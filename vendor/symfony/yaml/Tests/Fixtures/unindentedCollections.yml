@@ -8,7 +8,7 @@ yaml: |
     - item2
     - item3
 php: |
-    array('collection' => array('item1', 'item2', 'item3'))
+    ['collection' => ['item1', 'item2', 'item3']]
 ---
 test: Nested unindented collection (two levels)
 brief: >
@@ -20,7 +20,7 @@ yaml: |
         - b
         - c
 php: |
-    array('collection' => array('key' => array('a', 'b', 'c')))
+    ['collection' => ['key' => ['a', 'b', 'c']]]
 ---
 test: Nested unindented collection (three levels)
 brief: >
@@ -33,7 +33,7 @@ yaml: |
             - two
             - three
 php: |
-    array('collection' => array('key' => array('subkey' => array('one', 'two', 'three'))))
+    ['collection' => ['key' => ['subkey' => ['one', 'two', 'three']]]]
 ---
 test: Key/value after unindented collection (1)
 brief: >
@@ -46,7 +46,7 @@ yaml: |
         - c
     foo: bar
 php: |
-    array('collection' => array('key' => array('a', 'b', 'c')), 'foo' => 'bar')
+    ['collection' => ['key' => ['a', 'b', 'c']], 'foo' => 'bar']
 ---
 test: Key/value after unindented collection (at the same level)
 brief: >
@@ -59,7 +59,7 @@ yaml: |
         - c
         foo: bar
 php: |
-    array('collection' => array('key' => array('a', 'b', 'c'), 'foo' => 'bar'))
+    ['collection' => ['key' => ['a', 'b', 'c'], 'foo' => 'bar']]
 ---
 test: Shortcut Key after unindented collection
 brief: >
@@ -69,7 +69,7 @@ yaml: |
     - key: foo
       foo: bar
 php: |
-    array('collection' => array(array('key' => 'foo', 'foo' => 'bar')))
+    ['collection' => [['key' => 'foo', 'foo' => 'bar']]]
 ---
 test: Shortcut Key after unindented collection with custom spaces
 brief: >
@@ -79,4 +79,4 @@ yaml: |
     -  key: foo
        foo: bar
 php: |
-    array('collection' => array(array('key' => 'foo', 'foo' => 'bar')))
+    ['collection' => [['key' => 'foo', 'foo' => 'bar']]]

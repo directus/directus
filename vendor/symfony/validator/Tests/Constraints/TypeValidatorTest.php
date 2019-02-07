@@ -26,7 +26,7 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
 
     public function testNullIsValid()
     {
-        $constraint = new Type(array('type' => 'integer'));
+        $constraint = new Type(['type' => 'integer']);
 
         $this->validator->validate(null, $constraint);
 
@@ -35,7 +35,7 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
 
     public function testEmptyIsValidIfString()
     {
-        $constraint = new Type(array('type' => 'string'));
+        $constraint = new Type(['type' => 'string']);
 
         $this->validator->validate('', $constraint);
 
@@ -44,10 +44,10 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
 
     public function testEmptyIsInvalidIfNoString()
     {
-        $constraint = new Type(array(
+        $constraint = new Type([
             'type' => 'integer',
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate('', $constraint);
 
@@ -63,7 +63,7 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValues($value, $type)
     {
-        $constraint = new Type(array('type' => $type));
+        $constraint = new Type(['type' => $type]);
 
         $this->validator->validate($value, $constraint);
 
@@ -75,36 +75,36 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
         $object = new \stdClass();
         $file = $this->createFile();
 
-        return array(
-            array(true, 'Boolean'),
-            array(false, 'Boolean'),
-            array(true, 'boolean'),
-            array(false, 'boolean'),
-            array(true, 'bool'),
-            array(false, 'bool'),
-            array(0, 'numeric'),
-            array('0', 'numeric'),
-            array(1.5, 'numeric'),
-            array('1.5', 'numeric'),
-            array(0, 'integer'),
-            array(1.5, 'float'),
-            array('12345', 'string'),
-            array(array(), 'array'),
-            array($object, 'object'),
-            array($object, 'stdClass'),
-            array($file, 'resource'),
-            array('12345', 'digit'),
-            array('12a34', 'alnum'),
-            array('abcde', 'alpha'),
-            array("\n\r\t", 'cntrl'),
-            array('arf12', 'graph'),
-            array('abcde', 'lower'),
-            array('ABCDE', 'upper'),
-            array('arf12', 'print'),
-            array('*&$()', 'punct'),
-            array("\n\r\t", 'space'),
-            array('AB10BC99', 'xdigit'),
-        );
+        return [
+            [true, 'Boolean'],
+            [false, 'Boolean'],
+            [true, 'boolean'],
+            [false, 'boolean'],
+            [true, 'bool'],
+            [false, 'bool'],
+            [0, 'numeric'],
+            ['0', 'numeric'],
+            [1.5, 'numeric'],
+            ['1.5', 'numeric'],
+            [0, 'integer'],
+            [1.5, 'float'],
+            ['12345', 'string'],
+            [[], 'array'],
+            [$object, 'object'],
+            [$object, 'stdClass'],
+            [$file, 'resource'],
+            ['12345', 'digit'],
+            ['12a34', 'alnum'],
+            ['abcde', 'alpha'],
+            ["\n\r\t", 'cntrl'],
+            ['arf12', 'graph'],
+            ['abcde', 'lower'],
+            ['ABCDE', 'upper'],
+            ['arf12', 'print'],
+            ['*&$()', 'punct'],
+            ["\n\r\t", 'space'],
+            ['AB10BC99', 'xdigit'],
+        ];
     }
 
     /**
@@ -112,10 +112,10 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValues($value, $type, $valueAsString)
     {
-        $constraint = new Type(array(
+        $constraint = new Type([
             'type' => $type,
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -131,36 +131,36 @@ class TypeValidatorTest extends ConstraintValidatorTestCase
         $object = new \stdClass();
         $file = $this->createFile();
 
-        return array(
-            array('foobar', 'numeric', '"foobar"'),
-            array('foobar', 'boolean', '"foobar"'),
-            array('0', 'integer', '"0"'),
-            array('1.5', 'float', '"1.5"'),
-            array(12345, 'string', '12345'),
-            array($object, 'boolean', 'object'),
-            array($object, 'numeric', 'object'),
-            array($object, 'integer', 'object'),
-            array($object, 'float', 'object'),
-            array($object, 'string', 'object'),
-            array($object, 'resource', 'object'),
-            array($file, 'boolean', 'resource'),
-            array($file, 'numeric', 'resource'),
-            array($file, 'integer', 'resource'),
-            array($file, 'float', 'resource'),
-            array($file, 'string', 'resource'),
-            array($file, 'object', 'resource'),
-            array('12a34', 'digit', '"12a34"'),
-            array('1a#23', 'alnum', '"1a#23"'),
-            array('abcd1', 'alpha', '"abcd1"'),
-            array("\nabc", 'cntrl', "\"\nabc\""),
-            array("abc\n", 'graph', "\"abc\n\""),
-            array('abCDE', 'lower', '"abCDE"'),
-            array('ABcde', 'upper', '"ABcde"'),
-            array("\nabc", 'print', "\"\nabc\""),
-            array('abc&$!', 'punct', '"abc&$!"'),
-            array("\nabc", 'space', "\"\nabc\""),
-            array('AR1012', 'xdigit', '"AR1012"'),
-        );
+        return [
+            ['foobar', 'numeric', '"foobar"'],
+            ['foobar', 'boolean', '"foobar"'],
+            ['0', 'integer', '"0"'],
+            ['1.5', 'float', '"1.5"'],
+            [12345, 'string', '12345'],
+            [$object, 'boolean', 'object'],
+            [$object, 'numeric', 'object'],
+            [$object, 'integer', 'object'],
+            [$object, 'float', 'object'],
+            [$object, 'string', 'object'],
+            [$object, 'resource', 'object'],
+            [$file, 'boolean', 'resource'],
+            [$file, 'numeric', 'resource'],
+            [$file, 'integer', 'resource'],
+            [$file, 'float', 'resource'],
+            [$file, 'string', 'resource'],
+            [$file, 'object', 'resource'],
+            ['12a34', 'digit', '"12a34"'],
+            ['1a#23', 'alnum', '"1a#23"'],
+            ['abcd1', 'alpha', '"abcd1"'],
+            ["\nabc", 'cntrl', "\"\nabc\""],
+            ["abc\n", 'graph', "\"abc\n\""],
+            ['abCDE', 'lower', '"abCDE"'],
+            ['ABcde', 'upper', '"ABcde"'],
+            ["\nabc", 'print', "\"\nabc\""],
+            ['abc&$!', 'punct', '"abc&$!"'],
+            ["\nabc", 'space', "\"\nabc\""],
+            ['AR1012', 'xdigit', '"AR1012"'],
+        ];
     }
 
     protected function createFile()

@@ -21,24 +21,24 @@ class YamlFileDumperTest extends TestCase
     {
         $catalogue = new MessageCatalogue('en');
         $catalogue->add(
-            array(
+            [
                 'foo.bar1' => 'value1',
                 'foo.bar2' => 'value2',
-            ));
+            ]);
 
         $dumper = new YamlFileDumper();
 
-        $this->assertStringEqualsFile(__DIR__.'/../fixtures/messages.yml', $dumper->formatCatalogue($catalogue, 'messages', array('as_tree' => true, 'inline' => 999)));
+        $this->assertStringEqualsFile(__DIR__.'/../fixtures/messages.yml', $dumper->formatCatalogue($catalogue, 'messages', ['as_tree' => true, 'inline' => 999]));
     }
 
     public function testLinearFormatCatalogue()
     {
         $catalogue = new MessageCatalogue('en');
         $catalogue->add(
-            array(
+            [
                 'foo.bar1' => 'value1',
                 'foo.bar2' => 'value2',
-            ));
+            ]);
 
         $dumper = new YamlFileDumper();
 

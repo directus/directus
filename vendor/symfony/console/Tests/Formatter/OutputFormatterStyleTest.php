@@ -18,10 +18,10 @@ class OutputFormatterStyleTest extends TestCase
 {
     public function testConstructor()
     {
-        $style = new OutputFormatterStyle('green', 'black', array('bold', 'underscore'));
+        $style = new OutputFormatterStyle('green', 'black', ['bold', 'underscore']);
         $this->assertEquals("\033[32;40;1;4mfoo\033[39;49;22;24m", $style->apply('foo'));
 
-        $style = new OutputFormatterStyle('red', null, array('blink'));
+        $style = new OutputFormatterStyle('red', null, ['blink']);
         $this->assertEquals("\033[31;5mfoo\033[39;25m", $style->apply('foo'));
 
         $style = new OutputFormatterStyle(null, 'white');
@@ -66,7 +66,7 @@ class OutputFormatterStyleTest extends TestCase
     {
         $style = new OutputFormatterStyle();
 
-        $style->setOptions(array('reverse', 'conceal'));
+        $style->setOptions(['reverse', 'conceal']);
         $this->assertEquals("\033[7;8mfoo\033[27;28m", $style->apply('foo'));
 
         $style->setOption('bold');
@@ -78,7 +78,7 @@ class OutputFormatterStyleTest extends TestCase
         $style->setOption('bold');
         $this->assertEquals("\033[8;1mfoo\033[28;22m", $style->apply('foo'));
 
-        $style->setOptions(array('bold'));
+        $style->setOptions(['bold']);
         $this->assertEquals("\033[1mfoo\033[22m", $style->apply('foo'));
 
         try {

@@ -4,6 +4,6 @@ spec: 2.21
 yaml: |
   null: ~
 php: |
-  array(
+  [
     'null' => null,
-  )
+  ]

@@ -20,10 +20,10 @@ class ContainerCommandLoaderTest extends TestCase
 {
     public function testHas()
     {
-        $loader = new ContainerCommandLoader(new ServiceLocator(array(
+        $loader = new ContainerCommandLoader(new ServiceLocator([
             'foo-service' => function () { return new Command('foo'); },
             'bar-service' => function () { return new Command('bar'); },
-        )), array('foo' => 'foo-service', 'bar' => 'bar-service'));
+        ]), ['foo' => 'foo-service', 'bar' => 'bar-service']);
 
         $this->assertTrue($loader->has('foo'));
         $this->assertTrue($loader->has('bar'));
@@ -32,10 +32,10 @@ class ContainerCommandLoaderTest extends TestCase
 
     public function testGet()
     {
-        $loader = new ContainerCommandLoader(new ServiceLocator(array(
+        $loader = new ContainerCommandLoader(new ServiceLocator([
             'foo-service' => function () { return new Command('foo'); },
             'bar-service' => function () { return new Command('bar'); },
-        )), array('foo' => 'foo-service', 'bar' => 'bar-service'));
+        ]), ['foo' => 'foo-service', 'bar' => 'bar-service']);
 
         $this->assertInstanceOf(Command::class, $loader->get('foo'));
         $this->assertInstanceOf(Command::class, $loader->get('bar'));
@@ -46,16 +46,16 @@ class ContainerCommandLoaderTest extends TestCase
      */
     public function testGetUnknownCommandThrows()
     {
-        (new ContainerCommandLoader(new ServiceLocator(array()), array()))->get('unknown');
+        (new ContainerCommandLoader(new ServiceLocator([]), []))->get('unknown');
     }
 
     public function testGetCommandNames()
     {
-        $loader = new ContainerCommandLoader(new ServiceLocator(array(
+        $loader = new ContainerCommandLoader(new ServiceLocator([
             'foo-service' => function () { return new Command('foo'); },
             'bar-service' => function () { return new Command('bar'); },
-        )), array('foo' => 'foo-service', 'bar' => 'bar-service'));
+        ]), ['foo' => 'foo-service', 'bar' => 'bar-service']);
 
-        $this->assertSame(array('foo', 'bar'), $loader->getNames());
+        $this->assertSame(['foo', 'bar'], $loader->getNames());
     }
 }

@@ -49,7 +49,7 @@ yaml: |
     foo: 1
     bar: 2
 php: |
-    array('foo' => 1, 'bar' => 2)
+    ['foo' => 1, 'bar' => 2]
 documents: 1
 
 ---
@@ -63,7 +63,7 @@ yaml: |
     foo: |
         ---
 php: |
-    array('foo' => "---\n")
+    ['foo' => "---\n"]
 
 ---
 test: Multiple Document Separators in Block
@@ -79,7 +79,7 @@ yaml: |
     bar: |
         fooness
 php: |
-    array(
+    [
        'foo' => "---\nfoo: bar\n---\nyo: baz\n",
        'bar' => "fooness\n"
-    )
+    ]

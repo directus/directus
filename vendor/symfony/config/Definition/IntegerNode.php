@@ -41,6 +41,6 @@ class IntegerNode extends NumericNode
      */
     protected function getValidPlaceholderTypes(): array
     {
-        return array('int');
+        return ['int'];
     }
 }

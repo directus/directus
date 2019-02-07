@@ -37,7 +37,7 @@ class ConstraintViolationListTest extends TestCase
     public function testInitWithViolations()
     {
         $violation = $this->getViolation('Error');
-        $this->list = new ConstraintViolationList(array($violation));
+        $this->list = new ConstraintViolationList([$violation]);
 
         $this->assertCount(1, $this->list);
         $this->assertSame($violation, $this->list[0]);
@@ -54,11 +54,11 @@ class ConstraintViolationListTest extends TestCase
 
     public function testAddAll()
     {
-        $violations = array(
+        $violations = [
             10 => $this->getViolation('Error 1'),
             20 => $this->getViolation('Error 2'),
             30 => $this->getViolation('Error 3'),
-        );
+        ];
         $otherList = new ConstraintViolationList($violations);
         $this->list->addAll($otherList);
 
@@ -71,11 +71,11 @@ class ConstraintViolationListTest extends TestCase
 
     public function testIterator()
     {
-        $violations = array(
+        $violations = [
             10 => $this->getViolation('Error 1'),
             20 => $this->getViolation('Error 2'),
             30 => $this->getViolation('Error 3'),
-        );
+        ];
 
         $this->list = new ConstraintViolationList($violations);
 
@@ -103,13 +103,13 @@ class ConstraintViolationListTest extends TestCase
 
     public function testToString()
     {
-        $this->list = new ConstraintViolationList(array(
+        $this->list = new ConstraintViolationList([
             $this->getViolation('Error 1', 'Root'),
             $this->getViolation('Error 2', 'Root', 'foo.bar'),
             $this->getViolation('Error 3', 'Root', '[baz]'),
             $this->getViolation('Error 4', '', 'foo.bar'),
             $this->getViolation('Error 5', '', '[baz]'),
-        ));
+        ]);
 
         $expected = <<<'EOF'
 Root:
@@ -133,11 +133,11 @@ EOF;
      */
     public function testFindByCodes($code, $violationsCount)
     {
-        $violations = array(
+        $violations = [
             $this->getViolation('Error', null, null, 'code1'),
             $this->getViolation('Error', null, null, 'code1'),
             $this->getViolation('Error', null, null, 'code2'),
-        );
+        ];
         $list = new ConstraintViolationList($violations);
 
         $specificErrors = $list->findByCodes($code);
@@ -148,15 +148,15 @@ EOF;
 
     public function findByCodesProvider()
     {
-        return array(
-            array('code1', 2),
-            array(array('code1', 'code2'), 3),
-            array('code3', 0),
-        );
+        return [
+            ['code1', 2],
+            [['code1', 'code2'], 3],
+            ['code3', 0],
+        ];
     }
 
     protected function getViolation($message, $root = null, $propertyPath = null, $code = null)
     {
-        return new ConstraintViolation($message, $message, array(), $root, $propertyPath, null, null, $code);
+        return new ConstraintViolation($message, $message, [], $root, $propertyPath, null, null, $code);
     }
 }

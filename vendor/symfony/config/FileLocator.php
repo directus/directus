@@ -25,7 +25,7 @@ class FileLocator implements FileLocatorInterface
     /**
      * @param string|string[] $paths A path or an array of paths where to look for resources
      */
-    public function __construct($paths = array())
+    public function __construct($paths = [])
     {
         $this->paths = (array) $paths;
     }
@@ -41,7 +41,7 @@ class FileLocator implements FileLocatorInterface
 
         if ($this->isAbsolutePath($name)) {
             if (!file_exists($name)) {
-                throw new FileLocatorFileNotFoundException(sprintf('The file "%s" does not exist.', $name), 0, null, array($name));
+                throw new FileLocatorFileNotFoundException(sprintf('The file "%s" does not exist.', $name), 0, null, [$name]);
             }
 
             return $name;
@@ -54,7 +54,7 @@ class FileLocator implements FileLocatorInterface
         }
 
         $paths = array_unique($paths);
-        $filepaths = $notfound = array();
+        $filepaths = $notfound = [];
 
         foreach ($paths as $path) {
             if (@file_exists($file = $path.\DIRECTORY_SEPARATOR.$name)) {

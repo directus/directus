@@ -20,7 +20,7 @@ class MoFileDumperTest extends TestCase
     public function testFormatCatalogue()
     {
         $catalogue = new MessageCatalogue('en');
-        $catalogue->add(array('foo' => 'bar'));
+        $catalogue->add(['foo' => 'bar']);
 
         $dumper = new MoFileDumper();
 

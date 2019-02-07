@@ -57,11 +57,11 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
      *                                                                constraint validators
      * @param ObjectInitializerInterface[]        $objectInitializers The object initializers
      */
-    public function __construct(ExecutionContextInterface $context, MetadataFactoryInterface $metadataFactory, ConstraintValidatorFactoryInterface $validatorFactory, array $objectInitializers = array())
+    public function __construct(ExecutionContextInterface $context, MetadataFactoryInterface $metadataFactory, ConstraintValidatorFactoryInterface $validatorFactory, array $objectInitializers = [])
     {
         $this->context = $context;
         $this->defaultPropertyPath = $context->getPropertyPath();
-        $this->defaultGroups = array($context->getGroup() ?: Constraint::DEFAULT_GROUP);
+        $this->defaultGroups = [$context->getGroup() ?: Constraint::DEFAULT_GROUP];
         $this->metadataFactory = $metadataFactory;
         $this->validatorFactory = $validatorFactory;
         $this->objectInitializers = $objectInitializers;
@@ -101,7 +101,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
             // You can pass a single constraint or an array of constraints
             // Make sure to deal with an array in the rest of the code
             if (!\is_array($constraints)) {
-                $constraints = array($constraints);
+                $constraints = [$constraints];
             }
 
             $metadata = new GenericMetadata();
@@ -283,7 +283,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
             return $groups;
         }
 
-        return array($groups);
+        return [$groups];
     }
 
     /**
@@ -731,7 +731,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
     private function stepThroughGroupSequence($value, $object, $cacheKey, MetadataInterface $metadata = null, $propertyPath, $traversalStrategy, GroupSequence $groupSequence, $cascadedGroup, ExecutionContextInterface $context)
     {
         $violationCount = \count($context->getViolations());
-        $cascadedGroups = $cascadedGroup ? array($cascadedGroup) : null;
+        $cascadedGroups = $cascadedGroup ? [$cascadedGroup] : null;
 
         foreach ($groupSequence->groups as $groupInSequence) {
             $groups = (array) $groupInSequence;

@@ -22,7 +22,7 @@ class BaseNodeTest extends TestCase
      */
     public function testGetPathForChildNode($expected, array $params)
     {
-        $constructorArgs = array();
+        $constructorArgs = [];
         $constructorArgs[] = $params[0];
 
         if (isset($params[1])) {
@@ -46,11 +46,11 @@ class BaseNodeTest extends TestCase
 
     public function providePath()
     {
-        return array(
-            'name only' => array('root', array('root')),
-            'name and parent' => array('foo.bar.baz.bim', array('bim', 'foo.bar.baz')),
-            'name and separator' => array('foo', array('foo', null, '/')),
-            'name, parent and separator' => array('foo.bar/baz/bim', array('bim', 'foo.bar/baz', '/')),
-        );
+        return [
+            'name only' => ['root', ['root']],
+            'name and parent' => ['foo.bar.baz.bim', ['bim', 'foo.bar.baz']],
+            'name and separator' => ['foo', ['foo', null, '/']],
+            'name, parent and separator' => ['foo.bar/baz/bim', ['bim', 'foo.bar/baz', '/']],
+        ];
     }
 }

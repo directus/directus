@@ -27,7 +27,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
 
     protected function tearDown()
     {
-        $files = array($this->cacheFile, "{$this->cacheFile}.meta");
+        $files = [$this->cacheFile, "{$this->cacheFile}.meta"];
 
         foreach ($files as $file) {
             if (file_exists($file)) {
@@ -52,7 +52,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
             It does not matter if you provide checkers or not. */
 
         unlink($this->cacheFile); // remove tempnam() side effect
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
 
         $this->assertFalse($cache->isFresh());
     }
@@ -67,7 +67,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
 
     public function testCacheIsFreshIfEmptyCheckerIteratorProvided()
     {
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, new \ArrayIterator(array()));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, new \ArrayIterator([]));
         $this->assertTrue($cache->isFresh());
     }
 
@@ -75,7 +75,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
     {
         /* As in the previous test, but this time we have a resource. */
         $cache = new ResourceCheckerConfigCache($this->cacheFile);
-        $cache->write('', array(new ResourceStub()));
+        $cache->write('', [new ResourceStub()]);
 
         $this->assertTrue($cache->isFresh()); // no (matching) ResourceChecker passed
     }
@@ -92,8 +92,8 @@ class ResourceCheckerConfigCacheTest extends TestCase
                   ->method('isFresh')
                   ->willReturn(true);
 
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
-        $cache->write('', array(new ResourceStub()));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
+        $cache->write('', [new ResourceStub()]);
 
         $this->assertTrue($cache->isFresh());
     }
@@ -110,8 +110,8 @@ class ResourceCheckerConfigCacheTest extends TestCase
                   ->method('isFresh')
                   ->willReturn(false);
 
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
-        $cache->write('', array(new ResourceStub()));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
+        $cache->write('', [new ResourceStub()]);
 
         $this->assertFalse($cache->isFresh());
     }
@@ -119,8 +119,8 @@ class ResourceCheckerConfigCacheTest extends TestCase
     public function testCacheIsNotFreshWhenUnserializeFails()
     {
         $checker = $this->getMockBuilder('\Symfony\Component\Config\ResourceCheckerInterface')->getMock();
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
-        $cache->write('foo', array(new FileResource(__FILE__)));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
+        $cache->write('foo', [new FileResource(__FILE__)]);
 
         $metaFile = "{$this->cacheFile}.meta";
         file_put_contents($metaFile, str_replace('FileResource', 'ClassNotHere', file_get_contents($metaFile)));
@@ -139,8 +139,8 @@ class ResourceCheckerConfigCacheTest extends TestCase
     public function testCacheIsNotFreshIfNotExistsMetaFile()
     {
         $checker = $this->getMockBuilder('\Symfony\Component\Config\ResourceCheckerInterface')->getMock();
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, array($checker));
-        $cache->write('foo', array(new FileResource(__FILE__)));
+        $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
+        $cache->write('foo', [new FileResource(__FILE__)]);
 
         $metaFile = "{$this->cacheFile}.meta";
         unlink($metaFile);

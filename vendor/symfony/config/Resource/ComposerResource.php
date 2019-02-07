@@ -51,11 +51,17 @@ class ComposerResource implements SelfCheckingResourceInterface, \Serializable
         return self::$runtimeVendors === $this->vendors;
     }
 
+    /**
+     * @internal
+     */
     public function serialize()
     {
         return serialize($this->vendors);
     }
 
+    /**
+     * @internal
+     */
     public function unserialize($serialized)
     {
         $this->vendors = unserialize($serialized);
@@ -63,7 +69,7 @@ class ComposerResource implements SelfCheckingResourceInterface, \Serializable
 
     private static function refresh()
     {
-        self::$runtimeVendors = array();
+        self::$runtimeVendors = [];
 
         foreach (get_declared_classes() as $class) {
             if ('C' === $class[0] && 0 === strpos($class, 'ComposerAutoloaderInit')) {

@@ -57,11 +57,11 @@ class LanguageValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidLanguages()
     {
-        return array(
-            array('en'),
-            array('en_US'),
-            array('my'),
-        );
+        return [
+            ['en'],
+            ['en_US'],
+            ['my'],
+        ];
     }
 
     /**
@@ -69,9 +69,9 @@ class LanguageValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidLanguages($language)
     {
-        $constraint = new Language(array(
+        $constraint = new Language([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($language, $constraint);
 
@@ -83,10 +83,10 @@ class LanguageValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidLanguages()
     {
-        return array(
-            array('EN'),
-            array('foobar'),
-        );
+        return [
+            ['EN'],
+            ['foobar'],
+        ];
     }
 
     public function testValidateUsingCountrySpecificLocale()
@@ -96,9 +96,9 @@ class LanguageValidatorTest extends ConstraintValidatorTestCase
         \Locale::setDefault('fr_FR');
         $existingLanguage = 'en';
 
-        $this->validator->validate($existingLanguage, new Language(array(
+        $this->validator->validate($existingLanguage, new Language([
             'message' => 'aMessage',
-        )));
+        ]));
 
         $this->assertNoViolation();
     }

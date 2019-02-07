@@ -6,7 +6,7 @@ yaml: |
   - Sammy Sosa
   - Ken Griffey
 php: |
-  array('Mark McGwire', 'Sammy Sosa', 'Ken Griffey')
+  ['Mark McGwire', 'Sammy Sosa', 'Ken Griffey']
 ---
 test: Mapping of scalars to scalars
 spec: 2.2
@@ -15,7 +15,7 @@ yaml: |
   avg: 0.278
   rbi: 147
 php: |
-  array('hr' => 65, 'avg' => 0.278, 'rbi' => 147)
+  ['hr' => 65, 'avg' => 0.278, 'rbi' => 147]
 ---
 test: Mapping of scalars to sequences
 spec: 2.3
@@ -29,13 +29,13 @@ yaml: |
        - Chicago Cubs
        - Atlanta Braves
 php: |
-    array('american' =>
-        array( 'Boston Red Sox', 'Detroit Tigers',
-          'New York Yankees' ),
+    ['american' =>
+        [ 'Boston Red Sox', 'Detroit Tigers',
+          'New York Yankees' ],
       'national' =>
-        array( 'New York Mets', 'Chicago Cubs',
-          'Atlanta Braves' )
-    )
+        [ 'New York Mets', 'Chicago Cubs',
+          'Atlanta Braves' ]
+    ]
 ---
 test: Sequence of mappings
 spec: 2.4
@@ -49,10 +49,10 @@ yaml: |
       hr:   63
       avg:  0.288
 php: |
-    array(
-      array('name' => 'Mark McGwire', 'hr' => 65, 'avg' => 0.278),
-      array('name' => 'Sammy Sosa', 'hr' => 63, 'avg' => 0.288)
-    )
+    [
+      ['name' => 'Mark McGwire', 'hr' => 65, 'avg' => 0.278],
+      ['name' => 'Sammy Sosa', 'hr' => 63, 'avg' => 0.288]
+    ]
 ---
 test: Legacy A5
 todo: true
@@ -134,11 +134,11 @@ yaml: |
   - [ Mark McGwire , 65 , 0.278 ]
   - [ Sammy Sosa   , 63 , 0.288 ]
 php: |
-  array(
-    array( 'name', 'hr', 'avg' ),
-    array( 'Mark McGwire', 65, 0.278 ),
-    array( 'Sammy Sosa', 63, 0.288 )
-  )
+  [
+    [ 'name', 'hr', 'avg' ],
+    [ 'Mark McGwire', 65, 0.278 ],
+    [ 'Sammy Sosa', 63, 0.288 ]
+  ]
 ---
 test: Mapping of mappings
 todo: true
@@ -150,12 +150,12 @@ yaml: |
       avg: 0.288
     }
 php: |
-  array(
+  [
     'Mark McGwire' =>
-      array( 'hr' => 65, 'avg' => 0.278 ),
+      [ 'hr' => 65, 'avg' => 0.278 ],
     'Sammy Sosa' =>
-      array( 'hr' => 63, 'avg' => 0.288 )
-  )
+      [ 'hr' => 63, 'avg' => 0.288 ]
+  ]
 ---
 test: Two documents in a stream each with a leading comment
 todo: true
@@ -208,10 +208,10 @@ yaml: |
     - Sammy Sosa
     - Ken Griffey
 php: |
-  array(
-    'hr' => array( 'Mark McGwire', 'Sammy Sosa' ),
-    'rbi' => array( 'Sammy Sosa', 'Ken Griffey' )
-  )
+  [
+    'hr' => [ 'Mark McGwire', 'Sammy Sosa' ],
+    'rbi' => [ 'Sammy Sosa', 'Ken Griffey' ]
+  ]
 ---
 test: Node for Sammy Sosa appears twice in this document
 spec: 2.10
@@ -225,12 +225,12 @@ yaml: |
       - *SS # Subsequent occurrence
       - Ken Griffey
 php: |
-   array(
+   [
       'hr' =>
-         array('Mark McGwire', 'Sammy Sosa'),
+         ['Mark McGwire', 'Sammy Sosa'],
       'rbi' =>
-         array('Sammy Sosa', 'Ken Griffey')
-   )
+         ['Sammy Sosa', 'Ken Griffey']
+    ]
 ---
 test: Mapping between sequences
 todo: true
@@ -297,20 +297,20 @@ yaml: |
   - item    : Big Shoes
     quantity: 1
 php: |
-  array (
-    array (
+  [
+    [
       'item' => 'Super Hoop',
       'quantity' => 1,
-    ),
-    array (
+    ],
+    [
       'item' => 'Basketball',
       'quantity' => 4,
-    ),
-    array (
+    ],
+    [
       'item' => 'Big Shoes',
       'quantity' => 1,
-    )
-  )
+    ]
+  ]
 perl: |
   [
      { item => 'Super Hoop', quantity => 1 },
@@ -462,11 +462,11 @@ yaml: |
      65 Home Runs
      0.278 Batting Average
 php: |
-  array(
+  [
     'name' => 'Mark McGwire',
     'accomplishment' => "Mark set a major league home run record in 1998.\n",
     'stats' => "65 Home Runs\n0.278 Batting Average\n"
-  )
+  ]
 ---
 test: Quoted scalars
 todo: true
@@ -512,11 +512,11 @@ yaml: |
   octal: 014
   hexadecimal: 0xC
 php: |
-  array(
+  [
     'canonical' => 12345,
     'octal' => 014,
     'hexadecimal' => 0xC
-  )
+  ]
 ---
 # FIX: spec shows parens around -inf and NaN
 test: Floating point
@@ -528,13 +528,13 @@ yaml: |
   not a number: .NaN
   float as whole number: !!float 1
 php: |
-  array(
+  [
     'canonical' => 1230.15,
     'exponential' => 1230.15,
     'negative infinity' => log(0),
     'not a number' => -log(0),
     'float as whole number' => (float) 1
-  )
+  ]
 ---
 test: Timestamps
 todo: true
@@ -545,12 +545,12 @@ yaml: |
   spaced:  2001-12-14 21:59:43.10 -05:00
   date:   2002-12-14 # Time is noon UTC
 php: |
-  array(
+  [
     'canonical' => YAML::mktime( 2001, 12, 15, 2, 59, 43, 0.10 ),
     'iso8601' => YAML::mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" ),
     'spaced' => YAML::mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" ),
     'date' => Date.new( 2002, 12, 14 )
-  )
+  ]
 ---
 test: legacy Timestamps test
 todo: true
@@ -561,12 +561,12 @@ yaml: |
     spaced:  2001-12-14 21:59:43.00 -05:00
     date:   2002-12-14
 php: |
-   array(
+   [
      'canonical' => Time::utc( 2001, 12, 15, 2, 59, 43, 0 ),
      'iso8601' => YAML::mktime( 2001, 2, 28, 21, 59, 43, 0, "-05:00" ),
      'spaced' => YAML::mktime( 2001, 12, 14, 21, 59, 43, 0, "-05:00" ),
      'date' => Date.new( 2002, 12, 14 )
-   )
+   ]
 ---
 test: Various explicit families
 todo: true
@@ -734,20 +734,20 @@ yaml: |
     Backup contact is Nancy
     Billsmer @ 338-4338.
 php: |
-  array(
+  [
      'invoice' => 34843, 'date' => gmmktime(0, 0, 0, 1, 23, 2001),
      'bill-to' =>
-      array( 'given' => 'Chris', 'family' => 'Dumars', 'address' => array( 'lines' => "458 Walkman Dr.\nSuite #292\n", 'city' => 'Royal Oak', 'state' => 'MI', 'postal' => 48046 ) )
+      [ 'given' => 'Chris', 'family' => 'Dumars', 'address' => [ 'lines' => "458 Walkman Dr.\nSuite #292\n", 'city' => 'Royal Oak', 'state' => 'MI', 'postal' => 48046 ]]
      , 'ship-to' =>
-      array( 'given' => 'Chris', 'family' => 'Dumars', 'address' => array( 'lines' => "458 Walkman Dr.\nSuite #292\n", 'city' => 'Royal Oak', 'state' => 'MI', 'postal' => 48046 ) )
+      [ 'given' => 'Chris', 'family' => 'Dumars', 'address' => [ 'lines' => "458 Walkman Dr.\nSuite #292\n", 'city' => 'Royal Oak', 'state' => 'MI', 'postal' => 48046 ]]
      , 'product' =>
-       array(
-        array( 'sku' => 'BL394D', 'quantity' => 4, 'description' => 'Basketball', 'price' => 450.00 ),
-        array( 'sku' => 'BL4438H', 'quantity' => 1, 'description' => 'Super Hoop', 'price' => 2392.00 )
-      ),
+       [
+        [ 'sku' => 'BL394D', 'quantity' => 4, 'description' => 'Basketball', 'price' => 450.00 ],
+        [ 'sku' => 'BL4438H', 'quantity' => 1, 'description' => 'Super Hoop', 'price' => 2392.00 ]
+      ],
      'tax' => 251.42, 'total' => 4443.52,
      'comments' => "Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.\n"
-  )
+  ]
 ---
 test: Log file
 todo: true
@@ -806,9 +806,9 @@ yaml: |
    # These are three throwaway comment
    # lines (the first line is empty).
 php: |
-   array(
+   [
      'this' => "contains three lines of text.\nThe third one starts with a\n# character. This isn't a comment.\n"
-   )
+   ]
 ---
 test: Document with a single value
 todo: true
@@ -858,11 +858,11 @@ yaml: |
    date    : 2001-01-23
    total   : 4443.52
 php: |
-   array(
+   [
       'invoice' => 34843,
       'date' => gmmktime(0, 0, 0, 1, 23, 2001),
       'total' => 4443.52
-   )
+   ]
 ---
 test: Single-line documents
 todo: true
@@ -913,7 +913,7 @@ yaml: |
    no int: ! 12
    string: !!str 12
 php: |
-   array( 'integer' => 12, 'no int' => '12', 'string' => '12' )
+   [ 'integer' => 12, 'no int' => '12', 'string' => '12' ]
 ---
 test: Private types
 todo: true
@@ -945,7 +945,7 @@ yaml: |
   # The URI is 'tag:yaml.org,2002:str'
   - !!str a Unicode string
 php: |
-  array( 'a Unicode string' )
+  [ 'a Unicode string' ]
 ---
 test: Type family under perl.yaml.org
 todo: true
@@ -1018,9 +1018,9 @@ yaml: |
    repeated use of this value.
   alias : *A001
 php: |
-  array( 'anchor' => 'This scalar has an anchor.',
+  [ 'anchor' => 'This scalar has an anchor.',
     'override' => "The alias node below is a repeated use of this value.\n",
-    'alias' => "The alias node below is a repeated use of this value.\n" )
+    'alias' => "The alias node below is a repeated use of this value.\n" ]
 ---
 test: Flow and block formatting
 todo: true
@@ -1131,12 +1131,12 @@ yaml: |
    redundant: |2
      This value is indented 2 spaces.
 php: |
-   array(
+   [
       'leading spaces' => "    This value starts with four spaces.\n",
       'leading line break' => "\nThis value starts with a line break.\n",
       'leading comment indicator' => "# first line starts with a\n# character.\n",
       'redundant' => "This value is indented 2 spaces.\n"
-   )
+   ]
 ---
 test: Chomping and keep modifiers
 yaml: |
@@ -1155,14 +1155,14 @@ yaml: |
 
     same as "kept" above: "This has two newlines.\n\n"
 php: |
-    array(
+    [
       'clipped' => "This has one newline.\n",
       'same as "clipped" above' => "This has one newline.\n",
       'stripped' => 'This has no newline.',
       'same as "stripped" above' => 'This has no newline.',
       'kept' => "This has two newlines.\n\n",
       'same as "kept" above' => "This has two newlines.\n\n"
-    )
+    ]
 ---
 test: Literal combinations
 todo: true
@@ -1200,7 +1200,7 @@ yaml: |
 
    both are equal to: "  This has no newline."
 php: |
-   array(
+   [
      'empty' => '',
      'literal' => "The \\ ' \" characters may be\nfreely used. Leading white\n   space " +
        "is significant.\n\nLine breaks are significant.\nThus this value contains one\n" +
@@ -1211,7 +1211,7 @@ php: |
      'indented and chomped' => '  This has no newline.',
      'also written as' => '  This has no newline.',
      'both are equal to' => '  This has no newline.'
-   )
+   ]
 ---
 test: Folded combinations
 todo: true
@@ -1267,7 +1267,7 @@ yaml: |
    # Explicit comments may follow
    # but must be less indented.
 php: |
-   array(
+   [
      'empty' => '',
      'one paragraph' => 'Line feeds are converted to spaces, so this value'.
        " contains no line breaks except for the final one.\n",
@@ -1279,7 +1279,7 @@ php: |
      'above is equal to' => "This is a folded paragraph followed by a list:\n".
        " * first entry\n * second entry\nFollowed by another folded paragraph, ".
        "another list:\n\n * first entry\n\n * second entry\n\nAnd a final folded paragraph.\n"
-   )
+   ]
 ---
 test: Single quotes
 todo: true
@@ -1294,13 +1294,13 @@ yaml: |
          line break'
    is same as: "this contains six spaces\nand one line break"
 php: |
-   array(
+   [
      'empty' => '',
      'second' => '! : \\ etc. can be used freely.',
      'third' => "a single quote ' must be escaped.",
      'span' => "this contains six spaces\nand one line break",
      'is same as' => "this contains six spaces\nand one line break"
-   )
+   ]
 ---
 test: Double quotes
 todo: true
@@ -1314,14 +1314,14 @@ yaml: |
          spaces"
    is equal to: "this contains four  spaces"
 php: |
-   array(
+   [
      'empty' => '',
      'second' => '! : etc. can be used freely.',
      'third' => 'a " or a \\ must be escaped.',
      'fourth' => "this value ends with an LF.\n",
      'span' => "this contains four  spaces",
      'is equal to' => "this contains four  spaces"
-   )
+   ]
 ---
 test: Unquoted strings
 todo: true
@@ -1350,7 +1350,7 @@ yaml: |
    note: { one-line keys: but multi-line values }
 
 php: |
-   array(
+   [
      'first' => 'There is no unquoted empty string.',
      'second' => 12,
      'third' => '12',
@@ -1358,7 +1358,7 @@ php: |
      'indicators' => "this has no comments. #:foo and bar# are both text.",
      'flow' => [ 'can span lines', 'like this' ],
      'note' => { 'one-line keys' => 'but multi-line values' }
-   )
+   ]
 ---
 test: Spanning sequences
 todo: true
@@ -1372,11 +1372,11 @@ yaml: |
      - one
      - two
 php: |
-   array(
+   [
      'flow' => [ 'one', 'two' ],
      'spanning' => [ 'one', 'two' ],
      'block' => [ 'one', 'two' ]
-   )
+   ]
 ---
 test: Flow mappings
 yaml: |
@@ -1387,10 +1387,10 @@ yaml: |
        one: 1
        two: 2
 php: |
-   array(
-     'flow' => array( 'one' => 1, 'two' => 2 ),
-     'block' => array( 'one' => 1, 'two' => 2 )
-   )
+   [
+     'flow' => [ 'one' => 1, 'two' => 2 ],
+     'block' => [ 'one' => 1, 'two' => 2 ]
+    ]
 ---
 test: Representations of 12
 todo: true
@@ -1412,7 +1412,7 @@ yaml: |
    - foo/bar
    - /a.*b/
 php: |
-   array( 12, '12', '12', '12', '12', '/foo/bar', 'd:/foo/bar', 'foo/bar', '/a.*b/' )
+   [ 12, '12', '12', '12', '12', '/foo/bar', 'd:/foo/bar', 'foo/bar', '/a.*b/' ]
 ---
 test: "Null"
 todo: true
@@ -1434,12 +1434,12 @@ yaml: |
          only two with values.
 
 php: |
-   array (
+   [
      'canonical' => null,
      'english' => null,
-     'sparse' => array( null, '2nd entry', null, '4th entry', null ]),
+     'sparse' => [ null, '2nd entry', null, '4th entry', null ]],
      'four' => 'This mapping has five keys, only two with values.'
-   )
+      ]
 ---
 test: Omap
 todo: true
@@ -1504,11 +1504,11 @@ yaml: |
    octal: 014
    hexadecimal: 0xC
 php: |
-   array(
+   [
      'canonical' => 12345,
      'octal' => 12,
      'hexadecimal' => 12
-   )
+   ]
 ---
 test: Float
 yaml: |
@@ -1517,12 +1517,12 @@ yaml: |
    negative infinity: -.inf
    not a number: .NaN
 php: |
-  array(
+  [
     'canonical' => 1230.15,
     'exponential' => 1230.15,
     'negative infinity' => log(0),
     'not a number' => -log(0)
-  )
+  ]
 ---
 test: Timestamp
 todo: true
@@ -1532,12 +1532,12 @@ yaml: |
    space separated: 2001-12-14 21:59:43.10 -05:00
    date (noon UTC): 2002-12-14
 ruby: |
-   array(
+   [
      'canonical' => YAML::mktime( 2001, 12, 15, 2, 59, 43, 0.10 ),
      'valid iso8601' => YAML::mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" ),
      'space separated' => YAML::mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" ),
      'date (noon UTC)' => Date.new( 2002, 12, 14 )
-   )
+   ]
 ---
 test: Binary
 todo: true

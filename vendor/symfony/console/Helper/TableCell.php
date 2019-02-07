@@ -19,12 +19,12 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 class TableCell
 {
     private $value;
-    private $options = array(
+    private $options = [
         'rowspan' => 1,
         'colspan' => 1,
-    );
+    ];
 
-    public function __construct(string $value = '', array $options = array())
+    public function __construct(string $value = '', array $options = [])
     {
         $this->value = $value;
 

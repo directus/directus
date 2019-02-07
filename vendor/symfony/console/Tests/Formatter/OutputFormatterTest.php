@@ -184,26 +184,26 @@ class OutputFormatterTest extends TestCase
 
     public function provideInlineStyleOptionsCases()
     {
-        return array(
-            array('<unknown=_unknown_>'),
-            array('<unknown=_unknown_;a=1;b>'),
-            array('<fg=green;>', "\033[32m[test]\033[39m", '[test]'),
-            array('<fg=green;bg=blue;>', "\033[32;44ma\033[39;49m", 'a'),
-            array('<fg=green;options=bold>', "\033[32;1mb\033[39;22m", 'b'),
-            array('<fg=green;options=reverse;>', "\033[32;7m<a>\033[39;27m", '<a>'),
-            array('<fg=green;options=bold,underscore>', "\033[32;1;4mz\033[39;22;24m", 'z'),
-            array('<fg=green;options=bold,underscore,reverse;>', "\033[32;1;4;7md\033[39;22;24;27m", 'd'),
-        );
+        return [
+            ['<unknown=_unknown_>'],
+            ['<unknown=_unknown_;a=1;b>'],
+            ['<fg=green;>', "\033[32m[test]\033[39m", '[test]'],
+            ['<fg=green;bg=blue;>', "\033[32;44ma\033[39;49m", 'a'],
+            ['<fg=green;options=bold>', "\033[32;1mb\033[39;22m", 'b'],
+            ['<fg=green;options=reverse;>', "\033[32;7m<a>\033[39;27m", '<a>'],
+            ['<fg=green;options=bold,underscore>', "\033[32;1;4mz\033[39;22;24m", 'z'],
+            ['<fg=green;options=bold,underscore,reverse;>', "\033[32;1;4;7md\033[39;22;24;27m", 'd'],
+        ];
     }
 
     public function provideInlineStyleTagsWithUnknownOptions()
     {
-        return array(
-            array('<options=abc;>', 'abc'),
-            array('<options=abc,def;>', 'abc'),
-            array('<fg=green;options=xyz;>', 'xyz'),
-            array('<fg=green;options=efg,abc>', 'efg'),
-        );
+        return [
+            ['<options=abc;>', 'abc'],
+            ['<options=abc,def;>', 'abc'],
+            ['<fg=green;options=xyz;>', 'xyz'],
+            ['<fg=green;options=efg,abc>', 'efg'],
+        ];
     }
 
     public function testNonStyleTag()

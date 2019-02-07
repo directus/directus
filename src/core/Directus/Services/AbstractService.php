@@ -232,6 +232,12 @@ abstract class AbstractService
                 $columnConstraints[] = 'array';
             } else if (DataTypes::isJson($field->getType())) {
                 $columnConstraints[] = 'json';
+            } else if (DataTypes::isDateType($field->getType())) {
+                $columnConstraints[] = 'date';
+            } else if (DataTypes::isTimeType($field->getType())) {
+                $columnConstraints[] = 'time';
+            } else if (DataTypes::isDateTimeType($field->getType())) {
+                $columnConstraints[] = 'datetime';
             }
             // TODO: Relational accept its type, null (if allowed) and a object
             // else if ($schemaManager->isNumericType($field->getType())) {

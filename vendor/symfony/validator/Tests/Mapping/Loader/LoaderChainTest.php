@@ -31,10 +31,10 @@ class LoaderChainTest extends TestCase
             ->method('loadClassMetadata')
             ->with($this->equalTo($metadata));
 
-        $chain = new LoaderChain(array(
+        $chain = new LoaderChain([
             $loader1,
             $loader2,
-        ));
+        ]);
 
         $chain->loadClassMetadata($metadata);
     }
@@ -53,10 +53,10 @@ class LoaderChainTest extends TestCase
             ->method('loadClassMetadata')
             ->will($this->returnValue(false));
 
-        $chain = new LoaderChain(array(
+        $chain = new LoaderChain([
             $loader1,
             $loader2,
-        ));
+        ]);
 
         $this->assertTrue($chain->loadClassMetadata($metadata));
     }
@@ -75,10 +75,10 @@ class LoaderChainTest extends TestCase
             ->method('loadClassMetadata')
             ->will($this->returnValue(false));
 
-        $chain = new LoaderChain(array(
+        $chain = new LoaderChain([
             $loader1,
             $loader2,
-        ));
+        ]);
 
         $this->assertFalse($chain->loadClassMetadata($metadata));
     }

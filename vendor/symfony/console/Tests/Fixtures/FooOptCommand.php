@@ -15,7 +15,7 @@ class FooOptCommand extends Command
         $this
             ->setName('foo:bar')
             ->setDescription('The foo:bar command')
-            ->setAliases(array('afoobar'))
+            ->setAliases(['afoobar'])
             ->addOption('fooopt', 'fo', InputOption::VALUE_OPTIONAL, 'fooopt description')
         ;
     }

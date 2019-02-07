@@ -18,7 +18,7 @@ class FakeClassMetadata extends ClassMetadata
     public function addCustomPropertyMetadata($propertyName, $metadata)
     {
         if (!isset($this->members[$propertyName])) {
-            $this->members[$propertyName] = array();
+            $this->members[$propertyName] = [];
         }
 
         $this->members[$propertyName][] = $metadata;

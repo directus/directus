@@ -52,7 +52,7 @@ The edge case of defining just one value for nodes of type Enum is now allowed:
 $rootNode
     ->children()
         ->enumNode('variable')
-            ->values(array('value'))
+            ->values(['value'])
         ->end()
     ->end()
 ;

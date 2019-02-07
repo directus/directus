@@ -38,7 +38,7 @@ class TranslationDumperPass implements CompilerPassInterface
         $definition = $container->getDefinition($this->writerServiceId);
 
         foreach ($container->findTaggedServiceIds($this->dumperTag, true) as $id => $attributes) {
-            $definition->addMethodCall('addDumper', array($attributes[0]['alias'], new Reference($id)));
+            $definition->addMethodCall('addDumper', [$attributes[0]['alias'], new Reference($id)]);
         }
     }
 }

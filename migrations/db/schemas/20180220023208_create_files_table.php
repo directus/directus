@@ -106,6 +106,11 @@ class CreateFilesTable extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
+        $table->addColumn('checksum', 'string', [
+            'limit' => 32,
+            'null' => true,
+            'default' => null
+        ]);
         $table->addColumn('metadata', 'text', [
             'null' => true,
             'default' => null

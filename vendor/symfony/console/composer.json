@@ -28,11 +28,14 @@
         "symfony/process": "~3.4|~4.0",
         "psr/log": "~1.0"
     },
+    "provide": {
+        "psr/log-implementation": "1.0"
+    },
     "suggest": {
         "symfony/event-dispatcher": "",
         "symfony/lock": "",
         "symfony/process": "",
-        "psr/log-implementation": "For using the console logger"
+        "psr/log": "For using the console logger"
     },
     "conflict": {
         "symfony/dependency-injection": "<3.4",

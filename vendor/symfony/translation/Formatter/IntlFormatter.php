@@ -21,12 +21,12 @@ use Symfony\Component\Translation\Exception\LogicException;
 class IntlFormatter implements IntlFormatterInterface
 {
     private $hasMessageFormatter;
-    private $cache = array();
+    private $cache = [];
 
     /**
      * {@inheritdoc}
      */
-    public function formatIntl(string $message, string $locale, array $parameters = array()): string
+    public function formatIntl(string $message, string $locale, array $parameters = []): string
     {
         if (!$formatter = $this->cache[$locale][$message] ?? null) {
             if (!($this->hasMessageFormatter ?? $this->hasMessageFormatter = class_exists(\MessageFormatter::class))) {
@@ -40,7 +40,7 @@ class IntlFormatter implements IntlFormatterInterface
         }
 
         foreach ($parameters as $key => $value) {
-            if (\in_array($key[0] ?? null, array('%', '{'), true)) {
+            if (\in_array($key[0] ?? null, ['%', '{'], true)) {
                 unset($parameters[$key]);
                 $parameters[trim($key, '%{ }')] = $value;
             }

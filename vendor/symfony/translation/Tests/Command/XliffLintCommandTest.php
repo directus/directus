@@ -32,8 +32,8 @@ class XliffLintCommandTest extends TestCase
         $filename = $this->createFile();
 
         $tester->execute(
-            array('filename' => $filename),
-            array('verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false)
+            ['filename' => $filename],
+            ['verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false]
         );
 
         $this->assertEquals(0, $tester->getStatusCode(), 'Returns 0 in case of success');
@@ -47,8 +47,8 @@ class XliffLintCommandTest extends TestCase
         $filename2 = $this->createFile();
 
         $tester->execute(
-            array('filename' => array($filename1, $filename2)),
-            array('verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false)
+            ['filename' => [$filename1, $filename2]],
+            ['verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false]
         );
 
         $this->assertEquals(0, $tester->getStatusCode(), 'Returns 0 in case of success');
@@ -64,8 +64,8 @@ class XliffLintCommandTest extends TestCase
         $filename = $this->createFile('note', $targetLanguage, $fileNamePattern);
 
         $tester->execute(
-            array('filename' => $filename),
-            array('verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false)
+            ['filename' => $filename],
+            ['verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false]
         );
 
         $this->assertEquals($mustFail ? 1 : 0, $tester->getStatusCode());
@@ -77,7 +77,7 @@ class XliffLintCommandTest extends TestCase
         $tester = $this->createCommandTester();
         $filename = $this->createFile('note <target>');
 
-        $tester->execute(array('filename' => $filename), array('decorated' => false));
+        $tester->execute(['filename' => $filename], ['decorated' => false]);
 
         $this->assertEquals(1, $tester->getStatusCode(), 'Returns 1 in case of error');
         $this->assertContains('Opening and ending tag mismatch: target line 6 and source', trim($tester->getDisplay()));
@@ -88,7 +88,7 @@ class XliffLintCommandTest extends TestCase
         $tester = $this->createCommandTester();
         $filename = $this->createFile('note', 'es');
 
-        $tester->execute(array('filename' => $filename), array('decorated' => false));
+        $tester->execute(['filename' => $filename], ['decorated' => false]);
 
         $this->assertEquals(1, $tester->getStatusCode(), 'Returns 1 in case of error');
         $this->assertContains('There is a mismatch between the language included in the file name ("messages.en.xlf") and the "es" value used in the "target-language" attribute of the file.', trim($tester->getDisplay()));
@@ -103,7 +103,7 @@ class XliffLintCommandTest extends TestCase
         $filename = $this->createFile();
         unlink($filename);
 
-        $tester->execute(array('filename' => $filename), array('decorated' => false));
+        $tester->execute(['filename' => $filename], ['decorated' => false]);
     }
 
     public function testGetHelp()
@@ -179,7 +179,7 @@ XLIFF;
 
     protected function setUp()
     {
-        $this->files = array();
+        $this->files = [];
         @mkdir(sys_get_temp_dir().'/translation-xliff-lint-test');
     }
 
@@ -195,13 +195,13 @@ XLIFF;
 
     public function provideStrictFilenames()
     {
-        yield array(false, 'messages.%locale%.xlf', 'en', false);
-        yield array(false, 'messages.%locale%.xlf', 'es', true);
-        yield array(false, '%locale%.messages.xlf', 'en', false);
-        yield array(false, '%locale%.messages.xlf', 'es', true);
-        yield array(true, 'messages.%locale%.xlf', 'en', false);
-        yield array(true, 'messages.%locale%.xlf', 'es', true);
-        yield array(true, '%locale%.messages.xlf', 'en', true);
-        yield array(true, '%locale%.messages.xlf', 'es', true);
+        yield [false, 'messages.%locale%.xlf', 'en', false];
+        yield [false, 'messages.%locale%.xlf', 'es', true];
+        yield [false, '%locale%.messages.xlf', 'en', false];
+        yield [false, '%locale%.messages.xlf', 'es', true];
+        yield [true, 'messages.%locale%.xlf', 'en', false];
+        yield [true, 'messages.%locale%.xlf', 'es', true];
+        yield [true, '%locale%.messages.xlf', 'en', true];
+        yield [true, '%locale%.messages.xlf', 'es', true];
     }
 }

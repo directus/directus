@@ -17,7 +17,7 @@ namespace Symfony\Component\Validator\Constraints;
  * When validating a group sequence, each group will only be validated if all
  * of the previous groups in the sequence succeeded. For example:
  *
- *     $validator->validate($address, null, new GroupSequence(array('Basic', 'Strict')));
+ *     $validator->validate($address, null, new GroupSequence(['Basic', 'Strict']));
  *
  * In the first step, all constraints that belong to the group "Basic" will be
  * validated. If none of the constraints fail, the validator will then validate

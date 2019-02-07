@@ -41,7 +41,7 @@ abstract class FilesLoader extends LoaderChain
      */
     protected function getFileLoaders($paths)
     {
-        $loaders = array();
+        $loaders = [];
 
         foreach ($paths as $path) {
             $loaders[] = $this->getFileLoaderInstance($path);

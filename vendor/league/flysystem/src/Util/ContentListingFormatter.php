@@ -13,19 +13,26 @@ class ContentListingFormatter
      * @var string
      */
     private $directory;
+
     /**
      * @var bool
      */
     private $recursive;
 
     /**
+     * @var bool
+     */
+    private $caseSensitive;
+
+    /**
      * @param string $directory
      * @param bool   $recursive
      */
-    public function __construct($directory, $recursive)
+    public function __construct($directory, $recursive, $caseSensitive = true)
     {
-        $this->directory = $directory;
+        $this->directory = rtrim($directory, '/');
         $this->recursive = $recursive;
+        $this->caseSensitive = $caseSensitive;
     }
 
     /**
@@ -37,14 +44,9 @@ class ContentListingFormatter
      */
     public function formatListing(array $listing)
     {
-        $listing = array_values(
-            array_map(
-                [$this, 'addPathInfo'],
-                array_filter($listing, [$this, 'isEntryOutOfScope'])
-            )
-        );
+        $listing = array_filter(array_map([$this, 'addPathInfo'], $listing), [$this, 'isEntryOutOfScope']);
 
-        return $this->sortListing($listing);
+        return $this->sortListing(array_values($listing));
     }
 
     private function addPathInfo(array $entry)
@@ -85,7 +87,9 @@ class ContentListingFormatter
             return true;
         }
 
-        return strpos($entry['path'], $this->directory . '/') === 0;
+        return $this->caseSensitive
+            ? strpos($entry['path'], $this->directory . '/') === 0
+            : stripos($entry['path'], $this->directory . '/') === 0;
     }
 
     /**
@@ -97,7 +101,9 @@ class ContentListingFormatter
      */
     private function isDirectChild(array $entry)
     {
-        return Util::dirname($entry['path']) === $this->directory;
+        return $this->caseSensitive
+            ? $entry['dirname'] === $this->directory
+            : strcasecmp($this->directory, $entry['dirname']) === 0;
     }
 
     /**

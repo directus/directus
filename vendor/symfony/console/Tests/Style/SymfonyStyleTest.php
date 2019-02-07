@@ -48,7 +48,7 @@ class SymfonyStyleTest extends TestCase
     {
         $code = require $inputCommandFilepath;
         $this->command->setCode($code);
-        $this->tester->execute(array(), array('interactive' => false, 'decorated' => false));
+        $this->tester->execute([], ['interactive' => false, 'decorated' => false]);
         $this->assertStringEqualsFile($outputFilepath, $this->tester->getDisplay(true));
     }
 
@@ -59,7 +59,7 @@ class SymfonyStyleTest extends TestCase
     {
         $code = require $inputCommandFilepath;
         $this->command->setCode($code);
-        $this->tester->execute(array(), array('interactive' => true, 'decorated' => false));
+        $this->tester->execute([], ['interactive' => true, 'decorated' => false]);
         $this->assertStringEqualsFile($outputFilepath, $this->tester->getDisplay(true));
     }
 

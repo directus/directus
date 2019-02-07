@@ -169,7 +169,7 @@ class ArgvInput extends Input
         // if input is expecting another argument, add it
         if ($this->definition->hasArgument($c)) {
             $arg = $this->definition->getArgument($c);
-            $this->arguments[$arg->getName()] = $arg->isArray() ? array($token) : $token;
+            $this->arguments[$arg->getName()] = $arg->isArray() ? [$token] : $token;
 
         // if last argument isArray(), append token to last argument
         } elseif ($this->definition->hasArgument($c - 1) && $this->definition->getArgument($c - 1)->isArray()) {
@@ -224,11 +224,11 @@ class ArgvInput extends Input
             throw new RuntimeException(sprintf('The "--%s" option does not accept a value.', $name));
         }
 
-        if (\in_array($value, array('', null), true) && $option->acceptValue() && \count($this->parsed)) {
+        if (\in_array($value, ['', null], true) && $option->acceptValue() && \count($this->parsed)) {
             // if option accepts an optional or mandatory argument
             // let's see if there is one provided
             $next = array_shift($this->parsed);
-            if ((isset($next[0]) && '-' !== $next[0]) || \in_array($next, array('', null), true)) {
+            if ((isset($next[0]) && '-' !== $next[0]) || \in_array($next, ['', null], true)) {
                 $value = $next;
             } else {
                 array_unshift($this->parsed, $next);

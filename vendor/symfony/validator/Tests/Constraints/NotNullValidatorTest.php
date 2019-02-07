@@ -34,19 +34,19 @@ class NotNullValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidValues()
     {
-        return array(
-            array(0),
-            array(false),
-            array(true),
-            array(''),
-        );
+        return [
+            [0],
+            [false],
+            [true],
+            [''],
+        ];
     }
 
     public function testNullIsInvalid()
     {
-        $constraint = new NotNull(array(
+        $constraint = new NotNull([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate(null, $constraint);
 

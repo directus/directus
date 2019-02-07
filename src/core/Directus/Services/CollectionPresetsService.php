@@ -4,6 +4,9 @@ namespace Directus\Services;
 
 use Directus\Application\Container;
 use Directus\Database\Schema\SchemaManager;
+use Directus\Exception\ForbiddenException;
+use Directus\Util\ArrayUtils;
+use Zend\Db\Sql\Delete;
 
 class CollectionPresetsService extends AbstractService
 {
@@ -62,10 +65,25 @@ class CollectionPresetsService extends AbstractService
 
     public function delete($id, array $params = [])
     {
-        return $this->itemsService->delete(
-            $this->collection,
-            $id,
-            array_merge($params, ['activity_skip' => 1])
-        );
+        $params = array_merge($params, ['activity_skip' => 1]);
+        $this->enforcePermissions($this->collection, [], $params);
+        $tableGateway = $this->createTableGateway($this->collection);
+
+        // hotfix: enforce delete permission before checking for the item existence
+        // this avoids an indirect reveal of an item the user is not allowed to see
+        $delete = new Delete($this->collection);
+        $delete->where([
+            'id' => $id
+        ]);
+        $tableGateway->enforceDeletePermission($delete);
+
+        $item = $this->createTableGateway($this->collection, false)->find($id);
+        if ($item && ArrayUtils::get($item, 'role') && !$this->getAcl()->isAdmin()) {
+            throw new ForbiddenException('Cannot delete collection presets that belongs to a role');
+        }
+
+        $tableGateway->deleteRecord($id, $this->getCRUDParams($params));
+
+        return true;
     }
 }

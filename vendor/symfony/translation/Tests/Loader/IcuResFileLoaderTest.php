@@ -26,9 +26,9 @@ class IcuResFileLoaderTest extends LocalizedTestCase
         $resource = __DIR__.'/../fixtures/resourcebundle/res';
         $catalogue = $loader->load($resource, 'en', 'domain1');
 
-        $this->assertEquals(array('foo' => 'bar'), $catalogue->all('domain1'));
+        $this->assertEquals(['foo' => 'bar'], $catalogue->all('domain1'));
         $this->assertEquals('en', $catalogue->getLocale());
-        $this->assertEquals(array(new DirectoryResource($resource)), $catalogue->getResources());
+        $this->assertEquals([new DirectoryResource($resource)], $catalogue->getResources());
     }
 
     /**

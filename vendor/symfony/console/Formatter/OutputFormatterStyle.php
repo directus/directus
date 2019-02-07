@@ -20,39 +20,39 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
  */
 class OutputFormatterStyle implements OutputFormatterStyleInterface
 {
-    private static $availableForegroundColors = array(
-        'black' => array('set' => 30, 'unset' => 39),
-        'red' => array('set' => 31, 'unset' => 39),
-        'green' => array('set' => 32, 'unset' => 39),
-        'yellow' => array('set' => 33, 'unset' => 39),
-        'blue' => array('set' => 34, 'unset' => 39),
-        'magenta' => array('set' => 35, 'unset' => 39),
-        'cyan' => array('set' => 36, 'unset' => 39),
-        'white' => array('set' => 37, 'unset' => 39),
-        'default' => array('set' => 39, 'unset' => 39),
-    );
-    private static $availableBackgroundColors = array(
-        'black' => array('set' => 40, 'unset' => 49),
-        'red' => array('set' => 41, 'unset' => 49),
-        'green' => array('set' => 42, 'unset' => 49),
-        'yellow' => array('set' => 43, 'unset' => 49),
-        'blue' => array('set' => 44, 'unset' => 49),
-        'magenta' => array('set' => 45, 'unset' => 49),
-        'cyan' => array('set' => 46, 'unset' => 49),
-        'white' => array('set' => 47, 'unset' => 49),
-        'default' => array('set' => 49, 'unset' => 49),
-    );
-    private static $availableOptions = array(
-        'bold' => array('set' => 1, 'unset' => 22),
-        'underscore' => array('set' => 4, 'unset' => 24),
-        'blink' => array('set' => 5, 'unset' => 25),
-        'reverse' => array('set' => 7, 'unset' => 27),
-        'conceal' => array('set' => 8, 'unset' => 28),
-    );
+    private static $availableForegroundColors = [
+        'black' => ['set' => 30, 'unset' => 39],
+        'red' => ['set' => 31, 'unset' => 39],
+        'green' => ['set' => 32, 'unset' => 39],
+        'yellow' => ['set' => 33, 'unset' => 39],
+        'blue' => ['set' => 34, 'unset' => 39],
+        'magenta' => ['set' => 35, 'unset' => 39],
+        'cyan' => ['set' => 36, 'unset' => 39],
+        'white' => ['set' => 37, 'unset' => 39],
+        'default' => ['set' => 39, 'unset' => 39],
+    ];
+    private static $availableBackgroundColors = [
+        'black' => ['set' => 40, 'unset' => 49],
+        'red' => ['set' => 41, 'unset' => 49],
+        'green' => ['set' => 42, 'unset' => 49],
+        'yellow' => ['set' => 43, 'unset' => 49],
+        'blue' => ['set' => 44, 'unset' => 49],
+        'magenta' => ['set' => 45, 'unset' => 49],
+        'cyan' => ['set' => 46, 'unset' => 49],
+        'white' => ['set' => 47, 'unset' => 49],
+        'default' => ['set' => 49, 'unset' => 49],
+    ];
+    private static $availableOptions = [
+        'bold' => ['set' => 1, 'unset' => 22],
+        'underscore' => ['set' => 4, 'unset' => 24],
+        'blink' => ['set' => 5, 'unset' => 25],
+        'reverse' => ['set' => 7, 'unset' => 27],
+        'conceal' => ['set' => 8, 'unset' => 28],
+    ];
 
     private $foreground;
     private $background;
-    private $options = array();
+    private $options = [];
 
     /**
      * Initializes output formatter style.
@@ -61,7 +61,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
      * @param string|null $background The style background color name
      * @param array       $options    The style options
      */
-    public function __construct(string $foreground = null, string $background = null, array $options = array())
+    public function __construct(string $foreground = null, string $background = null, array $options = [])
     {
         if (null !== $foreground) {
             $this->setForeground($foreground);
@@ -160,7 +160,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
      */
     public function setOptions(array $options)
     {
-        $this->options = array();
+        $this->options = [];
 
         foreach ($options as $option) {
             $this->setOption($option);
@@ -176,8 +176,8 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
      */
     public function apply($text)
     {
-        $setCodes = array();
-        $unsetCodes = array();
+        $setCodes = [];
+        $unsetCodes = [];
 
         if (null !== $this->foreground) {
             $setCodes[] = $this->foreground['set'];

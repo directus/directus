@@ -1218,8 +1218,8 @@ class TablesService extends AbstractService
                     unset($fullFieldData['unique']);
                 }
 
-                $type = ArrayUtils::get($fullFieldData, 'type');
-                if ($type && !$this->getSchemaManager()->isTypeLengthRequired($type)) {
+                $dataType = ArrayUtils::get($fullFieldData, 'datatype');
+                if ($dataType && !$this->getSchemaManager()->isTypeLengthRequired($dataType)) {
                     unset($fullFieldData['length']);
                 }
 

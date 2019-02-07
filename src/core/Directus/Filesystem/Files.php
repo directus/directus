@@ -242,6 +242,7 @@ class Files
     public function saveData($fileData, $fileName, $replace = false)
     {
         $fileData = base64_decode($this->getDataInfo($fileData)['data']);
+        $checksum = md5($fileData);
 
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName, $replace !== true);
@@ -273,7 +274,8 @@ class Files
             'filesize' => $fileData['size'],
             'width' => $fileData['width'],
             'height' => $fileData['height'],
-            'storage' => $fileData['storage']
+            'storage' => $fileData['storage'],
+            'checksum' => $checksum,
         ];
     }
 

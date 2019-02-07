@@ -10,7 +10,7 @@ class TestCommand extends Command
     {
         $this
             ->setName('namespace:name')
-            ->setAliases(array('name'))
+            ->setAliases(['name'])
             ->setDescription('description')
             ->setHelp('help')
         ;

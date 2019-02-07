@@ -35,7 +35,7 @@ class ApplicationTesterTest extends TestCase
         ;
 
         $this->tester = new ApplicationTester($this->application);
-        $this->tester->run(array('command' => 'foo', 'foo' => 'bar'), array('interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
+        $this->tester->run(['command' => 'foo', 'foo' => 'bar'], ['interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE]);
     }
 
     protected function tearDown()
@@ -79,8 +79,8 @@ class ApplicationTesterTest extends TestCase
         });
         $tester = new ApplicationTester($application);
 
-        $tester->setInputs(array('I1', 'I2', 'I3'));
-        $tester->run(array('command' => 'foo'));
+        $tester->setInputs(['I1', 'I2', 'I3']);
+        $tester->run(['command' => 'foo']);
 
         $this->assertSame(0, $tester->getStatusCode());
         $this->assertEquals('Q1Q2Q3', $tester->getDisplay(true));
@@ -104,8 +104,8 @@ class ApplicationTesterTest extends TestCase
 
         $tester = new ApplicationTester($application);
         $tester->run(
-            array('command' => 'foo', 'foo' => 'bar'),
-            array('capture_stderr_separately' => true)
+            ['command' => 'foo', 'foo' => 'bar'],
+            ['capture_stderr_separately' => true]
         );
 
         $this->assertSame('foo', $tester->getErrorOutput());

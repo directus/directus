@@ -67,7 +67,7 @@ interface ExecutionContextInterface
      * @param string $message The error message
      * @param array  $params  The parameters substituted in the error message
      */
-    public function addViolation($message, array $params = array());
+    public function addViolation($message, array $params = []);
 
     /**
      * Returns a builder for adding a violation with extended information.
@@ -86,7 +86,7 @@ interface ExecutionContextInterface
      *
      * @return ConstraintViolationBuilderInterface The violation builder
      */
-    public function buildViolation($message, array $parameters = array());
+    public function buildViolation($message, array $parameters = []);
 
     /**
      * Returns the validator.
@@ -97,7 +97,7 @@ interface ExecutionContextInterface
      *     {
      *         $validator = $this->context->getValidator();
      *
-     *         $violations = $validator->validate($value, new Length(array('min' => 3)));
+     *         $violations = $validator->validate($value, new Length(['min' => 3]));
      *
      *         if (count($violations) > 0) {
      *             // ...

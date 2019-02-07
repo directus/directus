@@ -57,11 +57,11 @@ class CountryValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidCountries()
     {
-        return array(
-            array('GB'),
-            array('AT'),
-            array('MY'),
-        );
+        return [
+            ['GB'],
+            ['AT'],
+            ['MY'],
+        ];
     }
 
     /**
@@ -69,9 +69,9 @@ class CountryValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidCountries($country)
     {
-        $constraint = new Country(array(
+        $constraint = new Country([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($country, $constraint);
 
@@ -83,10 +83,10 @@ class CountryValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidCountries()
     {
-        return array(
-            array('foobar'),
-            array('EN'),
-        );
+        return [
+            ['foobar'],
+            ['EN'],
+        ];
     }
 
     public function testValidateUsingCountrySpecificLocale()

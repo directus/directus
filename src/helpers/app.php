@@ -11,6 +11,7 @@ use Directus\Application\Http\Response;
 use Directus\Collection\Collection;
 use Directus\Config\Config;
 use Directus\Exception\Exception;
+use Directus\Exception\UnauthorizedException;
 use Slim\Http\Body;
 
 if (!function_exists('create_app'))  {
@@ -204,14 +205,17 @@ if (!function_exists('create_default_app')) {
      *
      * @param string $basePath
      * @param array $config
+     * @param array $values
      *
      * @return Application
      */
-    function create_default_app($basePath, array $config = [])
+    function create_default_app($basePath, array $config = [], array $values = [])
     {
-        $values['notFoundHandler'] = function () {
-            return new NotInstalledNotFoundHandler();
-        };
+        if (!isset($values['notFoundHandler'])) {
+            $values['notFoundHandler'] = function () {
+                return new NotInstalledNotFoundHandler();
+            };
+        }
 
         $app = create_app($basePath, array_merge([
             'app' => [
@@ -227,6 +231,28 @@ if (!function_exists('create_default_app')) {
         create_install_route($app);
 
         return $app;
+    }
+}
+
+if (!function_exists('create_unknown_project_app')) {
+    /**
+     * Creates a simple Application when the project name is unknown
+     *
+     * @param string $basePath
+     * @param array $config
+     * @param array $values
+     *
+     * @return Application
+     */
+    function create_unknown_project_app($basePath, array $config = [], array $values = [])
+    {
+        return create_default_app($basePath, $config, array_merge($values, [
+            'notFoundHandler' => function () {
+                return function () {
+                    throw new UnauthorizedException('Unauthorized request');
+                };
+            }
+        ]));
     }
 }
 

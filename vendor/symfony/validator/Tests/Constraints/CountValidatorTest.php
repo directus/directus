@@ -44,29 +44,29 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
 
     public function getThreeOrLessElements()
     {
-        return array(
-            array($this->createCollection(array(1))),
-            array($this->createCollection(array(1, 2))),
-            array($this->createCollection(array(1, 2, 3))),
-            array($this->createCollection(array('a' => 1, 'b' => 2, 'c' => 3))),
-        );
+        return [
+            [$this->createCollection([1])],
+            [$this->createCollection([1, 2])],
+            [$this->createCollection([1, 2, 3])],
+            [$this->createCollection(['a' => 1, 'b' => 2, 'c' => 3])],
+        ];
     }
 
     public function getFourElements()
     {
-        return array(
-            array($this->createCollection(array(1, 2, 3, 4))),
-            array($this->createCollection(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4))),
-        );
+        return [
+            [$this->createCollection([1, 2, 3, 4])],
+            [$this->createCollection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4])],
+        ];
     }
 
     public function getFiveOrMoreElements()
     {
-        return array(
-            array($this->createCollection(array(1, 2, 3, 4, 5))),
-            array($this->createCollection(array(1, 2, 3, 4, 5, 6))),
-            array($this->createCollection(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5))),
-        );
+        return [
+            [$this->createCollection([1, 2, 3, 4, 5])],
+            [$this->createCollection([1, 2, 3, 4, 5, 6])],
+            [$this->createCollection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5])],
+        ];
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValuesMax($value)
     {
-        $constraint = new Count(array('max' => 3));
+        $constraint = new Count(['max' => 3]);
         $this->validator->validate($value, $constraint);
 
         $this->assertNoViolation();
@@ -85,7 +85,7 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValuesMin($value)
     {
-        $constraint = new Count(array('min' => 5));
+        $constraint = new Count(['min' => 5]);
         $this->validator->validate($value, $constraint);
 
         $this->assertNoViolation();
@@ -107,10 +107,10 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testTooManyValues($value)
     {
-        $constraint = new Count(array(
+        $constraint = new Count([
             'max' => 4,
             'maxMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -128,10 +128,10 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testTooFewValues($value)
     {
-        $constraint = new Count(array(
+        $constraint = new Count([
             'min' => 4,
             'minMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -149,11 +149,11 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testTooManyValuesExact($value)
     {
-        $constraint = new Count(array(
+        $constraint = new Count([
             'min' => 4,
             'max' => 4,
             'exactMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -171,11 +171,11 @@ abstract class CountValidatorTest extends ConstraintValidatorTestCase
      */
     public function testTooFewValuesExact($value)
     {
-        $constraint = new Count(array(
+        $constraint = new Count([
             'min' => 4,
             'max' => 4,
             'exactMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 

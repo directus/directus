@@ -26,7 +26,7 @@ class ConfigCacheTest extends TestCase
 
     protected function tearDown()
     {
-        $files = array($this->cacheFile, $this->cacheFile.'.meta');
+        $files = [$this->cacheFile, $this->cacheFile.'.meta'];
 
         foreach ($files as $file) {
             if (file_exists($file)) {
@@ -52,7 +52,7 @@ class ConfigCacheTest extends TestCase
         $staleResource->setFresh(false);
 
         $cache = new ConfigCache($this->cacheFile, false);
-        $cache->write('', array($staleResource));
+        $cache->write('', [$staleResource]);
 
         $this->assertTrue($cache->isFresh());
     }
@@ -63,7 +63,7 @@ class ConfigCacheTest extends TestCase
     public function testIsFreshWhenNoResourceProvided($debug)
     {
         $cache = new ConfigCache($this->cacheFile, $debug);
-        $cache->write('', array());
+        $cache->write('', []);
         $this->assertTrue($cache->isFresh());
     }
 
@@ -73,7 +73,7 @@ class ConfigCacheTest extends TestCase
         $freshResource->setFresh(true);
 
         $cache = new ConfigCache($this->cacheFile, true);
-        $cache->write('', array($freshResource));
+        $cache->write('', [$freshResource]);
 
         $this->assertTrue($cache->isFresh());
     }
@@ -84,16 +84,16 @@ class ConfigCacheTest extends TestCase
         $staleResource->setFresh(false);
 
         $cache = new ConfigCache($this->cacheFile, true);
-        $cache->write('', array($staleResource));
+        $cache->write('', [$staleResource]);
 
         $this->assertFalse($cache->isFresh());
     }
 
     public function debugModes()
     {
-        return array(
-            array(true),
-            array(false),
-        );
+        return [
+            [true],
+            [false],
+        ];
     }
 }

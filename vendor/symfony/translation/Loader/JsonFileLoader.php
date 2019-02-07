@@ -25,7 +25,7 @@ class JsonFileLoader extends FileLoader
      */
     protected function loadResource($resource)
     {
-        $messages = array();
+        $messages = [];
         if ($data = file_get_contents($resource)) {
             $messages = json_decode($data, true);
 

@@ -1,1 +1,1 @@
-label[data-v-da3b6b]{margin-bottom:10px;margin-top:30px}.required[data-v-da3b6b]:after{content:"required";margin:0 5px;padding:0 2px;font-size:.7em;color:var(--white);background-color:var(--danger);border-radius:var(--border-radius)}
+label[data-v-da3b6b]{margin-bottom:10px;margin-top:30px}.required[data-v-da3b6b]:after{content:"required";margin:0 5px;padding:0 4px 1px;font-size:10px;font-weight:600;color:var(--white);background-color:var(--warning);border-radius:var(--border-radius);text-transform:uppercase}

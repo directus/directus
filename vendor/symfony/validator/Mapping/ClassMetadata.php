@@ -53,7 +53,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getPropertyMetadata()} instead.
      */
-    public $members = array();
+    public $members = [];
 
     /**
      * @var PropertyMetadata[]
@@ -62,7 +62,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getPropertyMetadata()} instead.
      */
-    public $properties = array();
+    public $properties = [];
 
     /**
      * @var GetterMetadata[]
@@ -71,7 +71,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getPropertyMetadata()} instead.
      */
-    public $getters = array();
+    public $getters = [];
 
     /**
      * @var array
@@ -80,7 +80,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getGroupSequence()} instead.
      */
-    public $groupSequence = array();
+    public $groupSequence = [];
 
     /**
      * @var bool
@@ -135,7 +135,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
         // Don't store the cascading strategy. Classes never cascade.
         unset($parentProperties[array_search('cascadingStrategy', $parentProperties)]);
 
-        return array_merge($parentProperties, array(
+        return array_merge($parentProperties, [
             'getters',
             'groupSequence',
             'groupSequenceProvider',
@@ -143,7 +143,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
             'name',
             'properties',
             'defaultGroup',
-        ));
+        ]);
     }
 
     /**
@@ -380,7 +380,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
     public function getPropertyMetadata($property)
     {
         if (!isset($this->members[$property])) {
-            return array();
+            return [];
         }
 
         return $this->members[$property];

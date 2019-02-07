@@ -41,7 +41,7 @@ class ValidatorBuilderTest extends TestCase
 
     public function testAddObjectInitializers()
     {
-        $this->assertSame($this->builder, $this->builder->addObjectInitializers(array()));
+        $this->assertSame($this->builder, $this->builder->addObjectInitializers([]));
     }
 
     public function testAddXmlMapping()
@@ -51,7 +51,7 @@ class ValidatorBuilderTest extends TestCase
 
     public function testAddXmlMappings()
     {
-        $this->assertSame($this->builder, $this->builder->addXmlMappings(array()));
+        $this->assertSame($this->builder, $this->builder->addXmlMappings([]));
     }
 
     public function testAddYamlMapping()
@@ -61,7 +61,7 @@ class ValidatorBuilderTest extends TestCase
 
     public function testAddYamlMappings()
     {
-        $this->assertSame($this->builder, $this->builder->addYamlMappings(array()));
+        $this->assertSame($this->builder, $this->builder->addYamlMappings([]));
     }
 
     public function testAddMethodMapping()
@@ -71,7 +71,7 @@ class ValidatorBuilderTest extends TestCase
 
     public function testAddMethodMappings()
     {
-        $this->assertSame($this->builder, $this->builder->addMethodMappings(array()));
+        $this->assertSame($this->builder, $this->builder->addMethodMappings([]));
     }
 
     public function testEnableAnnotationMapping()

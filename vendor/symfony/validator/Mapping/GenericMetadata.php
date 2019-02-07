@@ -32,7 +32,7 @@ class GenericMetadata implements MetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getConstraints()} and {@link findConstraints()} instead.
      */
-    public $constraints = array();
+    public $constraints = [];
 
     /**
      * @var array
@@ -41,7 +41,7 @@ class GenericMetadata implements MetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link findConstraints()} instead.
      */
-    public $constraintsByGroup = array();
+    public $constraintsByGroup = [];
 
     /**
      * The strategy for cascading objects.
@@ -80,12 +80,12 @@ class GenericMetadata implements MetadataInterface
      */
     public function __sleep()
     {
-        return array(
+        return [
             'constraints',
             'constraintsByGroup',
             'cascadingStrategy',
             'traversalStrategy',
-        );
+        ];
     }
 
     /**
@@ -95,8 +95,8 @@ class GenericMetadata implements MetadataInterface
     {
         $constraints = $this->constraints;
 
-        $this->constraints = array();
-        $this->constraintsByGroup = array();
+        $this->constraints = [];
+        $this->constraintsByGroup = [];
 
         foreach ($constraints as $constraint) {
             $this->addConstraint(clone $constraint);
@@ -189,7 +189,7 @@ class GenericMetadata implements MetadataInterface
     {
         return isset($this->constraintsByGroup[$group])
             ? $this->constraintsByGroup[$group]
-            : array();
+            : [];
     }
 
     /**

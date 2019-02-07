@@ -14,7 +14,7 @@ class ValidValidatorTest extends TestCase
         $validatorBuilder = new ValidatorBuilder();
         $validator = $validatorBuilder->enableAnnotationMapping()->getValidator();
 
-        $violations = $validator->validate(new Foo(), null, array('nested'));
+        $violations = $validator->validate(new Foo(), null, ['nested']);
 
         $this->assertCount(1, $violations);
         $this->assertSame('fooBar.fooBarBaz.foo', $violations->get(0)->getPropertyPath());
@@ -27,7 +27,7 @@ class ValidValidatorTest extends TestCase
 
         $foo = new Foo();
         $foo->fooBar = null;
-        $violations = $validator->validate($foo, null, array('nested'));
+        $violations = $validator->validate($foo, null, ['nested']);
 
         $this->assertCount(0, $violations);
     }

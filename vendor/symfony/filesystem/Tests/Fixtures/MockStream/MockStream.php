@@ -41,6 +41,6 @@ class MockStream
      */
     public function url_stat($path, $flags)
     {
-        return array();
+        return [];
     }
 }

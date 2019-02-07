@@ -34,7 +34,7 @@ class ArrayNodeTest extends TestCase
     public function testExceptionThrownOnUnrecognizedChild()
     {
         $node = new ArrayNode('root');
-        $node->normalize(array('foo' => 'bar'));
+        $node->normalize(['foo' => 'bar']);
     }
 
     /**
@@ -47,7 +47,7 @@ class ArrayNodeTest extends TestCase
         $node->addChild(new ArrayNode('alpha1'));
         $node->addChild(new ArrayNode('alpha2'));
         $node->addChild(new ArrayNode('beta'));
-        $node->normalize(array('alpha3' => 'foo'));
+        $node->normalize(['alpha3' => 'foo']);
     }
 
     /**
@@ -59,19 +59,19 @@ class ArrayNodeTest extends TestCase
         $node = new ArrayNode('root');
         $node->addChild(new ArrayNode('alpha1'));
         $node->addChild(new ArrayNode('alpha2'));
-        $node->normalize(array('beta' => 'foo'));
+        $node->normalize(['beta' => 'foo']);
     }
 
     public function ignoreAndRemoveMatrixProvider()
     {
         $unrecognizedOptionException = new InvalidConfigurationException('Unrecognized option "foo" under "root"');
 
-        return array(
-            array(true, true, array(), 'no exception is thrown for an unrecognized child if the ignoreExtraKeys option is set to true'),
-            array(true, false, array('foo' => 'bar'), 'extra keys are not removed when ignoreExtraKeys second option is set to false'),
-            array(false, true, $unrecognizedOptionException),
-            array(false, false, $unrecognizedOptionException),
-        );
+        return [
+            [true, true, [], 'no exception is thrown for an unrecognized child if the ignoreExtraKeys option is set to true'],
+            [true, false, ['foo' => 'bar'], 'extra keys are not removed when ignoreExtraKeys second option is set to false'],
+            [false, true, $unrecognizedOptionException],
+            [false, false, $unrecognizedOptionException],
+        ];
     }
 
     /**
@@ -89,7 +89,7 @@ class ArrayNodeTest extends TestCase
         }
         $node = new ArrayNode('root');
         $node->setIgnoreExtraKeys($ignore, $remove);
-        $result = $node->normalize(array('foo' => 'bar'));
+        $result = $node->normalize(['foo' => 'bar']);
         $this->assertSame($expected, $result, $message);
     }
 
@@ -108,24 +108,24 @@ class ArrayNodeTest extends TestCase
 
     public function getPreNormalizationTests()
     {
-        return array(
-            array(
-                array('foo-bar' => 'foo'),
-                array('foo_bar' => 'foo'),
-            ),
-            array(
-                array('foo-bar_moo' => 'foo'),
-                array('foo-bar_moo' => 'foo'),
-            ),
-            array(
-                array('anything-with-dash-and-no-underscore' => 'first', 'no_dash' => 'second'),
-                array('anything_with_dash_and_no_underscore' => 'first', 'no_dash' => 'second'),
-            ),
-            array(
-                array('foo-bar' => null, 'foo_bar' => 'foo'),
-                array('foo-bar' => null, 'foo_bar' => 'foo'),
-            ),
-        );
+        return [
+            [
+                ['foo-bar' => 'foo'],
+                ['foo_bar' => 'foo'],
+            ],
+            [
+                ['foo-bar_moo' => 'foo'],
+                ['foo-bar_moo' => 'foo'],
+            ],
+            [
+                ['anything-with-dash-and-no-underscore' => 'first', 'no_dash' => 'second'],
+                ['anything_with_dash_and_no_underscore' => 'first', 'no_dash' => 'second'],
+            ],
+            [
+                ['foo-bar' => null, 'foo_bar' => 'foo'],
+                ['foo-bar' => null, 'foo_bar' => 'foo'],
+            ],
+        ];
     }
 
     /**
@@ -150,30 +150,30 @@ class ArrayNodeTest extends TestCase
 
     public function getZeroNamedNodeExamplesData()
     {
-        return array(
-            array(
-                array(
-                    0 => array(
+        return [
+            [
+                [
+                    0 => [
                         'name' => 'something',
-                    ),
-                    5 => array(
+                    ],
+                    5 => [
                         0 => 'this won\'t work too',
                         'new_key' => 'some other value',
-                    ),
+                    ],
                     'string_key' => 'just value',
-                ),
-                array(
-                    0 => array(
+                ],
+                [
+                    0 => [
                         'name' => 'something',
-                    ),
-                    5 => array(
+                    ],
+                    5 => [
                         0 => 'this won\'t work too',
                         'new_key' => 'some other value',
-                    ),
+                    ],
                     'string_key' => 'just value',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -197,12 +197,12 @@ class ArrayNodeTest extends TestCase
 
     public function getPreNormalizedNormalizedOrderedData()
     {
-        return array(
-            array(
-                array('2' => 'two', '1' => 'one', '3' => 'three'),
-                array('2' => 'two', '1' => 'one', '3' => 'three'),
-            ),
-        );
+        return [
+            [
+                ['2' => 'two', '1' => 'one', '3' => 'three'],
+                ['2' => 'two', '1' => 'one', '3' => 'three'],
+            ],
+        ];
     }
 
     /**
@@ -263,13 +263,13 @@ class ArrayNodeTest extends TestCase
         };
 
         $prevErrorHandler = set_error_handler($deprecationHandler);
-        $node->finalize(array());
+        $node->finalize([]);
         restore_error_handler();
 
         $this->assertFalse($deprecationTriggered, '->finalize() should not trigger if the deprecated node is not set');
 
         $prevErrorHandler = set_error_handler($deprecationHandler);
-        $node->finalize(array('foo' => array()));
+        $node->finalize(['foo' => []]);
         restore_error_handler();
         $this->assertTrue($deprecationTriggered, '->finalize() should trigger if the deprecated node is set');
     }

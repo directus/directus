@@ -23,9 +23,9 @@ class QtFileLoaderTest extends TestCase
         $resource = __DIR__.'/../fixtures/resources.ts';
         $catalogue = $loader->load($resource, 'en', 'resources');
 
-        $this->assertEquals(array('foo' => 'bar'), $catalogue->all('resources'));
+        $this->assertEquals(['foo' => 'bar'], $catalogue->all('resources'));
         $this->assertEquals('en', $catalogue->getLocale());
-        $this->assertEquals(array(new FileResource($resource)), $catalogue->getResources());
+        $this->assertEquals([new FileResource($resource)], $catalogue->getResources());
     }
 
     /**

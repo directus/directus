@@ -20,22 +20,22 @@ class MergeOperationTest extends AbstractOperationTest
     public function testGetMessagesFromSingleDomain()
     {
         $operation = $this->createOperation(
-            new MessageCatalogue('en', array('messages' => array('a' => 'old_a', 'b' => 'old_b'))),
-            new MessageCatalogue('en', array('messages' => array('a' => 'new_a', 'c' => 'new_c')))
+            new MessageCatalogue('en', ['messages' => ['a' => 'old_a', 'b' => 'old_b']]),
+            new MessageCatalogue('en', ['messages' => ['a' => 'new_a', 'c' => 'new_c']])
         );
 
         $this->assertEquals(
-            array('a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c'),
+            ['a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c'],
             $operation->getMessages('messages')
         );
 
         $this->assertEquals(
-            array('c' => 'new_c'),
+            ['c' => 'new_c'],
             $operation->getNewMessages('messages')
         );
 
         $this->assertEquals(
-            array(),
+            [],
             $operation->getObsoleteMessages('messages')
         );
     }
@@ -43,12 +43,12 @@ class MergeOperationTest extends AbstractOperationTest
     public function testGetResultFromSingleDomain()
     {
         $this->assertEquals(
-            new MessageCatalogue('en', array(
-                'messages' => array('a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c'),
-            )),
+            new MessageCatalogue('en', [
+                'messages' => ['a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c'],
+            ]),
             $this->createOperation(
-                new MessageCatalogue('en', array('messages' => array('a' => 'old_a', 'b' => 'old_b'))),
-                new MessageCatalogue('en', array('messages' => array('a' => 'new_a', 'c' => 'new_c')))
+                new MessageCatalogue('en', ['messages' => ['a' => 'old_a', 'b' => 'old_b']]),
+                new MessageCatalogue('en', ['messages' => ['a' => 'new_a', 'c' => 'new_c']])
             )->getResult()
         );
     }
@@ -56,27 +56,27 @@ class MergeOperationTest extends AbstractOperationTest
     public function testGetResultFromIntlDomain()
     {
         $this->assertEquals(
-            new MessageCatalogue('en', array(
-                'messages' => array('a' => 'old_a', 'b' => 'old_b'),
-                'messages+intl-icu' => array('d' => 'old_d', 'c' => 'new_c'),
-            )),
+            new MessageCatalogue('en', [
+                'messages' => ['a' => 'old_a', 'b' => 'old_b'],
+                'messages+intl-icu' => ['d' => 'old_d', 'c' => 'new_c'],
+            ]),
             $this->createOperation(
-                new MessageCatalogue('en', array('messages' => array('a' => 'old_a', 'b' => 'old_b'), 'messages+intl-icu' => array('d' => 'old_d'))),
-                new MessageCatalogue('en', array('messages+intl-icu' => array('a' => 'new_a', 'c' => 'new_c')))
+                new MessageCatalogue('en', ['messages' => ['a' => 'old_a', 'b' => 'old_b'], 'messages+intl-icu' => ['d' => 'old_d']]),
+                new MessageCatalogue('en', ['messages+intl-icu' => ['a' => 'new_a', 'c' => 'new_c']])
             )->getResult()
         );
     }
 
     public function testGetResultWithMetadata()
     {
-        $leftCatalogue = new MessageCatalogue('en', array('messages' => array('a' => 'old_a', 'b' => 'old_b')));
+        $leftCatalogue = new MessageCatalogue('en', ['messages' => ['a' => 'old_a', 'b' => 'old_b']]);
         $leftCatalogue->setMetadata('a', 'foo', 'messages');
         $leftCatalogue->setMetadata('b', 'bar', 'messages');
-        $rightCatalogue = new MessageCatalogue('en', array('messages' => array('b' => 'new_b', 'c' => 'new_c')));
+        $rightCatalogue = new MessageCatalogue('en', ['messages' => ['b' => 'new_b', 'c' => 'new_c']]);
         $rightCatalogue->setMetadata('b', 'baz', 'messages');
         $rightCatalogue->setMetadata('c', 'qux', 'messages');
 
-        $mergedCatalogue = new MessageCatalogue('en', array('messages' => array('a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c')));
+        $mergedCatalogue = new MessageCatalogue('en', ['messages' => ['a' => 'old_a', 'b' => 'old_b', 'c' => 'new_c']]);
         $mergedCatalogue->setMetadata('a', 'foo', 'messages');
         $mergedCatalogue->setMetadata('b', 'bar', 'messages');
         $mergedCatalogue->setMetadata('c', 'qux', 'messages');

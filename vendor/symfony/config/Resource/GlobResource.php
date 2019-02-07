@@ -37,7 +37,7 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface,
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(?string $prefix, string $pattern, bool $recursive, bool $forExclusion = false, array $excludedPrefixes = array())
+    public function __construct(?string $prefix, string $pattern, bool $recursive, bool $forExclusion = false, array $excludedPrefixes = [])
     {
         $this->prefix = realpath($prefix) ?: (file_exists($prefix) ? $prefix : false);
         $this->pattern = $pattern;
@@ -77,18 +77,24 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface,
         return $this->hash === $hash;
     }
 
+    /**
+     * @internal
+     */
     public function serialize()
     {
         if (null === $this->hash) {
             $this->hash = $this->computeHash();
         }
 
-        return serialize(array($this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes));
+        return serialize([$this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes]);
     }
 
+    /**
+     * @internal
+     */
     public function unserialize($serialized)
     {
-        list($this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes) = unserialize($serialized) + array(4 => false, array());
+        list($this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes) = unserialize($serialized) + [4 => false, []];
     }
 
     public function getIterator()

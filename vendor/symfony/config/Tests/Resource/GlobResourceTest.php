@@ -33,7 +33,7 @@ class GlobResourceTest extends TestCase
         $paths = iterator_to_array($resource);
 
         $file = $dir.'/Resource'.\DIRECTORY_SEPARATOR.'ConditionalClass.php';
-        $this->assertEquals(array($file => new \SplFileInfo($file)), $paths);
+        $this->assertEquals([$file => new \SplFileInfo($file)], $paths);
         $this->assertInstanceOf('SplFileInfo', current($paths));
         $this->assertSame($dir, $resource->getPrefix());
 
@@ -42,7 +42,7 @@ class GlobResourceTest extends TestCase
         $paths = iterator_to_array($resource);
 
         $file = $dir.\DIRECTORY_SEPARATOR.'Resource'.\DIRECTORY_SEPARATOR.'ConditionalClass.php';
-        $this->assertEquals(array($file => $file), $paths);
+        $this->assertEquals([$file => $file], $paths);
         $this->assertInstanceOf('SplFileInfo', current($paths));
         $this->assertSame($dir, $resource->getPrefix());
     }
@@ -62,7 +62,7 @@ class GlobResourceTest extends TestCase
     public function testIteratorSkipsFoldersForGivenExcludedPrefixes()
     {
         $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';
-        $resource = new GlobResource($dir, '/*Exclude*', true, false, array($dir.\DIRECTORY_SEPARATOR.'Exclude' => true));
+        $resource = new GlobResource($dir, '/*Exclude*', true, false, [$dir.\DIRECTORY_SEPARATOR.'Exclude' => true]);
 
         $paths = iterator_to_array($resource);
 
@@ -76,7 +76,7 @@ class GlobResourceTest extends TestCase
     public function testIteratorSkipsSubfoldersForGivenExcludedPrefixes()
     {
         $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';
-        $resource = new GlobResource($dir, '/*Exclude/*', true, false, array($dir.\DIRECTORY_SEPARATOR.'Exclude' => true));
+        $resource = new GlobResource($dir, '/*Exclude/*', true, false, [$dir.\DIRECTORY_SEPARATOR.'Exclude' => true]);
 
         $paths = iterator_to_array($resource);
 
@@ -90,7 +90,7 @@ class GlobResourceTest extends TestCase
     public function testIteratorSkipsFoldersWithForwardSlashForGivenExcludedPrefixes()
     {
         $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';
-        $resource = new GlobResource($dir, '/*Exclude*', true, false, array($dir.'/Exclude' => true));
+        $resource = new GlobResource($dir, '/*Exclude*', true, false, [$dir.'/Exclude' => true]);
 
         $paths = iterator_to_array($resource);
 

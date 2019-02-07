@@ -106,6 +106,7 @@ class Local extends AbstractAdapter
             }
 
             umask($umask);
+            clearstatcache(false, $root);
 
             if ( ! is_dir($root)) {
                 $errorMessage = isset($mkdirError['message']) ? $mkdirError['message'] : '';

@@ -25,10 +25,10 @@ class Count extends Constraint
     const TOO_FEW_ERROR = 'bef8e338-6ae5-4caf-b8e2-50e7b0579e69';
     const TOO_MANY_ERROR = '756b1212-697c-468d-a9ad-50dd783bb169';
 
-    protected static $errorNames = array(
+    protected static $errorNames = [
         self::TOO_FEW_ERROR => 'TOO_FEW_ERROR',
         self::TOO_MANY_ERROR => 'TOO_MANY_ERROR',
-    );
+    ];
 
     public $minMessage = 'This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.';
     public $maxMessage = 'This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.';
@@ -39,16 +39,16 @@ class Count extends Constraint
     public function __construct($options = null)
     {
         if (null !== $options && !\is_array($options)) {
-            $options = array(
+            $options = [
                 'min' => $options,
                 'max' => $options,
-            );
+            ];
         }
 
         parent::__construct($options);
 
         if (null === $this->min && null === $this->max) {
-            throw new MissingOptionsException(sprintf('Either option "min" or "max" must be given for constraint %s', __CLASS__), array('min', 'max'));
+            throw new MissingOptionsException(sprintf('Either option "min" or "max" must be given for constraint %s', __CLASS__), ['min', 'max']);
         }
     }
 }

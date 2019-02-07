@@ -25,14 +25,14 @@ yaml: |
     - No, I mean, "And what about Yaml?"
     - Oh, oh yeah. Uh.. Yaml for Ruby.
 php: |
-    array(
+    [
       "What's Yaml?",
       "It's for writing data structures in plain text.",
       "And?",
       "And what? That's not good enough for you?",
       "No, I mean, \"And what about Yaml?\"",
       "Oh, oh yeah. Uh.. Yaml for Ruby."
-    )
+    ]
 ---
 test: Indicators in Strings
 brief: >
@@ -43,11 +43,11 @@ yaml: |
     same for the pound sign: here we have it#in a string
     the comma can, honestly, be used in most cases: [ but not in, inline collections ]
 php: |
-    array(
+    [
       'the colon followed by space is an indicator' => 'but is a string:right here',
       'same for the pound sign' => 'here we have it#in a string',
-      'the comma can, honestly, be used in most cases' => array('but not in', 'inline collections')
-    )
+      'the comma can, honestly, be used in most cases' => ['but not in', 'inline collections']
+    ]
 ---
 test: Forcing Strings
 brief: >
@@ -57,10 +57,10 @@ yaml: |
     date string: !!str 2001-08-01
     number string: !!str 192
 php: |
-    array(
+    [
       'date string' => '2001-08-01',
       'number string' => '192'
-    )
+    ]
 ---
 test: Single-quoted Strings
 brief: >
@@ -75,12 +75,12 @@ yaml: |
     why do i hate them?: 'it''s very hard to explain'
     entities: '&pound; me'
 php: |
-    array(
+    [
       'all my favorite symbols' => '#:!/%.)',
       'a few i hate' => '&(*',
       'why do i hate them?' => 'it\'s very hard to explain',
       'entities' => '&pound; me'
-    )
+    ]
 ---
 test: Double-quoted Strings
 brief: >
@@ -90,9 +90,9 @@ brief: >
 yaml: |
     i know where i want my line breaks: "one here\nand another here\n"
 php: |
-    array(
+    [
       'i know where i want my line breaks' => "one here\nand another here\n"
-    )
+    ]
 ---
 test: Multi-line Quoted Strings
 todo: true
@@ -106,10 +106,10 @@ yaml: |
       let it go on and on to other lines
       until i end it with a quote."
 php: |
-    array('i want a long string' => "so i'm going to ".
+    ['i want a long string' => "so i'm going to ".
          "let it go on and on to other lines ".
          "until i end it with a quote."
-    )
+    ]
 
 ---
 test: Plain scalars
@@ -128,7 +128,7 @@ yaml: |
     - This would impair my skiing ability somewhat for the
       duration, as can be imagined.
 php: |
-    array(
+    [
       "My little toe is broken in two places;",
       "I'm crazy to have skied this way;",
       "I'm not the craziest he's seen, since there was always ".
@@ -139,7 +139,7 @@ php: |
       "He's going to put my foot in plaster for a month;",
       "This would impair my skiing ability somewhat for the duration, ".
          "as can be imagined."
-    )
+    ]
 ---
 test: 'Null'
 brief: >
@@ -149,11 +149,11 @@ yaml: |
     hosted by: Bob and David
     date of next season: ~
 php: |
-    array(
+    [
       'name' => 'Mr. Show',
       'hosted by' => 'Bob and David',
       'date of next season' => null
-    )
+    ]
 ---
 test: Boolean
 brief: >
@@ -162,10 +162,10 @@ yaml: |
     Is Gus a Liar?: true
     Do I rely on Gus for Sustenance?: false
 php: |
-    array(
+    [
       'Is Gus a Liar?' => true,
       'Do I rely on Gus for Sustenance?' => false
-    )
+    ]
 ---
 test: Integers
 dump_skip: true
@@ -177,10 +177,10 @@ yaml: |
     zero: 0
     simple: 12
 php: |
-    array(
+    [
       'zero' => 0,
       'simple' => 12,
-    )
+    ]
 ---
 test: Floats
 dump_skip: true
@@ -192,10 +192,10 @@ yaml: |
      a simple float: 2.00
      scientific notation: 1.00009e+3
 php: |
-     array(
+     [
        'a simple float' => 2.0,
        'scientific notation' => 1000.09
-     )
+     ]
 ---
 test: Time
 todo: true
@@ -208,10 +208,10 @@ yaml: |
     iso8601: 2001-12-14t21:59:43.10-05:00
     space separated: 2001-12-14 21:59:43.10 -05:00
 php: |
-    array(
+    [
       'iso8601' => mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" ),
       'space separated' => mktime( 2001, 12, 14, 21, 59, 43, 0.10, "-05:00" )
-    )
+    ]
 ---
 test: Date
 todo: true

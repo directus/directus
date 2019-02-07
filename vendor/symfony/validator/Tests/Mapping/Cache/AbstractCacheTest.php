@@ -26,7 +26,7 @@ abstract class AbstractCacheTest extends TestCase
     {
         $meta = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('getClassName'))
+            ->setMethods(['getClassName'])
             ->getMock();
 
         $meta->expects($this->once())
@@ -46,7 +46,7 @@ abstract class AbstractCacheTest extends TestCase
     {
         $meta = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('getClassName'))
+            ->setMethods(['getClassName'])
             ->getMock();
 
         $meta->expects($this->once())
@@ -63,7 +63,7 @@ abstract class AbstractCacheTest extends TestCase
     {
         $meta = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('getClassName'))
+            ->setMethods(['getClassName'])
             ->getMock();
 
         $meta->expects($this->once())

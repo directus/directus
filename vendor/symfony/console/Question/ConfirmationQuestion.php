@@ -53,7 +53,7 @@ class ConfirmationQuestion extends Question
                 return $answer && $answerIsTrue;
             }
 
-            return !$answer || $answerIsTrue;
+            return '' === $answer || $answerIsTrue;
         };
     }
 }

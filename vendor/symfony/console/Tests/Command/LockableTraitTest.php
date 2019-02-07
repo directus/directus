@@ -33,8 +33,8 @@ class LockableTraitTest extends TestCase
         $command = new \FooLockCommand();
 
         $tester = new CommandTester($command);
-        $this->assertSame(2, $tester->execute(array()));
-        $this->assertSame(2, $tester->execute(array()));
+        $this->assertSame(2, $tester->execute([]));
+        $this->assertSame(2, $tester->execute([]));
     }
 
     public function testLockReturnsFalseIfAlreadyLockedByAnotherCommand()
@@ -51,10 +51,10 @@ class LockableTraitTest extends TestCase
         $lock->acquire();
 
         $tester = new CommandTester($command);
-        $this->assertSame(1, $tester->execute(array()));
+        $this->assertSame(1, $tester->execute([]));
 
         $lock->release();
-        $this->assertSame(2, $tester->execute(array()));
+        $this->assertSame(2, $tester->execute([]));
     }
 
     public function testMultipleLockCallsThrowLogicException()
@@ -62,6 +62,6 @@ class LockableTraitTest extends TestCase
         $command = new \FooLock2Command();
 
         $tester = new CommandTester($command);
-        $this->assertSame(1, $tester->execute(array()));
+        $this->assertSame(1, $tester->execute([]));
     }
 }

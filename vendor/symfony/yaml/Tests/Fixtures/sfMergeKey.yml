@@ -46,16 +46,16 @@ yaml: |
     head_inline: &head_inline { <<: [ *foo , *dong , *foo2 ] }
     recursive_inline: { <<: *head_inline, c: { <<: *foo2 } }
 php: |
-    array(
-        'foo' => array('a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull'),
-        'bar' => array('a' => 'before', 'd' => 'other', 'e' => null, 'b' => 'new', 'c' => array('foo' => 'bar', 'bar' => 'foo'), 'x' => 'Oren'),
-        'bar_inline' => array('a' => 'before', 'd' => 'other', 'b' => 'new', 'c' => array('foo' => 'bar', 'bar' => 'foo'), 'e' => 'notnull', 'x' => 'Oren'),
-        'foo2' => array('a' => 'Ballmer'),
-        'ding' => array('fi', 'fei', 'fo', 'fam'),
-        'check' => array('a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam', 'isit' => 'tested'),
-        'head' => array('a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'),
-        'taz' => array('a' => 'Steve', 'w' => array('p' => 1234)),
-        'nested' => array('a' => 'Steve', 'w' => array('p' => 12345), 'd' => 'Doug', 'z' => array('p' => 12345)),
-        'head_inline' => array('a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'),
-        'recursive_inline' => array('a' => 'Steve', 'b' => 'Clark', 'c' => array('a' => 'Ballmer'), 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'),
-    )
+    [
+        'foo' => ['a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull'],
+        'bar' => ['a' => 'before', 'd' => 'other', 'e' => null, 'b' => 'new', 'c' => ['foo' => 'bar', 'bar' => 'foo'], 'x' => 'Oren'],
+        'bar_inline' => ['a' => 'before', 'd' => 'other', 'b' => 'new', 'c' => ['foo' => 'bar', 'bar' => 'foo'], 'e' => 'notnull', 'x' => 'Oren'],
+        'foo2' => ['a' => 'Ballmer'],
+        'ding' => ['fi', 'fei', 'fo', 'fam'],
+        'check' => ['a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam', 'isit' => 'tested'],
+        'head' => ['a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'],
+        'taz' => ['a' => 'Steve', 'w' => ['p' => 1234]],
+        'nested' => ['a' => 'Steve', 'w' => ['p' => 12345], 'd' => 'Doug', 'z' => ['p' => 12345]],
+        'head_inline' => ['a' => 'Steve', 'b' => 'Clark', 'c' => 'Brian', 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'],
+        'recursive_inline' => ['a' => 'Steve', 'b' => 'Clark', 'c' => ['a' => 'Ballmer'], 'e' => 'notnull', 'fi', 'fei', 'fo', 'fam'],
+    ]

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\MetadataInterface;
 
 class FakeMetadataFactory implements MetadataFactoryInterface
 {
-    protected $metadatas = array();
+    protected $metadatas = [];
 
     public function getMetadataFor($class)
     {

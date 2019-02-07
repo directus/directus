@@ -33,6 +33,27 @@ class DateTimeUtils extends \DateTime
     const DEFAULT_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
+     * Example: 2019-01-04T16:12:05+00:00
+     *
+     * @var string
+     */
+    const ISO8601_FORMAT_ONE = 'Y-m-d\TH:i:sP';
+
+    /**
+     * Example: 2019-01-04T16:12:05Z
+     *
+     * @var string
+     */
+    const ISO8601_FORMAT_TWO = 'Y-m-d\TH:i:s\Z';
+
+    /**
+     * Example: 20190104T161205Z
+     *
+     * @var string
+     */
+    const ISO8601_FORMAT_THREE = 'Ymd\THis\Z';
+
+    /**
      * @var string
      */
     const DEFAULT_DATE_FORMAT = 'Y-m-d';

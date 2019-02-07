@@ -46,7 +46,7 @@ class LazyLoadingMetadataFactory implements MetadataFactoryInterface
      *
      * @var ClassMetadata[]
      */
-    protected $loadedClasses = array();
+    protected $loadedClasses = [];
 
     /**
      * Creates a new metadata factory.

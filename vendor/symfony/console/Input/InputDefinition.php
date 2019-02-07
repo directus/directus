@@ -19,10 +19,10 @@ use Symfony\Component\Console\Exception\LogicException;
  *
  * Usage:
  *
- *     $definition = new InputDefinition(array(
+ *     $definition = new InputDefinition([
  *         new InputArgument('name', InputArgument::REQUIRED),
  *         new InputOption('foo', 'f', InputOption::VALUE_REQUIRED),
- *     ));
+ *     ]);
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -38,7 +38,7 @@ class InputDefinition
     /**
      * @param array $definition An array of InputArgument and InputOption instance
      */
-    public function __construct(array $definition = array())
+    public function __construct(array $definition = [])
     {
         $this->setDefinition($definition);
     }
@@ -48,8 +48,8 @@ class InputDefinition
      */
     public function setDefinition(array $definition)
     {
-        $arguments = array();
-        $options = array();
+        $arguments = [];
+        $options = [];
         foreach ($definition as $item) {
             if ($item instanceof InputOption) {
                 $options[] = $item;
@@ -67,9 +67,9 @@ class InputDefinition
      *
      * @param InputArgument[] $arguments An array of InputArgument objects
      */
-    public function setArguments($arguments = array())
+    public function setArguments($arguments = [])
     {
-        $this->arguments = array();
+        $this->arguments = [];
         $this->requiredCount = 0;
         $this->hasOptional = false;
         $this->hasAnArrayArgument = false;
@@ -81,7 +81,7 @@ class InputDefinition
      *
      * @param InputArgument[] $arguments An array of InputArgument objects
      */
-    public function addArguments($arguments = array())
+    public function addArguments($arguments = [])
     {
         if (null !== $arguments) {
             foreach ($arguments as $argument) {
@@ -191,7 +191,7 @@ class InputDefinition
      */
     public function getArgumentDefaults()
     {
-        $values = array();
+        $values = [];
         foreach ($this->arguments as $argument) {
             $values[$argument->getName()] = $argument->getDefault();
         }
@@ -204,10 +204,10 @@ class InputDefinition
      *
      * @param InputOption[] $options An array of InputOption objects
      */
-    public function setOptions($options = array())
+    public function setOptions($options = [])
     {
-        $this->options = array();
-        $this->shortcuts = array();
+        $this->options = [];
+        $this->shortcuts = [];
         $this->addOptions($options);
     }
 
@@ -216,7 +216,7 @@ class InputDefinition
      *
      * @param InputOption[] $options An array of InputOption objects
      */
-    public function addOptions($options = array())
+    public function addOptions($options = [])
     {
         foreach ($options as $option) {
             $this->addOption($option);
@@ -322,7 +322,7 @@ class InputDefinition
      */
     public function getOptionDefaults()
     {
-        $values = array();
+        $values = [];
         foreach ($this->options as $option) {
             $values[$option->getName()] = $option->getDefault();
         }
@@ -357,7 +357,7 @@ class InputDefinition
      */
     public function getSynopsis($short = false)
     {
-        $elements = array();
+        $elements = [];
 
         if ($short && $this->getOptions()) {
             $elements[] = '[options]';

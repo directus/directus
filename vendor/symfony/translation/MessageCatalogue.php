@@ -19,9 +19,9 @@ use Symfony\Component\Translation\Exception\LogicException;
  */
 class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterface
 {
-    private $messages = array();
-    private $metadata = array();
-    private $resources = array();
+    private $messages = [];
+    private $metadata = [];
+    private $resources = [];
     private $locale;
     private $fallbackCatalogue;
     private $parent;
@@ -30,7 +30,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
      * @param string $locale   The locale
      * @param array  $messages An array of messages classified by domain
      */
-    public function __construct(?string $locale, array $messages = array())
+    public function __construct(?string $locale, array $messages = [])
     {
         $this->locale = $locale;
         $this->messages = $messages;
@@ -49,7 +49,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
      */
     public function getDomains()
     {
-        $domains = array();
+        $domains = [];
         $suffixLength = \strlen(self::INTL_DOMAIN_SUFFIX);
 
         foreach ($this->messages as $domain => $messages) {
@@ -68,18 +68,18 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     public function all($domain = null)
     {
         if (null !== $domain) {
-            return ($this->messages[$domain.self::INTL_DOMAIN_SUFFIX] ?? array()) + ($this->messages[$domain] ?? array());
+            return ($this->messages[$domain.self::INTL_DOMAIN_SUFFIX] ?? []) + ($this->messages[$domain] ?? []);
         }
 
-        $allMessages = array();
+        $allMessages = [];
         $suffixLength = \strlen(self::INTL_DOMAIN_SUFFIX);
 
         foreach ($this->messages as $domain => $messages) {
             if (\strlen($domain) > $suffixLength && false !== $i = strpos($domain, self::INTL_DOMAIN_SUFFIX, -$suffixLength)) {
                 $domain = substr($domain, 0, $i);
-                $allMessages[$domain] = $messages + ($allMessages[$domain] ?? array());
+                $allMessages[$domain] = $messages + ($allMessages[$domain] ?? []);
             } else {
-                $allMessages[$domain] = ($allMessages[$domain] ?? array()) + $messages;
+                $allMessages[$domain] = ($allMessages[$domain] ?? []) + $messages;
             }
         }
 
@@ -91,7 +91,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
      */
     public function set($id, $translation, $domain = 'messages')
     {
-        $this->add(array($id => $translation), $domain);
+        $this->add([$id => $translation], $domain);
     }
 
     /**
@@ -277,7 +277,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     public function deleteMetadata($key = '', $domain = 'messages')
     {
         if ('' == $domain) {
-            $this->metadata = array();
+            $this->metadata = [];
         } elseif ('' == $key) {
             unset($this->metadata[$domain]);
         } else {

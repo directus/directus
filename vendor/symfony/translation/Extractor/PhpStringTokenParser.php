@@ -49,7 +49,7 @@ namespace Symfony\Component\Translation\Extractor;
 
 class PhpStringTokenParser
 {
-    protected static $replacements = array(
+    protected static $replacements = [
         '\\' => '\\',
         '$' => '$',
         'n' => "\n",
@@ -58,7 +58,7 @@ class PhpStringTokenParser
         'f' => "\f",
         'v' => "\v",
         'e' => "\x1B",
-    );
+    ];
 
     /**
      * Parses a string token.
@@ -76,8 +76,8 @@ class PhpStringTokenParser
 
         if ('\'' === $str[$bLength]) {
             return str_replace(
-                array('\\\\', '\\\''),
-                array('\\', '\''),
+                ['\\\\', '\\\''],
+                ['\\', '\''],
                 substr($str, $bLength + 1, -1)
             );
         } else {
@@ -101,7 +101,7 @@ class PhpStringTokenParser
 
         return preg_replace_callback(
             '~\\\\([\\\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3})~',
-            array(__CLASS__, 'parseCallback'),
+            [__CLASS__, 'parseCallback'],
             $str
         );
     }

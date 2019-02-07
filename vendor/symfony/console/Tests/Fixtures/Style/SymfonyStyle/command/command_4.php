@@ -20,12 +20,12 @@ return function (InputInterface $input, OutputInterface $output) {
 
     //Ensure edge case by appending empty strings to history:
     $output->write('Lorem ipsum dolor sit amet');
-    $output->write(array('', '', ''));
+    $output->write(['', '', '']);
     $output->title('Fourth title');
 
     //Ensure have manual control over number of blank lines:
     $output->writeln('Lorem ipsum dolor sit amet');
-    $output->writeln(array('', '')); //Should append an extra blank line
+    $output->writeln(['', '']); //Should append an extra blank line
     $output->title('Fifth title');
 
     $output->writeln('Lorem ipsum dolor sit amet');

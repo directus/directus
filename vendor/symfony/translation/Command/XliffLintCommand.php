@@ -89,10 +89,10 @@ EOF
                 throw new RuntimeException('Please provide a filename or pipe file content to STDIN.');
             }
 
-            return $this->display($io, array($this->validate($stdin)));
+            return $this->display($io, [$this->validate($stdin)]);
         }
 
-        $filesInfo = array();
+        $filesInfo = [];
         foreach ($filenames as $filename) {
             if (!$this->isReadable($filename)) {
                 throw new RuntimeException(sprintf('File or directory "%s" is not readable.', $filename));
@@ -108,11 +108,11 @@ EOF
 
     private function validate($content, $file = null)
     {
-        $errors = array();
+        $errors = [];
 
         // Avoid: Warning DOMDocument::loadXML(): Empty string supplied as input
         if ('' === trim($content)) {
-            return array('file' => $file, 'valid' => true);
+            return ['file' => $file, 'valid' => true];
         }
 
         libxml_use_internal_errors(true);
@@ -127,23 +127,23 @@ EOF
             $expectedFilenamePattern = $this->requireStrictFileNames ? sprintf('/^.*\.%s\.xlf/', $normalizedLocale) : sprintf('/^(.*\.%s\.xlf|%s\..*\.xlf)/', $normalizedLocale, $normalizedLocale);
 
             if (0 === preg_match($expectedFilenamePattern, basename($file))) {
-                $errors[] = array(
+                $errors[] = [
                     'line' => -1,
                     'column' => -1,
                     'message' => sprintf('There is a mismatch between the language included in the file name ("%s") and the "%s" value used in the "target-language" attribute of the file.', basename($file), $targetLanguage),
-                );
+                ];
             }
         }
 
         foreach (XliffUtils::validateSchema($document) as $xmlError) {
-            $errors[] = array(
+            $errors[] = [
                 'line' => $xmlError['line'],
                 'column' => $xmlError['column'],
                 'message' => $xmlError['message'],
-            );
+            ];
         }
 
-        return array('file' => $file, 'valid' => 0 === \count($errors), 'messages' => $errors);
+        return ['file' => $file, 'valid' => 0 === \count($errors), 'messages' => $errors];
     }
 
     private function display(SymfonyStyle $io, array $files)
@@ -210,7 +210,7 @@ EOF
         }
 
         foreach ($this->getDirectoryIterator($fileOrDirectory) as $file) {
-            if (!\in_array($file->getExtension(), array('xlf', 'xliff'))) {
+            if (!\in_array($file->getExtension(), ['xlf', 'xliff'])) {
                 continue;
             }
 
@@ -263,7 +263,7 @@ EOF
 
     private function getTargetLanguageFromFile(\DOMDocument $xliffContents): ?string
     {
-        foreach ($xliffContents->getElementsByTagName('file')[0]->attributes ?? array() as $attribute) {
+        foreach ($xliffContents->getElementsByTagName('file')[0]->attributes ?? [] as $attribute) {
             if ('target-language' === $attribute->nodeName) {
                 return $attribute->nodeValue;
             }

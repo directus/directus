@@ -626,17 +626,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.49",
-        "version_normalized": "1.0.49.0",
+        "version": "1.0.50",
+        "version_normalized": "1.0.50.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd"
+            "reference": "dab4e7624efa543a943be978008f439c333f2249"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a63cc83d8a931b271be45148fa39ba7156782ffd",
-            "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dab4e7624efa543a943be978008f439c333f2249",
+            "reference": "dab4e7624efa543a943be978008f439c333f2249",
             "shasum": ""
         },
         "require": {
@@ -666,7 +666,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2018-11-23T23:41:29+00:00",
+        "time": "2019-02-01T08:50:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3187,17 +3187,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "v4.2.3",
+        "version_normalized": "4.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "a7a7d0a0244cfc82f040729ccf769e6cf55a78fb"
+            "reference": "25a2e7abe0d97e70282537292e3df45cf6da7b98"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/a7a7d0a0244cfc82f040729ccf769e6cf55a78fb",
-            "reference": "a7a7d0a0244cfc82f040729ccf769e6cf55a78fb",
+            "url": "https://api.github.com/repos/symfony/config/zipball/25a2e7abe0d97e70282537292e3df45cf6da7b98",
+            "reference": "25a2e7abe0d97e70282537292e3df45cf6da7b98",
             "shasum": ""
         },
         "require": {
@@ -3217,7 +3217,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2019-01-03T09:07:35+00:00",
+        "time": "2019-01-30T11:44:30+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3252,17 +3252,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "v4.2.3",
+        "version_normalized": "4.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522"
+            "reference": "1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522",
-            "reference": "b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522",
+            "url": "https://api.github.com/repos/symfony/console/zipball/1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4",
+            "reference": "1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4",
             "shasum": ""
         },
         "require": {
@@ -3274,6 +3274,9 @@
             "symfony/dependency-injection": "<3.4",
             "symfony/process": "<3.3"
         },
+        "provide": {
+            "psr/log-implementation": "1.0"
+        },
         "require-dev": {
             "psr/log": "~1.0",
             "symfony/config": "~3.4|~4.0",
@@ -3283,12 +3286,12 @@
             "symfony/process": "~3.4|~4.0"
         },
         "suggest": {
-            "psr/log-implementation": "For using the console logger",
+            "psr/log": "For using the console logger",
             "symfony/event-dispatcher": "",
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-01-04T15:13:53+00:00",
+        "time": "2019-01-25T14:35:16+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3393,24 +3396,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "v4.2.3",
+        "version_normalized": "4.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8"
+            "reference": "7c16ebc2629827d4ec915a52ac809768d060a4ee"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8",
-            "reference": "c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/7c16ebc2629827d4ec915a52ac809768d060a4ee",
+            "reference": "7c16ebc2629827d4ec915a52ac809768d060a4ee",
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2019-01-03T09:07:35+00:00",
+        "time": "2019-01-16T20:35:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3491,7 +3494,7 @@
             },
             {
                 "name": "Gert de Pagter",
-                "email": "backendtea@gmail.com"
+                "email": "BackEndTea@gmail.com"
             }
         ],
         "description": "Symfony polyfill for ctype functions",
@@ -3566,17 +3569,17 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "v4.2.3",
+        "version_normalized": "4.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "939fb792d73f2ce80e6ae9019d205fc480f1c9a0"
+            "reference": "23fd7aac70d99a17a8e6473a41fec8fab3331050"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/939fb792d73f2ce80e6ae9019d205fc480f1c9a0",
-            "reference": "939fb792d73f2ce80e6ae9019d205fc480f1c9a0",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/23fd7aac70d99a17a8e6473a41fec8fab3331050",
+            "reference": "23fd7aac70d99a17a8e6473a41fec8fab3331050",
             "shasum": ""
         },
         "require": {
@@ -3606,7 +3609,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2019-01-03T09:07:35+00:00",
+        "time": "2019-01-27T23:11:39+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3641,17 +3644,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v3.4.21",
-        "version_normalized": "3.4.21.0",
+        "version": "v3.4.22",
+        "version_normalized": "3.4.22.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "cd3fba16d309347883b74bb0ee8cb4720a60554c"
+            "reference": "06af494d8634df6ad9655ec7d80cb61983253912"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/cd3fba16d309347883b74bb0ee8cb4720a60554c",
-            "reference": "cd3fba16d309347883b74bb0ee8cb4720a60554c",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/06af494d8634df6ad9655ec7d80cb61983253912",
+            "reference": "06af494d8634df6ad9655ec7d80cb61983253912",
             "shasum": ""
         },
         "require": {
@@ -3693,7 +3696,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-        "time": "2019-01-06T14:07:11+00:00",
+        "time": "2019-01-30T09:03:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3728,17 +3731,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "v4.2.3",
+        "version_normalized": "4.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "d0aa6c0ea484087927b49fd513383a7d36190ca6"
+            "reference": "d461670ee145092b7e2a56c1da7118f19cadadb0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/d0aa6c0ea484087927b49fd513383a7d36190ca6",
-            "reference": "d0aa6c0ea484087927b49fd513383a7d36190ca6",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/d461670ee145092b7e2a56c1da7118f19cadadb0",
+            "reference": "d461670ee145092b7e2a56c1da7118f19cadadb0",
             "shasum": ""
         },
         "require": {
@@ -3754,7 +3757,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2019-01-03T09:07:35+00:00",
+        "time": "2019-01-16T20:35:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

@@ -22,7 +22,7 @@ class TextDescriptorTest extends AbstractDescriptorTest
     {
         return $this->getDescriptionTestData(array_merge(
             ObjectsProvider::getCommands(),
-            array('command_mbstring' => new DescriptorCommandMbString())
+            ['command_mbstring' => new DescriptorCommandMbString()]
         ));
     }
 
@@ -30,7 +30,7 @@ class TextDescriptorTest extends AbstractDescriptorTest
     {
         return $this->getDescriptionTestData(array_merge(
             ObjectsProvider::getApplications(),
-            array('application_mbstring' => new DescriptorApplicationMbString())
+            ['application_mbstring' => new DescriptorApplicationMbString()]
         ));
     }
 
@@ -38,7 +38,7 @@ class TextDescriptorTest extends AbstractDescriptorTest
     {
         $application = new DescriptorApplication2();
 
-        $this->assertDescription(file_get_contents(__DIR__.'/../Fixtures/application_filtered_namespace.txt'), $application, array('namespace' => 'command4'));
+        $this->assertDescription(file_get_contents(__DIR__.'/../Fixtures/application_filtered_namespace.txt'), $application, ['namespace' => 'command4']);
     }
 
     protected function getDescriptor()

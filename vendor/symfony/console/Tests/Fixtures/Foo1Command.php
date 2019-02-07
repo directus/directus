@@ -14,7 +14,7 @@ class Foo1Command extends Command
         $this
             ->setName('foo:bar1')
             ->setDescription('The foo:bar1 command')
-            ->setAliases(array('afoobar1'))
+            ->setAliases(['afoobar1'])
         ;
     }
 

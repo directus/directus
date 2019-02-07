@@ -29,13 +29,13 @@ class Parser
     private $filename;
     private $offset = 0;
     private $totalNumberOfLines;
-    private $lines = array();
+    private $lines = [];
     private $currentLineNb = -1;
     private $currentLine = '';
-    private $refs = array();
-    private $skippedLineNumbers = array();
-    private $locallySkippedLineNumbers = array();
-    private $refsBeingParsed = array();
+    private $refs = [];
+    private $skippedLineNumbers = [];
+    private $locallySkippedLineNumbers = [];
+    private $refsBeingParsed = [];
 
     /**
      * Parses a YAML file into a PHP value.
@@ -82,7 +82,7 @@ class Parser
             throw new ParseException('The YAML value does not appear to be valid UTF-8.', -1, null, $this->filename);
         }
 
-        $this->refs = array();
+        $this->refs = [];
 
         $mbEncoding = null;
         $data = null;
@@ -98,11 +98,11 @@ class Parser
             if (null !== $mbEncoding) {
                 mb_internal_encoding($mbEncoding);
             }
-            $this->lines = array();
+            $this->lines = [];
             $this->currentLine = '';
-            $this->refs = array();
-            $this->skippedLineNumbers = array();
-            $this->locallySkippedLineNumbers = array();
+            $this->refs = [];
+            $this->skippedLineNumbers = [];
+            $this->locallySkippedLineNumbers = [];
         }
 
         return $data;
@@ -124,7 +124,7 @@ class Parser
         $this->currentLine = '';
         $value = $this->cleanup($value);
         $this->lines = explode("\n", $value);
-        $this->locallySkippedLineNumbers = array();
+        $this->locallySkippedLineNumbers = [];
 
         if (null === $this->totalNumberOfLines) {
             $this->totalNumberOfLines = \count($this->lines);
@@ -134,7 +134,7 @@ class Parser
             return null;
         }
 
-        $data = array();
+        $data = [];
         $context = null;
         $allowOverwrite = false;
 
@@ -207,7 +207,7 @@ class Parser
                 }
             } elseif (
                 self::preg_match('#^(?P<key>(?:![^\s]++\s++)?(?:'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?[^ \'"\[\{!].*?)) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
-                && (false === strpos($values['key'], ' #') || \in_array($values['key'][0], array('"', "'")))
+                && (false === strpos($values['key'], ' #') || \in_array($values['key'][0], ['"', "'"]))
             ) {
                 if ($context && 'sequence' == $context) {
                     throw new ParseException('You cannot define a mapping item when in a sequence', $this->currentLineNb + 1, $this->currentLine, $this->filename);
@@ -546,7 +546,7 @@ class Parser
             $newIndent = $indentation;
         }
 
-        $data = array();
+        $data = [];
         if ($this->getCurrentLineIndentation() >= $newIndent) {
             $data[] = substr($this->currentLine, $newIndent);
         } elseif ($this->isCurrentLineEmpty() || $this->isCurrentLineComment()) {
@@ -659,7 +659,7 @@ class Parser
             return $this->refs[$value];
         }
 
-        if (\in_array($value[0], array('!', '|', '>'), true) && self::preg_match('/^(?:'.self::TAG_PATTERN.' +)?'.self::BLOCK_SCALAR_HEADER_PATTERN.'$/', $value, $matches)) {
+        if (\in_array($value[0], ['!', '|', '>'], true) && self::preg_match('/^(?:'.self::TAG_PATTERN.' +)?'.self::BLOCK_SCALAR_HEADER_PATTERN.'$/', $value, $matches)) {
             $modifiers = isset($matches['modifiers']) ? $matches['modifiers'] : '';
 
             $data = $this->parseBlockScalar($matches['separator'], preg_replace('#\d+#', '', $modifiers), (int) abs($modifiers));
@@ -683,7 +683,7 @@ class Parser
                 return Inline::parse($value, $flags, $this->refs);
             }
 
-            $lines = array();
+            $lines = [];
 
             while ($this->moveToNextLine()) {
                 // unquoted strings end before the first unindented line
@@ -748,7 +748,7 @@ class Parser
         }
 
         $isCurrentLineBlank = $this->isCurrentLineBlank();
-        $blockLines = array();
+        $blockLines = [];
 
         // leading blank lines are consumed before determining indentation
         while ($notEOF && $isCurrentLineBlank) {
@@ -922,7 +922,7 @@ class Parser
      */
     private function cleanup(string $value): string
     {
-        $value = str_replace(array("\r\n", "\r"), "\n", $value);
+        $value = str_replace(["\r\n", "\r"], "\n", $value);
 
         // strip YAML header
         $count = 0;

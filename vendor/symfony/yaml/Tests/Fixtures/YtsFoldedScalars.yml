@@ -12,7 +12,7 @@ yaml: |
         Foo
         Bar
 php: |
-    array('this' => "Foo\nBar\n")
+    ['this' => "Foo\nBar\n"]
 ---
 test: The '+' indicator
 brief: >
@@ -28,11 +28,11 @@ yaml: |
 
     dummy: value
 php: |
-    array(
+    [
         'normal' => "extra new lines not kept\n",
         'preserving' => "extra new lines are kept\n\n\n",
         'dummy' => 'value'
-    )
+    ]
 ---
 test: Three trailing newlines in literals
 brief: >
@@ -64,14 +64,14 @@ yaml: |
 
     same as "kept" above: "This has four newlines.\n\n\n\n"
 php: |
-    array(
+    [
       'clipped' => "This has one newline.\n",
       'same as "clipped" above' => "This has one newline.\n",
       'stripped' => 'This has no newline.',
       'same as "stripped" above' => 'This has no newline.',
       'kept' => "This has four newlines.\n\n\n\n",
       'same as "kept" above' => "This has four newlines.\n\n\n\n"
-    )
+    ]
 ---
 test: Extra trailing newlines with spaces
 todo: true
@@ -95,8 +95,8 @@ yaml: |
 
 
 php: |
-    array('this' => "Foo\n\n  \n",
-      'kept' => "Foo\n\n  \n" )
+    ['this' => "Foo\n\n  \n",
+      'kept' => "Foo\n\n  \n"]
 
 ---
 test: Folded Block in a Sequence
@@ -115,12 +115,12 @@ yaml: |
         hmm
     - dog
 php: |
-    array(
+    [
         'apple',
         'banana',
         "can't you see the beauty of yaml? hmm\n",
         'dog'
-    )
+    ]
 ---
 test: Folded Block as a Mapping Value
 brief: >
@@ -135,10 +135,10 @@ yaml: |
         by a knee injury.
     source: espn
 php: |
-    array(
+    [
         'quote' => "Mark McGwire's year was crippled by a knee injury.\n",
         'source' => 'espn'
-    )
+    ]
 ---
 test: Three trailing newlines in folded blocks
 brief: >
@@ -166,11 +166,11 @@ yaml: |
 
     same as "kept" above: "This has four newlines.\n\n\n\n"
 php: |
-    array(
+    [
       'clipped' => "This has one newline.\n",
       'same as "clipped" above' => "This has one newline.\n",
       'stripped' => 'This has no newline.',
       'same as "stripped" above' => 'This has no newline.',
       'kept' => "This has four newlines.\n\n\n\n",
       'same as "kept" above' => "This has four newlines.\n\n\n\n"
-    )
+    ]

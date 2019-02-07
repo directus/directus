@@ -194,12 +194,12 @@ class TableStyle
      */
     public function getBorderChars()
     {
-        return array(
+        return [
             $this->horizontalOutsideBorderChar,
             $this->verticalOutsideBorderChar,
             $this->horizontalInsideBorderChar,
             $this->verticalInsideBorderChar,
-        );
+        ];
     }
 
     /**
@@ -292,7 +292,7 @@ class TableStyle
      */
     public function getCrossingChars(): array
     {
-        return array(
+        return [
             $this->crossingChar,
             $this->crossingTopLeftChar,
             $this->crossingTopMidChar,
@@ -305,7 +305,7 @@ class TableStyle
             $this->crossingTopLeftBottomChar,
             $this->crossingTopMidBottomChar,
             $this->crossingTopRightBottomChar,
-        );
+        ];
     }
 
     /**
@@ -413,7 +413,7 @@ class TableStyle
      */
     public function setPadType($padType)
     {
-        if (!\in_array($padType, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH), true)) {
+        if (!\in_array($padType, [STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH], true)) {
             throw new InvalidArgumentException('Invalid padding type. Expected one of (STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH).');
         }
 

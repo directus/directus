@@ -628,6 +628,15 @@ class FieldsSeeder extends AbstractSeed
                 'hidden_detail' => 1,
                 'hidden_browse' => 1
             ],
+            [
+                'collection' => 'directus_files',
+                'field' => 'checksum',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'text-input',
+                'locked' => 1,
+                'readonly' => 1,
+                'hidden_detail' => 1,
+            ],
 
 
             // Folders

@@ -28,17 +28,17 @@ class ScalarNodeTest extends TestCase
 
     public function getValidValues()
     {
-        return array(
-            array(false),
-            array(true),
-            array(null),
-            array(''),
-            array('foo'),
-            array(0),
-            array(1),
-            array(0.0),
-            array(0.1),
-        );
+        return [
+            [false],
+            [true],
+            [null],
+            [''],
+            ['foo'],
+            [0],
+            [1],
+            [0.0],
+            [0.1],
+        ];
     }
 
     public function testSetDeprecated()
@@ -62,12 +62,12 @@ class ScalarNodeTest extends TestCase
         };
 
         $prevErrorHandler = set_error_handler($deprecationHandler);
-        $node->finalize(array());
+        $node->finalize([]);
         restore_error_handler();
         $this->assertSame(0, $deprecationTriggered, '->finalize() should not trigger if the deprecated node is not set');
 
         $prevErrorHandler = set_error_handler($deprecationHandler);
-        $node->finalize(array('foo' => ''));
+        $node->finalize(['foo' => '']);
         restore_error_handler();
         $this->assertSame(1, $deprecationTriggered, '->finalize() should trigger if the deprecated node is set');
     }
@@ -84,11 +84,11 @@ class ScalarNodeTest extends TestCase
 
     public function getInvalidValues()
     {
-        return array(
-            array(array()),
-            array(array('foo' => 'bar')),
-            array(new \stdClass()),
-        );
+        return [
+            [[]],
+            [['foo' => 'bar']],
+            [new \stdClass()],
+        ];
     }
 
     public function testNormalizeThrowsExceptionWithoutHint()
@@ -102,7 +102,7 @@ class ScalarNodeTest extends TestCase
             $this->setExpectedException('Symfony\Component\Config\Definition\Exception\InvalidTypeException', 'Invalid type for path "test". Expected scalar, but got array.');
         }
 
-        $node->normalize(array());
+        $node->normalize([]);
     }
 
     public function testNormalizeThrowsExceptionWithErrorMessage()
@@ -117,7 +117,7 @@ class ScalarNodeTest extends TestCase
             $this->setExpectedException('Symfony\Component\Config\Definition\Exception\InvalidTypeException', "Invalid type for path \"test\". Expected scalar, but got array.\nHint: \"the test value\"");
         }
 
-        $node->normalize(array());
+        $node->normalize([]);
     }
 
     /**
@@ -135,15 +135,15 @@ class ScalarNodeTest extends TestCase
 
     public function getValidNonEmptyValues()
     {
-        return array(
-            array(false),
-            array(true),
-            array('foo'),
-            array(0),
-            array(1),
-            array(0.0),
-            array(0.1),
-        );
+        return [
+            [false],
+            [true],
+            ['foo'],
+            [0],
+            [1],
+            [0.0],
+            [0.1],
+        ];
     }
 
     /**
@@ -161,9 +161,9 @@ class ScalarNodeTest extends TestCase
 
     public function getEmptyValues()
     {
-        return array(
-            array(null),
-            array(''),
-        );
+        return [
+            [null],
+            [''],
+        ];
     }
 }

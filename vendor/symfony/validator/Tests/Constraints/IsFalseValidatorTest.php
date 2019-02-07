@@ -38,9 +38,9 @@ class IsFalseValidatorTest extends ConstraintValidatorTestCase
 
     public function testTrueIsInvalid()
     {
-        $constraint = new IsFalse(array(
+        $constraint = new IsFalse([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate(true, $constraint);
 

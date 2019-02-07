@@ -22,9 +22,9 @@ class FileValidatorPathTest extends FileValidatorTest
 
     public function testFileNotFound()
     {
-        $constraint = new File(array(
+        $constraint = new File([
             'notFoundMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate('foobar', $constraint);
 

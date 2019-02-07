@@ -20,49 +20,49 @@ class XliffFileDumperTest extends TestCase
     public function testFormatCatalogue()
     {
         $catalogue = new MessageCatalogue('en_US');
-        $catalogue->add(array(
+        $catalogue->add([
             'foo' => 'bar',
             'key' => '',
             'key.with.cdata' => '<source> & <target>',
-        ));
-        $catalogue->setMetadata('foo', array('notes' => array(array('priority' => 1, 'from' => 'bar', 'content' => 'baz'))));
-        $catalogue->setMetadata('key', array('notes' => array(array('content' => 'baz'), array('content' => 'qux'))));
+        ]);
+        $catalogue->setMetadata('foo', ['notes' => [['priority' => 1, 'from' => 'bar', 'content' => 'baz']]]);
+        $catalogue->setMetadata('key', ['notes' => [['content' => 'baz'], ['content' => 'qux']]]);
 
         $dumper = new XliffFileDumper();
 
         $this->assertStringEqualsFile(
             __DIR__.'/../fixtures/resources-clean.xlf',
-            $dumper->formatCatalogue($catalogue, 'messages', array('default_locale' => 'fr_FR'))
+            $dumper->formatCatalogue($catalogue, 'messages', ['default_locale' => 'fr_FR'])
         );
     }
 
     public function testFormatCatalogueXliff2()
     {
         $catalogue = new MessageCatalogue('en_US');
-        $catalogue->add(array(
+        $catalogue->add([
             'foo' => 'bar',
             'key' => '',
             'key.with.cdata' => '<source> & <target>',
-        ));
-        $catalogue->setMetadata('key', array('target-attributes' => array('order' => 1)));
+        ]);
+        $catalogue->setMetadata('key', ['target-attributes' => ['order' => 1]]);
 
         $dumper = new XliffFileDumper();
 
         $this->assertStringEqualsFile(
             __DIR__.'/../fixtures/resources-2.0-clean.xlf',
-            $dumper->formatCatalogue($catalogue, 'messages', array('default_locale' => 'fr_FR', 'xliff_version' => '2.0'))
+            $dumper->formatCatalogue($catalogue, 'messages', ['default_locale' => 'fr_FR', 'xliff_version' => '2.0'])
         );
     }
 
     public function testFormatCatalogueWithCustomToolInfo()
     {
-        $options = array(
+        $options = [
             'default_locale' => 'en_US',
-            'tool_info' => array('tool-id' => 'foo', 'tool-name' => 'foo', 'tool-version' => '0.0', 'tool-company' => 'Foo'),
-        );
+            'tool_info' => ['tool-id' => 'foo', 'tool-name' => 'foo', 'tool-version' => '0.0', 'tool-company' => 'Foo'],
+        ];
 
         $catalogue = new MessageCatalogue('en_US');
-        $catalogue->add(array('foo' => 'bar'));
+        $catalogue->add(['foo' => 'bar']);
 
         $dumper = new XliffFileDumper();
 
@@ -75,41 +75,41 @@ class XliffFileDumperTest extends TestCase
     public function testFormatCatalogueWithTargetAttributesMetadata()
     {
         $catalogue = new MessageCatalogue('en_US');
-        $catalogue->add(array(
+        $catalogue->add([
             'foo' => 'bar',
-        ));
-        $catalogue->setMetadata('foo', array('target-attributes' => array('state' => 'needs-translation')));
+        ]);
+        $catalogue->setMetadata('foo', ['target-attributes' => ['state' => 'needs-translation']]);
 
         $dumper = new XliffFileDumper();
 
         $this->assertStringEqualsFile(
             __DIR__.'/../fixtures/resources-target-attributes.xlf',
-            $dumper->formatCatalogue($catalogue, 'messages', array('default_locale' => 'fr_FR'))
+            $dumper->formatCatalogue($catalogue, 'messages', ['default_locale' => 'fr_FR'])
         );
     }
 
     public function testFormatCatalogueWithNotesMetadata()
     {
         $catalogue = new MessageCatalogue('en_US');
-        $catalogue->add(array(
+        $catalogue->add([
             'foo' => 'bar',
             'baz' => 'biz',
-        ));
-        $catalogue->setMetadata('foo', array('notes' => array(
-            array('category' => 'state', 'content' => 'new'),
-            array('category' => 'approved', 'content' => 'true'),
-            array('category' => 'section', 'content' => 'user login', 'priority' => '1'),
-        )));
-        $catalogue->setMetadata('baz', array('notes' => array(
-            array('id' => 'x', 'content' => 'x_content'),
-            array('appliesTo' => 'target', 'category' => 'quality', 'content' => 'Fuzzy'),
-        )));
+        ]);
+        $catalogue->setMetadata('foo', ['notes' => [
+            ['category' => 'state', 'content' => 'new'],
+            ['category' => 'approved', 'content' => 'true'],
+            ['category' => 'section', 'content' => 'user login', 'priority' => '1'],
+        ]]);
+        $catalogue->setMetadata('baz', ['notes' => [
+            ['id' => 'x', 'content' => 'x_content'],
+            ['appliesTo' => 'target', 'category' => 'quality', 'content' => 'Fuzzy'],
+        ]]);
 
         $dumper = new XliffFileDumper();
 
         $this->assertStringEqualsFile(
             __DIR__.'/../fixtures/resources-notes-meta.xlf',
-            $dumper->formatCatalogue($catalogue, 'messages', array('default_locale' => 'fr_FR', 'xliff_version' => '2.0'))
+            $dumper->formatCatalogue($catalogue, 'messages', ['default_locale' => 'fr_FR', 'xliff_version' => '2.0'])
         );
     }
 }

@@ -8,7 +8,7 @@ brief: >
 yaml: |
     seq: [ a, b, c ]
 php: |
-    array('seq' => array('a', 'b', 'c'))
+    ['seq' => ['a', 'b', 'c']]
 ---
 test: Simple Inline Hash
 brief: >
@@ -21,7 +21,7 @@ brief: >
 yaml: |
     hash: { name: Steve, foo: bar }
 php: |
-    array('hash' => array('name' => 'Steve', 'foo' => 'bar'))
+    ['hash' => ['name' => 'Steve', 'foo' => 'bar']]
 ---
 test: Multi-line Inline Collections
 todo: true
@@ -38,15 +38,15 @@ yaml: |
                 Python: python.org,
                 Perl: use.perl.org }
 php: |
-    array(
-      'languages' => array('Ruby', 'Perl', 'Python'),
-      'websites' => array(
+    [
+      'languages' => ['Ruby', 'Perl', 'Python'],
+      'websites' => [
         'YAML' => 'yaml.org',
         'Ruby' => 'ruby-lang.org',
         'Python' => 'python.org',
         'Perl' => 'use.perl.org'
-      )
-    )
+      ]
+    ]
 ---
 test: Commas in Values (not in the spec!)
 todo: true
@@ -57,4 +57,4 @@ brief: >
 yaml: |
     attendances: [ 45,123, 70,000, 17,222 ]
 php: |
-    array('attendances' => array(45123, 70000, 17222))
+    ['attendances' => [45123, 70000, 17222]]

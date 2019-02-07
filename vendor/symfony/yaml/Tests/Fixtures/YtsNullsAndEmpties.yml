@@ -6,7 +6,7 @@ brief: >
 yaml: |
     empty: []
 php: |
-    array('empty' => array())
+    ['empty' => []]
 ---
 test: Empty Mapping
 brief: >
@@ -15,19 +15,19 @@ brief: >
 yaml: |
     empty: {}
 php: |
-    array('empty' => array())
+    ['empty' => []]
 ---
 test: Empty Sequence as Entire Document
 yaml: |
     []
 php: |
-    array()
+    []
 ---
 test: Empty Mapping as Entire Document
 yaml: |
     {}
 php: |
-    array()
+    []
 ---
 test: Null as Document
 yaml: |

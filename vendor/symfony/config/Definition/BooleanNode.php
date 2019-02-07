@@ -50,6 +50,6 @@ class BooleanNode extends ScalarNode
      */
     protected function getValidPlaceholderTypes(): array
     {
-        return array('bool');
+        return ['bool'];
     }
 }

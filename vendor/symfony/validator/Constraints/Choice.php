@@ -25,11 +25,11 @@ class Choice extends Constraint
     const TOO_FEW_ERROR = '11edd7eb-5872-4b6e-9f12-89923999fd0e';
     const TOO_MANY_ERROR = '9bd98e49-211c-433f-8630-fd1c2d0f08c3';
 
-    protected static $errorNames = array(
+    protected static $errorNames = [
         self::NO_SUCH_CHOICE_ERROR => 'NO_SUCH_CHOICE_ERROR',
         self::TOO_FEW_ERROR => 'TOO_FEW_ERROR',
         self::TOO_MANY_ERROR => 'TOO_MANY_ERROR',
-    );
+    ];
 
     public $choices;
     public $callback;

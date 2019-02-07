@@ -64,14 +64,14 @@ class PoFileLoader extends FileLoader
     {
         $stream = fopen($resource, 'r');
 
-        $defaults = array(
-            'ids' => array(),
+        $defaults = [
+            'ids' => [],
             'translated' => null,
-        );
+        ];
 
-        $messages = array();
+        $messages = [];
         $item = $defaults;
-        $flags = array();
+        $flags = [];
 
         while ($line = fgets($stream)) {
             $line = trim($line);
@@ -82,7 +82,7 @@ class PoFileLoader extends FileLoader
                     $this->addMessage($messages, $item);
                 }
                 $item = $defaults;
-                $flags = array();
+                $flags = [];
             } elseif ('#,' === substr($line, 0, 2)) {
                 $flags = array_map('trim', explode(',', substr($line, 2)));
             } elseif ('msgid "' === substr($line, 0, 7)) {

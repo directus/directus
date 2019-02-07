@@ -45,8 +45,8 @@ class MemberMetadataTest extends TestCase
 
     public function testSerialize()
     {
-        $this->metadata->addConstraint(new ConstraintA(array('property1' => 'A')));
-        $this->metadata->addConstraint(new ConstraintB(array('groups' => 'TestGroup')));
+        $this->metadata->addConstraint(new ConstraintA(['property1' => 'A']));
+        $this->metadata->addConstraint(new ConstraintB(['groups' => 'TestGroup']));
 
         $metadata = unserialize(serialize($this->metadata));
 
@@ -55,7 +55,7 @@ class MemberMetadataTest extends TestCase
 
     public function testSerializeCollectionCascaded()
     {
-        $this->metadata->addConstraint(new Valid(array('traverse' => true)));
+        $this->metadata->addConstraint(new Valid(['traverse' => true]));
 
         $metadata = unserialize(serialize($this->metadata));
 
@@ -64,7 +64,7 @@ class MemberMetadataTest extends TestCase
 
     public function testSerializeCollectionNotCascaded()
     {
-        $this->metadata->addConstraint(new Valid(array('traverse' => false)));
+        $this->metadata->addConstraint(new Valid(['traverse' => false]));
 
         $metadata = unserialize(serialize($this->metadata));
 

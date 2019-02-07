@@ -37,7 +37,7 @@ class OutputFormatterStyleStack implements ResetInterface
      */
     public function reset()
     {
-        $this->styles = array();
+        $this->styles = [];
     }
 
     /**

@@ -14,7 +14,7 @@ yaml: |
     - Oren
     - *showell
 php: |
-    array('Steve', 'Clark', 'Brian', 'Oren', 'Steve')
+    ['Steve', 'Clark', 'Brian', 'Oren', 'Steve']
 
 ---
 test: Alias of a Mapping
@@ -28,4 +28,4 @@ yaml: |
     - banana
     - *hello
 php: |
-    array(array('Meat'=>'pork', 'Starch'=>'potato'), 'banana', array('Meat'=>'pork', 'Starch'=>'potato'))
+    [['Meat'=>'pork', 'Starch'=>'potato'], 'banana', ['Meat'=>'pork', 'Starch'=>'potato']]

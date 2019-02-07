@@ -22,7 +22,7 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 class OutputFormatter implements WrappableOutputFormatterInterface
 {
     private $decorated;
-    private $styles = array();
+    private $styles = [];
     private $styleStack;
 
     /**
@@ -66,7 +66,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
      * @param bool                            $decorated Whether this formatter should actually decorate strings
      * @param OutputFormatterStyleInterface[] $styles    Array of "name => FormatterStyle" instances
      */
-    public function __construct(bool $decorated = false, array $styles = array())
+    public function __construct(bool $decorated = false, array $styles = [])
     {
         $this->decorated = $decorated;
 
@@ -178,7 +178,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
         $output .= $this->applyCurrentStyle(substr($message, $offset), $output, $width, $currentLineLength);
 
         if (false !== strpos($output, "\0")) {
-            return strtr($output, array("\0" => '\\', '\\<' => '<'));
+            return strtr($output, ["\0" => '\\', '\\<' => '<']);
         }
 
         return str_replace('\\<', '<', $output);

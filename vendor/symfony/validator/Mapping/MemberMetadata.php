@@ -52,7 +52,7 @@ abstract class MemberMetadata extends GenericMetadata implements PropertyMetadat
     /**
      * @var \ReflectionMethod[]|\ReflectionProperty[]
      */
-    private $reflMember = array();
+    private $reflMember = [];
 
     /**
      * @param string $class    The name of the class this member is defined on
@@ -85,11 +85,11 @@ abstract class MemberMetadata extends GenericMetadata implements PropertyMetadat
      */
     public function __sleep()
     {
-        return array_merge(parent::__sleep(), array(
+        return array_merge(parent::__sleep(), [
             'class',
             'name',
             'property',
-        ));
+        ]);
     }
 
     /**

@@ -52,14 +52,14 @@ class XmlUtilsTest extends TestCase
         $mock->expects($this->exactly(2))->method('validate')->will($this->onConsecutiveCalls(false, true));
 
         try {
-            XmlUtils::loadFile($fixtures.'valid.xml', array($mock, 'validate'));
+            XmlUtils::loadFile($fixtures.'valid.xml', [$mock, 'validate']);
             $this->fail();
         } catch (\InvalidArgumentException $e) {
             $this->assertRegExp('/The XML file ".+" is not valid\./', $e->getMessage());
         }
 
-        $this->assertInstanceOf('DOMDocument', XmlUtils::loadFile($fixtures.'valid.xml', array($mock, 'validate')));
-        $this->assertSame(array(), libxml_get_errors());
+        $this->assertInstanceOf('DOMDocument', XmlUtils::loadFile($fixtures.'valid.xml', [$mock, 'validate']));
+        $this->assertSame([], libxml_get_errors());
     }
 
     /**
@@ -73,16 +73,16 @@ class XmlUtilsTest extends TestCase
         $mock = $this->getMockBuilder(__NAMESPACE__.'\Validator')->getMock();
         $mock->expects($this->once())->method('validate')->willReturn(false);
 
-        XmlUtils::parse(file_get_contents($fixtures.'valid.xml'), array($mock, 'validate'));
+        XmlUtils::parse(file_get_contents($fixtures.'valid.xml'), [$mock, 'validate']);
     }
 
     public function testLoadFileWithInternalErrorsEnabled()
     {
         $internalErrors = libxml_use_internal_errors(true);
 
-        $this->assertSame(array(), libxml_get_errors());
+        $this->assertSame([], libxml_get_errors());
         $this->assertInstanceOf('DOMDocument', XmlUtils::loadFile(__DIR__.'/../Fixtures/Util/invalid_schema.xml'));
-        $this->assertSame(array(), libxml_get_errors());
+        $this->assertSame([], libxml_get_errors());
 
         libxml_clear_errors();
         libxml_use_internal_errors($internalErrors);
@@ -101,25 +101,25 @@ class XmlUtilsTest extends TestCase
 
     public function getDataForConvertDomToArray()
     {
-        return array(
-            array(null, ''),
-            array('bar', 'bar'),
-            array(array('bar' => 'foobar'), '<foo bar="foobar" />', true),
-            array(array('foo' => null), '<foo />'),
-            array(array('foo' => 'bar'), '<foo>bar</foo>'),
-            array(array('foo' => array('foo' => 'bar')), '<foo foo="bar"/>'),
-            array(array('foo' => array('foo' => 0)), '<foo><foo>0</foo></foo>'),
-            array(array('foo' => array('foo' => 'bar')), '<foo><foo>bar</foo></foo>'),
-            array(array('foo' => array('foo' => 'bar', 'value' => 'text')), '<foo foo="bar">text</foo>'),
-            array(array('foo' => array('attr' => 'bar', 'foo' => 'text')), '<foo attr="bar"><foo>text</foo></foo>'),
-            array(array('foo' => array('bar', 'text')), '<foo>bar</foo><foo>text</foo>'),
-            array(array('foo' => array(array('foo' => 'bar'), array('foo' => 'text'))), '<foo foo="bar"/><foo foo="text" />'),
-            array(array('foo' => array('foo' => array('bar', 'text'))), '<foo foo="bar"><foo>text</foo></foo>'),
-            array(array('foo' => 'bar'), '<foo><!-- Comment -->bar</foo>'),
-            array(array('foo' => 'text'), '<foo xmlns:h="http://www.example.org/bar" h:bar="bar">text</foo>'),
-            array(array('foo' => array('bar' => 'bar', 'value' => 'text')), '<foo xmlns:h="http://www.example.org/bar" h:bar="bar">text</foo>', false, false),
-            array(array('attr' => 1, 'b' => 'hello'), '<foo:a xmlns:foo="http://www.example.org/foo" xmlns:h="http://www.example.org/bar" attr="1" h:bar="bar"><foo:b>hello</foo:b><h:c>2</h:c></foo:a>', true),
-        );
+        return [
+            [null, ''],
+            ['bar', 'bar'],
+            [['bar' => 'foobar'], '<foo bar="foobar" />', true],
+            [['foo' => null], '<foo />'],
+            [['foo' => 'bar'], '<foo>bar</foo>'],
+            [['foo' => ['foo' => 'bar']], '<foo foo="bar"/>'],
+            [['foo' => ['foo' => 0]], '<foo><foo>0</foo></foo>'],
+            [['foo' => ['foo' => 'bar']], '<foo><foo>bar</foo></foo>'],
+            [['foo' => ['foo' => 'bar', 'value' => 'text']], '<foo foo="bar">text</foo>'],
+            [['foo' => ['attr' => 'bar', 'foo' => 'text']], '<foo attr="bar"><foo>text</foo></foo>'],
+            [['foo' => ['bar', 'text']], '<foo>bar</foo><foo>text</foo>'],
+            [['foo' => [['foo' => 'bar'], ['foo' => 'text']]], '<foo foo="bar"/><foo foo="text" />'],
+            [['foo' => ['foo' => ['bar', 'text']]], '<foo foo="bar"><foo>text</foo></foo>'],
+            [['foo' => 'bar'], '<foo><!-- Comment -->bar</foo>'],
+            [['foo' => 'text'], '<foo xmlns:h="http://www.example.org/bar" h:bar="bar">text</foo>'],
+            [['foo' => ['bar' => 'bar', 'value' => 'text']], '<foo xmlns:h="http://www.example.org/bar" h:bar="bar">text</foo>', false, false],
+            [['attr' => 1, 'b' => 'hello'], '<foo:a xmlns:foo="http://www.example.org/foo" xmlns:h="http://www.example.org/bar" attr="1" h:bar="bar"><foo:b>hello</foo:b><h:c>2</h:c></foo:a>', true],
+        ];
     }
 
     /**
@@ -132,34 +132,34 @@ class XmlUtilsTest extends TestCase
 
     public function getDataForPhpize()
     {
-        return array(
-            array('', ''),
-            array(null, 'null'),
-            array(true, 'true'),
-            array(false, 'false'),
-            array(null, 'Null'),
-            array(true, 'True'),
-            array(false, 'False'),
-            array(0, '0'),
-            array(1, '1'),
-            array(-1, '-1'),
-            array(0777, '0777'),
-            array(255, '0xFF'),
-            array(100.0, '1e2'),
-            array(-120.0, '-1.2E2'),
-            array(-10100.1, '-10100.1'),
-            array('-10,100.1', '-10,100.1'),
-            array('1234 5678 9101 1121 3141', '1234 5678 9101 1121 3141'),
-            array('1,2,3,4', '1,2,3,4'),
-            array('11,22,33,44', '11,22,33,44'),
-            array('11,222,333,4', '11,222,333,4'),
-            array('1,222,333,444', '1,222,333,444'),
-            array('11,222,333,444', '11,222,333,444'),
-            array('111,222,333,444', '111,222,333,444'),
-            array('1111,2222,3333,4444,5555', '1111,2222,3333,4444,5555'),
-            array('foo', 'foo'),
-            array(6, '0b0110'),
-        );
+        return [
+            ['', ''],
+            [null, 'null'],
+            [true, 'true'],
+            [false, 'false'],
+            [null, 'Null'],
+            [true, 'True'],
+            [false, 'False'],
+            [0, '0'],
+            [1, '1'],
+            [-1, '-1'],
+            [0777, '0777'],
+            [255, '0xFF'],
+            [100.0, '1e2'],
+            [-120.0, '-1.2E2'],
+            [-10100.1, '-10100.1'],
+            ['-10,100.1', '-10,100.1'],
+            ['1234 5678 9101 1121 3141', '1234 5678 9101 1121 3141'],
+            ['1,2,3,4', '1,2,3,4'],
+            ['11,22,33,44', '11,22,33,44'],
+            ['11,222,333,4', '11,222,333,4'],
+            ['1,222,333,444', '1,222,333,444'],
+            ['11,222,333,444', '11,222,333,444'],
+            ['111,222,333,444', '111,222,333,444'],
+            ['1111,2222,3333,4444,5555', '1111,2222,3333,4444,5555'],
+            ['foo', 'foo'],
+            [6, '0b0110'],
+        ];
     }
 
     public function testLoadEmptyXmlFile()

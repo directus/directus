@@ -12,8 +12,12 @@ use Directus\Database\Schema\SchemaManager;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Exception\ForbiddenException;
+use Directus\Exception\ForbiddenLastAdminException;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\JWTUtils;
+use Zend\Db\Sql\Delete;
+use Zend\Db\Sql\Select;
 
 class UsersService extends AbstractService
 {
@@ -44,14 +48,34 @@ class UsersService extends AbstractService
         return $this->itemsService->createItem($this->collection, $data, $params);
     }
 
-    public function update($id, array $data, array $params = [])
+    public function update($id, array $payload, array $params = [])
     {
-        return $this->itemsService->update(
-            $this->collection,
-            $this->getUserId($id),
-            $data,
-            $params
-        );
+        $id = $this->getUserId($id);
+
+        $this->enforceUpdatePermissions($this->collection, $payload, $params);
+        $this->validatePayload($this->collection, array_keys($payload), $payload, $params);
+        $this->checkItemExists($this->collection, $id);
+
+        $tableGateway = $this->createTableGateway($this->collection);
+        $status = $this->getSchemaManager()->getCollection($this->collection)->getStatusField();
+        if (ArrayUtils::has($payload, $status->getName()) && (string) ArrayUtils::get($payload, $status->getName()) != DirectusUsersTableGateway::STATUS_ACTIVE) {
+            $this->enforceLastAdmin($id);
+        }
+
+        // Fetch the entry even if it's not "published"
+        $params['status'] = '*';
+        $newRecord = $tableGateway->updateRecord($id, $payload, $this->getCRUDParams($params));
+
+        try {
+            $item = $this->find(
+                $newRecord->getId(),
+                ArrayUtils::omit($params, $this->itemsService::SINGLE_ITEM_PARAMS_BLACKLIST)
+            );
+        } catch (\Exception $e) {
+            $item = null;
+        }
+
+        return $item;
     }
 
     /**
@@ -103,11 +127,23 @@ class UsersService extends AbstractService
 
     public function delete($id, array $params = [])
     {
-        return $this->itemsService->delete(
-            $this->collection,
-            $this->getUserId($id),
-            $params
-        );
+        $this->enforcePermissions($this->collection, [], $params);
+        $tableGateway = $this->createTableGateway($this->collection);
+        $id = $this->getUserId($id);
+
+        // hotfix: enforce delete permission before checking for the item existence
+        // this avoids an indirect reveal of an item the user is not allowed to see
+        $delete = new Delete($this->collection);
+        $delete->where([
+            'id' => $id
+        ]);
+        $tableGateway->enforceDeletePermission($delete);
+
+        $this->enforceLastAdmin($id);
+
+        $tableGateway->deleteRecord($id, $this->getCRUDParams($params));
+
+        return true;
     }
 
     /**
@@ -266,5 +302,45 @@ class UsersService extends AbstractService
         }
 
         return $id;
+    }
+
+    /**
+     * Checks whether the given ID is the last admin
+     *
+     * @param int $id
+     *
+     * @return bool
+     */
+    protected function isLastAdmin($id)
+    {
+        $result = $this->createTableGateway(SchemaManager::COLLECTION_USER_ROLES, false)->fetchAll(function (Select $select) use ($id) {
+            $select->columns(['role']);
+            $select->where(['role' => 1]);
+            $on = sprintf('%s.id = %s.user', SchemaManager::COLLECTION_USERS, SchemaManager::COLLECTION_USER_ROLES);
+            $select->join(SchemaManager::COLLECTION_USERS, $on, ['user' => 'id']);
+        });
+
+        $usersIds = [];
+        while ($result->valid()) {
+            $item = $result->current();
+            $usersIds[] = $item['user'];
+            $result->next();
+        }
+
+        return in_array($id, $usersIds) && count($usersIds) === 1;
+    }
+
+    /**
+     * Throws an exception if the user is the last admin
+     *
+     * @param int $id
+     *
+     * @throws ForbiddenLastAdminException
+     */
+    protected function enforceLastAdmin($id)
+    {
+        if ($this->isLastAdmin($id)) {
+            throw new ForbiddenLastAdminException();
+        }
     }
 }

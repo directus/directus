@@ -2,12 +2,15 @@
 
 namespace Directus\Validator;
 
+use Directus\Validator\Constraints\DateTime;
 use Directus\Validator\Constraints\Required;
 use Directus\Validator\Exception\UnknownConstraintException;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Time;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -93,6 +96,15 @@ class Validator
             case 'string':
             case 'bool':
                 $constraint = new Type(['type' => $name]);
+                break;
+            case 'date':
+                $constraint = new Date();
+                break;
+            case 'time':
+                $constraint = new Time();
+                break;
+            case 'datetime':
+                $constraint = new DateTime();
                 break;
             case 'regex':
                 $constraint = new Regex(['pattern' => $options]);

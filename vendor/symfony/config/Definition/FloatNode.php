@@ -46,6 +46,6 @@ class FloatNode extends NumericNode
      */
     protected function getValidPlaceholderTypes(): array
     {
-        return array('float');
+        return ['float'];
     }
 }

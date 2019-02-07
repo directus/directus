@@ -71,13 +71,13 @@ class CurrencyValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidCurrencies()
     {
-        return array(
-            array('EUR'),
-            array('USD'),
-            array('SIT'),
-            array('AUD'),
-            array('CAD'),
-        );
+        return [
+            ['EUR'],
+            ['USD'],
+            ['SIT'],
+            ['AUD'],
+            ['CAD'],
+        ];
     }
 
     /**
@@ -85,9 +85,9 @@ class CurrencyValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidCurrencies($currency)
     {
-        $constraint = new Currency(array(
+        $constraint = new Currency([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($currency, $constraint);
 
@@ -99,9 +99,9 @@ class CurrencyValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidCurrencies()
     {
-        return array(
-            array('EN'),
-            array('foobar'),
-        );
+        return [
+            ['EN'],
+            ['foobar'],
+        ];
     }
 }

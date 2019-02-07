@@ -21,7 +21,7 @@ class ConstraintViolationTest extends TestCase
         $violation = new ConstraintViolation(
             'Array',
             '{{ value }}',
-            array('{{ value }}' => array(1, 2, 3)),
+            ['{{ value }}' => [1, 2, 3]],
             'Root',
             'property.path',
             null
@@ -40,8 +40,8 @@ EOF;
         $violation = new ConstraintViolation(
             '42 cannot be used here',
             'this is the message template',
-            array(),
-            array('some_value' => 42),
+            [],
+            ['some_value' => 42],
             'some_value',
             null
         );
@@ -59,8 +59,8 @@ EOF;
         $violation = new ConstraintViolation(
             '42 cannot be used here',
             'this is the message template',
-            array(),
-            array('some_value' => 42),
+            [],
+            ['some_value' => 42],
             'some_value',
             null,
             null,
@@ -85,8 +85,8 @@ EOF;
         $violation = new ConstraintViolation(
             '42 cannot be used here',
             'this is the message template',
-            array(),
-            array('some_value' => 42),
+            [],
+            ['some_value' => 42],
             'some_value',
             null,
             null,
@@ -98,8 +98,8 @@ EOF;
         $violation = new ConstraintViolation(
             '42 cannot be used here',
             'this is the message template',
-            array(),
-            array('some_value' => 42),
+            [],
+            ['some_value' => 42],
             'some_value',
             null,
             null,

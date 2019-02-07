@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\MetadataInterface;
 use Symfony\Component\Validator\Validator\ContextualValidatorInterface;
@@ -27,17 +26,17 @@ class TraceableValidatorTest extends TestCase
     public function testValidate()
     {
         $originalValidator = $this->createMock(ValidatorInterface::class);
-        $violations = new ConstraintViolationList(array(
+        $violations = new ConstraintViolationList([
             $this->createMock(ConstraintViolation::class),
             $this->createMock(ConstraintViolation::class),
-        ));
+        ]);
         $originalValidator->expects($this->exactly(2))->method('validate')->willReturn($violations);
 
         $validator = new TraceableValidator($originalValidator);
 
         $object = new \stdClass();
-        $constraints = array($this->createMock(Constraint::class));
-        $groups = array('Default', 'Create');
+        $constraints = [$this->createMock(Constraint::class)];
+        $groups = ['Default', 'Create'];
 
         $validator->validate($object, $constraints, $groups);
         $line = __LINE__ - 1;
@@ -50,17 +49,17 @@ class TraceableValidatorTest extends TestCase
 
         $this->assertSame(iterator_to_array($violations), $callData['violations']);
 
-        $this->assertSame(array(
+        $this->assertSame([
             'value' => $object,
             'constraints' => $constraints,
             'groups' => $groups,
-        ), $callData['context']);
+        ], $callData['context']);
 
-        $this->assertEquals(array(
+        $this->assertEquals([
             'name' => 'TraceableValidatorTest.php',
             'file' => __FILE__,
             'line' => $line,
-        ), $callData['caller']);
+        ], $callData['caller']);
 
         $validator->validate($object, $constraints, $groups);
         $collectedData = $validator->getCollectedData();
@@ -87,13 +86,13 @@ class TraceableValidatorTest extends TestCase
         $expects('startContext')->willReturn($expected = $this->createMock(ContextualValidatorInterface::class));
         $this->assertSame($expected, $validator->startContext(), 'returns original validator startContext() result');
 
-        $expects('validate')->willReturn($expected = $this->createMock(ConstraintViolationListInterface::class));
+        $expects('validate')->willReturn($expected = new ConstraintViolationList());
         $this->assertSame($expected, $validator->validate('value'), 'returns original validator validate() result');
 
-        $expects('validateProperty')->willReturn($expected = $this->createMock(ConstraintViolationListInterface::class));
+        $expects('validateProperty')->willReturn($expected = new ConstraintViolationList());
         $this->assertSame($expected, $validator->validateProperty(new \stdClass(), 'property'), 'returns original validator validateProperty() result');
 
-        $expects('validatePropertyValue')->willReturn($expected = $this->createMock(ConstraintViolationListInterface::class));
+        $expects('validatePropertyValue')->willReturn($expected = new ConstraintViolationList());
         $this->assertSame($expected, $validator->validatePropertyValue(new \stdClass(), 'property', 'value'), 'returns original validator validatePropertyValue() result');
     }
 

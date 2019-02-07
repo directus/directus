@@ -20,7 +20,7 @@ class NodeDefinitionTest extends TestCase
 {
     public function testDefaultPathSeparatorIsDot()
     {
-        $node = $this->getMockForAbstractClass(NodeDefinition::class, array('foo'));
+        $node = $this->getMockForAbstractClass(NodeDefinition::class, ['foo']);
 
         $this->assertAttributeSame('.', 'pathSeparator', $node);
     }

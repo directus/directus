@@ -18,7 +18,7 @@ class YamlTest extends TestCase
 {
     public function testParseAndDump()
     {
-        $data = array('lorem' => 'ipsum', 'dolor' => 'sit');
+        $data = ['lorem' => 'ipsum', 'dolor' => 'sit'];
         $yml = Yaml::dump($data);
         $parsed = Yaml::parse($yml);
         $this->assertEquals($data, $parsed);
@@ -30,7 +30,7 @@ class YamlTest extends TestCase
      */
     public function testZeroIndentationThrowsException()
     {
-        Yaml::dump(array('lorem' => 'ipsum', 'dolor' => 'sit'), 2, 0);
+        Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, 0);
     }
 
     /**
@@ -39,6 +39,6 @@ class YamlTest extends TestCase
      */
     public function testNegativeIndentationThrowsException()
     {
-        Yaml::dump(array('lorem' => 'ipsum', 'dolor' => 'sit'), 2, -4);
+        Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, -4);
     }
 }

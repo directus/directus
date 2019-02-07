@@ -31,13 +31,13 @@ class AddValidatorInitializersPassTest extends TestCase
         ;
         $container
             ->register('validator.builder')
-            ->addArgument(array())
+            ->addArgument([])
         ;
 
         (new AddValidatorInitializersPass())->process($container);
 
         $this->assertEquals(
-            array(array('addObjectInitializers', array(array(new Reference('initializer1'), new Reference('initializer2'))))),
+            [['addObjectInitializers', [[new Reference('initializer1'), new Reference('initializer2')]]]],
             $container->getDefinition('validator.builder')->getMethodCalls()
         );
     }

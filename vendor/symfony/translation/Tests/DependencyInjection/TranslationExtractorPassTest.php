@@ -23,12 +23,12 @@ class TranslationExtractorPassTest extends TestCase
         $container = new ContainerBuilder();
         $extractorDefinition = $container->register('translation.extractor');
         $container->register('foo.id')
-            ->addTag('translation.extractor', array('alias' => 'bar.alias'));
+            ->addTag('translation.extractor', ['alias' => 'bar.alias']);
 
         $translationDumperPass = new TranslationExtractorPass();
         $translationDumperPass->process($container);
 
-        $this->assertEquals(array(array('addExtractor', array('bar.alias', new Reference('foo.id')))), $extractorDefinition->getMethodCalls());
+        $this->assertEquals([['addExtractor', ['bar.alias', new Reference('foo.id')]]], $extractorDefinition->getMethodCalls());
     }
 
     public function testProcessNoDefinitionFound()
@@ -56,7 +56,7 @@ class TranslationExtractorPassTest extends TestCase
         $container = new ContainerBuilder();
         $container->register('translation.extractor');
         $container->register('foo.id')
-            ->addTag('translation.extractor', array());
+            ->addTag('translation.extractor', []);
 
         $definition->expects($this->never())->method('addMethodCall');
 

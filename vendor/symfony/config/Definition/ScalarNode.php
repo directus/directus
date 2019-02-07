@@ -60,6 +60,6 @@ class ScalarNode extends VariableNode
      */
     protected function getValidPlaceholderTypes(): array
     {
-        return array('bool', 'int', 'float', 'string');
+        return ['bool', 'int', 'float', 'string'];
     }
 }

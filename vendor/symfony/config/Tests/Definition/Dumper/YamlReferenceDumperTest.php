@@ -28,12 +28,12 @@ class YamlReferenceDumperTest extends TestCase
 
     public function provideDumpAtPath()
     {
-        return array(
-            'Regular node' => array('scalar_true', <<<EOL
+        return [
+            'Regular node' => ['scalar_true', <<<EOL
 scalar_true:          true
 EOL
-            ),
-            'Array node' => array('array', <<<EOL
+            ],
+            'Array node' => ['array', <<<EOL
 # some info
 array:
     child1:               ~
@@ -44,12 +44,12 @@ array:
     # which should be indented
     child3:               ~ # Example: example setting
 EOL
-            ),
-            'Regular nested' => array('array.child2', <<<EOL
+            ],
+            'Regular nested' => ['array.child2', <<<EOL
 child2:               ~
 EOL
-            ),
-            'Prototype' => array('cms_pages.page', <<<EOL
+            ],
+            'Prototype' => ['cms_pages.page', <<<EOL
 # Prototype
 page:
 
@@ -58,15 +58,15 @@ page:
         title:                ~ # Required
         path:                 ~ # Required
 EOL
-            ),
-            'Nested prototype' => array('cms_pages.page.locale', <<<EOL
+            ],
+            'Nested prototype' => ['cms_pages.page.locale', <<<EOL
 # Prototype
 locale:
     title:                ~ # Required
     path:                 ~ # Required
 EOL
-            ),
-        );
+            ],
+        ];
     }
 
     /**

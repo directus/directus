@@ -1485,6 +1485,7 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $columns = SchemaService::getAllCollectionFields($this->getTable());
         $table = $this->getTable();
+        $search = $this->getLikeValue('like', 'like', $search);
 
         $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {

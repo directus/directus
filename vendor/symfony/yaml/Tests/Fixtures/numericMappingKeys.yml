@@ -6,7 +6,7 @@ yaml: |
   1: foo
   0: bar
 php: |
-  array(1 => 'foo', 0 => 'bar')
+  [1 => 'foo', 0 => 'bar']
 ---
 test: Integers as Map Keys
 brief: >
@@ -16,8 +16,8 @@ yaml: |
     2: two
     3: three
 php: |
-    array(
+    [
         1 => 'one',
         2 => 'two',
         3 => 'three'
-    )
+    ]

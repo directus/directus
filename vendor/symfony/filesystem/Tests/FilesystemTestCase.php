@@ -18,7 +18,7 @@ class FilesystemTestCase extends TestCase
 {
     private $umask;
 
-    protected $longPathNamesWindows = array();
+    protected $longPathNamesWindows = [];
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
@@ -84,7 +84,7 @@ class FilesystemTestCase extends TestCase
             foreach ($this->longPathNamesWindows as $path) {
                 exec('DEL '.$path);
             }
-            $this->longPathNamesWindows = array();
+            $this->longPathNamesWindows = [];
         }
 
         $this->filesystem->remove($this->workspace);

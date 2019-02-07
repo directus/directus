@@ -41,7 +41,7 @@ class RecursiveValidator implements ValidatorInterface
      *                                                                constraint validators
      * @param ObjectInitializerInterface[]        $objectInitializers The object initializers
      */
-    public function __construct(ExecutionContextFactoryInterface $contextFactory, MetadataFactoryInterface $metadataFactory, ConstraintValidatorFactoryInterface $validatorFactory, array $objectInitializers = array())
+    public function __construct(ExecutionContextFactoryInterface $contextFactory, MetadataFactoryInterface $metadataFactory, ConstraintValidatorFactoryInterface $validatorFactory, array $objectInitializers = [])
     {
         $this->contextFactory = $contextFactory;
         $this->metadataFactory = $metadataFactory;

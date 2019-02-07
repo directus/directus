@@ -27,17 +27,17 @@ abstract class BaseNode implements NodeInterface
     const DEFAULT_PATH_SEPARATOR = '.';
 
     private static $placeholderUniquePrefix;
-    private static $placeholders = array();
+    private static $placeholders = [];
 
     protected $name;
     protected $parent;
-    protected $normalizationClosures = array();
-    protected $finalValidationClosures = array();
+    protected $normalizationClosures = [];
+    protected $finalValidationClosures = [];
     protected $allowOverwrite = true;
     protected $required = false;
     protected $deprecationMessage = null;
-    protected $equivalentValues = array();
-    protected $attributes = array();
+    protected $equivalentValues = [];
+    protected $attributes = [];
     protected $pathSeparator;
 
     private $handlingPlaceholder;
@@ -94,7 +94,7 @@ abstract class BaseNode implements NodeInterface
     public static function resetPlaceholders(): void
     {
         self::$placeholderUniquePrefix = null;
-        self::$placeholders = array();
+        self::$placeholders = [];
     }
 
     public function setAttribute($key, $value)
@@ -175,7 +175,7 @@ abstract class BaseNode implements NodeInterface
      */
     public function addEquivalentValue($originalValue, $equivalentValue)
     {
-        $this->equivalentValues[] = array($originalValue, $equivalentValue);
+        $this->equivalentValues[] = [$originalValue, $equivalentValue];
     }
 
     /**
@@ -259,7 +259,7 @@ abstract class BaseNode implements NodeInterface
      */
     public function getDeprecationMessage($node, $path)
     {
-        return strtr($this->deprecationMessage, array('%node%' => $node, '%path%' => $path));
+        return strtr($this->deprecationMessage, ['%node%' => $node, '%path%' => $path]);
     }
 
     /**
@@ -484,7 +484,7 @@ abstract class BaseNode implements NodeInterface
      */
     protected function getValidPlaceholderTypes(): array
     {
-        return array();
+        return [];
     }
 
     private static function resolvePlaceholderValue($value)
@@ -495,7 +495,7 @@ abstract class BaseNode implements NodeInterface
             }
 
             if (self::$placeholderUniquePrefix && 0 === strpos($value, self::$placeholderUniquePrefix)) {
-                return array();
+                return [];
             }
         }
 

@@ -21,9 +21,9 @@ class ValidTest extends TestCase
 {
     public function testGroupsCanBeSet()
     {
-        $constraint = new Valid(array('groups' => 'foo'));
+        $constraint = new Valid(['groups' => 'foo']);
 
-        $this->assertSame(array('foo'), $constraint->groups);
+        $this->assertSame(['foo'], $constraint->groups);
     }
 
     public function testGroupsAreNullByDefault()

@@ -61,7 +61,7 @@ abstract class FileDumper implements DumperInterface
     /**
      * {@inheritdoc}
      */
-    public function dump(MessageCatalogue $messages, $options = array())
+    public function dump(MessageCatalogue $messages, $options = [])
     {
         if (!array_key_exists('path', $options)) {
             throw new InvalidArgumentException('The file dumper needs a path option.');
@@ -84,7 +84,7 @@ abstract class FileDumper implements DumperInterface
                 $intlPath = $options['path'].'/'.$this->getRelativePath($intlDomain, $messages->getLocale());
                 file_put_contents($intlPath, $this->formatCatalogue($messages, $intlDomain, $options));
 
-                $messages->replace(array(), $intlDomain);
+                $messages->replace([], $intlDomain);
 
                 try {
                     if ($messages->all($domain)) {
@@ -109,7 +109,7 @@ abstract class FileDumper implements DumperInterface
      *
      * @return string representation
      */
-    abstract public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = array());
+    abstract public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = []);
 
     /**
      * Gets the file extension of the dumper.
@@ -123,10 +123,10 @@ abstract class FileDumper implements DumperInterface
      */
     private function getRelativePath(string $domain, string $locale): string
     {
-        return strtr($this->relativePathTemplate, array(
+        return strtr($this->relativePathTemplate, [
             '%domain%' => $domain,
             '%locale%' => $locale,
             '%extension%' => $this->getExtension(),
-        ));
+        ]);
     }
 }

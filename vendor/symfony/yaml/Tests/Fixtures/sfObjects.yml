@@ -8,4 +8,4 @@ yaml: |
     ex3: 'foo # bar' # comment
     ex4: foo # comment
 php: |
-    array('ex1' => 'foo # bar', 'ex2' => 'foo # bar', 'ex3' => 'foo # bar', 'ex4' => 'foo')
+    ['ex1' => 'foo # bar', 'ex2' => 'foo # bar', 'ex3' => 'foo # bar', 'ex4' => 'foo']

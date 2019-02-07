@@ -24,14 +24,14 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
 
     public function testNullIsValid()
     {
-        $this->validator->validate(null, new Regex(array('pattern' => '/^[0-9]+$/')));
+        $this->validator->validate(null, new Regex(['pattern' => '/^[0-9]+$/']));
 
         $this->assertNoViolation();
     }
 
     public function testEmptyStringIsValid()
     {
-        $this->validator->validate('', new Regex(array('pattern' => '/^[0-9]+$/')));
+        $this->validator->validate('', new Regex(['pattern' => '/^[0-9]+$/']));
 
         $this->assertNoViolation();
     }
@@ -41,7 +41,7 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
      */
     public function testExpectsStringCompatibleType()
     {
-        $this->validator->validate(new \stdClass(), new Regex(array('pattern' => '/^[0-9]+$/')));
+        $this->validator->validate(new \stdClass(), new Regex(['pattern' => '/^[0-9]+$/']));
     }
 
     /**
@@ -49,7 +49,7 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValues($value)
     {
-        $constraint = new Regex(array('pattern' => '/^[0-9]+$/'));
+        $constraint = new Regex(['pattern' => '/^[0-9]+$/']);
         $this->validator->validate($value, $constraint);
 
         $this->assertNoViolation();
@@ -57,12 +57,12 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidValues()
     {
-        return array(
-            array(0),
-            array('0'),
-            array('090909'),
-            array(90909),
-        );
+        return [
+            [0],
+            ['0'],
+            ['090909'],
+            [90909],
+        ];
     }
 
     /**
@@ -70,10 +70,10 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValues($value)
     {
-        $constraint = new Regex(array(
+        $constraint = new Regex([
             'pattern' => '/^[0-9]+$/',
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -85,9 +85,9 @@ class RegexValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidValues()
     {
-        return array(
-            array('abcd'),
-            array('090foo'),
-        );
+        return [
+            ['abcd'],
+            ['090foo'],
+        ];
     }
 }

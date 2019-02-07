@@ -1,43 +1,38 @@
 <?php
 
 $basePath =  realpath(__DIR__ . '/../');
-$configPath = $basePath . '/config';
-$configFilePath = $configPath . '/api.php';
 
 require $basePath . '/vendor/autoload.php';
 
 // Creates a simple endpoint to test the server rewriting
 // If the server responds "pong" it means the rewriting works
-if (!file_exists($configFilePath)) {
+// NOTE: The API requires the default project to be configured to properly works
+//       It should work without the default project being configured
+if (!file_exists($basePath . '/config/api.php')) {
     return \Directus\create_default_app($basePath);
 }
 
 // Get Environment name
 $projectName = \Directus\get_api_project_from_request();
-$requestUri = trim(\Directus\get_virtual_path(), '/');
 
-$reservedNames = [
-    'server',
-    'interfaces',
-    'pages',
-    'layouts',
-    'types',
-    'projects'
-];
+// All "globals" endpoints requires the project name beforehand
+// Otherwise there's not way to tell which database to connect to
+// It returns 401 Unauthorized error to any endpoint except /server/ping
+if (!$projectName) {
+    return \Directus\create_unknown_project_app($basePath);
+}
 
-if ($requestUri && !empty($projectName) && $projectName !== '_' && !in_array($projectName, $reservedNames)) {
-    $configFilePath = sprintf('%s/api.%s.php', $configPath, $projectName);
-    if (!file_exists($configFilePath)) {
-        http_response_code(404);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'error' => [
-                'error' => 8,
-                'message' => 'API Environment Configuration Not Found: ' . $projectName
-            ]
-        ]);
-        exit;
-    }
+$configFilePath = \Directus\create_config_path($basePath, $projectName);
+if (!file_exists($configFilePath)) {
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => [
+            'error' => 8,
+            'message' => 'API Environment Configuration Not Found: ' . $projectName
+        ]
+    ]);
+    exit;
 }
 
 $app = \Directus\create_app($basePath, require $configFilePath);

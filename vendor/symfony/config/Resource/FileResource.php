@@ -63,11 +63,17 @@ class FileResource implements SelfCheckingResourceInterface, \Serializable
         return false !== ($filemtime = @filemtime($this->resource)) && $filemtime <= $timestamp;
     }
 
+    /**
+     * @internal
+     */
     public function serialize()
     {
         return serialize($this->resource);
     }
 
+    /**
+     * @internal
+     */
     public function unserialize($serialized)
     {
         $this->resource = unserialize($serialized);

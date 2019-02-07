@@ -27,42 +27,42 @@ class IssnValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidLowerCasedIssn()
     {
-        return array(
-            array('2162-321x'),
-            array('2160-200x'),
-            array('1537-453x'),
-            array('1937-710x'),
-            array('0002-922x'),
-            array('1553-345x'),
-            array('1553-619x'),
-        );
+        return [
+            ['2162-321x'],
+            ['2160-200x'],
+            ['1537-453x'],
+            ['1937-710x'],
+            ['0002-922x'],
+            ['1553-345x'],
+            ['1553-619x'],
+        ];
     }
 
     public function getValidNonHyphenatedIssn()
     {
-        return array(
-            array('2162321X'),
-            array('01896016'),
-            array('15744647'),
-            array('14350645'),
-            array('07174055'),
-            array('20905076'),
-            array('14401592'),
-        );
+        return [
+            ['2162321X'],
+            ['01896016'],
+            ['15744647'],
+            ['14350645'],
+            ['07174055'],
+            ['20905076'],
+            ['14401592'],
+        ];
     }
 
     public function getFullValidIssn()
     {
-        return array(
-            array('1550-7416'),
-            array('1539-8560'),
-            array('2156-5376'),
-            array('1119-023X'),
-            array('1684-5315'),
-            array('1996-0786'),
-            array('1684-5374'),
-            array('1996-0794'),
-        );
+        return [
+            ['1550-7416'],
+            ['1539-8560'],
+            ['2156-5376'],
+            ['1119-023X'],
+            ['1684-5315'],
+            ['1996-0786'],
+            ['1684-5374'],
+            ['1996-0794'],
+        ];
     }
 
     public function getValidIssn()
@@ -76,16 +76,16 @@ class IssnValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidIssn()
     {
-        return array(
-            array(0, Issn::TOO_SHORT_ERROR),
-            array('1539', Issn::TOO_SHORT_ERROR),
-            array('2156-537A', Issn::INVALID_CHARACTERS_ERROR),
-            array('1119-0231', Issn::CHECKSUM_FAILED_ERROR),
-            array('1684-5312', Issn::CHECKSUM_FAILED_ERROR),
-            array('1996-0783', Issn::CHECKSUM_FAILED_ERROR),
-            array('1684-537X', Issn::CHECKSUM_FAILED_ERROR),
-            array('1996-0795', Issn::CHECKSUM_FAILED_ERROR),
-        );
+        return [
+            [0, Issn::TOO_SHORT_ERROR],
+            ['1539', Issn::TOO_SHORT_ERROR],
+            ['2156-537A', Issn::INVALID_CHARACTERS_ERROR],
+            ['1119-0231', Issn::CHECKSUM_FAILED_ERROR],
+            ['1684-5312', Issn::CHECKSUM_FAILED_ERROR],
+            ['1996-0783', Issn::CHECKSUM_FAILED_ERROR],
+            ['1684-537X', Issn::CHECKSUM_FAILED_ERROR],
+            ['1996-0795', Issn::CHECKSUM_FAILED_ERROR],
+        ];
     }
 
     public function testNullIsValid()
@@ -120,10 +120,10 @@ class IssnValidatorTest extends ConstraintValidatorTestCase
      */
     public function testCaseSensitiveIssns($issn)
     {
-        $constraint = new Issn(array(
+        $constraint = new Issn([
             'caseSensitive' => true,
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($issn, $constraint);
 
@@ -138,10 +138,10 @@ class IssnValidatorTest extends ConstraintValidatorTestCase
      */
     public function testRequireHyphenIssns($issn)
     {
-        $constraint = new Issn(array(
+        $constraint = new Issn([
             'requireHyphen' => true,
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($issn, $constraint);
 
@@ -168,9 +168,9 @@ class IssnValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidIssn($issn, $code)
     {
-        $constraint = new Issn(array(
+        $constraint = new Issn([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($issn, $constraint);
 

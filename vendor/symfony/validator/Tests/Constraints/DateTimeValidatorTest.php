@@ -77,9 +77,9 @@ class DateTimeValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidDateTimes($format, $dateTime)
     {
-        $constraint = new DateTime(array(
+        $constraint = new DateTime([
             'format' => $format,
-        ));
+        ]);
 
         $this->validator->validate($dateTime, $constraint);
 
@@ -88,13 +88,13 @@ class DateTimeValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidDateTimes()
     {
-        return array(
-            array('Y-m-d H:i:s e', '1995-03-24 00:00:00 UTC'),
-            array('Y-m-d H:i:s', '2010-01-01 01:02:03'),
-            array('Y/m/d H:i', '2010/01/01 01:02'),
-            array('F d, Y', 'December 31, 1999'),
-            array('d-m-Y', '10-05-1995'),
-        );
+        return [
+            ['Y-m-d H:i:s e', '1995-03-24 00:00:00 UTC'],
+            ['Y-m-d H:i:s', '2010-01-01 01:02:03'],
+            ['Y/m/d H:i', '2010/01/01 01:02'],
+            ['F d, Y', 'December 31, 1999'],
+            ['d-m-Y', '10-05-1995'],
+        ];
     }
 
     /**
@@ -102,10 +102,10 @@ class DateTimeValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidDateTimes($format, $dateTime, $code)
     {
-        $constraint = new DateTime(array(
+        $constraint = new DateTime([
             'message' => 'myMessage',
             'format' => $format,
-        ));
+        ]);
 
         $this->validator->validate($dateTime, $constraint);
 
@@ -117,17 +117,17 @@ class DateTimeValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidDateTimes()
     {
-        return array(
-            array('Y-m-d', 'foobar', DateTime::INVALID_FORMAT_ERROR),
-            array('H:i', '00:00:00', DateTime::INVALID_FORMAT_ERROR),
-            array('Y-m-d', '2010-01-01 00:00', DateTime::INVALID_FORMAT_ERROR),
-            array('Y-m-d e', '2010-01-01 TCU', DateTime::INVALID_FORMAT_ERROR),
-            array('Y-m-d H:i:s', '2010-13-01 00:00:00', DateTime::INVALID_DATE_ERROR),
-            array('Y-m-d H:i:s', '2010-04-32 00:00:00', DateTime::INVALID_DATE_ERROR),
-            array('Y-m-d H:i:s', '2010-02-29 00:00:00', DateTime::INVALID_DATE_ERROR),
-            array('Y-m-d H:i:s', '2010-01-01 24:00:00', DateTime::INVALID_TIME_ERROR),
-            array('Y-m-d H:i:s', '2010-01-01 00:60:00', DateTime::INVALID_TIME_ERROR),
-            array('Y-m-d H:i:s', '2010-01-01 00:00:60', DateTime::INVALID_TIME_ERROR),
-        );
+        return [
+            ['Y-m-d', 'foobar', DateTime::INVALID_FORMAT_ERROR],
+            ['H:i', '00:00:00', DateTime::INVALID_FORMAT_ERROR],
+            ['Y-m-d', '2010-01-01 00:00', DateTime::INVALID_FORMAT_ERROR],
+            ['Y-m-d e', '2010-01-01 TCU', DateTime::INVALID_FORMAT_ERROR],
+            ['Y-m-d H:i:s', '2010-13-01 00:00:00', DateTime::INVALID_DATE_ERROR],
+            ['Y-m-d H:i:s', '2010-04-32 00:00:00', DateTime::INVALID_DATE_ERROR],
+            ['Y-m-d H:i:s', '2010-02-29 00:00:00', DateTime::INVALID_DATE_ERROR],
+            ['Y-m-d H:i:s', '2010-01-01 24:00:00', DateTime::INVALID_TIME_ERROR],
+            ['Y-m-d H:i:s', '2010-01-01 00:60:00', DateTime::INVALID_TIME_ERROR],
+            ['Y-m-d H:i:s', '2010-01-01 00:00:60', DateTime::INVALID_TIME_ERROR],
+        ];
     }
 }

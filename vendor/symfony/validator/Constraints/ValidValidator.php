@@ -33,6 +33,6 @@ class ValidValidator extends ConstraintValidator
         $this->context
             ->getValidator()
             ->inContext($this->context)
-            ->validate($value, null, array($this->context->getGroup()));
+            ->validate($value, null, [$this->context->getGroup()]);
     }
 }

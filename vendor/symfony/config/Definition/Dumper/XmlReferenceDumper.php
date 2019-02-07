@@ -59,10 +59,10 @@ class XmlReferenceDumper
         }
         $rootName = str_replace('_', '-', $rootName);
 
-        $rootAttributes = array();
-        $rootAttributeComments = array();
-        $rootChildren = array();
-        $rootComments = array();
+        $rootAttributes = [];
+        $rootAttributeComments = [];
+        $rootChildren = [];
+        $rootComments = [];
 
         if ($node instanceof ArrayNode) {
             $children = $node->getChildren();
@@ -92,7 +92,7 @@ class XmlReferenceDumper
 
                 if ($prototype instanceof PrototypedArrayNode) {
                     $prototype->setName($key);
-                    $children = array($key => $prototype);
+                    $children = [$key => $prototype];
                 } elseif ($prototype instanceof ArrayNode) {
                     $children = $prototype->getChildren();
                 } else {
@@ -134,7 +134,7 @@ class XmlReferenceDumper
                     $value = '%%%%not_defined%%%%'; // use a string which isn't used in the normal world
 
                     // comments
-                    $comments = array();
+                    $comments = [];
                     if ($info = $child->getInfo()) {
                         $comments[] = $info;
                     }

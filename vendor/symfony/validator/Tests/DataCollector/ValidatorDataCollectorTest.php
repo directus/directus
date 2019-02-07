@@ -27,10 +27,10 @@ class ValidatorDataCollectorTest extends TestCase
 
         $collector = new ValidatorDataCollector($validator);
 
-        $violations = new ConstraintViolationList(array(
+        $violations = new ConstraintViolationList([
             $this->createMock(ConstraintViolation::class),
             $this->createMock(ConstraintViolation::class),
-        ));
+        ]);
         $originalValidator->method('validate')->willReturn($violations);
 
         $validator->validate(new \stdClass());
@@ -57,10 +57,10 @@ class ValidatorDataCollectorTest extends TestCase
 
         $collector = new ValidatorDataCollector($validator);
 
-        $violations = new ConstraintViolationList(array(
+        $violations = new ConstraintViolationList([
             $this->createMock(ConstraintViolation::class),
             $this->createMock(ConstraintViolation::class),
-        ));
+        ]);
         $originalValidator->method('validate')->willReturn($violations);
 
         $validator->validate(new \stdClass());

@@ -80,7 +80,7 @@ class YamlFileLoader extends FileLoader
      */
     protected function parseNodes(array $nodes)
     {
-        $values = array();
+        $values = [];
 
         foreach ($nodes as $name => $childNodes) {
             if (is_numeric($name) && \is_array($childNodes) && 1 === \count($childNodes)) {
@@ -131,7 +131,7 @@ class YamlFileLoader extends FileLoader
 
         // empty file
         if (null === $classes) {
-            return array();
+            return [];
         }
 
         // not an array

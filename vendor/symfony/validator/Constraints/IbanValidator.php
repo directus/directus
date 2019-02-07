@@ -35,7 +35,7 @@ class IbanValidator extends ConstraintValidator
      *
      * @see https://www.swift.com/sites/default/files/resources/iban_registry.pdf
      */
-    private static $formats = array(
+    private static $formats = [
         'AD' => 'AD\d{2}\d{4}\d{4}[\dA-Z]{12}', // Andorra
         'AE' => 'AE\d{2}\d{3}\d{16}', // United Arab Emirates
         'AL' => 'AL\d{2}\d{8}[\dA-Z]{16}', // Albania
@@ -134,7 +134,7 @@ class IbanValidator extends ConstraintValidator
         'WF' => 'FR\d{2}\d{5}\d{5}[\dA-Z]{11}\d{2}', // Wallis and Futuna Islands
         'XK' => 'XK\d{2}\d{4}\d{10}\d{2}', // Republic of Kosovo
         'YT' => 'FR\d{2}\d{5}\d{5}[\dA-Z]{11}\d{2}', // Mayotte
-    );
+    ];
 
     /**
      * {@inheritdoc}

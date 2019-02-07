@@ -21,7 +21,7 @@ class ListCommandTest extends TestCase
     {
         $application = new Application();
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName()), array('decorated' => false));
+        $commandTester->execute(['command' => $command->getName()], ['decorated' => false]);
 
         $this->assertRegExp('/help\s{2,}Displays help for a command/', $commandTester->getDisplay(), '->execute() returns a list of available commands');
     }
@@ -30,7 +30,7 @@ class ListCommandTest extends TestCase
     {
         $application = new Application();
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName(), '--format' => 'xml'));
+        $commandTester->execute(['command' => $command->getName(), '--format' => 'xml']);
         $this->assertRegExp('/<command id="list" name="list" hidden="0">/', $commandTester->getDisplay(), '->execute() returns a list of available commands in XML if --xml is passed');
     }
 
@@ -38,7 +38,7 @@ class ListCommandTest extends TestCase
     {
         $application = new Application();
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName(), '--raw' => true));
+        $commandTester->execute(['command' => $command->getName(), '--raw' => true]);
         $output = <<<'EOF'
 help   Displays help for a command
 list   Lists commands
@@ -54,7 +54,7 @@ EOF;
         $application = new Application();
         $application->add(new \FooCommand());
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName(), 'namespace' => 'foo', '--raw' => true));
+        $commandTester->execute(['command' => $command->getName(), 'namespace' => 'foo', '--raw' => true]);
         $output = <<<'EOF'
 foo:bar   The foo:bar command
 
@@ -69,7 +69,7 @@ EOF;
         $application = new Application();
         $application->add(new \Foo6Command());
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName()), array('decorated' => false));
+        $commandTester->execute(['command' => $command->getName()], ['decorated' => false]);
         $output = <<<'EOF'
 Console Tool
 
@@ -101,7 +101,7 @@ EOF;
         $application = new Application();
         $application->add(new \Foo6Command());
         $commandTester = new CommandTester($command = $application->get('list'));
-        $commandTester->execute(array('command' => $command->getName(), '--raw' => true));
+        $commandTester->execute(['command' => $command->getName(), '--raw' => true]);
         $output = <<<'EOF'
 help       Displays help for a command
 list       Lists commands

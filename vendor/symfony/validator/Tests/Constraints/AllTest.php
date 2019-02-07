@@ -25,9 +25,9 @@ class AllTest extends TestCase
      */
     public function testRejectNonConstraints()
     {
-        new All(array(
+        new All([
             'foo',
-        ));
+        ]);
     }
 
     /**
@@ -35,8 +35,8 @@ class AllTest extends TestCase
      */
     public function testRejectValidConstraint()
     {
-        new All(array(
+        new All([
             new Valid(),
-        ));
+        ]);
     }
 }

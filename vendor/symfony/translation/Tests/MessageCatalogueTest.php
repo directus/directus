@@ -25,40 +25,40 @@ class MessageCatalogueTest extends TestCase
 
     public function testGetDomains()
     {
-        $catalogue = new MessageCatalogue('en', array('domain1' => array(), 'domain2' => array(), 'domain2+intl-icu' => array(), 'domain3+intl-icu' => array()));
+        $catalogue = new MessageCatalogue('en', ['domain1' => [], 'domain2' => [], 'domain2+intl-icu' => [], 'domain3+intl-icu' => []]);
 
-        $this->assertEquals(array('domain1', 'domain2', 'domain3'), $catalogue->getDomains());
+        $this->assertEquals(['domain1', 'domain2', 'domain3'], $catalogue->getDomains());
     }
 
     public function testAll()
     {
-        $catalogue = new MessageCatalogue('en', $messages = array('domain1' => array('foo' => 'foo'), 'domain2' => array('bar' => 'bar')));
+        $catalogue = new MessageCatalogue('en', $messages = ['domain1' => ['foo' => 'foo'], 'domain2' => ['bar' => 'bar']]);
 
-        $this->assertEquals(array('foo' => 'foo'), $catalogue->all('domain1'));
-        $this->assertEquals(array(), $catalogue->all('domain88'));
+        $this->assertEquals(['foo' => 'foo'], $catalogue->all('domain1'));
+        $this->assertEquals([], $catalogue->all('domain88'));
         $this->assertEquals($messages, $catalogue->all());
 
-        $messages = array('domain1+intl-icu' => array('foo' => 'bar')) + $messages + array(
-            'domain2+intl-icu' => array('bar' => 'foo'),
-            'domain3+intl-icu' => array('biz' => 'biz'),
-        );
+        $messages = ['domain1+intl-icu' => ['foo' => 'bar']] + $messages + [
+            'domain2+intl-icu' => ['bar' => 'foo'],
+            'domain3+intl-icu' => ['biz' => 'biz'],
+        ];
         $catalogue = new MessageCatalogue('en', $messages);
 
-        $this->assertEquals(array('foo' => 'bar'), $catalogue->all('domain1'));
-        $this->assertEquals(array('bar' => 'foo'), $catalogue->all('domain2'));
-        $this->assertEquals(array('biz' => 'biz'), $catalogue->all('domain3'));
+        $this->assertEquals(['foo' => 'bar'], $catalogue->all('domain1'));
+        $this->assertEquals(['bar' => 'foo'], $catalogue->all('domain2'));
+        $this->assertEquals(['biz' => 'biz'], $catalogue->all('domain3'));
 
-        $messages = array(
-            'domain1' => array('foo' => 'bar'),
-            'domain2' => array('bar' => 'foo'),
-            'domain3' => array('biz' => 'biz'),
-        );
+        $messages = [
+            'domain1' => ['foo' => 'bar'],
+            'domain2' => ['bar' => 'foo'],
+            'domain3' => ['biz' => 'biz'],
+        ];
         $this->assertEquals($messages, $catalogue->all());
     }
 
     public function testHas()
     {
-        $catalogue = new MessageCatalogue('en', array('domain1' => array('foo' => 'foo'), 'domain2+intl-icu' => array('bar' => 'bar')));
+        $catalogue = new MessageCatalogue('en', ['domain1' => ['foo' => 'foo'], 'domain2+intl-icu' => ['bar' => 'bar']]);
 
         $this->assertTrue($catalogue->has('foo', 'domain1'));
         $this->assertTrue($catalogue->has('bar', 'domain2'));
@@ -68,7 +68,7 @@ class MessageCatalogueTest extends TestCase
 
     public function testGetSet()
     {
-        $catalogue = new MessageCatalogue('en', array('domain1' => array('foo' => 'foo'), 'domain2' => array('bar' => 'bar'), 'domain2+intl-icu' => array('bar' => 'foo')));
+        $catalogue = new MessageCatalogue('en', ['domain1' => ['foo' => 'foo'], 'domain2' => ['bar' => 'bar'], 'domain2+intl-icu' => ['bar' => 'foo']]);
         $catalogue->set('foo1', 'foo1', 'domain1');
 
         $this->assertEquals('foo', $catalogue->get('foo', 'domain1'));
@@ -78,24 +78,24 @@ class MessageCatalogueTest extends TestCase
 
     public function testAdd()
     {
-        $catalogue = new MessageCatalogue('en', array('domain1' => array('foo' => 'foo'), 'domain2' => array('bar' => 'bar')));
-        $catalogue->add(array('foo1' => 'foo1'), 'domain1');
+        $catalogue = new MessageCatalogue('en', ['domain1' => ['foo' => 'foo'], 'domain2' => ['bar' => 'bar']]);
+        $catalogue->add(['foo1' => 'foo1'], 'domain1');
 
         $this->assertEquals('foo', $catalogue->get('foo', 'domain1'));
         $this->assertEquals('foo1', $catalogue->get('foo1', 'domain1'));
 
-        $catalogue->add(array('foo' => 'bar'), 'domain1');
+        $catalogue->add(['foo' => 'bar'], 'domain1');
         $this->assertEquals('bar', $catalogue->get('foo', 'domain1'));
         $this->assertEquals('foo1', $catalogue->get('foo1', 'domain1'));
 
-        $catalogue->add(array('foo' => 'bar'), 'domain88');
+        $catalogue->add(['foo' => 'bar'], 'domain88');
         $this->assertEquals('bar', $catalogue->get('foo', 'domain88'));
     }
 
     public function testReplace()
     {
-        $catalogue = new MessageCatalogue('en', array('domain1' => array('foo' => 'foo'), 'domain1+intl-icu' => array('bar' => 'bar')));
-        $catalogue->replace($messages = array('foo1' => 'foo1'), 'domain1');
+        $catalogue = new MessageCatalogue('en', ['domain1' => ['foo' => 'foo'], 'domain1+intl-icu' => ['bar' => 'bar']]);
+        $catalogue->replace($messages = ['foo1' => 'foo1'], 'domain1');
 
         $this->assertEquals($messages, $catalogue->all('domain1'));
     }
@@ -108,10 +108,10 @@ class MessageCatalogueTest extends TestCase
         $r1 = $this->getMockBuilder('Symfony\Component\Config\Resource\ResourceInterface')->getMock();
         $r1->expects($this->any())->method('__toString')->will($this->returnValue('r1'));
 
-        $catalogue = new MessageCatalogue('en', array('domain1' => array('foo' => 'foo')));
+        $catalogue = new MessageCatalogue('en', ['domain1' => ['foo' => 'foo']]);
         $catalogue->addResource($r);
 
-        $catalogue1 = new MessageCatalogue('en', array('domain1' => array('foo1' => 'foo1'), 'domain2+intl-icu' => array('bar' => 'bar')));
+        $catalogue1 = new MessageCatalogue('en', ['domain1' => ['foo1' => 'foo1'], 'domain2+intl-icu' => ['bar' => 'bar']]);
         $catalogue1->addResource($r1);
 
         $catalogue->addCatalogue($catalogue1);
@@ -121,7 +121,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertEquals('bar', $catalogue->get('bar', 'domain2'));
         $this->assertEquals('bar', $catalogue->get('bar', 'domain2+intl-icu'));
 
-        $this->assertEquals(array($r, $r1), $catalogue->getResources());
+        $this->assertEquals([$r, $r1], $catalogue->getResources());
     }
 
     public function testAddFallbackCatalogue()
@@ -135,10 +135,10 @@ class MessageCatalogueTest extends TestCase
         $r2 = $this->getMockBuilder('Symfony\Component\Config\Resource\ResourceInterface')->getMock();
         $r2->expects($this->any())->method('__toString')->will($this->returnValue('r2'));
 
-        $catalogue = new MessageCatalogue('fr_FR', array('domain1' => array('foo' => 'foo'), 'domain2' => array('bar' => 'bar')));
+        $catalogue = new MessageCatalogue('fr_FR', ['domain1' => ['foo' => 'foo'], 'domain2' => ['bar' => 'bar']]);
         $catalogue->addResource($r);
 
-        $catalogue1 = new MessageCatalogue('fr', array('domain1' => array('foo' => 'bar', 'foo1' => 'foo1')));
+        $catalogue1 = new MessageCatalogue('fr', ['domain1' => ['foo' => 'bar', 'foo1' => 'foo1']]);
         $catalogue1->addResource($r1);
 
         $catalogue2 = new MessageCatalogue('en');
@@ -150,7 +150,7 @@ class MessageCatalogueTest extends TestCase
         $this->assertEquals('foo', $catalogue->get('foo', 'domain1'));
         $this->assertEquals('foo1', $catalogue->get('foo1', 'domain1'));
 
-        $this->assertEquals(array($r, $r1, $r2), $catalogue->getResources());
+        $this->assertEquals([$r, $r1, $r2], $catalogue->getResources());
     }
 
     /**
@@ -185,7 +185,7 @@ class MessageCatalogueTest extends TestCase
     public function testAddCatalogueWhenLocaleIsNotTheSameAsTheCurrentOne()
     {
         $catalogue = new MessageCatalogue('en');
-        $catalogue->addCatalogue(new MessageCatalogue('fr', array()));
+        $catalogue->addCatalogue(new MessageCatalogue('fr', []));
     }
 
     public function testGetAddResource()
@@ -199,13 +199,13 @@ class MessageCatalogueTest extends TestCase
         $r1->expects($this->any())->method('__toString')->will($this->returnValue('r1'));
         $catalogue->addResource($r1);
 
-        $this->assertEquals(array($r, $r1), $catalogue->getResources());
+        $this->assertEquals([$r, $r1], $catalogue->getResources());
     }
 
     public function testMetadataDelete()
     {
         $catalogue = new MessageCatalogue('en');
-        $this->assertEquals(array(), $catalogue->getMetadata('', ''), 'Metadata is empty');
+        $this->assertEquals([], $catalogue->getMetadata('', ''), 'Metadata is empty');
         $catalogue->deleteMetadata('key', 'messages');
         $catalogue->deleteMetadata('', 'messages');
         $catalogue->deleteMetadata();
@@ -217,8 +217,8 @@ class MessageCatalogueTest extends TestCase
         $catalogue->setMetadata('key', 'value');
         $this->assertEquals('value', $catalogue->getMetadata('key', 'messages'), "Metadata 'key' = 'value'");
 
-        $catalogue->setMetadata('key2', array());
-        $this->assertEquals(array(), $catalogue->getMetadata('key2', 'messages'), 'Metadata key2 is array');
+        $catalogue->setMetadata('key2', []);
+        $this->assertEquals([], $catalogue->getMetadata('key2', 'messages'), 'Metadata key2 is array');
 
         $catalogue->deleteMetadata('key2', 'messages');
         $this->assertNull($catalogue->getMetadata('key2', 'messages'), 'Metadata key2 should is deleted.');
@@ -231,13 +231,13 @@ class MessageCatalogueTest extends TestCase
     {
         $cat1 = new MessageCatalogue('en');
         $cat1->setMetadata('a', 'b');
-        $this->assertEquals(array('messages' => array('a' => 'b')), $cat1->getMetadata('', ''), 'Cat1 contains messages metadata.');
+        $this->assertEquals(['messages' => ['a' => 'b']], $cat1->getMetadata('', ''), 'Cat1 contains messages metadata.');
 
         $cat2 = new MessageCatalogue('en');
         $cat2->setMetadata('b', 'c', 'domain');
-        $this->assertEquals(array('domain' => array('b' => 'c')), $cat2->getMetadata('', ''), 'Cat2 contains domain metadata.');
+        $this->assertEquals(['domain' => ['b' => 'c']], $cat2->getMetadata('', ''), 'Cat2 contains domain metadata.');
 
         $cat1->addCatalogue($cat2);
-        $this->assertEquals(array('messages' => array('a' => 'b'), 'domain' => array('b' => 'c')), $cat1->getMetadata('', ''), 'Cat1 contains merged metadata.');
+        $this->assertEquals(['messages' => ['a' => 'b'], 'domain' => ['b' => 'c']], $cat1->getMetadata('', ''), 'Cat1 contains merged metadata.');
     }
 }

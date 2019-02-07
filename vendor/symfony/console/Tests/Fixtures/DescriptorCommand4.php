@@ -19,7 +19,7 @@ class DescriptorCommand4 extends Command
     {
         $this
             ->setName('descriptor:command4')
-            ->setAliases(array('descriptor:alias_command4', 'command4:descriptor'))
+            ->setAliases(['descriptor:alias_command4', 'command4:descriptor'])
         ;
     }
 }

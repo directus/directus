@@ -11,7 +11,7 @@ yaml: |
     ex6: foo#foo # comment here
     ex7: foo 	# ignore me # and me
 php: |
-    array('ex1' => 'foo # bar', 'ex2' => 'foo # bar', 'ex3' => 'foo # bar', 'ex4' => 'foo', 'ex5' => 'foo', 'ex6' => 'foo#foo', 'ex7' => 'foo')
+    ['ex1' => 'foo # bar', 'ex2' => 'foo # bar', 'ex3' => 'foo # bar', 'ex4' => 'foo', 'ex5' => 'foo', 'ex6' => 'foo#foo', 'ex7' => 'foo']
 ---
 test: Comments in the middle
 brief: >
@@ -24,7 +24,7 @@ yaml: |
     # some comment
     # some comment
 php: |
-    array('foo' => array('bar' => 'foo'))
+    ['foo' => ['bar' => 'foo']]
 ---
 test: Comments on a hash line
 brief: >
@@ -33,7 +33,7 @@ yaml: |
     foo:   # a comment
       foo: bar # a comment
 php: |
-    array('foo' => array('foo' => 'bar'))
+    ['foo' => ['foo' => 'bar']]
 ---
 test: 'Value starting with a #'
 brief: >
@@ -41,7 +41,7 @@ brief: >
 yaml: |
     foo:   '#bar'
 php: |
-    array('foo' => '#bar')
+    ['foo' => '#bar']
 ---
 test: Document starting with a comment and a separator
 brief: >
@@ -51,7 +51,7 @@ yaml: |
     ---
     foo: bar # a comment
 php: |
-    array('foo' => 'bar')
+    ['foo' => 'bar']
 ---
 test: Comment containing a colon on a hash line
 brief: >
@@ -65,7 +65,7 @@ brief: >
     'Hash key containing a #'
 yaml: 'foo#bar: baz'
 php: |
-    array('foo#bar' => 'baz')
+    ['foo#bar' => 'baz']
 ---
 test: 'Hash key ending with a space and a #'
 brief: >
@@ -73,4 +73,4 @@ brief: >
 yaml: |
     'foo #': baz
 php: |
-    array('foo #' => 'baz')
+    ['foo #' => 'baz']

@@ -27,5 +27,5 @@ interface DescriptorInterface
      * @param object          $object
      * @param array           $options
      */
-    public function describe(OutputInterface $output, $object, array $options = array());
+    public function describe(OutputInterface $output, $object, array $options = []);
 }

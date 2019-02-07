@@ -28,9 +28,9 @@ class CollectionTest extends TestCase
      */
     public function testRejectInvalidFieldsOption()
     {
-        new Collection(array(
+        new Collection([
             'fields' => 'foo',
-        ));
+        ]);
     }
 
     /**
@@ -38,9 +38,9 @@ class CollectionTest extends TestCase
      */
     public function testRejectNonConstraints()
     {
-        new Collection(array(
+        new Collection([
             'foo' => 'bar',
-        ));
+        ]);
     }
 
     /**
@@ -48,9 +48,9 @@ class CollectionTest extends TestCase
      */
     public function testRejectValidConstraint()
     {
-        new Collection(array(
+        new Collection([
             'foo' => new Valid(),
-        ));
+        ]);
     }
 
     /**
@@ -58,9 +58,9 @@ class CollectionTest extends TestCase
      */
     public function testRejectValidConstraintWithinOptional()
     {
-        new Collection(array(
+        new Collection([
             'foo' => new Optional(new Valid()),
-        ));
+        ]);
     }
 
     /**
@@ -68,45 +68,45 @@ class CollectionTest extends TestCase
      */
     public function testRejectValidConstraintWithinRequired()
     {
-        new Collection(array(
+        new Collection([
             'foo' => new Required(new Valid()),
-        ));
+        ]);
     }
 
     public function testAcceptOptionalConstraintAsOneElementArray()
     {
-        $collection1 = new Collection(array(
-            'fields' => array(
-                'alternate_email' => array(
+        $collection1 = new Collection([
+            'fields' => [
+                'alternate_email' => [
                     new Optional(new Email()),
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $collection2 = new Collection(array(
-            'fields' => array(
+        $collection2 = new Collection([
+            'fields' => [
                 'alternate_email' => new Optional(new Email()),
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertEquals($collection1, $collection2);
     }
 
     public function testAcceptRequiredConstraintAsOneElementArray()
     {
-        $collection1 = new Collection(array(
-            'fields' => array(
-                'alternate_email' => array(
+        $collection1 = new Collection([
+            'fields' => [
+                'alternate_email' => [
                     new Required(new Email()),
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $collection2 = new Collection(array(
-            'fields' => array(
+        $collection2 = new Collection([
+            'fields' => [
                 'alternate_email' => new Required(new Email()),
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertEquals($collection1, $collection2);
     }

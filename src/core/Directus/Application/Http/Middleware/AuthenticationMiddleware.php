@@ -9,6 +9,7 @@ use Directus\Authentication\User\User;
 use Directus\Authentication\User\UserInterface;
 use Directus\Database\TableGateway\DirectusPermissionsTableGateway;
 use Directus\Exception\UnauthorizedLocationException;
+use function Directus\get_request_authorization_token;
 use Directus\Permissions\Acl;
 use Directus\Services\AuthService;
 use Zend\Db\Sql\Select;
@@ -111,39 +112,7 @@ class AuthenticationMiddleware extends AbstractMiddleware
      */
     protected function getAuthToken(Request $request)
     {
-        $authToken = null;
-
-        if ($request->getParam('access_token')) {
-            $authToken = $request->getParam('access_token');
-        } elseif ($request->hasHeader('Php-Auth-User')) {
-            $authUser = $request->getHeader('Php-Auth-User');
-            $authPassword = $request->getHeader('Php-Auth-Pw');
-
-            if (is_array($authUser)) {
-                $authUser = array_shift($authUser);
-            }
-
-            if (is_array($authPassword)) {
-                $authPassword = array_shift($authPassword);
-            }
-
-            if ($authUser && (empty($authPassword) || $authUser === $authPassword)) {
-                $authToken = $authUser;
-            }
-        } elseif ($request->hasHeader('Authorization')) {
-            $authorizationHeader = $request->getHeader('Authorization');
-
-            // If there's multiple Authorization header, pick first, ignore the rest
-            if (is_array($authorizationHeader)) {
-                $authorizationHeader = array_shift($authorizationHeader);
-            }
-
-            if (is_string($authorizationHeader) && preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
-                $authToken = $matches[1];
-            }
-        }
-
-        return $authToken;
+        return get_request_authorization_token($request);
     }
 
     /**

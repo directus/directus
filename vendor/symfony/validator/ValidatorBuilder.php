@@ -37,10 +37,10 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  */
 class ValidatorBuilder implements ValidatorBuilderInterface
 {
-    private $initializers = array();
-    private $xmlMappings = array();
-    private $yamlMappings = array();
-    private $methodMappings = array();
+    private $initializers = [];
+    private $xmlMappings = [];
+    private $yamlMappings = [];
+    private $methodMappings = [];
 
     /**
      * @var Reader|null
@@ -271,7 +271,7 @@ class ValidatorBuilder implements ValidatorBuilderInterface
      */
     public function getLoaders()
     {
-        $loaders = array();
+        $loaders = [];
 
         foreach ($this->xmlMappings as $xmlMapping) {
             $loaders[] = new XmlFileLoader($xmlMapping);

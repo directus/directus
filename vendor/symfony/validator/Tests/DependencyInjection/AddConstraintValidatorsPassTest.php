@@ -25,21 +25,21 @@ class AddConstraintValidatorsPassTest extends TestCase
     {
         $container = new ContainerBuilder();
         $validatorFactory = $container->register('validator.validator_factory')
-            ->addArgument(array());
+            ->addArgument([]);
 
         $container->register('my_constraint_validator_service1', Validator1::class)
-            ->addTag('validator.constraint_validator', array('alias' => 'my_constraint_validator_alias1'));
+            ->addTag('validator.constraint_validator', ['alias' => 'my_constraint_validator_alias1']);
         $container->register('my_constraint_validator_service2', Validator2::class)
             ->addTag('validator.constraint_validator');
 
         $addConstraintValidatorsPass = new AddConstraintValidatorsPass();
         $addConstraintValidatorsPass->process($container);
 
-        $expected = (new Definition(ServiceLocator::class, array(array(
+        $expected = (new Definition(ServiceLocator::class, [[
             Validator1::class => new ServiceClosureArgument(new Reference('my_constraint_validator_service1')),
             'my_constraint_validator_alias1' => new ServiceClosureArgument(new Reference('my_constraint_validator_service1')),
             Validator2::class => new ServiceClosureArgument(new Reference('my_constraint_validator_service2')),
-        ))))->addTag('container.service_locator')->setPublic(false);
+        ]]))->addTag('container.service_locator')->setPublic(false);
         $this->assertEquals($expected, $container->getDefinition((string) $validatorFactory->getArgument(0)));
     }
 
@@ -51,7 +51,7 @@ class AddConstraintValidatorsPassTest extends TestCase
     {
         $container = new ContainerBuilder();
         $container->register('validator.validator_factory')
-            ->addArgument(array());
+            ->addArgument([]);
 
         $container->register('my_abstract_constraint_validator')
             ->setAbstract(true)

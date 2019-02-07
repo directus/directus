@@ -49,14 +49,14 @@ class BicValidatorTest extends ConstraintValidatorTestCase
     public function getValidBics()
     {
         // http://formvalidation.io/validators/bic/
-        return array(
-            array('ASPKAT2LXXX'),
-            array('ASPKAT2L'),
-            array('DSBACNBXSHA'),
-            array('UNCRIT2B912'),
-            array('DABADKKK'),
-            array('RZOOAT2L303'),
-        );
+        return [
+            ['ASPKAT2LXXX'],
+            ['ASPKAT2L'],
+            ['DSBACNBXSHA'],
+            ['UNCRIT2B912'],
+            ['DABADKKK'],
+            ['RZOOAT2L303'],
+        ];
     }
 
     /**
@@ -64,9 +64,9 @@ class BicValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidBics($bic, $code)
     {
-        $constraint = new Bic(array(
+        $constraint = new Bic([
             'message' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($bic, $constraint);
 
@@ -78,30 +78,30 @@ class BicValidatorTest extends ConstraintValidatorTestCase
 
     public function getInvalidBics()
     {
-        return array(
-            array('DEUTD', Bic::INVALID_LENGTH_ERROR),
-            array('ASPKAT2LXX', Bic::INVALID_LENGTH_ERROR),
-            array('ASPKAT2LX', Bic::INVALID_LENGTH_ERROR),
-            array('ASPKAT2LXXX1', Bic::INVALID_LENGTH_ERROR),
-            array('DABADKK', Bic::INVALID_LENGTH_ERROR),
-            array('1SBACNBXSHA', Bic::INVALID_BANK_CODE_ERROR),
-            array('RZ00AT2L303', Bic::INVALID_BANK_CODE_ERROR),
-            array('D2BACNBXSHA', Bic::INVALID_BANK_CODE_ERROR),
-            array('DS3ACNBXSHA', Bic::INVALID_BANK_CODE_ERROR),
-            array('DSB4CNBXSHA', Bic::INVALID_BANK_CODE_ERROR),
-            array('DEUT12HH', Bic::INVALID_COUNTRY_CODE_ERROR),
-            array('DSBAC6BXSHA', Bic::INVALID_COUNTRY_CODE_ERROR),
-            array('DSBA5NBXSHA', Bic::INVALID_COUNTRY_CODE_ERROR),
+        return [
+            ['DEUTD', Bic::INVALID_LENGTH_ERROR],
+            ['ASPKAT2LXX', Bic::INVALID_LENGTH_ERROR],
+            ['ASPKAT2LX', Bic::INVALID_LENGTH_ERROR],
+            ['ASPKAT2LXXX1', Bic::INVALID_LENGTH_ERROR],
+            ['DABADKK', Bic::INVALID_LENGTH_ERROR],
+            ['1SBACNBXSHA', Bic::INVALID_BANK_CODE_ERROR],
+            ['RZ00AT2L303', Bic::INVALID_BANK_CODE_ERROR],
+            ['D2BACNBXSHA', Bic::INVALID_BANK_CODE_ERROR],
+            ['DS3ACNBXSHA', Bic::INVALID_BANK_CODE_ERROR],
+            ['DSB4CNBXSHA', Bic::INVALID_BANK_CODE_ERROR],
+            ['DEUT12HH', Bic::INVALID_COUNTRY_CODE_ERROR],
+            ['DSBAC6BXSHA', Bic::INVALID_COUNTRY_CODE_ERROR],
+            ['DSBA5NBXSHA', Bic::INVALID_COUNTRY_CODE_ERROR],
 
             // branch code error
-            array('THISSVAL1D]', Bic::INVALID_CHARACTERS_ERROR),
+            ['THISSVAL1D]', Bic::INVALID_CHARACTERS_ERROR],
 
             // location code error
-            array('DEUTDEF]', Bic::INVALID_CHARACTERS_ERROR),
+            ['DEUTDEF]', Bic::INVALID_CHARACTERS_ERROR],
 
             // lower case values are invalid
-            array('DeutAT2LXXX', Bic::INVALID_CASE_ERROR),
-            array('DEUTAT2lxxx', Bic::INVALID_CASE_ERROR),
-        );
+            ['DeutAT2LXXX', Bic::INVALID_CASE_ERROR],
+            ['DEUTAT2lxxx', Bic::INVALID_CASE_ERROR],
+        ];
     }
 }

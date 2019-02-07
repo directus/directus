@@ -40,16 +40,16 @@ class FloatNodeTest extends TestCase
 
     public function getValidValues()
     {
-        return array(
-            array(1798.0),
-            array(-678.987),
-            array(12.56E45),
-            array(0.0),
+        return [
+            [1798.0],
+            [-678.987],
+            [12.56E45],
+            [0.0],
             // Integer are accepted too, they will be cast
-            array(17),
-            array(-10),
-            array(0),
-        );
+            [17],
+            [-10],
+            [0],
+        ];
     }
 
     /**
@@ -64,15 +64,15 @@ class FloatNodeTest extends TestCase
 
     public function getInvalidValues()
     {
-        return array(
-            array(null),
-            array(''),
-            array('foo'),
-            array(true),
-            array(false),
-            array(array()),
-            array(array('foo' => 'bar')),
-            array(new \stdClass()),
-        );
+        return [
+            [null],
+            [''],
+            ['foo'],
+            [true],
+            [false],
+            [[]],
+            [['foo' => 'bar']],
+            [new \stdClass()],
+        ];
     }
 }

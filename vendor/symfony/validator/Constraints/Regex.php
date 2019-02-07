@@ -23,9 +23,9 @@ class Regex extends Constraint
 {
     const REGEX_FAILED_ERROR = 'de1e3db3-5ed4-4941-aae4-59f3667cc3a3';
 
-    protected static $errorNames = array(
+    protected static $errorNames = [
         self::REGEX_FAILED_ERROR => 'REGEX_FAILED_ERROR',
-    );
+    ];
 
     public $message = 'This value is not valid.';
     public $pattern;
@@ -45,7 +45,7 @@ class Regex extends Constraint
      */
     public function getRequiredOptions()
     {
-        return array('pattern');
+        return ['pattern'];
     }
 
     /**

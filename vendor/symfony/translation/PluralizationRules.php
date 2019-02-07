@@ -20,7 +20,7 @@ namespace Symfony\Component\Translation;
  */
 class PluralizationRules
 {
-    private static $rules = array();
+    private static $rules = [];
 
     /**
      * Returns the plural position to use for the given locale and number.

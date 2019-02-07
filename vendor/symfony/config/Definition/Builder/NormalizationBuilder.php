@@ -19,8 +19,8 @@ namespace Symfony\Component\Config\Definition\Builder;
 class NormalizationBuilder
 {
     protected $node;
-    public $before = array();
-    public $remappings = array();
+    public $before = [];
+    public $remappings = [];
 
     public function __construct(NodeDefinition $node)
     {
@@ -37,7 +37,7 @@ class NormalizationBuilder
      */
     public function remap($key, $plural = null)
     {
-        $this->remappings[] = array($key, null === $plural ? $key.'s' : $plural);
+        $this->remappings[] = [$key, null === $plural ? $key.'s' : $plural];
 
         return $this;
     }

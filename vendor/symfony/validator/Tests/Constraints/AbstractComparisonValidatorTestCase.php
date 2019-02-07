@@ -73,10 +73,10 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
 
     public function provideInvalidConstraintOptions()
     {
-        return array(
-            array(null),
-            array(array()),
-        );
+        return [
+            [null],
+            [[]],
+        ];
     }
 
     /**
@@ -95,10 +95,10 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
      */
     public function testThrowsConstraintExceptionIfBothValueAndPropertyPath()
     {
-        $this->createConstraint((array(
+        $this->createConstraint(([
             'value' => 'value',
             'propertyPath' => 'propertyPath',
-        )));
+        ]));
     }
 
     /**
@@ -109,7 +109,7 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
      */
     public function testValidComparisonToValue($dirtyValue, $comparisonValue)
     {
-        $constraint = $this->createConstraint(array('value' => $comparisonValue));
+        $constraint = $this->createConstraint(['value' => $comparisonValue]);
 
         $this->validator->validate($dirtyValue, $constraint);
 
@@ -137,7 +137,7 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
      */
     public function testValidComparisonToPropertyPath($comparedValue)
     {
-        $constraint = $this->createConstraint(array('propertyPath' => 'value'));
+        $constraint = $this->createConstraint(['propertyPath' => 'value']);
 
         $object = new ComparisonTest_Class(5);
 
@@ -153,9 +153,9 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
      */
     public function testValidComparisonToPropertyPathOnArray($comparedValue)
     {
-        $constraint = $this->createConstraint(array('propertyPath' => '[root][value]'));
+        $constraint = $this->createConstraint(['propertyPath' => '[root][value]']);
 
-        $this->setObject(array('root' => array('value' => 5)));
+        $this->setObject(['root' => ['value' => 5]]);
 
         $this->validator->validate($comparedValue, $constraint);
 
@@ -164,7 +164,7 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
 
     public function testNoViolationOnNullObjectWithPropertyPath()
     {
-        $constraint = $this->createConstraint(array('propertyPath' => 'propertyPath'));
+        $constraint = $this->createConstraint(['propertyPath' => 'propertyPath']);
 
         $this->setObject(null);
 
@@ -175,7 +175,7 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
 
     public function testInvalidValuePath()
     {
-        $constraint = $this->createConstraint(array('propertyPath' => 'foo'));
+        $constraint = $this->createConstraint(['propertyPath' => 'foo']);
 
         if (method_exists($this, 'expectException')) {
             $this->expectException(ConstraintDefinitionException::class);
@@ -218,7 +218,7 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
             IntlTestHelper::requireIntl($this, '57.1');
         }
 
-        $constraint = $this->createConstraint(array('value' => $comparedValue));
+        $constraint = $this->createConstraint(['value' => $comparedValue]);
         $constraint->message = 'Constraint Message';
 
         $this->validator->validate($dirtyValue, $constraint);

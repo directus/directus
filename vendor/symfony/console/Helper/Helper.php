@@ -74,17 +74,17 @@ abstract class Helper implements HelperInterface
 
     public static function formatTime($secs)
     {
-        static $timeFormats = array(
-            array(0, '< 1 sec'),
-            array(1, '1 sec'),
-            array(2, 'secs', 1),
-            array(60, '1 min'),
-            array(120, 'mins', 60),
-            array(3600, '1 hr'),
-            array(7200, 'hrs', 3600),
-            array(86400, '1 day'),
-            array(172800, 'days', 86400),
-        );
+        static $timeFormats = [
+            [0, '< 1 sec'],
+            [1, '1 sec'],
+            [2, 'secs', 1],
+            [60, '1 min'],
+            [120, 'mins', 60],
+            [3600, '1 hr'],
+            [7200, 'hrs', 3600],
+            [86400, '1 day'],
+            [172800, 'days', 86400],
+        ];
 
         foreach ($timeFormats as $index => $format) {
             if ($secs >= $format[0]) {

@@ -148,7 +148,7 @@ CHANGELOG
  * Added support for customizing the dumped YAML string through an optional bit field:
 
    ```php
-   Yaml::dump(array('foo' => new A(), 'bar' => 1), 0, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE | Yaml::DUMP_OBJECT);
+   Yaml::dump(['foo' => new A(), 'bar' => 1], 0, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE | Yaml::DUMP_OBJECT);
    ```
 
 3.0.0

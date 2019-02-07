@@ -46,50 +46,50 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
 
     public function getThreeOrLessCharacters()
     {
-        return array(
-            array(12),
-            array('12'),
-            array('üü'),
-            array('éé'),
-            array(123),
-            array('123'),
-            array('üüü'),
-            array('ééé'),
-        );
+        return [
+            [12],
+            ['12'],
+            ['üü'],
+            ['éé'],
+            [123],
+            ['123'],
+            ['üüü'],
+            ['ééé'],
+        ];
     }
 
     public function getFourCharacters()
     {
-        return array(
-            array(1234),
-            array('1234'),
-            array('üüüü'),
-            array('éééé'),
-        );
+        return [
+            [1234],
+            ['1234'],
+            ['üüüü'],
+            ['éééé'],
+        ];
     }
 
     public function getFiveOrMoreCharacters()
     {
-        return array(
-            array(12345),
-            array('12345'),
-            array('üüüüü'),
-            array('ééééé'),
-            array(123456),
-            array('123456'),
-            array('üüüüüü'),
-            array('éééééé'),
-        );
+        return [
+            [12345],
+            ['12345'],
+            ['üüüüü'],
+            ['ééééé'],
+            [123456],
+            ['123456'],
+            ['üüüüüü'],
+            ['éééééé'],
+        ];
     }
 
     public function getOneCharset()
     {
-        return array(
-            array('é', 'utf8', true),
-            array("\xE9", 'CP1252', true),
-            array("\xE9", 'XXX', false),
-            array("\xE9", 'utf8', false),
-        );
+        return [
+            ['é', 'utf8', true],
+            ["\xE9", 'CP1252', true],
+            ["\xE9", 'XXX', false],
+            ["\xE9", 'utf8', false],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValuesMin($value)
     {
-        $constraint = new Length(array('min' => 5));
+        $constraint = new Length(['min' => 5]);
         $this->validator->validate($value, $constraint);
 
         $this->assertNoViolation();
@@ -108,7 +108,7 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testValidValuesMax($value)
     {
-        $constraint = new Length(array('max' => 3));
+        $constraint = new Length(['max' => 3]);
         $this->validator->validate($value, $constraint);
 
         $this->assertNoViolation();
@@ -130,10 +130,10 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValuesMin($value)
     {
-        $constraint = new Length(array(
+        $constraint = new Length([
             'min' => 4,
             'minMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -151,10 +151,10 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValuesMax($value)
     {
-        $constraint = new Length(array(
+        $constraint = new Length([
             'max' => 4,
             'maxMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -172,11 +172,11 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValuesExactLessThanFour($value)
     {
-        $constraint = new Length(array(
+        $constraint = new Length([
             'min' => 4,
             'max' => 4,
             'exactMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -194,11 +194,11 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testInvalidValuesExactMoreThanFour($value)
     {
-        $constraint = new Length(array(
+        $constraint = new Length([
             'min' => 4,
             'max' => 4,
             'exactMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 
@@ -216,12 +216,12 @@ class LengthValidatorTest extends ConstraintValidatorTestCase
      */
     public function testOneCharset($value, $charset, $isValid)
     {
-        $constraint = new Length(array(
+        $constraint = new Length([
             'min' => 1,
             'max' => 1,
             'charset' => $charset,
             'charsetMessage' => 'myMessage',
-        ));
+        ]);
 
         $this->validator->validate($value, $constraint);
 

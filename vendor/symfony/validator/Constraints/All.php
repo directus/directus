@@ -19,7 +19,7 @@ namespace Symfony\Component\Validator\Constraints;
  */
 class All extends Composite
 {
-    public $constraints = array();
+    public $constraints = [];
 
     public function getDefaultOption()
     {
@@ -28,7 +28,7 @@ class All extends Composite
 
     public function getRequiredOptions()
     {
-        return array('constraints');
+        return ['constraints'];
     }
 
     protected function getCompositeOption()

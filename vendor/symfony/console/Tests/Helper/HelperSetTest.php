@@ -20,7 +20,7 @@ class HelperSetTest extends TestCase
     public function testConstructor()
     {
         $mock_helper = $this->getGenericMockHelper('fake_helper');
-        $helperset = new HelperSet(array('fake_helper_alias' => $mock_helper));
+        $helperset = new HelperSet(['fake_helper_alias' => $mock_helper]);
 
         $this->assertEquals($mock_helper, $helperset->get('fake_helper_alias'), '__construct sets given helper to helpers');
         $this->assertTrue($helperset->has('fake_helper_alias'), '__construct sets helper alias for given helper');
@@ -46,7 +46,7 @@ class HelperSetTest extends TestCase
 
     public function testHas()
     {
-        $helperset = new HelperSet(array('fake_helper_alias' => $this->getGenericMockHelper('fake_helper')));
+        $helperset = new HelperSet(['fake_helper_alias' => $this->getGenericMockHelper('fake_helper')]);
         $this->assertTrue($helperset->has('fake_helper'), '->has() finds set helper');
         $this->assertTrue($helperset->has('fake_helper_alias'), '->has() finds set helper by alias');
     }
@@ -55,7 +55,7 @@ class HelperSetTest extends TestCase
     {
         $helper_01 = $this->getGenericMockHelper('fake_helper_01');
         $helper_02 = $this->getGenericMockHelper('fake_helper_02');
-        $helperset = new HelperSet(array('fake_helper_01_alias' => $helper_01, 'fake_helper_02_alias' => $helper_02));
+        $helperset = new HelperSet(['fake_helper_01_alias' => $helper_01, 'fake_helper_02_alias' => $helper_02]);
         $this->assertEquals($helper_01, $helperset->get('fake_helper_01'), '->get() returns correct helper by name');
         $this->assertEquals($helper_01, $helperset->get('fake_helper_01_alias'), '->get() returns correct helper by alias');
         $this->assertEquals($helper_02, $helperset->get('fake_helper_02'), '->get() returns correct helper by name');
@@ -101,7 +101,7 @@ class HelperSetTest extends TestCase
         $helperset->set($this->getGenericMockHelper('fake_helper_01', $helperset));
         $helperset->set($this->getGenericMockHelper('fake_helper_02', $helperset));
 
-        $helpers = array('fake_helper_01', 'fake_helper_02');
+        $helpers = ['fake_helper_01', 'fake_helper_02'];
         $i = 0;
 
         foreach ($helperset as $helper) {

@@ -5,7 +5,7 @@ yaml: |
   true: true
   false: false
 php: |
-  array(
+  [
     'true' => true,
     'false' => false,
-  )
+  ]

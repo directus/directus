@@ -9,29 +9,29 @@ return function (InputInterface $input, OutputInterface $output) {
     $output = new SymfonyStyle($input, $output);
 
     $output->writeln('Lorem ipsum dolor sit amet');
-    $output->listing(array(
+    $output->listing([
         'Lorem ipsum dolor sit amet',
         'consectetur adipiscing elit',
-    ));
+    ]);
 
     //Even using write:
     $output->write('Lorem ipsum dolor sit amet');
-    $output->listing(array(
+    $output->listing([
         'Lorem ipsum dolor sit amet',
         'consectetur adipiscing elit',
-    ));
+    ]);
 
     $output->write('Lorem ipsum dolor sit amet');
-    $output->text(array(
+    $output->text([
         'Lorem ipsum dolor sit amet',
         'consectetur adipiscing elit',
-    ));
+    ]);
 
     $output->newLine();
 
     $output->write('Lorem ipsum dolor sit amet');
-    $output->comment(array(
+    $output->comment([
         'Lorem ipsum dolor sit amet',
         'consectetur adipiscing elit',
-    ));
+    ]);
 };

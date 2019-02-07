@@ -380,13 +380,11 @@ class Ftp extends AbstractFtpAdapter
      */
     public function getMetadata($path)
     {
-        $connection = $this->getConnection();
-
         if ($path === '') {
             return ['type' => 'dir', 'path' => ''];
         }
 
-        if (@ftp_chdir($connection, $path) === true) {
+        if (@ftp_chdir($this->getConnection(), $path) === true) {
             $this->setConnectionRoot();
 
             return ['type' => 'dir', 'path' => $path];

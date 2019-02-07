@@ -557,7 +557,7 @@ class CoreServicesProvider
                    $type = $field->getType();
 
                    // This value is being populated in another hook
-                   if (DataTypes::isSystemDateTimeType($type)) {
+                   if (!$value || DataTypes::isSystemDateTimeType($type)) {
                        continue;
                    }
 

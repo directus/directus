@@ -11,7 +11,7 @@ class TestToto extends Command
         $this
             ->setName('test-toto')
             ->setDescription('The test-toto command')
-            ->setAliases(array('test'))
+            ->setAliases(['test'])
         ;
     }
 

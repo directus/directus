@@ -49,7 +49,7 @@ class TranslationWriterTest extends TestCase
 
 class NonBackupDumper implements DumperInterface
 {
-    public function dump(MessageCatalogue $messages, $options = array())
+    public function dump(MessageCatalogue $messages, $options = [])
     {
     }
 }
@@ -58,7 +58,7 @@ class BackupDumper implements DumperInterface
 {
     public $backup = true;
 
-    public function dump(MessageCatalogue $messages, $options = array())
+    public function dump(MessageCatalogue $messages, $options = [])
     {
     }
 

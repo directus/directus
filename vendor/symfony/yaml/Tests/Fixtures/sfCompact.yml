@@ -13,22 +13,22 @@ yaml: |
       nick: Biggies
     quantity: 1
 php: |
-  array (
-    array (
+  [
+    [
       'item' => 'Super Hoop',
-    ),
-    array (
+    ],
+    [
       'item' => 'Basketball',
       'quantity' => 1,
-    ),
-    array (
-      'item' => array(
+    ],
+    [
+      'item' => [
         'name' => 'Big Shoes',
         'nick' => 'Biggies'
-      ),
+      ],
       'quantity' => 1
-    )
-  )
+    ]
+  ]
 ---
 test: Compact notation combined with inline notation
 brief: |
@@ -39,18 +39,18 @@ yaml: |
     - { item: Super Hoop, quantity: 1 }
     - [ Basketball, Big Shoes ]
 php: |
-  array (
-    'items' => array (
-      array (
+  [
+    'items' => [
+      [
         'item' => 'Super Hoop',
         'quantity' => 1,
-      ),
-      array (
+      ],
+      [
         'Basketball',
         'Big Shoes'
-      )
-    )
-  )
+      ]
+      ]
+    ]
 --- %YAML:1.0
 test: Compact notation
 brief: |
@@ -66,22 +66,22 @@ yaml: |
       nick: Biggies
     quantity: 1
 php: |
-  array (
-    array (
+  [
+    [
       'item' => 'Super Hoop',
-    ),
-    array (
+    ],
+    [
       'item' => 'Basketball',
       'quantity' => 1,
-    ),
-    array (
-      'item' => array(
+    ],
+    [
+      'item' => [
         'name' => 'Big Shoes',
         'nick' => 'Biggies'
-      ),
+      ],
       'quantity' => 1
-    )
-  )
+    ]
+  ]
 ---
 test: Compact notation combined with inline notation
 brief: |
@@ -92,18 +92,18 @@ yaml: |
     - { item: Super Hoop, quantity: 1 }
     - [ Basketball, Big Shoes ]
 php: |
-  array (
-    'items' => array (
-      array (
+  [
+    'items' => [
+      [
         'item' => 'Super Hoop',
         'quantity' => 1,
-      ),
-      array (
+      ],
+      [
         'Basketball',
         'Big Shoes'
-      )
-    )
-  )
+      ]
+    ]
+  ]
 --- %YAML:1.0
 test: Compact notation
 brief: |
@@ -119,22 +119,22 @@ yaml: |
       nick: Biggies
     quantity: 1
 php: |
-  array (
-    array (
+  [
+    [
       'item' => 'Super Hoop',
-    ),
-    array (
+    ],
+    [
       'item' => 'Basketball',
       'quantity' => 1,
-    ),
-    array (
-      'item' => array(
+    ],
+    [
+      'item' => [
         'name' => 'Big Shoes',
         'nick' => 'Biggies'
-      ),
+      ],
       'quantity' => 1
-    )
-  )
+    ]
+  ]
 ---
 test: Compact notation combined with inline notation
 brief: |
@@ -145,15 +145,15 @@ yaml: |
     - { item: Super Hoop, quantity: 1 }
     - [ Basketball, Big Shoes ]
 php: |
-  array (
-    'items' => array (
-      array (
+  [
+    'items' => [
+      [
         'item' => 'Super Hoop',
         'quantity' => 1,
-      ),
-      array (
+      ],
+      [
         'Basketball',
         'Big Shoes'
-      )
-    )
-  )
+      ]
+    ]
+  ]

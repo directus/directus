@@ -5,7 +5,7 @@ brief: |
 yaml: |
     foo: bar
 php: |
-    array('foo' => 'bar')
+    ['foo' => 'bar']
 ---
 test: Multi Element Mapping
 brief: |
@@ -15,11 +15,11 @@ yaml: |
     white: walls
     blue: berries
 php: |
-    array(
+    [
      'red' => 'baron',
      'white' => 'walls',
      'blue' => 'berries',
-    )
+    ]
 ---
 test: Values aligned
 brief: |
@@ -30,11 +30,11 @@ yaml: |
     white: walls
     blue:  berries
 php: |
-    array(
+    [
      'red' => 'baron',
      'white' => 'walls',
      'blue' => 'berries',
-    )
+    ]
 ---
 test: Colons aligned
 brief: |
@@ -44,8 +44,8 @@ yaml: |
     white : walls
     blue  : berries
 php: |
-    array(
+    [
      'red' => 'baron',
      'white' => 'walls',
      'blue' => 'berries',
-    )
+    ]

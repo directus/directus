@@ -89,19 +89,19 @@ abstract class AbstractDescriptorTest extends TestCase
 
     protected function getDescriptionTestData(array $objects)
     {
-        $data = array();
+        $data = [];
         foreach ($objects as $name => $object) {
             $description = file_get_contents(sprintf('%s/../Fixtures/%s.%s', __DIR__, $name, $this->getFormat()));
-            $data[] = array($object, $description);
+            $data[] = [$object, $description];
         }
 
         return $data;
     }
 
-    protected function assertDescription($expectedDescription, $describedObject, array $options = array())
+    protected function assertDescription($expectedDescription, $describedObject, array $options = [])
     {
         $output = new BufferedOutput(BufferedOutput::VERBOSITY_NORMAL, true);
-        $this->getDescriptor()->describe($output, $describedObject, $options + array('raw_output' => true));
+        $this->getDescriptor()->describe($output, $describedObject, $options + ['raw_output' => true]);
         $this->assertEquals(trim($expectedDescription), trim(str_replace(PHP_EOL, "\n", $output->fetch())));
     }
 }

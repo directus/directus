@@ -29,7 +29,7 @@ class CsvFileLoader extends FileLoader
      */
     protected function loadResource($resource)
     {
-        $messages = array();
+        $messages = [];
 
         try {
             $file = new \SplFileObject($resource, 'rb');
