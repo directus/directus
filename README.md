@@ -72,6 +72,8 @@ Whether you need many-to-one, one-to-many, many-to-many, or something completely
 
 We've intentionally kept our codebase as simple and lightweight as possible. Every aspect of Directus has been modularized, with many options for extending, overriding, or even bypassing the core system. Choose your auth providers, storage adapters, content interfaces, data presentation, and more. We also have webhooks, event hooks, API response filters, custom endpoints, CSS/JS override files, and much more.
 
+Furthermore, because the codebase has been internally decoupled, Directus supports full multitenancy. You can use a single Directus App to manage multiple Directus API instances, and each API instance can manage multiple databases (projects or environments).
+
 ### Internationalization and Accessibility
 
 Directus allows you to manage multilingual content in as many languages as your project needs. And no matter what language(s) your organization requires, our Admin App supports a growing number of locales. We've also paid close attention to our Admin App's interface to ensure it is as clear and accessible as possible for all users.
