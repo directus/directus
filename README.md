@@ -16,7 +16,7 @@
   <a href="https://docs.directus.io/api/reference.html">API Reference</a> • 
   <a href="https://docs.directus.io/guides/user-guide.html">User Guide</a> • 
   <a href="https://directus.app">Demo</a> • 
-  <a href="https://docs.directus.io/getting-started/supporting-directus.html">Contribute</a>
+  <a href="https://docs.directus.io/getting-started/supporting-directus.html">Contribute</a> • 
   <a href="https://twitter.com/directus">Twitter</a>
 </h3>
 
