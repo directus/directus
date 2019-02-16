@@ -17,6 +17,7 @@
   <a href="https://docs.directus.io/guides/user-guide.html">User Guide</a> • 
   <a href="https://directus.app">Demo</a> • 
   <a href="https://docs.directus.io/getting-started/supporting-directus.html">Contribute</a>
+  <a href="https://twitter.com/directus">Twitter</a>
 </h3>
 
 <p>&nbsp;</p>
@@ -34,9 +35,9 @@
 
 Directus is an open-source suite of software that provides an instant API wrapper for SQL databases and an intuitive Admin App for non-technical users to manage that content. It's like a safe, friendly, and super-powered "database client" (eg: _PHP-my-Admin_ or _Sequel Pro_). Created in 2004, our premium platform powers hundreds-of-thousands of data-driven applications around the world. With our JSON API, webhooks, and complete control over where and how your content is used — what will you build with Directus?
 
-* **[Directus API](https://github.com/directus/api)** — Wraps any new or existing SQL database with RESTful JSON endpoints for connecting content anywhere: websites, native apps, wearables, IoT devices, kiosks, or anything else! ([API Reference](https://docs.directus.io/api/reference.html))
-* **[Directus Admin App](https://github.com/directus/app)** — A friendly admin interface built with Vue.js that works in conjunction with our API to allow non-technical users to manage database content and digital assets. ([User Guide](https://docs.directus.io/guides/user-guide.html))
-* **[Directus Suite](https://github.com/directus/directus)** A package that combines our API, Admin App, and all dependencies for quick and easy installation on most servers. ([Docs](https://docs.directus.io))
+* **[Directus API](https://github.com/directus/api)** — Wraps any new or existing SQL database with RESTful JSON endpoints for connecting content anywhere: websites, native apps, wearables, IoT devices, kiosks, or anything else!
+* **[Directus Admin App](https://github.com/directus/app)** — A friendly admin interface built with Vue.js that works in conjunction with our API to allow non-technical users to manage database content and digital assets.
+* **[Directus Suite](https://github.com/directus/directus)** A package that combines our API, Admin App, and all dependencies for quick and easy installation on most servers.
 
 <p>&nbsp;</p>
 
@@ -108,17 +109,17 @@ Directus allows you to manage multilingual content in as many languages as your 
 * **[Slack](https://slack.directus.io)** — Come join almost a thousand members discussing the future of Directus. Our helpful members are also quick to offer advice for simple questions you may have while getting started.
 * **[Twitter](https://twitter.com/directus)** — Follow us on Twitter to be the first to hear about product updates, see sneak peeks of new features, and vote on polls regarding the future of our platform.
 
-### Reporting Bugs
+### GitHub Tickets
 
-If you believe you've found a bug in the Directus Core codebase, please submit new tickets to either the [App](https://github.com/directus/app/issues/new?template=Bug_report.md) or the [API](https://github.com/directus/api/issues/new?template=Bug_report.md). **For all security related issues, please chat with us directly through [directus.io](https://directus.io/).**
-
-### Feature Requests
-
-Feature requests are managed as GitHub issues within the appropriate Directus repository. Before making a new submission, first [browse existing feature requests](https://github.com/directus/app/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement) using the `enhancement` label. If you find a similar request, simply vote for it using the :+1: or :-1: reactions and add any additional context in the comments. If _not_, [add a new feature request](https://github.com/directus/app/issues/new?template=Feature_request.md) by completing the provided template.
+* **Reporting Bugs** — If you believe you've found a bug in the Directus Core codebase, please submit new tickets to either the [App](https://github.com/directus/app/issues/new?template=Bug_report.md) or the [API](https://github.com/directus/api/issues/new?template=Bug_report.md). **For all security related issues, please chat with us directly through [directus.io](https://directus.io/).**
+* **Requesting Features** — Feature requests are managed as GitHub issues within the appropriate Directus repository. Before making a new submission, first [browse existing feature requests](https://github.com/directus/app/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement) using the `enhancement` label. If you find a similar request, simply vote for it using the :+1: or :-1: reactions and add any additional context in the comments. If _not_, [add a new feature request](https://github.com/directus/app/issues/new?template=Feature_request.md) by completing the provided template.
 
 ### Online Demos
 
-We have two online demos available so you can easily check out Directus in action: [stable](https://directus.app) or [canary](https://next.directus.app). The credentials to login are: `admin@example.com` and `password`
+We have two online demos available so you can easily check out Directus in action. These demos are public and is therefore susceptible to trolls who think it's funny to write offensive things or change the master user password. The entire database is reset each hour to mitigate this. The login credentials for both demos: `admin@example.com` and `password`
+
+* **[Stable](https://directus.app)** — This demo showcases the [latest release](https://github.com/directus/directus/releases/latest) of the Directus suite.
+* **[Canary](https://next.directus.app)** — This demo uses the [latest commits](https://github.com/directus/directus/commits/master) from the `master` branch.
 
 <p>&nbsp;</p>
 
