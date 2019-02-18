@@ -6,6 +6,7 @@ use Directus\Application\Container;
 use Directus\Database\Schema\SchemaManager;
 use Directus\Exception\BadRequestException;
 use Directus\Exception\BatchUploadNotAllowedException;
+use function Directus\is_a_url;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Validator\Exception\InvalidRequestException;
@@ -36,6 +37,12 @@ class FilesServices extends AbstractService
         $data['uploaded_on'] = DateTimeUtils::now()->toString();
 
         $validationConstraints = $this->createConstraintFor($this->collection);
+        // Do not validate filename when uploading files using URL
+        // The filename will be generate automatically if not defined
+        if (is_a_url(ArrayUtils::get($data, 'data'))) {
+            unset($validationConstraints['filename']);
+        }
+
         $this->validate($data, array_merge(['data' => 'required'], $validationConstraints));
         $newFile = $tableGateway->createRecord($data, $this->getCRUDParams($params));
 

@@ -590,6 +590,28 @@ if (!function_exists('register_hook_filter')) {
     }
 }
 
+if (!function_exists('get_default_timezone')) {
+    /**
+     * Returns the default timezone
+     *
+     * @param Application $app
+     *
+     * @return string
+     */
+    function get_default_timezone(Application $app = null)
+    {
+        if ($app == null) {
+            $app = Application::getInstance();
+        }
+
+        if (!$app || !($timezone = $app->getConfig()->get('app.timezone'))) {
+            $timezone = date_default_timezone_get();
+        }
+
+        return $timezone;
+    }
+}
+
 if (!function_exists('get_user_timezone')) {
     function get_user_timezone()
     {

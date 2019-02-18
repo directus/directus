@@ -21,6 +21,7 @@ use Directus\Database\TableGatewayFactory;
 use Directus\Database\SchemaService;
 use Directus\Exception\Exception;
 use Directus\Exception\UnprocessableEntityException;
+use function Directus\filename_put_ext;
 use Directus\Filesystem\Files;
 use function Directus\get_directus_setting;
 use Directus\Hook\Emitter;
@@ -424,11 +425,12 @@ class BaseTableGateway extends TableGateway
             throw new UnprocessableEntityException();
         }
 
+        $recordId = $recordData[$primaryKey];
         if ($collectionName === SchemaManager::COLLECTION_FILES) {
             $select = new Select($collectionName);
             $select->columns(['filename']);
             $select->where([
-                $primaryKey => $recordData[$primaryKey]
+                $primaryKey => $recordId
             ]);
             $select->limit(1);
             $result = $TableGateway->ignoreFilters()->selectWith($select);
@@ -448,19 +450,23 @@ class BaseTableGateway extends TableGateway
         $Update = new Update($collectionName);
         $Update->set($recordData);
         $Update->where([
-            $primaryKey => $recordData[$primaryKey]
+            $primaryKey => $recordId
         ]);
         $TableGateway->updateWith($Update);
 
+        $replace = true;
         if ($collectionName === SchemaManager::COLLECTION_FILES && static::$container) {
-            if ($originalFilename && $recordData['filename'] !== $originalFilename) {
+            $changeFilename = $originalFilename && $recordData['filename'] !== $originalFilename;
+            $replace = !$changeFilename;
+
+            if ($changeFilename) {
                 /** @var Files $Files */
                 $Files = static::$container->get('files');
                 $Files->delete(['filename' => $originalFilename]);
             }
         }
 
-        $this->afterAddOrUpdate($recordData, true);
+        $this->afterAddOrUpdate($recordData, $replace);
 
         $columns = SchemaService::getAllNonAliasCollectionFieldNames($collectionName);
         return $TableGateway->fetchAll(function ($select) use ($recordData, $columns, $primaryKey) {
@@ -1752,37 +1758,45 @@ class BaseTableGateway extends TableGateway
     protected function afterAddOrUpdate(array $record, $replace = false)
     {
         // TODO: Move this to a proper hook
-        if ($this->table == SchemaManager::COLLECTION_FILES && static::$container) {
-            $Files = static::$container->get('files');
+        $hasData = ArrayUtils::has($record, 'data') && is_string($record['data']);
+        $isFilesCollection = $this->table == SchemaManager::COLLECTION_FILES;
 
-            $updateArray = [];
-            if ($Files->getSettings('file_naming') == 'id') {
-                // overwrite a file with this file content if it already exists
-                $replace = true;
-                $ext = $thumbnailExt = pathinfo($record['filename'], PATHINFO_EXTENSION);
-                $fileId = $record[$this->primaryKeyFieldName];
-                $newFilename = str_pad(
-                    $fileId,
-                    11,
-                    '0',
-                    STR_PAD_LEFT
-                ) . '.' . $ext;
+        if (!static::$container || !$hasData || !$isFilesCollection) {
+            return;
+        }
 
+        $Files = static::$container->get('files');
+
+        $updateArray = [];
+        if ($Files->getSettings('file_naming') == 'id') {
+            $ext = $thumbnailExt = pathinfo($record['filename'], PATHINFO_EXTENSION);
+            $fileId = $record[$this->primaryKeyFieldName];
+            // TODO: The left padding should be based on the max length of the primary
+            $newFilename = filename_put_ext(str_pad(
+                $fileId,
+                11,
+                '0',
+                STR_PAD_LEFT
+            ), $ext);
+
+            // overwrite a file with this file content if it already exists
+            if (!$replace) {
                 $Files->rename(
                     $record['filename'],
                     $newFilename,
-                    $replace
+                    true
                 );
-                $updateArray['filename'] = $newFilename;
-                $record['filename'] = $updateArray['filename'];
             }
 
-            if (!empty($updateArray)) {
-                $Update = new Update($this->table);
-                $Update->set($updateArray);
-                $Update->where([$this->primaryKeyFieldName => $record[$this->primaryKeyFieldName]]);
-                $this->updateWith($Update);
-            }
+            $updateArray['filename'] = $newFilename;
+            $record['filename'] = $updateArray['filename'];
+        }
+
+        if (!empty($updateArray)) {
+            $Update = new Update($this->table);
+            $Update->set($updateArray);
+            $Update->where([$this->primaryKeyFieldName => $record[$this->primaryKeyFieldName]]);
+            $this->updateWith($Update);
         }
     }
 

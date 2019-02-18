@@ -3018,11 +3018,19 @@ class MimeTypeUtils
      */
     public static function getFromExtension($extension)
     {
-        if ($extension && isset(self::$reverseMap[$extension])) {
-            return array_shift(self::$reverseMap[$extension]);
-        }
+        return static::get(self::$reverseMap, $extension, 'application/octet-stream');
+    }
 
-        return 'application/octet-stream';
+    /**
+     * Returns the extension for a given MIME type
+     *
+     * @param string $type
+     *
+     * @return null|string
+     */
+    public static function getFromMimeType($type)
+    {
+        return static::get(self::$map, $type);
     }
 
     /**
@@ -3037,5 +3045,21 @@ class MimeTypeUtils
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
         return self::getFromExtension($extension);
+    }
+
+    /**
+     * @param array $list
+     * @param string $key
+     * @param null $default
+     *
+     * @return string|null
+     */
+    protected static function get(array $list, $key, $default = null)
+    {
+        if ($key && isset($list[$key])) {
+            return $list[$key][0];
+        }
+
+        return $default;
     }
 }

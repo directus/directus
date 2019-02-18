@@ -16,7 +16,7 @@ class NotFoundHandler extends ErrorHandler
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $exception)
+    public function __invoke(Request $request, Response $response, $exception = null)
     {
         $response = $response->withStatus(Response::HTTP_NOT_FOUND);
 

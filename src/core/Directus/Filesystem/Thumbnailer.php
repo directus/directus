@@ -2,6 +2,7 @@
 
 namespace Directus\Filesystem;
 
+use function Directus\add_default_thumbnail_dimensions;
 use function Directus\filename_put_ext;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
@@ -352,15 +353,11 @@ class Thumbnailer {
      */
     public function getSupportedThumbnailDimensions()
     {
-        $defaultDimension = '200x200';
-
         $dimensions =  $this->parseCSV(
             ArrayUtils::get($this->getConfig(), 'thumbnail_dimensions')
         );
 
-        if (!in_array($defaultDimension, $dimensions)) {
-            array_unshift($dimensions, $defaultDimension);
-        }
+        add_default_thumbnail_dimensions($dimensions);
 
         return $dimensions;
     }

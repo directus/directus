@@ -43,6 +43,7 @@ use function Directus\get_url;
 use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Hook\Payload;
+use function Directus\is_a_url;
 use function Directus\is_iso8601_datetime;
 use Directus\Mail\Mailer;
 use Directus\Mail\TransportManager;
@@ -287,8 +288,11 @@ class CoreServicesProvider
                 $files = $container->get('files');
 
                 $fileData = ArrayUtils::get($data, 'data');
-                if (filter_var($fileData, FILTER_VALIDATE_URL)) {
+                if (is_a_url($fileData)) {
                     $dataInfo = $files->getLink($fileData);
+                    // Set the URL payload data
+                    $payload['data'] = ArrayUtils::get($dataInfo, 'data');
+                    $payload['filename'] = ArrayUtils::get($dataInfo, 'filename');
                 } else {
                     $dataInfo = $files->getDataInfo($fileData);
                 }
@@ -554,13 +558,13 @@ class CoreServicesProvider
                 $data = $payload->getData();
                 foreach ($data as $key => $value) {
                    $field = $collection->getField($key);
-                   $type = $field->getType();
 
                    // This value is being populated in another hook
-                   if (!$value || DataTypes::isSystemDateTimeType($type)) {
+                   if (!$field || !$value || DataTypes::isSystemDateTimeType($field->getType())) {
                        continue;
                    }
 
+                   $type = $field->getType();
                    if (DataTypes::isDateTimeType($type)) {
                        $dateTime = new DateTimeUtils($value);
                        if ($isSystemCollection || is_iso8601_datetime($value)) {

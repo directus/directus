@@ -12,6 +12,7 @@ use Directus\Exception\Exception;
 use Directus\Exception\InvalidConfigPathException;
 use Directus\Exception\InvalidPathException;
 use function Directus\generate_uuid4;
+use function Directus\get_default_timezone;
 use Directus\Permissions\Acl;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
@@ -248,7 +249,7 @@ class InstallerUtils
             'user_email' => 'admin@example.com',
             'user_password' => 'password',
             'user_token' => null,
-            'timezone' => 'America/New_York',
+            'timezone' => get_default_timezone($app),
             'locale' => 'en-US',
         ], $data);
 
@@ -903,7 +904,7 @@ class InstallerUtils
             'auth_public' => generate_uuid4(),
             'feedback_login' => true,
             'cors_enabled' => true,
-            'timezone' => 'America/New_York',
+            'timezone' => get_default_timezone(),
         ], $data);
     }
 }

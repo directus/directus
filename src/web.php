@@ -63,7 +63,7 @@ ini_set('display_errors', $displayErrors);
 // =============================================================================
 // Timezone
 // =============================================================================
-date_default_timezone_set($app->getConfig()->get('app.timezone', 'America/New_York'));
+date_default_timezone_set(\Directus\get_default_timezone());
 
 $container = $app->getContainer();
 

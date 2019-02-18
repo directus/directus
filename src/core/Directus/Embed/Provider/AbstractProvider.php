@@ -101,7 +101,6 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $defaultInfo = [
             'embed' => $embedID,
-            'title' => sprintf('%s %s: %s', $this->getName(), $this->getProviderType(), $embedID),
             'filesize' => 0,
             'filename' => $this->getName() . '_' . $embedID . '.jpg',
             'type' => $this->getType()
@@ -111,6 +110,18 @@ abstract class AbstractProvider implements ProviderInterface
         $info['html'] = $this->getCode($info);
 
         return $info;
+    }
+
+    /**
+     * Returns the default embed title
+     *
+     * @param mixed $id
+     *
+     * @return string
+     */
+    protected function getDefaultTitle($id)
+    {
+        return sprintf('%s - %s', $this->name, $id);
     }
 
     /**

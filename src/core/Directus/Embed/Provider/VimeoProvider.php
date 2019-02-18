@@ -53,7 +53,7 @@ class VimeoProvider extends AbstractProvider
     {
         $info = [];
 
-        $info['title'] = null;
+        $info['title'] = $this->getDefaultTitle($videoID);
         $info['filesize'] = 0;
         $info['width'] = 560;
         $info['height'] = 540;

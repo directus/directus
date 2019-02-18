@@ -12,11 +12,11 @@ class MethodNotAllowedHandler extends ErrorHandler
     /**
      * @param Request $request
      * @param Response $response
-     * @param \Exception|\Throwable $exception
+     * @param array $allowed methods
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $exception)
+    public function __invoke(Request $request, Response $response, $allowed)
     {
         $response = $response->withStatus(Response::HTTP_METHOD_NOT_ALLOWED);
 

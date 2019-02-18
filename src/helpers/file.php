@@ -112,12 +112,6 @@ if (!function_exists('append_storage_information'))
         }
 
         $container = Application::getInstance()->getContainer();
-        $thumbnailDimensions = array_filter(
-            explode(',', get_directus_setting('thumbnail_dimensions'))
-        );
-
-        // Add default size
-        array_unshift($thumbnailDimensions, '200x200');
 
         $config = $container->get('config');
         $fileRootUrl = $config->get('storage.root_url');
@@ -131,8 +125,6 @@ if (!function_exists('append_storage_information'))
 
         foreach ($rows as &$row) {
             $data = [];
-            $thumbnailFilenameParts = explode('.', $row['filename']);
-            $thumbnailExtension = array_pop($thumbnailFilenameParts);
             $data['url'] = $data['full_url'] = $fileRootUrl . '/' . $row['filename'];
 
             // Add Full url
@@ -141,28 +133,7 @@ if (!function_exists('append_storage_information'))
             }
 
             // Add Thumbnails
-            foreach (array_unique($thumbnailDimensions) as $dimension) {
-                if (Thumbnail::isNonImageFormatSupported($thumbnailExtension)) {
-                    $thumbnailExtension = Thumbnail::defaultFormat();
-                }
-
-                if (!is_string($dimension)) {
-                    continue;
-                }
-
-                $size = explode('x', $dimension);
-                if (count($size) == 2) {
-                    $thumbnailUrl =  get_thumbnail_url($row['filename'], $size[0], $size[1]);
-                    $thumbnailRelativeUrl = get_thumbnail_path($row['filename'], $size[0], $size[1]);
-                    $data['thumbnails'][] = [
-                        'url' => $thumbnailUrl,
-                        'relative_url' => $thumbnailRelativeUrl,
-                        'dimension' => $dimension,
-                        'width' => (int) $size[0],
-                        'height' => (int) $size[1]
-                    ];
-                }
-            }
+            $data['thumbnails'] = get_thumbnails($row);
 
             // Add embed content
             /** @var \Directus\Embed\EmbedManager $embedManager */
@@ -181,6 +152,74 @@ if (!function_exists('append_storage_information'))
         }
 
         return $list ? $rows : reset($rows);
+    }
+}
+
+if (!function_exists('add_default_dimensions')) {
+    /**
+     * Adds the default dimensions to the dimension list
+     *
+     * @param array $list
+     */
+    function add_default_thumbnail_dimensions(array &$list)
+    {
+        $defaultDimension = '200x200';
+        if (!in_array($defaultDimension, $list)) {
+            array_unshift($list, $defaultDimension);
+        }
+    }
+}
+
+if (!function_exists('get_thumbnails')) {
+    /**
+     * Returns the row thumbnails data
+     *
+     * @param array $row
+     *
+     * @return array|null
+     */
+    function get_thumbnails(array $row)
+    {
+        $filename = $row['filename'];
+        $type = array_get($row, 'type');
+        $thumbnailFilenameParts = explode('.', $filename);
+        $thumbnailExtension = array_pop($thumbnailFilenameParts);
+        $thumbnailDimensions = array_filter(
+            explode(',', get_directus_setting('thumbnail_dimensions'))
+        );
+
+        if (!$type || (strpos($type, 'image/') !== 0 && strpos($type, 'embed/') !== 0)) {
+            return null;
+        }
+
+        // Add default size
+        add_default_thumbnail_dimensions($thumbnailDimensions);
+
+        $thumbnails = [];
+        foreach (array_unique($thumbnailDimensions) as $dimension) {
+            if (Thumbnail::isNonImageFormatSupported($thumbnailExtension)) {
+                $thumbnailExtension = Thumbnail::defaultFormat();
+            }
+
+            if (!is_string($dimension)) {
+                continue;
+            }
+
+            $size = explode('x', $dimension);
+            if (count($size) == 2) {
+                $thumbnailUrl =  get_thumbnail_url($filename, $size[0], $size[1]);
+                $thumbnailRelativeUrl = get_thumbnail_path($filename, $size[0], $size[1]);
+                $thumbnails[] = [
+                    'url' => $thumbnailUrl,
+                    'relative_url' => $thumbnailRelativeUrl,
+                    'dimension' => $dimension,
+                    'width' => (int) $size[0],
+                    'height' => (int) $size[1]
+                ];
+            }
+        }
+
+        return $thumbnails;
     }
 }
 
@@ -244,5 +283,41 @@ if (!function_exists('filename_put_ext')) {
         }
 
         return $name;
+    }
+}
+
+if (!function_exists('is_a_url')) {
+    /**
+     * Checks whether or not the given value is a URL
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function is_a_url($value)
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        if (preg_match('#^data:.+\/.+;base64,#si', $value)) {
+            return false;
+        }
+
+        // Ported from: https://github.com/segmentio/is-url/blob/master/index.js
+        if (!preg_match('#^(?:\w+:)?\/\/(.+)$#si', $value, $matches)) {
+            return false;
+        }
+
+        $hostAndPath = $matches[1];
+        if (!$hostAndPath) {
+            return false;
+        }
+
+        if (preg_match('#^[^\s\.]+\.\S{2,}$#si', $hostAndPath)) {
+            return true;
+        }
+
+        return false;
     }
 }

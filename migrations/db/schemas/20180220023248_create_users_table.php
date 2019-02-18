@@ -61,7 +61,7 @@ class CreateUsersTable extends AbstractMigration
         ]);
         $table->addColumn('timezone', 'string', [
             'limit' => 32,
-            'default' => 'America/New_York'
+            'default' => date_default_timezone_get(),
         ]);
         $table->addColumn('locale', 'string', [
             'limit' => 8,
