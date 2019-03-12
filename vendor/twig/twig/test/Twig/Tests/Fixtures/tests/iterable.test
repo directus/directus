@@ -8,8 +8,8 @@
 --DATA--
 return [
     'foo' => [],
-    'traversable' => new ArrayIterator([]),
-    'obj' => new stdClass(),
+    'traversable' => new \ArrayIterator([]),
+    'obj' => new \stdClass(),
     'val' => 'test',
 ]
 --EXPECT--

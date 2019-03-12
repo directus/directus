@@ -7,9 +7,9 @@
 --DATA--
 date_default_timezone_set('UTC');
 return [
-    'date1' => new DateInterval('P2D'),
-    // This should have no effect on DateInterval formatting
-    'timezone1' => new DateTimeZone('America/New_York'),
+    'date1' => new \DateInterval('P2D'),
+    // This should have no effect on \DateInterval formatting
+    'timezone1' => new \DateTimeZone('America/New_York'),
 ]
 --EXPECT--
 2 days

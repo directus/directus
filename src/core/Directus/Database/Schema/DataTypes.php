@@ -12,6 +12,7 @@ final class DataTypes
     const TYPE_DATE                 = 'date';
     const TYPE_TIME                 = 'time';
     const TYPE_FILE                 = 'file';
+    const TYPE_HASH                 = 'hash';
     const TYPE_GROUP                = 'group';
     const TYPE_INTEGER              = 'integer';
     const TYPE_DECIMAL              = 'decimal';
@@ -19,6 +20,7 @@ final class DataTypes
     const TYPE_LANG                 = 'lang';
     const TYPE_M2O                  = 'm2o';
     const TYPE_O2M                  = 'o2m';
+    const TYPE_SLUG                 = 'slug';
     const TYPE_SORT                 = 'sort';
     const TYPE_STATUS               = 'status';
     const TYPE_STRING               = 'string';
@@ -45,6 +47,7 @@ final class DataTypes
             static::TYPE_DATE,
             static::TYPE_TIME,
             static::TYPE_FILE,
+            static::TYPE_HASH,
             static::TYPE_GROUP,
             static::TYPE_INTEGER,
             static::TYPE_DECIMAL,
@@ -52,6 +55,7 @@ final class DataTypes
             static::TYPE_LANG,
             static::TYPE_M2O,
             static::TYPE_O2M,
+            static::TYPE_SLUG,
             static::TYPE_SORT,
             static::TYPE_STATUS,
             static::TYPE_STRING,
@@ -110,6 +114,30 @@ final class DataTypes
     public static function isStringType($type)
     {
         return strtolower($type) === static::TYPE_STRING;
+    }
+
+    /**
+     * Checks whether or not the given type is a slug type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isSlugType($type)
+    {
+        return strtolower($type) === static::TYPE_SLUG;
+    }
+
+    /**
+     * Checks whether or not the given type is a hash type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isHashType($type)
+    {
+        return strtolower($type) === static::TYPE_HASH;
     }
 
     /**

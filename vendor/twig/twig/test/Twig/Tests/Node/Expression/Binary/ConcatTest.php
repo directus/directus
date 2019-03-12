@@ -9,13 +9,17 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Node_Expression_Binary_ConcatTest extends Twig_Test_NodeTestCase
+use Twig\Node\Expression\Binary\ConcatBinary;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Test\NodeTestCase;
+
+class Twig_Tests_Node_Expression_Binary_ConcatTest extends NodeTestCase
 {
     public function testConstructor()
     {
-        $left = new Twig_Node_Expression_Constant(1, 1);
-        $right = new Twig_Node_Expression_Constant(2, 1);
-        $node = new Twig_Node_Expression_Binary_Concat($left, $right, 1);
+        $left = new ConstantExpression(1, 1);
+        $right = new ConstantExpression(2, 1);
+        $node = new ConcatBinary($left, $right, 1);
 
         $this->assertEquals($left, $node->getNode('left'));
         $this->assertEquals($right, $node->getNode('right'));
@@ -23,9 +27,9 @@ class Twig_Tests_Node_Expression_Binary_ConcatTest extends Twig_Test_NodeTestCas
 
     public function getTests()
     {
-        $left = new Twig_Node_Expression_Constant(1, 1);
-        $right = new Twig_Node_Expression_Constant(2, 1);
-        $node = new Twig_Node_Expression_Binary_Concat($left, $right, 1);
+        $left = new ConstantExpression(1, 1);
+        $right = new ConstantExpression(2, 1);
+        $node = new ConcatBinary($left, $right, 1);
 
         return [
             [$node, '(1 . 2)'],

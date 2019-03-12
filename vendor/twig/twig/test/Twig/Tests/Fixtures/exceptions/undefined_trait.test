@@ -6,4 +6,4 @@ Exception for an undefined trait
 {% block bar %}
 {% endblock %}
 --EXCEPTION--
-Twig_Error_Runtime: Block "foobar" is not defined in trait "foo" in "index.twig" at line 2.
+Twig\Error\RuntimeError: Block "foobar" is not defined in trait "foo" in "index.twig" at line 2.

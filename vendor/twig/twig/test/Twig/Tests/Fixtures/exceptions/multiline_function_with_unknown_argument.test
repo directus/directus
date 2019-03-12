@@ -6,4 +6,4 @@ Exception for multiline function with unknown argument
    invalid=False
 ) }}
 --EXCEPTION--
-Twig_Error_Syntax: Unknown argument "invalid" for function "include(template, variables, with_context, ignore_missing, sandboxed)" in "index.twig" at line 4.
+Twig\Error\SyntaxError: Unknown argument "invalid" for function "include(template, variables, with_context, ignore_missing, sandboxed)" in "index.twig" at line 4.

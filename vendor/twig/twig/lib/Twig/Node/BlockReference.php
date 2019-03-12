@@ -1,34 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- * (c) Armin Ronacher
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\BlockReferenceNode;
 
-/**
- * Represents a block call node.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_BlockReference extends Twig_Node implements Twig_NodeOutputInterface
-{
-    public function __construct($name, $lineno, $tag = null)
-    {
-        parent::__construct([], ['name' => $name], $lineno, $tag);
-    }
+class_exists('Twig\Node\BlockReferenceNode');
 
-    public function compile(Twig_Compiler $compiler)
+@trigger_error(sprintf('Using the "Twig_Node_BlockReference" class is deprecated since Twig version 2.7, use "Twig\Node\BlockReferenceNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\BlockReferenceNode" instead */
+    class Twig_Node_BlockReference extends BlockReferenceNode
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write(sprintf("\$this->displayBlock('%s', \$context, \$blocks);\n", $this->getAttribute('name')))
-        ;
     }
 }
-
-class_alias('Twig_Node_BlockReference', 'Twig\Node\BlockReferenceNode', false);

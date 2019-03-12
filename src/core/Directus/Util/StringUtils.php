@@ -195,15 +195,49 @@ class StringUtils
      */
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
     {
+        $keyName = function ($key) {
+            $parts = explode('.', $key);
+
+            return end($parts);
+        };
+
+        $wrapValue = function ($value) {
+            return sprintf('\'%s\'', $value);
+        };
+
         foreach ($data as $key => $value) {
+            $isString = is_string($value);
+
             if (is_bool($value)) {
                 $value = $value ? 'true' : 'false';
+            } else if (is_null($value)) {
+                $value = 'null';
+            } else if (is_array($value)) {
+                $value = var_export($value, true);
+                // make the array as one-liner to avoid bad indentation
+                // $value = str_replace("\n", '', $value);
             }
 
             if (is_scalar($value) || is_null($value)) {
+                $string = str_replace(
+                    sprintf('{{optional(%s)}}', $key),
+                    sprintf(
+                        '\'%s\' => %s',
+                        $keyName($key),
+                        // Only wrap string values
+                        $isString ? $wrapValue($value) : $value
+                    ),
+                    $string
+                );
                 $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
             }
         }
+
+        // convert all remaining optionals placeholder from {{optional(key)}} to // 'key' => ''
+        $pattern = '#^(.*)({{optional\((.*)\)}})(.*\n)?#im';
+        $string = preg_replace_callback($pattern, function ($matches) use ($keyName) {
+            return sprintf('%s// \'%s\' => \'\'%s', $matches[1], $keyName($matches[3]), $matches[4]);
+        }, $string);
 
         return $string;
     }

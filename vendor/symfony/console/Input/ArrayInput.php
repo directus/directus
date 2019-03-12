@@ -19,7 +19,7 @@ use Symfony\Component\Console\Exception\InvalidOptionException;
  *
  * Usage:
  *
- *     $input = new ArrayInput(['name' => 'foo', '--bar' => 'foobar']);
+ *     $input = new ArrayInput(['command' => 'foo:bar', 'foo' => 'bar', '--bar' => 'foobar']);
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */

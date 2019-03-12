@@ -318,6 +318,18 @@
                 <source>Error</source>
                 <target>Galat</target>
             </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Ini bukan UUID yang sah.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Nilai ini harus kelipatan dari {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Business Identifier Code (BIC) ini tidak terkait dengan IBAN {{ iban }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

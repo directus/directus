@@ -8,7 +8,7 @@
 {{ 'Ä€é'|first }}
 {{ ''|first }}
 --DATA--
-return ['arr' => new ArrayObject([1, 2, 3, 4])]
+return ['arr' => new \ArrayObject([1, 2, 3, 4])]
 --EXPECT--
 1
 1

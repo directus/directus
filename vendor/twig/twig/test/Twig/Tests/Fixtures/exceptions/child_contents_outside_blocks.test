@@ -12,4 +12,4 @@ Content outside a block.
 {% block sidebar %}
 {% endblock %}
 --EXCEPTION--
-Twig_Error_Syntax: A template that extends another one cannot include content outside Twig blocks. Did you forget to put the content inside a {% block %} tag in "index.twig" at line 3?
+Twig\Error\SyntaxError: A template that extends another one cannot include content outside Twig blocks. Did you forget to put the content inside a {% block %} tag in "index.twig" at line 3?

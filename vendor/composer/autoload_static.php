@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit87149da506ba944b491687d22cbea956
+class ComposerStaticInit34b04bc18a9d40fb62a8e23f72d64252
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -108,6 +108,7 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         ),
         'C' => 
         array (
+            'Cocur\\Slugify\\' => 14,
             'Cache\\' => 6,
         ),
     );
@@ -129,7 +130,7 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         ),
         'WellingGuzman\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/wellingguzman/oauth2-okta/src',
+            0 => __DIR__ . '/..' . '/directus/oauth2-okta/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -185,7 +186,7 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         ),
         'RateLimit\\' => 
         array (
-            0 => __DIR__ . '/..' . '/wellingguzman/rate-limit/src',
+            0 => __DIR__ . '/..' . '/directus/rate-limit/src',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -194,7 +195,7 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'RKA\\Middleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/akrabat/ip-address-middleware/src',
-            1 => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src',
+            1 => __DIR__ . '/..' . '/directus/proxy-detection/src',
         ),
         'Psr\\SimpleCache\\' => 
         array (
@@ -308,6 +309,10 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'Cocur\\Slugify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cocur/slugify/src',
+        ),
         'Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/cache/cache/src',
@@ -376,6 +381,27 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Cache\\Taggable\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/cache/cache/src/Taggable/Exception/InvalidArgumentException.php',
         'Cache\\Taggable\\TaggablePSR6ItemAdapter' => __DIR__ . '/..' . '/cache/cache/src/Taggable/TaggablePSR6ItemAdapter.php',
         'Cache\\Taggable\\TaggablePSR6PoolAdapter' => __DIR__ . '/..' . '/cache/cache/src/Taggable/TaggablePSR6PoolAdapter.php',
+        'Cocur\\Slugify\\Bridge\\Laravel\\SlugifyFacade' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Laravel/SlugifyFacade.php',
+        'Cocur\\Slugify\\Bridge\\Laravel\\SlugifyServiceProvider' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Laravel/SlugifyServiceProvider.php',
+        'Cocur\\Slugify\\Bridge\\Latte\\SlugifyHelper' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Latte/SlugifyHelper.php',
+        'Cocur\\Slugify\\Bridge\\League\\SlugifyServiceProvider' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/League/SlugifyServiceProvider.php',
+        'Cocur\\Slugify\\Bridge\\Nette\\SlugifyExtension' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Nette/SlugifyExtension.php',
+        'Cocur\\Slugify\\Bridge\\Plum\\SlugifyConverter' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Plum/SlugifyConverter.php',
+        'Cocur\\Slugify\\Bridge\\Silex2\\SlugifyServiceProvider' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Silex2/SlugifyServiceProvider.php',
+        'Cocur\\Slugify\\Bridge\\Silex\\SlugifyServiceProvider' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Silex/SlugifyServiceProvider.php',
+        'Cocur\\Slugify\\Bridge\\Symfony\\CocurSlugifyBundle' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Symfony/CocurSlugifyBundle.php',
+        'Cocur\\Slugify\\Bridge\\Symfony\\CocurSlugifyExtension' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Symfony/CocurSlugifyExtension.php',
+        'Cocur\\Slugify\\Bridge\\Symfony\\Configuration' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Symfony/Configuration.php',
+        'Cocur\\Slugify\\Bridge\\Twig\\SlugifyExtension' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Twig/SlugifyExtension.php',
+        'Cocur\\Slugify\\Bridge\\ZF2\\Module' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/ZF2/Module.php',
+        'Cocur\\Slugify\\Bridge\\ZF2\\SlugifyService' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/ZF2/SlugifyService.php',
+        'Cocur\\Slugify\\Bridge\\ZF2\\SlugifyViewHelper' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/ZF2/SlugifyViewHelper.php',
+        'Cocur\\Slugify\\Bridge\\ZF2\\SlugifyViewHelperFactory' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/ZF2/SlugifyViewHelperFactory.php',
+        'Cocur\\Slugify\\RuleProvider\\DefaultRuleProvider' => __DIR__ . '/..' . '/cocur/slugify/src/RuleProvider/DefaultRuleProvider.php',
+        'Cocur\\Slugify\\RuleProvider\\FileRuleProvider' => __DIR__ . '/..' . '/cocur/slugify/src/RuleProvider/FileRuleProvider.php',
+        'Cocur\\Slugify\\RuleProvider\\RuleProviderInterface' => __DIR__ . '/..' . '/cocur/slugify/src/RuleProvider/RuleProviderInterface.php',
+        'Cocur\\Slugify\\Slugify' => __DIR__ . '/..' . '/cocur/slugify/src/Slugify.php',
+        'Cocur\\Slugify\\SlugifyInterface' => __DIR__ . '/..' . '/cocur/slugify/src/SlugifyInterface.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
         'DeepCopy\\Exception\\CloneException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
         'DeepCopy\\Exception\\PropertyException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/PropertyException.php',
@@ -414,7 +440,8 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Directus\\Api\\Routes\\Permissions' => __DIR__ . '/../..' . '/src/endpoints/Permissions.php',
         'Directus\\Api\\Routes\\ProjectHome' => __DIR__ . '/../..' . '/src/endpoints/ProjectHome.php',
         'Directus\\Api\\Routes\\ProjectUpdate' => __DIR__ . '/../..' . '/src/endpoints/ProjectUpdate.php',
-        'Directus\\Api\\Routes\\Projects' => __DIR__ . '/../..' . '/src/endpoints/Projects.php',
+        'Directus\\Api\\Routes\\ProjectsCreate' => __DIR__ . '/../..' . '/src/endpoints/ProjectsCreate.php',
+        'Directus\\Api\\Routes\\ProjectsDelete' => __DIR__ . '/../..' . '/src/endpoints/ProjectsDelete.php',
         'Directus\\Api\\Routes\\Relations' => __DIR__ . '/../..' . '/src/endpoints/Relations.php',
         'Directus\\Api\\Routes\\Revisions' => __DIR__ . '/../..' . '/src/endpoints/Revisions.php',
         'Directus\\Api\\Routes\\Roles' => __DIR__ . '/../..' . '/src/endpoints/Roles.php',
@@ -1733,8 +1760,8 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheInterface.php',
         'Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/simple-cache/src/InvalidArgumentException.php',
         'RKA\\Middleware\\IpAddress' => __DIR__ . '/..' . '/akrabat/ip-address-middleware/src/IpAddress.php',
-        'RKA\\Middleware\\ProxyDetection' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetection.php',
-        'RKA\\Middleware\\ProxyDetectionMiddleware' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetectionMiddleware.php',
+        'RKA\\Middleware\\ProxyDetection' => __DIR__ . '/..' . '/directus/proxy-detection/src/ProxyDetection.php',
+        'RKA\\Middleware\\ProxyDetectionMiddleware' => __DIR__ . '/..' . '/directus/proxy-detection/src/ProxyDetectionMiddleware.php',
         'Ramsey\\Uuid\\BinaryUtils' => __DIR__ . '/..' . '/ramsey/uuid/src/BinaryUtils.php',
         'Ramsey\\Uuid\\Builder\\DefaultUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DefaultUuidBuilder.php',
         'Ramsey\\Uuid\\Builder\\DegradedUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DegradedUuidBuilder.php',
@@ -1781,18 +1808,18 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Ramsey\\Uuid\\UuidFactory' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidFactory.php',
         'Ramsey\\Uuid\\UuidFactoryInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidFactoryInterface.php',
         'Ramsey\\Uuid\\UuidInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidInterface.php',
-        'RateLimit\\AbstractRateLimiter' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/AbstractRateLimiter.php',
-        'RateLimit\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Exception/ExceptionInterface.php',
-        'RateLimit\\Exception\\RateLimitExceededException' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Exception/RateLimitExceededException.php',
-        'RateLimit\\InMemoryRateLimiter' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/InMemoryRateLimiter.php',
-        'RateLimit\\Middleware\\Identity\\AbstractIdentityResolver' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Middleware/Identity/AbstractIdentityResolver.php',
-        'RateLimit\\Middleware\\Identity\\IdentityResolverInterface' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Middleware/Identity/IdentityResolverInterface.php',
-        'RateLimit\\Middleware\\Identity\\IpAddressIdentityResolver' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Middleware/Identity/IpAddressIdentityResolver.php',
-        'RateLimit\\Middleware\\Options' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Middleware/Options.php',
-        'RateLimit\\Middleware\\RateLimitMiddleware' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/Middleware/RateLimitMiddleware.php',
-        'RateLimit\\RateLimiterFactory' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/RateLimiterFactory.php',
-        'RateLimit\\RateLimiterInterface' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/RateLimiterInterface.php',
-        'RateLimit\\RedisRateLimiter' => __DIR__ . '/..' . '/wellingguzman/rate-limit/src/RedisRateLimiter.php',
+        'RateLimit\\AbstractRateLimiter' => __DIR__ . '/..' . '/directus/rate-limit/src/AbstractRateLimiter.php',
+        'RateLimit\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/directus/rate-limit/src/Exception/ExceptionInterface.php',
+        'RateLimit\\Exception\\RateLimitExceededException' => __DIR__ . '/..' . '/directus/rate-limit/src/Exception/RateLimitExceededException.php',
+        'RateLimit\\InMemoryRateLimiter' => __DIR__ . '/..' . '/directus/rate-limit/src/InMemoryRateLimiter.php',
+        'RateLimit\\Middleware\\Identity\\AbstractIdentityResolver' => __DIR__ . '/..' . '/directus/rate-limit/src/Middleware/Identity/AbstractIdentityResolver.php',
+        'RateLimit\\Middleware\\Identity\\IdentityResolverInterface' => __DIR__ . '/..' . '/directus/rate-limit/src/Middleware/Identity/IdentityResolverInterface.php',
+        'RateLimit\\Middleware\\Identity\\IpAddressIdentityResolver' => __DIR__ . '/..' . '/directus/rate-limit/src/Middleware/Identity/IpAddressIdentityResolver.php',
+        'RateLimit\\Middleware\\Options' => __DIR__ . '/..' . '/directus/rate-limit/src/Middleware/Options.php',
+        'RateLimit\\Middleware\\RateLimitMiddleware' => __DIR__ . '/..' . '/directus/rate-limit/src/Middleware/RateLimitMiddleware.php',
+        'RateLimit\\RateLimiterFactory' => __DIR__ . '/..' . '/directus/rate-limit/src/RateLimiterFactory.php',
+        'RateLimit\\RateLimiterInterface' => __DIR__ . '/..' . '/directus/rate-limit/src/RateLimiterInterface.php',
+        'RateLimit\\RedisRateLimiter' => __DIR__ . '/..' . '/directus/rate-limit/src/RedisRateLimiter.php',
         'SebastianBergmann\\CodeCoverage\\CodeCoverage' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/CodeCoverage.php',
         'SebastianBergmann\\CodeCoverage\\CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Exception/CoveredCodeNotExecutedException.php',
         'SebastianBergmann\\CodeCoverage\\Driver\\Driver' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Driver/Driver.php',
@@ -2402,6 +2429,7 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Twig\\Node\\BlockReferenceNode' => __DIR__ . '/..' . '/twig/twig/src/Node/BlockReferenceNode.php',
         'Twig\\Node\\BodyNode' => __DIR__ . '/..' . '/twig/twig/src/Node/BodyNode.php',
         'Twig\\Node\\CheckSecurityNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckSecurityNode.php',
+        'Twig\\Node\\CheckToStringNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckToStringNode.php',
         'Twig\\Node\\DeprecatedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DeprecatedNode.php',
         'Twig\\Node\\DoNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DoNode.php',
         'Twig\\Node\\EmbedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/EmbedNode.php',
@@ -2706,9 +2734,9 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
         'Twig_Util_DeprecationCollector' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Util/DeprecationCollector.php',
         'Twig_Util_TemplateDirIterator' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Util/TemplateDirIterator.php',
         'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
-        'WellingGuzman\\OAuth2\\Client\\Provider\\Exception\\OktaIdentityProviderException' => __DIR__ . '/..' . '/wellingguzman/oauth2-okta/src/Provider/Exception/OktaIdentityProviderException.php',
-        'WellingGuzman\\OAuth2\\Client\\Provider\\Okta' => __DIR__ . '/..' . '/wellingguzman/oauth2-okta/src/Provider/Okta.php',
-        'WellingGuzman\\OAuth2\\Client\\Provider\\OktaResourceOwner' => __DIR__ . '/..' . '/wellingguzman/oauth2-okta/src/Provider/OktaResourceOwner.php',
+        'WellingGuzman\\OAuth2\\Client\\Provider\\Exception\\OktaIdentityProviderException' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/Exception/OktaIdentityProviderException.php',
+        'WellingGuzman\\OAuth2\\Client\\Provider\\Okta' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/Okta.php',
+        'WellingGuzman\\OAuth2\\Client\\Provider\\OktaResourceOwner' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/OktaResourceOwner.php',
         'Zend\\Db\\Adapter\\Adapter' => __DIR__ . '/..' . '/zendframework/zend-db/src/Adapter/Adapter.php',
         'Zend\\Db\\Adapter\\AdapterAbstractServiceFactory' => __DIR__ . '/..' . '/zendframework/zend-db/src/Adapter/AdapterAbstractServiceFactory.php',
         'Zend\\Db\\Adapter\\AdapterAwareInterface' => __DIR__ . '/..' . '/zendframework/zend-db/src/Adapter/AdapterAwareInterface.php',
@@ -3031,10 +3059,10 @@ class ComposerStaticInit87149da506ba944b491687d22cbea956
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit87149da506ba944b491687d22cbea956::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit87149da506ba944b491687d22cbea956::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit87149da506ba944b491687d22cbea956::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit87149da506ba944b491687d22cbea956::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit34b04bc18a9d40fb62a8e23f72d64252::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit34b04bc18a9d40fb62a8e23f72d64252::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit34b04bc18a9d40fb62a8e23f72d64252::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit34b04bc18a9d40fb62a8e23f72d64252::$classMap;
 
         }, null, ClassLoader::class);
     }

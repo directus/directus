@@ -9,13 +9,18 @@
  * file that was distributed with this source code.
  */
 
-/**
+use Twig\TwigFunction;
+
+/*
  * For Twig 1.x compatibility.
  */
-class_exists('Twig_Function');
+class_exists(TwigFunction::class);
+
+@trigger_error(sprintf('Using the "Twig_SimpleFunction" class is deprecated since Twig version 2.7, use "Twig\TwigFunction" instead.'), E_USER_DEPRECATED);
 
 if (false) {
-    final class Twig_SimpleFunction extends Twig_Function
+    /** @deprecated since Twig 2.7, use "Twig\TwigFunction" instead */
+    final class Twig_SimpleFunction extends TwigFunction
     {
     }
 }

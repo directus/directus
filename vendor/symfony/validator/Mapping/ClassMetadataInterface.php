@@ -86,8 +86,8 @@ interface ClassMetadataInterface extends MetadataInterface
     /**
      * Returns all metadata instances for the given named property.
      *
-     * If your implementation does not support properties, simply throw an
-     * exception in this method (for example a <tt>BadMethodCallException</tt>).
+     * If your implementation does not support properties, throw an exception
+     * in this method (for example a <tt>BadMethodCallException</tt>).
      *
      * @param string $property The property name
      *

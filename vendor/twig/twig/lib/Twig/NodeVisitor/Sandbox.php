@@ -1,80 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\NodeVisitor\SandboxNodeVisitor;
 
-/**
- * Twig_NodeVisitor_Sandbox implements sandboxing.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-final class Twig_NodeVisitor_Sandbox extends Twig_BaseNodeVisitor
-{
-    private $inAModule = false;
-    private $tags;
-    private $filters;
-    private $functions;
+class_exists('Twig\NodeVisitor\SandboxNodeVisitor');
 
-    protected function doEnterNode(Twig_Node $node, Twig_Environment $env)
+@trigger_error(sprintf('Using the "Twig_NodeVisitor_Sandbox" class is deprecated since Twig version 2.7, use "Twig\NodeVisitor\SandboxNodeVisitor" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\NodeVisitor\SandboxNodeVisitor" instead */
+    class Twig_NodeVisitor_Sandbox extends SandboxNodeVisitor
     {
-        if ($node instanceof Twig_Node_Module) {
-            $this->inAModule = true;
-            $this->tags = [];
-            $this->filters = [];
-            $this->functions = [];
-
-            return $node;
-        } elseif ($this->inAModule) {
-            // look for tags
-            if ($node->getNodeTag() && !isset($this->tags[$node->getNodeTag()])) {
-                $this->tags[$node->getNodeTag()] = $node;
-            }
-
-            // look for filters
-            if ($node instanceof Twig_Node_Expression_Filter && !isset($this->filters[$node->getNode('filter')->getAttribute('value')])) {
-                $this->filters[$node->getNode('filter')->getAttribute('value')] = $node;
-            }
-
-            // look for functions
-            if ($node instanceof Twig_Node_Expression_Function && !isset($this->functions[$node->getAttribute('name')])) {
-                $this->functions[$node->getAttribute('name')] = $node;
-            }
-
-            // the .. operator is equivalent to the range() function
-            if ($node instanceof Twig_Node_Expression_Binary_Range && !isset($this->functions['range'])) {
-                $this->functions['range'] = $node;
-            }
-
-            // wrap print to check __toString() calls
-            if ($node instanceof Twig_Node_Print) {
-                return new Twig_Node_SandboxedPrint($node->getNode('expr'), $node->getTemplateLine(), $node->getNodeTag());
-            }
-        }
-
-        return $node;
-    }
-
-    protected function doLeaveNode(Twig_Node $node, Twig_Environment $env)
-    {
-        if ($node instanceof Twig_Node_Module) {
-            $this->inAModule = false;
-
-            $node->setNode('display_start', new Twig_Node([new Twig_Node_CheckSecurity($this->filters, $this->tags, $this->functions), $node->getNode('display_start')]));
-        }
-
-        return $node;
-    }
-
-    public function getPriority()
-    {
-        return 0;
     }
 }
-
-class_alias('Twig_NodeVisitor_Sandbox', 'Twig\NodeVisitor\SandboxNodeVisitor', false);

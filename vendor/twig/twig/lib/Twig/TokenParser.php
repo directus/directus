@@ -1,33 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\TokenParser\AbstractTokenParser;
 
-/**
- * Base class for all token parsers.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-abstract class Twig_TokenParser implements Twig_TokenParserInterface
-{
-    /**
-     * @var Twig_Parser
-     */
-    protected $parser;
+class_exists('Twig\TokenParser\AbstractTokenParser');
 
-    /**
-     * Sets the parser associated with this token parser.
-     */
-    public function setParser(Twig_Parser $parser)
+@trigger_error(sprintf('Using the "Twig_TokenParser" class is deprecated since Twig version 2.7, use "Twig\TokenParser\AbstractTokenParser" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\TokenParser\AbstractTokenParser" instead */
+    class Twig_TokenParser extends AbstractTokenParser
     {
-        $this->parser = $parser;
     }
 }
-
-class_alias('Twig_TokenParser', 'Twig\TokenParser\AbstractTokenParser', false);

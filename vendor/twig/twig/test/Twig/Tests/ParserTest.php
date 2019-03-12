@@ -8,37 +8,49 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Twig\Environment;
+use Twig\Loader\LoaderInterface;
+use Twig\Node\Node;
+use Twig\Node\SetNode;
+use Twig\Node\TextNode;
+use Twig\Parser;
+use Twig\Source;
+use Twig\Token;
+use Twig\TokenParser\AbstractTokenParser;
+use Twig\TokenStream;
+
 class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @expectedException        Twig_Error_Syntax
+     * @expectedException        \Twig\Error\SyntaxError
      * @expectedExceptionMessage Unknown "foo" tag. Did you mean "for" at line 1?
      */
     public function testUnknownTag()
     {
-        $stream = new Twig_TokenStream([
-            new Twig_Token(Twig_Token::BLOCK_START_TYPE, '', 1),
-            new Twig_Token(Twig_Token::NAME_TYPE, 'foo', 1),
-            new Twig_Token(Twig_Token::BLOCK_END_TYPE, '', 1),
-            new Twig_Token(Twig_Token::EOF_TYPE, '', 1),
+        $stream = new TokenStream([
+            new Token(Token::BLOCK_START_TYPE, '', 1),
+            new Token(Token::NAME_TYPE, 'foo', 1),
+            new Token(Token::BLOCK_END_TYPE, '', 1),
+            new Token(Token::EOF_TYPE, '', 1),
         ]);
-        $parser = new Twig_Parser(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
+        $parser = new Parser(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
         $parser->parse($stream);
     }
 
     /**
-     * @expectedException        Twig_Error_Syntax
+     * @expectedException        \Twig\Error\SyntaxError
      * @expectedExceptionMessage Unknown "foobar" tag at line 1.
      */
     public function testUnknownTagWithoutSuggestions()
     {
-        $stream = new Twig_TokenStream([
-            new Twig_Token(Twig_Token::BLOCK_START_TYPE, '', 1),
-            new Twig_Token(Twig_Token::NAME_TYPE, 'foobar', 1),
-            new Twig_Token(Twig_Token::BLOCK_END_TYPE, '', 1),
-            new Twig_Token(Twig_Token::EOF_TYPE, '', 1),
+        $stream = new TokenStream([
+            new Token(Token::BLOCK_START_TYPE, '', 1),
+            new Token(Token::NAME_TYPE, 'foobar', 1),
+            new Token(Token::BLOCK_END_TYPE, '', 1),
+            new Token(Token::EOF_TYPE, '', 1),
         ]);
-        $parser = new Twig_Parser(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
+        $parser = new Parser(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
         $parser->parse($stream);
     }
 
@@ -48,7 +60,7 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
     public function testFilterBodyNodes($input, $expected)
     {
         $parser = $this->getParser();
-        $m = new ReflectionMethod($parser, 'filterBodyNodes');
+        $m = new \ReflectionMethod($parser, 'filterBodyNodes');
         $m->setAccessible(true);
 
         $this->assertEquals($expected, $m->invoke($parser, $input));
@@ -58,15 +70,15 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
     {
         return [
             [
-                new Twig_Node([new Twig_Node_Text('   ', 1)]),
-                new Twig_Node([]),
+                new Node([new TextNode('   ', 1)]),
+                new Node([]),
             ],
             [
-                $input = new Twig_Node([new Twig_Node_Set(false, new Twig_Node(), new Twig_Node(), 1)]),
+                $input = new Node([new SetNode(false, new Node(), new Node(), 1)]),
                 $input,
             ],
             [
-                $input = new Twig_Node([new Twig_Node_Set(true, new Twig_Node(), new Twig_Node([new Twig_Node([new Twig_Node_Text('foo', 1)])]), 1)]),
+                $input = new Node([new SetNode(true, new Node(), new Node([new Node([new TextNode('foo', 1)])]), 1)]),
                 $input,
             ],
         ];
@@ -74,13 +86,13 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider getFilterBodyNodesDataThrowsException
-     * @expectedException Twig_Error_Syntax
+     * @expectedException \Twig\Error\SyntaxError
      */
     public function testFilterBodyNodesThrowsException($input)
     {
         $parser = $this->getParser();
 
-        $m = new ReflectionMethod($parser, 'filterBodyNodes');
+        $m = new \ReflectionMethod($parser, 'filterBodyNodes');
         $m->setAccessible(true);
 
         $m->invoke($parser, $input);
@@ -89,8 +101,8 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
     public function getFilterBodyNodesDataThrowsException()
     {
         return [
-            [new Twig_Node_Text('foo', 1)],
-            [new Twig_Node([new Twig_Node([new Twig_Node_Text('foo', 1)])])],
+            [new TextNode('foo', 1)],
+            [new Node([new Node([new TextNode('foo', 1)])])],
         ];
     }
 
@@ -101,9 +113,9 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
     {
         $parser = $this->getParser();
 
-        $m = new ReflectionMethod($parser, 'filterBodyNodes');
+        $m = new \ReflectionMethod($parser, 'filterBodyNodes');
         $m->setAccessible(true);
-        $this->assertNull($m->invoke($parser, new Twig_Node_Text(chr(0xEF).chr(0xBB).chr(0xBF).$emptyNode, 1)));
+        $this->assertNull($m->invoke($parser, new TextNode(\chr(0xEF).\chr(0xBB).\chr(0xBF).$emptyNode, 1)));
     }
 
     public function getFilterBodyNodesWithBOMData()
@@ -118,22 +130,22 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
 
     public function testParseIsReentrant()
     {
-        $twig = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), [
+        $twig = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), [
             'autoescape' => false,
             'optimizations' => 0,
         ]);
         $twig->addTokenParser(new TestTokenParser());
 
-        $parser = new Twig_Parser($twig);
+        $parser = new Parser($twig);
 
-        $parser->parse(new Twig_TokenStream([
-            new Twig_Token(Twig_Token::BLOCK_START_TYPE, '', 1),
-            new Twig_Token(Twig_Token::NAME_TYPE, 'test', 1),
-            new Twig_Token(Twig_Token::BLOCK_END_TYPE, '', 1),
-            new Twig_Token(Twig_Token::VAR_START_TYPE, '', 1),
-            new Twig_Token(Twig_Token::NAME_TYPE, 'foo', 1),
-            new Twig_Token(Twig_Token::VAR_END_TYPE, '', 1),
-            new Twig_Token(Twig_Token::EOF_TYPE, '', 1),
+        $parser->parse(new TokenStream([
+            new Token(Token::BLOCK_START_TYPE, '', 1),
+            new Token(Token::NAME_TYPE, 'test', 1),
+            new Token(Token::BLOCK_END_TYPE, '', 1),
+            new Token(Token::VAR_START_TYPE, '', 1),
+            new Token(Token::NAME_TYPE, 'foo', 1),
+            new Token(Token::VAR_END_TYPE, '', 1),
+            new Token(Token::EOF_TYPE, '', 1),
         ]));
 
         $this->assertNull($parser->getParent());
@@ -141,12 +153,12 @@ class Twig_Tests_ParserTest extends \PHPUnit\Framework\TestCase
 
     public function testGetVarName()
     {
-        $twig = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), [
+        $twig = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), [
             'autoescape' => false,
             'optimizations' => 0,
         ]);
 
-        $twig->parse($twig->tokenize(new Twig_Source(<<<EOF
+        $twig->parse($twig->tokenize(new Source(<<<EOF
 {% from _self import foo %}
 
 {% macro foo() %}
@@ -163,33 +175,33 @@ EOF
 
     protected function getParser()
     {
-        $parser = new Twig_Parser(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $parser->setParent(new Twig_Node());
+        $parser = new Parser(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $parser->setParent(new Node());
 
-        $p = new ReflectionProperty($parser, 'stream');
+        $p = new \ReflectionProperty($parser, 'stream');
         $p->setAccessible(true);
-        $p->setValue($parser, new Twig_TokenStream([]));
+        $p->setValue($parser, new TokenStream([]));
 
         return $parser;
     }
 }
 
-class TestTokenParser extends Twig_TokenParser
+class TestTokenParser extends AbstractTokenParser
 {
-    public function parse(Twig_Token $token)
+    public function parse(Token $token)
     {
         // simulate the parsing of another template right in the middle of the parsing of the current template
-        $this->parser->parse(new Twig_TokenStream([
-            new Twig_Token(Twig_Token::BLOCK_START_TYPE, '', 1),
-            new Twig_Token(Twig_Token::NAME_TYPE, 'extends', 1),
-            new Twig_Token(Twig_Token::STRING_TYPE, 'base', 1),
-            new Twig_Token(Twig_Token::BLOCK_END_TYPE, '', 1),
-            new Twig_Token(Twig_Token::EOF_TYPE, '', 1),
+        $this->parser->parse(new TokenStream([
+            new Token(Token::BLOCK_START_TYPE, '', 1),
+            new Token(Token::NAME_TYPE, 'extends', 1),
+            new Token(Token::STRING_TYPE, 'base', 1),
+            new Token(Token::BLOCK_END_TYPE, '', 1),
+            new Token(Token::EOF_TYPE, '', 1),
         ]));
 
-        $this->parser->getStream()->expect(Twig_Token::BLOCK_END_TYPE);
+        $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
-        return new Twig_Node([]);
+        return new Node([]);
     }
 
     public function getTag()

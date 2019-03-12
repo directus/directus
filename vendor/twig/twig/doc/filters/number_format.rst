@@ -34,8 +34,8 @@ These defaults can be easily changed through the core extension:
 
 .. code-block:: php
 
-    $twig = new Twig_Environment($loader);
-    $twig->getExtension('Twig_Extension_Core')->setNumberFormat(3, '.', ',');
+    $twig = new \Twig\Environment($loader);
+    $twig->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(3, '.', ',');
 
 The defaults set for ``number_format`` can be over-ridden upon each call using the
 additional parameters.

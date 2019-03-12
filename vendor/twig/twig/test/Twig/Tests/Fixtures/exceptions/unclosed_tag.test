@@ -17,4 +17,4 @@ Exception for an unclosed tag
 
 {% endblock %}
 --EXCEPTION--
-Twig_Error_Syntax: Unexpected "endblock" tag (expecting closing tag for the "if" tag defined near line 4) in "index.twig" at line 16.
+Twig\Error\SyntaxError: Unexpected "endblock" tag (expecting closing tag for the "if" tag defined near line 4) in "index.twig" at line 16.

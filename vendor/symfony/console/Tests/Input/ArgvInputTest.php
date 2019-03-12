@@ -312,6 +312,14 @@ class ArgvInputTest extends TestCase
 
         $input = new ArgvInput(['cli.php', '-fbbar', 'foo']);
         $this->assertEquals('foo', $input->getFirstArgument(), '->getFirstArgument() returns the first argument from the raw input');
+
+        $input = new ArgvInput(['cli.php', '--foo', 'fooval', 'bar']);
+        $input->bind(new InputDefinition([new InputOption('foo', 'f', InputOption::VALUE_OPTIONAL), new InputArgument('arg')]));
+        $this->assertSame('bar', $input->getFirstArgument());
+
+        $input = new ArgvInput(['cli.php', '-bf', 'fooval', 'argval']);
+        $input->bind(new InputDefinition([new InputOption('bar', 'b', InputOption::VALUE_NONE), new InputOption('foo', 'f', InputOption::VALUE_OPTIONAL), new InputArgument('arg')]));
+        $this->assertSame('argval', $input->getFirstArgument());
     }
 
     public function testHasParameterOption()

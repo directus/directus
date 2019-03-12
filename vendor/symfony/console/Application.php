@@ -199,6 +199,13 @@ class Application
             return 0;
         }
 
+        try {
+            // Makes ArgvInput::getFirstArgument() able to distinguish an option from an argument.
+            $input->bind($this->getDefinition());
+        } catch (ExceptionInterface $e) {
+            // Errors must be ignored, full binding/validation happens later when the command is known.
+        }
+
         $name = $this->getCommandName($input);
         if (true === $input->hasParameterOption(['--help', '-h'], true)) {
             if (!$name) {

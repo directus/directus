@@ -7,4 +7,4 @@
 --DATA--
 return ['items' => ['a', 'b']]
 --EXCEPTION--
-Twig_Error_Syntax: The "loop.last" variable is not defined when looping with a condition in "index.twig" at line 3.
+Twig\Error\SyntaxError: The "loop.last" variable is not defined when looping with a condition in "index.twig" at line 3.

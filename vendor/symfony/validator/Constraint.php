@@ -122,7 +122,7 @@ abstract class Constraint
         }
         if ($options && \is_array($options) && \is_string(key($options))) {
             foreach ($options as $option => $value) {
-                if (array_key_exists($option, $knownOptions)) {
+                if (\array_key_exists($option, $knownOptions)) {
                     $this->$option = $value;
                     unset($missingOptions[$option]);
                 } else {
@@ -136,7 +136,7 @@ abstract class Constraint
                 throw new ConstraintDefinitionException(sprintf('No default option is configured for constraint %s', \get_class($this)));
             }
 
-            if (array_key_exists($option, $knownOptions)) {
+            if (\array_key_exists($option, $knownOptions)) {
                 $this->$option = $options;
                 unset($missingOptions[$option]);
             } else {

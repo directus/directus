@@ -18,7 +18,7 @@
 {{ {"a": "w", "b": "x", "c": "y", "d": "z"}|join(',') }}
 {{ {"a": "w", "b": "x", "c": "y", "d": "z"}|join(',','-') }}
 --DATA--
-return ['foo' => new TwigTestFoo(), 'bar' => new ArrayObject([3, 4])]
+return ['foo' => new TwigTestFoo(), 'bar' => new \ArrayObject([3, 4])]
 --EXPECT--
 foo, bar
 1, 2

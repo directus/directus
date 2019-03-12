@@ -8,4 +8,4 @@ sandbox tag
 --TEMPLATE(foo.twig)--
 foo
 --EXCEPTION--
-Twig_Error_Syntax: Only "include" tags are allowed within a "sandbox" section in "index.twig" at line 4.
+Twig\Error\SyntaxError: Only "include" tags are allowed within a "sandbox" section in "index.twig" at line 4.

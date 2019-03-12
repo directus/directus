@@ -1,3 +1,34 @@
+* 2.7.1 (2019-03-12)
+
+ * fixed class aliases
+
+* 2.7.0 (2019-03-12)
+
+ * fixed sandbox security issue (under some circumstances, calling the
+   __toString() method on an object was possible even if not allowed by the
+   security policy)
+ * fixed batch filter clobbers array keys when fill parameter is used
+ * added preserveKeys support for the batch filter
+ * fixed "embed" support when used from "template_from_string"
+ * deprecated passing a Twig\Template to Twig\Environment::load()/Twig\Environment::resolveTemplate()
+ * added the possibility to pass a TemplateWrapper to Twig\Environment::load()
+ * marked Twig\Environment::getTemplateClass() as internal (implementation detail)
+ * improved the performance of the sandbox
+ * deprecated the spaceless tag
+ * added a spaceless filter
+ * added max value to the "random" function
+ * deprecated Twig\Extension\InitRuntimeInterface
+ * deprecated Twig\Loader\ExistsLoaderInterface
+ * deprecated PSR-0 classes in favor of namespaced ones
+ * made namespace classes the default classes (PSR-0 ones are aliases now)
+ * added Twig\Loader\ChainLoader::getLoaders()
+ * removed duplicated directory separator in FilesystemLoader
+ * deprecated the "base_template_class" option on Twig\Environment
+ * deprecated the Twig\Environment::getBaseTemplateClass() and
+   Twig\Environment::setBaseTemplateClass() methods
+ * changed internal code to use the namespaced classes as much as possible
+ * deprecated Twig_Parser::isReservedMacroName()
+
 * 2.6.2 (2019-01-14)
 
  * fixed regression (key exists check for non ArrayObject objects)
@@ -140,7 +171,28 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.37.1 (2019-XX-XX)
+* 1.38.1 (2019-XX-XX)
+
+ * fixed class aliases
+
+* 1.38.0 (2019-03-12)
+
+ * fixed sandbox security issue (under some circumstances, calling the
+   __toString() method on an object was possible even if not allowed by the
+   security policy)
+ * fixed batch filter clobbers array keys when fill parameter is used
+ * added preserveKeys support for the batch filter
+ * fixed "embed" support when used from "template_from_string"
+ * added the possibility to pass a TemplateWrapper to Twig\Environment::load()
+ * improved the performance of the sandbox
+ * added a spaceless filter
+ * added max value to the "random" function
+ * made namespace classes the default classes (PSR-0 ones are aliases now)
+ * removed duplicated directory separator in FilesystemLoader
+ * added Twig\Loader\ChainLoader::getLoaders()
+ * changed internal code to use the namespaced classes as much as possible
+
+* 1.37.1 (2019-01-14)
 
  * fixed regression (key exists check for non ArrayObject objects)
  * fixed logic in TemplateWrapper

@@ -23,7 +23,7 @@ return [
     'magically_callable' => new MagicCallStub(),
     'countable_empty' => new CountableStub([]), 'countable_not_empty' => new CountableStub([1, 2]),
     'tostring_empty' => new ToStringStub(''), 'tostring_not_empty' => new ToStringStub('0' /* edge case of using "0" as the string */),
-    'markup_empty' => new Twig_Markup('', 'UTF-8'), 'markup_not_empty' => new Twig_Markup('test', 'UTF-8'),
+    'markup_empty' => new \Twig\Markup('', 'UTF-8'), 'markup_not_empty' => new \Twig\Markup('test', 'UTF-8'),
 ]
 --EXPECT--
 ok

@@ -54,6 +54,21 @@ class XliffFileDumperTest extends TestCase
         );
     }
 
+    public function testFormatIcuCatalogueXliff2()
+    {
+        $catalogue = new MessageCatalogue('en_US');
+        $catalogue->add([
+            'foo' => 'bar',
+        ], 'messages'.MessageCatalogue::INTL_DOMAIN_SUFFIX);
+
+        $dumper = new XliffFileDumper();
+
+        $this->assertStringEqualsFile(
+            __DIR__.'/../fixtures/resources-2.0+intl-icu.xlf',
+            $dumper->formatCatalogue($catalogue, 'messages'.MessageCatalogue::INTL_DOMAIN_SUFFIX, ['default_locale' => 'fr_FR', 'xliff_version' => '2.0'])
+        );
+    }
+
     public function testFormatCatalogueWithCustomToolInfo()
     {
         $options = [

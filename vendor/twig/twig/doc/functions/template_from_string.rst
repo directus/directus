@@ -11,11 +11,11 @@ The ``template_from_string`` function loads a template from a string:
 .. note::
 
     The ``template_from_string`` function is not available by default. You
-    must add the ``Twig_Extension_StringLoader`` extension explicitly when
+    must add the ``\Twig\Extension\StringLoaderExtension`` extension explicitly when
     creating your Twig environment::
 
-        $twig = new Twig_Environment(...);
-        $twig->addExtension(new Twig_Extension_StringLoader());
+        $twig = new \Twig\Environment(...);
+        $twig->addExtension(new \Twig\Extension\StringLoaderExtension());
 
 .. note::
 

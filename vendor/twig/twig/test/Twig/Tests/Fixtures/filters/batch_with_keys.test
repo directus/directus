@@ -1,8 +1,8 @@
 --TEST--
 "batch" filter preserves array keys
 --TEMPLATE--
-{{ {'foo': 'bar', 'key': 'value'}|batch(4)|first|keys|join(',')  }}
-{{ {'foo': 'bar', 'key': 'value'}|batch(4, 'fill')|first|keys|join(',')  }}
+{{ {'foo': 'bar', 'key': 'value'}|batch(4)|first|keys|join(',') }}
+{{ {'foo': 'bar', 'key': 'value'}|batch(4, 'fill')|first|keys|join(',') }}
 --DATA--
 return []
 --EXPECT--

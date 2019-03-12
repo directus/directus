@@ -278,6 +278,42 @@
                 <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
                 <target>Balio hau ez litzateke {{ compared_value_type }} {{ compared_value }}-(r)en berbera izan behar.</target>
             </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Irudiaren proportzioa oso handia da ({{ ratio }}). Onartutako proportzio handienda {{ max_ratio }} da.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Irudiaren proportzioa oso txikia da ({{ ratio }}). Onartutako proportzio txikiena {{ min_ratio }} da.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Irudia karratua da ({{ width }}x{{ height }}px). Karratuak diren irudiak ez dira onartzen.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>Irudia horizontalki bideratua dago ({{ width }}x{{ height }}px). Horizontalki bideratutako irudiak ez dira onartzen.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>Irudia bertikalki bideratua dago ({{ width }}x{{ height }}px). Bertikalki bideratutako irudiak ez dira onartzen.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Hutsik dagoen fitxategia ez da onartzen.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>Host-a ezin da ebatzi.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Balio honen karaktere kodea ez da esperotakoa {{ charset }}.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Ez da balizko Banku Identifikazioko Kodea (BIC).</target>
+            </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
                 <target>Errore</target>
@@ -285,6 +321,14 @@
             <trans-unit id="83">
                 <source>This is not a valid UUID.</source>
                 <target>Balio hau ez da onartutako UUID bat.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Balio honek {{ compared_value }}-ren multiploa izan beharko luke.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Banku Identifikazioko Kode hau ez dago lotuta {{ IBAN }} IBAN-rekin.</target>
             </trans-unit>
         </body>
     </file>

@@ -18,7 +18,7 @@ any other ones:
     {# displays bar #}
     {{ foo }}
 
-The assigned value can be any valid :ref:`Twig expressions
+The assigned value can be any valid :ref:`Twig expression
 <twig-expressions>`:
 
 .. code-block:: jinja

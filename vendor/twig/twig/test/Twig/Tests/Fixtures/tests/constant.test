@@ -6,7 +6,7 @@
 {{ value is constant('TwigTestFoo::BAR_NAME') ? 'ok' : 'no' }}
 {{ 2 is constant('ARRAY_AS_PROPS', object) ? 'ok' : 'no' }}
 --DATA--
-return ['value' => 'bar', 'object' => new ArrayObject(['hi'])]
+return ['value' => 'bar', 'object' => new \ArrayObject(['hi'])]
 --EXPECT--
 ok
 ok

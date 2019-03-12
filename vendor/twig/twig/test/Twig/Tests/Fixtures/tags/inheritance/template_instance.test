@@ -9,6 +9,6 @@
 --TEMPLATE(foo.twig)--
 {% block content %}BAR{% endblock %}
 --DATA--
-return ['foo' => $twig->loadTemplate('foo.twig')]
+return ['foo' => $twig->load('foo.twig')]
 --EXPECT--
 BARFOO

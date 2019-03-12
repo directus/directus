@@ -9,7 +9,7 @@
 --DATA--
 return [
     'included_loaded' => $twig->load('included.twig'),
-    'included_loaded_internal' => $twig->loadTemplate('included.twig'),
+    'included_loaded_internal' => $twig->load('included.twig'),
 ]
 --EXPECT--
 ok

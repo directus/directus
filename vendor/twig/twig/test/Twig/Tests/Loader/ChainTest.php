@@ -9,15 +9,20 @@
  * file that was distributed with this source code.
  */
 
+use Twig\Loader\ArrayLoader;
+use Twig\Loader\ChainLoader;
+use Twig\Loader\FilesystemLoader;
+use Twig\Loader\LoaderInterface;
+
 class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSourceContext()
     {
         $path = __DIR__.'/../Fixtures';
-        $loader = new Twig_Loader_Chain([
-            new Twig_Loader_Array(['foo' => 'bar']),
-            new Twig_Loader_Array(['errors/index.html' => 'baz']),
-            new Twig_Loader_Filesystem([$path]),
+        $loader = new ChainLoader([
+            new ArrayLoader(['foo' => 'bar']),
+            new ArrayLoader(['errors/index.html' => 'baz']),
+            new FilesystemLoader([$path]),
         ]);
 
         $this->assertEquals('foo', $loader->getSourceContext('foo')->getName());
@@ -33,20 +38,20 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Twig_Error_Loader
+     * @expectedException \Twig\Error\LoaderError
      */
     public function testGetSourceContextWhenTemplateDoesNotExist()
     {
-        $loader = new Twig_Loader_Chain([]);
+        $loader = new ChainLoader([]);
 
         $loader->getSourceContext('foo');
     }
 
     public function testGetCacheKey()
     {
-        $loader = new Twig_Loader_Chain([
-            new Twig_Loader_Array(['foo' => 'bar']),
-            new Twig_Loader_Array(['foo' => 'foobar', 'bar' => 'foo']),
+        $loader = new ChainLoader([
+            new ArrayLoader(['foo' => 'bar']),
+            new ArrayLoader(['foo' => 'foobar', 'bar' => 'foo']),
         ]);
 
         $this->assertEquals('foo:bar', $loader->getCacheKey('foo'));
@@ -54,34 +59,34 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Twig_Error_Loader
+     * @expectedException \Twig\Error\LoaderError
      */
     public function testGetCacheKeyWhenTemplateDoesNotExist()
     {
-        $loader = new Twig_Loader_Chain([]);
+        $loader = new ChainLoader([]);
 
         $loader->getCacheKey('foo');
     }
 
     public function testAddLoader()
     {
-        $loader = new Twig_Loader_Chain();
-        $loader->addLoader(new Twig_Loader_Array(['foo' => 'bar']));
+        $loader = new ChainLoader();
+        $loader->addLoader(new ArrayLoader(['foo' => 'bar']));
 
         $this->assertEquals('bar', $loader->getSourceContext('foo')->getCode());
     }
 
     public function testExists()
     {
-        $loader1 = $this->getMockBuilder('Twig_LoaderInterface')->getMock();
+        $loader1 = $this->getMockBuilder(LoaderInterface::class)->getMock();
         $loader1->expects($this->once())->method('exists')->will($this->returnValue(false));
         $loader1->expects($this->never())->method('getSourceContext');
 
-        $loader2 = $this->getMockBuilder('Twig_LoaderInterface')->getMock();
+        $loader2 = $this->getMockBuilder(LoaderInterface::class)->getMock();
         $loader2->expects($this->once())->method('exists')->will($this->returnValue(true));
         $loader2->expects($this->never())->method('getSourceContext');
 
-        $loader = new Twig_Loader_Chain();
+        $loader = new ChainLoader();
         $loader->addLoader($loader1);
         $loader->addLoader($loader2);
 

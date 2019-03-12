@@ -1,30 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-class Twig_Node_Expression_Binary_Range extends Twig_Node_Expression_Binary
-{
-    public function compile(Twig_Compiler $compiler)
-    {
-        $compiler
-            ->raw('range(')
-            ->subcompile($this->getNode('left'))
-            ->raw(', ')
-            ->subcompile($this->getNode('right'))
-            ->raw(')')
-        ;
-    }
+use Twig\Node\Expression\Binary\RangeBinary;
 
-    public function operator(Twig_Compiler $compiler)
+class_exists('Twig\Node\Expression\Binary\RangeBinary');
+
+@trigger_error(sprintf('Using the "Twig_Node_Expression_Binary_Range" class is deprecated since Twig version 2.7, use "Twig\Node\Expression\Binary\RangeBinary" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\Expression\Binary\RangeBinary" instead */
+    class Twig_Node_Expression_Binary_Range extends RangeBinary
     {
-        return $compiler->raw('..');
     }
 }
-
-class_alias('Twig_Node_Expression_Binary_Range', 'Twig\Node\Expression\Binary\RangeBinary', false);

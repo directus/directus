@@ -1,25 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- * (c) Armin Ronacher
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-class Twig_Node_Expression_Constant extends Twig_Node_Expression
-{
-    public function __construct($value, $lineno)
-    {
-        parent::__construct([], ['value' => $value], $lineno);
-    }
+use Twig\Node\Expression\ConstantExpression;
 
-    public function compile(Twig_Compiler $compiler)
+class_exists('Twig\Node\Expression\ConstantExpression');
+
+@trigger_error(sprintf('Using the "Twig_Node_Expression_Constant" class is deprecated since Twig version 2.7, use "Twig\Node\Expression\ConstantExpression" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\Expression\ConstantExpression" instead */
+    class Twig_Node_Expression_Constant extends ConstantExpression
     {
-        $compiler->repr($this->getAttribute('value'));
     }
 }
-
-class_alias('Twig_Node_Expression_Constant', 'Twig\Node\Expression\ConstantExpression', false);

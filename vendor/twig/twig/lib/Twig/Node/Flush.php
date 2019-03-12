@@ -1,33 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\FlushNode;
 
-/**
- * Represents a flush node.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_Flush extends Twig_Node
-{
-    public function __construct($lineno, $tag)
-    {
-        parent::__construct([], [], $lineno, $tag);
-    }
+class_exists('Twig\Node\FlushNode');
 
-    public function compile(Twig_Compiler $compiler)
+@trigger_error(sprintf('Using the "Twig_Node_Flush" class is deprecated since Twig version 2.7, use "Twig\Node\FlushNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\FlushNode" instead */
+    class Twig_Node_Flush extends FlushNode
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write("flush();\n")
-        ;
     }
 }
-
-class_alias('Twig_Node_Flush', 'Twig\Node\FlushNode', false);

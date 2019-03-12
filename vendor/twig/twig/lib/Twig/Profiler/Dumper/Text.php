@@ -1,33 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Profiler\Dumper\TextDumper;
 
-/**
- * @author Fabien Potencier <fabien@symfony.com>
- */
-final class Twig_Profiler_Dumper_Text extends Twig_Profiler_Dumper_Base
-{
-    protected function formatTemplate(Twig_Profiler_Profile $profile, $prefix)
-    {
-        return sprintf('%s└ %s', $prefix, $profile->getTemplate());
-    }
+class_exists('Twig\Profiler\Dumper\TextDumper');
 
-    protected function formatNonTemplate(Twig_Profiler_Profile $profile, $prefix)
-    {
-        return sprintf('%s└ %s::%s(%s)', $prefix, $profile->getTemplate(), $profile->getType(), $profile->getName());
-    }
+@trigger_error(sprintf('Using the "Twig_Profiler_Dumper_Text" class is deprecated since Twig version 2.7, use "Twig\Profiler\Dumper\TextDumper" instead.'), E_USER_DEPRECATED);
 
-    protected function formatTime(Twig_Profiler_Profile $profile, $percent)
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Profiler\Dumper\TextDumper" instead */
+    class Twig_Profiler_Dumper_Text extends TextDumper
     {
-        return sprintf('%.2fms/%.0f%%', $profile->getDuration() * 1000, $percent);
     }
 }
-
-class_alias('Twig_Profiler_Dumper_Text', 'Twig\Profiler\Dumper\TextDumper', false);

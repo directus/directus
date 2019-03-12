@@ -13,4 +13,4 @@
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Loader: Template "foo.twig" is not defined in "base.twig" at line 3.
+Twig\Error\LoaderError: Template "foo.twig" is not defined in "base.twig" at line 3.

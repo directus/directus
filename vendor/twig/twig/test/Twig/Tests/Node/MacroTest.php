@@ -9,13 +9,20 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Node_MacroTest extends Twig_Test_NodeTestCase
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\NameExpression;
+use Twig\Node\MacroNode;
+use Twig\Node\Node;
+use Twig\Node\TextNode;
+use Twig\Test\NodeTestCase;
+
+class Twig_Tests_Node_MacroTest extends NodeTestCase
 {
     public function testConstructor()
     {
-        $body = new Twig_Node_Text('foo', 1);
-        $arguments = new Twig_Node([new Twig_Node_Expression_Name('foo', 1)], [], 1);
-        $node = new Twig_Node_Macro('foo', $body, $arguments, 1);
+        $body = new TextNode('foo', 1);
+        $arguments = new Node([new NameExpression('foo', 1)], [], 1);
+        $node = new MacroNode('foo', $body, $arguments, 1);
 
         $this->assertEquals($body, $node->getNode('body'));
         $this->assertEquals($arguments, $node->getNode('arguments'));
@@ -24,12 +31,12 @@ class Twig_Tests_Node_MacroTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $body = new Twig_Node_Text('foo', 1);
-        $arguments = new Twig_Node([
-            'foo' => new Twig_Node_Expression_Constant(null, 1),
-            'bar' => new Twig_Node_Expression_Constant('Foo', 1),
+        $body = new TextNode('foo', 1);
+        $arguments = new Node([
+            'foo' => new ConstantExpression(null, 1),
+            'bar' => new ConstantExpression('Foo', 1),
         ], [], 1);
-        $node = new Twig_Node_Macro('foo', $body, $arguments, 1);
+        $node = new MacroNode('foo', $body, $arguments, 1);
 
         return [
             [$node, <<<EOF
@@ -48,7 +55,7 @@ public function macro_foo(\$__foo__ = null, \$__bar__ = "Foo", ...\$__varargs__)
     try {
         echo "foo";
 
-        return ('' === \$tmp = ob_get_contents()) ? '' : new Twig_Markup(\$tmp, \$this->env->getCharset());
+        return ('' === \$tmp = ob_get_contents()) ? '' : new Markup(\$tmp, \$this->env->getCharset());
     } finally {
         ob_end_clean();
     }

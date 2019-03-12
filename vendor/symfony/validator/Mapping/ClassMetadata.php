@@ -371,7 +371,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
      */
     public function hasPropertyMetadata($property)
     {
-        return array_key_exists($property, $this->members);
+        return \array_key_exists($property, $this->members);
     }
 
     /**

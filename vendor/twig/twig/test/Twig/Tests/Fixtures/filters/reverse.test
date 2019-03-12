@@ -8,7 +8,7 @@
 {{ {'a': 'c', 'b': 'a'}|reverse(preserveKeys=true)|join(glue=',') }}
 {{ {'a': 'c', 'b': 'a'}|reverse(preserve_keys=true)|join(glue=',') }}
 --DATA--
-return ['arr' => new ArrayObject([1, 2, 3, 4])]
+return ['arr' => new \ArrayObject([1, 2, 3, 4])]
 --EXPECT--
 4321
 tnemenèvé4321

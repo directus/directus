@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
+use Twig\Profiler\Profile;
+
 class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructor()
     {
-        $profile = new Twig_Profiler_Profile('template', 'type', 'name');
+        $profile = new Profile('template', 'type', 'name');
 
         $this->assertEquals('template', $profile->getTemplate());
         $this->assertEquals('type', $profile->getType());
@@ -22,45 +24,45 @@ class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testIsRoot()
     {
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::ROOT);
+        $profile = new Profile('template', Profile::ROOT);
         $this->assertTrue($profile->isRoot());
 
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::TEMPLATE);
+        $profile = new Profile('template', Profile::TEMPLATE);
         $this->assertFalse($profile->isRoot());
     }
 
     public function testIsTemplate()
     {
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::TEMPLATE);
+        $profile = new Profile('template', Profile::TEMPLATE);
         $this->assertTrue($profile->isTemplate());
 
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::ROOT);
+        $profile = new Profile('template', Profile::ROOT);
         $this->assertFalse($profile->isTemplate());
     }
 
     public function testIsBlock()
     {
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::BLOCK);
+        $profile = new Profile('template', Profile::BLOCK);
         $this->assertTrue($profile->isBlock());
 
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::ROOT);
+        $profile = new Profile('template', Profile::ROOT);
         $this->assertFalse($profile->isBlock());
     }
 
     public function testIsMacro()
     {
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::MACRO);
+        $profile = new Profile('template', Profile::MACRO);
         $this->assertTrue($profile->isMacro());
 
-        $profile = new Twig_Profiler_Profile('template', Twig_Profiler_Profile::ROOT);
+        $profile = new Profile('template', Profile::ROOT);
         $this->assertFalse($profile->isMacro());
     }
 
     public function testGetAddProfile()
     {
-        $profile = new Twig_Profiler_Profile();
-        $profile->addProfile($a = new Twig_Profiler_Profile());
-        $profile->addProfile($b = new Twig_Profiler_Profile());
+        $profile = new Profile();
+        $profile->addProfile($a = new Profile());
+        $profile->addProfile($b = new Profile());
 
         $this->assertSame([$a, $b], $profile->getProfiles());
         $this->assertSame([$a, $b], iterator_to_array($profile));
@@ -68,7 +70,7 @@ class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDuration()
     {
-        $profile = new Twig_Profiler_Profile();
+        $profile = new Profile();
         usleep(1);
         $profile->leave();
 
@@ -77,8 +79,8 @@ class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testSerialize()
     {
-        $profile = new Twig_Profiler_Profile('template', 'type', 'name');
-        $profile1 = new Twig_Profiler_Profile('template1', 'type1', 'name1');
+        $profile = new Profile('template', 'type', 'name');
+        $profile1 = new Profile('template1', 'type1', 'name1');
         $profile->addProfile($profile1);
         $profile->leave();
         $profile1->leave();
@@ -100,7 +102,7 @@ class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testReset()
     {
-        $profile = new Twig_Profiler_Profile();
+        $profile = new Profile();
         usleep(1);
         $profile->leave();
         $profile->reset();

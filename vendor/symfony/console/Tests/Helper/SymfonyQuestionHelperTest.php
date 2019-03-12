@@ -124,7 +124,7 @@ class SymfonyQuestionHelperTest extends AbstractQuestionHelperTest
 
     /**
      * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted
+     * @expectedExceptionMessage Aborted.
      */
     public function testAskThrowsExceptionOnMissingInput()
     {

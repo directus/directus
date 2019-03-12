@@ -79,7 +79,7 @@ class Regex extends Constraint
         // Unescape the delimiter
         $pattern = str_replace('\\'.$delimiter, $delimiter, substr($this->pattern, 1, -1));
 
-        // If the pattern is inverted, we can simply wrap it in
+        // If the pattern is inverted, we can wrap it in
         // ((?!pattern).)*
         if (!$this->match) {
             return '((?!'.$pattern.').)*';

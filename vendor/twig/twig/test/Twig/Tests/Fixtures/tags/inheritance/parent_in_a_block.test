@@ -5,4 +5,4 @@
     {% extends "foo.twig" %}
 {% endblock %}
 --EXCEPTION--
-Twig_Error_Syntax: Cannot extend from a block in "index.twig" at line 3.
+Twig\Error\SyntaxError: Cannot extend from a block in "index.twig" at line 3.

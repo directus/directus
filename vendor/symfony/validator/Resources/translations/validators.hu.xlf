@@ -322,6 +322,14 @@
                 <source>This is not a valid UUID.</source>
                 <target>Érvénytelen egyedi azonosító (UUID).</target>
             </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Ennek az értéknek oszthatónak kell lennie a következővel: {{ compared_value }}</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Ez a Bankazonosító kód (BIC) nem kapcsolódik az IBAN kódhoz ({{ iban }}).</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

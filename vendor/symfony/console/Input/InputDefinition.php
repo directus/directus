@@ -338,8 +338,10 @@ class InputDefinition
      * @return string The InputOption name
      *
      * @throws InvalidArgumentException When option given does not exist
+     *
+     * @internal
      */
-    private function shortcutToName($shortcut)
+    public function shortcutToName($shortcut)
     {
         if (!isset($this->shortcuts[$shortcut])) {
             throw new InvalidArgumentException(sprintf('The "-%s" option does not exist.', $shortcut));

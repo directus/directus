@@ -1,0 +1,8 @@
+--TEST--
+"spaceless" filter
+--TEMPLATE--
+{{ "    <div>   <div>   foo   </div>   </div>"|spaceless }}
+--DATA--
+return []
+--EXPECT--
+<div><div>   foo   </div></div>

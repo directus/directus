@@ -1,38 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-class Twig_Node_Expression_Test extends Twig_Node_Expression_Call
-{
-    public function __construct(Twig_Node $node, $name, Twig_Node $arguments = null, $lineno)
+use Twig\Node\Expression\TestExpression;
+
+class_exists('Twig\Node\Expression\TestExpression');
+
+@trigger_error(sprintf('Using the "Twig_Node_Expression_Test" class is deprecated since Twig version 2.7, use "Twig\Node\Expression\TestExpression" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\Expression\TestExpression" instead */
+    class Twig_Node_Expression_Test extends TestExpression
     {
-        $nodes = ['node' => $node];
-        if (null !== $arguments) {
-            $nodes['arguments'] = $arguments;
-        }
-
-        parent::__construct($nodes, ['name' => $name], $lineno);
-    }
-
-    public function compile(Twig_Compiler $compiler)
-    {
-        $name = $this->getAttribute('name');
-        $test = $compiler->getEnvironment()->getTest($name);
-
-        $this->setAttribute('name', $name);
-        $this->setAttribute('type', 'test');
-        $this->setAttribute('arguments', $test->getArguments());
-        $this->setAttribute('callable', $test->getCallable());
-        $this->setAttribute('is_variadic', $test->isVariadic());
-
-        $this->compileCallable($compiler);
     }
 }
-
-class_alias('Twig_Node_Expression_Test', 'Twig\Node\Expression\TestExpression', false);

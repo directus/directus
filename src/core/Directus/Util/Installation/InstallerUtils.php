@@ -51,7 +51,10 @@ class InstallerUtils
     {
         $configStub = file_get_contents(__DIR__ . '/stubs/config.stub');
 
-        return static::replacePlaceholderValues($configStub, $data);
+        $configStub = static::replacePlaceholderValues($configStub, $data);
+
+        // Users are allowed to sent {{project}} to be replaced with the project name
+        return static::replacePlaceholderValues($configStub, ArrayUtils::pick($data, 'project'));
     }
 
     /**
@@ -107,6 +110,11 @@ class InstallerUtils
         }
 
         static::runMigrationAndSeeder($config);
+    }
+
+    public static function cleanDatabase($basePath, $projectName = null)
+    {
+        static::dropTables($basePath, $projectName);
     }
 
     /**
@@ -391,6 +399,22 @@ class InstallerUtils
     }
 
     /**
+    * Deletes the given config file
+    *
+    * @param string $path
+    * @param string|null $projectName
+    */
+    public static function deleteConfigFile($path, $projectName = null)
+    {
+        $filePath = static::createConfigPath($path, $projectName);
+
+        static::ensureConfigFileExists($path, $projectName);
+        static::ensureFileCanBeDeleted($filePath);
+
+        @unlink($filePath);
+    }
+
+    /**
      * Creates a config path for the given environment
      *
      * @param string $path
@@ -560,6 +584,27 @@ class InstallerUtils
     }
 
     /**
+     * Check if the api configuration file exists
+     *
+     * @param string $basePath
+     * @param null $projectName
+     *
+     * @throws \Exception
+     */
+    public static function ensureConfigFileExists($basePath, $projectName = null)
+    {
+        $basePath = rtrim($basePath, '/');
+        $configName = static::getConfigName($projectName);
+        $configPath = static::createConfigPath($basePath, $projectName);
+
+        if (!file_exists($configPath)) {
+            throw new InvalidPathException(
+                sprintf('Config file for "%s" does not exist at: "%s"', $configName, $basePath)
+            );
+        }
+    }
+
+    /**
      * Creates a config path from data
      *
      * @param string $path
@@ -697,27 +742,6 @@ class InstallerUtils
     }
 
     /**
-     * Check if the api configuration file exists
-     *
-     * @param string $basePath
-     * @param null $projectName
-     *
-     * @throws \Exception
-     */
-    private static function ensureConfigFileExists($basePath, $projectName = null)
-    {
-        $basePath = rtrim($basePath, '/');
-        $configName = static::getConfigName($projectName);
-        $configPath = static::createConfigPath($basePath, $projectName);
-
-        if (!file_exists($configPath)) {
-            throw new InvalidPathException(
-                sprintf('Config file for "%s" does not exist at: "%s"', $configName, $basePath)
-            );
-        }
-    }
-
-    /**
      * Checks if the migration configuration file exists
      *
      * @param string $basePath
@@ -752,11 +776,27 @@ class InstallerUtils
     }
 
     /**
+    * Throws an exception when the given file path cannot be deleted
+    *
+    * @param string $path
+    *
+    * @throws InvalidPathException
+    */
+    private static function ensureFileCanBeDeleted($path)
+    {
+        if (!is_writable($path) || !is_file($path)) {
+            throw new InvalidPathException(
+                sprintf('Unable to delete the config file at "%s"', $path)
+            );
+        }
+    }
+
+    /**
      * Throws an exception when file exists
      *
      * @param string $path
      *
-     * @throws InvalidPathException
+     * @throws InvalidConfigPathException
      */
     private static function ensureFileDoesNotExists($path)
     {
@@ -891,6 +931,10 @@ class InstallerUtils
      */
     private static function createConfigData(array $data)
     {
+        $corsEnabled = ArrayUtils::get($data, 'cors_enabled', true);
+        $authSecret = ArrayUtils::get($data, 'auth_secret', StringUtils::randomString(32));
+        $authPublic = ArrayUtils::get($data, 'auth_public', generate_uuid4());
+
         return ArrayUtils::defaults([
             'project' => '_',
             'db_type' => 'mysql',
@@ -900,11 +944,50 @@ class InstallerUtils
             'db_socket' => '',
             'mail_from' => 'admin@example.com',
             'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
-            'auth_secret' => StringUtils::randomString(32),
-            'auth_public' => generate_uuid4(),
             'feedback_login' => true,
-            'cors_enabled' => true,
             'timezone' => get_default_timezone(),
+            'cache' => [
+                'enabled' => false,
+                'response_ttl' => 3600,
+            ],
+            'storage' => [
+                'adapter' => 'local',
+                'root' => 'public/uploads/{{project}}/originals',
+                'root_url' => '/uploads/{{project}}/originals',
+                'thumb_root' => 'public/uploads/{{project}}/thumbnails',
+            ],
+            'mail' => [
+                'transport' => 'sendmail',
+            ],
+            'cors' => [
+                'enabled' => $corsEnabled,
+                'origin' => ['*'],
+                'methods' => [
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'PATCH',
+                    'DELETE',
+                    'HEAD',
+                ],
+                'headers' => [],
+                'exposed_headers' => [],
+                'max_age' => null,
+                'credentials' => false,
+            ],
+            'rate_limit' => [
+                'enabled' => false,
+                'limit' => 100,
+                'interval' => 60,
+                'adapter' => 'redis',
+                'host' => '127.0.0.1',
+                'port' => 6379,
+                'timeout' => 10,
+            ],
+            'auth' => [
+                'secret' => $authSecret,
+                'public' => $authPublic,
+            ]
         ], $data);
     }
 }

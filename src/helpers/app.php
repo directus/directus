@@ -2,7 +2,7 @@
 
 namespace Directus;
 
-use Directus\Api\Routes\Projects;
+use Directus\Api\Routes\ProjectsCreate;
 use Directus\Application\Application;
 use Directus\Application\ErrorHandlers\NotInstalledNotFoundHandler;
 use Directus\Application\Http\Middleware\CorsMiddleware;
@@ -167,7 +167,7 @@ if (!function_exists('create_install_route')) {
      */
     function create_install_route(Application $app)
     {
-        $app->group('/projects', Projects::class);
+        $app->post('/projects', ProjectsCreate::class);
 
         return $app;
     }

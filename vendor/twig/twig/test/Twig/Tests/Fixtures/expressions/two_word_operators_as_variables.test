@@ -5,4 +5,4 @@ Twig does not allow to use two-word named operators as variable names
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Syntax: Unexpected token "operator" of value "starts with" in "index.twig" at line 2.
+Twig\Error\SyntaxError: Unexpected token "operator" of value "starts with" in "index.twig" at line 2.

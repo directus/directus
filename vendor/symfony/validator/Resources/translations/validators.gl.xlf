@@ -314,6 +314,22 @@
                 <source>This is not a valid Business Identifier Code (BIC).</source>
                 <target>Non é un Código de Identificación Bancaria (BIC) válido.</target>
             </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Erro</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Isto non é un UUID válido.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Este valor debería ser multiplo de {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Este Código de identificación bancaria (BIC) non está asociado co IBAN {{ iban }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

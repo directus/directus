@@ -41,8 +41,8 @@ dates and the second one is the default format for date intervals:
 
 .. code-block:: php
 
-    $twig = new Twig_Environment($loader);
-    $twig->getExtension('Twig_Extension_Core')->setDateFormat('d/m/Y', '%d days');
+    $twig = new \Twig\Environment($loader);
+    $twig->getExtension(\Twig\Extension\CoreExtension::class)->setDateFormat('d/m/Y', '%d days');
 
 Timezone
 --------
@@ -66,8 +66,8 @@ The default timezone can also be set globally by calling ``setTimezone()``:
 
 .. code-block:: php
 
-    $twig = new Twig_Environment($loader);
-    $twig->getExtension('Twig_Extension_Core')->setTimezone('Europe/Paris');
+    $twig = new \Twig\Environment($loader);
+    $twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/Paris');
 
 Arguments
 ---------

@@ -278,6 +278,58 @@
                 <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
                 <target>این مقدار نباید {{ compared_value_type }} {{ compared_value }} یکی باشد.</target>
             </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>ابعاد {{ ratio }} عکس بیش از حد بزرگ است.حداکثر ابعاد مجاز {{ max_ratio }} است.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>ابعاد {{ ratio }} عکس بیش از حد کوچک است.حداقل ابعاد مجاز {{ min_ratio }} است.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>این عکس مربع width }}x{{ height }}px}} می باشد.عکس مربع مجاز نمی باشد.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>این عکس افقی width }}x{{ height }}px}} می باشد.عکس افقی مجاز نمی باشد.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>این عکس عمودی width }}x{{ height }}px}} می باشد.عکس عمودی مجاز نمی باشد.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>فایل خالی مجاز نمی باشد.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>هاست قابل حل نیست.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>این مقدار مورد نظر نمی باشد. مقدار مورد نظر {{ charset }} می باشد.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>این مقدار یک BIC درست نیست.</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>خطا</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>این مقدار یک UUID درست نیست.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>این مقدار باید چند برابر {{ compared_value }} باشد.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>این BIC با IBAN ارتباط ندارد.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

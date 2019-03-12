@@ -245,7 +245,7 @@ class PrototypedArrayNode extends ArrayNode
                     // if only "value" is left
                     if (array_keys($v) === ['value']) {
                         $v = $v['value'];
-                        if ($this->prototype instanceof ArrayNode && ($children = $this->prototype->getChildren()) && array_key_exists('value', $children)) {
+                        if ($this->prototype instanceof ArrayNode && ($children = $this->prototype->getChildren()) && \array_key_exists('value', $children)) {
                             $valuePrototype = current($this->valuePrototypes) ?: clone $children['value'];
                             $valuePrototype->parent = $this;
                             $originalClosures = $this->prototype->normalizationClosures;
@@ -258,7 +258,7 @@ class PrototypedArrayNode extends ArrayNode
                     }
                 }
 
-                if (array_key_exists($k, $normalized)) {
+                if (\array_key_exists($k, $normalized)) {
                     $ex = new DuplicateKeyException(sprintf('Duplicate key "%s" for path "%s".', $k, $this->getPath()));
                     $ex->setPath($this->getPath());
 
@@ -301,14 +301,14 @@ class PrototypedArrayNode extends ArrayNode
         }
 
         foreach ($rightSide as $k => $v) {
-            // prototype, and key is irrelevant, so simply append the element
+            // prototype, and key is irrelevant, append the element
             if (null === $this->keyAttribute) {
                 $leftSide[] = $v;
                 continue;
             }
 
             // no conflict
-            if (!array_key_exists($k, $leftSide)) {
+            if (!\array_key_exists($k, $leftSide)) {
                 if (!$this->allowNewKeys) {
                     $ex = new InvalidConfigurationException(sprintf('You are not allowed to define new elements for path "%s". Please define all elements for this path in one config file.', $this->getPath()));
                     $ex->setPath($this->getPath());

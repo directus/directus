@@ -332,10 +332,10 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
      * Allows extra config keys to be specified under an array without
      * throwing an exception.
      *
-     * Those config values are simply ignored and removed from the
-     * resulting array. This should be used only in special cases where
-     * you want to send an entire configuration array through a special
-     * tree that processes only part of the array.
+     * Those config values are ignored and removed from the resulting
+     * array. This should be used only in special cases where you want
+     * to send an entire configuration array through a special tree that
+     * processes only part of the array.
      *
      * @param bool $remove Whether to remove the extra keys
      *

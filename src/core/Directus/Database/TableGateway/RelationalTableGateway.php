@@ -1569,7 +1569,7 @@ class RelationalTableGateway extends BaseTableGateway
                 throw new Exception\InvalidFieldException($column);
             }
 
-            if ($field->isAlias()) {
+            if ($field && $field->isAlias()) {
                 throw new Exception\UnableSortAliasFieldException($orderBy);
             }
 

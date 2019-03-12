@@ -1,7 +1,7 @@
 --TEST--
 "dump" function, xdebug is not loaded or xdebug <2.2-dev is loaded
 --CONDITION--
-!extension_loaded('xdebug') || (($r = new ReflectionExtension('xdebug')) && version_compare($r->getVersion(), '2.2-dev', '<'))
+!extension_loaded('xdebug') || (($r = new \ReflectionExtension('xdebug')) && version_compare($r->getVersion(), '2.2-dev', '<'))
 --TEMPLATE--
 {{ dump() }}
 --DATA--

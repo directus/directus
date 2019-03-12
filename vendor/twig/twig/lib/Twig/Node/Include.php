@@ -1,90 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- * (c) Armin Ronacher
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\IncludeNode;
 
-/**
- * Represents an include node.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_Include extends Twig_Node implements Twig_NodeOutputInterface
-{
-    public function __construct(Twig_Node_Expression $expr, Twig_Node_Expression $variables = null, $only = false, $ignoreMissing = false, $lineno, $tag = null)
+class_exists('Twig\Node\IncludeNode');
+
+@trigger_error(sprintf('Using the "Twig_Node_Include" class is deprecated since Twig version 2.7, use "Twig\Node\IncludeNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\IncludeNode" instead */
+    class Twig_Node_Include extends IncludeNode
     {
-        $nodes = ['expr' => $expr];
-        if (null !== $variables) {
-            $nodes['variables'] = $variables;
-        }
-
-        parent::__construct($nodes, ['only' => (bool) $only, 'ignore_missing' => (bool) $ignoreMissing], $lineno, $tag);
-    }
-
-    public function compile(Twig_Compiler $compiler)
-    {
-        $compiler->addDebugInfo($this);
-
-        if ($this->getAttribute('ignore_missing')) {
-            $compiler
-                ->write("try {\n")
-                ->indent()
-            ;
-        }
-
-        $this->addGetTemplate($compiler);
-
-        $compiler->raw('->display(');
-
-        $this->addTemplateArguments($compiler);
-
-        $compiler->raw(");\n");
-
-        if ($this->getAttribute('ignore_missing')) {
-            $compiler
-                ->outdent()
-                ->write("} catch (Twig_Error_Loader \$e) {\n")
-                ->indent()
-                ->write("// ignore missing template\n")
-                ->outdent()
-                ->write("}\n\n")
-            ;
-        }
-    }
-
-    protected function addGetTemplate(Twig_Compiler $compiler)
-    {
-        $compiler
-             ->write('$this->loadTemplate(')
-             ->subcompile($this->getNode('expr'))
-             ->raw(', ')
-             ->repr($this->getTemplateName())
-             ->raw(', ')
-             ->repr($this->getTemplateLine())
-             ->raw(')')
-         ;
-    }
-
-    protected function addTemplateArguments(Twig_Compiler $compiler)
-    {
-        if (!$this->hasNode('variables')) {
-            $compiler->raw(false === $this->getAttribute('only') ? '$context' : '[]');
-        } elseif (false === $this->getAttribute('only')) {
-            $compiler
-                ->raw('array_merge($context, ')
-                ->subcompile($this->getNode('variables'))
-                ->raw(')')
-            ;
-        } else {
-            $compiler->subcompile($this->getNode('variables'));
-        }
     }
 }
-
-class_alias('Twig_Node_Include', 'Twig\Node\IncludeNode', false);

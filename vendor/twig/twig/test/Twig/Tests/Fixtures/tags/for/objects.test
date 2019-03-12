@@ -16,7 +16,7 @@
   * {{ key }}
 {% endfor %}
 --DATA--
-class ItemsIterator implements Iterator
+class ItemsIterator implements \Iterator
 {
   protected $values = ['foo' => 'bar', 'bar' => 'foo'];
   public function current() { return current($this->values); }

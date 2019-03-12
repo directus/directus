@@ -1,11 +1,25 @@
 <?php
 
+/*
+ * This file is part of Twig.
+ *
+ * (c) Fabien Potencier
+ * (c) Armin Ronacher
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Twig\Node\Expression\Binary;
 
-class_exists('Twig_Node_Expression_Binary_Concat');
+use Twig\Compiler;
 
-if (\false) {
-    class ConcatBinary extends \Twig_Node_Expression_Binary_Concat
+class ConcatBinary extends AbstractBinary
+{
+    public function operator(Compiler $compiler)
     {
+        return $compiler->raw('.');
     }
 }
+
+class_alias('Twig\Node\Expression\Binary\ConcatBinary', 'Twig_Node_Expression_Binary_Concat');

@@ -5,4 +5,4 @@
     {{ parent() }}
 {% endblock %}
 --EXCEPTION--
-Twig_Error_Syntax: Calling "parent" on a template that does not extend nor "use" another template is forbidden in "index.twig" at line 3.
+Twig\Error\SyntaxError: Calling "parent" on a template that does not extend nor "use" another template is forbidden in "index.twig" at line 3.

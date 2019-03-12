@@ -12,8 +12,8 @@ return [
     'items' => ['foo' => 'bar'],
     'numerics' => [1, 2, 3],
     'traversable' => [
-        'a' => new ArrayObject([0 => 1, 1 => 2, 2 => 3]),
-        'b' => new ArrayObject(['a' => 'b'])
+        'a' => new \ArrayObject([0 => 1, 1 => 2, 2 => 3]),
+        'b' => new \ArrayObject(['a' => 'b'])
     ]
 ]
 --EXPECT--

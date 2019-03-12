@@ -27,8 +27,14 @@ return [
     ],
 
     'cache' => [
-        'enabled' => false,
-        'response_ttl' => 3600, // seconds
+        'enabled' => {{cache.enabled}},
+        'response_ttl' => {{cache.response_ttl}}, // seconds
+        'pool' => [
+            {{optional(cache.adapter)}},
+            {{optional(cache.path)}},
+            {{optional(cache.host)}},
+            {{optional(cache.port)}},
+        ],
         // 'pool' => [
         //    'adapter' => 'apc'
         // ],
@@ -52,60 +58,59 @@ return [
     ],
 
     'storage' => [
-        'adapter' => 'local',
+        'adapter' => '{{storage.adapter}}',
         // The storage root is the directus root directory.
         // All path are relative to the storage root when the path is not starting with a forward slash.
         // By default the uploads directory is located at the directus public root
         // An absolute path can be used as alternative.
-        'root' => 'public/uploads/{{project}}/originals',
+        'root' => '{{storage.root}}',
         // This is the url where all the media will be pointing to
         // here is where Directus will assume all assets will be accessed
         // Ex: (yourdomain)/uploads/_/originals
-        'root_url' => '/uploads/{{project}}/originals',
+        'root_url' => '{{storage.root_url}}',
         // Same as "root", but for the thumbnails
-        'thumb_root' => 'public/uploads/{{project}}/thumbnails',
-        //   'key'    => 's3-key',
-        //   'secret' => 's3-secret',
-        //   'region' => 's3-region',
-        //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket'
-        //   'options' => ['ACL' => 'public-read', 'Cache-Control' => 'max-age=604800'],
+        'thumb_root' => '{{storage.thumb_root}}',
+        {{optional(storage.key)}},
+        {{optional(storage.secret)}},
+        {{optional(storage.region)}},
+        {{optional(storage.version)}},
+        {{optional(storage.bucket)}},
+        {{optional(storage.options)}},
         // Set custom S3 endpoint
-        //   'endpoint' => 's3-endpoint',
+        {{optional(storage.endpoint)}},
     ],
 
     'mail' => [
         'default' => [
-            'transport' => 'sendmail',
+            'transport' => '{{mail.transport}}',
+            {{optional(mail.sendmail)}},
+            {{optional(mail.host)}},
+            {{optional(mail.port)}},
+            {{optional(mail.username)}},
+            {{optional(mail.password)}},
+            {{optional(mail.encryption)}},
             'from' => '{{mail_from}}'
         ],
     ],
 
     'cors' => [
-        'enabled' => {{cors_enabled}},
-        'origin' => ['*'],
-        'methods' => [
-            'GET',
-            'POST',
-            'PUT',
-            'PATCH',
-            'DELETE',
-            'HEAD',
-        ],
-        'headers' => [],
-        'exposed_headers' => [],
-        'max_age' => null, // in seconds
-        'credentials' => false,
+        'enabled' => {{cors.enabled}},
+        'origin' => {{cors.origin}},
+        'methods' => {{cors.methods}},
+        'headers' => {{cors.headers}},
+        'exposed_headers' => {{cors.exposed_headers}},
+        'max_age' => {{cors.max_age}}, // in seconds
+        'credentials' => {{cors.credentials}},
     ],
 
     'rate_limit' => [
-        'enabled' => false,
-        'limit' => 100, // number of request
-        'interval' => 60, // seconds
-        'adapter' => 'redis',
-        'host' => '127.0.0.1',
-        'port' => 6379,
-        'timeout' => 10
+        'enabled' => {{rate_limit.enabled}},
+        'limit' => {{rate_limit.limit}}, // number of request
+        'interval' => {{rate_limit.interval}}, // seconds
+        {{optional(rate_limit.adapter)}},
+        {{optional(rate_limit.host)}},
+        {{optional(rate_limit.port)}},
+        {{optional(rate_limit.timeout)}},
     ],
 
     'hooks' => [
@@ -122,35 +127,34 @@ return [
     'tableBlacklist' => [],
 
     'auth' => [
-        'secret_key' => '{{auth_secret}}',
-        'public_key' => '{{auth_public}}',
-        'social_providers' => [
-            // 'okta' => [
-            //     'client_id' => '',
-            //     'client_secret' => '',
-            //     'base_url' => 'https://dev-000000.oktapreview.com/oauth2/default'
-            // ],
-            // 'github' => [
-            //     'client_id' => '',
-            //     'client_secret' => ''
-            // ],
-            // 'facebook' => [
-            //     'client_id'          => '',
-            //     'client_secret'      => '',
-            //     'graph_api_version'  => 'v2.8',
-            // ],
-            // 'google' => [
-            //     'client_id'       => '',
-            //     'client_secret'   => '',
-            //     'hosted_domain'   => '*',
-            //     // Uses OpenIDConnect to fetch the email instead of using the Google+ API
-            //     // Disabling the OIDC Mode, requires you to enable the Google+ API otherwise it will fail
-            //     'use_oidc_mode'   => true,
-            // ],
-            // 'twitter' => [
-            //     'identifier'   => '',
-            //     'secret'       => ''
-            // ]
-        ]
+        'secret_key' => '{{auth.secret}}',
+        'public_key' => '{{auth.public}}',
+        {{optional(auth.social_providers)}},
+        // 'okta' => [
+        //     'client_id' => '',
+        //     'client_secret' => '',
+        //     'base_url' => 'https://dev-000000.oktapreview.com/oauth2/default'
+        // ],
+        // 'github' => [
+        //     'client_id' => '',
+        //     'client_secret' => ''
+        // ],
+        // 'facebook' => [
+        //     'client_id'          => '',
+        //     'client_secret'      => '',
+        //     'graph_api_version'  => 'v2.8',
+        // ],
+        // 'google' => [
+        //     'client_id'       => '',
+        //     'client_secret'   => '',
+        //     'hosted_domain'   => '*',
+        //     // Uses OpenIDConnect to fetch the email instead of using the Google+ API
+        //     // Disabling the OIDC Mode, requires you to enable the Google+ API otherwise it will fail
+        //     'use_oidc_mode'   => true,
+        // ],
+        // 'twitter' => [
+        //     'identifier'   => '',
+        //     'secret'       => ''
+        // ]
     ],
 ];

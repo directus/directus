@@ -381,20 +381,17 @@ final class ProgressBar
                     $lines = floor(Helper::strlen($message) / $this->terminal->getWidth()) + $this->formatLineCount + 1;
                     $this->output->clear($lines);
                 } else {
-                    // Move the cursor to the beginning of the line
-                    $this->output->write("\x0D");
-
-                    // Erase the line
-                    $this->output->write("\x1B[2K");
-
                     // Erase previous lines
                     if ($this->formatLineCount > 0) {
-                        $this->output->write(str_repeat("\x1B[1A\x1B[2K", $this->formatLineCount));
+                        $message = str_repeat("\x1B[1A\x1B[2K", $this->formatLineCount).$message;
                     }
+
+                    // Move the cursor to the beginning of the line and erase the line
+                    $message = "\x0D\x1B[2K$message";
                 }
             }
         } elseif ($this->step > 0) {
-            $this->output->writeln('');
+            $message = PHP_EOL.$message;
         }
 
         $this->firstRun = false;

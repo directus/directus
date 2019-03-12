@@ -1,29 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- * (c) Armin Ronacher
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-abstract class Twig_Node_Expression_Unary extends Twig_Node_Expression
-{
-    public function __construct(Twig_Node $node, $lineno)
-    {
-        parent::__construct(['node' => $node], [], $lineno);
-    }
+use Twig\Node\Expression\Unary\AbstractUnary;
 
-    public function compile(Twig_Compiler $compiler)
-    {
-        $compiler->raw(' ');
-        $this->operator($compiler);
-        $compiler->subcompile($this->getNode('node'));
-    }
+class_exists('Twig\Node\Expression\Unary\AbstractUnary');
 
-    abstract public function operator(Twig_Compiler $compiler);
+@trigger_error(sprintf('Using the "Twig_Node_Expression_Unary" class is deprecated since Twig version 2.7, use "Twig\Node\Expression\Unary\AbstractUnary" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\Expression\Unary\AbstractUnary" instead */
+    class Twig_Node_Expression_Unary extends AbstractUnary
+    {
+    }
 }
-
-class_alias('Twig_Node_Expression_Unary', 'Twig\Node\Expression\Unary\AbstractUnary', false);

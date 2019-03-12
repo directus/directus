@@ -17,4 +17,4 @@
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Runtime: Block "unknown" on template "layout.twig" does not exist in "index.twig" at line 5.
+Twig\Error\RuntimeError: Block "unknown" on template "layout.twig" does not exist in "index.twig" at line 5.

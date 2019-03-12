@@ -17,6 +17,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\Output;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -139,7 +140,7 @@ class CommandTesterTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedMessage   Aborted
+     * @expectedExceptionMessage Aborted.
      */
     public function testCommandWithWrongInputsNumber()
     {
@@ -153,13 +154,40 @@ class CommandTesterTest extends TestCase
         $command->setHelperSet(new HelperSet([new QuestionHelper()]));
         $command->setCode(function ($input, $output) use ($questions, $command) {
             $helper = $command->getHelper('question');
+            $helper->ask($input, $output, new ChoiceQuestion('choice', ['a', 'b']));
             $helper->ask($input, $output, new Question($questions[0]));
             $helper->ask($input, $output, new Question($questions[1]));
             $helper->ask($input, $output, new Question($questions[2]));
         });
 
         $tester = new CommandTester($command);
-        $tester->setInputs(['Bobby', 'Fine']);
+        $tester->setInputs(['a', 'Bobby', 'Fine']);
+        $tester->execute([]);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Aborted.
+     */
+    public function testCommandWithQuestionsButNoInputs()
+    {
+        $questions = [
+            'What\'s your name?',
+            'How are you?',
+            'Where do you come from?',
+        ];
+
+        $command = new Command('foo');
+        $command->setHelperSet(new HelperSet([new QuestionHelper()]));
+        $command->setCode(function ($input, $output) use ($questions, $command) {
+            $helper = $command->getHelper('question');
+            $helper->ask($input, $output, new ChoiceQuestion('choice', ['a', 'b']));
+            $helper->ask($input, $output, new Question($questions[0]));
+            $helper->ask($input, $output, new Question($questions[1]));
+            $helper->ask($input, $output, new Question($questions[2]));
+        });
+
+        $tester = new CommandTester($command);
         $tester->execute([]);
     }
 

@@ -1,37 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\SpacelessNode;
 
-/**
- * Represents a spaceless node.
- *
- * It removes spaces between HTML tags.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_Spaceless extends Twig_Node implements Twig_NodeOutputInterface
-{
-    public function __construct(Twig_Node $body, $lineno, $tag = 'spaceless')
-    {
-        parent::__construct(['body' => $body], [], $lineno, $tag);
-    }
+class_exists('Twig\Node\SpacelessNode');
 
-    public function compile(Twig_Compiler $compiler)
+@trigger_error(sprintf('Using the "Twig_Node_Spaceless" class is deprecated since Twig version 2.7, use "Twig\Node\SpacelessNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\SpacelessNode" instead */
+    class Twig_Node_Spaceless extends SpacelessNode
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write("ob_start();\n")
-            ->subcompile($this->getNode('body'))
-            ->write("echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));\n")
-        ;
     }
 }
-
-class_alias('Twig_Node_Spaceless', 'Twig\Node\SpacelessNode', false);

@@ -9,11 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Twig\Compiler;
+use Twig\Environment;
+use Twig\Loader\LoaderInterface;
+
 class Twig_Tests_CompilerTest extends \PHPUnit\Framework\TestCase
 {
     public function testReprNumericValueWithLocale()
     {
-        $compiler = new Twig_Compiler(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
+        $compiler = new Compiler(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
 
         $locale = setlocale(LC_NUMERIC, 0);
         if (false === $locale) {

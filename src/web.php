@@ -104,8 +104,14 @@ $app->get('/', \Directus\Api\Routes\Home::class)
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);
 
-$app->group('/projects', \Directus\Api\Routes\Projects::class)
-    ->add($middleware['table_gateway']);
+$app->group('/projects', function () use ($middleware) {
+    $this->post('', \Directus\Api\Routes\ProjectsCreate::class);
+
+    $this->delete('/{name}', \Directus\Api\Routes\ProjectsDelete::class)
+        ->add($middleware['auth_admin'])
+        ->add($middleware['auth'])
+        ->add($middleware['auth_ignore_origin']);
+})->add($middleware['table_gateway']);
 
 $app->group('/{project}', function () use ($middleware) {
     $this->get('/', \Directus\Api\Routes\ProjectHome::class)

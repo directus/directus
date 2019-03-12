@@ -139,7 +139,7 @@
             {
                 "name": "Tobias Nyholm",
                 "email": "tobias.nyholm@gmail.com",
-                "homepage": "https://github.com/nyholm"
+                "homepage": "https://github.com/Nyholm"
             }
         ],
         "description": "Library of all the php-cache adapters",
@@ -147,6 +147,73 @@
         "keywords": [
             "cache",
             "psr6"
+        ]
+    },
+    {
+        "name": "cocur/slugify",
+        "version": "v3.2",
+        "version_normalized": "3.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cocur/slugify.git",
+            "reference": "d41701efe58ba2df9cae029c3d21e1518cc6780e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cocur/slugify/zipball/d41701efe58ba2df9cae029c3d21e1518cc6780e",
+            "reference": "d41701efe58ba2df9cae029c3d21e1518cc6780e",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "php": ">=5.5.9"
+        },
+        "require-dev": {
+            "laravel/framework": "~5.1",
+            "latte/latte": "~2.2",
+            "league/container": "^2.2.0",
+            "mikey179/vfsstream": "~1.6",
+            "mockery/mockery": "~0.9",
+            "nette/di": "~2.2",
+            "phpunit/phpunit": "~4.8.36|~5.2",
+            "pimple/pimple": "~1.1",
+            "plumphp/plum": "~0.1",
+            "silex/silex": "~1.3",
+            "symfony/config": "~2.4|~3.0|~4.0",
+            "symfony/dependency-injection": "~2.4|~3.0|~4.0",
+            "symfony/http-kernel": "~2.4|~3.0|~4.0",
+            "twig/twig": "~1.26|~2.0",
+            "zendframework/zend-modulemanager": "~2.2",
+            "zendframework/zend-servicemanager": "~2.2",
+            "zendframework/zend-view": "~2.2"
+        },
+        "time": "2019-01-31T20:38:55+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Cocur\\Slugify\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Ivo Bathke",
+                "email": "ivo.bathke@gmail.com"
+            },
+            {
+                "name": "Florian Eckerstorfer",
+                "email": "florian@eckerstorfer.co",
+                "homepage": "https://florian.ec"
+            }
+        ],
+        "description": "Converts a string into a slug.",
+        "keywords": [
+            "slug",
+            "slugify"
         ]
     },
     {
@@ -181,6 +248,178 @@
         ],
         "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
         "homepage": "https://github.com/container-interop/container-interop"
+    },
+    {
+        "name": "directus/oauth2-okta",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/directus/oauth2-okta.git",
+            "reference": "ac30e8f24a382f3844735a26834f1dc3986f31a4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/directus/oauth2-okta/zipball/ac30e8f24a382f3844735a26834f1dc3986f31a4",
+            "reference": "ac30e8f24a382f3844735a26834f1dc3986f31a4",
+            "shasum": ""
+        },
+        "require": {
+            "league/oauth2-client": "^2.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "phpunit/phpunit": "~4.0",
+            "squizlabs/php_codesniffer": "~2.0"
+        },
+        "time": "2019-02-22T21:30:29+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "WellingGuzman\\OAuth2\\Client\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Welling Guzman",
+                "email": "wellingguzman@gmail.com",
+                "homepage": "https://github.com/wellingguzman"
+            }
+        ],
+        "description": "Okta OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+        "keywords": [
+            "authorisation",
+            "authorization",
+            "client",
+            "oauth",
+            "oauth2",
+            "okta"
+        ]
+    },
+    {
+        "name": "directus/proxy-detection",
+        "version": "0.5.1",
+        "version_normalized": "0.5.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/directus/proxy-detection.git",
+            "reference": "e1fd098352dec991bb857e216a099a0758615328"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/directus/proxy-detection/zipball/e1fd098352dec991bb857e216a099a0758615328",
+            "reference": "e1fd098352dec991bb857e216a099a0758615328",
+            "shasum": ""
+        },
+        "require": {
+            "psr/http-message": "^1.0"
+        },
+        "require-dev": {
+            "php": ">=5.6",
+            "phpunit/phpunit": "^5",
+            "squizlabs/php_codesniffer": "^2.3",
+            "zendframework/zend-diactoros": "^1.1"
+        },
+        "time": "2018-12-10T20:24:05+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "RKA\\Middleware\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Rob Allen",
+                "email": "rob@akrabat.com",
+                "homepage": "http://akrabat.com"
+            },
+            {
+                "name": "Welling Guzmán",
+                "email": "hola@wellingguzman.com",
+                "homepage": "http://wellingguzman.com"
+            }
+        ],
+        "description": "PSR-7 Middleware that determines the scheme, host and port from the 'X-Forwarded-Proto', 'X-Forwarded-Host' and 'X-Forwarded-Port' headers and updates the Request's Uri object.",
+        "homepage": "http://github.com/wellingguzman/proxy-detection",
+        "keywords": [
+            "IP",
+            "middleware",
+            "psr7"
+        ]
+    },
+    {
+        "name": "directus/rate-limit",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/directus/rate-limit.git",
+            "reference": "c3e6cef8d633f5f47251f23904fce8d9e94a75f7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/directus/rate-limit/zipball/c3e6cef8d633f5f47251f23904fce8d9e94a75f7",
+            "reference": "c3e6cef8d633f5f47251f23904fce8d9e94a75f7",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.6 | ^7.0",
+            "psr/http-message": "^1.0"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "^2.0",
+            "phpunit/phpunit": "^4.7 | ^5.0",
+            "zendframework/zend-diactoros": "^1.3"
+        },
+        "time": "2019-02-22T21:28:31+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "RateLimit\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nikola Poša",
+                "email": "posa.nikola@gmail.com",
+                "homepage": "http://www.nikolaposa.in.rs"
+            },
+            {
+                "name": "Welling Guzmán",
+                "email": "hola@wellingguzman.com",
+                "homepage": "http://wellingguzman.com"
+            }
+        ],
+        "description": "Standalone component that facilitates rate-limiting functionality. Also provides a middleware designed for API and/or other application endpoints.",
+        "keywords": [
+            "middleware",
+            "rate limit"
+        ]
     },
     {
         "name": "doctrine/cache",
@@ -3188,17 +3427,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.2.3",
-        "version_normalized": "4.2.3.0",
+        "version": "v4.2.4",
+        "version_normalized": "4.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "25a2e7abe0d97e70282537292e3df45cf6da7b98"
+            "reference": "7f70d79c7a24a94f8e98abb988049403a53d7b31"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/25a2e7abe0d97e70282537292e3df45cf6da7b98",
-            "reference": "25a2e7abe0d97e70282537292e3df45cf6da7b98",
+            "url": "https://api.github.com/repos/symfony/config/zipball/7f70d79c7a24a94f8e98abb988049403a53d7b31",
+            "reference": "7f70d79c7a24a94f8e98abb988049403a53d7b31",
             "shasum": ""
         },
         "require": {
@@ -3218,7 +3457,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2019-01-30T11:44:30+00:00",
+        "time": "2019-02-23T15:17:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3253,17 +3492,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.2.3",
-        "version_normalized": "4.2.3.0",
+        "version": "v4.2.4",
+        "version_normalized": "4.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4"
+            "reference": "9dc2299a016497f9ee620be94524e6c0af0280a9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4",
-            "reference": "1f0ad51dfde4da8a6070f06adc58b4e37cbb37a4",
+            "url": "https://api.github.com/repos/symfony/console/zipball/9dc2299a016497f9ee620be94524e6c0af0280a9",
+            "reference": "9dc2299a016497f9ee620be94524e6c0af0280a9",
             "shasum": ""
         },
         "require": {
@@ -3292,7 +3531,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-01-25T14:35:16+00:00",
+        "time": "2019-02-23T15:17:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3397,24 +3636,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.2.3",
-        "version_normalized": "4.2.3.0",
+        "version": "v4.2.4",
+        "version_normalized": "4.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "7c16ebc2629827d4ec915a52ac809768d060a4ee"
+            "reference": "e16b9e471703b2c60b95f14d31c1239f68f11601"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/7c16ebc2629827d4ec915a52ac809768d060a4ee",
-            "reference": "7c16ebc2629827d4ec915a52ac809768d060a4ee",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/e16b9e471703b2c60b95f14d31c1239f68f11601",
+            "reference": "e16b9e471703b2c60b95f14d31c1239f68f11601",
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2019-01-16T20:35:37+00:00",
+        "time": "2019-02-07T11:40:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3495,7 +3734,7 @@
             },
             {
                 "name": "Gert de Pagter",
-                "email": "BackEndTea@gmail.com"
+                "email": "backendtea@gmail.com"
             }
         ],
         "description": "Symfony polyfill for ctype functions",
@@ -3570,17 +3809,17 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.2.3",
-        "version_normalized": "4.2.3.0",
+        "version": "v4.2.4",
+        "version_normalized": "4.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "23fd7aac70d99a17a8e6473a41fec8fab3331050"
+            "reference": "748464177a77011f8f4cdd076773862ce4915f8f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/23fd7aac70d99a17a8e6473a41fec8fab3331050",
-            "reference": "23fd7aac70d99a17a8e6473a41fec8fab3331050",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/748464177a77011f8f4cdd076773862ce4915f8f",
+            "reference": "748464177a77011f8f4cdd076773862ce4915f8f",
             "shasum": ""
         },
         "require": {
@@ -3610,7 +3849,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2019-01-27T23:11:39+00:00",
+        "time": "2019-02-27T03:31:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3645,17 +3884,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v3.4.22",
-        "version_normalized": "3.4.22.0",
+        "version": "v3.4.23",
+        "version_normalized": "3.4.23.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "06af494d8634df6ad9655ec7d80cb61983253912"
+            "reference": "21f8a7da6d4d8e6e34bd4e2bfaa24fa373886907"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/06af494d8634df6ad9655ec7d80cb61983253912",
-            "reference": "06af494d8634df6ad9655ec7d80cb61983253912",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/21f8a7da6d4d8e6e34bd4e2bfaa24fa373886907",
+            "reference": "21f8a7da6d4d8e6e34bd4e2bfaa24fa373886907",
             "shasum": ""
         },
         "require": {
@@ -3697,7 +3936,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-        "time": "2019-01-30T09:03:33+00:00",
+        "time": "2019-02-25T09:32:21+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3732,17 +3971,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.2.3",
-        "version_normalized": "4.2.3.0",
+        "version": "v4.2.4",
+        "version_normalized": "4.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "d461670ee145092b7e2a56c1da7118f19cadadb0"
+            "reference": "761fa560a937fd7686e5274ff89dcfa87a5047df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/d461670ee145092b7e2a56c1da7118f19cadadb0",
-            "reference": "d461670ee145092b7e2a56c1da7118f19cadadb0",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/761fa560a937fd7686e5274ff89dcfa87a5047df",
+            "reference": "761fa560a937fd7686e5274ff89dcfa87a5047df",
             "shasum": ""
         },
         "require": {
@@ -3758,7 +3997,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2019-01-16T20:35:37+00:00",
+        "time": "2019-02-23T15:17:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3793,17 +4032,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.6.2",
-        "version_normalized": "2.6.2.0",
+        "version": "v2.7.1",
+        "version_normalized": "2.7.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7"
+            "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
-            "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
+            "reference": "c0dd4dc5f44e541c9c0e0506da76aa4f14b41c69",
             "shasum": ""
         },
         "require": {
@@ -3816,11 +4055,11 @@
             "symfony/debug": "^2.7",
             "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
         },
-        "time": "2019-01-14T15:00:48+00:00",
+        "time": "2019-03-12T15:45:07+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.6-dev"
+                "dev-master": "2.7-dev"
             }
         },
         "installation-source": "dist",
@@ -3914,184 +4153,12 @@
         ]
     },
     {
-        "name": "wellingguzman/oauth2-okta",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/WellingGuzman/oauth2-okta.git",
-            "reference": "5de9ef704ba079d913f75a40a98ecd61958860a5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/oauth2-okta/zipball/5de9ef704ba079d913f75a40a98ecd61958860a5",
-            "reference": "5de9ef704ba079d913f75a40a98ecd61958860a5",
-            "shasum": ""
-        },
-        "require": {
-            "league/oauth2-client": "^2.0"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9",
-            "phpunit/phpunit": "~4.0",
-            "squizlabs/php_codesniffer": "~2.0"
-        },
-        "time": "2018-04-16T18:17:10+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.0.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "WellingGuzman\\OAuth2\\Client\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Welling Guzman",
-                "email": "wellingguzman@gmail.com",
-                "homepage": "https://github.com/wellingguzman"
-            }
-        ],
-        "description": "Okta OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
-        "keywords": [
-            "authorisation",
-            "authorization",
-            "client",
-            "oauth",
-            "oauth2",
-            "okta"
-        ]
-    },
-    {
-        "name": "wellingguzman/proxy-detection",
-        "version": "0.5.1",
-        "version_normalized": "0.5.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/WellingGuzman/proxy-detection.git",
-            "reference": "e1fd098352dec991bb857e216a099a0758615328"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/proxy-detection/zipball/e1fd098352dec991bb857e216a099a0758615328",
-            "reference": "e1fd098352dec991bb857e216a099a0758615328",
-            "shasum": ""
-        },
-        "require": {
-            "psr/http-message": "^1.0"
-        },
-        "require-dev": {
-            "php": ">=5.6",
-            "phpunit/phpunit": "^5",
-            "squizlabs/php_codesniffer": "^2.3",
-            "zendframework/zend-diactoros": "^1.1"
-        },
-        "time": "2018-12-10T20:24:05+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "RKA\\Middleware\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Rob Allen",
-                "email": "rob@akrabat.com",
-                "homepage": "http://akrabat.com"
-            },
-            {
-                "name": "Welling Guzmán",
-                "email": "hola@wellingguzman.com",
-                "homepage": "http://wellingguzman.com"
-            }
-        ],
-        "description": "PSR-7 Middleware that determines the scheme, host and port from the 'X-Forwarded-Proto', 'X-Forwarded-Host' and 'X-Forwarded-Port' headers and updates the Request's Uri object.",
-        "homepage": "http://github.com/wellingguzman/proxy-detection",
-        "keywords": [
-            "IP",
-            "middleware",
-            "psr7"
-        ]
-    },
-    {
-        "name": "wellingguzman/rate-limit",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/WellingGuzman/rate-limit.git",
-            "reference": "4930e8715f820452c3c2f2f6375533e6863dd669"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/WellingGuzman/rate-limit/zipball/4930e8715f820452c3c2f2f6375533e6863dd669",
-            "reference": "4930e8715f820452c3c2f2f6375533e6863dd669",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.6 | ^7.0",
-            "psr/http-message": "^1.0"
-        },
-        "require-dev": {
-            "friendsofphp/php-cs-fixer": "^2.0",
-            "phpunit/phpunit": "^4.7 | ^5.0",
-            "zendframework/zend-diactoros": "^1.3"
-        },
-        "time": "2018-06-15T22:46:19+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "RateLimit\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nikola Poša",
-                "email": "posa.nikola@gmail.com",
-                "homepage": "http://www.nikolaposa.in.rs"
-            },
-            {
-                "name": "Welling Guzmán",
-                "email": "hola@wellingguzman.com",
-                "homepage": "http://wellingguzman.com"
-            }
-        ],
-        "description": "Standalone component that facilitates rate-limiting functionality. Also provides a middleware designed for API and/or other application endpoints.",
-        "keywords": [
-            "middleware",
-            "rate limit"
-        ]
-    },
-    {
         "name": "zendframework/zend-db",
         "version": "dev-directus",
         "version_normalized": "dev-directus",
         "source": {
             "type": "git",
-            "url": "https://github.com/wellingguzman/zend-db",
+            "url": "https://github.com/directus/zend-db",
             "reference": "ef55371343a85e5cd0937d0ab9d30da7e86f5ab3"
         },
         "require": {

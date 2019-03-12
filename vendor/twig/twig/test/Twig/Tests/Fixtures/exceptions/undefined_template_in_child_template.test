@@ -12,4 +12,4 @@ Exception for an undefined template in a child template
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Loader: Template "include.twig" is not defined in "index.twig" at line 5.
+Twig\Error\LoaderError: Template "include.twig" is not defined in "index.twig" at line 5.

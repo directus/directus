@@ -9,4 +9,4 @@ Foo
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Runtime: Variable "with_context" does not exist in "index.twig" at line 3.
+Twig\Error\RuntimeError: Variable "with_context" does not exist in "index.twig" at line 3.

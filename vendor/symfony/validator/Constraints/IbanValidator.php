@@ -181,7 +181,7 @@ class IbanValidator extends ConstraintValidator
         }
 
         // ...have a format available
-        if (!array_key_exists($countryCode, self::$formats)) {
+        if (!\array_key_exists($countryCode, self::$formats)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Iban::NOT_SUPPORTED_COUNTRY_CODE_ERROR)

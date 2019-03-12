@@ -8,42 +8,49 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use Twig\Environment;
+use Twig\Lexer;
+use Twig\Loader\LoaderInterface;
+use Twig\Source;
+use Twig\Token;
+
 class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
 {
     public function testNameLabelForTag()
     {
         $template = '{% § %}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
 
-        $stream->expect(Twig_Token::BLOCK_START_TYPE);
-        $this->assertSame('§', $stream->expect(Twig_Token::NAME_TYPE)->getValue());
+        $stream->expect(Token::BLOCK_START_TYPE);
+        $this->assertSame('§', $stream->expect(Token::NAME_TYPE)->getValue());
     }
 
     public function testNameLabelForFunction()
     {
         $template = '{{ §() }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
 
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $this->assertSame('§', $stream->expect(Twig_Token::NAME_TYPE)->getValue());
+        $stream->expect(Token::VAR_START_TYPE);
+        $this->assertSame('§', $stream->expect(Token::NAME_TYPE)->getValue());
     }
 
     public function testBracketsNesting()
     {
         $template = '{{ {"a":{"b":"c"}} }}';
 
-        $this->assertEquals(2, $this->countToken($template, Twig_Token::PUNCTUATION_TYPE, '{'));
-        $this->assertEquals(2, $this->countToken($template, Twig_Token::PUNCTUATION_TYPE, '}'));
+        $this->assertEquals(2, $this->countToken($template, Token::PUNCTUATION_TYPE, '{'));
+        $this->assertEquals(2, $this->countToken($template, Token::PUNCTUATION_TYPE, '}'));
     }
 
     protected function countToken($template, $type, $value = null)
     {
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
 
         $count = 0;
         while (!$stream->isEOF()) {
@@ -67,17 +74,17 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
             ."baz\n"
             ."}}\n";
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
 
         // foo\nbar\n
-        $this->assertSame(1, $stream->expect(Twig_Token::TEXT_TYPE)->getLine());
+        $this->assertSame(1, $stream->expect(Token::TEXT_TYPE)->getLine());
         // \n (after {% line %})
-        $this->assertSame(10, $stream->expect(Twig_Token::TEXT_TYPE)->getLine());
+        $this->assertSame(10, $stream->expect(Token::TEXT_TYPE)->getLine());
         // {{
-        $this->assertSame(11, $stream->expect(Twig_Token::VAR_START_TYPE)->getLine());
+        $this->assertSame(11, $stream->expect(Token::VAR_START_TYPE)->getLine());
         // baz
-        $this->assertSame(12, $stream->expect(Twig_Token::NAME_TYPE)->getLine());
+        $this->assertSame(12, $stream->expect(Token::NAME_TYPE)->getLine());
     }
 
     public function testLineDirectiveInline()
@@ -87,23 +94,23 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
             ."baz\n"
             ."}}\n";
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
 
         // foo\nbar
-        $this->assertSame(1, $stream->expect(Twig_Token::TEXT_TYPE)->getLine());
+        $this->assertSame(1, $stream->expect(Token::TEXT_TYPE)->getLine());
         // {{
-        $this->assertSame(10, $stream->expect(Twig_Token::VAR_START_TYPE)->getLine());
+        $this->assertSame(10, $stream->expect(Token::VAR_START_TYPE)->getLine());
         // baz
-        $this->assertSame(11, $stream->expect(Twig_Token::NAME_TYPE)->getLine());
+        $this->assertSame(11, $stream->expect(Token::NAME_TYPE)->getLine());
     }
 
     public function testLongComments()
     {
         $template = '{# '.str_repeat('*', 100000).' #}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -114,8 +121,8 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{% verbatim %}'.str_repeat('*', 100000).'{% endverbatim %}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -126,8 +133,8 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{{ '.str_repeat('x', 100000).' }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -138,8 +145,8 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{% '.str_repeat('x', 100000).' %}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -150,8 +157,8 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{{ 922337203685477580700 }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
         $stream->next();
         $node = $stream->next();
         $this->assertEquals('922337203685477580700', $node->getValue());
@@ -164,11 +171,11 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
             '{{ "foo \" bar" }}' => 'foo " bar',
         ];
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
         foreach ($tests as $template => $expected) {
-            $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-            $stream->expect(Twig_Token::VAR_START_TYPE);
-            $stream->expect(Twig_Token::STRING_TYPE, $expected);
+            $stream = $lexer->tokenize(new Source($template, 'index'));
+            $stream->expect(Token::VAR_START_TYPE);
+            $stream->expect(Token::STRING_TYPE, $expected);
 
             // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
             // can be executed without throwing any exceptions
@@ -180,17 +187,17 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = 'foo {{ "bar #{ baz + 1 }" }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::TEXT_TYPE, 'foo ');
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'bar ');
-        $stream->expect(Twig_Token::INTERPOLATION_START_TYPE);
-        $stream->expect(Twig_Token::NAME_TYPE, 'baz');
-        $stream->expect(Twig_Token::OPERATOR_TYPE, '+');
-        $stream->expect(Twig_Token::NUMBER_TYPE, '1');
-        $stream->expect(Twig_Token::INTERPOLATION_END_TYPE);
-        $stream->expect(Twig_Token::VAR_END_TYPE);
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::TEXT_TYPE, 'foo ');
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'bar ');
+        $stream->expect(Token::INTERPOLATION_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'baz');
+        $stream->expect(Token::OPERATOR_TYPE, '+');
+        $stream->expect(Token::NUMBER_TYPE, '1');
+        $stream->expect(Token::INTERPOLATION_END_TYPE);
+        $stream->expect(Token::VAR_END_TYPE);
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -201,11 +208,11 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{{ "bar \#{baz+1}" }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'bar #{baz+1}');
-        $stream->expect(Twig_Token::VAR_END_TYPE);
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'bar #{baz+1}');
+        $stream->expect(Token::VAR_END_TYPE);
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -216,11 +223,11 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{{ "bar # baz" }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'bar # baz');
-        $stream->expect(Twig_Token::VAR_END_TYPE);
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'bar # baz');
+        $stream->expect(Token::VAR_END_TYPE);
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -228,32 +235,32 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Twig_Error_Syntax
+     * @expectedException \Twig\Error\SyntaxError
      * @expectedExceptionMessage Unclosed """
      */
     public function testStringWithUnterminatedInterpolation()
     {
         $template = '{{ "bar #{x" }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
     }
 
     public function testStringWithNestedInterpolations()
     {
         $template = '{{ "bar #{ "foo#{bar}" }" }}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'bar ');
-        $stream->expect(Twig_Token::INTERPOLATION_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'foo');
-        $stream->expect(Twig_Token::INTERPOLATION_START_TYPE);
-        $stream->expect(Twig_Token::NAME_TYPE, 'bar');
-        $stream->expect(Twig_Token::INTERPOLATION_END_TYPE);
-        $stream->expect(Twig_Token::INTERPOLATION_END_TYPE);
-        $stream->expect(Twig_Token::VAR_END_TYPE);
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'bar ');
+        $stream->expect(Token::INTERPOLATION_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'foo');
+        $stream->expect(Token::INTERPOLATION_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'bar');
+        $stream->expect(Token::INTERPOLATION_END_TYPE);
+        $stream->expect(Token::INTERPOLATION_END_TYPE);
+        $stream->expect(Token::VAR_END_TYPE);
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -264,18 +271,18 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = '{% foo "bar #{ "foo#{bar}" }" %}';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::BLOCK_START_TYPE);
-        $stream->expect(Twig_Token::NAME_TYPE, 'foo');
-        $stream->expect(Twig_Token::STRING_TYPE, 'bar ');
-        $stream->expect(Twig_Token::INTERPOLATION_START_TYPE);
-        $stream->expect(Twig_Token::STRING_TYPE, 'foo');
-        $stream->expect(Twig_Token::INTERPOLATION_START_TYPE);
-        $stream->expect(Twig_Token::NAME_TYPE, 'bar');
-        $stream->expect(Twig_Token::INTERPOLATION_END_TYPE);
-        $stream->expect(Twig_Token::INTERPOLATION_END_TYPE);
-        $stream->expect(Twig_Token::BLOCK_END_TYPE);
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::BLOCK_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'foo');
+        $stream->expect(Token::STRING_TYPE, 'bar ');
+        $stream->expect(Token::INTERPOLATION_START_TYPE);
+        $stream->expect(Token::STRING_TYPE, 'foo');
+        $stream->expect(Token::INTERPOLATION_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'bar');
+        $stream->expect(Token::INTERPOLATION_END_TYPE);
+        $stream->expect(Token::INTERPOLATION_END_TYPE);
+        $stream->expect(Token::BLOCK_END_TYPE);
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -286,11 +293,11 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     {
         $template = "{{ 1 and\n0}}";
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $stream = $lexer->tokenize(new Twig_Source($template, 'index'));
-        $stream->expect(Twig_Token::VAR_START_TYPE);
-        $stream->expect(Twig_Token::NUMBER_TYPE, 1);
-        $stream->expect(Twig_Token::OPERATOR_TYPE, 'and');
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::NUMBER_TYPE, 1);
+        $stream->expect(Token::OPERATOR_TYPE, 'and');
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any exceptions
@@ -298,7 +305,7 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Twig_Error_Syntax
+     * @expectedException \Twig\Error\SyntaxError
      * @expectedExceptionMessage Unclosed "variable" in "index" at line 3
      */
     public function testUnterminatedVariable()
@@ -312,12 +319,12 @@ bar
 
 ';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
     }
 
     /**
-     * @expectedException Twig_Error_Syntax
+     * @expectedException \Twig\Error\SyntaxError
      * @expectedExceptionMessage Unclosed "block" in "index" at line 3
      */
     public function testUnterminatedBlock()
@@ -331,7 +338,7 @@ bar
 
 ';
 
-        $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
-        $lexer->tokenize(new Twig_Source($template, 'index'));
+        $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
+        $lexer->tokenize(new Source($template, 'index'));
     }
 }

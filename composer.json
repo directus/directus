@@ -5,7 +5,7 @@
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/wellingguzman/zend-db"
+      "url": "https://github.com/directus/zend-db"
     }
   ],
   "require": {
@@ -20,8 +20,8 @@
     "league/oauth2-facebook": "^2.0",
     "league/oauth1-client": "^1.7",
     "intervention/image": "^2.4",
-    "wellingguzman/oauth2-okta": "dev-master",
-    "wellingguzman/proxy-detection": "^0.5.1",
+    "directus/oauth2-okta": "dev-master",
+    "directus/proxy-detection": "^0.5.1",
     "cache/cache": "^1.0",
     "akrabat/ip-address-middleware": "^1.0",
     "firebase/php-jwt": "^5.0",
@@ -29,7 +29,8 @@
     "slim/twig-view": "^2.3",
     "robmorgan/phinx": "^0.9.2",
     "ramsey/uuid": "^3.7",
-    "wellingguzman/rate-limit": "dev-master",
+    "directus/rate-limit": "dev-master",
+    "cocur/slugify": "^3.2",
     "ext-json": "*",
     "ext-curl": "*",
     "ext-fileinfo": "*",

@@ -302,6 +302,10 @@
                 <source>An empty file is not allowed.</source>
                 <target>Lege bestanden zijn niet toegestaan.</target>
             </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>De hostnaam kon niet worden bepaald.</target>
+            </trans-unit>
             <trans-unit id="80">
                 <source>This value does not match the expected {{ charset }} charset.</source>
                 <target>Deze waarde is niet in de verwachte tekencodering {{ charset }}.</target>
@@ -317,6 +321,14 @@
             <trans-unit id="83">
                 <source>This is not a valid UUID.</source>
                 <target>Dit is geen geldige UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Deze waarde zou een meervoud van {{ compared_value }} moeten zijn.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Deze bedrijfsidentificatiecode (BIC) is niet gekoppeld aan IBAN {{ iban }}.</target>
             </trans-unit>
         </body>
     </file>

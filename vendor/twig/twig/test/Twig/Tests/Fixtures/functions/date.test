@@ -12,10 +12,10 @@
 date_default_timezone_set('UTC');
 return [
     'date1' => mktime(13, 45, 0, 10, 4, 2010),
-    'date2' => new DateTime('2010-10-04 13:45'),
+    'date2' => new \DateTime('2010-10-04 13:45'),
     'date3' => '2010-10-04 13:45',
-    'date4' => 1286199900, // DateTime::createFromFormat('Y-m-d H:i', '2010-10-04 13:45', new DateTimeZone('UTC'))->getTimestamp() -- A unixtimestamp is always GMT
-    'date5' => -189291360, // DateTime::createFromFormat('Y-m-d H:i', '1964-01-02 03:04', new DateTimeZone('UTC'))->getTimestamp(),
+    'date4' => 1286199900, // \DateTime::createFromFormat('Y-m-d H:i', '2010-10-04 13:45', new \DateTimeZone('UTC'))->getTimestamp() -- A unixtimestamp is always GMT
+    'date5' => -189291360, // \DateTime::createFromFormat('Y-m-d H:i', '1964-01-02 03:04', new \DateTimeZone('UTC'))->getTimestamp(),
 ]
 --EXPECT--
 OK

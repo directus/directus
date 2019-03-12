@@ -1,35 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\DoNode;
 
-/**
- * Represents a do node.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_Do extends Twig_Node
-{
-    public function __construct(Twig_Node_Expression $expr, $lineno, $tag = null)
-    {
-        parent::__construct(['expr' => $expr], [], $lineno, $tag);
-    }
+class_exists('Twig\Node\DoNode');
 
-    public function compile(Twig_Compiler $compiler)
+@trigger_error(sprintf('Using the "Twig_Node_Do" class is deprecated since Twig version 2.7, use "Twig\Node\DoNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\DoNode" instead */
+    class Twig_Node_Do extends DoNode
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write('')
-            ->subcompile($this->getNode('expr'))
-            ->raw(";\n")
-        ;
     }
 }
-
-class_alias('Twig_Node_Do', 'Twig\Node\DoNode', false);

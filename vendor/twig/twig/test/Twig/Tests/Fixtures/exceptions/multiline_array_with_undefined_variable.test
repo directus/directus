@@ -15,4 +15,4 @@ Exception for multiline array with undefined variable
 --DATA--
 return ['foobar' => 'foobar']
 --EXCEPTION--
-Twig_Error_Runtime: Variable "foo2" does not exist in "index.twig" at line 11.
+Twig\Error\RuntimeError: Variable "foo2" does not exist in "index.twig" at line 11.

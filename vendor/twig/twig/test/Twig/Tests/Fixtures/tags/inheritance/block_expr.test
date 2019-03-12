@@ -8,7 +8,6 @@ block_expr
     {{- parent() -}}
 {% endblock %}
 --TEMPLATE(base.twig)--
-{% spaceless %}
 {% block element -%}
     <div>
         {%- if item.children is defined %}
@@ -18,7 +17,6 @@ block_expr
         {%- endif -%}
     </div>
 {%- endblock %}
-{% endspaceless %}
 --DATA--
 return [
     'item' => [

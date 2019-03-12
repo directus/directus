@@ -2,13 +2,44 @@
 ===========
 
 The ``include`` statement includes a template and returns the rendered content
-of that file into the current namespace:
+of that file:
 
 .. code-block:: jinja
 
     {% include 'header.html' %}
         Body
     {% include 'footer.html' %}
+
+.. note::
+
+    As of Twig 1.12, it is recommended to use the
+    :doc:`include<../functions/include>` function instead as it provides the
+    same features with a bit more flexibility:
+
+    * The ``include`` function is semantically more "correct" (including a
+      template outputs its rendered contents in the current scope; a tag should
+      not display anything);
+
+    * The ``include`` function is more "composable":
+
+      .. code-block:: jinja
+
+          {# Store a rendered template in a variable #}
+          {% set content %}
+              {% include 'template.html' %}
+          {% endset %}
+          {# vs #}
+          {% set content = include('template.html') %}
+
+          {# Filter a rendered template #}
+          {% filter upper %}
+              {% include 'template.html' %}
+          {% endfilter %}
+          {# vs #}
+          {% include('template.html')|upper %}
+
+    * The ``include`` function does not impose any specific order for
+      arguments thanks to :ref:`named arguments <named-arguments>`.
 
 Included templates have access to the variables of the active context.
 
@@ -50,8 +81,8 @@ The template name can be any valid Twig expression:
     {% include some_var %}
     {% include ajax ? 'ajax.html' : 'not_ajax.html' %}
 
-And if the expression evaluates to a ``Twig_Template`` or a
-``Twig_TemplateWrapper`` instance, Twig will use it directly::
+And if the expression evaluates to a ``\Twig\Template`` or a
+``\Twig\TemplateWrapper`` instance, Twig will use it directly::
 
     // {% include template %}
 

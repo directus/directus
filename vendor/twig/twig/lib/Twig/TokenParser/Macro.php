@@ -1,58 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\TokenParser\MacroTokenParser;
 
-/**
- * Defines a macro.
- *
- * <pre>
- * {% macro input(name, value, type, size) %}
- *    <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
- * {% endmacro %}
- * </pre>
- */
-final class Twig_TokenParser_Macro extends Twig_TokenParser
-{
-    public function parse(Twig_Token $token)
+class_exists('Twig\TokenParser\MacroTokenParser');
+
+@trigger_error(sprintf('Using the "Twig_TokenParser_Macro" class is deprecated since Twig version 2.7, use "Twig\TokenParser\MacroTokenParser" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\TokenParser\MacroTokenParser" instead */
+    class Twig_TokenParser_Macro extends MacroTokenParser
     {
-        $lineno = $token->getLine();
-        $stream = $this->parser->getStream();
-        $name = $stream->expect(/* Twig_Token::NAME_TYPE */ 5)->getValue();
-
-        $arguments = $this->parser->getExpressionParser()->parseArguments(true, true);
-
-        $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-        $this->parser->pushLocalScope();
-        $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
-        if ($token = $stream->nextIf(/* Twig_Token::NAME_TYPE */ 5)) {
-            $value = $token->getValue();
-
-            if ($value != $name) {
-                throw new Twig_Error_Syntax(sprintf('Expected endmacro for macro "%s" (but "%s" given).', $name, $value), $stream->getCurrent()->getLine(), $stream->getSourceContext());
-            }
-        }
-        $this->parser->popLocalScope();
-        $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-
-        $this->parser->setMacro($name, new Twig_Node_Macro($name, new Twig_Node_Body([$body]), $arguments, $lineno, $this->getTag()));
-    }
-
-    public function decideBlockEnd(Twig_Token $token)
-    {
-        return $token->test('endmacro');
-    }
-
-    public function getTag()
-    {
-        return 'macro';
     }
 }
-
-class_alias('Twig_TokenParser_Macro', 'Twig\TokenParser\MacroTokenParser', false);

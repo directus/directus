@@ -46,7 +46,7 @@ Twig supports array notation
 {{ does_not_exist[0].does_not_exist_either|default('ok') }}
 {{ does_not_exist[0]['does_not_exist_either']|default('ok') }}
 --DATA--
-return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'array_access' => new ArrayObject(['a' => 'b'])]
+return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'array_access' => new \ArrayObject(['a' => 'b'])]
 --EXPECT--
 1,2
 foo,bar
@@ -74,7 +74,7 @@ ok
 ok
 ok
 --DATA--
-return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'array_access' => new ArrayObject(['a' =>  'b'])]
+return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'array_access' => new \ArrayObject(['a' =>  'b'])]
 --CONFIG--
 return ['strict_variables' => false]
 --EXPECT--

@@ -1,39 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\TokenParser\ImportTokenParser;
 
-/**
- * Imports macros.
- *
- * <pre>
- *   {% import 'forms.html' as forms %}
- * </pre>
- */
-final class Twig_TokenParser_Import extends Twig_TokenParser
-{
-    public function parse(Twig_Token $token)
+class_exists('Twig\TokenParser\ImportTokenParser');
+
+@trigger_error(sprintf('Using the "Twig_TokenParser_Import" class is deprecated since Twig version 2.7, use "Twig\TokenParser\ImportTokenParser" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\TokenParser\ImportTokenParser" instead */
+    class Twig_TokenParser_Import extends ImportTokenParser
     {
-        $macro = $this->parser->getExpressionParser()->parseExpression();
-        $this->parser->getStream()->expect('as');
-        $var = new Twig_Node_Expression_AssignName($this->parser->getStream()->expect(/* Twig_Token::NAME_TYPE */ 5)->getValue(), $token->getLine());
-        $this->parser->getStream()->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-
-        $this->parser->addImportedSymbol('template', $var->getAttribute('name'));
-
-        return new Twig_Node_Import($macro, $var, $token->getLine(), $this->getTag());
-    }
-
-    public function getTag()
-    {
-        return 'import';
     }
 }
-
-class_alias('Twig_TokenParser_Import', 'Twig\TokenParser\ImportTokenParser', false);

@@ -9,14 +9,14 @@ Here is a small example of a macro that renders a form element:
 
 .. code-block:: jinja
 
-    {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+    {% macro input(name, value, type = "text", size = 20) %}
+        <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
     {% endmacro %}
 
-Macros differ from native PHP functions in a few ways:
+Each argument can have a default value (here ``text`` is the default value for
+``type`` if not provided in the call).
 
-* Default argument values are defined by using the ``default`` filter in the
-  macro body;
+Macros differ from native PHP functions in a few ways:
 
 * Arguments of a macro are always optional.
 

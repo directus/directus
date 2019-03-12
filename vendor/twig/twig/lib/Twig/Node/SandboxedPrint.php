@@ -1,51 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\SandboxedPrintNode;
 
-/**
- * Twig_Node_SandboxedPrint adds a check for the __toString() method
- * when the variable is an object and the sandbox is activated.
- *
- * When there is a simple Print statement, like {{ article }},
- * and if the sandbox is enabled, we need to check that the __toString()
- * method is allowed if 'article' is an object.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_SandboxedPrint extends Twig_Node_Print
-{
-    public function compile(Twig_Compiler $compiler)
+class_exists('Twig\Node\SandboxedPrintNode');
+
+@trigger_error(sprintf('Using the "Twig_Node_SandboxedPrint" class is deprecated since Twig version 2.7, use "Twig\Node\SandboxedPrintNode" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\SandboxedPrintNode" instead */
+    class Twig_Node_SandboxedPrint extends SandboxedPrintNode
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->write('echo $this->extensions[\'Twig_Extension_Sandbox\']->ensureToStringAllowed(')
-            ->subcompile($this->getNode('expr'))
-            ->raw(");\n")
-        ;
-    }
-
-    /**
-     * Removes node filters.
-     *
-     * This is mostly needed when another visitor adds filters (like the escaper one).
-     *
-     * @return Twig_Node
-     */
-    private function removeNodeFilter(Twig_Node $node)
-    {
-        if ($node instanceof Twig_Node_Expression_Filter) {
-            return $this->removeNodeFilter($node->getNode('node'));
-        }
-
-        return $node;
     }
 }
-
-class_alias('Twig_Node_SandboxedPrint', 'Twig\Node\SandboxedPrintNode', false);

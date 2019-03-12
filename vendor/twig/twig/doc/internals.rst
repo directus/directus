@@ -27,24 +27,24 @@ The Lexer
 ---------
 
 The lexer tokenizes a template source code into a token stream (each token is
-an instance of ``Twig_Token``, and the stream is an instance of
-``Twig_TokenStream``). The default lexer recognizes 13 different token types:
+an instance of ``\Twig\Token``, and the stream is an instance of
+``\Twig\TokenStream``). The default lexer recognizes 13 different token types:
 
-* ``Twig_Token::BLOCK_START_TYPE``, ``Twig_Token::BLOCK_END_TYPE``: Delimiters for blocks (``{% %}``)
-* ``Twig_Token::VAR_START_TYPE``, ``Twig_Token::VAR_END_TYPE``: Delimiters for variables (``{{ }}``)
-* ``Twig_Token::TEXT_TYPE``: A text outside an expression;
-* ``Twig_Token::NAME_TYPE``: A name in an expression;
-* ``Twig_Token::NUMBER_TYPE``: A number in an expression;
-* ``Twig_Token::STRING_TYPE``: A string in an expression;
-* ``Twig_Token::OPERATOR_TYPE``: An operator;
-* ``Twig_Token::PUNCTUATION_TYPE``: A punctuation sign;
-* ``Twig_Token::INTERPOLATION_START_TYPE``, ``Twig_Token::INTERPOLATION_END_TYPE``: Delimiters for string interpolation;
-* ``Twig_Token::EOF_TYPE``: Ends of template.
+* ``\Twig\Token::BLOCK_START_TYPE``, ``\Twig\Token::BLOCK_END_TYPE``: Delimiters for blocks (``{% %}``)
+* ``\Twig\Token::VAR_START_TYPE``, ``\Twig\Token::VAR_END_TYPE``: Delimiters for variables (``{{ }}``)
+* ``\Twig\Token::TEXT_TYPE``: A text outside an expression;
+* ``\Twig\Token::NAME_TYPE``: A name in an expression;
+* ``\Twig\Token::NUMBER_TYPE``: A number in an expression;
+* ``\Twig\Token::STRING_TYPE``: A string in an expression;
+* ``\Twig\Token::OPERATOR_TYPE``: An operator;
+* ``\Twig\Token::PUNCTUATION_TYPE``: A punctuation sign;
+* ``\Twig\Token::INTERPOLATION_START_TYPE``, ``\Twig\Token::INTERPOLATION_END_TYPE``: Delimiters for string interpolation;
+* ``\Twig\Token::EOF_TYPE``: Ends of template.
 
 You can manually convert a source code into a token stream by calling the
 ``tokenize()`` method of an environment::
 
-    $stream = $twig->tokenize(new Twig_Source($source, $identifier));
+    $stream = $twig->tokenize(new \Twig\Source($source, $identifier));
 
 As the stream has a ``__toString()`` method, you can have a textual
 representation of it by echoing the object::
@@ -63,7 +63,7 @@ Here is the output for the ``Hello {{ name }}`` template:
 
 .. note::
 
-    The default lexer (``Twig_Lexer``) can be changed by calling
+    The default lexer (``\Twig\Lexer``) can be changed by calling
     the ``setLexer()`` method::
 
         $twig->setLexer($lexer);
@@ -72,7 +72,7 @@ The Parser
 ----------
 
 The parser converts the token stream into an AST (Abstract Syntax Tree), or a
-node tree (an instance of ``Twig_Node_Module``). The core extension defines
+node tree (an instance of ``\Twig\Node\ModuleNode``). The core extension defines
 the basic nodes like: ``for``, ``if``, ... and the expression nodes.
 
 You can manually convert a token stream into a node tree by calling the
@@ -88,16 +88,16 @@ Here is the output for the ``Hello {{ name }}`` template:
 
 .. code-block:: text
 
-    Twig_Node_Module(
-      Twig_Node_Text(Hello )
-      Twig_Node_Print(
-        Twig_Node_Expression_Name(name)
+    \Twig\Node\ModuleNode(
+      \Twig\Node\TextNode(Hello )
+      \Twig\Node\PrintNode(
+        \Twig\Node\Expression\NameExpression(name)
       )
     )
 
 .. note::
 
-    The default parser (``Twig_TokenParser``) can be changed by calling the
+    The default parser (``\Twig\TokenParser\AbstractTokenParser``) can be changed by calling the
     ``setParser()`` method::
 
         $twig->setParser($parser);
@@ -118,7 +118,7 @@ The generated template for a ``Hello {{ name }}`` template reads as follows
 using)::
 
     /* Hello {{ name }} */
-    class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends Twig_Template
+    class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends \Twig\Template
     {
         protected function doDisplay(array $context, array $blocks = [])
         {
@@ -132,7 +132,7 @@ using)::
 
 .. note::
 
-    The default compiler (``Twig_Compiler``) can be changed by calling the
+    The default compiler (``\Twig\Compiler``) can be changed by calling the
     ``setCompiler()`` method::
 
         $twig->setCompiler($compiler);

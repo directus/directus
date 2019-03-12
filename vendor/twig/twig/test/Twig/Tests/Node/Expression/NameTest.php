@@ -9,25 +9,30 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Node_Expression_NameTest extends Twig_Test_NodeTestCase
+use Twig\Environment;
+use Twig\Loader\LoaderInterface;
+use Twig\Node\Expression\NameExpression;
+use Twig\Test\NodeTestCase;
+
+class Twig_Tests_Node_Expression_NameTest extends NodeTestCase
 {
     public function testConstructor()
     {
-        $node = new Twig_Node_Expression_Name('foo', 1);
+        $node = new NameExpression('foo', 1);
 
         $this->assertEquals('foo', $node->getAttribute('name'));
     }
 
     public function getTests()
     {
-        $node = new Twig_Node_Expression_Name('foo', 1);
-        $self = new Twig_Node_Expression_Name('_self', 1);
-        $context = new Twig_Node_Expression_Name('_context', 1);
+        $node = new NameExpression('foo', 1);
+        $self = new NameExpression('_self', 1);
+        $context = new NameExpression('_context', 1);
 
-        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['strict_variables' => true]);
-        $env1 = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['strict_variables' => false]);
+        $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), ['strict_variables' => true]);
+        $env1 = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), ['strict_variables' => false]);
 
-        $output = '(isset($context["foo"]) || array_key_exists("foo", $context) ? $context["foo"] : (function () { throw new Twig_Error_Runtime(\'Variable "foo" does not exist.\', 1, $this->source); })())';
+        $output = '(isset($context["foo"]) || array_key_exists("foo", $context) ? $context["foo"] : (function () { throw new RuntimeError(\'Variable "foo" does not exist.\', 1, $this->source); })())';
 
         return [
             [$node, "// line 1\n".$output, $env],

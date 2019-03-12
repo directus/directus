@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Twig\FileExtensionEscapingStrategy;
+
 class Twig_Tests_FileExtensionEscapingStrategyTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -16,7 +18,7 @@ class Twig_Tests_FileExtensionEscapingStrategyTest extends \PHPUnit\Framework\Te
      */
     public function testGuess($strategy, $filename)
     {
-        $this->assertSame($strategy, Twig_FileExtensionEscapingStrategy::guess($filename));
+        $this->assertSame($strategy, FileExtensionEscapingStrategy::guess($filename));
     }
 
     public function getGuessData()

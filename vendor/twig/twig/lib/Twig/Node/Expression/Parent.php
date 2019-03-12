@@ -1,44 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- * (c) Armin Ronacher
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Node\Expression\ParentExpression;
 
-/**
- * Represents a parent node.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-class Twig_Node_Expression_Parent extends Twig_Node_Expression
-{
-    public function __construct($name, $lineno, $tag = null)
-    {
-        parent::__construct([], ['output' => false, 'name' => $name], $lineno, $tag);
-    }
+class_exists('Twig\Node\Expression\ParentExpression');
 
-    public function compile(Twig_Compiler $compiler)
+@trigger_error(sprintf('Using the "Twig_Node_Expression_Parent" class is deprecated since Twig version 2.7, use "Twig\Node\Expression\ParentExpression" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Node\Expression\ParentExpression" instead */
+    class Twig_Node_Expression_Parent extends ParentExpression
     {
-        if ($this->getAttribute('output')) {
-            $compiler
-                ->addDebugInfo($this)
-                ->write('$this->displayParentBlock(')
-                ->string($this->getAttribute('name'))
-                ->raw(", \$context, \$blocks);\n")
-            ;
-        } else {
-            $compiler
-                ->raw('$this->renderParentBlock(')
-                ->string($this->getAttribute('name'))
-                ->raw(', $context, $blocks)')
-            ;
-        }
     }
 }
-
-class_alias('Twig_Node_Expression_Parent', 'Twig\Node\Expression\ParentExpression', false);

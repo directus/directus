@@ -310,6 +310,30 @@
                 <source>This value does not match the expected {{ charset }} charset.</source>
                 <target>Šī vērtība neatbilst sagaidāmajai rakstzīmju kopai {{ charset }}.</target>
             </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Šī vērtība nav derīgs Biznesa Identifikācijas Kods (BIC).</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Kļūda</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Šis nav derīgs UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Šai vērtībai jābūt vairākas reizes atkārtotai {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Šis Biznesa Identifikācijas Kods (BIC) neatbilst {{ iban }} konta numuram (IBAN).</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Šai vērtībai jābūt derīgam JSON.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

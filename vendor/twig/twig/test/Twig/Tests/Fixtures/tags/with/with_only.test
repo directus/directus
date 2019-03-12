@@ -7,4 +7,4 @@
 --DATA--
 return ['foo' => 'baz', 'baz' => 'baz']
 --EXCEPTION--
-Twig_Error_Runtime: Variable "baz" does not exist in "index.twig" at line 3.
+Twig\Error\RuntimeError: Variable "baz" does not exist in "index.twig" at line 3.

@@ -322,6 +322,18 @@
                 <source>This is not a valid UUID.</source>
                 <target>Dëst ass keng gëlteg UUID.</target>
             </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Dëse Wäert sollt e puer vun {{ compared_value }} sinn.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Dëse "Business Identifier Code" (BIC) ass net mat IBAN verbonnen {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Dëse Wäert sollt gëlteg JSON.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -968,6 +968,19 @@ class ApplicationTest extends TestCase
         $this->assertSame('called'.PHP_EOL, $tester->getDisplay(), '->run() does not call interact() if -n is passed');
     }
 
+    public function testRunWithGlobalOptionAndNoCommand()
+    {
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->getDefinition()->addOption(new InputOption('foo', 'f', InputOption::VALUE_OPTIONAL));
+
+        $output = new StreamOutput(fopen('php://memory', 'w', false));
+        $input = new ArgvInput(['cli.php', '--foo', 'bar']);
+
+        $this->assertSame(0, $application->run($input, $output));
+    }
+
     /**
      * Issue #9285.
      *

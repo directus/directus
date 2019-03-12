@@ -1,5 +1,7 @@
 --TEST--
 capturing "block" tag
+--DEPRECATION--
+The spaceless tag is deprecated since Twig 2.7, use the spaceless filter instead.
 --TEMPLATE--
 {% set foo %}{% block foo %}FOO{% endblock %}{% endset %}
 {{ foo }}

@@ -1,19 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\Loader\SourceContextLoaderInterface;
 
-/**
- * Empty interface for Twig 1.x compatibility.
- */
-interface Twig_SourceContextLoaderInterface extends Twig_LoaderInterface
-{
+class_exists('Twig\Loader\SourceContextLoaderInterface');
+
+@trigger_error(sprintf('Using the "Twig_SourceContextLoaderInterface" class is deprecated since Twig version 2.7, use "Twig\Loader\SourceContextLoaderInterface" instead.'), E_USER_DEPRECATED);
+
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\Loader\SourceContextLoaderInterface" instead */
+    class Twig_SourceContextLoaderInterface extends SourceContextLoaderInterface
+    {
+    }
 }
-
-class_alias('Twig_SourceContextLoaderInterface', 'Twig\Loader\SourceContextLoaderInterface', false);

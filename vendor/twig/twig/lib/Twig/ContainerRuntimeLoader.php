@@ -1,39 +1,14 @@
 <?php
 
-/*
- * This file is part of Twig.
- *
- * (c) Fabien Potencier
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+use Twig\RuntimeLoader\ContainerRuntimeLoader;
 
-use Psr\Container\ContainerInterface;
+class_exists('Twig\RuntimeLoader\ContainerRuntimeLoader');
 
-/**
- * Lazily loads Twig runtime implementations from a PSR-11 container.
- *
- * Note that the runtime services MUST use their class names as identifiers.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Robin Chalas <robin.chalas@gmail.com>
- */
-class Twig_ContainerRuntimeLoader implements Twig_RuntimeLoaderInterface
-{
-    private $container;
+@trigger_error(sprintf('Using the "Twig_ContainerRuntimeLoader" class is deprecated since Twig version 2.7, use "Twig\RuntimeLoader\ContainerRuntimeLoader" instead.'), E_USER_DEPRECATED);
 
-    public function __construct(ContainerInterface $container)
+if (\false) {
+    /** @deprecated since Twig 2.7, use "Twig\RuntimeLoader\ContainerRuntimeLoader" instead */
+    class Twig_ContainerRuntimeLoader extends ContainerRuntimeLoader
     {
-        $this->container = $container;
-    }
-
-    public function load($class)
-    {
-        if ($this->container->has($class)) {
-            return $this->container->get($class);
-        }
     }
 }
-
-class_alias('Twig_ContainerRuntimeLoader', 'Twig\RuntimeLoader\ContainerRuntimeLoader', false);

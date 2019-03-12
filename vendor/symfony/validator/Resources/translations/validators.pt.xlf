@@ -302,9 +302,33 @@
                 <source>An empty file is not allowed.</source>
                 <target>Ficheiro vazio não é permitido.</target>
             </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>O host não pode ser resolvido.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>O valor não corresponde ao conjunto de caracteres {{ charset }} esperado.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>O Código de Identificação de Empresa (BIC) não é válido.</target>
+            </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
                 <target>Erro</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Este valor não é um UUID válido.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Este valor deve ser um múltiplo de {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>O Código de Identificação de Empresa (BIC) não está associado ao IBAN {{ iban }}.</target>
             </trans-unit>
         </body>
     </file>

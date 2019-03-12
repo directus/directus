@@ -5,4 +5,4 @@
 --DATA--
 return []
 --EXCEPTION--
-Twig_Error_Loader: Template "foo.twig" is not defined in "index.twig" at line 2.
+Twig\Error\LoaderError: Template "foo.twig" is not defined in "index.twig" at line 2.

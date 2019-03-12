@@ -326,6 +326,10 @@
                 <source>This value should be a multiple of {{ compared_value }}.</source>
                 <target>Ta wartość powinna być wielokrotnością {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Ten kod BIC (Business Identifier Code) nie jest powiązany z międzynarodowym numerem rachunku bankowego (IBAN) {{ iban }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

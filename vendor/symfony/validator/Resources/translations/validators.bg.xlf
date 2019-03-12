@@ -318,6 +318,22 @@
                 <source>Error</source>
                 <target>Грешка</target>
             </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Това не е валиден UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Тази стойност трябва да бъде кратно число на {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Този бизнес идентификационен код (BIC) не е свързана с IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Тази стойност трябва да е валидна JSON.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

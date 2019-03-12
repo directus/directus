@@ -310,9 +310,25 @@
                 <source>This value does not match the expected {{ charset }} charset.</source>
                 <target>Значение не совпадает с ожидаемой {{ charset }} кодировкой.</target>
             </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Значение не соответствует формату BIC.</target>
+            </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
                 <target>Ошибка</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Значение не соответствует формату UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Значение должно быть кратно {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Данный BIC не связан с IBAN {{ iban }}.</target>
             </trans-unit>
         </body>
     </file>

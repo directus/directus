@@ -17,7 +17,7 @@
   * {{ key }}
 {% endfor %}
 --DATA--
-class ItemsIteratorCountable implements Iterator, Countable
+class ItemsIteratorCountable implements \Iterator, \Countable
 {
   protected $values = ['foo' => 'bar', 'bar' => 'foo'];
   public function current() { return current($this->values); }

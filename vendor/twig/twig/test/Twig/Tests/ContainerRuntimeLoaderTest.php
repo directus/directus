@@ -10,6 +10,7 @@
  */
 
 use Psr\Container\ContainerInterface;
+use Twig\RuntimeLoader\ContainerRuntimeLoader;
 
 class Twig_Tests_ContainerRuntimeLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -19,7 +20,7 @@ class Twig_Tests_ContainerRuntimeLoaderTest extends \PHPUnit\Framework\TestCase
         $container->expects($this->once())->method('has')->with('stdClass')->willReturn(true);
         $container->expects($this->once())->method('get')->with('stdClass')->willReturn(new \stdClass());
 
-        $loader = new Twig_ContainerRuntimeLoader($container);
+        $loader = new ContainerRuntimeLoader($container);
 
         $this->assertInstanceOf('stdClass', $loader->load('stdClass'));
     }
@@ -30,6 +31,6 @@ class Twig_Tests_ContainerRuntimeLoaderTest extends \PHPUnit\Framework\TestCase
         $container->expects($this->once())->method('has')->with('Foo');
         $container->expects($this->never())->method('get');
 
-        $this->assertNull((new Twig_ContainerRuntimeLoader($container))->load('Foo'));
+        $this->assertNull((new ContainerRuntimeLoader($container))->load('Foo'));
     }
 }

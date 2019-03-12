@@ -322,6 +322,14 @@
                 <source>This is not a valid UUID.</source>
                 <target>Dies ist keine gültige UUID.</target>
             </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Dieser Wert sollte ein Vielfaches von {{ compared_value }} sein.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Diese internationale Bankleitzahl (BIC) ist nicht mit der IBAN {{ iban }} assoziiert.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

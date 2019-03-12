@@ -237,6 +237,43 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
         $this->assertSame('b', $dialog->ask($this->createStreamableInputInterfaceMock($inputStream), $this->createOutputInterface(), $question));
     }
 
+    public function getInputs()
+    {
+        return [
+            ['$'], // 1 byte character
+            ['¢'], // 2 bytes character
+            ['€'], // 3 bytes character
+            ['𐍈'], // 4 bytes character
+        ];
+    }
+
+    /**
+     * @dataProvider getInputs
+     */
+    public function testAskWithAutocompleteWithMultiByteCharacter($character)
+    {
+        if (!$this->hasSttyAvailable()) {
+            $this->markTestSkipped('`stty` is required to test autocomplete functionality');
+        }
+
+        $inputStream = $this->getInputStream("$character\n");
+
+        $possibleChoices = [
+            '$' => '1 byte character',
+            '¢' => '2 bytes character',
+            '€' => '3 bytes character',
+            '𐍈' => '4 bytes character',
+        ];
+
+        $dialog = new QuestionHelper();
+        $dialog->setHelperSet(new HelperSet([new FormatterHelper()]));
+
+        $question = new ChoiceQuestion('Please select a character', $possibleChoices);
+        $question->setMaxAttempts(1);
+
+        $this->assertSame($character, $dialog->ask($this->createStreamableInputInterfaceMock($inputStream), $this->createOutputInterface(), $question));
+    }
+
     public function testAutocompleteWithTrailingBackslash()
     {
         if (!$this->hasSttyAvailable()) {
@@ -549,7 +586,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     /**
      * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted
+     * @expectedExceptionMessage Aborted.
      */
     public function testAskThrowsExceptionOnMissingInput()
     {
@@ -559,7 +596,17 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     /**
      * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted
+     * @expectedExceptionMessage Aborted.
+     */
+    public function testAskThrowsExceptionOnMissingInputForChoiceQuestion()
+    {
+        $dialog = new QuestionHelper();
+        $dialog->ask($this->createStreamableInputInterfaceMock($this->getInputStream('')), $this->createOutputInterface(), new ChoiceQuestion('Choice', ['a', 'b']));
+    }
+
+    /**
+     * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
+     * @expectedExceptionMessage Aborted.
      */
     public function testAskThrowsExceptionOnMissingInputWithValidator()
     {

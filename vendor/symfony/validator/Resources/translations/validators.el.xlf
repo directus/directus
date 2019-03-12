@@ -278,6 +278,58 @@
                 <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
                 <target>Αυτή η τιμή δεν πρέπει να είναι πανομοιότυπη με {{ compared_value_type }} {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Η αναλογία πλάτους-ύψους της εικόνας είναι πολύ μεγάλη ({{ ratio }}). Μέγιστη επιτρεπτή αναλογία {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Η αναλογία πλάτους-ύψους της εικόνας είναι πολύ μικρή ({{ ratio }}). Ελάχιστη επιτρεπτή αναλογία {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Η εικόνα είναι τετράγωνη ({{ width }}x{{ height }}px). Δεν επιτρέπονται τετράγωνες εικόνες.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>Η εικόνα έχει οριζόντιο προσανατολισμό ({{ width }}x{{ height }}px). Δεν επιτρέπονται εικόνες με οριζόντιο προσανατολισμό.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>Η εικόνα έχει κάθετο προσανατολισμό ({{ width }}x{{ height }}px). Δεν επιτρέπονται εικόνες με κάθετο προσανατολισμό.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Δεν επιτρέπεται κενό αρχείο.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>Η διεύθυνση δεν μπόρεσε να επιλυθεί.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Αυτή η τιμή δεν ταιριάζει στο αναμενόμενο {{ charset }} σύνολο χαρακτήρων.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Αυτός δεν έιναι ένας έγκυρος κωδικός BIC.</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Σφάλμα</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Αυτό δεν είναι ένα έγκυρο UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Αυτή η τιμή θα έπρεπε να είναι πολλαπλάσιο του {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Αυτός ο κωδικός BIC δεν σχετίζεται με το IBAN {{ iban }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -10,7 +10,6 @@ block_expr2
 --TEMPLATE(base2.twig)--
 {% extends "base.twig" %}
 --TEMPLATE(base.twig)--
-{% spaceless %}
 {% block element -%}
     <div>
         {%- if item.children is defined %}
@@ -20,7 +19,6 @@ block_expr2
         {%- endif -%}
     </div>
 {%- endblock %}
-{% endspaceless %}
 --DATA--
 return [
     'item' => [
