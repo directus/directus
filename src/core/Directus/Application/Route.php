@@ -97,11 +97,11 @@ abstract class Route
 
         switch ($type) {
             case 'scim+json':
-                $response = $response->withScimJson($data);
+                $response = $response->withScimJson($data,null,JSON_UNESCAPED_UNICODE);
                 break;
             case 'json':
             default:
-                $response = $response->withJson($data);
+                $response = $response->withJson($data,null,JSON_UNESCAPED_UNICODE);
         }
 
         return $response;
