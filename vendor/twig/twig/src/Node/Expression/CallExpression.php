@@ -146,7 +146,7 @@ abstract class CallExpression extends AbstractExpression
             throw new \LogicException($message);
         }
 
-        $callableParameters = $this->getCallableParameters($callable, $isVariadic);
+        list($callableParameters, $isPhpVariadic) = $this->getCallableParameters($callable, $isVariadic);
         $arguments = [];
         $names = [];
         $missingArguments = [];
@@ -191,7 +191,7 @@ abstract class CallExpression extends AbstractExpression
         }
 
         if ($isVariadic) {
-            $arbitraryArguments = new ArrayExpression([], -1);
+            $arbitraryArguments = $isPhpVariadic ? new VariadicExpression([], -1) : new ArrayExpression([], -1);
             foreach ($parameters as $key => $value) {
                 if (\is_int($key)) {
                     $arbitraryArguments->addElement($value);
@@ -230,11 +230,11 @@ abstract class CallExpression extends AbstractExpression
         return strtolower(preg_replace(['/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'], ['\\1_\\2', '\\1_\\2'], $name));
     }
 
-    private function getCallableParameters($callable, $isVariadic)
+    private function getCallableParameters($callable, bool $isVariadic): array
     {
         list($r) = $this->reflectCallable($callable);
         if (null === $r) {
-            return [];
+            return [[], false];
         }
 
         $parameters = $r->getParameters();
@@ -252,10 +252,14 @@ abstract class CallExpression extends AbstractExpression
                 array_shift($parameters);
             }
         }
+        $isPhpVariadic = false;
         if ($isVariadic) {
             $argument = end($parameters);
             if ($argument && $argument->isArray() && $argument->isDefaultValueAvailable() && [] === $argument->getDefaultValue()) {
                 array_pop($parameters);
+            } else if ($argument && $argument->isVariadic()) {
+                array_pop($parameters);
+                $isPhpVariadic = true;
             } else {
                 $callableName = $r->name;
                 if ($r instanceof \ReflectionMethod) {
@@ -266,7 +270,7 @@ abstract class CallExpression extends AbstractExpression
             }
         }
 
-        return $parameters;
+        return [$parameters, $isPhpVariadic];
     }
 
     private function reflectCallable($callable)

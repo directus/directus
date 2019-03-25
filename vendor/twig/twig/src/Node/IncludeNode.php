@@ -22,7 +22,7 @@ use Twig\Node\Expression\AbstractExpression;
  */
 class IncludeNode extends Node implements NodeOutputInterface
 {
-    public function __construct(AbstractExpression $expr, AbstractExpression $variables = null, $only = false, $ignoreMissing = false, $lineno, $tag = null)
+    public function __construct(AbstractExpression $expr, AbstractExpression $variables = null, bool $only = false, bool $ignoreMissing = false, int $lineno, string $tag = null)
     {
         $nodes = ['expr' => $expr];
         if (null !== $variables) {
@@ -82,12 +82,14 @@ class IncludeNode extends Node implements NodeOutputInterface
             $compiler->raw(false === $this->getAttribute('only') ? '$context' : '[]');
         } elseif (false === $this->getAttribute('only')) {
             $compiler
-                ->raw('array_merge($context, ')
+                ->raw('twig_array_merge($context, ')
                 ->subcompile($this->getNode('variables'))
                 ->raw(')')
             ;
         } else {
+            $compiler->raw('twig_to_array(');
             $compiler->subcompile($this->getNode('variables'));
+            $compiler->raw(')');
         }
     }
 }

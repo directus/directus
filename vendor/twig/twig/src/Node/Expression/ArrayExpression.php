@@ -17,7 +17,7 @@ class ArrayExpression extends AbstractExpression
 {
     private $index;
 
-    public function __construct(array $elements, $lineno)
+    public function __construct(array $elements, int $lineno)
     {
         parent::__construct($elements, [], $lineno);
 

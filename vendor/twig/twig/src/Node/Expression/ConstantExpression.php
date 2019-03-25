@@ -16,7 +16,7 @@ use Twig\Compiler;
 
 class ConstantExpression extends AbstractExpression
 {
-    public function __construct($value, $lineno)
+    public function __construct($value, int $lineno)
     {
         parent::__construct([], ['value' => $value], $lineno);
     }

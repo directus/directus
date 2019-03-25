@@ -1,0 +1,24 @@
+--TEST--
+"set" tag with inheritance
+--TEMPLATE--
+{% extends "layout.twig" %}
+
+{% set foo %}bar{% endset %}
+
+{% block var_from_child %}
+    {{- foo -}}
+{% endblock %}
+--TEMPLATE(layout.twig)--
+{% set foo %}foo{% endset %}
+
+{% block var_from_layout %}
+    {{- foo -}}
+{% endblock %}
+
+{% block var_from_child %}
+{% endblock %}
+--DATA--
+return []
+--EXPECT--
+foo
+foo

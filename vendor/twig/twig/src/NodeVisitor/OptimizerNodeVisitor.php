@@ -51,7 +51,7 @@ final class OptimizerNodeVisitor extends AbstractNodeVisitor
     /**
      * @param int $optimizers The optimizer mode
      */
-    public function __construct($optimizers = -1)
+    public function __construct(int $optimizers = -1)
     {
         if (!\is_int($optimizers) || $optimizers > (self::OPTIMIZE_FOR | self::OPTIMIZE_RAW_FILTER | self::OPTIMIZE_VAR_ACCESS)) {
             throw new \InvalidArgumentException(sprintf('Optimizer mode "%s" is not valid.', $optimizers));
@@ -90,10 +90,8 @@ final class OptimizerNodeVisitor extends AbstractNodeVisitor
      * It replaces:
      *
      *   * "echo $this->render(Parent)Block()" with "$this->display(Parent)Block()"
-     *
-     * @return Node
      */
-    private function optimizePrintNode(Node $node, Environment $env)
+    private function optimizePrintNode(Node $node, Environment $env): Node
     {
         if (!$node instanceof PrintNode) {
             return $node;
@@ -114,10 +112,8 @@ final class OptimizerNodeVisitor extends AbstractNodeVisitor
 
     /**
      * Removes "raw" filters.
-     *
-     * @return Node
      */
-    private function optimizeRawFilter(Node $node, Environment $env)
+    private function optimizeRawFilter(Node $node, Environment $env): Node
     {
         if ($node instanceof FilterExpression && 'raw' == $node->getNode('filter')->getAttribute('value')) {
             return $node->getNode('node');

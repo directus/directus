@@ -816,6 +816,11 @@ class RelationalTableGateway extends BaseTableGateway
     {
         ArrayUtils::remove($params, 'id');
 
+        // Check if single param is set then convert it into boolean
+        if (ArrayUtils::get($params, 'single')) {
+            $params['single'] = json_decode(strtolower(ArrayUtils::get($params, 'single')));
+        }
+
         return $this->fetchData($params);
     }
 
@@ -1109,7 +1114,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = array_values($results);
         }
 
-        if (ArrayUtils::has($params, 'single')) {
+        if (ArrayUtils::get($params, 'single')) {
             $results = reset($results);
         }
 

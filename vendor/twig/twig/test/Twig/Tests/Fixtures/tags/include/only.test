@@ -3,14 +3,18 @@
 --TEMPLATE--
 {% include "foo.twig" %}
 {% include "foo.twig" only %}
-{% include "foo.twig" with {'foo1': 'bar'} %}
-{% include "foo.twig" with {'foo1': 'bar'} only %}
+{% include "foo.twig" with vars1 %}
+{% include "foo.twig" with vars1 only %}
+{% include "foo.twig" with vars2 %}
+{% include "foo.twig" with vars2 only %}
 --TEMPLATE(foo.twig)--
 {% for k, v in _context %}{{ k }},{% endfor %}
 --DATA--
-return ['foo' => 'bar']
+return ['vars1' => ['foo1' => 'bar'], 'vars2' => new ArrayObject(['foo2' => 'bar'])]
 --EXPECT--
-foo,global,_parent,
+vars1,vars2,global,_parent,
 global,_parent,
-foo,global,foo1,_parent,
+vars1,vars2,global,foo1,_parent,
 foo1,global,_parent,
+vars1,vars2,global,foo2,_parent,
+foo2,global,_parent,

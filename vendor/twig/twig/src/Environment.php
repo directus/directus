@@ -38,11 +38,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    const VERSION = '2.7.1';
-    const VERSION_ID = 20701;
+    const VERSION = '2.7.4';
+    const VERSION_ID = 20704;
     const MAJOR_VERSION = 2;
     const MINOR_VERSION = 7;
-    const RELEASE_VERSION = 1;
+    const RELEASE_VERSION = 4;
     const EXTRA_VERSION = '';
 
     private $charset;
@@ -496,7 +496,7 @@ class Environment
      *
      * @param string|TemplateWrapper|array $names A template or an array of templates to try consecutively
      *
-     * @return TemplateWrapper
+     * @return TemplateWrapper|Template
      *
      * @throws LoaderError When none of the templates can be found
      * @throws SyntaxError When an error occurred during compilation
@@ -504,13 +504,23 @@ class Environment
     public function resolveTemplate($names)
     {
         if (!\is_array($names)) {
-            return $this->load($names);
+            $names = [$names];
         }
 
         foreach ($names as $name) {
+            if ($name instanceof Template) {
+                return $name;
+            }
+            if ($name instanceof TemplateWrapper) {
+                return $name;
+            }
+
             try {
-                return $this->load($name);
+                return $this->loadTemplate($name);
             } catch (LoaderError $e) {
+                if (1 === \count($names)) {
+                    throw $e;
+                }
             }
         }
 

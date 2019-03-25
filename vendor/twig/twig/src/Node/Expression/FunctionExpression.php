@@ -16,7 +16,7 @@ use Twig\Node\Node;
 
 class FunctionExpression extends CallExpression
 {
-    public function __construct($name, Node $arguments, $lineno)
+    public function __construct(string $name, Node $arguments, int $lineno)
     {
         parent::__construct(['arguments' => $arguments], ['name' => $name, 'is_defined_test' => false], $lineno);
     }

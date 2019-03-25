@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class MethodCallExpression extends AbstractExpression
 {
-    public function __construct(AbstractExpression $node, $method, ArrayExpression $arguments, $lineno)
+    public function __construct(AbstractExpression $node, string $method, ArrayExpression $arguments, int $lineno)
     {
         parent::__construct(['node' => $node, 'arguments' => $arguments], ['method' => $method, 'safe' => false], $lineno);
 

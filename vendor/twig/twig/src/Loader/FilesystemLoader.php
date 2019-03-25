@@ -34,7 +34,7 @@ class FilesystemLoader implements LoaderInterface, ExistsLoaderInterface, Source
      * @param string|array $paths    A path or an array of paths where to look for templates
      * @param string|null  $rootPath The root path common to all relative paths (null for getcwd())
      */
-    public function __construct($paths = [], $rootPath = null)
+    public function __construct($paths = [], string $rootPath = null)
     {
         $this->rootPath = (null === $rootPath ? getcwd() : $rootPath).\DIRECTORY_SEPARATOR;
         if (false !== $realPath = realpath($rootPath)) {

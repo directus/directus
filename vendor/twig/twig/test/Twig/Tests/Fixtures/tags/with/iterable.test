@@ -1,0 +1,10 @@
+--TEST--
+"with" tag with an iterable expression
+--TEMPLATE--
+{% with vars %}
+    {{ foo }}{{ bar }}
+{% endwith %}
+--DATA--
+return ['vars' => new ArrayObject(['foo' => 'baz', 'bar' => 'qux'])]
+--EXPECT--
+bazqux

@@ -335,7 +335,7 @@ class Parser
         return $this->stream->getCurrent();
     }
 
-    private function filterBodyNodes(Node $node, $nested = false)
+    private function filterBodyNodes(Node $node, bool $nested = false)
     {
         // check that the body does not contain non-empty output nodes
         if (

@@ -88,7 +88,7 @@ final class SecurityPolicy implements SecurityPolicyInterface
     public function checkMethodAllowed($obj, $method)
     {
         if ($obj instanceof Template || $obj instanceof Markup) {
-            return true;
+            return;
         }
 
         $allowed = false;

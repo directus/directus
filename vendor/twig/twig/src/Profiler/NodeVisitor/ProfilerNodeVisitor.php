@@ -29,7 +29,7 @@ final class ProfilerNodeVisitor extends AbstractNodeVisitor
 {
     private $extensionName;
 
-    public function __construct($extensionName)
+    public function __construct(string $extensionName)
     {
         $this->extensionName = $extensionName;
     }
@@ -64,7 +64,7 @@ final class ProfilerNodeVisitor extends AbstractNodeVisitor
         return $node;
     }
 
-    private function getVarName()
+    private function getVarName(): string
     {
         return sprintf('__internal_%s', hash('sha256', $this->extensionName));
     }

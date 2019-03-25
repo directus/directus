@@ -392,7 +392,7 @@ class Twig_Tests_TemplateTest extends \PHPUnit\Framework\TestCase
     {
         $twig = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), ['strict_variables' => true]);
         $getIsObject = new Twig_TemplateGetIsMethods();
-        $template = new Twig_TemplateTest($twig, ['strict_variables' => true]);
+        $template = new Twig_TemplateTest($twig, 'index.twig');
         // first time should not create a cache for "get"
         $this->assertNull(twig_get_attribute($twig, $template->getSourceContext(), $getIsObject, 'get'));
         // 0 should be in the method cache now, so this should fail

@@ -23,7 +23,7 @@ use Twig\Node\Expression\ConstantExpression;
 class EmbedNode extends IncludeNode
 {
     // we don't inject the module to avoid node visitors to traverse it twice (as it will be already visited in the main module)
-    public function __construct($name, $index, AbstractExpression $variables = null, $only = false, $ignoreMissing = false, $lineno, $tag = null)
+    public function __construct(string $name, int $index, AbstractExpression $variables = null, bool $only = false, bool $ignoreMissing = false, int $lineno, string $tag = null)
     {
         parent::__construct(new ConstantExpression('not_used', $lineno), $variables, $only, $ignoreMissing, $lineno, $tag);
 

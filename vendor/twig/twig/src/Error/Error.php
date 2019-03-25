@@ -61,7 +61,7 @@ class Error extends \Exception
      * @param Source|string|null $source   The source context where the error occurred
      * @param \Exception         $previous The previous exception
      */
-    public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null, $autoGuess = true)
+    public function __construct(string $message, int $lineno = -1, $source = null, \Exception $previous = null, bool $autoGuess = true)
     {
         parent::__construct('', 0, $previous);
 

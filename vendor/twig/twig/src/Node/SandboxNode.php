@@ -20,7 +20,7 @@ use Twig\Compiler;
  */
 class SandboxNode extends Node
 {
-    public function __construct(Node $body, $lineno, $tag = null)
+    public function __construct(Node $body, int $lineno, string $tag = null)
     {
         parent::__construct(['body' => $body], [], $lineno, $tag);
     }

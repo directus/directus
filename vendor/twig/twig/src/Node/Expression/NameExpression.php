@@ -22,7 +22,7 @@ class NameExpression extends AbstractExpression
         '_charset' => '$this->env->getCharset()',
     ];
 
-    public function __construct($name, $lineno)
+    public function __construct(string $name, int $lineno)
     {
         parent::__construct([], ['name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
     }

@@ -29,7 +29,7 @@ use Twig\Node\Node;
  */
 class DefaultFilter extends FilterExpression
 {
-    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, $lineno, $tag = null)
+    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, int $lineno, string $tag = null)
     {
         $default = new FilterExpression($node, new ConstantExpression('default', $node->getTemplateLine()), $arguments, $node->getTemplateLine());
 

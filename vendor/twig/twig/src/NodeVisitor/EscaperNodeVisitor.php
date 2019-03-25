@@ -147,7 +147,7 @@ final class EscaperNodeVisitor extends AbstractNodeVisitor
         return $this->defaultStrategy ? $this->defaultStrategy : false;
     }
 
-    private function getEscaperFilter($type, Node $node)
+    private function getEscaperFilter(string $type, Node $node): FilterExpression
     {
         $line = $node->getTemplateLine();
         $name = new ConstantExpression('escape', $line);

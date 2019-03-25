@@ -938,7 +938,41 @@ class FieldsSeeder extends AbstractSeed
                 'interface' => 'many-to-many',
                 'locked' => 1
             ],
-
+            [
+                'collection' => 'directus_roles',
+                'field' => 'nav_override',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
+                'interface' => 'code',
+                'locked' => 1,
+                'options' => '[
+                    {
+                        "title": "$t:collections",
+                        "include": "collections"
+                    },
+                    {
+                        "title": "$t:bookmarks",
+                        "include": "bookmarks"
+                    },
+                    {
+                        "title": "$t:extensions",
+                        "include": "extensions"
+                    },
+                    {
+                        "title": "Custom Links",
+                        "links": [
+                            {
+                                "name": "RANGER Studio",
+                                "path": "https://rangerstudio.com",
+                                "icon": "star"
+                            },
+                            {
+                                "name": "Movies",
+                                "path": "/collections/movies"
+                            }
+                        ]
+                    }
+                ]'
+            ],
 
             // Settings
             // -----------------------------------------------------------------

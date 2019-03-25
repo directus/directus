@@ -8,7 +8,7 @@ scope are not visible outside of the scope:
 
     {% with %}
         {% set foo = 42 %}
-        {{ foo }}           foo is 42 here
+        {{ foo }} {# foo is 42 here #}
     {% endwith %}
     foo is not visible here any longer
 
@@ -19,7 +19,7 @@ is equivalent to the following one:
 .. code-block:: jinja
 
     {% with { foo: 42 } %}
-        {{ foo }}           foo is 42 here
+        {{ foo }} {# foo is 42 here #}
     {% endwith %}
     foo is not visible here any longer
 

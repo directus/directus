@@ -24,7 +24,7 @@ use Twig\Node\Expression\AbstractExpression;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class CheckToStringNode extends Node
+class CheckToStringNode extends AbstractExpression
 {
     public function __construct(AbstractExpression $expr)
     {

@@ -24,7 +24,7 @@ use Twig\Compiler;
  */
 class SpacelessNode extends Node implements NodeOutputInterface
 {
-    public function __construct(Node $body, $lineno, $tag = 'spaceless')
+    public function __construct(Node $body, int $lineno, string $tag = 'spaceless')
     {
         parent::__construct(['body' => $body], [], $lineno, $tag);
     }

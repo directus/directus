@@ -1,3 +1,20 @@
+* 2.7.4 (2019-03-23)
+
+ * fixed variadic support
+ * fixed CheckToStringNode implementation (broken when a function/filter is variadic)
+
+* 2.7.3 (2019-03-21)
+
+ * fixed the spaceless filter so that it behaves like the spaceless tag
+ * fixed BC break on Environment::resolveTemplate()
+ * allowed Traversable objects to be used in the "with" tag
+ * allowed Traversable objects to be used in the "with" tag
+ * allowed Traversable objects to be used in the "with" argument of the "include" and "embed" tags
+
+* 2.7.2 (2019-03-12)
+
+ * added TemplateWrapper::getTemplateName()
+
 * 2.7.1 (2019-03-12)
 
  * fixed class aliases
@@ -171,7 +188,23 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.38.1 (2019-XX-XX)
+* 1.38.4 (2019-XX-XX)
+
+ * fixed CheckToStringNode implementation (broken when a function/filter is variadic)
+
+* 1.38.3 (2019-03-21)
+
+ * fixed the spaceless filter so that it behaves like the spaceless tag
+ * fixed BC break on Environment::resolveTemplate()
+ * fixed the bundled Autoloader to also load namespaced classes
+ * allowed Traversable objects to be used in the "with" tag
+ * allowed Traversable objects to be used in the "with" argument of the "include" and "embed" tags
+
+* 1.38.2 (2019-03-12)
+
+ * added TemplateWrapper::getTemplateName()
+
+* 1.38.1 (2019-03-12)
 
  * fixed class aliases
 

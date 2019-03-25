@@ -385,9 +385,7 @@ function twig_random(Environment $env, $values = null, $max = null)
         return mt_rand($min, $max);
     }
 
-    if ($values instanceof \Traversable) {
-        $values = iterator_to_array($values);
-    } elseif (\is_string($values)) {
+    if (\is_string($values)) {
         if ('' === $values) {
             return '';
         }
@@ -409,9 +407,11 @@ function twig_random(Environment $env, $values = null, $max = null)
         }
     }
 
-    if (!\is_array($values)) {
+    if (!twig_test_iterable($values)) {
         return $values;
     }
+
+    $values = twig_to_array($values);
 
     if (0 === \count($values)) {
         throw new RuntimeError('The random function cannot pick from an empty array.');
@@ -527,13 +527,11 @@ function twig_date_converter(Environment $env, $date = null, $timezone = null)
  */
 function twig_replace_filter($str, $from)
 {
-    if ($from instanceof \Traversable) {
-        $from = iterator_to_array($from);
-    } elseif (!\is_array($from)) {
+    if (!twig_test_iterable($from)) {
         throw new RuntimeError(sprintf('The "replace" filter expects an array or "Traversable" as replace values, got "%s".', \is_object($from) ? \get_class($from) : \gettype($from)));
     }
 
-    return strtr($str, $from);
+    return strtr($str, twig_to_array($from));
 }
 
 /**
@@ -622,19 +620,15 @@ function twig_urlencode_filter($url)
  */
 function twig_array_merge($arr1, $arr2)
 {
-    if ($arr1 instanceof \Traversable) {
-        $arr1 = iterator_to_array($arr1);
-    } elseif (!\is_array($arr1)) {
+    if (!twig_test_iterable($arr1)) {
         throw new RuntimeError(sprintf('The merge filter only works with arrays or "Traversable", got "%s" as first argument.', \gettype($arr1)));
     }
 
-    if ($arr2 instanceof \Traversable) {
-        $arr2 = iterator_to_array($arr2);
-    } elseif (!\is_array($arr2)) {
+    if (!twig_test_iterable($arr2)) {
         throw new RuntimeError(sprintf('The merge filter only works with arrays or "Traversable", got "%s" as second argument.', \gettype($arr2)));
     }
 
-    return array_merge($arr1, $arr2);
+    return array_merge(twig_to_array($arr1), twig_to_array($arr2));
 }
 
 /**
@@ -724,13 +718,9 @@ function twig_last(Environment $env, $item)
  */
 function twig_join_filter($value, $glue = '', $and = null)
 {
-    if ($value instanceof \Traversable) {
-        $value = iterator_to_array($value, false);
-    } else {
-        $value = (array) $value;
-    }
+    $value = twig_to_array($value, false);
 
-    if (0 === \count($value)) {
+    if (!\is_array($value) || 0 === \count($value)) {
         return '';
     }
 
@@ -738,12 +728,11 @@ function twig_join_filter($value, $glue = '', $and = null)
         return implode($glue, $value);
     }
 
-    $v = array_values($value);
-    if (1 === \count($v)) {
-        return $v[0];
+    if (1 === \count($value)) {
+        return $value[0];
     }
 
-    return implode($glue, \array_slice($value, 0, -1)).$and.$v[\count($v) - 1];
+    return implode($glue, \array_slice($value, 0, -1)).$and.$value[\count($value) - 1];
 }
 
 /**
@@ -970,7 +959,7 @@ function twig_trim_filter($string, $characterMask = null, $side = 'both')
  */
 function twig_spaceless($content)
 {
-    return preg_replace('/>\s+</', '><', $content);
+    return trim(preg_replace('/>\s+</', '><', $content));
 }
 
 /**
@@ -1325,6 +1314,26 @@ function twig_ensure_traversable($seq)
 }
 
 /**
+ * @internal
+ */
+function twig_to_array($seq, $preserveKeys = true)
+{
+    if ($seq instanceof \Traversable) {
+        return iterator_to_array($seq, $preserveKeys);
+    }
+
+    if (!is_array($seq)) {
+        return (array) $seq;
+    }
+
+    if(!$preserveKeys) {
+        return array_values($seq);
+    }
+
+    return $seq;
+}
+
+/**
  * Checks if a variable is empty.
  *
  *    {# evaluates to true if the foo variable is null, false, or the empty string #}
@@ -1471,13 +1480,9 @@ function twig_constant_is_defined($constant, $object = null)
  */
 function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
 {
-    if ($items instanceof \Traversable) {
-        $items = iterator_to_array($items, $preserveKeys);
-    }
-
     $size = ceil($size);
 
-    $result = array_chunk($items, $size, $preserveKeys);
+    $result = array_chunk(twig_to_array($items, $preserveKeys), $size, $preserveKeys);
 
     if (null !== $fill && $result) {
         $last = \count($result) - 1;

@@ -2152,6 +2152,7 @@ return array(
     'Twig\\Node\\Expression\\Unary\\NegUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/NegUnary.php',
     'Twig\\Node\\Expression\\Unary\\NotUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/NotUnary.php',
     'Twig\\Node\\Expression\\Unary\\PosUnary' => $vendorDir . '/twig/twig/src/Node/Expression/Unary/PosUnary.php',
+    'Twig\\Node\\Expression\\VariadicExpression' => $vendorDir . '/twig/twig/src/Node/Expression/VariadicExpression.php',
     'Twig\\Node\\FlushNode' => $vendorDir . '/twig/twig/src/Node/FlushNode.php',
     'Twig\\Node\\ForLoopNode' => $vendorDir . '/twig/twig/src/Node/ForLoopNode.php',
     'Twig\\Node\\ForNode' => $vendorDir . '/twig/twig/src/Node/ForNode.php',

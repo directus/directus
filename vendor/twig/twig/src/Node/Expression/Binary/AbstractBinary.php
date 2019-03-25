@@ -18,7 +18,7 @@ use Twig\Node\Node;
 
 abstract class AbstractBinary extends AbstractExpression
 {
-    public function __construct(Node $left, Node $right, $lineno)
+    public function __construct(Node $left, Node $right, int $lineno)
     {
         parent::__construct(['left' => $left, 'right' => $right], [], $lineno);
     }

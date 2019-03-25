@@ -20,7 +20,7 @@ use Twig\Node\Node;
 
 class NullCoalesceExpression extends ConditionalExpression
 {
-    public function __construct(Node $left, Node $right, $lineno)
+    public function __construct(Node $left, Node $right, int $lineno)
     {
         $test = new AndBinary(
             new DefinedTest(clone $left, 'defined', new Node(), $left->getTemplateLine()),

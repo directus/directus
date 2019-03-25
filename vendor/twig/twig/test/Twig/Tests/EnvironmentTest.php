@@ -69,7 +69,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig = new Environment($loader);
         $twig->addGlobal('foo', 'foo');
         $twig->getGlobals();
-        $twig->loadTemplate('index');
+        $twig->load('index');
         $twig->addGlobal('foo', 'bar');
         $globals = $twig->getGlobals();
         $this->assertEquals('bar', $globals['foo']);
@@ -89,7 +89,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig->addGlobal('foo', 'foo');
         $twig->getGlobals();
         $twig->getFunctions();
-        $twig->loadTemplate('index');
+        $twig->load('index');
         $twig->addGlobal('foo', 'bar');
         $globals = $twig->getGlobals();
         $this->assertEquals('bar', $globals['foo']);
@@ -97,14 +97,14 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig = new Environment($arrayLoader);
         $twig->getGlobals();
         $twig->addGlobal('foo', 'bar');
-        $template = $twig->loadTemplate('index');
+        $template = $twig->load('index');
         $this->assertEquals('bar', $template->render([]));
 
         // globals cannot be added after a template has been loaded
         $twig = new Environment($loader);
         $twig->addGlobal('foo', 'foo');
         $twig->getGlobals();
-        $twig->loadTemplate('index');
+        $twig->load('index');
         try {
             $twig->addGlobal('bar', 'bar');
             $this->fail();
@@ -129,7 +129,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig->addGlobal('foo', 'foo');
         $twig->getGlobals();
         $twig->getFunctions();
-        $twig->loadTemplate('index');
+        $twig->load('index');
         try {
             $twig->addGlobal('bar', 'bar');
             $this->fail();
@@ -139,7 +139,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 
         // test adding globals after a template has been loaded without call to getGlobals
         $twig = new Environment($loader);
-        $twig->loadTemplate('index');
+        $twig->load('index');
         try {
             $twig->addGlobal('bar', 'bar');
             $this->fail();
@@ -200,7 +200,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $cache->expects($this->once())
             ->method('load');
 
-        $twig->loadTemplate($templateName);
+        $twig->load($templateName);
     }
 
     public function testAutoReloadCacheHit()
@@ -228,7 +228,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $cache->expects($this->atLeastOnce())
             ->method('load');
 
-        $twig->loadTemplate($templateName);
+        $twig->load($templateName);
     }
 
     public function testAutoReloadOutdatedCacheHit()
@@ -256,7 +256,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $cache->expects($this->once())
             ->method('load');
 
-        $twig->loadTemplate($templateName);
+        $twig->load($templateName);
     }
 
     public function testHasGetExtensionByClassName()
@@ -317,7 +317,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig = new Environment($loader);
         $loader->expects($this->once())->method('getSourceContext')->will($this->returnValue(new Source('', '')));
         $twig->addExtension(new Twig_Tests_EnvironmentTest_ExtensionWithoutDeprecationInitRuntime());
-        $twig->loadTemplate('');
+        $twig->load('');
 
         // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
         // can be executed without throwing any deprecations
@@ -364,14 +364,13 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @expectedException \Twig\Error\RuntimeError
-     * @expectedExceptionMessage Failed to load Twig template "testFailLoadTemplate.twig", index "abc": cache might be corrupted in "testFailLoadTemplate.twig".
+     * @expectedExceptionMessage Failed to load Twig template "testFailLoadTemplate.twig", index "112233": cache might be corrupted in "testFailLoadTemplate.twig".
      */
     public function testFailLoadTemplate()
     {
         $template = 'testFailLoadTemplate.twig';
         $twig = new Environment(new ArrayLoader([$template => false]));
-        //$twig->setCache(new CorruptCache());
-        $twig->loadTemplate($template, 'abc');
+        $twig->loadTemplate($template, 112233);
     }
 
     /**
@@ -384,7 +383,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
             'base.html.twig' => '{% extends "base.html.twig" %}',
         ]));
 
-        $twig->loadTemplate('base.html.twig');
+        $twig->load('base.html.twig');
     }
 
     /**
@@ -398,7 +397,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
             'base2.html.twig' => '{% extends "base1.html.twig" %}',
         ]));
 
-        $twig->loadTemplate('base1.html.twig');
+        $twig->load('base1.html.twig');
     }
 
     protected function getMockLoader($templateName, $templateContent)
@@ -414,27 +413,6 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
           ->will($this->returnValue($templateName));
 
         return $loader;
-    }
-}
-
-class CorruptCache implements CacheInterface
-{
-    public function generateKey($name, $className)
-    {
-        return $name.':'.$className;
-    }
-
-    public function write($key, $content)
-    {
-    }
-
-    public function load($key)
-    {
-    }
-
-    public function getTimestamp($key)
-    {
-        time();
     }
 }
 

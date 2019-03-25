@@ -1,0 +1,17 @@
+--TEST--
+"set" tag
+--TEMPLATE--
+{% set foo = "foo" %}
+
+{% set bar %}
+    {%- set foo = "bar" -%}
+    bar
+{% endset %}
+
+{{ foo }}
+{{ bar }}
+--DATA--
+return []
+--EXPECT--
+bar
+bar

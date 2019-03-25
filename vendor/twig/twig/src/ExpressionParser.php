@@ -27,6 +27,8 @@ use Twig\Node\Expression\Unary\NegUnary;
 use Twig\Node\Expression\Unary\NotUnary;
 use Twig\Node\Expression\Unary\PosUnary;
 use Twig\Node\Node;
+use Twig\Node\Expression\AbstractExpression;
+use Twig\Node\Expression\TestExpression;
 
 /**
  * Parses expressions.
@@ -88,7 +90,7 @@ class ExpressionParser
         return $expr;
     }
 
-    private function getPrimary()
+    private function getPrimary(): AbstractExpression
     {
         $token = $this->parser->getCurrentToken();
 
@@ -110,7 +112,7 @@ class ExpressionParser
         return $this->parsePrimaryExpression();
     }
 
-    private function parseConditionalExpression($expr)
+    private function parseConditionalExpression($expr): AbstractExpression
     {
         while ($this->parser->getStream()->nextIf(/* Token::PUNCTUATION_TYPE */ 9, '?')) {
             if (!$this->parser->getStream()->nextIf(/* Token::PUNCTUATION_TYPE */ 9, ':')) {
@@ -131,12 +133,12 @@ class ExpressionParser
         return $expr;
     }
 
-    private function isUnary(Token $token)
+    private function isUnary(Token $token): bool
     {
         return $token->test(/* Token::OPERATOR_TYPE */ 8) && isset($this->unaryOperators[$token->getValue()]);
     }
 
-    private function isBinary(Token $token)
+    private function isBinary(Token $token): bool
     {
         return $token->test(/* Token::OPERATOR_TYPE */ 8) && isset($this->binaryOperators[$token->getValue()]);
     }
@@ -598,12 +600,12 @@ class ExpressionParser
         return new Node($targets);
     }
 
-    private function parseNotTestExpression(Node $node)
+    private function parseNotTestExpression(Node $node): NotUnary
     {
         return new NotUnary($this->parseTestExpression($node), $this->parser->getCurrentToken()->getLine());
     }
 
-    private function parseTestExpression(Node $node)
+    private function parseTestExpression(Node $node): TestExpression
     {
         $stream = $this->parser->getStream();
         list($name, $test) = $this->getTest($node->getTemplateLine());
@@ -617,7 +619,7 @@ class ExpressionParser
         return new $class($node, $name, $arguments, $this->parser->getCurrentToken()->getLine());
     }
 
-    private function getTest($line)
+    private function getTest(int $line): array
     {
         $stream = $this->parser->getStream();
         $name = $stream->expect(/* Token::NAME_TYPE */ 5)->getValue();
@@ -643,7 +645,7 @@ class ExpressionParser
         throw $e;
     }
 
-    private function getTestNodeClass($test)
+    private function getTestNodeClass(TwigTest $test): string
     {
         if ($test->isDeprecated()) {
             $stream = $this->parser->getStream();
@@ -664,7 +666,7 @@ class ExpressionParser
         return $test->getNodeClass();
     }
 
-    private function getFunctionNodeClass($name, $line)
+    private function getFunctionNodeClass(string $name, int $line): string
     {
         if (false === $function = $this->env->getFunction($name)) {
             $e = new SyntaxError(sprintf('Unknown "%s" function.', $name), $line, $this->parser->getStream()->getSourceContext());
@@ -690,7 +692,7 @@ class ExpressionParser
         return $function->getNodeClass();
     }
 
-    private function getFilterNodeClass($name, $line)
+    private function getFilterNodeClass(string $name, int $line): string
     {
         if (false === $filter = $this->env->getFilter($name)) {
             $e = new SyntaxError(sprintf('Unknown "%s" filter.', $name), $line, $this->parser->getStream()->getSourceContext());
@@ -717,7 +719,7 @@ class ExpressionParser
     }
 
     // checks that the node only contains "constant" elements
-    private function checkConstantExpression(Node $node)
+    private function checkConstantExpression(Node $node): bool
     {
         if (!($node instanceof ConstantExpression || $node instanceof ArrayExpression
             || $node instanceof NegUnary || $node instanceof PosUnary

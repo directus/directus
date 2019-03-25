@@ -31,7 +31,7 @@ abstract class BaseDumper
 
     abstract protected function formatTime(Profile $profile, $percent);
 
-    private function dumpProfile(Profile $profile, $prefix = '', $sibling = false)
+    private function dumpProfile(Profile $profile, $prefix = '', $sibling = false): string
     {
         if ($profile->isRoot()) {
             $this->root = $profile->getDuration();

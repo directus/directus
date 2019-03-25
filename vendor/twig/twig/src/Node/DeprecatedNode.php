@@ -22,7 +22,7 @@ use Twig\Node\Expression\ConstantExpression;
  */
 class DeprecatedNode extends Node
 {
-    public function __construct(AbstractExpression $expr, $lineno, $tag = null)
+    public function __construct(AbstractExpression $expr, int $lineno, string $tag = null)
     {
         parent::__construct(['expr' => $expr], [], $lineno, $tag);
     }

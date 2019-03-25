@@ -26,14 +26,6 @@ class Twig_Tests_ErrorTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('test'.DIRECTORY_SEPARATOR.'Twig'.DIRECTORY_SEPARATOR.'Tests'.DIRECTORY_SEPARATOR.'ErrorTest.php', $error->getMessage());
     }
 
-    public function testErrorWithArrayFilename()
-    {
-        $error = new Error('foo');
-        $error->setSourceContext(new Source('', ['foo' => 'bar']));
-
-        $this->assertEquals('foo in {"foo":"bar"}', $error->getMessage());
-    }
-
     public function testTwigExceptionGuessWithMissingVarAndArrayLoader()
     {
         $loader = new ArrayLoader([

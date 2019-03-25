@@ -26,7 +26,7 @@ namespace Twig\Error;
  */
 class LoaderError extends Error
 {
-    public function __construct($message, $lineno = -1, $source = null, \Exception $previous = null)
+    public function __construct(string $message, int $lineno = -1, $source = null, \Exception $previous = null)
     {
         parent::__construct($message, $lineno, $source, $previous, false);
     }

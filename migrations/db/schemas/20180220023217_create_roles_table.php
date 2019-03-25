@@ -51,6 +51,10 @@ class CreateRolesTable extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
+        $table->addColumn('nav_override', 'text', [
+            'null' => true,
+            'default' => null
+        ]);
 
         $table->addIndex('name', [
             'unique' => true,

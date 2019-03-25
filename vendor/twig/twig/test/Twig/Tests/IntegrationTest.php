@@ -34,7 +34,7 @@ class Twig_Tests_IntegrationTest extends IntegrationTestCase
 {
     public function getExtensions()
     {
-        $policy = new SecurityPolicy([], [], [], [], []);
+        $policy = new SecurityPolicy([], [], [], [], ['dump']);
 
         return [
             new DebugExtension(),

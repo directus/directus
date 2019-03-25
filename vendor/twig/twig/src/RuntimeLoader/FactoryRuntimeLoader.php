@@ -23,7 +23,7 @@ class FactoryRuntimeLoader implements RuntimeLoaderInterface
     /**
      * @param array $map An array where keys are class names and values factory callables
      */
-    public function __construct($map = [])
+    public function __construct(array $map = [])
     {
         $this->map = $map;
     }

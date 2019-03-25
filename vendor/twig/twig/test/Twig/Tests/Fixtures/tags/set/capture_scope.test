@@ -1,0 +1,10 @@
+--TEST--
+"set" tag block capture
+--TEMPLATE--
+{% set foo %}{{ foo }}{% endset %}
+
+{{ foo }}
+--DATA--
+return ['foo' => 'foo']
+--EXPECT--
+foo

@@ -72,6 +72,11 @@ Environment
   ``Twig\Environment::load()`` and ``Twig\Environment::resolveTemplate()`` is
   deprecated.
 
+* Depending on the input, ``Twig\Environment::resolveTemplate()`` can return
+  a ``Twig\Template`` or a ``Twig\TemplateWrapper`` instance. In Twig 3.0, this
+  method will **always** return a ``Twig\TemplateWrapper`` instance. You should
+  only rely on the methods of this class if you want to be forward-compatible.
+
 Interfaces
 ----------
 

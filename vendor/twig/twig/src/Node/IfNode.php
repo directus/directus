@@ -21,7 +21,7 @@ use Twig\Compiler;
  */
 class IfNode extends Node
 {
-    public function __construct(Node $tests, Node $else = null, $lineno, $tag = null)
+    public function __construct(Node $tests, Node $else = null, int $lineno, string $tag = null)
     {
         $nodes = ['tests' => $tests];
         if (null !== $else) {

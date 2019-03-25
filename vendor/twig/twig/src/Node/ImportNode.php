@@ -22,7 +22,7 @@ use Twig\Node\Expression\NameExpression;
  */
 class ImportNode extends Node
 {
-    public function __construct(AbstractExpression $expr, AbstractExpression $var, $lineno, $tag = null)
+    public function __construct(AbstractExpression $expr, AbstractExpression $var, int $lineno, string $tag = null)
     {
         parent::__construct(['expr' => $expr, 'var' => $var], [], $lineno, $tag);
     }

@@ -110,7 +110,7 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         return $node;
     }
 
-    private function wrapNode(Node $node, $name)
+    private function wrapNode(Node $node, string $name)
     {
         $expr = $node->getNode($name);
         if ($expr instanceof NameExpression || $expr instanceof GetAttrExpression) {
@@ -118,7 +118,7 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         }
     }
 
-    private function wrapArrayNode(Node $node, $name)
+    private function wrapArrayNode(Node $node, string $name)
     {
         $args = $node->getNode($name);
         foreach ($args as $name => $_) {

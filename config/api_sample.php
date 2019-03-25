@@ -3,7 +3,7 @@
 return [
     'app' => [
         'env' => 'production',
-        'timezone' => 'America/New_York',
+        'timezone' => 'America/New_York'
     ],
 
     'settings' => [
