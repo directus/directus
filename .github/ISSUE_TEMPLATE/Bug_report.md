@@ -5,6 +5,8 @@ about: Create a report to help us improve
 ---
 
 <!--
+For security issues, please email support@directus.io directly.
+
 1. Do not delete this template or the issue will be closed
 2. Ensure you're using the latest version of Directus
 3. Post to the correct repo:
