@@ -683,60 +683,8 @@ class InstallerUtils
                 'value' => isset($data['project_name']) ? $data['project_name'] : 'Directus'
             ],
             [
-                'key' => 'project_url',
-                'value' => ''
-            ],
-            [
                 'key' => 'app_url',
                 'value' => isset($data['app_url']) ? $data['app_url'] : ''
-            ],
-            [
-                'key' => 'logo',
-                'value' => ''
-            ],
-            [
-                'key' => 'color',
-                'value' => 'light-blue-600'
-            ],
-            [
-                'key' => 'default_limit',
-                'value' => '200'
-            ],
-            [
-                'key' => 'sort_null_last',
-                'value' => 1
-            ],
-            [
-                'key' => 'auto_sign_out',
-                'value' => '60'
-            ],
-            [
-                'key' => 'youtube_api_key',
-                'value' => ''
-            ],
-            [
-                'key' => 'trusted_proxies',
-                'value' => ''
-            ],
-            [
-                'key' => 'thumbnail_dimensions',
-                'value' => '200x200'
-            ],
-            [
-                'key' => 'thumbnail_quality_tags',
-                'value' => '{"poor": 25, "good": 50, "better":  75, "best": 100}'
-            ],
-            [
-                'key' => 'thumbnail_actions',
-                'value' => '{"contain":{"options":{"resizeCanvas":false,"position":"center","resizeRelative":false,"canvasBackground":"ccc"}},"crop":{"options":{"position":"center"}}}'
-            ],
-            [
-                'key' => 'thumbnail_cache_ttl',
-                'value' => '86400'
-            ],
-            [
-                'key' => 'thumbnail_not_found_location',
-                'value' => ''
             ],
         ];
     }

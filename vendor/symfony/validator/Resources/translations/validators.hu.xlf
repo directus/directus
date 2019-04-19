@@ -330,6 +330,34 @@
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
                 <target>Ez a Bankazonosító kód (BIC) nem kapcsolódik az IBAN kódhoz ({{ iban }}).</target>
             </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Ez az érték érvényes JSON kell, hogy legyen.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This value should be positive.</source>
+                <target>Ennek az értéknek pozitívnak kell lennie.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be either positive or zero.</source>
+                <target>Ennek az értéknek pozitívnak vagy nullának kell lennie.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be negative.</source>
+                <target>Ennek az értéknek negatívnak kell lennie.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be either negative or zero.</source>
+                <target>Ennek az értéknek negatívnak vagy nullának kell lennie.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ez a gyűjtemény csak egyedi elemeket tartalmazhat.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ez az érték nem egy érvényes időzóna.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

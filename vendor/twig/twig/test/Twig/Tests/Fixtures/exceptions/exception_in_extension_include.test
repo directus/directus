@@ -1,0 +1,12 @@
+--TEST--
+Exception thrown from an include for an extension error
+--TEMPLATE--
+{% include 'content.twig' %}
+--TEMPLATE(content.twig)--
+
+
+{{ random([]) }}
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\RuntimeError: The random function cannot pick from an empty array in "content.twig" at line 4.

@@ -56,8 +56,9 @@ class Twig_Tests_ExpressionParserTest extends \PHPUnit\Framework\TestCase
     public function testArrayExpression($template, $expected)
     {
         $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), ['cache' => false, 'autoescape' => false]);
-        $stream = $env->tokenize(new Source($template, ''));
+        $stream = $env->tokenize($source = new Source($template, ''));
         $parser = new Parser($env);
+        $expected->setSourceContext($source);
 
         $this->assertEquals($expected, $parser->parse($stream)->getNode('body')->getNode(0)->getNode('expr'));
     }
@@ -176,8 +177,9 @@ class Twig_Tests_ExpressionParserTest extends \PHPUnit\Framework\TestCase
     public function testStringExpression($template, $expected)
     {
         $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock(), ['cache' => false, 'autoescape' => false, 'optimizations' => 0]);
-        $stream = $env->tokenize(new Source($template, ''));
+        $stream = $env->tokenize($source = new Source($template, ''));
         $parser = new Parser($env);
+        $expected->setSourceContext($source);
 
         $this->assertEquals($expected, $parser->parse($stream)->getNode('body')->getNode(0)->getNode('expr'));
     }

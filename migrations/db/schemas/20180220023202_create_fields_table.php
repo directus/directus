@@ -85,10 +85,10 @@ class CreateFieldsTable extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
-        $table->addColumn('width', 'integer', [
-            'signed' => false,
-            'null' => false,
-            'default' => 4
+        $table->addColumn('width', 'string', [
+            'limit' => 50,
+            'null' => true,
+            'default' => 'full'
         ]);
         $table->addColumn('group', 'integer', [
             'signed' => false,

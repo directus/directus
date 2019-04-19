@@ -7,7 +7,7 @@ Twig compiles floats properly
 {{ val2 is same as (0.0) ? 'Yes' : 'No' }}
 {{ val is same as (val2) ? 'Yes' : 'No' }}
 --DATA--
-return array('val' => 0.0)
+return ['val' => 0.0]
 --EXPECT--
 Yes
 Yes

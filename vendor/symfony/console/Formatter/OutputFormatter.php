@@ -263,8 +263,12 @@ class OutputFormatter implements WrappableOutputFormatterInterface
         }
 
         $lines = explode("\n", $text);
-        if ($width === $currentLineLength = \strlen(end($lines))) {
-            $currentLineLength = 0;
+
+        foreach ($lines as $line) {
+            $currentLineLength += \strlen($line);
+            if ($width <= $currentLineLength) {
+                $currentLineLength = 0;
+            }
         }
 
         if ($this->isDecorated()) {

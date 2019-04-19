@@ -21,7 +21,7 @@ use Slim\Exception\ContainerException as SlimContainerException;
  * with these service keys configured and ready for use:
  *
  *  - settings: an array or instance of \ArrayAccess
- *  - environment: an instance of \Slim\Interfaces\Http\EnvironmentInterface
+ *  - environment: an instance of \Slim\Http\Environment
  *  - request: an instance of \Psr\Http\Message\ServerRequestInterface
  *  - response: an instance of \Psr\Http\Message\ResponseInterface
  *  - router: an instance of \Slim\Interfaces\RouterInterface
@@ -32,7 +32,7 @@ use Slim\Exception\ContainerException as SlimContainerException;
  *  - callableResolver: an instance of \Slim\Interfaces\CallableResolverInterface
  *
  * @property-read array $settings
- * @property-read \Slim\Interfaces\Http\EnvironmentInterface $environment
+ * @property-read \Slim\Http\Environment $environment
  * @property-read \Psr\Http\Message\ServerRequestInterface $request
  * @property-read \Psr\Http\Message\ResponseInterface $response
  * @property-read \Slim\Interfaces\RouterInterface $router

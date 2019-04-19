@@ -72,7 +72,7 @@ yaml: |
       - 2001-07-23
 perl-busted: >
     YAML.pm will be able to emulate this behavior soon. In this regard
-    it may be somewhat more correct than Python's native behaviour which
+    it may be somewhat more correct than Python's native behavior which
     can only use tuples as mapping keys. PyYAML will also need to figure
     out some clever way to roundtrip structured keys.
 python: |

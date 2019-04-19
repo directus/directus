@@ -93,6 +93,9 @@ final class ExtensionSet
         return $this->extensions[$class];
     }
 
+    /**
+     * @param ExtensionInterface[] $extensions
+     */
     public function setExtensions(array $extensions)
     {
         foreach ($extensions as $extension) {
@@ -101,7 +104,7 @@ final class ExtensionSet
     }
 
     /**
-     * @param ExtensionInterface[] $extensions
+     * @return ExtensionInterface[]
      */
     public function getExtensions(): array
     {

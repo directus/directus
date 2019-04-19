@@ -202,7 +202,7 @@ class TranslatorCacheTest extends TestCase
          * messages provided by the loader. This must also be the case when these catalogues
          * are (internally) read from a cache.
          *
-         * Optimizations inside the translator must not change this behaviour.
+         * Optimizations inside the translator must not change this behavior.
          */
 
         /*

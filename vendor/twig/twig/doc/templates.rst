@@ -825,25 +825,28 @@ inserted into the string:
 Whitespace Control
 ------------------
 
-The first newline after a template tag is removed automatically (like in PHP.)
+.. versionadded:: 2.8
+    Tag level Line whitespace control was added in Twig 2.8.
+
+The first newline after a template tag is removed automatically (like in PHP).
 Whitespace is not further modified by the template engine, so each whitespace
 (spaces, tabs, newlines etc.) is returned unchanged.
 
-Use the ``spaceless`` tag to remove whitespace *between HTML tags*:
+You can also control whitespace on a per tag level. By using the whitespace
+control modifiers on your tags, you can trim leading and or trailing whitespace.
 
-.. code-block:: jinja
+Twig supports two modifiers:
 
-    {% spaceless %}
-        <div>
-            <strong>foo bar</strong>
-        </div>
-    {% endspaceless %}
+* *Whitespace trimming* via the ``-`` modifier: Removes all whitespace
+  (including newlines);
 
-    {# output will be <div><strong>foo bar</strong></div> #}
+* *Line whitespace trimming* via the ``~`` modifier: Removes all whitespace
+  (excluding newlines). Using this modifier on the right disables the default
+  removal of the first newline inherited from PHP.
 
-In addition to the spaceless tag you can also control whitespace on a per tag
-level. By using the whitespace control modifier on your tags, you can trim
-leading and or trailing whitespace:
+The modifiers can be used on either side of the tags like in ``{%-`` or ``-%}``
+and they consume all whitespace for that side of the tag. It is possible to use
+the modifiers on one side of a tag or on both sides:
 
 .. code-block:: jinja
 
@@ -852,20 +855,34 @@ leading and or trailing whitespace:
     {%- if true -%}
         {{- value -}}
     {%- endif -%}
-
     {# output 'no spaces' #}
 
-The above sample shows the default whitespace control modifier, and how you can
-use it to remove whitespace around tags. Trimming space will consume all whitespace
-for that side of the tag.  It is possible to use whitespace trimming on one side
-of a tag:
+    <li>
+        {{ value }}    </li>
+    {# outputs '<li>\n    no spaces    </li>' #}
 
-.. code-block:: jinja
-
-    {% set value = 'no spaces' %}
-    <li>    {{- value }}    </li>
-
+    <li>
+        {{- value }}    </li>
     {# outputs '<li>no spaces    </li>' #}
+
+    <li>
+        {{~ value }}    </li>
+    {# outputs '<li>\nno spaces    </li>' #}
+
+.. tip::
+
+    In addition to the whitespace modifiers, Twig also has a ``spaceless`` filter
+    that removes whitespace **between HTML tags**:
+
+    .. code-block:: jinja
+
+        {% filter spaceless %}
+            <div>
+                <strong>foo bar</strong>
+            </div>
+        {% endfilter %}
+
+        {# output will be <div><strong>foo bar</strong></div> #}
 
 Extensions
 ----------

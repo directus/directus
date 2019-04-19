@@ -314,6 +314,54 @@
                 <source>This is not a valid Business Identifier Code (BIC).</source>
                 <target>Ito ay hindi isang balidong Business Identifier Code (BIC).</target>
             </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Error</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Ito ay hindi wastong UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Ang halagang ito ay dapat multiple ng {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Ang Business Identifier Code (BIC) na ito ay walang kaugnayan sa IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Ang halagang ito ay dapat naka wastong JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ang mga elemento ng koleksyong ito ay dapat magkakaiba.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Ang halagang ito ay dapat positibo.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Ang halagang ito ay dapat positibo o zero.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Ang halagang ito ay dapat negatibo.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Ang halagang ito ay dapat negatibo o zero.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ang halagang ito ay hindi wastong timezone.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Naikalat ang password na ito sa isang data breach at hindi na dapat gamitin. Mangyaring gumamit ng ibang pang password.</target>
+            </trans-unit>
         </body>
     </file>
  </xliff>

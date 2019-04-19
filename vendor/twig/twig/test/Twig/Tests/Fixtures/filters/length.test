@@ -11,6 +11,7 @@
 {{ magic|length }}
 {{ non_countable|length }}
 {{ simple_xml_element|length }}
+{{ iterator|length }}
 --DATA--
 return [
     'array' => [1, 4],
@@ -23,6 +24,7 @@ return [
     'magic'         => new MagicCallStub(),     /* used to assert we do *not* call __call */
     'non_countable' => new \StdClass(),
     'simple_xml_element' => new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><doc><elem/><elem/></doc>'),
+    'iterator' => new \SimpleIteratorForTesting()
 ]
 --EXPECT--
 2
@@ -35,3 +37,4 @@ return [
 1
 1
 2
+7

@@ -1,0 +1,11 @@
+--TEST--
+"include" function
+--TEMPLATE--
+{{ include("included.twig", ignore_missing = true) }}
+NOT DISPLAYED
+--TEMPLATE(included.twig)--
+{{ include("DOES NOT EXIST") }}
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\LoaderError: Template "DOES NOT EXIST" is not defined in "included.twig" at line 2.

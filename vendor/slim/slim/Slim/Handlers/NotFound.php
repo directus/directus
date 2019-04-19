@@ -67,7 +67,7 @@ class NotFound extends AbstractHandler
     /**
      * Render plain not found message
      *
-     * @return ResponseInterface
+     * @return string
      */
     protected function renderPlainNotFoundOutput()
     {
@@ -77,7 +77,7 @@ class NotFound extends AbstractHandler
     /**
      * Return a response for application/json content not found
      *
-     * @return ResponseInterface
+     * @return string
      */
     protected function renderJsonNotFoundOutput()
     {
@@ -87,7 +87,7 @@ class NotFound extends AbstractHandler
     /**
      * Return a response for xml content not found
      *
-     * @return ResponseInterface
+     * @return string
      */
     protected function renderXmlNotFoundOutput()
     {
@@ -99,7 +99,7 @@ class NotFound extends AbstractHandler
      *
      * @param  ServerRequestInterface $request  The most recent Request object
      *
-     * @return ResponseInterface
+     * @return string
      */
     protected function renderHtmlNotFoundOutput(ServerRequestInterface $request)
     {

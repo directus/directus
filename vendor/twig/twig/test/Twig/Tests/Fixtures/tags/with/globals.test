@@ -1,0 +1,10 @@
+--TEST--
+"with" tag
+--TEMPLATE--
+{% with [] only %}
+    {{ global }}
+{% endwith %}
+--DATA--
+return []
+--EXPECT--
+global

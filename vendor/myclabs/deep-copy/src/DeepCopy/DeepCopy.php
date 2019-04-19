@@ -99,6 +99,14 @@ class DeepCopy
         ];
     }
 
+    public function prependFilter(Filter $filter, Matcher $matcher)
+    {
+        array_unshift($this->filters, [
+            'matcher' => $matcher,
+            'filter'  => $filter,
+        ]);
+    }
+
     public function addTypeFilter(TypeFilter $filter, TypeMatcher $matcher)
     {
         $this->typeFilters[] = [

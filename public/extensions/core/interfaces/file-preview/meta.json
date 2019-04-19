@@ -1,1 +1,0 @@
-{"name":"$t:file_preview","version":"1.0.0","types":["string"],"hideLabel":true,"icon":"image","options":{"edit":{"name":"$t:edit","interface":"checkboxes","default":["image_editor"],"options":{"choices":{"image_editor":"Image Editor"}}}},"translation":{"en-US":{"file_preview":"File Preview","edit":"Editing Options"}}}

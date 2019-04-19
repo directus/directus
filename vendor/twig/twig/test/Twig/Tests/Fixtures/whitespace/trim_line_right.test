@@ -1,0 +1,32 @@
+--TEST--
+Line whitespace trimming on tags (right side).
+--TEMPLATE--
+**{% if true ~%}    	    
+foo{% endif %}**
+
+**{{ 'foo' ~}}    	    
+foo
+**
+
+**{# comment ~#}	    
+	foo
+**
+
+**{% verbatim ~%}	    
+    foo{% endverbatim %}**
+--DATA--
+return []
+--EXPECT--
+**
+foo**
+
+**foo
+foo
+**
+
+**
+	foo
+**
+
+**
+    foo**

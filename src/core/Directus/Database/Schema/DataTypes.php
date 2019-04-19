@@ -339,6 +339,18 @@ final class DataTypes
     }
 
     /**
+     * Checks whether or not the given type is status type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isStatusType($type)
+    {
+        return strtolower($type) === static::TYPE_STATUS;
+    }
+
+    /**
      * Returns all the unique data types
      *
      * Only one of these types can exists per collection

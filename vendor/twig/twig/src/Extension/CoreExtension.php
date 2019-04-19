@@ -226,6 +226,7 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('sort', 'twig_sort_filter'),
             new TwigFilter('merge', 'twig_array_merge'),
             new TwigFilter('batch', 'twig_array_batch'),
+            new TwigFilter('column', 'twig_array_column'),
 
             // string/array filters
             new TwigFilter('reverse', 'twig_reverse_filter', ['needs_environment' => true]),
@@ -651,7 +652,7 @@ function twig_slice(Environment $env, $item, $start, $length = null, $preserveKe
         if ($start >= 0 && $length >= 0 && $item instanceof \Iterator) {
             try {
                 return iterator_to_array(new \LimitIterator($item, $start, null === $length ? -1 : $length), $preserveKeys);
-            } catch (\OutOfBoundsException $exception) {
+            } catch (\OutOfBoundsException $e) {
                 return [];
             }
         }
@@ -718,9 +719,13 @@ function twig_last(Environment $env, $item)
  */
 function twig_join_filter($value, $glue = '', $and = null)
 {
+    if (!twig_test_iterable($value)) {
+        $value = (array) $value;
+    }
+
     $value = twig_to_array($value, false);
 
-    if (!\is_array($value) || 0 === \count($value)) {
+    if (0 === \count($value)) {
         return '';
     }
 
@@ -1228,20 +1233,16 @@ function twig_length_filter(Environment $env, $thing)
         return mb_strlen($thing, $env->getCharset());
     }
 
-    if ($thing instanceof \SimpleXMLElement) {
+    if ($thing instanceof \Countable || \is_array($thing) || $thing instanceof \SimpleXMLElement) {
         return \count($thing);
+    }
+
+    if ($thing instanceof \Traversable) {
+        return iterator_count($thing);
     }
 
     if (method_exists($thing, '__toString') && !$thing instanceof \Countable) {
         return mb_strlen((string) $thing, $env->getCharset());
-    }
-
-    if ($thing instanceof \Countable || \is_array($thing)) {
-        return \count($thing);
-    }
-
-    if ($thing instanceof \IteratorAggregate) {
-        return iterator_count($thing);
     }
 
     return 1;
@@ -1322,15 +1323,11 @@ function twig_to_array($seq, $preserveKeys = true)
         return iterator_to_array($seq, $preserveKeys);
     }
 
-    if (!is_array($seq)) {
-        return (array) $seq;
+    if (!\is_array($seq)) {
+        return $seq;
     }
 
-    if(!$preserveKeys) {
-        return array_values($seq);
-    }
-
-    return $seq;
+    return $preserveKeys ? $seq : array_values($seq);
 }
 
 /**
@@ -1403,11 +1400,16 @@ function twig_include(Environment $env, $context, $template, $variables = [], $w
     }
 
     try {
-        return $env->resolveTemplate($template)->render($variables);
-    } catch (LoaderError $e) {
-        if (!$ignoreMissing) {
-            throw $e;
+        $loaded = null;
+        try {
+            $loaded = $env->resolveTemplate($template);
+        } catch (LoaderError $e) {
+            if (!$ignoreMissing) {
+                throw $e;
+            }
         }
+
+        return $loaded ? $loaded->render($variables) : '';
     } finally {
         if ($isSandboxed && !$alreadySandboxed) {
             $sandbox->disableSandbox();
@@ -1480,6 +1482,10 @@ function twig_constant_is_defined($constant, $object = null)
  */
 function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
 {
+    if (!twig_test_iterable($items)) {
+        throw new RuntimeError(sprintf('The "batch" filter expects an array or "Traversable", got "%s".', \is_object($items) ? \get_class($items) : \gettype($items)));
+    }
+
     $size = ceil($size);
 
     $result = array_chunk(twig_to_array($items, $preserveKeys), $size, $preserveKeys);
@@ -1487,7 +1493,7 @@ function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
     if (null !== $fill && $result) {
         $last = \count($result) - 1;
         if ($fillCount = $size - \count($result[$last])) {
-            for ($i = 0; $i < $fillCount; $i++) {
+            for ($i = 0; $i < $fillCount; ++$i) {
                 $result[$last][] = $fill;
             }
         }
@@ -1595,7 +1601,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
             }
 
             if ($sandboxed) {
-                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item);
+                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $source);
             }
 
             return $object->$item;
@@ -1672,7 +1678,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
     }
 
     if ($sandboxed) {
-        $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method);
+        $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method, $source);
     }
 
     // Some objects throw exceptions when they have __call, and the method we try
@@ -1687,5 +1693,32 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
     }
 
     return $ret;
+}
+
+/**
+ * Returns the values from a single column in the input array.
+ *
+ * <pre>
+ *  {% set items = [{ 'fruit' : 'apple'}, {'fruit' : 'orange' }] %}
+ *
+ *  {% set fruits = items|column('fruit') %}
+ *
+ *  {# fruits now contains ['apple', 'orange'] #}
+ * </pre>
+ *
+ * @param array|Traversable $array An array
+ * @param mixed             $name  The column name
+ *
+ * @return array The array of values
+ */
+function twig_array_column($array, $name): array
+{
+    if ($array instanceof Traversable) {
+        $array = iterator_to_array($array);
+    } elseif (!\is_array($array)) {
+        throw new RuntimeError(sprintf('The column filter only works with arrays or "Traversable", got "%s" as first argument.', \gettype($array)));
+    }
+
+    return array_column($array, $name);
 }
 }

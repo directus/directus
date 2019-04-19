@@ -11,8 +11,10 @@ use Directus\Database\Exception\CollectionNotFoundException;
 use Directus\Exception\ErrorException;
 use Directus\Exception\UnauthorizedException;
 use Directus\Services\TablesService;
+use Directus\Services\PermissionsService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
+use Directus\Database\Schema\DataTypes;
 
 class Fields extends Route
 {
@@ -167,13 +169,30 @@ class Fields extends Route
      */
     public function delete(Request $request, Response $response)
     {
+        
         $service = new TablesService($this->container);
 
+        $field = $service->getFieldObject($request->getAttribute('collection'),$request->getAttribute('field'));
+        
         $service->deleteField(
             $request->getAttribute('collection'),
             $request->getAttribute('field'),
             $request->getQueryParams()
         );
+
+        /**
+         * If the field is status then remove the status related permission.
+         */
+
+        if (DataTypes::isStatusType($field->getType())) {
+            $permissionService = new PermissionsService($this->container);
+            $filter['filter']['collection'] = $request->getAttribute('collection');
+            $filter['filter']['status']['neq'] = "";
+            $collectionsPermission  = $permissionService->findAll($filter);
+            $permissionId = array_column($collectionsPermission['data'], 'id');
+            $permissionService->batchDeleteWithIds($permissionId);
+           
+        }
 
         return $this->responseWithData($request, $response, []);
     }

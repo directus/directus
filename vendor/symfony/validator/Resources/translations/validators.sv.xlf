@@ -318,6 +318,22 @@
                 <source>Error</source>
                 <target>Fel</target>
             </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Detta är inte ett giltigt UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Detta värde ska vara en multipel av {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Denna BIC-koden är inte associerad med IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Detta värde ska vara giltig JSON.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

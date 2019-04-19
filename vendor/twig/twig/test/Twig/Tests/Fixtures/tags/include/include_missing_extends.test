@@ -1,0 +1,13 @@
+--TEST--
+"include" tag
+--TEMPLATE--
+{% include ['bad.twig', 'good.twig'] ignore missing %}
+NOT DISPLAYED
+--TEMPLATE(bad.twig)--
+{% extends 'DOES NOT EXIST' %}
+--TEMPLATE(good.twig)--
+NOT DISPLAYED
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\LoaderError: Template "DOES NOT EXIST" is not defined in "bad.twig" at line 2.

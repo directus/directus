@@ -330,6 +330,10 @@
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
                 <target>رمز المعرّف نشاط تجاري (BIC) هذا لا يرتبط مع IBAN {{ iban }}.</target>
             </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>هذه القيمة يجب أن تكون صالحة ل JSON.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

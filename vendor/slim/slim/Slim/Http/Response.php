@@ -359,7 +359,7 @@ class Response extends Message implements ResponseInterface
             throw new \RuntimeException(json_last_error_msg(), json_last_error());
         }
 
-        $responseWithJson = $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+        $responseWithJson = $response->withHeader('Content-Type', 'application/json');
         if (isset($status)) {
             return $responseWithJson->withStatus($status);
         }

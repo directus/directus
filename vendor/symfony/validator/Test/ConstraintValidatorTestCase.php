@@ -29,6 +29,8 @@ use Symfony\Component\Validator\Mapping\PropertyMetadata;
  */
 abstract class ConstraintValidatorTestCase extends TestCase
 {
+    use TestCaseSetUpTearDownTrait;
+
     /**
      * @var ExecutionContextInterface
      */
@@ -48,7 +50,7 @@ abstract class ConstraintValidatorTestCase extends TestCase
     protected $constraint;
     protected $defaultTimezone;
 
-    protected function setUp()
+    private function doSetUp()
     {
         $this->group = 'MyGroup';
         $this->metadata = null;
@@ -70,7 +72,7 @@ abstract class ConstraintValidatorTestCase extends TestCase
         $this->setDefaultTimezone('UTC');
     }
 
-    protected function tearDown()
+    private function doTearDown()
     {
         $this->restoreDefaultTimezone();
     }

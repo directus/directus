@@ -59,20 +59,96 @@ class Lexer
             'tag_block' => ['{%', '%}'],
             'tag_variable' => ['{{', '}}'],
             'whitespace_trim' => '-',
+            'whitespace_line_trim' => '~',
+            'whitespace_line_chars' => ' \t\0\x0B',
             'interpolation' => ['#{', '}'],
         ], $options);
 
         $this->regexes = [
-            'lex_var' => '/\s*'.preg_quote($this->options['whitespace_trim'].$this->options['tag_variable'][1], '/').'\s*|\s*'.preg_quote($this->options['tag_variable'][1], '/').'/A',
-            'lex_block' => '/\s*(?:'.preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '/').'\s*|\s*'.preg_quote($this->options['tag_block'][1], '/').')\n?/A',
-            'lex_raw_data' => '/('.preg_quote($this->options['tag_block'][0].$this->options['whitespace_trim'], '/').'|'.preg_quote($this->options['tag_block'][0], '/').')\s*(?:endverbatim)\s*(?:'.preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '/').'\s*|\s*'.preg_quote($this->options['tag_block'][1], '/').')/s',
+            // }}
+            'lex_var' => '{
+                \s*
+                (?:'.
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_variable'][1]).'\s*'. // -}}\s*
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_variable'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~}}[ \t\0\x0B]*
+                    '|'.
+                    preg_quote($this->options['tag_variable'][1]). // }}
+                ')
+            }Ax',
+
+            // %}
+            'lex_block' => '{
+                \s*
+                (?:'.
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*\n?'. // -%}\s*\n?
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    '|'.
+                    preg_quote($this->options['tag_block'][1]).'\n?'. // %}\n?
+                ')
+            }Ax',
+
+            // {% endverbatim %}
+            'lex_raw_data' => '{'.
+                preg_quote($this->options['tag_block'][0]). // {%
+                '('.
+                    $this->options['whitespace_trim']. // -
+                    '|'.
+                    $this->options['whitespace_line_trim']. // ~
+                ')?\s*endverbatim\s*'.
+                '(?:'.
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*'. // -%}
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    '|'.
+                    preg_quote($this->options['tag_block'][1]). // %}
+                ')
+            }sx',
+
             'operator' => $this->getOperatorRegex(),
-            'lex_comment' => '/(?:'.preg_quote($this->options['whitespace_trim'], '/').preg_quote($this->options['tag_comment'][1], '/').'\s*|'.preg_quote($this->options['tag_comment'][1], '/').')\n?/s',
-            'lex_block_raw' => '/\s*verbatim\s*(?:'.preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '/').'\s*|\s*'.preg_quote($this->options['tag_block'][1], '/').')/As',
-            'lex_block_line' => '/\s*line\s+(\d+)\s*'.preg_quote($this->options['tag_block'][1], '/').'/As',
-            'lex_tokens_start' => '/('.preg_quote($this->options['tag_variable'][0], '/').'|'.preg_quote($this->options['tag_block'][0], '/').'|'.preg_quote($this->options['tag_comment'][0], '/').')('.preg_quote($this->options['whitespace_trim'], '/').')?/s',
-            'interpolation_start' => '/'.preg_quote($this->options['interpolation'][0], '/').'\s*/A',
-            'interpolation_end' => '/\s*'.preg_quote($this->options['interpolation'][1], '/').'/A',
+
+            // #}
+            'lex_comment' => '{
+                (?:'.
+                    preg_quote($this->options['whitespace_trim']).preg_quote($this->options['tag_comment'][1], '#').'\s*\n?'. // -#}\s*\n?
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_comment'][1], '#').'['.$this->options['whitespace_line_chars'].']*'. // ~#}[ \t\0\x0B]*
+                    '|'.
+                    preg_quote($this->options['tag_comment'][1], '#').'\n?'. // #}\n?
+                ')
+            }sx',
+
+            // verbatim %}
+            'lex_block_raw' => '{
+                \s*verbatim\s*
+                (?:'.
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*'. // -%}\s*
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    '|'.
+                    preg_quote($this->options['tag_block'][1]). // %}
+                ')
+            }Asx',
+
+            'lex_block_line' => '{\s*line\s+(\d+)\s*'.preg_quote($this->options['tag_block'][1]).'}As',
+
+            // {{ or {% or {#
+            'lex_tokens_start' => '{
+                ('.
+                    preg_quote($this->options['tag_variable'][0]). // {{
+                    '|'.
+                    preg_quote($this->options['tag_block'][0]). // {%
+                    '|'.
+                    preg_quote($this->options['tag_comment'][0], '#'). // {#
+                ')('.
+                    preg_quote($this->options['whitespace_trim']). // -
+                    '|'.
+                    preg_quote($this->options['whitespace_line_trim']). // ~
+                ')?
+            }sx',
+            'interpolation_start' => '{'.preg_quote($this->options['interpolation'][0]).'\s*}A',
+            'interpolation_end' => '{\s*'.preg_quote($this->options['interpolation'][1]).'}A',
         ];
     }
 
@@ -150,8 +226,17 @@ class Lexer
 
         // push the template text first
         $text = $textContent = substr($this->code, $this->cursor, $position[1] - $this->cursor);
+
+        // trim?
         if (isset($this->positions[2][$this->position][0])) {
-            $text = rtrim($text);
+            if ($this->options['whitespace_trim'] === $this->positions[2][$this->position][0]) {
+                // whitespace_trim detected ({%-, {{- or {#-)
+                $text = rtrim($text);
+            } else {
+                // whitespace_line_trim detected ({%~, {{~ or {#~)
+                // don't trim \r and \n
+                $text = rtrim($text, " \t\0\x0B");
+            }
         }
         $this->pushToken(/* Token::TEXT_TYPE */ 0, $text);
         $this->moveCursor($textContent.$position[0]);
@@ -163,11 +248,11 @@ class Lexer
 
             case $this->options['tag_block'][0]:
                 // raw data?
-                if (preg_match($this->regexes['lex_block_raw'], $this->code, $match, null, $this->cursor)) {
+                if (preg_match($this->regexes['lex_block_raw'], $this->code, $match, 0, $this->cursor)) {
                     $this->moveCursor($match[0]);
                     $this->lexRawData();
                 // {% line \d+ %}
-                } elseif (preg_match($this->regexes['lex_block_line'], $this->code, $match, null, $this->cursor)) {
+                } elseif (preg_match($this->regexes['lex_block_line'], $this->code, $match, 0, $this->cursor)) {
                     $this->moveCursor($match[0]);
                     $this->lineno = (int) $match[1];
                 } else {
@@ -187,7 +272,7 @@ class Lexer
 
     private function lexBlock()
     {
-        if (empty($this->brackets) && preg_match($this->regexes['lex_block'], $this->code, $match, null, $this->cursor)) {
+        if (empty($this->brackets) && preg_match($this->regexes['lex_block'], $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::BLOCK_END_TYPE */ 3);
             $this->moveCursor($match[0]);
             $this->popState();
@@ -198,7 +283,7 @@ class Lexer
 
     private function lexVar()
     {
-        if (empty($this->brackets) && preg_match($this->regexes['lex_var'], $this->code, $match, null, $this->cursor)) {
+        if (empty($this->brackets) && preg_match($this->regexes['lex_var'], $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::VAR_END_TYPE */ 4);
             $this->moveCursor($match[0]);
             $this->popState();
@@ -210,7 +295,7 @@ class Lexer
     private function lexExpression()
     {
         // whitespace
-        if (preg_match('/\s+/A', $this->code, $match, null, $this->cursor)) {
+        if (preg_match('/\s+/A', $this->code, $match, 0, $this->cursor)) {
             $this->moveCursor($match[0]);
 
             if ($this->cursor >= $this->end) {
@@ -219,17 +304,17 @@ class Lexer
         }
 
         // operators
-        if (preg_match($this->regexes['operator'], $this->code, $match, null, $this->cursor)) {
+        if (preg_match($this->regexes['operator'], $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::OPERATOR_TYPE */ 8, preg_replace('/\s+/', ' ', $match[0]));
             $this->moveCursor($match[0]);
         }
         // names
-        elseif (preg_match(self::REGEX_NAME, $this->code, $match, null, $this->cursor)) {
+        elseif (preg_match(self::REGEX_NAME, $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::NAME_TYPE */ 5, $match[0]);
             $this->moveCursor($match[0]);
         }
         // numbers
-        elseif (preg_match(self::REGEX_NUMBER, $this->code, $match, null, $this->cursor)) {
+        elseif (preg_match(self::REGEX_NUMBER, $this->code, $match, 0, $this->cursor)) {
             $number = (float) $match[0];  // floats
             if (ctype_digit($match[0]) && $number <= PHP_INT_MAX) {
                 $number = (int) $match[0]; // integers lower than the maximum
@@ -259,12 +344,12 @@ class Lexer
             ++$this->cursor;
         }
         // strings
-        elseif (preg_match(self::REGEX_STRING, $this->code, $match, null, $this->cursor)) {
+        elseif (preg_match(self::REGEX_STRING, $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::STRING_TYPE */ 7, stripcslashes(substr($match[0], 1, -1)));
             $this->moveCursor($match[0]);
         }
         // opening double quoted string
-        elseif (preg_match(self::REGEX_DQ_STRING_DELIM, $this->code, $match, null, $this->cursor)) {
+        elseif (preg_match(self::REGEX_DQ_STRING_DELIM, $this->code, $match, 0, $this->cursor)) {
             $this->brackets[] = ['"', $this->lineno];
             $this->pushState(self::STATE_STRING);
             $this->moveCursor($match[0]);
@@ -284,8 +369,16 @@ class Lexer
         $text = substr($this->code, $this->cursor, $match[0][1] - $this->cursor);
         $this->moveCursor($text.$match[0][0]);
 
-        if (false !== strpos($match[1][0], $this->options['whitespace_trim'])) {
-            $text = rtrim($text);
+        // trim?
+        if (isset($match[1][0])) {
+            if ($this->options['whitespace_trim'] === $match[1][0]) {
+                // whitespace_trim detected ({%-, {{- or {#-)
+                $text = rtrim($text);
+            } else {
+                // whitespace_line_trim detected ({%~, {{~ or {#~)
+                // don't trim \r and \n
+                $text = rtrim($text, " \t\0\x0B");
+            }
         }
 
         $this->pushToken(/* Token::TEXT_TYPE */ 0, $text);
@@ -302,15 +395,15 @@ class Lexer
 
     private function lexString()
     {
-        if (preg_match($this->regexes['interpolation_start'], $this->code, $match, null, $this->cursor)) {
+        if (preg_match($this->regexes['interpolation_start'], $this->code, $match, 0, $this->cursor)) {
             $this->brackets[] = [$this->options['interpolation'][0], $this->lineno];
             $this->pushToken(/* Token::INTERPOLATION_START_TYPE */ 10);
             $this->moveCursor($match[0]);
             $this->pushState(self::STATE_INTERPOLATION);
-        } elseif (preg_match(self::REGEX_DQ_STRING_PART, $this->code, $match, null, $this->cursor) && \strlen($match[0]) > 0) {
+        } elseif (preg_match(self::REGEX_DQ_STRING_PART, $this->code, $match, 0, $this->cursor) && \strlen($match[0]) > 0) {
             $this->pushToken(/* Token::STRING_TYPE */ 7, stripcslashes($match[0]));
             $this->moveCursor($match[0]);
-        } elseif (preg_match(self::REGEX_DQ_STRING_DELIM, $this->code, $match, null, $this->cursor)) {
+        } elseif (preg_match(self::REGEX_DQ_STRING_DELIM, $this->code, $match, 0, $this->cursor)) {
             list($expect, $lineno) = array_pop($this->brackets);
             if ('"' != $this->code[$this->cursor]) {
                 throw new SyntaxError(sprintf('Unclosed "%s".', $expect), $lineno, $this->source);
@@ -327,7 +420,7 @@ class Lexer
     private function lexInterpolation()
     {
         $bracket = end($this->brackets);
-        if ($this->options['interpolation'][0] === $bracket[0] && preg_match($this->regexes['interpolation_end'], $this->code, $match, null, $this->cursor)) {
+        if ($this->options['interpolation'][0] === $bracket[0] && preg_match($this->regexes['interpolation_end'], $this->code, $match, 0, $this->cursor)) {
             array_pop($this->brackets);
             $this->pushToken(/* Token::INTERPOLATION_END_TYPE */ 11);
             $this->moveCursor($match[0]);

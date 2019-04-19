@@ -310,9 +310,29 @@
                 <source>This value does not match the expected {{ charset }} charset.</source>
                 <target>该值不符合 {{ charset }} 编码。</target>
             </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>这不是有效的业务标识符代码（BIC)。</target>
+            </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
                 <target>错误</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>这不是有效的UUID。</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>此值应为 {{ compared_value }} 的倍数。</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>此业务标识符代码（BIC）与IBAN {{ iban }} 无关。</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>该值应该是有效的JSON。</target>
             </trans-unit>
         </body>
     </file>

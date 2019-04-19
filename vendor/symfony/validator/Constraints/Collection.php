@@ -68,7 +68,7 @@ class Collection extends Composite
             }
 
             if (!$field instanceof Optional && !$field instanceof Required) {
-                $this->fields[$fieldName] = $field = new Required($field);
+                $this->fields[$fieldName] = new Required($field);
             }
         }
     }

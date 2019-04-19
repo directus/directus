@@ -61,7 +61,7 @@ class Error extends \Exception
      * @param Source|string|null $source   The source context where the error occurred
      * @param \Exception         $previous The previous exception
      */
-    public function __construct(string $message, int $lineno = -1, $source = null, \Exception $previous = null, bool $autoGuess = true)
+    public function __construct(string $message, int $lineno = -1, $source = null, \Exception $previous = null)
     {
         parent::__construct('', 0, $previous);
 
@@ -78,13 +78,7 @@ class Error extends \Exception
 
         $this->lineno = $lineno;
         $this->name = $name;
-
-        if ($autoGuess && (-1 === $lineno || null === $name || null === $this->sourcePath)) {
-            $this->guessTemplateInfo();
-        }
-
         $this->rawMessage = $message;
-
         $this->updateRepr();
     }
 

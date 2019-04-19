@@ -43,6 +43,9 @@ class Count extends Constraint
                 'min' => $options,
                 'max' => $options,
             ];
+        } elseif (\is_array($options) && isset($options['value']) && !isset($options['min']) && !isset($options['max'])) {
+            $options['min'] = $options['max'] = $options['value'];
+            unset($options['value']);
         }
 
         parent::__construct($options);

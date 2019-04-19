@@ -13,6 +13,7 @@
 namespace Twig\Node;
 
 use Twig\Compiler;
+use Twig\Source;
 
 /**
  * Represents a node in the AST.
@@ -27,13 +28,9 @@ class Node implements \Countable, \IteratorAggregate
     protected $tag;
 
     private $name;
+    private $sourceContext;
 
     /**
-     * Constructor.
-     *
-     * The nodes are automatically made available as properties ($this->node).
-     * The attributes are automatically made available as array items ($this['name']).
-     *
      * @param array  $nodes      An array of named nodes
      * @param array  $attributes An array of attributes (should not be nodes)
      * @param int    $lineno     The line number
@@ -171,17 +168,40 @@ class Node implements \Countable, \IteratorAggregate
         return new \ArrayIterator($this->nodes);
     }
 
-    public function setTemplateName($name)
+    /**
+     * @deprecated since 2.8 (to be removed in 3.0)
+     */
+    public function setTemplateName($name/*, $triggerDeprecation = true */)
     {
+        $triggerDeprecation = 2 > \func_num_args() || \func_get_arg(1);
+        if ($triggerDeprecation) {
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use setSourceContext() instead.', E_USER_DEPRECATED);
+        }
+
         $this->name = $name;
         foreach ($this->nodes as $node) {
-            $node->setTemplateName($name);
+            $node->setTemplateName($name, $triggerDeprecation);
         }
     }
 
     public function getTemplateName()
     {
-        return $this->name;
+        return $this->sourceContext ? $this->sourceContext->getName() : null;
+    }
+
+    public function setSourceContext(Source $source)
+    {
+        $this->sourceContext = $source;
+        foreach ($this->nodes as $node) {
+            $node->setSourceContext($source);
+        }
+
+        $this->setTemplateName($source->getName(), false);
+    }
+
+    public function getSourceContext()
+    {
+        return $this->sourceContext;
     }
 }
 

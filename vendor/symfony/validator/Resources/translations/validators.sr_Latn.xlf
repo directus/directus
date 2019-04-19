@@ -220,7 +220,7 @@
             </trans-unit>
             <trans-unit id="58">
                 <source>Unsupported card type or invalid card number.</source>
-                <target>Tip kartije nije podržan ili broj kartice nije validan.</target>
+                <target>Tip kartice nije podržan ili broj kartice nije validan.</target>
             </trans-unit>
             <trans-unit id="59">
                 <source>This is not a valid International Bank Account Number (IBAN).</source>
@@ -324,7 +324,7 @@
             </trans-unit>
             <trans-unit id="84">
                 <source>This value should be a multiple of {{ compared_value }}.</source>
-                <target>Ova vrednost bi trebalo da bude višestruko veća od {{ compared_value }}.</target>
+                <target>Ova vrednost bi trebalo da bude deljiva sa {{ compared_value }}.</target>
             </trans-unit>
             <trans-unit id="85">
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>

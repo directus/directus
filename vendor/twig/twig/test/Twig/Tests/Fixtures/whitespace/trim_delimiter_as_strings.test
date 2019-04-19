@@ -1,0 +1,10 @@
+--TEST--
+Whitespace trimming as strings.
+--TEMPLATE--
+{{ 5 * '{#-'|length }}
+{{ '{{-'|length * 5 + '{%-'|length }}
+--DATA--
+return []
+--EXPECT--
+15
+18

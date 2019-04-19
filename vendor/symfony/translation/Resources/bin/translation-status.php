@@ -159,6 +159,11 @@ function printTitle($title)
 
 function printTable($translations, $verboseOutput)
 {
+    if (0 === count($translations)) {
+        echo 'No translations found';
+
+        return;
+    }
     $longestLocaleNameLength = max(array_map('strlen', array_keys($translations)));
 
     foreach ($translations as $locale => $translation) {

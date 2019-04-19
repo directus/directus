@@ -23,4 +23,12 @@ class Psr6CacheTest extends AbstractCacheTest
         $this->cache->write($metadata);
         $this->assertFalse($this->cache->has('Foo_Bar'));
     }
+
+    public function testNameWithInvalidChars()
+    {
+        $metadata = new ClassMetadata('class@anonymous/path/file');
+
+        $this->cache->write($metadata);
+        $this->assertTrue($this->cache->has('class@anonymous/path/file'));
+    }
 }

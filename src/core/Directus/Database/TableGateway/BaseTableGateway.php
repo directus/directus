@@ -387,6 +387,27 @@ class BaseTableGateway extends TableGateway
             $TableGateway->ignoreFilters();
         }
 
+        // NOTE: This is a dirty fix for https://github.com/directus/api/issues/750
+        // Currently, the whole file content is being read to a base64 string which is being added
+        // to the $recordData array. If this data string is too large, the insert() call below this
+        // if statement will 500 error out without any error logs or anything. I'm assuming it's the
+        // php process running out of memory. When I removed the data key for every file, I noticed
+        // that the thumbnailer stopped working. For now, this if statement will check if the record
+        // contains both a filename and a data key, indicating that it's a file. If the length of the
+        // data key is over 25 million characters, we stop passing on the data key. As mentioned,
+        // this data string is base64 encoded, so this 25 million number doesn't translate very well
+        // into bytes. I believe it's somewhere in the 20~25MB range, which should be plenty for
+        // photos, which are the only usecase for the thumbnailer.
+        // TODO: Move this somewhere more sensible, and don't read the whole file contents into memory
+        // in the first place.
+        if (
+          array_key_exists('filename', $recordData) &&
+          array_key_exists('data', $recordData) &&
+          strlen($recordData) > 25000000
+        ) {
+          $recordData = ['filename' => $recordData['filename']];
+        }
+
         $TableGateway->insert($recordData);
 
         if (static::$emitter && $listenerId) {
@@ -900,11 +921,12 @@ class BaseTableGateway extends TableGateway
         if ($pk = $this->primaryKeyFieldName) {
             $select = $this->sql->select();
             $select->where($deleteState['where']);
-            $select->columns([$pk]);
             $results = parent::executeSelect($select);
 
+            $deletedObject = [];
             foreach($results as $result) {
                 $ids[] = $result['id'];
+                $deletedObject[$result['id']] = $result->toArray();
             }
         }
 
@@ -930,7 +952,7 @@ class BaseTableGateway extends TableGateway
             }
 
             foreach ($ids as $id) {
-                $deleteData = ['id' => $id];
+                $deleteData = $deletedObject[$id];
                 $this->runHook('item.delete', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete:after', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete.' . $deleteTable, [$deleteData]);

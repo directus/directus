@@ -1698,4 +1698,11 @@ class TablesService extends AbstractService
 
         return $newParams;
     }
+
+    public function getFieldObject($collection,$field)
+    {
+        $collectionObject = $this->getSchemaManager()->getCollection($collection);
+        $fieldObject = $collectionObject->getField($field);
+        return $fieldObject;
+    }
 }

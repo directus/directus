@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc6c33052b7f95643311773adf94f7805
+class ComposerStaticInit3f810374b80374038b91646ce330831f
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -2338,6 +2338,7 @@ class ComposerStaticInitc6c33052b7f95643311773adf94f7805
         'Symfony\\Component\\Validator\\ObjectInitializerInterface' => __DIR__ . '/..' . '/symfony/validator/ObjectInitializerInterface.php',
         'Symfony\\Component\\Validator\\Test\\ConstraintValidatorTestCase' => __DIR__ . '/..' . '/symfony/validator/Test/ConstraintValidatorTestCase.php',
         'Symfony\\Component\\Validator\\Test\\ConstraintViolationAssertion' => __DIR__ . '/..' . '/symfony/validator/Test/ConstraintValidatorTestCase.php',
+        'Symfony\\Component\\Validator\\Test\\TestCaseSetUpTearDownTrait' => __DIR__ . '/..' . '/symfony/validator/Test/TestCaseSetUpTearDownTrait.php',
         'Symfony\\Component\\Validator\\Util\\PropertyPath' => __DIR__ . '/..' . '/symfony/validator/Util/PropertyPath.php',
         'Symfony\\Component\\Validator\\Validation' => __DIR__ . '/..' . '/symfony/validator/Validation.php',
         'Symfony\\Component\\Validator\\ValidatorBuilder' => __DIR__ . '/..' . '/symfony/validator/ValidatorBuilder.php',
@@ -2470,6 +2471,7 @@ class ComposerStaticInitc6c33052b7f95643311773adf94f7805
         'Twig\\Node\\Expression\\Filter\\DefaultFilter' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Filter/DefaultFilter.php',
         'Twig\\Node\\Expression\\FunctionExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/FunctionExpression.php',
         'Twig\\Node\\Expression\\GetAttrExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/GetAttrExpression.php',
+        'Twig\\Node\\Expression\\InlinePrint' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/InlinePrint.php',
         'Twig\\Node\\Expression\\MethodCallExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/MethodCallExpression.php',
         'Twig\\Node\\Expression\\NameExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/NameExpression.php',
         'Twig\\Node\\Expression\\NullCoalesceExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/NullCoalesceExpression.php',
@@ -3060,10 +3062,10 @@ class ComposerStaticInitc6c33052b7f95643311773adf94f7805
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc6c33052b7f95643311773adf94f7805::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc6c33052b7f95643311773adf94f7805::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc6c33052b7f95643311773adf94f7805::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitc6c33052b7f95643311773adf94f7805::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3f810374b80374038b91646ce330831f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3f810374b80374038b91646ce330831f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3f810374b80374038b91646ce330831f::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3f810374b80374038b91646ce330831f::$classMap;
 
         }, null, ClassLoader::class);
     }

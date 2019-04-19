@@ -13,6 +13,8 @@ if ``raw`` is the last filter applied to it:
 
 .. note::
 
+    **This note only applies to Twig before versions 1.39 and 2.8**.
+
     Be careful when using the ``raw`` filter inside expressions:
 
     .. code-block:: jinja

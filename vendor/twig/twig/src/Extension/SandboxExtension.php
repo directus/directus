@@ -12,7 +12,10 @@
 namespace Twig\Extension;
 
 use Twig\NodeVisitor\SandboxNodeVisitor;
+use Twig\Sandbox\SecurityNotAllowedMethodError;
+use Twig\Sandbox\SecurityNotAllowedPropertyError;
 use Twig\Sandbox\SecurityPolicyInterface;
+use Twig\Source;
 use Twig\TokenParser\SandboxTokenParser;
 
 final class SandboxExtension extends AbstractExtension
@@ -74,24 +77,42 @@ final class SandboxExtension extends AbstractExtension
         }
     }
 
-    public function checkMethodAllowed($obj, $method)
+    public function checkMethodAllowed($obj, $method, Source $source = null)
     {
         if ($this->isSandboxed()) {
-            $this->policy->checkMethodAllowed($obj, $method);
+            try {
+                $this->policy->checkMethodAllowed($obj, $method);
+            } catch (SecurityNotAllowedMethodError $e) {
+                $e->setSourceContext($source);
+
+                throw $e;
+            }
         }
     }
 
-    public function checkPropertyAllowed($obj, $method)
+    public function checkPropertyAllowed($obj, $method, Source $source = null)
     {
         if ($this->isSandboxed()) {
-            $this->policy->checkPropertyAllowed($obj, $method);
+            try {
+                $this->policy->checkPropertyAllowed($obj, $method);
+            } catch (SecurityNotAllowedPropertyError $e) {
+                $e->setSourceContext($source);
+
+                throw $e;
+            }
         }
     }
 
-    public function ensureToStringAllowed($obj)
+    public function ensureToStringAllowed($obj, Source $source = null)
     {
         if ($this->isSandboxed() && \is_object($obj) && method_exists($obj, '__toString')) {
-            $this->policy->checkMethodAllowed($obj, '__toString');
+            try {
+                $this->policy->checkMethodAllowed($obj, '__toString');
+            } catch (SecurityNotAllowedMethodError $e) {
+                $e->setSourceContext($source);
+
+                throw $e;
+            }
         }
 
         return $obj;

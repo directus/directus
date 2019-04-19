@@ -1077,6 +1077,26 @@ TABLE;
         $this->assertEquals($expected, $this->getOutputContent($output));
     }
 
+    public function testColumnMaxWidthsWithTrailingBackslash()
+    {
+        (new Table($output = $this->getOutputStream()))
+            ->setColumnMaxWidth(0, 5)
+            ->setRows([['1234\6']])
+            ->render()
+        ;
+
+        $expected =
+            <<<'TABLE'
++-------+
+| 1234\ |
+| 6     |
++-------+
+
+TABLE;
+
+        $this->assertEquals($expected, $this->getOutputContent($output));
+    }
+
     public function testBoxedStyleWithColspan()
     {
         $boxed = new TableStyle();
@@ -1123,5 +1143,57 @@ TABLE;
         rewind($output->getStream());
 
         return str_replace(PHP_EOL, "\n", stream_get_contents($output->getStream()));
+    }
+
+    public function testWithColspanAndMaxWith(): void
+    {
+        $table = new Table($output = $this->getOutputStream());
+
+        $table->setColumnMaxWidth(0, 15);
+        $table->setColumnMaxWidth(1, 15);
+        $table->setColumnMaxWidth(2, 15);
+        $table->setRows([
+                [new TableCell('Lorem ipsum dolor sit amet, <fg=white;bg=green>consectetur</> adipiscing elit, <fg=white;bg=red>sed</> do <fg=white;bg=red>eiusmod</> tempor', ['colspan' => 3])],
+                new TableSeparator(),
+                [new TableCell('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor', ['colspan' => 3])],
+                new TableSeparator(),
+                [new TableCell('Lorem ipsum <fg=white;bg=red>dolor</> sit amet, consectetur ', ['colspan' => 2]), 'hello world'],
+                new TableSeparator(),
+                ['hello <fg=white;bg=green>world</>', new TableCell('Lorem ipsum dolor sit amet, <fg=white;bg=green>consectetur</> adipiscing elit', ['colspan' => 2])],
+                new TableSeparator(),
+                ['hello ', new TableCell('world', ['colspan' => 1]), 'Lorem ipsum dolor sit amet, consectetur'],
+                new TableSeparator(),
+                ['Symfony ', new TableCell('Test', ['colspan' => 1]), 'Lorem <fg=white;bg=green>ipsum</> dolor sit amet, consectetur'],
+            ])
+        ;
+        $table->render();
+
+        $expected =
+            <<<TABLE
++-----------------+-----------------+-----------------+
+| Lorem ipsum dolor sit amet, consectetur adipi       |
+| scing elit, sed do eiusmod tempor                   |
++-----------------+-----------------+-----------------+
+| Lorem ipsum dolor sit amet, consectetur adipi       |
+| scing elit, sed do eiusmod tempor                   |
++-----------------+-----------------+-----------------+
+| Lorem ipsum dolor sit amet, co    | hello world     |
+| nsectetur                         |                 |
++-----------------+-----------------+-----------------+
+| hello world     | Lorem ipsum dolor sit amet, co    |
+|                 | nsectetur adipiscing elit         |
++-----------------+-----------------+-----------------+
+| hello           | world           | Lorem ipsum dol |
+|                 |                 | or sit amet, co |
+|                 |                 | nsectetur       |
++-----------------+-----------------+-----------------+
+| Symfony         | Test            | Lorem ipsum dol |
+|                 |                 | or sit amet, co |
+|                 |                 | nsectetur       |
++-----------------+-----------------+-----------------+
+
+TABLE;
+
+        $this->assertSame($expected, $this->getOutputContent($output));
     }
 }

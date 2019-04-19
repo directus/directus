@@ -1,3 +1,21 @@
+* 2.8.1 (2019-04-16)
+
+ * fixed EscaperNodeVisitor
+ * deprecated passing a 3rd, 4th, and 5th arguments to the Sandbox exception classes
+ * deprecated Node::setTemplateName() in favor of Node::setSourceContext()
+
+* 2.8.0 (2019-04-16)
+
+ * added Traversable support for the length filter
+ * fixed some wrong location in error messages
+ * made exception creation faster
+ * made escaping on ternary expressions (?: and ??) more fine-grained
+ * added the possibility to give a nice name to string templates (template_from_string function)
+ * fixed the "with" behavior to always include the globals (for consistency with the "include" and "embed" tags)
+ * fixed "include" with "ignore missing" when an error loading occurs in the included template
+ * added support for a new whitespace trimming option ({%~ ~%}, {{~ ~}}, {#~ ~#})
+ * added the "column" filter
+
 * 2.7.4 (2019-03-23)
 
  * fixed variadic support
@@ -188,7 +206,22 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.38.4 (2019-XX-XX)
+* 1.39.1 (2019-XX-XX)
+
+ * fixed EscaperNodeVisitor
+
+* 1.39.0 (2019-04-16)
+
+ * added Traversable support for the length filter
+ * fixed some wrong location in error messages
+ * made exception creation faster
+ * made escaping on ternary expressions (?: and ??) more fine-grained
+ * added the possibility to give a nice name to string templates (template_from_string function)
+ * fixed the "with" behavior to always include the globals (for consistency with the "include" and "embed" tags)
+ * fixed "include" with "ignore missing" when an error loading occurs in the included template
+ * added support for a new whitespace trimming option ({%~ ~%}, {{~ ~}}, {#~ ~#})
+
+* 1.38.4 (2019-03-23)
 
  * fixed CheckToStringNode implementation (broken when a function/filter is variadic)
 

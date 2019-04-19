@@ -164,12 +164,28 @@ class Profile implements \IteratorAggregate, \Serializable
 
     public function serialize()
     {
-        return serialize([$this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles]);
+        return serialize($this->__serialize());
     }
 
     public function unserialize($data)
     {
-        list($this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles) = unserialize($data);
+        $this->__unserialize(unserialize($data));
+    }
+
+    /**
+     * @internal
+     */
+    public function __serialize()
+    {
+        return [$this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles];
+    }
+
+    /**
+     * @internal
+     */
+    public function __unserialize(array $data)
+    {
+        list($this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles) = $data;
     }
 }
 

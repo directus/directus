@@ -538,7 +538,7 @@ class CoreServicesProvider
                     ];
                     // Authenticated user can see their private info
                     // Admin can see all users private info
-                    if (!$acl->isAdmin() && $userId !== $row['id']) {
+                    if (!$acl->isAdmin() && $userId !== (int)$row['id']) {
                         $omit = array_merge($omit, [
                             'token',
                             'email_notifications',

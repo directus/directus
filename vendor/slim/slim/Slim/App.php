@@ -11,7 +11,6 @@ namespace Slim;
 use Exception;
 use Psr\Http\Message\UriInterface;
 use Slim\Exception\InvalidMethodException;
-use Slim\Http\Response;
 use Throwable;
 use Closure;
 use InvalidArgumentException;
@@ -27,7 +26,6 @@ use Slim\Http\Uri;
 use Slim\Http\Headers;
 use Slim\Http\Body;
 use Slim\Http\Request;
-use Slim\Interfaces\Http\EnvironmentInterface;
 use Slim\Interfaces\RouteGroupInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Interfaces\RouterInterface;
@@ -53,7 +51,7 @@ class App
      *
      * @var string
      */
-    const VERSION = '3.12.1-dev';
+    const VERSION = '3.12.1';
 
     /**
      * Container
@@ -445,7 +443,8 @@ class App
         }
 
         // Body
-        if (!$this->isEmptyResponse($response)) {
+        $request = $this->container->get('request');
+        if (!$this->isEmptyResponse($response) && !$this->isHeadRequest($request)) {
             $body = $response->getBody();
             if ($body->isSeekable()) {
                 $body->rewind();
@@ -614,7 +613,8 @@ class App
         // stop PHP sending a Content-Type automatically
         ini_set('default_mimetype', '');
 
-        if ($this->isEmptyResponse($response)) {
+        $request = $this->container->get('request');
+        if ($this->isEmptyResponse($response) && !$this->isHeadRequest($request)) {
             return $response->withoutHeader('Content-Type')->withoutHeader('Content-Length');
         }
 
@@ -629,6 +629,11 @@ class App
             if ($size !== null && !$response->hasHeader('Content-Length')) {
                 $response = $response->withHeader('Content-Length', (string) $size);
             }
+        }
+
+        // clear the body if this is a HEAD request
+        if ($this->isHeadRequest($request)) {
+            return $response->withBody(new Body(fopen('php://temp', 'r+')));
         }
 
         return $response;
@@ -650,6 +655,18 @@ class App
         }
 
         return in_array($response->getStatusCode(), [204, 205, 304]);
+    }
+
+    /**
+     * Helper method to check if the current request is a HEAD request
+     *
+     * @param RequestInterface $request
+     *
+     * @return bool
+     */
+    protected function isHeadRequest(RequestInterface $request)
+    {
+        return strtoupper($request->getMethod()) === 'HEAD';
     }
 
     /**

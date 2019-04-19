@@ -38,11 +38,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    const VERSION = '2.7.4';
-    const VERSION_ID = 20704;
+    const VERSION = '2.8.1';
+    const VERSION_ID = 20801;
     const MAJOR_VERSION = 2;
-    const MINOR_VERSION = 7;
-    const RELEASE_VERSION = 4;
+    const MINOR_VERSION = 8;
+    const RELEASE_VERSION = 1;
     const EXTRA_VERSION = '';
 
     private $charset;
@@ -64,7 +64,6 @@ class Environment
     private $runtimeLoaders = [];
     private $runtimes = [];
     private $optionsHash;
-    private $loading = [];
 
     /**
      * Constructor.
@@ -403,6 +402,7 @@ class Environment
                 $this->cache->load($key);
             }
 
+            $source = null;
             if (!class_exists($cls, false)) {
                 $source = $this->getLoader()->getSourceContext($name);
                 $content = $this->compileSource($source);
@@ -427,19 +427,7 @@ class Environment
         // to be removed in 3.0
         $this->extensionSet->initRuntime($this);
 
-        if (isset($this->loading[$cls])) {
-            throw new RuntimeError(sprintf('Circular reference detected for Twig template "%s", path: %s.', $name, implode(' -> ', array_merge($this->loading, [$name]))));
-        }
-
-        $this->loading[$cls] = $name;
-
-        try {
-            $this->loadedTemplates[$cls] = new $cls($this);
-        } finally {
-            unset($this->loading[$cls]);
-        }
-
-        return $this->loadedTemplates[$cls];
+        return $this->loadedTemplates[$cls] = new $cls($this);
     }
 
     /**
@@ -448,15 +436,21 @@ class Environment
      * This method should not be used as a generic way to load templates.
      *
      * @param string $template The template name
+     * @param string $name     An optional name of the template to be used in error messages
      *
      * @return TemplateWrapper A template instance representing the given template name
      *
      * @throws LoaderError When the template cannot be found
      * @throws SyntaxError When an error occurred during compilation
      */
-    public function createTemplate($template)
+    public function createTemplate($template, string $name = null)
     {
-        $name = sprintf('__string_template__%s', hash('sha256', $template, false));
+        $hash = hash('sha256', $template, false);
+        if (null !== $name) {
+            $name = sprintf('%s (string template %s)', $name, $hash);
+        } else {
+            $name = sprintf('__string_template__%s', $hash);
+        }
 
         $loader = new ChainLoader([
             new ArrayLoader([$name => $template]),

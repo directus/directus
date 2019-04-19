@@ -115,7 +115,7 @@ EOF
             return ['file' => $file, 'valid' => true];
         }
 
-        libxml_use_internal_errors(true);
+        $internal = libxml_use_internal_errors(true);
 
         $document = new \DOMDocument();
         $document->loadXML($content);
@@ -142,6 +142,9 @@ EOF
                 'message' => $xmlError['message'],
             ];
         }
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($internal);
 
         return ['file' => $file, 'valid' => 0 === \count($errors), 'messages' => $errors];
     }

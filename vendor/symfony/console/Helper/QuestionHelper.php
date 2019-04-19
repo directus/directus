@@ -49,7 +49,13 @@ class QuestionHelper extends Helper
         if (!$input->isInteractive()) {
             $default = $question->getDefault();
 
-            if (null !== $default && $question instanceof ChoiceQuestion) {
+            if (null === $default) {
+                return $default;
+            }
+
+            if ($validator = $question->getValidator()) {
+                return \call_user_func($question->getValidator(), $default);
+            } elseif ($question instanceof ChoiceQuestion) {
                 $choices = $question->getChoices();
 
                 if (!$question->isMultiselect()) {
@@ -215,6 +221,7 @@ class QuestionHelper extends Helper
 
             // as opposed to fgets(), fread() returns an empty string when the stream content is empty, not false.
             if (false === $c || ('' === $ret && '' === $c && null === $question->getDefault())) {
+                shell_exec(sprintf('stty %s', $sttyMode));
                 throw new RuntimeException('Aborted.');
             } elseif ("\177" === $c) { // Backspace Character
                 if (0 === $numMatches && 0 !== $i) {

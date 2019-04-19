@@ -36,23 +36,23 @@
             </trans-unit>
             <trans-unit id="9">
                 <source>This field was not expected.</source>
-                <target>Това поле не се е очаквало.</target>
+                <target>Полето не се е очаквало.</target>
             </trans-unit>
             <trans-unit id="10">
                 <source>This field is missing.</source>
-                <target>Това поле липсва.</target>
+                <target>Полето липсва.</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>This value is not a valid date.</source>
-                <target>Стойността не е валидна дата (date).</target>
+                <target>Стойността не е валидна дата.</target>
             </trans-unit>
             <trans-unit id="12">
                 <source>This value is not a valid datetime.</source>
-                <target>Стойността не е валидна дата (datetime).</target>
+                <target>Стойността не е валидна дата и час.</target>
             </trans-unit>
             <trans-unit id="13">
                 <source>This value is not a valid email address.</source>
-                <target>Стойността не е валиден email адрес.</target>
+                <target>Стойността не е валиден имейл адрес.</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>The file could not be found.</source>
@@ -68,7 +68,7 @@
             </trans-unit>
             <trans-unit id="17">
                 <source>The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.</source>
-                <target>Майм типа на файла е невалиден ({{ type }}). Разрешени майм типове са {{ types }}.</target>
+                <target>Mime типа на файла е невалиден ({{ type }}). Разрешени mime типове са {{ types }}.</target>
             </trans-unit>
             <trans-unit id="18">
                 <source>This value should be {{ limit }} or less.</source>
@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="26">
                 <source>This value is not a valid time.</source>
-                <target>Стойността не е валидно време (time).</target>
+                <target>Стойността не е валидно време.</target>
             </trans-unit>
             <trans-unit id="27">
                 <source>This value is not a valid URL.</source>
@@ -216,35 +216,35 @@
             </trans-unit>
             <trans-unit id="57">
                 <source>Invalid card number.</source>
-                <target>Невалиден номер на картата.</target>
+                <target>Невалиден номер на карта.</target>
             </trans-unit>
             <trans-unit id="58">
                 <source>Unsupported card type or invalid card number.</source>
-                <target>Неподдържан тип карта или невалиден номер на картата.</target>
+                <target>Неподдържан тип карта или невалиден номер на карта.</target>
             </trans-unit>
             <trans-unit id="59">
                 <source>This is not a valid International Bank Account Number (IBAN).</source>
-                <target>Невалиден Международен номер на банкова сметка (IBAN).</target>
+                <target>Това не е валиден Международен номер на банкова сметка (IBAN).</target>
             </trans-unit>
             <trans-unit id="60">
                 <source>This value is not a valid ISBN-10.</source>
-                <target>Невалиден ISBN-10.</target>
+                <target>Стойността не е валиден ISBN-10.</target>
             </trans-unit>
             <trans-unit id="61">
                 <source>This value is not a valid ISBN-13.</source>
-                <target>Невалиден ISBN-13.</target>
+                <target>Стойността не е валиден ISBN-13.</target>
             </trans-unit>
             <trans-unit id="62">
                 <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
-                <target>Невалидна стойност както за ISBN-10, така и за ISBN-13 .</target>
+                <target>Стойността не е нито валиден ISBN-10, нито валиден ISBN-13.</target>
             </trans-unit>
             <trans-unit id="63">
                 <source>This value is not a valid ISSN.</source>
-                <target>Невалиден Международен стандартен сериен номер (ISSN).</target>
+                <target>Стойността не е валиден ISSN.</target>
             </trans-unit>
             <trans-unit id="64">
                 <source>This value is not a valid currency.</source>
-                <target>Невалидна валута.</target>
+                <target>Стойността не е валидна валута.</target>
             </trans-unit>
             <trans-unit id="65">
                 <source>This value should be equal to {{ compared_value }}.</source>
@@ -308,11 +308,11 @@
             </trans-unit>
             <trans-unit id="80">
                 <source>This value does not match the expected {{ charset }} charset.</source>
-                <target>Стойността не съвпада с {{ charset }}.</target>
+                <target>Стойността не съвпада с очакваната {{ charset }} кодировка.</target>
             </trans-unit>
             <trans-unit id="81">
                 <source>This is not a valid Business Identifier Code (BIC).</source>
-                <target>Невалиден бизнес идентификационен код (BIC).</target>
+                <target>Това не е валиден Бизнес идентификационен код (BIC).</target>
             </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
@@ -324,15 +324,15 @@
             </trans-unit>
             <trans-unit id="84">
                 <source>This value should be a multiple of {{ compared_value }}.</source>
-                <target>Тази стойност трябва да бъде кратно число на {{ compared_value }}.</target>
+                <target>Стойността трябва да бъде кратно число на {{ compared_value }}.</target>
             </trans-unit>
             <trans-unit id="85">
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
-                <target>Този бизнес идентификационен код (BIC) не е свързана с IBAN {{ iban }}.</target>
+                <target>Бизнес идентификационния код (BIC) не е свързан с IBAN {{ iban }}.</target>
             </trans-unit>
             <trans-unit id="86">
                 <source>This value should be valid JSON.</source>
-                <target>Тази стойност трябва да е валидна JSON.</target>
+                <target>Стойността трябва да е валиден JSON.</target>
             </trans-unit>
         </body>
     </file>
