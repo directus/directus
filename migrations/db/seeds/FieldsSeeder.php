@@ -185,14 +185,14 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_collection_presets',
                 'field' => 'filters',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
                 'collection' => 'directus_collection_presets',
                 'field' => 'view_options',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
@@ -206,7 +206,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_collection_presets',
                 'field' => 'view_query',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
 
@@ -278,7 +278,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_collections',
                 'field' => 'translation',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'sort' => 7,
                 'hidden_detail' => 1
@@ -337,7 +337,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_fields',
                 'field' => 'options',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
@@ -351,7 +351,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_fields',
                 'field' => 'translation',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
@@ -587,7 +587,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_files',
                 'field' => 'metadata',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'sort' => 14
             ],
@@ -852,14 +852,14 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_revisions',
                 'field' => 'data',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
                 'collection' => 'directus_revisions',
                 'field' => 'delta',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1
             ],
             [
@@ -955,7 +955,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_roles',
                 'field' => 'nav_override',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'options' => '[
                     {
@@ -1086,7 +1086,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_settings',
                 'field' => 'thumbnail_quality_tags',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'width' => 'half',
                 'note' => 'Allowed quality for thumbnails.',
@@ -1096,7 +1096,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_settings',
                 'field' => 'thumbnail_actions',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'width' => 'half',
                 'note' => 'Defines how the thumbnail will be generated based on the requested dimensions.',
@@ -1458,7 +1458,7 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_users',
                 'field' => 'locale_options',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
-                'interface' => 'code',
+                'interface' => 'json',
                 'locked' => 1,
                 'hidden_browse' => 1,
                 'hidden_detail' => 1,

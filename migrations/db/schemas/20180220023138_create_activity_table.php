@@ -68,7 +68,8 @@ class CreateActivityTable extends AbstractMigration
         ]);
 
         $table->addColumn('comment', 'text', [
-            'null' => true
+            'null' => true,
+            'encoding' => 'utf8mb4'
         ]);
 
         $table->addColumn('comment_deleted_on', 'datetime', [

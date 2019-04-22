@@ -182,16 +182,18 @@ class CoreServicesProvider
             $cacheTableTagInvalidator = function ($tableName) use ($cachePool) {
                 $cachePool->invalidateTags(['table_' . $tableName]);
             };
-
-            foreach (['item.update:after', 'collection.delete:after'] as $action) {
+            foreach (['item.create:after', 'item.delete:after', 'item.update:after', 'collection.update:after', 'collection.delete:after'] as $action) {
                 $emitter->addAction($action, $cacheTableTagInvalidator);
             }
 
-            $emitter->addAction('item.delete:after', function ($tableName, $ids) use ($cachePool) {
+            $cacheEntityTagInvalidator = function ($tableName, $ids) use ($cachePool) {
                 foreach ($ids as $id) {
                     $cachePool->invalidateTags(['entity_' . $tableName . '_' . $id]);
                 }
-            });
+            };
+            foreach (['item.delete:after', 'item.update:after'] as $action) {
+                $emitter->addAction($action, $cacheEntityTagInvalidator);
+            }
 
             $emitter->addAction('item.update.directus_permissions:after', function ($data) use ($container, $cachePool) {
                 $acl = $container->get('acl');

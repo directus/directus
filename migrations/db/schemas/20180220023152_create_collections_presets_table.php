@@ -32,7 +32,8 @@ class CreateCollectionsPresetsTable extends AbstractMigration
         $table->addColumn('title', 'string', [
             'limit' => 255,
             'null' => true,
-            'default' => null
+            'default' => null,
+            'encoding' => 'utf8mb4'
         ]);
         $table->addColumn('user', 'integer', [
             'signed' => false,

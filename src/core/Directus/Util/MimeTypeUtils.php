@@ -3018,7 +3018,7 @@ class MimeTypeUtils
      */
     public static function getFromExtension($extension)
     {
-        return static::get(self::$reverseMap, $extension, 'application/octet-stream');
+        return static::get(self::$reverseMap, strtolower($extension), 'application/octet-stream');
     }
 
     /**
@@ -3043,7 +3043,6 @@ class MimeTypeUtils
     public static function getFromFilename($filename)
     {
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
-
         return self::getFromExtension($extension);
     }
 
