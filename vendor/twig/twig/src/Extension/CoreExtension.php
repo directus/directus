@@ -48,6 +48,7 @@ use Twig\Node\Expression\Test\SameasTest;
 use Twig\Node\Expression\Unary\NegUnary;
 use Twig\Node\Expression\Unary\NotUnary;
 use Twig\Node\Expression\Unary\PosUnary;
+use Twig\TokenParser\ApplyTokenParser;
 use Twig\TokenParser\BlockTokenParser;
 use Twig\TokenParser\DeprecatedTokenParser;
 use Twig\TokenParser\DoTokenParser;
@@ -173,6 +174,7 @@ final class CoreExtension extends AbstractExtension
     public function getTokenParsers()
     {
         return [
+            new ApplyTokenParser(),
             new ForTokenParser(),
             new IfTokenParser(),
             new ExtendsTokenParser(),
@@ -907,6 +909,10 @@ function twig_sort_filter($array)
  */
 function twig_in_filter($value, $compare)
 {
+    if ($value instanceof Markup) {
+        $value = (string) $value;
+    }
+
     if (\is_array($compare)) {
         return \in_array($value, $compare, \is_object($value) || \is_resource($value));
     } elseif (\is_string($compare) && (\is_string($value) || \is_int($value) || \is_float($value))) {
@@ -1511,6 +1517,7 @@ function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
  * @param string $type              The type of attribute (@see \Twig\Template constants)
  * @param bool   $isDefinedTest     Whether this is only a defined check
  * @param bool   $ignoreStrictCheck Whether to ignore the strict attribute check or not
+ * @param int    $lineno            The template line where the attribute was called
  *
  * @return mixed The attribute value, or a Boolean when $isDefinedTest is true, or null when the attribute is not set and $ignoreStrictCheck is true
  *
@@ -1518,7 +1525,7 @@ function twig_array_batch($items, $size, $fill = null, $preserveKeys = true)
  *
  * @internal
  */
-function twig_get_attribute(Environment $env, Source $source, $object, $item, array $arguments = [], $type = /* Template::ANY_CALL */ 'any', $isDefinedTest = false, $ignoreStrictCheck = false, $sandboxed = false)
+function twig_get_attribute(Environment $env, Source $source, $object, $item, array $arguments = [], $type = /* Template::ANY_CALL */ 'any', $isDefinedTest = false, $ignoreStrictCheck = false, $sandboxed = false, int $lineno = -1)
 {
     // array
     if (/* Template::METHOD_CALL */ 'method' !== $type) {
@@ -1565,7 +1572,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
                 $message = sprintf('Impossible to access an attribute ("%s") on a %s variable ("%s").', $item, \gettype($object), $object);
             }
 
-            throw new RuntimeError($message, -1, $source);
+            throw new RuntimeError($message, $lineno, $source);
         }
     }
 
@@ -1586,11 +1593,11 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
             $message = sprintf('Impossible to invoke a method ("%s") on a %s variable ("%s").', $item, \gettype($object), $object);
         }
 
-        throw new RuntimeError($message, -1, $source);
+        throw new RuntimeError($message, $lineno, $source);
     }
 
     if ($object instanceof Template) {
-        throw new RuntimeError('Accessing \Twig\Template attributes is forbidden.');
+        throw new RuntimeError('Accessing \Twig\Template attributes is forbidden.', $lineno, $source);
     }
 
     // object property
@@ -1601,7 +1608,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
             }
 
             if ($sandboxed) {
-                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $source);
+                $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $lineno, $source);
             }
 
             return $object->$item;
@@ -1670,7 +1677,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
             return;
         }
 
-        throw new RuntimeError(sprintf('Neither the property "%1$s" nor one of the methods "%1$s()", "get%1$s()"/"is%1$s()"/"has%1$s()" or "__call()" exist and have public access in class "%2$s".', $item, $class), -1, $source);
+        throw new RuntimeError(sprintf('Neither the property "%1$s" nor one of the methods "%1$s()", "get%1$s()"/"is%1$s()"/"has%1$s()" or "__call()" exist and have public access in class "%2$s".', $item, $class), $lineno, $source);
     }
 
     if ($isDefinedTest) {
@@ -1678,7 +1685,7 @@ function twig_get_attribute(Environment $env, Source $source, $object, $item, ar
     }
 
     if ($sandboxed) {
-        $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method, $source);
+        $env->getExtension(SandboxExtension::class)->checkMethodAllowed($object, $method, $lineno, $source);
     }
 
     // Some objects throw exceptions when they have __call, and the method we try

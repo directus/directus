@@ -267,9 +267,9 @@ class Builder
      *
      * @return Builder
      */
-    public function whereNotIn($column, array $values)
+    public function whereNotIn($column, array $values, $not = false, $logical = 'and')
     {
-        return $this->whereIn($column, $values, true);
+        return $this->whereIn($column, $values, true, $logical);
     }
 
     public function whereBetween($column, array $values, $not = false, $logical = 'and')
@@ -277,9 +277,9 @@ class Builder
         return $this->where($column, 'between', $values, $not, $logical);
     }
 
-    public function whereNotBetween($column, array $values)
+    public function whereNotBetween($column, array $values, $not = false, $logical = 'and')
     {
-        return $this->whereBetween($column, $values, true);
+        return $this->whereBetween($column, $values, true, $logical);
     }
 
     public function whereEqualTo($column, $value, $not = false, $logical = 'and')
@@ -292,29 +292,29 @@ class Builder
         return $this->where($column, '=', $value, $not, 'or');
     }
 
-    public function whereNotEqualTo($column, $value)
+    public function whereNotEqualTo($column, $value, $not = false, $logical = 'and')
     {
-        return $this->whereEqualTo($column, $value, true);
+        return $this->whereEqualTo($column, $value, true, $logical);
     }
 
-    public function whereLessThan($column, $value)
+    public function whereLessThan($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, '<', $value);
+        return $this->where($column, '<', $value, $not, $logical);
     }
 
-    public function whereLessThanOrEqual($column, $value)
+    public function whereLessThanOrEqual($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, '<=', $value);
+        return $this->where($column, '<=', $value, $not, $logical);
     }
 
-    public function whereGreaterThan($column, $value)
+    public function whereGreaterThan($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, '>', $value);
+        return $this->where($column, '>', $value, $not, $logical);
     }
 
-    public function whereGreaterThanOrEqual($column, $value)
+    public function whereGreaterThanOrEqual($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, '>=', $value);
+        return $this->where($column, '>=', $value, $not, $logical);
     }
 
     public function whereNull($column, $not = false, $logical = 'and')
@@ -342,9 +342,9 @@ class Builder
         return $this->whereLike($column, $value, $not, 'or');
     }
 
-    public function whereNotLike($column, $value)
+    public function whereNotLike($column, $value, $not = false, $logical = 'and')
     {
-        return $this->whereLike($column, $value, true);
+        return $this->whereLike($column, $value, true, $logical);
     }
 
     public function whereAll($column, $table, $columnLeft, $columnRight, $values)
@@ -741,7 +741,7 @@ class Builder
         $platform = $this->getConnection()->getPlatform();
         $table = $this->getFrom();
 
-        if (strpos($column, $platform->getIdentifierSeparator()) === false) {
+        if (is_string ($column) && strpos($column, $platform->getIdentifierSeparator()) === false) {
             $column = implode($platform->getIdentifierSeparator(), [$table, $column]);
         }
 

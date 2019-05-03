@@ -1,26 +1,29 @@
 ``escape``
 ==========
 
-The ``escape`` filter escapes a string for safe insertion into the final
-output. It supports different escaping strategies depending on the template
+The ``escape`` filter escapes a string using strategies that depend on the
 context.
 
 By default, it uses the HTML escaping strategy:
 
-.. code-block:: jinja
+.. code-block:: html+twig
 
-    {{ user.username|escape }}
+    <p>
+        {{ user.username|escape }}
+    </p>
 
 For convenience, the ``e`` filter is defined as an alias:
 
-.. code-block:: jinja
+.. code-block:: html+twig
 
-    {{ user.username|e }}
+    <p>
+        {{ user.username|e }}
+    </p>
 
 The ``escape`` filter can also be used in other contexts than HTML thanks to
 an optional argument which defines the escaping strategy to use:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ user.username|e }}
     {# is equivalent to #}
@@ -28,25 +31,32 @@ an optional argument which defines the escaping strategy to use:
 
 And here is how to escape variables included in JavaScript code:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ user.username|escape('js') }}
     {{ user.username|e('js') }}
 
-The ``escape`` filter supports the following escaping strategies:
+The ``escape`` filter supports the following escaping strategies for HTML
+documents:
 
 * ``html``: escapes a string for the **HTML body** context.
 
-* ``js``: escapes a string for the **JavaScript context**.
+* ``js``: escapes a string for the **JavaScript** context.
 
-* ``css``: escapes a string for the **CSS context**. CSS escaping can be
+* ``css``: escapes a string for the **CSS** context. CSS escaping can be
   applied to any string being inserted into CSS and escapes everything except
   alphanumerics.
 
-* ``url``: escapes a string for the **URI or parameter contexts**. This should
+* ``url``: escapes a string for the **URI or parameter** contexts. This should
   not be used to escape an entire URI; only a subcomponent being inserted.
 
 * ``html_attr``: escapes a string for the **HTML attribute** context.
+
+Note that doing contextual escaping in HTML documents is hard and choosing the
+right escaping strategy depends on a lot of factors. Please, read related
+documentation like `the OWASP prevention cheat sheet
+<https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.md>`_
+to learn more about this topic.
 
 .. note::
 
@@ -60,7 +70,7 @@ The ``escape`` filter supports the following escaping strategies:
     escape filter; but that does not work when using a variable as the
     escaping strategy:
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
         {% set strategy = 'html' %}
 
@@ -72,7 +82,7 @@ The ``escape`` filter supports the following escaping strategies:
     When using a variable as the escaping strategy, you should disable
     automatic escaping:
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
         {% set strategy = 'html' %}
 
@@ -97,8 +107,8 @@ string to escape, and the charset.
 
 .. note::
 
-    Built-in escapers cannot be overridden mainly they should be considered as
-    the final implementation and also for better performance.
+    Built-in escapers cannot be overridden mainly because they should be
+    considered as the final implementation and also for better performance.
 
 Arguments
 ---------

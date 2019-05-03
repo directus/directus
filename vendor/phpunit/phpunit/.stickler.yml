@@ -1,3 +1,0 @@
-linters:
-  phpcs:
-    standard: 'build/phpcs.xml'

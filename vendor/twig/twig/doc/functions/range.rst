@@ -3,7 +3,7 @@
 
 Returns a list containing an arithmetic progression of integers:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in range(0, 3) %}
         {{ i }},
@@ -14,7 +14,7 @@ Returns a list containing an arithmetic progression of integers:
 When step is given (as the third parameter), it specifies the increment (or
 decrement for negative values):
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in range(0, 6, 2) %}
         {{ i }},
@@ -27,7 +27,7 @@ decrement for negative values):
     Note that if the start is greater than the end, ``range`` assumes a step of
     ``-1``:
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
         {% for i in range(3, 0) %}
             {{ i }},
@@ -38,7 +38,7 @@ decrement for negative values):
 The Twig built-in ``..`` operator is just syntactic sugar for the ``range``
 function (with a step of ``1``, or ``-1`` if the start is greater than the end):
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in 0..3 %}
         {{ i }},

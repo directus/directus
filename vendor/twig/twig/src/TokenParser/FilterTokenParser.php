@@ -23,11 +23,15 @@ use Twig\Token;
  *   {% filter upper %}
  *      This text becomes uppercase
  *   {% endfilter %}
+ *
+ * @deprecated since Twig 2.9, to be removed in 3.0 (use the "apply" tag instead)
  */
 final class FilterTokenParser extends AbstractTokenParser
 {
     public function parse(Token $token)
     {
+        @trigger_error('The "filter" tag is deprecated since Twig 2.9, use the "apply" tag instead.', E_USER_DEPRECATED);
+
         $name = $this->parser->getVarName();
         $ref = new BlockReferenceExpression(new ConstantExpression($name, $token->getLine()), null, $token->getLine(), $this->getTag());
 

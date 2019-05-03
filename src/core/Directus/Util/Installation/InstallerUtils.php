@@ -920,7 +920,7 @@ class InstallerUtils
                 ],
                 'headers' => [],
                 'exposed_headers' => [],
-                'max_age' => null,
+                'max_age' => 600,
                 'credentials' => false,
             ],
             'rate_limit' => [

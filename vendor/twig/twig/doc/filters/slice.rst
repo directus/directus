@@ -3,7 +3,7 @@
 
 The ``slice`` filter extracts a slice of a sequence, a mapping, or a string:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in [1, 2, 3, 4, 5]|slice(1, 2) %}
         {# will iterate over 2 and 3 #}
@@ -15,7 +15,7 @@ The ``slice`` filter extracts a slice of a sequence, a mapping, or a string:
 
 You can use any valid expression for both the start and the length:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in [1, 2, 3, 4, 5]|slice(start, length) %}
         {# ... #}
@@ -23,7 +23,7 @@ You can use any valid expression for both the start and the length:
 
 As syntactic sugar, you can also use the ``[]`` notation:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in [1, 2, 3, 4, 5][start:length] %}
         {# ... #}

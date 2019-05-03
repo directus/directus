@@ -4,7 +4,7 @@
 The ``trim`` filter strips whitespace (or other characters) from the beginning
 and end of a string:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ '  I like Twig.  '|trim }}
 

@@ -4,7 +4,7 @@
 The ``split`` filter splits a string by the given delimiter and returns a list
 of strings:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set foo = "one,two,three"|split(',') %}
     {# foo contains ['one', 'two', 'three'] #}
@@ -19,7 +19,7 @@ You can also pass a ``limit`` argument:
 
 * If ``limit`` is zero, then this is treated as 1.
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set foo = "one,two,three,four,five"|split(',', 3) %}
     {# foo contains ['one', 'two', 'three,four,five'] #}
@@ -27,7 +27,7 @@ You can also pass a ``limit`` argument:
 If the ``delimiter`` is an empty string, then value will be split by equal
 chunks. Length is set by the ``limit`` argument (one character by default).
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set foo = "123"|split('') %}
     {# foo contains ['1', '2', '3'] #}

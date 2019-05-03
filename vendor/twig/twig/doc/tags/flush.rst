@@ -3,7 +3,7 @@
 
 The ``flush`` tag tells Twig to flush the output buffer:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% flush %}
 

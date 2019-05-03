@@ -1,4 +1,0 @@
-{
-    "bootstrap": "vendor/autoload.php",
-    "path": "tests/DoctrineTest/InstantiatorPerformance"
-}

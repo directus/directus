@@ -90,7 +90,7 @@ class Profile implements \IteratorAggregate, \Serializable
     /**
      * Returns the duration in microseconds.
      *
-     * @return int
+     * @return float
      */
     public function getDuration()
     {

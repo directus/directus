@@ -675,6 +675,7 @@ class MySQLSchema extends AbstractSchema
             'varbinary',
             'enum',
             'set',
+            'decimal'
         ];
     }
 

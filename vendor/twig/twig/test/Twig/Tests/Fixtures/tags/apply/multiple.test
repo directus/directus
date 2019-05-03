@@ -1,0 +1,10 @@
+--TEST--
+"apply" tags accept multiple chained filters
+--TEMPLATE--
+{% apply lower|title %}
+  {{ var }}
+{% endapply %}
+--DATA--
+return ['var' => 'VAR']
+--EXPECT--
+    Var

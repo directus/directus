@@ -64,16 +64,17 @@ class Lexer
             'interpolation' => ['#{', '}'],
         ], $options);
 
+        // when PHP 7.3 is the min version, we will be able to remove the '#' part in preg_quote as it's part of the default
         $this->regexes = [
             // }}
             'lex_var' => '{
                 \s*
                 (?:'.
-                    preg_quote($this->options['whitespace_trim'].$this->options['tag_variable'][1]).'\s*'. // -}}\s*
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_variable'][1], '#').'\s*'. // -}}\s*
                     '|'.
-                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_variable'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~}}[ \t\0\x0B]*
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_variable'][1], '#').'['.$this->options['whitespace_line_chars'].']*'. // ~}}[ \t\0\x0B]*
                     '|'.
-                    preg_quote($this->options['tag_variable'][1]). // }}
+                    preg_quote($this->options['tag_variable'][1], '#'). // }}
                 ')
             }Ax',
 
@@ -81,28 +82,28 @@ class Lexer
             'lex_block' => '{
                 \s*
                 (?:'.
-                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*\n?'. // -%}\s*\n?
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '#').'\s*\n?'. // -%}\s*\n?
                     '|'.
-                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1], '#').'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
                     '|'.
-                    preg_quote($this->options['tag_block'][1]).'\n?'. // %}\n?
+                    preg_quote($this->options['tag_block'][1], '#').'\n?'. // %}\n?
                 ')
             }Ax',
 
             // {% endverbatim %}
             'lex_raw_data' => '{'.
-                preg_quote($this->options['tag_block'][0]). // {%
+                preg_quote($this->options['tag_block'][0], '#'). // {%
                 '('.
                     $this->options['whitespace_trim']. // -
                     '|'.
                     $this->options['whitespace_line_trim']. // ~
                 ')?\s*endverbatim\s*'.
                 '(?:'.
-                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*'. // -%}
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '#').'\s*'. // -%}
                     '|'.
-                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1], '#').'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
                     '|'.
-                    preg_quote($this->options['tag_block'][1]). // %}
+                    preg_quote($this->options['tag_block'][1], '#'). // %}
                 ')
             }sx',
 
@@ -123,32 +124,32 @@ class Lexer
             'lex_block_raw' => '{
                 \s*verbatim\s*
                 (?:'.
-                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1]).'\s*'. // -%}\s*
+                    preg_quote($this->options['whitespace_trim'].$this->options['tag_block'][1], '#').'\s*'. // -%}\s*
                     '|'.
-                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1]).'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
+                    preg_quote($this->options['whitespace_line_trim'].$this->options['tag_block'][1], '#').'['.$this->options['whitespace_line_chars'].']*'. // ~%}[ \t\0\x0B]*
                     '|'.
-                    preg_quote($this->options['tag_block'][1]). // %}
+                    preg_quote($this->options['tag_block'][1], '#'). // %}
                 ')
             }Asx',
 
-            'lex_block_line' => '{\s*line\s+(\d+)\s*'.preg_quote($this->options['tag_block'][1]).'}As',
+            'lex_block_line' => '{\s*line\s+(\d+)\s*'.preg_quote($this->options['tag_block'][1], '#').'}As',
 
             // {{ or {% or {#
             'lex_tokens_start' => '{
                 ('.
-                    preg_quote($this->options['tag_variable'][0]). // {{
+                    preg_quote($this->options['tag_variable'][0], '#'). // {{
                     '|'.
-                    preg_quote($this->options['tag_block'][0]). // {%
+                    preg_quote($this->options['tag_block'][0], '#'). // {%
                     '|'.
                     preg_quote($this->options['tag_comment'][0], '#'). // {#
                 ')('.
-                    preg_quote($this->options['whitespace_trim']). // -
+                    preg_quote($this->options['whitespace_trim'], '#'). // -
                     '|'.
-                    preg_quote($this->options['whitespace_line_trim']). // ~
+                    preg_quote($this->options['whitespace_line_trim'], '#'). // ~
                 ')?
             }sx',
-            'interpolation_start' => '{'.preg_quote($this->options['interpolation'][0]).'\s*}A',
-            'interpolation_end' => '{\s*'.preg_quote($this->options['interpolation'][1]).'}A',
+            'interpolation_start' => '{'.preg_quote($this->options['interpolation'][0], '#').'\s*}A',
+            'interpolation_end' => '{\s*'.preg_quote($this->options['interpolation'][1], '#').'}A',
         ];
     }
 

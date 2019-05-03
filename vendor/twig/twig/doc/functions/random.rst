@@ -13,7 +13,7 @@ parameter type:
 * a random integer between the integer parameter (when negative) and 0 (inclusive).
 * a random integer between the first integer and the second integer parameter (inclusive).
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ random(['apple', 'orange', 'citrus']) }} {# example output: orange #}
     {{ random('ABC') }}                         {# example output: C #}

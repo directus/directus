@@ -28,6 +28,28 @@ class User
     }
 
     /**
+     * Check the existance of user in the system
+     * 
+     * The function will check the user of given their e-mail address exist in 
+     * the system or not.
+     */
+    public function userExists($email)
+    {
+        try {
+            $rowset = $this->usersTableGateway->select([
+                'email' => $email
+            ]);
+            if ($rowset->count() > 0) {
+                return true;
+            }
+            return false;
+        } catch (\PDOException $ex) {
+            return false;
+        }
+    }
+
+
+    /**
      *  Change the password of a user given their e-mail address
      *
      *  The function will change the password of a user given their e-mail

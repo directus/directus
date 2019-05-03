@@ -7,18 +7,18 @@ will be most useful as reference to those creating Twig templates.
 Synopsis
 --------
 
-A template is simply a text file. It can generate any text-based format (HTML,
+A template is a regular text file. It can generate any text-based format (HTML,
 XML, CSV, LaTeX, etc.). It doesn't have a specific extension, ``.html`` or
 ``.xml`` are just fine.
 
 A template contains **variables** or **expressions**, which get replaced with
-values when the template is evaluated, and **tags**, which control the logic
-of the template.
+values when the template is evaluated, and **tags**, which control the
+template's logic.
 
 Below is a minimal template that illustrates a few basics. We will cover further
 details later on:
 
-.. code-block:: html+jinja
+.. code-block:: html+twig
 
     <!DOCTYPE html>
     <html>
@@ -38,8 +38,8 @@ details later on:
     </html>
 
 There are two kinds of delimiters: ``{% ... %}`` and ``{{ ... }}``. The first
-one is used to execute statements such as for-loops, the latter prints the
-result of an expression to the template.
+one is used to execute statements such as for-loops, the latter outputs the
+result of an expression.
 
 IDEs Integration
 ----------------
@@ -68,37 +68,22 @@ Variables
 ---------
 
 The application passes variables to the templates for manipulation in the
-template. Variables may have attributes or elements you can access,
-too. The visual representation of a variable depends heavily on the application providing
+template. Variables may have attributes or elements you can access, too. The
+visual representation of a variable depends heavily on the application providing
 it.
 
-You can use a dot (``.``) to access attributes of a variable (methods or
-properties of a PHP object, or items of a PHP array), or the so-called
-"subscript" syntax (``[]``):
+Use a dot (``.``) to access attributes of a variable (methods or properties of a
+PHP object, or items of a PHP array):
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ foo.bar }}
-    {{ foo['bar'] }}
-
-When the attribute contains special characters (like ``-`` that would be
-interpreted as the minus operator), use the ``attribute`` function instead to
-access the variable attribute:
-
-.. code-block:: jinja
-
-    {# equivalent to the non-working foo.data-foo #}
-    {{ attribute(foo, 'data-foo') }}
 
 .. note::
 
     It's important to know that the curly braces are *not* part of the
     variable but the print statement. When accessing variables inside tags,
     don't put the braces around them.
-
-If a variable or attribute does not exist, you will receive a ``null`` value
-when the ``strict_variables`` option is set to ``false``; alternatively, if ``strict_variables``
-is set, Twig will throw an error (see :ref:`environment options<environment_options>`).
 
 .. sidebar:: Implementation
 
@@ -114,15 +99,29 @@ is set, Twig will throw an error (see :ref:`environment options<environment_opti
     * if not, and if ``foo`` is an object, check that ``hasBar`` is a valid method;
     * if not, return a ``null`` value.
 
-    ``foo['bar']`` on the other hand only works with PHP arrays:
+    Twig also supports a specific syntax for accessing items on PHP arrays,
+    ``foo['bar']``:
 
     * check if ``foo`` is an array and ``bar`` a valid element;
     * if not, return a ``null`` value.
+
+If a variable or attribute does not exist, you will receive a ``null`` value
+when the ``strict_variables`` option is set to ``false``; alternatively, if ``strict_variables``
+is set, Twig will throw an error (see :ref:`environment options<environment_options>`).
 
 .. note::
 
     If you want to access a dynamic attribute of a variable, use the
     :doc:`attribute<functions/attribute>` function instead.
+
+    The ``attribute`` function is also useful when the attribute contains
+    special characters (like ``-`` that would be interpreted as the minus
+    operator):
+
+    .. code-block:: twig
+
+        {# equivalent to the non-working foo.data-foo #}
+        {{ attribute(foo, 'data-foo') }}
 
 Global Variables
 ~~~~~~~~~~~~~~~~
@@ -139,7 +138,7 @@ Setting Variables
 You can assign values to variables inside code blocks. Assignments use the
 :doc:`set<tags/set>` tag:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set foo = 'foo' %}
     {% set foo = [1, 2] %}
@@ -149,35 +148,39 @@ Filters
 -------
 
 Variables can be modified by **filters**. Filters are separated from the
-variable by a pipe symbol (``|``) and may have optional arguments in
-parentheses. Multiple filters can be chained. The output of one filter is
-applied to the next.
+variable by a pipe symbol (``|``). Multiple filters can be chained. The output
+of one filter is applied to the next.
 
 The following example removes all HTML tags from the ``name`` and title-cases
 it:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ name|striptags|title }}
 
 Filters that accept arguments have parentheses around the arguments. This
-example will join a list by commas:
+example joins the elements of a list by commas:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ list|join(', ') }}
 
-To apply a filter on a section of code, wrap it in the
-:doc:`filter<tags/filter>` tag:
+To apply a filter on a section of code, wrap it with the
+:doc:`apply<tags/apply>` tag:
 
-.. code-block:: jinja
+.. code-block:: twig
 
-    {% filter upper %}
+    {% apply upper %}
         This text becomes uppercase
-    {% endfilter %}
+    {% endapply %}
 
 Go to the :doc:`filters<filters/index>` page to learn more about built-in
 filters.
+
+.. note::
+
+    The ``apply`` tag was introduced in Twig 2.9; use the ``filter`` tag with
+    previous versions.
 
 Functions
 ---------
@@ -188,7 +191,7 @@ name followed by parentheses (``()``) and may have arguments.
 For instance, the ``range`` function returns a list containing an arithmetic
 progression of integers:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in range(0, 3) %}
         {{ i }},
@@ -202,7 +205,7 @@ built-in functions.
 Named Arguments
 ---------------
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for i in range(low=1, high=10, step=2) %}
         {{ i }},
@@ -211,7 +214,7 @@ Named Arguments
 Using named arguments makes your templates more explicit about the meaning of
 the values you pass as arguments:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ data|convert_encoding('UTF-8', 'iso-2022-jp') }}
 
@@ -222,7 +225,7 @@ the values you pass as arguments:
 Named arguments also allow you to skip some arguments for which you don't want
 to change the default value:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# the first argument is the date format, which defaults to the global date format if null is passed #}
     {{ "now"|date(null, "Europe/Paris") }}
@@ -233,7 +236,7 @@ to change the default value:
 You can also use both positional and named arguments in one call, in which
 case positional arguments must always come before named arguments:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ "now"|date('d/m/Y H:i', timezone="Europe/Paris") }}
 
@@ -253,7 +256,7 @@ blocks.
 For example, to display a list of users provided in a variable called
 ``users``, use the :doc:`for<tags/for>` tag:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     <h1>Members</h1>
     <ul>
@@ -264,7 +267,7 @@ For example, to display a list of users provided in a variable called
 
 The :doc:`if<tags/if>` tag can be used to test an expression:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if users|length > 0 %}
         <ul>
@@ -283,7 +286,7 @@ To comment-out part of a line in a template, use the comment syntax ``{# ...
 #}``. This is useful for debugging or to add information for other template
 designers or yourself:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# note: disabled template because we no longer use this
         {% for user in users %}
@@ -297,7 +300,7 @@ Including other Templates
 The :doc:`include<functions/include>` function is useful to include a template
 and return the rendered content of that template into the current one:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ include('sidebar.html') }}
 
@@ -305,7 +308,7 @@ By default, included templates have access to the same context as the template
 which includes them. This means that any variable defined in the main template
 will be available in the included template too:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for box in boxes %}
         {{ include('render_box.html') }}
@@ -317,7 +320,7 @@ The name of the template depends on the template loader. For instance, the
 ``\Twig\Loader\FilesystemLoader`` allows you to access other templates by giving the
 filename. You can access templates in subdirectories with a slash:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ include('sections/articles/sidebar.html') }}
 
@@ -331,13 +334,12 @@ allows you to build a base "skeleton" template that contains all the common
 elements of your site and defines **blocks** that child templates can
 override.
 
-Sounds complicated but it is very basic. It's easier to understand it by
-starting with an example.
+It's easier to understand the concept by starting with an example.
 
-Let's define a base template, ``base.html``, which defines a simple HTML
-skeleton document that you might use for a simple two-column page:
+Let's define a base template, ``base.html``, which defines an HTML skeleton
+document that might be used for a two-column page:
 
-.. code-block:: html+jinja
+.. code-block:: html+twig
 
     <!DOCTYPE html>
     <html>
@@ -364,7 +366,7 @@ template.
 
 A child template might look like this:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends "base.html" %}
 
@@ -394,7 +396,7 @@ It's possible to render the contents of the parent block by using the
 :doc:`parent<functions/parent>` function. This gives back the results of the
 parent block:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block sidebar %}
         <h3>Table Of Contents</h3>
@@ -410,9 +412,8 @@ parent block:
 
 .. note::
 
-    Twig also supports multiple inheritance with the so called horizontal reuse
-    with the help of the :doc:`use<tags/use>` tag. This is an advanced feature
-    hardly ever needed in regular templates.
+    Twig also supports multiple inheritance via "horizontal reuse" with the help
+    of the :doc:`use<tags/use>` tag.
 
 HTML Escaping
 -------------
@@ -430,21 +431,19 @@ The automatic escaping strategy can be configured via the
 Working with Manual Escaping
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If manual escaping is enabled, it is **your** responsibility to escape
-variables if needed. What to escape? Any variable you don't trust.
+If manual escaping is enabled, it is **your** responsibility to escape variables
+if needed. What to escape? Any variable that comes from an untrusted source.
 
-Escaping works by piping the variable through the
-:doc:`escape<filters/escape>` or ``e`` filter:
+Escaping works by using the :doc:`escape<filters/escape>` or ``e`` filter:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ user.username|e }}
 
 By default, the ``escape`` filter uses the ``html`` strategy, but depending on
-the escaping context, you might want to explicitly use any other available
-strategies:
+the escaping context, you might want to explicitly use an other strategy:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ user.username|e('js') }}
     {{ user.username|e('css') }}
@@ -458,7 +457,7 @@ Whether automatic escaping is enabled or not, you can mark a section of a
 template to be escaped or not by using the :doc:`autoescape<tags/autoescape>`
 tag:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% autoescape %}
         Everything will be automatically escaped in this block (using the HTML strategy)
@@ -468,7 +467,7 @@ By default, auto-escaping uses the ``html`` escaping strategy. If you output
 variables in other contexts, you need to explicitly escape them with the
 appropriate escaping strategy:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% autoescape 'js' %}
         Everything will be automatically escaped in this block (using the JS strategy)
@@ -485,7 +484,7 @@ variable you have to use a trick.
 The easiest way is to output the variable delimiter (``{{``) by using a variable
 expression:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ '{{' }}
 
@@ -501,7 +500,7 @@ are useful to reuse often used HTML fragments to not repeat yourself.
 A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small example
 (subsequently called ``forms.html``) of a macro that renders a form element:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input(name, value, type, size) %}
         <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
@@ -510,7 +509,7 @@ A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small example
 Macros can be defined in any template, and need to be "imported" via the
 :doc:`import<tags/import>` tag before being used:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% import "forms.html" as forms %}
 
@@ -519,7 +518,7 @@ Macros can be defined in any template, and need to be "imported" via the
 Alternatively, you can import individual macro names from a template into the
 current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% from 'forms.html' import input as input_field %}
 
@@ -533,7 +532,7 @@ current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
 A default value can also be defined for macro arguments when not provided in a
 macro call:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input(name, value = "", type = "text", size = 20) %}
         <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
@@ -547,8 +546,7 @@ special ``varargs`` variable as a list of values.
 Expressions
 -----------
 
-Twig allows expressions everywhere. These work very similar to regular PHP and
-even if you're not working with PHP you should feel comfortable with it.
+Twig allows expressions everywhere.
 
 .. note::
 
@@ -559,7 +557,7 @@ even if you're not working with PHP you should feel comfortable with it.
     ``*``, ``/``, ``//``, ``%``, ``is`` (tests), ``**``, ``??``, ``|``
     (filters), ``[]``, and ``.``.
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
         {% set greeting = 'Hello ' %}
         {% set name = 'Fabien' %}
@@ -584,7 +582,7 @@ exist:
   backslash (e.g. ``'c:\Program Files'``) escape it by doubling it
   (e.g. ``'c:\\Program Files'``).
 
-* ``42`` / ``42.23``: Integers and floating point numbers are created by just
+* ``42`` / ``42.23``: Integers and floating point numbers are created by
   writing the number down. If a dot is present the number is a float,
   otherwise an integer.
 
@@ -594,7 +592,7 @@ exist:
 * ``{"foo": "bar"}``: Hashes are defined by a list of keys and values
   separated by a comma (``,``) and wrapped with curly braces (``{}``):
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {# keys as string #}
     { 'foo': 'foo', 'bar': 'bar' }
@@ -617,22 +615,22 @@ exist:
 
 Arrays and hashes can be nested:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set foo = [1, {"foo": "bar"}] %}
 
 .. tip::
 
     Using double-quoted or single-quoted strings has no impact on performance
-    but string interpolation is only supported in double-quoted strings.
+    but :ref:`string interpolation <templates-string-interpolation>` is only
+    supported in double-quoted strings.
 
 Math
 ~~~~
 
-Twig allows you to calculate with values. This is rarely useful in templates
-but exists for completeness' sake. The following operators are supported:
+Twig allows you to do math in templates; the following operators are supported:
 
-* ``+``: Adds two objects together (the operands are casted to numbers). ``{{
+* ``+``: Adds two numbers together (the operands are casted to numbers). ``{{
   1 + 1 }}`` is ``2``.
 
 * ``-``: Subtracts the second number from the first one. ``{{ 3 - 2 }}`` is
@@ -686,7 +684,7 @@ The following comparison operators are supported in any expression: ``==``,
 You can also check if a string ``starts with`` or ``ends with`` another
 string:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if 'Fabien' starts with 'F' %}
     {% endif %}
@@ -699,7 +697,7 @@ string:
     For complex string comparisons, the ``matches`` operator allows you to use
     `regular expressions`_:
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
         {% if phone matches '/^[\\d\\.]+$/' %}
         {% endif %}
@@ -707,11 +705,10 @@ string:
 Containment Operator
 ~~~~~~~~~~~~~~~~~~~~
 
-The ``in`` operator performs containment test.
+The ``in`` operator performs containment test. It returns ``true`` if the left
+operand is contained in the right:
 
-It returns ``true`` if the left operand is contained in the right:
-
-.. code-block:: jinja
+.. code-block:: twig
 
     {# returns true #}
 
@@ -726,7 +723,7 @@ It returns ``true`` if the left operand is contained in the right:
 
 To perform a negative test, use the ``not in`` operator:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if 1 not in [1, 2, 3] %}
 
@@ -739,7 +736,7 @@ Test Operator
 The ``is`` operator performs tests. Tests can be used to test a variable against
 a common expression. The right operand is name of the test:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# find out if a variable is odd #}
 
@@ -747,13 +744,13 @@ a common expression. The right operand is name of the test:
 
 Tests can accept arguments too:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if post.status is constant('Post::PUBLISHED') %}
 
 Tests can be negated by using the ``is not`` operator:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if post.status is not constant('Post::PUBLISHED') %}
 
@@ -771,9 +768,9 @@ The following operators don't fit into any of the other categories:
 * ``|``: Applies a filter.
 
 * ``..``: Creates a sequence based on the operand before and after the operator
-  (this is just syntactic sugar for the :doc:`range<functions/range>` function):
+  (this is syntactic sugar for the :doc:`range<functions/range>` function):
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
       {{ 1..5 }}
 
@@ -783,7 +780,7 @@ The following operators don't fit into any of the other categories:
   Note that you must use parentheses when combining it with the filter operator
   due to the :ref:`operator precedence rules <twig-expressions>`:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
       (1..5)|join(', ')
 
@@ -791,11 +788,11 @@ The following operators don't fit into any of the other categories:
   " ~ name ~ "!" }}`` would return (assuming ``name`` is ``'John'``) ``Hello
   John!``.
 
-* ``.``, ``[]``: Gets an attribute of an object.
+* ``.``, ``[]``: Gets an attribute of a variable.
 
 * ``?:``: The ternary operator:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
       {{ foo ? 'yes' : 'no' }}
       {{ foo ?: 'no' }} is the same as {{ foo ? foo : 'no' }}
@@ -803,10 +800,12 @@ The following operators don't fit into any of the other categories:
 
 * ``??``: The null-coalescing operator:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
       {# returns the value of foo if it is defined and not null, 'no' otherwise #}
       {{ foo ?? 'no' }}
+
+.. _templates-string-interpolation
 
 String Interpolation
 ~~~~~~~~~~~~~~~~~~~~
@@ -815,7 +814,7 @@ String interpolation (``#{expression}``) allows any valid expression to appear
 within a *double-quoted string*. The result of evaluating that expression is
 inserted into the string:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ "foo #{bar} baz" }}
     {{ "foo #{1 + 2} baz" }}
@@ -848,7 +847,7 @@ The modifiers can be used on either side of the tags like in ``{%-`` or ``-%}``
 and they consume all whitespace for that side of the tag. It is possible to use
 the modifiers on one side of a tag or on both sides:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set value = 'no spaces' %}
     {#- No leading/trailing whitespace -#}
@@ -874,23 +873,26 @@ the modifiers on one side of a tag or on both sides:
     In addition to the whitespace modifiers, Twig also has a ``spaceless`` filter
     that removes whitespace **between HTML tags**:
 
-    .. code-block:: jinja
+    .. code-block:: twig
 
-        {% filter spaceless %}
+        {% apply spaceless %}
             <div>
                 <strong>foo bar</strong>
             </div>
-        {% endfilter %}
+        {% endapply %}
 
         {# output will be <div><strong>foo bar</strong></div> #}
+
+    .. note::
+
+        The ``apply`` tag was introduced in Twig 2.9; use the ``filter`` tag with
+        previous versions.
 
 Extensions
 ----------
 
-Twig can be easily extended.
-
-If you are looking for new tags, filters, or functions, have a look at the Twig official
-`extension repository`_.
+Twig can be extended. If you are looking for new tags, filters, or functions,
+have a look at the Twig official `extension repository`_.
 
 If you want to create your own, read the :ref:`Creating an
 Extension<creating_extensions>` chapter.

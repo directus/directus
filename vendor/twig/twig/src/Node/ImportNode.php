@@ -46,7 +46,7 @@ class ImportNode extends Node
                 ->repr($this->getTemplateName())
                 ->raw(', ')
                 ->repr($this->getTemplateLine())
-                ->raw(')')
+                ->raw(')->unwrap()')
             ;
         }
 

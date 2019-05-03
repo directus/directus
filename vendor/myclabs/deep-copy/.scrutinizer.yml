@@ -1,4 +1,0 @@
-build:
-    environment:
-        variables:
-            COMPOSER_ROOT_VERSION: '1.8.0'

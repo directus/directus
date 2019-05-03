@@ -4,7 +4,7 @@
 The ``include`` statement includes a template and returns the rendered content
 of that file:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% include 'header.html' %}
         Body
@@ -22,7 +22,7 @@ of that file:
 
     * The ``include`` function is more "composable":
 
-      .. code-block:: jinja
+      .. code-block:: twig
 
           {# Store a rendered template in a variable #}
           {% set content %}
@@ -48,7 +48,7 @@ paths defined by it.
 
 You can add additional variables by passing them after the ``with`` keyword:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# template.html will have access to the variables from the current context and the additional ones provided #}
     {% include 'template.html' with {'foo': 'bar'} %}
@@ -58,12 +58,12 @@ You can add additional variables by passing them after the ``with`` keyword:
 
 You can disable access to the context by appending the ``only`` keyword:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# only the foo variable will be accessible #}
     {% include 'template.html' with {'foo': 'bar'} only %}
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# no variables will be accessible #}
     {% include 'template.html' only %}
@@ -76,7 +76,7 @@ You can disable access to the context by appending the ``only`` keyword:
 
 The template name can be any valid Twig expression:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% include some_var %}
     {% include ajax ? 'ajax.html' : 'not_ajax.html' %}
@@ -94,7 +94,7 @@ You can mark an include with ``ignore missing`` in which case Twig will ignore
 the statement if the template to be included does not exist. It has to be
 placed just after the template name. Here some valid examples:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% include 'sidebar.html' ignore missing %}
     {% include 'sidebar.html' ignore missing with {'foo': 'bar'} %}
@@ -103,7 +103,7 @@ placed just after the template name. Here some valid examples:
 You can also provide a list of templates that are checked for existence before
 inclusion. The first template that exists will be included:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% include ['page_detailed.html', 'page.html'] %}
 

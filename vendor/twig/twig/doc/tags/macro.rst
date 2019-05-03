@@ -7,7 +7,7 @@ yourself.
 
 Here is a small example of a macro that renders a form element:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input(name, value, type = "text", size = 20) %}
         <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
@@ -38,17 +38,17 @@ Macros can be defined in any template, and need to be "imported" before being
 used (see the documentation for the :doc:`import<../tags/import>` tag for more
 information):
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% import "forms.html" as forms %}
 
 The above ``import`` call imports the "forms.html" file (which can contain only
 macros, or a template and some macros), and import the functions as items of
-the ``forms`` variable.
+the ``forms`` local variable.
 
-The macro can then be called at will:
+The macro can then be called at will in the current template:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     <p>{{ forms.input('username') }}</p>
     <p>{{ forms.input('password', null, 'password') }}</p>
@@ -56,7 +56,7 @@ The macro can then be called at will:
 If macros are defined and used in the same template, you can use the
 special ``_self`` variable to import them:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% import _self as forms %}
 
@@ -65,7 +65,7 @@ special ``_self`` variable to import them:
 When you want to use a macro in another macro from the same file, you need to
 import it locally:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input(name, value, type, size) %}
         <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
@@ -85,7 +85,7 @@ Named Macro End-Tags
 Twig allows you to put the name of the macro after the end tag for better
 readability:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input() %}
         ...

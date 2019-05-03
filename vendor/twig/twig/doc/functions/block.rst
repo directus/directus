@@ -4,7 +4,7 @@
 When a template uses inheritance and if you want to print a block multiple
 times, use the ``block`` function:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     <title>{% block title %}{% endblock %}</title>
 
@@ -15,14 +15,14 @@ times, use the ``block`` function:
 The ``block`` function can also be used to display one block from another
 template:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ block("title", "common_blocks.twig") }}
 
 Use the ``defined`` test to check if a block exists in the context of the
 current template:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if block("footer") is defined %}
         ...

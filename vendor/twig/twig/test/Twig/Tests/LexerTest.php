@@ -341,4 +341,30 @@ bar
         $lexer = new Lexer(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()));
         $lexer->tokenize(new Source($template, 'index'));
     }
+
+    public function testOverridingSyntax()
+    {
+        $template = '[# comment #]{# variable #}/# if true #/true/# endif #/';
+        $lexer = new Lexer(new Environment($this->getMockBuilder('\Twig\Loader\LoaderInterface')->getMock()), [
+            'tag_comment' => ['[#', '#]'],
+            'tag_block' => ['/#', '#/'],
+            'tag_variable' => ['{#', '#}'],
+        ]);
+        $stream = $lexer->tokenize(new Source($template, 'index'));
+        $stream->expect(Token::VAR_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'variable');
+        $stream->expect(Token::VAR_END_TYPE);
+        $stream->expect(Token::BLOCK_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'if');
+        $stream->expect(Token::NAME_TYPE, 'true');
+        $stream->expect(Token::BLOCK_END_TYPE);
+        $stream->expect(Token::TEXT_TYPE, 'true');
+        $stream->expect(Token::BLOCK_START_TYPE);
+        $stream->expect(Token::NAME_TYPE, 'endif');
+        $stream->expect(Token::BLOCK_END_TYPE);
+
+        // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
+        // can be executed without throwing any exceptions
+        $this->addToAssertionCount(1);
+    }
 }

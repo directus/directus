@@ -3,7 +3,7 @@
 
 ``null`` returns ``true`` if the variable is ``null``:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ var is null }}
 

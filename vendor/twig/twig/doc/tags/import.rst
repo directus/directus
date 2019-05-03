@@ -2,14 +2,12 @@
 ==========
 
 Twig supports putting often used code into :doc:`macros<../tags/macro>`. These
-macros can go into different templates and get imported from there.
+macros are defined in regular templates.
 
-There are two ways to import templates. You can import the complete template
-into a variable or request specific macros from it.
+Imagine having a generic helper template that define how to render forms via
+macros (called ``forms.html``):
 
-Imagine we have a helper module that renders forms (called ``forms.html``):
-
-.. code-block:: jinja
+.. code-block:: twig
 
     {% macro input(name, value, type, size) %}
         <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
@@ -19,10 +17,14 @@ Imagine we have a helper module that renders forms (called ``forms.html``):
         <textarea name="{{ name }}" rows="{{ rows|default(10) }}" cols="{{ cols|default(40) }}">{{ value|e }}</textarea>
     {% endmacro %}
 
-The easiest and most flexible is importing the whole module into a variable.
-That way you can access the attributes:
+There are two ways to import macros. You can import the complete template
+containing the macros into a local variable or only import specific macros from
+the template.
 
-.. code-block:: jinja
+The easiest and most flexible is importing the whole module into a local
+variable:
+
+.. code-block:: twig
 
     {% import 'forms.html' as forms %}
 
@@ -37,7 +39,7 @@ That way you can access the attributes:
 Alternatively you can import names from the template into the current
 namespace:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% from 'forms.html' import input as input_field, textarea %}
 
@@ -48,6 +50,12 @@ namespace:
         <dd>{{ input_field('password', '', 'password') }}</dd>
     </dl>
     <p>{{ textarea('comment') }}</p>
+
+.. note::
+
+    Importing macros using ``import`` or ``from`` is **local** to the current
+    file. The imported macros are not available in included templates or child
+    templates; you need to explicitely re-import macros in each file.
 
 .. tip::
 

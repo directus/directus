@@ -11,6 +11,7 @@ use function Directus\send_mail_with_layout;
 use Directus\Util\ArrayUtils;
 use Directus\Validator\Validator;
 use Zend\Db\Sql\Predicate\In;
+use function Directus\get_project_config;
 
 class MailService extends AbstractService
 {
@@ -24,16 +25,19 @@ class MailService extends AbstractService
             'to' => 'required'
         ]);
 
+        $acl = $this->container->get('acl');
+
         $subject = ArrayUtils::get($data, 'subject');
         $toAddresses = $this->getToAddresses(ArrayUtils::get($data, 'to'));
 
+        $useDefaultEmail = isset($data['use_default_email']) && $acl->isAdmin() ? $data['use_default_email'] : false;
         send_mail_with_layout(
             'base.twig',
             $data['body'],
             (array) ArrayUtils::get($data, 'data'),
             $data['type'] == 'plain' ? 'text/plain' : 'text/html',
-            function (Message $message) use ($data, $toAddresses, $subject) {
-                $message->setFrom($this->getFrom());
+            function (Message $message) use ($data, $toAddresses, $subject, $useDefaultEmail) {
+                $message->setFrom($this->getFrom($useDefaultEmail));
                 $message->setTo($toAddresses);
                 $message->setSubject($subject);
             }
@@ -153,13 +157,21 @@ class MailService extends AbstractService
      *
      * @return array
      */
-    protected function getFrom()
+
+    protected function getFrom($defaultEmail = false)
     {
         /** @var Acl $acl */
         $acl = $this->container->get('acl');
-
-        return [
-            $acl->getUserEmail() => $acl->getUserFullName()
-        ];
+        if ($defaultEmail) {
+            $config = get_project_config();
+            return  [
+                 $config->get('mail.default.from') => $acl->getUserFullName()
+            ];
+        }
+        else {
+            return [
+                $acl->getUserEmail() => $acl->getUserFullName()
+            ];
+        }
     }
 }

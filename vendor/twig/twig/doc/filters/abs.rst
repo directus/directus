@@ -3,7 +3,7 @@
 
 The ``abs`` filter returns the absolute value.
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# number = -5 #}
 

@@ -1,0 +1,10 @@
+--TEST--
+"apply" tag applies a filter on its children
+--TEMPLATE--
+{% apply upper %}
+Some text with a {{ var }}
+{% endapply %}
+--DATA--
+return ['var' => 'var']
+--EXPECT--
+SOME TEXT WITH A VAR

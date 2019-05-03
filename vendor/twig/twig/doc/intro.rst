@@ -1,13 +1,11 @@
 Introduction
 ============
 
-This is the documentation for Twig, the flexible, fast, and secure template
+Welcome to the documentation for Twig, the flexible, fast, and secure template
 engine for PHP.
 
-If you have any exposure to other text-based template languages, such as
-Smarty, Django, or Jinja, you should feel right at home with Twig. It's both
-designer and developer friendly by sticking to PHP's principles and adding
-functionality useful for templating environments.
+Twig is both designer and developer friendly by sticking to PHP's principles and
+adding functionality useful for templating environments.
 
 The key-features are...
 
@@ -22,8 +20,8 @@ The key-features are...
   developer to define their own custom tags and filters, and to create their own DSL.
 
 Twig is used by many Open-Source projects like Symfony, Drupal8, eZPublish,
-phpBB, Piwik, OroCRM; and many frameworks have support for it as well like
-Slim, Yii, Laravel, Codeigniter and Kohana — just to name a few.
+phpBB, Matomo, OroCRM; and many frameworks have support for it as well like
+Slim, Yii, Laravel, and Codeigniter — just to name a few.
 
 Prerequisites
 -------------
@@ -56,7 +54,7 @@ This section gives you a brief introduction to the PHP API for Twig.
     echo $twig->render('index', ['name' => 'Fabien']);
 
 Twig uses a loader (``\Twig\Loader\ArrayLoader``) to locate templates, and an
-environment (``\Twig\Environment``) to store the configuration.
+environment (``\Twig\Environment``) to store its configuration.
 
 The ``render()`` method loads the template passed as a first argument and
 renders it with the variables passed as a second argument.

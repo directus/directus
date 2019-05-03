@@ -4,7 +4,7 @@
 Use the ``with`` tag to create a new inner scope. Variables set within this
 scope are not visible outside of the scope:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% with %}
         {% set foo = 42 %}
@@ -16,7 +16,7 @@ Instead of defining variables at the beginning of the scope, you can pass a
 hash of variables you want to define in the ``with`` tag; the previous example
 is equivalent to the following one:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% with { foo: 42 } %}
         {{ foo }} {# foo is 42 here #}
@@ -32,7 +32,7 @@ is equivalent to the following one:
 By default, the inner scope has access to the outer scope context; you can
 disable this behavior by appending the ``only`` keyword:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set bar = 'bar' %}
     {% with { foo: 42 } only %}

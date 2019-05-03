@@ -152,7 +152,7 @@
             </trans-unit>
             <trans-unit id="41">
                 <source>This value is already used.</source>
-                <target>Tค่านี้ถูกใช้งานไปแล้ว</target>
+                <target>ค่านี้ถูกใช้งานไปแล้ว</target>
             </trans-unit>
             <trans-unit id="42">
                 <source>The size of the image could not be detected.</source>

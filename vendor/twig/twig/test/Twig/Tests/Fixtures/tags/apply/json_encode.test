@@ -1,0 +1,8 @@
+--TEST--
+"apply" tag applies a filter on its children
+--TEMPLATE--
+{% apply json_encode|raw %}test{% endapply %}
+--DATA--
+return []
+--EXPECT--
+"test"

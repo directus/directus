@@ -1,1 +1,0 @@
-["Mascott", "Tux", "OS", "Linux"]

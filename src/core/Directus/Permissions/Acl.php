@@ -1240,16 +1240,32 @@ class Acl
      *
      * @return boolean
      */
-    public function allowTo($action, $level, $collection, $status = null)
+   public function allowTo($action, $level, $collection, $status = null)
     {
         if ($this->isAdmin()) {
             return true;
         }
 
         $permission = $this->getPermission($collection, $status);
-        $permissionLevel = ArrayUtils::get($permission, $action);
 
-        return $this->can($permissionLevel, $level);
+        if (count($permission) === 0) {
+            $statuses = $this->getCollectionStatuses($collection);
+
+            $allowed = false;
+            foreach ($statuses as $status) {
+                $permission = $this->getPermission($collection, $status);
+                $permissionLevel = ArrayUtils::get($permission, $action);
+                if ($this->can($permissionLevel, $level)) {
+                    $allowed = true;
+                    break;
+                }
+            }
+
+            return $allowed;
+        } else {
+            $permissionLevel = ArrayUtils::get($permission, $action);
+            return $this->can($permissionLevel, $level);
+        }
     }
 
     public function allowToOnce($action, $collection)

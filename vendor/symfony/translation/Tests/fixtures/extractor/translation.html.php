@@ -55,3 +55,5 @@ EOF
 <?php echo $view['translator']->trans('typecast', ['a' => (int) '123'], 'not_messages'); ?>
 <?php echo $view['translator']->transChoice('msg1', 10 + 1, [], 'not_messages'); ?>
 <?php echo $view['translator']->transChoice('msg2', ceil(4.5), [], 'not_messages'); ?>
+
+<?php echo $view['translator']->trans('default domain', [], null); ?>

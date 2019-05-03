@@ -71,7 +71,7 @@ class Provider
             throw new Exception('auth: secret key is required and it must be a string');
         }
 
-        $ttl = ArrayUtils::get($options, 'ttl', 5);
+        $ttl = ArrayUtils::get($options, 'ttl', 20);
         if (!is_numeric($ttl)) {
             throw new Exception('ttl must be a number');
         }
@@ -370,7 +370,7 @@ class Provider
             'type' => 'request_token',
             'id' => (int) $user->getId(),
             // 'group' => (int) $user->getGroupId(),
-            'exp' => time() + (5 * DateTimeUtils::MINUTE_IN_SECONDS),
+            'exp' => time() + (20 * DateTimeUtils::MINUTE_IN_SECONDS),
             'url' => \Directus\get_url(),
             'project' => \Directus\get_api_project_from_request()
         ];

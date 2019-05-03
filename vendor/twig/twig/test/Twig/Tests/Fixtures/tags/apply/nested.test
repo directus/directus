@@ -1,0 +1,16 @@
+--TEST--
+"apply" tags can be nested at will
+--TEMPLATE--
+{% apply lower|title %}
+  {{ var }}
+  {% apply upper %}
+    {{ var }}
+  {% endapply %}
+  {{ var }}
+{% endapply %}
+--DATA--
+return ['var' => 'var']
+--EXPECT--
+  Var
+      Var
+    Var

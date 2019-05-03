@@ -1,0 +1,10 @@
+--TEST--
+"filter" tag applies a filter on its children
+--DEPRECATION--
+The "filter" tag is deprecated since Twig 2.9, use the "apply" tag instead.
+--TEMPLATE--
+{% filter json_encode|raw %}test{% endfilter %}
+--DATA--
+return []
+--EXPECT--
+"test"

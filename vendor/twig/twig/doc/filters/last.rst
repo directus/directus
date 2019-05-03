@@ -4,7 +4,7 @@
 The ``last`` filter returns the last "element" of a sequence, a mapping, or
 a string:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ [1, 2, 3, 4]|last }}
     {# outputs 4 #}

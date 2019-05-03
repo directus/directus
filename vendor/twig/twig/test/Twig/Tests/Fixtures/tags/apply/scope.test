@@ -1,0 +1,15 @@
+--TEST--
+"apply" tag does not create a new scope
+--TEMPLATE--
+{% set foo = 'baz' %}
+{% apply spaceless %}
+    {% set foo = 'foo' %}
+    {% set bar = 'bar' %}
+{% endapply %}
+{{ 'foo' == foo ? 'OK ' ~ foo : 'KO' }}
+{{ 'bar' == bar ? 'OK ' ~ bar : 'KO' }}
+--DATA--
+return []
+--EXPECT--
+OK foo
+OK bar

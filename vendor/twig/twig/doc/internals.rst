@@ -16,11 +16,13 @@ The rendering of a Twig template can be summarized into four key steps:
 
   * First, the **lexer** tokenizes the template source code into small pieces
     for easier processing;
+
   * Then, the **parser** converts the token stream into a meaningful tree
     of nodes (the Abstract Syntax Tree);
-  * Eventually, the *compiler* transforms the AST into PHP code.
 
-* **Evaluate** the template: It basically means calling the ``display()``
+  * Finally, the *compiler* transforms the AST into PHP code.
+
+* **Evaluate** the template: It means calling the ``display()``
   method of the compiled template and passing it the context.
 
 The Lexer

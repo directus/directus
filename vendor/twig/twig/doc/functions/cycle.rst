@@ -3,7 +3,7 @@
 
 The ``cycle`` function cycles on an array of values:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set start_year = date() | date('Y') %}
     {% set end_year = start_year + 5 %}
@@ -14,7 +14,7 @@ The ``cycle`` function cycles on an array of values:
 
 The array can contain any number of values:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% set fruits = ['apple', 'orange', 'citrus'] %}
 

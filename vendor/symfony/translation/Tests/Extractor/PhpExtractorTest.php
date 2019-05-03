@@ -52,6 +52,7 @@ EOF;
                 $expectedNowdoc => 'prefix'.$expectedNowdoc,
                 '{0} There is no apples|{1} There is one apple|]1,Inf[ There are %count% apples' => 'prefix{0} There is no apples|{1} There is one apple|]1,Inf[ There are %count% apples',
                 'concatenated message with heredoc and nowdoc' => 'prefixconcatenated message with heredoc and nowdoc',
+                'default domain' => 'prefixdefault domain',
             ],
             'not_messages' => [
                 'other-domain-test-no-params-short-array' => 'prefixother-domain-test-no-params-short-array',

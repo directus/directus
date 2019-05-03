@@ -3,7 +3,7 @@
 
 The ``json_encode`` filter returns the JSON representation of a value:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ data|json_encode() }}
 

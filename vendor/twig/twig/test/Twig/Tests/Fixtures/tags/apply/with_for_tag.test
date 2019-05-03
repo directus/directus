@@ -1,0 +1,13 @@
+--TEST--
+"apply" tag applies the filter on "for" tags
+--TEMPLATE--
+{% apply upper %}
+{% for item in items %}
+{{ item }}
+{% endfor %}
+{% endapply %}
+--DATA--
+return ['items' => ['a', 'b']]
+--EXPECT--
+A
+B

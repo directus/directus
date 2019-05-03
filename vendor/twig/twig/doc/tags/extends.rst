@@ -12,7 +12,7 @@ The ``extends`` tag can be used to extend a template from another one.
 Let's define a base template, ``base.html``, which defines a simple HTML
 skeleton document:
 
-.. code-block:: html+jinja
+.. code-block:: html+twig
 
     <!DOCTYPE html>
     <html>
@@ -43,7 +43,7 @@ Child Template
 
 A child template might look like this:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends "base.html" %}
 
@@ -79,7 +79,7 @@ know which one of the blocks' content to use.
 If you want to print a block multiple times you can however use the
 ``block`` function:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     <title>{% block title %}{% endblock %}</title>
     <h1>{{ block('title') }}</h1>
@@ -92,7 +92,7 @@ It's possible to render the contents of the parent block by using the
 :doc:`parent<../functions/parent>` function. This gives back the results of
 the parent block:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block sidebar %}
         <h3>Table Of Contents</h3>
@@ -106,7 +106,7 @@ Named Block End-Tags
 Twig allows you to put the name of the block after the end tag for better
 readability:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block sidebar %}
         {% block inner_sidebar %}
@@ -122,7 +122,7 @@ Block Nesting and Scope
 Blocks can be nested for more complex layouts. Per default, blocks have access
 to variables from outer scopes:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for item in seq %}
         <li>{% block loop_item %}{{ item }}{% endblock %}</li>
@@ -134,13 +134,13 @@ Block Shortcuts
 For blocks with little content, it's possible to use a shortcut syntax. The
 following constructs do the same thing:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block title %}
         {{ page_title|title }}
     {% endblock %}
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block title page_title|title %}
 
@@ -149,7 +149,7 @@ Dynamic Inheritance
 
 Twig supports dynamic inheritance by using a variable as the base template:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends some_var %}
 
@@ -165,7 +165,7 @@ instance, Twig will use it as the parent template::
 You can also provide a list of templates that are checked for existence. The
 first template that exists will be used as a parent:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends ['layout.html', 'base_layout.html'] %}
 
@@ -175,7 +175,7 @@ Conditional Inheritance
 As the template name for the parent can be any valid Twig expression, it's
 possible to make the inheritance mechanism conditional:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends standalone ? "minimum.html" : "base.html" %}
 
@@ -192,7 +192,7 @@ but it does not interfere in any way with the logic around it.
 Let's take the following example to illustrate how a block works and more
 importantly, how it does not work:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# base.twig #}
 
@@ -207,7 +207,7 @@ If you render this template, the result would be exactly the same with or
 without the ``block`` tag. The ``block`` inside the ``for`` loop is just a way
 to make it overridable by a child template:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {# child.twig #}
 
@@ -224,7 +224,7 @@ Now, when rendering the child template, the loop is going to use the block
 defined in the child template instead of the one defined in the base one; the
 executed template is then equivalent to the following one:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for post in posts %}
         <article>
@@ -235,7 +235,7 @@ executed template is then equivalent to the following one:
 
 Let's take another example: a block included within an ``if`` statement:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% if posts is empty %}
         {% block head %}
@@ -252,7 +252,7 @@ what will be rendered when the condition is ``true``.
 If you want the output to be displayed conditionally, use the following
 instead:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% block head %}
         {{ parent() }}

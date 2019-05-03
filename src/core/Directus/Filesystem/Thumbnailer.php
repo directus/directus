@@ -45,7 +45,7 @@ class Thumbnailer {
      * @param Filesystem $main
      * @param Filesystem $thumb
      * @param array $config
-     * @param string $path in the form '_/100/100/crop/good/some-image.jpg'
+     * @param string $path in the form '_/100/100/crop/good/path/to/some-image.jpg'
      *
      * @throws Exception
      */
@@ -217,84 +217,50 @@ class Thumbnailer {
      */
     public function extractThumbnailParams($thumbnailUrlPath)
     {
-        try {
-            if ($this->thumbnailParams) {
-                return $this->thumbnailParams;
-            }
-
-            $urlSegments = explode('/', $thumbnailUrlPath);
-
-            // pull the env out of the segments
-            array_shift($urlSegments);
-
-            if (! $urlSegments) {
-                throw new Exception('Invalid thumbnailUrlPath.');
-            }
-
-            // pop off the filename
-            $fileName = ArrayUtils::pop($urlSegments);
-
-            // make sure filename is valid
-            $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-            $name = pathinfo($fileName, PATHINFO_FILENAME);
-            if (! $this->isSupportedFileExtension($ext)) {
-                throw new Exception('Invalid file extension.');
-            }
-
-            $thumbnailParams = [
-                'fileName' => filename_put_ext($name, $ext),
-                'fileExt' => $ext
-            ];
-
-            foreach ($urlSegments as $segment) {
-
-                if (! $segment) continue;
-
-                $hasWidth = ArrayUtils::get($thumbnailParams, 'width');
-                $hasHeight = ArrayUtils::get($thumbnailParams, 'height');
-                // extract width and height
-                if ((!$hasWidth || !$hasHeight) && is_numeric($segment)) {
-                    if (!$hasWidth) {
-                        ArrayUtils::set($thumbnailParams, 'width', $segment);
-                    } else if (!$hasHeight) {
-                        ArrayUtils::set($thumbnailParams, 'height', $segment);
-                    }
-                }
-
-                // extract action and quality
-                else {
-                    if (!ArrayUtils::get($thumbnailParams, 'action')) {
-                        ArrayUtils::set($thumbnailParams, 'action', $segment);
-                    } else if (!ArrayUtils::get($thumbnailParams, 'quality')) {
-                        ArrayUtils::set($thumbnailParams, 'quality', $segment);
-                    }
-                }
-            }
-
-            // validate
-            if (! ArrayUtils::contains($thumbnailParams, [
-                'width',
-                'height'
-            ])) {
-                throw new Exception('No height or width provided.');
-            }
-
-            // set default action, if needed
-            if (! ArrayUtils::exists($thumbnailParams, 'action')) {
-                ArrayUtils::set($thumbnailParams, 'action', null);
-            }
-
-            // set quality to null, if needed
-            if (! ArrayUtils::exists($thumbnailParams, 'quality')) {
-                ArrayUtils::set($thumbnailParams, 'quality', null);
-            }
-
-            return $thumbnailParams;
+        // cache
+        if ($this->thumbnailParams) {
+            return $this->thumbnailParams;
         }
 
-        catch (Exception $e) {
-            throw $e;
+        // get URL parts
+        // https://docs.directus.io/guides/thumbnailer.html#url-syntax
+        $urlSegments = explode('/', $thumbnailUrlPath);
+        if (count($urlSegments) < 6) {
+            throw new Exception('Invalid URL syntax.');
         }
+
+        // pull the env out of the segments
+        array_shift($urlSegments);
+
+        // set thumbnail parameters
+        $thumbnailParams = [
+            'action' => filter_var($urlSegments[2], FILTER_SANITIZE_STRING),
+            'height' => filter_var($urlSegments[1], FILTER_SANITIZE_NUMBER_INT),
+            'quality' => filter_var($urlSegments[3], FILTER_SANITIZE_STRING),
+            'width' => filter_var($urlSegments[0], FILTER_SANITIZE_NUMBER_INT),
+        ];
+
+        // validate parameters
+        if (! ArrayUtils::contains($thumbnailParams, [
+            'width',
+            'height'
+        ])) {
+            throw new Exception('No height or width provided.');
+        }
+
+        // make sure filename is valid
+        $filename = implode('/', array_slice($urlSegments, 4));
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $name = pathinfo($filename, PATHINFO_FILENAME);
+        if (! $this->isSupportedFileExtension($ext)) {
+            throw new Exception('Invalid file extension.');
+        }
+
+        // Set thumbnail filename parameters
+        $thumbnailParams['fileName'] = $filename;
+        $thumbnailParams['fileExt'] = $ext;
+
+        return $thumbnailParams;
     }
 
     /**

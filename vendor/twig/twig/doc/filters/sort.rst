@@ -3,7 +3,7 @@
 
 The ``sort`` filter sorts an array:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% for user in users|sort %}
         ...

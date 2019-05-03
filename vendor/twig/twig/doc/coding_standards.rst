@@ -7,7 +7,7 @@ standards:
 * Put one (and only one) space after the start of a delimiter (``{{``, ``{%``,
   and ``{#``) and before the end of a delimiter (``}}``, ``%}``, and ``#}``):
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {{ foo }}
     {# comment #}
@@ -16,7 +16,7 @@ standards:
   When using the whitespace control character, do not put any spaces between
   it and the delimiter:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {{- foo -}}
     {#- comment -#}
@@ -28,7 +28,7 @@ standards:
   operators (``not``, ``and``, ``or``), ``~``, ``is``, ``in``, and the ternary
   operator (``?:``):
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {{ 1 + 2 }}
      {{ foo ~ bar }}
@@ -37,7 +37,7 @@ standards:
 * Put one (and only one) space after the ``:`` sign in hashes and ``,`` in
   arrays and hashes:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {{ [1, 2, 3] }}
      {{ {'foo': 'bar'} }}
@@ -45,13 +45,13 @@ standards:
 * Do not put any spaces after an opening parenthesis and before a closing
   parenthesis in expressions:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {{ 1 + (2 * 3) }}
 
 * Do not put any spaces before and after string delimiters:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {{ 'foo' }}
     {{ "foo" }}
@@ -59,7 +59,7 @@ standards:
 * Do not put any spaces before and after the following operators: ``|``,
   ``.``, ``..``, ``[]``:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
     {{ foo|upper|lower }}
     {{ user.name }}
@@ -69,7 +69,7 @@ standards:
 * Do not put any spaces before and after the parenthesis used for filter and
   function calls:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {{ foo|default('foo') }}
      {{ range(1..10) }}
@@ -77,14 +77,14 @@ standards:
 * Do not put any spaces before and after the opening and the closing of arrays
   and hashes:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {{ [1, 2, 3] }}
      {{ {'foo': 'bar'} }}
 
 * Use lower cased and underscored variable names:
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {% set foo = 'foo' %}
      {% set foo_bar = 'foo' %}
@@ -92,7 +92,7 @@ standards:
 * Indent your code inside tags (use the same indentation as the one used for
   the target language of the rendered template):
 
-  .. code-block:: jinja
+  .. code-block:: twig
 
      {% block foo %}
          {% if true %}

@@ -1,128 +1,116 @@
 --TEST--
 Twig supports the in operator
 --TEMPLATE--
-{% if bar in foo %}
-TRUE
-{% endif %}
-{% if not (bar in foo) %}
-{% else %}
-TRUE
-{% endif %}
-{% if bar not in foo %}
-{% else %}
-TRUE
-{% endif %}
-{% if 'a' in bar %}
-TRUE
-{% endif %}
-{% if 'c' not in bar %}
-TRUE
-{% endif %}
-{% if '' in bar %}
-TRUE
-{% endif %}
-{% if '' in '' %}
-TRUE
-{% endif %}
-{% if '0' not in '' %}
-TRUE
-{% endif %}
-{% if 'a' not in '0' %}
-TRUE
-{% endif %}
-{% if '0' in '0' %}
-TRUE
-{% endif %}
+{{ bar in foo ? 'OK' : 'KO' }}
+{{ not (bar in foo) ? 'KO' : 'OK' }}
+{{ bar not in foo ? 'KO' : 'OK' }}
+{{ 'a' in bar ? 'OK' : 'KO' }}
+{{ 'c' not in bar ? 'OK' : 'KO' }}
+{{ '' in bar ? 'OK' : 'KO' }}
+{{ '' in '' ? 'OK' : 'KO' }}
+{{ '0' not in '' ? 'OK' : 'KO' }}
+{{ 'a' not in '0' ? 'OK' : 'KO' }}
+{{ '0' in '0' ? 'OK' : 'KO' }}
 
-{{ false in [0, 1] ? 'TRUE' : 'FALSE' }}
-{{ true in [0, 1] ? 'TRUE' : 'FALSE' }}
-{{ '0' in [0, 1] ? 'TRUE' : 'FALSE' }}
-{{ '' in [0, 1] ? 'TRUE' : 'FALSE' }}
-{{ 0 in ['', 1] ? 'TRUE' : 'FALSE' }}
+{{ false in [0, 1] ? 'OK' : 'KO' }}
+{{ true in [0, 1] ? 'OK' : 'KO' }}
+{{ '0' in [0, 1] ? 'OK' : 'KO' }}
+{{ '0' in [1, 0] ? 'OK' : 'KO' }}
+{{ '' in [0, 1] ? 'OK' : 'KO' }}
+{{ '' in [1, 0] ? 'OK' : 'KO' }}
+{{ 0 in ['', 1] ? 'OK' : 'KO' }}
+{{ 0 in [1, ''] ? 'OK' : 'KO' }}
 
-{{ '' in 'foo' ? 'TRUE' : 'FALSE' }}
-{{ 0 in 'foo' ? 'TRUE' : 'FALSE' }}
-{{ false in 'foo' ? 'TRUE' : 'FALSE' }}
-{{ false in '100' ? 'TRUE' : 'FALSE' }}
-{{ true in '100' ? 'TRUE' : 'FALSE' }}
+{{ '' in 'foo' ? 'OK' : 'KO' }}
+{{ 0 in 'foo' ? 'KO' : 'OK' }}
+{{ false in 'foo' ? 'KO' : 'OK' }}
+{{ false in '100' ? 'KO' : 'OK' }}
+{{ true in '100' ? 'KO' : 'OK' }}
 
-{{ [] in [true, false] ? 'TRUE' : 'FALSE' }}
-{{ [] in [true, ''] ? 'TRUE' : 'FALSE' }}
-{{ [] in [true, []] ? 'TRUE' : 'FALSE' }}
+{{ [] in [true, false] ? 'OK' : 'KO' }}
+{{ [] in [true, ''] ? 'KO' : 'OK' }}
+{{ [] in [true, []] ? 'OK' : 'KO' }}
 
-{{ resource ? 'TRUE' : 'FALSE' }}
-{{ resource in 'foo'~resource ? 'TRUE' : 'FALSE' }}
-{{ object in 'stdClass' ? 'TRUE' : 'FALSE' }}
-{{ [] in 'Array' ? 'TRUE' : 'FALSE' }}
-{{ dir_object in 'foo'~dir_object ? 'TRUE' : 'FALSE' }}
+{{ resource ? 'OK' : 'KO' }}
+{{ resource in 'foo'~resource ? 'KO' : 'OK' }}
+{{ object in 'stdClass' ? 'KO' : 'OK' }}
+{{ [] in 'Array' ? 'KO' : 'OK' }}
+{{ dir_object in 'foo'~dir_object ? 'KO' : 'OK' }}
 
-{{ ''~resource in resource ? 'TRUE' : 'FALSE' }}
-{{ 'stdClass' in object ? 'TRUE' : 'FALSE' }}
-{{ 'Array' in [] ? 'TRUE' : 'FALSE' }}
-{{ ''~dir_object in dir_object ? 'TRUE' : 'FALSE' }}
+{{ ''~resource in resource ? 'KO' : 'OK' }}
+{{ 'stdClass' in object ? 'KO' : 'OK' }}
+{{ 'Array' in [] ? 'KO' : 'OK' }}
+{{ ''~dir_object in dir_object ? 'KO' : 'OK' }}
 
-{{ resource in [''~resource] ? 'TRUE' : 'FALSE' }}
-{{ resource in [resource + 1 - 1] ? 'TRUE' : 'FALSE' }}
-{{ dir_object in [''~dir_object] ? 'TRUE' : 'FALSE' }}
+{{ resource in [''~resource] ? 'KO' : 'OK' }}
+{{ resource in [resource + 1 - 1] ? 'KO' : 'OK' }}
+{{ dir_object in [''~dir_object] ? 'KO' : 'OK' }}
 
-{{ 5 in 125 ? 'TRUE' : 'FALSE' }}
-{{ 5 in '125' ? 'TRUE' : 'FALSE' }}
-{{ '5' in 125 ? 'TRUE' : 'FALSE' }}
-{{ '5' in '125' ? 'TRUE' : 'FALSE' }}
+{{ 5 in 125 ? 'KO' : 'OK' }}
+{{ 5 in '125' ? 'OK' : 'KO' }}
+{{ '5' in 125 ? 'KO' : 'OK' }}
+{{ '5' in '125' ? 'OK' : 'KO' }}
 
-{{ 5.5 in 125.5 ? 'TRUE' : 'FALSE' }}
-{{ 5.5 in '125.5' ? 'TRUE' : 'FALSE' }}
-{{ '5.5' in 125.5 ? 'TRUE' : 'FALSE' }}
+{{ 5.5 in 125.5 ? 'KO' : 'OK' }}
+{{ 5.5 in '125.5' ? 'OK' : 'KO' }}
+{{ '5.5' in 125.5 ? 'KO' : 'OK' }}
+
+{{ safe in ['foo', 'bar'] ? 'OK' : 'KO' }}
 --DATA--
-return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'dir_object' => new \SplFileInfo(__DIR__), 'object' => new \stdClass(), 'resource' => opendir(__DIR__)]
+return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'dir_object' => new \SplFileInfo(__DIR__), 'object' => new \stdClass(), 'resource' => opendir(__DIR__), 'safe' => new \Twig\Markup('foo', 'UTF-8')]
 --EXPECT--
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
 
-TRUE
-TRUE
-TRUE
-TRUE
-TRUE
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
 
-TRUE
-FALSE
-FALSE
-FALSE
-FALSE
+OK
+OK
+OK
+OK
+OK
 
-TRUE
-FALSE
-TRUE
+OK
+OK
+OK
 
-TRUE
-FALSE
-FALSE
-FALSE
-FALSE
+OK
+OK
+OK
+OK
+OK
 
-FALSE
-FALSE
-FALSE
-FALSE
+OK
+OK
+OK
+OK
 
-FALSE
-FALSE
-FALSE
+OK
+OK
+OK
 
-FALSE
-TRUE
-FALSE
-TRUE
+OK
+OK
+OK
+OK
 
-FALSE
-TRUE
-FALSE
+OK
+OK
+OK
+
+OK

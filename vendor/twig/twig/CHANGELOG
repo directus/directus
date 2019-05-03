@@ -1,3 +1,15 @@
+* 2.9.0 (2019-04-28)
+
+ * deprecated returning "false" to remove a Node from NodeVisitorInterface::leaveNode()
+ * allowed Twig\NodeVisitor\NodeVisitorInterface::leaveNode() to return "null" instead of "false" (same meaning)
+ * deprecated the "filter" tag (use the "apply" tag instead)
+ * added the "apply" tag as a replacement for the "filter" tag
+ * allowed Twig\Loader\FilesystemLoader::findTemplate() to return "null" instead of "false" (same meaning)
+ * added support for "Twig\Markup" instances in the "in" test
+ * fixed "import" when macros are stored in a template string
+ * fixed Lexer when using custom options containing the # char
+ * added template line number to twig_get_attribute()
+
 * 2.8.1 (2019-04-16)
 
  * fixed EscaperNodeVisitor
@@ -206,7 +218,16 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.39.1 (2019-XX-XX)
+* 1.40.0 (2019-XX-XX)
+
+ * allowed Twig\NodeVisitor\NodeVisitorInterface::leaveNode() to return "null" instead of "false" (same meaning)
+ * added the "apply" tag as a replacement for the "filter" tag
+ * allowed Twig\Loader\FilesystemLoader::findTemplate() to return "null" instead of "false" (same meaning)
+ * added support for "Twig\Markup" instances in the "in" test
+ * fixed Lexer when using custom options containing the # char
+ * fixed "import" when macros are stored in a template string
+
+* 1.39.1 (2019-04-16)
 
  * fixed EscaperNodeVisitor
 

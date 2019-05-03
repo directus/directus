@@ -138,14 +138,18 @@ class FilesystemLoader implements LoaderInterface, ExistsLoaderInterface, Source
 
     public function getSourceContext($name)
     {
-        $path = $this->findTemplate($name);
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
+            return new Source('', $name, '');
+        }
 
         return new Source(file_get_contents($path), $name, $path);
     }
 
     public function getCacheKey($name)
     {
-        $path = $this->findTemplate($name);
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
+            return '';
+        }
         $len = \strlen($this->rootPath);
         if (0 === strncmp($this->rootPath, $path, $len)) {
             return substr($path, $len);
@@ -162,21 +166,28 @@ class FilesystemLoader implements LoaderInterface, ExistsLoaderInterface, Source
             return true;
         }
 
-        return false !== $this->findTemplate($name, false);
+        return null !== ($path = $this->findTemplate($name, false)) && false !== $path;
     }
 
     public function isFresh($name, $time)
     {
-        return filemtime($this->findTemplate($name)) < $time;
+        // false support to be removed in 3.0
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
+            return false;
+        }
+
+        return filemtime($path) < $time;
     }
 
     /**
      * Checks if the template can be found.
      *
+     * In Twig 3.0, findTemplate must return a string or null (returning false won't work anymore).
+     *
      * @param string $name  The template name
      * @param bool   $throw Whether to throw an exception when an error occurs
      *
-     * @return string|false The template name or false
+     * @return string|false|null The template name or false/null
      */
     protected function findTemplate($name, $throw = true)
     {

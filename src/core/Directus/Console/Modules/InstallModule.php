@@ -201,12 +201,17 @@ class InstallModule extends ModuleBase
                 $user = new User($directus_path);
                 try {
                     $hasEmail = ArrayUtils::has($data, 'user_email');
-                    if ($hasEmail) {
-                        $user->changeEmail(1, $data['user_email']);
-                    }
+                    if ($hasEmail && !$user->userExists($data['user_email'])) {
+                        InstallerUtils::addDefaultUser($directus_path, $data, $projectName);
+                    }else{
+                        //TODO: Verify this method is required or not! 
+                        if ($hasEmail) {
+                            $user->changeEmail(1, $data['user_email']);
+                        }
 
-                    if ($hasEmail && ArrayUtils::has($data, 'user_password')) {
-                        $user->changePassword($data['user_email'], $data['user_password']);
+                        if ($hasEmail && ArrayUtils::has($data, 'user_password')) {
+                            $user->changePassword($data['user_email'], $data['user_password']);
+                        }
                     }
                 } catch (UserUpdateException $ex) {
                     throw new CommandFailedException('Error changing admin e-mail' . ': ' . $ex->getMessage());

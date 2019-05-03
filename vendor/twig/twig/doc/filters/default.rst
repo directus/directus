@@ -4,7 +4,7 @@
 The ``default`` filter returns the passed default value if the value is
 undefined or empty, otherwise the value of the variable:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ var|default('var is not defined') }}
 
@@ -18,7 +18,7 @@ When using the ``default`` filter on an expression that uses variables in some
 method calls, be sure to use the ``default`` filter whenever a variable can be
 undefined:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ var.method(foo|default('foo'))|default('foo') }}
 

@@ -77,39 +77,42 @@ final class SandboxExtension extends AbstractExtension
         }
     }
 
-    public function checkMethodAllowed($obj, $method, Source $source = null)
+    public function checkMethodAllowed($obj, $method, int $lineno = -1, Source $source = null)
     {
         if ($this->isSandboxed()) {
             try {
                 $this->policy->checkMethodAllowed($obj, $method);
             } catch (SecurityNotAllowedMethodError $e) {
                 $e->setSourceContext($source);
+                $e->setTemplateLine($lineno);
 
                 throw $e;
             }
         }
     }
 
-    public function checkPropertyAllowed($obj, $method, Source $source = null)
+    public function checkPropertyAllowed($obj, $method, int $lineno = -1, Source $source = null)
     {
         if ($this->isSandboxed()) {
             try {
                 $this->policy->checkPropertyAllowed($obj, $method);
             } catch (SecurityNotAllowedPropertyError $e) {
                 $e->setSourceContext($source);
+                $e->setTemplateLine($lineno);
 
                 throw $e;
             }
         }
     }
 
-    public function ensureToStringAllowed($obj, Source $source = null)
+    public function ensureToStringAllowed($obj, int $lineno = -1, Source $source = null)
     {
         if ($this->isSandboxed() && \is_object($obj) && method_exists($obj, '__toString')) {
             try {
                 $this->policy->checkMethodAllowed($obj, '__toString');
             } catch (SecurityNotAllowedMethodError $e) {
                 $e->setSourceContext($source);
+                $e->setTemplateLine($lineno);
 
                 throw $e;
             }

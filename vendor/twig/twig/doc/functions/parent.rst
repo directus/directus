@@ -4,7 +4,7 @@
 When a template uses inheritance, it's possible to render the contents of the
 parent block when overriding a block by using the ``parent`` function:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends "base.html" %}
 

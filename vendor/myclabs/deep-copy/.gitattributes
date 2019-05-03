@@ -1,7 +1,0 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-
-*.png    binary
-
-tests/ export-ignore
-phpunit.xml.dist export-ignore

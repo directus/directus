@@ -5,7 +5,7 @@ The ``verbatim`` tag marks sections as being raw text that should not be
 parsed. For example to put Twig syntax as example into a template you can use
 this snippet:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% verbatim %}
         <ul>

@@ -29,12 +29,15 @@ Tags
 ----
 
 * The ``spaceless`` tag is deprecated in Twig 2.7. Use the ``spaceless`` filter
-  instead or ``{% filter spaceless %}`` (the ``Twig\Node\SpacelessNode`` and
+  instead or ``{% apply spaceless %}`` (the ``Twig\Node\SpacelessNode`` and
   ``Twig\TokenParser\SpacelessTokenParser`` classes are also deprecated).
 
 * Using the ``spaceless`` tag at the root level of a child template is
   deprecated in Twig 2.5.0. This does not work as one would expect it to work
   anyway. In Twig 3.0, it will throw a ``Twig\Error\SyntaxError`` exception.
+
+* The ``filter`` tag is deprecated in Twig 2.9. Use the ``apply`` tag instead
+  (the ``Twig\TokenParser\FilterTokenParser`` classes is also deprecated).
 
 Final Classes
 -------------
@@ -93,3 +96,9 @@ Miscellaneous
   ``Twig_SimpleTest`` empty classes are deprecated and will be removed in Twig
   3.0. Use ``Twig\TwigFilter``, ``Twig\TwigFunction``, and ``Twig\TwigTest``
   respectively.
+
+* As of Twig 2.8.2, all usage of
+  ``Twig\Loader\FilesystemLoader::findTemplate()`` check for a ``null`` return
+  value (same meaning as returning ``false``). If you are overidding
+  ``Twig\Loader\FilesystemLoader::findTemplate()``, you must return ``null`` instead of ``false``
+  to be compatible with Twig 3.0.

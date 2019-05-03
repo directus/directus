@@ -3,7 +3,7 @@
 
 The ``date`` filter formats a date to a given format:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ post.published_at|date("m/d/Y") }}
 
@@ -15,14 +15,14 @@ The ``date`` filter accepts strings (it must be in a format supported by the
 `strtotime`_ function), `DateTime`_ instances, or `DateInterval`_ instances. For
 instance, to display the current date, filter the word "now":
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ "now"|date("m/d/Y") }}
 
 To escape words and characters in the date format use ``\\`` in front of each
 character:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ post.published_at|date("F jS \\a\\t g:ia") }}
 
@@ -30,7 +30,7 @@ If the value passed to the ``date`` filter is ``null``, it will return the
 current date by default. If an empty string is desired instead of the current
 date, use a ternary operator:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ post.published_at is empty ? "" : post.published_at|date("m/d/Y") }}
 
@@ -51,14 +51,14 @@ By default, the date is displayed by applying the default timezone (the one
 specified in php.ini or declared in Twig -- see below), but you can override
 it by explicitly specifying a timezone:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ post.published_at|date("m/d/Y", "Europe/Paris") }}
 
 If the date is already a DateTime object, and if you want to keep its current
 timezone, pass ``false`` as the timezone value:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {{ post.published_at|date("m/d/Y", false) }}
 

@@ -17,6 +17,8 @@ use Twig\Node\Node;
 /**
  * Used to make node visitors compatible with Twig 1.x and 2.x.
  *
+ * To be removed in Twig 3.1.
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 abstract class AbstractNodeVisitor implements NodeVisitorInterface
@@ -41,7 +43,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * Called after child nodes are visited.
      *
-     * @return Node|false The modified node or false if the node must be removed
+     * @return Node|false|null The modified node or null if the node must be removed
      */
     abstract protected function doLeaveNode(Node $node, Environment $env);
 }
