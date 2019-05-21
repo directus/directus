@@ -32,7 +32,7 @@ class MailService extends AbstractService
 
         $useDefaultEmail = isset($data['use_default_email']) && $acl->isAdmin() ? $data['use_default_email'] : false;
         send_mail_with_layout(
-            'base.twig',
+            $data['type'] == 'plain' ? 'plain.twig' : 'base.twig',
             $data['body'],
             (array) ArrayUtils::get($data, 'data'),
             $data['type'] == 'plain' ? 'text/plain' : 'text/html',

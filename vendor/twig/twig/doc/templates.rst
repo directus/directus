@@ -805,7 +805,7 @@ The following operators don't fit into any of the other categories:
       {# returns the value of foo if it is defined and not null, 'no' otherwise #}
       {{ foo ?? 'no' }}
 
-.. _templates-string-interpolation
+.. _templates-string-interpolation:
 
 String Interpolation
 ~~~~~~~~~~~~~~~~~~~~
@@ -883,10 +883,8 @@ the modifiers on one side of a tag or on both sides:
 
         {# output will be <div><strong>foo bar</strong></div> #}
 
-    .. note::
-
-        The ``apply`` tag was introduced in Twig 2.9; use the ``filter`` tag with
-        previous versions.
+    The ``apply`` tag was introduced in Twig 2.9; use the ``filter`` tag with
+    previous versions.
 
 Extensions
 ----------

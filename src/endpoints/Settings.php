@@ -79,25 +79,28 @@ class Settings extends Route
         );
 
         /**
-         * Generate the response object based on interface
-         * 
+         * Generate the response object based on interface/type
+         *
          */
-        foreach($fieldData['data'] as $key => $value){
-            switch ($value['type']) {
-                case 'file':
-                    $result = array_search($value['field'], array_column($responseData['data'], 'key'));
-                    if($result){
-			if (!empty($responseData['data'][$result]['value'])) {
-                            $fileInstence = $service->findFile($responseData['data'][$result]['value']);
-                            $responseData['data'][$result]['value'] = !empty($fileInstence['data']) ? $fileInstence['data'] : null;
-                        } else {
-                            $responseData['data'][$result]['value'] = null;
+        foreach($fieldData['data'] as $fieldDefinition){
+            // find position of field in $response['data']
+            $index = array_search($fieldDefinition['field'], array_column($responseData['data'], 'key'));
+            if (false !== $index) {
+
+                switch ($fieldDefinition['type']) {
+                    case 'file':
+                        if (!empty($responseData['data'][$index]['value'])) {
+                            $fileInstance = $service->findFile($responseData['data'][$index]['value']);
+                            $responseData['data'][$index]['value'] = null;
+
+                            if (!empty($fileInstance['data'])) {
+                                $responseData['data'][$index]['value'] = $fileInstance['data'];
+                            }
                         }
-                    }
-                    break;
-                case 'array':
-                    $inputData['value'] = !empty($responseData['data'][$result]['value']) ? $responseData['data'][$result]['value'] : null;
-                    break;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

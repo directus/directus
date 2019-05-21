@@ -1,0 +1,16 @@
+--TEST--
+"for" tag takes a condition
+--DEPRECATION--
+Using an "if" condition on "for" tag is deprecated since Twig 2.10.0, use a "filter" filter or an "if" condition inside the "for" body instead (if your condition depends on a variable updated inside the loop).
+--TEMPLATE--
+{% for i in 1..5 if i is odd -%}
+    {{ loop.index }}.{{ i }}{{ foo.bar }}
+{% endfor %}
+--DATA--
+return ['foo' => ['bar' => 'X']]
+--CONFIG--
+return ['strict_variables' => false]
+--EXPECT--
+1.1X
+2.3X
+3.5X

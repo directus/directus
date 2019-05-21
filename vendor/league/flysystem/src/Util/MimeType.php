@@ -13,7 +13,7 @@ class MimeType
     protected static $extensionToMimeTypeMap = [
         'hqx'   => 'application/mac-binhex40',
         'cpt'   => 'application/mac-compactpro',
-        'csv'   => 'text/x-comma-separated-values',
+        'csv'   => 'text/csv',
         'bin'   => 'application/octet-stream',
         'dms'   => 'application/octet-stream',
         'lha'   => 'application/octet-stream',

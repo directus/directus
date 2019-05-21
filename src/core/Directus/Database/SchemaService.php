@@ -352,8 +352,10 @@ class SchemaService
 
         $tableObject = static::getCollection($tableName);
         $columnObject = $tableObject->getField($columnName);
-
-        return $columnObject->getRelationship()->getCollectionOne();
+        if($columnObject->getRelationship()->getType() == FieldRelationship::ONE_TO_MANY)
+            return $columnObject->getRelationship()->getCollectionMany();
+        else
+            return $columnObject->getRelationship()->getCollectionOne();
     }
 
     /**

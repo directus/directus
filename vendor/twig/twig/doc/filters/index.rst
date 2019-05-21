@@ -7,11 +7,13 @@ Filters
     abs
     batch
     capitalize
+    column
     convert_encoding
     date
     date_modify
     default
     escape
+    filter
     first
     format
     join
@@ -20,10 +22,12 @@ Filters
     last
     length
     lower
+    map
     merge
     nl2br
     number_format
     raw
+    reduce
     replace
     reverse
     round

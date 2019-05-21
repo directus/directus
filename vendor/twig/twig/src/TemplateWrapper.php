@@ -92,7 +92,7 @@ final class TemplateWrapper
     {
         $context = $this->env->mergeGlobals($context);
         $level = ob_get_level();
-        ob_start();
+        ob_start(function () { return ''; });
         try {
             $this->template->displayBlock($name, $context);
         } catch (\Throwable $e) {

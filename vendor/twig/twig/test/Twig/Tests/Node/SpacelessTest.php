@@ -32,7 +32,7 @@ class Twig_Tests_Node_SpacelessTest extends NodeTestCase
         return [
             [$node, <<<EOF
 // line 1
-ob_start();
+ob_start(function () { return ''; });
 echo "<div>   <div>   foo   </div>   </div>";
 echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));
 EOF

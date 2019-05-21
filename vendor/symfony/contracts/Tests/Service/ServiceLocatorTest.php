@@ -26,11 +26,11 @@ class ServiceLocatorTest extends TestCase
 
     public function testHas()
     {
-        $locator = $this->getServiceLocator(array(
+        $locator = $this->getServiceLocator([
             'foo' => function () { return 'bar'; },
             'bar' => function () { return 'baz'; },
             function () { return 'dummy'; },
-        ));
+        ]);
 
         $this->assertTrue($locator->has('foo'));
         $this->assertTrue($locator->has('bar'));
@@ -39,10 +39,10 @@ class ServiceLocatorTest extends TestCase
 
     public function testGet()
     {
-        $locator = $this->getServiceLocator(array(
+        $locator = $this->getServiceLocator([
             'foo' => function () { return 'bar'; },
             'bar' => function () { return 'baz'; },
-        ));
+        ]);
 
         $this->assertSame('bar', $locator->get('foo'));
         $this->assertSame('baz', $locator->get('bar'));
@@ -51,13 +51,13 @@ class ServiceLocatorTest extends TestCase
     public function testGetDoesNotMemoize()
     {
         $i = 0;
-        $locator = $this->getServiceLocator(array(
+        $locator = $this->getServiceLocator([
             'foo' => function () use (&$i) {
                 ++$i;
 
                 return 'bar';
             },
-        ));
+        ]);
 
         $this->assertSame('bar', $locator->get('foo'));
         $this->assertSame('bar', $locator->get('foo'));
@@ -70,9 +70,9 @@ class ServiceLocatorTest extends TestCase
      */
     public function testThrowsOnUndefinedInternalService()
     {
-        $locator = $this->getServiceLocator(array(
+        $locator = $this->getServiceLocator([
             'foo' => function () use (&$locator) { return $locator->get('bar'); },
-        ));
+        ]);
 
         $locator->get('foo');
     }
@@ -83,11 +83,11 @@ class ServiceLocatorTest extends TestCase
      */
     public function testThrowsOnCircularReference()
     {
-        $locator = $this->getServiceLocator(array(
+        $locator = $this->getServiceLocator([
             'foo' => function () use (&$locator) { return $locator->get('bar'); },
             'bar' => function () use (&$locator) { return $locator->get('baz'); },
             'baz' => function () use (&$locator) { return $locator->get('bar'); },
-        ));
+        ]);
 
         $locator->get('foo');
     }

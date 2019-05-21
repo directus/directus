@@ -39,6 +39,10 @@ Tags
 * The ``filter`` tag is deprecated in Twig 2.9. Use the ``apply`` tag instead
   (the ``Twig\TokenParser\FilterTokenParser`` classes is also deprecated).
 
+* Adding an ``if`` condition on a ``for`` tag is deprecated in Twig 2.10. Use a
+  ``filter`` filter or an "if" condition inside the "for" body instead (if your condition
+  depends on a variable updated inside the loop)
+
 Final Classes
 -------------
 

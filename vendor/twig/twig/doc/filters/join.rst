@@ -19,7 +19,7 @@ define it with the optional first parameter:
 
     {{ [1, 2, 3]|join('|') }}
     {# outputs 1|2|3 #}
-    
+
 A second parameter can also be provided that will be the separator used between
 the last two items of the sequence:
 
@@ -27,7 +27,7 @@ the last two items of the sequence:
 
     {{ [1, 2, 3]|join(', ', ' and ') }}
     {# outputs 1, 2 and 3 #}
-    
+
 Arguments
 ---------
 

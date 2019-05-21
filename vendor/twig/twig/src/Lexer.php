@@ -233,7 +233,7 @@ class Lexer
             if ($this->options['whitespace_trim'] === $this->positions[2][$this->position][0]) {
                 // whitespace_trim detected ({%-, {{- or {#-)
                 $text = rtrim($text);
-            } else {
+            } elseif ($this->options['whitespace_line_trim'] === $this->positions[2][$this->position][0]) {
                 // whitespace_line_trim detected ({%~, {{~ or {#~)
                 // don't trim \r and \n
                 $text = rtrim($text, " \t\0\x0B");
@@ -304,8 +304,13 @@ class Lexer
             }
         }
 
+        // arrow function
+        if ('=' === $this->code[$this->cursor] && '>' === $this->code[$this->cursor + 1]) {
+            $this->pushToken(Token::ARROW_TYPE, '=>');
+            $this->moveCursor('=>');
+        }
         // operators
-        if (preg_match($this->regexes['operator'], $this->code, $match, 0, $this->cursor)) {
+        elseif (preg_match($this->regexes['operator'], $this->code, $match, 0, $this->cursor)) {
             $this->pushToken(/* Token::OPERATOR_TYPE */ 8, preg_replace('/\s+/', ' ', $match[0]));
             $this->moveCursor($match[0]);
         }

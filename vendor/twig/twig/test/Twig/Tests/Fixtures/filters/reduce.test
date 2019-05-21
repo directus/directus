@@ -1,0 +1,14 @@
+--TEST--
+"reduce" filter
+--TEMPLATE--
+{% set offset = 3 %}
+
+{{ [1, -1, 4]|reduce((carry, item) => carry + item + offset, 10) }}
+
+{{ it|reduce((carry, item) => carry + item + offset, 10) }}
+--DATA--
+return ['it' => new \ArrayIterator([1, -1, 4])]
+--EXPECT--
+23
+
+23

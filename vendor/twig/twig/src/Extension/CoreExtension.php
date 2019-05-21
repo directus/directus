@@ -229,6 +229,9 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('merge', 'twig_array_merge'),
             new TwigFilter('batch', 'twig_array_batch'),
             new TwigFilter('column', 'twig_array_column'),
+            new TwigFilter('filter', 'twig_array_filter'),
+            new TwigFilter('map', 'twig_array_map'),
+            new TwigFilter('reduce', 'twig_array_reduce'),
 
             // string/array filters
             new TwigFilter('reverse', 'twig_reverse_filter', ['needs_environment' => true]),
@@ -1727,5 +1730,41 @@ function twig_array_column($array, $name): array
     }
 
     return array_column($array, $name);
+}
+
+function twig_array_filter($array, $arrow)
+{
+    if (\is_array($array)) {
+        if (\PHP_VERSION_ID >= 50600) {
+            return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
+        }
+
+        return array_filter($array, $arrow);
+    }
+
+    while ($array instanceof \IteratorAggregate) {
+        $array = $array->getIterator();
+    }
+
+    return new \CallbackFilterIterator($array, $arrow);
+}
+
+function twig_array_map($array, $arrow)
+{
+    $r = [];
+    foreach ($array as $k => $v) {
+        $r[$k] = $arrow($v, $k);
+    }
+
+    return $r;
+}
+
+function twig_array_reduce($array, $arrow, $initial = null)
+{
+    if (!\is_array($array)) {
+        $array = iterator_to_array($array);
+    }
+
+    return array_reduce($array, $arrow, $initial);
 }
 }

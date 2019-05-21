@@ -41,7 +41,7 @@ trait TranslatorTrait
     /**
      * {@inheritdoc}
      */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
+    public function trans($id, array $parameters = [], $domain = null, $locale = null)
     {
         $id = (string) $id;
 
@@ -52,7 +52,7 @@ trait TranslatorTrait
         $number = (float) $parameters['%count%'];
         $locale = (string) $locale ?: $this->getLocale();
 
-        $parts = array();
+        $parts = [];
         if (preg_match('/^\|++$/', $id)) {
             $parts = explode('|', $id);
         } elseif (preg_match_all('/(?:\|\||[^\|])++/', $id, $matches)) {
@@ -77,7 +77,7 @@ trait TranslatorTrait
 )\s*(?P<message>.*?)$/xs
 EOF;
 
-        $standardRules = array();
+        $standardRules = [];
         foreach ($parts as $part) {
             $part = trim(str_replace('||', '|', $part));
 

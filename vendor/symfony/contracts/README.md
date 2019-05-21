@@ -11,7 +11,7 @@ Design Principles
 
  * contracts are split by domain, each into their own sub-namespaces;
  * contracts are small and consistent sets of PHP interfaces, traits, normative
-   docblocks and reference test suites when applicable, etc.;
+   docblocks and reference test suites when applicable, ...;
  * all contracts must have a proven implementation to enter this repository;
  * they must be backward compatible with existing Symfony components.
 

@@ -36,7 +36,10 @@ if (!function_exists('get_custom_x')) {
             $pathInfo = pathinfo($relativePath);
             $dirname = $pathInfo['dirname'];
             $extensionName = $pathInfo['filename'];
-            $isDirectory = $dirname !== '/';
+            /**
+             * For windows system the path is '\' instead of '/'. So we need to check for both slashes.
+             */
+            $isDirectory = $dirname !== '/' && $dirname !== '\\';
 
             // TODO: Need to improve logic
             if (in_array($dirname, $ignoredDirectories)) {

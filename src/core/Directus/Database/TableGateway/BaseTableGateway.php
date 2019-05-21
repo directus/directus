@@ -403,7 +403,7 @@ class BaseTableGateway extends TableGateway
         if (
           array_key_exists('filename', $recordData) &&
           array_key_exists('data', $recordData) &&
-          strlen($recordData) > 25000000
+          strlen($recordData['data']) > 25000000
         ) {
           $recordData = ['filename' => $recordData['filename']];
         }

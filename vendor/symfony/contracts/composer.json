@@ -20,12 +20,15 @@
     },
     "require-dev": {
         "psr/cache": "^1.0",
-        "psr/container": "^1.0"
+        "psr/container": "^1.0",
+        "symfony/polyfill-intl-idn": "^1.10"
     },
     "suggest": {
         "psr/cache": "When using the Cache contracts",
         "psr/container": "When using the Service contracts",
         "symfony/cache-contracts-implementation": "",
+        "symfony/event-dispatcher-implementation": "",
+        "symfony/http-client-contracts-implementation": "",
         "symfony/service-contracts-implementation": "",
         "symfony/translation-contracts-implementation": ""
     },
@@ -38,7 +41,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }

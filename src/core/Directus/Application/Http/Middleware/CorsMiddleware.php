@@ -37,7 +37,7 @@ class CorsMiddleware extends AbstractMiddleware
             'Authorization',
         ],
         'exposed_headers' => [],
-        'max_age' => null,
+        'max_age' => 500,
         'credentials' => false,
     ];
 

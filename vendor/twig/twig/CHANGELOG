@@ -1,3 +1,10 @@
+* 2.10.0 (2019-05-14)
+
+ * deprecated "if" conditions on "for" tags
+ * added "filter", "map", and "reduce" filters (and support for arrow functions)
+ * fixed partial output leak when a PHP fatal error occurs
+ * optimized context access on PHP 7.4
+
 * 2.9.0 (2019-04-28)
 
  * deprecated returning "false" to remove a Node from NodeVisitorInterface::leaveNode()
@@ -218,7 +225,18 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.40.0 (2019-XX-XX)
+* 1.41.0 (2019-XX-XX)
+
+ * fixed support for PHP 7.4
+ * added "filter", "map", and "reduce" filters (and support for arrow functions)
+ * fixed partial output leak when a PHP fatal error occurs
+ * optimized context access on PHP 7.4
+
+* 1.40.1 (2019-04-29)
+
+* fixed regression in NodeTraverser
+
+* 1.40.0 (2019-04-28)
 
  * allowed Twig\NodeVisitor\NodeVisitorInterface::leaveNode() to return "null" instead of "false" (same meaning)
  * added the "apply" tag as a replacement for the "filter" tag

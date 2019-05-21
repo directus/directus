@@ -229,14 +229,17 @@ class SchemaFactory
      *
      * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
      */
-    public function buildTable(AbstractSql $table)
+    public function buildTable(AbstractSql $table,$charset="")
     {
         $connection = $this->schemaManager->getSource()->getConnection();
         $sql = new Sql($connection);
-
+        
+        $tableQuery = $sql->buildSqlString($table);
+        $tableQuery = !empty($charset) ? $tableQuery."charset = ".$charset: $tableQuery;
+                
         // TODO: Allow charset and comment
         return $connection->query(
-            $sql->buildSqlString($table),
+            $tableQuery,
             $connection::QUERY_MODE_EXECUTE
         );
     }

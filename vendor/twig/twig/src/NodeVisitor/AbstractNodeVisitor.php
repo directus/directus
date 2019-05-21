@@ -43,7 +43,7 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
     /**
      * Called after child nodes are visited.
      *
-     * @return Node|false|null The modified node or null if the node must be removed
+     * @return Node|null The modified node or null if the node must be removed
      */
     abstract protected function doLeaveNode(Node $node, Environment $env);
 }

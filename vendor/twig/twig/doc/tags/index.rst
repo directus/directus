@@ -4,8 +4,10 @@ Tags
 .. toctree::
     :maxdepth: 1
 
+    apply
     autoescape
     block
+    deprecated
     do
     embed
     extends
@@ -23,4 +25,3 @@ Tags
     use
     verbatim
     with
-    deprecated

@@ -51,7 +51,7 @@ public function macro_foo(\$__foo__ = null, \$__bar__ = "Foo", ...\$__varargs__)
 
     \$blocks = [];
 
-    ob_start();
+    ob_start(function () { return ''; });
     try {
         echo "foo";
 

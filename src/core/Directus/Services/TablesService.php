@@ -1156,7 +1156,6 @@ class TablesService extends AbstractService
         return $result;
     }
 
-
     /**
      * @param string $name
      * @param array $data
@@ -1175,11 +1174,11 @@ class TablesService extends AbstractService
         /** @var Emitter $hookEmitter */
         $hookEmitter = $this->container->get('hook_emitter');
         $hookEmitter->run('collection.create:before', $name);
-
-        $result = $schemaFactory->buildTable($table);
+        $charset = $this->container->get('config')->get('database.charset');
+        $result = $schemaFactory->buildTable($table,$charset);
 
         return $result ? true : false;
-    }
+    }    
 
     /**
      * @param Collection $collection
@@ -1683,7 +1682,7 @@ class TablesService extends AbstractService
             foreach ($sort as $field) {
                 $field = (string)$field;
                 if (!$collection->hasField($field)) {
-                    throw new InvalidFieldException($field);
+                    throw new InvalidFieldException($field, $collection->getName());
                 }
             }
         }

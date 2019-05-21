@@ -21,14 +21,14 @@ class ServiceSubscriberTraitTest extends TestCase
 {
     public function testMethodsOnParentsAndChildrenAreIgnoredInGetSubscribedServices()
     {
-        $expected = array(TestService::class.'::aService' => '?Symfony\Contracts\Tests\Service\Service2');
+        $expected = [TestService::class.'::aService' => '?Symfony\Contracts\Tests\Service\Service2'];
 
         $this->assertEquals($expected, ChildTestService::getSubscribedServices());
     }
 
     public function testSetContainerIsCalledOnParent()
     {
-        $container = new class(array()) implements ContainerInterface {
+        $container = new class([]) implements ContainerInterface {
             use ServiceLocatorTrait;
         };
 

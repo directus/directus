@@ -61,5 +61,5 @@ interface TranslatorInterface
      *
      * @throws \InvalidArgumentException If the locale contains invalid characters
      */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null);
+    public function trans($id, array $parameters = [], $domain = null, $locale = null);
 }
