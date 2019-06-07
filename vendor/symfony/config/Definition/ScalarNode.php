@@ -48,6 +48,8 @@ class ScalarNode extends VariableNode
      */
     protected function isValueEmpty($value)
     {
+        // assume environment variables are never empty (which in practice is likely to be true during runtime)
+        // not doing so breaks many configs that are valid today
         if ($this->isHandlingPlaceholder()) {
             return false;
         }

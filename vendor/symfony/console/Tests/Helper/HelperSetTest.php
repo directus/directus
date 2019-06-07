@@ -114,7 +114,7 @@ class HelperSetTest extends TestCase
         $mock_helper = $this->getMockBuilder('\Symfony\Component\Console\Helper\HelperInterface')->getMock();
         $mock_helper->expects($this->any())
             ->method('getName')
-            ->will($this->returnValue($name));
+            ->willReturn($name);
 
         if ($helperset) {
             $mock_helper->expects($this->any())

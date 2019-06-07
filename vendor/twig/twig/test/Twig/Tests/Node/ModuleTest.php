@@ -74,6 +74,7 @@ use Twig\Template;
 class __TwigTemplate_%x extends \Twig\Template
 {
     private \$source;
+    private \$macros = [];
 
     public function __construct(Environment \$env)
     {
@@ -89,6 +90,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     protected function doDisplay(array \$context, array \$blocks = [])
     {
+        \$macros = \$this->macros;
         // line 1
         echo "foo";
     }
@@ -100,7 +102,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     public function getDebugInfo()
     {
-        return array (  35 => 1,);
+        return array (  37 => 1,);
     }
 
     public function getSourceContext()
@@ -136,6 +138,7 @@ use Twig\Template;
 class __TwigTemplate_%x extends \Twig\Template
 {
     private \$source;
+    private \$macros = [];
 
     public function __construct(Environment \$env)
     {
@@ -155,8 +158,9 @@ class __TwigTemplate_%x extends \Twig\Template
 
     protected function doDisplay(array \$context, array \$blocks = [])
     {
+        \$macros = \$this->macros;
         // line 2
-        \$context["macro"] = \$this->loadTemplate("foo.twig", "foo.twig", 2)->unwrap();
+        \$macros["macro"] = \$this->macros["macro"] = \$this->loadTemplate("foo.twig", "foo.twig", 2)->unwrap();
         // line 1
         \$this->parent = \$this->loadTemplate("layout.twig", "foo.twig", 1);
         \$this->parent->display(\$context, array_merge(\$this->blocks, \$blocks));
@@ -174,7 +178,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     public function getDebugInfo()
     {
-        return array (  41 => 1,  39 => 2,  33 => 1,);
+        return array (  43 => 1,  41 => 2,  34 => 1,);
     }
 
     public function getSourceContext()
@@ -215,6 +219,7 @@ use Twig\Template;
 class __TwigTemplate_%x extends \Twig\Template
 {
     private \$source;
+    private \$macros = [];
 
     public function __construct(Environment \$env)
     {
@@ -234,6 +239,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     protected function doDisplay(array \$context, array \$blocks = [])
     {
+        \$macros = \$this->macros;
         // line 4
         \$context["foo"] = "foo";
         // line 2
@@ -252,7 +258,7 @@ class __TwigTemplate_%x extends \Twig\Template
 
     public function getDebugInfo()
     {
-        return array (  41 => 2,  39 => 4,  33 => 2,);
+        return array (  43 => 2,  41 => 4,  34 => 2,);
     }
 
     public function getSourceContext()

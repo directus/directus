@@ -29,7 +29,7 @@
         "symfony/polyfill-ctype": "^1.8"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.4.19|^4.1.8",
+        "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0",
         "symfony/debug": "^2.7",
         "psr/container": "^1.0"
     },
@@ -48,7 +48,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.10-dev"
+            "dev-master": "2.11-dev"
         }
     }
 }

@@ -56,6 +56,7 @@ Twig supports the in operator
 {{ '5.5' in 125.5 ? 'KO' : 'OK' }}
 
 {{ safe in ['foo', 'bar'] ? 'OK' : 'KO' }}
+{{ 'fo' in safe ? 'OK' : 'KO' }}
 --DATA--
 return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'dir_object' => new \SplFileInfo(__DIR__), 'object' => new \stdClass(), 'resource' => opendir(__DIR__), 'safe' => new \Twig\Markup('foo', 'UTF-8')]
 --EXPECT--
@@ -113,4 +114,5 @@ OK
 OK
 OK
 
+OK
 OK

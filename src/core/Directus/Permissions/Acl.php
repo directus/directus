@@ -1329,6 +1329,39 @@ class Acl
     }
     
     /**
+     * Gets the statuses on which field has been write blacklisted
+     *
+     * @param string $collection
+     * @param mixed $status
+     *
+     * @return array
+     */
+    public function getStatusesOnWriteFieldBlacklist($collection, $field)
+    {
+        $blackListStatuses = [];
+        $collectionPermission = $this->getCollectionPermissions($collection);
+        $statuses = $this->getCollectionStatuses($collection);
+        if($statuses){
+            foreach($statuses as $status){
+                $writeFieldBlackList = isset($collectionPermission[$status]['write_field_blacklist']) ? $collectionPermission[$status]['write_field_blacklist'] : [];
+                if($writeFieldBlackList && in_array($field, $writeFieldBlackList)){                    
+                    $blackListStatuses['statuses'][] = $status;
+                }
+            }
+            //Set flag for field which is blacklist for all statuses
+            if(isset($blackListStatuses['statuses']) && count($blackListStatuses['statuses']) == count($statuses)){
+                $blackListStatuses['isWriteBlackList'] = true;
+            }
+        }else{
+            $writeFieldBlackList = isset($collectionPermission['write_field_blacklist']) ? $collectionPermission['write_field_blacklist'] : [];
+            if($writeFieldBlackList && in_array($field, $writeFieldBlackList)){
+                $blackListStatuses['isWriteBlackList'] = true;
+            }
+        }
+        return $blackListStatuses;
+    }
+    
+    /**
      * Returns a list of status the given collection has permission to read
      *
      * @param string $collection

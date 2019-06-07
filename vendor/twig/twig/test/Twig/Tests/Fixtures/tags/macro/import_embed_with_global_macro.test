@@ -1,0 +1,21 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{% import _self as macros %}
+
+{% embed 'embed' %}
+    {% block foo %}
+        {{ macros.input("username") }}
+    {% endblock %}
+{% endembed %}
+
+{% macro input(name) -%}
+    <input name="{{ name }}">
+{% endmacro %}
+--TEMPLATE(embed)--
+    {% block foo %}
+    {% endblock %}
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\RuntimeError: Variable "macros" does not exist in "index.twig" at line 6.

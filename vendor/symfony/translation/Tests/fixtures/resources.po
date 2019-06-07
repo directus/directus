@@ -9,3 +9,16 @@ msgstr "bar"
 
 msgid "bar"
 msgstr "foo"
+
+# Comment 1
+# Comment 2
+#, fuzzy,another
+#: src/file_1 src/file_2:50
+msgid "foo_bar"
+msgstr "foobar"
+
+# Comment
+#, fuzzy
+#: src/file_1
+msgid "bar_foo"
+msgstr "barfoo"

@@ -141,7 +141,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     {
         $offset = 0;
         $output = '';
-        $tagRegex = '[a-z][a-z0-9,_=;-]*+';
+        $tagRegex = '[a-z][^<>]*+';
         $currentLineLength = 0;
         preg_match_all("#<(($tagRegex) | /($tagRegex)?)>#ix", $message, $matches, PREG_OFFSET_CAPTURE);
         foreach ($matches[0] as $i => $match) {
@@ -216,6 +216,8 @@ class OutputFormatter implements WrappableOutputFormatterInterface
                 $style->setForeground(strtolower($match[1]));
             } elseif ('bg' == $match[0]) {
                 $style->setBackground(strtolower($match[1]));
+            } elseif ('href' === $match[0]) {
+                $style->setHref($match[1]);
             } elseif ('options' === $match[0]) {
                 preg_match_all('([^,;]+)', strtolower($match[1]), $options);
                 $options = array_shift($options);

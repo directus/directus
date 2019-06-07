@@ -166,7 +166,8 @@ class ModuleNode extends Node
             ->raw(sprintf(" extends %s\n", $compiler->getEnvironment()->getBaseTemplateClass(false)))
             ->write("{\n")
             ->indent()
-            ->write("private \$source;\n\n")
+            ->write("private \$source;\n")
+            ->write("private \$macros = [];\n\n")
         ;
     }
 
@@ -310,6 +311,7 @@ class ModuleNode extends Node
         $compiler
             ->write("protected function doDisplay(array \$context, array \$blocks = [])\n", "{\n")
             ->indent()
+            ->write("\$macros = \$this->macros;\n")
             ->subcompile($this->getNode('display_start'))
             ->subcompile($this->getNode('body'))
         ;

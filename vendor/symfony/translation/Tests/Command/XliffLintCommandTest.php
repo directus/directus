@@ -94,6 +94,17 @@ class XliffLintCommandTest extends TestCase
         $this->assertContains('There is a mismatch between the language included in the file name ("messages.en.xlf") and the "es" value used in the "target-language" attribute of the file.', trim($tester->getDisplay()));
     }
 
+    public function testLintTargetLanguageIsCaseInsensitive()
+    {
+        $tester = $this->createCommandTester();
+        $filename = $this->createFile('note', 'zh-cn', 'messages.zh_CN.xlf');
+
+        $tester->execute(['filename' => $filename], ['decorated' => false]);
+
+        $this->assertEquals(0, $tester->getStatusCode());
+        $this->assertContains('[OK] All 1 XLIFF files contain valid syntax.', trim($tester->getDisplay()));
+    }
+
     /**
      * @expectedException \RuntimeException
      */

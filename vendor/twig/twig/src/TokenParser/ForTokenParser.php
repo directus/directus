@@ -43,7 +43,7 @@ final class ForTokenParser extends AbstractTokenParser
 
         $ifexpr = null;
         if ($stream->nextIf(/* Token::NAME_TYPE */ 5, 'if')) {
-            @trigger_error(sprintf('Using an "if" condition on "for" tag is deprecated since Twig 2.10.0, use a "filter" filter or an "if" condition inside the "for" body instead (if your condition depends on a variable updated inside the loop).', __CLASS__), E_USER_DEPRECATED);
+            @trigger_error(sprintf('Using an "if" condition on "for" tag in "%s" at line %d is deprecated since Twig 2.10.0, use a "filter" filter or an "if" condition inside the "for" body instead (if your condition depends on a variable updated inside the loop).', $stream->getSourceContext()->getName(), $lineno), E_USER_DEPRECATED);
 
             $ifexpr = $this->parser->getExpressionParser()->parseExpression();
         }

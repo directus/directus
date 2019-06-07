@@ -33,6 +33,16 @@ class Field extends AbstractObject
     }
 
     /**
+     * Gets the field name with proper formatisation
+     *
+     * @return string
+     */
+    public function getFormatisedName()
+    {
+        return ucwords(str_replace("_", " ", $this->attributes->get('field')));
+    }
+
+    /**
      * Gets the field type
      *
      * @return string

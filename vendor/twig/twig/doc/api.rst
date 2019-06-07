@@ -415,6 +415,24 @@ The escaping rules are implemented as follows:
         {% set text = "Twig<br />" %}
         {{ foo ? text|escape : "<br />Twig" }} {# the result of the expression won't be escaped #}
 
+* Objects with a ``__toString`` method are converted to strings and
+  escaped. You can mark some classes and/or interfaces as being safe for some
+  strategies via ``EscaperExtension::addSafeClass()``:
+
+  .. code-block:: twig
+
+        // mark object of class Foo as safe for the HTML strategy
+        $escaper->addSafeClass('Foo', ['html']);
+
+        // mark object of interface Foo as safe for the HTML strategy
+        $escaper->addSafeClass('FooInterface', ['html']);
+
+        // mark object of class Foo as safe for the HTML and JS strategies
+        $escaper->addSafeClass('Foo', ['html', 'js']);
+
+        // mark object of class Foo as safe for all strategies
+        $escaper->addSafeClass('Foo', ['all']);
+
 * Escaping is applied before printing, after any other filter is applied:
 
   .. code-block:: twig

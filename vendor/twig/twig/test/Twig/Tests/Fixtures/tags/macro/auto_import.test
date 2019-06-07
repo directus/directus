@@ -1,0 +1,16 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{{ _self.hello('Fabien') }}
+
+{% macro hello(name) -%}
+    Hello {{ _self.up(name) }}
+{% endmacro %}
+
+{% macro up(name) -%}
+    {{ name|upper }}
+{% endmacro %}
+--DATA--
+return []
+--EXPECT--
+Hello FABIEN

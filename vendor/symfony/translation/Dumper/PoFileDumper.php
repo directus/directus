@@ -39,6 +39,18 @@ class PoFileDumper extends FileDumper
             } else {
                 $newLine = true;
             }
+            $metadata = $messages->getMetadata($source, $domain);
+
+            if (isset($metadata['comments'])) {
+                $output .= $this->formatComments($metadata['comments']);
+            }
+            if (isset($metadata['flags'])) {
+                $output .= $this->formatComments(implode(',', (array) $metadata['flags']), ',');
+            }
+            if (isset($metadata['sources'])) {
+                $output .= $this->formatComments(implode(' ', (array) $metadata['sources']), ':');
+            }
+
             $output .= sprintf('msgid "%s"'."\n", $this->escape($source));
             $output .= sprintf('msgstr "%s"'."\n", $this->escape($target));
         }
@@ -57,5 +69,16 @@ class PoFileDumper extends FileDumper
     private function escape($str)
     {
         return addcslashes($str, "\0..\37\42\134");
+    }
+
+    private function formatComments($comments, string $prefix = ''): ?string
+    {
+        $output = null;
+
+        foreach ((array) $comments as $comment) {
+            $output .= sprintf('#%s %s'."\n", $prefix, $comment);
+        }
+
+        return $output;
     }
 }

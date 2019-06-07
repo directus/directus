@@ -21,7 +21,7 @@ abstract class AbstractQuestionHelperTest extends TestCase
         $mock = $this->getMockBuilder(StreamableInputInterface::class)->getMock();
         $mock->expects($this->any())
             ->method('isInteractive')
-            ->will($this->returnValue($interactive));
+            ->willReturn($interactive);
 
         if ($stream) {
             $mock->expects($this->any())

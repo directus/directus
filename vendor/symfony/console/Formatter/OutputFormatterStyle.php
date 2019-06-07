@@ -52,7 +52,9 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
 
     private $foreground;
     private $background;
+    private $href;
     private $options = [];
+    private $handlesHrefGracefully;
 
     /**
      * Initializes output formatter style.
@@ -118,6 +120,11 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->background = static::$availableBackgroundColors[$color];
     }
 
+    public function setHref(string $url): void
+    {
+        $this->href = $url;
+    }
+
     /**
      * Sets some specific style option.
      *
@@ -179,6 +186,10 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $setCodes = [];
         $unsetCodes = [];
 
+        if (null === $this->handlesHrefGracefully) {
+            $this->handlesHrefGracefully = 'JetBrains-JediTerm' !== getenv('TERMINAL_EMULATOR') && !getenv('KONSOLE_VERSION');
+        }
+
         if (null !== $this->foreground) {
             $setCodes[] = $this->foreground['set'];
             $unsetCodes[] = $this->foreground['unset'];
@@ -187,11 +198,14 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
             $setCodes[] = $this->background['set'];
             $unsetCodes[] = $this->background['unset'];
         }
-        if (\count($this->options)) {
-            foreach ($this->options as $option) {
-                $setCodes[] = $option['set'];
-                $unsetCodes[] = $option['unset'];
-            }
+
+        foreach ($this->options as $option) {
+            $setCodes[] = $option['set'];
+            $unsetCodes[] = $option['unset'];
+        }
+
+        if (null !== $this->href && $this->handlesHrefGracefully) {
+            $text = "\033]8;;$this->href\033\\$text\033]8;;\033\\";
         }
 
         if (0 === \count($setCodes)) {

@@ -635,7 +635,13 @@ class ExpressionParser
         $stream = $this->parser->getStream();
         $targets = [];
         while (true) {
-            $token = $stream->expect(/* Token::NAME_TYPE */ 5, null, 'Only variables can be assigned to');
+            $token = $this->parser->getCurrentToken();
+            if ($stream->test(/* Token::OPERATOR_TYPE */ 8) && preg_match(Lexer::REGEX_NAME, $token->getValue())) {
+                // in this context, string operators are variable names
+                $this->parser->getStream()->next();
+            } else {
+                $stream->expect(/* Token::NAME_TYPE */ 5, null, 'Only variables can be assigned to');
+            }
             $value = $token->getValue();
             if (\in_array(strtolower($value), ['true', 'false', 'none', 'null'])) {
                 throw new SyntaxError(sprintf('You cannot assign a value to "%s".', $value), $token->getLine(), $stream->getSourceContext());
@@ -677,6 +683,11 @@ class ExpressionParser
         $arguments = null;
         if ($stream->test(/* Token::PUNCTUATION_TYPE */ 9, '(')) {
             $arguments = $this->parseArguments(true);
+        }
+
+        if ('defined' === $name && $node instanceof NameExpression && null !== $alias = $this->parser->getImportedSymbol('function', $node->getAttribute('name'))) {
+            $node = new MethodCallExpression($alias['node'], $alias['name'], new ArrayExpression([], $node->getTemplateLine()), $node->getTemplateLine());
+            $node->setAttribute('safe', true);
         }
 
         return new $class($node, $name, $arguments, $this->parser->getCurrentToken()->getLine());

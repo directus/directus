@@ -1,0 +1,23 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{% extends "parent" %}
+{% import _self as me %}
+
+{% block test %}
+    {{ me.hello() }}
+{% endblock test %}
+--TEMPLATE(parent)--
+{% import _self as me %}
+
+{% block test %}
+Hello
+{% endblock test %}
+
+{% macro hello() %}
+    Test
+{% endmacro %}
+--DATA--
+return []
+--EXPECT--
+Test

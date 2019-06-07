@@ -1,0 +1,10 @@
+--TEST--
+"import" tag with reserved name
+--TEMPLATE--
+{% import 'forms.twig' %}
+
+{{ macros.parent() }}
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\SyntaxError: Unexpected token "end of statement block" ("name" expected with value "as") in "index.twig" at line 2.

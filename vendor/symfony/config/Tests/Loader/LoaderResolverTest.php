@@ -32,7 +32,7 @@ class LoaderResolverTest extends TestCase
         $this->assertFalse($resolver->resolve('foo.foo'), '->resolve() returns false if no loader is able to load the resource');
 
         $loader = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderInterface')->getMock();
-        $loader->expects($this->once())->method('supports')->will($this->returnValue(true));
+        $loader->expects($this->once())->method('supports')->willReturn(true);
         $resolver = new LoaderResolver([$loader]);
         $this->assertEquals($loader, $resolver->resolve(function () {}), '->resolve() returns the loader for the given resource');
     }

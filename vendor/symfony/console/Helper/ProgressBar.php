@@ -244,6 +244,24 @@ final class ProgressBar
     }
 
     /**
+     * Returns an iterator that will automatically update the progress bar when iterated.
+     *
+     * @param int|null $max Number of steps to complete the bar (0 if indeterminate), if null it will be inferred from $iterable
+     */
+    public function iterate(iterable $iterable, ?int $max = null): iterable
+    {
+        $this->start($max ?? (\is_countable($iterable) ? \count($iterable) : 0));
+
+        foreach ($iterable as $key => $value) {
+            yield $key => $value;
+
+            $this->advance();
+        }
+
+        $this->finish();
+    }
+
+    /**
      * Starts the progress output.
      *
      * @param int|null $max Number of steps to complete the bar (0 if indeterminate), null to leave unchanged

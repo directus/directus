@@ -69,6 +69,10 @@ EOF;
         $actualCatalogue = $catalogue->all();
 
         $this->assertEquals($expectedCatalogue, $actualCatalogue);
+
+        $filename = str_replace(\DIRECTORY_SEPARATOR, '/', __DIR__).'/../fixtures/extractor/translation.html.php';
+        $this->assertEquals(['sources' => [$filename.':2']], $catalogue->getMetadata('single-quoted key'));
+        $this->assertEquals(['sources' => [$filename.':43']], $catalogue->getMetadata('other-domain-test-no-params-short-array', 'not_messages'));
     }
 
     public function resourcesProvider()

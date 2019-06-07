@@ -1,0 +1,18 @@
+--TEST--
+"import" tag with syntax error
+--TEMPLATE--
+{% import _self as foo %}
+
+{{ foo.foo() }}
+
+{% macro foo() %}
+    {{ foo.another() }}
+{% endmacro %}
+
+{% macro another() %}
+    OK
+{% endmacro %}
+--DATA--
+return []
+--EXPECT--
+OK

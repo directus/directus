@@ -82,7 +82,9 @@ class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterfac
      */
     public function setLocale($locale)
     {
+        $prev = $this->translator->getLocale();
         $this->translator->setLocale($locale);
+        $this->logger->debug(sprintf('The locale of the translator has changed from "%s" to "%s".', $prev, $locale));
     }
 
     /**

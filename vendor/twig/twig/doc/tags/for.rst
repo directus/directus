@@ -84,6 +84,13 @@ Variable              Description
 Adding a condition
 ------------------
 
+.. tip::
+
+    As of Twig 2.10, use the :doc:`filter <../filters/filter>` filter instead,
+    or an ``if`` condition inside the ``for`` body (if your condition depends on
+    a variable updated inside the loop and you are not using the ``loop``
+    variable).
+
 Unlike in PHP, it's not possible to ``break`` or ``continue`` in a loop. You
 can however filter the sequence during iteration which allows you to skip
 items. The following example skips all the users which are not active:

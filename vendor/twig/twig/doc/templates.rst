@@ -494,52 +494,9 @@ For bigger sections it makes sense to mark a block
 Macros
 ------
 
-Macros are comparable with functions in regular programming languages. They
-are useful to reuse often used HTML fragments to not repeat yourself.
-
-A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small example
-(subsequently called ``forms.html``) of a macro that renders a form element:
-
-.. code-block:: twig
-
-    {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
-    {% endmacro %}
-
-Macros can be defined in any template, and need to be "imported" via the
-:doc:`import<tags/import>` tag before being used:
-
-.. code-block:: twig
-
-    {% import "forms.html" as forms %}
-
-    <p>{{ forms.input('username') }}</p>
-
-Alternatively, you can import individual macro names from a template into the
-current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
-
-.. code-block:: twig
-
-    {% from 'forms.html' import input as input_field %}
-
-    <dl>
-        <dt>Username</dt>
-        <dd>{{ input_field('username') }}</dd>
-        <dt>Password</dt>
-        <dd>{{ input_field('password', '', 'password') }}</dd>
-    </dl>
-
-A default value can also be defined for macro arguments when not provided in a
-macro call:
-
-.. code-block:: twig
-
-    {% macro input(name, value = "", type = "text", size = 20) %}
-        <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
-    {% endmacro %}
-
-If extra positional arguments are passed to a macro call, they end up in the
-special ``varargs`` variable as a list of values.
+Macros are comparable with functions in regular programming languages. They are
+useful to reuse HTML fragments to not repeat yourself. They are described in the
+:doc:`macro<tags/macro>` tag documentation.
 
 .. _twig-expressions:
 

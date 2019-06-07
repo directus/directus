@@ -154,7 +154,7 @@ class SymfonyStyle extends OutputStyle
      */
     public function warning($message)
     {
-        $this->block($message, 'WARNING', 'fg=white;bg=red', ' ', true);
+        $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ', true);
     }
 
     /**

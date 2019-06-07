@@ -63,9 +63,7 @@ class MacroNode extends Node
             ->raw(")\n")
             ->write("{\n")
             ->indent()
-        ;
-
-        $compiler
+            ->write("\$macros = \$this->macros;\n")
             ->write("\$context = \$this->env->mergeGlobals([\n")
             ->indent()
         ;

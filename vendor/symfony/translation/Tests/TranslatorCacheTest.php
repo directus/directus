@@ -104,7 +104,7 @@ class TranslatorCacheTest extends TestCase
         $loader
             ->expects($this->exactly(2))
             ->method('load')
-            ->will($this->returnValue($catalogue))
+            ->willReturn($catalogue)
         ;
 
         // 1st pass
@@ -249,11 +249,11 @@ class TranslatorCacheTest extends TestCase
     {
         $resource = $this->getMockBuilder('Symfony\Component\Config\Resource\SelfCheckingResourceInterface')->getMock();
         $loader = $this->getMockBuilder('Symfony\Component\Translation\Loader\LoaderInterface')->getMock();
-        $resource->method('isFresh')->will($this->returnValue(false));
+        $resource->method('isFresh')->willReturn(false);
         $loader
             ->expects($this->exactly(2))
             ->method('load')
-            ->will($this->returnValue($this->getCatalogue('fr', [], [$resource])));
+            ->willReturn($this->getCatalogue('fr', [], [$resource]));
 
         // prime the cache
         $translator = new Translator('fr', null, $this->tmpDir, true);

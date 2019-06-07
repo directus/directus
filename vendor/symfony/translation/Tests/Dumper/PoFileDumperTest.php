@@ -20,7 +20,26 @@ class PoFileDumperTest extends TestCase
     public function testFormatCatalogue()
     {
         $catalogue = new MessageCatalogue('en');
-        $catalogue->add(['foo' => 'bar', 'bar' => 'foo']);
+        $catalogue->add(['foo' => 'bar', 'bar' => 'foo', 'foo_bar' => 'foobar', 'bar_foo' => 'barfoo']);
+        $catalogue->setMetadata('foo_bar', [
+            'comments' => [
+                'Comment 1',
+                'Comment 2',
+            ],
+            'flags' => [
+                'fuzzy',
+                'another',
+            ],
+            'sources' => [
+                'src/file_1',
+                'src/file_2:50',
+            ],
+        ]);
+        $catalogue->setMetadata('bar_foo', [
+            'comments' => 'Comment',
+            'flags' => 'fuzzy',
+            'sources' => 'src/file_1',
+        ]);
 
         $dumper = new PoFileDumper();
 

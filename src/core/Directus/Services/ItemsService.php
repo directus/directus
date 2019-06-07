@@ -85,22 +85,27 @@ class ItemsService extends AbstractService
      * @param string $collection
      * @param mixed $ids
      * @param array $params
+     * @params bool $acl default true
      *
      * @return array
      *
      * @throws ItemNotFoundException
      * @throws ForbiddenCollectionReadException
      */
-    public function findByIds($collection, $ids, array $params = [])
+    public function findByIds($collection, $ids, array $params = [], $acl = true)
     {
         $params = ArrayUtils::omit($params, static::SINGLE_ITEM_PARAMS_BLACKLIST);
 
         $statusValue = $this->getStatusValue($collection, $ids);
-        $tableGateway = $this->createTableGateway($collection);
+        $tableGateway = $this->createTableGateway($collection, $acl);
         $ids = StringUtils::safeCvs($ids, false, false);
 
         try {
-            $this->getAcl()->enforceRead($collection, $statusValue);
+            // if acl check is disabled (e.g. fetching the logo from the settings endpoint/service) do not
+            // enforce permissions here!
+            if (false !== $acl) {
+                $this->getAcl()->enforceRead($collection, $statusValue);
+            }
         } catch (ForbiddenCollectionReadException $e) {
             if (is_array($ids) && count($ids) > 1) {
                 throw $e;

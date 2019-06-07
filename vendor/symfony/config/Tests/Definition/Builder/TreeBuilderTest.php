@@ -197,4 +197,14 @@ class TreeBuilderTest extends TestCase
     {
         new TreeBuilder();
     }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation The "Symfony\Component\Config\Definition\Builder\TreeBuilder::root()" method called for the "foo" configuration is deprecated since Symfony 4.3, pass the root name to the constructor instead.
+     */
+    public function testRoot()
+    {
+        $builder = new TreeBuilder('foo');
+        $builder->root('foo');
+    }
 }

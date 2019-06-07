@@ -41,7 +41,7 @@ abstract class AbstractOperationTest extends TestCase
 
     public function testGetMessagesFromUnknownDomain()
     {
-        $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->createOperation(
             new MessageCatalogue('en'),
             new MessageCatalogue('en')

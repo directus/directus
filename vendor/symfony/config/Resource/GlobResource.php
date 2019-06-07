@@ -20,8 +20,10 @@ use Symfony\Component\Finder\Glob;
  * Only existence/removal is tracked (not mtimes.)
  *
  * @author Nicolas Grekas <p@tchwork.com>
+ *
+ * @final since Symfony 4.3
  */
-class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface, \Serializable
+class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
 {
     private $prefix;
     private $pattern;
@@ -80,21 +82,13 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface,
     /**
      * @internal
      */
-    public function serialize()
+    public function __sleep(): array
     {
         if (null === $this->hash) {
             $this->hash = $this->computeHash();
         }
 
-        return serialize([$this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes]);
-    }
-
-    /**
-     * @internal
-     */
-    public function unserialize($serialized)
-    {
-        list($this->prefix, $this->pattern, $this->recursive, $this->hash, $this->forExclusion, $this->excludedPrefixes) = unserialize($serialized) + [4 => false, []];
+        return ['prefix', 'pattern', 'recursive', 'hash', 'forExclusion', 'excludedPrefixes'];
     }
 
     public function getIterator()

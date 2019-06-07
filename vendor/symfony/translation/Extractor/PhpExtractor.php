@@ -81,9 +81,8 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     {
         $files = $this->extractFiles($resource);
         foreach ($files as $file) {
-            $this->parseTokens(token_get_all(file_get_contents($file)), $catalog);
+            $this->parseTokens(token_get_all(file_get_contents($file)), $catalog, $file);
 
-            // PHP 7 memory manager will not release after token_get_all(), see https://bugs.php.net/70098
             gc_mem_caches();
         }
     }
@@ -198,9 +197,15 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
      *
      * @param array            $tokens
      * @param MessageCatalogue $catalog
+     * @param string           $filename
      */
-    protected function parseTokens($tokens, MessageCatalogue $catalog)
+    protected function parseTokens($tokens, MessageCatalogue $catalog/*, string $filename*/)
     {
+        if (\func_num_args() < 3 && __CLASS__ !== \get_class($this) && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
+            @trigger_error(sprintf('The "%s()" method will have a new "string $filename" argument in version 5.0, not defining it is deprecated since Symfony 4.3.', __METHOD__), E_USER_DEPRECATED);
+        }
+        $filename = 2 < \func_num_args() ? \func_get_arg(2) : '';
+
         $tokenIterator = new \ArrayIterator($tokens);
 
         for ($key = 0; $key < $tokenIterator->count(); ++$key) {
@@ -237,6 +242,10 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
 
                 if ($message) {
                     $catalog->set($message, $this->prefix.$message, $domain);
+                    $metadata = $catalog->getMetadata($message, $domain) ?? [];
+                    $normalizedFilename = preg_replace('{[\\\\/]+}', '/', $filename);
+                    $metadata['sources'][] = $normalizedFilename.':'.$tokens[$key][2];
+                    $catalog->setMetadata($message, $metadata, $domain);
                     break;
                 }
             }

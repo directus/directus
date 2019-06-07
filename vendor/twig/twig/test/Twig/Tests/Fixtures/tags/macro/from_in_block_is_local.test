@@ -1,0 +1,18 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{% block foo %}
+    {%- from _self import input as linput %}
+{% endblock %}
+
+{% block bar %}
+    {{- linput('username') }}
+{% endblock %}
+
+{% macro input(name) -%}
+    <input name="{{ name }}">
+{% endmacro %}
+--DATA--
+return []
+--EXCEPTION--
+Twig\Error\SyntaxError: Unknown "linput" function in "index.twig" at line 7.

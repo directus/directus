@@ -1,7 +1,7 @@
 --TEST--
 "filter" tag applies a filter on its children
 --DEPRECATION--
-The "filter" tag is deprecated since Twig 2.9, use the "apply" tag instead.
+The "filter" tag in "index.twig" at line 2 is deprecated since Twig 2.9, use the "apply" tag instead.
 --TEMPLATE--
 {% filter upper %}
 Some text with a {{ var }}

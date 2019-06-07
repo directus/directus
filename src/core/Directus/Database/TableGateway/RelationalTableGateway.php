@@ -524,8 +524,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         $statusField = $tableSchema->getStatusField();
         $logEntryAction = ArrayUtils::get($params, 'revert') === true
-                            ? DirectusActivityTableGateway::ACTION_REVERT
-                            : DirectusActivityTableGateway::ACTION_UPDATE;
+            ? DirectusActivityTableGateway::ACTION_REVERT
+            : DirectusActivityTableGateway::ACTION_UPDATE;
 
         if ($statusField && $logEntryAction === DirectusActivityTableGateway::ACTION_UPDATE) {
             try {
@@ -591,6 +591,13 @@ class RelationalTableGateway extends BaseTableGateway
             $foreignTableSchema = $this->getTableSchema($foreignTableName);
             $primaryKey = $foreignTableSchema->getPrimaryKeyName();
             $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
+
+            // If a system table is joined, stop relational update here.
+            if (strpos($foreignTableName, 'directus_') === 0) {
+                // Once they're managed, remove the foreign collections from the record array
+                unset($parentRow[$fieldName]);
+                continue;
+            }
 
             if ($primaryKey && ArrayUtils::get($foreignRow, $this->deleteFlag) === true) {
                 $Where = new Where();
@@ -941,7 +948,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function createEntriesMetadata(array $entries, array $list = [])
     {
-        $allKeys = ['result_count', 'total_count', 'status'];
+        $allKeys = ['result_count', 'total_count', 'filter_count', 'status', 'page'];
         $tableSchema = $this->getTableSchema($this->table);
 
         $metadata = [];
@@ -969,6 +976,78 @@ class RelationalTableGateway extends BaseTableGateway
             $metadata['status_count'] = $statusCount;
         }
 
+        if (in_array('filter_count', $list) || in_array('page', $list)) {
+	        $metadata = $this->createMetadataPagination($metadata, $_GET);
+        }
+
+        return $metadata;
+    }
+    
+    /**
+     * Updates Metadata Object with Pagination
+     *
+     * @param $metadata - Existing metadata object
+     * @param $params - GET Parameters
+     *
+     * @return array
+     */
+    public function createMetadataPagination(array $metadata = [], array $params = [])
+    {
+	    if (empty($params)) $params = $_GET;
+	    
+	    $filtered = ArrayUtils::get($params, 'filter') || ArrayUtils::get($params, 'q');
+	    
+        $limit = intval( ArrayUtils::get($params, 'limit', 0) );
+        $page = intval( ArrayUtils::get($params, 'page', 1) ); 
+        $offset = intval( ArrayUtils::get($params, 'offset', -1) );            
+        
+        $total = intval(ArrayUtils::get($metadata, 'Published') ?: ArrayUtils::get($metadata, 'total_count'));
+        $rows = intval(ArrayUtils::get($metadata, 'result_count'));
+        $pathname = explode('?', ArrayUtils::get($_SERVER, 'REQUEST_URI'));
+        $url = trim(\Directus\get_url(), '/') . reset($pathname);
+        
+        if (!$rows || !$total) return $metadata;
+	    
+	    if ($filtered) {
+		    $filteredparams = array_merge($params, [
+		       "depth" => 0,
+		       "fields" => $this->primaryKeyFieldName,
+		       "limit" => -1
+	        ]);
+	        
+	        $entries = $this->fetchItems($filteredparams);
+	        $total = count($entries);	        
+	        $metadata['filter_count'] = $total;
+	    }
+		        
+        $limit = $limit < 1 ? $rows : $limit;
+        $pages = $total ? ceil($total / $limit) : 1;
+        $page = $page > $pages ? $pages : ( $page && $offset >= 0 ? ( floor($offset / $limit) + 1 ) : $page );
+        $offset = $offset >= 0 ? $offset : ($page ? (($page - 1) * $limit) : 0);
+        $next = $previous = $last = $first = -1;
+        
+        if ($pages > 1) {
+	        $next = ($pages > $page) ? ($offset + $limit) : null;
+	        $previous = ($offset >= $limit) ? ($offset - $limit) : ($limit * ( $pages - 1 ));
+	        $first = ($pages < 2 || $limit < 1) ? null : 0;
+	        $last = ($pages < 2) ? null : ( ($pages - 1) * $limit );
+        }
+	    
+	    $metadata = array_merge($metadata, [
+		    "limit" => $limit,
+		    "offset" => $offset,
+		    "page" => $page,
+		    "page_count" => $pages,
+		    "links" => [
+			    "self" => $url,
+			    "current" => "{$url}?" . urldecode( http_build_query(array_merge($params, ["page" => $page]))), 
+			    "next" => $next > 0 && $page < $pages ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $next, "page" => $page + 1])) ) ) : null, 
+			    "previous" => $previous >= 0 && $page > 1 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $previous, "page" => $page - 1])) ) ) : null,
+			    "first" => $first >= 0 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $first, "page" => 1])) ) ) : null, 
+			    "last" => $last > 0 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $last, "page" => $pages])) ) ) : null
+		    ]
+	    ]);
+	    
         return $metadata;
     }
 
@@ -1020,7 +1099,11 @@ class RelationalTableGateway extends BaseTableGateway
         $builder->orderBy($this->primaryKeyFieldName);
 
         try {
-            $this->enforceReadPermission($builder);
+            $this->enforceReadPermission($builder);            
+        
+            //If collection is directus_fields, also check permission of actual collection of which fields are retrieving        
+            if($this->getTable() == SchemaManager::COLLECTION_FIELDS && ArrayUtils::has($params['filter'], 'collection'))
+                $this->acl->enforceReadOnce(ArrayUtils::get($params['filter'], 'collection'));
         } catch (PermissionException $e) {
             $isForbiddenRead = $e instanceof ForbiddenCollectionReadException;
             $isUnableFindItems = $e instanceof UnableFindOwnerItemsException;
@@ -1220,7 +1303,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $relational = SchemaService::hasRelationship($nextTable, $nextColumn);
                 $columnsTable[] = $nextTable;
             }
-            
+
             // if one of the column in the list has not relationship
             // it will break the loop before going over all the columns
             // which we will call this as column not found
@@ -1231,7 +1314,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             // Remove the original filter column with dot-notation
             unset($filters[$column]);
-            
+
             //Prepare relational data for all the fields
             $columnRelationalData = [];
             foreach($filterColumns as $filterColumn){
@@ -1247,7 +1330,7 @@ class RelationalTableGateway extends BaseTableGateway
                     ];
                 }
             }
-            
+
             // Reverse all the columns from comments.author.id to id.author.comments
             // To filter from the most deep relationship to their parents
             $columns = explode('.', \Directus\column_identifier_reverse($column));
@@ -1264,19 +1347,19 @@ class RelationalTableGateway extends BaseTableGateway
             $query = new Builder($this->getAdapter());
             $mainTableObject = $this->getTableSchema($table);
             $selectColumn = $mainTableObject->getPrimaryField()->getName();
-            
+
             //check if column type is alias and relationship is O2M
             $previousRelation = isset($filterColumns[array_search($column, $filterColumns)-1])?$filterColumns[array_search($column, $filterColumns)-1]:'';
-            if ($previousRelation && $columnRelationalData[$previousRelation]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {                
+            if ($previousRelation && $columnRelationalData[$previousRelation]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {
                 $selectColumn = $columnRelationalData[$previousRelation]['field_many'];
             }
-            
+
             //get last relationship
             if ($mainColumn && !empty($mainColumn) && $columnRelationalData[$mainColumn]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {
                 $mainColumn = $mainTableObject->getPrimaryField()->getName();
             }
             $query->columns([$selectColumn]);
-            
+
             $query->from($table);
 
             $this->doFilter($query, $column, $condition, $table);
@@ -1446,8 +1529,8 @@ class RelationalTableGateway extends BaseTableGateway
             $relatedTable = $relationship->getCollectionMany();
             $relatedRightColumn = $relationship->getFieldMany();
             $tableSchema = SchemaService::getCollection($relatedTable);
-            $relatedTableColumns = $tableSchema->getFields();  
-            
+            $relatedTableColumns = $tableSchema->getFields();
+
             $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $value) {
                 foreach ($relatedTableColumns as $column) {
                     $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
@@ -1512,12 +1595,12 @@ class RelationalTableGateway extends BaseTableGateway
             if (isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList']) {
                 throw new Exception\ForbiddenFieldAccessException($column);
             }else if(isset($fieldReadBlackListDetails['statuses']) && !empty ($fieldReadBlackListDetails['statuses'])){
-                $blackListStatuses = array_merge($blackListStatuses,array_values($fieldReadBlackListDetails['statuses']));                
+                $blackListStatuses = array_merge($blackListStatuses,array_values($fieldReadBlackListDetails['statuses']));
             }
         }
-        $filters = $this->parseDotFilters($query, $filters);        
-        
-        foreach ($filters as $column => $conditions) {                        
+        $filters = $this->parseDotFilters($query, $filters);
+
+        foreach ($filters as $column => $conditions) {
             if ($conditions instanceof Filter) {
                 $column =  $conditions->getIdentifier();
                 $conditions = $conditions->getValue();

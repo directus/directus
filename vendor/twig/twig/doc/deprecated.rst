@@ -93,6 +93,13 @@ Interfaces
 * As of Twig 2.7, the ``Twig\Extension\InitRuntimeInterface`` interface is
   deprecated and will be removed in Twig 3.0.
 
+Extensions
+----------
+
+* As of Twig 2.11, the ``Twig\Extension\CoreExtension::setEscaper()`` and
+  ``Twig\Extension\CoreExtension::getEscapers()`` are deprecated. Use the same
+  methods on ``Twig\Extension\EscaperExtension`` instead.
+
 Miscellaneous
 -------------
 

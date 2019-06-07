@@ -3,6 +3,7 @@
 namespace Directus\Services;
 
 use Directus\Application\Container;
+use Directus\Database\Exception;
 use Directus\Database\Exception\CollectionNotManagedException;
 use Directus\Database\Exception\FieldAlreadyExistsException;
 use Directus\Database\Exception\FieldLengthNotSupportedException;
@@ -76,12 +77,6 @@ class TablesService extends AbstractService
 
     public function findAllFieldsByCollection($collectionName, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
-        }
-
-        // $this->tagResponseCache('tableColumnsSchema_'.$tableName);
-
         $this->validate(['collection' => $collectionName], ['collection' => 'required|string']);
 
         /** @var SchemaManager $schemaManager */
@@ -98,17 +93,27 @@ class TablesService extends AbstractService
             ]
         ]));
 
-        $result['data'] = $this->mergeMissingSchemaFields($collection, $result['data']);
+        $result = $this->mergeMissingSchemaFields($collection, $result);
 
-        return $result;
+        $data = [];
+        foreach($result as $resultDetails){            
+            if($this->getAcl()->isAdmin()){
+                $data[] = $resultDetails;
+            }else{
+                $fieldReadBlackListDetails = $this->getAcl()->getStatusesOnReadFieldBlacklist($collectionName,$resultDetails['field']);
+                if (!(isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList'])) {
+                    $data[] = $resultDetails;
+                }
+            }
+        }
+        
+        return ['data' => $data];
     }
 
     public function findAllFields(array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
-        }
-
+        $this->getAcl()->enforceReadOnce('directus_fields');
+        
         /** @var SchemaManager $schemaManager */
         $schemaManager = $this->container->get('schema_manager');
 
@@ -119,8 +124,20 @@ class TablesService extends AbstractService
         foreach ($fields as $field) {
             $data[] = $this->mergeSchemaField($field);
         }
-
-        return ['data' => $data];
+        
+        $response = [];
+        foreach($data as $fieldDetails){
+            if($this->getAcl()->isAdmin()){
+                $response[] = $fieldDetails;
+            }else{
+                $fieldReadBlackListDetails = $this->getAcl()->getStatusesOnReadFieldBlacklist($fieldDetails['collection'],$fieldDetails['field']);
+                if ($this->getAcl()->canReadOnce($fieldDetails['collection']) && !(isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList'])) {
+                    $response[] = $fieldDetails;
+                }
+            }
+        }
+        
+        return ['data' => $response];
     }
 
     public function find($name, array $params = [])
@@ -166,8 +183,11 @@ class TablesService extends AbstractService
 
     public function findField($collection, $field, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
+        $this->getAcl()->enforceReadOnce('directus_fields');
+        $this->getAcl()->enforceReadOnce($collection);        
+        $fieldReadBlackListDetails = $this->getAcl()->getStatusesOnReadFieldBlacklist($collection,$field);
+        if (isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList']) {
+            throw new Exception\ForbiddenFieldAccessException($field);
         }
 
         $this->validate([
@@ -221,11 +241,14 @@ class TablesService extends AbstractService
 
     public function findFields($collectionName, array $fieldsName, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
+        $this->getAcl()->enforceReadOnce('directus_fields');
+        $this->getAcl()->enforceReadOnce($collectionName);
+        foreach($fieldsName as $field){
+            $fieldReadBlackListDetails = $this->getAcl()->getStatusesOnReadFieldBlacklist($collectionName,$field);
+            if (isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList']) {
+                throw new Exception\ForbiddenFieldAccessException($field);
+            }
         }
-
-        // $this->tagResponseCache('tableColumnsSchema_'.$tableName);
         $this->validate(['fields' => $fieldsName], ['fields' => 'required|array']);
 
         /** @var SchemaManager $schemaManager */
@@ -250,12 +273,12 @@ class TablesService extends AbstractService
 
     public function deleteField($collection, $field, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
+        $this->getAcl()->enforceDelete('directus_fields');          
+        $this->getAcl()->enforceDelete($collection);  
+        $fieldWriteBlackListDetails = $this->getAcl()->getStatusesOnWriteFieldBlacklist($collection,$field);
+        if (isset($fieldWriteBlackListDetails['isWriteBlackList']) && $fieldWriteBlackListDetails['isWriteBlackList']) {
+            throw new Exception\ForbiddenFieldAccessException($field);
         }
-
-        $this->enforcePermissions('directus_fields', [], $params);
-
         $this->validate([
             'collection' => $collection,
             'field' => $field
@@ -503,12 +526,9 @@ class TablesService extends AbstractService
      */
     public function addColumn($collectionName, $columnName, array $data, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
-        }
-
-        $this->enforcePermissions('directus_fields', $data, $params);
-
+        $this->getAcl()->enforceCreate('directus_fields');          
+        $this->getAcl()->enforceCreate($collectionName);  
+        
         $data['field'] = $columnName;
         $data['collection'] = $collectionName;
         $this->validateFieldPayload($data, null, $params);
@@ -567,12 +587,13 @@ class TablesService extends AbstractService
      */
     public function changeColumn($collectionName, $fieldName, array $data, array $params = [])
     {
-        if (!$this->getAcl()->isAdmin()) {
-            throw new UnauthorizedException('Permission denied');
+        $this->getAcl()->enforceUpdate('directus_fields');          
+        $this->getAcl()->enforceUpdate($collectionName);
+        $fieldWriteBlackListDetails = $this->getAcl()->getStatusesOnWriteFieldBlacklist($collectionName,$fieldName);
+        if (isset($fieldWriteBlackListDetails['isWriteBlackList']) && $fieldWriteBlackListDetails['isWriteBlackList']) {
+            throw new Exception\ForbiddenFieldAccessException($fieldName);
         }
-
-        $this->enforcePermissions('directus_fields', $data, $params);
-
+        
         $data['field'] = $fieldName;
         $data['collection'] = $collectionName;
         $this->validateFieldPayload($data, array_keys($data), $params);

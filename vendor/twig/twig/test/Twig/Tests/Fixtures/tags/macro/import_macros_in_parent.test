@@ -1,0 +1,16 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{% import "macros" as m %}
+
+{{ m.hello() }}
+--TEMPLATE(macros)--
+{% extends "parent" %}
+--TEMPLATE(parent)--
+{% macro hello() %}
+    Test
+{% endmacro %}
+--DATA--
+return []
+--EXPECT--
+Test

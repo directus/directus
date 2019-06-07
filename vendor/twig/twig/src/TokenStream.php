@@ -73,9 +73,10 @@ final class TokenStream
         $token = $this->tokens[$this->current];
         if (!$token->test($type, $value)) {
             $line = $token->getLine();
-            throw new SyntaxError(sprintf('%sUnexpected token "%s" of value "%s" ("%s" expected%s).',
+            throw new SyntaxError(sprintf('%sUnexpected token "%s"%s ("%s" expected%s).',
                 $message ? $message.'. ' : '',
-                Token::typeToEnglish($token->getType()), $token->getValue(),
+                Token::typeToEnglish($token->getType()),
+                $token->getValue() ? sprintf(' of value "%s"', $token->getValue()) : '',
                 Token::typeToEnglish($type), $value ? sprintf(' with value "%s"', $value) : ''),
                 $line,
                 $this->source

@@ -640,18 +640,7 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            $preventNonAdminFromUpdateRoles = function (array $payload) use ($container) {
-                /** @var Acl $acl */
-                $acl = $container->get('acl');
-
-                if (!$acl->isAdmin()) {
-                    throw new ForbiddenException('You are not allowed to create, update or delete roles');
-                }
-            };
-
-            $emitter->addAction('item.create.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
-            $emitter->addAction('item.update.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
-            $emitter->addAction('item.delete.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
+            
             $generateExternalId = function (Payload $payload) {
                 // generate an external id if none is passed
                 if (!$payload->get('external_id')) {

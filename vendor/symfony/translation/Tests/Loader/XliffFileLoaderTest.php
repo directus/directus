@@ -84,7 +84,17 @@ class XliffFileLoaderTest extends TestCase
 
         $this->assertEquals(utf8_decode('föö'), $catalogue->get('bar', 'domain1'));
         $this->assertEquals(utf8_decode('bär'), $catalogue->get('foo', 'domain1'));
-        $this->assertEquals(['notes' => [['content' => utf8_decode('bäz')]], 'id' => '1'], $catalogue->getMetadata('foo', 'domain1'));
+        $this->assertEquals(
+            [
+                'source' => 'foo',
+                'notes' => [['content' => utf8_decode('bäz')]],
+                'id' => '1',
+                'file' => [
+                    'original' => 'file.ext',
+                ],
+            ],
+            $catalogue->getMetadata('foo', 'domain1')
+        );
     }
 
     public function testTargetAttributesAreStoredCorrectly()
@@ -164,11 +174,44 @@ class XliffFileLoaderTest extends TestCase
         $loader = new XliffFileLoader();
         $catalogue = $loader->load(__DIR__.'/../fixtures/withnote.xlf', 'en', 'domain1');
 
-        $this->assertEquals(['notes' => [['priority' => 1, 'content' => 'foo']], 'id' => '1'], $catalogue->getMetadata('foo', 'domain1'));
+        $this->assertEquals(
+            [
+                'source' => 'foo',
+                'notes' => [['priority' => 1, 'content' => 'foo']],
+                'id' => '1',
+                'file' => [
+                    'original' => 'file.ext',
+                ],
+            ],
+            $catalogue->getMetadata('foo', 'domain1')
+        );
         // message without target
-        $this->assertEquals(['notes' => [['content' => 'bar', 'from' => 'foo']], 'id' => '2'], $catalogue->getMetadata('extra', 'domain1'));
+        $this->assertEquals(
+            [
+                'source' => 'extrasource',
+                'notes' => [['content' => 'bar', 'from' => 'foo']],
+                'id' => '2',
+                'file' => [
+                    'original' => 'file.ext',
+                ],
+            ],
+            $catalogue->getMetadata('extra', 'domain1')
+        );
         // message with empty target
-        $this->assertEquals(['notes' => [['content' => 'baz'], ['priority' => 2, 'from' => 'bar', 'content' => 'qux']], 'id' => '123'], $catalogue->getMetadata('key', 'domain1'));
+        $this->assertEquals(
+            [
+                'source' => 'key',
+                'notes' => [
+                    ['content' => 'baz'],
+                    ['priority' => 2, 'from' => 'bar', 'content' => 'qux'],
+                ],
+                'id' => '123',
+                'file' => [
+                    'original' => 'file.ext',
+                ],
+            ],
+            $catalogue->getMetadata('key', 'domain1')
+        );
     }
 
     public function testLoadVersion2()
@@ -256,5 +299,33 @@ class XliffFileLoaderTest extends TestCase
 
         $this->assertSame('processed', $metadata['notes'][0]['category']);
         $this->assertSame('true', $metadata['notes'][0]['content']);
+    }
+
+    public function testLoadWithMultipleFileNodes()
+    {
+        $loader = new XliffFileLoader();
+        $catalogue = $loader->load(__DIR__.'/../fixtures/resources-multi-files.xlf', 'en', 'domain1');
+
+        $this->assertEquals(
+            [
+                'source' => 'foo',
+                'id' => '1',
+                'file' => [
+                    'original' => 'file.ext',
+                ],
+            ],
+            $catalogue->getMetadata('foo', 'domain1')
+        );
+        $this->assertEquals(
+            [
+                'source' => 'test',
+                'notes' => [['content' => 'note']],
+                'id' => '4',
+                'file' => [
+                    'original' => 'otherfile.ext',
+                ],
+            ],
+            $catalogue->getMetadata('test', 'domain1')
+        );
     }
 }

@@ -30,13 +30,14 @@ final class SpacelessTokenParser extends AbstractTokenParser
 {
     public function parse(Token $token)
     {
-        @trigger_error('The spaceless tag is deprecated since Twig 2.7, use the spaceless filter instead.', E_USER_DEPRECATED);
-
+        $stream = $this->parser->getStream();
         $lineno = $token->getLine();
 
-        $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
+        @trigger_error(sprintf('The spaceless tag in "%s" at line %d is deprecated since Twig 2.7, use the spaceless filter instead.', $stream->getSourceContext()->getName(), $lineno), E_USER_DEPRECATED);
+
+        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
         $body = $this->parser->subparse([$this, 'decideSpacelessEnd'], true);
-        $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
 
         return new SpacelessNode($body, $lineno, $this->getTag());
     }

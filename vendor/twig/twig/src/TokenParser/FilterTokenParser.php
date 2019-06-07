@@ -30,21 +30,24 @@ final class FilterTokenParser extends AbstractTokenParser
 {
     public function parse(Token $token)
     {
-        @trigger_error('The "filter" tag is deprecated since Twig 2.9, use the "apply" tag instead.', E_USER_DEPRECATED);
+        $stream = $this->parser->getStream();
+        $lineno = $token->getLine();
+
+        @trigger_error(sprintf('The "filter" tag in "%s" at line %d is deprecated since Twig 2.9, use the "apply" tag instead.', $stream->getSourceContext()->getName(), $lineno), E_USER_DEPRECATED);
 
         $name = $this->parser->getVarName();
-        $ref = new BlockReferenceExpression(new ConstantExpression($name, $token->getLine()), null, $token->getLine(), $this->getTag());
+        $ref = new BlockReferenceExpression(new ConstantExpression($name, $lineno), null, $lineno, $this->getTag());
 
         $filter = $this->parser->getExpressionParser()->parseFilterExpressionRaw($ref, $this->getTag());
-        $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
 
         $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
-        $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
 
-        $block = new BlockNode($name, $body, $token->getLine());
+        $block = new BlockNode($name, $body, $lineno);
         $this->parser->setBlock($name, $block);
 
-        return new PrintNode($filter, $token->getLine(), $this->getTag());
+        return new PrintNode($filter, $lineno, $this->getTag());
     }
 
     public function decideBlockEnd(Token $token)

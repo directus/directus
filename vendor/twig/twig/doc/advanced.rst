@@ -863,49 +863,6 @@ It is now possible to move the runtime logic to a new
         }
     }
 
-Overloading
------------
-
-To overload an already defined filter, test, operator, global variable, or
-function, re-define it in an extension and register it **as late as
-possible** (order matters)::
-
-    class MyCoreExtension extends \Twig\Extension\AbstractExtension
-    {
-        public function getFilters()
-        {
-            return [
-                new \Twig\TwigFilter('date', [$this, 'dateFilter']),
-            ];
-        }
-
-        public function dateFilter($timestamp, $format = 'F j, Y H:i')
-        {
-            // do something different from the built-in date filter
-        }
-    }
-
-    $twig = new \Twig\Environment($loader);
-    $twig->addExtension(new MyCoreExtension());
-
-Here, we have overloaded the built-in ``date`` filter with a custom one.
-
-If you do the same on the ``\Twig\Environment`` itself, beware that it takes
-precedence over any other registered extensions::
-
-    $twig = new \Twig\Environment($loader);
-    $twig->addFilter(new \Twig\TwigFilter('date', function ($timestamp, $format = 'F j, Y H:i') {
-        // do something different from the built-in date filter
-    }));
-    // the date filter will come from the above registration, not
-    // from the registered extension below
-    $twig->addExtension(new MyCoreExtension());
-
-.. caution::
-
-    Note that overloading the built-in Twig elements is not recommended as it
-    might be confusing.
-
 Testing an Extension
 --------------------
 

@@ -525,6 +525,20 @@ EOF;
         $this->parser->parse($yaml, Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE);
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Support for mapping keys in multi-line blocks is deprecated since Symfony 4.3 and will throw a ParseException in 5.0.
+     */
+    public function testMappingKeyInMultiLineStringTriggersDeprecationNotice()
+    {
+        $yaml = <<<'EOF'
+data:
+    dbal:wrong
+        default_connection: monolith
+EOF;
+        $this->parser->parse($yaml);
+    }
+
     public function testCanParseContentWithTrailingSpaces()
     {
         $yaml = "items:  \n  foo: bar";

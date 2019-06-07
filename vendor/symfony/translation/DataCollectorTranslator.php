@@ -68,9 +68,9 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
     {
         if ($this->translator instanceof TranslatorInterface) {
             $trans = $this->translator->trans($id, ['%count%' => $number] + $parameters, $domain, $locale);
+        } else {
+            $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
         }
-
-        $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
 
         $this->collectMessage($locale, $domain, $id, $trans, ['%count%' => $number] + $parameters);
 

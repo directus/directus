@@ -1,0 +1,28 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{%- from _self import input %}
+
+{% block foo %}
+    {%- from "macros" import input %}
+    {{- input('username') }}
+{% endblock %}
+
+{% block bar %}
+    {{- input('username') }}
+{% endblock %}
+
+{% macro input(name) -%}
+    <input name="{{ name }}">
+{% endmacro %}
+--TEMPLATE(macros)--
+{% macro input(name) %}
+    <input name="{{ name }}" value="local">
+{% endmacro %}
+--DATA--
+return []
+--EXPECT--
+<input name="username" value="local">
+
+
+<input name="username">

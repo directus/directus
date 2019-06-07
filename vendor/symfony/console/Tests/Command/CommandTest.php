@@ -188,7 +188,7 @@ class CommandTest extends TestCase
     public function testSetAliasesNull()
     {
         $command = new \TestCommand();
-        $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $command->setAliases(null);
     }
 
@@ -321,7 +321,7 @@ class CommandTest extends TestCase
         $command = $this->getMockBuilder('TestCommand')->setMethods(['execute'])->getMock();
         $command->expects($this->once())
             ->method('execute')
-            ->will($this->returnValue('2.3'));
+            ->willReturn('2.3');
         $exitCode = $command->run(new StringInput(''), new NullOutput());
         $this->assertSame(2, $exitCode, '->run() returns integer exit code (casts numeric to int)');
     }

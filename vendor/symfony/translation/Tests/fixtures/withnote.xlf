@@ -7,8 +7,8 @@
         <target>bar</target>
         <note priority="1">foo</note>
       </trans-unit>
-      <trans-unit id="2">
-        <source>extra</source>
+      <trans-unit id="2" resname="extra">
+        <source>extrasource</source>
         <note from="foo">bar</note>
       </trans-unit>
       <trans-unit id="123">

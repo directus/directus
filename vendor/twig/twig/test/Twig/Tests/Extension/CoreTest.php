@@ -10,7 +10,6 @@
  */
 
 use Twig\Environment;
-use Twig\Extension\CoreExtension;
 use Twig\Loader\LoaderInterface;
 
 class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
@@ -124,34 +123,6 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
         $output = iconv('ISO-8859-1', 'UTF-8', twig_reverse_filter($twig, $input));
 
         $this->assertEquals($output, 'éÄ');
-    }
-
-    /**
-     * @dataProvider provideCustomEscaperCases
-     */
-    public function testCustomEscaper($expected, $string, $strategy)
-    {
-        $twig = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
-        $twig->getExtension(CoreExtension::class)->setEscaper('foo', 'foo_escaper_for_test');
-
-        $this->assertSame($expected, twig_escape_filter($twig, $string, $strategy));
-    }
-
-    public function provideCustomEscaperCases()
-    {
-        return [
-            ['fooUTF-8', 'foo', 'foo'],
-            ['UTF-8', null, 'foo'],
-            ['42UTF-8', 42, 'foo'],
-        ];
-    }
-
-    /**
-     * @expectedException \Twig\Error\RuntimeError
-     */
-    public function testUnknownCustomEscaper()
-    {
-        twig_escape_filter(new Environment($this->getMockBuilder(LoaderInterface::class)->getMock()), 'foo', 'bar');
     }
 
     /**
@@ -278,11 +249,6 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
             [[], new \ArrayIterator([1, 2]), 3],
         ];
     }
-}
-
-function foo_escaper_for_test(Environment $env, $string, $charset)
-{
-    return $string.$charset;
 }
 
 final class CoreTestIteratorAggregate implements \IteratorAggregate

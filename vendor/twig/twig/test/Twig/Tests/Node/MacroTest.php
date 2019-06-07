@@ -43,6 +43,7 @@ class Twig_Tests_Node_MacroTest extends NodeTestCase
 // line 1
 public function macro_foo(\$__foo__ = null, \$__bar__ = "Foo", ...\$__varargs__)
 {
+    \$macros = \$this->macros;
     \$context = \$this->env->mergeGlobals([
         "foo" => \$__foo__,
         "bar" => \$__bar__,

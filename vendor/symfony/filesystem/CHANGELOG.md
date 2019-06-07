@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+4.3.0
+-----
+
+ * support for passing arrays to `Filesystem::dumpFile()` is deprecated and will be removed in 5.0
+ * support for passing arrays to `Filesystem::appendToFile()` is deprecated and will be removed in 5.0
+
 4.0.0
 -----
 

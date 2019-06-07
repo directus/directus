@@ -26,10 +26,20 @@
 {% for k, v in ita|filter(v => v > offset) -%}
     {{ k }} = {{ v }}
 {% endfor %}
+
+{% for k, v in xml|filter(x => true) %}
+{{ k }}/{{ v }}
+{% endfor %}
+
+{# we can iterate more than once #}
+{% for k, v in xml|filter(x => true) %}
+{{ k }}/{{ v }}
+{% endfor %}
 --DATA--
 return [
     'it' => new \ArrayIterator(['a' => 1, 'b' => 2, 'c' => 5, 'd' => 8]),
     'ita' => new IteratorAggregateStub(['a' => 1, 'b' => 2, 'c' => 5, 'd' => 8]),
+    'xml' => new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><doc><elem>foo</elem><elem>bar</elem><elem>baz</elem></doc>'),
 ]
 --EXPECT--
 1 = 5
@@ -50,3 +60,11 @@ d = 8
 
 c = 5
 d = 8
+
+elem/foo
+elem/bar
+elem/baz
+
+elem/foo
+elem/bar
+elem/baz

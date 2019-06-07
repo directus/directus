@@ -1,3 +1,27 @@
+* 2.11.2 (2019-06-05)
+
+ * fixed macro auto-import
+
+* 2.11.1 (2019-06-04)
+
+ * added support for "Twig\Markup" instances in the "in" test (again)
+ * allowed string operators as variables names in assignments
+ * fixed support for macros defined in parent templates
+
+* 2.11.0 (2019-05-31)
+
+ * added the possibility to register classes/interfaces as being safe for the escaper ("EscaperExtension::addSafeClass()")
+ * deprecated CoreExtension::setEscaper() and CoreExtension::getEscapers() in favor of the same methods on EscaperExtension
+ * macros are now auto-imported in the template they are defined (under the ``_self`` variable)
+ * added support for macros on "is defined" tests
+ * fixed macros "import" when using the same name in the parent and child templates
+ * fixed recursive macros
+ * macros imported "globally" in a template are now available in macros without re-importing them
+ * fixed the "filter" filter when the argument is \Traversable but does not implement \Iterator (\SimpleXmlElement for instance)
+ * fixed a PHP fatal error when calling a macro imported in a block in a nested block
+ * fixed a PHP fatal error when calling a macro imported in the template in another macro
+ * fixed wrong error message on "import" and "from"
+
 * 2.10.0 (2019-05-14)
 
  * deprecated "if" conditions on "for" tags
@@ -225,7 +249,23 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.41.0 (2019-XX-XX)
+* 1.42.2 (2019-XX-XX)
+
+ * n/a
+
+* 1.42.1 (2019-06-04)
+
+ * added support for "Twig\Markup" instances in the "in" test (again)
+ * allowed string operators as variables names in assignments
+
+* 1.42.0 (2019-05-31)
+
+ * fixed the "filter" filter when the argument is \Traversable but does not implement \Iterator (\SimpleXmlElement for instance)
+ * fixed a PHP fatal error when calling a macro imported in a block in a nested block
+ * fixed a PHP fatal error when calling a macro imported in the template in another macro
+ * fixed wrong error message on "import" and "from"
+
+* 1.41.0 (2019-05-14)
 
  * fixed support for PHP 7.4
  * added "filter", "map", and "reduce" filters (and support for arrow functions)
