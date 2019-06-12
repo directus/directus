@@ -58,7 +58,7 @@ Directus mirrors _your_ actual database so it will automatically stay in sync wi
 
 #### Direct Access
 
-This database-first approach means that you have the option to completely bypass Directus if needed. Connecting your application _directly_ to the database means Directus is completely bypassed, removing even the slightest possiblility of a bottleneck, and giving you the unbridled power of complex SQL queries.
+This database-first approach means that you have the option to completely bypass Directus if needed. Connecting your application _directly_ to the database means Directus is completely bypassed, removing even the slightest possibility of a bottleneck, and giving you the unbridled power of complex SQL queries.
 
 #### Portability and Transparency
 
