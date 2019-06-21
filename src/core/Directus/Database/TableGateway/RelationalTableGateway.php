@@ -592,11 +592,10 @@ class RelationalTableGateway extends BaseTableGateway
             $primaryKey = $foreignTableSchema->getPrimaryKeyName();
             $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
 
-            // If a system table is joined, stop relational update here.
-            if (strpos($foreignTableName, 'directus_') === 0) {
-                // Once they're managed, remove the foreign collections from the record array
-                unset($parentRow[$fieldName]);
-                continue;
+            // TODO : Need to redevelop this logic.
+            if ($field->getType() == "file" && isset($parentRow[$fieldName][$primaryKey])) {
+                $parentRow[$fieldName] = $parentRow[$fieldName][$primaryKey];
+                return $parentRow;
             }
 
             if ($primaryKey && ArrayUtils::get($foreignRow, $this->deleteFlag) === true) {
@@ -982,7 +981,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         return $metadata;
     }
-    
+
     /**
      * Updates Metadata Object with Pagination
      *
@@ -994,45 +993,45 @@ class RelationalTableGateway extends BaseTableGateway
     public function createMetadataPagination(array $metadata = [], array $params = [])
     {
 	    if (empty($params)) $params = $_GET;
-	    
+
 	    $filtered = ArrayUtils::get($params, 'filter') || ArrayUtils::get($params, 'q');
-	    
+
         $limit = intval( ArrayUtils::get($params, 'limit', 0) );
-        $page = intval( ArrayUtils::get($params, 'page', 1) ); 
-        $offset = intval( ArrayUtils::get($params, 'offset', -1) );            
-        
+        $page = intval( ArrayUtils::get($params, 'page', 1) );
+        $offset = intval( ArrayUtils::get($params, 'offset', -1) );
+
         $total = intval(ArrayUtils::get($metadata, 'Published') ?: ArrayUtils::get($metadata, 'total_count'));
         $rows = intval(ArrayUtils::get($metadata, 'result_count'));
         $pathname = explode('?', ArrayUtils::get($_SERVER, 'REQUEST_URI'));
         $url = trim(\Directus\get_url(), '/') . reset($pathname);
-        
+
         if (!$rows || !$total) return $metadata;
-	    
+
 	    if ($filtered) {
 		    $filteredparams = array_merge($params, [
 		       "depth" => 0,
 		       "fields" => $this->primaryKeyFieldName,
 		       "limit" => -1
 	        ]);
-	        
+
 	        $entries = $this->fetchItems($filteredparams);
-	        $total = count($entries);	        
+	        $total = count($entries);
 	        $metadata['filter_count'] = $total;
 	    }
-		        
+
         $limit = $limit < 1 ? $rows : $limit;
         $pages = $total ? ceil($total / $limit) : 1;
         $page = $page > $pages ? $pages : ( $page && $offset >= 0 ? ( floor($offset / $limit) + 1 ) : $page );
         $offset = $offset >= 0 ? $offset : ($page ? (($page - 1) * $limit) : 0);
         $next = $previous = $last = $first = -1;
-        
+
         if ($pages > 1) {
 	        $next = ($pages > $page) ? ($offset + $limit) : null;
 	        $previous = ($offset >= $limit) ? ($offset - $limit) : ($limit * ( $pages - 1 ));
 	        $first = ($pages < 2 || $limit < 1) ? null : 0;
 	        $last = ($pages < 2) ? null : ( ($pages - 1) * $limit );
         }
-	    
+
 	    $metadata = array_merge($metadata, [
 		    "limit" => $limit,
 		    "offset" => $offset,
@@ -1040,14 +1039,14 @@ class RelationalTableGateway extends BaseTableGateway
 		    "page_count" => $pages,
 		    "links" => [
 			    "self" => $url,
-			    "current" => "{$url}?" . urldecode( http_build_query(array_merge($params, ["page" => $page]))), 
-			    "next" => $next > 0 && $page < $pages ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $next, "page" => $page + 1])) ) ) : null, 
+			    "current" => "{$url}?" . urldecode( http_build_query(array_merge($params, ["page" => $page]))),
+			    "next" => $next > 0 && $page < $pages ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $next, "page" => $page + 1])) ) ) : null,
 			    "previous" => $previous >= 0 && $page > 1 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $previous, "page" => $page - 1])) ) ) : null,
-			    "first" => $first >= 0 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $first, "page" => 1])) ) ) : null, 
+			    "first" => $first >= 0 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $first, "page" => 1])) ) ) : null,
 			    "last" => $last > 0 ? ( "{$url}?" . urldecode( http_build_query(array_merge($params, ["offset" => $last, "page" => $pages])) ) ) : null
 		    ]
 	    ]);
-	    
+
         return $metadata;
     }
 
@@ -1099,9 +1098,9 @@ class RelationalTableGateway extends BaseTableGateway
         $builder->orderBy($this->primaryKeyFieldName);
 
         try {
-            $this->enforceReadPermission($builder);            
-        
-            //If collection is directus_fields, also check permission of actual collection of which fields are retrieving        
+            $this->enforceReadPermission($builder);
+
+            //If collection is directus_fields, also check permission of actual collection of which fields are retrieving
             if($this->getTable() == SchemaManager::COLLECTION_FIELDS && ArrayUtils::has($params['filter'], 'collection'))
                 $this->acl->enforceReadOnce(ArrayUtils::get($params['filter'], 'collection'));
         } catch (PermissionException $e) {

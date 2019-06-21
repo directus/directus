@@ -44,7 +44,7 @@ class Settings extends Route
          * Get interface based input
          */
         $inputData = $this->getInterfaceBasedInput($request,$payload['key']);
-        
+
         $service = new SettingsService($this->container);
         $responseData = $service->create(
             $inputData,
@@ -71,7 +71,7 @@ class Settings extends Route
 
         /**
          * Get all the fields of settings table to check the interface
-         * 
+         *
          */
 
         $fieldData = $service->findAllFields(
@@ -152,7 +152,7 @@ class Settings extends Route
         $fieldData = $service->findAllFields(
             $request->getQueryParams()
         );
-        
+
         $inputData = $request->getParsedBody();
         foreach($fieldData['data'] as $key => $value){
             if($value['field'] == $setting){
@@ -192,12 +192,13 @@ class Settings extends Route
             return $this->batch($request, $response);
         }
 
+        $inputData = $request->getParsedBody();
         $service = new SettingsService($this->container);
 
         /**
          * Get the object of current setting from its setting to check the interface.
-         * 
-         */        
+         *
+         */
         $serviceData = $service->findByIds(
             $request->getAttribute('id'),
             $request->getQueryParams()
@@ -206,18 +207,18 @@ class Settings extends Route
 
         /**
          * Get the interface based input
-         * 
+         *
          */
-    
+
         $inputData = $this->getInterfaceBasedInput($request,$serviceData['data']['key']);
         $responseData = $service->update(
             $request->getAttribute('id'),
             $inputData,
             $request->getQueryParams()
         );
-        
+
         $responseData['data']['value'] = $payload['value'];
-       
+
         return $this->responseWithData($request, $response, $responseData);
     }
 
