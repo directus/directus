@@ -44,11 +44,7 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
         if ($node instanceof ModuleNode) {
             $this->inAModule = false;
             if ($this->hasMacroCalls) {
-                $body = [new ImportNode(new NameExpression('_self', 0), new AssignNameExpression('_self', 0), 0, 'import', true)];
-                foreach ($node->getNode('body') as $n) {
-                    $body[] = $n;
-                }
-                $node->setNode('body', new Node($body));
+                $node->getNode('constructor_end')->setNode('_auto_macro_import', new ImportNode(new NameExpression('_self', 0), new AssignNameExpression('_self', 0), 0, 'import', true));
             }
         } elseif ($this->inAModule) {
             if (

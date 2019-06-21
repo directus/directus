@@ -1,0 +1,13 @@
+schema {
+  query: Query
+  mutation: Calc
+}
+
+type Calc {
+  sum(x: Int, y: Int): Int
+}
+
+type Query {
+  echo(message: String): String
+}
+

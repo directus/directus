@@ -33,11 +33,11 @@ class Local extends AbstractAdapter
      */
     protected static $permissions = [
         'file' => [
-            'public'  => 0644,
+            'public' => 0644,
             'private' => 0600,
         ],
-        'dir'  => [
-            'public'  => 0755,
+        'dir' => [
+            'public' => 0755,
             'private' => 0700,
         ],
     ];
@@ -297,6 +297,7 @@ class Local extends AbstractAdapter
     public function getMetadata($path)
     {
         $location = $this->applyPathPrefix($path);
+        clearstatcache(false, $location);
         $info = new SplFileInfo($location);
 
         return $this->normalizeFileInfo($info);

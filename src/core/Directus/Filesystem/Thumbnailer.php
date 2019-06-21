@@ -49,13 +49,14 @@ class Thumbnailer {
      *
      * @throws Exception
      */
-    public function __construct(Filesystem $main, Filesystem $thumb, array $config, $path = '')
+    public function __construct(Filesystem $main, Filesystem $thumb, array $config, $path = '', array $params)
     {
         try {
             // $this->files = $files;
             $this->filesystem = $main;
             $this->filesystemThumb = $thumb;
             $this->config = $config;
+            $this->params = $params;
 
             $this->thumbnailParams = $this->extractThumbnailParams($path);
 
@@ -106,8 +107,8 @@ class Thumbnailer {
     public function get()
     {
         try {
-            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->fileName) ) {
-                $img = $this->filesystemThumb->read($this->thumbnailDir . '/' . $this->fileName);
+            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName) ) {
+                $img = $this->filesystemThumb->read($this->thumbnailDir . '/' . $this->thumbnailFileName);
             }
 
             return isset($img) && $img ? $img : null;
@@ -127,8 +128,11 @@ class Thumbnailer {
     public function getThumbnailMimeType()
     {
         try {
-            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->fileName) ) {
-                $img = Image::make($this->filesystemThumb->read($this->thumbnailDir . '/' . $this->fileName));
+            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName) ) {
+                if(strtolower(pathinfo($this->thumbnailFileName, PATHINFO_EXTENSION)) === 'webp') {
+                    return 'image/webp';
+                }
+                $img = Image::make($this->filesystemThumb->read($this->thumbnailDir . '/' . $this->thumbnailFileName));
                 return $img->mime();
             }
 
@@ -166,8 +170,8 @@ class Thumbnailer {
                 $img->resizeCanvas($this->width, $this->height, ArrayUtils::get($options, 'position', 'center'), ArrayUtils::get($options, 'resizeRelative', false), ArrayUtils::get($options, 'canvasBackground', [255, 255, 255, 0]));
             }
 
-            $encodedImg = (string) $img->encode(ArrayUtils::get($this->thumbnailParams, 'fileExt'), ($this->quality ? $this->translateQuality($this->quality) : null));
-            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->fileName, $encodedImg);
+            $encodedImg = (string) $img->encode($this->format, ($this->quality ? $this->translateQuality($this->quality) : null));
+            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailFileName, $encodedImg);
 
             return $encodedImg;
         }
@@ -197,8 +201,8 @@ class Thumbnailer {
             // resize/crop image
             $img->fit($this->width, $this->height, function($constraint){}, ArrayUtils::get($options, 'position', 'center'));
 
-            $encodedImg = (string) $img->encode(ArrayUtils::get($this->thumbnailParams, 'fileExt'), ($this->quality ? $this->translateQuality($this->quality) : null));
-            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->fileName, $encodedImg);
+            $encodedImg = (string) $img->encode($this->format, ($this->quality ? $this->translateQuality($this->quality) : null));
+            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailFileName, $encodedImg);
 
             return $encodedImg;
         }
@@ -257,8 +261,27 @@ class Thumbnailer {
         }
 
         // Set thumbnail filename parameters
-        $thumbnailParams['fileName'] = $filename;
         $thumbnailParams['fileExt'] = $ext;
+        $thumbnailParams['fileName'] = $filename;
+        $format = strtolower(ArrayUtils::get($this->params, 'format') ?: $ext);
+
+        if (! $this->isSupportedFileExtension($format)) {
+            throw new Exception('Invalid file format.');
+        }
+
+        // Check format against image extension
+        if(
+            $format !== NULL &&
+            strtolower($ext) !== $format &&
+            !(
+                ($format === 'jpeg' || $format === 'jpg') &&
+                (strtolower($ext) === 'jpeg' || strtolower($ext) === 'jpg')
+            )
+        ) {
+            $thumbnailParams['thumbnailFileName'] = $name . '.' . $format;
+        } else {
+            $thumbnailParams['thumbnailFileName'] = $filename;
+        }
 
         return $thumbnailParams;
     }

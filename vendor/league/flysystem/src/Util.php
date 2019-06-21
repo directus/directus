@@ -137,7 +137,8 @@ class Util
      *
      * @return string $path
      */
-    protected static function removeFunkyWhiteSpace($path) {
+    protected static function removeFunkyWhiteSpace($path)
+    {
         // We do this check in a loop, since removing invalid unicode characters
         // can lead to new characters being created.
         while (preg_match('#\p{C}+|^\./#u', $path)) {
@@ -175,7 +176,7 @@ class Util
     /**
      * Guess MIME Type based on the path of the file and it's content.
      *
-     * @param string $path
+     * @param string          $path
      * @param string|resource $content
      *
      * @return string|null MIME Type or NULL if no extension detected

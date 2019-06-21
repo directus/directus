@@ -1,3 +1,8 @@
+* 2.11.3 (2019-06-18)
+
+ * fixed the filter filter (allow the result to be used several times)
+ * fixed macro auto-import when a template contains only macros
+
 * 2.11.2 (2019-06-05)
 
  * fixed macro auto-import
@@ -251,7 +256,7 @@
 
 * 1.42.2 (2019-XX-XX)
 
- * n/a
+ * Display partial output (PHP buffer) when an error occurs in debug mode
 
 * 1.42.1 (2019-06-04)
 

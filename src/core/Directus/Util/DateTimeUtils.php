@@ -319,4 +319,24 @@ class DateTimeUtils extends \DateTime
     {
         return clone $this;
     }
+
+    /**
+     * Check for valid date formate
+     *
+     * @return boolean
+     */
+
+    public static function isValidDate($date, $format= 'Y-m-d'){
+        return $date == date($format, strtotime($date));
+    }
+
+    /**
+     * Check for valid datetime formate
+     *
+     * @return boolean
+     */
+
+    public static function isValidDateTime($date, $format= 'Y-m-d H:i:s'){
+        return $date == date($format, strtotime($date));
+    }
 }

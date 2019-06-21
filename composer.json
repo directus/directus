@@ -38,14 +38,16 @@
     "ext-exif": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "webonyx/graphql-php": "^0.13.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7.25"
   },
   "suggest": {
     "paragonie/random_compat": "Generates cryptographically more secure pseudo-random bytes",
-    "league/flysystem-aws-s3-v3": "Enables the usage of Amazon S3 adapter for storage"
+    "league/flysystem-aws-s3-v3": "Enables the usage of Amazon S3 adapter for storage",
+    "aliyuncs/aliyun-oss-flysystem": "Enables the usage of Aliyun OSS adapter for storage"
   },
   "autoload": {
     "psr-4": {

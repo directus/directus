@@ -18,21 +18,18 @@ class CollectionPresetsSeeder extends AbstractSeed
             [
                 'collection' => 'directus_activity',
                 'view_type' => 'tabular',
+                'view_type' => 'timeline',
                 'view_query' => json_encode([
-                    'tabular' => [
-                        'sort' => '-action_on',
-                        'fields' => 'action,action_by,action_on,collection,item'
+                    'timeline' => [
+                      'sort' => '-action_on'
                     ]
                 ]),
                 'view_options' => json_encode([
-                    'tabular' => [
-                        'widths' => [
-                            'action' => 170,
-                            'action_by' => 170,
-                            'action_on' => 180,
-                            'collection' => 200,
-                            'item' => 200
-                        ]
+                    'timeline' => [
+                        'date' => 'action_on',
+                        'title' => '{{ action_by.first_name }} {{ action_by.last_name }} ({{ action }})',
+                        'content' => 'action_by',
+                        'color' => 'action'
                     ]
                 ])
             ],

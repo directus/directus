@@ -16,6 +16,7 @@ class Thumbnail
         'jpeg',
         'gif',
         'png',
+	    'webp'
     ];
 
     /**
@@ -89,7 +90,7 @@ class Thumbnail
         }
 
         // Preserve transperancy for gifs and pngs
-        if ($format == 'gif' || $format == 'png') {
+        if ($format == 'gif' || $format == 'png' || $format == 'webp') {
             imagealphablending($imgResized, false);
             imagesavealpha($imgResized, true);
             $transparent = imagecolorallocatealpha($imgResized, 255, 255, 255, 127);
@@ -139,6 +140,9 @@ class Thumbnail
                 break;
             case 'png':
                 imagepng($img, $path);
+                break;
+	        case 'webp':
+                imagewebp($img, $path, $quality);
                 break;
             case 'pdf':
             case 'psd':

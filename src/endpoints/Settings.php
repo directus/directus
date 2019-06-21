@@ -6,8 +6,8 @@ use Directus\Application\Application;
 use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
 use Directus\Application\Route;
-use function Directus\regex_numeric_ids;
 use Directus\Services\SettingsService;
+use function Directus\regex_numeric_ids;
 
 class Settings extends Route
 {
@@ -19,10 +19,10 @@ class Settings extends Route
         $app->post('', [$this, 'create']);
         $app->get('', [$this, 'all']);
         $app->get('/fields', [$this, 'fields']);
-        $app->get('/{id:' . regex_numeric_ids()  . '}', [$this, 'read']);
-        $app->patch('/{id:' . regex_numeric_ids()  . '}', [$this, 'update']);
+        $app->get('/{id:' . regex_numeric_ids() . '}', [$this, 'read']);
+        $app->patch('/{id:' . regex_numeric_ids() . '}', [$this, 'update']);
         $app->patch('', [$this, 'update']);
-        $app->delete('/{id:' . regex_numeric_ids()  . '}', [$this, 'delete']);
+        $app->delete('/{id:' . regex_numeric_ids() . '}', [$this, 'delete']);
     }
 
     /**
@@ -43,8 +43,8 @@ class Settings extends Route
         /**
          * Get interface based input
          */
-        $inputData = $this->getInterfaceBasedInput($request,$payload['key']);
-        
+        $inputData = $this->getInterfaceBasedInput($request, $payload['key']);
+
         $service = new SettingsService($this->container);
         $responseData = $service->create(
             $inputData,
@@ -71,7 +71,7 @@ class Settings extends Route
 
         /**
          * Get all the fields of settings table to check the interface
-         * 
+         *
          */
 
         $fieldData = $service->findAllFields(
@@ -82,7 +82,7 @@ class Settings extends Route
          * Generate the response object based on interface/type
          *
          */
-        foreach($fieldData['data'] as $fieldDefinition){
+        foreach ($fieldData['data'] as $fieldDefinition) {
             // find position of field in $response['data']
             $index = array_search($fieldDefinition['field'], array_column($responseData['data'], 'key'));
             if (false !== $index) {
@@ -146,29 +146,29 @@ class Settings extends Route
      *
      * @return Response
      */
-    public function getInterfaceBasedInput($request,$setting)
+    public function getInterfaceBasedInput($request, $setting)
     {
         $service = new SettingsService($this->container);
         $fieldData = $service->findAllFields(
             $request->getQueryParams()
         );
-        
+
         $inputData = $request->getParsedBody();
-        foreach($fieldData['data'] as $key => $value){
-            if($value['field'] == $setting){
-                if($inputData['value'] != null){
+        foreach ($fieldData['data'] as $key => $value) {
+            if ($value['field'] == $setting) {
+                if ($inputData['value'] != null) {
                     switch ($value['type']) {
                         case 'file':
                             $inputData['value'] = isset($inputData['value']['id']) ? $inputData['value']['id'] : $inputData['value'];
                             break;
                         case 'array':
-                            $inputData['value'] = is_array($inputData['value']) ? implode(",",$inputData['value']) : $inputData['value'];
+                            $inputData['value'] = is_array($inputData['value']) ? implode(",", $inputData['value']) : $inputData['value'];
                             break;
                         case 'json':
                             $inputData['value'] = json_encode($inputData['value']);
                             break;
                     }
-                }else{
+                } else {
                     // To convert blank string in null
                     $inputData['value'] = null;
                 }
@@ -192,32 +192,32 @@ class Settings extends Route
             return $this->batch($request, $response);
         }
 
+        $inputData = $request->getParsedBody();
         $service = new SettingsService($this->container);
 
         /**
          * Get the object of current setting from its setting to check the interface.
-         * 
-         */        
+         *
+         */
         $serviceData = $service->findByIds(
             $request->getAttribute('id'),
             $request->getQueryParams()
         );
 
-
         /**
          * Get the interface based input
-         * 
+         *
          */
-    
-        $inputData = $this->getInterfaceBasedInput($request,$serviceData['data']['key']);
+
+        $inputData = $this->getInterfaceBasedInput($request, $serviceData['data']['key']);
         $responseData = $service->update(
             $request->getAttribute('id'),
             $inputData,
             $request->getQueryParams()
         );
-        
+
         $responseData['data']['value'] = $payload['value'];
-       
+
         return $this->responseWithData($request, $response, $responseData);
     }
 

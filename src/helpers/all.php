@@ -339,6 +339,19 @@ if (!function_exists('create_config_path')) {
     }
 }
 
+if (!function_exists('create_maintenanceflag_path')) {
+    /**
+     * Returns the path for the maintenance flag file
+     *
+     * @param string $basePath
+     *
+     * @return string
+     */
+    function create_maintenanceflag_path($basePath) {
+        return $basePath . '/logs/maintenance';
+    }
+}
+
 if (!function_exists('get_reserved_endpoint_names')) {
     /**
      * Returns a list of reserved endpoint names

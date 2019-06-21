@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<ruleset>
+    <arg name="basepath" value="." />
+    <arg name="extensions" value="php" />
+    <arg name="parallel" value="80" />
+    <arg name="cache" value=".phpcs-cache" />
+    <arg name="colors" />
+
+    <!-- Ignore warnings, show progress of the run and show sniff names -->
+    <arg value="nps" />
+
+    <file>src</file>
+    <file>tests</file>
+
+    <rule ref="Doctrine">
+        <!-- Disable PHP7+ features that might cause BC breaks for now -->
+        <exclude name="SlevomatCodingStandard.Classes.ClassConstantVisibility.MissingConstantVisibility" />
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint" />
+        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingReturnTypeHint" />
+        <!-- Enable when Slevomat starts supporting variadics, see https://github.com/slevomat/coding-standard/issues/251 -->
+        <exclude name="SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse" />
+    </rule>
+
+    <!--@api annotation is required for now -->
+    <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
+        <properties>
+            <property
+                    name="usefulAnnotations"
+                    type="array"
+                    value="
+                    @after,
+                    @afterClass,
+                    @AfterMethods,
+                    @api,
+                    @Attribute,
+                    @Attributes,
+                    @before,
+                    @beforeClass,
+                    @BeforeMethods,
+                    @covers,
+                    @coversDefaultClass,
+                    @coversNothing,
+                    @dataProvider,
+                    @depends,
+                    @deprecated,
+                    @doesNotPerformAssertions,
+                    @Enum,
+                    @expectedDeprecation,
+                    @expectedException,
+                    @expectedExceptionCode,
+                    @expectedExceptionMessage,
+                    @expectedExceptionMessageRegExp,
+                    @group,
+                    @Groups,
+                    @IgnoreAnnotation,
+                    @internal,
+                    @Iterations,
+                    @link,
+                    @ODM\,
+                    @ORM\,
+                    @requires,
+                    @Required,
+                    @Revs,
+                    @runInSeparateProcess,
+                    @runTestsInSeparateProcesses,
+                    @see,
+                    @Target,
+                    @test,
+                    @throws,
+                    @uses
+                "
+            />
+        </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+        <properties>
+            <property
+                    name="forbiddenAnnotations"
+                    type="array"
+                    value="
+                    @author,
+                    @category,
+                    @copyright,
+                    @created,
+                    @license,
+                    @package,
+                    @since,
+                    @subpackage,
+                    @version
+                "
+            />
+        </properties>
+    </rule>
+
+    <!-- IDEs sort by PSR12, Slevomat coding standard uses old sorting for BC -->
+    <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses">
+        <properties>
+            <property name="psr12Compatible" type="bool" value="true" />
+        </properties>
+    </rule>
+</ruleset>

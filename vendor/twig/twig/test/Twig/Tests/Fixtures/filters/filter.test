@@ -35,6 +35,11 @@
 {% for k, v in xml|filter(x => true) %}
 {{ k }}/{{ v }}
 {% endfor %}
+
+{% set coll = ['a', 'b']|filter(v => v is same as('a')) %}
+{% if coll|length > 0 %}
+    {{- coll|join(', ') }}
+{% endif %}
 --DATA--
 return [
     'it' => new \ArrayIterator(['a' => 1, 'b' => 2, 'c' => 5, 'd' => 8]),
@@ -68,3 +73,5 @@ elem/baz
 elem/foo
 elem/bar
 elem/baz
+
+a

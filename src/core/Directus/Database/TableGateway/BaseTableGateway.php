@@ -401,11 +401,11 @@ class BaseTableGateway extends TableGateway
         // TODO: Move this somewhere more sensible, and don't read the whole file contents into memory
         // in the first place.
         if (
-          array_key_exists('filename', $recordData) &&
-          array_key_exists('data', $recordData) &&
-          strlen($recordData['data']) > 25000000
+            array_key_exists('filename', $recordData) &&
+            array_key_exists('data', $recordData) &&
+            strlen($recordData['data']) > 25000000
         ) {
-          $recordData = ['filename' => $recordData['filename']];
+            $recordData = ['filename' => $recordData['filename']];
         }
 
         $TableGateway->insert($recordData);
@@ -695,7 +695,7 @@ class BaseTableGateway extends TableGateway
     public function castFloatIfNumeric(&$value, $key)
     {
         if ($key != 'table_name') {
-            $value = is_numeric($value) && preg_match('/^-?(?:\d+|\d*\.\d+)$/',$value) ? (float)$value : $value;
+            $value = is_numeric($value) && preg_match('/^-?(?:\d+|\d*\.\d+)$/', $value) ? (float)$value : $value;
         }
     }
 
@@ -729,8 +729,10 @@ class BaseTableGateway extends TableGateway
      * @throws \Directus\Permissions\Exception\ForbiddenFieldWriteException
      * @throws \Exception
      */
-    protected function executeSelect(Select $select)
+    protected function executeSelect(Select $select, array $params = [])
     {
+
+
         $useFilter = $this->shouldUseFilter();
         unset($this->options['filter']);
 
@@ -740,6 +742,7 @@ class BaseTableGateway extends TableGateway
 
         $selectState = $select->getRawState();
         $selectCollectionName = $selectState['table'];
+
 
         if ($useFilter) {
             $selectState = $this->applyHooks([
@@ -768,7 +771,8 @@ class BaseTableGateway extends TableGateway
                 'item.read.' . $selectCollectionName
             ], $result, [
                 'selectState' => $selectState,
-                'collection_name' => $selectCollectionName
+                'collection_name' => $selectCollectionName,
+                'params' => $params
             ]);
         }
 
@@ -924,9 +928,9 @@ class BaseTableGateway extends TableGateway
             $results = parent::executeSelect($select);
 
             $deletedObject = [];
-            foreach($results as $result) {
-                $ids[] = $result['id'];
-                $deletedObject[$result['id']] = $result->toArray();
+            foreach ($results as $result) {
+                $ids[] = $result[$this->primaryKeyFieldName];
+                $deletedObject[$result[$this->primaryKeyFieldName]] = $result->toArray();
             }
         }
 
@@ -937,7 +941,7 @@ class BaseTableGateway extends TableGateway
             $delete->where($expression);
 
             foreach ($ids as $id) {
-                $deleteData = ['id' => $id];
+                $deleteData = [$this->primaryKeyFieldName => $id];
                 $this->runHook('item.delete:before', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete.' . $deleteTable . ':before', [$deleteData]);
             }
@@ -1298,15 +1302,15 @@ class BaseTableGateway extends TableGateway
             /** User object dont have a created_by field so we cant get the owner and not able to update
              * the profile. Thus we need to check manually that whether its update profile or not.
              */
-            if($this->table == SchemaManager::COLLECTION_USERS  && $item['id'] == $currentUserId){
+            if ($this->table == SchemaManager::COLLECTION_USERS  && $item['id'] == $currentUserId) {
                 $this->acl->enforceUpdate($updateTable, $statusId);
                 return;
             }
 
             /** Object dont have a created_by field so we cant get the owner and not able to fetch
-              *  the bookmarks.
-              */
-            if($this->table == SchemaManager::COLLECTION_COLLECTION_PRESETS  && $item['user'] == $currentUserId){
+             *  the bookmarks.
+             */
+            if ($this->table == SchemaManager::COLLECTION_COLLECTION_PRESETS  && $item['user'] == $currentUserId) {
                 $this->acl->enforceUpdate($updateTable, $statusId);
                 return;
             }
@@ -1772,14 +1776,11 @@ class BaseTableGateway extends TableGateway
 
             if (
                 ($field && is_array($columnValue)
-                    && (
-                        !DataTypes::isJson($field->getType())
+                    && (!DataTypes::isJson($field->getType())
                         && !DataTypes::isArray($field->getType())
-                            // The owner of the alias should handle it
-                            // either on hook or custom field validation to ignore any value
-                        && !DataTypes::isAliasType($field->getType())
-                    )
-                )
+                        // The owner of the alias should handle it
+                        // either on hook or custom field validation to ignore any value
+                        && !DataTypes::isAliasType($field->getType())))
             ) {
                 throw new SuppliedArrayAsColumnValue(
                     $this->table,
@@ -1845,7 +1846,7 @@ class BaseTableGateway extends TableGateway
      */
     protected function shouldNullSortedLast()
     {
-        return (bool) get_directus_setting('sort_null_last', true);
+        return (bool)get_directus_setting('sort_null_last', true);
     }
 
     /**

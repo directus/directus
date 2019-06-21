@@ -1,0 +1,29 @@
+build:
+    nodes:
+        analysis:
+            environment:
+                php:
+                    version: 7.1
+            cache:
+                disabled: false
+                directories:
+                    - ~/.composer/cache
+            project_setup:
+                override: true
+            tests:
+                override:
+                    - php-scrutinizer-run
+
+    dependencies:
+        override:
+            - composer install --ignore-platform-reqs --no-interaction
+
+tools:
+    external_code_coverage:
+        timeout: 900
+
+build_failure_conditions:
+    - 'elements.rating(<= C).new.exists'                        # No new classes/methods with a rating of C or worse allowed
+    - 'issues.label("coding-style").new.exists'                 # No new coding style issues allowed
+    - 'issues.severity(>= MAJOR).new.exists'                    # New issues of major or higher severity
+    - 'project.metric_change("scrutinizer.test_coverage", < 0)' # Code Coverage decreased from previous inspection

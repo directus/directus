@@ -46,7 +46,7 @@ function twig_var_dump(Environment $env, $context, ...$vars)
         return;
     }
 
-    ob_start(function () { return ''; });
+    ob_start();
 
     if (!$vars) {
         $vars = [];

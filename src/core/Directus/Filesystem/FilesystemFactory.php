@@ -2,10 +2,14 @@
 
 namespace Directus\Filesystem;
 
+use OSS\OssClient;
+use OSS\Core\OssException;
 use Aws\S3\S3Client;
 use Directus\Application\Application;
 use function Directus\array_get;
 use function Directus\array_pick;
+use Aliyun\Flysystem\AliyunOss\Plugins\PutFile;
+use Aliyun\Flysystem\AliyunOss\AliyunOssAdapter;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\AwsS3v3\AwsS3Adapter as S3Adapter;
 use League\Flysystem\Filesystem as Flysystem;
@@ -17,6 +21,9 @@ class FilesystemFactory
         // @TODO: This need to be more dynamic
         // As the app get more organized this will too
         switch ($config['adapter']) {
+            case 'aliyun-oss':
+                return self::createAliyunOSSAdapter($config, $rootKey);
+                break;
             case 's3':
                 return self::createS3Adapter($config, $rootKey);
                 break;
@@ -65,5 +72,24 @@ class FilesystemFactory
         $options = array_get($config, 'options', []);
 
         return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey), $options));
+    }
+    
+    public static function createAliyunOSSAdapter(Array $config, $rootKey = 'root')
+    {
+       try {
+            $ossClient = new OssClient($config['OSS_ACCESS_ID'], $config['OSS_ACCESS_KEY'], $config['OSS_ENDPOINT'], false);
+        } catch (OssException $e) {
+            $app = Application::getInstance();
+            $app->getContainer()->get('logger')->error($e->getMessage());
+            throw new \InvalidArgumentException("creating OssClient instance: FAILED");
+        }
+        
+        $adapter = new AliyunOssAdapter($ossClient, $config['OSS_BUCKET']);
+        $adapter->setPathPrefix(array_get($config, $rootKey));
+
+        $flysystem = new Flysystem($adapter);
+        $flysystem->addPlugin(new PutFile());
+        
+        return $flysystem;
     }
 }

@@ -98,6 +98,21 @@ if (!function_exists('get_directus_thumbnail_settings')) {
     }
 }
 
+if (!function_exists('get_directus_proxy_downloads_settings')) {
+    /**
+     * Get all directus files settings
+     *
+     * @return array
+     */
+    function get_directus_proxy_downloads_settings()
+    {
+        return get_directus_settings_by_keys([
+            'proxy_downloads_not_found_location',
+            'proxy_downloads_cache_ttl',
+        ]);
+    }
+}
+
 if (!function_exists('get_directus_settings_by_keys')) {
     /**
      * Get all directus files settings

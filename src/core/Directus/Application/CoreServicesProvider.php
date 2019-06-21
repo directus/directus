@@ -7,6 +7,7 @@ use Cache\Adapter\Apcu\ApcuCachePool;
 use Cache\Adapter\Common\PhpCachePool;
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\Memcache\MemcacheCachePool;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Cache\Adapter\Redis\RedisCachePool;
 use Cache\Adapter\Void\VoidCachePool;
@@ -356,8 +357,8 @@ class CoreServicesProvider
 
                 return $payload;
             });
-            $addFilesUrl = function ($rows) {
-                return \Directus\append_storage_information($rows);
+            $addFilesUrl = function ($rows, $params = []) {
+                return \Directus\append_storage_information($rows, $params);
             };
             $emitter->addFilter('item.read.directus_files:before', function (Payload $payload) {
                 $columns = $payload->get('columns');
@@ -445,7 +446,7 @@ class CoreServicesProvider
 
                     if ($decode === true) {
                         $value = is_string($value) ? json_decode($value) : $value;
-                    } else if ($value !== null) {
+                    } elseif ($value !== null) {
                         $value = !is_string($value) ? json_encode($value) : $value;
                     }
 
@@ -524,7 +525,8 @@ class CoreServicesProvider
             // -------------------------------------------------------------------------------------------
             // Add file url and thumb url
             $emitter->addFilter('item.read.directus_files', function (Payload $payload) use ($addFilesUrl, $container) {
-                $rows = $addFilesUrl($payload->getData());
+
+                $rows = $addFilesUrl($payload->getData(), $payload->attribute('params'));
 
                 $payload->replace($rows);
 
@@ -629,10 +631,10 @@ class CoreServicesProvider
                         }
 
                         $payload->set($key, $dateTimeValue);
-                    } else if (DataTypes::isDateType($type)) {
+                    } elseif (DataTypes::isDateType($type)) {
                         $dateTime = new DateTimeUtils($value);
                         $payload->set($key, $dateTime->toString(DateTimeUtils::DEFAULT_DATE_FORMAT));
-                    } else if (DataTypes::isTimeType($type)) {
+                    } elseif (DataTypes::isTimeType($type)) {
                         $dateTime = new DateTimeUtils($value);
                         $payload->set($key, $dateTime->toString(DateTimeUtils::DEFAULT_TIME_FORMAT));
                     }
@@ -640,7 +642,7 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            
+
             $generateExternalId = function (Payload $payload) {
                 // generate an external id if none is passed
                 if (!$payload->get('external_id')) {
@@ -891,8 +893,8 @@ class CoreServicesProvider
             if (is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
                 $pool = $poolConfig;
             } else {
-                if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'redis', 'void'])) {
-                    throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'redis'");
+                if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'memcache', 'redis', 'void'])) {
+                    throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'memcache', 'redis'");
                 }
 
                 $pool = new VoidCachePool();
@@ -928,13 +930,27 @@ class CoreServicesProvider
                     $pool = new FilesystemCachePool($filesystem);
                 }
 
-                if ($adapter == 'memcached') {
-                    $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
-                    $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
+                if ($adapter == 'memcached' || $adapter == 'memcache') {
+                    $client = $adapter == 'memcached' ? new \Memcached() : new \Memcache();
+                    if (isset($poolConfig['url'])) {
+                        $urls = explode(';', $poolConfig['url']);
+                        if ($urls ===  false) {
+                            $urls = 'localhost:11211';
+                        }
+                        foreach ($urls as $url) {
+                            $parts = parse_url($url);
+                            $host = (isset($parts['host'])) ? $parts['host'] : 'localhost';
+                            $port = (isset($parts['port'])) ? $parts['port'] : 11211;
 
-                    $client = new \Memcached();
-                    $client->addServer($host, $port);
-                    $pool = new MemcachedCachePool($client);
+                            $client->addServer($host, $port);
+                        }
+                    } else {
+                        $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                        $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
+                        
+                        $client->addServer($host, $port);
+                    }
+                    $pool = $adapter == 'memcached' ? new MemcachedCachePool($client) : new MemcacheCachePool($client);
                 }
 
                 if ($adapter == 'redis') {
@@ -963,12 +979,12 @@ class CoreServicesProvider
             switch ($databaseName) {
                 case 'MySQL':
                     return new \Directus\Database\Schema\Sources\MySQLSchema($adapter);
-                // case 'SQLServer':
-                //    return new SQLServerSchema($adapter);
-                // case 'SQLite':
-                //     return new \Directus\Database\Schemas\Sources\SQLiteSchema($adapter);
-                // case 'PostgreSQL':
-                //     return new PostgresSchema($adapter);
+                    // case 'SQLServer':
+                    //    return new SQLServerSchema($adapter);
+                    // case 'SQLite':
+                    //     return new \Directus\Database\Schemas\Sources\SQLiteSchema($adapter);
+                    // case 'PostgreSQL':
+                    //     return new PostgresSchema($adapter);
             }
 
             throw new \Exception('Unknown/Unsupported database: ' . $databaseName);
@@ -1281,4 +1297,3 @@ class CoreServicesProvider
         return $storageConfig;
     }
 }
-

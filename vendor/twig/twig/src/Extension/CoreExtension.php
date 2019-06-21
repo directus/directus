@@ -1522,11 +1522,12 @@ function twig_array_column($array, $name): array
 
 function twig_array_filter($array, $arrow)
 {
-    foreach ($array as $k => $v) {
-        if ($arrow($v, $k)) {
-            yield $k => $v;
-        }
+    if (\is_array($array)) {
+        return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
     }
+
+    // the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
+    return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
 }
 
 function twig_array_map($array, $arrow)

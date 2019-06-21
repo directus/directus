@@ -77,7 +77,7 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
     protected $safeStorage;
 
     /**
-     * True to enable timestamps for FTP servers that return unix-style listings
+     * True to enable timestamps for FTP servers that return unix-style listings.
      *
      * @var bool
      */
@@ -317,12 +317,14 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
     }
 
     /**
-     * True to enable timestamps for FTP servers that return unix-style listings
+     * True to enable timestamps for FTP servers that return unix-style listings.
      *
      * @param bool $bool
+     *
      * @return $this
      */
-    public function setEnableTimestampsOnUnixListings($bool = false) {
+    public function setEnableTimestampsOnUnixListings($bool = false)
+    {
         $this->enableTimestampsOnUnixListings = $bool;
 
         return $this;
@@ -450,35 +452,38 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
             $timestamp = $this->normalizeUnixTimestamp($month, $day, $timeOrYear);
             $result += compact('timestamp');
         }
+
         return $result;
     }
 
     /**
-     * Only accurate to the minute (current year), or to the day
+     * Only accurate to the minute (current year), or to the day.
      *
      * Inadequacies in timestamp accuracy are due to limitations of the FTP 'LIST' command
      *
      * Note: The 'MLSD' command is a machine-readable replacement for 'LIST'
      * but many FTP servers do not support it :(
      *
-     * @param string $month e.g. 'Aug'
-     * @param string $day e.g. '19'
+     * @param string $month      e.g. 'Aug'
+     * @param string $day        e.g. '19'
      * @param string $timeOrYear e.g. '09:01' OR '2015'
+     *
      * @return int
      */
-    protected function normalizeUnixTimestamp($month, $day, $timeOrYear) {
+    protected function normalizeUnixTimestamp($month, $day, $timeOrYear)
+    {
         if (is_numeric($timeOrYear)) {
             $year = $timeOrYear;
             $hour = '00';
             $minute = '00';
             $seconds = '00';
-        }
-        else {
+        } else {
             $year = date('Y');
             list($hour, $minute) = explode(':', $timeOrYear);
             $seconds = '00';
         }
         $dateTime = DateTime::createFromFormat('Y-M-j-G:i:s', "{$year}-{$month}-{$day}-{$hour}:{$minute}:{$seconds}");
+
         return $dateTime->getTimestamp();
     }
 

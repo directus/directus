@@ -47,9 +47,16 @@ return [
         // ],
         // 'pool' => [
         //    'adapter'   => 'memcached',
+        //    //'url' => 'localhost:11211;localhost:11212'
         //    'host'      => 'localhost',
         //    'port'      => 11211
         // ],
+        // 'pool' => [
+        //    'adapter'   => 'memcache',
+        //    'url' => 'localhost:11211;localhost:11212'
+        //    //'host'      => 'localhost',
+        //    //'port'      => 11211
+        // ],        
         // 'pool' => [
         //    'adapter'   => 'redis',
         //    'host'      => 'localhost',
@@ -78,6 +85,8 @@ return [
         {{optional(storage.options)}},
         // Set custom S3 endpoint
         {{optional(storage.endpoint)}},
+        // Use an internal proxy for downloading all files
+        {{optional(storage.proxy_downloads)}},
     ],
 
     'mail' => [

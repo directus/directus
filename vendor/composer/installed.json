@@ -809,17 +809,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.52",
-        "version_normalized": "1.0.52.0",
+        "version": "1.0.53",
+        "version_normalized": "1.0.53.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391"
+            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/c5a5097156387970e6f0ccfcdf03f752856f3391",
-            "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/08e12b7628f035600634a5e76d95b5eb66cea674",
+            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674",
             "shasum": ""
         },
         "require": {
@@ -849,7 +849,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2019-05-20T20:21:14+00:00",
+        "time": "2019-06-18T20:09:29+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2536,27 +2536,27 @@
     },
     {
         "name": "symfony/service-contracts",
-        "version": "v1.1.2",
-        "version_normalized": "1.1.2.0",
+        "version": "v1.1.5",
+        "version_normalized": "1.1.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/service-contracts.git",
-            "reference": "191afdcb5804db960d26d8566b7e9a2843cab3a0"
+            "reference": "f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/191afdcb5804db960d26d8566b7e9a2843cab3a0",
-            "reference": "191afdcb5804db960d26d8566b7e9a2843cab3a0",
+            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d",
+            "reference": "f391a00de78ec7ec8cf5cdcdae59ec7b883edb8d",
             "shasum": ""
         },
         "require": {
-            "php": "^7.1.3"
+            "php": "^7.1.3",
+            "psr/container": "^1.0"
         },
         "suggest": {
-            "psr/container": "",
             "symfony/service-implementation": ""
         },
-        "time": "2019-05-28T07:50:59+00:00",
+        "time": "2019-06-13T11:15:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2674,17 +2674,17 @@
     },
     {
         "name": "symfony/translation-contracts",
-        "version": "v1.1.2",
-        "version_normalized": "1.1.2.0",
+        "version": "v1.1.5",
+        "version_normalized": "1.1.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation-contracts.git",
-            "reference": "93597ce975d91c52ebfaca1253343cd9ccb7916d"
+            "reference": "cb4b18ad7b92a26e83b65dde940fab78339e6f3c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/93597ce975d91c52ebfaca1253343cd9ccb7916d",
-            "reference": "93597ce975d91c52ebfaca1253343cd9ccb7916d",
+            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/cb4b18ad7b92a26e83b65dde940fab78339e6f3c",
+            "reference": "cb4b18ad7b92a26e83b65dde940fab78339e6f3c",
             "shasum": ""
         },
         "require": {
@@ -2693,7 +2693,7 @@
         "suggest": {
             "symfony/translation-implementation": ""
         },
-        "time": "2019-05-27T08:16:38+00:00",
+        "time": "2019-06-13T11:15:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2881,17 +2881,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.11.2",
-        "version_normalized": "2.11.2.0",
+        "version": "v2.11.3",
+        "version_normalized": "2.11.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "84a463403da1c81afbcedda8f0e788c78bd25a79"
+            "reference": "699ed2342557c88789a15402de5eb834dedd6792"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/84a463403da1c81afbcedda8f0e788c78bd25a79",
-            "reference": "84a463403da1c81afbcedda8f0e788c78bd25a79",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/699ed2342557c88789a15402de5eb834dedd6792",
+            "reference": "699ed2342557c88789a15402de5eb834dedd6792",
             "shasum": ""
         },
         "require": {
@@ -2904,7 +2904,7 @@
             "symfony/debug": "^2.7",
             "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0"
         },
-        "time": "2019-06-05T11:17:07+00:00",
+        "time": "2019-06-18T15:37:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2946,6 +2946,60 @@
         "homepage": "https://twig.symfony.com",
         "keywords": [
             "templating"
+        ]
+    },
+    {
+        "name": "webonyx/graphql-php",
+        "version": "v0.13.5",
+        "version_normalized": "0.13.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/webonyx/graphql-php.git",
+            "reference": "cdcf5b44737ee743358f5ed25b19a39ad7daf777"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/cdcf5b44737ee743358f5ed25b19a39ad7daf777",
+            "reference": "cdcf5b44737ee743358f5ed25b19a39ad7daf777",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": "^7.1||^8.0"
+        },
+        "require-dev": {
+            "doctrine/coding-standard": "^6.0",
+            "phpbench/phpbench": "^0.14.0",
+            "phpstan/phpstan": "^0.11.4",
+            "phpstan/phpstan-phpunit": "^0.11.0",
+            "phpstan/phpstan-strict-rules": "^0.11.0",
+            "phpunit/phpcov": "^5.0",
+            "phpunit/phpunit": "^7.2",
+            "psr/http-message": "^1.0",
+            "react/promise": "2.*"
+        },
+        "suggest": {
+            "psr/http-message": "To use standard GraphQL server",
+            "react/promise": "To leverage async resolving on React PHP platform"
+        },
+        "time": "2019-06-12T07:16:37+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "GraphQL\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "A PHP port of GraphQL reference implementation",
+        "homepage": "https://github.com/webonyx/graphql-php",
+        "keywords": [
+            "api",
+            "graphql"
         ]
     },
     {

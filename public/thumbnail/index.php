@@ -26,12 +26,16 @@ try {
 $settings = \Directus\get_directus_thumbnail_settings();
 $timeToLive = \Directus\array_get($settings, 'thumbnail_cache_ttl', 86400);
 try {
+
+    parse_str($_SERVER['QUERY_STRING'], $queryParams);
+
     // if the thumb already exists, return it
     $thumbnailer = new Thumbnailer(
         $app->getContainer()->get('filesystem'),
         $app->getContainer()->get('filesystem_thumb'),
         $settings,
-        urldecode(\Directus\get_virtual_path())
+        urldecode(\Directus\get_virtual_path()),
+        $queryParams
     );
 
     $image = $thumbnailer->get();

@@ -3,6 +3,7 @@
 namespace Directus\Database\Schema\Object;
 
 use Directus\Util\ArrayUtils;
+use Directus\Database\SchemaService;
 
 class FieldRelationship extends AbstractObject
 {
@@ -39,6 +40,44 @@ class FieldRelationship extends AbstractObject
     public function getCollectionMany()
     {
         return $this->attributes->get('collection_many');
+    }
+    
+    /**
+     * Gets the other collection of M2M relationship
+     *
+     * @return string
+     */
+    public function getCollectionManyToMany()
+    {
+        $firstCollection = $this->attributes->get('collection_one');
+        $junctionCollection = $this->attributes->get('collection_many');
+        
+        //get alias fields of junction table
+        $junctionTableSchema = SchemaService::getCollection($junctionCollection);
+        foreach ($junctionTableSchema->getFields() as $fieldColumnDetails) {            
+            if($fieldColumnDetails->hasRelationship() && $fieldColumnDetails->isManyToOne() && $fieldColumnDetails->getRelationship()->getFieldOne() == $firstCollection){
+                return $fieldColumnDetails->getRelationship()->getCollectionOne();
+            }
+        }
+    }
+    
+    /**
+     * Get junction field relate to other collection
+     *
+     * @return string
+     */
+    public function getJunctionOtherRelatedField()
+    {
+        $firstCollection = $this->attributes->get('collection_one');
+        $junctionCollection = $this->attributes->get('collection_many');
+        
+        //get alias fields of junction table
+        $junctionTableSchema = SchemaService::getCollection($junctionCollection);
+        foreach ($junctionTableSchema->getFields() as $fieldColumnDetails) {            
+            if($fieldColumnDetails->hasRelationship() && $fieldColumnDetails->isManyToOne() && $fieldColumnDetails->getRelationship()->getFieldOne() == $firstCollection){
+                return $fieldColumnDetails->getName();
+            }
+        }
     }
 
     /**

@@ -35,6 +35,19 @@ if (!file_exists($configFilePath)) {
     exit;
 }
 
+$maintenanceFlagPath = \Directus\create_maintenanceflag_path($basePath);
+if (file_exists($maintenanceFlagPath)) {
+    http_response_code(503);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => [
+            'error' => 21,
+            'message' => 'This API instance is currently down for maintenance. Please try again later.'
+        ]
+    ]);
+    exit;
+}
+
 $app = \Directus\create_app($basePath, require $configFilePath);
 
 // ----------------------------------------------------------------------------
@@ -218,6 +231,12 @@ $app->group('/{project}', function () use ($middleware) {
             \Directus\create_group_route_from_array($this, $name, $endpoints);
         }
     })
+        ->add($middleware['rate_limit_user'])
+        ->add($middleware['auth'])
+        ->add($middleware['table_gateway']);
+
+    $this->group('/gql', \Directus\Api\Routes\GraphQL::class)
+        ->add($middleware['auth_admin'])
         ->add($middleware['rate_limit_user'])
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);

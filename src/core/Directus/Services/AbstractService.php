@@ -194,10 +194,11 @@ abstract class AbstractService
      *
      * @param string $collectionName
      * @param array $fields List of columns name
-     *
+     * @param array $skipRelatedCollectionField To skip parent collection field validation
+     * 
      * @return array
      */
-    protected function createConstraintFor($collectionName, array $fields = [])
+    protected function createConstraintFor($collectionName, array $fields = [], $skipRelatedCollectionField = '')
     {
         /** @var SchemaManager $schemaManager */
         $schemaManager = $this->container->get('schema_manager');
@@ -210,6 +211,11 @@ abstract class AbstractService
         }
 
         foreach ($collectionObject->getFields($fields) as $field) {
+            //This condition is placed to skip alias validation field which is related to parent collection, 
+            //to avoid nested payload validation for O2M and M2O collections
+            if($field->hasRelationship() && !empty($skipRelatedCollectionField) && (($field->getRelationship()->isManyToOne() && $field->getRelationship()->getCollectionOne() == $skipRelatedCollectionField) || ($field->getRelationship()->isOneToMany() && $field->getRelationship()->getCollectionMany() == $skipRelatedCollectionField))) 
+                continue;
+            
             $columnConstraints = [];
 
             if ($field->hasAutoIncrement()) {
@@ -358,10 +364,11 @@ abstract class AbstractService
      * @param array|null $fields
      * @param array $payload
      * @param array $params
-     *
+     * @param array $skipRelatedCollectionField To skip parent collection field validation
+     * 
      * @throws UnprocessableEntityException
      */
-    protected function validatePayload($collectionName, $fields, array $payload, array $params)
+    protected function validatePayload($collectionName, $fields, array $payload, array $params, $skipRelatedCollectionField = '')
     {
         $columnsToValidate = [];
 
@@ -378,7 +385,7 @@ abstract class AbstractService
         // we need to accept options for the constraint builder
         $this->validatePayloadWithFieldsValidation($collectionName, $payload);
 
-        $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate));
+        $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField));
     }
 
     /**
@@ -482,6 +489,10 @@ abstract class AbstractService
      */
     protected function validateFieldLength($field, $value)
     {
+        if ($field->hasRelationship()) {
+            return;
+        }
+
         if($field->getType() == "decimal"){
             $precision = $field->getPrecision();
             $scale = $field->getScale();
@@ -497,9 +508,9 @@ abstract class AbstractService
                 );
             }
         }else{
-            if(!is_null($field['length']) && $field['length'] < strlen($value) ){
+            if(!is_null($field['length']) && ((is_array($value) && $field['length'] < strlen(json_encode($value))) || (!is_array($value) && $field['length'] < strlen($value)))){
                 throw new UnprocessableEntityException(
-                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",$value,$field->getFormatisedName(),$field['length'])
+                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",!is_array($value) ? $value : 'Json / Array',$field->getFormatisedName(),$field['length'])
                 );
             }
         }
