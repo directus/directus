@@ -24,11 +24,6 @@
 
 > _The Directus 7 App has been rebuilt from the ground-up in Vue.js and decoupled from our new "versionless" API. Both can easily be customized and extended to suit your project's needs._
 
-
-<p align="center">
-  <img src="https://semaphoreci.com/api/v1/directus/app/branches/build/badge.svg">
-</p>
-
 <p>&nbsp;</p>
 
 ## 🐰 Introduction
@@ -121,7 +116,7 @@ Directus allows you to manage multilingual content in as many languages as your 
 We have two online demos available so you can easily check out Directus in action. These demos are public and is therefore susceptible to trolls who think it's funny to write offensive things or change the master user password. The entire database is reset each hour to mitigate this. The login credentials for both demos: `admin@example.com` and `password`
 
 * **[Stable](https://directus.app)** — This demo showcases the [latest release](https://github.com/directus/directus/releases/latest) of the Directus suite.
-* **[Canary](https://next.directus.app)** — This demo uses the [latest commits](https://github.com/directus/directus/commits/master) from the `master` branch.
+* **[Nightly](https://nightly.directus.app)** — This demo uses the [latest commits](https://github.com/directus/directus/commits/master) from the `master` branch.
 
 <p>&nbsp;</p>
 
