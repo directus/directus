@@ -83,7 +83,10 @@ VALUES
 /*Data for the table `directus_collection_presets` */
 
 
-insert  into `directus_collection_presets`(`id`,`title`,`user`,`role`,`collection`,`search_query`,`filters`,`view_type`,`view_query`,`view_options`,`translation`) values (1,NULL,NULL,NULL,'directus_activity',NULL,NULL,'tabular','{\"tabular\":{\"sort\":\"-action_on\",\"fields\":\"action,action_by,action_on,collection,item\"}}','{\"tabular\":{\"widths\":{\"action\":170,\"action_by\":170,\"action_on\":180,\"collection\":200,\"item\":200}}}',NULL),(2,NULL,NULL,NULL,'directus_files',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"title\",\"subtitle\":\"type\",\"content\":\"description\",\"src\":\"data\"}}',NULL),(3,NULL,NULL,NULL,'directus_users',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"first_name\",\"subtitle\":\"last_name\",\"content\":\"title\",\"src\":\"avatar\",\"icon\":\"person\"}}',NULL);
+insert  into `directus_collection_presets`
+    (`id`,`title`,`user`,`role`,`collection`,`search_query`,`filters`,`view_type`,`view_query`,`view_options`,`translation`)
+values
+    (4,NULL,NULL,NULL,'directus_activity',NULL,NULL,'tabular','{\"tabular\":{\"sort\":\"-action_on\",\"fields\":\"action,action_by,action_on,collection,item\"}}','{\"tabular\":{\"widths\":{\"action\":170,\"action_by\":170,\"action_on\":180,\"collection\":200,\"item\":200}}}',NULL),(2,NULL,NULL,NULL,'directus_files',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"title\",\"subtitle\":\"type\",\"content\":\"description\",\"src\":\"data\"}}',NULL),(3,NULL,NULL,NULL,'directus_users',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"first_name\",\"subtitle\":\"last_name\",\"content\":\"title\",\"src\":\"avatar\",\"icon\":\"person\"}}',NULL);
 
 /*Table structure for table `directus_collections` */
 
