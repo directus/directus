@@ -4,7 +4,7 @@ namespace Intervention\Image\Commands;
 
 use Closure;
 
-class CircleCommand extends \Intervention\Image\Commands\AbstractCommand
+class CircleCommand extends AbstractCommand
 {
     /**
      * Draw a circle centered on given image

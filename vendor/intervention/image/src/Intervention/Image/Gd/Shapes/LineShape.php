@@ -2,10 +2,11 @@
 
 namespace Intervention\Image\Gd\Shapes;
 
-use Intervention\Image\Image;
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Gd\Color;
+use Intervention\Image\Image;
 
-class LineShape extends \Intervention\Image\AbstractShape
+class LineShape extends AbstractShape
 {
     /**
      * Starting point x-coordinate of line

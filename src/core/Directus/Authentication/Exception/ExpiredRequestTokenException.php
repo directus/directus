@@ -12,4 +12,9 @@ class ExpiredRequestTokenException extends Exception
     {
         parent::__construct('Expired Request Token');
     }
+
+    public function getStatusCode()
+    {
+        return 401;
+    }
 }

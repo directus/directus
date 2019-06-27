@@ -2,10 +2,11 @@
 
 namespace Intervention\Image\Imagick\Shapes;
 
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Image;
 use Intervention\Image\Imagick\Color;
 
-class EllipseShape extends \Intervention\Image\AbstractShape
+class EllipseShape extends AbstractShape
 {
     /**
      * Width of ellipse in pixels

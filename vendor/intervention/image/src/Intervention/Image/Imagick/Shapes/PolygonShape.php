@@ -2,10 +2,11 @@
 
 namespace Intervention\Image\Imagick\Shapes;
 
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Image;
 use Intervention\Image\Imagick\Color;
 
-class PolygonShape extends \Intervention\Image\AbstractShape
+class PolygonShape extends AbstractShape
 {
     /**
      * Array of points of polygon

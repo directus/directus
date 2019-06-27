@@ -2,6 +2,9 @@
 
 namespace Intervention\Image;
 
+use Intervention\Image\Exception\NotReadableException;
+use Intervention\Image\Exception\NotSupportedException;
+
 abstract class AbstractColor
 {
     /**
@@ -136,7 +139,7 @@ abstract class AbstractColor
                 break;
 
             default:
-                throw new \Intervention\Image\Exception\NotReadableException(
+                throw new NotReadableException(
                     "Color format ({$value}) cannot be read."
                 );
         }
@@ -172,7 +175,7 @@ abstract class AbstractColor
                 return $this;
 
             default:
-                throw new \Intervention\Image\Exception\NotSupportedException(
+                throw new NotSupportedException(
                     "Color format ({$type}) is not supported."
                 );
         }
@@ -216,7 +219,7 @@ abstract class AbstractColor
             $result[2] = ($matches[3] >= 0 && $matches[3] <= 255) ? intval($matches[3]) : 0;
             $result[3] = ($matches[4] >= 0 && $matches[4] <= 1) ? $matches[4] : 0;
         } else {
-            throw new \Intervention\Image\Exception\NotReadableException(
+            throw new NotReadableException(
                 "Unable to read color ({$value})."
             );
         }

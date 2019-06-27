@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Gd\Commands;
 
-class DestroyCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class DestroyCommand extends AbstractCommand
 {
     /**
      * Destroys current image core and frees up memory

@@ -2,8 +2,10 @@
 
 namespace Intervention\Image\Gd\Commands;
 
+use Intervention\Image\Commands\AbstractCommand;
 
-class LimitColorsCommand extends \Intervention\Image\Commands\AbstractCommand
+
+class LimitColorsCommand extends AbstractCommand
 {
     /**
      * Reduces colors of a given image

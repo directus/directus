@@ -4,7 +4,7 @@ namespace Intervention\Image\Commands;
 
 use Closure;
 
-class EllipseCommand extends \Intervention\Image\Commands\AbstractCommand
+class EllipseCommand extends AbstractCommand
 {
     /**
      * Draws ellipse on given image

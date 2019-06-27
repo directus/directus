@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class InvertCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class InvertCommand extends AbstractCommand
 {
     /**
      * Inverts colors of an image

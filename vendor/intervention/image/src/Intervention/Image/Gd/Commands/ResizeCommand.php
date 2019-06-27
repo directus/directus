@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Gd\Commands;
 
-class ResizeCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class ResizeCommand extends AbstractCommand
 {
     /**
      * Resizes image dimensions

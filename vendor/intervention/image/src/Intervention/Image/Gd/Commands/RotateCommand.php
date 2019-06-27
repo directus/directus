@@ -2,9 +2,10 @@
 
 namespace Intervention\Image\Gd\Commands;
 
+use Intervention\Image\Commands\AbstractCommand;
 use Intervention\Image\Gd\Color;
 
-class RotateCommand extends \Intervention\Image\Commands\AbstractCommand
+class RotateCommand extends AbstractCommand
 {
     /**
      * Rotates image counter clockwise

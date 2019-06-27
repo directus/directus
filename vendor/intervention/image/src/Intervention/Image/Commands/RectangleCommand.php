@@ -4,7 +4,7 @@ namespace Intervention\Image\Commands;
 
 use Closure;
 
-class RectangleCommand extends \Intervention\Image\Commands\AbstractCommand
+class RectangleCommand extends AbstractCommand
 {
     /**
      * Draws rectangle on given image

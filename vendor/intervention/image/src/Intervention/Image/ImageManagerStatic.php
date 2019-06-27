@@ -51,6 +51,7 @@ class ImageManagerStatic
      * @param  mixed $data
      *
      * @return \Intervention\Image\Image
+     * @throws \Intervention\Image\Exception\NotReadableException
      */
     public static function make($data)
     {

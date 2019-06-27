@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class ResizeCanvasCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class ResizeCanvasCommand extends AbstractCommand
 {
     /**
      * Resizes image boundaries

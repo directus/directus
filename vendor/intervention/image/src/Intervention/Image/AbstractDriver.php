@@ -2,6 +2,8 @@
 
 namespace Intervention\Image;
 
+use Intervention\Image\Exception\NotSupportedException;
+
 abstract class AbstractDriver
 {
     /**
@@ -114,7 +116,7 @@ abstract class AbstractDriver
             return $classnameGlobal;
         }
 
-        throw new \Intervention\Image\Exception\NotSupportedException(
+        throw new NotSupportedException(
             "Command ({$name}) is not available for driver ({$drivername})."
         );
     }

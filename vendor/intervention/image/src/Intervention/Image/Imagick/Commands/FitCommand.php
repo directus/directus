@@ -2,9 +2,10 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
+use Intervention\Image\Commands\AbstractCommand;
 use Intervention\Image\Size;
 
-class FitCommand extends \Intervention\Image\Commands\AbstractCommand
+class FitCommand extends AbstractCommand
 {
     /**
      * Crops and resized an image at the same time

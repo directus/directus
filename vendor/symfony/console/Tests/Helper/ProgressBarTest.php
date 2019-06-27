@@ -884,7 +884,7 @@ class ProgressBarTest extends TestCase
     {
         $bar = new ProgressBar($output = $this->getOutputStream());
 
-        $this->assertEquals([1, 2], \iterator_to_array($bar->iterate([1, 2])));
+        $this->assertEquals([1, 2], iterator_to_array($bar->iterate([1, 2])));
 
         rewind($output->getStream());
         $this->assertEquals(
@@ -900,7 +900,7 @@ class ProgressBarTest extends TestCase
     {
         $bar = new ProgressBar($output = $this->getOutputStream());
 
-        $this->assertEquals([1, 2], \iterator_to_array($bar->iterate((function () {
+        $this->assertEquals([1, 2], iterator_to_array($bar->iterate((function () {
             yield 1;
             yield 2;
         })())));

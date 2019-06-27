@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class ColorizeCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class ColorizeCommand extends AbstractCommand
 {
     /**
      * Changes balance of different RGB color channels

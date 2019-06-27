@@ -1362,6 +1362,22 @@ class FilesystemTest extends FilesystemTestCase
         $this->assertFalse($this->filesystem->exists($targetPath.'target'));
     }
 
+    public function testMirrorFromSubdirectoryInToParentDirectory()
+    {
+        $targetPath = $this->workspace.\DIRECTORY_SEPARATOR.'foo'.\DIRECTORY_SEPARATOR;
+        $sourcePath = $targetPath.'bar'.\DIRECTORY_SEPARATOR;
+        $file1 = $sourcePath.'file1';
+        $file2 = $sourcePath.'file2';
+
+        $this->filesystem->mkdir($sourcePath);
+        file_put_contents($file1, 'FILE1');
+        file_put_contents($file2, 'FILE2');
+
+        $this->filesystem->mirror($sourcePath, $targetPath);
+
+        $this->assertFileEquals($file1, $targetPath.'file1');
+    }
+
     /**
      * @dataProvider providePathsForIsAbsolutePath
      */

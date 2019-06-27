@@ -2,7 +2,10 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class ResetCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+use Intervention\Image\Exception\RuntimeException;
+
+class ResetCommand extends AbstractCommand
 {
     /**
      * Resets given image to its backup state
@@ -30,7 +33,7 @@ class ResetCommand extends \Intervention\Image\Commands\AbstractCommand
             return true;
         }
 
-        throw new \Intervention\Image\Exception\RuntimeException(
+        throw new RuntimeException(
             "Backup not available. Call backup({$backupName}) before reset()."
         );
     }

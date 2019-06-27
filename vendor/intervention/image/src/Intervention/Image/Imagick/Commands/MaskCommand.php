@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class MaskCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class MaskCommand extends AbstractCommand
 {
     /**
      * Applies an alpha mask to an image

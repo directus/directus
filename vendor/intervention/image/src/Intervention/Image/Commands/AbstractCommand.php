@@ -2,6 +2,8 @@
 
 namespace Intervention\Image\Commands;
 
+use Intervention\Image\Commands\Argument;
+
 abstract class AbstractCommand
 {
     /**
@@ -44,7 +46,7 @@ abstract class AbstractCommand
      */
     public function argument($key)
     {
-        return new \Intervention\Image\Commands\Argument($this, $key);
+        return new Argument($this, $key);
     }
 
     /**

@@ -103,7 +103,7 @@ class Files
             'height' => $fileData['height'],
             //    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
             //    see: https://en.wikipedia.org/wiki/ISO_8601
-            'date_uploaded' => $fileData['date_uploaded'],// . ' UTC',
+            'date_uploaded' => $fileData['date_uploaded'], // . ' UTC',
             'storage' => $fileData['storage']
         ];
     }
@@ -254,13 +254,21 @@ class Files
      */
     public function saveData($fileData, $fileName, $replace = false)
     {
-        $fileData = base64_decode($this->getDataInfo($fileData)['data']);
-        $checksum = md5($fileData);
+        // When file is uploaded via multipart form data then We will get object of Slim\Http\UploadFile
+        // When file is uploaded via URL (Youtube, Vimeo, or image link) then we will get base64 encode string.
+        if (is_object($fileData)) {
 
+            $checksum = hash_file('md5', $fileData->file);
+        } else {
+            $fileData = base64_decode($this->getDataInfo($fileData)['data']);
+            $checksum = md5($fileData);
+        }
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName, $replace !== true);
 
         $filePath = $this->getConfig('root') . '/' . $fileName;
+
+
 
         $this->emitter->run('file.save', ['name' => $fileName, 'size' => strlen($fileData)]);
         $this->write($fileName, $fileData, $replace);
@@ -330,11 +338,35 @@ class Files
     {
         if ($outside === true) {
             $buffer = file_get_contents($path);
+            $fileData = $this->getFileInfoFromData($buffer);
         } else {
-            $buffer = $this->filesystem->getAdapter()->read($path);
+            $fileData = $this->getFileInfoFromPath($path);
         }
 
-        return $this->getFileInfoFromData($buffer);
+        return $fileData;
+    }
+
+    public function getFileInfoFromPath($path)
+    {
+        $mime = $this->filesystem->getAdapter()->getMimetype($path);
+
+        $typeTokens = explode('/', $mime);
+
+        if ($typeTokens[0] == 'image') {
+            $buffer = $this->filesystem->getAdapter()->read($path);
+            $info = $this->getFileInfoFromData($buffer);
+        } else {
+            $size = $this->filesystem->getAdapter()->getSize($path);
+            $info = [
+                'type' => $mime,
+                'format' => $typeTokens[1],
+                'size' => $size,
+                'width' => null,
+                'height' => null
+            ];
+        }
+
+        return $info;
     }
 
     public function getFileInfoFromData($data)
@@ -513,9 +545,17 @@ class Files
      */
     private function sanitizeName($fileName)
     {
-        // do not start with dot
-        $fileName = preg_replace('/^\./', 'dot-', $fileName);
-        $fileName = str_replace(' ', '_', $fileName);
+        // Swap out Non "Letters" with a -
+        $fileName = preg_replace('/[^\\pL\d^\.]+/u', '-', $fileName);
+
+        // Trim out extra -'s
+        $fileName = trim($fileName, '-');
+
+        // Make text lowercase
+        $fileName = strtolower($fileName);
+
+        // Strip out anything we haven't been able to convert
+        $fileName = preg_replace('/[^-\w\.]+/', '', $fileName);
 
         return $fileName;
     }

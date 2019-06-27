@@ -3,8 +3,9 @@
     ExpiresDefault "access 1 year"
 </IfModule>
 
-<FilesMatch "\.(php|phps|php5|htm|shtml|xhtml|cgi.+)$">
-    ForceType text/plain
+<FilesMatch "\.(php|phps|php5|phtml|htm|shtml|xhtml|cgi.+)$">
+    order allow,deny
+    deny from all
 </FilesMatch>
 
 # Respond with 404 if the file doesn't exists

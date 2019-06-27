@@ -73,7 +73,7 @@ foreach ($config['original_files'] as $originalFilePath) {
     $translationStatus = calculateTranslationStatus($originalFilePath, $translationFilePaths);
 
     $totalMissingTranslations += array_sum(array_map(function ($translation) {
-        return \count($translation['missingKeys']);
+        return count($translation['missingKeys']);
     }, array_values($translationStatus)));
 
     printTranslationStatus($originalFilePath, $translationStatus, $config['verbose_output']);
@@ -113,8 +113,8 @@ function calculateTranslationStatus($originalFilePath, $translationFilePaths)
         $missingKeys = array_diff_key($allTranslationKeys, $translatedKeys);
 
         $translationStatus[$locale] = [
-            'total' => \count($allTranslationKeys),
-            'translated' => \count($translatedKeys),
+            'total' => count($allTranslationKeys),
+            'translated' => count($translatedKeys),
             'missingKeys' => $missingKeys,
         ];
     }
@@ -176,7 +176,7 @@ function printTable($translations, $verboseOutput)
 
         textColorNormal();
 
-        if (true === $verboseOutput && \count($translation['missingKeys']) > 0) {
+        if (true === $verboseOutput && count($translation['missingKeys']) > 0) {
             echo str_repeat('-', 80).PHP_EOL;
             echo '| Missing Translations:'.PHP_EOL;
 

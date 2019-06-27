@@ -330,6 +330,38 @@
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
                 <target>Questo codice identificativo bancario (BIC) non è associato all'IBAN {{ iban }}.</target>
             </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Questo valore dovrebbe essere un JSON valido.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Questa collezione dovrebbe contenere solo elementi unici.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Questo valore dovrebbe essere positivo.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Questo valore dovrebbe essere positivo oppure zero.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Questo valore dovrebbe essere negativo.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Questo valore dovrebbe essere negativo oppure zero.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Questo valore non è un fuso orario valido.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Questa password è trapelata durante una compromissione di dati, non deve essere usata. Si prega di usare una password diversa.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

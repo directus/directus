@@ -26,7 +26,7 @@ class ProcessHelperTest extends TestCase
     public function testVariousProcessRuns($expected, $cmd, $verbosity, $error)
     {
         if (\is_string($cmd)) {
-            $cmd = \method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd);
+            $cmd = method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd);
         }
 
         $helper = new ProcessHelper();
@@ -99,7 +99,7 @@ EOT;
         $args = new Process(['php', '-r', 'echo 42;']);
         $args = $args->getCommandLine();
         $successOutputProcessDebug = str_replace("'php' '-r' 'echo 42;'", $args, $successOutputProcessDebug);
-        $fromShellCommandline = \method_exists(Process::class, 'fromShellCommandline') ? [Process::class, 'fromShellCommandline'] : function ($cmd) { return new Process($cmd); };
+        $fromShellCommandline = method_exists(Process::class, 'fromShellCommandline') ? [Process::class, 'fromShellCommandline'] : function ($cmd) { return new Process($cmd); };
 
         return [
             ['', 'php -r "echo 42;"', StreamOutput::VERBOSITY_VERBOSE, null],

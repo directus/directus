@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class LimitColorsCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class LimitColorsCommand extends AbstractCommand
 {
     /**
      * Reduces colors of a given image

@@ -2,6 +2,8 @@
 
 namespace Intervention\Image;
 
+use Intervention\Image\Exception\NotWritableException;
+use Intervention\Image\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -40,7 +42,7 @@ use Psr\Http\Message\StreamInterface;
  * @method \Intervention\Image\Image polygon(array $points, \Closure $callback = null)                                                                                    Draw a colored polygon with given points. You can define the appearance of the polygon by an optional closure callback.
  * @method \Intervention\Image\Image rectangle(int $x1, int $y1, int $x2, int $y2, \Closure $callback = null)                                             Draw a colored rectangle on current image with top-left corner on x,y point 1 and bottom-right corner at x,y point 2. Define the overall appearance of the shape by passing a Closure callback as an optional parameter.
  * @method \Intervention\Image\Image reset(string $name = 'default')                                                                                                      Resets all of the modifications to a state saved previously by backup under an optional name.
- * @method \Intervention\Image\Image resize(int $width, int $height = null, \Closure $callback = null)                                                                   Resizes current image based on given width and/or height. To contraint the resize command, pass an optional Closure callback as third parameter.
+ * @method \Intervention\Image\Image resize(int $width = null, int $height = null, \Closure $callback = null)                                                                   Resizes current image based on given width and/or height. To contraint the resize command, pass an optional Closure callback as third parameter.
  * @method \Intervention\Image\Image resizeCanvas(int $width, int $height, string $anchor = 'center', boolean $relative = false, mixed $bgcolor = null)           Resize the boundaries of the current image to given width and height. An anchor can be defined to determine from what point of the image the resizing is going to happen. Set the mode to relative to add or subtract the given width or height to the actual image dimensions. You can also pass a background color for the emerging area of the image.
  * @method mixed                     response(string $format = null, int $quality = 90)                                                                               Sends HTTP response with current image in given format and quality.
  * @method \Intervention\Image\Image rotate(float $angle, mixed $bgcolor = null)                                                                                          Rotate the current image counter-clockwise by a given angle. Optionally define a background color for the uncovered zone after the rotation.
@@ -124,23 +126,28 @@ class Image extends File
      *
      * @param  string  $path
      * @param  int     $quality
+     * @param  string  $format
      * @return \Intervention\Image\Image
      */
-    public function save($path = null, $quality = null)
+    public function save($path = null, $quality = null, $format = null)
     {
         $path = is_null($path) ? $this->basePath() : $path;
 
         if (is_null($path)) {
-            throw new Exception\NotWritableException(
+            throw new NotWritableException(
                 "Can't write to undefined path."
             );
         }
 
-        $data = $this->encode(pathinfo($path, PATHINFO_EXTENSION), $quality);
+        if ($format === null) {
+            $format = pathinfo($path, PATHINFO_EXTENSION);
+        }
+
+        $data = $this->encode($format, $quality);
         $saved = @file_put_contents($path, $data);
 
         if ($saved === false) {
-            throw new Exception\NotWritableException(
+            throw new NotWritableException(
                 "Can't write image data to path ({$path})"
             );
         }
@@ -216,7 +223,7 @@ class Image extends File
         $name = is_null($name) ? 'default' : $name;
 
         if ( ! $this->backupExists($name)) {
-            throw new \Intervention\Image\Exception\RuntimeException(
+            throw new RuntimeException(
                 "Backup with name ({$name}) not available. Call backup() before reset()."
             );
         }

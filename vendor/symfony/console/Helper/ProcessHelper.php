@@ -51,7 +51,7 @@ class ProcessHelper extends Helper
 
         if (!\is_array($cmd)) {
             @trigger_error(sprintf('Passing a command as a string to "%s()" is deprecated since Symfony 4.2, pass it the command as an array of arguments instead.', __METHOD__), E_USER_DEPRECATED);
-            $cmd = [\method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd)];
+            $cmd = [method_exists(Process::class, 'fromShellCommandline') ? Process::fromShellCommandline($cmd) : new Process($cmd)];
         }
 
         if (\is_string($cmd[0] ?? null)) {

@@ -46,12 +46,12 @@ class LoaderChainTest extends TestCase
         $loader1 = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
         $loader1->expects($this->any())
             ->method('loadClassMetadata')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $loader2 = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
         $loader2->expects($this->any())
             ->method('loadClassMetadata')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $chain = new LoaderChain([
             $loader1,
@@ -68,12 +68,12 @@ class LoaderChainTest extends TestCase
         $loader1 = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
         $loader1->expects($this->any())
             ->method('loadClassMetadata')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $loader2 = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Loader\LoaderInterface')->getMock();
         $loader2->expects($this->any())
             ->method('loadClassMetadata')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $chain = new LoaderChain([
             $loader1,

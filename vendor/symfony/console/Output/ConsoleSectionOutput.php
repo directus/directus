@@ -50,7 +50,7 @@ class ConsoleSectionOutput extends StreamOutput
         }
 
         if ($lines) {
-            \array_splice($this->content, -($lines * 2)); // Multiply lines by 2 to cater for each new line added between content
+            array_splice($this->content, -($lines * 2)); // Multiply lines by 2 to cater for each new line added between content
         } else {
             $lines = $this->lines;
             $this->content = [];

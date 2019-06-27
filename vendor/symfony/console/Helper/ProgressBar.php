@@ -250,7 +250,7 @@ final class ProgressBar
      */
     public function iterate(iterable $iterable, ?int $max = null): iterable
     {
-        $this->start($max ?? (\is_countable($iterable) ? \count($iterable) : 0));
+        $this->start($max ?? (is_countable($iterable) ? \count($iterable) : 0));
 
         foreach ($iterable as $key => $value) {
             yield $key => $value;

@@ -61,8 +61,18 @@ class Filesystem
         }
 
         try {
-            if (!$this->getAdapter()->write($location, $data)) {
-                $throwException();
+            if (is_object($data)) { // Uploaded file is in resource format. Used when file uploaded in multipart form data.
+                $handle = fopen($data->file, 'rb');
+                if (!$this->getAdapter()->writeStream($location, $handle)) {
+                    $throwException();
+                }
+                if (is_resource($handle)) {
+                    fclose($handle);
+                }
+            } else { // Uploaded file is base64 format. Used when file uploaded as base64.
+                if (!$this->getAdapter()->write($location, $data)) {
+                    $throwException();
+                }
             }
         } catch (\Exception $e) {
             $throwException();

@@ -2,9 +2,10 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
+use Intervention\Image\Commands\AbstractCommand;
 use Intervention\Image\Imagick\Color;
 
-class PickColorCommand extends \Intervention\Image\Commands\AbstractCommand
+class PickColorCommand extends AbstractCommand
 {
     /**
      * Read color information from a certain position

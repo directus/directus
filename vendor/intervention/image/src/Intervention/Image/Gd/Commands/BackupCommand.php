@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Gd\Commands;
 
-class BackupCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class BackupCommand extends AbstractCommand
 {
     /**
      * Saves a backups of current state of image core

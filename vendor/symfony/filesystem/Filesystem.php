@@ -569,14 +569,15 @@ class Filesystem
         }
 
         $this->mkdir($targetDir);
-        $targetDirInfo = new \SplFileInfo($targetDir);
+        $filesCreatedWhileMirroring = [];
 
         foreach ($iterator as $file) {
-            if ($file->getPathname() === $targetDir || $file->getRealPath() === $targetDir || 0 === strpos($file->getRealPath(), $targetDirInfo->getRealPath())) {
+            if ($file->getPathname() === $targetDir || $file->getRealPath() === $targetDir || isset($filesCreatedWhileMirroring[$file->getRealPath()])) {
                 continue;
             }
 
             $target = $targetDir.substr($file->getPathname(), $originDirLen);
+            $filesCreatedWhileMirroring[$target] = true;
 
             if (!$copyOnWindows && is_link($file)) {
                 $this->symlink($file->getLinkTarget(), $target);
@@ -744,15 +745,15 @@ class Filesystem
     private static function box($func)
     {
         self::$lastError = null;
-        \set_error_handler(__CLASS__.'::handleError');
+        set_error_handler(__CLASS__.'::handleError');
         try {
             $result = $func(...\array_slice(\func_get_args(), 1));
-            \restore_error_handler();
+            restore_error_handler();
 
             return $result;
         } catch (\Throwable $e) {
         }
-        \restore_error_handler();
+        restore_error_handler();
 
         throw $e;
     }

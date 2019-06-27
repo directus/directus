@@ -334,6 +334,34 @@
                 <source>This value should be valid JSON.</source>
                 <target>Ova vrijednost treba biti validan JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ova kolekcija treba sadržavati samo unikatne elemente.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Ova vrijednost treba biti pozitivna.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Ova vrijednost treba biti pozitivna ili jednaka nuli.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Ova vrijednost treba biti negativna.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Ova vrijednost treba biti negativna ili jednaka nuli.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ova vrijednost nije validna vremenska zona.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Ova lozinka je procurila u nekom od sigurnosnih propusta, te je potrebno koristiti drugu lozinku.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

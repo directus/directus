@@ -4,7 +4,7 @@ namespace Intervention\Image\Commands;
 
 use Closure;
 
-class TextCommand extends \Intervention\Image\Commands\AbstractCommand
+class TextCommand extends AbstractCommand
 {
     /**
      * Write text on given image

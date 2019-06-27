@@ -948,7 +948,7 @@ class FieldsSeeder extends AbstractSeed
                 'interface' => 'many-to-many',
                 'locked' => 1,
                 'options' => json_encode([
-                  'fields' => "first_name,last_name"
+                    'fields' => "first_name,last_name"
                 ])
             ],
             [
@@ -1123,6 +1123,22 @@ class FieldsSeeder extends AbstractSeed
                 'note' => 'This image will be used when trying to generate a thumbnail with invalid options or an error happens on the server when creating the image.',
                 'sort' => 13
             ],
+            [
+                'collection' => 'directus_settings',
+                'field' => 'file_naming',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'dropdown',
+                'locked' => 1,
+                'width' => 'full',
+                'note' => 'The file-system naming convention for uploads.',
+                'sort' => 14,
+                'options' => json_encode([
+                    'choices' => [
+                        'uuid' => 'File Hash (Obfuscated)',
+                        'file_name' => 'File Name (Readable)'
+                    ]
+                ])
+            ],
 
 
             // Users
@@ -1143,48 +1159,48 @@ class FieldsSeeder extends AbstractSeed
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_STATUS,
                 'interface' => 'status',
                 'options' => json_encode([
-                   'status_mapping' => [
-                      'draft' => [
-                         'name' => 'Draft',
-                         'text_color' => 'white',
-                         'background_color' => 'light-gray',
-                         'listing_subdued' => false,
-                         'listing_badge' => true,
-                         'soft_delete' => false,
-                      ],
-                      'invited' => [
-                         'name' => 'Invited',
-                         'text_color' => 'white',
-                         'background_color' => 'light-gray',
-                         'listing_subdued' => false,
-                         'listing_badge' => true,
-                         'soft_delete' => false,
-                      ],
-                      'active' => [
-                         'name' => 'Active',
-                         'text_color' => 'white',
-                         'background_color' => 'success',
-                         'listing_subdued' => false,
-                         'listing_badge' => false,
-                         'soft_delete' => false,
-                      ],
-                      'suspended' => [
-                         'name' => 'Suspended',
-                         'text_color' => 'white',
-                         'background_color' => 'light-gray',
-                         'listing_subdued' => false,
-                         'listing_badge' => true,
-                         'soft_delete' => false,
-                      ],
-                      'deleted' => [
-                         'name' => 'Deleted',
-                         'text_color' => 'white',
-                         'background_color' => 'danger',
-                         'listing_subdued' => false,
-                         'listing_badge' => true,
-                         'soft_delete' => true,
-                      ]
-                   ]
+                    'status_mapping' => [
+                        'draft' => [
+                            'name' => 'Draft',
+                            'text_color' => 'white',
+                            'background_color' => 'light-gray',
+                            'listing_subdued' => false,
+                            'listing_badge' => true,
+                            'soft_delete' => false,
+                        ],
+                        'invited' => [
+                            'name' => 'Invited',
+                            'text_color' => 'white',
+                            'background_color' => 'light-gray',
+                            'listing_subdued' => false,
+                            'listing_badge' => true,
+                            'soft_delete' => false,
+                        ],
+                        'active' => [
+                            'name' => 'Active',
+                            'text_color' => 'white',
+                            'background_color' => 'success',
+                            'listing_subdued' => false,
+                            'listing_badge' => false,
+                            'soft_delete' => false,
+                        ],
+                        'suspended' => [
+                            'name' => 'Suspended',
+                            'text_color' => 'white',
+                            'background_color' => 'light-gray',
+                            'listing_subdued' => false,
+                            'listing_badge' => true,
+                            'soft_delete' => false,
+                        ],
+                        'deleted' => [
+                            'name' => 'Deleted',
+                            'text_color' => 'white',
+                            'background_color' => 'danger',
+                            'listing_subdued' => false,
+                            'listing_badge' => true,
+                            'soft_delete' => true,
+                        ]
+                    ]
                 ]),
                 'locked' => 1,
                 'sort' => 2,

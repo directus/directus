@@ -2,10 +2,11 @@
 
 namespace Intervention\Image\Gd\Shapes;
 
-use Intervention\Image\Image;
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Gd\Color;
+use Intervention\Image\Image;
 
-class EllipseShape extends \Intervention\Image\AbstractShape
+class EllipseShape extends AbstractShape
 {
     /**
      * Width of ellipse in pixels

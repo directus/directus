@@ -357,8 +357,8 @@ class CoreServicesProvider
 
                 return $payload;
             });
-            $addFilesUrl = function ($rows, $params = []) {
-                return \Directus\append_storage_information($rows, $params);
+            $addFilesUrl = function ($rows) {
+                return \Directus\append_storage_information($rows);
             };
             $emitter->addFilter('item.read.directus_files:before', function (Payload $payload) {
                 $columns = $payload->get('columns');
@@ -526,7 +526,7 @@ class CoreServicesProvider
             // Add file url and thumb url
             $emitter->addFilter('item.read.directus_files', function (Payload $payload) use ($addFilesUrl, $container) {
 
-                $rows = $addFilesUrl($payload->getData(), $payload->attribute('params'));
+                $rows = $addFilesUrl($payload->getData());
 
                 $payload->replace($rows);
 
@@ -947,7 +947,7 @@ class CoreServicesProvider
                     } else {
                         $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
                         $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
-                        
+
                         $client->addServer($host, $port);
                     }
                     $pool = $adapter == 'memcached' ? new MemcachedCachePool($client) : new MemcacheCachePool($client);
@@ -956,9 +956,16 @@ class CoreServicesProvider
                 if ($adapter == 'redis') {
                     $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
                     $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
+                    $socket = (isset($poolConfig['socket'])) ? $poolConfig['socket'] : null;
 
                     $client = new \Redis();
-                    $client->connect($host, $port);
+
+                    if ($socket) {
+                        $client->connect($socket);
+                    } else {
+                        $client->connect($host, $port);
+                    }
+
                     $pool = new RedisCachePool($client);
                 }
             }

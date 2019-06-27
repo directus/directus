@@ -595,7 +595,6 @@ class RelationalTableGateway extends BaseTableGateway
             // TODO : Need to redevelop this logic.
             if ($field->getType() == "file" && isset($parentRow[$fieldName][$primaryKey])) {
                 $parentRow[$fieldName] = $parentRow[$fieldName][$primaryKey];
-                return $parentRow;
             }
 
             if ($primaryKey && ArrayUtils::get($foreignRow, $this->deleteFlag) === true) {
@@ -609,8 +608,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Update/Add foreign record
-            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryKeyName())) {
-                // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
+            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryKeyName()) && ($field->getType() != "file" && !isset($parentRow[$fieldName][$primaryKey]))) {
+                 // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
                 $foreignRow = $ForeignTable->manageRecordUpdate($foreignTableName, $foreignRow);
             }
 
@@ -1146,7 +1145,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Run the builder Select with this tablegateway
         // to run all the hooks against the result
-        $results = $this->selectWith($builder->buildSelect(), $params)->toArray();
+        $results = $this->selectWith($builder->buildSelect())->toArray();
 
         if (!$results && ArrayUtils::has($params, 'single')) {
             $message = null;

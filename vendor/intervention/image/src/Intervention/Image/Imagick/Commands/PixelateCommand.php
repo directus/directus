@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
-class PixelateCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class PixelateCommand extends AbstractCommand
 {
     /**
      * Applies a pixelation effect to a given image

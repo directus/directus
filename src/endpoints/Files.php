@@ -73,10 +73,9 @@ class Files extends Route
             }
 
             // TODO: the file already exists move it to the upload path location
-            $data = file_get_contents($uploadedFile->file);
             $payload = array_merge([
                 'filename' => $uploadedFile->getClientFilename(),
-                'data' => base64_encode($data)
+                'data' => $uploadedFile,
             ], $payload);
         }
 

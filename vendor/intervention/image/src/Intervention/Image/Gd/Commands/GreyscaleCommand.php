@@ -2,7 +2,9 @@
 
 namespace Intervention\Image\Gd\Commands;
 
-class GreyscaleCommand extends \Intervention\Image\Commands\AbstractCommand
+use Intervention\Image\Commands\AbstractCommand;
+
+class GreyscaleCommand extends AbstractCommand
 {
     /**
      * Turns an image into a greyscale version

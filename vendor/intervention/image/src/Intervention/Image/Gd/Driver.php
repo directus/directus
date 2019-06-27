@@ -2,6 +2,9 @@
 
 namespace Intervention\Image\Gd;
 
+use Intervention\Image\Exception\NotSupportedException;
+use Intervention\Image\Image;
+
 class Driver extends \Intervention\Image\AbstractDriver
 {
     /**
@@ -13,7 +16,7 @@ class Driver extends \Intervention\Image\AbstractDriver
     public function __construct(Decoder $decoder = null, Encoder $encoder = null)
     {
         if ( ! $this->coreAvailable()) {
-            throw new \Intervention\Image\Exception\NotSupportedException(
+            throw new NotSupportedException(
                 "GD Library extension not available with this PHP installation."
             );
         }
@@ -34,7 +37,7 @@ class Driver extends \Intervention\Image\AbstractDriver
     {
         // create empty resource
         $core = imagecreatetruecolor($width, $height);
-        $image = new \Intervention\Image\Image(new static, $core);
+        $image = new Image(new static, $core);
 
         // set background color
         $background = new Color($background);

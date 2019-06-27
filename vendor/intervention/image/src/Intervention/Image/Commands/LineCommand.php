@@ -4,7 +4,7 @@ namespace Intervention\Image\Commands;
 
 use Closure;
 
-class LineCommand extends \Intervention\Image\Commands\AbstractCommand
+class LineCommand extends AbstractCommand
 {
     /**
      * Draws line on given image

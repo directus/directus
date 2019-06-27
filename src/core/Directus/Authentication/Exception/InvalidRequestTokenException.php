@@ -12,4 +12,9 @@ class InvalidRequestTokenException extends Exception
     {
         parent::__construct('Invalid Request Token');
     }
+
+    public function getStatusCode()
+    {
+        return 401;
+    }
 }

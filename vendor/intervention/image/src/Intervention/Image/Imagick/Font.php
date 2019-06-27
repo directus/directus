@@ -2,9 +2,11 @@
 
 namespace Intervention\Image\Imagick;
 
+use Intervention\Image\AbstractFont;
+use Intervention\Image\Exception\RuntimeException;
 use Intervention\Image\Image;
 
-class Font extends \Intervention\Image\AbstractFont
+class Font extends AbstractFont
 {
     /**
      * Draws font to given image at given position
@@ -25,7 +27,7 @@ class Font extends \Intervention\Image\AbstractFont
         if ($this->hasApplicableFontFile()) {
             $draw->setFont($this->file);
         } else {
-            throw new \Intervention\Image\Exception\RuntimeException(
+            throw new RuntimeException(
                 "Font file must be provided to apply text to image."
             );
         }
@@ -56,17 +58,18 @@ class Font extends \Intervention\Image\AbstractFont
         // align vertical
         if (strtolower($this->valign) != 'bottom') {
 
-            // calculate box size
-            $dimensions = $image->getCore()->queryFontMetrics($draw, $this->text);
-
             // corrections on y-position
             switch (strtolower($this->valign)) {
                 case 'center':
                 case 'middle':
+                // calculate box size
+                $dimensions = $image->getCore()->queryFontMetrics($draw, $this->text);
                 $posy = $posy + $dimensions['textHeight'] * 0.65 / 2;
                 break;
 
                 case 'top':
+                // calculate box size
+                $dimensions = $image->getCore()->queryFontMetrics($draw, $this->text, false);
                 $posy = $posy + $dimensions['textHeight'] * 0.65;
                 break;
             }
@@ -94,7 +97,7 @@ class Font extends \Intervention\Image\AbstractFont
         if ($this->hasApplicableFontFile()) {
             $draw->setFont($this->file);
         } else {
-            throw new \Intervention\Image\Exception\RuntimeException(
+            throw new RuntimeException(
                 "Font file must be provided to apply text to image."
             );
         }

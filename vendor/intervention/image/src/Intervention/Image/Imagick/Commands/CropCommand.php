@@ -2,10 +2,12 @@
 
 namespace Intervention\Image\Imagick\Commands;
 
+use Intervention\Image\Commands\AbstractCommand;
+use Intervention\Image\Exception\InvalidArgumentException;
 use Intervention\Image\Point;
 use Intervention\Image\Size;
 
-class CropCommand extends \Intervention\Image\Commands\AbstractCommand
+class CropCommand extends AbstractCommand
 {
     /**
      * Crop an image instance
@@ -21,7 +23,7 @@ class CropCommand extends \Intervention\Image\Commands\AbstractCommand
         $y = $this->argument(3)->type('digit')->value();
 
         if (is_null($width) || is_null($height)) {
-            throw new \Intervention\Image\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Width and height of cutout needs to be defined."
             );
         }

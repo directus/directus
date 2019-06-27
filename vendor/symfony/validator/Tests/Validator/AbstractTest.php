@@ -610,9 +610,9 @@ abstract class AbstractTest extends AbstractValidatorTest
         $initializer1->expects($this->once())
             ->method('initialize')
             ->with($entity)
-            ->will($this->returnCallback(function ($object) {
+            ->willReturnCallback(function ($object) {
                 $object->initialized = true;
-            }));
+            });
 
         $initializer2->expects($this->once())
             ->method('initialize')
