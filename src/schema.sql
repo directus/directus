@@ -69,16 +69,16 @@ CREATE TABLE `directus_collection_presets` (
   `view_query` text,
   `view_options` text,
   `translation` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_user_collection_title` (`user`,`collection`,`title`)
+  PRIMARY KEY (`id`)
+--  UNIQUE KEY `idx_user_collection_title` (`user`,`collection`,`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `directus_collection_presets` (`id`, `title`, `user`, `role`, `collection`, `search_query`, `filters`, `view_type`, `view_query`, `view_options`, `translation`)
-VALUES
-	(1,NULL,NULL,NULL,'directus_activity',NULL,NULL,'timeline','{\"timeline\":{\"sort\":\"-action_on\"}}','{\"timeline\":{\"date\":\"action_on\",\"title\":\"{{ action_by.first_name }} {{ action_by.last_name }} ({{action}})\",\"content\":\"action_by\",\"color\":\"action\"}}',NULL),
-	(2,NULL,NULL,NULL,'directus_files',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"title\",\"subtitle\":\"type\",\"content\":\"description\",\"src\":\"data\"}}',NULL),
-	(3,NULL,NULL,NULL,'directus_users',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"first_name\",\"subtitle\":\"last_name\",\"content\":\"title\",\"src\":\"avatar\",\"icon\":\"person\"}}',NULL);
+-- INSERT INTO `directus_collection_presets` (`id`, `title`, `user`, `role`, `collection`, `search_query`, `filters`, `view_type`, `view_query`, `view_options`, `translation`)
+-- VALUES
+-- 	(1,NULL,NULL,NULL,'directus_activity',NULL,NULL,'timeline','{\"timeline\":{\"sort\":\"-action_on\"}}','{\"timeline\":{\"date\":\"action_on\",\"title\":\"{{ action_by.first_name }} {{ action_by.last_name }} ({{action}})\",\"content\":\"action_by\",\"color\":\"action\"}}',NULL),
+-- 	(2,NULL,NULL,NULL,'directus_files',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"title\",\"subtitle\":\"type\",\"content\":\"description\",\"src\":\"data\"}}',NULL),
+-- 	(3,NULL,NULL,NULL,'directus_users',NULL,NULL,'cards',NULL,'{\"cards\":{\"title\":\"first_name\",\"subtitle\":\"last_name\",\"content\":\"title\",\"src\":\"avatar\",\"icon\":\"person\"}}',NULL);
 
 /*Data for the table `directus_collection_presets` */
 
