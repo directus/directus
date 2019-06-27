@@ -69,8 +69,8 @@ CREATE TABLE `directus_collection_presets` (
   `view_query` text,
   `view_options` text,
   `translation` text,
-  PRIMARY KEY (`id`)
---  UNIQUE KEY `idx_user_collection_title` (`user`,`collection`,`title`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_collection_title` (`user`,`collection`,`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 
