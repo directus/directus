@@ -103,7 +103,7 @@ Directus allows you to manage multilingual content in as many languages as your 
 
 ### Community
 
-* **[Slack](https://slack.directus.io)** — Come join almost a thousand members discussing the future of Directus. Our helpful members are also quick to offer advice for simple questions you may have while getting started.
+* **[Slack](https://directus.chat)** — Come join over a thousand members discussing the future of Directus. Our helpful members are also quick to offer advice for simple questions you may have while getting started.
 * **[Twitter](https://twitter.com/directus)** — Follow us on Twitter to be the first to hear about product updates, see sneak peeks of new features, and vote on polls regarding the future of our platform.
 
 ### GitHub Tickets
