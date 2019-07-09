@@ -14,6 +14,7 @@ interface UserProviderInterface
      * @var int
      */
     const STATUS_ACTIVE = DirectusUsersTableGateway::STATUS_ACTIVE;
+    const STATUS_SUSPENDED = DirectusUsersTableGateway::STATUS_SUSPENDED;
 
     /**
 

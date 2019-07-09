@@ -33,7 +33,8 @@ class Files
     private $defaults = [
         'description' => '',
         'tags' => '',
-        'location' => ''
+        'location' => '',
+        'charset' => ''
     ];
 
     /**
@@ -591,7 +592,7 @@ class Files
 
             if (preg_match($trailingDigit, $fileName, $matches)) {
                 // Convert "fname-1.jpg" to "fname-2.jpg"
-                $attempt = 1 + (int)$matches[1];
+                $attempt = 1 + (int) $matches[1];
                 $newName = preg_replace(
                     $trailingDigit,
                     filename_put_ext("-{$attempt}", $ext),

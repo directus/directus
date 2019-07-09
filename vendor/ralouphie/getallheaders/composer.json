@@ -9,13 +9,18 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.6"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "~3.7.0",
-		"satooshi/php-coveralls": ">=1.0"
+		"phpunit/phpunit": "^5 || ^6.5",
+		"php-coveralls/php-coveralls": "^2.1"
 	},
 	"autoload": {
 		"files": ["src/getallheaders.php"]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"getallheaders\\Tests\\": "tests/"
+		}
 	}
 }

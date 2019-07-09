@@ -11,7 +11,6 @@ use function Directus\send_mail_with_layout;
 use Directus\Util\ArrayUtils;
 use Directus\Validator\Validator;
 use Zend\Db\Sql\Predicate\In;
-use function Directus\get_project_config;
 
 class MailService extends AbstractService
 {
@@ -163,7 +162,7 @@ class MailService extends AbstractService
         /** @var Acl $acl */
         $acl = $this->container->get('acl');
         if ($defaultEmail) {
-            $config = get_project_config();
+            $config = $this->container->get('config');
             return  [
                  $config->get('mail.default.from') => $acl->getUserFullName()
             ];

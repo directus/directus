@@ -8,6 +8,14 @@
     deny from all
 </FilesMatch>
 
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpe?g|png|gif|mp3|wav|ogg|m4a|mp4|mov|wmv|avi)$">
+      Header set Access-Control-Allow-Origin "*"
+      Header set Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+      Header set Access-Control-Allow-Headers "Access-Control-Allow-Headers,Content-Type"
+    </FilesMatch>
+</IfModule>
+
 # Respond with 404 if the file doesn't exists
 # Before the API mod_rewrite catches the request
 <IfModule mod_rewrite.c>

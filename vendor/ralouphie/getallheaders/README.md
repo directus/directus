@@ -14,6 +14,14 @@ This is a simple polyfill for [`getallheaders()`](http://www.php.net/manual/en/f
 
 ## Install
 
+For PHP version **`>= 5.6`**:
+
 ```
 composer require ralouphie/getallheaders
+```
+
+For PHP version **`< 5.6`**:
+
+```
+composer require ralouphie/getallheaders "^2"
 ```

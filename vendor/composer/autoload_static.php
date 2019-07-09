@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c
+class ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -453,6 +453,7 @@ class ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c
         'Directus\\Authentication\\Exception\\UserInactiveException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserInactiveException.php',
         'Directus\\Authentication\\Exception\\UserNotAuthenticatedException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserNotAuthenticatedException.php',
         'Directus\\Authentication\\Exception\\UserNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserNotFoundException.php',
+        'Directus\\Authentication\\Exception\\UserSuspendedException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserSuspendedException.php',
         'Directus\\Authentication\\Exception\\UserWithEmailNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserWithEmailNotFoundException.php',
         'Directus\\Authentication\\Provider' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Provider.php',
         'Directus\\Authentication\\Sso\\AbstractSocialProvider' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Sso/AbstractSocialProvider.php',
@@ -471,14 +472,26 @@ class ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c
         'Directus\\Authentication\\User\\User' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/User/User.php',
         'Directus\\Authentication\\User\\UserInterface' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/User/UserInterface.php',
         'Directus\\Cache\\Cache' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Cache.php',
+        'Directus\\Cache\\Exception\\InvalidCacheAdapterException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheAdapterException.php',
+        'Directus\\Cache\\Exception\\InvalidCacheConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheConfigurationException.php',
         'Directus\\Cache\\Response' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Response.php',
         'Directus\\Collection\\Arrayable' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Arrayable.php',
         'Directus\\Collection\\Collection' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Collection.php',
         'Directus\\Collection\\CollectionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Collection/CollectionInterface.php',
         'Directus\\Config\\Config' => __DIR__ . '/../..' . '/src/core/Directus/Config/Config.php',
         'Directus\\Config\\ConfigInterface' => __DIR__ . '/../..' . '/src/core/Directus/Config/ConfigInterface.php',
+        'Directus\\Config\\Context' => __DIR__ . '/../..' . '/src/core/Directus/Config/Context.php',
+        'Directus\\Config\\Exception\\InvalidProjectException' => __DIR__ . '/../..' . '/src/core/Directus/Config/Exception/InvalidProjectException.php',
         'Directus\\Config\\Exception\\InvalidStatusException' => __DIR__ . '/../..' . '/src/core/Directus/Config/Exception/InvalidStatusException.php',
         'Directus\\Config\\Exception\\InvalidValueException' => __DIR__ . '/../..' . '/src/core/Directus/Config/Exception/InvalidValueException.php',
+        'Directus\\Config\\Exception\\UnknownProjectException' => __DIR__ . '/../..' . '/src/core/Directus/Config/Exception/UnknownProjectException.php',
+        'Directus\\Config\\Schema\\Base' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Base.php',
+        'Directus\\Config\\Schema\\Exception\\OmitException' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Exception/OmitException.php',
+        'Directus\\Config\\Schema\\Group' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Group.php',
+        'Directus\\Config\\Schema\\Node' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Node.php',
+        'Directus\\Config\\Schema\\Schema' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Schema.php',
+        'Directus\\Config\\Schema\\Types' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Types.php',
+        'Directus\\Config\\Schema\\Value' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Value.php',
         'Directus\\Config\\StatusItem' => __DIR__ . '/../..' . '/src/core/Directus/Config/StatusItem.php',
         'Directus\\Config\\StatusMapping' => __DIR__ . '/../..' . '/src/core/Directus/Config/StatusMapping.php',
         'Directus\\Console\\Cli' => __DIR__ . '/../..' . '/src/core/Directus/Console/Cli.php',
@@ -2609,10 +2622,10 @@ class ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitfef58229980f2c70347e4b7e9e7c5e1c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$classMap;
 
         }, null, ClassLoader::class);
     }

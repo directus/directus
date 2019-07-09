@@ -18,6 +18,8 @@ use Directus\Authentication\Provider;
 use Directus\Authentication\Sso\Social;
 use Directus\Authentication\User\Provider\UserTableGatewayProvider;
 use Directus\Cache\Response;
+use Directus\Cache\Exception\InvalidCacheAdapterException;
+use Directus\Cache\Exception\InvalidCacheConfigurationException;
 use Directus\Config\StatusMapping;
 use Directus\Database\Connection;
 use Directus\Database\Exception\ConnectionFailedException;
@@ -127,12 +129,14 @@ class CoreServicesProvider
 
             $filenameFormat = '%s.%s.log';
             foreach (Logger::getLevels() as $name => $level) {
+                if ($path !== "php://stdout" && $path !== "php://stderr") {
+                    $path . '/' . sprintf($filenameFormat, strtolower($name), date('Y-m-d'));
+                }
                 $handler = new StreamHandler(
-                    $path . '/' . sprintf($filenameFormat, strtolower($name), date('Y-m-d')),
+                    $path,
                     $level,
                     false
                 );
-
                 $handler->setFormatter($formatter);
                 $logger->pushHandler($handler);
             }
@@ -542,7 +546,7 @@ class CoreServicesProvider
                     ];
                     // Authenticated user can see their private info
                     // Admin can see all users private info
-                    if (!$acl->isAdmin() && $userId !== (int)$row['id']) {
+                    if (!$acl->isAdmin() && $userId !== (int) $row['id']) {
                         $omit = array_merge($omit, [
                             'token',
                             'email_notifications',
@@ -894,7 +898,7 @@ class CoreServicesProvider
                 $pool = $poolConfig;
             } else {
                 if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'memcache', 'redis', 'void'])) {
-                    throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'memcache', 'redis'");
+                    throw new InvalidCacheAdapterException();
                 }
 
                 $pool = new VoidCachePool();
@@ -915,7 +919,7 @@ class CoreServicesProvider
 
                 if ($adapter == 'filesystem') {
                     if (empty($poolConfig['path']) || !is_string($poolConfig['path'])) {
-                        throw new \Exception('"cache.pool.path parameter is required for "filesystem" adapter and must be a string');
+                        throw new InvalidCacheConfigurationException($adapter);
                     }
 
                     $cachePath = $poolConfig['path'];
@@ -931,6 +935,15 @@ class CoreServicesProvider
                 }
 
                 if ($adapter == 'memcached' || $adapter == 'memcache') {
+
+                    if ($adapter == 'memcached' && !extension_loaded('memcached')) {
+                        throw new InvalidCacheConfigurationException($adapter);
+                    }
+
+                    if ($adapter == 'memcache' && !extension_loaded('memcache')) {
+                        throw new InvalidCacheConfigurationException($adapter);
+                    }
+
                     $client = $adapter == 'memcached' ? new \Memcached() : new \Memcache();
                     if (isset($poolConfig['url'])) {
                         $urls = explode(';', $poolConfig['url']);
@@ -954,6 +967,11 @@ class CoreServicesProvider
                 }
 
                 if ($adapter == 'redis') {
+
+                    if (!extension_loaded('redis')) {
+                        throw new InvalidCacheConfigurationException($adapter);
+                    }
+
                     $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
                     $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
                     $socket = (isset($poolConfig['socket'])) ? $poolConfig['socket'] : null;

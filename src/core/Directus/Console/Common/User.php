@@ -6,6 +6,7 @@ use Directus\Application\Application;
 use Directus\Console\Common\Exception\PasswordChangeException;
 use Directus\Console\Common\Exception\UserUpdateException;
 use Zend\Db\TableGateway\TableGateway;
+use Directus\Util\Installation\InstallerUtils;
 
 class User
 {
@@ -14,14 +15,16 @@ class User
     private $db;
     private $usersTableGateway;
 
-    public function __construct($base_path)
+    public function __construct($base_path, $projectName)
     {
         if ($base_path == null) {
             $base_path = \Directus\base_path();
         }
 
+        $config = require InstallerUtils::createConfigPath($base_path, $projectName);
+
         $this->directus_path = $base_path;
-        $this->app = new Application($base_path, require $base_path. '/config/api.php');
+        $this->app = new Application($base_path, $config);
         $this->db = $this->app->getContainer()->get('database');
 
         $this->usersTableGateway = new TableGateway('directus_users', $this->db);
@@ -90,7 +93,6 @@ class User
         } catch (\PDOException $ex) {
             throw new PasswordChangeException('Failed to change password' . ': ' . str($ex));
         }
-
     }
 
     /**
@@ -122,5 +124,4 @@ class User
             throw new PasswordChangeException('Could not change email for ID ' . $id . ': ' . str($ex));
         }
     }
-
 }

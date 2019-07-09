@@ -198,12 +198,12 @@ class InstallModule extends ModuleBase
                 }
 
                 // NOTE: Do we really want to change the email when re-run install command?
-                $user = new User($directus_path);
+                $user = new User($directus_path, $projectName);
                 try {
                     $hasEmail = ArrayUtils::has($data, 'user_email');
                     if ($hasEmail && !$user->userExists($data['user_email'])) {
                         InstallerUtils::addDefaultUser($directus_path, $data, $projectName);
-                    }else{
+                    } else {
                         //TODO: Verify this method is required or not! 
                         if ($hasEmail) {
                             $user->changeEmail(1, $data['user_email']);

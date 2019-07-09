@@ -10,6 +10,7 @@ use Directus\Authentication\Provider;
 use Directus\Database\Exception\ItemNotFoundException;
 use Directus\Database\Schema\SchemaManager;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Exception\ForbiddenException;
 use Directus\Exception\ForbiddenLastAdminException;
@@ -65,7 +66,20 @@ class UsersService extends AbstractService
 
         // Fetch the entry even if it's not "published"
         $params['status'] = '*';
+        $oldRecord = $this->find(
+            $id,
+            ArrayUtils::omit($params, $this->itemsService::SINGLE_ITEM_PARAMS_BLACKLIST)
+        );
         $newRecord = $tableGateway->updateRecord($id, $payload, $this->getCRUDParams($params));
+
+        if(!is_null(ArrayUtils::get($payload, $status->getName()))){
+            $activityTableGateway = $this->createTableGateway(SchemaManager::COLLECTION_ACTIVITY);
+            $activityTableGateway->recordAction(
+                $id,
+                SchemaManager::COLLECTION_USERS,
+                DirectusActivityTableGateway::ACTION_UPDATE_USER_STATUS
+            );
+        }
 
         try {
             $item = $this->find(
