@@ -8,7 +8,7 @@ return [
 
     'settings' => [
         'logger' => [
-            'path' => __DIR__ . '/logs/app.log',
+            'path' => __DIR__ . '/../logs',
         ],
     ],
 
@@ -50,7 +50,7 @@ return [
         //    'url' => 'localhost:11211;localhost:11212'
         //    //'host'      => 'localhost',
         //    //'port'      => 11211
-        //],        
+        //],
         // 'pool' => [
         //    'adapter'   => 'redis',
         //    'host'      => 'localhost',

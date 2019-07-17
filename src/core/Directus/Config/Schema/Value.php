@@ -33,9 +33,13 @@ class Value extends Base implements Node
     /**
      * Gets a value from leaf node
      */
-    public function value($values)
+    public function value($context)
     {
-        if (!isset($values) || !isset($values[$this->key()])) {
+        foreach ($context as $context_key => $context_value) {
+            $context[strtolower(str_replace("-", "", str_replace("_", "", $context_key)))] = $context_value;
+        }
+
+        if (!isset($context) || !isset($context[$this->key()])) {
             if ($this->optional()) {
                 throw new OmitException();
             } else {
@@ -43,7 +47,7 @@ class Value extends Base implements Node
             }
         }
 
-        $value = $values[$this->key()];
+        $value = $context[$this->key()];
 
         switch ($this->_type) {
         case Types::INTEGER:

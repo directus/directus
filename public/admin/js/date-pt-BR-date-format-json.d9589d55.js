@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["date-pt-BR-date-format-json"],{6316:function(n){n.exports={short:{year:"numeric",month:"short",day:"numeric"},long:{year:"numeric",month:"short",day:"numeric",weekday:"short",hour:"numeric",minute:"numeric",hour12:!0}}}}]);
+//# sourceMappingURL=date-pt-BR-date-format-json.d9589d55.js.map

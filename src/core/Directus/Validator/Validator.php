@@ -43,7 +43,7 @@ class Validator
             $violations = $this->provider->validate($value, $this->createConstraintFromList($constraints));
         } catch (UnexpectedTypeException $e) {
             $message = $e->getMessage();
-
+           
             preg_match('/Expected argument of type "(.*)", "(.*)" given/', $message, $matches);
             if (count($matches) === 3) {
                 $message = 'This value should be of type ' . $matches[1];
@@ -129,7 +129,7 @@ class Validator
 
         foreach ($constraints as $constraint) {
             $options = null;
-
+    
             // NOTE: Simple implementation to adapt a new regex validation and its pattern
             if (strpos($constraint, ':')) {
                 $constraintParts = explode(':', $constraint);
@@ -139,7 +139,7 @@ class Validator
 
             $constraintsObjects[] = $this->getConstraint($constraint, $options);
         }
-
+        
         return $constraintsObjects;
     }
 }

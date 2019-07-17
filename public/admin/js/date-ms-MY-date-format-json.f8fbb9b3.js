@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["date-ms-MY-date-format-json"],{"7fbb":function(n){n.exports={short:{year:"numeric",month:"short",day:"numeric"},long:{year:"numeric",month:"short",day:"numeric",weekday:"short",hour:"numeric",minute:"numeric",hour12:!1}}}}]);
+//# sourceMappingURL=date-ms-MY-date-format-json.f8fbb9b3.js.map

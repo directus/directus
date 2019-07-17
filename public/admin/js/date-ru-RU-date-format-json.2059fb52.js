@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["date-ru-RU-date-format-json"],{c8ef:function(e){e.exports={short:{year:"numeric",month:"short",day:"numeric"},long:{year:"numeric",month:"short",day:"numeric",weekday:"short",hour:"numeric",minute:"numeric",hour12:!1}}}}]);
+//# sourceMappingURL=date-ru-RU-date-format-json.2059fb52.js.map

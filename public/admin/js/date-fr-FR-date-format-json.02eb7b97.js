@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["date-fr-FR-date-format-json"],{fd39:function(n){n.exports={short:{year:"numeric",month:"short",day:"numeric"},long:{year:"numeric",month:"short",day:"numeric",weekday:"short",hour:"numeric",minute:"numeric",hour12:!1}}}}]);
+//# sourceMappingURL=date-fr-FR-date-format-json.02eb7b97.js.map

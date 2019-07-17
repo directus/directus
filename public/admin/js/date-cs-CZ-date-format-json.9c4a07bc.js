@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["date-cs-CZ-date-format-json"],{"859c":function(n){n.exports={short:{year:"numeric",month:"short",day:"numeric"},long:{year:"numeric",month:"short",day:"numeric",weekday:"short",hour:"numeric",minute:"numeric",hour12:!1}}}}]);
+//# sourceMappingURL=date-cs-CZ-date-format-json.9c4a07bc.js.map

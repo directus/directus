@@ -15,7 +15,7 @@ class Schema {
         if ($isEnv) {
             $loggerPath = "php://stdout";
         } else {
-            $loggerPath = __DIR__ . '/../../../../../logs/app.log';
+            $loggerPath = realpath(__DIR__ . '/../../../../../logs');
         }
 
         return new Group('directus', [
@@ -25,7 +25,6 @@ class Schema {
             ]),
             new Group('settings', [
                 new Group('logger', [
-                    // TODO: fix this mess
                     new Value('path', Types::STRING, $loggerPath),
                 ])
             ]),
@@ -63,10 +62,12 @@ class Schema {
                 new Value('version?', Types::STRING, 's3-version'),
                 new Value('bucket?', Types::STRING, 's3-bucket'),
                 new Value('endpoint?', Types::STRING, 's3-endpoint'),
-                new Group('options?', [
+                new Group('options', [
                     new Value('ACL', Types::STRING, 'public-read'),
                     new Value('Cache-Control', Types::STRING, 'max-age=604800')
-                ])
+                ]),
+
+                // TODO: Missing keys?
             ]),
             new Group('mail', [
                 new Group('default', [
@@ -76,7 +77,6 @@ class Schema {
             ]),
             new Group('cors', [
                 new Value('enabled', Types::BOOLEAN, true),
-                // TODO: still no idea how to do arrays, but I will >:[
                 new Value('origin', 'array', ['*']),
                 new Value('methods', 'array', [
                     'GET',

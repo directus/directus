@@ -153,6 +153,7 @@ return array(
     'Directus\\Cache\\Cache' => $baseDir . '/src/core/Directus/Cache/Cache.php',
     'Directus\\Cache\\Exception\\InvalidCacheAdapterException' => $baseDir . '/src/core/Directus/Cache/Exception/InvalidCacheAdapterException.php',
     'Directus\\Cache\\Exception\\InvalidCacheConfigurationException' => $baseDir . '/src/core/Directus/Cache/Exception/InvalidCacheConfigurationException.php',
+    'Directus\\Cache\\Exception\\InvalidLoggerConfigurationException' => $baseDir . '/src/core/Directus/Logger/Exception/InvalidLoggerConfigurationException.php',
     'Directus\\Cache\\Response' => $baseDir . '/src/core/Directus/Cache/Response.php',
     'Directus\\Collection\\Arrayable' => $baseDir . '/src/core/Directus/Collection/Arrayable.php',
     'Directus\\Collection\\Collection' => $baseDir . '/src/core/Directus/Collection/Collection.php',

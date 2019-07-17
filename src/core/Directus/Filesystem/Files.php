@@ -5,6 +5,7 @@ namespace Directus\Filesystem;
 use Directus\Application\Application;
 use function Directus\filename_put_ext;
 use function Directus\generate_uuid5;
+use function Directus\is_a_url;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\Formatting;
@@ -669,5 +670,33 @@ class Files
         $ini += strlen($start);
         $len = strpos($string, $end, $ini) - $ini;
         return substr($string, $ini, $len);
+    }
+    /**
+     * Get a file size and type info from base64 data , URL ,multipart form data
+     * 
+     * @param string $data
+     *
+     * @return array file size and type
+     */
+    public function getFileSizeType($data)
+    {
+        $result=[];
+        if (is_a_url($data)) {
+            $dataInfo = $this->getLink($data);
+            $result['mimeType']=$dataInfo['type'];
+            $result['size']=$dataInfo['filesize'] ? $dataInfo['filesize'] : $dataInfo['size'];
+        }
+        if(is_object($data)) {
+            $result['mimeType']=$data->getClientMediaType();
+            $result['size']=$data->getSize();
+        }
+        if(strpos($data, 'data:') === 0){
+            $parts = explode(',', $data);
+            $file = $parts[1];
+            $dataInfo = $this->getFileInfoFromData(base64_decode($file));
+            $result['mimeType']=$dataInfo['type'];
+            $result['size']=$dataInfo['size'];
+        }
+        return $result;
     }
 }

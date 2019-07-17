@@ -12,6 +12,7 @@ class CollectionList
     protected $limit;
     protected $offset;
     protected $container;
+    protected $lang;
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class CollectionList
         $this->limit = ['limit' => Types::int()];
         $this->offset = ['offset' => Types::int()];
         $this->container = Application::getInstance()->getContainer();
+        $this->lang = ['lang' => Types::string()];
     }
 
     protected function convertArgsToFilter($args)

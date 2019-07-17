@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9
+class ComposerStaticInit10405e49e25f85788214aec5260c10b5
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -474,6 +474,7 @@ class ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9
         'Directus\\Cache\\Cache' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Cache.php',
         'Directus\\Cache\\Exception\\InvalidCacheAdapterException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheAdapterException.php',
         'Directus\\Cache\\Exception\\InvalidCacheConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheConfigurationException.php',
+        'Directus\\Cache\\Exception\\InvalidLoggerConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Logger/Exception/InvalidLoggerConfigurationException.php',
         'Directus\\Cache\\Response' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Response.php',
         'Directus\\Collection\\Arrayable' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Arrayable.php',
         'Directus\\Collection\\Collection' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Collection.php',
@@ -2622,10 +2623,10 @@ class ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3edaef8c9924f8c649845b93fd58dbe9::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -25,11 +25,10 @@ class UserCollectionList extends CollectionList
             if ($value['managed']) {
 
                 $type = Types::userCollection($value['collection']);
-
                 //Add the list of collection
                 $this->list[$value['collection']] = [
                     'type' => Types::collections($type),
-                    'args' => array_merge($this->id, $this->limit, $this->offset, ['filter' => Types::filters($value['collection'])]),
+                    'args' => array_merge($this->id, $this->limit, $this->offset, $this->lang, ['filter' => Types::filters($value['collection'])]),
                     'resolve' => function ($val, $args, $context, ResolveInfo $info) use ($value, $itemsService) {
                         $itemsService->throwErrorIfSystemTable($value['collection']);
                         $responseData = [];

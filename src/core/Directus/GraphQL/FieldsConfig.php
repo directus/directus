@@ -169,6 +169,8 @@ class FieldsConfig
                     $filters[$v['field'] . '_nin'] = Types::string();
                     break;
                 case 'string':
+                    $filters[$v['field'] . '_eq'] = Types::string();
+                    $filters[$v['field'] . '_neq'] = Types::string();
                     $filters[$v['field'] . '_contains'] = Types::string();
                     $filters[$v['field'] . '_ncontains'] = Types::string();
                     $filters[$v['field'] . '_rlike'] = Types::string();

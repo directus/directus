@@ -4,6 +4,8 @@ namespace Directus;
 
 use Directus\Application\Application;
 use Directus\Filesystem\Thumbnail;
+use function Directus\get_directus_setting;
+use Directus\Validator\Exception\InvalidRequestException;
 
 if (!function_exists('is_uploaded_file_okay')) {
     /**
@@ -352,3 +354,98 @@ if (!function_exists('is_a_url')) {
         return false;
     }
 }
+
+if (!function_exists('validate_file')) {
+    /**
+     * Validate A File
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function validate_file($value,$constraint,$options = null)
+    {
+       switch ($constraint) {
+            case 'mimeTypes':
+                validate_file_mime_type($value,$options);
+            break;
+            case 'maxSize':
+                validate_file_size($value,$options);
+            break;
+
+       }
+    }
+}
+
+if (!function_exists('validate_file_mime_type')) {
+    /**
+     * Validate A File Mime Types
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function validate_file_mime_type($value,$options)
+    {
+        $mimeTypes = $options;
+        $mime = $value;
+        
+        if($options == null) {
+            $options=get_directus_setting('file_mimetype_whitelist');
+            $mimeTypes = explode(",",$options);
+        }
+        foreach ($mimeTypes as $mimeType) {
+            if ($mimeType === $mime) {
+                return;
+            }
+            if ($type = strstr($mimeType, '/*', true)) {
+                if (strstr($mime, '/', true) === $type) {
+                    return;
+                }
+            }
+        }
+        $message='The mime type of the file is invalid.Allowed mime types are '.$options.'.';
+        throw new InvalidRequestException($message);
+    }
+}
+if (!function_exists('validate_file_size')) {
+    /**
+     * Validate A File Size
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function validate_file_size($value,$options)
+    {
+        $maxSize=$options;
+        if($options == null) {
+            $maxSize=get_directus_setting('file_max_size');
+        }
+        $size=$maxSize;
+        $factors = [
+            'KB' => 1000,
+            'MB' => 1000000,
+            'GB' => 1000000000,
+            'TB' => 1000000000000
+        ];
+        if (ctype_digit((string) $maxSize)) {
+            $maxSize = (int) $maxSize;
+        } elseif (preg_match('/^(\d++)('.implode('|', array_keys($factors)).')$/', $maxSize, $matches)) {
+            $maxSize = $matches[1] * $factors[$unit = $matches[2]];
+        } else {
+            throw new InvalidRequestException(sprintf('"%s" is not a valid maximum size.', $size));
+        }
+
+        if (0 === $value) {
+            $message='An empty file is not allowed.';
+            throw new InvalidRequestException($message);
+        }
+
+        if($value > $maxSize){
+            $message='The file is too large. Allowed maximum size is '.$size.'.';
+            throw new InvalidRequestException($message);
+        }
+    }
+}
+

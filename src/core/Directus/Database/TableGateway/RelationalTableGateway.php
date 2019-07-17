@@ -607,8 +607,8 @@ class RelationalTableGateway extends BaseTableGateway
                 continue;
             }
 
-            // Update/Add foreign record
-            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryKeyName()) && ($field->getType() != "file" && !isset($parentRow[$fieldName][$primaryKey]))) {
+            // TODO: Remove the hardcode consition of file
+            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryKeyName()) && $field->getType() != "file" ) {
                  // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
                 $foreignRow = $ForeignTable->manageRecordUpdate($foreignTableName, $foreignRow);
             }
@@ -1208,7 +1208,7 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if ($statusField && $this->acl->getCollectionStatuses($this->table)) {
+        if ($statusField && $this->acl != null && $this->acl->getCollectionStatuses($this->table)) {
             foreach ($results as $index => &$item) {
                 $statusId = ArrayUtils::get($item, $statusField->getName());
                 $blacklist = $this->acl->getReadFieldBlacklist($this->table, $statusId);

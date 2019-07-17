@@ -5,6 +5,7 @@ namespace Directus\Application\Http\Middleware;
 use Directus\Cache\Response as CacheResponse;
 use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
+use Directus\Util\StringUtils;
 
 class ResponseCacheMiddleware extends AbstractMiddleware
 {
@@ -33,6 +34,12 @@ class ResponseCacheMiddleware extends AbstractMiddleware
             $requestPath = $request->getUri()->getPath();
 
             $key = md5($container->get('acl')->getUserId().'@'.$requestPath.'?'.http_build_query($parameters));
+        } else if ($request->isPost() && StringUtils::endsWith($request->getUri()->getPath(), '/gql')) {
+            // Handle caching for GraphQL query that are POST.
+            // TODO:: Add support for ACL and Mutation
+            $body = $request->getBody();
+            $key = md5($body->getContents());
+            $body->rewind();
         } else {
             $key = null;
         }

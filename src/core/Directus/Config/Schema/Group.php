@@ -24,6 +24,11 @@ class Group extends Base implements Node
     {
         $value = [];
         $current = [];
+
+        foreach ($context as $context_key => $context_value) {
+            $context[strtolower(str_replace("-", "", str_replace("_", "", $context_key)))] = $context_value;
+        }
+
         if (!isset($context[$this->key()])) {
             if ($this->optional()) {
                 throw new OmitException();
