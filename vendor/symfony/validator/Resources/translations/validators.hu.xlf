@@ -358,6 +358,14 @@
                 <source>This value is not a valid timezone.</source>
                 <target>Ez az érték nem egy érvényes időzóna.</target>
             </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Ez a jelszó korábban egy adatvédelmi incidens során illetéktelenek kezébe került, így nem használható. Kérjük, használjon másik jelszót.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Ennek az értéknek {{ min }} és {{ max }} között kell lennie.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

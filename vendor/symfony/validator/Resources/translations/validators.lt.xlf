@@ -362,6 +362,10 @@
                 <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
                 <target>Slaptažodis yra nutekėjęs duomenų saugumo pažeidime, jo naudoti negalima. Prašome naudoti kitą slaptažodį.</target>
             </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Ši reikšmė turi būti tarp {{ min }} ir {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

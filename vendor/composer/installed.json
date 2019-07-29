@@ -139,7 +139,7 @@
             {
                 "name": "Tobias Nyholm",
                 "email": "tobias.nyholm@gmail.com",
-                "homepage": "https://github.com/nyholm"
+                "homepage": "https://github.com/Nyholm"
             }
         ],
         "description": "Library of all the php-cache adapters",
@@ -534,13 +534,13 @@
         "authors": [
             {
                 "name": "Neuman Vong",
-                "email": "neuman+pear@twilio.com",
-                "role": "Developer"
+                "role": "Developer",
+                "email": "neuman+pear@twilio.com"
             },
             {
                 "name": "Anant Narayanan",
-                "email": "anant@php.net",
-                "role": "Developer"
+                "role": "Developer",
+                "email": "anant@php.net"
             }
         ],
         "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
@@ -941,9 +941,9 @@
         "authors": [
             {
                 "name": "Ben Corlett",
+                "role": "Developer",
                 "email": "bencorlett@me.com",
-                "homepage": "http://www.webcomm.com.au",
-                "role": "Developer"
+                "homepage": "http://www.webcomm.com.au"
             }
         ],
         "description": "OAuth 1.0 Client Library",
@@ -1950,20 +1950,20 @@
         "authors": [
             {
                 "name": "Woody Gilk",
+                "role": "Developer",
                 "email": "woody.gilk@gmail.com",
-                "homepage": "http://shadowhand.me",
-                "role": "Developer"
+                "homepage": "http://shadowhand.me"
             },
             {
                 "name": "Rob Morgan",
+                "role": "Lead Developer",
                 "email": "robbym@gmail.com",
-                "homepage": "https://robmorgan.id.au",
-                "role": "Lead Developer"
+                "homepage": "https://robmorgan.id.au"
             },
             {
                 "name": "Richard Quadling",
-                "email": "rquadling@gmail.com",
-                "role": "Developer"
+                "role": "Developer",
+                "email": "rquadling@gmail.com"
             },
             {
                 "name": "CakePHP Community",
@@ -2164,17 +2164,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.3.2",
-        "version_normalized": "4.3.2.0",
+        "version": "v4.3.3",
+        "version_normalized": "4.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "9198eea354be75794a7b1064de00d9ae9ae5090f"
+            "reference": "a17a2aea43950ce83a0603ed301bac362eb86870"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/9198eea354be75794a7b1064de00d9ae9ae5090f",
-            "reference": "9198eea354be75794a7b1064de00d9ae9ae5090f",
+            "url": "https://api.github.com/repos/symfony/config/zipball/a17a2aea43950ce83a0603ed301bac362eb86870",
+            "reference": "a17a2aea43950ce83a0603ed301bac362eb86870",
             "shasum": ""
         },
         "require": {
@@ -2195,7 +2195,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2019-06-08T06:33:08+00:00",
+        "time": "2019-07-18T10:34:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2230,17 +2230,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.3.2",
-        "version_normalized": "4.3.2.0",
+        "version": "v4.3.3",
+        "version_normalized": "4.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "b592b26a24265a35172d8a2094d8b10f22b7cc39"
+            "reference": "8b0ae5742ce9aaa8b0075665862c1ca397d1c1d9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/b592b26a24265a35172d8a2094d8b10f22b7cc39",
-            "reference": "b592b26a24265a35172d8a2094d8b10f22b7cc39",
+            "url": "https://api.github.com/repos/symfony/console/zipball/8b0ae5742ce9aaa8b0075665862c1ca397d1c1d9",
+            "reference": "8b0ae5742ce9aaa8b0075665862c1ca397d1c1d9",
             "shasum": ""
         },
         "require": {
@@ -2272,7 +2272,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-06-13T11:03:18+00:00",
+        "time": "2019-07-24T17:13:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2307,8 +2307,8 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.3.2",
-        "version_normalized": "4.3.2.0",
+        "version": "v4.3.3",
+        "version_normalized": "4.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
@@ -2600,17 +2600,17 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.3.2",
-        "version_normalized": "4.3.2.0",
+        "version": "v4.3.3",
+        "version_normalized": "4.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "934ab1d18545149e012aa898cf02e9f23790f7a0"
+            "reference": "4e3e39cc485304f807622bdc64938e4633396406"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/934ab1d18545149e012aa898cf02e9f23790f7a0",
-            "reference": "934ab1d18545149e012aa898cf02e9f23790f7a0",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/4e3e39cc485304f807622bdc64938e4633396406",
+            "reference": "4e3e39cc485304f807622bdc64938e4633396406",
             "shasum": ""
         },
         "require": {
@@ -2643,7 +2643,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2019-06-13T11:03:18+00:00",
+        "time": "2019-07-18T10:34:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2737,17 +2737,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v3.4.29",
-        "version_normalized": "3.4.29.0",
+        "version": "v3.4.30",
+        "version_normalized": "3.4.30.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "d6561bff343346be8ff3e93eb5c4344985bc538b"
+            "reference": "d10a8b1d632086666ca57ae6081f2cbf73037fb2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/d6561bff343346be8ff3e93eb5c4344985bc538b",
-            "reference": "d6561bff343346be8ff3e93eb5c4344985bc538b",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/d10a8b1d632086666ca57ae6081f2cbf73037fb2",
+            "reference": "d10a8b1d632086666ca57ae6081f2cbf73037fb2",
             "shasum": ""
         },
         "require": {
@@ -2789,7 +2789,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-        "time": "2019-06-20T06:43:29+00:00",
+        "time": "2019-07-19T11:52:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2824,17 +2824,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.3.2",
-        "version_normalized": "4.3.2.0",
+        "version": "v4.3.3",
+        "version_normalized": "4.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "c60ecf5ba842324433b46f58dc7afc4487dbab99"
+            "reference": "34d29c2acd1ad65688f58452fd48a46bd996d5a6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/c60ecf5ba842324433b46f58dc7afc4487dbab99",
-            "reference": "c60ecf5ba842324433b46f58dc7afc4487dbab99",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/34d29c2acd1ad65688f58452fd48a46bd996d5a6",
+            "reference": "34d29c2acd1ad65688f58452fd48a46bd996d5a6",
             "shasum": ""
         },
         "require": {
@@ -2850,7 +2850,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2019-04-06T14:04:46+00:00",
+        "time": "2019-07-24T14:47:54+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

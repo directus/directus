@@ -116,12 +116,13 @@ class Thumbnail
         if (!extension_loaded('imagick')) {
             return false;
         }
-
         $image = new \Imagick();
         $image->readImageBlob($content);
         $image->setIteratorIndex(0);
         $image->setImageFormat($format);
-
+        $image->setImageBackgroundColor('#ffffff');
+        $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_REMOVE);
+        $image = $image->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
         return $image->getImageBlob();
     }
 

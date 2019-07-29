@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Yaml;
 
+use Symfony\Component\Yaml\Tag\TaggedValue;
+
 /**
  * Dumper dumps PHP variables to YAML strings.
  *
@@ -56,7 +58,7 @@ class Dumper
             $dumpObjectAsInlineMap = empty((array) $input);
         }
 
-        if ($inline <= 0 || (!\is_array($input) && $dumpObjectAsInlineMap) || empty($input)) {
+        if ($inline <= 0 || (!\is_array($input) && !$input instanceof TaggedValue && $dumpObjectAsInlineMap) || empty($input)) {
             $output .= $prefix.Inline::dump($input, $flags);
         } else {
             $dumpAsMap = Inline::isHash($input);
@@ -70,6 +72,19 @@ class Dumper
 
                     foreach (preg_split('/\n|\r\n/', $value) as $row) {
                         $output .= sprintf("%s%s%s\n", $prefix, str_repeat(' ', $this->indentation), $row);
+                    }
+
+                    continue;
+                }
+
+                if ($value instanceof TaggedValue) {
+                    $output .= sprintf('%s%s !%s', $prefix, $dumpAsMap ? Inline::dump($key, $flags).':' : '-', $value->getTag());
+
+                    if ($inline - 1 <= 0) {
+                        $output .= ' '.$this->dump($value->getValue(), $inline - 1, 0, $flags)."\n";
+                    } else {
+                        $output .= "\n";
+                        $output .= $this->dump($value->getValue(), $inline - 1, $dumpAsMap ? $indent + $this->indentation : $indent + 2, $flags);
                     }
 
                     continue;

@@ -97,6 +97,10 @@ class FileTest extends TestCase
             ['1MI', 1048576, true],
             ['3m', 3000000, false],
             ['3M', 3000000, false],
+            ['1gi', 1073741824, true],
+            ['1GI', 1073741824, true],
+            ['4g', 4000000000, false],
+            ['4G', 4000000000, false],
         ];
     }
 
@@ -107,8 +111,6 @@ class FileTest extends TestCase
             ['foo'],
             ['1Ko'],
             ['1kio'],
-            ['1G'],
-            ['1Gi'],
         ];
     }
 

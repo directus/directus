@@ -134,6 +134,14 @@ EOPHP;
         yield [1, 13, 'protected function prot($a = [123]) {}'];
         yield [0, 14, '/** priv docblock */'];
         yield [0, 15, ''];
+
+        if (\PHP_VERSION_ID >= 70400) {
+            // PHP7.4 typed properties without default value are
+            // undefined, make sure this doesn't throw an error
+            yield [1, 5, 'public array $pub;'];
+            yield [0, 7, 'protected int $prot;'];
+            yield [0, 9, 'private string $priv;'];
+        }
     }
 
     public function testEventSubscriber()

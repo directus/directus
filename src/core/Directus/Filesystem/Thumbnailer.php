@@ -8,6 +8,7 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
 use Intervention\Image\ImageManagerStatic as Image;
 use Exception;
+use Imagick;
 
 class Thumbnailer {
 
@@ -145,6 +146,20 @@ class Thumbnailer {
     }
 
     /**
+     * Replace PDF files with a JPG thumbnail
+     * @throws Exception
+     * @return string image content
+     */
+    public function load () {
+        $content = $this->filesystem->read($this->fileName);
+        $ext = pathinfo($this->fileName, PATHINFO_EXTENSION);
+        if (Thumbnail::isNonImageFormatSupported($ext)) {
+            $content = Thumbnail::createImageFromNonImage($content);
+        }
+        return Image::make($content);
+    }
+
+    /**
      * Create thumbnail from image and `contain`
      * http://image.intervention.io/api/resize
      * https://css-tricks.com/almanac/properties/o/object-fit/
@@ -159,7 +174,7 @@ class Thumbnailer {
             $options = $this->getSupportedActionOptions($this->action);
 
             // open file image resource
-            $img = Image::make($this->filesystem->read($this->fileName));
+            $img = $this->load();
 
             // crop image
             $img->resize($this->width, $this->height, function ($constraint) {
@@ -192,11 +207,12 @@ class Thumbnailer {
     public function crop()
     {
         try {
+
             // action options
             $options = $this->getSupportedActionOptions($this->action);
 
             // open file image resource
-            $img = Image::make($this->filesystem->read($this->fileName));
+            $img = $this->load();
 
             // resize/crop image
             $img->fit($this->width, $this->height, function($constraint){}, ArrayUtils::get($options, 'position', 'center'));

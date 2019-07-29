@@ -50,7 +50,7 @@ class ComposerResource implements SelfCheckingResourceInterface
     {
         self::refresh();
 
-        return self::$runtimeVendors === $this->vendors;
+        return array_values(self::$runtimeVendors) === array_values($this->vendors);
     }
 
     private static function refresh()

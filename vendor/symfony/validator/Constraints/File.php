@@ -102,8 +102,10 @@ class File extends Constraint
         $factors = [
             'k' => 1000,
             'ki' => 1 << 10,
-            'm' => 1000000,
+            'm' => 1000 * 1000,
             'mi' => 1 << 20,
+            'g' => 1000 * 1000 * 1000,
+            'gi' => 1 << 30,
         ];
         if (ctype_digit((string) $maxSize)) {
             $this->maxSize = (int) $maxSize;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Cache\Exception;
+namespace Directus\Logger\Exception;
 
 use Directus\Exception\ErrorException;
 

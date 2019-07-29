@@ -1296,7 +1296,7 @@ class RelationalTableGateway extends BaseTableGateway
             'logical' => $logical
         ];
     }
-
+    
     protected function parseDotFilters(Builder $mainQuery, array $filters)
     {
         foreach ($filters as $column => $condition) {
@@ -1601,7 +1601,156 @@ class RelationalTableGateway extends BaseTableGateway
 
         return in_array($operator, $operators) && empty($value) && !is_numeric($value);
     }
+    
+    /**
+     * Process single relation field filter
+     *
+     * @param Builder $mainQuery
+     * @param string $column
+     * @param array | string $condition
+     *
+     * @return 
+     */
+    protected function processRelationalFilter(Builder $mainQuery, $column, $condition){
+        $columnList = $filterColumns = explode('.', $column);
+        $columnsTable = [
+            $this->getTable()
+        ];
 
+        $nextColumn = array_shift($columnList);
+        $nextTable = $this->getTable();
+        $relational = SchemaService::hasRelationship($nextTable, $nextColumn);
+        $relationalTables = [];
+        while ($relational) {
+            $relationalTables[$nextColumn] = $nextTable;
+            $nextTable = SchemaService::getRelatedCollectionName($nextTable, $nextColumn);
+            $nextColumn = array_shift($columnList);
+            if (empty($nextColumn))
+                break;
+            // Confirm the user has permission to all chained (dot) fields
+            if ($this->acl && !$this->acl->canRead($nextTable)) {
+                throw new Exception\ForbiddenFieldAccessException($nextColumn);
+            }
+
+            $relational = SchemaService::hasRelationship($nextTable, $nextColumn);
+            $columnsTable[] = $nextTable;
+        }
+
+        // if one of the column in the list has not relationship
+        // it will break the loop before going over all the columns
+        // which we will call this as column not found
+        // TODO: Better error message
+        if (!empty($columnList)) {
+            throw new Exception\FieldNotFoundException($nextColumn);
+        }
+
+        //Prepare relational data for all the fields
+        $columnRelationalData = [];
+        foreach ($filterColumns as $filterColumn) {
+            if (isset($relationalTables[$filterColumn])) {
+                $collection = $this->getTableSchema($relationalTables[$filterColumn]);
+                $fieldRelation = $collection->getField($filterColumn)->getRelationship();
+                $columnRelationalData[$filterColumn] = [
+                    "type" => $fieldRelation->getType(),
+                    "collection_many" => $fieldRelation->getCollectionMany(),
+                    "field_many" => $fieldRelation->getFieldMany(),
+                    "collection_one" => $fieldRelation->getCollectionOne(),
+                    "field_one" => $fieldRelation->getFieldOne()
+                ];
+            }
+        }
+
+        // Reverse all the columns from comments.author.id to id.author.comments
+        // To filter from the most deep relationship to their parents
+        $columns = explode('.', \Directus\column_identifier_reverse($column));
+        $columnsTable = array_reverse($columnsTable, true);
+
+        $mainColumn = array_pop($columns);
+        $mainTable = array_pop($columnsTable);
+
+        // the main query column
+        // where the filter is going to be applied
+        $column = array_shift($columns);
+        $table = array_shift($columnsTable);
+
+        $query = new Builder($this->getAdapter());
+        $mainTableObject = $this->getTableSchema($table);
+        $selectColumn = $mainTableObject->getPrimaryField()->getName();
+
+        //check if column type is alias and relationship is O2M
+        $previousRelation = isset($filterColumns[array_search($column, $filterColumns) - 1]) ? $filterColumns[array_search($column, $filterColumns) - 1] : '';
+        if ($previousRelation && $columnRelationalData[$previousRelation]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {
+            $selectColumn = $columnRelationalData[$previousRelation]['field_many'];
+        }
+
+        //get last relationship
+        if ($mainColumn && !empty($mainColumn) && $columnRelationalData[$mainColumn]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {
+            $mainColumn = $mainTableObject->getPrimaryField()->getName();
+        }
+        $query->columns([$selectColumn]);
+
+        $query->from($table);
+
+        $this->doFilter($query, $column, $condition, $table);
+        $index = 0;
+        foreach ($columns as $key => $column) {
+            ++$index;
+
+            $oldQuery = $query;
+            $query = new Builder($this->getAdapter());
+            $collection = $this->getTableSchema($columnsTable[$key]);
+            $field = $collection->getField($column);
+
+            $selectColumn = $collection->getPrimaryField()->getName();
+            //check if column type is alias and relationship is O2M
+            $previousRelation = isset($filterColumns[array_search($column, $filterColumns) - 1]) ? $filterColumns[array_search($column, $filterColumns) - 1] : '';
+            if ($previousRelation && $columnRelationalData[$previousRelation]['type'] == \Directus\Database\Schema\Object\FieldRelationship::ONE_TO_MANY) {
+                $selectColumn = $columnRelationalData[$previousRelation]['field_many'];
+            }
+            $table = $columnsTable[$key];
+
+            if ($field->isAlias()) {
+                $column = $collection->getPrimaryField()->getName();
+            }
+
+            $query->columns([$selectColumn]);
+            $query->from($table);
+            $query->whereIn($column, $oldQuery);
+        }
+
+        $collection = $this->getTableSchema($mainTable);
+        $field = $collection->getField($mainColumn);
+        $relationship = $field->getRelationship();
+
+        // TODO: Make all this whereIn duplication into a function
+        // TODO: Can we make the O2M simpler getting the parent id from itself
+        //       right now is creating one unnecessary select
+        /*if ($field->isOneToMany()) {
+            $mainColumn = $collection->getPrimaryField()->getName();
+            $oldQuery = $query;
+            $query = new Builder($this->getAdapter());
+            $selectColumn = $column = $relationship->getFieldOne();
+            $table = $relationship->getCollectionOne();
+
+            $query->columns([$selectColumn]);
+            $query->from($table);
+            $query->whereIn(
+                $column,
+                $oldQuery
+            );
+        }*/
+
+        $this->doFilter(
+            $mainQuery,
+            $mainColumn,
+            [
+                'in' => $query,
+                'logical' => isset($condition['logical']) ? $condition['logical'] : 'and'
+            ],
+            $mainTable
+        );
+    }
+    
     /**
      * Process Select Filters (Where conditions)
      *
@@ -1610,32 +1759,36 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected function processFilter(Builder $query, array $filters = [])
     {
-        //Logic for blacklisted fields
         $blackListStatuses = [];
         foreach ($filters as $column => $conditions) {
-            $column = explode('.', $column);
-            $column = array_shift($column);
-            $fieldReadBlackListDetails = $this->acl->getStatusesOnReadFieldBlacklist($this->getTable(), $column);
+            //Logic for blacklisted fields
+            $field = explode('.', $column);
+            $field = array_shift($field);
+            $fieldReadBlackListDetails = $this->acl->getStatusesOnReadFieldBlacklist($this->getTable(), $field);
             if (isset($fieldReadBlackListDetails['isReadBlackList']) && $fieldReadBlackListDetails['isReadBlackList']) {
-                throw new Exception\ForbiddenFieldAccessException($column);
+                throw new Exception\ForbiddenFieldAccessException($field);
             } else if (isset($fieldReadBlackListDetails['statuses']) && !empty($fieldReadBlackListDetails['statuses'])) {
                 $blackListStatuses = array_merge($blackListStatuses, array_values($fieldReadBlackListDetails['statuses']));
             }
-        }
-        $filters = $this->parseDotFilters($query, $filters);
+            
+            if (!(!is_string($column) || strpos($column, '.') === false)){
+                //Process relational & non relation field filters sequentially
+                //Earlier, all the relation field filters were processing first and then non relation fields, due to that logical operators were not working in mix filters
+                //Reference #1149
+                $this->processRelationalFilter($query, $column, $conditions);
+            }else{
+                if ($conditions instanceof Filter) {
+                    $column =  $conditions->getIdentifier();
+                    $conditions = $conditions->getValue();
+                }
 
-        foreach ($filters as $column => $conditions) {
-            if ($conditions instanceof Filter) {
-                $column =  $conditions->getIdentifier();
-                $conditions = $conditions->getValue();
-            }
+                if (!is_array($conditions) || !isset($conditions[0])) {
+                    $conditions = [$conditions];
+                }
 
-            if (!is_array($conditions) || !isset($conditions[0])) {
-                $conditions = [$conditions];
-            }
-
-            foreach ($conditions as $condition) {
-                $this->doFilter($query, $column, $condition, $this->getTable());
+                foreach ($conditions as $condition) {
+                    $this->doFilter($query, $column, $condition, $this->getTable());
+                }
             }
         }
         //Condition for blacklisted statuses

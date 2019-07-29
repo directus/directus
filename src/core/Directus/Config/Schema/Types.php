@@ -7,8 +7,8 @@ namespace Directus\Config\Schema;
  */
 interface Types
 {
-    public const INTEGER = 'number';
-    public const FLOAT = 'float';
-    public const STRING = 'string';
-    public const BOOLEAN = 'boolean';
+    const INTEGER = 'number';
+    const FLOAT = 'float';
+    const STRING = 'string';
+    const BOOLEAN = 'boolean';
 }

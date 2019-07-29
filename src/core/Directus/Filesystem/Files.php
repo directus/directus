@@ -258,12 +258,14 @@ class Files
     {
         // When file is uploaded via multipart form data then We will get object of Slim\Http\UploadFile
         // When file is uploaded via URL (Youtube, Vimeo, or image link) then we will get base64 encode string.
+        $size = null;
         if (is_object($fileData)) {
-
+            $size = $fileData->getSize();
             $checksum = hash_file('md5', $fileData->file);
         } else {
             $fileData = base64_decode($this->getDataInfo($fileData)['data']);
             $checksum = md5($fileData);
+            $size = strlen($fileData);
         }
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName, $replace !== true);
@@ -272,9 +274,9 @@ class Files
 
 
 
-        $this->emitter->run('file.save', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('file.save', ['name' => $fileName, 'size' => $size]);
         $this->write($fileName, $fileData, $replace);
-        $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => $size]);
 
         unset($fileData);
 
@@ -683,19 +685,17 @@ class Files
         $result=[];
         if (is_a_url($data)) {
             $dataInfo = $this->getLink($data);
-            $result['mimeType']=$dataInfo['type'];
-            $result['size']=$dataInfo['filesize'] ? $dataInfo['filesize'] : $dataInfo['size'];
-        }
-        if(is_object($data)) {
+            $result['mimeType'] = isset($dataInfo['type']) ? $dataInfo['type'] : null;
+            $result['size'] = isset($dataInfo['filesize']) ? $dataInfo['filesize'] : (isset($dataInfo['size']) ? $dataInfo['size'] : null);
+        }else if(is_object($data)) {
             $result['mimeType']=$data->getClientMediaType();
             $result['size']=$data->getSize();
-        }
-        if(strpos($data, 'data:') === 0){
+        }else if(strpos($data, 'data:') === 0){
             $parts = explode(',', $data);
             $file = $parts[1];
             $dataInfo = $this->getFileInfoFromData(base64_decode($file));
-            $result['mimeType']=$dataInfo['type'];
-            $result['size']=$dataInfo['size'];
+            $result['mimeType'] = isset($dataInfo['type']) ? $dataInfo['type'] : null;
+            $result['size'] = isset($dataInfo['size']) ? $dataInfo['size'] : null;
         }
         return $result;
     }

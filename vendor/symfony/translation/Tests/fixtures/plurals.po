@@ -3,3 +3,5 @@ msgid_plural "foos"
 msgstr[0] "bar"
 msgstr[1] "bars"
 
+msgid "{0} no foos|one foo|%count% foos"
+msgstr "{0} no bars|one bar|%count% bars"

@@ -330,6 +330,10 @@
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
                 <target>Ten kod BIC (Business Identifier Code) nie jest powiązany z międzynarodowym numerem rachunku bankowego (IBAN) {{ iban }}.</target>
             </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Ta wartość powinna być pomiędzy {{ min }} a {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

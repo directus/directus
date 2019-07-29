@@ -362,6 +362,10 @@
                 <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
                 <target>Esta contraseña no se puede utilizar porque está incluida en un listado de contraseñas públicas obtenido gracias a fallos de seguridad de otros sitios y aplicaciones. Por favor utilice otra contraseña.</target>
             </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Este valor debe estar entre {{ min }} y {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -6,6 +6,7 @@ use Directus\Application\Application;
 use Directus\Filesystem\Thumbnail;
 use function Directus\get_directus_setting;
 use Directus\Validator\Exception\InvalidRequestException;
+use Directus\Util\MimeTypeUtils;
 
 if (!function_exists('is_uploaded_file_okay')) {
     /**
@@ -198,7 +199,8 @@ if (!function_exists('get_thumbnails')) {
             explode(',', get_directus_setting('thumbnail_dimensions'))
         );
 
-        if (!$type || (strpos($type, 'image/') !== 0 && strpos($type, 'embed/') !== 0)) {
+        $fileExtension = MimeTypeUtils::getFromMimeType($type);
+        if (!in_array($fileExtension, Thumbnail::getFormatsSupported())  &&  strpos($type, 'embed/') !== 0) {
             return null;
         }
 

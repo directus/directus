@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit10405e49e25f85788214aec5260c10b5
+class ComposerStaticInit7f510d84a88c3932f3d68bd7cb6d7cc5
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -474,7 +474,6 @@ class ComposerStaticInit10405e49e25f85788214aec5260c10b5
         'Directus\\Cache\\Cache' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Cache.php',
         'Directus\\Cache\\Exception\\InvalidCacheAdapterException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheAdapterException.php',
         'Directus\\Cache\\Exception\\InvalidCacheConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Exception/InvalidCacheConfigurationException.php',
-        'Directus\\Cache\\Exception\\InvalidLoggerConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Logger/Exception/InvalidLoggerConfigurationException.php',
         'Directus\\Cache\\Response' => __DIR__ . '/../..' . '/src/core/Directus/Cache/Response.php',
         'Directus\\Collection\\Arrayable' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Arrayable.php',
         'Directus\\Collection\\Collection' => __DIR__ . '/../..' . '/src/core/Directus/Collection/Collection.php',
@@ -684,6 +683,7 @@ class ComposerStaticInit10405e49e25f85788214aec5260c10b5
         'Directus\\Hook\\Emitter' => __DIR__ . '/../..' . '/src/core/Directus/Hook/Emitter.php',
         'Directus\\Hook\\HookInterface' => __DIR__ . '/../..' . '/src/core/Directus/Hook/HookInterface.php',
         'Directus\\Hook\\Payload' => __DIR__ . '/../..' . '/src/core/Directus/Hook/Payload.php',
+        'Directus\\Logger\\Exception\\InvalidLoggerConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Logger/Exception/InvalidLoggerConfigurationException.php',
         'Directus\\Mail\\Exception\\InvalidTransportException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/InvalidTransportException.php',
         'Directus\\Mail\\Exception\\InvalidTransportObjectException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/InvalidTransportObjectException.php',
         'Directus\\Mail\\Exception\\TransportNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/TransportNotFoundException.php',
@@ -2623,10 +2623,10 @@ class ComposerStaticInit10405e49e25f85788214aec5260c10b5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit10405e49e25f85788214aec5260c10b5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7f510d84a88c3932f3d68bd7cb6d7cc5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7f510d84a88c3932f3d68bd7cb6d7cc5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7f510d84a88c3932f3d68bd7cb6d7cc5::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit7f510d84a88c3932f3d68bd7cb6d7cc5::$classMap;
 
         }, null, ClassLoader::class);
     }

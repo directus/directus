@@ -13,4 +13,4 @@ Resources
     [send Pull Requests](https://github.com/symfony/symfony/pulls)
     in the [main Symfony repository](https://github.com/symfony/symfony)
 
-[1]: http://jcp.org/en/jsr/detail?id=303
+[1]: https://jcp.org/en/jsr/detail?id=303

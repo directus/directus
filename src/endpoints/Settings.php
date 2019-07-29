@@ -90,8 +90,11 @@ class Settings extends Route
                 switch ($fieldDefinition['type']) {
                     case 'file':
                         if (!empty($responseData['data'][$index]['value'])) {
-                            $fileInstance = $service->findFile($responseData['data'][$index]['value']);
-                            $responseData['data'][$index]['value'] = null;
+                            try{
+                                $fileInstance = $service->findFile($responseData['data'][$index]['value']);
+                            }catch(\Exception $e){
+                                $responseData['data'][$index]['value'] = null;
+                            }
 
                             if (!empty($fileInstance['data'])) {
                                 $responseData['data'][$index]['value'] = $fileInstance['data'];

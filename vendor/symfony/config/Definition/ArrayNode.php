@@ -141,7 +141,7 @@ class ArrayNode extends BaseNode implements PrototypeNodeInterface
     }
 
     /**
-     * Whether extra keys should just be ignore without an exception.
+     * Whether extra keys should just be ignored without an exception.
      *
      * @param bool $boolean To allow extra keys
      * @param bool $remove  To remove extra keys

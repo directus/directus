@@ -21,9 +21,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  * @author Tim Nagel <t.nagel@infinite.net.au>
  * @author Bernhard Schussek <bschussek@gmail.com>
  *
- * @see http://en.wikipedia.org/wiki/Bank_card_number
- * @see http://www.regular-expressions.info/creditcard.html
- * @see http://www.barclaycard.co.uk/business/files/Ranges_and_Rules_September_2014.pdf
+ * @see https://en.wikipedia.org/wiki/Payment_card_number
+ * @see https://www.regular-expressions.info/creditcard.html
  */
 class CardSchemeValidator extends ConstraintValidator
 {

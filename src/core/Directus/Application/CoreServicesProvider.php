@@ -321,12 +321,14 @@ class CoreServicesProvider
                 $files = $container->get('files');
 
                 $fileData = ArrayUtils::get($data, 'data');
+
+                $dataInfo = [];
                 if (is_a_url($fileData)) {
                     $dataInfo = $files->getLink($fileData);
                     // Set the URL payload data
                     $payload['data'] = ArrayUtils::get($dataInfo, 'data');
                     $payload['filename'] = ArrayUtils::get($dataInfo, 'filename');
-                } else {
+                } else if(!is_object($fileData)) {
                     $dataInfo = $files->getDataInfo($fileData);
                 }
 

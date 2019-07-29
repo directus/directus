@@ -20,9 +20,13 @@ use Directus\Util\DateTimeUtils;
 use Directus\Util\JWTUtils;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
+use function Directus\get_directus_setting;
 
 class UsersService extends AbstractService
 {
+
+    const PASSWORD_FIELD = 'password';
+
     /**
      * @var string
      */
@@ -56,6 +60,12 @@ class UsersService extends AbstractService
 
         $this->enforceUpdatePermissions($this->collection, $payload, $params);
         $this->validatePayload($this->collection, array_keys($payload), $payload, $params);
+
+        $passwordValidation = get_directus_setting('password_policy');
+        if(!empty($passwordValidation)){
+            $this->validate($payload,[static::PASSWORD_FIELD => ['regex:'.$passwordValidation ]]);
+        }
+
         $this->checkItemExists($this->collection, $id);
 
         $tableGateway = $this->createTableGateway($this->collection);

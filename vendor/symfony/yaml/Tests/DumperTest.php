@@ -14,6 +14,7 @@ namespace Symfony\Component\Yaml\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Tag\TaggedValue;
 use Symfony\Component\Yaml\Yaml;
 
 class DumperTest extends TestCase
@@ -367,6 +368,94 @@ outer2:
     inner1: b
     inner2: c
     inner3: { deep1: d, deep2: e }
+
+YAML;
+        $this->assertSame($expected, $yaml);
+    }
+
+    public function testDumpingTaggedValueSequenceRespectsInlineLevel()
+    {
+        $data = [
+            new TaggedValue('user', [
+                'username' => 'jane',
+            ]),
+            new TaggedValue('user', [
+                'username' => 'john',
+            ]),
+        ];
+
+        $yaml = $this->dumper->dump($data, 2);
+
+        $expected = <<<YAML
+- !user
+  username: jane
+- !user
+  username: john
+
+YAML;
+        $this->assertSame($expected, $yaml);
+    }
+
+    public function testDumpingTaggedValueSequenceWithInlinedTagValues()
+    {
+        $data = [
+            new TaggedValue('user', [
+                'username' => 'jane',
+            ]),
+            new TaggedValue('user', [
+                'username' => 'john',
+            ]),
+        ];
+
+        $yaml = $this->dumper->dump($data, 1);
+
+        $expected = <<<YAML
+- !user { username: jane }
+- !user { username: john }
+
+YAML;
+        $this->assertSame($expected, $yaml);
+    }
+
+    public function testDumpingTaggedValueMapRespectsInlineLevel()
+    {
+        $data = [
+            'user1' => new TaggedValue('user', [
+                'username' => 'jane',
+            ]),
+            'user2' => new TaggedValue('user', [
+                'username' => 'john',
+            ]),
+        ];
+
+        $yaml = $this->dumper->dump($data, 2);
+
+        $expected = <<<YAML
+user1: !user
+    username: jane
+user2: !user
+    username: john
+
+YAML;
+        $this->assertSame($expected, $yaml);
+    }
+
+    public function testDumpingTaggedValueMapWithInlinedTagValues()
+    {
+        $data = [
+            'user1' => new TaggedValue('user', [
+                'username' => 'jane',
+            ]),
+            'user2' => new TaggedValue('user', [
+                'username' => 'john',
+            ]),
+        ];
+
+        $yaml = $this->dumper->dump($data, 1);
+
+        $expected = <<<YAML
+user1: !user { username: jane }
+user2: !user { username: john }
 
 YAML;
         $this->assertSame($expected, $yaml);

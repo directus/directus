@@ -7,6 +7,7 @@ use Directus\Console\Common\Exception\PasswordChangeException;
 use Directus\Console\Common\Exception\UserUpdateException;
 use Zend\Db\TableGateway\TableGateway;
 use Directus\Util\Installation\InstallerUtils;
+use function Directus\get_directus_setting;
 
 class User
 {
@@ -74,6 +75,14 @@ class User
     {
 
         $auth = $this->app->getContainer()->get('auth');
+
+        $passwordValidation = get_directus_setting('password_policy');
+        if(!empty($passwordValidation)){
+            if(!preg_match($passwordValidation, $password, $match)){
+                throw new PasswordChangeException('Password is not valid.');
+            }
+        }
+
         $hash = $auth->hashPassword($password);
         $user = $this->usersTableGateway->select(['email' => $email])->current();
 

@@ -246,6 +246,10 @@
                 <source>Error</source>
                 <target>Fejl</target>
             </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Værdien skal være mellem {{ min }} og {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
