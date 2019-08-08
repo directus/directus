@@ -155,7 +155,7 @@ class BuildSchema
         $skip = array_reduce(
             $directives,
             static function ($hasSkip, $directive) {
-                return $hasSkip || $directive->name === 'skip';
+                return (bool) $hasSkip || $directive->name === 'skip';
             }
         );
         if (! $skip) {
@@ -165,7 +165,7 @@ class BuildSchema
         $include = array_reduce(
             $directives,
             static function ($hasInclude, $directive) {
-                return $hasInclude || $directive->name === 'include';
+                return (bool) $hasInclude || $directive->name === 'include';
             }
         );
         if (! $include) {
@@ -175,7 +175,7 @@ class BuildSchema
         $deprecated = array_reduce(
             $directives,
             static function ($hasDeprecated, $directive) {
-                return $hasDeprecated || $directive->name === 'deprecated';
+                return (bool) $hasDeprecated || $directive->name === 'deprecated';
             }
         );
         if (! $deprecated) {

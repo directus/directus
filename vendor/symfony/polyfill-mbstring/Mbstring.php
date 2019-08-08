@@ -35,6 +35,7 @@ namespace Symfony\Polyfill\Mbstring;
  * - mb_strlen               - Get string length
  * - mb_strpos               - Find position of first occurrence of string in a string
  * - mb_strrpos              - Find position of last occurrence of a string in a string
+ * - mb_str_split            - Convert a string to an array
  * - mb_strtolower           - Make a string lowercase
  * - mb_strtoupper           - Make a string uppercase
  * - mb_substitute_character - Set/Get substitution character
@@ -523,6 +524,34 @@ final class Mbstring
         return false !== $pos ? $offset + $pos : false;
     }
 
+    public static function mb_str_split($string, $split_length = 1, $encoding = null)
+    {
+        if (null !== $string && !\is_scalar($string) && !(\is_object($string) && \method_exists($string, '__toString'))) {
+            trigger_error('mb_str_split() expects parameter 1 to be string, '.\gettype($string).' given', E_USER_WARNING);
+
+            return null;
+        }
+
+        if ($split_length < 1) {
+            trigger_error('The length of each segment must be greater than zero', E_USER_WARNING);
+
+            return false;
+        }
+
+        if (null === $encoding) {
+            $encoding = mb_internal_encoding();
+        }
+
+        $result = array();
+        $length = mb_strlen($string, $encoding);
+
+        for ($i = 0; $i < $length; $i += $split_length) {
+            $result[] = mb_substr($string, $i, $split_length, $encoding);
+        }
+
+        return $result;
+    }
+
     public static function mb_strtolower($s, $encoding = null)
     {
         return self::mb_convert_case($s, MB_CASE_LOWER, $encoding);
@@ -546,7 +575,7 @@ final class Mbstring
     {
         $encoding = self::getEncoding($encoding);
         if ('CP850' === $encoding || 'ASCII' === $encoding) {
-            return substr($s, $start, null === $length ? 2147483647 : $length);
+            return (string) substr($s, $start, null === $length ? 2147483647 : $length);
         }
 
         if ($start < 0) {

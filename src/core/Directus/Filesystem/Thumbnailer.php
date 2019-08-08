@@ -179,9 +179,12 @@ class Thumbnailer {
             // crop image
             $img->resize($this->width, $this->height, function ($constraint) {
                 $constraint->aspectRatio();
+                if (ArrayUtils::get($options, 'preventUpsize')) {
+                    $constraint->upsize();
+                }
             });
 
-            if( ArrayUtils::get($options, 'resizeCanvas')) {
+            if (ArrayUtils::get($options, 'resizeCanvas')) {
                 $img->resizeCanvas($this->width, $this->height, ArrayUtils::get($options, 'position', 'center'), ArrayUtils::get($options, 'resizeRelative', false), ArrayUtils::get($options, 'canvasBackground', [255, 255, 255, 0]));
             }
 

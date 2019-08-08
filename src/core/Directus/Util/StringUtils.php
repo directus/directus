@@ -123,10 +123,14 @@ class StringUtils
      *
      * @return string
      */
-    public static function randomString($length = 16)
+    public static function randomString($length = 16, $special_chars = true)
     {
         // TODO: Add options to allow symbols or user provided characters to extend the list
-        $pool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+}{';'?>.<,";
+        $pool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        if ($special_chars) {
+            $pool .= "!@#$%^&*()_+}{;?>.<,";
+        }
 
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
     }
@@ -234,7 +238,7 @@ class StringUtils
         }
 
         /**
-         * If any variable of the given string have null value as a replacement then the 
+         * If any variable of the given string have null value as a replacement then the
          * result will be 'null'(string). So we need to replace it with blank string.
          */
         $string = str_replace("'null'", "''", $string);

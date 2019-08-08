@@ -140,9 +140,11 @@ class QueryPlan
     /**
      * @return mixed[]
      *
+     * $parentType InterfaceType|ObjectType.
+     *
      * @throws Error
      */
-    private function analyzeSelectionSet(SelectionSetNode $selectionSet, ObjectType $parentType) : array
+    private function analyzeSelectionSet(SelectionSetNode $selectionSet, Type $parentType) : array
     {
         $fields = [];
         foreach ($selectionSet->selections as $selectionNode) {

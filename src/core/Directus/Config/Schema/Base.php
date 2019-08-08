@@ -113,4 +113,17 @@ abstract class Base implements Node
         }
         return $this->_optional;
     }
+
+    /**
+     * Returns the $context with normalized array keys.
+     * @param $context
+     * @return mixed
+     */
+    protected function normalize($context) {
+        foreach ($context as $context_key => $context_value) {
+            $context[strtolower(str_replace("-", "", str_replace("_", "", $context_key)))] = $context_value;
+        }
+
+        return $context;
+    }
 }

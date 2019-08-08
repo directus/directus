@@ -46,6 +46,7 @@ class ProjectService extends AbstractService
 
             'timezone' => 'string',
             'locale' => 'string',
+            'logs_path' => 'string',
 
             'project_name' => 'string',
             'app_url' => 'string',

@@ -294,7 +294,7 @@ class TablesService extends AbstractService
         $hookEmitter->run('field.delete:before', [$collection, $field]);
         $hookEmitter->run('field.delete.' . $collection . ':before', [$field]);
 
-        $tableService->dropColumn($collection, $field);
+        $tableService->dropColumn($collection, $field, $params);
 
         $hookEmitter->run('field.delete', [$collection, $field]);
         $hookEmitter->run('field.delete.' . $collection, [$field]);
@@ -730,7 +730,7 @@ class TablesService extends AbstractService
         return $allItems;
     }
 
-    public function dropColumn($collectionName, $fieldName)
+    public function dropColumn($collectionName, $fieldName, array $params = [])
     {
         $tableObject = $this->getSchemaManager()->getCollection($collectionName);
         if (!$tableObject) {
@@ -753,7 +753,7 @@ class TablesService extends AbstractService
         }
 
         if ($columnObject->hasRelationship()) {
-            $this->removeColumnRelationship($columnObject);
+            $this->removeColumnRelationship($columnObject,$params);
         }
 
         if ($columnObject->isManaged()) {
@@ -900,7 +900,7 @@ class TablesService extends AbstractService
      *
      * @return bool|int
      */
-    public function removeColumnRelationship(Field $field)
+    public function removeColumnRelationship(Field $field, array $params = [])
     {
         if (!$field->hasRelationship()) {
             return false;
@@ -909,7 +909,7 @@ class TablesService extends AbstractService
         if ($this->shouldRemoveRelationshipRecord($field)) {
             $result = $this->removeRelationshipRecord($field);
         } else {
-            $result = $this->removeRelationshipFromRecord($field);
+            $result = $this->removeRelationshipFromRecord($field, $params);
         }
 
         return $result;
@@ -950,7 +950,7 @@ class TablesService extends AbstractService
      *
      * @return int
      */
-    protected function removeRelationshipFromRecord(Field $field)
+    protected function removeRelationshipFromRecord(Field $field, array $params = [])
     {
         $tableGateway = $this->getRelationsTableGateway();
 
@@ -975,7 +975,10 @@ class TablesService extends AbstractService
          */
         if (!empty($junctionEntries['data'])) {
             $tableGateway->delete($junctionConditions);
-            $this->dropTable($relationship->getCollectionMany());
+
+            if(isset($params['delete_junction'])){
+                $this->dropTable($relationship->getCollectionMany());
+            }
 
             return $tableGateway->delete($conditions['values']);
         } else {

@@ -77,8 +77,8 @@ class Schema {
             ]),
             new Group('cors', [
                 new Value('enabled', Types::BOOLEAN, true),
-                new Value('origin', 'array', ['*']),
-                new Value('methods', 'array', [
+                new Value('origin', Types::ARRAY, ['*']),
+                new Value('methods', Types::ARRAY, [
                     'GET',
                     'POST',
                     'PUT',
@@ -86,8 +86,8 @@ class Schema {
                     'DELETE',
                     'HEAD'
                 ]),
-                new Value('headers', 'array', []),
-                new Value('exposed_headers', 'array', []),
+                new Value('headers', Types::ARRAY, []),
+                new Value('exposed_headers', Types::ARRAY, []),
                 new Value('max_age', Types::INTEGER, null),
                 new Value('credentials', Types::BOOLEAN, false),
             ]),
@@ -101,14 +101,14 @@ class Schema {
                 new Value('timeout', Types::INTEGER, 10),
             ]),
             new Group('hooks', [
-                new Value('actions', 'array', []),
-                new Value('filters', 'array', []),
+                new Value('actions', Types::ARRAY, []),
+                new Value('filters', Types::ARRAY, []),
             ]),
             new Group('feedback', [
                 new Value('token', Types::STRING, 'a-kind-of-unique-token'),
                 new Value('login', Types::STRING, true),
             ]),
-            new Value('tableBlacklist', 'array', []),
+            new Value('tableBlacklist', Types::ARRAY, []),
             new Group('auth', [
                 new Value('secret_key', Types::STRING, '<type-a-secret-authentication-key-string>'),
                 new Value('public_key', Types::STRING, '<type-a-public-authentication-key-string>'),
@@ -139,6 +139,7 @@ class Schema {
                     ]),
                 ]),
             ]),
+            new Value('ext?', Types::ARRAY, []),
         ]);
     }
 }

@@ -1009,14 +1009,14 @@
         "authors": [
             {
                 "name": "Alex Bilbie",
+                "role": "Developer",
                 "email": "hello@alexbilbie.com",
-                "homepage": "http://www.alexbilbie.com",
-                "role": "Developer"
+                "homepage": "http://www.alexbilbie.com"
             },
             {
                 "name": "Woody Gilk",
-                "homepage": "https://github.com/shadowhand",
-                "role": "Contributor"
+                "role": "Contributor",
+                "homepage": "https://github.com/shadowhand"
             }
         ],
         "description": "OAuth 2.0 Client Library",
@@ -2359,17 +2359,17 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.11.0",
-        "version_normalized": "1.11.0.0",
+        "version": "v1.12.0",
+        "version_normalized": "1.12.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "82ebae02209c21113908c229e9883c419720738a"
+            "reference": "550ebaac289296ce228a706d0867afc34687e3f4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/82ebae02209c21113908c229e9883c419720738a",
-            "reference": "82ebae02209c21113908c229e9883c419720738a",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/550ebaac289296ce228a706d0867afc34687e3f4",
+            "reference": "550ebaac289296ce228a706d0867afc34687e3f4",
             "shasum": ""
         },
         "require": {
@@ -2378,11 +2378,11 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2019-02-06T07:57:58+00:00",
+        "time": "2019-08-06T08:03:45+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.11-dev"
+                "dev-master": "1.12-dev"
             }
         },
         "installation-source": "dist",
@@ -2400,12 +2400,12 @@
         ],
         "authors": [
             {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            },
-            {
                 "name": "Gert de Pagter",
                 "email": "BackEndTea@gmail.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
             }
         ],
         "description": "Symfony polyfill for ctype functions",
@@ -2419,17 +2419,17 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.11.0",
-        "version_normalized": "1.11.0.0",
+        "version": "v1.12.0",
+        "version_normalized": "1.12.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "fe5e94c604826c35a32fa832f35bd036b6799609"
+            "reference": "b42a2f66e8f1b15ccf25652c3424265923eb4f17"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fe5e94c604826c35a32fa832f35bd036b6799609",
-            "reference": "fe5e94c604826c35a32fa832f35bd036b6799609",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/b42a2f66e8f1b15ccf25652c3424265923eb4f17",
+            "reference": "b42a2f66e8f1b15ccf25652c3424265923eb4f17",
             "shasum": ""
         },
         "require": {
@@ -2438,11 +2438,11 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2019-02-06T07:57:58+00:00",
+        "time": "2019-08-06T08:03:45+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.11-dev"
+                "dev-master": "1.12-dev"
             }
         },
         "installation-source": "dist",
@@ -2480,27 +2480,27 @@
     },
     {
         "name": "symfony/polyfill-php73",
-        "version": "v1.11.0",
-        "version_normalized": "1.11.0.0",
+        "version": "v1.12.0",
+        "version_normalized": "1.12.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php73.git",
-            "reference": "d1fb4abcc0c47be136208ad9d68bf59f1ee17abd"
+            "reference": "2ceb49eaccb9352bff54d22570276bb75ba4a188"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/d1fb4abcc0c47be136208ad9d68bf59f1ee17abd",
-            "reference": "d1fb4abcc0c47be136208ad9d68bf59f1ee17abd",
+            "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/2ceb49eaccb9352bff54d22570276bb75ba4a188",
+            "reference": "2ceb49eaccb9352bff54d22570276bb75ba4a188",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2019-02-06T07:57:58+00:00",
+        "time": "2019-08-06T08:03:45+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.11-dev"
+                "dev-master": "1.12-dev"
             }
         },
         "installation-source": "dist",
@@ -2931,19 +2931,19 @@
         "authors": [
             {
                 "name": "Fabien Potencier",
+                "role": "Lead Developer",
                 "email": "fabien@symfony.com",
-                "homepage": "http://fabien.potencier.org",
-                "role": "Lead Developer"
+                "homepage": "http://fabien.potencier.org"
             },
             {
                 "name": "Armin Ronacher",
-                "email": "armin.ronacher@active-4.com",
-                "role": "Project Founder"
+                "role": "Project Founder",
+                "email": "armin.ronacher@active-4.com"
             },
             {
                 "name": "Twig Team",
-                "homepage": "https://twig.symfony.com/contributors",
-                "role": "Contributors"
+                "role": "Contributors",
+                "homepage": "https://twig.symfony.com/contributors"
             }
         ],
         "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -2954,17 +2954,17 @@
     },
     {
         "name": "webonyx/graphql-php",
-        "version": "v0.13.5",
-        "version_normalized": "0.13.5.0",
+        "version": "v0.13.6",
+        "version_normalized": "0.13.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/webonyx/graphql-php.git",
-            "reference": "cdcf5b44737ee743358f5ed25b19a39ad7daf777"
+            "reference": "123af49e46d26b0cd2e7a71a387253aa01ea9a6b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/cdcf5b44737ee743358f5ed25b19a39ad7daf777",
-            "reference": "cdcf5b44737ee743358f5ed25b19a39ad7daf777",
+            "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/123af49e46d26b0cd2e7a71a387253aa01ea9a6b",
+            "reference": "123af49e46d26b0cd2e7a71a387253aa01ea9a6b",
             "shasum": ""
         },
         "require": {
@@ -2987,7 +2987,7 @@
             "psr/http-message": "To use standard GraphQL server",
             "react/promise": "To leverage async resolving on React PHP platform"
         },
-        "time": "2019-06-12T07:16:37+00:00",
+        "time": "2019-08-07T08:16:55+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

@@ -259,6 +259,9 @@ class Files
         // When file is uploaded via multipart form data then We will get object of Slim\Http\UploadFile
         // When file is uploaded via URL (Youtube, Vimeo, or image link) then we will get base64 encode string.
         $size = null;
+
+        $title = $fileName;
+
         if (is_object($fileData)) {
             $size = $fileData->getSize();
             $checksum = hash_file('md5', $fileData->file);
@@ -281,7 +284,7 @@ class Files
         unset($fileData);
 
         $fileData = $this->getFileInfo($fileName);
-        $fileData['title'] = Formatting::fileNameToFileTitle($fileName);
+        $fileData['title'] = Formatting::fileNameToFileTitle($title);
         $fileData['filename'] = basename($filePath);
         $fileData['storage'] = $this->config['adapter'];
 

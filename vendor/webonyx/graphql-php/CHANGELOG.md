@@ -1,4 +1,9 @@
 # Changelog
+#### v0.13.6
+- QueryPlan can now be used on interfaces not only objects. (#495)
+- Array in variables in place of object shouldn't cause fatal error (fixes #467)
+- Scalar type ResolverInfo::getFieldSelection support (#529)
+
 #### v0.13.5
 - Fix coroutine executor when using with promise (#486) 
 

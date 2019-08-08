@@ -8,7 +8,7 @@ return [
 
     'settings' => [
         'logger' => [
-            'path' => __DIR__ . '/../logs',
+            'path' => '{{logs_path}}',
         ],
     ],
 

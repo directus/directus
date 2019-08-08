@@ -11,4 +11,5 @@ interface Types
     const FLOAT = 'float';
     const STRING = 'string';
     const BOOLEAN = 'boolean';
+    const ARRAY = 'array';
 }

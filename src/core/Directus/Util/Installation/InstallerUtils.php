@@ -880,7 +880,7 @@ class InstallerUtils
     private static function createConfigData(array $data)
     {
         $corsEnabled = ArrayUtils::get($data, 'cors_enabled', true);
-        $authSecret = ArrayUtils::get($data, 'auth_secret', StringUtils::randomString(32));
+        $authSecret = ArrayUtils::get($data, 'auth_secret', StringUtils::randomString(32, false));
         $authPublic = ArrayUtils::get($data, 'auth_public', generate_uuid4());
 
         return ArrayUtils::defaults([
@@ -891,9 +891,10 @@ class InstallerUtils
             'db_password' => null,
             'db_socket' => '',
             'mail_from' => 'admin@example.com',
-            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
+            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32, false)),
             'feedback_login' => true,
             'timezone' => get_default_timezone(),
+            'logs_path' => __DIR__ . '/../../../../../logs',
             'cache' => [
                 'enabled' => false,
                 'response_ttl' => 3600,

@@ -7,6 +7,7 @@ use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
 use Directus\Application\Route;
 use Directus\Services\SettingsService;
+use Directus\Services\FilesServices;
 use function Directus\regex_numeric_ids;
 
 class Settings extends Route
@@ -149,13 +150,8 @@ class Settings extends Route
      *
      * @return Response
      */
-    public function getInterfaceBasedInput($request, $setting)
+    public function getInterfaceBasedInput($request, $setting, $fieldData)
     {
-        $service = new SettingsService($this->container);
-        $fieldData = $service->findAllFields(
-            $request->getQueryParams()
-        );
-
         $inputData = $request->getParsedBody();
         foreach ($fieldData['data'] as $key => $value) {
             if ($value['field'] == $setting) {
@@ -178,6 +174,33 @@ class Settings extends Route
             }
         }
         return $inputData;
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     *
+     * @return Response
+     */
+    public function getInterfaceBasedOutput($setting, $fieldData)
+    {
+        $fileService = new FilesServices($this->container);
+        $response = $setting['value'];
+        foreach ($fieldData['data'] as $value) {
+            if ($value['field'] == $setting['key']) {
+                if ($setting['value'] != null) {
+                    switch ($value['type']) {
+                        case 'file':
+                            $responseData = $fileService->findByIds($setting['value'],[]);
+                            if( !empty($responseData['data']) ){
+                                $response = $responseData['data'];
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        return $response;
     }
 
     /**
@@ -212,7 +235,10 @@ class Settings extends Route
          *
          */
 
-        $inputData = $this->getInterfaceBasedInput($request, $serviceData['data']['key']);
+        $fieldData = $service->findAllFields(
+            $request->getQueryParams()
+        );
+        $inputData = $this->getInterfaceBasedInput($request, $serviceData['data']['key'], $fieldData);
         $responseData = $service->update(
             $request->getAttribute('id'),
             $inputData,
@@ -220,6 +246,7 @@ class Settings extends Route
         );
 
         $responseData['data']['value'] = $payload['value'];
+        $responseData['data']['value'] = $this->getInterfaceBasedOutput($responseData['data'], $fieldData);
 
         return $this->responseWithData($request, $response, $responseData);
     }

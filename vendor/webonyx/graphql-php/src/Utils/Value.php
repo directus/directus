@@ -199,7 +199,7 @@ class Value
                 }
 
                 $suggestions = Utils::suggestionList(
-                    $fieldName,
+                    (string) $fieldName,
                     array_keys($fields)
                 );
                 $didYouMean  = $suggestions

@@ -56,3 +56,7 @@ if (!function_exists('mb_chr')) {
     function mb_chr($code, $enc = null) { return p\Mbstring::mb_chr($code, $enc); }
     function mb_scrub($s, $enc = null) { $enc = null === $enc ? mb_internal_encoding() : $enc; return mb_convert_encoding($s, $enc, $enc); }
 }
+
+if (!function_exists('mb_str_split')) {
+    function mb_str_split($string, $split_length = 1, $encoding = null) { return p\Mbstring::mb_str_split($string, $split_length, $encoding); }
+}

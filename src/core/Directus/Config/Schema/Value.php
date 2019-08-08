@@ -35,9 +35,7 @@ class Value extends Base implements Node
      */
     public function value($context)
     {
-        foreach ($context as $context_key => $context_value) {
-            $context[strtolower(str_replace("-", "", str_replace("_", "", $context_key)))] = $context_value;
-        }
+        $context = $this->normalize($context);
 
         if (!isset($context) || !isset($context[$this->key()])) {
             if ($this->optional()) {
@@ -50,19 +48,20 @@ class Value extends Base implements Node
         $value = $context[$this->key()];
 
         switch ($this->_type) {
-        case Types::INTEGER:
-            return intval($value);
-        case Types::BOOLEAN:
-            $value = strtolower($value);
-            return $value === "true" || $value ===  "1" || $value === "on" || $value === "yes" || boolval($value);
-        case Types::FLOAT:
-            return floatval($value);
-        // TODO: add support to arrays
-        case 'array':
-            return $this->_default;
-        case Types::STRING:
-        default:
-            return $value;
+            case Types::INTEGER:
+                return intval($value);
+            case Types::BOOLEAN:
+                $value = strtolower($value);
+                return $value === "true" || $value ===  "1" || $value === "on" || $value === "yes" || boolval($value);
+            case Types::FLOAT:
+                return floatval($value);
+            case Types::ARRAY:
+                if (!is_array($value)) {
+                    return $this->_default;
+                }
+            case Types::STRING:
+            default:
+                return $value;
         }
     }
 }

@@ -20,7 +20,8 @@ Options +SymLinksIfOwnerMatch
     RewriteRule !^admin index.php?%{QUERY_STRING} [L]
 </ifModule>
 
-<IfModule mod_php7.c>
-  php_value upload_max_filesize 50M
-  php_value post_max_size 100M
-</IfModule>
+# Uncomment the following lines to modify PHP settings. The lines below can be used to increase the max upload size of files in Directus
+#<IfModule mod_php7.c>
+  #php_value upload_max_filesize 50M
+  #php_value post_max_size 100M
+#</IfModule>
