@@ -110,7 +110,7 @@ trait TesterTrait
      * @param array $inputs An array of strings representing each input
      *                      passed to the command input stream
      *
-     * @return self
+     * @return $this
      */
     public function setInputs(array $inputs)
     {

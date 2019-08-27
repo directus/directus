@@ -53,7 +53,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
         rewind($output->getStream());
         $stream = stream_get_contents($output->getStream());
-        $this->assertContains('Input "Fabien" is not a superhero!', $stream);
+        $this->assertStringContainsString('Input "Fabien" is not a superhero!', $stream);
 
         try {
             $question = new ChoiceQuestion('What is your favorite superhero?', $heroes, '1');
@@ -561,12 +561,10 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
         $this->assertSame($expectedValue, $answer);
     }
 
-    /**
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage The provided answer is ambiguous. Value should be one of env_2 or env_3.
-     */
     public function testAmbiguousChoiceFromChoicelist()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The provided answer is ambiguous. Value should be one of env_2 or env_3.');
         $possibleChoices = [
             'env_1' => 'My first environment',
             'env_2' => 'My environment',
@@ -630,32 +628,26 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
         $dialog->ask($this->createStreamableInputInterfaceMock($this->getInputStream("\n")), $output, $question);
     }
 
-    /**
-     * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted.
-     */
     public function testAskThrowsExceptionOnMissingInput()
     {
+        $this->expectException('Symfony\Component\Console\Exception\RuntimeException');
+        $this->expectExceptionMessage('Aborted.');
         $dialog = new QuestionHelper();
         $dialog->ask($this->createStreamableInputInterfaceMock($this->getInputStream('')), $this->createOutputInterface(), new Question('What\'s your name?'));
     }
 
-    /**
-     * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted.
-     */
     public function testAskThrowsExceptionOnMissingInputForChoiceQuestion()
     {
+        $this->expectException('Symfony\Component\Console\Exception\RuntimeException');
+        $this->expectExceptionMessage('Aborted.');
         $dialog = new QuestionHelper();
         $dialog->ask($this->createStreamableInputInterfaceMock($this->getInputStream('')), $this->createOutputInterface(), new ChoiceQuestion('Choice', ['a', 'b']));
     }
 
-    /**
-     * @expectedException        \Symfony\Component\Console\Exception\RuntimeException
-     * @expectedExceptionMessage Aborted.
-     */
     public function testAskThrowsExceptionOnMissingInputWithValidator()
     {
+        $this->expectException('Symfony\Component\Console\Exception\RuntimeException');
+        $this->expectExceptionMessage('Aborted.');
         $dialog = new QuestionHelper();
 
         $question = new Question('What\'s your name?');
@@ -668,12 +660,10 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
         $dialog->ask($this->createStreamableInputInterfaceMock($this->getInputStream('')), $this->createOutputInterface(), $question);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Choice question must have at least 1 choice available.
-     */
     public function testEmptyChoices()
     {
+        $this->expectException('LogicException');
+        $this->expectExceptionMessage('Choice question must have at least 1 choice available.');
         new ChoiceQuestion('Question', [], 'irrelevant');
     }
 

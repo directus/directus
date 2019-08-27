@@ -180,21 +180,17 @@ class CallbackValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
     public function testExpectValidMethods()
     {
+        $this->expectException('Symfony\Component\Validator\Exception\ConstraintDefinitionException');
         $object = new CallbackValidatorTest_Object();
 
         $this->validator->validate($object, new Callback(['callback' => ['foobar']]));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
     public function testExpectValidCallbacks()
     {
+        $this->expectException('Symfony\Component\Validator\Exception\ConstraintDefinitionException');
         $object = new CallbackValidatorTest_Object();
 
         $this->validator->validate($object, new Callback(['callback' => ['foo', 'bar']]));

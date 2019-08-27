@@ -25,13 +25,13 @@ class ProgressBarTest extends TestCase
 {
     private $colSize;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->colSize = getenv('COLUMNS');
         putenv('COLUMNS=120');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         putenv($this->colSize ? 'COLUMNS='.$this->colSize : 'COLUMNS');
     }

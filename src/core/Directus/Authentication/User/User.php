@@ -50,6 +50,14 @@ class User implements UserInterface
     /**
      * @inheritdoc
      */
+    public function get2FASecret()
+    {
+        return $this->get('2fa_secret');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getGroupId()
     {
         return $this->get('group');

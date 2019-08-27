@@ -2,36 +2,30 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim\Handlers;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Slim\Http\Body;
 use UnexpectedValueException;
 
-/**
- * Default Slim application error handler
- *
- * It outputs the error message and diagnostic information in either JSON, XML,
- * or HTML based on the Accept header.
- */
 class Error extends AbstractError
 {
     /**
-     * Invoke error handler
-     *
      * @param ServerRequestInterface $request   The most recent Request object
      * @param ResponseInterface      $response  The most recent Response object
-     * @param \Exception             $exception The caught Exception object
+     * @param Exception              $exception The caught Exception object
      *
      * @return ResponseInterface
+     *
      * @throws UnexpectedValueException
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, \Exception $exception)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, Exception $exception)
     {
         $contentType = $this->determineContentType($request);
         switch ($contentType) {
@@ -66,11 +60,11 @@ class Error extends AbstractError
     /**
      * Render HTML error page
      *
-     * @param  \Exception $exception
+     * @param  Exception $exception
      *
      * @return string
      */
-    protected function renderHtmlErrorMessage(\Exception $exception)
+    protected function renderHtmlErrorMessage(Exception $exception)
     {
         $title = 'Slim Application Error';
 
@@ -105,11 +99,11 @@ class Error extends AbstractError
      *
      * Provided for backwards compatibility; use renderHtmlExceptionOrError().
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      *
      * @return string
      */
-    protected function renderHtmlException(\Exception $exception)
+    protected function renderHtmlException(Exception $exception)
     {
         return $this->renderHtmlExceptionOrError($exception);
     }
@@ -117,14 +111,16 @@ class Error extends AbstractError
     /**
      * Render exception or error as HTML.
      *
-     * @param \Exception|\Error $exception
+     * @param Exception|\Error $exception
      *
      * @return string
+     *
+     * @throws RuntimeException
      */
     protected function renderHtmlExceptionOrError($exception)
     {
-        if (!$exception instanceof \Exception && !$exception instanceof \Error) {
-            throw new \RuntimeException("Unexpected type. Expected Exception or Error.");
+        if (!$exception instanceof Exception && !$exception instanceof \Error) {
+            throw new RuntimeException("Unexpected type. Expected Exception or Error.");
         }
 
         $html = sprintf('<div><strong>Type:</strong> %s</div>', get_class($exception));
@@ -156,11 +152,11 @@ class Error extends AbstractError
     /**
      * Render JSON error
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      *
      * @return string
      */
-    protected function renderJsonErrorMessage(\Exception $exception)
+    protected function renderJsonErrorMessage(Exception $exception)
     {
         $error = [
             'message' => 'Slim Application Error',
@@ -187,11 +183,11 @@ class Error extends AbstractError
     /**
      * Render XML error
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      *
      * @return string
      */
-    protected function renderXmlErrorMessage(\Exception $exception)
+    protected function renderXmlErrorMessage(Exception $exception)
     {
         $xml = "<error>\n  <message>Slim Application Error</message>\n";
         if ($this->displayErrorDetails) {
@@ -215,6 +211,7 @@ class Error extends AbstractError
      * Returns a CDATA section with the given content.
      *
      * @param  string $content
+     *
      * @return string
      */
     private function createCdataSection($content)

@@ -118,12 +118,10 @@ class AddConsoleCommandPassTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The service "my-command" tagged "console.command" must not be abstract.
-     */
     public function testProcessThrowAnExceptionIfTheServiceIsAbstract()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The service "my-command" tagged "console.command" must not be abstract.');
         $container = new ContainerBuilder();
         $container->setResourceTracking(false);
         $container->addCompilerPass(new AddConsoleCommandPass(), PassConfig::TYPE_BEFORE_REMOVING);
@@ -136,12 +134,10 @@ class AddConsoleCommandPassTest extends TestCase
         $container->compile();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The service "my-command" tagged "console.command" must be a subclass of "Symfony\Component\Console\Command\Command".
-     */
     public function testProcessThrowAnExceptionIfTheServiceIsNotASubclassOfCommand()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The service "my-command" tagged "console.command" must be a subclass of "Symfony\Component\Console\Command\Command".');
         $container = new ContainerBuilder();
         $container->setResourceTracking(false);
         $container->addCompilerPass(new AddConsoleCommandPass(), PassConfig::TYPE_BEFORE_REMOVING);
@@ -223,12 +219,10 @@ class AddConsoleCommandPassTest extends TestCase
         $this->assertInstanceOf($className, $command);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage The definition for "my-child-command" has no class.
-     */
     public function testProcessOnChildDefinitionWithoutClass()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('The definition for "my-child-command" has no class.');
         $container = new ContainerBuilder();
         $container->addCompilerPass(new AddConsoleCommandPass(), PassConfig::TYPE_BEFORE_REMOVING);
 

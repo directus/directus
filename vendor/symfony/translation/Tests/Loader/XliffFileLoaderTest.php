@@ -106,50 +106,40 @@ class XliffFileLoaderTest extends TestCase
         $this->assertEquals('translated', $metadata['target-attributes']['state']);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testLoadInvalidResource()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
         $loader = new XliffFileLoader();
         $loader->load(__DIR__.'/../fixtures/resources.php', 'en', 'domain1');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testLoadResourceDoesNotValidate()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
         $loader = new XliffFileLoader();
         $loader->load(__DIR__.'/../fixtures/non-valid.xlf', 'en', 'domain1');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\NotFoundResourceException
-     */
     public function testLoadNonExistingResource()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\NotFoundResourceException');
         $loader = new XliffFileLoader();
         $resource = __DIR__.'/../fixtures/non-existing.xlf';
         $loader->load($resource, 'en', 'domain1');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testLoadThrowsAnExceptionIfFileNotLocal()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
         $loader = new XliffFileLoader();
         $resource = 'http://example.com/resources.xlf';
         $loader->load($resource, 'en', 'domain1');
     }
 
-    /**
-     * @expectedException        \Symfony\Component\Translation\Exception\InvalidResourceException
-     * @expectedExceptionMessage Document types are not allowed.
-     */
     public function testDocTypeIsNotAllowed()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
+        $this->expectExceptionMessage('Document types are not allowed.');
         $loader = new XliffFileLoader();
         $loader->load(__DIR__.'/../fixtures/withdoctype.xlf', 'en', 'domain1');
     }
@@ -159,12 +149,8 @@ class XliffFileLoaderTest extends TestCase
         $loader = new XliffFileLoader();
         $resource = __DIR__.'/../fixtures/empty.xlf';
 
-        if (method_exists($this, 'expectException')) {
-            $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
-            $this->expectExceptionMessage(sprintf('Unable to load "%s":', $resource));
-        } else {
-            $this->setExpectedException('Symfony\Component\Translation\Exception\InvalidResourceException', sprintf('Unable to load "%s":', $resource));
-        }
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
+        $this->expectExceptionMessage(sprintf('Unable to load "%s":', $resource));
 
         $loader->load($resource, 'en', 'domain1');
     }

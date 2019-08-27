@@ -40,8 +40,8 @@ class Command
     private $aliases = [];
     private $definition;
     private $hidden = false;
-    private $help;
-    private $description;
+    private $help = '';
+    private $description = '';
     private $ignoreValidationErrors = false;
     private $applicationDefinitionMerged = false;
     private $applicationDefinitionMergedWithArgs = false;
@@ -105,7 +105,7 @@ class Command
     /**
      * Gets the helper set.
      *
-     * @return HelperSet A HelperSet instance
+     * @return HelperSet|null A HelperSet instance
      */
     public function getHelperSet()
     {
@@ -115,7 +115,7 @@ class Command
     /**
      * Gets the application instance for this command.
      *
-     * @return Application An Application instance
+     * @return Application|null An Application instance
      */
     public function getApplication()
     {
@@ -339,6 +339,10 @@ class Command
      */
     public function getDefinition()
     {
+        if (null === $this->definition) {
+            throw new LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', \get_class($this)));
+        }
+
         return $this->definition;
     }
 
@@ -445,6 +449,10 @@ class Command
      */
     public function getName()
     {
+        if (!$this->name) {
+            throw new LogicException(sprintf('The command defined in "%s" cannot have an empty name.', \get_class($this)));
+        }
+
         return $this->name;
     }
 

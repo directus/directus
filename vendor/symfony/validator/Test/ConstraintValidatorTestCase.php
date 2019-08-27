@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Mapping\PropertyMetadata;
  */
 abstract class ConstraintValidatorTestCase extends TestCase
 {
-    use TestCaseSetUpTearDownTrait;
+    use ForwardCompatTestTrait;
 
     /**
      * @var ExecutionContextInterface

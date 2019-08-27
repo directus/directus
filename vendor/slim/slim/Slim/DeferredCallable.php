@@ -2,9 +2,7 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
 
 namespace Slim;
@@ -16,12 +14,17 @@ class DeferredCallable
 {
     use CallableResolverAwareTrait;
 
+    /**
+     * @var callable|string
+     */
     private $callable;
-    /** @var  ContainerInterface */
+
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
-     * DeferredMiddleware constructor.
      * @param callable|string $callable
      * @param ContainerInterface $container
      */
@@ -31,6 +34,17 @@ class DeferredCallable
         $this->container = $container;
     }
 
+    /**
+     * @return callable|string
+     */
+    public function getCallable()
+    {
+        return $this->callable;
+    }
+
+    /**
+     * @return mixed
+     */
     public function __invoke()
     {
         $callable = $this->resolveCallable($this->callable);

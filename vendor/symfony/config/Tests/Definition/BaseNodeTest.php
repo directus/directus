@@ -26,10 +26,7 @@ class BaseNodeTest extends TestCase
         $constructorArgs[] = $params[0];
 
         if (isset($params[1])) {
-            // Handle old PHPUnit version for PHP 5.5
-            $parent = method_exists($this, 'createMock')
-                    ? $this->createMock(NodeInterface::class)
-                    : $this->getMock(NodeInterface::class);
+            $parent = $this->createMock(NodeInterface::class);
             $parent->method('getPath')->willReturn($params[1]);
 
             $constructorArgs[] = $parent;

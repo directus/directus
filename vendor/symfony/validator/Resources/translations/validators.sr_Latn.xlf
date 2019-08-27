@@ -334,6 +334,38 @@
                 <source>This value should be valid JSON.</source>
                 <target>Ova vrednost bi trebalo da bude validan JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ova kolekcija bi trebala da sadrži samo jedinstvene elemente.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Ova vrednost bi trebala biti pozitivna.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Ova vrednost bi trebala biti pozitivna ili nula.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Ova vrednost bi trebala biti negativna.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Ova vrednost bi trebala biti pozitivna ili nula.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ova vrednost nije validna vremenska zona.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Ova lozinka je kompromitovana prilikom prethodnih napada, nemojte je koristiti. Koristite drugu lozinku.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Ova vrednost treba da bude između {{ min }} i {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

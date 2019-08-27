@@ -4,9 +4,11 @@ namespace Directus\Services;
 
 use Directus\Application\Container;
 use Directus\Authentication\Exception\ExpiredTokenException;
+use Directus\Authentication\Exception\InvalidOTPException;
 use Directus\Authentication\Exception\InvalidTokenException;
 use Directus\Authentication\Exception\UserNotFoundException;
 use Directus\Authentication\Provider;
+use Directus\Database\Exception\InvalidQueryException;
 use Directus\Database\Exception\ItemNotFoundException;
 use Directus\Database\Schema\SchemaManager;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
@@ -18,6 +20,7 @@ use Directus\Permissions\Acl;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\JWTUtils;
+use PragmaRX\Google2FA\Google2FA;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
 use function Directus\get_directus_setting;
@@ -239,7 +242,7 @@ class UsersService extends AbstractService
         if (!$user) {
             /** @var Provider $auth */
             $auth = $this->container->get('auth');
-            $datetime = DateTimeUtils::nowInUTC();
+            $datetime = DateTimeUtils::nowInTimezone();
             $invitationToken = $auth->generateInvitationToken([
                 'date' => $datetime->toString(),
                 'exp' => $datetime->inDays(30)->getTimestamp(),
@@ -367,6 +370,38 @@ class UsersService extends AbstractService
     }
 
     /**
+     * Checks whether the given ID has 2FA enforced, as set by their role.
+     * When 2FA is enforced, the column enforce_2fa is set to 1.
+     * Otherwise, it is either set to null or 0.
+     *
+     * @param $id
+     *
+     * @return bool
+     */
+    public function has2FAEnforced($id)
+    {
+        try {
+            $result = $this->createTableGateway(SchemaManager::COLLECTION_ROLES, false)->fetchAll(function (Select $select) use ($id) {
+                $select->columns(['enforce_2fa']);
+                $select->where(['user' => $id]);
+                $on = sprintf('%s.role = %s.id', SchemaManager::COLLECTION_USER_ROLES, SchemaManager::COLLECTION_ROLES);
+                $select->join(SchemaManager::COLLECTION_USER_ROLES, $on, ['id' => 'role']);
+            });
+
+            $enforce_2fa = $result->current()['enforce_2fa'];
+
+            if ($enforce_2fa == null || $enforce_2fa == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (InvalidQueryException $e) {
+            // Column enforce_2fa doesn't exist in directus_roles
+            return false;
+        }
+    }
+
+    /**
      * Throws an exception if the user is the last admin
      *
      * @param int $id
@@ -378,5 +413,31 @@ class UsersService extends AbstractService
         if ($this->isLastAdmin($id)) {
             throw new ForbiddenLastAdminException();
         }
+    }
+
+    /**
+     * Activate 2FA for the given user id if the OTP is valid for the given 2FA secret
+     * @param $id
+     * @param $tfa_secret
+     * @param $otp
+     *
+     * @return array
+     *
+     * @throws InvalidOTPException
+     */
+    public function activate2FA($id, $tfa_secret, $otp)
+    {
+        $this->validate(
+            ['tfa_secret' => $tfa_secret, 'otp' => $otp],
+            ['tfa_secret' => 'required|string', 'otp' => 'required|string']
+        );
+
+        $ga = new Google2FA();
+
+        if (!$ga->verifyKey($tfa_secret, $otp, 2)){
+            throw new InvalidOTPException();
+        }
+
+        return $this->update($id, ['2fa_secret' => $tfa_secret]);
     }
 }

@@ -314,6 +314,58 @@
                 <source>This is not a valid Business Identifier Code (BIC).</source>
                 <target>Táto hodnota nie je platný identifikačný kód podniku (BIC).</target>
             </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Chyba</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Táto hodnota nie je platný UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť násobkom {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Tento identifikačný kód podniku (BIC) nie je spojený s IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Táto hodnota by mala byť platný JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Táto kolekcia by mala obsahovať len unikátne prkvy.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Táto hodnota by mala byť kladná.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Táto hodnota by mala byť kladná alebo nulová.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Táto hodnota by mala byť záporná.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Táto hodnota by mala byť záporná alebo nulová.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Táto hodnota nie je platné časové pásmo.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Toto heslo uniklo pri narušení ochrany dát, nie je možné ho použiť. Prosím, použite iné heslo.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Táto hodnota by mala byť medzi {{ min }} a {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

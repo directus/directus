@@ -24,12 +24,12 @@ class ConsoleSectionOutputTest extends TestCase
 {
     private $stream;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->stream = fopen('php://memory', 'r+b', false);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->stream = null;
     }

@@ -6,10 +6,16 @@ use Directus\Exception\UnprocessableEntityException;
 
 class InvalidRequestException extends UnprocessableEntityException
 {
-    const ERROR_CODE = 4;
+    protected $uploadedError = 4;
 
-    public function __construct($message = '')
+    public function __construct($message = '', $errorCode = "")
     {
-        parent::__construct($message, static::ERROR_CODE);
+        $this->uploadedError = $errorCode ?: $this->uploadedError ;
+        parent::__construct($message, $this->uploadedError);
+    }
+
+    public function getErrorCode()
+    {
+        return $this->uploadedError;
     }
 }

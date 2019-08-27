@@ -19,12 +19,12 @@ class ConfigCacheTest extends TestCase
 {
     private $cacheFile = null;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cacheFile = tempnam(sys_get_temp_dir(), 'config_');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $files = [$this->cacheFile, $this->cacheFile.'.meta'];
 

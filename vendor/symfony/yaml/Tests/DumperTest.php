@@ -38,14 +38,14 @@ class DumperTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->parser = new Parser();
         $this->dumper = new Dumper();
         $this->path = __DIR__.'/Fixtures';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->parser = null;
         $this->dumper = null;
@@ -192,11 +192,9 @@ EOF;
         $this->assertEquals('{ foo: null, bar: 1 }', $dump, '->dump() does not dump objects when disabled');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Yaml\Exception\DumpException
-     */
     public function testObjectSupportDisabledWithExceptions()
     {
+        $this->expectException('Symfony\Component\Yaml\Exception\DumpException');
         $this->dumper->dump(['foo' => new A(), 'bar' => 1], 0, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
     }
 
@@ -493,21 +491,17 @@ YAML;
         $this->assertSame("- \"a\\r\\nb\\nc\"\n", $this->dumper->dump(["a\r\nb\nc"], 2, 0, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The indentation must be greater than zero
-     */
     public function testZeroIndentationThrowsException()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The indentation must be greater than zero');
         new Dumper(0);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The indentation must be greater than zero
-     */
     public function testNegativeIndentationThrowsException()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The indentation must be greater than zero');
         new Dumper(-4);
     }
 }

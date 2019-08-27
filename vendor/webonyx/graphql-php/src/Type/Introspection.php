@@ -284,8 +284,18 @@ EOD;
                                 }
                             },
                         ],
-                        'name'          => ['type' => Type::string()],
-                        'description'   => ['type' => Type::string()],
+                        'name'          => [
+                            'type' => Type::string(),
+                            'resolve' => static function ($obj) {
+                                return $obj->name;
+                            },
+                        ],
+                        'description'   => [
+                            'type' => Type::string(),
+                            'resolve' => static function ($obj) {
+                                return $obj->description;
+                            },
+                        ],
                         'fields'        => [
                             'type'    => Type::listOf(Type::nonNull(self::_field())),
                             'args'    => [
@@ -440,8 +450,18 @@ EOD;
                     'which has a name, potentially a list of arguments, and a return type.',
                 'fields'          => static function () {
                     return [
-                        'name'              => ['type' => Type::nonNull(Type::string())],
-                        'description'       => ['type' => Type::string()],
+                        'name'              => [
+                            'type' => Type::nonNull(Type::string()),
+                            'resolve' => static function (FieldDefinition $field) {
+                                return $field->name;
+                            },
+                        ],
+                        'description'       => [
+                            'type' => Type::string(),
+                            'resolve' => static function (FieldDefinition $field) {
+                                return $field->description;
+                            },
+                        ],
                         'args'              => [
                             'type'    => Type::nonNull(Type::listOf(Type::nonNull(self::_inputValue()))),
                             'resolve' => static function (FieldDefinition $field) {
@@ -461,7 +481,10 @@ EOD;
                             },
                         ],
                         'deprecationReason' => [
-                            'type' => Type::string(),
+                            'type'    => Type::string(),
+                            'resolve' => static function (FieldDefinition $field) {
+                                return $field->deprecationReason;
+                            },
                         ],
                     ];
                 },
@@ -483,8 +506,20 @@ EOD;
                     'and optionally a default value.',
                 'fields'          => static function () {
                     return [
-                        'name'         => ['type' => Type::nonNull(Type::string())],
-                        'description'  => ['type' => Type::string()],
+                        'name'         => [
+                            'type' => Type::nonNull(Type::string()),
+                            'resolve' => static function ($inputValue) {
+                                /** @var FieldArgument|InputObjectField $inputValue */
+                                return $inputValue->name;
+                            },
+                        ],
+                        'description'  => [
+                            'type' => Type::string(),
+                            'resolve' => static function ($inputValue) {
+                                /** @var FieldArgument|InputObjectField $inputValue */
+                                return $inputValue->description;
+                            },
+                        ],
                         'type'         => [
                             'type'    => Type::nonNull(self::_type()),
                             'resolve' => static function ($value) {
@@ -524,8 +559,18 @@ EOD;
                     'a placeholder for a string or numeric value. However an Enum value is ' .
                     'returned in a JSON response as a string.',
                 'fields'          => [
-                    'name'              => ['type' => Type::nonNull(Type::string())],
-                    'description'       => ['type' => Type::string()],
+                    'name'              => [
+                        'type' => Type::nonNull(Type::string()),
+                        'resolve' => static function ($enumValue) {
+                            return $enumValue->name;
+                        },
+                    ],
+                    'description'       => [
+                        'type' => Type::string(),
+                        'resolve' => static function ($enumValue) {
+                            return $enumValue->description;
+                        },
+                    ],
                     'isDeprecated'      => [
                         'type'    => Type::nonNull(Type::boolean()),
                         'resolve' => static function ($enumValue) {
@@ -534,6 +579,9 @@ EOD;
                     ],
                     'deprecationReason' => [
                         'type' => Type::string(),
+                        'resolve' => static function ($enumValue) {
+                            return $enumValue->deprecationReason;
+                        },
                     ],
                 ],
             ]);
@@ -555,12 +603,25 @@ EOD;
                     'conditionally including or skipping a field. Directives provide this by ' .
                     'describing additional information to the executor.',
                 'fields'          => [
-                    'name'        => ['type' => Type::nonNull(Type::string())],
-                    'description' => ['type' => Type::string()],
+                    'name'        => [
+                        'type'    => Type::nonNull(Type::string()),
+                        'resolve' => static function ($obj) {
+                            return $obj->name;
+                        },
+                    ],
+                    'description' => [
+                        'type' => Type::string(),
+                        'resolve' => static function ($obj) {
+                            return $obj->description;
+                        },
+                    ],
                     'locations'   => [
                         'type' => Type::nonNull(Type::listOf(Type::nonNull(
                             self::_directiveLocation()
                         ))),
+                        'resolve' => static function ($obj) {
+                            return $obj->locations;
+                        },
                     ],
                     'args'        => [
                         'type'    => Type::nonNull(Type::listOf(Type::nonNull(self::_inputValue()))),

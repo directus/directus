@@ -58,7 +58,7 @@ CHANGELOG
   with value optional explicitly passed empty
 * added console.error event to catch exceptions thrown by other listeners
 * deprecated console.exception event in favor of console.error
-* added ability to handle `CommandNotFoundException` through the 
+* added ability to handle `CommandNotFoundException` through the
  `console.error` event
 * deprecated default validation in `SymfonyQuestionHelper::ask`
 
@@ -74,7 +74,7 @@ CHANGELOG
 -----
 
  * added truncate method to FormatterHelper
- * added setColumnWidth(s) method to Table 
+ * added setColumnWidth(s) method to Table
 
 2.8.3
 -----

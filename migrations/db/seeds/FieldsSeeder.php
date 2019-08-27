@@ -1567,6 +1567,14 @@ class FieldsSeeder extends AbstractSeed
                 'readonly' => 1,
                 'hidden_detail' => 1
             ],
+            [
+                'collection' => 'directus_users',
+                'field' => '2fa_secret',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => '2fa-secret',
+                'locked' => 1,
+                'readonly' => 1
+            ],
 
             // User Roles Junction
             // -----------------------------------------------------------------
@@ -1592,6 +1600,12 @@ class FieldsSeeder extends AbstractSeed
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_M2O,
                 'interface' => 'many-to-one',
                 'locked' => 1
+            ],
+            [
+                'collection' => 'directus_user_roles',
+                'field' => 'enforce_2fa',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
+                'interface' => 'toggle'
             ]
         ];
 

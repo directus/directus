@@ -88,13 +88,16 @@ class FilesServices extends AbstractService
         $this->validatePayload($this->collection, array_keys($data), $data, $params);
 
         $files = $this->container->get('files');
-        $result=$files->getFileSizeType($data['data']);
 
-        if(get_directus_setting('file_mimetype_whitelist') != null){
-            validate_file($result['mimeType'],'mimeTypes');
-        }
-        if(get_directus_setting('file_max_size') != null){
-            validate_file($result['size'],'maxSize');
+        if(isset($data['data'])){
+            $result=$files->getFileSizeType($data['data']);
+    
+            if(get_directus_setting('file_mimetype_whitelist') != null){
+                validate_file($result['mimeType'],'mimeTypes');
+            }
+            if(get_directus_setting('file_max_size') != null){
+                validate_file($result['size'],'maxSize');
+            }
         }
         
         $tableGateway = $this->createTableGateway($this->collection);

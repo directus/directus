@@ -28,21 +28,17 @@ class PhpFileLoaderTest extends TestCase
         $this->assertEquals([new FileResource($resource)], $catalogue->getResources());
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\NotFoundResourceException
-     */
     public function testLoadNonExistingResource()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\NotFoundResourceException');
         $loader = new PhpFileLoader();
         $resource = __DIR__.'/../fixtures/non-existing.php';
         $loader->load($resource, 'en', 'domain1');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testLoadThrowsAnExceptionIfFileNotLocal()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
         $loader = new PhpFileLoader();
         $resource = 'http://example.com/resources.php';
         $loader->load($resource, 'en', 'domain1');

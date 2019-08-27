@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
+class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -16,6 +16,7 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         '79c6260273d1303c3d11c2b0b06acb78' => __DIR__ . '/../..' . '/src/helpers/all.php',
     );
 
@@ -35,7 +36,9 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Util\\' => 22,
             'Symfony\\Polyfill\\Php73\\' => 23,
+            'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Contracts\\Translation\\' => 30,
@@ -63,7 +66,10 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'PragmaRX\\Google2FA\\Tests\\' => 25,
+            'PragmaRX\\Google2FA\\' => 19,
             'Phinx\\' => 6,
+            'ParagonIE\\ConstantTime\\' => 23,
         ),
         'M' => 
         array (
@@ -105,6 +111,8 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'C' => 
         array (
             'Cocur\\Slugify\\' => 14,
+            'Char0n\\FFMpegPHP\\Tests\\' => 23,
+            'Char0n\\FFMpegPHP\\' => 17,
             'Cache\\' => 6,
         ),
     );
@@ -126,9 +134,17 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
+        'Symfony\\Polyfill\\Util\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-util',
+        ),
         'Symfony\\Polyfill\\Php73\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
+        ),
+        'Symfony\\Polyfill\\Php56\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php56',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -216,9 +232,21 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+        'PragmaRX\\Google2FA\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pragmarx/google2fa/tests',
+        ),
+        'PragmaRX\\Google2FA\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pragmarx/google2fa/src',
+        ),
         'Phinx\\' => 
         array (
             0 => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx',
+        ),
+        'ParagonIE\\ConstantTime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
         'Monolog\\' => 
         array (
@@ -303,6 +331,14 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         array (
             0 => __DIR__ . '/..' . '/cocur/slugify/src',
         ),
+        'Char0n\\FFMpegPHP\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests',
+        ),
+        'Char0n\\FFMpegPHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/char0n/ffmpeg-php/src',
+        ),
         'Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/cache/cache/src',
@@ -367,6 +403,25 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Cache\\Taggable\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/cache/cache/src/Taggable/Exception/InvalidArgumentException.php',
         'Cache\\Taggable\\TaggablePSR6ItemAdapter' => __DIR__ . '/..' . '/cache/cache/src/Taggable/TaggablePSR6ItemAdapter.php',
         'Cache\\Taggable\\TaggablePSR6PoolAdapter' => __DIR__ . '/..' . '/cache/cache/src/Taggable/TaggablePSR6PoolAdapter.php',
+        'Char0n\\FFMpegPHP\\Adapters\\FFMpegAnimatedGif' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/Adapters/FFMpegAnimatedGif.php',
+        'Char0n\\FFMpegPHP\\Adapters\\FFMpegFrame' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/Adapters/FFMpegFrame.php',
+        'Char0n\\FFMpegPHP\\Adapters\\FFMpegMovie' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/Adapters/FFMpegMovie.php',
+        'Char0n\\FFMpegPHP\\AnimatedGif' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/AnimatedGif.php',
+        'Char0n\\FFMpegPHP\\Frame' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/Frame.php',
+        'Char0n\\FFMpegPHP\\Movie' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/Movie.php',
+        'Char0n\\FFMpegPHP\\OutputProviders\\AbstractProvider' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/OutputProviders/AbstractProvider.php',
+        'Char0n\\FFMpegPHP\\OutputProviders\\FFMpegProvider' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/OutputProviders/FFMpegProvider.php',
+        'Char0n\\FFMpegPHP\\OutputProviders\\FFProbeProvider' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/OutputProviders/FFProbeProvider.php',
+        'Char0n\\FFMpegPHP\\OutputProviders\\OutputProvider' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/OutputProviders/OutputProvider.php',
+        'Char0n\\FFMpegPHP\\OutputProviders\\StringProvider' => __DIR__ . '/..' . '/char0n/ffmpeg-php/src/OutputProviders/StringProvider.php',
+        'Char0n\\FFMpegPHP\\Tests\\Adapters\\FFMpegAnimatedGifTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/Adapters/FFMpegAnimatedGifTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\Adapters\\FFMpegFrameTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/Adapters/FFMpegFrameTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\Adapters\\FFMpegMovieTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/Adapters/FFMpegMovieTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\FFmpegAnimatedGifTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/AnimatedGifTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\FFmpegFrameTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/FrameTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\MovieTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/MovieTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\OutputProviders\\FFProbeOutputProviderTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/OutputProviders/FFProbeProviderTest.php',
+        'Char0n\\FFMpegPHP\\Tests\\OutputProviders\\FFmpegProviderTest' => __DIR__ . '/..' . '/char0n/ffmpeg-php/tests/OutputProviders/FFMpegProviderTest.php',
         'Cocur\\Slugify\\Bridge\\Laravel\\SlugifyFacade' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Laravel/SlugifyFacade.php',
         'Cocur\\Slugify\\Bridge\\Laravel\\SlugifyServiceProvider' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Laravel/SlugifyServiceProvider.php',
         'Cocur\\Slugify\\Bridge\\Latte\\SlugifyHelper' => __DIR__ . '/..' . '/cocur/slugify/src/Bridge/Latte/SlugifyHelper.php',
@@ -444,10 +499,13 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Directus\\Authentication\\Exception\\ExpiredResetPasswordToken' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/ExpiredResetPasswordToken.php',
         'Directus\\Authentication\\Exception\\ExpiredTokenException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/ExpiredTokenException.php',
         'Directus\\Authentication\\Exception\\InvalidInvitationCodeException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidInvitationCodeException.php',
+        'Directus\\Authentication\\Exception\\InvalidOTPException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidOTPException.php',
         'Directus\\Authentication\\Exception\\InvalidRequestTokenException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidRequestTokenException.php',
         'Directus\\Authentication\\Exception\\InvalidResetPasswordTokenException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidResetPasswordTokenException.php',
         'Directus\\Authentication\\Exception\\InvalidTokenException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidTokenException.php',
         'Directus\\Authentication\\Exception\\InvalidUserCredentialsException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidUserCredentialsException.php',
+        'Directus\\Authentication\\Exception\\Missing2FAPasswordException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/Missing2FAPasswordException.php',
+        'Directus\\Authentication\\Exception\\TFAEnforcedException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/TFAEnforcedException.php',
         'Directus\\Authentication\\Exception\\UnknownUserAttributeException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UnknownUserAttributeException.php',
         'Directus\\Authentication\\Exception\\UserAlreadyLoggedInException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserAlreadyLoggedInException.php',
         'Directus\\Authentication\\Exception\\UserInactiveException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserInactiveException.php',
@@ -1382,6 +1440,17 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Monolog\\ResettableInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/ResettableInterface.php',
         'Monolog\\SignalHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/SignalHandler.php',
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
+        'ParagonIE\\ConstantTime\\Base32' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32.php',
+        'ParagonIE\\ConstantTime\\Base32Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32Hex.php',
+        'ParagonIE\\ConstantTime\\Base64' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64.php',
+        'ParagonIE\\ConstantTime\\Base64DotSlash' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64DotSlash.php',
+        'ParagonIE\\ConstantTime\\Base64DotSlashOrdered' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64DotSlashOrdered.php',
+        'ParagonIE\\ConstantTime\\Base64UrlSafe' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64UrlSafe.php',
+        'ParagonIE\\ConstantTime\\Binary' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Binary.php',
+        'ParagonIE\\ConstantTime\\EncoderInterface' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/EncoderInterface.php',
+        'ParagonIE\\ConstantTime\\Encoding' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Encoding.php',
+        'ParagonIE\\ConstantTime\\Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Hex.php',
+        'ParagonIE\\ConstantTime\\RFC4648' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/RFC4648.php',
         'Phinx\\Config\\Config' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Config/Config.php',
         'Phinx\\Config\\ConfigInterface' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Config/ConfigInterface.php',
         'Phinx\\Config\\NamespaceAwareInterface' => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx/Config/NamespaceAwareInterface.php',
@@ -1443,6 +1512,16 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Pimple\\Tests\\Psr11\\ContainerTest' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Tests/Psr11/ContainerTest.php',
         'Pimple\\Tests\\Psr11\\ServiceLocatorTest' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Tests/Psr11/ServiceLocatorTest.php',
         'Pimple\\Tests\\ServiceIteratorTest' => __DIR__ . '/..' . '/pimple/pimple/src/Pimple/Tests/ServiceIteratorTest.php',
+        'PragmaRX\\Google2FA\\Exceptions\\IncompatibleWithGoogleAuthenticatorException' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Exceptions/IncompatibleWithGoogleAuthenticatorException.php',
+        'PragmaRX\\Google2FA\\Exceptions\\InvalidCharactersException' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Exceptions/InvalidCharactersException.php',
+        'PragmaRX\\Google2FA\\Exceptions\\SecretKeyTooShortException' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Exceptions/SecretKeyTooShortException.php',
+        'PragmaRX\\Google2FA\\Google2FA' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Google2FA.php',
+        'PragmaRX\\Google2FA\\Support\\Base32' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Support/Base32.php',
+        'PragmaRX\\Google2FA\\Support\\Constants' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Support/Constants.php',
+        'PragmaRX\\Google2FA\\Support\\QRCode' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Support/QRCode.php',
+        'PragmaRX\\Google2FA\\Support\\Url' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Support/Url.php',
+        'PragmaRX\\Google2FA\\Tests\\Constants' => __DIR__ . '/..' . '/pragmarx/google2fa/tests/Constants.php',
+        'PragmaRX\\Google2FA\\Tests\\Google2FATest' => __DIR__ . '/..' . '/pragmarx/google2fa/tests/Google2FATest.php',
         'Psr\\Cache\\CacheException' => __DIR__ . '/..' . '/psr/cache/src/CacheException.php',
         'Psr\\Cache\\CacheItemInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemInterface.php',
         'Psr\\Cache\\CacheItemPoolInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemPoolInterface.php',
@@ -1560,6 +1639,7 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Slim\\Http\\Environment' => __DIR__ . '/..' . '/slim/slim/Slim/Http/Environment.php',
         'Slim\\Http\\Headers' => __DIR__ . '/..' . '/slim/slim/Slim/Http/Headers.php',
         'Slim\\Http\\Message' => __DIR__ . '/..' . '/slim/slim/Slim/Http/Message.php',
+        'Slim\\Http\\NonBufferedBody' => __DIR__ . '/..' . '/slim/slim/Slim/Http/NonBufferedBody.php',
         'Slim\\Http\\Request' => __DIR__ . '/..' . '/slim/slim/Slim/Http/Request.php',
         'Slim\\Http\\RequestBody' => __DIR__ . '/..' . '/slim/slim/Slim/Http/RequestBody.php',
         'Slim\\Http\\Response' => __DIR__ . '/..' . '/slim/slim/Slim/Http/Response.php',
@@ -1975,7 +2055,7 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Symfony\\Component\\Validator\\ObjectInitializerInterface' => __DIR__ . '/..' . '/symfony/validator/ObjectInitializerInterface.php',
         'Symfony\\Component\\Validator\\Test\\ConstraintValidatorTestCase' => __DIR__ . '/..' . '/symfony/validator/Test/ConstraintValidatorTestCase.php',
         'Symfony\\Component\\Validator\\Test\\ConstraintViolationAssertion' => __DIR__ . '/..' . '/symfony/validator/Test/ConstraintValidatorTestCase.php',
-        'Symfony\\Component\\Validator\\Test\\TestCaseSetUpTearDownTrait' => __DIR__ . '/..' . '/symfony/validator/Test/TestCaseSetUpTearDownTrait.php',
+        'Symfony\\Component\\Validator\\Test\\ForwardCompatTestTrait' => __DIR__ . '/..' . '/symfony/validator/Test/ForwardCompatTestTrait.php',
         'Symfony\\Component\\Validator\\Util\\PropertyPath' => __DIR__ . '/..' . '/symfony/validator/Util/PropertyPath.php',
         'Symfony\\Component\\Validator\\Validation' => __DIR__ . '/..' . '/symfony/validator/Validation.php',
         'Symfony\\Component\\Validator\\ValidatorBuilder' => __DIR__ . '/..' . '/symfony/validator/ValidatorBuilder.php',
@@ -2011,7 +2091,16 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
         'Symfony\\Contracts\\Translation\\TranslatorTrait' => __DIR__ . '/..' . '/symfony/translation-contracts/TranslatorTrait.php',
         'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
+        'Symfony\\Polyfill\\Php56\\Php56' => __DIR__ . '/..' . '/symfony/polyfill-php56/Php56.php',
         'Symfony\\Polyfill\\Php73\\Php73' => __DIR__ . '/..' . '/symfony/polyfill-php73/Php73.php',
+        'Symfony\\Polyfill\\Util\\Binary' => __DIR__ . '/..' . '/symfony/polyfill-util/Binary.php',
+        'Symfony\\Polyfill\\Util\\BinaryNoFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryNoFuncOverload.php',
+        'Symfony\\Polyfill\\Util\\BinaryOnFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryOnFuncOverload.php',
+        'Symfony\\Polyfill\\Util\\TestListener' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListener.php',
+        'Symfony\\Polyfill\\Util\\TestListenerForV5' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV5.php',
+        'Symfony\\Polyfill\\Util\\TestListenerForV6' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV6.php',
+        'Symfony\\Polyfill\\Util\\TestListenerForV7' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerForV7.php',
+        'Symfony\\Polyfill\\Util\\TestListenerTrait' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListenerTrait.php',
         'Twig\\Cache\\CacheInterface' => __DIR__ . '/..' . '/twig/twig/src/Cache/CacheInterface.php',
         'Twig\\Cache\\FilesystemCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/FilesystemCache.php',
         'Twig\\Cache\\NullCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/NullCache.php',
@@ -2623,10 +2712,10 @@ class ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit1d61f2ced5b92c36b21d942bf56ef2bd::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$classMap;
 
         }, null, ClassLoader::class);
     }

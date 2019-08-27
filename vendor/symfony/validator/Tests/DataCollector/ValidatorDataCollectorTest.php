@@ -71,9 +71,4 @@ class ValidatorDataCollectorTest extends TestCase
         $this->assertCount(0, $collector->getCalls());
         $this->assertSame(0, $collector->getViolationsCount());
     }
-
-    protected function createMock($classname)
-    {
-        return $this->getMockBuilder($classname)->disableOriginalConstructor()->getMock();
-    }
 }

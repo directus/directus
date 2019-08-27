@@ -16,7 +16,7 @@ class User
     private $db;
     private $usersTableGateway;
 
-    public function __construct($base_path, $projectName)
+    public function __construct($base_path, $projectName = null)
     {
         if ($base_path == null) {
             $base_path = \Directus\base_path();

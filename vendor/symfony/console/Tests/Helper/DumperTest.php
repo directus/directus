@@ -20,13 +20,13 @@ class DumperTest extends TestCase
 {
     use VarDumperTestTrait;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         putenv('DUMP_LIGHT_ARRAY=1');
         putenv('DUMP_COMMA_SEPARATOR=1');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         putenv('DUMP_LIGHT_ARRAY');
         putenv('DUMP_COMMA_SEPARATOR');
@@ -37,7 +37,10 @@ class DumperTest extends TestCase
      */
     public function testInvoke($variable)
     {
-        $dumper = new Dumper($this->getMockBuilder(OutputInterface::class)->getMock());
+        $output = $this->getMockBuilder(OutputInterface::class)->getMock();
+        $output->method('isDecorated')->willReturn(false);
+
+        $dumper = new Dumper($output);
 
         $this->assertDumpMatchesFormat($dumper($variable), $variable);
     }

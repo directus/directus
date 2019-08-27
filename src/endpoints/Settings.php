@@ -40,13 +40,13 @@ class Settings extends Route
         if (isset($payload[0]) && is_array($payload[0])) {
             return $this->batch($request, $response);
         }
-
-        /**
-         * Get interface based input
-         */
-        $inputData = $this->getInterfaceBasedInput($request, $payload['key']);
-
         $service = new SettingsService($this->container);
+        $fieldData = $service->findAllFields(
+            $request->getQueryParams()
+        );
+        $inputData = $this->getInterfaceBasedInput($request, $payload['key'], $fieldData);
+
+       
         $responseData = $service->create(
             $inputData,
             $request->getQueryParams()

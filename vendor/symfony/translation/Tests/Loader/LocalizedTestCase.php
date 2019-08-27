@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class LocalizedTestCase extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\extension_loaded('intl')) {
             $this->markTestSkipped('Extension intl is required.');

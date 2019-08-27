@@ -3,8 +3,10 @@
 namespace Directus\Authentication;
 
 use Directus\Authentication\Exception\ExpiredTokenException;
+use Directus\Authentication\Exception\InvalidOTPException;
 use Directus\Authentication\Exception\InvalidTokenException;
 use Directus\Authentication\Exception\InvalidUserCredentialsException;
+use Directus\Authentication\Exception\Missing2FAPasswordException;
 use Directus\Authentication\Exception\UserInactiveException;
 use Directus\Authentication\Exception\UserNotAuthenticatedException;
 use Directus\Authentication\Exception\UserNotFoundException;
@@ -23,6 +25,7 @@ use function Directus\get_directus_setting;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\JWTUtils;
+use PragmaRX\Google2FA\Google2FA;
 
 class Provider
 {
@@ -109,17 +112,19 @@ class Provider
      * @return UserInterface
      *
      * @throws InvalidUserCredentialsException
+     * @throws Missing2FAPasswordException
      * @throws UserInactiveException
      */
     public function login(array $credentials)
     {
         $email = ArrayUtils::get($credentials, 'email');
         $password = ArrayUtils::get($credentials, 'password');
+        $otp = ArrayUtils::get($credentials, 'otp');
 
         $user = null;
         if ($email && $password) {
             // Verify Credentials
-            $user = $this->findUserWithCredentials($email, $password);
+            $user = $this->findUserWithCredentials($email, $password, $otp);
             $this->setUser($user);
         }
 
@@ -153,8 +158,10 @@ class Provider
      * @return UserInterface
      *
      * @throws InvalidUserCredentialsException
+     * @throws InvalidOTPException
+     * @throws Missing2FAPasswordException
      */
-    public function findUserWithCredentials($email, $password)
+    public function findUserWithCredentials($email, $password, $otp=null)
     {
         try {
             $user = $this->findUserWithEmail($email);
@@ -167,6 +174,20 @@ class Provider
             
             $this->recordActivityAndCheckLoginAttempt($user);
             throw new InvalidUserCredentialsException();
+        }
+
+        $tfa_secret = $user->get2FASecret();
+
+        if ($tfa_secret) {
+            $ga = new Google2FA();
+
+            if ($otp == null) {
+                throw new Missing2FAPasswordException();
+            }
+
+            if (!$ga->verifyKey($tfa_secret, $otp, 2)){
+                throw new InvalidOTPException();
+            }
         }
 
         $this->user = $user;
@@ -405,15 +426,21 @@ class Provider
      *
      * @param UserInterface $user
      *
+     * @param bool $needs2FA Whether the User needs 2FA
+     *
      * @return string
      */
-    public function generateAuthToken(UserInterface $user)
+    public function generateAuthToken(UserInterface $user, $needs2FA = false)
     {
         $payload = [
             'id' => (int) $user->getId(),
             // 'group' => $user->getGroupId(),
             'exp' => $this->getNewExpirationTime()
         ];
+
+        if ($needs2FA == true) {
+            $payload['needs2FA'] = true;
+        }
 
         return $this->generateToken(JWTUtils::TYPE_AUTH, $payload);
     }
@@ -497,7 +524,7 @@ class Provider
      * @throws ExpiredTokenException
      * @throws InvalidTokenException
      */
-    public function refreshToken($token)
+    public function refreshToken($token, $needs2FA = false)
     {
         $payload = $this->getTokenPayload($token);
 
@@ -506,6 +533,16 @@ class Provider
         }
 
         $payload->exp = $this->getNewExpirationTime();
+
+        $payload_arr = json_decode($payload);
+
+        if ($needs2FA == true) {
+            $payload_arr['needs2FA'] = true;
+        } else {
+            unset($payload_arr['needs2FA']);
+        }
+
+        $payload = json_encode($payload_arr);
 
         return JWTUtils::encode($payload, $this->getSecretKey(), $this->getTokenAlgorithm());
     }

@@ -19,11 +19,9 @@ use Symfony\Component\Translation\Loader\IcuDatFileLoader;
  */
 class IcuDatFileLoaderTest extends LocalizedTestCase
 {
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\InvalidResourceException
-     */
     public function testLoadInvalidResource()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\InvalidResourceException');
         $loader = new IcuDatFileLoader();
         $loader->load(__DIR__.'/../fixtures/resourcebundle/corrupted/resources', 'es', 'domain2');
     }
@@ -53,11 +51,9 @@ class IcuDatFileLoaderTest extends LocalizedTestCase
         $this->assertEquals([new FileResource($resource.'.dat')], $catalogue->getResources());
     }
 
-    /**
-     * @expectedException \Symfony\Component\Translation\Exception\NotFoundResourceException
-     */
     public function testLoadNonExistingResource()
     {
+        $this->expectException('Symfony\Component\Translation\Exception\NotFoundResourceException');
         $loader = new IcuDatFileLoader();
         $loader->load(__DIR__.'/../fixtures/non-existing.txt', 'en', 'domain1');
     }

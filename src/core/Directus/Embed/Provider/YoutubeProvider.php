@@ -16,7 +16,7 @@ class YoutubeProvider extends AbstractProvider
      */
     public function validateURL($url)
     {
-        return strpos($url, 'youtube.com') !== false;
+        return (bool) preg_match("@^(https?\:\/\/)?(www\.)|(m\.)?(youtube\.com|youtu\.?be)\/.+$@", $url);
     }
 
     /**
@@ -33,9 +33,13 @@ class YoutubeProvider extends AbstractProvider
     protected function parseURL($url)
     {
         // Get ID from URL
-        parse_str(parse_url($url, PHP_URL_QUERY), $urlParameters);
-        $videoID = isset($urlParameters['v']) ? $urlParameters['v'] : false;
-
+        if(strpos($url, 'youtu.be')) {
+            $urlElements = parse_url($url);
+            $videoID = isset($urlElements['path']) && strlen($urlElements['path']) > 1 ? ltrim($urlElements['path'], '/') : false;
+        } else {
+            parse_str(parse_url($url, PHP_URL_QUERY), $urlParameters);
+            $videoID = isset($urlParameters['v']) ? $urlParameters['v'] : false;
+        }
         // Can't find the video ID
         if (!$videoID) {
             throw new \Exception('YouTube ID not detected');

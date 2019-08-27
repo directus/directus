@@ -22,12 +22,10 @@ class EnumNodeTest extends TestCase
         $this->assertSame('foo', $node->finalize('foo'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $values must contain at least one element.
-     */
     public function testConstructionWithNoValues()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('$values must contain at least one element.');
         new EnumNode('foo', null, []);
     }
 
@@ -49,12 +47,10 @@ class EnumNodeTest extends TestCase
         $this->assertSame('foo', $node->finalize('foo'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage The value "foobar" is not allowed for path "foo". Permissible values: "foo", "bar"
-     */
     public function testFinalizeWithInvalidValue()
     {
+        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
+        $this->expectExceptionMessage('The value "foobar" is not allowed for path "foo". Permissible values: "foo", "bar"');
         $node = new EnumNode('foo', null, ['foo', 'bar']);
         $node->finalize('foobar');
     }

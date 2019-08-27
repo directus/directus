@@ -57,5 +57,7 @@ trait ServiceSubscriberTrait
         if (\is_callable(['parent', __FUNCTION__])) {
             return parent::setContainer($container);
         }
+
+        return null;
     }
 }

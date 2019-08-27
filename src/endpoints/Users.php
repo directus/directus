@@ -35,6 +35,9 @@ class Users extends Route
 
         // Tracking
         $app->patch('/{id}/tracking/page', [$this, 'trackPage']);
+
+        // Enable 2FA
+        $app->post('/{id}/activate2FA', [$this, 'activate2FA']);
     }
 
     /**
@@ -214,4 +217,24 @@ class Users extends Route
 
         return $this->responseWithData($request, $response, $responseData);
     }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     *
+     * @return Response
+     */
+    public function activate2FA(Request $request, Response $response)
+    {
+        $this->validateRequestPayload($request);
+        $service = new UsersService($this->container);
+        $responseData = $service->activate2FA(
+            $request->getAttribute('id'),
+            $request->getParsedBodyParam('tfa_secret'),
+            $request->getParsedBodyParam('otp')
+        );
+
+        return $this->responseWithData($request, $response, $responseData);
+    }
+
 }

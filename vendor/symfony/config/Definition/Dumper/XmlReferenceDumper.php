@@ -296,5 +296,7 @@ class XmlReferenceDumper
         if (\is_array($value)) {
             return implode(',', $value);
         }
+
+        return '';
     }
 }

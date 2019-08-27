@@ -78,7 +78,7 @@ class PrototypedArrayNode extends ArrayNode
     /**
      * Retrieves the name of the attribute which value should be used as key.
      *
-     * @return string The name of the attribute
+     * @return string|null The name of the attribute
      */
     public function getKeyAttribute()
     {

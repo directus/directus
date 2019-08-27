@@ -27,7 +27,7 @@ class CommandTesterTest extends TestCase
     protected $command;
     protected $tester;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->command = new Command('foo');
         $this->command->addArgument('command');
@@ -38,7 +38,7 @@ class CommandTesterTest extends TestCase
         $this->tester->execute(['foo' => 'bar'], ['interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->command = null;
         $this->tester = null;
@@ -138,12 +138,10 @@ class CommandTesterTest extends TestCase
         $this->assertEquals(implode('', $questions), $tester->getDisplay(true));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Aborted.
-     */
     public function testCommandWithWrongInputsNumber()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Aborted.');
         $questions = [
             'What\'s your name?',
             'How are you?',
@@ -165,12 +163,10 @@ class CommandTesterTest extends TestCase
         $tester->execute([]);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Aborted.
-     */
     public function testCommandWithQuestionsButNoInputs()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Aborted.');
         $questions = [
             'What\'s your name?',
             'How are you?',

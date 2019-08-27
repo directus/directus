@@ -22,7 +22,7 @@ class PropertyMetadataTest extends TestCase
 
     public function testInvalidPropertyName()
     {
-        $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('Symfony\Component\Validator\Exception\ValidatorException');
+        $this->expectException('Symfony\Component\Validator\Exception\ValidatorException');
 
         new PropertyMetadata(self::CLASSNAME, 'foobar');
     }
@@ -50,7 +50,7 @@ class PropertyMetadataTest extends TestCase
         $metadata = new PropertyMetadata(self::CLASSNAME, 'internal');
         $metadata->name = 'test';
 
-        $this->{method_exists($this, $_ = 'expectException') ? $_ : 'setExpectedException'}('Symfony\Component\Validator\Exception\ValidatorException');
+        $this->expectException('Symfony\Component\Validator\Exception\ValidatorException');
         $metadata->getPropertyValue($entity);
     }
 }

@@ -20,14 +20,14 @@ class FileExistenceResourceTest extends TestCase
     protected $file;
     protected $time;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->file = realpath(sys_get_temp_dir()).'/tmp.xml';
         $this->time = time();
         $this->resource = new FileExistenceResource($this->file);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists($this->file)) {
             unlink($this->file);

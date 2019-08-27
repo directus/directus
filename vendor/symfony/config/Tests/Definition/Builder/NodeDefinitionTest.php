@@ -14,26 +14,25 @@ namespace Symfony\Component\Config\Tests\Definition\Builder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
 
 class NodeDefinitionTest extends TestCase
 {
-    public function testDefaultPathSeparatorIsDot()
-    {
-        $node = $this->getMockForAbstractClass(NodeDefinition::class, ['foo']);
-
-        $this->assertAttributeSame('.', 'pathSeparator', $node);
-    }
-
     public function testSetPathSeparatorChangesChildren()
     {
-        $node = new ArrayNodeDefinition('foo');
-        $scalar = new ScalarNodeDefinition('bar');
-        $node->append($scalar);
+        $parentNode = new ArrayNodeDefinition('name');
+        $childNode = $this->createMock(NodeDefinition::class);
 
-        $node->setPathSeparator('/');
+        $childNode
+            ->expects($this->once())
+            ->method('setPathSeparator')
+            ->with('/');
+        $childNode
+            ->expects($this->once())
+            ->method('setParent')
+            ->with($parentNode)
+            ->willReturn($childNode);
+        $parentNode->append($childNode);
 
-        $this->assertAttributeSame('/', 'pathSeparator', $node);
-        $this->assertAttributeSame('/', 'pathSeparator', $scalar);
+        $parentNode->setPathSeparator('/');
     }
 }

@@ -32,11 +32,12 @@
         "symfony/expression-language": "~2.8|~3.0|~4.0",
         "symfony/cache": "~3.1|~4.0",
         "symfony/property-access": "~2.8|~3.0|~4.0",
-        "doctrine/annotations": "~1.0",
+        "doctrine/annotations": "~1.7",
         "doctrine/cache": "~1.0",
-        "egulias/email-validator": "^1.2.8|~2.0"
+        "egulias/email-validator": "^2.1.10"
     },
     "conflict": {
+        "doctrine/lexer": "<1.0.2",
         "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0",
         "symfony/dependency-injection": "<3.3",
         "symfony/http-kernel": "<3.3.5",

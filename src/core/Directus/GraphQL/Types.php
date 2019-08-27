@@ -136,12 +136,13 @@ class Types
 
     public static function collections($type)
     {
-        if (!array_key_exists($type, self::$collections)) {
+        $key  = is_subclass_of($type, 'GraphQL\Type\Definition\ObjectType') ? $type->name : $type;
+        if (!array_key_exists($key, self::$collections)) {
             $collectionType =  new CollectionType($type);
-            self::$collections[$type] = $collectionType;
+            self::$collections[$key] = $collectionType;
             return $collectionType;
         } else {
-            return self::$collections[$type];
+            return self::$collections[$key];
         }
     }
 

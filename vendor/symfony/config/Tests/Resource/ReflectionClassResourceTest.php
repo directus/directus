@@ -185,6 +185,15 @@ EOPHP;
         $res = new ReflectionClassResource(new \ReflectionClass(TestServiceSubscriber::class));
         $this->assertTrue($res->isFresh(0));
     }
+
+    public function testIgnoresObjectsInSignature()
+    {
+        $res = new ReflectionClassResource(new \ReflectionClass(TestServiceWithStaticProperty::class));
+        $this->assertTrue($res->isFresh(0));
+
+        TestServiceWithStaticProperty::$initializedObject = new TestServiceWithStaticProperty();
+        $this->assertTrue($res->isFresh(0));
+    }
 }
 
 interface DummyInterface
@@ -223,4 +232,9 @@ class TestServiceSubscriber implements ServiceSubscriberInterface
     {
         return self::$subscribedServices;
     }
+}
+
+class TestServiceWithStaticProperty
+{
+    public static $initializedObject;
 }

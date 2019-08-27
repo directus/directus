@@ -2,16 +2,16 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
+use RuntimeException;
 use Slim\Interfaces\Http\HeadersInterface;
 
 /**
@@ -125,8 +125,6 @@ class Response extends Message implements ResponseInterface
     const EOL = "\r\n";
 
     /**
-     * Create new HTTP response.
-     *
      * @param int                   $status  The response status code.
      * @param HeadersInterface|null $headers The response headers.
      * @param StreamInterface|null  $body    The response body.
@@ -152,17 +150,13 @@ class Response extends Message implements ResponseInterface
         $this->headers = clone $this->headers;
     }
 
-    /*******************************************************************************
-     * Status
-     ******************************************************************************/
-
     /**
      * Gets the response status code.
      *
      * The status code is a 3-digit integer result code of the server's attempt
      * to understand and satisfy the request.
      *
-     * @return int Status code.
+     * @return int
      */
     public function getStatusCode()
     {
@@ -182,12 +176,15 @@ class Response extends Message implements ResponseInterface
      *
      * @link http://tools.ietf.org/html/rfc7231#section-6
      * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     *
      * @param int $code The 3-digit integer result code to set.
      * @param string $reasonPhrase The reason phrase to use with the
      *     provided status code; if none is provided, implementations MAY
      *     use the defaults as suggested in the HTTP specification.
+     *
      * @return static
-     * @throws \InvalidArgumentException For invalid status code arguments.
+     *
+     * @throws InvalidArgumentException For invalid status code arguments.
      */
     public function withStatus($code, $reasonPhrase = '')
     {
@@ -216,8 +213,10 @@ class Response extends Message implements ResponseInterface
      * Filter HTTP status code.
      *
      * @param  int $status HTTP status code.
+     *
      * @return int
-     * @throws \InvalidArgumentException If an invalid HTTP status code is provided.
+     *
+     * @throws InvalidArgumentException If an invalid HTTP status code is provided.
      */
     protected function filterStatus($status)
     {
@@ -242,6 +241,7 @@ class Response extends Message implements ResponseInterface
      *
      * @link http://tools.ietf.org/html/rfc7231#section-6
      * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     *
      * @return string Reason phrase; must return an empty string if none present.
      */
     public function getReasonPhrase()
@@ -255,10 +255,6 @@ class Response extends Message implements ResponseInterface
         return '';
     }
 
-    /*******************************************************************************
-     * Headers
-     ******************************************************************************/
-
     /**
      * Return an instance with the provided value replacing the specified header.
      *
@@ -267,13 +263,19 @@ class Response extends Message implements ResponseInterface
      *
      * @param string $name Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
+     *
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     *
+     * @throws InvalidArgumentException For invalid header names or values.
      */
     public function withHeader($name, $value)
     {
         $clone = clone $this;
         $clone->headers->set($name, $value);
+
+        if ($this->body instanceof NonBufferedBody) {
+            header(sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
+        }
 
         if ($clone->getStatusCode() === StatusCode::HTTP_OK && strtolower($name) === 'location') {
             $clone = $clone->withStatus(StatusCode::HTTP_FOUND);
@@ -281,11 +283,6 @@ class Response extends Message implements ResponseInterface
 
         return $clone;
     }
-
-
-    /*******************************************************************************
-     * Body
-     ******************************************************************************/
 
     /**
      * Write data to the response body.
@@ -295,7 +292,8 @@ class Response extends Message implements ResponseInterface
      * Proxies to the underlying stream and writes the provided data to it.
      *
      * @param string $data
-     * @return $this
+     *
+     * @return static
      */
     public function write($data)
     {
@@ -303,10 +301,6 @@ class Response extends Message implements ResponseInterface
 
         return $this;
     }
-
-    /*******************************************************************************
-     * Response Helpers
-     ******************************************************************************/
 
     /**
      * Redirect.
@@ -318,6 +312,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param  string|UriInterface $url    The redirect destination.
      * @param  int|null            $status The redirect HTTP status code.
+     *
      * @return static
      */
     public function withRedirect($url, $status = null)
@@ -343,11 +338,13 @@ class Response extends Message implements ResponseInterface
      * This method prepares the response object to return an HTTP Json
      * response to the client.
      *
-     * @param  mixed  $data   The data
-     * @param  int    $status The HTTP status code.
-     * @param  int    $encodingOptions Json encoding options
-     * @throws \RuntimeException
+     * @param  mixed $data   The data
+     * @param  int   $status The HTTP status code.
+     * @param  int   $encodingOptions Json encoding options
+     *
      * @return static
+     *
+     * @throws RuntimeException
      */
     public function withJson($data, $status = null, $encodingOptions = 0)
     {
@@ -356,7 +353,7 @@ class Response extends Message implements ResponseInterface
 
         // Ensure that the json encoding passed successfully
         if ($json === false) {
-            throw new \RuntimeException(json_last_error_msg(), json_last_error());
+            throw new RuntimeException(json_last_error_msg(), json_last_error());
         }
 
         $responseWithJson = $response->withHeader('Content-Type', 'application/json');
@@ -458,7 +455,6 @@ class Response extends Message implements ResponseInterface
      * Note: This method is not part of the PSR-7 standard.
      *
      * @return bool
-     * @api
      */
     public function isForbidden()
     {
@@ -475,6 +471,18 @@ class Response extends Message implements ResponseInterface
     public function isNotFound()
     {
         return $this->getStatusCode() === StatusCode::HTTP_NOT_FOUND;
+    }
+
+    /**
+     * Is this a bad request?
+     *
+     * Note: This method is not part of the PSR-7 standard.
+     *
+     * @return bool
+     */
+    public function isBadRequest()
+    {
+        return $this->getStatusCode() === StatusCode::HTTP_BAD_REQUEST;
     }
 
     /**

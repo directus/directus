@@ -2,20 +2,13 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim;
 
 use Psr\Container\ContainerInterface;
 
-/**
- * A routable, middleware-aware object
- *
- * @package Slim
- * @since   3.0.0
- */
 abstract class Routable
 {
     use CallableResolverAwareTrait;
@@ -49,6 +42,16 @@ abstract class Routable
     protected $pattern;
 
     /**
+     * @param string   $pattern
+     * @param callable $callable
+     */
+    public function __construct($pattern, $callable)
+    {
+        $this->pattern = $pattern;
+        $this->callable = $callable;
+    }
+
+    /**
      * Get the middleware registered for the group
      *
      * @return callable[]
@@ -73,7 +76,7 @@ abstract class Routable
      *
      * @param ContainerInterface $container
      *
-     * @return self
+     * @return static
      */
     public function setContainer(ContainerInterface $container)
     {

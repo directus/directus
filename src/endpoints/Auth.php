@@ -46,7 +46,8 @@ class Auth extends Route
 
         $responseData = $authService->loginWithCredentials(
             $request->getParsedBodyParam('email'),
-            $request->getParsedBodyParam('password')
+            $request->getParsedBodyParam('password'),
+            $request->getParsedBodyParam('otp')
         );
 
         return $this->responseWithData($request, $response, $responseData);

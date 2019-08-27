@@ -54,10 +54,10 @@ class FloatNodeTest extends TestCase
 
     /**
      * @dataProvider getInvalidValues
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidTypeException
      */
     public function testNormalizeThrowsExceptionOnInvalidValues($value)
     {
+        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidTypeException');
         $node = new FloatNode('test');
         $node->normalize($value);
     }

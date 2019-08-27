@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ScalarType;
+use stdClass;
 use Throwable;
 use Traversable;
 use function array_key_exists;
@@ -155,6 +156,11 @@ class Value
                         $path
                     ),
                 ]);
+            }
+
+            // Cast \stdClass to associative array before checking the fields. Note that the coerced value will be an array.
+            if ($value instanceof stdClass) {
+                $value = (array) $value;
             }
 
             $errors       = [];

@@ -2,10 +2,9 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim;
 
 use ArrayIterator;
@@ -28,8 +27,6 @@ class Collection implements CollectionInterface
     protected $data = [];
 
     /**
-     * Create new collection
-     *
      * @param array $items Pre-populate collection with this key-value array
      */
     public function __construct(array $items = [])
@@ -37,15 +34,8 @@ class Collection implements CollectionInterface
         $this->replace($items);
     }
 
-    /********************************************************************************
-     * Collection interface
-     *******************************************************************************/
-
     /**
-     * Set collection item
-     *
-     * @param string $key   The data key
-     * @param mixed  $value The data value
+     * {@inheritdoc}
      */
     public function set($key, $value)
     {
@@ -53,12 +43,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get collection item for key
-     *
-     * @param string $key     The data key
-     * @param mixed  $default The default value to return if data key does not exist
-     *
-     * @return mixed The key's value, or the default value
+     * {@inheritdoc}
      */
     public function get($key, $default = null)
     {
@@ -66,9 +51,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Add item to collection, replacing existing items with the same data key
-     *
-     * @param array $items Key-value array of data to append to this collection
+     * {@inheritdoc}
      */
     public function replace(array $items)
     {
@@ -78,9 +61,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get all items in collection
-     *
-     * @return array The collection's source data
+     * {@inheritdoc}
      */
     public function all()
     {
@@ -98,11 +79,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Does this collection have a given key?
-     *
-     * @param string $key The data key
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -110,9 +87,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Remove item from collection
-     *
-     * @param string $key The data key
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -120,16 +95,12 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Remove all items from collection
+     * {@inheritdoc}
      */
     public function clear()
     {
         $this->data = [];
     }
-
-    /********************************************************************************
-     * ArrayAccess interface
-     *******************************************************************************/
 
     /**
      * Does this collection have a given key?
@@ -186,14 +157,10 @@ class Collection implements CollectionInterface
         return count($this->data);
     }
 
-    /********************************************************************************
-     * IteratorAggregate interface
-     *******************************************************************************/
-
     /**
      * Get collection iterator
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {

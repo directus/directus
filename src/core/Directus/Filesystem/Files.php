@@ -2,6 +2,7 @@
 
 namespace Directus\Filesystem;
 
+use Char0n\FFMpegPHP\Movie;
 use Directus\Application\Application;
 use function Directus\filename_put_ext;
 use function Directus\generate_uuid5;
@@ -259,7 +260,7 @@ class Files
         // When file is uploaded via multipart form data then We will get object of Slim\Http\UploadFile
         // When file is uploaded via URL (Youtube, Vimeo, or image link) then we will get base64 encode string.
         $size = null;
-
+        
         $title = $fileName;
 
         if (is_object($fileData)) {
@@ -275,11 +276,14 @@ class Files
 
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-
-
         $this->emitter->run('file.save', ['name' => $fileName, 'size' => $size]);
         $this->write($fileName, $fileData, $replace);
         $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => $size]);
+
+        #open local tmp file since s3 bucket is private
+        $handle = fopen($fileData->file, 'rb');
+        $tmp = tempnam(sys_get_temp_dir(), $fileName);
+        file_put_contents($tmp, $handle);
 
         unset($fileData);
 
@@ -289,6 +293,25 @@ class Files
         $fileData['storage'] = $this->config['adapter'];
 
         $fileData = array_merge($this->defaults, $fileData);
+
+        # Updates for file meta data tags
+        if (strpos($fileData['type'],'video') !== false) {
+            #use ffprobe on local file, can't stream data to it or reference
+            $output = shell_exec("ffprobe {$tmp} -show_entries format=duration:stream=height,width -v quiet -of json");
+            #echo($output);
+            $media = json_decode($output);
+            $width = $media->streams[0]->width;
+            $height = $media->streams[0]->height;
+            $duration = $media->format->duration;   #seconds
+
+        } elseif (strpos($fileData['type'],'audio') !== false) {
+            $output = shell_exec("ffprobe {$tmp} -show_entries format=duration -v quiet -of json");
+            $media = json_decode($output);
+            $duration = $media->format->duration;
+        }
+
+        fclose($handle);
+        unset($tmpData);
 
         return [
             // The MIME type will be based on its extension, rather than its content
@@ -300,10 +323,11 @@ class Files
             'location' => $fileData['location'],
             'charset' => $fileData['charset'],
             'filesize' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
+            'width' => isset($width) ? $width : $fileData['width'],
+            'height' => isset($height) ? $width : $fileData['height'],
             'storage' => $fileData['storage'],
             'checksum' => $checksum,
+            'duration' => isset($duration) ? $duration : 0
         ];
     }
 
@@ -355,6 +379,7 @@ class Files
 
     public function getFileInfoFromPath($path)
     {
+        
         $mime = $this->filesystem->getAdapter()->getMimetype($path);
 
         $typeTokens = explode('/', $mime);
@@ -537,7 +562,7 @@ class Files
         $this->emitter->run('file.save:after', ['name' => $targetName, 'size' => strlen($data)]);
 
         $fileData['name'] = basename($finalPath);
-        $fileData['date_uploaded'] = DateTimeUtils::nowInUTC()->toString();
+        $fileData['date_uploaded'] = DateTimeUtils::nowInTimezone()->toString();
         $fileData['storage'] = $this->config['adapter'];
 
         return $fileData;

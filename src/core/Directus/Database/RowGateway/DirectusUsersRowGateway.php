@@ -23,7 +23,7 @@ class DirectusUsersRowGateway extends BaseRowGateway
         // Updated their "last_access" value.
         if ($this->acl) {
             if (isset($rowData['id']) && $rowData['id'] == $this->acl->getUserId()) {
-                $rowData['last_access_on'] = DateTimeUtils::nowInUTC()->toString();
+                $rowData['last_access_on'] = DateTimeUtils::nowInTimezone()->toString();
             }
         }
 

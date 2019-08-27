@@ -223,10 +223,13 @@ EOF
         }
     }
 
+    /**
+     * @return string|null
+     */
     private function getStdin()
     {
         if (0 !== ftell(STDIN)) {
-            return;
+            return null;
         }
 
         $inputs = '';

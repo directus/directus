@@ -158,10 +158,10 @@ class TranslatorTest extends TestCase
 
     /**
      * @dataProvider getNonMatchingMessages
-     * @expectedException \InvalidArgumentException
      */
     public function testThrowExceptionIfMatchingMessageCannotBeFound($id, $number)
     {
+        $this->expectException('InvalidArgumentException');
         $translator = $this->getTranslator();
 
         $translator->trans($id, ['%count%' => $number]);

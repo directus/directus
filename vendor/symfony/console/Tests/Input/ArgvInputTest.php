@@ -182,12 +182,8 @@ class ArgvInputTest extends TestCase
      */
     public function testInvalidInput($argv, $definition, $expectedExceptionMessage)
     {
-        if (method_exists($this, 'expectException')) {
-            $this->expectException('RuntimeException');
-            $this->expectExceptionMessage($expectedExceptionMessage);
-        } else {
-            $this->setExpectedException('RuntimeException', $expectedExceptionMessage);
-        }
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
         $input = new ArgvInput($argv);
         $input->bind($definition);

@@ -53,12 +53,12 @@
     "conflict": {
         "league/flysystem-sftp": "<1.0.6"
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.1-dev"
         }
+    },
+    "scripts": {
+        "phpstan": "php phpstan.php"
     }
 }

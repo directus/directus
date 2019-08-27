@@ -169,12 +169,10 @@ class NormalizationTest extends TestCase
         return array_map(function ($v) { return [$v]; }, $configs);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage The attribute "id" must be set for path "root.thing".
-     */
     public function testNonAssociativeArrayThrowsExceptionIfAttributeNotSet()
     {
+        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
+        $this->expectExceptionMessage('The attribute "id" must be set for path "root.thing".');
         $denormalized = [
             'thing' => [
                 ['foo', 'bar'], ['baz', 'qux'],

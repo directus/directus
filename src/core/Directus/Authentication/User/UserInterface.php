@@ -28,6 +28,13 @@ interface UserInterface
     public function getEmail();
 
     /**
+     * Gets the user 2FA code
+     *
+     * @return string
+     */
+    public function get2FASecret();
+
+    /**
      * Gets the user group id
      *
      * @return int

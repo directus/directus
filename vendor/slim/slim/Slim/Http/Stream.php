@@ -2,10 +2,9 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim\Http;
 
 use InvalidArgumentException;
@@ -87,8 +86,6 @@ class Stream implements StreamInterface
     protected $isPipe;
 
     /**
-     * Create a new Stream.
-     *
      * @param  resource $stream A PHP resource handle.
      *
      * @throws InvalidArgumentException If argument is not a resource.
@@ -101,8 +98,7 @@ class Stream implements StreamInterface
     /**
      * Get stream metadata as an associative array or retrieve a specific key.
      *
-     * The keys returned are identical to the keys returned from PHP's
-     * stream_get_meta_data() function.
+     * The keys returned are identical to the keys returned from PHP's stream_get_meta_data() function.
      *
      * @link http://php.net/manual/en/function.stream-get-meta-data.php
      *
@@ -189,6 +185,7 @@ class Stream implements StreamInterface
      * string casting operations.
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
+     *
      * @return string
      */
     public function __toString()
@@ -342,7 +339,7 @@ class Stream implements StreamInterface
      *     offset bytes SEEK_CUR: Set position to current location plus offset
      *     SEEK_END: Set position to end-of-stream plus offset.
      *
-     * @throws RuntimeException on failure.
+     * @throws RuntimeException If stream is not seekable
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -378,8 +375,7 @@ class Stream implements StreamInterface
      *     them. Fewer than $length bytes may be returned if underlying stream
      *     call returns fewer bytes.
      *
-     * @return string Returns the data read from the stream, or an empty string
-     *     if no bytes are available.
+     * @return string Returns the data read from the stream, or an empty string if no bytes are available.
      *
      * @throws RuntimeException if an error occurs.
      */
@@ -399,7 +395,7 @@ class Stream implements StreamInterface
      *
      * @return int Returns the number of bytes written to the stream.
      *
-     * @throws RuntimeException on failure.
+     * @throws RuntimeException If stream is not writable
      */
     public function write($string)
     {
@@ -418,8 +414,7 @@ class Stream implements StreamInterface
      *
      * @return string
      *
-     * @throws RuntimeException if unable to read or an error occurs while
-     *     reading.
+     * @throws RuntimeException If stream is not readable
      */
     public function getContents()
     {

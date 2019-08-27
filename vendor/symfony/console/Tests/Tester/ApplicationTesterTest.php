@@ -23,7 +23,7 @@ class ApplicationTesterTest extends TestCase
     protected $application;
     protected $tester;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->application = new Application();
         $this->application->setAutoExit(false);
@@ -38,7 +38,7 @@ class ApplicationTesterTest extends TestCase
         $this->tester->run(['command' => 'foo', 'foo' => 'bar'], ['interactive' => false, 'decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->application = null;
         $this->tester = null;

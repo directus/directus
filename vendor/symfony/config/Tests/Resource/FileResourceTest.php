@@ -20,7 +20,7 @@ class FileResourceTest extends TestCase
     protected $file;
     protected $time;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->file = sys_get_temp_dir().'/tmp.xml';
         $this->time = time();
@@ -28,7 +28,7 @@ class FileResourceTest extends TestCase
         $this->resource = new FileResource($this->file);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (!file_exists($this->file)) {
             return;
@@ -53,12 +53,10 @@ class FileResourceTest extends TestCase
         $this->assertSame(realpath($this->file), (string) $this->resource);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp /The file ".*" does not exist./
-     */
     public function testResourceDoesNotExist()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessageRegExp('/The file ".*" does not exist./');
         $resource = new FileResource('/____foo/foobar'.mt_rand(1, 999999));
     }
 

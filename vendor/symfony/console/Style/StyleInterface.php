@@ -119,7 +119,6 @@ interface StyleInterface
      * Asks a choice question.
      *
      * @param string          $question
-     * @param array           $choices
      * @param string|int|null $default
      *
      * @return mixed

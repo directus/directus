@@ -2,15 +2,14 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim;
 
-use RuntimeException;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use UnexpectedValueException;
 
 /**
@@ -42,9 +41,10 @@ trait MiddlewareAwareTrait
      * This method prepends new middleware to the application middleware stack.
      *
      * @param callable $callable Any callable that accepts three arguments:
-     *                           1. A Request object
-     *                           2. A Response object
-     *                           3. A "next" middleware callable
+     * 1. A Request object
+     * 2. A Response object
+     * 3. A "next" middleware callable
+     *
      * @return static
      *
      * @throws RuntimeException         If middleware is added while the stack is dequeuing

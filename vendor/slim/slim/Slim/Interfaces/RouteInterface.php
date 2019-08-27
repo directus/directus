@@ -2,29 +2,21 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Slim\Interfaces;
 
 use InvalidArgumentException;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Route Interface
- *
- * @package Slim
- * @since   3.0.0
- */
 interface RouteInterface
 {
-
     /**
      * Retrieve a specific route argument
      *
-     * @param string $name
+     * @param string      $name
      * @param string|null $default
      *
      * @return string|null
@@ -58,7 +50,7 @@ interface RouteInterface
      * @param string $name
      * @param string $value
      *
-     * @return self
+     * @return RouteInterface
      */
     public function setArgument($name, $value);
 
@@ -67,7 +59,7 @@ interface RouteInterface
      *
      * @param string[] $arguments
      *
-     * @return self
+     * @return RouteInterface
      */
     public function setArguments(array $arguments);
 
@@ -87,7 +79,8 @@ interface RouteInterface
      *
      * @param string $name
      *
-     * @return static
+     * @return RouteInterface
+     *
      * @throws InvalidArgumentException if the route name is not a string
      */
     public function setName($name);
@@ -107,7 +100,7 @@ interface RouteInterface
      * Prepare the route for use
      *
      * @param ServerRequestInterface $request
-     * @param array $arguments
+     * @param array                  $arguments
      */
     public function prepare(ServerRequestInterface $request, array $arguments);
 
@@ -119,7 +112,8 @@ interface RouteInterface
      * back to the Application.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param ResponseInterface      $response
+     *
      * @return ResponseInterface
      */
     public function run(ServerRequestInterface $request, ResponseInterface $response);

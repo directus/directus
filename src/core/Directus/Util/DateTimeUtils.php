@@ -3,6 +3,7 @@
 namespace Directus\Util;
 
 use DateTimeZone;
+use function Directus\get_project_config;
 
 class DateTimeUtils extends \DateTime
 {
@@ -82,9 +83,8 @@ class DateTimeUtils extends \DateTime
         if ($timezone) {
             $timezone = $this->createTimeZone($timezone);
         }
-
+        
         parent::__construct($time, $timezone);
-
         if ($time === null) {
             $this->setTimestamp(time());
         }
@@ -105,6 +105,12 @@ class DateTimeUtils extends \DateTime
     public static function nowInUTC()
     {
         return static::now('UTC');
+    }
+
+    public static function nowInTimezone()
+    {
+        $config = get_project_config();;
+        return static::now($config->get('app.timezone'));
     }
 
     /**
@@ -176,11 +182,11 @@ class DateTimeUtils extends \DateTime
         if ($timezone instanceof DateTimeZone) {
             return $timezone;
         }
-
+        
         if ($timezone === null) {
             return new DateTimeZone(date_default_timezone_get());
         }
-
+        
         try {
             $timezone = new DateTimeZone($timezone);
         } catch (\Exception $e) {
@@ -188,7 +194,6 @@ class DateTimeUtils extends \DateTime
                 sprintf('Unknown or bad timezone (%s)', $timezone)
             );
         }
-
         return $timezone;
     }
 

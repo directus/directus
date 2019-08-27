@@ -50,7 +50,7 @@ class RangeValidatorTest extends ConstraintValidatorTestCase
             [9.99999, '9.99999'],
             ['9.99999', '"9.99999"'],
             [5, '5'],
-            [1.0, '1.0'],
+            [1.0, '1'],
         ];
     }
 
@@ -60,7 +60,7 @@ class RangeValidatorTest extends ConstraintValidatorTestCase
             [20.000001, '20.000001'],
             ['20.000001', '"20.000001"'],
             [21, '21'],
-            [30.0, '30.0'],
+            [30.0, '30'],
         ];
     }
 

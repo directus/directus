@@ -283,7 +283,7 @@ interface ExecutionContextInterface
     /**
      * Returns the validation group that is currently being validated.
      *
-     * @return string The current validation group
+     * @return string|null The current validation group
      */
     public function getGroup();
 

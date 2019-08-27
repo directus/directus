@@ -12,8 +12,10 @@ require $basePath . '/vendor/autoload.php';
 // If the server responds "pong" it means the rewriting works
 // NOTE: The API requires the default project to be configured to properly works
 //       It should work without the default project being configured
-if (!file_exists($basePath . '/config/api.php')) {
-    return \Directus\create_default_app($basePath);
+if (getenv("DIRECTUS_USE_ENV") !== "1") {
+    if (!file_exists($basePath . '/config/api.php')) {
+        return \Directus\create_default_app($basePath);
+    }
 }
 
 // Get Environment name

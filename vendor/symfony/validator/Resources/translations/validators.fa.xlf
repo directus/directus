@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="9">
                 <source>The fields {{ fields }} were not expected.</source>
-                <target>فیلدهای {{ fields }} اضافی هستند.</target>
+                <target>فیلدهای {{ fields }} شامل فیلدهای مورد انتظار نمی باشند.</target>
             </trans-unit>
             <trans-unit id="10">
                 <source>The fields {{ fields }} are missing.</source>
@@ -60,7 +60,7 @@
             </trans-unit>
             <trans-unit id="15">
                 <source>The file is not readable.</source>
-                <target>فایل قابلیت خوانده شدن ندارد.</target>
+                <target>پرونده خواندنی نمی باشد.</target>
             </trans-unit>
             <trans-unit id="16">
                 <source>The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.</source>
@@ -160,19 +160,19 @@
             </trans-unit>
             <trans-unit id="43">
                 <source>The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.</source>
-                <target>طول تصویر بسیار بزرگ است ({{ width }}px). بشینه طول مجاز {{ max_width }}px می باشد.</target>
+                <target>طول تصویر بسیار بزرگ است({{ width }}px). بیشینه طول مجاز {{ max_width }}px می باشد.</target>
             </trans-unit>
             <trans-unit id="44">
                 <source>The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.</source>
-                <target>طول تصویر بسیار کوچک است ({{ width }}px). کمینه طول موردنظر {{ min_width }}px می باشد.</target>
+                <target>طول تصویر بسیار کوچک است({{ width }}px). کمینه طول موردنظر {{ min_width }}px می باشد.</target>
             </trans-unit>
             <trans-unit id="45">
                 <source>The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.</source>
-                <target>ارتفاع تصویر بسیار بزرگ است ({{ height }}px). بشینه ارتفاع مجاز {{ max_height }}px می باشد.</target>
+                <target>ارتفاع تصویر بسیار بزرگ است({{ height }}px). بیشینه ارتفاع مجاز {{ max_height }}px می باشد.</target>
             </trans-unit>
             <trans-unit id="46">
                 <source>The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.</source>
-                <target>ارتفاع تصویر بسیار کوچک است ({{ height }}px). کمینه ارتفاع موردنظر {{ min_height }}px می باشد.</target>
+                <target>ارتفاع تصویر بسیار کوچک است({{ height }}px). کمینه ارتفاع موردنظر {{ min_height }}px می باشد.</target>
             </trans-unit>
             <trans-unit id="47">
                 <source>This value should be the user's current password.</source>
@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="51">
                 <source>No temporary folder was configured in php.ini.</source>
-                <target>فولدر موقت در php.ini پیکربندی نگردیده است.</target>
+                <target>پوشه موقتی در php.ini پیکربندی نگردیده است.</target>
             </trans-unit>
             <trans-unit id="52">
                 <source>Cannot write temporary file to disk.</source>
@@ -224,7 +224,7 @@
             </trans-unit>
             <trans-unit id="59">
                 <source>This is not a valid International Bank Account Number (IBAN).</source>
-                <target>این یک شماره حساب بانک بین المللی معتبر نمی باشد (IBAN).</target>
+                <target>این یک شماره حساب بانک بین المللی معتبر نمی باشد(IBAN).</target>
             </trans-unit>
             <trans-unit id="60">
                 <source>This value is not a valid ISBN-10.</source>
@@ -280,23 +280,23 @@
             </trans-unit>
             <trans-unit id="73">
                 <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
-                <target>ابعاد {{ ratio }} عکس بیش از حد بزرگ است.حداکثر ابعاد مجاز {{ max_ratio }} می باشد.</target>
+                <target>ابعاد({{ ratio }}) عکس بیش از حد بزرگ است.حداکثر ابعاد مجاز {{ max_ratio }} می باشد.</target>
             </trans-unit>
             <trans-unit id="74">
                 <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
-                <target>ابعاد {{ ratio }} عکس بیش از حد کوچک است.حداقل ابعاد مجاز {{ min_ratio }} می باشد.</target>
+                <target>ابعاد({{ ratio }}) عکس بیش از حد کوچک است.حداقل ابعاد مجاز {{ min_ratio }} می باشد.</target>
             </trans-unit>
             <trans-unit id="75">
                 <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
-                <target>این تصویر یک مربع width }}x{{ height }}px}} می باشد.تصویر مربع مجاز نمی باشد.</target>
+                <target>این تصویر یک مربع({{ width }}x{{ height }}px) می باشد. تصویر مربع مجاز نمی باشد.</target>
             </trans-unit>
             <trans-unit id="76">
                 <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
-                <target>این تصویر افقی width }}x{{ height }}px}} می باشد.تصویر افقی مجاز نمی باشد.</target>
+                <target>این تصویر افقی({{ width }}x{{ height }}px) می باشد. تصویر افقی مجاز نمی باشد.</target>
             </trans-unit>
             <trans-unit id="77">
                 <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
-                <target>این تصویر عمودی width }}x{{ height }}px}} می باشد.تصویر عمودی مجاز نمی باشد.</target>
+                <target>این تصویر عمودی({{ width }}x{{ height }}px) می باشد. تصویر عمودی مجاز نمی باشد.</target>
             </trans-unit>
             <trans-unit id="78">
                 <source>An empty file is not allowed.</source>
@@ -312,7 +312,7 @@
             </trans-unit>
             <trans-unit id="81">
                 <source>This is not a valid Business Identifier Code (BIC).</source>
-                <target>این مقدار یک BIC معتبر نمی باشد.</target>
+                <target>این مقدار یک(BIC) معتبر نمی باشد.</target>
             </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
@@ -328,7 +328,7 @@
             </trans-unit>
             <trans-unit id="85">
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
-                <target>این BIC با IBAN ارتباطی ندارد.</target>
+                <target>این(BIC) با IBAN ارتباطی ندارد.</target>
             </trans-unit>
         </body>
     </file>

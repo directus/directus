@@ -167,8 +167,9 @@ function printTable($translations, $verboseOutput)
     $longestLocaleNameLength = max(array_map('strlen', array_keys($translations)));
 
     foreach ($translations as $locale => $translation) {
-        $isTranslationCompleted = $translation['translated'] === $translation['total'];
-        if ($isTranslationCompleted) {
+        if ($translation['translated'] > $translation['total']) {
+            textColorRed();
+        } elseif ($translation['translated'] === $translation['total']) {
             textColorGreen();
         }
 
@@ -192,6 +193,11 @@ function printTable($translations, $verboseOutput)
 function textColorGreen()
 {
     echo "\033[32m";
+}
+
+function textColorRed()
+{
+    echo "\033[31m";
 }
 
 function textColorNormal()

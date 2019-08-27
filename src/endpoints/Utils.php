@@ -18,6 +18,7 @@ class Utils extends Route
         $app->post('/hash', [$this, 'hash']);
         $app->post('/hash/match', [$this, 'matchHash']);
         $app->post('/random/string', [$this, 'randomString']);
+        $app->get('/2fa_secret', [$this, 'generate2FASecret']);
     }
 
     /**
@@ -86,6 +87,19 @@ class Utils extends Route
             $request->getParsedBodyParam('options')
         );
 
+        return $this->responseWithData($request, $response, $responseData);
+    }
+
+    /** Endpoint to generate a 2FA secret
+     * @param Request $request
+     * @param Response $response
+     *
+     * @return Response
+     */
+    public function generate2FASecret(Request $request, Response $response)
+    {
+        $service = new UtilsService($this->container);
+        $responseData = $service->generate2FASecret();
         return $this->responseWithData($request, $response, $responseData);
     }
 }

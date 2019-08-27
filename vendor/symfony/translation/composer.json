@@ -18,7 +18,7 @@
     "require": {
         "php": "^7.1.3",
         "symfony/polyfill-mbstring": "~1.0",
-        "symfony/translation-contracts": "^1.1.2"
+        "symfony/translation-contracts": "^1.1.6"
     },
     "require-dev": {
         "symfony/config": "~3.4|~4.0",

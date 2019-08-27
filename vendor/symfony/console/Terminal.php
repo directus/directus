@@ -87,25 +87,13 @@ class Terminal
      */
     private static function getConsoleMode()
     {
-        if (!\function_exists('proc_open')) {
-            return;
+        $info = self::readFromProcess('mode CON');
+
+        if (null === $info || !preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $info, $matches)) {
+            return null;
         }
 
-        $descriptorspec = [
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
-        ];
-        $process = proc_open('mode CON', $descriptorspec, $pipes, null, null, ['suppress_errors' => true]);
-        if (\is_resource($process)) {
-            $info = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
-
-            if (preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $info, $matches)) {
-                return [(int) $matches[2], (int) $matches[1]];
-            }
-        }
+        return [(int) $matches[2], (int) $matches[1]];
     }
 
     /**
@@ -115,8 +103,18 @@ class Terminal
      */
     private static function getSttyColumns()
     {
+        return self::readFromProcess('stty -a | grep columns');
+    }
+
+    /**
+     * @param string $command
+     *
+     * @return string|null
+     */
+    private static function readFromProcess($command)
+    {
         if (!\function_exists('proc_open')) {
-            return;
+            return null;
         }
 
         $descriptorspec = [
@@ -124,14 +122,16 @@ class Terminal
             2 => ['pipe', 'w'],
         ];
 
-        $process = proc_open('stty -a | grep columns', $descriptorspec, $pipes, null, null, ['suppress_errors' => true]);
-        if (\is_resource($process)) {
-            $info = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
-
-            return $info;
+        $process = proc_open($command, $descriptorspec, $pipes, null, null, ['suppress_errors' => true]);
+        if (!\is_resource($process)) {
+            return null;
         }
+
+        $info = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($process);
+
+        return $info;
     }
 }

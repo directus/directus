@@ -1,0 +1,40 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: circleci/php:7.1
+    filters:
+      branches:
+        ignore: gh-pages
+    steps:
+      - checkout
+      - run:
+          name: Add apt source
+          command: |
+            sudo echo "deb http://httpredir.debian.org/debian jessie-backports main non-free" | sudo tee -a /etc/apt/sources.list
+            sudo apt-get update
+      - run:
+          name: Install ffmpeg
+          command: sudo apt-get install ffmpeg
+      - run:
+          name: Install PHP extensions
+          command: |
+            sudo apt-get install libpng-dev libjpeg-dev libjpeg62-turbo-dev libfreetype6-dev libpng-dev graphviz
+            sudo docker-php-ext-configure gd --with-jpeg-dir=/usr/include --with-png-dir=/usr/include
+            sudo docker-php-ext-install gd
+      - run:
+          name: Install ffmpeg-php
+          command: composer install
+      - run:
+          name: Lint
+          command: composer run-script codesniffer
+      - run:
+          name: Test
+          command: composer run-script test
+
+workflows:
+  version: 2
+  ui_build_test:
+    jobs:
+      - test

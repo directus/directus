@@ -24,19 +24,22 @@ use Directus\Util\StringUtils;
 
 class AuthService extends AbstractService
 {
+    const AUTH_VALIDATION_ERROR_CODE = 109;
+
     /**
      * Gets the user token using the authentication email/password combination
      *
      * @param string $email
      * @param string $password
+     * @param string $otp
      *
      * @return array
      *
      * @throws UnauthorizedException
      */
-    public function loginWithCredentials($email, $password)
+    public function loginWithCredentials($email, $password, $otp=null)
     {
-        $this->validateCredentials($email, $password);
+        $this->validateCredentials($email, $password, $otp);
 
         /** @var Provider $auth */
         $auth = $this->container->get('auth');
@@ -44,7 +47,8 @@ class AuthService extends AbstractService
         /** @var UserInterface $user */
         $user = $auth->login([
             'email' => $email,
-            'password' => $password
+            'password' => $password,
+            'otp' => $otp
         ]);
 
         $hookEmitter = $this->container->get('hook_emitter');
@@ -55,9 +59,19 @@ class AuthService extends AbstractService
         $activityTableGateway = $this->createTableGateway('directus_activity', false);
         $activityTableGateway->recordLogin($user->get('id'));
 
+        /** @var UsersService $usersService */
+        $usersService = new UsersService($this->container);
+        $tfa_enforced = $usersService->has2FAEnforced($user->getId());
+
+        if ($tfa_enforced && $user->get2FASecret() == null) {
+            $token = $this->generateAuthToken($user, true);
+        } else {
+            $token = $this->generateAuthToken($user);
+        }
+
         return [
             'data' => [
-                'token' => $this->generateAuthToken($user)
+                'token' => $token
             ]
         ];
     }
@@ -289,14 +303,16 @@ class AuthService extends AbstractService
      *
      * @param UserInterface $user
      *
+     * @param bool $needs2FA Whether the user needs 2FA
+     *
      * @return string
      */
-    public function generateAuthToken(UserInterface $user)
+    public function generateAuthToken(UserInterface $user, bool $needs2FA = false)
     {
         /** @var Provider $auth */
         $auth = $this->container->get('auth');
 
-        return $auth->generateAuthToken($user);
+        return $auth->generateAuthToken($user, $needs2FA);
     }
 
     /**
@@ -382,29 +398,46 @@ class AuthService extends AbstractService
         /** @var Provider $auth */
         $auth = $this->container->get('auth');
 
-        return ['data' => ['token' => $auth->refreshToken($token)]];
+        $payload = JWTUtils::getPayload($token);
+        $userProvider = $auth->getUserProvider();
+        $user = $userProvider->find($payload->id);
+
+        /** @var UsersService $usersService */
+        $usersService = new UsersService($this->container);
+
+        $tfa_enforced = $usersService->has2FAEnforced($user->getId());
+
+        if ($tfa_enforced && $user->get2FASecret() == null) {
+            $new_token = $auth->refreshToken($token, true);
+        } else {
+            $new_token = $auth->refreshToken($token);
+        }
+
+        return ['data' => ['token' => $new_token]];
     }
 
     /**
-     * Validates email+password credentials
+     * Validates email+password+otp credentials
      *
      * @param $email
      * @param $password
+     * @param $otp
      *
      * @throws UnprocessableEntityException
      */
-    protected function validateCredentials($email, $password)
+    protected function validateCredentials($email, $password, $otp)
     {
         $payload = [
             'email' => $email,
-            'password' => $password
+            'password' => $password,
+            'otp' => $otp
         ];
         $constraints = [
             'email' => 'required|string|email',
-            'password' => 'required|string'
+            'password' => 'required|string',
         ];
 
         // throws an exception if the constraints are not met
-        $this->validate($payload, $constraints);
+        $this->validate($payload, $constraints, self::AUTH_VALIDATION_ERROR_CODE);
     }
 }

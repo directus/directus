@@ -201,7 +201,7 @@ static function listOf($wrappedType)
 
 ```php
 /**
- * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType $wrappedType
+ * @param NullableType $wrappedType
  *
  * @return NonNull
  *
@@ -291,7 +291,7 @@ static function isType($type)
 /**
  * @param Type $type
  *
- * @return ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType
+ * @return NullableType
  *
  * @api
  */
@@ -299,15 +299,16 @@ static function getNullableType($type)
 ```
 # GraphQL\Type\Definition\ResolveInfo
 Structure containing information useful for field resolution process.
-Passed as 3rd argument to every field resolver. See [docs on field resolving (data fetching)](data-fetching.md).
+
+Passed as 4th argument to every field resolver. See [docs on field resolving (data fetching)](data-fetching.md).
 
 **Class Props:** 
 ```php
 /**
- * The name of the field being resolved
+ * The name of the field being resolved.
  *
  * @api
- * @var string|null
+ * @var string
  */
 public $fieldName;
 
@@ -315,12 +316,12 @@ public $fieldName;
  * AST of all nodes referencing this field in the query.
  *
  * @api
- * @var FieldNode[]|null
+ * @var FieldNode[]
  */
 public $fieldNodes;
 
 /**
- * Expected return type of the field being resolved
+ * Expected return type of the field being resolved.
  *
  * @api
  * @var ScalarType|ObjectType|InterfaceType|UnionType|EnumType|ListOfType|NonNull
@@ -328,47 +329,47 @@ public $fieldNodes;
 public $returnType;
 
 /**
- * Parent type of the field being resolved
+ * Parent type of the field being resolved.
  *
  * @api
- * @var ObjectType|null
+ * @var ObjectType
  */
 public $parentType;
 
 /**
- * Path to this field from the very root value
+ * Path to this field from the very root value.
  *
  * @api
- * @var string[]
+ * @var string[][]
  */
 public $path;
 
 /**
- * Instance of a schema used for execution
+ * Instance of a schema used for execution.
  *
  * @api
- * @var Schema|null
+ * @var Schema
  */
 public $schema;
 
 /**
- * AST of all fragments defined in query
+ * AST of all fragments defined in query.
  *
  * @api
- * @var FragmentDefinitionNode[]|null
+ * @var FragmentDefinitionNode[]
  */
 public $fragments;
 
 /**
- * Root value passed to query execution
+ * Root value passed to query execution.
  *
  * @api
- * @var mixed|null
+ * @var mixed
  */
 public $rootValue;
 
 /**
- * AST of operation definition node (query, mutation)
+ * AST of operation definition node (query, mutation).
  *
  * @api
  * @var OperationDefinitionNode|null
@@ -376,10 +377,10 @@ public $rootValue;
 public $operation;
 
 /**
- * Array of variables passed to query execution
+ * Array of variables passed to query execution.
  *
  * @api
- * @var mixed[]|null
+ * @var mixed[]
  */
 public $variableValues;
 ```
@@ -388,7 +389,7 @@ public $variableValues;
 ```php
 /**
  * Helper method that returns names of all fields selected in query for
- * $this->fieldName up to $depth levels
+ * $this->fieldName up to $depth levels.
  *
  * Example:
  * query MyQuery{
@@ -1095,7 +1096,7 @@ Implements the "Evaluating requests" section of the GraphQL specification.
  * execution are collected in `$result->errors`.
  *
  * @param mixed|null               $rootValue
- * @param mixed[]|null             $contextValue
+ * @param mixed|null               $contextValue
  * @param mixed[]|ArrayAccess|null $variableValues
  * @param string|null              $operationName
  *
@@ -1121,8 +1122,8 @@ static function execute(
  *
  * Useful for async PHP platforms.
  *
- * @param mixed[]|null $rootValue
- * @param mixed[]|null $contextValue
+ * @param mixed|null   $rootValue
+ * @param mixed|null   $contextValue
  * @param mixed[]|null $variableValues
  * @param string|null  $operationName
  *
@@ -1879,13 +1880,9 @@ function setDebug($set = true)
 /**
  * Allow batching queries (disabled by default)
  *
- * @param bool $enableBatching
- *
- * @return self
- *
  * @api
  */
-function setQueryBatching($enableBatching)
+function setQueryBatching(bool $enableBatching)
 ```
 
 ```php
@@ -2059,6 +2056,12 @@ public $operation;
  * @var mixed[]|null
  */
 public $variables;
+
+/**
+ * @api
+ * @var mixed[]|null
+ */
+public $extensions;
 ```
 
 **Class Methods:** 
@@ -2067,13 +2070,10 @@ public $variables;
  * Creates an instance from given array
  *
  * @param mixed[] $params
- * @param bool    $readonly
- *
- * @return OperationParams
  *
  * @api
  */
-static function create(array $params, $readonly = false)
+static function create(array $params, bool $readonly = false)
 ```
 
 ```php

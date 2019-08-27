@@ -19,7 +19,7 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 class DumperNativeFallbackTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         ClassExistsMock::register(Dumper::class);
         ClassExistsMock::withMockedClasses([
@@ -27,7 +27,7 @@ class DumperNativeFallbackTest extends TestCase
         ]);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         ClassExistsMock::withMockedClasses([]);
     }

@@ -314,6 +314,58 @@
                 <source>This is not a valid Business Identifier Code (BIC).</source>
                 <target>Սա վավեր Business Identifier Code (BIC) չէ։</target>
             </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Սխալ</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Սա վավեր UUID չէ:</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Այս արժեքը պետք է լինի բազմակի {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Բիզնեսի նույնականացման կոդը (BIC) կապված չէ IBAN- ի հետ {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Այս արժեքը պետք է լինի վավեր JSON:</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Այս հավաքածուն պետք է պարունակի միայն եզակի տարրեր:</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Այս արժեքը պետք է լինի դրական:</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Այս արժեքը պետք է լինի դրական կամ զրոյական:</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Այս արժեքը պետք է լինի բացասական:</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Այս արժեքը պետք է լինի բացասական կամ զրոյական:</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Այս արժեքը վավեր ժամանակի գոտի չէ:</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Այս գաղտնաբառն արտահոսվել է տվյալների խախտման մեջ, այն չպետք է օգտագործվի: Խնդրում ենք օգտագործել մեկ այլ գաղտնաբառ:</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Այս արժեքը պետք է լինի միջև {{ min }} և {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

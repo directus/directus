@@ -30,7 +30,7 @@ class ItemsService extends AbstractService
     {
         $this->enforceCreatePermissions($collection, $payload, $params);
         $this->validatePayload($collection, null, $payload, $params);
-
+       
         // Validate Password if password policy settled in the system settings.
         if($collection == SchemaManager::COLLECTION_USERS){
             $passwordValidation = get_directus_setting('password_policy');
@@ -38,14 +38,13 @@ class ItemsService extends AbstractService
                 $this->validate($payload,[static::PASSWORD_FIELD => ['regex:'.$passwordValidation ]]);
             }
         }
-
+        
         //Validate nested payload
         $tableSchema = SchemaService::getCollection($collection);
         $collectionAliasColumns = $tableSchema->getAliasFields();
 
         foreach ($collectionAliasColumns as $aliasColumnDetails) {
             if($this->isManyToManyField($aliasColumnDetails)){
-
                 $this->validateManyToManyCollection($payload, $params, $aliasColumnDetails);
             }else{
                 $this->validateAliasCollection($payload, $params, $aliasColumnDetails, []);
@@ -189,23 +188,38 @@ class ItemsService extends AbstractService
         $relationalCollectionName = $aliasColumnDetails->getRelationship()->getCollectionManyToMany();
         if($relationalCollectionName && isset($payload[$colName])){
             $relationalCollectionPrimaryKey = SchemaService::getCollectionPrimaryKey($relationalCollectionName);
+            $relationalCollectionPrimaryKeyObject = SchemaService::getField($relationalCollectionName,$relationalCollectionPrimaryKey);
             $relationalCollectionColumns = SchemaService::getAllCollectionFields($relationalCollectionName);
 
             foreach($payload[$colName] as $individual){
                 if(!isset($individual['$delete'])){
                     $aliasField = $aliasColumnDetails->getRelationship()->getJunctionOtherRelatedField();
                     $validatePayload = $individual[$aliasField];
-
-
+                    if(!isset($params['fields'])){
+                        $params['fields'] = "*.*";
+                    }
                     foreach($relationalCollectionColumns as $column){
-                        if(!$column->isAlias() && !$column->hasPrimaryKey() && !empty($validatePayload[$relationalCollectionPrimaryKey])){
+                        if(!$column->hasPrimaryKey()){
                             $columnName = $column->getName();
-                            $relationalCollectionData = $this->findByIds(
-                                $relationalCollectionName,
-                                $validatePayload[$relationalCollectionPrimaryKey],
-                                $params
-                            );
-                            $validatePayload[$columnName] = array_key_exists($columnName, $validatePayload) ? $validatePayload[$columnName]: (isset($relationalCollectionData['data'][$columnName]) ? ((DataTypes::isJson($column->getType()) ? (array) $relationalCollectionData['data'][$columnName] : $relationalCollectionData['data'][$columnName])) : null);
+                            /**
+                             * The current system has INT / VARCHAR type primary key. For INT primary key will be auto-incremented so at the create time ID will be not passed but for VARCHAR ID will be passed in the payload for creating request.
+                             * If datatype of a primary key is VARCHAR; ID will be passed as payload for creating/ select existing / update. If the ID exists in the system then the system will consider it as an update/select existing otherwise it will be considered as a create request.
+                             *  If datatype of the primary key is INT; if ID exists in the payload then the system will consider it as an update/select existing otherwise it will be considered as a create request.
+                             * */ 
+
+                            if(!empty($validatePayload[$relationalCollectionPrimaryKey]) && $relationalCollectionPrimaryKeyObject->hasAutoIncrement() && $relationalCollectionPrimaryKeyObject->getDataType() == "INT"){
+                                $relationalCollectionData = $this->findByIds($relationalCollectionName,$validatePayload[$relationalCollectionPrimaryKey],$params);
+                                $validatePayload[$columnName] = array_key_exists($columnName, $validatePayload) ? $validatePayload[$columnName]: (isset($relationalCollectionData['data'][$columnName]) ? ((DataTypes::isJson($column->getType()) ? (array) $relationalCollectionData['data'][$columnName] : $relationalCollectionData['data'][$columnName])) : null);
+                                $params['select_existing_or_update'] = true;
+                            }else if(!empty($validatePayload[$relationalCollectionPrimaryKey]) && !$relationalCollectionPrimaryKeyObject->hasAutoIncrement()){
+                                try{
+                                    $relationalCollectionData = $this->findByIds($relationalCollectionName,$validatePayload[$relationalCollectionPrimaryKey],$params);
+                                    $validatePayload[$columnName] = array_key_exists($columnName, $validatePayload) ? $validatePayload[$columnName]: (isset($relationalCollectionData['data'][$columnName]) ? ((DataTypes::isJson($column->getType()) ? (array) $relationalCollectionData['data'][$columnName] : $relationalCollectionData['data'][$columnName])) : null);
+                                    $params['select_existing_or_update'] = true;
+                                }catch(\Exception $e){
+                                    continue;
+                                }
+                            }
                         }
                     }
                     $this->validatePayload($relationalCollectionName, null, $validatePayload,$params);
@@ -228,7 +242,6 @@ class ItemsService extends AbstractService
             $parentCollectionName = $aliasColumnDetails->getRelationship()->getCollectionMany();
         }
         if($relationalCollectionName && isset($payload[$colName])){
-
             $relationalCollectionPrimaryKey = SchemaService::getCollectionPrimaryKey($relationalCollectionName);
             $parentCollectionPrimaryKey = SchemaService::getCollectionPrimaryKey($parentCollectionName);
             $relationalCollectionColumns = SchemaService::getAllCollectionFields($relationalCollectionName);
@@ -238,7 +251,6 @@ class ItemsService extends AbstractService
 
                 if(!isset($individual['$delete'])){
                     foreach($relationalCollectionColumns as $key => $column){
-
                         if(!$column->isAlias() && !$column->hasPrimaryKey() && !empty($individual[$relationalCollectionPrimaryKey])){
                             $columnName = $column->getName();
                             $relationalCollectionData = $this->findByIds(
@@ -249,11 +261,11 @@ class ItemsService extends AbstractService
                             $individual[$columnName] = array_key_exists($columnName, $individual) ? $individual[$columnName]: (isset($relationalCollectionData['data'][$columnName]) ? ((DataTypes::isJson($column->getType()) ? (array) $relationalCollectionData['data'][$columnName] : $relationalCollectionData['data'][$columnName])) : null);
                         }
                     }
-
                     // only add parent id's to items that are lacking the parent column
-                    if (empty($individual[$foreignJoinColumn]) && !empty($recordData[$parentCollectionPrimaryKey])) {
-                        $individual[$foreignJoinColumn] = $recordData[$parentCollectionPrimaryKey];
+                    if (empty($individual[$foreignJoinColumn])) {
+                        $individual[$foreignJoinColumn] = !empty($recordData[$parentCollectionPrimaryKey]) ? $recordData[$parentCollectionPrimaryKey] : 0;
                     }
+
                     $this->validatePayload($relationalCollectionName, null, $individual,$params);
                 }
             }
