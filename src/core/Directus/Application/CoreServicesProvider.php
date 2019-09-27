@@ -69,6 +69,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Slim\Views\Twig;
 use Zend\Db\TableGateway\TableGateway;
+use Directus\Api\Routes\Roles;
 
 class CoreServicesProvider
 {
@@ -213,15 +214,6 @@ class CoreServicesProvider
                 $emitter->addAction($action, $cacheTableTagInvalidator);
             }
 
-            $cacheEntityTagInvalidator = function ($tableName, $ids) use ($cachePool) {
-                foreach ($ids as $id) {
-                    $cachePool->invalidateTags(['entity_' . $tableName . '_' . $id]);
-                }
-            };
-            foreach (['item.delete:after', 'item.update:after'] as $action) {
-                $emitter->addAction($action, $cacheEntityTagInvalidator);
-            }
-
             $emitter->addAction('item.update.directus_permissions:after', function ($data) use ($container, $cachePool) {
                 $acl = $container->get('acl');
                 $dbConnection = $container->get('database');
@@ -328,7 +320,7 @@ class CoreServicesProvider
                     // Set the URL payload data
                     $payload['data'] = ArrayUtils::get($dataInfo, 'data');
                     $payload['filename'] = ArrayUtils::get($dataInfo, 'filename');
-                } else if(!is_object($fileData)) {
+                } else if (!is_object($fileData)) {
                     $dataInfo = $files->getDataInfo($fileData);
                 }
 
@@ -686,6 +678,7 @@ class CoreServicesProvider
             $emitter->addFilter('item.update:before', $onInsertOrUpdate);
             $preventUsePublicGroup = function (Payload $payload) use ($container) {
                 $data = $payload->getData();
+
                 if (!ArrayUtils::has($data, 'role')) {
                     return $payload;
                 }
@@ -699,11 +692,7 @@ class CoreServicesProvider
                     return $payload;
                 }
 
-                $zendDb = $container->get('database');
-                $acl = $container->get('acl');
-                $tableGateway = new BaseTableGateway(SchemaManager::COLLECTION_ROLES, $zendDb, $acl);
-                $row = $tableGateway->select(['id' => $roleId])->current();
-                if (strtolower($row->name) === 'public') {
+                if ($roleId == ROLES::PUBLIC) {
                     throw new ForbiddenException('Users cannot be added into the public group');
                 }
 
@@ -918,14 +907,17 @@ class CoreServicesProvider
                 $poolConfig = ['adapter' => 'void'];
             }
 
+            $pool = new VoidCachePool();
+
+            if(!$config->get('cache.enabled'))
+                return $pool;
+
             if (is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
                 $pool = $poolConfig;
             } else {
                 if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'memcache', 'redis', 'void'])) {
                     throw new InvalidCacheAdapterException();
                 }
-
-                $pool = new VoidCachePool();
 
                 $adapter = $poolConfig['adapter'];
 

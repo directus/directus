@@ -24,6 +24,7 @@ use PragmaRX\Google2FA\Google2FA;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
 use function Directus\get_directus_setting;
+use Directus\Validator\Exception\InvalidRequestException;
 
 class UsersService extends AbstractService
 {
@@ -439,5 +440,121 @@ class UsersService extends AbstractService
         }
 
         return $this->update($id, ['2fa_secret' => $tfa_secret]);
+    }
+
+     /**
+     * @param $collection
+     * @param array $items
+     * @param array $params
+     *
+     * @return array
+     *
+     * @throws InvalidRequestException
+     */
+    public function batchCreate(array $items, array $params = [])
+    {
+        if (!isset($items[0]) || !is_array($items[0])) {
+            throw new InvalidRequestException('batch create expect an array of items');
+        }
+
+        foreach ($items as $data) {
+            $this->enforceCreatePermissions($this->collection, $data, $params);
+            $this->validatePayload($this->collection, null, $data, $params);
+        }
+
+        $allItems = [];
+        foreach ($items as $data) {
+            $item = $this->create($data, $params);
+            if (!is_null($item)) {
+                $allItems[] = $item['data'];
+            }
+        }
+
+        if (!empty($allItems)) {
+            $allItems = ['data' => $allItems];
+        }
+
+        return $allItems;
+    }
+
+    /**
+     * @param $collection
+     * @param array $items
+     * @param array $params
+     *
+     * @return array
+     *
+     * @throws InvalidRequestException
+     */
+    public function batchUpdate(array $items, array $params = [])
+    {
+        if (!isset($items[0]) || !is_array($items[0])) {
+            throw new InvalidRequestException('batch update expect an array of items');
+        }
+
+        foreach ($items as $data) {
+            $this->enforceCreatePermissions($this->collection, $data, $params);
+            $this->validatePayload($this->collection, array_keys($data), $data, $params);
+            $this->validatePayloadHasPrimaryKey($this->collection, $data);
+        }
+
+        $collectionObject = $this->getSchemaManager()->getCollection($this->collection);
+        $allItems = [];
+        foreach ($items as $data) {
+            $id = $data[$collectionObject->getPrimaryKeyName()];
+            $item = $this->update($id, $data, $params);
+
+            if (!is_null($item)) {
+                $allItems[] = $item['data'];
+            }
+        }
+
+        if (!empty($allItems)) {
+            $allItems = ['data' => $allItems];
+        }
+
+        return $allItems;
+    }
+
+    /**
+     * @param $collection
+     * @param array $ids
+     * @param array $payload
+     * @param array $params
+     *
+     * @return array
+     */
+    public function batchUpdateWithIds(array $ids, array $payload, array $params = [])
+    {
+        $this->enforceUpdatePermissions($this->collection, $payload, $params);
+        $this->validatePayload($this->collection, array_keys($payload), $payload, $params);
+
+        $allItems = [];
+        foreach ($ids as $id) {
+            $item = $this->update($id, $payload, $params);
+            if (!empty($item)) {
+                $allItems[] = $item['data'];
+            }
+        }
+
+        if (!empty($allItems)) {
+            $allItems = ['data' => $allItems];
+        }
+
+        return $allItems;
+    }
+
+    /**
+     * @param $collection
+     * @param array $ids
+     * @param array $params
+     *
+     * @throws ForbiddenException
+     */
+    public function batchDeleteWithIds(array $ids, array $params = [])
+    {
+        foreach ($ids as $id) {
+            $this->delete($id, $params);
+        }
     }
 }

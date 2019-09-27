@@ -43,10 +43,6 @@
     "char0n/ffmpeg-php": "^3.0.0",
     "pragmarx/google2fa": "^5.0"
   },
-  "require-dev": {
-    "phpunit/phpunit": "^5.7.25",
-    "phpbench/phpbench": "@dev"
-  },
   "suggest": {
     "paragonie/random_compat": "Generates cryptographically more secure pseudo-random bytes",
     "league/flysystem-aws-s3-v3": "Enables the usage of Amazon S3 adapter for storage",

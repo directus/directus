@@ -174,7 +174,8 @@ class RelationalTableGateway extends BaseTableGateway
             $column = $tableSchema->getField($key);
 
             // NOTE: Each interface or the API should handle the `alias` type
-            if ($column && $column->isOneToMany()) {
+            //Ignore all the alias fields except file interface > data
+            if ($column && (($column->isAlias() && $this->getTable() !== SchemaManager::COLLECTION_FILES)) || $column->isOneToMany()) {
                 continue;
             }
 
@@ -400,7 +401,8 @@ class RelationalTableGateway extends BaseTableGateway
             $column = $tableSchema->getField($key);
 
             // NOTE: Each interface or the API should handle the `alias` type
-            if ($column && $column->isOneToMany()) {
+            //Ignore all the alias fields except file interface > data
+            if ($column && (($column->isAlias() && $this->getTable() !== SchemaManager::COLLECTION_FILES)) || ($column && $column->isOneToMany())) {
                 continue;
             }
 
@@ -1872,20 +1874,37 @@ class RelationalTableGateway extends BaseTableGateway
                     $relatedTable = $relationship->getCollectionMany();
                     $relatedRightColumn = $relationship->getFieldMany();
                     $relatedTableColumns = SchemaService::getAllCollectionFields($relatedTable);
-
-                    $query->from($table);
-                    // TODO: Test here it may be not setting the proper primary key name
-                    // TODO: Only make this condition if it actually have conditions in the sub query
-                    $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
-                        foreach ($relatedTableColumns as $column) {
+                    
+                    //Condition for table related to same table with O2M, to avoid right join of same tables
+                    if($relatedTable == $table){
+                        $relatedQuery = new Builder($this->getAdapter());
+                        $relatedQuery->columns([$relatedRightColumn]);
+                        $relatedQuery->from($relatedTable);
+                        
+                        foreach ($relatedTableColumns as $relatedColumn) {
                             // NOTE: Only search numeric or string type columns
-                            $isNumeric = $this->getSchemaManager()->getSource()->isNumericType($column->getType());
-                            $isString = $this->getSchemaManager()->getSource()->isStringType($column->getType());
-                            if (!$column->isAlias() && ($isNumeric || $isString)) {
-                                $query->orWhereLike($column->getName(), $search, false);
+                            $isNumeric = $this->getSchemaManager()->isFieldNumericType($relatedColumn);
+                            $isString = $this->getSchemaManager()->isFieldStringType($relatedColumn);
+                            if (!$relatedColumn->isAlias() && ($isNumeric || $isString)) {
+                                $relatedQuery->orWhereLike($relatedColumn->getName(), $search, false);
                             }
                         }
-                    });
+                        $query->orWhereIn($this->primaryKeyFieldName, $relatedQuery);
+                    }else{
+                        $query->from($table);
+                        // TODO: Test here it may be not setting the proper primary key name
+                        // TODO: Only make this condition if it actually have conditions in the sub query
+                        $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                            foreach ($relatedTableColumns as $relatedColumn) {
+                                // NOTE: Only search numeric or string type columns
+                                $isNumeric = $this->getSchemaManager()->isFieldNumericType($relatedColumn);
+                                $isString = $this->getSchemaManager()->isFieldStringType($relatedColumn);
+                                if (!$relatedColumn->isAlias() && ($isNumeric || $isString)) {
+                                    $query->orWhereLike($relatedColumn->getName(), $search, false);
+                                }
+                            }
+                        });
+                    }
                 } else if (!$column->isAlias()) {
                     $query->orWhereLike($column->getName(), $search);
                 }
@@ -2055,6 +2074,8 @@ class RelationalTableGateway extends BaseTableGateway
             if (empty($ids)) {
                 continue;
             }
+
+	    $filterFields = [];
 
             // Only select the fields not on the currently authenticated user group's read field blacklist
             $relationalColumnName = $alias->getRelationship()->getFieldMany();

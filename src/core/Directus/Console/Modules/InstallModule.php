@@ -204,7 +204,7 @@ class InstallModule extends ModuleBase
                     if ($hasEmail && !$user->userExists($data['user_email'])) {
                         InstallerUtils::addDefaultUser($directus_path, $data, $projectName);
                     } else {
-                        //TODO: Verify this method is required or not! 
+                        //TODO: Verify this method is required or not!
                         if ($hasEmail) {
                             $user->changeEmail(1, $data['user_email']);
                         }

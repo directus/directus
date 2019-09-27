@@ -165,6 +165,22 @@ class Files
     }
 
     /**
+     * Check strpos in array
+     *
+     * @param string $haystack - The string to search in.
+     * @param array $needle - Array to search from string
+     *
+     * @return boolean
+     */
+    function strposarray($haystack, $needle) {
+        if(!is_array($needle)) $needle = array($needle);
+        foreach($needle as $query) {
+            if(strpos($haystack, $query) !== false) return true;
+        }
+        return false;
+    }
+
+    /**
      * Get Image from URL
      *
      * @param $url
@@ -194,8 +210,8 @@ class Files
         }
 
         $contentType = $this->getMimeTypeFromContentType($contentType);
-
-        if (strpos($contentType, 'image/') === false) {
+        $comparableContentType = ['image/', 'pdf'];
+        if (!$this->strposarray($contentType, $comparableContentType)) {
             return $info;
         }
 
@@ -260,7 +276,7 @@ class Files
         // When file is uploaded via multipart form data then We will get object of Slim\Http\UploadFile
         // When file is uploaded via URL (Youtube, Vimeo, or image link) then we will get base64 encode string.
         $size = null;
-        
+
         $title = $fileName;
 
         if (is_object($fileData)) {
@@ -281,9 +297,11 @@ class Files
         $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => $size]);
 
         #open local tmp file since s3 bucket is private
-        $handle = fopen($fileData->file, 'rb');
-        $tmp = tempnam(sys_get_temp_dir(), $fileName);
-        file_put_contents($tmp, $handle);
+        if(isset($fileData->file)){
+            $handle = fopen($fileData->file, 'rb');
+            $tmp = tempnam(sys_get_temp_dir(), $fileName);
+            file_put_contents($tmp, $handle);
+        }
 
         unset($fileData);
 
@@ -309,8 +327,9 @@ class Files
             $media = json_decode($output);
             $duration = $media->format->duration;
         }
-
-        fclose($handle);
+        if(isset($handle)){
+            fclose($handle);
+        }
         unset($tmpData);
 
         return [
@@ -324,7 +343,7 @@ class Files
             'charset' => $fileData['charset'],
             'filesize' => $fileData['size'],
             'width' => isset($width) ? $width : $fileData['width'],
-            'height' => isset($height) ? $width : $fileData['height'],
+            'height' => isset($height) ? $height : $fileData['height'],
             'storage' => $fileData['storage'],
             'checksum' => $checksum,
             'duration' => isset($duration) ? $duration : 0
@@ -379,7 +398,7 @@ class Files
 
     public function getFileInfoFromPath($path)
     {
-        
+
         $mime = $this->filesystem->getAdapter()->getMimetype($path);
 
         $typeTokens = explode('/', $mime);
@@ -703,7 +722,7 @@ class Files
     }
     /**
      * Get a file size and type info from base64 data , URL ,multipart form data
-     * 
+     *
      * @param string $data
      *
      * @return array file size and type

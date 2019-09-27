@@ -90,5 +90,5 @@ Monolog is licensed under the MIT License - see the `LICENSE` file for details
 
 ### Acknowledgements
 
-This library is heavily inspired by Python's [Logbook](http://packages.python.org/Logbook/)
+This library is heavily inspired by Python's [Logbook](https://logbook.readthedocs.io/en/stable/)
 library, although most concepts have been adjusted to fit to the PHP world.

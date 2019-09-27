@@ -171,7 +171,7 @@ class Provider
 
         // Verify that the user has an id (exists), it returns empty user object otherwise
         if (!password_verify($password, $user->get('password'))) {
-            
+
             $this->recordActivityAndCheckLoginAttempt($user);
             throw new InvalidUserCredentialsException();
         }
@@ -207,7 +207,7 @@ class Provider
         $activityTableGateway->recordAction($userId, SchemaManager::COLLECTION_USERS, DirectusActivityTableGateway::ACTION_INVALID_CREDENTIALS);
 
         $loginAttemptsAllowed = get_directus_setting('login_attempts_allowed');
-        
+
         if(!empty($loginAttemptsAllowed)){
 
             // We added 'Invalid credentials' entry before this condition so need to increase this counter with 1
@@ -217,11 +217,11 @@ class Provider
             if(!empty($invalidLoginAttempts)){
                 $lastInvalidCredentialsEntry = current($invalidLoginAttempts);
                 $firstInvalidCredentialsEntry = end($invalidLoginAttempts);
-              
+
                 $lastLoginAttempt = $activityTableGateway->getLastLoginOrStatusUpdateAttempt($userId);
-              
+
                 if(!empty($lastLoginAttempt) && !in_array($lastLoginAttempt['id'], range($firstInvalidCredentialsEntry['id'], $lastInvalidCredentialsEntry['id'])) &&  count($invalidLoginAttempts) > $loginAttemptsAllowed){
-                    
+
                     $tableGateway = TableGatewayFactory::create(SchemaManager::COLLECTION_USERS, ['acl' => false]);
                     $update = [
                         'status' => DirectusUsersTableGateway::STATUS_SUSPENDED
@@ -534,15 +534,7 @@ class Provider
 
         $payload->exp = $this->getNewExpirationTime();
 
-        $payload_arr = json_decode($payload);
-
-        if ($needs2FA == true) {
-            $payload_arr['needs2FA'] = true;
-        } else {
-            unset($payload_arr['needs2FA']);
-        }
-
-        $payload = json_encode($payload_arr);
+        $payload->needs2FA = $needs2FA;
 
         return JWTUtils::encode($payload, $this->getSecretKey(), $this->getTokenAlgorithm());
     }
@@ -613,11 +605,11 @@ class Provider
     /**
      * Authentication secret key
      *
-     * @param string|null $project
+     * @param string $project
      *
      * @return string
      */
-    public function getSecretKey($project = null)
+    public function getSecretKey($project = '_')
     {
         if ($project) {
             $config = get_project_config($project);

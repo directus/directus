@@ -24,7 +24,7 @@ use Directus\Util\StringUtils;
 
 class AuthService extends AbstractService
 {
-    const AUTH_VALIDATION_ERROR_CODE = 109;
+    const AUTH_VALIDATION_ERROR_CODE = 114;
 
     /**
      * Gets the user token using the authentication email/password combination

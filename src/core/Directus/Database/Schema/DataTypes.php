@@ -30,6 +30,7 @@ final class DataTypes
     const TYPE_DATETIME_UPDATED     = 'datetime_updated';
     const TYPE_USER_CREATED         = 'user_created';
     const TYPE_USER_UPDATED         = 'user_updated';
+    const TYPE_USER                 = 'user';
 
     /**
      * Returns a list all data types
@@ -65,6 +66,7 @@ final class DataTypes
             static::TYPE_DATETIME_UPDATED,
             static::TYPE_USER_CREATED,
             static::TYPE_USER_UPDATED,
+            static::TYPE_USER,
         ];
     }
 
@@ -412,6 +414,7 @@ final class DataTypes
         return [
             static::TYPE_USER_CREATED,
             static::TYPE_USER_UPDATED,
+            static::TYPE_USER,
         ];
     }
 

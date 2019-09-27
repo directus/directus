@@ -8,6 +8,7 @@ use Directus\Database\Schema\SchemaManager;
 use Directus\Database\TableGateway\DirectusRolesTableGateway;
 use Directus\Exception\UnauthorizedException;
 use Directus\Util\ArrayUtils;
+use Directus\Api\Routes\Roles;
 
 class RolesService extends AbstractService
 {
@@ -64,9 +65,7 @@ class RolesService extends AbstractService
     public function find($id, array $params = [])
     {
         $tableGateway = $this->getTableGateway();
-        $params['id'] = $id;
-
-        return $this->getItemsAndSetResponseCacheTags($tableGateway, $params);
+        return $this->getItemsByIdsAndSetResponseCacheTags($tableGateway, $id, $params);
     }
 
     /**
@@ -151,13 +150,13 @@ class RolesService extends AbstractService
     public function canDelete($id, $fetchNew = false)
     {
         if (!$this->lastGroup || $fetchNew === true) {
-            $group = $this->find($id);
+            $groupObject = $this->find($id);
+            $group = $groupObject ? $groupObject['data'] : null;
         } else {
             $group = $this->lastGroup;
         }
-
-        // TODO: RowGateWay should parse values against their column type
-        return !(!$group || $group->id == 1 || strtolower($group->name) === 'public');
+        
+        return !(!$group || $group['id'] == ROLES::ADMIN || $group['id'] == ROLES::PUBLIC);
     }
 
     /**

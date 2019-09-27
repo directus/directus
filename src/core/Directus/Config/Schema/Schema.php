@@ -36,7 +36,7 @@ class Schema {
                 new Value('username', Types::STRING, 'root'),
                 new Value('password', Types::STRING, 'root'),
                 new Value('engine', Types::STRING, 'InnoDB'),
-                new Value('chartset', Types::STRING, 'utf8mb4'),
+                new Value('charset', Types::STRING, 'utf8mb4'),
                 new Value('socket', Types::STRING, ''),
             ]),
             new Group('cache', [
@@ -72,7 +72,12 @@ class Schema {
             new Group('mail', [
                 new Group('default', [
                     new Value('transport', Types::STRING, 'sendmail'),
-                    new Value('from', Types::STRING, 'admin@example.com')
+                    new Value('from', Types::STRING, 'admin@example.com'),
+                    new Value('host?', Types::STRING, ''),
+                    new Value('port?', Types::STRING, ''),
+                    new Value('username?', Types::STRING, ''),
+                    new Value('password?', Types::STRING, ''),
+                    new Value('encryption?', Types::STRING, '')
                 ]),
             ]),
             new Group('cors', [

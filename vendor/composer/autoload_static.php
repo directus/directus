@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
+class ComposerStaticInit020da576f68516c9101f844cfac32a4c
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -561,6 +561,7 @@ class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
         'Directus\\Console\\Exception\\CommandFailedException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/CommandFailedException.php',
         'Directus\\Console\\Exception\\UnsupportedCommandException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/UnsupportedCommandException.php',
         'Directus\\Console\\Exception\\WrongArgumentsException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/WrongArgumentsException.php',
+        'Directus\\Console\\Modules\\CacheModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/CacheModule.php',
         'Directus\\Console\\Modules\\DatabaseModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/DatabaseModule.php',
         'Directus\\Console\\Modules\\InstallModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/InstallModule.php',
         'Directus\\Console\\Modules\\LogModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/LogModule.php',
@@ -1386,6 +1387,8 @@ class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
         'Monolog\\Handler\\FirePHPHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/FirePHPHandler.php',
         'Monolog\\Handler\\FleepHookHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/FleepHookHandler.php',
         'Monolog\\Handler\\FlowdockHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/FlowdockHandler.php',
+        'Monolog\\Handler\\FormattableHandlerInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/FormattableHandlerInterface.php',
+        'Monolog\\Handler\\FormattableHandlerTrait' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/FormattableHandlerTrait.php',
         'Monolog\\Handler\\GelfHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/GelfHandler.php',
         'Monolog\\Handler\\GroupHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/GroupHandler.php',
         'Monolog\\Handler\\HandlerInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/HandlerInterface.php',
@@ -1403,6 +1406,8 @@ class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
         'Monolog\\Handler\\NewRelicHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/NewRelicHandler.php',
         'Monolog\\Handler\\NullHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/NullHandler.php',
         'Monolog\\Handler\\PHPConsoleHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/PHPConsoleHandler.php',
+        'Monolog\\Handler\\ProcessableHandlerInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/ProcessableHandlerInterface.php',
+        'Monolog\\Handler\\ProcessableHandlerTrait' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/ProcessableHandlerTrait.php',
         'Monolog\\Handler\\PsrHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/PsrHandler.php',
         'Monolog\\Handler\\PushoverHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/PushoverHandler.php',
         'Monolog\\Handler\\RavenHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Handler/RavenHandler.php',
@@ -2712,10 +2717,10 @@ class ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4d1f2fb1c2a9d3b9f1175545adf253fc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$classMap;
 
         }, null, ClassLoader::class);
     }

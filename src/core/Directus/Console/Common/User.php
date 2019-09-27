@@ -22,10 +22,8 @@ class User
             $base_path = \Directus\base_path();
         }
 
-        $config = require InstallerUtils::createConfigPath($base_path, $projectName);
-
         $this->directus_path = $base_path;
-        $this->app = new Application($base_path, $config);
+        $this->app = InstallerUtils::createApp($base_path, $projectName);
         $this->db = $this->app->getContainer()->get('database');
 
         $this->usersTableGateway = new TableGateway('directus_users', $this->db);
@@ -33,8 +31,8 @@ class User
 
     /**
      * Check the existance of user in the system
-     * 
-     * The function will check the user of given their e-mail address exist in 
+     *
+     * The function will check the user of given their e-mail address exist in
      * the system or not.
      */
     public function userExists($email)
@@ -77,8 +75,8 @@ class User
         $auth = $this->app->getContainer()->get('auth');
 
         $passwordValidation = get_directus_setting('password_policy');
-        if(!empty($passwordValidation)){
-            if(!preg_match($passwordValidation, $password, $match)){
+        if (!empty($passwordValidation)) {
+            if (!preg_match($passwordValidation, $password, $match)) {
                 throw new PasswordChangeException('Password is not valid.');
             }
         }

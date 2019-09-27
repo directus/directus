@@ -151,23 +151,6 @@ class NormalizerFormatter implements FormatterInterface
         foreach ($trace as $frame) {
             if (isset($frame['file'])) {
                 $data['trace'][] = $frame['file'].':'.$frame['line'];
-            } elseif (isset($frame['function']) && $frame['function'] === '{closure}') {
-                // Simplify closures handling
-                $data['trace'][] = $frame['function'];
-            } else {
-                if (isset($frame['args'])) {
-                    // Make sure that objects present as arguments are not serialized nicely but rather only
-                    // as a class name to avoid any unexpected leak of sensitive information
-                    $frame['args'] = array_map(function ($arg) {
-                        if (is_object($arg) && !($arg instanceof \DateTime || $arg instanceof \DateTimeInterface)) {
-                            return sprintf("[object] (%s)", Utils::getClass($arg));
-                        }
-
-                        return $arg;
-                    }, $frame['args']);
-                }
-                // We should again normalize the frames, because it might contain invalid items
-                $data['trace'][] = $this->toJson($this->normalize($frame), true);
             }
         }
 

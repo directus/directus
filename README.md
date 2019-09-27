@@ -150,7 +150,7 @@ We love pull-requests! To work on Directus you'll need to install it locally fro
          <i>Project Lead</i>
       </td>
       <td>
-         <a href="https://github.com/rijkvanzanten"><img width="160px" src="https://user-images.githubusercontent.com/522079/42234533-dfb6039a-7ec2-11e8-950c-04b34d47d6e4.jpg"><br>
+         <a href="https://github.com/rijkvanzanten"><img width="160px" src="https://github.com/rijkvanzanten.png"><br>
          Rijk van Zanten</a><br>
          <i>App Lead</i>
       </td>

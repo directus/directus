@@ -59,7 +59,7 @@
     },
     "scripts": {
         "test": [
-            "parallel-lint . --exclude vendor",
+            "parallel-lint . --exclude vendor --exclude src/Monolog/Handler/FormattableHandlerInterface.php  --exclude src/Monolog/Handler/FormattableHandlerTrait.php --exclude src/Monolog/Handler/ProcessableHandlerInterface.php --exclude src/Monolog/Handler/ProcessableHandlerTrait.php",
             "phpunit"
         ]
     }

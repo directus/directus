@@ -67,7 +67,7 @@ if (!function_exists('get_project_config')) {
      *
      * @throws Exception
      */
-    function get_project_config($name = null, $basePath = null)
+    function get_project_config($name = '_', $basePath = null)
     {
         static $configs = [];
 

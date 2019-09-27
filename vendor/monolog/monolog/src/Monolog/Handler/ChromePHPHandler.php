@@ -43,7 +43,7 @@ class ChromePHPHandler extends AbstractProcessingHandler
     /**
      * Tracks whether we sent too much data
      *
-     * Chrome limits the headers to 256KB, so when we sent 240KB we stop sending
+     * Chrome limits the headers to 4KB, so when we sent 3KB we stop sending
      *
      * @var bool
      */
@@ -136,7 +136,7 @@ class ChromePHPHandler extends AbstractProcessingHandler
 
         $json = @json_encode(self::$json);
         $data = base64_encode(utf8_encode($json));
-        if (strlen($data) > 240 * 1024) {
+        if (strlen($data) > 3 * 1024) {
             self::$overflowed = true;
 
             $record = array(

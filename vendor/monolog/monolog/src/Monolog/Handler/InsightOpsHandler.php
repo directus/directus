@@ -38,7 +38,7 @@ class InsightOpsHandler extends SocketHandler
     public function __construct($token, $region = 'us', $useSSL = true, $level = Logger::DEBUG, $bubble = true)
     {
         if ($useSSL && !extension_loaded('openssl')) {
-            throw new MissingExtensionException('The OpenSSL PHP plugin is required to use SSL encrypted connection for LogEntriesHandler');
+            throw new MissingExtensionException('The OpenSSL PHP plugin is required to use SSL encrypted connection for InsightOpsHandler');
         }
 
         $endpoint = $useSSL

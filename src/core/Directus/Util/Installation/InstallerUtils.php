@@ -3,6 +3,8 @@
 namespace Directus\Util\Installation;
 
 use Directus\Application\Application;
+use Directus\Config\Context;
+use Directus\Config\Schema\Schema;
 use Directus\Database\Connection;
 use Directus\Database\Exception\ConnectionFailedException;
 use Directus\Database\Schema\SchemaManager;
@@ -26,6 +28,33 @@ use Zend\Db\TableGateway\TableGateway;
 
 class InstallerUtils
 {
+    /**
+     * Check if environment is using files or environment variables
+     *
+     * @return boolean
+     */
+    public static function isUsingFiles()
+    {
+        return getenv("DIRECTUS_USE_ENV") !== "1";
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $basePath
+     * @param string $projectName
+     * @return \Directus\Application\Application
+     */
+    public static function createApp($basePath, $projectName)
+    {
+        if (static::isUsingFiles()) {
+            $config = require static::createConfigPath($basePath, $projectName);
+        } else {
+            $config = Schema::get()->value(Context::from_env());
+        }
+        return new Application($basePath, $config);
+    }
+
     /**
      * Create a config and configuration file into $path
      *
@@ -224,8 +253,7 @@ class InstallerUtils
         $basePath = rtrim($basePath, '/');
         static::ensureConfigFileExists($basePath, $projectName);
 
-        $configPath = static::createConfigPath($basePath, $projectName);
-        $app = new Application($basePath, require $configPath);
+        $app = static::createApp($basePath, $projectName);
         $db = $app->getContainer()->get('database');
 
         $defaultSettings = static::getDefaultSettings($data);
@@ -247,8 +275,7 @@ class InstallerUtils
      */
     public static function addDefaultUser($basePath, array $data, $projectName = null)
     {
-        $configPath = static::createConfigPath($basePath, $projectName);
-        $app = new Application($basePath, require $configPath);
+        $app = static::createApp($basePath, $projectName);
         $db = $app->getContainer()->get('database');
         $auth = $app->getContainer()->get('auth');
         $tableGateway = new TableGateway('directus_users', $db);
@@ -399,11 +426,11 @@ class InstallerUtils
     }
 
     /**
-    * Deletes the given config file
-    *
-    * @param string $path
-    * @param string|null $projectName
-    */
+     * Deletes the given config file
+     *
+     * @param string $path
+     * @param string|null $projectName
+     */
     public static function deleteConfigFile($path, $projectName = null)
     {
         $filePath = static::createConfigPath($path, $projectName);
@@ -593,6 +620,10 @@ class InstallerUtils
      */
     public static function ensureConfigFileExists($basePath, $projectName = null)
     {
+        if (!self::isUsingFiles()) {
+            return;
+        }
+
         $basePath = rtrim($basePath, '/');
         $configName = static::getConfigName($projectName);
         $configPath = static::createConfigPath($basePath, $projectName);
@@ -653,7 +684,11 @@ class InstallerUtils
         $configPath = static::createConfigPath($basePath, $projectName);
         $migrationPath = $basePath . '/migrations/' . $migrationName;
 
-        $apiConfig = ArrayUtils::get(require $configPath, 'database', []);
+        if (self::isUsingFiles()) {
+            $apiConfig = ArrayUtils::get(require $configPath, 'database', []);
+        } else {
+            $apiConfig = ArrayUtils::get(Schema::get()->value(Context::from_env()), 'database', []);
+        }
 
         // Rename directus configuration to phinx configuration
         ArrayUtils::rename($apiConfig, 'type', 'adapter');
@@ -724,12 +759,12 @@ class InstallerUtils
     }
 
     /**
-    * Throws an exception when the given file path cannot be deleted
-    *
-    * @param string $path
-    *
-    * @throws InvalidPathException
-    */
+     * Throws an exception when the given file path cannot be deleted
+     *
+     * @param string $path
+     *
+     * @throws InvalidPathException
+     */
     private static function ensureFileCanBeDeleted($path)
     {
         if (!is_writable($path) || !is_file($path)) {
@@ -847,8 +882,7 @@ class InstallerUtils
      */
     private static function dropTables($basePath, $projectName)
     {
-        $configPath = static::createConfigPath($basePath, $projectName);
-        $app = new Application($basePath, require $configPath);
+        $app = static::createApp($basePath, $config);
         /** @var Connection $db */
         $db = $app->getContainer()->get('database');
         /** @var SchemaManager $schemaManager */

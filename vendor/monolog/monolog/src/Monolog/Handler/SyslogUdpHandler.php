@@ -18,11 +18,21 @@ use Monolog\Handler\SyslogUdp\UdpSocket;
  * A Handler for logging to a remote syslogd server.
  *
  * @author Jesper Skovgaard Nielsen <nulpunkt@gmail.com>
+ * @author Dominik Kukacka <dominik.kukacka@gmail.com>
  */
 class SyslogUdpHandler extends AbstractSyslogHandler
 {
+    const RFC3164 = 0;
+    const RFC5424 = 1;
+
+    private $dateFormats = array(
+        self::RFC3164 => 'M d H:i:s',
+        self::RFC5424 => \DateTime::RFC3339,
+    );
+
     protected $socket;
     protected $ident;
+    protected $rfc;
 
     /**
      * @param string $host
@@ -31,12 +41,14 @@ class SyslogUdpHandler extends AbstractSyslogHandler
      * @param int    $level    The minimum logging level at which this handler will be triggered
      * @param bool   $bubble   Whether the messages that are handled can bubble up the stack or not
      * @param string $ident    Program name or tag for each log message.
+     * @param int    $rfc      RFC to format the message for.
      */
-    public function __construct($host, $port = 514, $facility = LOG_USER, $level = Logger::DEBUG, $bubble = true, $ident = 'php')
+    public function __construct($host, $port = 514, $facility = LOG_USER, $level = Logger::DEBUG, $bubble = true, $ident = 'php', $rfc = self::RFC5424)
     {
         parent::__construct($facility, $level, $bubble);
 
         $this->ident = $ident;
+        $this->rfc = $rfc;
 
         $this->socket = new UdpSocket($host, $port ?: 514);
     }
@@ -67,7 +79,7 @@ class SyslogUdpHandler extends AbstractSyslogHandler
     }
 
     /**
-     * Make common syslog header (see rfc5424)
+     * Make common syslog header (see rfc5424 or rfc3164)
      */
     protected function makeCommonSyslogHeader($severity)
     {
@@ -81,16 +93,25 @@ class SyslogUdpHandler extends AbstractSyslogHandler
             $hostname = '-';
         }
 
-        return "<$priority>1 " .
-            $this->getDateTime() . " " .
-            $hostname . " " .
-            $this->ident . " " .
-            $pid . " - - ";
+        $date = $this->getDateTime();
+
+        if ($this->rfc === self::RFC3164) {
+            return "<$priority>" .
+                $date . " " .
+                $hostname . " " .
+                $this->ident . "[" . $pid . "]: ";
+        } else {
+            return "<$priority>1 " .
+                $date . " " .
+                $hostname . " " .
+                $this->ident . " " .
+                $pid . " - - ";
+        }
     }
 
     protected function getDateTime()
     {
-        return date(\DateTime::RFC3339);
+        return date($this->dateFormats[$this->rfc]);
     }
 
     /**

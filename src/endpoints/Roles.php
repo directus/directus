@@ -11,6 +11,8 @@ use Directus\Util\ArrayUtils;
 
 class Roles extends Route
 {
+    const ADMIN = 1;
+    const PUBLIC = 2;
     /**
      * @param Application $app
      */

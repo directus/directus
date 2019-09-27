@@ -20,8 +20,8 @@ class Setting
         }
 
         $this->directus_path = $base_path;
-        $configPath = InstallerUtils::createConfigPath($this->directus_path, $projectName);
-        $app = new Application($base_path, require $configPath);
+
+        $app = InstallerUtils::createApp($base_path, $config);
         $this->db = $app->getContainer()->get('database');
 
         $this->settingsTableGateway = new TableGateway('directus_settings', $this->db);
@@ -45,7 +45,7 @@ class Setting
                 return true;
             }
             return false;
-        } catch (PDOException $ex) {
+        } catch (\Exception $ex) {
             return false;
         }
     }
@@ -138,5 +138,4 @@ class Setting
             throw new SettingUpdateException('Could not change setting ' . $setting . ': ' . 'PDO Error: ' . $ex->getMessage());
         }
     }
-
 }

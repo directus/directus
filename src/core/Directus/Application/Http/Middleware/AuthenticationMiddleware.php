@@ -16,6 +16,7 @@ use Directus\Services\AuthService;
 use Directus\Services\UsersService;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
+use Directus\Api\Routes\Roles;
 
 class AuthenticationMiddleware extends AbstractMiddleware
 {
@@ -38,7 +39,7 @@ class AuthenticationMiddleware extends AbstractMiddleware
         $dbConnection = $this->container->get('database');
         $permissionsTable = new DirectusPermissionsTableGateway($dbConnection, null);
 
-        $publicRoleId = $this->getPublicRoleId();
+        $publicRoleId = ROLES::PUBLIC;
 
         $rolesIpWhitelist = [];
         $permissionsByCollection = [];
@@ -152,25 +153,6 @@ class AuthenticationMiddleware extends AbstractMiddleware
     protected function getAuthToken(Request $request)
     {
         return get_request_authorization_token($request);
-    }
-
-    /**
-     * Gets the public role id if exists
-     *
-     * @return int|null
-     */
-    protected function getPublicRoleId()
-    {
-        $dbConnection = $this->container->get('database');
-        $directusGroupsTableGateway = new TableGateway('directus_roles', $dbConnection);
-        $publicRole = $directusGroupsTableGateway->select(['name' => 'public'])->current();
-
-        $roleId = null;
-        if ($publicRole) {
-            $roleId = $publicRole['id'];
-        }
-
-        return $roleId;
     }
 
     /**

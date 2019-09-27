@@ -75,37 +75,41 @@ class Cli
             echo 'Command are executed as follows:' . PHP_EOL;
             echo "\tdirectus <module>:<command> <args|...>" . PHP_EOL . PHP_EOL;
             echo "Example: " . PHP_EOL . "\tdirectus install:help database" . PHP_EOL . PHP_EOL;
-            return;
+            exit(1);
         }
 
         if (!array_key_exists($module, $this->cmd_modules)) {
             echo PHP_EOL . PHP_EOL . 'Module ' . $module . ': does not exist!' . PHP_EOL . PHP_EOL;
-            return;
+            exit(1);
         }
 
         try {
             $options = $this->parseOptions($this->arguments, $this->cmd_modules[$module]->getOptions($command));
             $this->cmd_modules[$module]->runCommand($command, $options, $this->extra);
+            return;
         } catch (WrongArgumentsException $e) {
             echo PHP_EOL . PHP_EOL . 'Module ' . $module . ' error: ' . $e->getMessage() . PHP_EOL . PHP_EOL;
+            exit(1);
         } catch (UnsupportedCommandException $e) {
             echo PHP_EOL . PHP_EOL . 'Module ' . $module . ' error: ' . $e->getMessage() . PHP_EOL . PHP_EOL;
-        } catch(\PDOException $e) {
+            exit(1);
+        } catch (\PDOException $e) {
             $this->handlePdoException($e);
         }
     }
 
-    private function handlePdoException(\PDOException $e) {
+    private function handlePdoException(\PDOException $e)
+    {
         $expected = "Duplicate entry 'directus_activity-id' for key 'idx_collection_field'";
-        if((int) $e->errorInfo[0] == 23000 && $e->errorInfo[2] == $expected) {
-            echo "The Database for ".$this->directusPath." had already been deployed.\n";
+        if ((int) $e->errorInfo[0] == 23000 && $e->errorInfo[2] == $expected) {
+            echo "The Database for " . $this->directusPath . " had already been deployed.\n";
             echo "You may use option -f to enforce the overwriting of existing data.";
         } else {
-            throw($e);
+            throw ($e);
         }
         exit(1);
     }
-    
+
     private function showHelp()
     {
         echo PHP_EOL . 'Directus CLI Modules: ' . PHP_EOL . PHP_EOL;

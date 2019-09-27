@@ -372,7 +372,7 @@ abstract class AbstractService
     protected function validatePayload($collectionName, $fields, array $payload, array $params, $skipRelatedCollectionField = '')
     {
         $columnsToValidate = [];
-
+               
         // TODO: Validate empty request
         // If the user PATCH, POST or PUT with empty body, must throw an exception to avoid continue the execution
         // with the exception of POST, that can use the default value instead
@@ -381,12 +381,15 @@ abstract class AbstractService
             $columnsToValidate = $fields;
         }
       
-        $this->validatePayloadFields($collectionName, $payload);
-        // TODO: Ideally this should be part of the validator constraints
-        // we need to accept options for the constraint builder
-        $this->validatePayloadWithFieldsValidation($collectionName, $payload);
-       
-        $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField,$params));
+        if($this->validationRequired($collectionName,$payload)){
+            $this->validatePayloadFields($collectionName, $payload);
+            // TODO: Ideally this should be part of the validator constraints
+            // we need to accept options for the constraint builder
+            $this->validatePayloadWithFieldsValidation($collectionName, $payload);
+           
+            $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField,$params));
+        }
+
     }
 
     /**
@@ -405,6 +408,29 @@ abstract class AbstractService
         if (!ArrayUtils::has($payload, $primaryKey) || !$payload[$primaryKey]) {
             throw new UnprocessableEntityException('Payload must include the primary key');
         }
+    }
+
+    /**
+     * Validate collection only if required for given status
+     *
+     * @param string $collectionName
+     * @param array $payload
+     *
+     * @throws UnprocessableEntityException
+     */
+    protected function validationRequired($collectionName, array $payload)
+    {
+        $collection = $this->getSchemaManager()->getCollection($collectionName);
+        $statusField = $collection->getStatusField();
+        if($statusField){
+            $statusName = $statusField->getName();
+            $statusMapping = $collection->getStatusMapping();
+            $requiredStatus = $statusMapping->getRequiredStatusesValue();
+            if(ArrayUtils::get($payload, $statusName) && $requiredStatus && !in_array(ArrayUtils::get($payload, $statusName),$requiredStatus)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

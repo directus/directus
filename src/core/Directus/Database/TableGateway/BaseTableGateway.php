@@ -674,7 +674,7 @@ class BaseTableGateway extends TableGateway
     public function castFloatIfNumeric(&$value, $key)
     {
         if ($key != 'table_name') {
-            $value = is_numeric($value) && preg_match('/^-?(?:\d+|\d*\.\d+)$/', $value) ? (float)$value : $value;
+            $value = is_numeric($value) && preg_match('/^-?(?:\d+|\d*\.\d+)$/', $value) ? (float) $value : $value;
         }
     }
 
@@ -878,6 +878,13 @@ class BaseTableGateway extends TableGateway
             $this->runAfterUpdateHooks($updateTable, $updateData);
         }
 
+        //Invalidate individual cache
+        $config = static::$container->get('config');
+        if ($config->get('cache.enabled')) {
+            $cachePool = static::$container->get('cache');
+            $cachePool->invalidateTags(['entity_' . $updateTable . '_' . $result[$this->primaryKeyFieldName]]);
+        }
+
         return $result;
     }
 
@@ -898,7 +905,7 @@ class BaseTableGateway extends TableGateway
 
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
-
+       
         // Runs select PK with passed delete's $where before deleting, to use those for the even hook
         if ($pk = $this->primaryKeyFieldName) {
             $select = $this->sql->select();
@@ -917,7 +924,7 @@ class BaseTableGateway extends TableGateway
             $delete = $this->sql->delete();
             $expression = new In($pk, $ids);
             $delete->where($expression);
-
+            
             foreach ($ids as $id) {
                 $deleteData = [$this->primaryKeyFieldName => $id];
                 $this->runHook('item.delete:before', [$deleteTable, $deleteData]);
@@ -933,13 +940,23 @@ class BaseTableGateway extends TableGateway
                 );
             }
 
+            
+            //Invalidate individual cache
+            $config = static::$container->get('config');
+
             foreach ($ids as $id) {
                 $deleteData = $deletedObject[$id];
                 $this->runHook('item.delete', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete:after', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete.' . $deleteTable, [$deleteData]);
                 $this->runHook('item.delete.' . $deleteTable . ':after', [$deleteData]);
+                if ($config->get('cache.enabled')) {
+                    $cachePool = static::$container->get('cache');
+                    $cachePool->invalidateTags(['entity_' . $deleteTable . '_' . $deleteData[$this->primaryKeyFieldName]]);
+                }
             }
+
+
 
             return $result;
         }
@@ -1238,12 +1255,12 @@ class BaseTableGateway extends TableGateway
      * @throws \Exception
      */
     public function enforceUpdatePermission(Update $update)
-    {        
+    {
         $collectionObject = $this->getTableSchema();
         $statusField = $collectionObject->getStatusField();
-        $updateState = $update->getRawState();        
+        $updateState = $update->getRawState();
         $updateData = $updateState['set'];
-        
+
         //If a collection has status field then records are not actually deleting, they are soft deleting
         //Check delete permission for soft delete
         if (
@@ -1253,13 +1270,13 @@ class BaseTableGateway extends TableGateway
                 ArrayUtils::get($updateData, $collectionObject->getStatusField()->getName()),
                 $this->getStatusMapping()->getSoftDeleteStatusesValue()
             )
-        ) { 
+        ) {
             $delete = $this->sql->delete();
-            $delete->where($updateState['where']);            
+            $delete->where($updateState['where']);
             $this->enforceDeletePermission($delete);
             return;
         }
-        
+
         if ($this->acl->canUpdateAll($this->table) && $this->acl->isAdmin()) {
             return;
         }
@@ -1843,7 +1860,7 @@ class BaseTableGateway extends TableGateway
      */
     protected function shouldNullSortedLast()
     {
-        return (bool)get_directus_setting('sort_null_last', true);
+        return (bool) get_directus_setting('sort_null_last', true);
     }
 
     /**

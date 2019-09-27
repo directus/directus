@@ -752,7 +752,7 @@ class TablesService extends AbstractService
             }
         }
 
-        if ($columnObject->hasRelationship()) {
+        if ($columnObject->hasRelationship() && !in_array($columnObject->getType(),DataTypes::getUsersType())) {
             $this->removeColumnRelationship($columnObject,$params);
         }
 
@@ -760,7 +760,7 @@ class TablesService extends AbstractService
             /**
              * Remove O2M field if M2O interface deleted as O2M will only work if M2O exist
              */
-            if($columnObject->isManyToOne()){
+            if($columnObject->isManyToOne() && !in_array($columnObject->getType(),DataTypes::getUsersType())){
               $this->removeRelatedColumnInfo($columnObject);
             }
             $this->removeColumnInfo($collectionName, $fieldName);
