@@ -59,6 +59,7 @@ return [
     ],
 
     'storage' => [
+        // Adapter can have one of these values : local, s3, gcs, aliyun-oss
         'adapter' => 'local',
         // The storage root is the directus root directory.
         // All path are relative to the storage root when the path is not starting with a forward slash.
@@ -83,6 +84,10 @@ return [
         //   'OSS_ACCESS_KEY' => 'aliyun-oss-key',
         //   'OSS_ENDPOINT' => 'aliyun-oss-endpoint',
         //   'OSS_BUCKET' => 'aliyun-oss-bucket'
+        // Set Google Cloud Storage credentials
+        //   'project' => 'project-name-on-gcs',
+        //   'bucket' => 'bucket-name',
+        //   'keyFilePath' => 'gcloud-credentials-file-path',
         // Use an internal proxy for downloading all files
         //'proxy_downloads' => false,
     ],

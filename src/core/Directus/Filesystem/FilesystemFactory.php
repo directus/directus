@@ -27,6 +27,9 @@ class FilesystemFactory
             case 's3':
                 return self::createS3Adapter($config, $rootKey);
                 break;
+            case 'gcs':
+                return self::createGCSAdapter($config, $rootKey);
+                break;
             case 'local':
             default:
                 return self::createLocalAdapter($config, $rootKey);
@@ -73,7 +76,7 @@ class FilesystemFactory
 
         return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey), $options));
     }
-    
+
     public static function createAliyunOSSAdapter(Array $config, $rootKey = 'root')
     {
        try {
@@ -83,13 +86,26 @@ class FilesystemFactory
             $app->getContainer()->get('logger')->error($e->getMessage());
             throw new \InvalidArgumentException("creating OssClient instance: FAILED");
         }
-        
+
         $adapter = new AliyunOssAdapter($ossClient, $config['OSS_BUCKET']);
         $adapter->setPathPrefix(array_get($config, $rootKey));
 
         $flysystem = new Flysystem($adapter);
         $flysystem->addPlugin(new PutFile());
-        
+
         return $flysystem;
+    }
+
+    public static function createGCSAdapter(Array $config, $rootKey = 'root')
+    {
+        $storageClient = new StorageClient([
+            'projectId' => $config['project'],
+            'keyFilePath' => $config['keyFilePath']
+        ]);
+        $bucket = $storageClient->bucket($config['bucket']);
+
+        $adapter = new GoogleStorageAdapter($storageClient, $bucket);
+
+        return new Flysystem($adapter);
     }
 }
