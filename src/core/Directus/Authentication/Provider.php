@@ -430,7 +430,7 @@ class Provider
      *
      * @return string
      */
-    public function generateAuthToken(UserInterface $user, $needs2FA = false)
+    public function generateAuthToken(UserInterface $user)
     {
         $payload = [
             'id' => (int) $user->getId(),
@@ -438,9 +438,6 @@ class Provider
             'exp' => $this->getNewExpirationTime()
         ];
 
-        if ($needs2FA == true) {
-            $payload['needs2FA'] = true;
-        }
 
         return $this->generateToken(JWTUtils::TYPE_AUTH, $payload);
     }
@@ -511,7 +508,7 @@ class Provider
         $payload['key'] = $this->getPublicKey();
         $payload['project'] = get_api_project_from_request();
 
-        return JWTUtils::encode($payload, $this->getSecretKey(), $this->getTokenAlgorithm());
+        return JWTUtils::encode($payload, $this->getSecretKey($payload['project']), $this->getTokenAlgorithm());
     }
 
     /**
@@ -536,7 +533,7 @@ class Provider
 
         $payload->needs2FA = $needs2FA;
 
-        return JWTUtils::encode($payload, $this->getSecretKey(), $this->getTokenAlgorithm());
+        return JWTUtils::encode($payload, $this->getSecretKey(get_api_project_from_request()), $this->getTokenAlgorithm());
     }
 
     /**
@@ -609,7 +606,7 @@ class Provider
      *
      * @return string
      */
-    public function getSecretKey($project = '_')
+    public function getSecretKey($project)
     {
         if ($project) {
             $config = get_project_config($project);

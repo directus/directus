@@ -8,6 +8,7 @@ use Directus\Application\Http\Response;
 use Directus\Application\Route;
 use Directus\Services\SettingsService;
 use Directus\Services\FilesServices;
+use Directus\Util\ArrayUtils;
 use function Directus\regex_numeric_ids;
 
 class Settings extends Route
@@ -74,38 +75,49 @@ class Settings extends Route
          * Get all the fields of settings table to check the interface
          *
          */
+        $fieldData = $service->findAllFields(ArrayUtils::omit($request->getQueryParams(), 'single'));
 
-        $fieldData = $service->findAllFields(
-            $request->getQueryParams()
-        );
+        // this will return the value based on interface type
+        $fieldTypeValueResolver = function ($type, $value) use ($service){
+            switch ($type) {
+                case 'file':
+                    try{
+                        $fileInstance = $service->findFile($value);
+                        return $fileInstance['data'] ?? null;
+                    }catch(\Exception $e){
+                        return null;
+                    }
+                default:
+                    return $value;
+            }
+        };
+
+        // find the field definition that matches the field
+        $fieldDefinitionTypeResolver = function ($key) use ($fieldData){
+            $fieldDefinition = array_filter($fieldData['data'], function ($definition) use ($key){
+                return $definition['field'] === $key;
+            });
+            $fieldDefinition = array_shift($fieldDefinition);
+            return $fieldDefinition['type'] ?? null;
+        };
+
+        $valueResolver = function ($row) use ($fieldTypeValueResolver, $fieldDefinitionTypeResolver){
+            $fieldDefinitionType = $fieldDefinitionTypeResolver($row['key']);
+            $row['value'] = $fieldTypeValueResolver($fieldDefinitionType, $row['value']);
+            return $row;
+        };
 
         /**
          * Generate the response object based on interface/type
          *
          */
-        foreach ($fieldData['data'] as $fieldDefinition) {
-            // find position of field in $response['data']
-            $index = array_search($fieldDefinition['field'], array_column($responseData['data'], 'key'));
-            if (false !== $index) {
+        $isSingle = (int)ArrayUtils::get($request->getQueryParams(), 'single', 0);
 
-                switch ($fieldDefinition['type']) {
-                    case 'file':
-                        if (!empty($responseData['data'][$index]['value'])) {
-                            try{
-                                $fileInstance = $service->findFile($responseData['data'][$index]['value']);
-                            }catch(\Exception $e){
-                                $responseData['data'][$index]['value'] = null;
-                            }
-
-                            if (!empty($fileInstance['data'])) {
-                                $responseData['data'][$index]['value'] = $fileInstance['data'];
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+        if($isSingle){
+            $responseData['data'] = $valueResolver($responseData['data']);
+        }
+        else{
+            $responseData['data'] = array_map($valueResolver, $responseData['data']);
         }
 
         return $this->responseWithData($request, $response, $responseData);

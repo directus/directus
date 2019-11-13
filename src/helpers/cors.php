@@ -34,7 +34,7 @@ if (!function_exists('cors_get_allowed_origin')) {
         if (in_array($requestedOrigin, $allowedOrigins)) {
             $allowedOrigin = $requestedOrigin;
         } else if (in_array('*', $allowedOrigins)) {
-            $allowedOrigin = '*';
+            $allowedOrigin = !empty($requestedOrigin) ? $requestedOrigin : '*';
         } else {
             $allowedOrigin = null;
         }

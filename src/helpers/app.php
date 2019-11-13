@@ -13,9 +13,10 @@ use Directus\Config\Config;
 use Directus\Config\Context;
 use Directus\Config\Schema\Schema;
 use Directus\Config\Exception\UnknownProjectException;
-use Directus\Config\Exception\InvalidProjectException;
 use Directus\Exception\Exception;
 use Directus\Exception\UnauthorizedException;
+use Directus\Util\Installation\InstallerUtils;
+use Directus\Util\StringUtils;
 use Slim\Http\Body;
 
 if (!function_exists('create_app'))  {
@@ -67,7 +68,7 @@ if (!function_exists('get_project_config')) {
      *
      * @throws Exception
      */
-    function get_project_config($name = '_', $basePath = null)
+    function get_project_config($name, $basePath = null)
     {
         static $configs = [];
 
@@ -75,14 +76,8 @@ if (!function_exists('get_project_config')) {
             $basePath = get_app_base_path();
         }
 
-        $configPath = $basePath . '/config';
-
-        if (!empty($name) && $name !== '_') {
-            $configFilePath = sprintf('%s/api.%s.php', $configPath, $name);
-        } else {
-            $configFilePath = $configPath . '/api.php';
-        }
-
+        $configFilePath = InstallerUtils::createConfigPath($basePath, $name);
+        
         if (isset($configs[$configFilePath])) {
             return $configs[$configFilePath];
         }
@@ -91,9 +86,6 @@ if (!function_exists('get_project_config')) {
         $schema = Schema::get();
 
         if (getenv("DIRECTUS_USE_ENV") === "1") {
-            if ($name !== "_") {
-                throw new InvalidProjectException();
-            }
             $configFilePath = "__env__";
             $configData = $schema->value(Context::from_env());
         } else {
@@ -121,6 +113,32 @@ if (!function_exists('get_app_base_path')) {
         $container = Application::getInstance()->getContainer();
 
         return $container->get('path_base');
+    }
+}
+
+if (!function_exists('scan_config_folder')) {
+    /**
+     * Scan config folder and return the php files (Project Configurations)
+     *
+     * @return string
+     */
+    function scan_config_folder()
+    {
+        $projectNames = [];
+        $ignoreableFiles = ['api_sample.php','.DS_Store','..', '.'];
+        $scannedDirectory = array_values(array_diff(scandir(get_app_base_path().'/config'), $ignoreableFiles));
+        if(!empty($scannedDirectory)){
+            foreach($scannedDirectory as $fileName){
+                $fileObject = explode(".",$fileName);
+                if (StringUtils::startsWith($fileName, '_')) {
+                    continue;
+                }
+                if(end($fileObject) == "php" ){
+                    $projectNames[] = implode(".",$fileObject);
+                }
+            }
+        }
+        return $projectNames;
     }
 }
 
@@ -241,9 +259,9 @@ if (!function_exists('create_default_app')) {
 
         $app->add(new CorsMiddleware($app->getContainer(), true));
 
-        $app->group('/server', function () {
-            create_ping_route($this);
-        });
+        $app->get('/', \Directus\Api\Routes\Home::class);
+        $app->group('/server', \Directus\Api\Routes\Server::class);
+
         create_install_route($app);
 
         return $app;

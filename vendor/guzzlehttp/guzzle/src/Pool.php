@@ -6,7 +6,7 @@ use Psr\Http\Message\RequestInterface;
 use GuzzleHttp\Promise\EachPromise;
 
 /**
- * Sends and iterator of requests concurrently using a capped pool size.
+ * Sends an iterator of requests concurrently using a capped pool size.
  *
  * The pool will read from an iterator until it is cancelled or until the
  * iterator is consumed. When a request is yielded, the request is sent after

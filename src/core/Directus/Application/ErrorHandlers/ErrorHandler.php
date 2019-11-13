@@ -69,7 +69,7 @@ class ErrorHandler extends AbstractHandler
         $data = $this->processException($exception);
 
         $response = $response->withStatus($data['http_status_code']);
-
+       
         $this->triggerResponseAction($request, $response, $data);
 
         if ($this->isMessageSCIM($response)) {
@@ -82,7 +82,8 @@ class ErrorHandler extends AbstractHandler
         }
 
         return $response
-            ->withJson(['error' => $data['error']]);
+            ->withJson(['error' => $data['error']])
+            ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'));
     }
 
     /**

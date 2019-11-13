@@ -147,7 +147,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             throw $previous;
         }
 
-        $e = new \ReflectionException("Class $class not found", 0, $previous);
+        $e = new \ReflectionException(sprintf('Class "%s" not found while loading "%s".', $class, self::$autoloadedClass), 0, $previous);
 
         if (null !== $previous) {
             throw $e;

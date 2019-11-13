@@ -1,5 +1,5 @@
 ``filter``
-=========
+==========
 
 .. versionadded:: 1.41
     The ``filter`` filter was added in Twig 1.41 and 2.10.

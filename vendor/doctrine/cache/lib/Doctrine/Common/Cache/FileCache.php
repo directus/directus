@@ -2,6 +2,11 @@
 
 namespace Doctrine\Common\Cache;
 
+use FilesystemIterator;
+use InvalidArgumentException;
+use Iterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use const DIRECTORY_SEPARATOR;
 use const PATHINFO_DIRNAME;
 use function bin2hex;
@@ -62,13 +67,13 @@ abstract class FileCache extends CacheProvider
      * @param string $directory The cache directory.
      * @param string $extension The cache file extension.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct($directory, $extension = '', $umask = 0002)
     {
         // YES, this needs to be *before* createPathIfNeeded()
         if (! is_int($umask)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'The umask parameter is required to be integer, was: %s',
                 gettype($umask)
             ));
@@ -76,14 +81,14 @@ abstract class FileCache extends CacheProvider
         $this->umask = $umask;
 
         if (! $this->createPathIfNeeded($directory)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'The directory "%s" does not exist and could not be created.',
                 $directory
             ));
         }
 
         if (! is_writable($directory)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'The directory "%s" is not writable.',
                 $directory
             ));
@@ -257,11 +262,11 @@ abstract class FileCache extends CacheProvider
         return false;
     }
 
-    private function getIterator() : \Iterator
+    private function getIterator() : Iterator
     {
-        return new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->directory, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        return new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->directory, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
     }
 

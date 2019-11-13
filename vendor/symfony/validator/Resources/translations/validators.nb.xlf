@@ -334,6 +334,38 @@
                 <source>This value should be valid JSON.</source>
                 <target>Verdien er ikke gyldig JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Samlingen kan kun inneholde unike elementer.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Denne verdien må være positiv.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Denne verdien må være positiv eller null.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Denne verdien må være negativ.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Denne verdien må være negativ eller null.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Verdien er ikke en gyldig tidssone.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Dette passordet er lekket i et datainnbrudd, det må ikke tas i bruk. Vennligst bruk et annet passord.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Verdien må være mellom {{ min }} og {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

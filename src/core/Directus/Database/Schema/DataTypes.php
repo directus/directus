@@ -327,6 +327,18 @@ final class DataTypes
             static::TYPE_DATETIME_UPDATED
         ];
     }
+    /**
+     * Returns all the system user types
+     *
+     * @return array
+     */
+    public static function getSystemUserType()
+    {
+        return [
+            static::TYPE_USER_CREATED,
+            static::TYPE_USER_UPDATED
+        ];
+    }
 
     /**
      * Checks whether or not the given type is system datetime type
@@ -338,6 +350,18 @@ final class DataTypes
     public static function isSystemDateTimeType($type)
     {
         return in_array(strtolower($type), static::getSystemDateTimeTypes());
+    }
+
+    /**
+     * Checks whether or not the given type is system user type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isSystemUserType($type)
+    {
+        return in_array(strtolower($type), static::getSystemUserType());
     }
 
     /**

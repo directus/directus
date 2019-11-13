@@ -73,7 +73,6 @@ class LanguageValidatorTest extends ConstraintValidatorTestCase
     {
         return [
             ['en'],
-            ['en_US'],
             ['my'],
         ];
     }

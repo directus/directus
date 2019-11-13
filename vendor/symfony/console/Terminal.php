@@ -15,6 +15,7 @@ class Terminal
 {
     private static $width;
     private static $height;
+    private static $stty;
 
     /**
      * Gets the terminal width.
@@ -54,6 +55,22 @@ class Terminal
         return self::$height ?: 50;
     }
 
+    /**
+     * @internal
+     *
+     * @return bool
+     */
+    public static function hasSttyAvailable()
+    {
+        if (null !== self::$stty) {
+            return self::$stty;
+        }
+
+        exec('stty 2>&1', $output, $exitcode);
+
+        return self::$stty = 0 === $exitcode;
+    }
+
     private static function initDimensions()
     {
         if ('\\' === \DIRECTORY_SEPARATOR) {
@@ -62,12 +79,34 @@ class Terminal
                 // or [w, h] from "wxh"
                 self::$width = (int) $matches[1];
                 self::$height = isset($matches[4]) ? (int) $matches[4] : (int) $matches[2];
+            } elseif (!self::hasVt100Support() && self::hasSttyAvailable()) {
+                // only use stty on Windows if the terminal does not support vt100 (e.g. Windows 7 + git-bash)
+                // testing for stty in a Windows 10 vt100-enabled console will implicitly disable vt100 support on STDOUT
+                self::initDimensionsUsingStty();
             } elseif (null !== $dimensions = self::getConsoleMode()) {
                 // extract [w, h] from "wxh"
                 self::$width = (int) $dimensions[0];
                 self::$height = (int) $dimensions[1];
             }
-        } elseif ($sttyString = self::getSttyColumns()) {
+        } else {
+            self::initDimensionsUsingStty();
+        }
+    }
+
+    /**
+     * Returns whether STDOUT has vt100 support (some Windows 10+ configurations).
+     */
+    private static function hasVt100Support(): bool
+    {
+        return \function_exists('sapi_windows_vt100_support') && sapi_windows_vt100_support(fopen('php://stdout', 'w'));
+    }
+
+    /**
+     * Initializes dimensions using the output of an stty columns line.
+     */
+    private static function initDimensionsUsingStty()
+    {
+        if ($sttyString = self::getSttyColumns()) {
             if (preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyString, $matches)) {
                 // extract [w, h] from "rows h; columns w;"
                 self::$width = (int) $matches[2];

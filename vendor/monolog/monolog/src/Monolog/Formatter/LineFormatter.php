@@ -163,7 +163,7 @@ class LineFormatter extends NormalizerFormatter
             return $this->toJson($data, true);
         }
 
-        return str_replace('\\/', '/', @json_encode($data));
+        return str_replace('\\/', '/', $this->toJson($data, true));
     }
 
     protected function replaceNewlines($str)

@@ -156,16 +156,11 @@ if (!function_exists('get_project_info')) {
      */
     function get_project_info()
     {
-        $settings = get_directus_settings_by_keys(['project_name', 'logo']);
-
-        if (array_get($settings, 'logo')) {
-            $settings['logo'] = get_project_logo_data(array_get($settings, 'logo'));
-        }
-
-        array_rename($settings, [
-            'logo' => 'project_logo',
-        ]);
-
+        $settings = get_directus_settings_by_keys(['project_name', 'project_logo','project_color','project_foreground','project_background','default_locale', 'telemetry']);
+        $settings['project_logo'] = array_get($settings, 'project_logo') ? get_project_logo_data(array_get($settings, 'project_logo')) : null;
+        $settings['project_foreground'] = array_get($settings, 'project_foreground') ? get_project_logo_data(array_get($settings, 'project_foreground')) : null;
+        $settings['project_background'] = array_get($settings, 'project_background') ? get_project_logo_data(array_get($settings, 'project_background')) : null;
+        $settings['telemetry'] = array_get($settings, 'telemetry') && $settings['telemetry'] ? true : false;
         return $settings;
     }
 }

@@ -1,3 +1,12 @@
+### 1.25.2 (2019-11-13)
+
+  * Fixed normalization of Traversables to avoid traversing them as not all of them are rewindable
+  * Fixed setFormatter/getFormatter to forward to the nested handler in FilterHandler, FingersCrossedHandler, BufferHandler and SamplingHandler
+  * Fixed BrowserConsoleHandler formatting when using multiple styles
+  * Fixed normalization of exception codes to be always integers even for PDOException which have them as numeric strings
+  * Fixed normalization of SoapFault objects containing non-strings as "detail"
+  * Fixed json encoding across all handlers to always attempt recovery of non-UTF-8 strings instead of failing the whole encoding
+
 ### 1.25.1 (2019-09-06)
 
   * Fixed forward-compatible interfaces to be compatible with Monolog 1.x too.

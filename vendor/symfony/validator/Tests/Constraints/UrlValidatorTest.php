@@ -67,11 +67,13 @@ class UrlValidatorTest extends ConstraintValidatorTestCase
     {
         return [
             ['http://a.pl'],
-            ['http://www.google.com'],
-            ['http://www.google.com.'],
-            ['http://www.google.museum'],
-            ['https://google.com/'],
-            ['https://google.com:80/'],
+            ['http://www.example.com'],
+            ['http://www.example.com.'],
+            ['http://www.example.museum'],
+            ['https://example.com/'],
+            ['https://example.com:80/'],
+            ['http://examp_le.com'],
+            ['http://www.sub_domain.examp_le.com'],
             ['http://www.example.coop/'],
             ['http://www.test-example.com/'],
             ['http://www.symfony.com/'],
@@ -148,15 +150,14 @@ class UrlValidatorTest extends ConstraintValidatorTestCase
     public function getInvalidUrls()
     {
         return [
-            ['google.com'],
-            ['://google.com'],
-            ['http ://google.com'],
-            ['http:/google.com'],
-            ['http://goog_le.com'],
-            ['http://google.com::aa'],
-            ['http://google.com:aa'],
-            ['ftp://google.fr'],
-            ['faked://google.fr'],
+            ['example.com'],
+            ['://example.com'],
+            ['http ://example.com'],
+            ['http:/example.com'],
+            ['http://example.com::aa'],
+            ['http://example.com:aa'],
+            ['ftp://example.fr'],
+            ['faked://example.fr'],
             ['http://127.0.0.1:aa/'],
             ['ftp://[::1]/'],
             ['http://[::1'],
@@ -189,7 +190,7 @@ class UrlValidatorTest extends ConstraintValidatorTestCase
     public function getValidCustomUrls()
     {
         return [
-            ['ftp://google.com'],
+            ['ftp://example.com'],
             ['file://127.0.0.1'],
             ['git://[::1]/'],
         ];

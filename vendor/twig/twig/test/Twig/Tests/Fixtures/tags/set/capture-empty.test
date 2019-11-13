@@ -1,9 +1,0 @@
---TEST--
-"set" tag block empty capture
---TEMPLATE--
-{% set foo %}{% endset %}
-
-{% if foo %}FAIL{% endif %}
---DATA--
-return []
---EXPECT--

@@ -22,7 +22,7 @@ final class RequestOptions
      * - strict: (bool, default=false) Set to true to use strict redirects
      *   meaning redirect POST requests with POST requests vs. doing what most
      *   browsers do which is redirect POST requests with GET requests
-     * - referer: (bool, default=true) Set to false to disable the Referer
+     * - referer: (bool, default=false) Set to true to enable the Referer
      *   header.
      * - protocols: (array, default=['http', 'https']) Allowed redirect
      *   protocols.

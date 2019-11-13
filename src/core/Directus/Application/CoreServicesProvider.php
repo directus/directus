@@ -850,7 +850,7 @@ class CoreServicesProvider
 
                     $socialAuth->register($providerName, new $class($container, array_merge([
                         'custom' => $custom,
-                        'callback_url' => \Directus\get_url('/_/auth/sso/' . $providerName . '/callback')
+                        'callback_url' => \Directus\get_url('/'.get_api_project_from_request().'/auth/sso/' . $providerName . '/callback')
                     ], $providerConfig)));
                 }
             }

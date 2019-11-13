@@ -8,9 +8,13 @@ use Directus\Exception\Exception;
 use Directus\Hook\Emitter;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
+use Directus\Database\TableGateway\DirectusUserSessionsTableGateway;
 use Directus\Util\Installation\InstallerUtils;
+use Directus\Services\WebhookService;
+use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Util\JWTUtils;
 use Directus\Util\StringUtils;
+use Directus\Services\UserSessionService;
 use Phinx\Db\Adapter\AdapterInterface;
 use RKA\Middleware\ProxyDetection;
 use Slim\Http\Cookies;
@@ -19,6 +23,10 @@ use Slim\Http\Headers;
 use Slim\Http\RequestBody;
 use Slim\Http\UploadedFile;
 use Slim\Http\Uri;
+use Directus\Authentication\Exception\InvalidTokenException;
+
+
+const TOKEN_CIPHER_METHOD = 'aes-128-ctr';
 
 require __DIR__ . '/constants.php';
 require __DIR__ . '/app.php';
@@ -245,8 +253,20 @@ if (!function_exists('get_api_project_from_request')) {
                 'check_proxy' => false,
             ]);
 
-            $authToken = get_request_authorization_token($request);
-            if (JWTUtils::isJWT($authToken)) {
+            if ($request->hasHeader('Authorization')) {
+                $authorizationHeader = $request->getHeader('Authorization');
+
+                // If there's multiple Authorization header, pick first, ignore the rest
+                if (is_array($authorizationHeader)) {
+                    $authorizationHeader = array_shift($authorizationHeader);
+                }
+
+                if (is_string($authorizationHeader) && preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
+                    $authToken = $matches[1];
+                }
+            }
+
+            if(isset($authToken)){
                 $name = JWTUtils::getPayload($authToken, 'project');
             } else {
                 $name = get_request_project_name($request);
@@ -267,11 +287,13 @@ if (!function_exists('get_request_authorization_token')) {
      */
     function get_request_authorization_token(Request $request)
     {
-        $authToken = null;
+        $response = [];
 
         if ($request->getParam('access_token')) {
-            $authToken = $request->getParam('access_token');
+            $response['type'] =  DirectusUserSessionsTableGateway::TOKEN_JWT;
+            $response['token'] =  $request->getParam('access_token');
         } elseif ($request->hasHeader('Php-Auth-User')) {
+            $response['type'] =  DirectusUserSessionsTableGateway::TOKEN_JWT;
             $authUser = $request->getHeader('Php-Auth-User');
             $authPassword = $request->getHeader('Php-Auth-Pw');
 
@@ -284,9 +306,11 @@ if (!function_exists('get_request_authorization_token')) {
             }
 
             if ($authUser && (empty($authPassword) || $authUser === $authPassword)) {
-                $authToken = $authUser;
+                $response['token'] =  $authUser;
             }
+
         } elseif ($request->hasHeader('Authorization')) {
+            $response['type'] =  DirectusUserSessionsTableGateway::TOKEN_JWT;
             $authorizationHeader = $request->getHeader('Authorization');
 
             // If there's multiple Authorization header, pick first, ignore the rest
@@ -295,11 +319,97 @@ if (!function_exists('get_request_authorization_token')) {
             }
 
             if (is_string($authorizationHeader) && preg_match("/Bearer\s+(.*)$/i", $authorizationHeader, $matches)) {
-                $authToken = $matches[1];
+                $response['token'] = $matches[1];
+            }
+        } elseif ($request->hasHeader('Cookie')) {
+            $response['type'] = DirectusUserSessionsTableGateway::TOKEN_COOKIE;
+            $authorizationHeader = $request->getCookieParam(get_project_session_cookie_name($request));
+            $response['token'] = $authorizationHeader;
+        }
+        return $response;
+    }
+}
+
+if (!function_exists('get_project_session_cookie_name')) {
+    /**
+     * Returns the session cookie name of current project
+     *
+     * @param Request $request
+     *
+     * @return null|string
+     */
+    function get_project_session_cookie_name($request)
+    {
+        $projectName = get_api_project_from_request($request);
+        return 'directus-'.$projectName.'-session';
+    }
+}
+
+if (!function_exists('get_static_token_based_on_type')) {
+    /**
+     * Returns the static token of users table from a encrypted token of sessions table
+     *
+     * @param Request $request
+     *
+     * @return null|string
+     */
+    function get_static_token_based_on_type($tokenObject)
+    {
+        $accessToken = null;
+        if(!empty($tokenObject['token'])){
+            switch($tokenObject['type']){
+                case DirectusUserSessionsTableGateway::TOKEN_COOKIE :
+                    $container = Application::getInstance()->getContainer();
+                    $decryptedToken = decrypt_static_token($tokenObject['token']);
+                    $userSessionService = new UserSessionService($container);
+                    $userSession = $userSessionService->find(['token' => $decryptedToken]);
+                    if($userSession){
+                        $user = $container->get('auth')->getUserProvider()->find($userSession['user'])->toArray();
+                        $accessToken = $user['token'];
+                    }else{
+                        throw new InvalidTokenException();
+                    }
+                    break;
+                default :
+                    $accessToken = $tokenObject['token'];
+                    break;
             }
         }
+        return $accessToken;
+    }
+}
 
-        return $authToken;
+if (!function_exists('encrypt_static_token')) {
+    /**
+     * Returns the encrypted static token
+     *
+     * @param Request $request
+     *
+     * @return null|string
+     */
+    function encrypt_static_token($token)
+    {
+        $enc_key = openssl_digest(php_uname(), 'SHA256', TRUE);
+        $enc_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(TOKEN_CIPHER_METHOD));
+        $cryptedToken = openssl_encrypt($token, TOKEN_CIPHER_METHOD, $enc_key, 0, $enc_iv) . "::" . bin2hex($enc_iv);
+        return $cryptedToken;
+    }
+}
+
+if (!function_exists('decrypt_static_token')) {
+    /**
+     * Returns the decrypted static token
+     *
+     * @param Request $request
+     *
+     * @return null|string
+     */
+    function decrypt_static_token($token)
+    {
+        list($cryptedToken, $enc_iv) = explode("::", $token);
+        $enc_key = openssl_digest(php_uname(), 'SHA256', TRUE);
+        $token = openssl_decrypt($cryptedToken,TOKEN_CIPHER_METHOD, $enc_key, 0, hex2bin($enc_iv));
+        return $token;
     }
 }
 
@@ -506,6 +616,38 @@ if (!function_exists('register_extensions_hooks')) {
             $app,
             get_custom_hooks('public/extensions/core/interfaces', true)
         );
+    }
+}
+
+if (!function_exists('register_webhooks')) {
+    /**
+     * Register all the hooks from the directus_webhooks table
+     *
+     * @param Application $app
+     */
+    function register_webhooks(Application $app)
+    {
+        $app = Application::getInstance();
+        BaseTableGateway::setContainer($app->getContainer());
+        try{
+            $webhook = new WebhookService($app->getContainer());
+            $webhookData = $webhook->findAll(['status' => \Directus\Api\Routes\Webhook::STATUS_ACTIVE],false);
+            $result = [];
+            foreach($webhookData['data'] as $hook){
+                $action = explode(":",$hook['directus_action']);
+                $result['hooks']['actions'][$action[0].".".$hook['collection'].":".$action[1]] = function ($data) use ($hook) {
+                    $client = new \GuzzleHttp\Client();
+                    $response = [];
+                    if($hook['http_action'] == WebhookService::HTTP_ACTION_POST){
+                        $response['form_params'] = ($data);
+                    }
+                    $client->request($hook['http_action'], $hook['url'], $response);
+                };
+            }
+            register_hooks_list($app,$result);
+        }catch(\Exception $e){
+            return true;
+        }
     }
 }
 

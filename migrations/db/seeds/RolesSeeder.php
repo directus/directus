@@ -23,7 +23,7 @@ class RolesSeeder extends AbstractSeed
             [
                 'id' => 2,
                 'name' => 'Public',
-                'description' => 'This sets the data that is publicly available through the API without a token'
+                'description' => 'Controls what API data is publicly available without authenticating'
             ]
         ];
 

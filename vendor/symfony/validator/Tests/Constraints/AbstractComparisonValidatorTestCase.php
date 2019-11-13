@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\AbstractComparison;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
@@ -209,6 +210,31 @@ abstract class AbstractComparisonValidatorTestCase extends ConstraintValidatorTe
             ->setParameter('{{ compared_value_type }}', $comparedValueType)
             ->setCode($this->getErrorCode())
             ->assertRaised();
+    }
+
+    /**
+     * @dataProvider throwsOnInvalidStringDatesProvider
+     */
+    public function testThrowsOnInvalidStringDates(AbstractComparison $constraint, $expectedMessage, $value)
+    {
+        $this->expectException(ConstraintDefinitionException::class);
+        $this->expectExceptionMessage($expectedMessage);
+
+        $this->validator->validate($value, $constraint);
+    }
+
+    public function throwsOnInvalidStringDatesProvider()
+    {
+        $constraint = $this->createConstraint([
+            'value' => 'foo',
+        ]);
+
+        $constraintClass = \get_class($constraint);
+
+        return [
+            [$constraint, sprintf('The compared value "foo" could not be converted to a "DateTimeImmutable" instance in the "%s" constraint.', $constraintClass), new \DateTimeImmutable()],
+            [$constraint, sprintf('The compared value "foo" could not be converted to a "DateTime" instance in the "%s" constraint.', $constraintClass), new \DateTime()],
+        ];
     }
 
     /**

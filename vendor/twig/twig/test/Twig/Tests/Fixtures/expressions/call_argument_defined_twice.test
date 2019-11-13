@@ -1,8 +1,0 @@
---TEST--
-Argument is defined twice in a call
---TEMPLATE--
-{{ date(987654, date = 123456) }}
---DATA--
-return []
---EXCEPTION--
-Twig\Error\SyntaxError: Argument "date" is defined twice for function "date" in "index.twig" at line 2.

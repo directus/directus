@@ -14,14 +14,14 @@ class ProjectHome extends Route
     {
         /** @var Acl $acl */
         $acl = $this->container->get('acl');
-
+        
         $service = new ServerService($this->container);
         if ($acl->getUserId()) {
             $responseData = $service->findAllInfo(false);
         } else {
             $responseData = [
                 'data' => [
-                    'api' => $service->getPublicInfo()
+                    'api' => array_merge(['requires2FA' => false],$service->getPublicInfo())
                 ]
             ];
         }

@@ -1,8 +1,0 @@
---TEST--
-"escape" filter
---TEMPLATE--
-{{ "foo <br />"|e }}
---DATA--
-return []
---EXPECT--
-foo &lt;br /&gt;

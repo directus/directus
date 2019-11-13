@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit020da576f68516c9101f844cfac32a4c
+class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -470,6 +470,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Api\\Routes\\Types' => __DIR__ . '/../..' . '/src/endpoints/Types.php',
         'Directus\\Api\\Routes\\Users' => __DIR__ . '/../..' . '/src/endpoints/Users.php',
         'Directus\\Api\\Routes\\Utils' => __DIR__ . '/../..' . '/src/endpoints/Utils.php',
+        'Directus\\Api\\Routes\\Webhook' => __DIR__ . '/../..' . '/src/endpoints/Webhook.php',
         'Directus\\Application\\Application' => __DIR__ . '/../..' . '/src/core/Directus/Application/Application.php',
         'Directus\\Application\\Container' => __DIR__ . '/../..' . '/src/core/Directus/Application/Container.php',
         'Directus\\Application\\CoreServicesProvider' => __DIR__ . '/../..' . '/src/core/Directus/Application/CoreServicesProvider.php',
@@ -486,6 +487,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Application\\Http\\Middleware\\AuthenticationMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\AuthenticationOptionalMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationOptionalMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/CorsMiddleware.php',
+        'Directus\\Application\\Http\\Middleware\\DatabaseMigrationMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/DatabaseMigrationMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\IpRateLimitMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/IpRateLimitMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\ProxyMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/ProxyMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\RateLimit\\UserIdentityResolver' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/RateLimit/UserIdentityResolver.php',
@@ -505,6 +507,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Authentication\\Exception\\InvalidTokenException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidTokenException.php',
         'Directus\\Authentication\\Exception\\InvalidUserCredentialsException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/InvalidUserCredentialsException.php',
         'Directus\\Authentication\\Exception\\Missing2FAPasswordException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/Missing2FAPasswordException.php',
+        'Directus\\Authentication\\Exception\\SsoNotAllowedException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/SsoNotAllowedException.php',
         'Directus\\Authentication\\Exception\\TFAEnforcedException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/TFAEnforcedException.php',
         'Directus\\Authentication\\Exception\\UnknownUserAttributeException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UnknownUserAttributeException.php',
         'Directus\\Authentication\\Exception\\UserAlreadyLoggedInException' => __DIR__ . '/../..' . '/src/core/Directus/Authentication/Exception/UserAlreadyLoggedInException.php',
@@ -654,6 +657,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Database\\TableGateway\\DirectusPermissionsTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/DirectusPermissionsTableGateway.php',
         'Directus\\Database\\TableGateway\\DirectusRolesTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/DirectusRolesTableGateway.php',
         'Directus\\Database\\TableGateway\\DirectusSettingsTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/DirectusSettingsTableGateway.php',
+        'Directus\\Database\\TableGateway\\DirectusUserSessionsTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/DirectusUserSessionsTableGateway.php',
         'Directus\\Database\\TableGateway\\DirectusUsersTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/DirectusUsersTableGateway.php',
         'Directus\\Database\\TableGateway\\RelationalTableGateway' => __DIR__ . '/../..' . '/src/core/Directus/Database/TableGateway/RelationalTableGateway.php',
         'Directus\\Embed\\EmbedManager' => __DIR__ . '/../..' . '/src/core/Directus/Embed/EmbedManager.php',
@@ -745,6 +749,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Logger\\Exception\\InvalidLoggerConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Logger/Exception/InvalidLoggerConfigurationException.php',
         'Directus\\Mail\\Exception\\InvalidTransportException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/InvalidTransportException.php',
         'Directus\\Mail\\Exception\\InvalidTransportObjectException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/InvalidTransportObjectException.php',
+        'Directus\\Mail\\Exception\\MailNotSentException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/MailNotSentException.php',
         'Directus\\Mail\\Exception\\TransportNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Exception/TransportNotFoundException.php',
         'Directus\\Mail\\Mailer' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Mailer.php',
         'Directus\\Mail\\Message' => __DIR__ . '/../..' . '/src/core/Directus/Mail/Message.php',
@@ -787,8 +792,10 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Directus\\Services\\ServerService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ServerService.php',
         'Directus\\Services\\SettingsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/SettingsService.php',
         'Directus\\Services\\TablesService' => __DIR__ . '/../..' . '/src/core/Directus/Services/TablesService.php',
+        'Directus\\Services\\UserSessionService' => __DIR__ . '/../..' . '/src/core/Directus/Services/UserSessionService.php',
         'Directus\\Services\\UsersService' => __DIR__ . '/../..' . '/src/core/Directus/Services/UsersService.php',
         'Directus\\Services\\UtilsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/UtilsService.php',
+        'Directus\\Services\\WebhookService' => __DIR__ . '/../..' . '/src/core/Directus/Services/WebhookService.php',
         'Directus\\Session\\Session' => __DIR__ . '/../..' . '/src/core/Directus/Session/Session.php',
         'Directus\\Session\\Storage\\ArraySessionStorage' => __DIR__ . '/../..' . '/src/core/Directus/Session/Storage/ArraySessionStorage.php',
         'Directus\\Session\\Storage\\NativeSessionStorage' => __DIR__ . '/../..' . '/src/core/Directus/Session/Storage/NativeSessionStorage.php',
@@ -1057,6 +1064,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'GuzzleHttp\\Exception\\ClientException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/ClientException.php',
         'GuzzleHttp\\Exception\\ConnectException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/ConnectException.php',
         'GuzzleHttp\\Exception\\GuzzleException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/GuzzleException.php',
+        'GuzzleHttp\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/InvalidArgumentException.php',
         'GuzzleHttp\\Exception\\RequestException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/RequestException.php',
         'GuzzleHttp\\Exception\\SeekException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/SeekException.php',
         'GuzzleHttp\\Exception\\ServerException' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Exception/ServerException.php',
@@ -1197,7 +1205,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Intervention\\Image\\ImageManagerStatic' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageManagerStatic.php',
         'Intervention\\Image\\ImageServiceProvider' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProvider.php',
         'Intervention\\Image\\ImageServiceProviderLaravel4' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProviderLaravel4.php',
-        'Intervention\\Image\\ImageServiceProviderLaravel5' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProviderLaravel5.php',
+        'Intervention\\Image\\ImageServiceProviderLaravelRecent' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProviderLaravelRecent.php',
         'Intervention\\Image\\ImageServiceProviderLeague' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProviderLeague.php',
         'Intervention\\Image\\ImageServiceProviderLumen' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/ImageServiceProviderLumen.php',
         'Intervention\\Image\\Imagick\\Color' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/Imagick/Color.php',
@@ -2184,6 +2192,7 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
         'Twig\\Node\\Expression\\Binary\\OrBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/OrBinary.php',
         'Twig\\Node\\Expression\\Binary\\PowerBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/PowerBinary.php',
         'Twig\\Node\\Expression\\Binary\\RangeBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/RangeBinary.php',
+        'Twig\\Node\\Expression\\Binary\\SpaceshipBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SpaceshipBinary.php',
         'Twig\\Node\\Expression\\Binary\\StartsWithBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/StartsWithBinary.php',
         'Twig\\Node\\Expression\\Binary\\SubBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SubBinary.php',
         'Twig\\Node\\Expression\\BlockReferenceExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/BlockReferenceExpression.php',
@@ -2717,10 +2726,10 @@ class ComposerStaticInit020da576f68516c9101f844cfac32a4c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit020da576f68516c9101f844cfac32a4c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -80,7 +80,7 @@ class Dumper
                 if ($value instanceof TaggedValue) {
                     $output .= sprintf('%s%s !%s', $prefix, $dumpAsMap ? Inline::dump($key, $flags).':' : '-', $value->getTag());
 
-                    if ($inline - 1 <= 0) {
+                    if ($inline - 1 <= 0 || null === $value->getValue() || is_scalar($value->getValue())) {
                         $output .= ' '.$this->dump($value->getValue(), $inline - 1, 0, $flags)."\n";
                     } else {
                         $output .= "\n";

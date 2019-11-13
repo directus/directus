@@ -7,6 +7,7 @@ namespace Doctrine\Common\Cache;
 use Couchbase\Bucket;
 use Couchbase\Document;
 use Couchbase\Exception;
+use RuntimeException;
 use function phpversion;
 use function serialize;
 use function sprintf;
@@ -35,7 +36,7 @@ final class CouchbaseBucketCache extends CacheProvider
     {
         if (version_compare(phpversion('couchbase'), self::MINIMUM_VERSION) < 0) {
             // Manager is required to flush cache and pull stats.
-            throw new \RuntimeException(sprintf('ext-couchbase:^%s is required.', self::MINIMUM_VERSION));
+            throw new RuntimeException(sprintf('ext-couchbase:^%s is required.', self::MINIMUM_VERSION));
         }
 
         $this->bucket = $bucket;
@@ -182,6 +183,7 @@ final class CouchbaseBucketCache extends CacheProvider
 
     /**
      * Expiry treated as a unix timestamp instead of an offset if expiry is greater than 30 days.
+     *
      * @src https://developer.couchbase.com/documentation/server/4.1/developer-guide/expiry.html
      */
     private function normalizeExpiry(int $expiry) : int

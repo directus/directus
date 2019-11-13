@@ -55,6 +55,10 @@ class CreateRolesTable extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
+        $table->addColumn('enforce_2fa', 'boolean', [
+            'null' => true,
+            'default' => false
+        ]);
 
         $table->addIndex('name', [
             'unique' => true,

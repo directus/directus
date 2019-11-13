@@ -44,7 +44,7 @@ class Lexer
     const STATE_INTERPOLATION = 4;
 
     const REGEX_NAME = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/A';
-    const REGEX_NUMBER = '/[0-9]+(?:\.[0-9]+)?/A';
+    const REGEX_NUMBER = '/[0-9]+(?:\.[0-9]+)?([Ee][\+\-][0-9]+)?/A';
     const REGEX_STRING = '/"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/As';
     const REGEX_DQ_STRING_DELIM = '/"/A';
     const REGEX_DQ_STRING_PART = '/[^#"\\\\]*(?:(?:\\\\.|#(?!\{))[^#"\\\\]*)*/As';

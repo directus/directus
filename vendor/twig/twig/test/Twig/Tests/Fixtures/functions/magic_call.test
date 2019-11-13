@@ -1,8 +1,0 @@
---TEST--
-__call calls
---TEMPLATE--
-{{ 'foo'|magic_call }}
---DATA--
-return []
---EXPECT--
-magic_foo

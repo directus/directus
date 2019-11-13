@@ -85,7 +85,6 @@ class Parser
         $this->refs = [];
 
         $mbEncoding = null;
-        $data = null;
 
         if (2 /* MB_OVERLOAD_STRING */ & (int) ini_get('mbstring.func_overload')) {
             $mbEncoding = mb_internal_encoding();
@@ -106,14 +105,6 @@ class Parser
         }
 
         return $data;
-    }
-
-    /**
-     * @internal
-     */
-    public function getLastLineNumberBeforeDeprecation(): int
-    {
-        return $this->getRealCurrentLineNb();
     }
 
     private function doParse(string $value, int $flags)

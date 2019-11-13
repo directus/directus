@@ -21,16 +21,6 @@ class RelationsSeeder extends AbstractSeed
                 'collection_one' => 'directus_users'
             ],
             [
-                'collection_many' => 'directus_activity_seen',
-                'field_many' => 'user',
-                'collection_one' => 'directus_users'
-            ],
-            [
-                'collection_many' => 'directus_activity_seen',
-                'field_many' => 'activity',
-                'collection_one' => 'directus_activity'
-            ],
-            [
                 'collection_many' => 'directus_collections_presets',
                 'field_many' => 'user',
                 'collection_one' => 'directus_users'
@@ -39,6 +29,12 @@ class RelationsSeeder extends AbstractSeed
                 'collection_many' => 'directus_collections_presets',
                 'field_many' => 'group',
                 'collection_one' => 'directus_groups'
+            ],
+            [
+                'collection_many' => 'directus_fields',
+                'field_many' => 'collection',
+                'collection_one' => 'directus_collections',
+                'field_one' => 'fields'
             ],
             [
                 'collection_many' => 'directus_files',
@@ -83,12 +79,6 @@ class RelationsSeeder extends AbstractSeed
                 'collection_many' => 'directus_users',
                 'field_many' => 'avatar',
                 'collection_one' => 'directus_files'
-            ],
-            [
-                'collection_many' => 'directus_fields',
-                'field_many' => 'collection',
-                'collection_one' => 'directus_collections',
-                'field_one' => 'fields'
             ]
         ];
 

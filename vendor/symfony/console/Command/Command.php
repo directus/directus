@@ -445,14 +445,10 @@ class Command
     /**
      * Returns the command name.
      *
-     * @return string The command name
+     * @return string|null
      */
     public function getName()
     {
-        if (!$this->name) {
-            throw new LogicException(sprintf('The command defined in "%s" cannot have an empty name.', \get_class($this)));
-        }
-
         return $this->name;
     }
 

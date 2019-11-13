@@ -109,8 +109,14 @@ class DateTimeUtils extends \DateTime
 
     public static function nowInTimezone()
     {
-        $config = get_project_config();
-        return static::now($config->get('app.timezone'));
+        $projectName = \Directus\get_api_project_from_request();
+        if(!is_null($projectName)){
+            $config = get_project_config($projectName);
+            return static::now($config->get('app.timezone'));
+        } else {
+            // If there's no project config (f.e. when creating projects), default to UTC
+            return static::now('UTC');
+        }
     }
 
     /**

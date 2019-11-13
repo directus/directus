@@ -269,6 +269,22 @@ class TranslatorCacheTest extends TestCase
         $translator->trans('foo');
     }
 
+    public function testCachedCatalogueIsReDumpedWhenCacheVaryChange()
+    {
+        $translator = new Translator('a', null, $this->tmpDir, false, []);
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', ['foo' => 'bar'], 'a', 'messages');
+
+        // Cached catalogue is dumped
+        $this->assertSame('bar', $translator->trans('foo', [], 'messages', 'a'));
+
+        $translator = new Translator('a', null, $this->tmpDir, false, ['vary']);
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', ['foo' => 'ccc'], 'a', 'messages');
+
+        $this->assertSame('ccc', $translator->trans('foo', [], 'messages', 'a'));
+    }
+
     protected function getCatalogue($locale, $messages, $resources = [])
     {
         $catalogue = new MessageCatalogue($locale);

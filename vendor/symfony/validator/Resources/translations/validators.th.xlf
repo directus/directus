@@ -204,7 +204,7 @@
             </trans-unit>
             <trans-unit id="54">
                 <source>This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.</source>
-                <target>คอเล็กชั่นนี้ควรจะประกอบไปด้วยอ่างน้อย {{ limit }} สมาชิก</target>
+                <target>คอเล็กชั่นนี้ควรจะประกอบไปด้วยอย่างน้อย {{ limit }} สมาชิก</target>
             </trans-unit>
             <trans-unit id="55">
                 <source>This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.</source>
@@ -297,6 +297,74 @@
             <trans-unit id="77">
                 <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
                 <target>ภาพนี้เป็นแนวตั้ง ({{ width }}x{{ height }}px) ไม่อนุญาตภาพที่เป็นแนวตั้ง</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>ไม่อนุญาตให้ใช้ไฟล์ว่าง</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>ไม่สามารถแก้ไขชื่อโฮสต์</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>ค่านี้ไม่ตรงกับการเข้ารหัส {{ charset }}</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>นี่ไม่ถูกต้องตามรหัสสำหรับระบุธุรกิจนี้ (BIC)</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>เกิดข้อผิดพลาด</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>นี่ไม่ใช่ UUID ที่ถูกต้อง</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>ค่านี้ควรเป็น {{ compared_value }} หลายตัว</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>รหัสสำหรับระบุธุรกิจนี้ (BIC) ไม่เกี่ยวข้องกับ IBAN {{ iban }}</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>ค่านี้ควรอยู่ในรูปแบบ JSON ที่ถูกต้อง</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>คอเล็กชั่นนี้ควรมีเฉพาะสมาชิกที่ไม่ซ้ำกันเท่านั้น</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>ค่านี้ควรเป็นค่าบวก</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>ค่านี้ควรเป็นค่าบวกหรือค่าศูนย์</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>ค่านี้ควรเป็นค่าลบ</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>ค่านี้ควรเป็นค่าลบหรือค่าศูนย์</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>ค่าเขตเวลาไม่ถูกต้อง</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>รหัสผ่านนี้ได้เคยรั่วไหลออกไปโดยถูกการละเมิดข้อมูล ซึ่งไม่ควรนำกลับมาใช้ กรุณาใช้รหัสผ่านอื่น</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>ค่านี้ควรอยู่ระหว่าง {{ min }} ถึง {{ max }}</target>
             </trans-unit>
         </body>
     </file>

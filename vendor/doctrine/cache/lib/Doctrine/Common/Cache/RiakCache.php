@@ -5,7 +5,7 @@ namespace Doctrine\Common\Cache;
 use Riak\Bucket;
 use Riak\Exception;
 use Riak\Input;
-use Riak\Object;
+use Riak\Object as RiakObject;
 use function count;
 use function serialize;
 use function time;
@@ -14,9 +14,9 @@ use function unserialize;
 /**
  * Riak cache provider.
  *
- * @link   www.doctrine-project.org
- *
  * @deprecated
+ *
+ * @link   www.doctrine-project.org
  */
 class RiakCache extends CacheProvider
 {
@@ -47,7 +47,7 @@ class RiakCache extends CacheProvider
             }
 
             // Check for attempted siblings
-            $object = ($response->hasSiblings())
+            $object = $response->hasSiblings()
                 ? $this->resolveConflict($id, $response->getVClock(), $response->getObjectList())
                 : $response->getFirstObject();
 
@@ -111,7 +111,7 @@ class RiakCache extends CacheProvider
     protected function doSave($id, $data, $lifeTime = 0)
     {
         try {
-            $object = new Object($id);
+            $object = new RiakObject($id);
 
             $object->setContent(serialize($data));
 
@@ -180,9 +180,9 @@ class RiakCache extends CacheProvider
     }
 
     /**
-     * Check if a given Riak Object have expired.
+     * Check if a given RiakObject has expired.
      */
-    private function isExpired(Object $object) : bool
+    private function isExpired(RiakObject $object) : bool
     {
         $metadataMap = $object->getMetadataMap();
 
@@ -208,7 +208,7 @@ class RiakCache extends CacheProvider
      * @param string $vClock
      * @param array  $objectList
      *
-     * @return Object
+     * @return RiakObject
      */
     protected function resolveConflict($id, $vClock, array $objectList)
     {
@@ -218,7 +218,7 @@ class RiakCache extends CacheProvider
         $putInput = new Input\PutInput();
         $putInput->setVClock($vClock);
 
-        $mergedObject = new Object($id);
+        $mergedObject = new RiakObject($id);
         $mergedObject->setContent($winner->getContent());
 
         $this->bucket->put($mergedObject, $putInput);

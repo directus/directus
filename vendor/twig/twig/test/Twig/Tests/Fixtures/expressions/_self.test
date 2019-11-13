@@ -1,8 +1,0 @@
---TEST--
-_self returns the template name
---TEMPLATE--
-{{ _self }}
---DATA--
-return []
---EXPECT--
-index.twig

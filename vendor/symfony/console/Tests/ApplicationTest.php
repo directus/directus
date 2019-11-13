@@ -75,6 +75,7 @@ class ApplicationTest extends TestCase
         require_once self::$fixturesPath.'/FooWithoutAliasCommand.php';
         require_once self::$fixturesPath.'/TestAmbiguousCommandRegistering.php';
         require_once self::$fixturesPath.'/TestAmbiguousCommandRegistering2.php';
+        require_once self::$fixturesPath.'/FooHiddenCommand.php';
     }
 
     protected function normalizeLineBreaks($text)
@@ -567,7 +568,7 @@ class ApplicationTest extends TestCase
 
         // Subnamespace + plural
         try {
-            $a = $application->find('foo3:');
+            $application->find('foo3:');
             $this->fail('->find() should throw an Symfony\Component\Console\Exception\CommandNotFoundException if a command is ambiguous because of a subnamespace, with alternatives');
         } catch (\Exception $e) {
             $this->assertInstanceOf('Symfony\Component\Console\Exception\CommandNotFoundException', $e);
@@ -664,6 +665,7 @@ class ApplicationTest extends TestCase
         $application->add(new \Foo1Command());
         $application->add(new \Foo2Command());
         $application->add(new \Foo3Command());
+        $application->add(new \FooHiddenCommand());
 
         $expectedAlternatives = [
             'afoobar',
@@ -1607,23 +1609,6 @@ class ApplicationTest extends TestCase
 
         $tester->run(['--help' => true]);
         $this->assertStringContainsString('The foo:bar command', $tester->getDisplay());
-    }
-
-    /**
-     * @requires function posix_isatty
-     */
-    public function testCanCheckIfTerminalIsInteractive()
-    {
-        $application = new CustomDefaultCommandApplication();
-        $application->setAutoExit(false);
-
-        $tester = new ApplicationTester($application);
-        $tester->run(['command' => 'help']);
-
-        $this->assertFalse($tester->getInput()->hasParameterOption(['--no-interaction', '-n']));
-
-        $inputStream = $tester->getInput()->getStream();
-        $this->assertEquals($tester->getInput()->isInteractive(), @posix_isatty($inputStream));
     }
 
     public function testRunLazyCommandService()

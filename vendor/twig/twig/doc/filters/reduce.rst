@@ -1,5 +1,5 @@
 ``reduce``
-=========
+==========
 
 .. versionadded:: 1.41
     The ``reduce`` filter was added in Twig 1.41 and 2.10.
@@ -28,6 +28,5 @@ Note that the arrow function has access to the current context.
 Arguments
 ---------
 
-* ``array``: The sequence or mapping
 * ``arrow``: The arrow function
 * ``initial``: The initial value

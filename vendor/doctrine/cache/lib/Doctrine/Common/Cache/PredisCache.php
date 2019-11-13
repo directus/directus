@@ -69,7 +69,7 @@ class PredisCache extends CacheProvider
         }
 
         // No lifetime, use MSET
-        $response = $this->client->mset(array_map(function ($value) {
+        $response = $this->client->mset(array_map(static function ($value) {
             return serialize($value);
         }, $keysAndValues));
 

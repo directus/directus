@@ -1,8 +1,0 @@
---TEST--
-"§" custom tag
---TEMPLATE--
-{% § %}
---DATA--
-return []
---EXPECT--
-§

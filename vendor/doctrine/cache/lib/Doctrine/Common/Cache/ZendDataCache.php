@@ -55,6 +55,7 @@ class ZendDataCache extends CacheProvider
         if (empty($namespace)) {
             return zend_shm_cache_clear();
         }
+
         return zend_shm_cache_clear($namespace);
     }
 

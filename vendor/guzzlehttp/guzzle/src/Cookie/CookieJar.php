@@ -120,7 +120,7 @@ class CookieJar implements CookieJarInterface
         } elseif (!$path) {
             $this->cookies = array_filter(
                 $this->cookies,
-                function (SetCookie $cookie) use ($path, $domain) {
+                function (SetCookie $cookie) use ($domain) {
                     return !$cookie->matchesDomain($domain);
                 }
             );

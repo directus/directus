@@ -118,8 +118,8 @@ class ConsoleSectionOutputTest extends TestCase
     public function testAddingMultipleSections()
     {
         $sections = [];
-        $output1 = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
-        $output2 = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $this->assertCount(2, $sections);
     }

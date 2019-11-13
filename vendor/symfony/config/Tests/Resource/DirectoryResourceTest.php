@@ -67,7 +67,7 @@ class DirectoryResourceTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessageRegExp('/The directory ".*" does not exist./');
-        $resource = new DirectoryResource('/____foo/foobar'.mt_rand(1, 999999));
+        new DirectoryResource('/____foo/foobar'.mt_rand(1, 999999));
     }
 
     public function testIsFresh()
@@ -165,7 +165,7 @@ class DirectoryResourceTest extends TestCase
     {
         $resource = new DirectoryResource($this->directory, '/\.(foo|xml)$/');
 
-        $unserialized = unserialize(serialize($resource));
+        unserialize(serialize($resource));
 
         $this->assertSame(realpath($this->directory), $resource->getResource());
         $this->assertSame('/\.(foo|xml)$/', $resource->getPattern());

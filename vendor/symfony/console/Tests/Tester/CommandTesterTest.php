@@ -196,7 +196,7 @@ class CommandTesterTest extends TestCase
         ];
 
         $command = new Command('foo');
-        $command->setCode(function ($input, $output) use ($questions, $command) {
+        $command->setCode(function ($input, $output) use ($questions) {
             $io = new SymfonyStyle($input, $output);
             $io->ask($questions[0]);
             $io->ask($questions[1]);

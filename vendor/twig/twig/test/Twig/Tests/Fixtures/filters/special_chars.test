@@ -1,8 +1,0 @@
---TEST--
-"§" custom filter
---TEMPLATE--
-{{ 'foo'|§ }}
---DATA--
-return []
---EXPECT--
-§foo§

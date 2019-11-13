@@ -222,6 +222,150 @@
                 <source>Unsupported card type or invalid card number.</source>
                 <target>Dəstəklənməyən kart tipi və ya yanlış kart nömrəsi.</target>
             </trans-unit>
+            <trans-unit id="59">
+                <source>This is not a valid International Bank Account Number (IBAN).</source>
+                <target>Bu dəyər doğru bir Beynəlxalq Bank Hesap Nömrəsi (IBAN) deyil.</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>This value is not a valid ISBN-10.</source>
+                <target>Bu dəyər doğru bir ISBN-10 deyil.</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>This value is not a valid ISBN-13.</source>
+                <target>Bu dəyər doğru bir ISBN-13 deyil.</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
+                <target>Bu dəyər doğru bir ISBN-10 və ya ISBN-13 deyil.</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>This value is not a valid ISSN.</source>
+                <target>Bu dəyər doğru bir ISSN deyil.</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>This value is not a valid currency.</source>
+                <target>Bu dəyər doğru bir valyuta deyil.</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>This value should be equal to {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value }} ilə bərabər olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>This value should be greater than {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value }} dəyərindən büyük olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>This value should be greater than or equal to {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value }} ilə bərabər və ya daha böyük olmaldır.</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>This value should be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value_type }} {{ compared_value }} ilə eyni olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>This value should be less than {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value }} dəyərindən kiçik olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>This value should be less than or equal to {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value }} dəyərindən kiçik və ya bərabər olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>This value should not be equal to {{ compared_value }}.</source>
+                <target>Bu değer {{ compared_value }} ile eşit olmamalıdır.</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compared_value_type }} {{ compared_value }} ilə eyni olmamalıdır.</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Şəkil nisbəti çox büyükdür ({{ ratio }}). İcazə verilən maksimum nisbət: {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Şəkil nisbəti çox balacadır ({{ ratio }}). İcazə verilən minimum nisbət: {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Şəkil kvadratdır ({{ width }}x{{ height }}px). Kvadrat şəkillərə icazə verilmir.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>Şəkil albom rejimindədir ({{ width }}x{{ height }}px). Albom rejimli şəkillərə icazə verilmir.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>Şəkil portret rejimindədir ({{ width }}x{{ height }}px). Portret rejimli şəkillərə icazə verilmir.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Boş fayla icazə verilmir.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>Ünvan tapılmadı.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Bu dəyər gözlənilən {{ charset }} simvol cədvəli ilə uyğun gəlmir.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Bu dəyər doğru bir Biznes Təyinedici Kodu (BIC) deyil.</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Xəta</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Bu dəyər doğru bir UUID deyil.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Bu dəyər {{ compare_value }} dəyərinin bölənlərindən biri olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Bu Biznes Təyinedici Kodu (BIC) {{ iban }} IBAN kodu ilə əlaqəli deyil.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Bu dəyər doğru bir JSON olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Bu kolleksiyada sadəcə unikal elementlər olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Bu dəyər müsbət olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Bu dəyər müsbət və ya sıfır olmalıdır.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Bu dəyər mənfi olmaldır.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Bu dəyər mənfi və ya sıfır olmaldır.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Bu dəyər doğru bir zaman zolağı deyil.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Bu parol data oğurluğunda tapıldığı üçün işlədilməməlidir. Zəhmət olmasa, başqa parol seçin.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Bu dəyər {{ min }} və {{ max }} arasında olmaldır.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

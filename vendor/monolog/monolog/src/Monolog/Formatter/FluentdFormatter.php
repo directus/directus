@@ -11,6 +11,8 @@
 
 namespace Monolog\Formatter;
 
+use Monolog\Utils;
+
 /**
  * Class FluentdFormatter
  *
@@ -71,7 +73,7 @@ class FluentdFormatter implements FormatterInterface
             $message['level_name'] = $record['level_name'];
         }
 
-        return json_encode(array($tag, $record['datetime']->getTimestamp(), $message));
+        return Utils::jsonEncode(array($tag, $record['datetime']->getTimestamp(), $message));
     }
 
     public function formatBatch(array $records)

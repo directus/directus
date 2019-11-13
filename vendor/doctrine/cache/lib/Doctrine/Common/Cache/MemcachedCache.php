@@ -81,6 +81,7 @@ class MemcachedCache extends CacheProvider
         if ($lifeTime > 30 * 24 * 3600) {
             $lifeTime = time() + $lifeTime;
         }
+
         return $this->memcached->set($id, $data, (int) $lifeTime);
     }
 
@@ -119,6 +120,7 @@ class MemcachedCache extends CacheProvider
         $servers = $this->memcached->getServerList();
         $key     = $servers[0]['host'] . ':' . $servers[0]['port'];
         $stats   = $stats[$key];
+
         return [
             Cache::STATS_HITS   => $stats['get_hits'],
             Cache::STATS_MISSES => $stats['get_misses'],

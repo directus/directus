@@ -9,13 +9,7 @@
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
-         syntaxCheck="true"
 >
-    <testsuites>
-        <testsuite name="Unit">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
     <testsuites>
         <testsuite name="Constant Time Encoding Test Suite">
             <directory suffix="Test.php">./tests</directory>

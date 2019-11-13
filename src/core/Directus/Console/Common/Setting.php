@@ -21,7 +21,7 @@ class Setting
 
         $this->directus_path = $base_path;
 
-        $app = InstallerUtils::createApp($base_path, $config);
+        $app = InstallerUtils::createApp($base_path, $projectName);
         $this->db = $app->getContainer()->get('database');
 
         $this->settingsTableGateway = new TableGateway('directus_settings', $this->db);

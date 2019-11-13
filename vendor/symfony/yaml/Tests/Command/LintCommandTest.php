@@ -97,7 +97,7 @@ YAML;
         $filename = $this->createFile('');
         unlink($filename);
 
-        $ret = $tester->execute(['filename' => $filename], ['decorated' => false]);
+        $tester->execute(['filename' => $filename], ['decorated' => false]);
     }
 
     /**

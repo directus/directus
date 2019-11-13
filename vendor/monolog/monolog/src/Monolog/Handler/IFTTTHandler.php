@@ -12,6 +12,7 @@
 namespace Monolog\Handler;
 
 use Monolog\Logger;
+use Monolog\Utils;
 
 /**
  * IFTTTHandler uses cURL to trigger IFTTT Maker actions
@@ -53,7 +54,7 @@ class IFTTTHandler extends AbstractProcessingHandler
             "value2" => $record["level_name"],
             "value3" => $record["message"],
         );
-        $postString = json_encode($postData);
+        $postString = Utils::jsonEncode($postData);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://maker.ifttt.com/trigger/" . $this->eventName . "/with/key/" . $this->secretKey);

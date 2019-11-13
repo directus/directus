@@ -24,6 +24,11 @@ return [
         // When using unix socket to connect to the database the host attribute should be removed
         // 'socket' => '/var/lib/mysql/mysql.sock',
         'socket' => '',
+        // Connect over TLS by using the appropriate PDO_MySQL constants:
+        // https://www.php.net/manual/en/ref.pdo-mysql.php#pdo-mysql.constants
+        //'driver_options' => [
+        //    PDO::MYSQL_ATTR_SSL_CAPATH => '/etc/ssl/certs',
+        //]
     ],
 
     'cache' => [

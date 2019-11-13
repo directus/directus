@@ -1,8 +1,0 @@
---TEST--
-"defined" support for "complex" expressions
---TEMPLATE--
-{{ (1 + 2) is defined ? 'ok' : 'ko' }}
---DATA--
-return []
---EXCEPTION--
-Twig\Error\SyntaxError: The "defined" test only works with simple variables in "index.twig" at line 2.

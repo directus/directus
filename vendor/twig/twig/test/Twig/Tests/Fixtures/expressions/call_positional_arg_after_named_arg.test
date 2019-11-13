@@ -1,8 +1,0 @@
---TEST--
-Positional arguments after named arguments in a call
---TEMPLATE--
-{{ date(date = 123456, 'Y-m-d') }}
---DATA--
-return []
---EXCEPTION--
-Twig\Error\SyntaxError: Positional arguments cannot be used after named arguments for function "date" in "index.twig" at line 2.

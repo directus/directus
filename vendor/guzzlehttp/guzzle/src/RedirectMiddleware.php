@@ -186,7 +186,7 @@ class RedirectMiddleware
         if ($options['allow_redirects']['referer']
             && $modify['uri']->getScheme() === $request->getUri()->getScheme()
         ) {
-            $uri = $request->getUri()->withUserInfo('', '');
+            $uri = $request->getUri()->withUserInfo('');
             $modify['set_headers']['Referer'] = (string) $uri;
         } else {
             $modify['remove_headers'][] = 'Referer';

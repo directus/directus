@@ -334,6 +334,38 @@
                 <source>This value should be valid JSON.</source>
                 <target>Detta värde ska vara giltig JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Denna samling bör endast innehålla unika element.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Detta värde bör vara positivt.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Detta värde bör vara antingen positivt eller noll.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Detta värde bör vara negativt.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Detta värde bör vara antingen negativt eller noll.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Detta värde är inte en giltig tidszon.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Det här lösenordet har läckt ut vid ett dataintrång, det får inte användas. Använd ett annat lösenord.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Detta värde bör ligga mellan {{ min }} och {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -38,6 +38,7 @@ class Schema {
                 new Value('engine', Types::STRING, 'InnoDB'),
                 new Value('charset', Types::STRING, 'utf8mb4'),
                 new Value('socket', Types::STRING, ''),
+                new Value('driver_options?', Types::ARRAY, []),
             ]),
             new Group('cache', [
                 new Value('enabled', Types::BOOLEAN, false),
@@ -54,6 +55,7 @@ class Schema {
                 new Value('root', Types::STRING, 'public/uploads/_/originals'),
                 new Value('root_url', Types::STRING, '/uploads/_/originals'),
                 new Value('thumb_root', Types::STRING, 'public/uploads/_/thumbnails'),
+                new Value('proxy_downloads?', Types::BOOLEAN, false),
 
                 // S3
                 new Value('key?', Types::STRING, 's3-key'),
@@ -66,6 +68,12 @@ class Schema {
                     new Value('ACL', Types::STRING, 'public-read'),
                     new Value('Cache-Control', Types::STRING, 'max-age=604800')
                 ]),
+
+                // OSS
+                new Value('OSS_ACCESS_ID?', Types::STRING, 'oss-access-id'),
+                new Value('OSS_ACCESS_KEY?', Types::STRING, 'oss-access-secret'),
+                new Value('OSS_BUCKET?', Types::STRING, 'oss-bucket'),
+                new Value('OSS_ENDPOINT?', Types::STRING, 'oss-endpoint'),
 
                 // TODO: Missing keys?
             ]),

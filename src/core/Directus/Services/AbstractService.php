@@ -219,6 +219,10 @@ abstract class AbstractService
             if ($field->hasAutoIncrement()) {
                 continue;
             }
+            
+            if($field->isSystemDateTimeType() || $field->isSystemUserType()){
+                continue;
+            }
 
             if ($field->getName() == "password" && isset($params['select_existing_or_update'])) {
                 continue;

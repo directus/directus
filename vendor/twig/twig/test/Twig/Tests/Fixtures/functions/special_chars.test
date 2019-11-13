@@ -1,8 +1,0 @@
---TEST--
-"§" custom function
---TEMPLATE--
-{{ §('foo') }}
---DATA--
-return []
---EXPECT--
-§foo§

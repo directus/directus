@@ -2,6 +2,7 @@
 
 namespace Doctrine\Common\Cache;
 
+use BadMethodCallException;
 use const XC_TYPE_VAR;
 use function ini_get;
 use function serialize;
@@ -16,9 +17,9 @@ use function xcache_unset;
 /**
  * Xcache cache driver.
  *
- * @link   www.doctrine-project.org
- *
  * @deprecated
+ *
+ * @link   www.doctrine-project.org
  */
 class XcacheCache extends CacheProvider
 {
@@ -71,12 +72,12 @@ class XcacheCache extends CacheProvider
      *
      * @return void
      *
-     * @throws \BadMethodCallException When xcache.admin.enable_auth is On.
+     * @throws BadMethodCallException When xcache.admin.enable_auth is On.
      */
     protected function checkAuthorization()
     {
         if (ini_get('xcache.admin.enable_auth')) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 'To use all features of \Doctrine\Common\Cache\XcacheCache, '
                 . 'you must set "xcache.admin.enable_auth" to "Off" in your php.ini.'
             );
@@ -91,6 +92,7 @@ class XcacheCache extends CacheProvider
         $this->checkAuthorization();
 
         $info = xcache_info(XC_TYPE_VAR, 0);
+
         return [
             Cache::STATS_HITS   => $info['hits'],
             Cache::STATS_MISSES => $info['misses'],

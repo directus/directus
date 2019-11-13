@@ -69,7 +69,7 @@ class ImageServiceProvider extends ServiceProvider
         } elseif (version_compare(IlluminateApplication::VERSION, '5.0', '<')) {
             $provider = '\Intervention\Image\ImageServiceProviderLaravel4';
         } else {
-            $provider = '\Intervention\Image\ImageServiceProviderLaravel5';
+            $provider = '\Intervention\Image\ImageServiceProviderLaravelRecent';
         }
 
         return new $provider($this->app);

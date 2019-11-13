@@ -104,7 +104,7 @@ Named Block End-Tags
 --------------------
 
 Twig allows you to put the name of the block after the end tag for better
-readability:
+readability (the name after the ``endblock`` word must match the block name):
 
 .. code-block:: twig
 
@@ -113,8 +113,6 @@ readability:
             ...
         {% endblock inner_sidebar %}
     {% endblock sidebar %}
-
-Of course, the name after the ``endblock`` word must match the block name.
 
 Block Nesting and Scope
 -----------------------

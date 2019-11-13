@@ -57,7 +57,7 @@ class FileResourceTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessageRegExp('/The file ".*" does not exist./');
-        $resource = new FileResource('/____foo/foobar'.mt_rand(1, 999999));
+        new FileResource('/____foo/foobar'.mt_rand(1, 999999));
     }
 
     public function testIsFresh()
@@ -76,7 +76,7 @@ class FileResourceTest extends TestCase
 
     public function testSerializeUnserialize()
     {
-        $unserialized = unserialize(serialize($this->resource));
+        unserialize(serialize($this->resource));
 
         $this->assertSame(realpath($this->file), $this->resource->getResource());
     }

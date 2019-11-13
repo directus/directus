@@ -534,6 +534,12 @@ class BaseTableGateway extends TableGateway
             'collection' => $tableName
         ]);
 
+        // Remove entries from directus_relations
+        $columnsTableGateway = new TableGateway(SchemaManager::COLLECTION_RELATIONS, $this->adapter);
+        $columnsTableGateway->delete([
+            'collection_many' => $tableName
+        ]);
+
         // Remove table from directus_tables
         $tablesTableGateway = new TableGateway(SchemaManager::COLLECTION_COLLECTIONS, $this->adapter);
         $tablesTableGateway->delete([
@@ -879,10 +885,12 @@ class BaseTableGateway extends TableGateway
         }
 
         //Invalidate individual cache
-        $config = static::$container->get('config');
-        if ($config->get('cache.enabled')) {
-            $cachePool = static::$container->get('cache');
-            $cachePool->invalidateTags(['entity_' . $updateTable . '_' . $result[$this->primaryKeyFieldName]]);
+        if (static::$container) {
+            $config = static::$container->get('config');
+            if ($config->get('cache.enabled')) {
+                $cachePool = static::$container->get('cache');
+                $cachePool->invalidateTags(['entity_' . $updateTable . '_' . $result[$this->primaryKeyFieldName]]);
+            }
         }
 
         return $result;
@@ -942,15 +950,16 @@ class BaseTableGateway extends TableGateway
 
             
             //Invalidate individual cache
-            $config = static::$container->get('config');
-
+            if (static::$container) {
+                $config = static::$container->get('config');
+            }
             foreach ($ids as $id) {
                 $deleteData = $deletedObject[$id];
                 $this->runHook('item.delete', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete:after', [$deleteTable, $deleteData]);
                 $this->runHook('item.delete.' . $deleteTable, [$deleteData]);
                 $this->runHook('item.delete.' . $deleteTable . ':after', [$deleteData]);
-                if ($config->get('cache.enabled')) {
+                if (isset($config) && $config->get('cache.enabled')) {
                     $cachePool = static::$container->get('cache');
                     $cachePool->invalidateTags(['entity_' . $deleteTable . '_' . $deleteData[$this->primaryKeyFieldName]]);
                 }

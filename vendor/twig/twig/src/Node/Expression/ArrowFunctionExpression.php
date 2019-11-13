@@ -44,7 +44,7 @@ class ArrowFunctionExpression extends AbstractExpression
             ;
         }
         $compiler
-            ->raw(') use ($context) { ')
+            ->raw(') use ($context, $macros) { ')
         ;
         foreach ($this->getNode('names') as $name) {
             $compiler

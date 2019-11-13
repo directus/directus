@@ -169,14 +169,13 @@ class ItemsService extends AbstractService
         $collectionFields = $payload;
 
         foreach($tableColumns as $key => $column){
-            if(!empty($recordData)){
+            if(!empty($recordData) && array_key_exists($column->getName(), $recordData)){
 
                 $columnName = $column->getName();
-              
-                $collectionFields[$columnName] = array_key_exists($column->getName(), $collectionFields) ? $collectionFields[$column->getName()]: (DataTypes::isJson($column->getType()) ? (array) $recordData[$columnName] : $recordData[$columnName]);
+
+                $collectionFields[$columnName] = array_key_exists($columnName, $collectionFields) ? $collectionFields[$columnName]: (DataTypes::isJson($column->getType()) ? (array) $recordData[$columnName] : $recordData[$columnName]);
             }
         }
-
         $this->validatePayload($collection, null,  $collectionFields, $params);
     }
 
@@ -251,7 +250,7 @@ class ItemsService extends AbstractService
 
                 if(!isset($individual['$delete'])){
                     foreach($relationalCollectionColumns as $key => $column){
-                        if(!$column->isAlias() && !$column->hasPrimaryKey() && !empty($individual[$relationalCollectionPrimaryKey])){
+                        if(!$column->hasPrimaryKey() && !empty($individual[$relationalCollectionPrimaryKey])){
                             $columnName = $column->getName();
                             $relationalCollectionData = $this->findByIds(
                                 $relationalCollectionName,

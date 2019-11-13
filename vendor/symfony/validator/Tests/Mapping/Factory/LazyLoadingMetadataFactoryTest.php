@@ -12,7 +12,9 @@
 namespace Symfony\Component\Validator\Tests\Mapping\Factory;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Mapping\Cache\Psr6Cache;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
@@ -78,41 +80,20 @@ class LazyLoadingMetadataFactoryTest extends TestCase
 
     public function testWriteMetadataToCache()
     {
-        $cache = $this->getMockBuilder('Symfony\Component\Validator\Mapping\Cache\CacheInterface')->getMock();
+        $cache = new Psr6Cache(new ArrayAdapter());
         $factory = new LazyLoadingMetadataFactory(new TestLoader(), $cache);
 
         $parentClassConstraints = [
             new ConstraintA(['groups' => ['Default', 'EntityParent']]),
             new ConstraintA(['groups' => ['Default', 'EntityInterfaceA', 'EntityParent']]),
         ];
-        $interfaceAConstraints = [
-            new ConstraintA(['groups' => ['Default', 'EntityInterfaceA']]),
-        ];
-
-        $cache->expects($this->never())
-              ->method('has');
-        $cache->expects($this->exactly(2))
-              ->method('read')
-              ->withConsecutive(
-                  [$this->equalTo(self::PARENT_CLASS)],
-                  [$this->equalTo(self::INTERFACE_A_CLASS)]
-              )
-              ->willReturn(false);
-        $cache->expects($this->exactly(2))
-              ->method('write')
-              ->withConsecutive(
-                  $this->callback(function ($metadata) use ($interfaceAConstraints) {
-                      return $interfaceAConstraints == $metadata->getConstraints();
-                  }),
-                  $this->callback(function ($metadata) use ($parentClassConstraints) {
-                      return $parentClassConstraints == $metadata->getConstraints();
-                  })
-              );
 
         $metadata = $factory->getMetadataFor(self::PARENT_CLASS);
 
         $this->assertEquals(self::PARENT_CLASS, $metadata->getClassName());
         $this->assertEquals($parentClassConstraints, $metadata->getConstraints());
+        $this->assertInstanceOf(ClassMetadata::class, $cache->read(self::PARENT_CLASS));
+        $this->assertInstanceOf(ClassMetadata::class, $cache->read(self::INTERFACE_A_CLASS));
     }
 
     public function testReadMetadataFromCache()

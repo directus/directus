@@ -29,8 +29,8 @@
         "symfony/polyfill-ctype": "^1.8"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0",
-        "symfony/debug": "^2.7",
+        "symfony/phpunit-bridge": "^4.4@dev|^5.0",
+        "symfony/debug": "^3.4|^4.2",
         "psr/container": "^1.0"
     },
     "autoload": {
@@ -42,13 +42,13 @@
         }
     },
     "autoload-dev": {
-        "psr-0" : {
-            "Twig_Tests_" : "test/"
+        "psr-4" : {
+            "Twig\\Tests\\" : "tests/"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.11-dev"
+            "dev-master": "2.12-dev"
         }
     }
 }

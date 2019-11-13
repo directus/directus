@@ -1,9 +1,0 @@
---TEST--
-"for" tag
---TEMPLATE--
-{% for i, item in items if loop.last > 0 %}
-{% endfor %}
---DATA--
-return ['items' => ['a', 'b']]
---EXCEPTION--
-Twig\Error\SyntaxError: The "loop" variable cannot be used in a looping condition in "index.twig" at line 2.

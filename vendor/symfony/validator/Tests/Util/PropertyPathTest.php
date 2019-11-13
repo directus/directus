@@ -32,6 +32,7 @@ class PropertyPathTest extends TestCase
             ['foo', 'bar', 'foo.bar', 'It append the subPath to the basePath'],
             ['foo', '[bar]', 'foo[bar]', 'It does not include the dot separator if subPath uses the array notation'],
             ['0', 'bar', '0.bar', 'Leading zeros are kept.'],
+            ['0', 1, '0.1', 'Numeric subpaths do not cause PHP 7.4 errors.'],
         ];
     }
 }

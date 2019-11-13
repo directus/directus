@@ -60,7 +60,7 @@ class FileValidator extends ConstraintValidator
                         $binaryFormat = null === $constraint->binaryFormat ? true : $constraint->binaryFormat;
                     }
 
-                    list($sizeAsString, $limitAsString, $suffix) = $this->factorizeSizes(0, $limitInBytes, $binaryFormat);
+                    list(, $limitAsString, $suffix) = $this->factorizeSizes(0, $limitInBytes, $binaryFormat);
                     $this->context->buildViolation($constraint->uploadIniSizeErrorMessage)
                         ->setParameter('{{ limit }}', $limitAsString)
                         ->setParameter('{{ suffix }}', $suffix)

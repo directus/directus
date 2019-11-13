@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Terminal;
 
 /**
  * @group tty
@@ -167,7 +168,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testAskWithAutocomplete()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -200,7 +201,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testAskWithAutocompleteCallback()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -243,7 +244,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testAskWithAutocompleteWithNonSequentialKeys()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -262,7 +263,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testAskWithAutocompleteWithExactMatch()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -298,7 +299,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
      */
     public function testAskWithAutocompleteWithMultiByteCharacter($character)
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -322,7 +323,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testAutocompleteWithTrailingBackslash()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -651,7 +652,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
         $dialog = new QuestionHelper();
 
         $question = new Question('What\'s your name?');
-        $question->setValidator(function () {
+        $question->setValidator(function ($value) {
             if (!$value) {
                 throw new \Exception('A value is required.');
             }
@@ -669,7 +670,7 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
 
     public function testTraversableAutocomplete()
     {
-        if (!$this->hasSttyAvailable()) {
+        if (!Terminal::hasSttyAvailable()) {
             $this->markTestSkipped('`stty` is required to test autocomplete functionality');
         }
 
@@ -753,13 +754,6 @@ class QuestionHelperTest extends AbstractQuestionHelperTest
             ->willReturn($interactive);
 
         return $mock;
-    }
-
-    private function hasSttyAvailable()
-    {
-        exec('stty 2>&1', $output, $exitcode);
-
-        return 0 === $exitcode;
     }
 }
 

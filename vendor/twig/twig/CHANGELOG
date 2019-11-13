@@ -1,5 +1,37 @@
+* 2.12.2 (2019-11-11)
+
+ * added supported for exponential numbers
+
+* 2.12.1 (2019-10-17)
+
+ * added the String extension in the "extra" repositories: "u" filter
+
+* 2.12.0 (2019-10-05)
+
+ * added the spaceship operator ("<=>"), useful when using an arrow function in the "sort" filter
+ * added support for an "arrow" function on the "sort" filter
+ * added the CssInliner extension in the "extra" repositories: "inline_css"
+   filter
+ * added the Inky extension in the "extra" repositories: "inky_to_html" filter
+ * added Intl extension in the "extra" repositories: "country_name",
+   "currency_name", "currency_symbol", "language_name", "locale_name",
+   "timezone_name", "format_currency", "format_number",
+   "format_*_number", "format_datetime", "format_date", and "format_time"
+   filters, and the "country_timezones" function
+ * added the Markdown extension in the "extra" repositories: "markdown_to_html",
+   and "html_to_markdown" filters
+ * added the HtmlExtension extension in the "extra" repositories: "date_uri"
+   filter, and "html_classes" function
+ * optimized "block('foo') ?? 'bar'"
+ * fixed the empty test on Traversable instances
+ * fixed array_key_exists() on objects
+ * fixed cache when opcache is installed but disabled
+ * fixed using macros in arrow functions
+ * fixed split filter on edge case
+
 * 2.11.3 (2019-06-18)
 
+ * display partial output (PHP buffer) when an error occurs in debug mode
  * fixed the filter filter (allow the result to be used several times)
  * fixed macro auto-import when a template contains only macros
 
@@ -254,7 +286,19 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.42.2 (2019-XX-XX)
+* 1.42.4 (2019-XX-XX)
+
+ * added supported for exponential numbers
+
+* 1.42.3 (2019-08-24)
+
+ * fixed the "split" filter when the delimiter is "0"
+ * fixed the "empty" test on Traversable instances
+ * fixed cache when opcache is installed but disabled
+ * fixed PHP 7.4 compatibility
+ * bumped the minimal PHP version to 5.5
+
+* 1.42.2 (2019-06-18)
 
  * Display partial output (PHP buffer) when an error occurs in debug mode
 

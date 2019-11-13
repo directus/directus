@@ -43,7 +43,9 @@ trait TranslatorTrait
      */
     public function trans($id, array $parameters = [], $domain = null, $locale = null)
     {
-        $id = (string) $id;
+        if ('' === $id = (string) $id) {
+            return '';
+        }
 
         if (!isset($parameters['%count%']) || !is_numeric($parameters['%count%'])) {
             return strtr($id, $parameters);

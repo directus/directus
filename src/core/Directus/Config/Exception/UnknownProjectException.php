@@ -6,7 +6,7 @@ use Directus\Exception\ErrorException;
 
 class UnknownProjectException extends ErrorException
 {
-    const ERROR_CODE = 22;
+    const ERROR_CODE = 24;
 
     public function __construct($project, $previous = null)
     {

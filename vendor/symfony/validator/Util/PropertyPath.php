@@ -36,12 +36,13 @@ class PropertyPath
      */
     public static function append($basePath, $subPath)
     {
-        if ('' !== (string) $subPath) {
+        $subPath = (string) $subPath;
+        if ('' !== $subPath) {
             if ('[' === $subPath[0]) {
                 return $basePath.$subPath;
             }
 
-            return '' !== (string) $basePath ? $basePath.'.'.$subPath : $subPath;
+            return '' !== $basePath ? $basePath.'.'.$subPath : $subPath;
         }
 
         return $basePath;

@@ -82,6 +82,11 @@ _MSG_;
                 '{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree',
                 [4560, 123, 4560 / 123],
             ],
+            [
+                '',
+                '',
+                [],
+            ],
         ];
     }
 

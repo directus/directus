@@ -66,9 +66,9 @@ class FieldsConfig
                     $relation = $this->getRelation('o2m', $v['collection'], $v['field']);
                     $temp = [];
                     $temp['type'] = Types::listOf(Types::userCollection($relation['collection_one']));
-                    $temp['resolve'] = function ($value) use ($relation) {
+                     $temp['resolve'] = function ($value, $args, $context, $info) use ($relation) {
                         $data = [];
-                        foreach ($value[$relation['collection_one']] as  $v) {
+                        foreach ($value[$info->fieldName] as  $v) {
                             $data[] = $v[$relation['field_many']];
                         }
                         return $data;

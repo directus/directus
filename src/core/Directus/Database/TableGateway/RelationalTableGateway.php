@@ -658,6 +658,11 @@ class RelationalTableGateway extends BaseTableGateway
             $foreignTableName = $relationship->getCollectionMany();
             $foreignJoinColumn = $relationship->getFieldMany();
 
+            // we need to store all the deleted items ids
+            // so we can use it to compare against items that were deleted in previous iterations.
+            // if we don't check against already deleted IDs, then the recursion will re-create the deleted item.
+            static $hasBeenDeletedIds = [];
+
             $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
             foreach ($foreignDataSet as &$foreignRecord) {
                 if (empty($foreignRecord)) {
@@ -669,10 +674,23 @@ class RelationalTableGateway extends BaseTableGateway
                 // due to our basic "cache" implementation on schema layer
                 $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
 
+                // check if this foreignRecord was already deleted from a previous recursive iterations.
+                $foreignTableHasBeenDeletedIds = \Directus\array_get($hasBeenDeletedIds, $ForeignTable->getTable());
+                if($hasPrimaryKey && !empty($foreignTableHasBeenDeletedIds)) {
+                    $id = $foreignRecord[$ForeignTable->primaryKeyFieldName];
+
+                    // skip if already deleted
+                    // otherwise, it will re-create the deleted item/record
+                    if(in_array($id, $foreignTableHasBeenDeletedIds))
+                        continue;
+                }
+
                 if ($hasPrimaryKey && ArrayUtils::get($foreignRecord, $this->deleteFlag) === true) {
                     $Where = new Where();
                     $Where->equalTo($ForeignTable->primaryKeyFieldName, $foreignRecord[$ForeignTable->primaryKeyFieldName]);
                     $ForeignTable->delete($Where);
+
+                    $hasBeenDeletedIds[$ForeignTable->getTable()][] = $foreignRecord[$ForeignTable->primaryKeyFieldName];
 
                     continue;
                 }
@@ -771,6 +789,11 @@ class RelationalTableGateway extends BaseTableGateway
             $params['status'] = $statusList;
         }
 
+        // If page is defined as param then add offset dynamically.
+        if (!isset($params['offset']) && isset($params['page']) && isset($params['limit'])) {
+            $params['offset'] = $params['limit'] * ($params['page'] - 1);
+        }
+        
         $params = array_merge($defaultParams, $params);
 
         if (ArrayUtils::get($params, 'sort')) {
@@ -1005,7 +1028,7 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         if (in_array('filter_count', $list) || in_array('page', $list)) {
-            $metadata = $this->createMetadataPagination($metadata, $_GET,$countedData);
+            $metadata = $this->createMetadataPagination($metadata, $this::$container->get('request')->getQueryParams(),$countedData);
         }
 
         return $metadata;
@@ -1021,7 +1044,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function createMetadataPagination(array $metadata = [], array $params = [], array $countedData = [])
     {
-        if (empty($params)) $params = $_GET;
+        if (empty($params)) $params = $this::$container->get('request')->getQueryParams();
 
         $filtered = ArrayUtils::get($params, 'filter') || ArrayUtils::get($params, 'q');
 
@@ -2255,21 +2278,31 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Replace foreign keys with foreign rows
-            foreach ($entries as &$parentRow) {
+            foreach ($entries as $key => &$parentRow) {
                 if (array_key_exists($relationalColumnName, $parentRow)) {
                     // @NOTE: Not always will be a integer
                     // @NOTE: But what about UUIDS and slugs?
                     $foreign_id = (string)$parentRow[$relationalColumnName];
                     $parentRow[$relationalColumnName] = null;
+
+                    // if the foreign_key is empty, then there's nothing more to do
+                    if(empty($foreign_id))
+                        continue;
+
                     // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
                     if (array_key_exists($foreign_id, $relatedEntries)) {
                         $parentRow[$relationalColumnName] = $relatedEntries[$foreign_id];
+                    }
+                    else{
+                        // when foreign_id is not empty but there's no $relatedEntries,
+                        // then it means it was soft-deleted.
+                        unset($entries[$key]);
                     }
                 }
             }
         }
 
-        return $entries;
+        return array_values($entries);
     }
 
     /**

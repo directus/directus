@@ -196,7 +196,8 @@ function default_ca_bundle()
         }
     }
 
-    throw new \RuntimeException(<<< EOT
+    throw new \RuntimeException(
+        <<< EOT
 No system CA bundle could be found in any of the the common system locations.
 PHP versions earlier than 5.6 are not properly configured to use the system's
 CA bundle by default. In order to verify peer certificates, you will need to
@@ -294,14 +295,14 @@ function is_host_in_noproxy($host, array $noProxyArray)
  * @param int    $options Bitmask of JSON decode options.
  *
  * @return mixed
- * @throws \InvalidArgumentException if the JSON cannot be decoded.
+ * @throws Exception\InvalidArgumentException if the JSON cannot be decoded.
  * @link http://www.php.net/manual/en/function.json-decode.php
  */
 function json_decode($json, $assoc = false, $depth = 512, $options = 0)
 {
     $data = \json_decode($json, $assoc, $depth, $options);
     if (JSON_ERROR_NONE !== json_last_error()) {
-        throw new \InvalidArgumentException(
+        throw new Exception\InvalidArgumentException(
             'json_decode error: ' . json_last_error_msg()
         );
     }
@@ -317,17 +318,29 @@ function json_decode($json, $assoc = false, $depth = 512, $options = 0)
  * @param int    $depth   Set the maximum depth. Must be greater than zero.
  *
  * @return string
- * @throws \InvalidArgumentException if the JSON cannot be encoded.
+ * @throws Exception\InvalidArgumentException if the JSON cannot be encoded.
  * @link http://www.php.net/manual/en/function.json-encode.php
  */
 function json_encode($value, $options = 0, $depth = 512)
 {
     $json = \json_encode($value, $options, $depth);
     if (JSON_ERROR_NONE !== json_last_error()) {
-        throw new \InvalidArgumentException(
+        throw new Exception\InvalidArgumentException(
             'json_encode error: ' . json_last_error_msg()
         );
     }
 
     return $json;
+}
+
+/**
+ * Wrapper for the hrtime() or microtime() functions
+ * (depending on the PHP version, one of the two is used)
+ *
+ * @return float|mixed UNIX timestamp
+ * @internal
+ */
+function _current_time()
+{
+    return function_exists('hrtime') ? hrtime(true) / 1e9 : microtime(true);
 }

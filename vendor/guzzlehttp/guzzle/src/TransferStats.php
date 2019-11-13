@@ -20,7 +20,7 @@ final class TransferStats
     /**
      * @param RequestInterface  $request          Request that was sent.
      * @param ResponseInterface $response         Response received (if any)
-     * @param null              $transferTime     Total handler transfer time.
+     * @param float|null        $transferTime     Total handler transfer time.
      * @param mixed             $handlerErrorData Handler error data.
      * @param array             $handlerStats     Handler specific stats.
      */

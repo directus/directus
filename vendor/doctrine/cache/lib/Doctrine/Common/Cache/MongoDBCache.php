@@ -2,6 +2,7 @@
 
 namespace Doctrine\Common\Cache;
 
+use InvalidArgumentException;
 use MongoCollection;
 use MongoDB\Collection;
 use const E_USER_DEPRECATED;
@@ -46,6 +47,7 @@ class MongoDBCache extends CacheProvider
      *
      * @see http://www.php.net/manual/en/mongo.readpreferences.php
      * @see http://www.php.net/manual/en/mongo.writeconcerns.php
+     *
      * @param MongoCollection|Collection $collection
      */
     public function __construct($collection)
@@ -56,7 +58,7 @@ class MongoDBCache extends CacheProvider
         } elseif ($collection instanceof Collection) {
             $this->provider = new ExtMongoDBCache($collection);
         } else {
-            throw new \InvalidArgumentException('Invalid collection given - expected a MongoCollection or MongoDB\Collection instance');
+            throw new InvalidArgumentException('Invalid collection given - expected a MongoCollection or MongoDB\Collection instance');
         }
     }
 

@@ -4,6 +4,11 @@ namespace Doctrine\Common\Cache;
 
 use Redis;
 use function array_combine;
+use function array_diff_key;
+use function array_fill_keys;
+use function array_filter;
+use function array_keys;
+use function count;
 use function defined;
 use function extension_loaded;
 use function is_bool;
@@ -55,17 +60,21 @@ class RedisCache extends CacheProvider
         $fetchedItems = array_combine($keys, $this->redis->mget($keys));
 
         // Redis mget returns false for keys that do not exist. So we need to filter those out unless it's the real data.
-        $foundItems = [];
+        $keysToFilter = array_keys(array_filter($fetchedItems, static function ($item) : bool {
+            return $item === false;
+        }));
 
-        foreach ($fetchedItems as $key => $value) {
-            if ($value === false && ! $this->redis->exists($key)) {
-                continue;
+        if ($keysToFilter) {
+            $multi = $this->redis->multi(Redis::PIPELINE);
+            foreach ($keysToFilter as $key) {
+                $multi->exists($key);
             }
-
-            $foundItems[$key] = $value;
+            $existItems     = array_filter($multi->exec());
+            $missedItemKeys = array_diff_key($keysToFilter, $existItems);
+            $fetchedItems   = array_diff_key($fetchedItems, array_fill_keys($missedItemKeys, true));
         }
 
-        return $foundItems;
+        return $fetchedItems;
     }
 
     /**
@@ -74,18 +83,14 @@ class RedisCache extends CacheProvider
     protected function doSaveMultiple(array $keysAndValues, $lifetime = 0)
     {
         if ($lifetime) {
-            $success = true;
-
             // Keys have lifetime, use SETEX for each of them
+            $multi = $this->redis->multi(Redis::PIPELINE);
             foreach ($keysAndValues as $key => $value) {
-                if ($this->redis->setex($key, $lifetime, $value)) {
-                    continue;
-                }
-
-                $success = false;
+                $multi->setex($key, $lifetime, $value);
             }
+            $succeeded = array_filter($multi->exec());
 
-            return $success;
+            return count($succedeed) == count($keysAndValues);
         }
 
         // No lifetime, use MSET
@@ -123,7 +128,7 @@ class RedisCache extends CacheProvider
      */
     protected function doDelete($id)
     {
-        return $this->redis->delete($id) >= 0;
+        return $this->redis->del($id) >= 0;
     }
 
     /**
@@ -131,7 +136,7 @@ class RedisCache extends CacheProvider
      */
     protected function doDeleteMultiple(array $keys)
     {
-        return $this->redis->delete($keys) >= 0;
+        return $this->redis->del($keys) >= 0;
     }
 
     /**
@@ -148,6 +153,7 @@ class RedisCache extends CacheProvider
     protected function doGetStats()
     {
         $info = $this->redis->info();
+
         return [
             Cache::STATS_HITS   => $info['keyspace_hits'],
             Cache::STATS_MISSES => $info['keyspace_misses'],

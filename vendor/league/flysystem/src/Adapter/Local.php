@@ -319,7 +319,7 @@ class Local extends AbstractAdapter
         $finfo = new Finfo(FILEINFO_MIME_TYPE);
         $mimetype = $finfo->file($location);
 
-        if (in_array($mimetype, ['application/octet-stream', 'inode/x-empty'])) {
+        if (in_array($mimetype, ['application/octet-stream', 'inode/x-empty', 'application/x-empty'])) {
             $mimetype = Util\MimeType::detectByFilename($location);
         }
 

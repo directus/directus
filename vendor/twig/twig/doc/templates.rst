@@ -509,10 +509,10 @@ Twig allows expressions everywhere.
 
     The operator precedence is as follows, with the lowest-precedence operators
     listed first: ``?:`` (ternary operator), ``b-and``, ``b-xor``, ``b-or``,
-    ``or``, ``and``, ``==``, ``!=``, ``<``, ``>``, ``>=``, ``<=``, ``in``,
-    ``matches``, ``starts with``, ``ends with``, ``..``, ``+``, ``-``, ``~``,
-    ``*``, ``/``, ``//``, ``%``, ``is`` (tests), ``**``, ``??``, ``|``
-    (filters), ``[]``, and ``.``.
+    ``or``, ``and``, ``==``, ``!=``, ``<=>``, ``<``, ``>``, ``>=``, ``<=``,
+    ``in``, ``matches``, ``starts with``, ``ends with``, ``..``, ``+``, ``-``,
+    ``~``, ``*``, ``/``, ``//``, ``%``, ``is`` (tests), ``**``, ``??``, ``|``
+    (filters), ``[]``, and ``.``:
 
     .. code-block:: twig
 

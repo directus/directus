@@ -27,7 +27,7 @@ abstract class AbstractFileExtractor
      */
     protected function extractFiles($resource)
     {
-        if (\is_iterable($resource)) {
+        if (is_iterable($resource)) {
             $files = [];
             foreach ($resource as $file) {
                 if ($this->canBeExtracted($file)) {

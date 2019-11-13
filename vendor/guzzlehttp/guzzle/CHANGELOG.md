@@ -1,5 +1,22 @@
 # Change Log
 
+## 6.4.1 - 2019-10-23
+
+* No `guzzle.phar` was created in 6.4.0 due expired API token. This release will fix that 
+* Added `parent::__construct()` to `FileCookieJar` and `SessionCookieJar`
+
+## 6.4.0 - 2019-10-23
+
+* Improvement: Improved error messages when using curl < 7.21.2 [#2108](https://github.com/guzzle/guzzle/pull/2108)
+* Fix: Test if response is readable before returning a summary in `RequestException::getResponseBodySummary()` [#2081](https://github.com/guzzle/guzzle/pull/2081)
+* Fix: Add support for GUZZLE_CURL_SELECT_TIMEOUT environment variable [#2161](https://github.com/guzzle/guzzle/pull/2161)
+* Improvement: Added `GuzzleHttp\Exception\InvalidArgumentException` [#2163](https://github.com/guzzle/guzzle/pull/2163)
+* Improvement: Added `GuzzleHttp\_current_time()` to use `hrtime()` if that function exists. [#2242](https://github.com/guzzle/guzzle/pull/2242)
+* Improvement: Added curl's `appconnect_time` in `TransferStats` [#2284](https://github.com/guzzle/guzzle/pull/2284)
+* Improvement: Make GuzzleException extend Throwable wherever it's available [#2273](https://github.com/guzzle/guzzle/pull/2273)
+* Fix: Prevent concurrent writes to file when saving `CookieJar` [#2335](https://github.com/guzzle/guzzle/pull/2335)
+* Improvement: Update `MockHandler` so we can test transfer time [#2362](https://github.com/guzzle/guzzle/pull/2362)
+
 ## 6.3.3 - 2018-04-22
 
 * Fix: Default headers when decode_content is specified

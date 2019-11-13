@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\RangeValidator;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class RangeValidatorTest extends ConstraintValidatorTestCase
@@ -388,5 +389,30 @@ class RangeValidatorTest extends ConstraintValidatorTestCase
             ->setParameter('{{ value }}', '"abcd"')
             ->setCode(Range::INVALID_CHARACTERS_ERROR)
             ->assertRaised();
+    }
+
+    /**
+     * @dataProvider throwsOnInvalidStringDatesProvider
+     */
+    public function testThrowsOnInvalidStringDates($expectedMessage, $value, $min, $max)
+    {
+        $this->expectException(ConstraintDefinitionException::class);
+        $this->expectExceptionMessage($expectedMessage);
+
+        $this->validator->validate($value, new Range([
+            'min' => $min,
+            'max' => $max,
+        ]));
+    }
+
+    public function throwsOnInvalidStringDatesProvider()
+    {
+        return [
+            ['The min value "foo" could not be converted to a "DateTimeImmutable" instance in the "Symfony\Component\Validator\Constraints\Range" constraint.', new \DateTimeImmutable(), 'foo', null],
+            ['The min value "foo" could not be converted to a "DateTime" instance in the "Symfony\Component\Validator\Constraints\Range" constraint.', new \DateTime(), 'foo', null],
+            ['The max value "foo" could not be converted to a "DateTimeImmutable" instance in the "Symfony\Component\Validator\Constraints\Range" constraint.', new \DateTimeImmutable(), null, 'foo'],
+            ['The max value "foo" could not be converted to a "DateTime" instance in the "Symfony\Component\Validator\Constraints\Range" constraint.', new \DateTime(), null, 'foo'],
+            ['The min value "bar" could not be converted to a "DateTimeImmutable" instance in the "Symfony\Component\Validator\Constraints\Range" constraint.', new \DateTimeImmutable(), 'bar', 'ccc'],
+        ];
     }
 }

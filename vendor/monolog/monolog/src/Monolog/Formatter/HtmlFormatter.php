@@ -11,6 +11,7 @@
 namespace Monolog\Formatter;
 
 use Monolog\Logger;
+use Monolog\Utils;
 
 /**
  * Formats incoming records into an HTML table
@@ -133,9 +134,9 @@ class HtmlFormatter extends NormalizerFormatter
 
         $data = $this->normalize($data);
         if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
-            return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            return Utils::jsonEncode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE, true);
         }
 
-        return str_replace('\\/', '/', json_encode($data));
+        return str_replace('\\/', '/', Utils::jsonEncode($data, null, true));
     }
 }

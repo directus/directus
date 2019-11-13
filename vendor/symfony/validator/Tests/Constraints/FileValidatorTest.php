@@ -450,7 +450,7 @@ abstract class FileValidatorTest extends ConstraintValidatorTestCase
             $reflection = new \ReflectionClass(\get_class(new FileValidator()));
             $method = $reflection->getMethod('factorizeSizes');
             $method->setAccessible(true);
-            list($sizeAsString, $limit, $suffix) = $method->invokeArgs(new FileValidator(), [0, UploadedFile::getMaxFilesize(), false]);
+            list(, $limit, $suffix) = $method->invokeArgs(new FileValidator(), [0, UploadedFile::getMaxFilesize(), false]);
 
             // it correctly parses the maxSize option and not only uses simple string comparison
             // 1000M should be bigger than the ini value

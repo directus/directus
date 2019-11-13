@@ -222,9 +222,149 @@
                 <source>Unsupported card type or invalid card number.</source>
                 <target>Tätä korttityyppiä ei tueta tai korttinumero on virheellinen.</target>
             </trans-unit>
+            <trans-unit id="59">
+                <source>This is not a valid International Bank Account Number (IBAN).</source>
+                <target>Arvo ei ole kelvollinen kansainvälinen pankkitilinumero (IBAN).</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>This value is not a valid ISBN-10.</source>
+                <target>Arvo ei ole kelvollinen ISBN-10.</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>This value is not a valid ISBN-13.</source>
+                <target>Arvo ei ole kelvollinen ISBN-13.</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
+                <target>Arvo ei ole kelvollinen ISBN-10 tai kelvollinen ISBN-13.</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>This value is not a valid ISSN.</source>
+                <target>Arvo ei ole kelvollinen ISSN.</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>This value is not a valid currency.</source>
+                <target>Arvo ei ole kelvollinen valuutta.</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>This value should be equal to {{ compared_value }}.</source>
+                <target>Arvo ei ole sama kuin {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>This value should be greater than {{ compared_value }}.</source>
+                <target>Arvon tulee olla suurempi kuin {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>This value should be greater than or equal to {{ compared_value }}.</source>
+                <target>Arvon tulee olla suurempi tai yhtä suuri kuin {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>This value should be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Tämä arvo tulee olla sama kuin {{ compared_value_type }} {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>This value should be less than {{ compared_value }}.</source>
+                <target>Arvon tulee olla pienempi kuin {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>This value should be less than or equal to {{ compared_value }}.</source>
+                <target>Arvon tulee olla pienempi tai yhtä suuri {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>This value should not be equal to {{ compared_value }}.</source>
+                <target>Arvon ei tule olla sama kuin {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Tämä arvo ei tule olla sama kuin {{ compared_value_type }} {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Kuvasuhde on liian suuri ({{ ratio }}). Suurin sallittu suhde on {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Kuvasuhde on liian pieni ({{ ratio }}). Pienin sallittu arvo on {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Kuva on neliä ({{ width }}x{{ height }}px). Neliöt kuvat eivät ole sallittuja.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>Kuva on vaakasuuntainen ({{ width }}x{{ height }}px). Vaakasuuntaiset kuvat eivät ole sallittuja.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>Kuva on pystysuuntainen ({{ width }}x{{ height }}px). Pystysuuntaiset kuvat eivät ole sallittuja.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Tyhjä tiedosto ei ole sallittu.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>The host could not be resolved.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Arvo ei vastaa odotettua merkistöä {{ charset }}.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Arvo ei ole kelvollinen yritystunnus (BIC).</target>
+            </trans-unit>
             <trans-unit id="82">
                 <source>Error</source>
                 <target>Virhe</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Arvo ei ole kelvollinen UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Tämän arvon tulisi olla kerrannainen {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Tämä yritystunnus (BIC) ei ole liitetty IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Arvon tulee olla kelvollinen JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Tämä ryhmä tulisi sisältää vain yksilöllisiä arvoja.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Arvon tulisi olla positiivinen.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Arvon tulisi olla joko positiivinen tai nolla.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Arvon tulisi olla negatiivinen.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Arvon tulisi olla joko negatiivinen tai nolla.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Arvo ei ole kelvollinen aikavyöhyke.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Tämä salasana on vuotanut tietomurrossa, sitä ei saa käyttää. Käytä toista salasanaa.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Arvon tulisi olla välillä {{ min }} - {{ max }}.</target>
             </trans-unit>
         </body>
     </file>

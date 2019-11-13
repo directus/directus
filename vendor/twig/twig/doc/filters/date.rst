@@ -35,7 +35,7 @@ date, use a ternary operator:
     {{ post.published_at is empty ? "" : post.published_at|date("m/d/Y") }}
 
 If no format is provided, Twig will use the default one: ``F j, Y H:i``. This
-default can be easily changed by calling the ``setDateFormat()`` method on the
+default can be changed by calling the ``setDateFormat()`` method on the
 ``core`` extension instance. The first argument is the default format for
 dates and the second one is the default format for date intervals:
 

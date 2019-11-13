@@ -167,6 +167,12 @@ class InlineTest extends TestCase
         Inline::parse('{ foo: bar } bar');
     }
 
+    public function testParseInvalidTaggedSequenceShouldThrowException()
+    {
+        $this->expectException('Symfony\Component\Yaml\Exception\ParseException');
+        Inline::parse('!foo { bar: baz } qux', Yaml::PARSE_CUSTOM_TAGS);
+    }
+
     public function testParseScalarWithCorrectlyQuotedStringShouldReturnString()
     {
         $value = "'don''t do somthin'' like that'";

@@ -113,7 +113,7 @@ class SQLite3Cache extends CacheProvider
      */
     protected function doDelete($id)
     {
-        list($idField) = $this->getFields();
+        [$idField] = $this->getFields();
 
         $statement = $this->sqlite->prepare(sprintf(
             'DELETE FROM %s WHERE %s = :id',
@@ -151,7 +151,7 @@ class SQLite3Cache extends CacheProvider
      */
     private function findById($id, bool $includeData = true) : ?array
     {
-        list($idField) = $fields = $this->getFields();
+        [$idField] = $fields = $this->getFields();
 
         if (! $includeData) {
             $key = array_search(static::DATA_FIELD, $fields);

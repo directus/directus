@@ -36,6 +36,9 @@ class Context
         if (!isset($target[$segment])) {
             $target[$segment] = [];
         }
+        if (!is_array($target[$segment])) {
+            $target[$segment] = [];
+        }
         Context::expand($target[$segment], $path, $value);
     }
 

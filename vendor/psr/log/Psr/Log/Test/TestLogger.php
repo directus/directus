@@ -142,5 +142,6 @@ class TestLogger extends AbstractLogger
     public function reset()
     {
         $this->records = [];
+        $this->recordsByLevel = [];
     }
 }

@@ -57,7 +57,12 @@ class CorsMiddleware extends AbstractMiddleware
         if ($this->isEnabled()) {
             if ($request->isOptions()) {
                 $this->processPreflightHeaders($request, $response);
-                return $response;
+
+		// These withHeader calls are a temporary hack to get around the $response here not containig the correct headers that are supposedly set above in the processpreflightheaders call. 
+               // TODO: Remove withHeaders calls here
+                return $response
+                    ->withHeader('Access-Control-Allow-Credentials', 'true')
+                    ->withHeader('Access-Control-Allow-Headers', ['X-Directus-Project', 'Content-Type', 'Authorization']);
             } else {
                 $this->processActualHeaders($request, $response);
             }

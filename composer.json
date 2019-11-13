@@ -10,7 +10,7 @@
   ],
   "require": {
     "php": "^7.1",
-    "slim/slim": "^3.0.0",
+    "slim/slim": "^3.12.2",
     "monolog/monolog": "^1.23.0",
     "zendframework/zend-db": "dev-directus",
     "league/flysystem": "^1.0",
@@ -41,7 +41,8 @@
     "ext-gd": "*",
     "webonyx/graphql-php": "^0.13.0",
     "char0n/ffmpeg-php": "^3.0.0",
-    "pragmarx/google2fa": "^5.0"
+    "pragmarx/google2fa": "^5.0",
+    "guzzlehttp/guzzle": "~6.0"
   },
   "suggest": {
     "paragonie/random_compat": "Generates cryptographically more secure pseudo-random bytes",

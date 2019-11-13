@@ -2,6 +2,7 @@
 
 namespace Doctrine\Common\Cache;
 
+use Traversable;
 use function array_values;
 use function count;
 use function iterator_to_array;
@@ -19,7 +20,7 @@ class ChainCache extends CacheProvider
      */
     public function __construct($cacheProviders = [])
     {
-        $this->cacheProviders = $cacheProviders instanceof \Traversable
+        $this->cacheProviders = $cacheProviders instanceof Traversable
             ? iterator_to_array($cacheProviders, false)
             : array_values($cacheProviders);
     }

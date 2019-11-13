@@ -37,7 +37,7 @@ class Users extends Route
         $app->patch('/{id}/tracking/page', [$this, 'trackPage']);
 
         // Enable 2FA
-        $app->post('/{id}/activate2FA', [$this, 'activate2FA']);
+        $app->post('/{id}/activate_2fa', [$this, 'activate2FA']);
     }
 
     /**
@@ -135,7 +135,7 @@ class Users extends Route
         if (strpos($id, ',') !== false) {
             return $this->batch($request, $response);
         }
-      
+
         $responseData = $service->update(
             $id,
             $payload,
@@ -286,7 +286,7 @@ class Users extends Route
         $service = new UsersService($this->container);
         $responseData = $service->activate2FA(
             $request->getAttribute('id'),
-            $request->getParsedBodyParam('tfa_secret'),
+            $request->getParsedBodyParam('2fa_secret'),
             $request->getParsedBodyParam('otp')
         );
 

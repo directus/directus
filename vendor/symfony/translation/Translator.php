@@ -71,6 +71,8 @@ class Translator implements LegacyTranslatorInterface, TranslatorInterface, Tran
      */
     private $debug;
 
+    private $cacheVary;
+
     /**
      * @var ConfigCacheFactoryInterface|null
      */
@@ -86,7 +88,7 @@ class Translator implements LegacyTranslatorInterface, TranslatorInterface, Tran
     /**
      * @throws InvalidArgumentException If a locale contains invalid characters
      */
-    public function __construct(?string $locale, MessageFormatterInterface $formatter = null, string $cacheDir = null, bool $debug = false)
+    public function __construct(?string $locale, MessageFormatterInterface $formatter = null, string $cacheDir = null, bool $debug = false, array $cacheVary = [])
     {
         $this->setLocale($locale);
 
@@ -97,6 +99,7 @@ class Translator implements LegacyTranslatorInterface, TranslatorInterface, Tran
         $this->formatter = $formatter;
         $this->cacheDir = $cacheDir;
         $this->debug = $debug;
+        $this->cacheVary = $cacheVary;
         $this->hasIntlFormatter = $formatter instanceof IntlFormatterInterface;
     }
 
@@ -176,7 +179,7 @@ class Translator implements LegacyTranslatorInterface, TranslatorInterface, Tran
             $this->assertValidLocale($locale);
         }
 
-        $this->fallbackLocales = $locales;
+        $this->fallbackLocales = $this->cacheVary['fallback_locales'] = $locales;
     }
 
     /**
@@ -392,7 +395,7 @@ EOF
 
     private function getCatalogueCachePath($locale)
     {
-        return $this->cacheDir.'/catalogue.'.$locale.'.'.strtr(substr(base64_encode(hash('sha256', serialize($this->fallbackLocales), true)), 0, 7), '/', '_').'.php';
+        return $this->cacheDir.'/catalogue.'.$locale.'.'.strtr(substr(base64_encode(hash('sha256', serialize($this->cacheVary), true)), 0, 7), '/', '_').'.php';
     }
 
     /**

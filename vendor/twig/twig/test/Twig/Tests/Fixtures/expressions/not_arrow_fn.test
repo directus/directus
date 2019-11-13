@@ -1,8 +1,0 @@
---TEST--
-A string in parentheses cannot be confused with an arrow function
---TEMPLATE--
-{{ ["foo", "bar"]|join(("f")) }}
---DATA--
-return []
---EXPECT--
-foofbar

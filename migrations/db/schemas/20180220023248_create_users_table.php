@@ -66,7 +66,7 @@ class CreateUsersTable extends AbstractMigration
         $table->addColumn('locale', 'string', [
             'limit' => 8,
             'null' => true,
-            'default' => 'en-US'
+            'default' => null
         ]);
         $table->addColumn('locale_options', 'text', [
             'null' => true,
@@ -103,6 +103,13 @@ class CreateUsersTable extends AbstractMigration
         ]);
         $table->addColumn('external_id', 'string', [
             'limit' => 255,
+            'null' => true,
+            'default' => null
+        ]);
+
+        $table->addColumn('2fa_secret', 'string', [
+            'limit' => 100,
+            'encoding' => 'utf8',
             'null' => true,
             'default' => null
         ]);

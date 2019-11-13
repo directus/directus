@@ -227,7 +227,7 @@ class SetCookie
     /**
      * Get whether or not this is a secure cookie
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getSecure()
     {
@@ -247,7 +247,7 @@ class SetCookie
     /**
      * Get whether or not this is a session cookie
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getDiscard()
     {

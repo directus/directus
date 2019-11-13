@@ -135,28 +135,6 @@ if (!function_exists('parse_twig')) {
     }
 }
 
-if (!function_exists('send_reset_password_email')) {
-    /**
-     * Sends a new password email
-     *
-     * @param $user
-     * @param string $password
-     */
-    function send_reset_password_email($user, $password)
-    {
-        $data = [
-            'new_password' => $password,
-            'user_full_name' => get_user_full_name($user),
-        ];
-        send_mail_with_template('reset-password.twig', $data, function (Message $message) use ($user) {
-            $message->setSubject(
-                sprintf('New Temporary Password: %s', get_directus_setting('project_name', ''))
-            );
-            $message->setTo($user['email']);
-        });
-    }
-}
-
 if (!function_exists('send_forgot_password_email')) {
     /**
      * Sends a new reset password email
@@ -164,13 +142,13 @@ if (!function_exists('send_forgot_password_email')) {
      * @param array $user
      * @param string $token
      */
-    function send_forgot_password_email(array $user, $token)
+    function send_forgot_password_email(array $user, $url)
     {
         $data = [
-            'reset_token' => $token,
+            'reset_url' => $url,
             'user_full_name' => get_user_full_name($user),
         ];
-        send_mail_with_template('forgot-password.twig', $data, function (Message  $message) use ($user) {
+        send_mail_with_template('reset-password.twig', $data, function (Message  $message) use ($user) {
             $message->setSubject(
                 sprintf('Password Reset Request: %s', get_directus_setting('project_name', ''))
             );

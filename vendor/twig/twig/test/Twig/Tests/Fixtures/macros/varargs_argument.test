@@ -1,7 +1,0 @@
---TEST--
-macro with varargs argument
---TEMPLATE--
-{% macro test(varargs) %}
-{% endmacro %}
---EXCEPTION--
-Twig\Error\SyntaxError: The argument "varargs" in macro "test" cannot be defined because the variable "varargs" is reserved for arbitrary arguments in "index.twig" at line 2.

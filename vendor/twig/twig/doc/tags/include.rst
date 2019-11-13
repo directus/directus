@@ -36,7 +36,7 @@ of that file:
               {% include 'template.html' %}
           {% endfilter %}
           {# vs #}
-          {% include('template.html')|upper %}
+          {{ include('template.html')|upper }}
 
     * The ``include`` function does not impose any specific order for
       arguments thanks to :ref:`named arguments <named-arguments>`.

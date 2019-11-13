@@ -69,6 +69,10 @@ class UtilsService extends AbstractService
     {
         $ga = new Google2FA();
         $tfa_secret = $ga->generateSecretKey();
-        return ['2fa_secret' => $tfa_secret];
+        return [
+            'data' => [
+                '2fa_secret' => $tfa_secret
+            ]
+        ];
     }
 }

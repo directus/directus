@@ -278,6 +278,18 @@
                 <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
                 <target>Väärtus ei tohiks olla identne väärtusega {{ compared_value_type }} {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Kuvasuhe on liiga suur ({{ ratio }}). Lubatud maksimaalne suhe on {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Kuvasuhe on liiga väike ({{ ratio }}). Oodatav minimaalne suhe on {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Pilt on ruudukujuline ({{ width }}x{{ height }}px). Ruudukujulised pildid pole lubatud.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

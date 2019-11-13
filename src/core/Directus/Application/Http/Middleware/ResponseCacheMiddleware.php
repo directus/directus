@@ -6,6 +6,14 @@ use Directus\Cache\Response as CacheResponse;
 use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
 use Directus\Util\StringUtils;
+use Slim\Http\Cookies;
+use function Directus\get_directus_setting;
+use function Directus\decrypt_static_token;
+use function Directus\get_project_session_cookie_name;
+use function Directus\get_request_authorization_token;
+use Directus\Services\UserSessionService;
+use Directus\Database\TableGateway\DirectusUserSessionsTableGateway;
+use Directus\Util\DateTimeUtils;
 
 class ResponseCacheMiddleware extends AbstractMiddleware
 {
@@ -52,7 +60,6 @@ class ResponseCacheMiddleware extends AbstractMiddleware
         } else {
             /** @var Response $response */
             $response = $next($request, $response);
-
             $body = $response->getBody();
             $body->rewind();
             $bodyContent = $body->getContents();
@@ -61,6 +68,48 @@ class ResponseCacheMiddleware extends AbstractMiddleware
             $cache->process($key, $bodyContent, $headers);
         }
 
+        $authorizationTokenObject = get_request_authorization_token($request);
+
+        $accessToken = null;
+        if(!empty($authorizationTokenObject['token'])){
+            $userSessionService = new UserSessionService($container);
+            $userSessionService->destroy([
+                'token_expired_at < ?' => DateTimeUtils::now()->toString()
+            ]);
+            $expirationMinutes =  get_directus_setting('auto_sign_out');
+            $expiry = new \DateTimeImmutable('now + '.$expirationMinutes.'minutes');
+
+            switch($authorizationTokenObject['type']){
+                case DirectusUserSessionsTableGateway::TOKEN_COOKIE :
+                    $accessToken = decrypt_static_token($authorizationTokenObject['token']);
+                    $userSession = $userSessionService->find(['token' => $accessToken]);
+                    $cookie = new Cookies();
+                    $expiryAt = $userSession ? $expiry->format(\DateTime::COOKIE) : DateTimeUtils::now()->toString();
+                    $cookie->set(
+                        get_project_session_cookie_name($request),
+                        [
+                            'value' => $authorizationTokenObject['token'],
+                            'expires' => $expiryAt,
+                            'path'=>'/',
+                            'httponly' => true
+                        ]
+                    );
+
+                    $response =  $response->withAddedHeader('Set-Cookie',$cookie->toHeaders());
+                    break;
+                default :
+                    $userSession = $userSessionService->find(['token' => $authorizationTokenObject['token']]);
+                    break;
+            }
+        }
+        if(isset($userSession)){
+            $userSessionService->update($userSession['id'],['token_expired_at' => $expiry->format('Y-m-d H:i:s')]);
+        }
+        $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'));
+        $config = $container->get('config');
+        if ($config->get('cors.credentials')) {
+        $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
+        }
         return $response;
     }
 }

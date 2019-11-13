@@ -11,6 +11,7 @@ use Directus\Authentication\User\UserInterface;
 use Directus\Database\TableGateway\DirectusPermissionsTableGateway;
 use Directus\Exception\UnauthorizedLocationException;
 use function Directus\get_request_authorization_token;
+use function Directus\get_static_token_based_on_type;
 use Directus\Permissions\Acl;
 use Directus\Services\AuthService;
 use Directus\Services\UsersService;
@@ -48,7 +49,6 @@ class AuthenticationMiddleware extends AbstractMiddleware
             $user = $this->authenticate($request);
 
             $hookEmitter = $this->container->get('hook_emitter');
-
             if (!$user && !$publicRoleId) {
                 $exception = new UserNotAuthenticatedException();
                 $hookEmitter->run('auth.fail', [$exception]);
@@ -110,7 +110,7 @@ class AuthenticationMiddleware extends AbstractMiddleware
             $hookEmitter->run('auth.fail', [$exception]);
             throw $exception;
         }
-       
+
         // TODO: Adding an user should auto set its ID and GROUP
         // TODO: User data should be casted to its data type
         // TODO: Make sure that the group is not empty
@@ -152,7 +152,8 @@ class AuthenticationMiddleware extends AbstractMiddleware
      */
     protected function getAuthToken(Request $request)
     {
-        return get_request_authorization_token($request);
+        $authToken = get_request_authorization_token($request);
+        return get_static_token_based_on_type($authToken);
     }
 
     /**
@@ -225,8 +226,11 @@ class AuthenticationMiddleware extends AbstractMiddleware
 
         if ($num_elements > 3
             &&$target_array[$num_elements - 3] == 'users'
-            && $target_array[$num_elements - 2] == strval($id)
-            && $target_array[$num_elements - 1] == 'activate2FA') {
+            && (
+                $target_array[$num_elements - 2] == strval($id) ||
+                $target_array[$num_elements - 2] == 'me'
+            )
+            && $target_array[$num_elements - 1] == 'activate_2fa') {
             return true;
         }
 

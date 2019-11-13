@@ -429,8 +429,8 @@ class UsersService extends AbstractService
     public function activate2FA($id, $tfa_secret, $otp)
     {
         $this->validate(
-            ['tfa_secret' => $tfa_secret, 'otp' => $otp],
-            ['tfa_secret' => 'required|string', 'otp' => 'required|string']
+            ['2fa_secret' => $tfa_secret, 'otp' => $otp],
+            ['2fa_secret' => 'required|string', 'otp' => 'required|string']
         );
 
         $ga = new Google2FA();
