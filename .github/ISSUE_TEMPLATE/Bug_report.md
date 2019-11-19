@@ -39,4 +39,7 @@ For security issues, please email support@directus.io directly.
 - Web Server: [eg: Apache 2.4.37]
 - PHP Version: [eg: 7.2.0]
 - Database: [eg: MySQL 8.0.12]
+- Directus Release Version: [eg: v8.0.0-rc.1]
+    - Directus App Version: [eg: 7.11.0] (if Directus Release Version is <= `190927A`)
+    - Directus API Version: [eg: 2.6.0] (if Directus Release Version is <= `190927A`)
 - Install Method: [eg: cloned `master` branch]
