@@ -265,11 +265,11 @@ class CoreServicesProvider
 
 
                 if ($dateCreated = $collection->getDateCreatedField()) {
-                    $payload[$dateCreated->getName()] = DateTimeUtils::nowInTimezone()->toString();
+                    $payload[$dateCreated->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
                 if ($dateModified = $collection->getDateModifiedField()) {
-                    $payload[$dateModified->getName()] = DateTimeUtils::nowInTimezone()->toString();
+                    $payload[$dateModified->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
                 // Directus Users created user are themselves (primary key)
@@ -356,7 +356,7 @@ class CoreServicesProvider
                 /** @var Acl $acl */
                 $acl = $container->get('acl');
                 if ($dateModified = $collection->getDateModifiedField()) {
-                    $payload[$dateModified->getName()] = DateTimeUtils::nowInTimezone()->toString();
+                    $payload[$dateModified->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
                 if ($userModified = $collection->getUserModifiedField()) {
@@ -676,43 +676,37 @@ class CoreServicesProvider
 
             $emitter->addFilter('item.create:before', $onInsertOrUpdate);
             $emitter->addFilter('item.update:before', $onInsertOrUpdate);
-            $preventUsePublicGroup = function (Payload $payload) use ($container) {
-                $data = $payload->getData();
-
-                if (!ArrayUtils::has($data, 'role')) {
-                    return $payload;
-                }
-
-                $roleId = ArrayUtils::get($data, 'role');
-                if (is_array($roleId)) {
-                    $roleId = ArrayUtils::get($roleId, 'id');
-                }
-
-                if (!$roleId) {
-                    return $payload;
-                }
-
-                if ($roleId == ROLES::PUBLIC) {
-                    throw new ForbiddenException('Users cannot be added into the public group');
+            
+            $beforeSavingFiles = function ($payload) use ($container) {
+                $acl = $container->get('acl');
+                if (!$acl->canCreate('directus_files')) {
+                    throw new ForbiddenException('You are not allowed to upload files');
                 }
 
                 return $payload;
             };
-            $emitter->addFilter('item.create.directus_user_roles:before', $preventUsePublicGroup);
-            $emitter->addFilter('item.update.directus_user_roles:before', $preventUsePublicGroup);
-            $beforeSavingFiles = function ($payload) use ($container) {
+            $beforeUpdatingFiles = function ($payload) use ($container) {
                 $acl = $container->get('acl');
                 if (!$acl->canUpdate('directus_files')) {
-                    throw new ForbiddenException('You are not allowed to upload, edit or delete files');
+                    throw new ForbiddenException('You are not allowed to edit files');
+                }
+
+                return $payload;
+            };
+            $beforeDeletingFiles = function ($payload) use ($container) {
+                $acl = $container->get('acl');
+                if (!$acl->canDelete('directus_files')) {
+                    throw new ForbiddenException('You are not allowed to delete files');
                 }
 
                 return $payload;
             };
             $emitter->addAction('file.save', $beforeSavingFiles);
+            $emitter->addAction('file.update', $beforeUpdatingFiles);
             // TODO: Make insert actions and filters
             $emitter->addFilter('item.create.directus_files:before', $beforeSavingFiles);
-            $emitter->addFilter('item.update.directus_files:before', $beforeSavingFiles);
-            $emitter->addFilter('item.delete.directus_files:before', $beforeSavingFiles);
+            $emitter->addFilter('item.update.directus_files:before', $beforeUpdatingFiles);
+            $emitter->addFilter('item.delete.directus_files:before', $beforeDeletingFiles);
 
             $emitter->addAction('auth.request:credentials', function () use ($container) {
                 /** @var Session $session */
@@ -915,7 +909,7 @@ class CoreServicesProvider
             if (is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
                 $pool = $poolConfig;
             } else {
-                if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'memcache', 'redis', 'void'])) {
+                if (!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'memcache', 'redis', 'rediscluster', 'void'])) {
                     throw new InvalidCacheAdapterException();
                 }
 
@@ -982,7 +976,7 @@ class CoreServicesProvider
                     $pool = $adapter == 'memcached' ? new MemcachedCachePool($client) : new MemcacheCachePool($client);
                 }
 
-                if ($adapter == 'redis') {
+                if ($adapter == 'redis' || $adapter == 'rediscluster') {
 
                     if (!extension_loaded('redis')) {
                         throw new InvalidCacheConfigurationException($adapter);
@@ -991,15 +985,16 @@ class CoreServicesProvider
                     $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
                     $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
                     $socket = (isset($poolConfig['socket'])) ? $poolConfig['socket'] : null;
-
-                    $client = new \Redis();
-
-                    if ($socket) {
-                        $client->connect($socket);
+                    if ($adapter == 'rediscluster') {
+                        $client = new \RedisCluster(NULL,["$host:$port"]);
                     } else {
-                        $client->connect($host, $port);
+                        $client = new \Redis();
+                        if ($socket) {
+                            $client->connect($socket);
+                        } else {
+                            $client->connect($host, $port);
+                        }
                     }
-
                     $pool = new RedisCachePool($client);
                 }
             }

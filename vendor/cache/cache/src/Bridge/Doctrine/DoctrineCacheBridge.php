@@ -116,7 +116,7 @@ class DoctrineCacheBridge extends CacheProvider
      */
     protected function doFlush()
     {
-        $this->cachePool->clear();
+        return $this->cachePool->clear();
     }
 
     /**

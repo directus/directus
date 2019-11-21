@@ -17,4 +17,4 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 2.2.0
 
-No changelog before this version
+* No changelog before this version

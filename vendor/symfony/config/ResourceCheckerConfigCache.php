@@ -144,15 +144,13 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
 
     /**
      * Gets the meta file path.
-     *
-     * @return string The meta file path
      */
-    private function getMetaFile()
+    private function getMetaFile(): string
     {
         return $this->file.'.meta';
     }
 
-    private function safelyUnserialize($file)
+    private function safelyUnserialize(string $file)
     {
         $meta = false;
         $content = file_get_contents($file);

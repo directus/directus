@@ -1,0 +1,29 @@
+language: php
+sudo: false
+
+matrix:
+    include:
+      - php: 5.6
+
+services:
+    - memcached
+
+cache:
+    directories:
+      - "$HOME/.composer/cache"
+
+before_install:
+    - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
+    - bash <(curl -s https://raw.githubusercontent.com/php-cache/cache/master/build/php/5.6/Memcache.sh)
+
+install:
+    - composer update --prefer-dist --prefer-stable
+
+script:
+    - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - pip install --user codecov && codecov
+
+notifications:
+    email: false

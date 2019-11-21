@@ -22,7 +22,7 @@
     "intervention/image": "^2.4",
     "directus/oauth2-okta": "dev-master",
     "directus/proxy-detection": "^0.5.1",
-    "cache/cache": "^1.0",
+    "cache/cache": "dev-master",
     "akrabat/ip-address-middleware": "^1.0",
     "firebase/php-jwt": "^5.0",
     "symfony/validator": "^3.3",

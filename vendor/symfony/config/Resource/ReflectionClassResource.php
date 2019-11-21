@@ -98,7 +98,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         } while ($class = $class->getParentClass());
     }
 
-    private function computeHash()
+    private function computeHash(): string
     {
         if (null === $this->classReflector) {
             try {
@@ -117,7 +117,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         return hash_final($hash);
     }
 
-    private function generateSignature(\ReflectionClass $class)
+    private function generateSignature(\ReflectionClass $class): iterable
     {
         yield $class->getDocComment();
         yield (int) $class->isFinal();

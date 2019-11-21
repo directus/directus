@@ -12,7 +12,7 @@ class ProjectsDelete extends Route
     public function __invoke(Request $request, Response $response)
     {
         $installService = new ProjectService($this->container);
-        $installService->delete($request->getAttribute('name'));
+        $installService->delete($request);
 
         return $this->responseWithData($request, $response, []);
     }

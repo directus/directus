@@ -1,0 +1,50 @@
+{
+    "name": "cache/util",
+    "type": "library",
+    "description": "PSR-6 and PSR-16 Caching Utilities",
+    "keywords": [
+        "cache",
+        "psr6",
+        "psr16",
+        "utilities",
+        "util"
+    ],
+    "homepage": "http://www.php-cache.com/en/latest/",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/nyholm"
+        },
+        {
+            "name": "RJ Garcia",
+            "email": "rj@bighead.net",
+            "homepage": "https://github.com/ragboyjr"
+        }
+    ],
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "psr/cache": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.21",
+        "cache/array-adapter": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cache\\Util\\": ""
+        },
+        "files": ["SimpleCache/util.php"],
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

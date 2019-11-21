@@ -32,6 +32,10 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
      */
     public function __construct(?string $locale, array $messages = [])
     {
+        if (null === $locale) {
+            @trigger_error(sprintf('Passing "null" to the first argument of the "%s" method has been deprecated since Symfony 4.4 and will throw an error in 5.0.', __METHOD__), E_USER_DEPRECATED);
+        }
+
         $this->locale = $locale;
         $this->messages = $messages;
     }

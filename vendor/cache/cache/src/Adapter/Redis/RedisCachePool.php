@@ -12,6 +12,7 @@
 namespace Cache\Adapter\Redis;
 
 use Cache\Adapter\Common\AbstractCachePool;
+use Cache\Adapter\Common\Exception\CachePoolException;
 use Cache\Adapter\Common\PhpCacheItem;
 use Cache\Hierarchy\HierarchicalCachePoolTrait;
 use Cache\Hierarchy\HierarchicalPoolInterface;
@@ -29,10 +30,19 @@ class RedisCachePool extends AbstractCachePool implements HierarchicalPoolInterf
     protected $cache;
 
     /**
-     * @param \Redis $cache
+     * @param \Redis|\RedisArray|\RedisCluster $cache
      */
-    public function __construct(\Redis $cache)
+    public function __construct($cache)
     {
+        if (!$cache instanceof \Redis
+            && !$cache instanceof \RedisArray
+            && !$cache instanceof \RedisCluster
+        ) {
+            throw new CachePoolException(
+                'Cache instance must be of type \Redis, \RedisArray, or \RedisCluster'
+            );
+        }
+
         $this->cache = $cache;
     }
 
@@ -53,7 +63,44 @@ class RedisCachePool extends AbstractCachePool implements HierarchicalPoolInterf
      */
     protected function clearAllObjectsFromCache()
     {
-        return $this->cache->flushDb();
+        if ($this->cache instanceof \RedisCluster) {
+            return $this->clearAllObjectsFromCacheCluster();
+        }
+
+        $result = $this->cache->flushDb();
+
+        if (!is_array($result)) {
+            return $result;
+        }
+
+        $success = true;
+
+        foreach ($result as $serverResult) {
+            if (!$serverResult) {
+                $success = false;
+                break;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Clear all objects from all nodes in the cluster.
+     *
+     * @return bool false if error
+     */
+    protected function clearAllObjectsFromCacheCluster()
+    {
+        $nodes = $this->cache->_masters();
+
+        foreach ($nodes as $node) {
+            if (!$this->cache->flushDB($node)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

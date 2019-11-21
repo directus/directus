@@ -42,4 +42,4 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 0.3.1
 
-No changelog before this version
+* No changelog before this version

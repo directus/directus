@@ -13,6 +13,8 @@ namespace Cache\Adapter\Illuminate;
 
 use Cache\Adapter\Common\AbstractCachePool;
 use Cache\Adapter\Common\PhpCacheItem;
+use Cache\Hierarchy\HierarchicalCachePoolTrait;
+use Cache\Hierarchy\HierarchicalPoolInterface;
 use Illuminate\Contracts\Cache\Store;
 
 /**
@@ -20,8 +22,10 @@ use Illuminate\Contracts\Cache\Store;
  *
  * @author Florian Voutzinos <florian@voutzinos.com>
  */
-class IlluminateCachePool extends AbstractCachePool
+class IlluminateCachePool extends AbstractCachePool implements HierarchicalPoolInterface
 {
+    use HierarchicalCachePoolTrait;
+
     /**
      * @type Store
      */
@@ -44,7 +48,7 @@ class IlluminateCachePool extends AbstractCachePool
 
         $data = serialize([true, $item->get(), $item->getTags(), $item->getExpirationTimestamp()]);
 
-        $this->store->put($item->getKey(), $data, $ttl);
+        $this->store->put($this->getHierarchyKey($item->getKey()), $data, $ttl);
 
         return true;
     }
@@ -54,7 +58,7 @@ class IlluminateCachePool extends AbstractCachePool
      */
     protected function fetchObjectFromCache($key)
     {
-        if (null === $data = $this->store->get($key)) {
+        if (null === $data = $this->store->get($this->getHierarchyKey($key))) {
             return [false, null, [], null];
         }
 
@@ -74,7 +78,17 @@ class IlluminateCachePool extends AbstractCachePool
      */
     protected function clearOneObjectFromCache($key)
     {
-        return $this->store->forget($key);
+        $path      = null;
+        $keyString = $this->getHierarchyKey($key, $path);
+        if ($path) {
+            if ($this->store->get($path) === null) {
+                $this->store->put($path, 0, 0);
+            }
+            $this->store->increment($path);
+        }
+        $this->clearHierarchyKeyCache();
+
+        return $this->store->forget($keyString);
     }
 
     /**
@@ -124,5 +138,13 @@ class IlluminateCachePool extends AbstractCachePool
         }
 
         $this->store->forever($name, $list);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDirectValue($name)
+    {
+        return $this->store->get($name);
     }
 }

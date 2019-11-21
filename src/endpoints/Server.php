@@ -9,6 +9,7 @@ use Directus\Application\Http\Response;
 use Directus\Exception\NotInstalledException;
 use Directus\Util\StringUtils;
 use Directus\Services\ServerService;
+use Directus\Application\Http\Middleware\TableGatewayMiddleware;
 
 class Server extends Route
 {
@@ -19,18 +20,22 @@ class Server extends Route
     {
         \Directus\create_ping_route($app);
         $app->get('/projects', [$this, 'projects']);
+        $app->post('/projects', \Directus\Api\Routes\ProjectsCreate::class);
+        $app->delete('/projects/{name}', \Directus\Api\Routes\ProjectsDelete::class)
+            ->add(new TableGatewayMiddleware($this->container));
+
         $app->get('/info', [$this, 'getInfo']);
     }
 
     /**
      * Return the projects
-     * 
+     *
      * @return Response
      */
     public function projects(Request $request, Response $response)
     {
         $scannedDirectory = \Directus\scan_config_folder();
-        
+
         $projectNames = [];
         if(empty($scannedDirectory)){
             throw new NotInstalledException('This Directus instance has not been configured. Install via the Directus App (eg: /admin) or read more about configuration at: https://docs.directus.io/getting-started/installation.html#configure');
@@ -42,14 +47,14 @@ class Server extends Route
                 }
             }
         }
-  
+
         $responseData['data'] = $projectNames;
         return $this->responseWithData($request, $response, $responseData);
-    }	    
+    }
 
      /**
      * Return the current setup of server.
-     * 
+     *
      * @return Response
      */
     public function getInfo(Request $request, Response $response)
@@ -88,5 +93,5 @@ class Server extends Route
             ]
         ];
         return $this->responseWithData($request, $response, $responseData);
-    }	    
+    }
 }

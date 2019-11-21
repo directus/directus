@@ -12,6 +12,7 @@
 namespace Cache\Adapter\MongoDB;
 
 use Cache\Adapter\Common\AbstractCachePool;
+use Cache\Adapter\Common\JsonBinaryArmoring;
 use Cache\Adapter\Common\PhpCacheItem;
 use Cache\Adapter\Common\TagSupportWithArray;
 use MongoDB\Collection;
@@ -23,6 +24,7 @@ use MongoDB\Driver\Manager;
  */
 class MongoDBCachePool extends AbstractCachePool
 {
+    use JsonBinaryArmoring;
     use TagSupportWithArray;
 
     /**
@@ -70,7 +72,12 @@ class MongoDBCachePool extends AbstractCachePool
             }
         }
 
-        return [true, unserialize($object->data), unserialize($object->tags), $object->expirationTimestamp];
+        return [
+            true,
+            $this->thawValue($object->data),
+            $this->thawValue($object->tags),
+            $object->expirationTimestamp,
+        ];
     }
 
     /**
@@ -100,8 +107,8 @@ class MongoDBCachePool extends AbstractCachePool
     {
         $object = [
             '_id'                 => $item->getKey(),
-            'data'                => serialize($item->get()),
-            'tags'                => serialize($item->getTags()),
+            'data'                => $this->freezeValue($item->get()),
+            'tags'                => $this->freezeValue($item->getTags()),
             'expirationTimestamp' => $item->getExpirationTimestamp(),
         ];
 
@@ -124,7 +131,7 @@ class MongoDBCachePool extends AbstractCachePool
             return;
         }
 
-        return unserialize($object->data);
+        return $this->thawValue($object->data);
     }
 
     /**
@@ -134,9 +141,19 @@ class MongoDBCachePool extends AbstractCachePool
     {
         $object = [
             '_id'  => $name,
-            'data' => serialize($value),
+            'data' => $this->freezeValue($value),
         ];
 
         $this->collection->updateOne(['_id' => $name], ['$set' => $object], ['upsert' => true]);
+    }
+
+    private function freezeValue($value)
+    {
+        return static::jsonArmor(serialize($value));
+    }
+
+    private function thawValue($value)
+    {
+        return unserialize(static::jsonDeArmor($value));
     }
 }

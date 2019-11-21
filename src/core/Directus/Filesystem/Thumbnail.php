@@ -121,8 +121,17 @@ class Thumbnail
         $image->setIteratorIndex(0);
         $image->setImageFormat($format);
         $image->setImageBackgroundColor('#ffffff');
-        $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_REMOVE);
+        
+        // Only Imagick 3.4.4 contains the ALPHACHANNEL_REMOVE constant
+        if(\Imagick::IMAGICK_EXTNUM >= 30404){
+            $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_REMOVE);
+        }
+        else{
+            $image->setImageAlphaChannel(12);
+        }
+        
         $image = $image->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
+        
         return $image->getImageBlob();
     }
 

@@ -37,9 +37,8 @@ class TreeBuilder implements NodeParentInterface
     /**
      * Creates the root node.
      *
-     * @param string      $name    The name of the root node
-     * @param string      $type    The type of the root node
-     * @param NodeBuilder $builder A custom node builder instance
+     * @param string $name The name of the root node
+     * @param string $type The type of the root node
      *
      * @return ArrayNodeDefinition|NodeDefinition The root node (as an ArrayNodeDefinition when the type is 'array')
      *

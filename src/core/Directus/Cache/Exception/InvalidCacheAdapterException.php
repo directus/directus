@@ -11,7 +11,7 @@ class InvalidCacheAdapterException extends ErrorException
 
     public function __construct()
     {
-        parent::__construct("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'memcache', 'redis'.", static::ERROR_CODE);
+        parent::__construct("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'memcache', 'redis', 'rediscluster'.", static::ERROR_CODE);
     }
 
     public function getStatusCode()

@@ -130,9 +130,6 @@ if (!function_exists('scan_config_folder')) {
         if(!empty($scannedDirectory)){
             foreach($scannedDirectory as $fileName){
                 $fileObject = explode(".",$fileName);
-                if (StringUtils::startsWith($fileName, '_')) {
-                    continue;
-                }
                 if(end($fileObject) == "php" ){
                     $projectNames[] = implode(".",$fileObject);
                 }

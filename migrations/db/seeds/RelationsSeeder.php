@@ -62,18 +62,10 @@ class RelationsSeeder extends AbstractSeed
                 'collection_one' => 'directus_activity'
             ],
             [
-                'collection_many' => 'directus_user_roles',
-                'field_many' => 'user',
-                'collection_one' => 'directus_users',
-                'field_one' => 'roles',
-                'junction_field' => 'role',
-            ],
-            [
-                'collection_many' => 'directus_user_roles',
+                'collection_many' => 'directus_users',
                 'field_many' => 'role',
                 'collection_one' => 'directus_roles',
-                'field_one' => 'users',
-                'junction_field' => 'user',
+                'field_one' => 'users'
             ],
             [
                 'collection_many' => 'directus_users',

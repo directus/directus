@@ -1,3 +1,0 @@
-fr{
-    symfony{"Symfony est génial"}
-}

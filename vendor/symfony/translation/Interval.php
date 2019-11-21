@@ -99,7 +99,7 @@ class Interval
 EOF;
     }
 
-    private static function convertNumber($number)
+    private static function convertNumber(string $number): float
     {
         if ('-Inf' === $number) {
             return log(0);

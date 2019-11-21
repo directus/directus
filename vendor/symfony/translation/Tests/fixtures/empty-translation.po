@@ -1,3 +1,0 @@
-msgid "foo"
-msgstr ""
-

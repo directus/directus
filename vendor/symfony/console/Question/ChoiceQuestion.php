@@ -135,9 +135,15 @@ class ChoiceQuestion extends Question
                     throw new InvalidArgumentException(sprintf($errorMessage, $selected));
                 }
 
-                $selectedChoices = array_map('trim', explode(',', $selected));
+                $selectedChoices = explode(',', $selected);
             } else {
-                $selectedChoices = [trim($selected)];
+                $selectedChoices = [$selected];
+            }
+
+            if ($this->isTrimmable()) {
+                foreach ($selectedChoices as $k => $v) {
+                    $selectedChoices[$k] = trim($v);
+                }
             }
 
             $multiselectChoices = [];

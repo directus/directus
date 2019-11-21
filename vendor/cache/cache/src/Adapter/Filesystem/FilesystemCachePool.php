@@ -16,7 +16,7 @@ use Cache\Adapter\Common\Exception\InvalidArgumentException;
 use Cache\Adapter\Common\PhpCacheItem;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
@@ -24,7 +24,7 @@ use League\Flysystem\Filesystem;
 class FilesystemCachePool extends AbstractCachePool
 {
     /**
-     * @type Filesystem
+     * @type FilesystemInterface
      */
     private $filesystem;
 
@@ -36,10 +36,10 @@ class FilesystemCachePool extends AbstractCachePool
     private $folder;
 
     /**
-     * @param Filesystem $filesystem
-     * @param string     $folder
+     * @param FilesystemInterface $filesystem
+     * @param string              $folder
      */
-    public function __construct(Filesystem $filesystem, $folder = 'cache')
+    public function __construct(FilesystemInterface $filesystem, $folder = 'cache')
     {
         $this->folder = $folder;
 

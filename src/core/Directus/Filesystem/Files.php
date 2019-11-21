@@ -292,9 +292,10 @@ class Files
 
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-        $this->emitter->run('file.save', ['name' => $fileName, 'size' => $size]);
+        $event = $replace ? 'file.update' : 'file.save';
+        $this->emitter->run($event, ['name' => $fileName, 'size' => $size]);
         $this->write($fileName, $fileData, $replace);
-        $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => $size]);
+        $this->emitter->run($event.':after', ['name' => $fileName, 'size' => $size]);
 
         #open local tmp file since s3 bucket is private
         if(isset($fileData->file)){
@@ -581,7 +582,7 @@ class Files
         $this->emitter->run('file.save:after', ['name' => $targetName, 'size' => strlen($data)]);
 
         $fileData['name'] = basename($finalPath);
-        $fileData['date_uploaded'] = DateTimeUtils::nowInTimezone()->toString();
+        $fileData['date_uploaded'] = DateTimeUtils::nowInUTC()->toString();
         $fileData['storage'] = $this->config['adapter'];
 
         return $fileData;

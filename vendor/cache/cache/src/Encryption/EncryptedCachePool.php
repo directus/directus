@@ -11,10 +11,10 @@
 
 namespace Cache\Encryption;
 
+use Cache\Adapter\Common\Exception\InvalidArgumentException;
 use Cache\TagInterop\TaggableCacheItemPoolInterface;
 use Defuse\Crypto\Key;
 use Psr\Cache\CacheItemInterface;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Wraps a CacheItemInterface with EncryptedItemDecorator.
@@ -59,7 +59,7 @@ class EncryptedCachePool implements TaggableCacheItemPoolInterface
     public function getItems(array $keys = [])
     {
         return array_map(function (CacheItemInterface $inner) {
-            if (!($inner instanceof EncryptedItemDecorator)) {
+            if (!$inner instanceof EncryptedItemDecorator) {
                 return new EncryptedItemDecorator($inner, $this->key);
             }
 

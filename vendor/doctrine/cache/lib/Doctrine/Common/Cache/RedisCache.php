@@ -90,7 +90,7 @@ class RedisCache extends CacheProvider
             }
             $succeeded = array_filter($multi->exec());
 
-            return count($succedeed) == count($keysAndValues);
+            return count($succeeded) == count($keysAndValues);
         }
 
         // No lifetime, use MSET

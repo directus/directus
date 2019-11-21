@@ -352,12 +352,6 @@ class InstallerUtils
             'token' => $data['user_token'],
             'timezone' => $data['timezone'],
             'locale' => $data['locale'],
-        ]);
-
-        $userRolesTableGateway = new TableGateway('directus_user_roles', $db);
-
-        $userRolesTableGateway->insert([
-            'user' => $tableGateway->getLastInsertValue(),
             'role' => 1
         ]);
 
@@ -597,14 +591,6 @@ class InstallerUtils
             SchemaManager::COLLECTION_SETTINGS => [
                 'create' => Acl::LEVEL_NONE,
                 'read' => Acl::LEVEL_FULL,
-                'update' => Acl::LEVEL_NONE,
-                'delete' => Acl::LEVEL_NONE,
-                'comment' => Acl::COMMENT_LEVEL_NONE,
-                'explain' => Acl::EXPLAIN_LEVEL_NONE,
-            ],
-            SchemaManager::COLLECTION_USER_ROLES => [
-                'create' => Acl::LEVEL_NONE,
-                'read' => Acl::LEVEL_MINE,
                 'update' => Acl::LEVEL_NONE,
                 'delete' => Acl::LEVEL_NONE,
                 'comment' => Acl::COMMENT_LEVEL_NONE,

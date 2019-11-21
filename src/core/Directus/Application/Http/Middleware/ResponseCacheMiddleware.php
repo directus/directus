@@ -71,40 +71,45 @@ class ResponseCacheMiddleware extends AbstractMiddleware
         $authorizationTokenObject = get_request_authorization_token($request);
 
         $accessToken = null;
-        if(!empty($authorizationTokenObject['token'])){
-            $userSessionService = new UserSessionService($container);
-            $userSessionService->destroy([
-                'token_expired_at < ?' => DateTimeUtils::now()->toString()
-            ]);
-            $expirationMinutes =  get_directus_setting('auto_sign_out');
-            $expiry = new \DateTimeImmutable('now + '.$expirationMinutes.'minutes');
+        try{
+            if(!empty($authorizationTokenObject['token'])){
+                $userSessionService = new UserSessionService($container);
+                $userSessionService->destroy([
+                    'token_expired_at < ?' => DateTimeUtils::now()->toString()
+                ]);
+                $expirationMinutes =  get_directus_setting('auto_sign_out');
+                $expiry = new \DateTimeImmutable('now + '.$expirationMinutes.'minutes');
 
-            switch($authorizationTokenObject['type']){
-                case DirectusUserSessionsTableGateway::TOKEN_COOKIE :
-                    $accessToken = decrypt_static_token($authorizationTokenObject['token']);
-                    $userSession = $userSessionService->find(['token' => $accessToken]);
-                    $cookie = new Cookies();
-                    $expiryAt = $userSession ? $expiry->format(\DateTime::COOKIE) : DateTimeUtils::now()->toString();
-                    $cookie->set(
-                        get_project_session_cookie_name($request),
-                        [
-                            'value' => $authorizationTokenObject['token'],
-                            'expires' => $expiryAt,
-                            'path'=>'/',
-                            'httponly' => true
-                        ]
-                    );
+                switch($authorizationTokenObject['type']){
+                    case DirectusUserSessionsTableGateway::TOKEN_COOKIE :
+                        $accessToken = decrypt_static_token($authorizationTokenObject['token']);
+                        $userSession = $userSessionService->find(['token' => $accessToken]);
+                        $cookie = new Cookies();
+                        $expiryAt = $userSession ? $expiry->format(\DateTime::COOKIE) : DateTimeUtils::now()->toString();
+                        $cookie->set(
+                            get_project_session_cookie_name($request),
+                            [
+                                'value' => $authorizationTokenObject['token'],
+                                'expires' => $expiryAt,
+                                'path'=>'/',
+                                'httponly' => true
+                            ]
+                        );
 
-                    $response =  $response->withAddedHeader('Set-Cookie',$cookie->toHeaders());
-                    break;
-                default :
-                    $userSession = $userSessionService->find(['token' => $authorizationTokenObject['token']]);
-                    break;
+                        $response =  $response->withAddedHeader('Set-Cookie',$cookie->toHeaders());
+                        break;
+                    default :
+                        $userSession = $userSessionService->find(['token' => $authorizationTokenObject['token']]);
+                        break;
+                }
             }
+            if(isset($userSession)){
+                $userSessionService->update($userSession['id'],['token_expired_at' => $expiry->format('Y-m-d H:i:s')]);
+            }
+        }catch(\Exception $e){
+            $container->get('logger')->error($e->getMessage());
         }
-        if(isset($userSession)){
-            $userSessionService->update($userSession['id'],['token_expired_at' => $expiry->format('Y-m-d H:i:s')]);
-        }
+
         $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'));
         $config = $container->get('config');
         if ($config->get('cors.credentials')) {

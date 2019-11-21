@@ -33,6 +33,10 @@ class CreateUsersTable extends AbstractMigration
             'limit' => 16,
             'default' => \Directus\Database\TableGateway\DirectusUsersTableGateway::STATUS_DRAFT
         ]);
+        $table->addColumn('role', 'integer', [
+            'null' => true,
+            'default' => null
+        ]);
         $table->addColumn('first_name', 'string', [
             'limit' => 50,
             'null' => true,
@@ -106,7 +110,12 @@ class CreateUsersTable extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
-
+        $table->addColumn('theme', 'string', [
+            'limit' => 100,
+            'encoding' => 'utf8',
+            'null' => true,
+            'default' => 'auto'
+        ]);
         $table->addColumn('2fa_secret', 'string', [
             'limit' => 100,
             'encoding' => 'utf8',

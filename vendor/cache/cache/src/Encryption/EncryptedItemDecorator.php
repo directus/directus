@@ -11,6 +11,7 @@
 
 namespace Cache\Encryption;
 
+use Cache\Adapter\Common\JsonBinaryArmoring;
 use Cache\TagInterop\TaggableCacheItemInterface;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Key;
@@ -22,6 +23,8 @@ use Defuse\Crypto\Key;
  */
 class EncryptedItemDecorator implements TaggableCacheItemInterface
 {
+    use JsonBinaryArmoring;
+
     /**
      * The cacheItem should always contain encrypted data.
      *
@@ -67,11 +70,11 @@ class EncryptedItemDecorator implements TaggableCacheItemInterface
     {
         $type = gettype($value);
 
-        if ($type === 'object') {
+        if ($type === 'object' || $type === 'array') {
             $value = serialize($value);
         }
 
-        $json = json_encode(['type' => $type, 'value' => $value]);
+        $json = json_encode(['type' => $type, 'value' => static::jsonArmor($value)]);
 
         $this->cacheItem->set(Crypto::encrypt($json, $this->key));
 
@@ -155,11 +158,11 @@ class EncryptedItemDecorator implements TaggableCacheItemInterface
      */
     private function transform(array $item)
     {
-        if ($item['type'] === 'object') {
-            return unserialize($item['value']);
-        }
+        $value = static::jsonDeArmor($item['value']);
 
-        $value = $item['value'];
+        if ($item['type'] === 'object' || $item['type'] === 'array') {
+            return unserialize($value);
+        }
 
         settype($value, $item['type']);
 

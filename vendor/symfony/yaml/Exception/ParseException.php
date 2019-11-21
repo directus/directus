@@ -30,7 +30,7 @@ class ParseException extends RuntimeException
      * @param string|null     $parsedFile The file name where the error occurred
      * @param \Exception|null $previous   The previous exception
      */
-    public function __construct(string $message, int $parsedLine = -1, string $snippet = null, string $parsedFile = null, \Exception $previous = null)
+    public function __construct(string $message, int $parsedLine = -1, string $snippet = null, string $parsedFile = null, \Throwable $previous = null)
     {
         $this->parsedFile = $parsedFile;
         $this->parsedLine = $parsedLine;

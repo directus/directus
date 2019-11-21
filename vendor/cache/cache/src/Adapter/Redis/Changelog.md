@@ -4,6 +4,11 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## UNRELEASED
 
+## 1.1.0
+
+### Added
+* Allow \RedisArray and \RedisCluster objects for RedisCachePool
+
 ## 1.0.0
 
 ### Fixed
@@ -36,4 +41,4 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 0.4.1
 
-No changelog before this version
+* No changelog before this version

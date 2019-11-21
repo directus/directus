@@ -130,12 +130,8 @@ class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterfac
 
     /**
      * Logs for missing translations.
-     *
-     * @param string      $id
-     * @param string|null $domain
-     * @param string|null $locale
      */
-    private function log($id, $domain, $locale)
+    private function log(?string $id, ?string $domain, ?string $locale)
     {
         if (null === $domain) {
             $domain = 'messages';

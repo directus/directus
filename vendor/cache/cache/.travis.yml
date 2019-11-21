@@ -1,6 +1,6 @@
 language: php
 sudo: required
-dist: precise
+dist: trusty
 env:
   global:
     - COVERAGE=false
@@ -20,6 +20,7 @@ matrix:
       - php: 7.0
         env: COVERAGE=true
       - php: 7.1
+      - php: 7.2
       - php: 5.6
 
 services:
@@ -30,7 +31,7 @@ services:
 addons:
   apt:
     sources:
-      - mongodb-3.2-precise
+      - mongodb-3.2-trusty
     packages:
       - parallel
       - mongodb-org-server
@@ -43,6 +44,7 @@ before_install:
     - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini || true; fi
     - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
     - ./build/php/all.sh
+    - ./build/RedisClusterSetup.sh
     - sleep 5 # To make sure all services installed and running
     - |
       # General configuration

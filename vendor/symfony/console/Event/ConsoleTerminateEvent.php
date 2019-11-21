@@ -19,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Allows to manipulate the exit code of a command after its execution.
  *
  * @author Francesco Levorato <git@flevour.net>
+ *
+ * @final since Symfony 4.4
  */
 class ConsoleTerminateEvent extends ConsoleEvent
 {

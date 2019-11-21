@@ -243,7 +243,7 @@ class UsersService extends AbstractService
         if (!$user) {
             /** @var Provider $auth */
             $auth = $this->container->get('auth');
-            $datetime = DateTimeUtils::nowInTimezone();
+            $datetime = DateTimeUtils::nowInUTC();
             $invitationToken = $auth->generateInvitationToken([
                 'date' => $datetime->toString(),
                 'exp' => $datetime->inDays(30)->getTimestamp(),
@@ -353,11 +353,9 @@ class UsersService extends AbstractService
      */
     protected function isLastAdmin($id)
     {
-        $result = $this->createTableGateway(SchemaManager::COLLECTION_USER_ROLES, false)->fetchAll(function (Select $select) use ($id) {
+        $result = $this->createTableGateway(SchemaManager::COLLECTION_USERS, false)->fetchAll(function (Select $select) use ($id) {
             $select->columns(['role']);
             $select->where(['role' => 1]);
-            $on = sprintf('%s.id = %s.user', SchemaManager::COLLECTION_USERS, SchemaManager::COLLECTION_USER_ROLES);
-            $select->join(SchemaManager::COLLECTION_USERS, $on, ['user' => 'id']);
         });
 
         $usersIds = [];
@@ -384,9 +382,15 @@ class UsersService extends AbstractService
         try {
             $result = $this->createTableGateway(SchemaManager::COLLECTION_ROLES, false)->fetchAll(function (Select $select) use ($id) {
                 $select->columns(['enforce_2fa']);
-                $select->where(['user' => $id]);
-                $on = sprintf('%s.role = %s.id', SchemaManager::COLLECTION_USER_ROLES, SchemaManager::COLLECTION_ROLES);
-                $select->join(SchemaManager::COLLECTION_USER_ROLES, $on, ['id' => 'role']);
+                $select->where(['ur.id' => $id]);
+                $select->join(
+                    ['ur' => SchemaManager::COLLECTION_USERS],
+                    sprintf('ur.role = %s.id', SchemaManager::COLLECTION_ROLES),
+                    [
+                        'role'
+                    ]
+                );
+
             });
 
             $enforce_2fa = $result->current()['enforce_2fa'];

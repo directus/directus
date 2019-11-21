@@ -283,7 +283,7 @@ abstract class AbstractCachePool implements PhpCachePool, LoggerAwareInterface, 
             $this->handleException($e, __FUNCTION__);
         }
         if (!isset($key[0])) {
-            $e =  new InvalidArgumentException('Cache key cannot be an empty string');
+            $e = new InvalidArgumentException('Cache key cannot be an empty string');
             $this->handleException($e, __FUNCTION__);
         }
         if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {

@@ -9,6 +9,12 @@
 This is the main repository for all our cache adapters and libraries. To read about 
 features like tagging and hierarchy support please read the shared documentation at [www.php-cache.com](http://www.php-cache.com). 
 
+Back in 2016, this was the first library supporting PSR-6. We created Symfony bundles
+and made many great libraries in the PHP-cache organization. This was a few years ago 
+and the library is not activly maintained. Starting a new project one should consider 
+using the more performant and activly supported 
+[Symfony Cache](https://symfony.com/doc/current/components/cache.html).
+
 ### Notice
 
 This library is for development use. All pull requests to the adapters, and libraries included in here, should be made to this library.

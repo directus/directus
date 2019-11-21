@@ -1,4 +1,0 @@
-msgid "foo"
-msgid_plural "foos"
-msgstr[3] "bars"
-msgstr[1] "bar"

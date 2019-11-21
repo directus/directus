@@ -39,8 +39,9 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(?string $prefix, string $pattern, bool $recursive, bool $forExclusion = false, array $excludedPrefixes = [])
+    public function __construct(string $prefix, string $pattern, bool $recursive, bool $forExclusion = false, array $excludedPrefixes = [])
     {
+        ksort($excludedPrefixes);
         $this->prefix = realpath($prefix) ?: (file_exists($prefix) ? $prefix : false);
         $this->pattern = $pattern;
         $this->recursive = $recursive;
@@ -62,7 +63,7 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
      */
     public function __toString()
     {
-        return 'glob.'.$this->prefix.$this->pattern.(int) $this->recursive;
+        return 'glob.'.$this->prefix.(int) $this->recursive.$this->pattern.(int) $this->forExclusion.implode("\0", $this->excludedPrefixes);
     }
 
     /**
@@ -91,6 +92,9 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
         return ['prefix', 'pattern', 'recursive', 'hash', 'forExclusion', 'excludedPrefixes'];
     }
 
+    /**
+     * @return \Traversable
+     */
     public function getIterator()
     {
         if (!file_exists($this->prefix) || (!$this->recursive && '' === $this->pattern)) {
@@ -173,7 +177,7 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
         }
     }
 
-    private function computeHash()
+    private function computeHash(): string
     {
         $hash = hash_init('md5');
 

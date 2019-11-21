@@ -41,7 +41,7 @@ trait HierarchicalCachePoolTrait
      * @param string $key      The original key
      * @param string &$pathKey A cache key for the path. If this key is changed everything beyond that path is changed.
      *
-     * @return string
+     * @return string|array
      */
     protected function getHierarchyKey($key, &$pathKey = null)
     {
@@ -102,7 +102,7 @@ trait HierarchicalCachePoolTrait
      * This will take a hierarchy key ("|foo|bar") with tags ("|foo|bar!tagHash") and return an array with
      * each level in the hierarchy appended with the tags. ["foo!tagHash", "bar!tagHash"].
      *
-     * @param string $key
+     * @param string $string
      *
      * @return array
      */

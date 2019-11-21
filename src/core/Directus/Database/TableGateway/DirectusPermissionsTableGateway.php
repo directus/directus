@@ -42,8 +42,8 @@ class DirectusPermissionsTableGateway extends RelationalTableGateway
     {
         $select = new Select(['p' => $this->table]);
 
-        $subSelect = new Select(['ur' => 'directus_user_roles']);
-        $subSelect->where->equalTo('user', $userId);
+        $subSelect = new Select(['ur' => 'directus_users']);
+        $subSelect->where->equalTo('ur.id', $userId);
         $subSelect->limit(1);
 
         $select->join(
@@ -55,7 +55,7 @@ class DirectusPermissionsTableGateway extends RelationalTableGateway
             $select::JOIN_RIGHT
         );
 
-        $select->where->equalTo('ur.user', $userId);
+        $select->where->equalTo('ur.id', $userId);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

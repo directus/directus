@@ -717,7 +717,6 @@ class BaseTableGateway extends TableGateway
     protected function executeSelect(Select $select)
     {
 
-
         $useFilter = $this->shouldUseFilter();
         unset($this->options['filter']);
 
@@ -1185,9 +1184,6 @@ class BaseTableGateway extends TableGateway
             switch ($this->table) {
                 case SchemaManager::COLLECTION_USERS:
                     $userCreatedField = $collectionObject->getField('id');
-                    break;
-                case SchemaManager::COLLECTION_USER_ROLES:
-                    $userCreatedField = $collectionObject->getField('user');
                     break;
             }
         }

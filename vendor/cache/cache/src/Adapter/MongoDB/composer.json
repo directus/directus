@@ -26,17 +26,18 @@
     ],
     "require": {
         "php": "^5.6 || ^7.0",
+        "cache/adapter-common": "^1.1",
+        "mongodb/mongodb": "^1.0",
         "psr/cache": "^1.0",
-        "psr/simple-cache": "^1.0",
-        "cache/adapter-common": "^1.0",
-        "mongodb/mongodb": "^1.0"
+        "psr/simple-cache": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7.21",
         "cache/integration-tests": "^0.16"
     },
     "provide": {
-        "psr/cache-implementation": "^1.0"
+        "psr/cache-implementation": "^1.0",
+        "psr/simple-cache-implementation": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +49,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }

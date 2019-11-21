@@ -75,4 +75,4 @@ cache storage. The list contains keys to items that uses that tag.
 
 ## 0.3.1
 
-No changelog before this version
+* No changelog before this version

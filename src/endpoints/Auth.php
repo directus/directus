@@ -79,6 +79,7 @@ class Auth extends Route
             unset($responseData['data']['user']);
         }
         $responseData['data'] = !empty($responseData['data']) ? $responseData['data'] : null;
+
         return $this->responseWithData($request, $response, $responseData);
     }
 
@@ -118,11 +119,13 @@ class Auth extends Route
         $expirationMinutes =  get_directus_setting('auto_sign_out');
         $expiry = new \DateTimeImmutable('now + '.$expirationMinutes.'minutes');
         $userSessionService = new UserSessionService($this->container);
+
         if(!empty($authorizationTokenObject['token'])){
             $accessToken = decrypt_static_token($authorizationTokenObject['token']);
             $userSessionObject = $userSessionService->find(['token' => $accessToken]);
             $sessionToken = $userSessionObject['token'];
         }else{
+          
             $userSession = $userSessionService->create([
                 'user' => $data['user']['id'],
                 'token' => $data['user']['token'],
@@ -158,6 +161,7 @@ class Auth extends Route
     public function storeJwtSession($data){
         $expirationMinutes =  get_directus_setting('auto_sign_out');
         $expiry = new \DateTimeImmutable('now + '.$expirationMinutes.'minutes');
+
         $userSessionService = new UserSessionService($this->container);
         $userSessionService->create([
             'user' => $data['user']['id'],
@@ -237,7 +241,10 @@ class Auth extends Route
                 $request->getParsedBodyParam('email')
             );
         } catch (\Exception $e) {
-            $this->container->get('logger')->error($e);
+            $this->container->get('logger')->error($e->getMessage());
+            if(!empty($e->getCode())){
+                throw $e;
+            }
             throw new MailNotSentException();
         }
 

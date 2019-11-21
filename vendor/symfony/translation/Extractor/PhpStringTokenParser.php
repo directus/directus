@@ -106,7 +106,7 @@ class PhpStringTokenParser
         );
     }
 
-    private static function parseCallback($matches)
+    private static function parseCallback(array $matches): string
     {
         $str = $matches[1];
 

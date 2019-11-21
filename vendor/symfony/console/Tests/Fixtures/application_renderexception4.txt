@@ -1,6 +1,0 @@
-
-                               
-  Command "foo" is not define  
-  d.                           
-                               
-

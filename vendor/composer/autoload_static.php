@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
+class ComposerStaticInit754d3232bc30282130e946da89277429
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -17,6 +17,7 @@ class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '1b48a6058e8e720e1eecd2313510b7e9' => __DIR__ . '/..' . '/cache/cache/src/inc.php',
         '79c6260273d1303c3d11c2b0b06acb78' => __DIR__ . '/../..' . '/src/helpers/all.php',
     );
 
@@ -374,6 +375,7 @@ class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
         'Cache\\Adapter\\Common\\Exception\\CachePoolException' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/Exception/CachePoolException.php',
         'Cache\\Adapter\\Common\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/Exception/InvalidArgumentException.php',
         'Cache\\Adapter\\Common\\HasExpirationTimestampInterface' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/HasExpirationTimestampInterface.php',
+        'Cache\\Adapter\\Common\\JsonBinaryArmoring' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/JsonBinaryArmoring.php',
         'Cache\\Adapter\\Common\\PhpCacheItem' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/PhpCacheItem.php',
         'Cache\\Adapter\\Common\\PhpCachePool' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/PhpCachePool.php',
         'Cache\\Adapter\\Common\\TagSupportWithArray' => __DIR__ . '/..' . '/cache/cache/src/Adapter/Common/TagSupportWithArray.php',
@@ -397,6 +399,10 @@ class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
         'Cache\\Hierarchy\\HierarchicalPoolInterface' => __DIR__ . '/..' . '/cache/cache/src/Hierarchy/HierarchicalPoolInterface.php',
         'Cache\\Namespaced\\NamespacedCachePool' => __DIR__ . '/..' . '/cache/cache/src/Namespaced/NamespacedCachePool.php',
         'Cache\\Prefixed\\PrefixedCachePool' => __DIR__ . '/..' . '/cache/cache/src/Prefixed/PrefixedCachePool.php',
+        'Cache\\Prefixed\\PrefixedSimpleCache' => __DIR__ . '/..' . '/cache/cache/src/Prefixed/PrefixedSimpleCache.php',
+        'Cache\\Prefixed\\PrefixedUtilityTrait' => __DIR__ . '/..' . '/cache/cache/src/Prefixed/PrefixedUtilityTrait.php',
+        'Cache\\SessionHandler\\AbstractSessionHandler' => __DIR__ . '/..' . '/cache/cache/src/SessionHandler/AbstractSessionHandler.php',
+        'Cache\\SessionHandler\\Psr16SessionHandler' => __DIR__ . '/..' . '/cache/cache/src/SessionHandler/Psr16SessionHandler.php',
         'Cache\\SessionHandler\\Psr6SessionHandler' => __DIR__ . '/..' . '/cache/cache/src/SessionHandler/Psr6SessionHandler.php',
         'Cache\\TagInterop\\TaggableCacheItemInterface' => __DIR__ . '/..' . '/cache/cache/src/TagInterop/TaggableCacheItemInterface.php',
         'Cache\\TagInterop\\TaggableCacheItemPoolInterface' => __DIR__ . '/..' . '/cache/cache/src/TagInterop/TaggableCacheItemPoolInterface.php',
@@ -2726,10 +2732,10 @@ class ComposerStaticInit40e9e295fd5e1a358223c9942976e620
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit40e9e295fd5e1a358223c9942976e620::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit754d3232bc30282130e946da89277429::$classMap;
 
         }, null, ClassLoader::class);
     }

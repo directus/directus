@@ -31,4 +31,4 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 0.1.0
 
-First release
+* First release

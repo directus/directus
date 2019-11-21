@@ -31,11 +31,12 @@
     "require-dev": {
         "defuse/php-encryption": "^2.0",
         "phpunit/phpunit": "^5.7.21",
-        "mockery/mockery": "^0.9.9",
+        "mockery/mockery": "^1.0",
         "cache/integration-tests": "^0.16",
         "predis/predis": "^1.1",
         "symfony/cache": "^3.1",
-        "illuminate/cache": "^5.4"
+        "symfony/polyfill-php70": "^1.6",
+        "illuminate/cache": "^5.4 || ^5.5 || ^5.6"
     },
     "suggest": {
         "ext-apc": "APC extension is required to use the APC Adapter",
@@ -64,7 +65,8 @@
         "cache/hierarchical-cache": "*",
         "cache/session-handler": "*",
         "cache/taggable-cache": "*",
-        "cache/illuminate-adapter": "*"
+        "cache/illuminate-adapter": "*",
+        "cache/util": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -72,8 +74,14 @@
         "psr-4": {
             "Cache\\": "src/"
         },
+        "files": ["src/inc.php"],
         "exclude-from-classmap": [
             "**/Tests/"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
     }
 }

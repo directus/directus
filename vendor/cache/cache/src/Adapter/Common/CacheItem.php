@@ -240,9 +240,9 @@ class CacheItem implements PhpCacheItem
     private function initialize()
     {
         if ($this->callable !== null) {
-            // $f will be $adapter->fetchObjectFromCache();
-            $f                         = $this->callable;
-            $result                    = $f();
+            // $func will be $adapter->fetchObjectFromCache();
+            $func                      = $this->callable;
+            $result                    = $func();
             $this->hasValue            = $result[0];
             $this->value               = $result[1];
             $this->prevTags            = isset($result[2]) ? $result[2] : [];

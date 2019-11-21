@@ -1,2 +1,0 @@
-en.res
-fr.res

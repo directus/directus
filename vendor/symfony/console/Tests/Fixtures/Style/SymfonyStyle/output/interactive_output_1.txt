@@ -1,7 +1,0 @@
-
- What's your name?:
- > 
- How are you?:
- > 
- Where do you come from?:
- > 

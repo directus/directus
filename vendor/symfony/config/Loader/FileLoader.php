@@ -59,10 +59,11 @@ abstract class FileLoader extends Loader
     /**
      * Imports a resource.
      *
-     * @param mixed       $resource       A Resource
-     * @param string|null $type           The resource type or null if unknown
-     * @param bool        $ignoreErrors   Whether to ignore import errors or not
-     * @param string|null $sourceResource The original resource importing the new resource
+     * @param mixed                $resource       A Resource
+     * @param string|null          $type           The resource type or null if unknown
+     * @param bool                 $ignoreErrors   Whether to ignore import errors or not
+     * @param string|null          $sourceResource The original resource importing the new resource
+     * @param string|string[]|null $exclude        Glob patterns to exclude from the import
      *
      * @return mixed
      *
@@ -70,12 +71,25 @@ abstract class FileLoader extends Loader
      * @throws FileLoaderImportCircularReferenceException
      * @throws FileLocatorFileNotFoundException
      */
-    public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null)
+    public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null/*, $exclude = null*/)
     {
+        if (\func_num_args() < 5 && __CLASS__ !== \get_class($this) && 0 !== strpos(\get_class($this), 'Symfony\Component\\') && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
+            @trigger_error(sprintf('The "%s()" method will have a new "$exclude = null" argument in version 5.0, not defining it is deprecated since Symfony 4.4.', __METHOD__), E_USER_DEPRECATED);
+        }
+        $exclude = \func_num_args() >= 5 ? func_get_arg(4) : null;
+
         if (\is_string($resource) && \strlen($resource) !== $i = strcspn($resource, '*?{[')) {
+            $excluded = [];
+            foreach ((array) $exclude as $pattern) {
+                foreach ($this->glob($pattern, true, $_, false, true) as $path => $info) {
+                    // normalize Windows slashes
+                    $excluded[str_replace('\\', '/', $path)] = true;
+                }
+            }
+
             $ret = [];
             $isSubpath = 0 !== $i && false !== strpos(substr($resource, 0, $i), '/');
-            foreach ($this->glob($resource, false, $_, $ignoreErrors || !$isSubpath) as $path => $info) {
+            foreach ($this->glob($resource, false, $_, $ignoreErrors || !$isSubpath, false, $excluded) as $path => $info) {
                 if (null !== $res = $this->doImport($path, $type, $ignoreErrors, $sourceResource)) {
                     $ret[] = $res;
                 }
@@ -125,7 +139,7 @@ abstract class FileLoader extends Loader
         yield from $resource;
     }
 
-    private function doImport($resource, $type = null, bool $ignoreErrors = false, $sourceResource = null)
+    private function doImport($resource, string $type = null, bool $ignoreErrors = false, $sourceResource = null)
     {
         try {
             $loader = $this->resolve($resource, $type);

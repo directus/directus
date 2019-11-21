@@ -8,11 +8,11 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ### Added
 
-The `CachePoolChain` does now implement `Cache\TagInterop\TaggableCacheItemPoolInterface`
+* The `CachePoolChain` does now implement `Cache\TagInterop\TaggableCacheItemPoolInterface`
 
 ### Removed
 
-- Removed deprecated function `clearTags`
+* Removed deprecated function `clearTags`
 
 ## 0.5.1
 
@@ -35,4 +35,4 @@ The `CachePoolChain` does now implement `Cache\TagInterop\TaggableCacheItemPoolI
 
 ## 0.3.1
 
-No changelog before this version
+* No changelog before this version

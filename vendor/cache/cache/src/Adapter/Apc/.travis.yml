@@ -1,0 +1,37 @@
+language: php
+sudo: false
+
+matrix:
+    include:
+      - php: 7.0
+
+cache:
+    directories:
+      - "$HOME/.composer/cache"
+
+before_install:
+    - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
+    - PHP_INI_FILE=`php -r "echo php_ini_loaded_file();"`
+    - |
+        echo "apc.enabled=1
+        apc.enable_cli=1
+        apc.use_request_time=0
+        " > ./apc.ini
+    - phpenv config-add ./apc.ini
+    - yes '' | pecl install -f apcu
+    - yes '' | pecl install -f apcu_bc-beta
+    - sed -i '1d' ${PHP_INI_FILE}
+    - echo "extension=apc.so" > ./apcu_bc.ini
+    - phpenv config-add ./apcu_bc.ini
+
+install:
+    - composer update --prefer-dist --prefer-stable
+
+script:
+    - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - pip install --user codecov && codecov
+
+notifications:
+    email: false

@@ -2,6 +2,7 @@
 
 namespace Directus\Services;
 
+use Directus\Application\Http\Request;
 use Directus\Database\Exception\ConnectionFailedException;
 use Directus\Exception\ForbiddenException;
 use Directus\Exception\InvalidConfigPathException;
@@ -119,8 +120,22 @@ class ProjectService extends AbstractService
      * @throws NotFoundException
      * @throws UnprocessableEntityException
      */
-    public function delete($name)
+    public function delete(Request $request)
     {
+        $data = $request->getQueryParams();
+    
+        $this->validate($data,[
+            'super_admin_token' => 'required',
+        ]);
+
+        $superadminFilePath = \Directus\get_app_base_path().'/config/__api.json';
+
+        $superadminFileData = json_decode(file_get_contents($superadminFilePath), true);
+        if ($data['super_admin_token'] !== $superadminFileData['super_admin_token']) {
+            throw new UnauthorizedException('Permission denied: Superadmin Only');
+        }
+        $name = $request->getAttribute('name');
+
         if (!is_string($name) || !$name) {
             throw new UnprocessableEntityException('Invalid project name');
         }

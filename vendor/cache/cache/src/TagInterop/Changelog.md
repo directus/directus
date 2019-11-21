@@ -4,6 +4,6 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 1.0.0
 
-First release
+* First release
 
 

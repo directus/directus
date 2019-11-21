@@ -2,9 +2,17 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release.
 
+## UNRELEASED
+
+## 1.1.0
+
+### Added
+
+* Added adapter-common version v1.1.0
+
 ## 1.0.0
 
-No changes since 0.2.0
+* No changes since 0.2.0
 
 ## 0.2.0
 
@@ -27,4 +35,4 @@ No changes since 0.2.0
 
 ## 0.1.0
 
-First release
+* First release

@@ -433,7 +433,6 @@ class SchemaService
         if (false === $schemaArray) {
             return false;
         }
-
         foreach ($schemaArray as $column) {
             if (!$column->isAlias()) {
                 $columns[] = $onlyNames === true ? $column->getName() : $column;

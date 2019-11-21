@@ -45,13 +45,13 @@ if (!function_exists('get_item_owner')) {
                 'c.' . $collectionObject->getPrimaryKeyName() => $id
             ]);
 
-            $subSelect = new Select('directus_user_roles');
+            $subSelect = new Select('directus_users');
 
             $select->join(
                 ['ur' => $subSelect],
-                sprintf('c.%s = ur.user', $fieldName),
+                sprintf('c.%s = ur.id', $fieldName),
                 [
-                    'id' => 'user',
+                    'id',
                     'role'
                 ],
                 $select::JOIN_LEFT
@@ -71,10 +71,10 @@ if (!function_exists('get_user_ids_in_group')) {
         $id = array_shift($roleIds);
         $app = Application::getInstance();
         $dbConnection = $app->getContainer()->get('database');
-        $tableGateway = new TableGateway('directus_user_roles', $dbConnection);
+        $tableGateway = new TableGateway('directus_users', $dbConnection);
 
         $select = new Select($tableGateway->table);
-        $select->columns(['id' => 'user']);
+        $select->columns(['id']);
         $select->where(['role' => $id]);
 
         $result = $tableGateway->selectWith($select);

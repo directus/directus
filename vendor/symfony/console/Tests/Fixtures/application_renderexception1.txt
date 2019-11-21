@@ -1,5 +1,0 @@
-
-                                 
-  Command "foo" is not defined.  
-                                 
-

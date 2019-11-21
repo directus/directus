@@ -9,7 +9,6 @@
 This repository contains shared classes and interfaces used by the PHP Cache organisation. To read about 
 features like tagging and hierarchy support please read the shared documentation at [www.php-cache.com](http://www.php-cache.com). 
 
-
 ### Contribute
 
 Contributions are very welcome! Send a pull request to the [main repository](https://github.com/php-cache/cache) or 

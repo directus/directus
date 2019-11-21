@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.2.9",
         "psr/container": "^1.0"
     },
     "suggest": {
@@ -28,7 +28,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }

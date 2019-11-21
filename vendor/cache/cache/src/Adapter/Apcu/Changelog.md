@@ -6,7 +6,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 1.0.0
 
-No changes since 0.3.0
+* No changes since 0.3.0
 
 ## 0.3.0
 
@@ -34,4 +34,4 @@ No changes since 0.3.0
 
 ## 0.2.1
 
-No changelog before this version
+* No changelog before this version

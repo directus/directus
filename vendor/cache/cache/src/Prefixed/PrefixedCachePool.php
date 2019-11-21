@@ -21,15 +21,12 @@ use Psr\Cache\CacheItemPoolInterface;
  */
 class PrefixedCachePool implements CacheItemPoolInterface
 {
+    use PrefixedUtilityTrait;
+
     /**
      * @type CacheItemPoolInterface
      */
     private $cachePool;
-
-    /**
-     * @type string
-     */
-    private $prefix;
 
     /**
      * @param CacheItemPoolInterface $cachePool
@@ -39,26 +36,6 @@ class PrefixedCachePool implements CacheItemPoolInterface
     {
         $this->cachePool = $cachePool;
         $this->prefix    = $prefix;
-    }
-
-    /**
-     * Add namespace prefix on the key.
-     *
-     * @param array $keys
-     */
-    private function prefixValue(&$key)
-    {
-        $key = $this->prefix.$key;
-    }
-
-    /**
-     * @param array $keys
-     */
-    private function prefixValues(array &$keys)
-    {
-        foreach ($keys as &$key) {
-            $this->prefixValue($key);
-        }
     }
 
     /**

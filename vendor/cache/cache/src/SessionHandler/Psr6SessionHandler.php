@@ -15,8 +15,9 @@ use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
+ * @author Daniel Bannert <d.bannert@anolilab.de>
  */
-class Psr6SessionHandler implements \SessionHandlerInterface
+class Psr6SessionHandler extends AbstractSessionHandler
 {
     /**
      * @type CacheItemPoolInterface
@@ -36,14 +37,21 @@ class Psr6SessionHandler implements \SessionHandlerInterface
     /**
      * @param CacheItemPoolInterface $cache
      * @param array                  $options {
+     * @type  int                    $ttl The time to live in seconds
+     * @type  string                 $prefix The prefix to use for the cache keys in order to avoid collision
+     *                                       }
      *
-     *      @type int $ttl       The time to live in seconds
-     *      @type string $prefix The prefix to use for the cache keys in order to avoid collision
-     * }
+     * @throws \InvalidArgumentException
      */
     public function __construct(CacheItemPoolInterface $cache, array $options = [])
     {
         $this->cache = $cache;
+
+        if ($diff = array_diff(array_keys($options), ['prefix', 'ttl'])) {
+            throw new \InvalidArgumentException(sprintf(
+                'The following options are not supported "%s"', implode(', ', $diff)
+            ));
+        }
 
         $this->ttl    = isset($options['ttl']) ? (int) $options['ttl'] : 86400;
         $this->prefix = isset($options['prefix']) ? $options['prefix'] : 'psr6ses_';
@@ -52,25 +60,23 @@ class Psr6SessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function read($sessionId)
+    public function updateTimestamp($sessionId, $data)
     {
         $item = $this->getCacheItem($sessionId);
+        $item->expiresAt(\DateTime::createFromFormat('U', \time() + $this->ttl));
+
+        return $this->cache->save($item);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    protected function doRead($sessionId)
+    {
+        $item = $this->getCacheItem($sessionId);
+
         if ($item->isHit()) {
             return $item->get();
         }
@@ -80,8 +86,10 @@ class Psr6SessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function write($sessionId, $data)
+    protected function doWrite($sessionId, $data)
     {
         $item = $this->getCacheItem($sessionId);
         $item->set($data)
@@ -92,23 +100,18 @@ class Psr6SessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function destroy($sessionId)
+    protected function doDestroy($sessionId)
     {
         return $this->cache->deleteItem($this->prefix.$sessionId);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function gc($lifetime)
-    {
-        // not required here because cache will auto expire the records anyhow.
-        return true;
-    }
-
-    /**
-     * @param $sessionId
+     * @param string $sessionId
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      *
      * @return \Psr\Cache\CacheItemInterface
      */

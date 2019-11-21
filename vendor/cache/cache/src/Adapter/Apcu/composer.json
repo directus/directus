@@ -37,7 +37,8 @@
         "ext-apcu": "The extension required to use this pool."
     },
     "provide": {
-        "psr/cache-implementation": "^1.0"
+        "psr/cache-implementation": "^1.0",
+        "psr/simple-cache-implementation": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -49,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }

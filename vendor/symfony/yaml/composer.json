@@ -20,7 +20,7 @@
         "symfony/polyfill-ctype": "~1.8"
     },
     "require-dev": {
-        "symfony/console": "~3.4|~4.0"
+        "symfony/console": "^3.4|^4.0|^5.0"
     },
     "conflict": {
         "symfony/console": "<3.4"
@@ -37,7 +37,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "4.3-dev"
+            "dev-master": "4.4-dev"
         }
     }
 }
