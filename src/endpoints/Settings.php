@@ -47,7 +47,6 @@ class Settings extends Route
         );
         $inputData = $this->getInterfaceBasedInput($request, $payload['key'], $fieldData);
 
-       
         $responseData = $service->create(
             $inputData,
             $request->getQueryParams()
@@ -158,22 +157,22 @@ class Settings extends Route
 
     /**
      * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
+     * @param $setting
+     * @param $fieldData
+     * @return array|object
      */
     public function getInterfaceBasedInput($request, $setting, $fieldData)
     {
         $inputData = $request->getParsedBody();
         foreach ($fieldData['data'] as $key => $value) {
-            if ($value['field'] == $setting) {
-                if ($inputData['value'] != null) {
+            if ($value['field'] === $setting) {
+                if ($inputData['value'] !== null) {
                     switch ($value['type']) {
                         case 'file':
-                            $inputData['value'] = isset($inputData['value']['id']) ? $inputData['value']['id'] : $inputData['value'];
+                            $inputData['value'] = $inputData['value']['id'] ?? $inputData['value'];
                             break;
                         case 'array':
-                            $inputData['value'] = is_array($inputData['value']) ? implode(",", $inputData['value']) : $inputData['value'];
+                            $inputData['value'] = is_array($inputData['value']) ? implode(',', $inputData['value']) : $inputData['value'];
                             break;
                         case 'json':
                             $inputData['value'] = json_encode($inputData['value']);
