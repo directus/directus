@@ -100,7 +100,7 @@ Directus allows you to manage multilingual content in as many languages as your 
 ### Technical Support
 
 * **Community Support** — For help with open-source instances please post questions with the `directus` tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/directus) or chat with members of our [Slack Community](https://directus.chat).
-* **Premium Support** — Directus Cloud customers, Patreon Sponsors, and those paying for hourly support all have access to our Live support over our [Live Chat](https://directus.io) or [Email](mailto:support@directus.io).
+* **Premium Support** — Directus Cloud customers, GitHub Sponsors, and those paying for hourly support all have access to our Live support over our [Live Chat](https://directus.io) or [Email](mailto:support@directus.io).
 
 ### Community
 
