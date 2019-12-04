@@ -1,0 +1,66 @@
+Icon
+.DS_Store
+*.log
+.cache
+.vscode
+.ddev
+
+# Ignore dev files
+/.idea
+node_modules
+yarn.lock
+package-lock.json
+/nbproject/
+/tests/api/tmp/
+
+# Exclude env vars and custom deployment scripts
+.env
+deploy.*
+
+# Ignore configuration files
+/config/*
+!/config/_example.php
+
+# PHPUnit
+/phpunit.xml
+/documents
+
+# Core extensions
+/public/extensions/core/interfaces
+/public/extensions/core/layouts
+/public/extensions/core/pages
+
+# Custom extensions
+/public/extensions/custom/*/*
+
+##  Auth
+/public/extensions/custom/auth
+
+##  Endpoints
+!/public/extensions/custom/endpoints/_directory/
+!/public/extensions/custom/endpoints/_example.php
+
+##  Hashers
+!/public/extensions/custom/hashers/_CustomHasher.php
+
+##  Hooks
+!/public/extensions/custom/hooks/_products
+!/public/extensions/custom/hooks/_webhook
+
+# Storage
+/public/uploads/*/
+!public/uploads/_/originals/.gitignore
+!public/uploads/_/thumbnails/.gitignore
+
+# Keep gitkeep files
+# This will make sure empty directories has at least one file so it can be tracked by git
+!**/.gitkeep
+/docs/
+
+#Override the PHP internal server rules for static files
+#See https://github.com/slimphp/Slim/issues/1829
+#php -S localhost:8000 cliserver.php
+public/cliserver.php
+
+# Cache generated while filesystem adapter
+/cache/*
