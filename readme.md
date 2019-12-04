@@ -17,18 +17,19 @@
   <a href="https://docs.directus.io/guides/user-guide.html">User Guide</a> • 
   <a href="https://demo.directus.io">Demo</a> • 
   <a href="https://docs.directus.io/getting-started/supporting-directus.html">Contribute</a> • 
-  <a href="https://twitter.com/directus">Twitter</a>
+  <a href="https://twitter.com/directus">Twitter</a> • 
+  <a href="https://directus.chat">Community</a>
 </h3>
 
 <p>&nbsp;</p>
 
 ## 🐰 Introduction
 
-Directus is an open-source suite of software that provides an instant API wrapper for SQL databases and an intuitive Admin App for non-technical users to manage that content. It's like a safe, friendly, and super-powered "database client" (eg: _PHP-my-Admin_ or _Sequel Pro_). Created in 2004, our premium platform powers hundreds-of-thousands of data-driven applications around the world. With our JSON API, webhooks, and complete control over where and how your content is used — what will you build with Directus?
+Directus is an open-source tool that wraps your database with an API, and provides an intuitive admin app for non-technical users to manage its content. It's what you'd get if you mixed a headless CMS, database client, and WebApp builder. Created in 2004, our platform powers over a million data-driven projects around the world.
 
-Directus consists of:
+The Directus Suite consists of:
 
-* **[Directus API](https://github.com/directus/api)** — Wraps any new or existing SQL database with RESTful JSON endpoints for connecting content anywhere: websites, native apps, wearables, IoT devices, kiosks, or anything else!
+* **[Directus Database API](https://github.com/directus/api)** — Wraps any new or existing SQL database with RESTful JSON endpoints for connecting content anywhere: websites, native apps, wearables, IoT devices, kiosks, or anything else!
 * **[Directus Admin App](https://github.com/directus/app)** — A friendly admin interface built with Vue.js that works in conjunction with our API to allow non-technical users to manage database content and digital assets.
 
 <p>&nbsp;</p>
@@ -39,36 +40,46 @@ Directus consists of:
 
 Directus follows a database-first approach, storing all of your data _unaltered_ in pure SQL databases with that can be completely customized.
 
-#### Access and Optimization
+#### Customization & Optimization
 
-Directus mirrors _your_ actual database so it will automatically stay in sync with any changes made directly to the database! With the full power of SQL unlocked, you can:
+Directus mirrors _your_ actual SQL architecture and data, so it will automatically stay in sync with any changes made directly to the database! With the full power of SQL unlocked, you can:
 
 1. Architect your actual database with meaningful table and column names
 2. Infinitely optimize with indexing, datatypes, lengths, defaults, keys, encoding, etc
 3. Update your database schema at any point and Directus will instantly reflect changes
 4. Create, update, and delete content directly from the database
 
-#### Direct Access
+#### Direct Access & Performance
 
-This database-first approach means that you have the option to completely bypass Directus if needed. Connecting your application _directly_ to the database means Directus is completely bypassed, removing even the slightest possiblility of a bottleneck, and giving you the unbridled power of complex SQL queries.
+This database-first approach means that you have the option to bypass Directus if needed. Connecting your application _directly_ to the database means Directus is completely bypassed, removing even the slightest possiblility of a bottleneck, and giving you the unbridled power of complex SQL queries.
 
-#### Portability and Transparency
+#### Portability & Transparency
 
 Directus is _not_ a black-box system. There is nothing proprietary or opinionated about how Directus stores your content so you're never locked-in or locked out. Import existing SQL to get started quickly, and rest assured that you can also export your unaltered content as vanilla SQL at any point. You can also self-host the entire suite on your own servers if needed or use our hosted Cloud service.
 
 #### Complex Relationships
 
-Whether you need many-to-one, one-to-many, many-to-many, or something completely different... Directus has you covered. You can interrelate database fields, then fetch deeply nested data using our robust dot-notation parameters.
+Whether you need many-to-one, one-to-many, many-to-many, or something completely different... Directus has you covered. You can set up relationships between tables, then fetch that nested relational data using our dot-notation parameters.
 
-### Simple, Modular and Extensible
+### Modular & Extensible
 
 We've intentionally kept our codebase as simple and lightweight as possible. Every aspect of Directus has been modularized, with many options for extending, overriding, or even bypassing the core system. Choose your auth providers, storage adapters, content interfaces, data presentation, and more. We also have webhooks, event hooks, API response filters, custom endpoints, CSS/JS override files, and much more.
 
-Furthermore, because the codebase has been internally decoupled, Directus supports full multitenancy. You can use a single Directus App to manage multiple Directus API instances, and each API instance can manage multiple databases (projects or environments).
+Furthermore, Directus supports full multitenancy, so you can use a single instance of Directus to manage multiple project databases. That means agencies can organize their clients, companies can organize their properties, and projects can organize environments.
 
-### Internationalization and Accessibility
+### Internationalization & Accessibility
 
-Directus allows you to manage multilingual content in as many languages as your project needs. And no matter what language(s) your organization requires, our Admin App supports a growing number of locales. We've also paid close attention to our Admin App's interface to ensure it is as clear and accessible as possible for all users.
+Directus allows you to manage multilingual content in as many languages as your project needs. And no matter which languages your organization requires internally, our Admin App supports a growing number of locales. We've also paid close attention to our Admin App's interface to ensure it is as clear and accessible as possible for all users.
+
+### Directus Glossary
+
+* **Project** — A database (and its asset storage)
+* **Collection** — A database table
+* **Field** — A database column
+* **Item** — A database record
+* **Interface** — Modular components for viewing/managing field data
+* **Layout** — Modular components for viewing/managing a collection of items
+
 
 <p>&nbsp;</p>
 
@@ -89,7 +100,7 @@ Directus allows you to manage multilingual content in as many languages as your 
 
 ### Technical Support
 
-* **Community Support** — For help with open-source instances please post questions with the `directus` tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/directus) or chat with members of our online community.
+* **Community Support** — For help with open-source instances please post questions with the `directus` tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/directus) or chat with members of our [Slack Community](https://directus.chat).
 * **Premium Support** — Directus Cloud customers, Patreon Sponsors, and those paying for hourly support all have access to our Live support over our [Live Chat](https://directus.io) or [Email](mailto:support@directus.io).
 
 ### Community
@@ -104,7 +115,11 @@ Directus allows you to manage multilingual content in as many languages as your 
 
 ### Online Demos
 
-We have an [online demo](https://demo.directus.io) available so you can easily check out Directus in action. The demos is public and is therefore susceptible to trolls who think it's funny to write offensive things or change the master user password. The entire database is reset each hour to mitigate this. The login credentials for the demo is: `admin@example.com` and `password`.
+We have an online demo available so you can easily check out Directus in action. The entire server resets each hour, so if things look funky or the credentials below aren't working... just wait a bit and try again.
+
+* Demo: [https://demo.directus.io](https://demo.directus.io)
+* User: `admin@example.com`
+* Pass: `password`
 
 <p>&nbsp;</p>
 
@@ -112,7 +127,7 @@ We have an [online demo](https://demo.directus.io) available so you can easily c
 
 Directus is a GPLv3-licensed open source project with development made possible by support from our core team, contributors, and sponsors. It's not easy building premium open-source software; if you would like to help ensure Directus stays free, please consider becoming a sponsor.
 
-* [Become a backer or sponsor through Patreon](https://www.patreon.com/directus)
+* [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
 * [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
 * [Other ways to help](https://docs.directus.io/getting-started/supporting-directus.html)
 
@@ -123,10 +138,6 @@ We love pull-requests! To work on Directus you'll need to install it locally fro
 
 * [Setup API Development Environment](https://docs.directus.io/advanced/source.html#api-source)
 * [Setup App Development Environment](https://docs.directus.io/advanced/source.html#application-source)
-
-### Sponsors
-
-[RANGER Studio](http://rangerstudio.com), Bas Jansen
 
 ### Core Team
 
