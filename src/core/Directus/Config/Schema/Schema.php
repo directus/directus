@@ -19,14 +19,9 @@ class Schema {
         }
 
         return new Group('directus', [
-            new Group('app', [
-                new Value('env', Types::STRING, 'production'),
-                new Value('timezone', Types::STRING, 'America/New_York'),
-            ]),
-            new Group('settings', [
-                new Group('logger', [
-                    new Value('path', Types::STRING, $loggerPath),
-                ])
+            new Value('env', Types::STRING, 'production'),
+            new Group('logger', [
+                new Value('path', Types::STRING, $loggerPath),
             ]),
             new Group('database', [
                 new Value('type', Types::STRING, 'mysql'),
@@ -54,7 +49,7 @@ class Schema {
                 new Value('adapter', Types::STRING, 'local'),
                 new Value('root', Types::STRING, 'public/uploads/_/originals'),
                 new Value('root_url', Types::STRING, '/uploads/_/originals'),
-                new Value('thumb_root', Types::STRING, 'public/uploads/_/thumbnails'),
+                new Value('thumb_root', Types::STRING, 'public/uploads/_/generated'),
                 new Value('proxy_downloads?', Types::BOOLEAN, false),
 
                 // S3
@@ -116,10 +111,6 @@ class Schema {
             new Group('hooks', [
                 new Value('actions', Types::ARRAY, []),
                 new Value('filters', Types::ARRAY, []),
-            ]),
-            new Group('feedback', [
-                new Value('token', Types::STRING, 'a-kind-of-unique-token'),
-                new Value('login', Types::STRING, true),
             ]),
             new Value('tableBlacklist', Types::ARRAY, []),
             new Group('auth', [

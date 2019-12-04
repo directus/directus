@@ -193,7 +193,7 @@ abstract class AbstractService
      * @param string $collectionName
      * @param array $fields List of columns name
      * @param array $skipRelatedCollectionField To skip parent collection field validation
-     * 
+     *
      * @return array
      */
     protected function createConstraintFor($collectionName, array $fields = [], $skipRelatedCollectionField = '', array $params = [] )
@@ -209,17 +209,17 @@ abstract class AbstractService
         }
 
         foreach ($collectionObject->getFields($fields) as $field) {
-            //This condition is placed to skip alias validation field which is related to parent collection, 
+            //This condition is placed to skip alias validation field which is related to parent collection,
             //to avoid nested payload validation for O2M and M2O collections
-            if($field->hasRelationship() && !empty($skipRelatedCollectionField) && (($field->getRelationship()->isManyToOne() && $field->getRelationship()->getCollectionOne() == $skipRelatedCollectionField) || ($field->getRelationship()->isOneToMany() && $field->getRelationship()->getCollectionMany() == $skipRelatedCollectionField))) 
+            if($field->hasRelationship() && !empty($skipRelatedCollectionField) && (($field->getRelationship()->isManyToOne() && $field->getRelationship()->getCollectionOne() == $skipRelatedCollectionField) || ($field->getRelationship()->isOneToMany() && $field->getRelationship()->getCollectionMany() == $skipRelatedCollectionField)))
                 continue;
-            
+
             $columnConstraints = [];
 
             if ($field->hasAutoIncrement()) {
                 continue;
             }
-            
+
             if($field->isSystemDateTimeType() || $field->isSystemUserType()){
                 continue;
             }
@@ -232,9 +232,12 @@ abstract class AbstractService
             $isStatusField = $field->isStatusType();
             if (!$isRequired && $isStatusField && $field->getDefaultValue() === null) {
                 $isRequired = true;
+            } else if ($isRequired === true && $field->getDefaultValue() !== null) {
+                $isRequired = false;
             }
 
-            if ($isRequired || (!$field->isNullable() && $field->getDefaultValue() == null)) {
+            if ($isRequired || (!$field->isNullable() && $field->getDefaultValue() == null))
+            {
                 $columnConstraints[] = 'required';
             } else if (in_array($field->getName(), $fields) && !$field->isNullable()) {
                 $columnConstraints[] = 'notnullable';
@@ -370,13 +373,13 @@ abstract class AbstractService
      * @param array $payload
      * @param array $params
      * @param array $skipRelatedCollectionField To skip parent collection field validation
-     * 
+     *
      * @throws UnprocessableEntityException
      */
     protected function validatePayload($collectionName, $fields, array $payload, array $params, $skipRelatedCollectionField = '')
     {
         $columnsToValidate = [];
-               
+
         // TODO: Validate empty request
         // If the user PATCH, POST or PUT with empty body, must throw an exception to avoid continue the execution
         // with the exception of POST, that can use the default value instead
@@ -384,13 +387,13 @@ abstract class AbstractService
         if (is_array($fields)) {
             $columnsToValidate = $fields;
         }
-      
+
         if($this->validationRequired($collectionName,$payload)){
             $this->validatePayloadFields($collectionName, $payload);
             // TODO: Ideally this should be part of the validator constraints
             // we need to accept options for the constraint builder
             $this->validatePayloadWithFieldsValidation($collectionName, $payload);
-           
+
             $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField,$params));
         }
 
@@ -485,7 +488,7 @@ abstract class AbstractService
             }
 
             $this->validateFieldLength($field, $value);
-            
+
             if ($validation = $field->getValidation()) {
                 $isCustomValidation = \Directus\is_custom_validation($validation);
 
@@ -512,10 +515,10 @@ abstract class AbstractService
 
     /**
      * To validate the length of input with the DB.
-     * 
+     *
      * @param array $field
      * @param string $value
-     * 
+     *
      * @throws UnprocessableEntityException
      */
     protected function validateFieldLength($field, $value)

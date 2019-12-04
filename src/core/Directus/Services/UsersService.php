@@ -25,6 +25,7 @@ use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
 use function Directus\get_directus_setting;
 use Directus\Validator\Exception\InvalidRequestException;
+use Zend\Db\TableGateway\TableGateway;
 
 class UsersService extends AbstractService
 {
@@ -380,22 +381,26 @@ class UsersService extends AbstractService
     public function has2FAEnforced($id)
     {
         try {
-            $result = $this->createTableGateway(SchemaManager::COLLECTION_ROLES, false)->fetchAll(function (Select $select) use ($id) {
-                $select->columns(['enforce_2fa']);
-                $select->where(['ur.id' => $id]);
-                $select->join(
-                    ['ur' => SchemaManager::COLLECTION_USERS],
-                    sprintf('ur.role = %s.id', SchemaManager::COLLECTION_ROLES),
-                    [
-                        'role'
-                    ]
-                );
+            $dbConnection = $this->container->get('database');
+            $tableGateway = new TableGateway(SchemaManager::COLLECTION_ROLES, $dbConnection);
+            $select = new Select(['r' => SchemaManager::COLLECTION_ROLES]);
+            $select->columns(['enforce_2fa']);
 
-            });
+            $subSelect = new Select(['ur' => 'directus_users']);
+            $subSelect->where->equalTo('ur.id', $id);
+            $subSelect->limit(1);
 
-            $enforce_2fa = $result->current()['enforce_2fa'];
+            $select->join(
+                ['ur' => $subSelect],
+                'r.id = ur.role',
+                [
+                    'role'
+                ]
+            );
 
-            if ($enforce_2fa == null || $enforce_2fa == 0) {
+            $result = $tableGateway->selectWith($select)->current()['enforce_2fa'];
+
+            if (empty($result)) {
                 return false;
             } else {
                 return true;

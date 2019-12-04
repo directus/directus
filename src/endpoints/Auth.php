@@ -76,7 +76,7 @@ class Auth extends Route
                 default :
                     $this->storeJwtSession($responseData['data']);
             }
-            unset($responseData['data']['user']);
+            $responseData['data']['user'] = ArrayUtils::omit($responseData['data']['user'], [ 'password' , 'token', 'email_notifications', 'last_access_on', 'last_page']);
         }
         $responseData['data'] = !empty($responseData['data']) ? $responseData['data'] : null;
 
@@ -125,7 +125,7 @@ class Auth extends Route
             $userSessionObject = $userSessionService->find(['token' => $accessToken]);
             $sessionToken = $userSessionObject['token'];
         }else{
-          
+
             $userSession = $userSessionService->create([
                 'user' => $data['user']['id'],
                 'token' => $data['user']['token'],
@@ -417,8 +417,14 @@ class Auth extends Route
                 $urlParams['attributes'] = $e->getAttributes();
             }
 
-            $urlParams['code'] = ($e instanceof \Directus\Exception\Exception) ? $e->getErrorCode() : 0;
+            $urlParams['code'] = ($e instanceof \Directus\Exception\Exception) ? $e->getErrorCode() : -1;
             $urlParams['error'] = true;
+
+            // Log error to the error file if it's not coming from Directus. This allows the user to debug
+            // errors coming from the service provider
+            if ($e instanceof \Directus\Exception\Exception === false) {
+                $this->container->get('logger')->error($e);
+            }
         }
 
 

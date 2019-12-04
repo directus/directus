@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit754d3232bc30282130e946da89277429
+class ComposerStaticInita026b77e52e11e438308890203ba3c34
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -18,6 +18,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         '1b48a6058e8e720e1eecd2313510b7e9' => __DIR__ . '/..' . '/cache/cache/src/inc.php',
+        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
         '79c6260273d1303c3d11c2b0b06acb78' => __DIR__ . '/../..' . '/src/helpers/all.php',
     );
 
@@ -85,7 +86,6 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'I' => 
         array (
             'Intervention\\Image\\' => 19,
-            'Interop\\Container\\' => 18,
         ),
         'G' => 
         array (
@@ -272,10 +272,6 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         array (
             0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
         ),
-        'Interop\\Container\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
-        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
@@ -450,6 +446,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Cocur\\Slugify\\Slugify' => __DIR__ . '/..' . '/cocur/slugify/src/Slugify.php',
         'Cocur\\Slugify\\SlugifyInterface' => __DIR__ . '/..' . '/cocur/slugify/src/SlugifyInterface.php',
         'Directus\\Api\\Routes\\Activity' => __DIR__ . '/../..' . '/src/endpoints/Activity.php',
+        'Directus\\Api\\Routes\\Assets' => __DIR__ . '/../..' . '/src/endpoints/Assets.php',
         'Directus\\Api\\Routes\\Auth' => __DIR__ . '/../..' . '/src/endpoints/Auth.php',
         'Directus\\Api\\Routes\\CollectionPresets' => __DIR__ . '/../..' . '/src/endpoints/CollectionPresets.php',
         'Directus\\Api\\Routes\\Collections' => __DIR__ . '/../..' . '/src/endpoints/Collections.php',
@@ -461,7 +458,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Directus\\Api\\Routes\\Items' => __DIR__ . '/../..' . '/src/endpoints/Items.php',
         'Directus\\Api\\Routes\\Layouts' => __DIR__ . '/../..' . '/src/endpoints/Layouts.php',
         'Directus\\Api\\Routes\\Mail' => __DIR__ . '/../..' . '/src/endpoints/Mail.php',
-        'Directus\\Api\\Routes\\Pages' => __DIR__ . '/../..' . '/src/endpoints/Pages.php',
+        'Directus\\Api\\Routes\\Modules' => __DIR__ . '/../..' . '/src/endpoints/Modules.php',
         'Directus\\Api\\Routes\\Permissions' => __DIR__ . '/../..' . '/src/endpoints/Permissions.php',
         'Directus\\Api\\Routes\\ProjectHome' => __DIR__ . '/../..' . '/src/endpoints/ProjectHome.php',
         'Directus\\Api\\Routes\\ProjectUpdate' => __DIR__ . '/../..' . '/src/endpoints/ProjectUpdate.php',
@@ -780,6 +777,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Directus\\Services\\AbstractExtensionsController' => __DIR__ . '/../..' . '/src/core/Directus/Services/AbstractExtensionsController.php',
         'Directus\\Services\\AbstractService' => __DIR__ . '/../..' . '/src/core/Directus/Services/AbstractService.php',
         'Directus\\Services\\ActivityService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ActivityService.php',
+        'Directus\\Services\\AssetService' => __DIR__ . '/../..' . '/src/core/Directus/Services/AssetService.php',
         'Directus\\Services\\AuthService' => __DIR__ . '/../..' . '/src/core/Directus/Services/AuthService.php',
         'Directus\\Services\\CollectionPresetsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/CollectionPresetsService.php',
         'Directus\\Services\\FilesServices' => __DIR__ . '/../..' . '/src/core/Directus/Services/FilesServices.php',
@@ -788,7 +786,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Directus\\Services\\ItemsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ItemsService.php',
         'Directus\\Services\\LayoutsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/LayoutsService.php',
         'Directus\\Services\\MailService' => __DIR__ . '/../..' . '/src/core/Directus/Services/MailService.php',
-        'Directus\\Services\\PagesService' => __DIR__ . '/../..' . '/src/core/Directus/Services/PagesService.php',
+        'Directus\\Services\\ModulesService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ModulesService.php',
         'Directus\\Services\\PermissionsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/PermissionsService.php',
         'Directus\\Services\\ProjectService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ProjectService.php',
         'Directus\\Services\\RelationsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/RelationsService.php',
@@ -836,6 +834,7 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Doctrine\\Common\\Cache\\FileCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/FileCache.php',
         'Doctrine\\Common\\Cache\\FilesystemCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/FilesystemCache.php',
         'Doctrine\\Common\\Cache\\FlushableCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/FlushableCache.php',
+        'Doctrine\\Common\\Cache\\InvalidCacheId' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/InvalidCacheId.php',
         'Doctrine\\Common\\Cache\\LegacyMongoDBCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/LegacyMongoDBCache.php',
         'Doctrine\\Common\\Cache\\MemcacheCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/MemcacheCache.php',
         'Doctrine\\Common\\Cache\\MemcachedCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/MemcachedCache.php',
@@ -847,7 +846,6 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'Doctrine\\Common\\Cache\\PhpFileCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/PhpFileCache.php',
         'Doctrine\\Common\\Cache\\PredisCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/PredisCache.php',
         'Doctrine\\Common\\Cache\\RedisCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/RedisCache.php',
-        'Doctrine\\Common\\Cache\\RiakCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/RiakCache.php',
         'Doctrine\\Common\\Cache\\SQLite3Cache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/SQLite3Cache.php',
         'Doctrine\\Common\\Cache\\Version' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/Version.php',
         'Doctrine\\Common\\Cache\\VoidCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/VoidCache.php',
@@ -1129,9 +1127,6 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
         'GuzzleHttp\\RetryMiddleware' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/RetryMiddleware.php',
         'GuzzleHttp\\TransferStats' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/TransferStats.php',
         'GuzzleHttp\\UriTemplate' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/UriTemplate.php',
-        'Interop\\Container\\ContainerInterface' => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container/ContainerInterface.php',
-        'Interop\\Container\\Exception\\ContainerException' => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container/Exception/ContainerException.php',
-        'Interop\\Container\\Exception\\NotFoundException' => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container/Exception/NotFoundException.php',
         'Intervention\\Image\\AbstractColor' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/AbstractColor.php',
         'Intervention\\Image\\AbstractDecoder' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/AbstractDecoder.php',
         'Intervention\\Image\\AbstractDriver' => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image/AbstractDriver.php',
@@ -2732,10 +2727,10 @@ class ComposerStaticInit754d3232bc30282130e946da89277429
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit754d3232bc30282130e946da89277429::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit754d3232bc30282130e946da89277429::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita026b77e52e11e438308890203ba3c34::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita026b77e52e11e438308890203ba3c34::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInita026b77e52e11e438308890203ba3c34::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInita026b77e52e11e438308890203ba3c34::$classMap;
 
         }, null, ClassLoader::class);
     }

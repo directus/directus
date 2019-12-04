@@ -31,6 +31,7 @@ use Zend\Db\TableGateway\TableGateway;
 class InstallerUtils
 {
     const MIGRATION_CONFIGURATION_PATH = '/migrations/migrations.php';
+    const MIGRATION_UPGRADE_CONFIGURATION_PATH = '/migrations/migrations.upgrades.php';
     /**
      * Add the upgraded migrations into directus_migration on a fresh installation of project.
      * Upgraded migrations may contain the same queries which is in db [Original] migrations.
@@ -39,9 +40,16 @@ class InstallerUtils
      *
      * @return boolean
      */
-    public static function addUpgradeMigrations()
+    public static function addUpgradeMigrations($basePath = null, $projectName = null)
     {
-        $dbConnection = Application::getInstance()->fromContainer('database');
+        if(!is_null($basePath) && !is_null($projectName))
+        {
+            $app = static::createApp($basePath, $projectName);
+            $dbConnection =  $app->getContainer()->get('database');
+        }else{
+            $basePath = \Directus\get_app_base_path();
+            $dbConnection = Application::getInstance()->fromContainer('database');
+        }
         $migrationsTableGateway = new TableGateway(SchemaManager::COLLECTION_MIGRATIONS, $dbConnection);
 
         $select = new Select($migrationsTableGateway->table);
@@ -50,7 +58,7 @@ class InstallerUtils
         $alreadyStoredMigrations = array_column($result, 'version');
 
         $ignoreableFiles = ['..', '.'];
-        $scannedDirectory = array_values(array_diff(scandir(\Directus\get_app_base_path().'/migrations/upgrades/schemas'), $ignoreableFiles));
+        $scannedDirectory = array_values(array_diff(scandir($basePath.'/migrations/upgrades/schemas'), $ignoreableFiles));
         foreach($scannedDirectory as $fileName){
             $data = [];
             $fileNameObject = explode("_",$fileName,2);
@@ -58,8 +66,8 @@ class InstallerUtils
             $data = [
                 'version' => $fileNameObject[0],
                 'migration_name' => $migrationName[0],
-                'start_time' => DateTimeUtils::nowInTimezone()->toString(),
-                'end_time' => DateTimeUtils::nowInTimezone()->toString()
+                'start_time' => DateTimeUtils::nowInUTC()->toString(),
+                'end_time' => DateTimeUtils::nowInUTC()->toString()
             ];
 
             if(!in_array($data['version'],$alreadyStoredMigrations) && !is_null($data['version']) && !is_null($data['migration_name'])){
@@ -227,7 +235,9 @@ class InstallerUtils
     {
         $manager = new Manager($config, new StringInput(''), new NullOutput());
         $manager->migrate('development');
-        $manager->seed('development');
+        if(!empty($config['paths']['seeds'])){
+            $manager->seed('development');
+        }
     }
 
     /**
@@ -705,14 +715,11 @@ class InstallerUtils
      *
      * @return Config
      */
-    private static function getMigrationConfig($basePath, $projectName = null, $migrationName = null)
+    private static function getMigrationConfig($basePath, $projectName = null, $migrationName = 'install')
     {
         static::ensureConfigFileExists($basePath, $projectName);
         static::ensureMigrationFileExists($basePath);
 
-        if ($migrationName === null) {
-            $migrationName = 'db';
-        }
         $configPath = static::createConfigPath($basePath, $projectName);
         $migrationPath = $basePath . '/migrations/' . $migrationName;
 
@@ -729,9 +736,8 @@ class InstallerUtils
         ArrayUtils::rename($apiConfig, 'socket', 'unix_socket');
         $apiConfig['charset'] = ArrayUtils::get($apiConfig, 'database.charset', 'utf8mb4');
 
-        $configArray = require $basePath.self::MIGRATION_CONFIGURATION_PATH ;
-        $configArray['paths']['migrations'] = $migrationPath . '/schemas';
-        $configArray['paths']['seeds'] = $migrationPath . '/seeds';
+        $configArray = $migrationName == "install" ? require $basePath.self::MIGRATION_CONFIGURATION_PATH :require $basePath.self::MIGRATION_UPGRADE_CONFIGURATION_PATH;
+        $configArray['paths']['migrations'] = $migrationPath;
         $configArray['environments']['development'] = $apiConfig;
 
         return new Config($configArray);
@@ -957,8 +963,6 @@ class InstallerUtils
             'db_password' => null,
             'db_socket' => '',
             'mail_from' => 'admin@example.com',
-            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32, false)),
-            'feedback_login' => true,
             'timezone' => get_default_timezone(),
             'logs_path' => __DIR__ . '/../../../../../logs',
             'cache' => [
@@ -969,7 +973,7 @@ class InstallerUtils
                 'adapter' => 'local',
                 'root' => 'public/uploads/{{project}}/originals',
                 'root_url' => '/uploads/{{project}}/originals',
-                'thumb_root' => 'public/uploads/{{project}}/thumbnails',
+                'thumb_root' => 'public/uploads/{{project}}/generated',
             ],
             'mail' => [
                 'transport' => 'sendmail',

@@ -14,6 +14,8 @@
 
 namespace Ramsey\Uuid\Provider;
 
+use Exception;
+
 /**
  * NodeProviderInterface provides functionality to get the node ID (or host ID
  * in the form of the system's MAC address) from a specific type of node provider
@@ -24,7 +26,7 @@ interface NodeProviderInterface
      * Returns the system node ID
      *
      * @return string System node ID as a hexadecimal string
-     * @throws \Exception if it was not possible to gather sufficient entropy
+     * @throws Exception if it was not possible to gather sufficient entropy
      */
     public function getNode();
 }

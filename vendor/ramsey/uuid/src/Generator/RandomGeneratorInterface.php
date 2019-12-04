@@ -14,6 +14,10 @@
 
 namespace Ramsey\Uuid\Generator;
 
+use Exception;
+use InvalidArgumentException;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 /**
  * RandomGeneratorInterface provides functionality to generate strings of random
  * binary data
@@ -25,9 +29,9 @@ interface RandomGeneratorInterface
      *
      * @param integer $length The number of bytes of random binary data to generate
      * @return string A binary string
-     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
-     * @throws \InvalidArgumentException
-     * @throws \Exception if it was not possible to gather sufficient entropy
+     * @throws UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
+     * @throws InvalidArgumentException
+     * @throws Exception if it was not possible to gather sufficient entropy
      */
     public function generate($length);
 }

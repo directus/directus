@@ -8,8 +8,8 @@
 namespace Slim;
 
 use ArrayAccess;
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
 use InvalidArgumentException;
 use Pimple\Container as PimpleContainer;
 use Slim\Exception\ContainerException as SlimContainerException;
@@ -95,9 +95,10 @@ class Container extends PimpleContainer implements ContainerInterface
      * @return mixed
      *
      * @throws InvalidArgumentException         Thrown when an offset cannot be found in the Pimple container
-     * @throws SlimContainerException           Thrown when an exception is not an instance of ContainerException
+     * @throws SlimContainerException           Thrown when an exception is
+     *         not an instance of ContainerExceptionInterface
      * @throws ContainerValueNotFoundException  No entry was found for this identifier.
-     * @throws ContainerException               Error while retrieving the entry.
+     * @throws ContainerExceptionInterface      Error while retrieving the entry.
      */
     public function get($id)
     {
@@ -120,7 +121,7 @@ class Container extends PimpleContainer implements ContainerInterface
     }
 
     /**
-     * Tests whether an exception needs to be recast for compliance with Container-Interop.  This will be if the
+     * Tests whether an exception needs to be recast for compliance with psr/container.  This will be if the
      * exception was thrown by Pimple.
      *
      * @param InvalidArgumentException $exception
@@ -153,9 +154,10 @@ class Container extends PimpleContainer implements ContainerInterface
      * @return mixed
      *
      * @throws InvalidArgumentException         Thrown when an offset cannot be found in the Pimple container
-     * @throws SlimContainerException           Thrown when an exception is not an instance of ContainerException
+     * @throws SlimContainerException           Thrown when an exception is not
+     *         an instance of ContainerExceptionInterface
      * @throws ContainerValueNotFoundException  No entry was found for this identifier.
-     * @throws ContainerException               Error while retrieving the entry.
+     * @throws ContainerExceptionInterface      Error while retrieving the entry.
      */
     public function __get($name)
     {

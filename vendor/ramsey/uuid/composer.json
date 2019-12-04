@@ -1,7 +1,7 @@
 {
     "name": "ramsey/uuid",
-    "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
     "type": "library",
+    "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
     "keywords": ["uuid", "identifier", "guid"],
     "homepage": "https://github.com/ramsey/uuid",
     "license": "MIT",
@@ -20,61 +20,79 @@
             "email": "thibaud@aztech.io"
         }
     ],
-    "support": {
-        "issues": "https://github.com/ramsey/uuid/issues",
-        "source": "https://github.com/ramsey/uuid"
-    },
     "require": {
-        "php": "^5.4 || ^7.0",
-        "paragonie/random_compat": "^1.0|^2.0|9.99.99",
+        "php": "^5.4 | ^7",
+        "ext-json": "*",
+        "paragonie/random_compat": "^1 | ^2 | 9.99.99",
         "symfony/polyfill-ctype": "^1.8"
     },
     "require-dev": {
-        "codeception/aspect-mock": "^1.0 | ~2.0.0",
-        "doctrine/annotations": "~1.2.0",
-        "goaop/framework": "1.0.0-alpha.2 | ^1.0 | ~2.1.0",
-        "ircmaxell/random-lib": "^1.1",
+        "codeception/aspect-mock": "^1 | ^2",
+        "doctrine/annotations": "^1.2",
+        "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
         "jakub-onderka/php-parallel-lint": "^0.9.0",
         "mockery/mockery": "^0.9.9",
         "moontoast/math": "^1.1",
-        "php-mock/php-mock-phpunit": "^0.3|^1.1",
-        "phpunit/phpunit": "^4.7|^5.0|^6.5",
+        "paragonie/random-lib": "^2",
+        "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
+        "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
         "squizlabs/php_codesniffer": "^2.3"
     },
     "suggest": {
         "ext-ctype": "Provides support for PHP Ctype functions",
-        "ircmaxell/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
         "ext-libsodium": "Provides the PECL libsodium extension for use with the SodiumRandomGenerator",
+        "ext-openssl": "Provides the OpenSSL extension for use with the OpenSslGenerator",
         "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
         "moontoast/math": "Provides support for converting UUID to 128-bit integer (in string form).",
+        "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
         "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type.",
-        "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid"
+        "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter"
     },
-    "autoload": {
-        "psr-4": {"Ramsey\\Uuid\\": "src/"}
-    },
-    "autoload-dev": {
-        "psr-4": {"Ramsey\\Uuid\\Test\\": "tests/"}
-    },
-    "replace": {
-        "rhumsaa/uuid": "self.version"
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.x-dev"
         }
     },
-    "scripts": {
-        "lint": "parallel-lint src tests",
-        "phpunit": "phpunit --verbose --colors=always",
-        "phpcs": "phpcs src tests --standard=psr2 -sp --colors",
-        "test": [
-            "@lint",
-            "@phpunit",
-            "@phpcs"
+    "replace": {
+        "rhumsaa/uuid": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ramsey\\Uuid\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
         ]
     },
-    "config": {
-        "sort-packages": true
+    "autoload-dev": {
+        "psr-4": {
+            "Ramsey\\Uuid\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "parallel-lint src tests",
+        "phpcs": "phpcs src tests --standard=psr2 -sp --colors",
+        "phpunit": "phpunit --verbose --colors=always",
+        "phpunit-ci": "phpunit --verbose --coverage-clover build/logs/clover.xml",
+        "phpunit-coverage": "phpunit --verbose --colors=always --coverage-html build/coverage",
+        "test": [
+            "@lint",
+            "@phpcs",
+            "@phpunit"
+        ],
+        "test-ci": [
+            "@lint",
+            "@phpcs",
+            "@phpunit-ci"
+        ]
+    },
+    "support": {
+        "issues": "https://github.com/ramsey/uuid/issues",
+        "rss": "https://github.com/ramsey/uuid/releases.atom",
+        "source": "https://github.com/ramsey/uuid",
+        "wiki": "https://github.com/ramsey/uuid/wiki"
     }
 }

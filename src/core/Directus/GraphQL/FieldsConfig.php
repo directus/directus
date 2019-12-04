@@ -50,7 +50,10 @@ class FieldsConfig
                     $fields[$v['field']] = Types::directusFile();
                     break;
                 case 'integer':
-                    $fields[$v['field']] = ($v['interface'] == 'primary-key') ? $fields[$v['field']] = Types::id() : Types::int();
+                    $fields[$v['field']] = Types::int();
+                    if ($v['primary_key']) {
+                        $fields[$v['field']] = Types::id();
+                    }
                     break;
                 case 'decimal':
                     $fields[$v['field']] = Types::float();

@@ -11,6 +11,6 @@ class TFAEnforcedException extends UnauthorizedException
 
     public function __construct()
     {
-        parent::__construct(ERROR_MESSAGE);
+        parent::__construct(static::ERROR_MESSAGE);
     }
 }

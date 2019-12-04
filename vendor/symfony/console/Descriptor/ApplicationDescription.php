@@ -115,23 +115,29 @@ class ApplicationDescription
     {
         $namespacedCommands = [];
         $globalCommands = [];
+        $sortedCommands = [];
         foreach ($commands as $name => $command) {
             $key = $this->application->extractNamespace($name, 1);
-            if (!$key) {
-                $globalCommands['_global'][$name] = $command;
+            if (\in_array($key, ['', self::GLOBAL_NAMESPACE], true)) {
+                $globalCommands[$name] = $command;
             } else {
                 $namespacedCommands[$key][$name] = $command;
             }
         }
-        ksort($namespacedCommands);
-        $namespacedCommands = array_merge($globalCommands, $namespacedCommands);
 
-        foreach ($namespacedCommands as &$commandsSet) {
-            ksort($commandsSet);
+        if ($globalCommands) {
+            ksort($globalCommands);
+            $sortedCommands[self::GLOBAL_NAMESPACE] = $globalCommands;
         }
-        // unset reference to keep scope clear
-        unset($commandsSet);
 
-        return $namespacedCommands;
+        if ($namespacedCommands) {
+            ksort($namespacedCommands);
+            foreach ($namespacedCommands as $key => $commandsSet) {
+                ksort($commandsSet);
+                $sortedCommands[$key] = $commandsSet;
+            }
+        }
+
+        return $sortedCommands;
     }
 }

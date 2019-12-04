@@ -2365,7 +2365,7 @@ class MimeTypeUtils
         'pcx' => ['image/vnd.zbrush.pcx', 'image/x-pcx'],
         'pdb' => ['application/vnd.palm', 'application/x-aportisdoc', 'application/x-palm-database'],
         'pdc' => ['application/x-aportisdoc'],
-        'pdf' => ['application/acrobat', 'application/nappdf', 'application/pdf', 'application/x-pdf', 'image/pdf'],
+        'pdf' => ['application/pdf', 'application/acrobat', 'application/nappdf', 'application/x-pdf', 'image/pdf'],
         'pdf.bz2' => ['application/x-bzpdf'],
         'pdf.gz' => ['application/x-gzpdf'],
         'pdf.lz' => ['application/x-lzpdf'],

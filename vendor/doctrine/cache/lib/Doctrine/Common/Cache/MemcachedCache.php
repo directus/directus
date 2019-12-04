@@ -3,6 +3,10 @@
 namespace Doctrine\Common\Cache;
 
 use Memcached;
+use function array_keys;
+use function preg_match;
+use function strlen;
+use function strpos;
 use function time;
 
 /**
@@ -12,6 +16,8 @@ use function time;
  */
 class MemcachedCache extends CacheProvider
 {
+    public const CACHE_ID_MAX_LENGTH = 250;
+
     /** @var Memcached|null */
     private $memcached;
 
@@ -56,6 +62,10 @@ class MemcachedCache extends CacheProvider
      */
     protected function doSaveMultiple(array $keysAndValues, $lifetime = 0)
     {
+        foreach (array_keys($keysAndValues) as $id) {
+            $this->validateCacheId($id);
+        }
+
         if ($lifetime > 30 * 24 * 3600) {
             $lifetime = time() + $lifetime;
         }
@@ -78,6 +88,8 @@ class MemcachedCache extends CacheProvider
      */
     protected function doSave($id, $data, $lifeTime = 0)
     {
+        $this->validateCacheId($id);
+
         if ($lifeTime > 30 * 24 * 3600) {
             $lifeTime = time() + $lifeTime;
         }
@@ -128,5 +140,31 @@ class MemcachedCache extends CacheProvider
             Cache::STATS_MEMORY_USAGE     => $stats['bytes'],
             Cache::STATS_MEMORY_AVAILABLE => $stats['limit_maxbytes'],
         ];
+    }
+
+    /**
+     * Validate the cache id
+     *
+     * @see https://github.com/memcached/memcached/blob/1.5.12/doc/protocol.txt#L41-L49
+     *
+     * @param string $id
+     *
+     * @return void
+     *
+     * @throws InvalidCacheId
+     */
+    private function validateCacheId($id)
+    {
+        if (strlen($id) > self::CACHE_ID_MAX_LENGTH) {
+            throw InvalidCacheId::exceedsMaxLength($id, self::CACHE_ID_MAX_LENGTH);
+        }
+
+        if (strpos($id, ' ') !== false) {
+            throw InvalidCacheId::containsUnauthorizedCharacter($id, ' ');
+        }
+
+        if (preg_match('/[\t\r\n]/', $id) === 1) {
+            throw InvalidCacheId::containsControlCharacter($id);
+        }
     }
 }

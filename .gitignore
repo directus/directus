@@ -2,26 +2,33 @@ Icon
 .DS_Store
 *.log
 .cache
+.vscode
+.ddev
 
 # Ignore dev files
 /.idea
 node_modules
-
+yarn.lock
 package-lock.json
+/nbproject/
+/tests/api/tmp/
 
-# Don't track composer phar/vendors
-composer.phar
-composer.lock
+# Exclude env vars and custom deployment scripts
+.env
+deploy.*
 
 # Ignore configuration files
 /config/*
-!/config/migrations.php
-!/config/migrations.upgrades.php
-!/config/api_sample.php
+!/config/_example.php
 
 # PHPUnit
 /phpunit.xml
 /documents
+
+# Core extensions
+/public/extensions/core/interfaces
+/public/extensions/core/layouts
+/public/extensions/core/pages
 
 # Custom extensions
 /public/extensions/custom/*/*
@@ -48,3 +55,12 @@ composer.lock
 # Keep gitkeep files
 # This will make sure empty directories has at least one file so it can be tracked by git
 !**/.gitkeep
+/docs/
+
+#Override the PHP internal server rules for static files
+#See https://github.com/slimphp/Slim/issues/1829
+#php -S localhost:8000 cliserver.php
+public/cliserver.php
+
+# Cache generated while filesystem adapter
+/cache/*

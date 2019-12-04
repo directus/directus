@@ -265,11 +265,14 @@ class Files
     /**
      * Copy base64 data into Directus Media
      *
-     * @param string $fileData - base64 data
+     * @param string $fileData - base64 data or directus_files object
      * @param string $fileName - name of the file
      * @param bool $replace
      *
      * @return array
+     *
+     * @todo Refactor this to be clearer what's going on. $fileData can be anything,
+     *       all kinds of things are happening, and nothing is documented
      */
     public function saveData($fileData, $fileName, $replace = false)
     {
@@ -289,12 +292,17 @@ class Files
         }
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName, $replace !== true);
-
         $filePath = $this->getConfig('root') . '/' . $fileName;
-
+        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $event = $replace ? 'file.update' : 'file.save';
         $this->emitter->run($event, ['name' => $fileName, 'size' => $size]);
-        $this->write($fileName, $fileData, $replace);
+
+        // On name change, the file would be overwritten with the empty file data.
+        // This prevents you can't update a file to a zero-byte file.
+        if (!empty($fileData)) {
+            $this->write($fileName, $fileData, $replace);
+        }
+
         $this->emitter->run($event.':after', ['name' => $fileName, 'size' => $size]);
 
         #open local tmp file since s3 bucket is private
@@ -308,7 +316,7 @@ class Files
 
         $fileData = $this->getFileInfo($fileName);
         $fileData['title'] = Formatting::fileNameToFileTitle($title);
-        $fileData['filename'] = basename($filePath);
+        $fileData['filename_disk'] = basename($filePath);
         $fileData['storage'] = $this->config['adapter'];
 
         $fileData = array_merge($this->defaults, $fileData);
@@ -333,11 +341,10 @@ class Files
         }
         unset($tmpData);
 
-        return [
-            // The MIME type will be based on its extension, rather than its content
-            'type' => MimeTypeUtils::getFromFilename($fileData['filename']),
-            'filename' => $fileData['filename'],
-            'title' => $fileData['title'],
+        $response = [
+            // The MIME type will be based on its extension, rather than its extension
+            'type' => MimeTypeUtils::getFromFilename($fileData['filename_disk']),
+            'filename_disk' => $fileData['filename_disk'],
             'tags' => $fileData['tags'],
             'description' => $fileData['description'],
             'location' => $fileData['location'],
@@ -349,6 +356,12 @@ class Files
             'checksum' => $checksum,
             'duration' => isset($duration) ? $duration : 0
         ];
+
+        if(!$replace){
+            $response['title'] = $fileData['title'];
+        }
+
+        return $response;
     }
 
     /**
@@ -365,7 +378,7 @@ class Files
         }
 
         $fileName = isset($fileInfo['filename']) ? $fileInfo['filename'] : md5(time()) . '.jpg';
-        $thumbnailData = $this->saveData($fileInfo['data'], $fileName);
+        $thumbnailData = $this->saveData($fileInfo['data'], $fileName,$fileInfo['fileId']);
 
         return array_merge(
             $fileInfo,
@@ -675,16 +688,14 @@ class Files
      */
     private function getFileName($fileName, $unique = true)
     {
-        switch ($this->getSettings('file_naming')) {
-            case 'uuid':
-                $fileName = $this->uuidFileName($fileName);
-                break;
-        }
-
         if ($unique) {
+            switch ($this->getSettings('file_naming')) {
+                case 'uuid':
+                    $fileName = $this->uuidFileName($fileName);
+                    break;
+            }
             $fileName = $this->uniqueName($fileName, $this->filesystem->getPath());
         }
-
         return $fileName;
     }
 

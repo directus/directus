@@ -27,7 +27,7 @@ class DefaultServicesProvider
     /**
      * Register Slim's default services.
      *
-     * @param Container $container A DI container implementing ArrayAccess and container-interop.
+     * @param Container $container A DI container implementing ArrayAccess and psr/container.
      */
     public function register($container)
     {

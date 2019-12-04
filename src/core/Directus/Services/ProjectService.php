@@ -14,6 +14,7 @@ use Directus\Exception\ProjectAlreadyExistException;
 use Directus\Exception\UnprocessableEntityException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
+use Directus\Util\StringUtils;
 
 class ProjectService extends AbstractService
 {
@@ -61,10 +62,13 @@ class ProjectService extends AbstractService
         // If the first installtion is executing then add the api.json file to store the password.
         // For every installation after the first one, user must pass that same password to create the next project.
 
-        $scannedDirectory = \Directus\scan_config_folder();
+        $basePath = \Directus\get_app_base_path();
+        $scannedDirectory = \Directus\scan_folder($basePath.'/config');
 
-        $superadminFilePath = \Directus\get_app_base_path().'/config/__api.json';
-        if(empty($scannedDirectory)){
+        $projectNames = $scannedDirectory;
+
+        $superadminFilePath = $basePath.'/config/__api.json';
+        if(empty($projectNames)){
             $configStub = InstallerUtils::createJsonFileContent($data);
             file_put_contents($superadminFilePath, $configStub);
         }else{
@@ -123,7 +127,7 @@ class ProjectService extends AbstractService
     public function delete(Request $request)
     {
         $data = $request->getQueryParams();
-    
+
         $this->validate($data,[
             'super_admin_token' => 'required',
         ]);

@@ -77,7 +77,7 @@ if (!function_exists('get_project_config')) {
         }
 
         $configFilePath = InstallerUtils::createConfigPath($basePath, $name);
-        
+
         if (isset($configs[$configFilePath])) {
             return $configs[$configFilePath];
         }
@@ -116,22 +116,25 @@ if (!function_exists('get_app_base_path')) {
     }
 }
 
-if (!function_exists('scan_config_folder')) {
+if (!function_exists('scan_folder')) {
     /**
-     * Scan config folder and return the php files (Project Configurations)
+     * Scan folder and return the php files (Project Configurations)
      *
      * @return string
      */
-    function scan_config_folder()
+    function scan_folder($folder)
     {
         $projectNames = [];
-        $ignoreableFiles = ['api_sample.php','.DS_Store','..', '.'];
-        $scannedDirectory = array_values(array_diff(scandir(get_app_base_path().'/config'), $ignoreableFiles));
-        if(!empty($scannedDirectory)){
-            foreach($scannedDirectory as $fileName){
-                $fileObject = explode(".",$fileName);
-                if(end($fileObject) == "php" ){
-                    $projectNames[] = implode(".",$fileObject);
+        $ignoreableFiles = ['.DS_Store','..', '.'];
+        $scannedDirectory = array_values(array_diff(scandir($folder), $ignoreableFiles));
+        if (!empty($scannedDirectory)) {
+            foreach ($scannedDirectory as $fileName) {
+                $fileObject = explode(".", $fileName);
+
+                if (end($fileObject) == "php") {
+                    if (strlen($fileObject[0]) == 1 || StringUtils::startsWith($fileName, '_') === false) {
+                        $projectNames[] = implode(".", $fileObject);
+                    }
                 }
             }
         }

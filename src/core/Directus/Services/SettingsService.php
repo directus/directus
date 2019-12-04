@@ -3,7 +3,9 @@
 namespace Directus\Services;
 
 use Directus\Application\Container;
+use function Directus\get_directus_setting;
 use Directus\Database\Schema\SchemaManager;
+use Directus\Exception\UnprocessableEntityException;
 
 class SettingsService extends AbstractService
 {

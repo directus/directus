@@ -11,8 +11,7 @@
         "memcached",
         "couchdb",
         "xcache",
-        "apcu",
-        "riak"
+        "apcu"
     ],
     "homepage": "https://www.doctrine-project.org/projects/cache.html",
     "license": "MIT",

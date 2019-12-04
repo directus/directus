@@ -19,7 +19,6 @@ class Environment extends Collection implements EnvironmentInterface
 {
     /**
      * {@inheritdoc}
-     * @return self
      */
     public static function mock(array $settings = [])
     {

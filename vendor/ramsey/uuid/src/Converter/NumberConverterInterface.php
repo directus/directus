@@ -14,6 +14,8 @@
 
 namespace Ramsey\Uuid\Converter;
 
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 /**
  * NumberConverterInterface converts UUIDs from hexadecimal characters into
  * representations of integers and vice versa
@@ -28,7 +30,7 @@ interface NumberConverterInterface
      *
      * @param string $hex The hexadecimal string representation to convert
      * @return mixed
-     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
+     * @throws UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
      */
     public function fromHex($hex);
 
@@ -40,7 +42,7 @@ interface NumberConverterInterface
      *     a true integer, a string integer, or a object representation that
      *     this converter can understand
      * @return string Hexadecimal string
-     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
+     * @throws UnsatisfiedDependencyException if `Moontoast\Math\BigNumber` is not present
      */
     public function toHex($integer);
 }

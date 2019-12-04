@@ -169,11 +169,11 @@ class Fields extends Route
      */
     public function delete(Request $request, Response $response)
     {
-        
+
         $service = new TablesService($this->container);
 
         $field = $service->getFieldObject($request->getAttribute('collection'),$request->getAttribute('field'));
-        
+
         $service->deleteField(
             $request->getAttribute('collection'),
             $request->getAttribute('field'),
@@ -191,7 +191,6 @@ class Fields extends Route
             $collectionsPermission  = $permissionService->findAll($filter);
             $permissionId = array_column($collectionsPermission['data'], 'id');
             $permissionService->batchDeleteWithIds($permissionId);
-           
         }
 
         return $this->responseWithData($request, $response, []);

@@ -71,7 +71,7 @@ try {
 
 $errorReporting = E_ALL;
 $displayErrors = 1;
-if ($app->getConfig()->get('app.env', 'development') === 'production') {
+if ($app->getConfig()->get('env', 'development') === 'production') {
     $displayErrors = $errorReporting = 0;
 }
 
@@ -135,7 +135,10 @@ $app->get('/', \Directus\Api\Routes\Home::class)
     ->add($middleware['table_gateway']);
 
 
+$app->get('/{project}/assets/{id}', \Directus\Api\Routes\Assets::class);
+
 $app->group('/{project}', function () use ($middleware) {
+    
     $this->get('/', \Directus\Api\Routes\ProjectHome::class)
         ->add($middleware['auth_user'])
         ->add($middleware['rate_limit_user'])
@@ -227,8 +230,8 @@ $app->group('/{project}', function () use ($middleware) {
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);
 
-    $this->group('/pages', function () {
-        $endpointsList = \Directus\get_custom_endpoints('public/extensions/core/pages', true);
+    $this->group('/modules', function () {
+        $endpointsList = \Directus\get_custom_endpoints('public/extensions/core/modules', true);
 
         foreach ($endpointsList as $name => $endpoints) {
             \Directus\create_group_route_from_array($this, $name, $endpoints);
@@ -268,13 +271,13 @@ $app->group('/layouts', \Directus\Api\Routes\Layouts::class)
     ->add($middleware['auth'])
     ->add($middleware['table_gateway'])
     ->add($middleware['database_migration']);
-$app->group('/pages', \Directus\Api\Routes\Pages::class)
+$app->group('/modules', \Directus\Api\Routes\Modules::class)
     ->add($middleware['rate_limit_user'])
     ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['table_gateway'])
     ->add($middleware['database_migration']);
-   
+
 $app->group('/server', \Directus\Api\Routes\Server::class);
 $app->group('/types', \Directus\Api\Routes\Types::class)
     ->add($middleware['rate_limit_user'])

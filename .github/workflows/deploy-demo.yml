@@ -1,0 +1,19 @@
+name: Deploy to Demo
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pull on server
+      uses: appleboy/ssh-action@v0.0.2
+      with:
+        host: ${{ secrets.DEMO_HOST }}
+        username: ${{ secrets.DEMO_USERNAME }}
+        password: ${{ secrets.DEMO_PASSWORD }}
+        port: ${{ secrets.DEMO_PORT }}
+        script: ./pull-latest.sh

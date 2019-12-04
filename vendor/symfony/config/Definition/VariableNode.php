@@ -85,7 +85,7 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
         // this avoids ever passing an empty value to final validation closures
         if (!$this->allowEmptyValue && $this->isHandlingPlaceholder() && $this->finalValidationClosures) {
             @trigger_error(sprintf('Setting path "%s" to an environment variable is deprecated since Symfony 4.3. Remove "cannotBeEmpty()", "validate()" or include a prefix/suffix value instead.', $this->getPath()), E_USER_DEPRECATED);
-//            $e = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath(), json_encode($value)));
+//            $e = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath()));
 //            if ($hint = $this->getInfo()) {
 //                $e->addHint($hint);
 //            }

@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.2.9"
+        "php": "^7.2.5"
     },
     "suggest": {
         "symfony/translation-implementation": ""

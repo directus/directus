@@ -18,6 +18,11 @@ namespace Ramsey\Uuid\Generator;
  * SodiumRandomGenerator provides functionality to generate strings of random
  * binary data using the PECL libsodium extension
  *
+ * @deprecated As of PHP 7.2.0, the libsodium extension is bundled with PHP, and
+ *     the random_bytes() PHP function is now the recommended method for
+ *     generating random byes. The default RandomBytesGenerator uses the
+ *     random_bytes() function.
+ *     <em>This generator will be removed in ramsey/uuid 4.0.0.</em>
  * @link http://pecl.php.net/package/libsodium
  * @link https://paragonie.com/book/pecl-libsodium
  */

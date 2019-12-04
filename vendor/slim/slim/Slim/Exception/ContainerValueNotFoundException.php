@@ -7,9 +7,9 @@
 
 namespace Slim\Exception;
 
-use Interop\Container\Exception\NotFoundException as InteropNotFoundException;
+use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 
-class ContainerValueNotFoundException extends RuntimeException implements InteropNotFoundException
+class ContainerValueNotFoundException extends RuntimeException implements NotFoundExceptionInterface
 {
 }

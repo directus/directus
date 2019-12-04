@@ -25,7 +25,7 @@ class ProjectHome extends Route
                 ]
             ];
         }
-
+        
         return $this->responseWithData($request, $response, $responseData);
     }
 }

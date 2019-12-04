@@ -34,16 +34,27 @@ class Server extends Route
      */
     public function projects(Request $request, Response $response)
     {
-        $scannedDirectory = \Directus\scan_config_folder();
+        // When using Directus in Docker (or any other service that relies on environment variables), always use `_` for
+        // the project key
+        if (getenv("DIRECTUS_USE_ENV") === "1") {
+            $projectNames[] = "_";
+        } else {
+            $basePath = \Directus\get_app_base_path();
+            $scannedDirectory = \Directus\scan_folder($basePath.'/config');
 
-        $projectNames = [];
-        if(empty($scannedDirectory)){
-            throw new NotInstalledException('This Directus instance has not been configured. Install via the Directus App (eg: /admin) or read more about configuration at: https://docs.directus.io/getting-started/installation.html#configure');
-        }else{
-            foreach($scannedDirectory as $fileName){
-                if(!StringUtils::startsWith($fileName, 'private.')){
-                    $fileObject = explode(".",$fileName);
-                    $projectNames[] = $fileObject[0];
+            $configFiles = $scannedDirectory;
+
+            if (empty($configFiles)) {
+                throw new NotInstalledException('This Directus instance has not been configured. Install via the Directus App (eg: /admin) or read more about configuration at: https://docs.directus.io/getting-started/installation.html#configure');
+            }
+
+            // We're re-filtering the list of projects again before returning them. This time we'll fetch out the private
+            // config files. We want to filter out the disabled ones (`_`) so we can correctly return the "No projects installed"
+            // warning above.
+            $projectNames = [];
+            foreach($configFiles as $fileName){
+                if (!StringUtils::startsWith($fileName, 'private.')) {
+                    $projectNames[] = explode('.', $fileName)[0];
                 }
             }
         }
@@ -81,7 +92,6 @@ class Server extends Route
                     'curl' => extension_loaded("curl"),
                     'gd' => extension_loaded("gd"),
                     'fileinfo' => extension_loaded("fileinfo"),
-                    'libapache2_mod_php' => extension_loaded("libapache2-mod-php"),
                     'mbstring' => extension_loaded("mbstring"),
                     'json' => extension_loaded("json"),
                 ],

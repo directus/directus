@@ -746,23 +746,35 @@ class TablesService extends AbstractService
             throw new UnprocessableEntityException('Cannot delete the last field');
         }
 
-        if (!$columnObject->isAlias()) {
+        if ($columnObject->isAlias() === false) {
             if (!$this->dropColumnSchema($collectionName, $fieldName)) {
                 throw new ErrorException('Error deleting the field');
             }
         }
 
-        if ($columnObject->hasRelationship() && !in_array($columnObject->getType(),DataTypes::getUsersType())) {
-            $this->removeColumnRelationship($columnObject,$params);
+        if (
+            $columnObject->hasRelationship() &&
+            // Don't remove relational columns for native relationships (users / files)
+            DataTypes::isUsersType($columnObject->getType()) === false &&
+            DataTypes::isFilesType($columnObject->getType()) === false
+        ) {
+            $this->removeColumnRelationship($columnObject, $params);
         }
 
         if ($columnObject->isManaged()) {
             /**
              * Remove O2M field if M2O interface deleted as O2M will only work if M2O exist
              */
-            if($columnObject->isManyToOne() && !in_array($columnObject->getType(),DataTypes::getUsersType())){
+
+            if(
+                $columnObject->isManyToOne() &&
+                // Don't remove relational columns for native relationships (users / files)
+                DataTypes::isUsersType($columnObject->getType()) === false &&
+                DataTypes::isFilesType($columnObject->getType()) === false
+            ) {
               $this->removeRelatedColumnInfo($columnObject);
             }
+
             $this->removeColumnInfo($collectionName, $fieldName);
         }
     }

@@ -10,6 +10,7 @@ use Directus\Services\SettingsService;
 use Directus\Services\FilesServices;
 use Directus\Util\ArrayUtils;
 use function Directus\regex_numeric_ids;
+use function Directus\get_directus_setting;
 
 class Settings extends Route
 {
@@ -35,19 +36,19 @@ class Settings extends Route
      */
     public function create(Request $request, Response $response)
     {
+        $service = new SettingsService($this->container);
         $this->validateRequestPayload($request);
 
         $payload = $request->getParsedBody();
         if (isset($payload[0]) && is_array($payload[0])) {
             return $this->batch($request, $response);
         }
-        $service = new SettingsService($this->container);
         $fieldData = $service->findAllFields(
             $request->getQueryParams()
         );
         $inputData = $this->getInterfaceBasedInput($request, $payload['key'], $fieldData);
 
-       
+
         $responseData = $service->create(
             $inputData,
             $request->getQueryParams()
@@ -231,6 +232,7 @@ class Settings extends Route
         }
 
         $inputData = $request->getParsedBody();
+
         $service = new SettingsService($this->container);
 
         /**
@@ -241,7 +243,6 @@ class Settings extends Route
             $request->getAttribute('id'),
             $request->getQueryParams()
         );
-
         /**
          * Get the interface based input
          *

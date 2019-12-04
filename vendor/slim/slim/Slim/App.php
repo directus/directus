@@ -11,7 +11,7 @@ use BadMethodCallException;
 use Closure;
 use Exception;
 use FastRoute\Dispatcher;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerExceptionInterface as ContainerException;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
@@ -41,7 +41,7 @@ class App
      *
      * @var string
      */
-    const VERSION = '3.12.2';
+    const VERSION = '3.12.3';
 
     /**
      * @var ContainerInterface

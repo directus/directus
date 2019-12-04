@@ -72,7 +72,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
                 spl_autoload_register(__CLASS__.'::throwOnRequiredClass');
             }
             $autoloadedClass = self::$autoloadedClass;
-            self::$autoloadedClass = $this->resource;
+            self::$autoloadedClass = ltrim($this->resource, '\\');
 
             try {
                 $exists = class_exists($this->resource) || interface_exists($this->resource, false) || trait_exists($this->resource, false);
@@ -153,7 +153,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             throw $e;
         }
 
-        $trace = $e->getTrace();
+        $trace = debug_backtrace();
         $autoloadFrame = [
             'function' => 'spl_autoload_call',
             'args' => [$class],
@@ -183,15 +183,17 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             }
 
             $props = [
-                'file' => $trace[$i]['file'],
-                'line' => $trace[$i]['line'],
+                'file' => isset($trace[$i]['file']) ? $trace[$i]['file'] : null,
+                'line' => isset($trace[$i]['line']) ? $trace[$i]['line'] : null,
                 'trace' => \array_slice($trace, 1 + $i),
             ];
 
             foreach ($props as $p => $v) {
-                $r = new \ReflectionProperty('Exception', $p);
-                $r->setAccessible(true);
-                $r->setValue($e, $v);
+                if (null !== $v) {
+                    $r = new \ReflectionProperty('Exception', $p);
+                    $r->setAccessible(true);
+                    $r->setValue($e, $v);
+                }
             }
         }
 

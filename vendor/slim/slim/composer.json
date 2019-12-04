@@ -35,7 +35,6 @@
         "pimple/pimple": "^3.0",
         "psr/http-message": "^1.0",
         "nikic/fast-route": "^1.0",
-        "container-interop/container-interop": "^1.2",
         "psr/container": "^1.0"
     },
     "require-dev": {

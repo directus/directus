@@ -17,5 +17,6 @@ return array(
     '2c102faa651ef8ea5874edb585946bce' => $vendorDir . '/swiftmailer/swiftmailer/lib/swift_required.php',
     'bd9634f2d41831496de0d3dfe4c94881' => $vendorDir . '/symfony/polyfill-php56/bootstrap.php',
     '1b48a6058e8e720e1eecd2313510b7e9' => $vendorDir . '/cache/cache/src/inc.php',
+    'e39a8b23c42d4e1452234d762b03835a' => $vendorDir . '/ramsey/uuid/src/functions.php',
     '79c6260273d1303c3d11c2b0b06acb78' => $baseDir . '/src/helpers/all.php',
 );

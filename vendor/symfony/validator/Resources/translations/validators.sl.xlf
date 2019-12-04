@@ -318,6 +318,54 @@
                 <source>Error</source>
                 <target>Napaka</target>
             </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>To ni veljaven UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Ta vrednost bi morala biti večkratnik od {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>Ta poslovna identifikacijska koda (BIC) ni povezana z IBAN {{ iban }}.</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Ta vrednost bi morala biti veljaven JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ta zbirka bi morala vsebovati samo edinstvene elemente.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Ta vrednost bi morala biti pozitivna.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Ta vrednost bi morala biti pozitivna ali enaka nič.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Ta vrednost bi morala biti negativna.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Ta vrednost bi morala biti negativna ali enaka nič.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ta vrednost ni veljaven časovni pas.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>To geslo je ušlo pri kršitvi varnosti podatkov in ga ne smete uporabljati. Prosimo, uporabite drugo geslo.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Ta vrednost bi morala biti med {{ min }} in {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

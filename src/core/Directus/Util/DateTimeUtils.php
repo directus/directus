@@ -107,18 +107,6 @@ class DateTimeUtils extends \DateTime
         return static::now('UTC');
     }
 
-    public static function nowInTimezone()
-    {
-        $projectName = \Directus\get_api_project_from_request();
-        if(!is_null($projectName)){
-            $config = get_project_config($projectName);
-            return static::now($config->get('app.timezone'));
-        } else {
-            // If there's no project config (f.e. when creating projects), default to UTC
-            return static::now('UTC');
-        }
-    }
-
     /**
      * Creates a new DateTimeUtils instance from a \DateTime instance
      *
@@ -293,6 +281,9 @@ class DateTimeUtils extends \DateTime
         return $this->format('c');
     }
 
+    public function toRFC2616Format() {
+        return $this->format('D, d M Y H:i:s T');
+    }
     /**
      * Returns a string format of the datetime
      *
