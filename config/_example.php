@@ -58,7 +58,7 @@ return [
                                     // See https://docs.directus.io/extensions/storage-adapters.html#using-aws-s3
 
         'root' => 'public/uploads/project-name/originals',          // Where files are stored on disk
-        'thumb_root' => 'public/uploads/project-name/thumbnails',   // Where thumbnails are stored on disk
+        'thumb_root' => 'public/uploads/project-name/generated',    // Where thumbnails are stored on disk
         'root_url' => '/uploads/project-name/originals',            // Where files are accessed over the web
 
         'proxy_downloads' => false, // Use an internal proxy for downloading all files

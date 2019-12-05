@@ -541,8 +541,8 @@ abstract class AbstractService
                     sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",$value,$field->getFormatisedName(),$field['length'])
                 );
             }
-        }else{
-            if(!is_null($field['length']) && ((is_array($value) && $field['length'] < strlen(json_encode($value))) || (!is_array($value) && $field['length'] < strlen($value)))){
+        } else {
+            if (!is_null($field['length']) && ((is_array($value) && $field['length'] < strlen(json_encode($value))) || (!is_array($value) && $field['length'] < mb_strlen($value, 'UTF-8')))){
                 throw new UnprocessableEntityException(
                     sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",!is_array($value) ? $value : 'Json / Array',$field->getFormatisedName(),$field['length'])
                 );

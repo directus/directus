@@ -436,6 +436,18 @@ class CreateSettingsTable extends AbstractMigration
               'value' => ''
             ],
             [
+                'key' => 'asset_whitelist',
+                'value' => json_encode([
+                    [
+                        "key" => "thumbnail",
+                        "width" => 200,
+                        "height" => 200,
+                        "fit" => "contain",
+                        "quality" => 80
+                    ]
+                ])
+            ],
+            [
                 'key' => 'asset_whitelist_system',
                 'value' => json_encode([
                     [

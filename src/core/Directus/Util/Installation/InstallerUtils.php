@@ -42,14 +42,18 @@ class InstallerUtils
      */
     public static function addUpgradeMigrations($basePath = null, $projectName = null)
     {
-        if(!is_null($basePath) && !is_null($projectName))
-        {
+
+        if (
+            static::isUsingFiles() == false ||
+            (!is_null($basePath) && !is_null($projectName))
+        ) {
             $app = static::createApp($basePath, $projectName);
-            $dbConnection =  $app->getContainer()->get('database');
-        }else{
+            $dbConnection = $app->getContainer()->get('database');
+        } else {
             $basePath = \Directus\get_app_base_path();
             $dbConnection = Application::getInstance()->fromContainer('database');
         }
+
         $migrationsTableGateway = new TableGateway(SchemaManager::COLLECTION_MIGRATIONS, $dbConnection);
 
         $select = new Select($migrationsTableGateway->table);
@@ -57,12 +61,13 @@ class InstallerUtils
         $result = $migrationsTableGateway->selectWith($select)->toArray();
         $alreadyStoredMigrations = array_column($result, 'version');
 
-        $ignoreableFiles = ['..', '.'];
-        $scannedDirectory = array_values(array_diff(scandir($basePath.'/migrations/upgrades/schemas'), $ignoreableFiles));
+        $ignoreableFiles = ['..', '.', '.DS_Store'];
+        $scannedDirectory = array_values(array_diff(scandir($basePath.'/migrations/upgrades'), $ignoreableFiles));
         foreach($scannedDirectory as $fileName){
             $data = [];
-            $fileNameObject = explode("_",$fileName,2);
-            $migrationName = explode(".",str_replace(' ', '',ucwords(str_replace('_', ' ', $fileNameObject[1]))),2);
+            $fileNameObject = explode("_", $fileName, 2);
+            $migrationName = explode(".", str_replace(' ', '', ucwords(str_replace('_', ' ', $fileNameObject[1]))), 2);
+
             $data = [
                 'version' => $fileNameObject[0],
                 'migration_name' => $migrationName[0],
@@ -173,6 +178,8 @@ class InstallerUtils
      *
      * @param string $path
      * @param array $data
+     *        The JSON that the user POSTed to the create-project endpoint
+     *        Required in here are the database credentials
      * @param bool $force
      */
     public static function ensureCanCreateTables($path, array $data, $force = false)

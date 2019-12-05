@@ -130,16 +130,24 @@ abstract class AbstractSchema implements SchemaInterface
             case 'tinyint':
             case 'smallint':
             case 'mediumint':
+            case 'bigint':
+            case 'serial':
             case 'int': // alias: integer
             case 'year':
                 $type = DataTypes::TYPE_INTEGER;
                 break;
             case 'decimal': // alias: dec, fixed
             case 'numeric':
+            case 'real':
             case 'float': // alias: real
             case 'double': // alias: double precision, real
                 $type = DataTypes::TYPE_DECIMAL;
                 break;
+            case 'bool':
+            case 'boolean':
+                $type = DataTypes::TYPE_BOOLEAN;
+            case 'blob':
+            case 'longblob':
             case 'bit':
             case 'binary':
             case 'varbinary':

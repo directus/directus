@@ -94,7 +94,15 @@ class UpdateDirectusSettings extends AbstractMigration
         ],
         [
             'key' => 'asset_whitelist',
-            'value' => ''
+            'value' => json_encode([
+                [
+                    "key" => "thumbnail",
+                    "width" => 200,
+                    "height" => 200,
+                    "fit" => "contain",
+                    "quality" => 80
+                ]
+            ])
         ]
     ];
 

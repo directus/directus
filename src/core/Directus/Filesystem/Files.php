@@ -5,7 +5,7 @@ namespace Directus\Filesystem;
 use Char0n\FFMpegPHP\Movie;
 use Directus\Application\Application;
 use function Directus\filename_put_ext;
-use function Directus\generate_uuid5;
+use function Directus\generate_uuid4;
 use function Directus\is_a_url;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
@@ -709,7 +709,7 @@ class Files
     private function uuidFileName($fileName)
     {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-        $fileHashName = generate_uuid5(null, $fileName);
+        $fileHashName = generate_uuid4();
 
         return $fileHashName . '.' . $ext;
     }
