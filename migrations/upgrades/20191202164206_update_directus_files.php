@@ -1,6 +1,7 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
+use function Directus\get_random_string;
 
 class UpdateDirectusFiles extends AbstractMigration
 {
