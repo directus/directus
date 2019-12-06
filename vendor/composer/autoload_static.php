@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit978540ac5abfc7591dff180296c03b53
+class ComposerStaticInit0d1fd59125919014faaf8328ac72e8f6
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -452,6 +452,7 @@ class ComposerStaticInit978540ac5abfc7591dff180296c03b53
         'Directus\\Api\\Routes\\Collections' => __DIR__ . '/../..' . '/src/endpoints/Collections.php',
         'Directus\\Api\\Routes\\Fields' => __DIR__ . '/../..' . '/src/endpoints/Fields.php',
         'Directus\\Api\\Routes\\Files' => __DIR__ . '/../..' . '/src/endpoints/Files.php',
+        'Directus\\Api\\Routes\\Folders' => __DIR__ . '/../..' . '/src/endpoints/Folders.php',
         'Directus\\Api\\Routes\\GraphQL' => __DIR__ . '/../..' . '/src/endpoints/GraphQL.php',
         'Directus\\Api\\Routes\\Home' => __DIR__ . '/../..' . '/src/endpoints/Home.php',
         'Directus\\Api\\Routes\\Interfaces' => __DIR__ . '/../..' . '/src/endpoints/Interfaces.php',
@@ -781,6 +782,7 @@ class ComposerStaticInit978540ac5abfc7591dff180296c03b53
         'Directus\\Services\\AuthService' => __DIR__ . '/../..' . '/src/core/Directus/Services/AuthService.php',
         'Directus\\Services\\CollectionPresetsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/CollectionPresetsService.php',
         'Directus\\Services\\FilesServices' => __DIR__ . '/../..' . '/src/core/Directus/Services/FilesServices.php',
+        'Directus\\Services\\FoldersService' => __DIR__ . '/../..' . '/src/core/Directus/Services/FoldersService.php',
         'Directus\\Services\\GraphQLService' => __DIR__ . '/../..' . '/src/core/Directus/Services/GraphQLService.php',
         'Directus\\Services\\InterfacesService' => __DIR__ . '/../..' . '/src/core/Directus/Services/InterfacesService.php',
         'Directus\\Services\\ItemsService' => __DIR__ . '/../..' . '/src/core/Directus/Services/ItemsService.php',
@@ -2727,10 +2729,10 @@ class ComposerStaticInit978540ac5abfc7591dff180296c03b53
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit978540ac5abfc7591dff180296c03b53::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit978540ac5abfc7591dff180296c03b53::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit978540ac5abfc7591dff180296c03b53::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit978540ac5abfc7591dff180296c03b53::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0d1fd59125919014faaf8328ac72e8f6::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0d1fd59125919014faaf8328ac72e8f6::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0d1fd59125919014faaf8328ac72e8f6::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0d1fd59125919014faaf8328ac72e8f6::$classMap;
 
         }, null, ClassLoader::class);
     }

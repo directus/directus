@@ -138,7 +138,7 @@ $app->get('/', \Directus\Api\Routes\Home::class)
 $app->get('/{project}/assets/{id}', \Directus\Api\Routes\Assets::class);
 
 $app->group('/{project}', function () use ($middleware) {
-    
+
     $this->get('/', \Directus\Api\Routes\ProjectHome::class)
         ->add($middleware['auth_user'])
         ->add($middleware['rate_limit_user'])
@@ -161,6 +161,10 @@ $app->group('/{project}', function () use ($middleware) {
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);
     $this->group('/files', \Directus\Api\Routes\Files::class)
+        ->add($middleware['rate_limit_user'])
+        ->add($middleware['auth'])
+        ->add($middleware['table_gateway']);
+    $this->group('/folders', \Directus\Api\Routes\Folders::class)
         ->add($middleware['rate_limit_user'])
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);

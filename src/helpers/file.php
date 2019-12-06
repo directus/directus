@@ -148,6 +148,7 @@ if (!function_exists('append_storage_information')) {
             // Add thumbnails if the asset is an image
             $search = 'image';
             if (
+                array_key_exists('type', $row) &&
                 substr($row['type'], 0, strlen($search)) === $search &&
                 $row['type'] !== 'image/svg+xml' // SVGs aren't manipulatable bitmaps
             ) {

@@ -70,21 +70,24 @@ class FilesServices extends AbstractService
     public function getSaveData($data, $isUpdate){
         $dataInfo = [];
         $files = $this->container->get('files');
-        if (is_a_url($data['data'])) {
+
+        if (array_key_exists('data', $data) && is_a_url($data['data'])) {
             $dataInfo = $files->getLink($data['data']);
             // Set the URL payload data
             $data['data'] = ArrayUtils::get($dataInfo, 'data');
             $data['filename_disk'] = ArrayUtils::get($dataInfo, 'filename_disk');
-        } else if (!is_object($data['data'])) {
+        } else if (array_key_exists('data', $data) && !is_object($data['data'])) {
             $dataInfo = $files->getDataInfo($data['data']);
         }
+
 
         $type = ArrayUtils::get($dataInfo, 'type', ArrayUtils::get($data, 'type'));
 
         if (strpos($type, 'embed/') === 0) {
             $recordData = $files->saveEmbedData(array_merge($dataInfo, ArrayUtils::pick($data, ['filename_disk'])));
         } else {
-            $recordData = $files->saveData($data['data'], $data['filename_disk'],$isUpdate);
+            $newFileContents = array_key_exists('data', $data) ? $data['data'] : null;
+            $recordData = $files->saveData($newFileContents, $data['filename_disk'], $isUpdate);
         }
 
         // NOTE: Use the user input title, tags, description and location when exists.
@@ -96,7 +99,7 @@ class FilesServices extends AbstractService
         ]));
 
         if(!$isUpdate){
-            $recordData['private_hash'] =  get_random_string();
+            $recordData['private_hash'] = get_random_string();
         }
 
         return ArrayUtils::omit(array_merge($data,$recordData),['data','html']);
@@ -151,7 +154,7 @@ class FilesServices extends AbstractService
         $currentItem = $tableGateway->getOneData($id);
         $currentFileName = ArrayUtils::get($currentItem, 'filename_disk');
 
-        if ($data['filename_disk'] && $data['filename_disk'] !== $currentFileName) {
+        if (array_key_exists('filename_disk', $data) && $data['filename_disk'] !== $currentFileName) {
             $oldFilePath = $currentFileName;
             $newFilePath = $data['filename_disk'];
 
@@ -161,6 +164,17 @@ class FilesServices extends AbstractService
                throw new InvalidRequestException($e);
             }
         }
+
+        // getSaveData requires filename_disk to be set, in order for Filesystem/Files to read the file info
+        $fileName = $currentFileName;
+
+        // If the user provided their own filename, the file has been renamed above. In that case, pass on
+        // the new filename
+        if (array_key_exists('filename_disk', $data)) {
+            $fileName = $data['filename_disk'];
+        }
+
+        $data['filename_disk'] = $fileName;
 
         $recordData = $this->getSaveData($data, true);
 
@@ -195,75 +209,6 @@ class FilesServices extends AbstractService
         $tableGateway = $this->createTableGateway($this->collection);
 
         return $this->getItemsAndSetResponseCacheTags($tableGateway, $params);
-    }
-
-    public function createFolder(array $data, array $params = [])
-    {
-        $collection = 'directus_folders';
-        $this->enforceCreatePermissions($collection, $data, $params);
-        $this->validatePayload($collection, null, $data, $params);
-
-        $foldersTableGateway = $this->createTableGateway($collection);
-
-        $newFolder = $foldersTableGateway->createRecord($data, $this->getCRUDParams($params));
-
-        return $foldersTableGateway->wrapData(
-            $newFolder->toArray(),
-            true,
-            ArrayUtils::get($params, 'meta')
-        );
-    }
-
-    public function findFolder($id, array $params = [])
-    {
-        $foldersTableGateway = $this->createTableGateway('directus_folders');
-        $params['id'] = $id;
-
-        return $this->getItemsAndSetResponseCacheTags($foldersTableGateway, $params);
-    }
-
-    public function findFolderByIds($id, array $params = [])
-    {
-        $foldersTableGateway = $this->createTableGateway('directus_folders');
-
-        return $this->getItemsByIdsAndSetResponseCacheTags($foldersTableGateway, $id, $params);
-    }
-
-    public function updateFolder($id, array $data, array $params = [])
-    {
-        $collectionName = 'directus_folders';
-        $this->enforceUpdatePermissions($collectionName, $data, $params);
-        $this->checkItemExists($collectionName, $id);
-
-        $foldersTableGateway = $this->createTableGateway('directus_folders');
-        $group = $foldersTableGateway->updateRecord($id, $data, $this->getCRUDParams($params));
-
-        return $foldersTableGateway->wrapData(
-            $group->toArray(),
-            true,
-            ArrayUtils::get($params, 'meta')
-        );
-    }
-
-    public function findAllFolders(array $params = [])
-    {
-        $foldersTableGateway = $this->createTableGateway('directus_folders');
-
-        return $this->getItemsAndSetResponseCacheTags($foldersTableGateway, $params);
-    }
-
-    public function deleteFolder($id, array $params = [])
-    {
-        $this->enforcePermissions('directus_folders', [], $params);
-
-        $foldersTableGateway = $this->createTableGateway('directus_folders');
-        // NOTE: check if item exists
-        // TODO: As noted in other places make a light function to check for it
-        $this->getItemsAndSetResponseCacheTags($foldersTableGateway, [
-            'id' => $id
-        ]);
-
-        return $foldersTableGateway->deleteRecord($id, $this->getCRUDParams($params));
     }
 
     /**

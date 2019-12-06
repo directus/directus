@@ -31,16 +31,6 @@ class Files extends Route
         $app->delete('/{id}', [$this, 'delete']);
         $app->get('', [$this, 'all']);
 
-        // Folders
-        $controller = $this;
-        $app->group('/folders', function () use ($controller) {
-            $this->post('', [$controller, 'createFolder']);
-            $this->get('/{id:[0-9]+}', [$controller, 'readFolder']);
-            $this->patch('/{id:[0-9]+}', [$controller, 'updateFolder']);
-            $this->delete('/{id:[0-9]+}', [$controller, 'deleteFolder']);
-            $this->get('', [$controller, 'allFolder']);
-        });
-
         // Revisions
         $app->get('/{id}/revisions', [$this, 'fileRevisions']);
         $app->get('/{id}/revisions/{offset}', [$this, 'oneFileRevision']);
@@ -162,93 +152,6 @@ class Files extends Route
         $responseData = $service->findAll($request->getQueryParams());
 
         return $this->responseWithData($request, $response, $responseData);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function createFolder(Request $request, Response $response)
-    {
-        $this->validateRequestPayload($request);
-        $service = new FilesServices($this->container);
-        $responseData = $service->createFolder(
-            $request->getParsedBody(),
-            $request->getQueryParams()
-        );
-
-        return $this->responseWithData($request, $response, $responseData);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function readFolder(Request $request, Response $response)
-    {
-        $service = new FilesServices($this->container);
-        $responseData = $service->findFolderByIds(
-            $request->getAttribute('id'),
-            ArrayUtils::pick($request->getQueryParams(), ['fields', 'meta'])
-        );
-
-        return $this->responseWithData($request, $response, $responseData);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function updateFolder(Request $request, Response $response)
-    {
-        $this->validateRequestPayload($request);
-        $service = new FilesServices($this->container);
-        $responseData = $service->updateFolder(
-            $request->getAttribute('id'),
-            $request->getParsedBody(),
-            $request->getQueryParams()
-        );
-
-        return $this->responseWithData($request, $response, $responseData);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function allFolder(Request $request, Response $response)
-    {
-        $service = new FilesServices($this->container);
-        $responseData = $service->findAllFolders(
-            $request->getQueryParams()
-        );
-
-        return $this->responseWithData($request, $response, $responseData);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     */
-    public function deleteFolder(Request $request, Response $response)
-    {
-        $service = new FilesServices($this->container);
-        $service->deleteFolder(
-            $request->getAttribute('id'),
-            $request->getQueryParams()
-        );
-
-        return $this->responseWithData($request, $response, []);
     }
 
     /**
