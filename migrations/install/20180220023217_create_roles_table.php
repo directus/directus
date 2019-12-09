@@ -125,28 +125,7 @@ class CreateRolesTable extends AbstractMigration
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
                 'interface' => 'repeater',
                 'locked' => 1,
-                'options' => '{
-                    "fields": [
-                        {
-                            "field": "name",
-                            "interface": "text-input",
-                            "type": "string",
-                            "width": "half"
-                        },
-                        {
-                            "field": "link",
-                            "interface": "text-input",
-                            "type": "string",
-                            "width": "half"
-                        },
-                        {
-                            "field": "icon",
-                            "interface": "icon",
-                            "type": "string",
-                            "width": "full"
-                        }
-                    ]
-                }'
+                'options' => '{"template":"{{ name }}","createItemText":"Add Module","fields":[{"field":"name","interface":"text-input","type":"string","width":"half"},{"field":"link","interface":"text-input","type":"string","width":"half"},{"field":"icon","interface":"icon","type":"string","width":"full"}]}'
             ],
             [
                 'collection' => 'directus_roles',
@@ -154,37 +133,7 @@ class CreateRolesTable extends AbstractMigration
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_JSON,
                 'interface' => 'repeater',
                 'locked' => 1,
-                'options' => '{
-                    "fields": [
-                        {
-                            "field": "groups",
-                            "width": "full",
-                            "interface": "repeater",
-                            "type": "JSON",
-                            "options": {
-                                "template": "{{ label }}",
-                                "fields": [
-                                    {
-                                        "field": "label",
-                                        "interface": "text-input",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "field": "value",
-                                        "interface": "text-input",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "field": "icon",
-                                        "width": "full",
-                                        "interface": "icon",
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }'
+                'options' => '{"template":"{{ group_name }}","createItemText":"Add Group","fields":[{"field":"group_name","width":"full","interface":"text-input","type":"string"},{"field":"collections","interface":"repeater","type":"JSON","options":{"createItemText":"Add Collection","fields":[{"field":"collection","type":"string","interface":"collections","width":"full"}]}}]}'
             ],
         ];
 

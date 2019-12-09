@@ -1,7 +1,9 @@
 <?php
 namespace GuzzleHttp;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Creates a composed Guzzle handler function by stacking middlewares on top of
@@ -9,7 +11,7 @@ use Psr\Http\Message\RequestInterface;
  */
 class HandlerStack
 {
-    /** @var callable */
+    /** @var callable|null */
     private $handler;
 
     /** @var array */
@@ -59,6 +61,8 @@ class HandlerStack
      *
      * @param RequestInterface $request
      * @param array            $options
+     *
+     * @return ResponseInterface|PromiseInterface
      */
     public function __invoke(RequestInterface $request, array $options)
     {

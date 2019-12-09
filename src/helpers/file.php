@@ -262,21 +262,14 @@ if (!function_exists('get_thumbnail_path')) {
      *
      * @return string
      */
-    function get_thumbnail_path($name,$thumbnail)
+    function get_thumbnail_path($name, $thumbnail)
     {
+        $basePath = get_base_path();
         $projectName = get_api_project_from_request();
 
-        $thumbnailDetail=$thumbnail;
+        $paramsString = '?key=' . $thumbnail['key'];
 
-        $paramsString=  '?key='.$thumbnailDetail['key'];
-
-        return sprintf(
-            '/%s/%s/%s%s',
-            $projectName,
-            'assets',
-            $name,
-            $paramsString
-        );
+        return $basePath . $projectName . '/assets/' . $name . $paramsString;
     }
 }
 

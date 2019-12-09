@@ -365,7 +365,7 @@ class Filesystem implements FilesystemInterface
 
         if ( ! $handler) {
             $metadata = $this->getMetadata($path);
-            $handler = $metadata['type'] === 'file' ? new File($this, $path) : new Directory($this, $path);
+            $handler = ($metadata && $metadata['type'] === 'file') ? new File($this, $path) : new Directory($this, $path);
         }
 
         $handler->setPath($path);

@@ -96,13 +96,23 @@ class CreateSettingsTable extends AbstractMigration
             ],
             [
                 'collection' => 'directus_settings',
+                'field' => 'project_public_note',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'markdown',
+                'locked' => 1,
+                'width' => 'full',
+                'note' => 'This value will be shown on the public pages of the app',
+                'sort' => 7
+            ],
+            [
+                'collection' => 'directus_settings',
                 'field' => 'default_locale',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
                 'interface' => 'language',
                 'locked' => 1,
                 'width' => 'half',
                 'note' => 'Default locale for Directus Users',
-                'sort' => 7,
+                'sort' => 8,
                 'options' => json_encode([
                     'limit' => true
                 ])
@@ -115,7 +125,7 @@ class CreateSettingsTable extends AbstractMigration
                 'locked' => 1,
                 'width' => 'half',
                 'note' => '<a href="https://docs.directus.io/getting-started/concepts.html#telemetry" target="_blank">Learn More</a>',
-                'sort' => 8
+                'sort' => 9
             ],
             [
                 'collection' => 'directus_settings',
@@ -130,7 +140,7 @@ class CreateSettingsTable extends AbstractMigration
                 'locked' => 1,
                 'width' => 'full',
                 'hidden_browse' => 1,
-                'sort' => 10
+                'sort' => 11
             ],
             [
                 'collection' => 'directus_settings',
@@ -144,7 +154,7 @@ class CreateSettingsTable extends AbstractMigration
                 'required' => 1,
                 'width' => 'half',
                 'note' => 'Default item count in API and App responses',
-                'sort' => 11
+                'sort' => 12
             ],
             [
                 'collection' => 'directus_settings',
@@ -154,7 +164,7 @@ class CreateSettingsTable extends AbstractMigration
                 'locked' => 1,
                 'note' => 'NULL values are sorted last',
                 'width' => 'half',
-                'sort' => 12
+                'sort' => 13
             ],
             [
                 'collection' => 'directus_settings',
@@ -377,7 +387,7 @@ class CreateSettingsTable extends AbstractMigration
             ],
             [
               'key' => 'project_color',
-              'value' => '#13181a',
+              'value' => '#263238',
             ],
             [
               'key' => 'project_foreground',
@@ -385,6 +395,10 @@ class CreateSettingsTable extends AbstractMigration
             ],
             [
               'key' => 'project_background',
+              'value' => '',
+            ],
+            [
+              'key' => 'project_public_note',
               'value' => '',
             ],
             [
@@ -451,18 +465,46 @@ class CreateSettingsTable extends AbstractMigration
                 'key' => 'asset_whitelist_system',
                 'value' => json_encode([
                     [
-                        "key" => "card",
-                        "width" => 200,
-                        "height" => 200,
-                        "fit" => "crop",
-                        "quality" => 80
+                        'key' => 'directus-small-crop',
+                        'width' => 64,
+                        'height' => 64,
+                        'fit' => 'crop',
+                        'quality' => 80
                     ],
                     [
-                        "key" => "avatar",
-                        "width" => 100,
-                        "height" => 100,
-                        "fit" => "crop",
-                        "quality" => 80
+                        'key' => 'directus-small-contain',
+                        'width' => 64,
+                        'height' => 64,
+                        'fit' => 'contain',
+                        'quality' => 80
+                    ],
+                    [
+                        'key' => 'directus-medium-crop',
+                        'width' => 300,
+                        'height' => 300,
+                        'fit' => 'crop',
+                        'quality' => 80
+                    ],
+                    [
+                        'key' => 'directus-medium-contain',
+                        'width' => 300,
+                        'height' => 300,
+                        'fit' => 'contain',
+                        'quality' => 80
+                    ],
+                    [
+                        'key' => 'directus-large-crop',
+                        'width' => 800,
+                        'height' => 600,
+                        'fit' => 'crop',
+                        'quality' => 80
+                    ],
+                    [
+                        'key' => 'directus-large-contain',
+                        'width' => 800,
+                        'height' => 600,
+                        'fit' => 'contain',
+                        'quality' => 80
                     ]
                 ])
             ]

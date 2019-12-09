@@ -1,9 +1,0 @@
-parameters:
-    level: 1
-    paths:
-      - src
-
-    ignoreErrors:
-        -
-            message: '#Function uri_template not found#'
-            path: %currentWorkingDirectory%/src/functions.php

@@ -66,6 +66,11 @@ class PrepareBodyMiddleware
         return $fn(Psr7\modify_request($request, $modify), $options);
     }
 
+    /**
+     * Add expect header
+     *
+     * @return void
+     */
     private function addExpectHeader(
         RequestInterface $request,
         array $options,

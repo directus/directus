@@ -47,11 +47,11 @@ class RetryMiddleware
      *
      * @param int $retries
      *
-     * @return int
+     * @return int milliseconds.
      */
     public static function exponentialDelay($retries)
     {
-        return (int) pow(2, $retries - 1);
+        return (int) pow(2, $retries - 1) * 1000;
     }
 
     /**
@@ -74,6 +74,11 @@ class RetryMiddleware
             );
     }
 
+    /**
+     * Execute fulfilled closure
+     *
+     * @return mixed
+     */
     private function onFulfilled(RequestInterface $req, array $options)
     {
         return function ($value) use ($req, $options) {
@@ -90,6 +95,11 @@ class RetryMiddleware
         };
     }
 
+    /**
+     * Execute rejected closure
+     *
+     * @return callable
+     */
     private function onRejected(RequestInterface $req, array $options)
     {
         return function ($reason) use ($req, $options) {
@@ -106,6 +116,9 @@ class RetryMiddleware
         };
     }
 
+    /**
+     * @return self
+     */
     private function doRetry(RequestInterface $request, array $options, ResponseInterface $response = null)
     {
         $options['delay'] = call_user_func($this->delay, ++$options['retries'], $response);

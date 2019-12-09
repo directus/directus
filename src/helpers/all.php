@@ -154,6 +154,21 @@ if (!function_exists('get_url')) {
     }
 }
 
+if (!function_exists('get_base_path')) {
+    /**
+     * Get Directus' base path
+     *
+     * If Directus is running in a folder, this will return the names of the folder
+     * that Directus is running in, f.e. /directus/public/
+     *
+     * @return string
+     */
+    function get_base_path()
+    {
+        return create_uri_from_global()->getBasePath() . '/';
+    }
+}
+
 if (!function_exists('create_request_from_global')) {
     /**
      * Create a Request object from global variables

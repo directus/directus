@@ -56,7 +56,7 @@ function describe_type($input)
 /**
  * Parses an array of header lines into an associative array of headers.
  *
- * @param array $lines Header lines array of strings in the following
+ * @param iterable $lines Header lines array of strings in the following
  *                     format: "Name: Value"
  * @return array
  */

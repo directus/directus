@@ -21,9 +21,7 @@ class Server extends Route
         \Directus\create_ping_route($app);
         $app->get('/projects', [$this, 'projects']);
         $app->post('/projects', \Directus\Api\Routes\ProjectsCreate::class);
-        $app->delete('/projects/{name}', \Directus\Api\Routes\ProjectsDelete::class)
-            ->add(new TableGatewayMiddleware($this->container));
-
+        $app->delete('/projects/{name}', \Directus\Api\Routes\ProjectsDelete::class);
         $app->get('/info', [$this, 'getInfo']);
     }
 

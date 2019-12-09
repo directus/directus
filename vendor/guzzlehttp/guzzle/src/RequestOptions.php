@@ -133,6 +133,14 @@ final class RequestOptions
     const HTTP_ERRORS = 'http_errors';
 
     /**
+     * idn: (bool|int, default=true) A combination of IDNA_* constants for
+     * idn_to_ascii() PHP's function (see "options" parameter). Set to false to
+     * disable IDN support completely, or to true to use the default
+     * configuration (IDNA_DEFAULT constant).
+     */
+    const IDN_CONVERSION = 'idn_conversion';
+
+    /**
      * json: (mixed) Adds JSON data to a request. The provided value is JSON
      * encoded and a Content-Type header of application/json will be added to
      * the request if no Content-Type header is already present.
