@@ -40,6 +40,7 @@ class DatabaseModule extends ModuleBase
         foreach ($args as $key => $value) {
             switch ($key) {
                 case 'N':
+                case 'k':
                     $project = $value;
                     break;
             }

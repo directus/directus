@@ -15,8 +15,10 @@ class CreateSettingsTable extends AbstractMigration
             'limit' => 64,
             'null' => false
         ]);
+
         $table->addColumn('value', 'text', [
-            'default' => null
+            'default' => null,
+            'null' => true
         ]);
 
         $table->addIndex(['key'], [

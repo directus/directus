@@ -226,7 +226,7 @@ if (!function_exists('get_thumbnails')) {
             }
 
             $thumbnailUrl = get_thumbnail_url($row['private_hash'],$thumbnail);
-            $thumbnailRelativeUrl = get_thumbnail_path($row['private_hash'],$thumbnail);
+            $thumbnailRelativeUrl = get_thumbnail_path($row['private_hash'], $thumbnail, true);
             $thumbnails[] = [
                 'url' => $thumbnailUrl,
                 'relative_url' => $thumbnailRelativeUrl,
@@ -262,14 +262,21 @@ if (!function_exists('get_thumbnail_path')) {
      *
      * @return string
      */
-    function get_thumbnail_path($name, $thumbnail)
+    function get_thumbnail_path($name, $thumbnail, $addBasePath = false)
     {
-        $basePath = get_base_path();
-        $projectName = get_api_project_from_request();
+        $path = '';
 
+        $projectName = get_api_project_from_request();
         $paramsString = '?key=' . $thumbnail['key'];
 
-        return $basePath . $projectName . '/assets/' . $name . $paramsString;
+        $path = $projectName . '/assets/' . $name . $paramsString;
+
+        if ($addBasePath === true) {
+            $basePath = get_base_path();
+            $path = $basePath . $path;
+        }
+
+        return $path;
     }
 }
 

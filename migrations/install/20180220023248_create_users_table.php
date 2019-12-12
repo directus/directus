@@ -532,7 +532,8 @@ class CreateUsersTable extends AbstractMigration
                 'interface' => 'text-input',
                 'locked' => 1,
                 'readonly' => 1,
-                'hidden_detail' => 20
+                'hidden_detail' => 1,
+                'hidden_browse' => 1
             ],
         ];
 

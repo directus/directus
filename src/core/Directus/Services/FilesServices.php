@@ -42,6 +42,7 @@ class FilesServices extends AbstractService
         // The filename will be generate automatically if not defined
         if (is_a_url(ArrayUtils::get($data, 'data'))) {
             unset($validationConstraints['filename_disk']);
+            unset($validationConstraints['filename_download']);
         }
 
         $this->validate($data, array_merge(['data' => 'required'], $validationConstraints));
@@ -52,11 +53,12 @@ class FilesServices extends AbstractService
         if(get_directus_setting('file_mimetype_whitelist') != null){
             validate_file($result['mimeType'],'mimeTypes');
         }
+
         if(get_directus_setting('file_max_size') != null){
             validate_file($result['size'],'maxSize');
         }
 
-        $recordData = $this->getSaveData($data,false);
+        $recordData = $this->getSaveData($data, false);
 
         $newFile = $tableGateway->createRecord($recordData, $this->getCRUDParams($params));
 
@@ -75,11 +77,11 @@ class FilesServices extends AbstractService
             $dataInfo = $files->getLink($data['data']);
             // Set the URL payload data
             $data['data'] = ArrayUtils::get($dataInfo, 'data');
-            $data['filename_disk'] = ArrayUtils::get($dataInfo, 'filename_disk');
+            $data['filename_disk'] = ArrayUtils::get($dataInfo, 'filename');
+            $data['filename_download'] = ArrayUtils::get($dataInfo, 'filename');
         } else if (array_key_exists('data', $data) && !is_object($data['data'])) {
             $dataInfo = $files->getDataInfo($data['data']);
         }
-
 
         $type = ArrayUtils::get($dataInfo, 'type', ArrayUtils::get($data, 'type'));
 
