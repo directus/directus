@@ -700,30 +700,6 @@ class RelationalTableGateway extends BaseTableGateway
                     $foreignRecord[$foreignJoinColumn] = $parentRow[$this->primaryKeyFieldName];
                 }
 
-                //To avoid duplicate entries for translation interface
-                if (strtolower($field->getType()) == DataTypes::TYPE_TRANSLATION && !$hasPrimaryKey) {
-                    $translationLanguageField = $field->getOptions('translationLanguageField');
-                    $translationRecordExistCondition = [
-                        $foreignJoinColumn => $foreignRecord[$foreignJoinColumn],
-                        $translationLanguageField => $foreignRecord[$translationLanguageField]
-                    ];
-                    $translationTableGateway = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
-                    $translationRecordExist = $translationTableGateway->getItems(['filter' => $translationRecordExistCondition]);
-                    if (!empty($translationRecordExist['data'])) {
-                        $translationRecordExist = array_shift($translationRecordExist['data']);
-                        $foreignRecord[$ForeignTable->primaryKeyFieldName] = $translationRecordExist[$ForeignTable->primaryKeyFieldName];
-                    }
-                }
-
-                if (strtolower($field->getType()) == DataTypes::TYPE_TRANSLATION){
-                    $columns=SchemaService::getAllCollectionFields($foreignTableName);
-                    foreach($columns as $column){
-                        if(strtolower($column->getType()) == DataTypes::TYPE_USER_CREATED || strtolower($column->getType()) == DataTypes::TYPE_USER_UPDATED){
-                            unset($foreignRecord[$column->getName()]);
-                        }
-                    }
-                }
-
                 $foreignRecord = $ForeignTable->manageRecordUpdate(
                     $foreignTableName,
                     $foreignRecord,
