@@ -263,5 +263,3 @@ abstract class IntegrationTestCase extends TestCase
         return $templates;
     }
 }
-
-class_alias('Twig\Test\IntegrationTestCase', 'Twig_Test_IntegrationTestCase');

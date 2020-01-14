@@ -120,7 +120,7 @@ The generated template for a ``Hello {{ name }}`` template reads as follows
 using)::
 
     /* Hello {{ name }} */
-    class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends \Twig\Template
+    class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends Template
     {
         protected function doDisplay(array $context, array $blocks = [])
         {

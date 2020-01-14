@@ -589,17 +589,17 @@
     },
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.5.0",
-        "version_normalized": "6.5.0.0",
+        "version": "6.5.2",
+        "version_normalized": "6.5.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5"
+            "reference": "43ece0e75098b7ecd8d13918293029e555a50f82"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
-            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/43ece0e75098b7ecd8d13918293029e555a50f82",
+            "reference": "43ece0e75098b7ecd8d13918293029e555a50f82",
             "shasum": ""
         },
         "require": {
@@ -617,7 +617,7 @@
             "ext-intl": "Required for Internationalized Domain Name (IDN) support",
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2019-12-07T18:20:45+00:00",
+        "time": "2019-12-23T11:57:10+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -856,17 +856,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.61",
-        "version_normalized": "1.0.61.0",
+        "version": "1.0.63",
+        "version_normalized": "1.0.63.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "4fb13c01784a6c9f165a351e996871488ca2d8c9"
+            "reference": "8132daec326565036bc8e8d1876f77ec183a7bd6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/4fb13c01784a6c9f165a351e996871488ca2d8c9",
-            "reference": "4fb13c01784a6c9f165a351e996871488ca2d8c9",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8132daec326565036bc8e8d1876f77ec183a7bd6",
+            "reference": "8132daec326565036bc8e8d1876f77ec183a7bd6",
             "shasum": ""
         },
         "require": {
@@ -896,7 +896,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2019-12-08T21:46:50+00:00",
+        "time": "2020-01-04T16:30:31+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1239,17 +1239,17 @@
     },
     {
         "name": "monolog/monolog",
-        "version": "1.25.2",
-        "version_normalized": "1.25.2.0",
+        "version": "1.25.3",
+        "version_normalized": "1.25.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Seldaek/monolog.git",
-            "reference": "d5e2fb341cb44f7e2ab639d12a1e5901091ec287"
+            "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d5e2fb341cb44f7e2ab639d12a1e5901091ec287",
-            "reference": "d5e2fb341cb44f7e2ab639d12a1e5901091ec287",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fa82921994db851a8becaf3787a9e73c5976b6f1",
+            "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1",
             "shasum": ""
         },
         "require": {
@@ -1285,7 +1285,7 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2019-11-13T10:00:05+00:00",
+        "time": "2019-12-20T14:15:16+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1990,23 +1990,23 @@
     },
     {
         "name": "ramsey/uuid",
-        "version": "3.9.1",
-        "version_normalized": "3.9.1.0",
+        "version": "3.9.2",
+        "version_normalized": "3.9.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ramsey/uuid.git",
-            "reference": "5ac2740e0c8c599d2bbe7f113a939f2b5b216c67"
+            "reference": "7779489a47d443f845271badbdcedfe4df8e06fb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ramsey/uuid/zipball/5ac2740e0c8c599d2bbe7f113a939f2b5b216c67",
-            "reference": "5ac2740e0c8c599d2bbe7f113a939f2b5b216c67",
+            "url": "https://api.github.com/repos/ramsey/uuid/zipball/7779489a47d443f845271badbdcedfe4df8e06fb",
+            "reference": "7779489a47d443f845271badbdcedfe4df8e06fb",
             "shasum": ""
         },
         "require": {
             "ext-json": "*",
             "paragonie/random_compat": "^1 | ^2 | 9.99.99",
-            "php": "^5.4 | ^7",
+            "php": "^5.4 | ^7 | ^8",
             "symfony/polyfill-ctype": "^1.8"
         },
         "replace": {
@@ -2016,13 +2016,13 @@
             "codeception/aspect-mock": "^1 | ^2",
             "doctrine/annotations": "^1.2",
             "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
-            "jakub-onderka/php-parallel-lint": "^0.9.0",
-            "mockery/mockery": "^0.9.9",
+            "jakub-onderka/php-parallel-lint": "^1",
+            "mockery/mockery": "^0.9.11 | ^1",
             "moontoast/math": "^1.1",
             "paragonie/random-lib": "^2",
             "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
             "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
-            "squizlabs/php_codesniffer": "^2.3"
+            "squizlabs/php_codesniffer": "^3.5"
         },
         "suggest": {
             "ext-ctype": "Provides support for PHP Ctype functions",
@@ -2034,7 +2034,7 @@
             "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
             "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
         },
-        "time": "2019-12-01T04:55:27+00:00",
+        "time": "2019-12-17T08:18:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2227,29 +2227,29 @@
     },
     {
         "name": "slim/twig-view",
-        "version": "2.5.0",
-        "version_normalized": "2.5.0.0",
+        "version": "2.5.1",
+        "version_normalized": "2.5.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/slimphp/Twig-View.git",
-            "reference": "06ef39b58d60b11a9546893fd0b7fff2bd901798"
+            "reference": "47bd5cc1cbbdf5196d0873ece0ee97c6c7b352e9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/slimphp/Twig-View/zipball/06ef39b58d60b11a9546893fd0b7fff2bd901798",
-            "reference": "06ef39b58d60b11a9546893fd0b7fff2bd901798",
+            "url": "https://api.github.com/repos/slimphp/Twig-View/zipball/47bd5cc1cbbdf5196d0873ece0ee97c6c7b352e9",
+            "reference": "47bd5cc1cbbdf5196d0873ece0ee97c6c7b352e9",
             "shasum": ""
         },
         "require": {
             "php": ">=5.5.0",
             "psr/http-message": "^1.0",
-            "twig/twig": "^1.38|^2.7"
+            "twig/twig": "^1.38|^2.7|^3.0"
         },
         "require-dev": {
             "phpunit/phpunit": "^4.8|^5.7",
             "slim/slim": "^3.10"
         },
-        "time": "2019-04-06T16:34:38+00:00",
+        "time": "2019-11-28T18:03:50+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -2336,17 +2336,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.4.1",
-        "version_normalized": "4.4.1.0",
+        "version": "v4.4.2",
+        "version_normalized": "4.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "7aa5817f1b7a8ed377752b90fcc47dfb3c67b40c"
+            "reference": "6911d432edd5b50822986604fd5a5be3af856d30"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/7aa5817f1b7a8ed377752b90fcc47dfb3c67b40c",
-            "reference": "7aa5817f1b7a8ed377752b90fcc47dfb3c67b40c",
+            "url": "https://api.github.com/repos/symfony/config/zipball/6911d432edd5b50822986604fd5a5be3af856d30",
+            "reference": "6911d432edd5b50822986604fd5a5be3af856d30",
             "shasum": ""
         },
         "require": {
@@ -2367,7 +2367,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2019-12-01T10:50:45+00:00",
+        "time": "2019-12-18T12:00:29+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2402,17 +2402,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.4.1",
-        "version_normalized": "4.4.1.0",
+        "version": "v4.4.2",
+        "version_normalized": "4.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "f0aea3df20d15635b3cb9730ca5eea1c65b7f201"
+            "reference": "82437719dab1e6bdd28726af14cb345c2ec816d0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/f0aea3df20d15635b3cb9730ca5eea1c65b7f201",
-            "reference": "f0aea3df20d15635b3cb9730ca5eea1c65b7f201",
+            "url": "https://api.github.com/repos/symfony/console/zipball/82437719dab1e6bdd28726af14cb345c2ec816d0",
+            "reference": "82437719dab1e6bdd28726af14cb345c2ec816d0",
             "shasum": ""
         },
         "require": {
@@ -2445,7 +2445,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-12-01T10:06:17+00:00",
+        "time": "2019-12-17T10:32:23+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2480,8 +2480,8 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.0.1",
-        "version_normalized": "5.0.1.0",
+        "version": "v5.0.2",
+        "version_normalized": "5.0.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
@@ -2885,17 +2885,17 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.4.1",
-        "version_normalized": "4.4.1.0",
+        "version": "v4.4.2",
+        "version_normalized": "4.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "897fb68ee7933372517b551d6f08c6d4bb0b8c40"
+            "reference": "f7669f48a9633bf8139bc026c755e894b7206677"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/897fb68ee7933372517b551d6f08c6d4bb0b8c40",
-            "reference": "897fb68ee7933372517b551d6f08c6d4bb0b8c40",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/f7669f48a9633bf8139bc026c755e894b7206677",
+            "reference": "f7669f48a9633bf8139bc026c755e894b7206677",
             "shasum": ""
         },
         "require": {
@@ -2928,7 +2928,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2019-11-12T17:18:47+00:00",
+        "time": "2019-12-12T12:53:52+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3110,17 +3110,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.4.1",
-        "version_normalized": "4.4.1.0",
+        "version": "v4.4.2",
+        "version_normalized": "4.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "76de473358fe802578a415d5bb43c296cf09d211"
+            "reference": "a08832b974dd5fafe3085a66d41fe4c84bb2628c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/76de473358fe802578a415d5bb43c296cf09d211",
-            "reference": "76de473358fe802578a415d5bb43c296cf09d211",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/a08832b974dd5fafe3085a66d41fe4c84bb2628c",
+            "reference": "a08832b974dd5fafe3085a66d41fe4c84bb2628c",
             "shasum": ""
         },
         "require": {
@@ -3136,7 +3136,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2019-11-12T14:51:11+00:00",
+        "time": "2019-12-10T10:33:21+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3171,41 +3171,37 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.12.2",
-        "version_normalized": "2.12.2.0",
+        "version": "v3.0.1",
+        "version_normalized": "3.0.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "d761fd1f1c6b867ae09a7d8119a6d95d06dc44ed"
+            "reference": "28f856a4c57eeb24485916e8a68403f41a133616"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/d761fd1f1c6b867ae09a7d8119a6d95d06dc44ed",
-            "reference": "d761fd1f1c6b867ae09a7d8119a6d95d06dc44ed",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/28f856a4c57eeb24485916e8a68403f41a133616",
+            "reference": "28f856a4c57eeb24485916e8a68403f41a133616",
             "shasum": ""
         },
         "require": {
-            "php": "^7.0",
+            "php": "^7.2.5",
             "symfony/polyfill-ctype": "^1.8",
             "symfony/polyfill-mbstring": "^1.3"
         },
         "require-dev": {
             "psr/container": "^1.0",
-            "symfony/debug": "^3.4|^4.2",
-            "symfony/phpunit-bridge": "^4.4@dev|^5.0"
+            "symfony/phpunit-bridge": "^4.4|^5.0"
         },
-        "time": "2019-11-11T16:52:09+00:00",
+        "time": "2019-12-28T07:17:28+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.12-dev"
+                "dev-master": "3.0-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-0": {
-                "Twig_": "lib/"
-            },
             "psr-4": {
                 "Twig\\": "src/"
             }
@@ -3223,7 +3219,6 @@
             },
             {
                 "name": "Twig Team",
-                "homepage": "https://twig.symfony.com/contributors",
                 "role": "Contributors"
             },
             {
@@ -3428,6 +3423,7 @@
             "ZendFramework",
             "stdlib",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-stdlib"
     }
 ]

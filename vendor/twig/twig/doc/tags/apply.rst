@@ -1,9 +1,6 @@
 ``apply``
 =========
 
-.. versionadded:: 2.9
-    The ``apply`` tag was added in Twig 2.9.
-
 The ``apply`` tag allows you to apply Twig filters on a block of template data:
 
 .. code-block:: twig

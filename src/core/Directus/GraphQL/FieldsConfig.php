@@ -69,7 +69,7 @@ class FieldsConfig
                     $relation = $this->getRelation('o2m', $v['collection'], $v['field']);
                     $temp = [];
                     $temp['type'] = Types::listOf(Types::userCollection($relation['collection_one']));
-                     $temp['resolve'] = function ($value, $args, $context, $info) use ($relation) {
+                    $temp['resolve'] = function ($value, $args, $context, $info) use ($relation) {
                         $data = [];
                         foreach ($value[$info->fieldName] as  $v) {
                             $data[] = $v[$relation['field_many']];
@@ -91,7 +91,7 @@ class FieldsConfig
                     $relation = $this->getRelation('translation', $v['collection'], $v['field']);
                     $fields[$v['field']] = Types::listOf(Types::userCollection($relation['collection_many']));
                     break;
-                case 'user_created':
+                case 'owner':
                 case 'user_updated':
                     $fields[$v['field']] = Types::directusUser();
                     break;

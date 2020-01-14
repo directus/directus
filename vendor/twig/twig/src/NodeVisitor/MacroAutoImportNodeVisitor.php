@@ -29,7 +29,7 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
     private $inAModule = false;
     private $hasMacroCalls = false;
 
-    public function enterNode(Node $node, Environment $env)
+    public function enterNode(Node $node, Environment $env): Node
     {
         if ($node instanceof ModuleNode) {
             $this->inAModule = true;
@@ -39,7 +39,7 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
         return $node;
     }
 
-    public function leaveNode(Node $node, Environment $env)
+    public function leaveNode(Node $node, Environment $env): Node
     {
         if ($node instanceof ModuleNode) {
             $this->inAModule = false;
@@ -64,7 +64,7 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
         return $node;
     }
 
-    public function getPriority()
+    public function getPriority(): int
     {
         // we must be ran before auto-escaping
         return -10;

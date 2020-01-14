@@ -86,41 +86,8 @@ via the ``from`` tag:
             <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
         {% endmacro %}
 
-    Auto-import is only available as of Twig 2.11. For older versions, import
-    macros using the special ``_self`` variable for the template name:
-
-    .. code-block:: twig
-
-        {% import _self as forms %}
-
-        <p>{{ forms.input('username') }}</p>
-
-.. note::
-
-    Before Twig 2.11, when you want to use a macro in another macro from the
-    same file, you need to import it locally:
-
-    .. code-block:: twig
-
-        {% macro input(name, value, type, size) %}
-            <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
-        {% endmacro %}
-
-        {% macro wrapped_input(name, value, type, size) %}
-            {% import _self as forms %}
-
-            <div class="field">
-                {{ forms.input(name, value, type, size) }}
-            </div>
-        {% endmacro %}
-
 Macros Scoping
 --------------
-
-.. versionadded:: 2.11
-
-    The scoping rules described in this paragraph are implemented as of Twig
-    2.11.
 
 The scoping rules are the same whether you imported macros via ``import`` or
 ``from``.
@@ -146,10 +113,6 @@ template level with the same names.
 
 Checking if a Macro is defined
 ------------------------------
-
-.. versionadded:: 2.11
-
-    Support for the ``defined`` test on macros was added in Twig 2.11.
 
 You can check if a macro is defined via the ``defined`` test:
 

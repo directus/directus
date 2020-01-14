@@ -18,7 +18,6 @@ source output
 wget https://get.symfony.com/cli/installer -O - | bash
 export PATH="$HOME/.symfony/bin:$PATH"
 symfony server:start -d --no-tls
-ENDPOINT=`symfony server:status -no-ansi | sed -E 's/^.+ http/http/'`
 
 curl -OLsS https://get.blackfire.io/blackfire-player.phar
 chmod +x blackfire-player.phar
@@ -48,5 +47,5 @@ scenario
     click link('Structure')
         expect status_code() == 200
 EOF
-./blackfire-player.phar run drupal-tests.bkf --endpoint=$ENDPOINT --variable name=$DRUPAL_Username --variable pass=$DRUPAL_Password
+./blackfire-player.phar run drupal-tests.bkf --endpoint=`symfony var:export SYMFONY_DEFAULT_ROUTE_URL` --variable name=$DRUPAL_Username --variable pass=$DRUPAL_Password
 symfony server:stop

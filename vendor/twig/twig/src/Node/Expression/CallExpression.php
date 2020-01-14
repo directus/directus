@@ -37,8 +37,7 @@ abstract class CallExpression extends AbstractExpression
                     $compiler->raw(sprintf('$this->env->getRuntime(\'%s\')->%s', $callable[0], $callable[1]));
                 }
             } elseif ($r instanceof \ReflectionMethod && $callable[0] instanceof ExtensionInterface) {
-                // For BC/FC with namespaced aliases
-                $class = (new \ReflectionClass(\get_class($callable[0])))->name;
+                $class = \get_class($callable[0]);
                 if (!$compiler->getEnvironment()->hasExtension($class)) {
                     // Compile a non-optimized call to trigger a \Twig\Error\RuntimeError, which cannot be a compile-time error
                     $compiler->raw(sprintf('$this->env->getExtension(\'%s\')', $class));
@@ -61,7 +60,7 @@ abstract class CallExpression extends AbstractExpression
         }
     }
 
-    protected function compileArguments(Compiler $compiler, $isArray = false)
+    protected function compileArguments(Compiler $compiler, $isArray = false): void
     {
         $compiler->raw($isArray ? '[' : '(');
 
@@ -229,7 +228,7 @@ abstract class CallExpression extends AbstractExpression
         return $arguments;
     }
 
-    protected function normalizeName($name)
+    protected function normalizeName(string $name): string
     {
         return strtolower(preg_replace(['/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'], ['\\1_\\2', '\\1_\\2'], $name));
     }
@@ -309,5 +308,3 @@ abstract class CallExpression extends AbstractExpression
         return $this->reflector = [$r, $callable];
     }
 }
-
-class_alias('Twig\Node\Expression\CallExpression', 'Twig_Node_Expression_Call');

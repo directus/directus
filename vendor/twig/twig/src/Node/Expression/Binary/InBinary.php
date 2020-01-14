@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class InBinary extends AbstractBinary
 {
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->raw('twig_in_filter(')
@@ -26,10 +26,8 @@ class InBinary extends AbstractBinary
         ;
     }
 
-    public function operator(Compiler $compiler)
+    public function operator(Compiler $compiler): Compiler
     {
         return $compiler->raw('in');
     }
 }
-
-class_alias('Twig\Node\Expression\Binary\InBinary', 'Twig_Node_Expression_Binary_In');

@@ -95,6 +95,32 @@ class SchemaFactory
         return $table;
     }
 
+    // Todo
+    // Zend DB does not support NotNull constraint. This function will add/remove not null constraint from particular column
+    public function addNotNullConstraint($column)
+    {
+        // Make sure we don't add the constraint for alias type columns
+        if (DataTypes::isAliasType($column['type'])) {
+            return;
+        }
+
+        $connection = $this->schemaManager->getSource()->getConnection();
+        $sql = new Sql($connection);
+
+        $queryFormat = 'ALTER TABLE `%s`  MODIFY COLUMN `%s` %s';
+        $queryFormat .= !empty($column['length']) ? '(%s)' : '';
+        $queryFormat .= $column['required'] ? ' Not Null' : ' Null';
+
+        $sqlQuery = $sql->getAdapter();
+
+        if (!empty($column['length'])) {
+            $query = sprintf($queryFormat, $column['collection'], $column['field'], $column['datatype'], $column['length']);
+        } else {
+            $query = sprintf($queryFormat, $column['collection'], $column['field'], $column['datatype']);
+        }
+
+        $sqlQuery->query($query)->execute();
+    }
     /**
      * Alter an existing table
      *
@@ -121,7 +147,8 @@ class SchemaFactory
 
             if (ArrayUtils::get($options, 'primary_key') == true) {
                 $table->addConstraint(new PrimaryKey($column->getName()));
-            } if (ArrayUtils::get($options, 'unique') == true) {
+            }
+            if (ArrayUtils::get($options, 'unique') == true) {
                 $table->addConstraint(new UniqueKey($column->getName()));
             }
         }
@@ -138,7 +165,8 @@ class SchemaFactory
 
             if (ArrayUtils::get($options, 'primary_key') == true) {
                 $table->addConstraint(new PrimaryKey($column->getName()));
-            } if (ArrayUtils::get($options, 'unique') == true) {
+            }
+            if (ArrayUtils::get($options, 'unique') == true) {
                 $table->addConstraint(new UniqueKey($column->getName()));
             }
         }
@@ -229,14 +257,14 @@ class SchemaFactory
      *
      * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
      */
-    public function buildTable(AbstractSql $table,$charset="")
+    public function buildTable(AbstractSql $table, $charset = "")
     {
         $connection = $this->schemaManager->getSource()->getConnection();
         $sql = new Sql($connection);
-        
+
         $tableQuery = $sql->buildSqlString($table);
-        $tableQuery = !empty($charset) ? $tableQuery."charset = ".$charset: $tableQuery;
-                
+        $tableQuery = !empty($charset) ? $tableQuery . "charset = " . $charset : $tableQuery;
+
         // TODO: Allow charset and comment
         return $connection->query(
             $tableQuery,

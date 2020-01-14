@@ -102,8 +102,11 @@ class SystemNodeProvider implements NodeProviderInterface
                 return false;
             }
 
+            $macs = [];
             array_walk($addressPaths, function ($addressPath) use (&$macs) {
-                $macs[] = file_get_contents($addressPath);
+                if (is_readable($addressPath)) {
+                    $macs[] = file_get_contents($addressPath);
+                }
             });
 
             $macs = array_map('trim', $macs);

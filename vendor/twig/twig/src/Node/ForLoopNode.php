@@ -25,7 +25,7 @@ class ForLoopNode extends Node
         parent::__construct([], ['with_loop' => false, 'ifexpr' => false, 'else' => false], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         if ($this->getAttribute('else')) {
             $compiler->write("\$context['_iterated'] = true;\n");
@@ -36,21 +36,14 @@ class ForLoopNode extends Node
                 ->write("++\$context['loop']['index0'];\n")
                 ->write("++\$context['loop']['index'];\n")
                 ->write("\$context['loop']['first'] = false;\n")
+                ->write("if (isset(\$context['loop']['length'])) {\n")
+                ->indent()
+                ->write("--\$context['loop']['revindex0'];\n")
+                ->write("--\$context['loop']['revindex'];\n")
+                ->write("\$context['loop']['last'] = 0 === \$context['loop']['revindex0'];\n")
+                ->outdent()
+                ->write("}\n")
             ;
-
-            if (!$this->getAttribute('ifexpr')) {
-                $compiler
-                    ->write("if (isset(\$context['loop']['length'])) {\n")
-                    ->indent()
-                    ->write("--\$context['loop']['revindex0'];\n")
-                    ->write("--\$context['loop']['revindex'];\n")
-                    ->write("\$context['loop']['last'] = 0 === \$context['loop']['revindex0'];\n")
-                    ->outdent()
-                    ->write("}\n")
-                ;
-            }
         }
     }
 }
-
-class_alias('Twig\Node\ForLoopNode', 'Twig_Node_ForLoop');

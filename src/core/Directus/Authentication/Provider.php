@@ -89,7 +89,7 @@ class Provider
         $this->user = null;
         $this->secretKey = $options['secret_key'];
         $this->publicKey = ArrayUtils::get($options, 'public_key');
-        $this->ttl = (int)$ttl;
+        $this->ttl = (int) $ttl;
     }
 
     /**
@@ -161,7 +161,7 @@ class Provider
      * @throws InvalidOTPException
      * @throws Missing2FAPasswordException
      */
-    public function findUserWithCredentials($email, $password, $otp=null)
+    public function findUserWithCredentials($email, $password, $otp = null)
     {
         try {
             $user = $this->findUserWithEmail($email);
@@ -185,7 +185,7 @@ class Provider
                 throw new Missing2FAPasswordException();
             }
 
-            if (!$ga->verifyKey($tfa_secret, $otp, 2)){
+            if (!$ga->verifyKey($tfa_secret, $otp, 2)) {
                 throw new InvalidOTPException();
             }
         }
@@ -208,19 +208,19 @@ class Provider
 
         $loginAttemptsAllowed = get_directus_setting('login_attempts_allowed');
 
-        if(!empty($loginAttemptsAllowed)){
+        if (!empty($loginAttemptsAllowed)) {
 
             // We added 'Invalid credentials' entry before this condition so need to increase this counter with 1
             $totalLoginAttemptsAllowed = $loginAttemptsAllowed + 1;
 
             $invalidLoginAttempts = $activityTableGateway->getInvalidLoginAttempts($userId, $totalLoginAttemptsAllowed);
-            if(!empty($invalidLoginAttempts)){
+            if (!empty($invalidLoginAttempts)) {
                 $lastInvalidCredentialsEntry = current($invalidLoginAttempts);
                 $firstInvalidCredentialsEntry = end($invalidLoginAttempts);
 
                 $lastLoginAttempt = $activityTableGateway->getLastLoginOrStatusUpdateAttempt($userId);
 
-                if(!empty($lastLoginAttempt) && !in_array($lastLoginAttempt['id'], range($firstInvalidCredentialsEntry['id'], $lastInvalidCredentialsEntry['id'])) &&  count($invalidLoginAttempts) > $loginAttemptsAllowed){
+                if (!empty($lastLoginAttempt) && !in_array($lastLoginAttempt['id'], range($firstInvalidCredentialsEntry['id'], $lastInvalidCredentialsEntry['id'])) &&  count($invalidLoginAttempts) > $loginAttemptsAllowed) {
 
                     $tableGateway = TableGatewayFactory::create(SchemaManager::COLLECTION_USERS, ['acl' => false]);
                     $update = [
@@ -504,7 +504,7 @@ class Provider
      */
     public function generateToken($type, array $payload)
     {
-        $payload['type'] = (string)$type;
+        $payload['type'] = (string) $type;
         $payload['key'] = $this->getPublicKey();
         $payload['project'] = get_api_project_from_request();
 
@@ -528,7 +528,6 @@ class Provider
         if (!JWTUtils::hasPayloadType(JWTUtils::TYPE_AUTH, $payload)) {
             throw new InvalidTokenException();
         }
-
         $payload->exp = $this->getNewExpirationTime();
 
         $payload->needs2FA = $needs2FA;

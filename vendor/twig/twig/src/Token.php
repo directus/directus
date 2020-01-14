@@ -13,8 +13,6 @@
 namespace Twig;
 
 /**
- * Represents a Token.
- *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 final class Token
@@ -38,12 +36,7 @@ final class Token
     const INTERPOLATION_END_TYPE = 11;
     const ARROW_TYPE = 12;
 
-    /**
-     * @param int    $type   The type of the token
-     * @param string $value  The token value
-     * @param int    $lineno The line position in the source
-     */
-    public function __construct($type, $value, $lineno)
+    public function __construct(int $type, $value, int $lineno)
     {
         $this->type = $type;
         $this->value = $value;
@@ -65,10 +58,8 @@ final class Token
      *
      * @param array|string|int  $type   The type to test
      * @param array|string|null $values The token value
-     *
-     * @return bool
      */
-    public function test($type, $values = null)
+    public function test($type, $values = null): bool
     {
         if (null === $values && !\is_int($type)) {
             $values = $type;
@@ -82,39 +73,22 @@ final class Token
         );
     }
 
-    /**
-     * @return int
-     */
-    public function getLine()
+    public function getLine(): int
     {
         return $this->lineno;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * Returns the constant representation (internal) of a given type.
-     *
-     * @param int  $type  The type as an integer
-     * @param bool $short Whether to return a short representation or not
-     *
-     * @return string The string representation
-     */
-    public static function typeToString($type, $short = false)
+    public static function typeToString(int $type, bool $short = false): string
     {
         switch ($type) {
             case self::EOF_TYPE:
@@ -166,14 +140,7 @@ final class Token
         return $short ? $name : 'Twig\Token::'.$name;
     }
 
-    /**
-     * Returns the English representation of a given type.
-     *
-     * @param int $type The type as an integer
-     *
-     * @return string The string representation
-     */
-    public static function typeToEnglish($type)
+    public static function typeToEnglish(int $type): string
     {
         switch ($type) {
             case self::EOF_TYPE:
@@ -209,5 +176,3 @@ final class Token
         }
     }
 }
-
-class_alias('Twig\Token', 'Twig_Token');

@@ -27,7 +27,7 @@ class DeprecatedNode extends Node
         parent::__construct(['expr' => $expr], [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
 
@@ -51,5 +51,3 @@ class DeprecatedNode extends Node
         ;
     }
 }
-
-class_alias('Twig\Node\DeprecatedNode', 'Twig_Node_Deprecated');

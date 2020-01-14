@@ -4,7 +4,7 @@ use Phinx\Migration\AbstractMigration;
 
 class CreateFilesTable extends AbstractMigration
 {
-   /**
+    /**
      * Create Files Table
      */
     public function change()
@@ -162,7 +162,7 @@ class CreateFilesTable extends AbstractMigration
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
                 'interface' => 'wysiwyg',
                 'options' => json_encode([
-                    'toolbar' => ['bold','italic','underline','link','code']
+                    'toolbar' => ['bold', 'italic', 'underline', 'link', 'code']
                 ]),
                 'sort' => 5,
                 'width' => 'full',
@@ -198,7 +198,7 @@ class CreateFilesTable extends AbstractMigration
                 'collection' => 'directus_files',
                 'field' => 'private_hash',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
-                'interface'=> 'slug',
+                'interface' => 'slug',
                 'width' => 'half',
                 'locked' => 1,
                 'sort' => 8,
@@ -237,8 +237,8 @@ class CreateFilesTable extends AbstractMigration
             [
                 'collection' => 'directus_files',
                 'field' => 'uploaded_by',
-                'type' => \Directus\Database\Schema\DataTypes::TYPE_USER_CREATED,
-                'interface' => 'user-created',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_OWNER,
+                'interface' => 'owner',
                 'locked' => 1,
                 'readonly' => 1,
                 'sort' => 11,
@@ -384,15 +384,16 @@ class CreateFilesTable extends AbstractMigration
             ]
         ];
 
-        foreach($data as $value){
-            if(!$this->checkFieldExist($value['collection'], $value['field'])){
+        foreach ($data as $value) {
+            if (!$this->checkFieldExist($value['collection'], $value['field'])) {
                 $fileds = $this->table('directus_fields');
                 $fileds->insert($value)->save();
             }
         }
     }
 
-    public function checkFieldExist($collection,$field){
+    public function checkFieldExist($collection, $field)
+    {
         $checkSql = sprintf('SELECT 1 FROM `directus_fields` WHERE `collection` = "%s" AND `field` = "%s";', $collection, $field);
         return $this->query($checkSql)->fetch();
     }

@@ -58,7 +58,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'action_by' => $userId,
             'item' => $userId,
             'action_on' => DateTimeUtils::now()->toString(),
-            'ip' => \Directus\get_request_ip(),
+            'ip' => \Directus\get_request_host(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
         ];
 
@@ -77,7 +77,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'action_by' => $userId,
             'item' => $userId,
             'action_on' => DateTimeUtils::now()->toString(),
-            'ip' => \Directus\get_request_ip(),
+            'ip' => \Directus\get_request_host(),
             'comment' => $comment,
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
         ];
@@ -104,7 +104,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
     {
         $select = new Select($this->getTable());
         $select->where->equalTo('action_by', $userId);
-        $select->where('action = "'.self::ACTION_AUTHENTICATE.'" OR action = "'.self::ACTION_UPDATE_USER_STATUS.'"');
+        $select->where('action = "' . self::ACTION_AUTHENTICATE . '" OR action = "' . self::ACTION_UPDATE_USER_STATUS . '"');
         $select->order('id DESC');
         $select->limit(1);
         $lastLoginAttempt = $this->selectWith($select)->toArray();

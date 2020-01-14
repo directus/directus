@@ -21,10 +21,8 @@ class ConstantExpression extends AbstractExpression
         parent::__construct([], ['value' => $value], $lineno);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->repr($this->getAttribute('value'));
     }
 }
-
-class_alias('Twig\Node\Expression\ConstantExpression', 'Twig_Node_Expression_Constant');

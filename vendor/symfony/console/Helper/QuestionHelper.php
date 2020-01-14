@@ -166,20 +166,34 @@ class QuestionHelper extends Helper
         $message = $question->getQuestion();
 
         if ($question instanceof ChoiceQuestion) {
-            $maxWidth = max(array_map([$this, 'strlen'], array_keys($question->getChoices())));
-
-            $messages = (array) $question->getQuestion();
-            foreach ($question->getChoices() as $key => $value) {
-                $width = $maxWidth - $this->strlen($key);
-                $messages[] = '  [<info>'.$key.str_repeat(' ', $width).'</info>] '.$value;
-            }
-
-            $output->writeln($messages);
+            $output->writeln(array_merge([
+                $question->getQuestion(),
+            ], $this->formatChoiceQuestionChoices($question, 'info')));
 
             $message = $question->getPrompt();
         }
 
         $output->write($message);
+    }
+
+    /**
+     * @param string $tag
+     *
+     * @return string[]
+     */
+    protected function formatChoiceQuestionChoices(ChoiceQuestion $question, $tag)
+    {
+        $messages = [];
+
+        $maxWidth = max(array_map('self::strlen', array_keys($choices = $question->getChoices())));
+
+        foreach ($choices as $key => $value) {
+            $padding = str_repeat(' ', $maxWidth - self::strlen($key));
+
+            $messages[] = sprintf("  [<$tag>%s$padding</$tag>] %s", $key, $value);
+        }
+
+        return $messages;
     }
 
     /**

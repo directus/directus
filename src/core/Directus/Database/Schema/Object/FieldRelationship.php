@@ -41,7 +41,7 @@ class FieldRelationship extends AbstractObject
     {
         return $this->attributes->get('collection_many');
     }
-    
+
     /**
      * Gets the other collection of M2M relationship
      *
@@ -51,33 +51,26 @@ class FieldRelationship extends AbstractObject
     {
         $firstCollection = $this->attributes->get('collection_one');
         $junctionCollection = $this->attributes->get('collection_many');
-        
+        $fieldMany = $this->attributes->get('field_many');
+
         //get alias fields of junction table
         $junctionTableSchema = SchemaService::getCollection($junctionCollection);
-        foreach ($junctionTableSchema->getFields() as $fieldColumnDetails) {            
-            if($fieldColumnDetails->hasRelationship() && $fieldColumnDetails->isManyToOne() && $fieldColumnDetails->getRelationship()->getFieldOne() == $firstCollection){
+
+        foreach ($junctionTableSchema->getFields() as $fieldColumnDetails) {
+            if ($fieldColumnDetails->hasRelationship() && $fieldColumnDetails->isManyToOne() && $fieldColumnDetails->getRelationship()->getJunctionField() == $fieldMany) {
                 return $fieldColumnDetails->getRelationship()->getCollectionOne();
             }
         }
     }
-    
+
     /**
      * Get junction field relate to other collection
      *
      * @return string
      */
-    public function getJunctionOtherRelatedField()
+    public function getJunctionField()
     {
-        $firstCollection = $this->attributes->get('collection_one');
-        $junctionCollection = $this->attributes->get('collection_many');
-        
-        //get alias fields of junction table
-        $junctionTableSchema = SchemaService::getCollection($junctionCollection);
-        foreach ($junctionTableSchema->getFields() as $fieldColumnDetails) {            
-            if($fieldColumnDetails->hasRelationship() && $fieldColumnDetails->isManyToOne() && $fieldColumnDetails->getRelationship()->getFieldOne() == $firstCollection){
-                return $fieldColumnDetails->getName();
-            }
-        }
+        return $this->attributes->get('junction_field');
     }
 
     /**

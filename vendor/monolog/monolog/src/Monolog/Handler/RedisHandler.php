@@ -73,7 +73,8 @@ class RedisHandler extends AbstractProcessingHandler
     protected function writeCapped(array $record)
     {
         if ($this->redisClient instanceof \Redis) {
-            $this->redisClient->multi()
+            $mode = defined('\Redis::MULTI') ? \Redis::MULTI : 1;
+            $this->redisClient->multi($mode)
                 ->rpush($this->redisKey, $record["formatted"])
                 ->ltrim($this->redisKey, -$this->capSize, -1)
                 ->exec();

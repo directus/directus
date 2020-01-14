@@ -117,7 +117,7 @@ abstract class AbstractService
     {
         $constraintViolations = $this->getViolations($data, $constraints);
 
-        $this->throwErrorIfAny($constraintViolations,$errorCode);
+        $this->throwErrorIfAny($constraintViolations, $errorCode);
     }
 
     /**
@@ -162,7 +162,7 @@ abstract class AbstractService
      *
      * @throws UnprocessableEntityException
      */
-    protected function throwErrorIfAny(array $violations,$errorCode = "")
+    protected function throwErrorIfAny(array $violations, $errorCode = "")
     {
         $results = [];
 
@@ -196,7 +196,7 @@ abstract class AbstractService
      *
      * @return array
      */
-    protected function createConstraintFor($collectionName, array $fields = [], $skipRelatedCollectionField = '', array $params = [] )
+    protected function createConstraintFor($collectionName, array $fields = [], $skipRelatedCollectionField = '', array $params = [])
     {
         /** @var SchemaManager $schemaManager */
         $schemaManager = $this->container->get('schema_manager');
@@ -211,7 +211,7 @@ abstract class AbstractService
         foreach ($collectionObject->getFields($fields) as $field) {
             //This condition is placed to skip alias validation field which is related to parent collection,
             //to avoid nested payload validation for O2M and M2O collections
-            if($field->hasRelationship() && !empty($skipRelatedCollectionField) && (($field->getRelationship()->isManyToOne() && $field->getRelationship()->getCollectionOne() == $skipRelatedCollectionField) || ($field->getRelationship()->isOneToMany() && $field->getRelationship()->getCollectionMany() == $skipRelatedCollectionField)))
+            if ($field->hasRelationship() && !empty($skipRelatedCollectionField) && (($field->getRelationship()->isManyToOne() && $field->getRelationship()->getCollectionOne() == $skipRelatedCollectionField) || ($field->getRelationship()->isOneToMany() && $field->getRelationship()->getCollectionMany() == $skipRelatedCollectionField)))
                 continue;
 
             $columnConstraints = [];
@@ -220,7 +220,7 @@ abstract class AbstractService
                 continue;
             }
 
-            if($field->isSystemDateTimeType() || $field->isSystemUserType()){
+            if ($field->isSystemDateTimeType() || $field->isSystemUserType()) {
                 continue;
             }
 
@@ -236,8 +236,7 @@ abstract class AbstractService
                 $isRequired = false;
             }
 
-            if ($isRequired || (!$field->isNullable() && $field->getDefaultValue() == null))
-            {
+            if ($isRequired || (!$field->isNullable() && $field->getDefaultValue() == null)) {
                 $columnConstraints[] = 'required';
             } else if (in_array($field->getName(), $fields) && !$field->isNullable()) {
                 $columnConstraints[] = 'notnullable';
@@ -308,7 +307,7 @@ abstract class AbstractService
      * @param null $pkName
      * @return array|mixed
      */
-    protected function getDataAndSetResponseCacheTags(Callable $callable, array $callableParams = [], $pkName = null)
+    protected function getDataAndSetResponseCacheTags(callable $callable, array $callableParams = [], $pkName = null)
     {
         $container = $this->container;
 
@@ -317,16 +316,18 @@ abstract class AbstractService
             $pkName = $callable[0]->primaryKeyFieldName;
         }
 
-        $setIdTags = function(Payload $payload) use($pkName, $container) {
+        $setIdTags = function (Payload $payload) use ($pkName, $container) {
             $collectionName = $payload->attribute('collection_name');
 
-            $this->tagResponseCache('table_'.$collectionName);
+            $this->tagResponseCache('table_' . $collectionName);
             // Note: See other reference to permissions_collection_<>
             // to proper set a new tag now that group doesn't exist anymore
-            $this->tagResponseCache('permissions_collection_'.$collectionName);
+            $this->tagResponseCache('permissions_collection_' . $collectionName);
 
             foreach ($payload->getData() as $item) {
-                $this->tagResponseCache('entity_'.$collectionName.'_'.$item[$pkName]);
+                if (isset($item[$pkName])) {
+                    $this->tagResponseCache('entity_' . $collectionName . '_' . $item[$pkName]);
+                }
             }
 
             return $payload;
@@ -356,8 +357,8 @@ abstract class AbstractService
     {
         $activityLoggingDisabled = ArrayUtils::get($params, 'activity_skip', 0) == 1;
         $activityMode = $activityLoggingDisabled
-                        ? RelationalTableGateway::ACTIVITY_ENTRY_MODE_DISABLED
-                        : RelationalTableGateway::ACTIVITY_ENTRY_MODE_PARENT;
+            ? RelationalTableGateway::ACTIVITY_ENTRY_MODE_DISABLED
+            : RelationalTableGateway::ACTIVITY_ENTRY_MODE_PARENT;
 
         return [
             'activity_mode' => $activityMode,
@@ -388,15 +389,14 @@ abstract class AbstractService
             $columnsToValidate = $fields;
         }
 
-        if($this->validationRequired($collectionName,$payload)){
+        if ($this->validationRequired($collectionName, $payload)) {
             $this->validatePayloadFields($collectionName, $payload);
             // TODO: Ideally this should be part of the validator constraints
             // we need to accept options for the constraint builder
             $this->validatePayloadWithFieldsValidation($collectionName, $payload);
 
-            $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField,$params));
+            $this->validate($payload, $this->createConstraintFor($collectionName, $columnsToValidate, $skipRelatedCollectionField, $params));
         }
-
     }
 
     /**
@@ -429,11 +429,11 @@ abstract class AbstractService
     {
         $collection = $this->getSchemaManager()->getCollection($collectionName);
         $statusField = $collection->getStatusField();
-        if($statusField){
+        if ($statusField) {
             $statusName = $statusField->getName();
             $statusMapping = $collection->getStatusMapping();
             $requiredStatus = $statusMapping->getRequiredStatusesValue();
-            if(ArrayUtils::get($payload, $statusName) && $requiredStatus && !in_array(ArrayUtils::get($payload, $statusName),$requiredStatus)){
+            if (ArrayUtils::get($payload, $statusName) && $requiredStatus && !in_array(ArrayUtils::get($payload, $statusName), $requiredStatus)) {
                 return false;
             }
         }
@@ -527,24 +527,24 @@ abstract class AbstractService
             return;
         }
 
-        if($field->getType() == "decimal"){
+        if ($field->getType() == "decimal") {
             $precision = $field->getPrecision();
             $scale = $field->getScale();
             $number = $precision - $scale;
-            $input = explode(".",$value);
+            $input = explode(".", $value);
             $inputLengthScale = isset($input[1]) ? strlen($input[1]) : 0;
             $inputLengthNumber = isset($input[0]) ? strlen($input[0]) : 0;
-            $inputLengthPrecision = $inputLengthScale+$inputLengthNumber;
+            $inputLengthPrecision = $inputLengthScale + $inputLengthNumber;
 
-            if($inputLengthNumber > $number || $inputLengthScale > $scale){
+            if ($inputLengthNumber > $number || $inputLengthScale > $scale) {
                 throw new UnprocessableEntityException(
-                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",$value,$field->getFormatisedName(),$field['length'])
+                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.", $value, $field->getFormatisedName(), $field['length'])
                 );
             }
         } else {
-            if (!is_null($field['length']) && ((is_array($value) && $field['length'] < strlen(json_encode($value))) || (!is_array($value) && $field['length'] < mb_strlen($value, 'UTF-8')))){
+            if (!is_null($field['length']) && ((is_array($value) && $field['length'] < strlen(json_encode($value))) || (!is_array($value) && $field['length'] < mb_strlen($value, 'UTF-8')))) {
                 throw new UnprocessableEntityException(
-                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.",!is_array($value) ? $value : 'Json / Array',$field->getFormatisedName(),$field['length'])
+                    sprintf("The value submitted (%s) for '%s' is longer than the field's supported length (%s). Please submit a shorter value or ask an Admin to increase the length.", !is_array($value) ? $value : 'Json / Array', $field->getFormatisedName(), $field['length'])
                 );
             }
         }

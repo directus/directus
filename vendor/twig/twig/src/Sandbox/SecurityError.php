@@ -21,5 +21,3 @@ use Twig\Error\Error;
 class SecurityError extends Error
 {
 }
-
-class_alias('Twig\Sandbox\SecurityError', 'Twig_Sandbox_SecurityError');

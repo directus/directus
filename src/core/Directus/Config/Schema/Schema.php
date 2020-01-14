@@ -42,6 +42,7 @@ class Schema {
                     new Value('adapter', Types::STRING, 'filesystem'),
                     new Value('path', Types::STRING, '../cache/'),
                     new Value('host', Types::STRING, 'localhost'),
+                    new Value('auth', Types::STRING, null),
                     new Value('port', Types::INTEGER, 6379),
                 ])
             ]),

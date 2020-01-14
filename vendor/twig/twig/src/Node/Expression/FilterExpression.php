@@ -22,7 +22,7 @@ class FilterExpression extends CallExpression
         parent::__construct(['node' => $node, 'filter' => $filterName, 'arguments' => $arguments], [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $name = $this->getNode('filter')->getAttribute('value');
         $filter = $compiler->getEnvironment()->getFilter($name);
@@ -38,5 +38,3 @@ class FilterExpression extends CallExpression
         $this->compileCallable($compiler);
     }
 }
-
-class_alias('Twig\Node\Expression\FilterExpression', 'Twig_Node_Expression_Filter');

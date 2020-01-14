@@ -102,7 +102,7 @@ class Client implements ClientInterface
      * @param array $options Request options to apply to the given
      *                       request and to the transfer. See \GuzzleHttp\RequestOptions.
      *
-     * @return PromiseInterface
+     * @return Promise\PromiseInterface
      */
     public function sendAsync(RequestInterface $request, array $options = [])
     {
@@ -142,7 +142,7 @@ class Client implements ClientInterface
      * @param string|UriInterface $uri     URI object or string.
      * @param array               $options Request options to apply. See \GuzzleHttp\RequestOptions.
      *
-     * @return PromiseInterface
+     * @return Promise\PromiseInterface
      */
     public function requestAsync($method, $uri = '', array $options = [])
     {
@@ -215,36 +215,9 @@ class Client implements ClientInterface
             $uri = Psr7\UriResolver::resolve(Psr7\uri_for($config['base_uri']), $uri);
         }
 
-        if ($uri->getHost() && isset($config['idn_conversion']) && ($config['idn_conversion'] !== false)) {
+        if (isset($config['idn_conversion']) && ($config['idn_conversion'] !== false)) {
             $idnOptions = ($config['idn_conversion'] === true) ? IDNA_DEFAULT : $config['idn_conversion'];
-
-            $asciiHost = idn_to_ascii($uri->getHost(), $idnOptions, INTL_IDNA_VARIANT_UTS46, $info);
-            if ($asciiHost === false) {
-                $errorBitSet = isset($info['errors']) ? $info['errors'] : 0;
-
-                $errorConstants = array_filter(array_keys(get_defined_constants()), function ($name) {
-                    return substr($name, 0, 11) === 'IDNA_ERROR_';
-                });
-
-                $errors = [];
-                foreach ($errorConstants as $errorConstant) {
-                    if ($errorBitSet & constant($errorConstant)) {
-                        $errors[] = $errorConstant;
-                    }
-                }
-
-                $errorMessage = 'IDN conversion failed';
-                if ($errors) {
-                    $errorMessage .= ' (errors: ' . implode(', ', $errors) . ')';
-                }
-
-                throw new InvalidArgumentException($errorMessage);
-            } else {
-                if ($uri->getHost() !== $asciiHost) {
-                    // Replace URI only if the ASCII version is different
-                    $uri = $uri->withHost($asciiHost);
-                }
-            }
+            $uri = _idn_uri_convert($uri, $idnOptions);
         }
 
         return $uri->getScheme() === '' && $uri->getHost() !== '' ? $uri->withScheme('http') : $uri;
@@ -267,7 +240,14 @@ class Client implements ClientInterface
         ];
 
         // idn_to_ascii() is a part of ext-intl and might be not available
-        $defaults['idn_conversion'] = function_exists('idn_to_ascii');
+        $defaults['idn_conversion'] = function_exists('idn_to_ascii')
+            // Old ICU versions don't have this constant, so we are basically stuck (see https://github.com/guzzle/guzzle/pull/2424
+            // and https://github.com/guzzle/guzzle/issues/2448 for details)
+            && (
+                defined('INTL_IDNA_VARIANT_UTS46')
+                ||
+                PHP_VERSION_ID < 70200
+            );
 
         // Use the standard Linux HTTP_PROXY and HTTPS_PROXY if set.
 

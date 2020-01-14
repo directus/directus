@@ -28,7 +28,7 @@ final class DataTypes
     const TYPE_UUID                 = 'uuid';
     const TYPE_DATETIME_CREATED     = 'datetime_created';
     const TYPE_DATETIME_UPDATED     = 'datetime_updated';
-    const TYPE_USER_CREATED         = 'user_created';
+    const TYPE_OWNER                = 'owner';
     const TYPE_USER_UPDATED         = 'user_updated';
     const TYPE_USER                 = 'user';
 
@@ -64,7 +64,7 @@ final class DataTypes
             static::TYPE_UUID,
             static::TYPE_DATETIME_CREATED,
             static::TYPE_DATETIME_UPDATED,
-            static::TYPE_USER_CREATED,
+            static::TYPE_OWNER,
             static::TYPE_USER_UPDATED,
             static::TYPE_USER,
         ];
@@ -335,7 +335,7 @@ final class DataTypes
     public static function getSystemUserType()
     {
         return [
-            static::TYPE_USER_CREATED,
+            static::TYPE_OWNER,
             static::TYPE_USER_UPDATED
         ];
     }
@@ -386,7 +386,7 @@ final class DataTypes
     public static function getUniqueTypes()
     {
         return array_merge([
-            static::TYPE_USER_CREATED,
+            static::TYPE_OWNER,
             static::TYPE_USER_UPDATED,
             static::TYPE_STATUS,
             static::TYPE_SORT,
@@ -436,7 +436,7 @@ final class DataTypes
     public static function getUsersType()
     {
         return [
-            static::TYPE_USER_CREATED,
+            static::TYPE_OWNER,
             static::TYPE_USER_UPDATED,
             static::TYPE_USER,
         ];

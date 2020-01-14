@@ -13,6 +13,7 @@ namespace Twig\TokenParser;
 
 use Twig\Error\SyntaxError;
 use Twig\Node\IncludeNode;
+use Twig\Node\Node;
 use Twig\Node\SandboxNode;
 use Twig\Node\TextNode;
 use Twig\Token;
@@ -28,7 +29,7 @@ use Twig\Token;
  */
 final class SandboxTokenParser extends AbstractTokenParser
 {
-    public function parse(Token $token)
+    public function parse(Token $token): Node
     {
         $stream = $this->parser->getStream();
         $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
@@ -51,15 +52,13 @@ final class SandboxTokenParser extends AbstractTokenParser
         return new SandboxNode($body, $token->getLine(), $this->getTag());
     }
 
-    public function decideBlockEnd(Token $token)
+    public function decideBlockEnd(Token $token): bool
     {
         return $token->test('endsandbox');
     }
 
-    public function getTag()
+    public function getTag(): string
     {
         return 'sandbox';
     }
 }
-
-class_alias('Twig\TokenParser\SandboxTokenParser', 'Twig_TokenParser_Sandbox');

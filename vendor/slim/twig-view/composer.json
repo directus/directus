@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "twig/twig": "^1.38|^2.7",
+        "twig/twig": "^1.38|^2.7|^3.0",
         "psr/http-message": "^1.0"
     },
     "require-dev": {

@@ -16,7 +16,7 @@ use Twig\Compiler;
 
 class AssignNameExpression extends NameExpression
 {
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->raw('$context[')
@@ -25,5 +25,3 @@ class AssignNameExpression extends NameExpression
         ;
     }
 }
-
-class_alias('Twig\Node\Expression\AssignNameExpression', 'Twig_Node_Expression_AssignName');

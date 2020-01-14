@@ -30,12 +30,8 @@ class ContainerRuntimeLoader implements RuntimeLoaderInterface
         $this->container = $container;
     }
 
-    public function load($class)
+    public function load(string $class)
     {
-        if ($this->container->has($class)) {
-            return $this->container->get($class);
-        }
+        return $this->container->has($class) ? $this->container->get($class) : null;
     }
 }
-
-class_alias('Twig\RuntimeLoader\ContainerRuntimeLoader', 'Twig_ContainerRuntimeLoader');

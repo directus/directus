@@ -181,7 +181,7 @@ class MySQLSchema extends AbstractSchema
                 'interface',
                 'hidden_detail' => new Expression('IF(DF.hidden_detail=1,1,0)'),
                 'hidden_browse' => new Expression('IF(DF.hidden_browse=1,1,0)'),
-                'required' => new Expression('IF(DF.required=1,1,0)'),
+                'required' => new Expression('IF(SF.IS_NULLABLE="NO",1,0)'),
                 'options',
                 'locked',
                 'translation',
@@ -321,7 +321,8 @@ class MySQLSchema extends AbstractSchema
             'collection_many',
             'field_many',
             'collection_one',
-            'field_one'
+            'field_one',
+            'junction_field'
         ]);
 
         $selectOne->from('directus_relations');
@@ -499,11 +500,11 @@ class MySQLSchema extends AbstractSchema
             case 'mediumint':
             case 'int':
             case 'integer':
-            // do not cast bigint values. php doesn't support bigint
-            // case 'bigint':
-            // case 'serial':
-            // Only cast if the value is numeric already
-            // Avoid casting when the hooks already have cast numeric data type set as boolean type
+                // do not cast bigint values. php doesn't support bigint
+                // case 'bigint':
+                // case 'serial':
+                // Only cast if the value is numeric already
+                // Avoid casting when the hooks already have cast numeric data type set as boolean type
                 if (is_numeric($data)) {
                     $data = (int) $data;
                 }
@@ -513,7 +514,7 @@ class MySQLSchema extends AbstractSchema
             case 'real':
             case 'decimal':
             case 'double':
-                $data = (float)$data;
+                $data = (float) $data;
                 break;
             case 'date':
             case 'datetime':

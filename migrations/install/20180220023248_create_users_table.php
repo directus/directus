@@ -105,6 +105,13 @@ class CreateUsersTable extends AbstractMigration
             'default' => null
         ]);
 
+        $table->addColumn('password_reset_token', 'string', [
+            'limit' => 520,
+            'encoding' => 'utf8',
+            'null' => true,
+            'default' => null
+        ]);
+
         $table->addIndex('email', [
             'unique' => true,
             'name' => 'idx_users_email'
@@ -514,6 +521,7 @@ class CreateUsersTable extends AbstractMigration
                 'hidden_detail' => 1,
                 'sort' => 18
             ],
+
             [
                 'collection' => 'directus_users',
                 'field' => 'last_page',
@@ -535,17 +543,27 @@ class CreateUsersTable extends AbstractMigration
                 'hidden_detail' => 1,
                 'hidden_browse' => 1
             ],
+            [
+                'collection' => 'directus_users',
+                'field' => 'password_reset_token',
+                'type' =>  \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'text-input',
+                'locked' => 1,
+                'readonly' => 1,
+                'hidden_detail' => 1
+            ],
         ];
 
-        foreach($data as $value){
-            if(!$this->checkFieldExist($value['collection'], $value['field'])){
+        foreach ($data as $value) {
+            if (!$this->checkFieldExist($value['collection'], $value['field'])) {
                 $fileds = $this->table('directus_fields');
                 $fileds->insert($value)->save();
             }
         }
     }
 
-    public function checkFieldExist($collection,$field){
+    public function checkFieldExist($collection, $field)
+    {
         $checkSql = sprintf('SELECT 1 FROM `directus_fields` WHERE `collection` = "%s" AND `field` = "%s";', $collection, $field);
         return $this->query($checkSql)->fetch();
     }

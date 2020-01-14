@@ -26,5 +26,3 @@ class TemplateDirIterator extends \IteratorIterator
         return (string) parent::key();
     }
 }
-
-class_alias('Twig\Util\TemplateDirIterator', 'Twig_Util_TemplateDirIterator');

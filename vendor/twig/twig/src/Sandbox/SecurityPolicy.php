@@ -36,17 +36,17 @@ final class SecurityPolicy implements SecurityPolicyInterface
         $this->allowedFunctions = $allowedFunctions;
     }
 
-    public function setAllowedTags(array $tags)
+    public function setAllowedTags(array $tags): void
     {
         $this->allowedTags = $tags;
     }
 
-    public function setAllowedFilters(array $filters)
+    public function setAllowedFilters(array $filters): void
     {
         $this->allowedFilters = $filters;
     }
 
-    public function setAllowedMethods(array $methods)
+    public function setAllowedMethods(array $methods): void
     {
         $this->allowedMethods = [];
         foreach ($methods as $class => $m) {
@@ -54,17 +54,17 @@ final class SecurityPolicy implements SecurityPolicyInterface
         }
     }
 
-    public function setAllowedProperties(array $properties)
+    public function setAllowedProperties(array $properties): void
     {
         $this->allowedProperties = $properties;
     }
 
-    public function setAllowedFunctions(array $functions)
+    public function setAllowedFunctions(array $functions): void
     {
         $this->allowedFunctions = $functions;
     }
 
-    public function checkSecurity($tags, $filters, $functions)
+    public function checkSecurity($tags, $filters, $functions): void
     {
         foreach ($tags as $tag) {
             if (!\in_array($tag, $this->allowedTags)) {
@@ -85,7 +85,7 @@ final class SecurityPolicy implements SecurityPolicyInterface
         }
     }
 
-    public function checkMethodAllowed($obj, $method)
+    public function checkMethodAllowed($obj, $method): void
     {
         if ($obj instanceof Template || $obj instanceof Markup) {
             return;
@@ -107,7 +107,7 @@ final class SecurityPolicy implements SecurityPolicyInterface
         }
     }
 
-    public function checkPropertyAllowed($obj, $property)
+    public function checkPropertyAllowed($obj, $property): void
     {
         $allowed = false;
         foreach ($this->allowedProperties as $class => $properties) {
@@ -124,5 +124,3 @@ final class SecurityPolicy implements SecurityPolicyInterface
         }
     }
 }
-
-class_alias('Twig\Sandbox\SecurityPolicy', 'Twig_Sandbox_SecurityPolicy');

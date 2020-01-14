@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class EndsWithBinary extends AbstractBinary
 {
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $left = $compiler->getVarName();
         $right = $compiler->getVarName();
@@ -28,10 +28,8 @@ class EndsWithBinary extends AbstractBinary
         ;
     }
 
-    public function operator(Compiler $compiler)
+    public function operator(Compiler $compiler): Compiler
     {
         return $compiler->raw('');
     }
 }
-
-class_alias('Twig\Node\Expression\Binary\EndsWithBinary', 'Twig_Node_Expression_Binary_EndsWith');

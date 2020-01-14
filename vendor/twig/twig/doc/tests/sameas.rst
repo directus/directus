@@ -2,7 +2,7 @@
 ===========
 
 ``same as`` checks if a variable is the same as another variable.
-This is the equivalent to ``===`` in PHP:
+This is equivalent to ``===`` in PHP:
 
 .. code-block:: twig
 

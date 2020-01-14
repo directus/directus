@@ -28,16 +28,15 @@ use Twig\Node\SetNode;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
-final class SandboxNodeVisitor extends AbstractNodeVisitor
+final class SandboxNodeVisitor implements NodeVisitorInterface
 {
     private $inAModule = false;
     private $tags;
     private $filters;
     private $functions;
-
     private $needsToStringWrap = false;
 
-    protected function doEnterNode(Node $node, Environment $env)
+    public function enterNode(Node $node, Environment $env): Node
     {
         if ($node instanceof ModuleNode) {
             $this->inAModule = true;
@@ -95,7 +94,7 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         return $node;
     }
 
-    protected function doLeaveNode(Node $node, Environment $env)
+    public function leaveNode(Node $node, Environment $env): ?Node
     {
         if ($node instanceof ModuleNode) {
             $this->inAModule = false;
@@ -110,7 +109,7 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         return $node;
     }
 
-    private function wrapNode(Node $node, string $name)
+    private function wrapNode(Node $node, string $name): void
     {
         $expr = $node->getNode($name);
         if ($expr instanceof NameExpression || $expr instanceof GetAttrExpression) {
@@ -118,7 +117,7 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         }
     }
 
-    private function wrapArrayNode(Node $node, string $name)
+    private function wrapArrayNode(Node $node, string $name): void
     {
         $args = $node->getNode($name);
         foreach ($args as $name => $_) {
@@ -126,10 +125,8 @@ final class SandboxNodeVisitor extends AbstractNodeVisitor
         }
     }
 
-    public function getPriority()
+    public function getPriority(): int
     {
         return 0;
     }
 }
-
-class_alias('Twig\NodeVisitor\SandboxNodeVisitor', 'Twig_NodeVisitor_Sandbox');

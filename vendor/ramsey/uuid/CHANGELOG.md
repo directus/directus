@@ -21,12 +21,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 
+## [3.9.2] - 2019-12-17
+
+### Fixed
+
+* Check whether files returned by `/sys/class/net/*/address` are readable
+  before attempting to read them. This avoids a PHP warning that was being
+  emitted on hosts that do not grant permission to read these files.
+
+
 ## [3.9.1] - 2019-12-01
 
 ### Fixed
 
 * Fix `RandomNodeProvider` behavior on 32-bit systems. The `RandomNodeProvider`
-  was converting a 6-byte string to a a decimal number, which is a 48-bit,
+  was converting a 6-byte string to a decimal number, which is a 48-bit,
   unsigned integer. This caused problems on 32-bit systems and has now been
   resolved.
 
@@ -51,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Deprecated
 
-These will be removed in version ramsey/uuid version 4.0.0:
+These will be removed in ramsey/uuid version 4.0.0:
 
 * `MtRandGenerator`, `OpenSslGenerator`, and `SodiumRandomGenerator` are
   deprecated in favor of using the default `RandomBytesGenerator`.
@@ -582,7 +591,8 @@ versions leading up to this release.*
 [ramsey/uuid-doctrine]: https://github.com/ramsey/uuid-doctrine
 [ramsey/uuid-console]: https://github.com/ramsey/uuid-console
 
-[unreleased]: https://github.com/ramsey/uuid/compare/3.9.1...HEAD
+[unreleased]: https://github.com/ramsey/uuid/compare/3.9.2...HEAD
+[3.9.2]: https://github.com/ramsey/uuid/compare/3.9.1...3.9.2
 [3.9.1]: https://github.com/ramsey/uuid/compare/3.9.0...3.9.1
 [3.9.0]: https://github.com/ramsey/uuid/compare/3.8.0...3.9.0
 [3.8.0]: https://github.com/ramsey/uuid/compare/3.7.3...3.8.0

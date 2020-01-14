@@ -1,9 +1,6 @@
 ``map``
 =======
 
-.. versionadded:: 1.41
-    The ``map`` filter was added in Twig 1.41 and 2.10.
-
 The ``map`` filter applies an arrow function to the elements of a sequence or a
 mapping. The arrow function receives the value of the sequence or mapping:
 

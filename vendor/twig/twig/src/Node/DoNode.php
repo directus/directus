@@ -26,7 +26,7 @@ class DoNode extends Node
         parent::__construct(['expr' => $expr], [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->addDebugInfo($this)
@@ -36,5 +36,3 @@ class DoNode extends Node
         ;
     }
 }
-
-class_alias('Twig\Node\DoNode', 'Twig_Node_Do');

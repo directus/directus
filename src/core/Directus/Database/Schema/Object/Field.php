@@ -377,9 +377,9 @@ class Field extends AbstractObject
      *
      * @return bool
      */
-    public function isUserCreatedType()
+    public function isOwnerType()
     {
-        return $this->isType(DataTypes::TYPE_USER_CREATED);
+        return $this->isType(DataTypes::TYPE_OWNER);
     }
 
     /**

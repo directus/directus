@@ -48,7 +48,7 @@ class ActivityService extends AbstractService
         $data = array_merge($data, [
             'action' => DirectusActivityTableGateway::ACTION_COMMENT,
             'action_on' => DateTimeUtils::now()->toString(),
-            'ip' => \Directus\get_request_ip(),
+            'ip' => \Directus\get_request_host(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'action_by' => $this->getAcl()->getUserId(),
         ]);
@@ -242,7 +242,8 @@ class ActivityService extends AbstractService
         if ($collection->getUserCreatedField() && $ownerId !== $this->getAcl()->getUserId()) {
             $this->getAcl()->enforceUpdateAnyComments(
                 $collectionName,
-                $this->getStatusValue($collectionName, $data));
+                $this->getStatusValue($collectionName, $data)
+            );
         } else {
             $this->getAcl()->enforceUpdateMyComments(
                 $collectionName,

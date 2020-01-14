@@ -1,6 +1,15 @@
 # Change Log
 
-## 6.5.0 - 2019-11-07
+## 6.5.2 - 2019-12-23
+
+* idn_to_ascii() fix for old PHP versions [#2489](https://github.com/guzzle/guzzle/pull/2489)
+
+## 6.5.1 - 2019-12-21
+
+* Better defaults for PHP installations with old ICU lib [#2454](https://github.com/guzzle/guzzle/pull/2454)
+* IDN support for redirects [#2424](https://github.com/guzzle/guzzle/pull/2424)
+
+## 6.5.0 - 2019-12-07
 
 * Improvement: Added support for reset internal queue in MockHandler. [#2143](https://github.com/guzzle/guzzle/pull/2143)
 * Improvement: Added support to pass arbitrary options to `curl_multi_init`. [#2287](https://github.com/guzzle/guzzle/pull/2287)

@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^5.4 | ^7",
+        "php": "^5.4 | ^7 | ^8",
         "ext-json": "*",
         "paragonie/random_compat": "^1 | ^2 | 9.99.99",
         "symfony/polyfill-ctype": "^1.8"
@@ -30,13 +30,13 @@
         "codeception/aspect-mock": "^1 | ^2",
         "doctrine/annotations": "^1.2",
         "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
-        "jakub-onderka/php-parallel-lint": "^0.9.0",
-        "mockery/mockery": "^0.9.9",
+        "jakub-onderka/php-parallel-lint": "^1",
+        "mockery/mockery": "^0.9.11 | ^1",
         "moontoast/math": "^1.1",
         "paragonie/random-lib": "^2",
         "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
         "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
-        "squizlabs/php_codesniffer": "^2.3"
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "suggest": {
         "ext-ctype": "Provides support for PHP Ctype functions",
@@ -76,17 +76,11 @@
         "lint": "parallel-lint src tests",
         "phpcs": "phpcs src tests --standard=psr2 -sp --colors",
         "phpunit": "phpunit --verbose --colors=always",
-        "phpunit-ci": "phpunit --verbose --coverage-clover build/logs/clover.xml",
         "phpunit-coverage": "phpunit --verbose --colors=always --coverage-html build/coverage",
         "test": [
             "@lint",
             "@phpcs",
             "@phpunit"
-        ],
-        "test-ci": [
-            "@lint",
-            "@phpcs",
-            "@phpunit-ci"
         ]
     },
     "support": {

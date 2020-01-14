@@ -7,6 +7,6 @@ use LogicException;
 /**
  * Thrown when the MountManager cannot find a filesystem.
  */
-class FilesystemNotFoundException extends LogicException
+class FilesystemNotFoundException extends LogicException implements FilesystemException
 {
 }

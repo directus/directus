@@ -28,7 +28,7 @@ class GetAttrExpression extends AbstractExpression
         parent::__construct($nodes, ['type' => $type, 'is_defined_test' => false, 'ignore_strict_check' => false, 'optimizable' => true], $lineno);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $env = $compiler->getEnvironment();
 
@@ -85,5 +85,3 @@ class GetAttrExpression extends AbstractExpression
         ;
     }
 }
-
-class_alias('Twig\Node\Expression\GetAttrExpression', 'Twig_Node_Expression_GetAttr');

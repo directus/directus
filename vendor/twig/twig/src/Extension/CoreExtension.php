@@ -56,7 +56,6 @@ use Twig\TokenParser\DeprecatedTokenParser;
 use Twig\TokenParser\DoTokenParser;
 use Twig\TokenParser\EmbedTokenParser;
 use Twig\TokenParser\ExtendsTokenParser;
-use Twig\TokenParser\FilterTokenParser;
 use Twig\TokenParser\FlushTokenParser;
 use Twig\TokenParser\ForTokenParser;
 use Twig\TokenParser\FromTokenParser;
@@ -65,7 +64,6 @@ use Twig\TokenParser\ImportTokenParser;
 use Twig\TokenParser\IncludeTokenParser;
 use Twig\TokenParser\MacroTokenParser;
 use Twig\TokenParser\SetTokenParser;
-use Twig\TokenParser\SpacelessTokenParser;
 use Twig\TokenParser\UseTokenParser;
 use Twig\TokenParser\WithTokenParser;
 use Twig\TwigFilter;
@@ -77,38 +75,6 @@ final class CoreExtension extends AbstractExtension
     private $dateFormats = ['F j, Y H:i', '%d days'];
     private $numberFormat = [0, '.', ','];
     private $timezone = null;
-    private $escapers = [];
-
-    /**
-     * Defines a new escaper to be used via the escape filter.
-     *
-     * @param string   $strategy The strategy name that should be used as a strategy in the escape call
-     * @param callable $callable A valid PHP callable
-     *
-     * @deprecated since Twig 2.11, to be removed in 3.0; use the same method on EscaperExtension instead
-     */
-    public function setEscaper($strategy, callable $callable)
-    {
-        @trigger_error(sprintf('The "%s" method is deprecated since Twig 2.11; use "%s::setEscaper" instead.', __METHOD__, EscaperExtension::class), E_USER_DEPRECATED);
-
-        $this->escapers[$strategy] = $callable;
-    }
-
-    /**
-     * Gets all defined escapers.
-     *
-     * @return callable[] An array of escapers
-     *
-     * @deprecated since Twig 2.11, to be removed in 3.0; use the same method on EscaperExtension instead
-     */
-    public function getEscapers(/* $triggerDeprecation = true */)
-    {
-        if (0 === \func_num_args() || func_get_arg(0)) {
-            @trigger_error(sprintf('The "%s" method is deprecated since Twig 2.11; use "%s::getEscapers" instead.', __METHOD__, EscaperExtension::class), E_USER_DEPRECATED);
-        }
-
-        return $this->escapers;
-    }
 
     /**
      * Sets the default format to be used by the date filter.
@@ -183,7 +149,7 @@ final class CoreExtension extends AbstractExtension
         return $this->numberFormat;
     }
 
-    public function getTokenParsers()
+    public function getTokenParsers(): array
     {
         return [
             new ApplyTokenParser(),
@@ -193,12 +159,10 @@ final class CoreExtension extends AbstractExtension
             new IncludeTokenParser(),
             new BlockTokenParser(),
             new UseTokenParser(),
-            new FilterTokenParser(),
             new MacroTokenParser(),
             new ImportTokenParser(),
             new FromTokenParser(),
             new SetTokenParser(),
-            new SpacelessTokenParser(),
             new FlushTokenParser(),
             new DoTokenParser(),
             new EmbedTokenParser(),
@@ -207,7 +171,7 @@ final class CoreExtension extends AbstractExtension
         ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             // formatting filters
@@ -258,7 +222,7 @@ final class CoreExtension extends AbstractExtension
         ];
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('max', 'max'),
@@ -273,7 +237,7 @@ final class CoreExtension extends AbstractExtension
         ];
     }
 
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('even', null, ['node_class' => EvenTest::class]),
@@ -289,12 +253,12 @@ final class CoreExtension extends AbstractExtension
         ];
     }
 
-    public function getNodeVisitors()
+    public function getNodeVisitors(): array
     {
         return [new MacroAutoImportNodeVisitor()];
     }
 
-    public function getOperators()
+    public function getOperators(): array
     {
         return [
             [
@@ -336,8 +300,6 @@ final class CoreExtension extends AbstractExtension
         ];
     }
 }
-
-class_alias('Twig\Extension\CoreExtension', 'Twig_Extension_Core');
 }
 
 namespace {
@@ -490,7 +452,7 @@ function twig_date_modify_filter(Environment $env, $date, $modifier)
  * @param \DateTimeInterface|string|null  $date     A date or null to use the current time
  * @param \DateTimeZone|string|false|null $timezone The target timezone, null to use the default, false to leave unchanged
  *
- * @return \DateTime
+ * @return \DateTimeInterface
  */
 function twig_date_converter(Environment $env, $date = null, $timezone = null)
 {
@@ -935,29 +897,99 @@ function twig_in_filter($value, $compare)
         $compare = (string) $compare;
     }
 
-    if (\is_array($compare)) {
-        return \in_array($value, $compare, \is_object($value) || \is_resource($value));
-    } elseif (\is_string($compare) && (\is_string($value) || \is_int($value) || \is_float($value))) {
-        return '' === $value || false !== strpos($compare, (string) $value);
-    } elseif ($compare instanceof \Traversable) {
-        if (\is_object($value) || \is_resource($value)) {
-            foreach ($compare as $item) {
-                if ($item === $value) {
-                    return true;
-                }
-            }
-        } else {
-            foreach ($compare as $item) {
-                if ($item == $value) {
-                    return true;
-                }
-            }
+    if (\is_string($compare)) {
+        if (\is_string($value) || \is_int($value) || \is_float($value)) {
+            return '' === $value || false !== strpos($compare, (string) $value);
         }
 
         return false;
     }
 
+    if (!is_iterable($compare)) {
+        return false;
+    }
+
+    if (\is_object($value) || \is_resource($value)) {
+        if (!\is_array($compare)) {
+            foreach ($compare as $item) {
+                if ($item === $value) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return \in_array($value, $compare, true);
+    }
+
+    foreach ($compare as $item) {
+        if (0 === twig_compare($value, $item)) {
+            return true;
+        }
+    }
+
     return false;
+}
+
+/**
+ * Compares two values using a more strict version of the PHP non-strict comparison operator.
+ *
+ * @see https://wiki.php.net/rfc/string_to_number_comparison
+ * @see https://wiki.php.net/rfc/trailing_whitespace_numerics
+ *
+ * @internal
+ */
+function twig_compare($a, $b)
+{
+    // int <=> string
+    if (\is_int($a) && \is_string($b)) {
+        $b = trim($b);
+        if (!is_numeric($b)) {
+            return (string) $a <=> $b;
+        }
+        if ((int) $b == $b) {
+            return $a <=> (int) $b;
+        } else {
+            return (float) $a <=> (float) $b;
+        }
+    }
+    if (\is_string($a) && \is_int($b)) {
+        $a = trim($a);
+        if (!is_numeric($a)) {
+            return $a <=> (string) $b;
+        }
+        if ((int) $a == $a) {
+            return (int) $a <=> $b;
+        } else {
+            return (float) $a <=> (float) $b;
+        }
+    }
+
+    // float <=> string
+    if (\is_float($a) && \is_string($b)) {
+        if (is_nan($a)) {
+            return 1;
+        }
+        if (!is_numeric($b)) {
+            return (string) $a <=> $b;
+        }
+
+        return (float) $a <=> $b;
+    }
+    if (\is_float($b) && \is_string($a)) {
+        if (is_nan($b)) {
+            return 1;
+        }
+        if (!is_numeric($a)) {
+            return $a <=> (string) $b;
+        }
+
+        return (float) $a <=> $b;
+    }
+
+    // fallback to <=>
+    return $a <=> $b;
 }
 
 /**

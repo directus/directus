@@ -1164,7 +1164,7 @@ class BaseTableGateway extends TableGateway
         }
 
         // If User can read all items, nothing else needs to be checked
-        if ($this->acl->canReadAll($this->table)) {
+        if (empty($statuses) && $this->acl->canReadAll($this->table)) {
             return;
         }
 

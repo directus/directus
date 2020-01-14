@@ -22,10 +22,10 @@ class FoldersService extends AbstractService
 
     public function createFolder(array $data, array $params = [])
     {
-        $this->enforceCreatePermissions($this->$collection, $data, $params);
-        $this->validatePayload($this->$collection, null, $data, $params);
+        $this->enforceCreatePermissions($this->collection, $data, $params);
+        $this->validatePayload($this->collection, null, $data, $params);
 
-        $foldersTableGateway = $this->createTableGateway($this->$collection);
+        $foldersTableGateway = $this->createTableGateway($this->collection);
 
         $newFolder = $foldersTableGateway->createRecord($data, $this->getCRUDParams($params));
 

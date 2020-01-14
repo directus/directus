@@ -25,7 +25,7 @@ class SandboxNode extends Node
         parent::__construct(['body' => $body], [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->addDebugInfo($this)
@@ -43,5 +43,3 @@ class SandboxNode extends Node
         ;
     }
 }
-
-class_alias('Twig\Node\SandboxNode', 'Twig_Node_Sandbox');

@@ -36,17 +36,17 @@ final class EscaperExtension extends AbstractExtension
         $this->setDefaultStrategy($defaultStrategy);
     }
 
-    public function getTokenParsers()
+    public function getTokenParsers(): array
     {
         return [new AutoEscapeTokenParser()];
     }
 
-    public function getNodeVisitors()
+    public function getNodeVisitors(): array
     {
         return [new EscaperNodeVisitor()];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('escape', 'twig_escape_filter', ['needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe']),
@@ -63,7 +63,7 @@ final class EscaperExtension extends AbstractExtension
      *
      * @param string|false|callable $defaultStrategy An escaping strategy
      */
-    public function setDefaultStrategy($defaultStrategy)
+    public function setDefaultStrategy($defaultStrategy): void
     {
         if ('name' === $defaultStrategy) {
             $defaultStrategy = [FileExtensionEscapingStrategy::class, 'guess'];
@@ -79,7 +79,7 @@ final class EscaperExtension extends AbstractExtension
      *
      * @return string|false The default strategy to use for the template
      */
-    public function getDefaultStrategy($name)
+    public function getDefaultStrategy(string $name)
     {
         // disable string callables to avoid calling a function named html or js,
         // or any other upcoming escaping strategy
@@ -133,14 +133,11 @@ final class EscaperExtension extends AbstractExtension
         }
     }
 }
-
-class_alias('Twig\Extension\EscaperExtension', 'Twig_Extension_Escaper');
 }
 
 namespace {
 use Twig\Environment;
 use Twig\Error\RuntimeError;
-use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
 use Twig\Markup;
 use Twig\Node\Expression\ConstantExpression;
@@ -150,8 +147,6 @@ use Twig\Node\Node;
  * Marks a variable as being safe.
  *
  * @param string $string A PHP variable
- *
- * @return string
  */
 function twig_raw_filter($string)
 {
@@ -392,11 +387,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             static $escapers;
 
             if (null === $escapers) {
-                // merge the ones set on CoreExtension for BC (to be removed in 3.0)
-                $escapers = array_merge(
-                    $env->getExtension(CoreExtension::class)->getEscapers(false),
-                    $env->getExtension(EscaperExtension::class)->getEscapers()
-                );
+                $escapers = $env->getExtension(EscaperExtension::class)->getEscapers();
             }
 
             if (isset($escapers[$strategy])) {

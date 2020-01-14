@@ -1,3 +1,10 @@
+### 1.25.3 (2019-12-20)
+
+  * Fixed formatting of resources in JsonFormatter
+  * Fixed RedisHandler failing to use MULTI properly when passed a proxied Redis instance (e.g. in Symfony with lazy services)
+  * Fixed FilterHandler triggering a notice when handleBatch was filtering all records passed to it
+  * Fixed Turkish locale messing up the conversion of level names to their constant values
+
 ### 1.25.2 (2019-11-13)
 
   * Fixed normalization of Traversables to avoid traversing them as not all of them are rewindable

@@ -20,7 +20,7 @@ class TempNameExpression extends AbstractExpression
         parent::__construct([], ['name' => $name], $lineno);
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->raw('$_')
@@ -29,5 +29,3 @@ class TempNameExpression extends AbstractExpression
         ;
     }
 }
-
-class_alias('Twig\Node\Expression\TempNameExpression', 'Twig_Node_Expression_TempName');

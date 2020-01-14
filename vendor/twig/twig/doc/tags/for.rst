@@ -78,42 +78,7 @@ Variable              Description
 
     The ``loop.length``, ``loop.revindex``, ``loop.revindex0``, and
     ``loop.last`` variables are only available for PHP arrays, or objects that
-    implement the ``Countable`` interface. They are also not available when
-    looping with a condition.
-
-Adding a condition
-------------------
-
-.. tip::
-
-    As of Twig 2.10, use the :doc:`filter <../filters/filter>` filter instead,
-    or an ``if`` condition inside the ``for`` body (if your condition depends on
-    a variable updated inside the loop and you are not using the ``loop``
-    variable).
-
-Unlike in PHP, it's not possible to ``break`` or ``continue`` in a loop. You
-can however filter the sequence during iteration which allows you to skip
-items. The following example skips all the users which are not active:
-
-.. code-block:: twig
-
-    <ul>
-        {% for user in users if user.active %}
-            <li>{{ user.username|e }}</li>
-        {% endfor %}
-    </ul>
-
-The advantage is that the special loop variable will count correctly thus not
-counting the users not iterated over. Keep in mind that properties like
-``loop.last`` will not be defined when using loop conditions.
-
-.. note::
-
-    Using the ``loop`` variable within the condition is not recommended as it
-    will probably not be doing what you expect it to. For instance, adding a
-    condition like ``loop.index > 4`` won't work as the index is only
-    incremented when the condition is true (so the condition will never
-    match).
+    implement the ``Countable`` interface.
 
 The `else` Clause
 -----------------

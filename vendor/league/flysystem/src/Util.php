@@ -267,11 +267,15 @@ class Util
      *
      * @param resource $resource
      *
-     * @return int stream size
+     * @return int|null stream size
      */
     public static function getStreamSize($resource)
     {
         $stat = fstat($resource);
+
+        if ( ! is_array($stat) || ! isset($stat['size'])) {
+            return null;
+        }
 
         return $stat['size'];
     }

@@ -24,37 +24,23 @@ interface CacheInterface
 {
     /**
      * Generates a cache key for the given template class name.
-     *
-     * @param string $name      The template name
-     * @param string $className The template class name
-     *
-     * @return string
      */
-    public function generateKey($name, $className);
+    public function generateKey(string $name, string $className): string;
 
     /**
      * Writes the compiled template to cache.
      *
-     * @param string $key     The cache key
      * @param string $content The template representation as a PHP class
      */
-    public function write($key, $content);
+    public function write(string $key, string $content): void;
 
     /**
      * Loads a template from the cache.
-     *
-     * @param string $key The cache key
      */
-    public function load($key);
+    public function load(string $key): void;
 
     /**
      * Returns the modification timestamp of a key.
-     *
-     * @param string $key The cache key
-     *
-     * @return int
      */
-    public function getTimestamp($key);
+    public function getTimestamp(string $key): int;
 }
-
-class_alias('Twig\Cache\CacheInterface', 'Twig_CacheInterface');

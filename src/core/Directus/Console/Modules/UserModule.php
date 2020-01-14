@@ -22,12 +22,13 @@ class UserModule extends ModuleBase
             'password' => ''
                 . PHP_EOL . "\t\t-e " . 'User e-mail address.'
                 . PHP_EOL . "\t\t-p " . 'New password for the user.'
+                . PHP_EOL . "\t\t-k " . 'Project Key.'
                 . PHP_EOL . "\t\t-d " . 'Directus path. Default: ' . $this->getBasePath()
         ];
 
         $this->commands_help = [
             'password' => 'Change User Password: ' . PHP_EOL . PHP_EOL . "\t\t"
-                . $this->__module_name . ':password -e user_email -p new_password -d directus_path' . PHP_EOL
+                . $this->__module_name . ':password -e user_email -p new_password -k project_key -d directus_path' . PHP_EOL
         ];
 
         $this->__module_name = 'user';
@@ -48,6 +49,9 @@ class UserModule extends ModuleBase
                 case 'p':
                     $data['user_password'] = $value;
                     break;
+                case 'k':
+                    $data['project_name'] = $value;
+                    break;
                 case 'd':
                     $directus_path = $value;
                     break;
@@ -62,12 +66,15 @@ class UserModule extends ModuleBase
             throw new WrongArgumentsException($this->__module_name . ':password ' . 'missing new password for user!');
         }
 
-        $user = new User($directus_path);
+        if (!isset($data['project_name'])) {
+            throw new WrongArgumentsException($this->__module_name . ':password ' . 'missing project key!');
+        }
+
+        $user = new User($directus_path, $data['project_name']);
         try {
             $user->changePassword($data['user_email'], $data['user_password']);
         } catch (PasswordChangeException $ex) {
             throw new CommandFailedException('Error changing user password' . ': ' . $ex->getMessage());
         }
-
     }
 }

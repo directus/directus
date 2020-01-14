@@ -925,6 +925,8 @@ class CoreServicesProvider
                     $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
                     $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
                     $socket = (isset($poolConfig['socket'])) ? $poolConfig['socket'] : null;
+                    $auth = (isset($poolConfig['auth'])) ? $poolConfig['auth'] : null;
+
                     if ($adapter == 'rediscluster') {
                         $client = new \RedisCluster(NULL,["$host:$port"]);
                     } else {
@@ -935,6 +937,11 @@ class CoreServicesProvider
                             $client->connect($host, $port);
                         }
                     }
+
+                    if ($auth) {
+                        $client->auth($auth);
+                    }
+
                     $pool = new RedisCachePool($client);
                 }
             }

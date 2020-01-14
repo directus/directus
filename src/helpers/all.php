@@ -120,21 +120,21 @@ if (!function_exists('get_directus_path')) {
 
 if (!function_exists('normalize_path')) {
     /**
-    * Normalize a filesystem path.
-    *
-    * On windows systems, replaces backslashes with forward slashes.
-    * Ensures that no duplicate slashes exist.
-    *
-    * from WordPress source code
-    *
-    * @param string $path Path to normalize.
-    *
-    * @return string Normalized path.
-    */
+     * Normalize a filesystem path.
+     *
+     * On windows systems, replaces backslashes with forward slashes.
+     * Ensures that no duplicate slashes exist.
+     *
+     * from WordPress source code
+     *
+     * @param string $path Path to normalize.
+     *
+     * @return string Normalized path.
+     */
     function normalize_path($path)
     {
         $path = str_replace('\\', '/', $path);
-        $path = preg_replace('|/+|','/', $path);
+        $path = preg_replace('|/+|', '/', $path);
 
         return $path;
     }
@@ -281,7 +281,7 @@ if (!function_exists('get_api_project_from_request')) {
                 }
             }
 
-            if(isset($authToken)){
+            if (isset($authToken)) {
                 $name = JWTUtils::getPayload($authToken, 'project');
             } else {
                 $name = get_request_project_name($request);
@@ -323,7 +323,6 @@ if (!function_exists('get_request_authorization_token')) {
             if ($authUser && (empty($authPassword) || $authUser === $authPassword)) {
                 $response['token'] =  $authUser;
             }
-
         } elseif ($request->hasHeader('Authorization')) {
             $response['type'] =  DirectusUserSessionsTableGateway::TOKEN_JWT;
             $authorizationHeader = $request->getHeader('Authorization');
@@ -356,7 +355,7 @@ if (!function_exists('get_project_session_cookie_name')) {
     function get_project_session_cookie_name($request)
     {
         $projectName = get_api_project_from_request($request);
-        return 'directus-'.$projectName.'-session';
+        return 'directus-' . $projectName . '-session';
     }
 }
 
@@ -371,21 +370,21 @@ if (!function_exists('get_static_token_based_on_type')) {
     function get_static_token_based_on_type($tokenObject)
     {
         $accessToken = null;
-        if(!empty($tokenObject['token'])){
-            switch($tokenObject['type']){
-                case DirectusUserSessionsTableGateway::TOKEN_COOKIE :
+        if (!empty($tokenObject['token'])) {
+            switch ($tokenObject['type']) {
+                case DirectusUserSessionsTableGateway::TOKEN_COOKIE:
                     $container = Application::getInstance()->getContainer();
                     $decryptedToken = decrypt_static_token($tokenObject['token']);
                     $userSessionService = new UserSessionService($container);
                     $userSession = $userSessionService->find(['token' => $decryptedToken]);
-                    if($userSession){
+                    if ($userSession) {
                         $user = $container->get('auth')->getUserProvider()->find($userSession['user'])->toArray();
                         $accessToken = $user['token'];
-                    }else{
+                    } else {
                         throw new InvalidTokenException();
                     }
                     break;
-                default :
+                default:
                     $accessToken = $tokenObject['token'];
                     break;
             }
@@ -423,7 +422,7 @@ if (!function_exists('decrypt_static_token')) {
     {
         list($cryptedToken, $enc_iv) = explode("::", $token);
         $enc_key = openssl_digest(php_uname(), 'SHA256', TRUE);
-        $token = openssl_decrypt($cryptedToken,TOKEN_CIPHER_METHOD, $enc_key, 0, hex2bin($enc_iv));
+        $token = openssl_decrypt($cryptedToken, TOKEN_CIPHER_METHOD, $enc_key, 0, hex2bin($enc_iv));
         return $token;
     }
 }
@@ -472,7 +471,8 @@ if (!function_exists('create_maintenanceflag_path')) {
      *
      * @return string
      */
-    function create_maintenanceflag_path($basePath) {
+    function create_maintenanceflag_path($basePath)
+    {
         return $basePath . '/logs/maintenance';
     }
 }
@@ -644,23 +644,23 @@ if (!function_exists('register_webhooks')) {
     {
         $app = Application::getInstance();
         BaseTableGateway::setContainer($app->getContainer());
-        try{
+        try {
             $webhook = new WebhookService($app->getContainer());
-            $webhookData = $webhook->findAll(['status' => \Directus\Api\Routes\Webhook::STATUS_ACTIVE],false);
+            $webhookData = $webhook->findAll(['status' => \Directus\Api\Routes\Webhook::STATUS_ACTIVE], false);
             $result = [];
-            foreach($webhookData['data'] as $hook){
-                $action = explode(":",$hook['directus_action']);
-                $result['hooks']['actions'][$action[0].".".$hook['collection'].":".$action[1]] = function ($data) use ($hook) {
+            foreach ($webhookData['data'] as $hook) {
+                $action = explode(":", $hook['directus_action']);
+                $result['hooks']['actions'][$action[0] . "." . $hook['collection'] . ":" . $action[1]] = function ($data) use ($hook) {
                     $client = new \GuzzleHttp\Client();
                     $response = [];
-                    if($hook['http_action'] == WebhookService::HTTP_ACTION_POST){
-                        $response['form_params'] = ($data);
+                    if ($hook['http_action'] == WebhookService::HTTP_ACTION_POST) {
+                        $response['json'] = ($data);
                     }
                     $client->request($hook['http_action'], $hook['url'], $response);
                 };
             }
-            register_hooks_list($app,$result);
-        }catch(\Exception $e){
+            register_hooks_list($app, $result);
+        } catch (\Exception $e) {
             return true;
         }
     }
@@ -1360,7 +1360,7 @@ if (!function_exists('find_files')) {
             $result = array_filter(glob($searchPath . '/' . rtrim($pattern, '/'), $flags), $validPath);
             $filesPath = array_merge($filesPath, $result);
 
-            if ($includeSubDirectories === true || (int)$includeSubDirectories > 0) {
+            if ($includeSubDirectories === true || (int) $includeSubDirectories > 0) {
                 if (is_numeric($includeSubDirectories)) {
                     $includeSubDirectories--;
                 }
@@ -1478,6 +1478,19 @@ if (!function_exists('get_request_ip')) {
         }
 
         return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+if (!function_exists('get_request_host')) {
+    function get_request_host()
+    {
+        /**
+         * Return localhost if the IP is from local env
+         *
+         * @return string
+         */
+        $ip = get_request_ip();
+        return in_array($ip, ['127.0.0.1', '::1']) ? "localhost" : $ip;
     }
 }
 
@@ -1782,7 +1795,7 @@ if (!function_exists('is_custom_validation')) {
      */
     function is_custom_validation($value)
     {
-        return in_array(strtolower((string)$value), [
+        return in_array(strtolower((string) $value), [
             '$email',
         ]);
     }
@@ -1798,7 +1811,7 @@ if (!function_exists('get_custom_validation_name')) {
      */
     function get_custom_validation_name($value)
     {
-        return strtolower(substr((string)$value, 1));
+        return strtolower(substr((string) $value, 1));
     }
 }
 

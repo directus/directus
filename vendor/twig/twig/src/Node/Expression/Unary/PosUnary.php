@@ -16,10 +16,8 @@ use Twig\Compiler;
 
 class PosUnary extends AbstractUnary
 {
-    public function operator(Compiler $compiler)
+    public function operator(Compiler $compiler): Compiler
     {
-        $compiler->raw('+');
+        return $compiler->raw('+');
     }
 }
-
-class_alias('Twig\Node\Expression\Unary\PosUnary', 'Twig_Node_Expression_Unary_Pos');

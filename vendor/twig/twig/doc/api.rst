@@ -87,11 +87,6 @@ The following options are available:
 
   The charset used by the templates.
 
-* ``base_template_class`` *string* (defaults to ``\Twig\Template``)
-
-  The base template class to use for generated
-  templates.
-
 * ``cache`` *string* or ``false``
 
   An absolute path where to store the compiled templates, or
@@ -341,8 +336,8 @@ This section describes the features added by the built-in extensions.
 
 .. tip::
 
-    Read the chapter about extending Twig to learn how to create your own
-    extensions.
+    Read the chapter about :doc:`extending Twig <advanced>` to learn how to
+    create your own extensions.
 
 Core Extension
 ~~~~~~~~~~~~~~
@@ -399,7 +394,7 @@ The escaping rules are implemented as follows:
         {% set text = "Twig<br />" %}
         {{ text }} {# will be escaped #}
 
-* Expressions which the result is always a literal or a variable marked safe
+* Expressions which the result is a literal or a variable marked safe
   are never automatically escaped:
 
   .. code-block:: twig
@@ -407,13 +402,11 @@ The escaping rules are implemented as follows:
         {{ foo ? "Twig<br />" : "<br />Twig" }} {# won't be escaped #}
 
         {% set text = "Twig<br />" %}
-        {{ foo ? text : "<br />Twig" }} {# will be escaped #}
+        {{ true ? text : "<br />Twig" }} {# will be escaped #}
+        {{ false ? text : "<br />Twig" }} {# won't be escaped #}
 
         {% set text = "Twig<br />" %}
         {{ foo ? text|raw : "<br />Twig" }} {# won't be escaped #}
-
-        {% set text = "Twig<br />" %}
-        {{ foo ? text|escape : "<br />Twig" }} {# the result of the expression won't be escaped #}
 
 * Objects with a ``__toString`` method are converted to strings and
   escaped. You can mark some classes and/or interfaces as being safe for some

@@ -1,5 +1,6 @@
 {
     "name": "league/flysystem",
+    "type": "library",
     "description": "Filesystem abstraction: Many filesystems, one API.",
     "keywords": [
         "filesystem", "filesystems", "files", "storage", "dropbox", "aws",

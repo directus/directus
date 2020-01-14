@@ -19,19 +19,16 @@ class Assets extends Route
             $request->getQueryParams()
         );
 
-        if(isset($asset['file']) && $asset['mimeType'])
-        {
-            $response->setHeader('Content-type',$asset['mimeType']);
-            $response->setHeader('Content-Disposition','filename='.$asset['filename_download']);
-            $response->setHeader('Last-Modified',$asset['last_modified']);
+        if (isset($asset['file']) && $asset['mimeType']) {
+            $response->setHeader('Content-type', $asset['mimeType']);
+            $response->setHeader('Content-Disposition', 'filename="' . $asset['filename_download'] . '"');
+            $response->setHeader('Last-Modified', $asset['last_modified']);
 
             $body = $response->getBody();
             $body->write($asset['file']);
 
             return $response;
-        }
-        else
-        {
+        } else {
             return $response->withStatus(404);
         }
     }

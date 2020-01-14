@@ -72,9 +72,9 @@ class Files
 
     public function delete($file)
     {
-        if ($this->exists($file['filename'])) {
+        if ($this->exists($file['filename_disk'])) {
             $this->emitter->run('file.delete', [$file]);
-            $this->filesystem->getAdapter()->delete($file['filename']);
+            $this->filesystem->getAdapter()->delete($file['filename_disk']);
             $this->emitter->run('file.delete:after', [$file]);
         }
     }

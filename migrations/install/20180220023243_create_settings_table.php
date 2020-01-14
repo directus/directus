@@ -260,28 +260,16 @@ class CreateSettingsTable extends AbstractMigration
             ],
             [
                 'collection' => 'directus_settings',
-                'field' => 'file_max_size',
-                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
-                'interface' => 'text-input',
-                'options' => json_encode([
-                    'placeholder' => 'eg: 4MB',
-                    'iconRight' => 'storage'
-                ]),
-                'locked' => 1,
-                'width' => 'half',
-                'sort' => 32
-            ],
-            [
-                'collection' => 'directus_settings',
                 'field' => 'file_mimetype_whitelist',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_ARRAY,
                 'interface' => 'tags',
                 'options' => json_encode([
                     'placeholder' => 'Enter a file mimetype then hit enter (eg: image/jpeg)'
                 ]),
+                'note' => 'Enter a file mimetype then hit enter (eg: image/jpeg)',
                 'locked' => 1,
-                'width' => 'full',
-                'sort' => 33
+                'width' => 'half',
+                'sort' => 32
             ],
             [
                 'collection' => 'directus_settings',
@@ -290,7 +278,7 @@ class CreateSettingsTable extends AbstractMigration
                 'interface' => 'repeater',
                 'width' => 'full',
                 'note' => 'Defines how the thumbnail will be generated based on the requested params.',
-                'sort' => 34,
+                'sort' => 33,
                 'options' => json_encode([
                     'template' => '{{key}}',
                     'fields' => [
@@ -353,7 +341,7 @@ class CreateSettingsTable extends AbstractMigration
                 'width' => 'half',
                 'hidden_browse' => 1,
                 'hidden_detail' => 1,
-                'sort' => 35
+                'sort' => 34
             ],
             [
                 'collection' => 'directus_settings',
@@ -366,12 +354,12 @@ class CreateSettingsTable extends AbstractMigration
                 'locked' => 1,
                 'width' => 'full',
                 'note' => 'Allows fetching more YouTube Embed info',
-                'sort' => 36
+                'sort' => 35
             ],
         ];
 
-        foreach($data as $value){
-            if(!$this->checkFieldExist($value['collection'], $value['field'])){
+        foreach ($data as $value) {
+            if (!$this->checkFieldExist($value['collection'], $value['field'])) {
                 $fileds = $this->table('directus_fields');
                 $fileds->insert($value)->save();
             }
@@ -380,76 +368,72 @@ class CreateSettingsTable extends AbstractMigration
         // Insert into settings table
         $data = [
             [
-              'key' => 'project_url',
-              'value' => ''
+                'key' => 'project_url',
+                'value' => ''
             ],
             [
-              'key' => 'project_logo',
-              'value' => ''
+                'key' => 'project_logo',
+                'value' => ''
             ],
             [
-              'key' => 'project_color',
-              'value' => '#263238',
+                'key' => 'project_color',
+                'value' => '#263238',
             ],
             [
-              'key' => 'project_foreground',
-              'value' => '',
+                'key' => 'project_foreground',
+                'value' => '',
             ],
             [
-              'key' => 'project_background',
-              'value' => '',
+                'key' => 'project_background',
+                'value' => '',
             ],
             [
-              'key' => 'project_public_note',
-              'value' => '',
+                'key' => 'project_public_note',
+                'value' => '',
             ],
             [
-              'key' => 'default_locale',
-              'value' => 'en-US',
+                'key' => 'default_locale',
+                'value' => 'en-US',
             ],
             [
-              'key' => 'telemetry',
-              'value' => '1',
+                'key' => 'telemetry',
+                'value' => '1',
             ],
             [
-              'key' => 'default_limit',
-              'value' => '200'
+                'key' => 'default_limit',
+                'value' => '200'
             ],
             [
-              'key' => 'sort_null_last',
-              'value' => '1'
+                'key' => 'sort_null_last',
+                'value' => '1'
             ],
             [
-              'key' => 'password_policy',
-              'value' => ''
+                'key' => 'password_policy',
+                'value' => ''
             ],
             [
-              'key' => 'auto_sign_out',
-              'value' => '10080'
+                'key' => 'auto_sign_out',
+                'value' => '10080'
             ],
             [
-              'key' => 'login_attempts_allowed',
-              'value' => '10'
+                'key' => 'login_attempts_allowed',
+                'value' => '10'
             ],
             [
-              'key' => 'trusted_proxies',
-              'value' => ''
+                'key' => 'trusted_proxies',
+                'value' => ''
             ],
             [
-              'key' => 'file_max_size',
-              'value' => '100MB'
-            ],
-            [
-              'key' => 'file_mimetype_whitelist',
-              'value' => ''
+                'key' => 'file_mimetype_whitelist',
+                'value' => ''
             ],
             [
                 'key' => 'file_naming',
                 'value' => 'uuid'
             ],
             [
-              'key' => 'youtube_api_key',
-              'value' => ''
+                'key' => 'youtube_api_key',
+                'value' => ''
             ],
             [
                 'key' => 'asset_whitelist',
@@ -510,13 +494,14 @@ class CreateSettingsTable extends AbstractMigration
                     ]
                 ])
             ]
-          ];
+        ];
 
-          $groups = $this->table('directus_settings');
-          $groups->insert($data)->save();
+        $groups = $this->table('directus_settings');
+        $groups->insert($data)->save();
     }
 
-    public function checkFieldExist($collection,$field){
+    public function checkFieldExist($collection, $field)
+    {
         $checkSql = sprintf('SELECT 1 FROM `directus_fields` WHERE `collection` = "%s" AND `field` = "%s";', $collection, $field);
         return $this->query($checkSql)->fetch();
     }

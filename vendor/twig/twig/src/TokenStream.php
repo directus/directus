@@ -130,5 +130,3 @@ final class TokenStream
         return $this->source;
     }
 }
-
-class_alias('Twig\TokenStream', 'Twig_TokenStream');
