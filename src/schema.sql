@@ -70,7 +70,7 @@ CREATE TABLE `directus_fields` (
   `interface` varchar(64) DEFAULT NULL,
   `options` text DEFAULT NULL,
   `locked` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `validation` varchar(255) DEFAULT NULL,
+  `validation` varchar(500) DEFAULT NULL,
   `required` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `readonly` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `hidden_detail` tinyint(1) unsigned NOT NULL DEFAULT 0,
