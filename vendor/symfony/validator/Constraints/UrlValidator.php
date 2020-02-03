@@ -23,7 +23,7 @@ class UrlValidator extends ConstraintValidator
 {
     const PATTERN = '~^
             (%s)://                                 # protocol
-            (([\.\pL\pN-]+:)?([\.\pL\pN-]+)@)?      # basic auth
+            (([\_\.\pL\pN-]+:)?([\_\.\pL\pN-]+)@)?  # basic auth
             (
                 ([\pL\pN\pS\-\_\.])+(\.?([\pL\pN]|xn\-\-[\pL\pN-]+)+\.?) # a domain name
                     |                                                 # or
@@ -45,7 +45,7 @@ class UrlValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Url) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Url');
+            throw new UnexpectedTypeException($constraint, Url::class);
         }
 
         if (null === $value || '' === $value) {

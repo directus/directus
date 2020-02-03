@@ -29,7 +29,7 @@ class LanguageValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Language) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Language');
+            throw new UnexpectedTypeException($constraint, Language::class);
         }
 
         if (null === $value || '' === $value) {

@@ -29,7 +29,7 @@ class CallbackValidator extends ConstraintValidator
     public function validate($object, Constraint $constraint)
     {
         if (!$constraint instanceof Callback) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Callback');
+            throw new UnexpectedTypeException($constraint, Callback::class);
         }
 
         $method = $constraint->callback;

@@ -27,7 +27,7 @@ class RangeValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Range) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Range');
+            throw new UnexpectedTypeException($constraint, Range::class);
         }
 
         if (null === $value) {

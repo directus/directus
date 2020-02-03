@@ -3,18 +3,18 @@
 namespace Directus\Services;
 
 use Directus\Application\Http\Request;
+use Directus\Config\Context;
+use Directus\Config\SuperAdminToken;
 use Directus\Database\Exception\ConnectionFailedException;
 use Directus\Exception\ForbiddenException;
 use Directus\Exception\InvalidConfigPathException;
 use Directus\Exception\InvalidDatabaseConnectionException;
 use Directus\Exception\InvalidPathException;
 use Directus\Exception\NotFoundException;
-use Directus\Exception\UnauthorizedException;
 use Directus\Exception\ProjectAlreadyExistException;
 use Directus\Exception\UnprocessableEntityException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
-use Directus\Util\StringUtils;
 
 class ProjectService extends AbstractService
 {
@@ -24,7 +24,11 @@ class ProjectService extends AbstractService
             throw new ForbiddenException('Creating new instance is locked');
         }
 
-        $this->validate($data,[
+        if (Context::is_env()) {
+            throw new ForbiddenException('Project creation is disabled under environment variables.');
+        }
+
+        $this->validate($data, [
             'project' => 'required|string|regex:/^[0-9a-z_-]+$/i',
             'private' => 'bool',
             'force' => 'bool',
@@ -56,8 +60,8 @@ class ProjectService extends AbstractService
             'app_url' => 'string',
             'user_email' => 'required|email',
             'user_password' => 'required|string',
-            'user_token' => 'string'
-            ]);
+            'user_token' => 'string',
+        ]);
 
         // If the first installtion is executing then add the api.json file to store the password.
         // For every installation after the first one, user must pass that same password to create the next project.
@@ -67,16 +71,14 @@ class ProjectService extends AbstractService
 
         $projectNames = $scannedDirectory;
 
-        $superadminFilePath = $basePath.'/config/__api.json';
-        if(empty($projectNames)){
-            $configStub = InstallerUtils::createJsonFileContent($data);
-            file_put_contents($superadminFilePath, $configStub);
-        }else{
-            $superadminFileData = json_decode(file_get_contents($superadminFilePath), true);
-            if ($data['super_admin_token'] !== $superadminFileData['super_admin_token']) {
-                throw new UnauthorizedException('Permission denied: Superadmin Only');
-            }
+        if (!empty($projectNames)) {
+            SuperAdminToken::assert($data['super_admin_token']);
         }
+
+        // TODO: this two lines below is duplicated in InstallerModule,
+        //       maybe refactor this into a single place?
+        $configStub = InstallerUtils::createJsonFileContent($data);
+        file_put_contents(SuperAdminToken::path(), $configStub);
 
         $basePath = $this->container->get('path_base');
         $force = ArrayUtils::pull($data, 'force', false);
@@ -115,9 +117,8 @@ class ProjectService extends AbstractService
         }
     }
 
-
     /**
-     * Deletes a project with the given name
+     * Deletes a project with the given name.
      *
      * @param string $name
      *
@@ -128,18 +129,13 @@ class ProjectService extends AbstractService
     {
         $data = $request->getQueryParams();
 
-        $this->validate($data,[
+        $this->validate($data, [
             'super_admin_token' => 'required',
         ]);
 
-        $superadminFilePath = \Directus\get_app_base_path().'/config/__api.json';
+        SuperAdminToken::assert($data['super_admin_token']);
 
-        $superadminFileData = json_decode(file_get_contents($superadminFilePath), true);
-        if ($data['super_admin_token'] !== $superadminFileData['super_admin_token']) {
-            throw new UnauthorizedException('Permission denied: Superadmin Only');
-        }
         $name = $request->getAttribute('name');
-
         if (!is_string($name) || !$name) {
             throw new UnprocessableEntityException('Invalid project name');
         }
@@ -151,7 +147,7 @@ class ProjectService extends AbstractService
             InstallerUtils::ensureConfigFileExists($basePath, $name);
         } catch (InvalidPathException $e) {
             throw new NotFoundException(
-                'Unknown Project: ' . $name
+                'Unknown Project: '.$name
             );
         }
 
@@ -160,14 +156,14 @@ class ProjectService extends AbstractService
     }
 
     /**
-     * Checks whether .lock file exists
+     * Checks whether .lock file exists.
      *
      * @return bool
      */
     protected function isLocked()
     {
         $basePath = $this->container->get('path_base');
-        $lockFilePath = $basePath . '/.lock';
+        $lockFilePath = $basePath.'/.lock';
 
         return file_exists($lockFilePath) && is_file($lockFilePath);
     }

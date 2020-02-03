@@ -26,7 +26,7 @@ class LengthValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Length) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Length');
+            throw new UnexpectedTypeException($constraint, Length::class);
         }
 
         if (null === $value || '' === $value) {

@@ -29,7 +29,7 @@ class LocaleValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Locale) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Locale');
+            throw new UnexpectedTypeException($constraint, Locale::class);
         }
 
         if (null === $value || '' === $value) {

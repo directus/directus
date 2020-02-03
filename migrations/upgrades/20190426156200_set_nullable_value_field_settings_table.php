@@ -11,5 +11,7 @@ class SetNullableValueFieldSettingsTable extends AbstractMigration
         $table->changeColumn('value', 'text', [
             'null' => true
         ]);
+
+        $table->save();
     }
 }

@@ -439,6 +439,11 @@ class Inline
                 throw new ParseException('Missing mapping key.', self::$parsedLineNumber + 1, $mapping);
             }
 
+            if ('!php/const' === $key) {
+                $key .= ' '.self::parseScalar($mapping, $flags, [':'], $i, false, []);
+                $key = self::evaluateScalar($key, $flags);
+            }
+
             if (false === $i = strpos($mapping, ':', $i)) {
                 break;
             }
@@ -673,6 +678,10 @@ class Inline
 
         $nextOffset = $i + $tagLength + 1;
         $nextOffset += strspn($value, ' ', $nextOffset);
+
+        if ('' === $tag && (!isset($value[$nextOffset]) || \in_array($value[$nextOffset], [']', '}', ','], true))) {
+            throw new ParseException(sprintf('Using the unquoted scalar value "!" is not supported. You must quote it.', $value), self::$parsedLineNumber + 1, $value, self::$parsedFilename);
+        }
 
         // Is followed by a scalar and is a built-in tag
         if ('' !== $tag && (!isset($value[$nextOffset]) || !\in_array($value[$nextOffset], ['[', '{'], true)) && ('!' === $tag[0] || 'str' === $tag || 'php/const' === $tag || 'php/object' === $tag)) {

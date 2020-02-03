@@ -78,4 +78,11 @@ class GreaterThanOrEqualValidatorTest extends AbstractComparisonValidatorTestCas
             ['b', '"b"', 'c', '"c"', 'string'],
         ];
     }
+
+    public function provideComparisonsToNullValueAtPropertyPath()
+    {
+        return [
+            [5, '5', true],
+        ];
+    }
 }

@@ -44,7 +44,7 @@ class TimeValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Time) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Time');
+            throw new UnexpectedTypeException($constraint, Time::class);
         }
 
         if (null === $value || '' === $value || $value instanceof \DateTimeInterface) {

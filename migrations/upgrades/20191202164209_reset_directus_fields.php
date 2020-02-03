@@ -618,7 +618,7 @@ class ResetDirectusFields extends AbstractMigration
             [
                 'collection' => 'directus_files',
                 'field' => 'uploaded_by',
-                'type' => \Directus\Database\Schema\DataTypes::TYPE_USER_CREATED,
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_OWNER,
                 'interface' => 'user-created',
                 'locked' => 1,
                 'readonly' => 1,

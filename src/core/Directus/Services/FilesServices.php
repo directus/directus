@@ -199,6 +199,10 @@ class FilesServices extends AbstractService
         $files = $this->container->get('files');
         $files->delete($file);
 
+        //Force delete the thumbnails
+        $thumb = $this->container->get('files_thumb');
+        $thumb->deleteThumb($file);
+
         // Delete file record
         return $tableGateway->deleteRecord($id, $this->getCRUDParams($params));
     }

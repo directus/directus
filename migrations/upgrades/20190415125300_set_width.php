@@ -18,5 +18,7 @@ class SetWidth extends AbstractMigration
       $this->execute("UPDATE directus_fields SET width = 'half' WHERE width = '2';");
       $this->execute("UPDATE directus_fields SET width = 'full' WHERE width = '3';");
       $this->execute("UPDATE directus_fields SET width = 'full' WHERE width = '4';");
+
+      $table->save();
     }
 }

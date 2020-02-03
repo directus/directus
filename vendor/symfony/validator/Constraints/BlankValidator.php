@@ -26,7 +26,7 @@ class BlankValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Blank) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Blank');
+            throw new UnexpectedTypeException($constraint, Blank::class);
         }
 
         if ('' !== $value && null !== $value) {

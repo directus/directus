@@ -16,7 +16,5 @@ class UpdateDirectusFieldsField extends AbstractMigration
             ],
             ['collection' => 'directus_files', 'field' => 'duration']
         ));
-
-
     }
 }

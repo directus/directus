@@ -52,7 +52,7 @@ class UpdateDirectusSettings extends AbstractMigration
             ],
             [
                 'key' => 'default_locale',
-                'value' => 'en-US',
+                'value' => NULL,
             ],
             [
                 'key' => 'telemetry',

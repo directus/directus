@@ -67,7 +67,7 @@ class UuidValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Uuid) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Uuid');
+            throw new UnexpectedTypeException($constraint, Uuid::class);
         }
 
         if (null === $value || '' === $value) {

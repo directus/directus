@@ -26,7 +26,7 @@ class TypeValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Type) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Type');
+            throw new UnexpectedTypeException($constraint, Type::class);
         }
 
         if (null === $value) {

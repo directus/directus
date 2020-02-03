@@ -15,6 +15,7 @@ use Directus\Services\PermissionsService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
 use Directus\Database\Schema\DataTypes;
+use Directus\Exception\SQLException;
 
 class Fields extends Route
 {
@@ -47,12 +48,16 @@ class Fields extends Route
         $payload = $request->getParsedBody();
         $field = ArrayUtils::pull($payload, 'field');
 
-        $responseData = $service->addColumn(
-            $request->getAttribute('collection'),
-            $field,
-            $payload,
-            $request->getQueryParams()
-        );
+        try {
+            $responseData = $service->addColumn(
+                $request->getAttribute('collection'),
+                $field,
+                $payload,
+                $request->getQueryParams()
+            );
+        } catch (\Exception $e) {
+            throw new SQLException($e->getMessage());
+        }
 
         return $this->responseWithData($request, $response, $responseData);
     }
@@ -105,12 +110,17 @@ class Fields extends Route
             return $this->batch($request, $response);
         }
 
-        $responseData = $service->changeColumn(
-            $request->getAttribute('collection'),
-            $request->getAttribute('field'),
-            $request->getParsedBody(),
-            $request->getQueryParams()
-        );
+        try {
+
+            $responseData = $service->changeColumn(
+                $request->getAttribute('collection'),
+                $request->getAttribute('field'),
+                $request->getParsedBody(),
+                $request->getQueryParams()
+            );
+        } catch (\Exception $e) {
+            throw new SQLException($e->getMessage());
+        }
 
         return $this->responseWithData($request, $response, $responseData);
     }
@@ -172,7 +182,7 @@ class Fields extends Route
 
         $service = new TablesService($this->container);
 
-        $field = $service->getFieldObject($request->getAttribute('collection'),$request->getAttribute('field'));
+        $field = $service->getFieldObject($request->getAttribute('collection'), $request->getAttribute('field'));
 
         $service->deleteField(
             $request->getAttribute('collection'),

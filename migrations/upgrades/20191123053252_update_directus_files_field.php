@@ -116,7 +116,7 @@ class UpdateDirectusFilesField extends AbstractMigration
                 $this->getAdapter(),
                 'directus_fields',
                 [
-                    'type' => \Directus\Database\Schema\DataTypes::TYPE_USER_CREATED,
+                    'type' => \Directus\Database\Schema\DataTypes::TYPE_OWNER,
                     'interface' => 'user-created',
                     'sort' => 9
                 ],

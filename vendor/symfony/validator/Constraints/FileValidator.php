@@ -41,7 +41,7 @@ class FileValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof File) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\File');
+            throw new UnexpectedTypeException($constraint, File::class);
         }
 
         if (null === $value || '' === $value) {

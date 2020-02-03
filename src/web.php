@@ -4,9 +4,9 @@ use Directus\Config\Context;
 use Directus\Config\Schema\Schema;
 use Directus\Exception\ErrorException;
 
-$basePath =  realpath(__DIR__ . '/../');
+$basePath = realpath(__DIR__.'/../');
 
-require $basePath . '/vendor/autoload.php';
+require $basePath.'/vendor/autoload.php';
 
 // Get Environment name
 $projectName = \Directus\get_api_project_from_request();
@@ -16,7 +16,7 @@ $projectName = \Directus\get_api_project_from_request();
 // It returns 401 Unauthorized error to any endpoint except /server/ping
 if (!$projectName) {
     $schema = Schema::get();
-    if (getenv("DIRECTUS_USE_ENV") === "1") {
+    if (Context::is_env()) {
         $configData = $schema->value(Context::from_env());
     } else {
         $configData = $schema->value([]);
@@ -32,8 +32,8 @@ if (file_exists($maintenanceFlagPath)) {
     echo json_encode([
         'error' => [
             'code' => 21,
-            'message' => 'This API instance is currently down for maintenance. Please try again later.'
-        ]
+            'message' => 'This API instance is currently down for maintenance. Please try again later.',
+        ],
     ]);
     exit;
 }
@@ -41,7 +41,7 @@ if (file_exists($maintenanceFlagPath)) {
 try {
     $app = \Directus\create_app_with_project_name($basePath, $projectName);
 } catch (ErrorException $e) {
-    if($e->getCode() == Directus\Config\Exception\UnknownProjectException::ERROR_CODE){
+    if ($e->getCode() == Directus\Config\Exception\UnknownProjectException::ERROR_CODE) {
         return \Directus\create_unknown_project_app($basePath);
     }
     http_response_code($e->getStatusCode());
@@ -49,8 +49,8 @@ try {
     echo json_encode([
         'error' => [
             'code' => $e->getCode(),
-            'message' => $e->getMessage()
-        ]
+            'message' => $e->getMessage(),
+        ],
     ]);
     exit;
 }
@@ -95,8 +95,8 @@ try {
     echo json_encode([
         'error' => [
             'code' => $e->getCode(),
-            'message' => $e->getMessage()
-        ]
+            'message' => $e->getMessage(),
+        ],
     ]);
     exit;
 }
@@ -134,11 +134,9 @@ $app->get('/', \Directus\Api\Routes\Home::class)
     ->add($middleware['database_migration'])
     ->add($middleware['table_gateway']);
 
-
 $app->get('/{project}/assets/{id}', \Directus\Api\Routes\Assets::class);
 
 $app->group('/{project}', function () use ($middleware) {
-
     $this->get('/', \Directus\Api\Routes\ProjectHome::class)
         ->add($middleware['auth_user'])
         ->add($middleware['rate_limit_user'])

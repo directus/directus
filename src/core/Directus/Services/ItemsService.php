@@ -174,7 +174,8 @@ class ItemsService extends AbstractService
 
                 $columnName = $column->getName();
                 if (array_key_exists($columnName, $collectionFields)) {
-                    if ($column->hasRelationship() && !array_filter($collectionFields[$columnName])) {
+                    $arrayValue = is_array($collectionFields[$columnName]) ? $collectionFields[$columnName] : (array) $collectionFields[$columnName];
+                    if ($column->hasRelationship() && !array_filter($arrayValue)) {
                         $collectionFields[$columnName] = DataTypes::isJson($column->getType()) ? (array) $recordData[$columnName] : $recordData[$columnName];
                     } else {
                         $collectionFields[$columnName] =  $collectionFields[$columnName];

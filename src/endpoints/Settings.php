@@ -79,30 +79,34 @@ class Settings extends Route
         $fieldData = $service->findAllFields(ArrayUtils::omit($request->getQueryParams(), 'single'));
 
         // this will return the value based on interface type
-        $fieldTypeValueResolver = function ($type, $value) use ($service){
+        $fieldTypeValueResolver = function ($type, $value) use ($service) {
             switch ($type) {
                 case 'file':
-                    try{
+                    try {
                         $fileInstance = $service->findFile($value);
                         return $fileInstance['data'] ?? null;
-                    }catch(\Exception $e){
+                    } catch (\Exception $e) {
                         return null;
                     }
+                case 'integer':
+                    return (int) $value;
+                case 'boolean':
+                    return (bool) $value;
                 default:
                     return $value;
             }
         };
 
         // find the field definition that matches the field
-        $fieldDefinitionTypeResolver = function ($key) use ($fieldData){
-            $fieldDefinition = array_filter($fieldData['data'], function ($definition) use ($key){
+        $fieldDefinitionTypeResolver = function ($key) use ($fieldData) {
+            $fieldDefinition = array_filter($fieldData['data'], function ($definition) use ($key) {
                 return $definition['field'] === $key;
             });
             $fieldDefinition = array_shift($fieldDefinition);
             return $fieldDefinition['type'] ?? null;
         };
 
-        $valueResolver = function ($row) use ($fieldTypeValueResolver, $fieldDefinitionTypeResolver){
+        $valueResolver = function ($row) use ($fieldTypeValueResolver, $fieldDefinitionTypeResolver) {
             $fieldDefinitionType = $fieldDefinitionTypeResolver($row['key']);
             $row['value'] = $fieldTypeValueResolver($fieldDefinitionType, $row['value']);
             return $row;
@@ -112,12 +116,11 @@ class Settings extends Route
          * Generate the response object based on interface/type
          *
          */
-        $isSingle = (int)ArrayUtils::get($request->getQueryParams(), 'single', 0);
+        $isSingle = (int) ArrayUtils::get($request->getQueryParams(), 'single', 0);
 
-        if($isSingle){
+        if ($isSingle) {
             $responseData['data'] = $valueResolver($responseData['data']);
-        }
-        else{
+        } else {
             $responseData['data'] = array_map($valueResolver, $responseData['data']);
         }
 
@@ -204,8 +207,8 @@ class Settings extends Route
                 if ($setting['value'] != null) {
                     switch ($value['type']) {
                         case 'file':
-                            $responseData = $fileService->findByIds($setting['value'],[]);
-                            if( !empty($responseData['data']) ){
+                            $responseData = $fileService->findByIds($setting['value'], []);
+                            if (!empty($responseData['data'])) {
                                 $response = $responseData['data'];
                             }
                             break;

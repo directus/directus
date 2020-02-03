@@ -13,5 +13,7 @@ class IncreaseUsersLastPageLength extends AbstractMigration
             'null' => true,
             'default' => null
         ]);
+
+        $table->save();
     }
 }

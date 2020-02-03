@@ -471,10 +471,17 @@ EOF
         while ($locale) {
             $parent = $parentLocales[$locale] ?? null;
 
-            if (!$parent && false !== strrchr($locale, '_')) {
-                $locale = substr($locale, 0, -\strlen(strrchr($locale, '_')));
-            } elseif ('root' !== $parent) {
-                $locale = $parent;
+            if ($parent) {
+                $locale = 'root' !== $parent ? $parent : null;
+            } elseif (\function_exists('locale_parse')) {
+                $localeSubTags = locale_parse($locale);
+                $locale = null;
+                if (1 < \count($localeSubTags)) {
+                    array_pop($localeSubTags);
+                    $locale = locale_compose($localeSubTags) ?: null;
+                }
+            } elseif ($i = strrpos($locale, '_') ?: strrpos($locale, '-')) {
+                $locale = substr($locale, 0, $i);
             } else {
                 $locale = null;
             }

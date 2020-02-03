@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite306073f1ae54f408e0bcd1da54288d7
+class ComposerStaticInit4136220f95b700f382c3e81b312145d8
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -552,6 +552,7 @@ class ComposerStaticInite306073f1ae54f408e0bcd1da54288d7
         'Directus\\Config\\Schema\\Value' => __DIR__ . '/../..' . '/src/core/Directus/Config/Schema/Value.php',
         'Directus\\Config\\StatusItem' => __DIR__ . '/../..' . '/src/core/Directus/Config/StatusItem.php',
         'Directus\\Config\\StatusMapping' => __DIR__ . '/../..' . '/src/core/Directus/Config/StatusMapping.php',
+        'Directus\\Config\\SuperAdminToken' => __DIR__ . '/../..' . '/src/core/Directus/Config/SuperAdminToken.php',
         'Directus\\Console\\Cli' => __DIR__ . '/../..' . '/src/core/Directus/Console/Cli.php',
         'Directus\\Console\\Common\\Exception\\PasswordChangeException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Common/Exception/PasswordChangeException.php',
         'Directus\\Console\\Common\\Exception\\SettingUpdateException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Common/Exception/SettingUpdateException.php',
@@ -666,6 +667,7 @@ class ComposerStaticInite306073f1ae54f408e0bcd1da54288d7
         'Directus\\Exception\\BadRequestExceptionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/BadRequestExceptionInterface.php',
         'Directus\\Exception\\BatchUploadNotAllowedException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/BatchUploadNotAllowedException.php',
         'Directus\\Exception\\ConflictExceptionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ConflictExceptionInterface.php',
+        'Directus\\Exception\\ErrorCodes' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ErrorCodes.php',
         'Directus\\Exception\\ErrorException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ErrorException.php',
         'Directus\\Exception\\ErrorExceptionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ErrorExceptionInterface.php',
         'Directus\\Exception\\Exception' => __DIR__ . '/../..' . '/src/core/Directus/Exception/Exception.php',
@@ -686,6 +688,7 @@ class ComposerStaticInite306073f1ae54f408e0bcd1da54288d7
         'Directus\\Exception\\NotInstalledException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/NotInstalledException.php',
         'Directus\\Exception\\ProjectAlreadyExistException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ProjectAlreadyExistException.php',
         'Directus\\Exception\\RuntimeException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/RuntimeException.php',
+        'Directus\\Exception\\SQLException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/SQLException.php',
         'Directus\\Exception\\ServiceUnavailableInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/ServiceUnavailableInterface.php',
         'Directus\\Exception\\UnauthorizedException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/UnauthorizedException.php',
         'Directus\\Exception\\UnauthorizedExceptionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/UnauthorizedExceptionInterface.php',
@@ -2544,10 +2547,10 @@ class ComposerStaticInite306073f1ae54f408e0bcd1da54288d7
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite306073f1ae54f408e0bcd1da54288d7::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite306073f1ae54f408e0bcd1da54288d7::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInite306073f1ae54f408e0bcd1da54288d7::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInite306073f1ae54f408e0bcd1da54288d7::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4136220f95b700f382c3e81b312145d8::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4136220f95b700f382c3e81b312145d8::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4136220f95b700f382c3e81b312145d8::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4136220f95b700f382c3e81b312145d8::$classMap;
 
         }, null, ClassLoader::class);
     }

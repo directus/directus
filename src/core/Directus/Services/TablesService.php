@@ -1321,9 +1321,7 @@ class TablesService extends AbstractService
         $this->updateColumnsRelation($name, array_merge($toAdd, $toChange));
 
         foreach ($fields as $fieldData) {
-            if ($fieldData['type'] != DataTypes::TYPE_O2M) {
-                $schemaFactory->addNotNullConstraint($fieldData);
-            }
+            $schemaFactory->addNotNullConstraint($fieldData);
         }
 
         $hookEmitter->run('collection.update', [$name, $data]);

@@ -334,6 +334,38 @@
                 <source>This value should be valid JSON.</source>
                 <target>هذه القيمة يجب أن تكون صالحة ل JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>يجب أن تحتوي هذه المجموعة علي عناصر فريدة فقط.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>يجب أن تكون هذه القيمة موجبة.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>يجب أن تكون هذه القيمة إما موجبة او صفر.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>يجب أن تكون هذه القيمة سالبة.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>يجب أن تكون هذه القيمة إما سالبة او صفر.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>هذه القيمة ليست منطقة زمنية صحيحة.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>تم تسريب كلمة المرور هذه في خرق للبيانات، ويجب عدم استخدامها. يرجي استخدام كلمة مرور أخري.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>يجب أن تكون هذه القيمة بين {{ min }} و {{ max }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -93,4 +93,11 @@ class IdenticalToValidatorTest extends AbstractComparisonValidatorTestCase
             [new ComparisonTest_Class(4), '4', new ComparisonTest_Class(5), '5', __NAMESPACE__.'\ComparisonTest_Class'],
         ];
     }
+
+    public function provideComparisonsToNullValueAtPropertyPath()
+    {
+        return [
+            [5, '5', false],
+        ];
+    }
 }

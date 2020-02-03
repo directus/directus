@@ -39,7 +39,7 @@ class LuhnValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Luhn) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Luhn');
+            throw new UnexpectedTypeException($constraint, Luhn::class);
         }
 
         if (null === $value || '' === $value) {

@@ -26,7 +26,7 @@ class AllValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof All) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\All');
+            throw new UnexpectedTypeException($constraint, All::class);
         }
 
         if (null === $value) {

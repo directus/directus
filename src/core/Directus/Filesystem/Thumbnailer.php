@@ -10,7 +10,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Exception;
 use Imagick;
 
-class Thumbnailer {
+class Thumbnailer
+{
 
     /**
      * Thumbnail params extracted from url
@@ -59,27 +60,27 @@ class Thumbnailer {
             $this->config = $config;
             $this->params = $params;
 
-            $this->thumbnailParams = $this->validateThumbnailParams($path,$params);
+            $this->thumbnailParams = $this->validateThumbnailParams($path, $params);
 
             // // check if the original file exists in storage
-            if (! $this->filesystem->exists($this->fileName)) {
+            if (!$this->filesystem->exists($this->fileName)) {
                 throw new Exception($this->fileName . ' does not exist.'); // original file doesn't exist
             }
 
             $this->validateThumbnailWhitelist($params);
 
-            $otherParams=$params;
-            unset($otherParams['width'],$otherParams['height'],$otherParams['fit'],$otherParams['quality']);
+            $otherParams = $params;
+            unset($otherParams['width'], $otherParams['height'], $otherParams['fit'], $otherParams['quality']);
 
-            if(count($otherParams) > 0) {
+            if (count($otherParams) > 0) {
                 ksort($otherParams);
-                $paramsString='';
-                foreach($otherParams as $key => $value) {
-                    $paramsString .= ','. substr($key, 0, 1) . $value;
+                $paramsString = '';
+                foreach ($otherParams as $key => $value) {
+                    $paramsString .= ',' . substr($key, 0, 1) . $value;
                 }
             }
 
-            $this->thumbnailDir = 'w'.$params['width'] . ',h' . $params['height'] . ',f' . $params['fit'] . ',q' . $params['quality'].$paramsString;
+            $this->thumbnailDir = 'w' . $params['width'] . ',h' . $params['height'] . ',f' . $params['fit'] . ',q' . $params['quality'] . $paramsString;
         } catch (Exception $e) {
             throw $e;
         }
@@ -105,14 +106,12 @@ class Thumbnailer {
     public function get()
     {
         try {
-            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName) ) {
+            if ($this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName)) {
                 $img = $this->filesystemThumb->read($this->thumbnailDir . '/' . $this->thumbnailFileName);
             }
 
             return isset($img) && $img ? $img : null;
-        }
-
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -126,8 +125,8 @@ class Thumbnailer {
     public function getThumbnailMimeType()
     {
         try {
-            if( $this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName) ) {
-                if(strtolower(pathinfo($this->thumbnailFileName, PATHINFO_EXTENSION)) === 'webp') {
+            if ($this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailFileName)) {
+                if (strtolower(pathinfo($this->thumbnailFileName, PATHINFO_EXTENSION)) === 'webp') {
                     return 'image/webp';
                 }
                 $img = Image::make($this->filesystemThumb->read($this->thumbnailDir . '/' . $this->thumbnailFileName));
@@ -135,9 +134,7 @@ class Thumbnailer {
             }
 
             return 'application/octet-stream';
-        }
-
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -147,7 +144,8 @@ class Thumbnailer {
      * @throws Exception
      * @return string image content
      */
-    public function load () {
+    public function load()
+    {
         $content = $this->filesystem->read($this->fileName);
         $ext = pathinfo($this->fileName, PATHINFO_EXTENSION);
         if (Thumbnail::isNonImageFormatSupported($ext)) {
@@ -189,9 +187,7 @@ class Thumbnailer {
             $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailFileName, $encodedImg);
 
             return $encodedImg;
-        }
-
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -215,15 +211,14 @@ class Thumbnailer {
             $img = $this->load();
 
             // resize/crop image
-            $img->fit($this->width, $this->height, function($constraint){}, ArrayUtils::get($options, 'position', 'center'));
+            $img->fit($this->width, $this->height, function ($constraint) {
+            }, ArrayUtils::get($options, 'position', 'center'));
 
             $encodedImg = (string) $img->encode($this->format, ($this->quality ? $this->quality : null));
             $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailFileName, $encodedImg);
 
             return $encodedImg;
-        }
-
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -236,7 +231,7 @@ class Thumbnailer {
      * @throws Exception
      * @return array
      */
-    public function validateThumbnailParams($thumbnailUrlPath,$params)
+    public function validateThumbnailParams($thumbnailUrlPath, $params)
     {
         // cache
         if ($this->thumbnailParams) {
@@ -258,20 +253,16 @@ class Thumbnailer {
             'width' => filter_var($params['width'], FILTER_SANITIZE_NUMBER_INT),
         ];
 
-        if($thumbnailParams['width'] == null || $thumbnailParams['width'] == '')
-        {
+        if ($thumbnailParams['width'] == null || $thumbnailParams['width'] == '') {
             throw new Exception('No width is provided.');
         }
-        if($thumbnailParams['height'] == null || $thumbnailParams['height'] == '')
-        {
+        if ($thumbnailParams['height'] == null || $thumbnailParams['height'] == '') {
             throw new Exception('No height is provided.');
         }
-        if($thumbnailParams['fit'] == null || $thumbnailParams['fit'] == '')
-        {
+        if ($thumbnailParams['fit'] == null || $thumbnailParams['fit'] == '') {
             throw new Exception('No fit is provided.');
         }
-        if($thumbnailParams['quality'] == null || $thumbnailParams['quality'] == '')
-        {
+        if ($thumbnailParams['quality'] == null || $thumbnailParams['quality'] == '') {
             throw new Exception('No quality is provided.');
         }
 
@@ -279,7 +270,7 @@ class Thumbnailer {
         $filename = $urlSegments[1];
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         $name = pathinfo($filename, PATHINFO_FILENAME);
-        if (! $this->isSupportedFileExtension($ext)) {
+        if (!$this->isSupportedFileExtension($ext)) {
             throw new Exception('Invalid file extension.');
         }
 
@@ -288,18 +279,17 @@ class Thumbnailer {
         $thumbnailParams['fileName'] = $filename;
         $format = strtolower(ArrayUtils::get($this->params, 'format') ?: $ext);
 
-        if (! $this->isSupportedFileExtension($format)) {
+        if (!$this->isSupportedFileExtension($format)) {
             throw new Exception('Invalid file format.');
         }
 
         // Check format against image extension
-        if(
+        if (
             $format !== NULL &&
             strtolower($ext) !== $format &&
             !(
                 ($format === 'jpeg' || $format === 'jpg') &&
-                (strtolower($ext) === 'jpeg' || strtolower($ext) === 'jpg')
-            )
+                (strtolower($ext) === 'jpeg' || strtolower($ext) === 'jpg'))
         ) {
             $thumbnailParams['thumbnailFileName'] = $name . '.' . $format;
         } else {
@@ -309,7 +299,7 @@ class Thumbnailer {
         return $thumbnailParams;
     }
 
-     /**
+    /**
      * validate params against thumbnail whitelist
      *
      * @param array $params
@@ -323,27 +313,25 @@ class Thumbnailer {
 
         $thumbnailWhitelistEnabled = empty($userWhitelist) === false;
 
-        if($thumbnailWhitelistEnabled)
-        {
-            $userWhitelist = json_decode($userWhitelist,true);
+        if ($thumbnailWhitelistEnabled) {
+            if (is_string($userWhitelist)) {
+                $userWhitelist = json_decode($userWhitelist, true);
+            }
             $result = false;
-            foreach($userWhitelist as $key=>$value)
-            {
-                if(
-                  $value['width'] == $params['width'] &&
-                  $value['height'] == $params['height'] &&
-                  $value['fit'] == $params['fit'] &&
-                  $value['quality'] == $params['quality']
-                )
-                {
-                  $result = true;
+            foreach ($userWhitelist as $key => $value) {
+                if (
+                    $value['width'] == $params['width'] &&
+                    $value['height'] == $params['height'] &&
+                    $value['fit'] == $params['fit'] &&
+                    $value['quality'] == $params['quality']
+                ) {
+                    $result = true;
                 }
             }
-            if(!$result){
+            if (!$result) {
                 throw new Exception();
             }
         }
-
     }
 
 
@@ -491,7 +479,7 @@ class Thumbnailer {
             $actions = json_decode($actions, true);
         }
 
-        return array_merge($this->getDefaultActions(), (array)$actions);
+        return array_merge($this->getDefaultActions(), (array) $actions);
     }
 
     /**
@@ -543,7 +531,7 @@ class Thumbnailer {
                 $value
             );
         } else {
-            $value = (array)$value;
+            $value = (array) $value;
         }
 
         return $value;

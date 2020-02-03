@@ -26,7 +26,7 @@ class IsFalseValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof IsFalse) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\IsFalse');
+            throw new UnexpectedTypeException($constraint, IsFalse::class);
         }
 
         if (null === $value || false === $value || 0 === $value || '0' === $value) {

@@ -54,9 +54,24 @@ class Collections extends Route
     public function all(Request $request, Response $response)
     {
         $params = $request->getQueryParams();
+
+        // directus_collections only contains user collections and the core collections will be merged atter the process of fetching data from DB. Offset and limit will apply only for user generated collections[DB] and then the core collection will getting merged. Thus, it should handled from PHP instead of DB.
+        if (isset($params['offset'])) {
+            $offset = $params['offset'];
+            unset($params['offset']);
+        }
+        if (isset($params['limit'])) {
+            $limit = $params['limit'];
+            unset($params['limit']);
+        }
         $service = new TablesService($this->container);
         $responseData = $service->findAll($params);
-
+        if (isset($offset) && isset($limit)) {
+            $responseData['data'] = array_slice($responseData['data'], $offset, $limit);
+            if (isset($responseData['meta']) && isset($responseData['meta']['result_count'])) {
+                $responseData['meta']['result_count'] = count($responseData['data']);
+            }
+        }
         return $this->responseWithData($request, $response, $responseData);
     }
 

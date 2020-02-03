@@ -26,7 +26,7 @@ class NotNullValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof NotNull) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotNull');
+            throw new UnexpectedTypeException($constraint, NotNull::class);
         }
 
         if (null === $value) {

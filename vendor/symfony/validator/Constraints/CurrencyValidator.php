@@ -30,7 +30,7 @@ class CurrencyValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Currency) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Currency');
+            throw new UnexpectedTypeException($constraint, Currency::class);
         }
 
         if (null === $value || '' === $value) {

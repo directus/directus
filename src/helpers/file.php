@@ -120,7 +120,7 @@ if (!function_exists('append_storage_information')) {
         $proxyDownloads = $config->get('storage.proxy_downloads');
         $fileRootUrl = $config->get('storage.root_url');
         $hasFileRootUrlHost = parse_url($fileRootUrl, PHP_URL_HOST);
-        $isLocalStorageAdapter = $config->get('storage.adapter') == 'local';
+
         $list = isset($rows[0]);
 
         if (!$list) {
@@ -203,6 +203,9 @@ if (!function_exists('get_thumbnails')) {
     function get_thumbnails(array $row)
     {
 
+        $thumbnailURLPattern =  get_directus_setting('asset_url_naming');
+        $urlAlias = $thumbnailURLPattern == "private_hash" ? $row['private_hash'] : $row['filename_download'];
+
         $filename = $row['filename_disk'];
         $type = array_get($row, 'type');
         $thumbnailFilenameParts = explode('.', $filename);
@@ -224,8 +227,8 @@ if (!function_exists('get_thumbnails')) {
                 $thumbnailExtension = Thumbnail::defaultFormat();
             }
 
-            $thumbnailUrl = get_thumbnail_url($row['private_hash'], $thumbnail);
-            $thumbnailRelativeUrl = get_thumbnail_path($row['private_hash'], $thumbnail, true);
+            $thumbnailUrl = get_thumbnail_url($urlAlias, $thumbnail);
+            $thumbnailRelativeUrl = get_thumbnail_path($urlAlias, $thumbnail, true);
             $thumbnails[] = [
                 'url' => $thumbnailUrl,
                 'relative_url' => $thumbnailRelativeUrl,

@@ -24,7 +24,7 @@ class LessThanValidator extends AbstractComparisonValidator
      */
     protected function compareValues($value1, $value2)
     {
-        return $value1 < $value2;
+        return null === $value2 || $value1 < $value2;
     }
 
     /**

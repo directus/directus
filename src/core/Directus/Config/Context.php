@@ -3,12 +3,13 @@
 namespace Directus\Config;
 
 /**
- * Config context interface
+ * Config context interface.
  */
 class Context
 {
     /**
-     * Transforms an array of strings into a complex object
+     * Transforms an array of strings into a complex object.
+     *
      * @example
      *  $obj = Context::expand(['a', 'b', 'c'], 12345);
      *  $obj == [
@@ -31,6 +32,7 @@ class Context
                 // TODO: raise warning - overwriting group
             }
             $target[$segment] = $value;
+
             return;
         }
         if (!isset($target[$segment])) {
@@ -43,9 +45,10 @@ class Context
     }
 
     /**
-     * Normalize the array indexes
+     * Normalize the array indexes.
      */
-    private static function normalize(&$target) {
+    private static function normalize(&$target)
+    {
         if (!is_array($target)) {
             return;
         }
@@ -65,47 +68,63 @@ class Context
     }
 
     /**
-     * Source
+     * Source.
      */
-    public static function from_map($source) {
+    public static function from_map($source)
+    {
         $target = [];
         ksort($source);
         foreach ($source as $key => $value) {
             Context::expand($target, explode('_', strtolower($key)), $value);
         }
         Context::normalize($target);
+
         return $target;
     }
 
     /**
-     * Create
+     * Create.
      */
     public static function from_env()
     {
         if (empty($_ENV)) {
             throw new \Error('No environment variables available. Check php_ini "variables_order" value.');
         }
+
         return Context::from_map($_ENV);
     }
 
     /**
-     * Loads variables from PHP file
+     * Loads variables from PHP file.
      */
-    public static function from_file($file) {
+    public static function from_file($file)
+    {
         return require $file;
     }
 
     /**
-     * Loads variables from PHP file
+     * Loads variables from PHP file.
      */
-    public static function from_array($array) {
+    public static function from_array($array)
+    {
         return $array;
     }
 
     /**
-     * Loads variables from JSON file
+     * Loads variables from JSON file.
      */
-    public static function from_json($file) {
+    public static function from_json($file)
+    {
         return json_decode(file_get_contents($file));
+    }
+
+    /**
+     * Checks if under env variables environment.
+     *
+     * @return bool
+     */
+    public static function is_env()
+    {
+        return getenv('DIRECTUS_USE_ENV') === '1';
     }
 }

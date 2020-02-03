@@ -13,5 +13,7 @@ class Upgrade070006 extends AbstractMigration
             'null' => true,
             'default' => null,
         ]);
+
+        $table->save();
     }
 }

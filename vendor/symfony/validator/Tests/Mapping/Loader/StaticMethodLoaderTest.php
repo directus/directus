@@ -33,7 +33,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataReturnsTrueIfSuccessful()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderEntity');
+        $metadata = new ClassMetadata(StaticLoaderEntity::class);
 
         $this->assertTrue($loader->loadClassMetadata($metadata));
     }
@@ -49,7 +49,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadata()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderEntity');
+        $metadata = new ClassMetadata(StaticLoaderEntity::class);
 
         $loader->loadClassMetadata($metadata);
 
@@ -59,12 +59,12 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataDoesNotRepeatLoadWithParentClasses()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderDocument');
+        $metadata = new ClassMetadata(StaticLoaderDocument::class);
         $loader->loadClassMetadata($metadata);
         $this->assertCount(0, $metadata->getConstraints());
 
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\BaseStaticLoaderDocument');
+        $metadata = new ClassMetadata(BaseStaticLoaderDocument::class);
         $loader->loadClassMetadata($metadata);
         $this->assertCount(1, $metadata->getConstraints());
     }
@@ -72,7 +72,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataIgnoresInterfaces()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\StaticLoaderInterface');
+        $metadata = new ClassMetadata(StaticLoaderInterface::class);
 
         $loader->loadClassMetadata($metadata);
 
@@ -82,7 +82,7 @@ class StaticMethodLoaderTest extends TestCase
     public function testLoadClassMetadataInAbstractClasses()
     {
         $loader = new StaticMethodLoader('loadMetadata');
-        $metadata = new ClassMetadata(__NAMESPACE__.'\AbstractStaticLoader');
+        $metadata = new ClassMetadata(AbstractStaticLoader::class);
 
         $loader->loadClassMetadata($metadata);
 
@@ -95,7 +95,7 @@ class StaticMethodLoaderTest extends TestCase
         // strict standards error
         error_reporting(0);
 
-        $metadata = new ClassMetadata(__NAMESPACE__.'\AbstractStaticMethodLoader');
+        $metadata = new ClassMetadata(AbstractStaticMethodLoader::class);
 
         $loader = new StaticMethodLoader('loadMetadata');
         $loader->loadClassMetadata($metadata);

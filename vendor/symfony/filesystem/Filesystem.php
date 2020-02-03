@@ -206,11 +206,13 @@ class Filesystem
     /**
      * Change the owner of an array of files or directories.
      *
-     * @param string|iterable $files A filename, an array of files, or a \Traversable instance to change owner
+     * @param string|iterable $files     A filename, an array of files, or a \Traversable instance to change owner
+     * @param string|int      $user      A user name or number
+     * @param bool            $recursive Whether change the owner recursively or not
      *
      * @throws IOException When the change fails
      */
-    public function chown($files, string $user, bool $recursive = false)
+    public function chown($files, $user, bool $recursive = false)
     {
         foreach ($this->toIterable($files) as $file) {
             if ($recursive && is_dir($file) && !is_link($file)) {
@@ -231,11 +233,13 @@ class Filesystem
     /**
      * Change the group of an array of files or directories.
      *
-     * @param string|iterable $files A filename, an array of files, or a \Traversable instance to change group
+     * @param string|iterable $files     A filename, an array of files, or a \Traversable instance to change group
+     * @param string|int      $group     A group name or number
+     * @param bool            $recursive Whether change the group recursively or not
      *
      * @throws IOException When the change fails
      */
-    public function chgrp($files, string $group, bool $recursive = false)
+    public function chgrp($files, $group, bool $recursive = false)
     {
         foreach ($this->toIterable($files) as $file) {
             if ($recursive && is_dir($file) && !is_link($file)) {

@@ -2,17 +2,16 @@
 
 namespace Directus\Console\Modules;
 
-use Directus\Database\Exception\ConnectionFailedException;
+use Directus\Config\Context;
+use Directus\Config\SuperAdminToken;
 use Directus\Console\Common\Exception\PasswordChangeException;
 use Directus\Console\Common\Exception\UserUpdateException;
-use Directus\Console\Common\Exception\InvalidDatabaseConnectionException;
 use Directus\Console\Common\Setting;
 use Directus\Console\Common\User;
 use Directus\Console\Exception\CommandFailedException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
 use Directus\Util\StringUtils;
-use Directus\Exception\UnauthorizedException;
 
 class InstallModule extends ModuleBase
 {
@@ -29,32 +28,32 @@ class InstallModule extends ModuleBase
 
         $this->help = [
             'config' => ''
-                . PHP_EOL . "\t\t-k " . 'Project key for the created project'
-                . PHP_EOL . "\t\t-h " . 'Hostname or IP address of the MySQL DB to be used. Default: localhost'
-                . PHP_EOL . "\t\t-n " . 'Name of the database to use for Directus. Default: directus'
-                . PHP_EOL . "\t\t-u " . 'Username for DB connection. Default: directus'
-                . PHP_EOL . "\t\t-p " . 'Password for the DB connection user. Default: directus'
-                . PHP_EOL . "\t\t-t " . 'Database Server Type. Default: mysql'
-                . PHP_EOL . "\t\t-P " . 'Database Server Port. Default: 3306'
-                . PHP_EOL . "\t\t-c " . 'CORS Enabled. Default: false'
-                . PHP_EOL . "\t\t-r " . 'Directus root URI. Default: /',
+                .PHP_EOL."\t\t-k ".'Project key for the created project'
+                .PHP_EOL."\t\t-h ".'Hostname or IP address of the MySQL DB to be used. Default: localhost'
+                .PHP_EOL."\t\t-n ".'Name of the database to use for Directus. Default: directus'
+                .PHP_EOL."\t\t-u ".'Username for DB connection. Default: directus'
+                .PHP_EOL."\t\t-p ".'Password for the DB connection user. Default: directus'
+                .PHP_EOL."\t\t-t ".'Database Server Type. Default: mysql'
+                .PHP_EOL."\t\t-P ".'Database Server Port. Default: 3306'
+                .PHP_EOL."\t\t-c ".'CORS Enabled. Default: false'
+                .PHP_EOL."\t\t-r ".'Directus root URI. Default: /',
             'database' => '',
             'install' => ''
-                . PHP_EOL . "\t\t-k " . 'Project key for the created project'
-                . PHP_EOL . "\t\t-e " . 'Administrator e-mail address, used for administration login. Default: admin@directus.com'
-                . PHP_EOL . "\t\t-p " . 'Initial administrator password. Default: directus'
-                . PHP_EOL . "\t\t-t " . 'Name for this Directus installation. Default: Directus'
-                . PHP_EOL . "\t\t-T " . 'Administrator secret token. Default: Random'
-                . PHP_EOL . "\t\t-d " . 'Installation path of Directus. Default: ' . $this->getBasePath()
+                .PHP_EOL."\t\t-k ".'Project key for the created project'
+                .PHP_EOL."\t\t-e ".'Administrator e-mail address, used for administration login. Default: admin@directus.com'
+                .PHP_EOL."\t\t-p ".'Initial administrator password. Default: directus'
+                .PHP_EOL."\t\t-t ".'Name for this Directus installation. Default: Directus'
+                .PHP_EOL."\t\t-T ".'Administrator secret token. Default: Random'
+                .PHP_EOL."\t\t-d ".'Installation path of Directus. Default: '.$this->getBasePath(),
         ];
 
         $this->commands_help = [
-            'config' => 'Configure Directus: ' . PHP_EOL . PHP_EOL . "\t\t"
-                . $this->__module_name . ':config -k my-project -h db_host -n db_name -u db_user -p db_pass -d directus_path -a super_admin_token' . PHP_EOL,
-            'database' => 'Populate the Database Schema: ' . PHP_EOL . PHP_EOL . "\t\t"
-                . $this->__module_name . ':database -d directus_path' . PHP_EOL,
-            'install' => 'Install Initial Configurations: ' . PHP_EOL . PHP_EOL . "\t\t"
-                . $this->__module_name . ':install -e admin_email -p admin_password -t site_name' . PHP_EOL,
+            'config' => 'Configure Directus: '.PHP_EOL.PHP_EOL."\t\t"
+                .$this->__module_name.':config -k my-project -h db_host -n db_name -u db_user -p db_pass -d directus_path -a super_admin_token'.PHP_EOL,
+            'database' => 'Populate the Database Schema: '.PHP_EOL.PHP_EOL."\t\t"
+                .$this->__module_name.':database -d directus_path'.PHP_EOL,
+            'install' => 'Install Initial Configurations: '.PHP_EOL.PHP_EOL."\t\t"
+                .$this->__module_name.':install -e admin_email -p admin_password -t site_name'.PHP_EOL,
         ];
 
         $this->options = [
@@ -63,9 +62,8 @@ class InstallModule extends ModuleBase
             ],
             'database' => [
                 'f' => 'boolean',
-            ]
+            ],
         ];
-
     }
 
     public function cmdConfig($args, $extra)
@@ -79,6 +77,7 @@ class InstallModule extends ModuleBase
             switch ($key) {
                 case 'a':
                     $data['super_admin_token'] = $value;
+                    break;
                 case 'k':
                     $data['project'] = (string) $value;
                     break;
@@ -118,7 +117,7 @@ class InstallModule extends ModuleBase
             }
         }
 
-        $apiPath = rtrim($directusPath, '/') . '/config';
+        $apiPath = rtrim($directusPath, '/').'/config';
         if (!file_exists($apiPath)) {
             throw new \Exception(sprintf('Path "%s" does not exist', $apiPath));
         }
@@ -126,31 +125,33 @@ class InstallModule extends ModuleBase
         $scannedDirectory = \Directus\scan_folder($this->getBasePath().'/config');
         $projectNames = $scannedDirectory;
 
-        $superadminFilePath = $this->getBasePath().'/config/__api.json';
-        if(empty($projectNames)){
-            $requiredAttributes = ['db_name', 'db_user'];
-            $data['super_admin_token'] = StringUtils::randomString(16,false);
-        }else{
-            $requiredAttributes = ['db_name', 'db_user', 'super_admin_token'];
-            $superadminFileData = json_decode(file_get_contents($superadminFilePath), true);
-            if (!is_null($data['super_admin_token']) && $data['super_admin_token'] !== $superadminFileData['super_admin_token']) {
-                throw new UnauthorizedException('Permission denied: Superadmin Only');
-            }
+        if (!empty($projectName)) {
+            SuperAdminToken::assert($data['super_admin_token']);
         }
+
+        $superAdminGenerated = false;
+        if (empty($projectNames) && !isset($data['super_admin_token'])) {
+            $data['super_admin_token'] = StringUtils::randomString(16, false);
+            $superAdminGenerated = true;
+        }
+
+        $requiredAttributes = ['db_name', 'db_user', 'super_admin_token'];
         if (!ArrayUtils::contains($data, $requiredAttributes)) {
             throw new \InvalidArgumentException(
-                'Creating config files required: ' . implode(', ', $requiredAttributes)
+                'Creating config files required: '.implode(', ', $requiredAttributes)
             );
         }
-        if(empty($projectNames)){
+
+        if (empty($projectNames) && !Context::is_env()) {
             $configStub = InstallerUtils::createJsonFileContent($data);
-            file_put_contents($superadminFilePath, $configStub);
+            file_put_contents(SuperAdminToken::path(), $configStub);
         }
+
         InstallerUtils::createConfig($directusPath, $data, $force);
 
-        if(empty($projectNames)){
-            echo PHP_EOL . "Make sure to copy the generated Super-Admin password below. You won't be able to see it again!". PHP_EOL;
-            echo PHP_EOL . $data['super_admin_token'] . PHP_EOL;
+        if (empty($projectNames) && $superAdminGenerated) {
+            echo PHP_EOL."Make sure to copy the generated Super-Admin password below. You won't be able to see it again!".PHP_EOL;
+            echo PHP_EOL.$data['super_admin_token'].PHP_EOL;
         }
     }
 
@@ -174,8 +175,7 @@ class InstallModule extends ModuleBase
             }
         }
 
-
-        if (getenv('DIRECTUS_USE_ENV') === "1") {
+        if (Context::is_env()) {
             $data = [
                 'project' => '_',
                 'db_name' => getenv('DIRECTUS_DATABASE_NAME'),
@@ -200,12 +200,12 @@ class InstallModule extends ModuleBase
         InstallerUtils::ensureCanCreateTables($directus_path, $data, $force);
 
         InstallerUtils::createTables($directus_path, $projectName, $force);
-        InstallerUtils::addUpgradeMigrations($this->getBasePath(),$projectName);
+        InstallerUtils::addUpgradeMigrations($this->getBasePath(), $projectName);
     }
 
     public function cmdSeeder($args, $extra)
     {
-        $directus_path = $this->getBasePath() . DIRECTORY_SEPARATOR;
+        $directus_path = $this->getBasePath().DIRECTORY_SEPARATOR;
 
         InstallerUtils::runSeeder($directus_path);
     }
@@ -214,7 +214,7 @@ class InstallModule extends ModuleBase
     {
         $data = [];
         $projectName = null;
-        $directus_path = $this->getBasePath() . DIRECTORY_SEPARATOR;
+        $directus_path = $this->getBasePath().DIRECTORY_SEPARATOR;
 
         foreach ($args as $key => $value) {
             switch ($key) {
@@ -277,14 +277,14 @@ class InstallModule extends ModuleBase
                         }
                     }
                 } catch (UserUpdateException $ex) {
-                    throw new CommandFailedException('Error changing admin e-mail' . ': ' . $ex->getMessage());
+                    throw new CommandFailedException('Error changing admin e-mail'.': '.$ex->getMessage());
                 } catch (PasswordChangeException $ex) {
-                    throw new CommandFailedException('Error changing user password' . ': ' . $ex->getMessage());
+                    throw new CommandFailedException('Error changing user password'.': '.$ex->getMessage());
                 }
             }
         } catch (\PDOException $e) {
-            echo PHP_EOL . "PDO Excetion!!" . PHP_EOL;
-            echo PHP_EOL . PHP_EOL . 'Module ' . $this->__module_name . ' error: ' . $e->getMessage() . PHP_EOL . PHP_EOL;
+            echo PHP_EOL.'PDO Excetion!!'.PHP_EOL;
+            echo PHP_EOL.PHP_EOL.'Module '.$this->__module_name.' error: '.$e->getMessage().PHP_EOL.PHP_EOL;
         }
     }
 }
