@@ -58,7 +58,7 @@ class SuperAdminToken
             return true;
         }
 
-        return file_exists(static::getPath());
+        return file_exists(static::path());
     }
 
     /**
