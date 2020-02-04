@@ -33,7 +33,7 @@ class AddEnforce2FARoleField extends AbstractMigration
 
         if (!$result) {
             $insertSqlFormat = 'INSERT INTO `directus_fields` (`collection`, `field`, `type`, `interface`) VALUES ("%s", "%s", "%s", "%s");';
-            $insertSql = sprintf($insertSqlFormat, $collection, $field, 'boolean', 'toggle');
+            $insertSql = sprintf($insertSqlFormat, $collection, $field, 'boolean', 'switch');
             $this->execute($insertSql);
         }
     }

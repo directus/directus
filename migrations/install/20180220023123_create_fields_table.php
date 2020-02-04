@@ -143,7 +143,7 @@ class CreateFieldsTable extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'locked',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -176,7 +176,7 @@ class CreateFieldsTable extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'readonly',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -190,7 +190,7 @@ class CreateFieldsTable extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'required',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -211,14 +211,14 @@ class CreateFieldsTable extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'hidden_detail',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
                 'collection' => 'directus_fields',
                 'field' => 'hidden_browse',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [

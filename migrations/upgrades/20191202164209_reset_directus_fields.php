@@ -76,7 +76,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'locked',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -109,7 +109,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'readonly',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -123,7 +123,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'required',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -144,14 +144,14 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_fields',
                 'field' => 'hidden_detail',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
                 'collection' => 'directus_fields',
                 'field' => 'hidden_browse',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -423,7 +423,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_collections',
                 'field' => 'managed',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'sort' => 4,
                 'width' => 'half',
@@ -434,7 +434,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_collections',
                 'field' => 'hidden',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'sort' => 5,
                 'width' => 'half',
@@ -444,7 +444,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_collections',
                 'field' => 'single',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'sort' => 6,
                 'width' => 'half',
@@ -844,7 +844,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_roles',
                 'field' => 'enforce_2fa',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
             [
@@ -1128,7 +1128,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_revisions',
                 'field' => 'parent_changed',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
 
@@ -1218,7 +1218,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_settings',
                 'field' => 'telemetry',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'width' => 'half',
                 'note' => '<a href="https://docs.directus.io/getting-started/concepts.html#telemetry" target="_blank">Learn More</a>',
@@ -1257,7 +1257,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_settings',
                 'field' => 'sort_null_last',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'note' => 'NULL values are sorted last',
                 'width' => 'half',
@@ -1560,7 +1560,7 @@ class ResetDirectusFields extends AbstractMigration
                 'collection' => 'directus_users',
                 'field' => 'email_notifications',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'sort' => 6,
                 'width' => 'half'

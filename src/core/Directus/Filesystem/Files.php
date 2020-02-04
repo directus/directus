@@ -390,13 +390,13 @@ class Files
             return [];
         }
 
-        $fileName = isset($fileInfo['filename']) ? $fileInfo['filename'] : md5(time()) . '.jpg';
+        $fileName = isset($fileInfo['filename_disk']) ? $fileInfo['filename_disk'] : md5(time()) . '.jpg';
         $thumbnailData = $this->saveData($fileInfo['data'], $fileName, $fileInfo['fileId']);
 
         return array_merge(
             $fileInfo,
             ArrayUtils::pick($thumbnailData, [
-                'filename',
+                'filename_disk',
             ])
         );
     }

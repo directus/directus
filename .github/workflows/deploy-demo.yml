@@ -12,8 +12,8 @@ jobs:
     - name: Pull on server
       uses: appleboy/ssh-action@v0.0.2
       with:
-        host: ${{ secrets.DEMO_HOST }}
-        username: ${{ secrets.DEMO_USERNAME }}
-        password: ${{ secrets.DEMO_PASSWORD }}
-        port: ${{ secrets.DEMO_PORT }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
         script: ./pull-latest.sh

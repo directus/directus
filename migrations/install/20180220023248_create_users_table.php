@@ -237,7 +237,7 @@ class CreateUsersTable extends AbstractMigration
                 'collection' => 'directus_users',
                 'field' => 'email_notifications',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1,
                 'sort' => 6,
                 'width' => 'half'

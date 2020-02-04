@@ -44,7 +44,7 @@ class CreateRevisionsTable extends AbstractMigration
         ]);
 
         $table->create();
-    
+
 
         $data = [
             [
@@ -107,7 +107,7 @@ class CreateRevisionsTable extends AbstractMigration
                 'collection' => 'directus_revisions',
                 'field' => 'parent_changed',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
-                'interface' => 'toggle',
+                'interface' => 'switch',
                 'locked' => 1
             ],
         ];

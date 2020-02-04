@@ -53,11 +53,12 @@ class FilesServices extends AbstractService
         if (get_directus_setting('file_mimetype_whitelist') != null) {
             validate_file($result['mimeType'], 'mimeTypes');
         }
-
-        validate_file($result['size'], 'maxSize');
+        if($result['mimeType'] != 'embed/vimeo' && $result['mimeType'] != 'embed/youtube'){
+            validate_file($result['size'], 'maxSize');
+        }
 
         $recordData = $this->getSaveData($data, false);
-
+        
         $newFile = $tableGateway->createRecord($recordData, $this->getCRUDParams($params));
 
         return $tableGateway->wrapData(
@@ -74,16 +75,18 @@ class FilesServices extends AbstractService
 
         if (array_key_exists('data', $data) && is_a_url($data['data'])) {
             $dataInfo = $files->getLink($data['data']);
+
             // Set the URL payload data
             $data['data'] = ArrayUtils::get($dataInfo, 'data');
             $data['filename_disk'] = ArrayUtils::get($dataInfo, 'filename');
             $data['filename_download'] = ArrayUtils::get($dataInfo, 'filename');
+            ArrayUtils::remove($dataInfo, 'filename');
         } else if (array_key_exists('data', $data) && !is_object($data['data'])) {
             $dataInfo = $files->getDataInfo($data['data']);
         }
 
         $type = ArrayUtils::get($dataInfo, 'type', ArrayUtils::get($data, 'type'));
-
+      
         if (strpos($type, 'embed/') === 0) {
             $recordData = $files->saveEmbedData(array_merge($dataInfo, ArrayUtils::pick($data, ['filename_disk'])));
         } else {
@@ -102,7 +105,7 @@ class FilesServices extends AbstractService
         if (!$isUpdate) {
             $recordData['private_hash'] = get_random_string();
         }
-
+       
         return ArrayUtils::omit(array_merge($data, $recordData), ['data', 'html']);
     }
 
@@ -145,7 +148,9 @@ class FilesServices extends AbstractService
             if (get_directus_setting('file_mimetype_whitelist') != null) {
                 validate_file($result['mimeType'], 'mimeTypes');
             }
-            validate_file($result['size'], 'maxSize');
+            if($result['mimeType'] != 'embed/vimeo' && $result['mimeType'] != 'embed/youtube'){
+              validate_file($result['size'], 'maxSize');
+            }
         }
 
         $tableGateway = $this->createTableGateway($this->collection);
