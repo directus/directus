@@ -7,7 +7,8 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+	"allowSyntheticDefaultImports": true,
+	"resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [

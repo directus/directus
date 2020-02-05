@@ -14,9 +14,15 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/lodash": "^4.14.149",
     "@vue/composition-api": "^0.3.4",
+    "debug": "^4.1.1",
+    "lodash": "^4.17.15",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.5"
+    "vue-i18n": "^8.15.3",
+    "vue-router": "^3.1.5",
+    "vuedraggable": "^2.23.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",

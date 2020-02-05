@@ -1,0 +1,41 @@
+{
+  "layouts": {
+    "calendar": {
+      "calendar": "Calendário",
+      "fields": "Campos",
+      "today": "today",
+      "events": "Events",
+      "moreEvents": "and {amount} more...",
+      "noEvents": "no events yet!",
+      "date": "Data",
+      "datetime": "Data e Hora",
+      "time": "Time",
+      "title": "Título",
+      "color": "Cor"
+    },
+    "cards": {
+      "cards": "Cards",
+      "title": "Título",
+      "subtitle": "Subtitle",
+      "src": "Image Source",
+      "content": "Body Content",
+      "fit": "Fit"
+    },
+    "tabular": {
+      "tabular": "Table",
+      "fields": "Campos"
+    },
+    "timeline": {
+      "timeline": "Timeline",
+      "fields": "Campos",
+      "today": "today",
+      "events": "Events",
+      "moreEvents": "and {amount} more...",
+      "noEvents": "no events yet!",
+      "date": "Data",
+      "content": "Content",
+      "title": "Título",
+      "color": "Cor"
+    }
+  }
+}
