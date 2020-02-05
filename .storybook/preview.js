@@ -3,9 +3,9 @@ import VueCompositionAPI from "@vue/composition-api";
 import { addParameters } from '@storybook/vue';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
-import "../src/design/_base.scss";
-import "../src/design/_fonts.scss";
-import "../src/design/_variables.scss";
+import "../src/styles/_base.scss";
+import "../src/styles/_fonts.scss";
+import "../src/styles/_variables.scss";
 
 Vue.use(VueCompositionAPI);
 
