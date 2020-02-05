@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 
+import './styles/main.scss';
+
 import App from './app.vue';
 
 Vue.use(VueCompositionAPI);
