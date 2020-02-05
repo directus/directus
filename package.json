@@ -1,0 +1,76 @@
+{
+  "name": "directus",
+  "version": "8.5.1",
+  "private": true,
+  "description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
+  "author": "Rijk van Zanten <rijk@rngr.org>",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint",
+    "fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "@vue/composition-api": "^0.3.4",
+	"vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@storybook/addon-actions": "^5.3.3",
+    "@storybook/addon-centered": "^5.3.6",
+    "@storybook/addon-knobs": "^5.3.6",
+    "@storybook/addon-links": "^5.3.3",
+    "@storybook/addon-notes": "^5.3.6",
+    "@storybook/addon-viewport": "^5.3.10",
+    "@storybook/addons": "^5.3.3",
+    "@storybook/core": "^5.3.12",
+    "@storybook/vue": "^5.3.3",
+    "@types/jest": "^24.0.19",
+    "@vue/cli-plugin-babel": "^4.1.0",
+    "@vue/cli-plugin-eslint": "^4.1.0",
+    "@vue/cli-plugin-router": "^4.1.0",
+    "@vue/cli-plugin-typescript": "^4.1.0",
+    "@vue/cli-plugin-unit-jest": "^4.1.0",
+    "@vue/cli-plugin-vuex": "^4.1.0",
+    "@vue/cli-service": "^4.1.0",
+    "@vue/eslint-config-prettier": "^5.0.0",
+    "@vue/eslint-config-typescript": "^4.0.0",
+    "@vue/test-utils": "^1.0.0-beta.30",
+    "autoprefixer": "^9.7.4",
+    "babel-loader": "^8.0.6",
+    "babel-preset-vue": "^2.0.2",
+    "css-loader": "^3.4.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^5.0.0",
+    "html-loader": "^0.5.5",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-is": "^16.12.0",
+    "regenerator-runtime": "^0.13.3",
+    "sass": "^1.23.7",
+    "sass-loader": "^8.0.0",
+    "typescript": "^3.7.4",
+    "vue-cli-plugin-storybook": "^1.1.0",
+    "vue-loader": "^15.8.3",
+    "vue-template-compiler": "^2.6.10",
+    "vuepress": "^1.2.0",
+    "webpack": "^4.41.5",
+    "webpack-merge": "^4.2.2"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue,ts}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

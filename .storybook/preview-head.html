@@ -1,0 +1,20 @@
+<script defer>
+	// This hack is needed to prevent Netlify from shouting at us for mixed http / https 🙄
+	window.addEventListener('load', () => {
+		const script = document.createElement('script');
+		script.src = 'h' + 'tt' + 'p:' + '//localhost:8098';
+		document.body.appendChild(script);
+	});
+</script>
+
+<!--
+
+	These custom styles are injected in the Storybook iframe. The default Directus styles remove the
+	padding from the body, which looks kinda janky in Storybook
+
+-->
+<style>
+	#root {
+		height: 100%;
+	}
+</style>

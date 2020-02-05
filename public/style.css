@@ -1,0 +1,7 @@
+/*
+  Place your custom style overrides here.
+
+  NOTE: The main application's styling is included through JavaScript. Therefore, it gets added to
+    the head _after_ this file. If you want to override the globally used CSS variables, you can either
+    use !important, or increase the specificity from :root
+*/
