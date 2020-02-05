@@ -1,7 +1,6 @@
 <template>
 	<div
 		class="v-overlay"
-		v-show="active"
 		:class="{ active, absolute, 'has-click': hasClick }"
 		:style="styles"
 		@click="onClick"
@@ -73,10 +72,6 @@ export default createComponent({
 		cursor: pointer;
 	}
 
-	&.active {
-		pointer-events: auto;
-	}
-
 	&.absolute {
 		position: absolute;
 	}
@@ -88,7 +83,16 @@ export default createComponent({
 		width: 100%;
 		height: 100%;
 		background-color: var(--_v-overlay-color);
-		opacity: var(--_v-overlay-opacity);
+		opacity: 0;
+		transition: opacity var(--slow) var(--transition);
+	}
+
+	&.active {
+		pointer-events: auto;
+
+		.overlay {
+			opacity: var(--_v-overlay-opacity);
+		}
 	}
 
 	.content {

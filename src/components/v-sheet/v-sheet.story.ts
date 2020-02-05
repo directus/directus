@@ -11,13 +11,14 @@ import Vue from 'vue';
 import VSheet from './v-sheet.vue';
 import VIcon from '../v-icon/';
 import markdown from './v-sheet.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-sheet', VSheet);
 
 export default {
 	title: 'Components / Sheet',
 	component: VSheet,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

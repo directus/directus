@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VButton from './v-button.vue';
 import VIcon from '../v-icon/';
 import markdown from './v-button.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-button', VButton);
 Vue.component('v-icon', VIcon);
@@ -11,7 +12,7 @@ Vue.component('v-icon', VIcon);
 export default {
 	title: 'Components / Button',
 	component: VButton,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

@@ -4,13 +4,14 @@ import Vue from 'vue';
 import markdown from './v-slider.readme.md';
 import VIcon from '../v-icon/';
 import VSlider from './v-slider.vue';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-slider', VSlider);
 Vue.component('v-icon', VIcon);
 
 export default {
 	title: 'Components / Slider',
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	component: VSlider,
 	parameters: {
 		notes: markdown

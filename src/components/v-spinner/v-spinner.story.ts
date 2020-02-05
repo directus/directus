@@ -3,13 +3,14 @@ import { withKnobs, color, optionsKnob as options, number, text } from '@storybo
 import Vue from 'vue';
 import VSpinner from './v-spinner.vue';
 import markdown from './v-spinner.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-spinner', VSpinner);
 
 export default {
 	title: 'Components / Spinner',
 	component: VSpinner,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

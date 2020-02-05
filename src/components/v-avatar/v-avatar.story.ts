@@ -11,6 +11,7 @@ import Vue from 'vue';
 import VAvatar from './v-avatar.vue';
 import VIcon from '../v-icon/';
 import markdown from './v-avatar.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-avatar', VAvatar);
 Vue.component('v-icon', VIcon);
@@ -18,7 +19,7 @@ Vue.component('v-icon', VIcon);
 export default {
 	title: 'Components / Avatar',
 	component: VAvatar,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

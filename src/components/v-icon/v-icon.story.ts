@@ -3,13 +3,14 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VIcon from '../v-icon/';
 import markdown from './v-icon.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-icon', VIcon);
 
 export default {
 	title: 'Components / Icon',
 	component: VIcon,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

@@ -10,13 +10,14 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VOverlay from '../v-overlay';
 import markdown from './v-overlay.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-overlay', VOverlay);
 
 export default {
 	title: 'Components / Overlay',
 	component: VOverlay,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

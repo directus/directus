@@ -3,6 +3,7 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VInput from './v-input.vue';
 import markdown from './v-input.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-input', VInput);
 Vue.directive('focus', {});
@@ -10,7 +11,7 @@ Vue.directive('focus', {});
 export default {
 	title: 'Components / Input',
 	component: VInput,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

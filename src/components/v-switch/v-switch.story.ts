@@ -10,13 +10,14 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VSwitch from '../v-switch/';
 import markdown from './v-switch.readme.md';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-switch', VSwitch);
 
 export default {
 	title: 'Components / Switch',
 	component: VSwitch,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

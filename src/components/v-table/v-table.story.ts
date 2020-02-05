@@ -5,13 +5,14 @@ import Vue from 'vue';
 import VTable from './v-table.vue';
 import markdown from './v-table.readme.md';
 import { action } from '@storybook/addon-actions';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-table', VTable);
 
 export default {
 	title: 'Components / Table',
 	component: VTable,
-	decorators: [withKnobs],
+	decorators: [withKnobs, withPadding],
 	parameters: {
 		notes: markdown
 	}

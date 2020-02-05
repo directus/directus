@@ -2,6 +2,7 @@ import Vue from 'vue';
 import markdown from './v-hover.readme.md';
 import VIcon from '../v-icon/';
 import VHover from './v-hover.vue';
+import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-hover', VHover);
 Vue.component('v-icon', VIcon);
@@ -9,6 +10,7 @@ Vue.component('v-icon', VIcon);
 export default {
 	title: 'Components / Hover',
 	component: VHover,
+	decorators: [withPadding],
 	parameters: {
 		notes: markdown
 	}
