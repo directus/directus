@@ -1,0 +1,189 @@
+// Root
+
+::selection {
+  background: #e1f0fa;
+}
+
+* {
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  color: inherit;
+  margin: 0;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+  height: 100%;
+}
+
+body {
+  font-family: var(--family-sans-serif);
+  font-weight: 400;
+  color: var(--page-text-color);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--page-background-color);
+  height: 100%;
+
+  &:not(.user-is-tabbing) * {
+    outline: 0;
+  }
+}
+
+input, textarea, [contenteditable], .selectable {
+  user-select: text;
+}
+
+// Type Style Classes
+
+// Currently only used for page/modal titles
+.type-title {
+  font-size: var(--type-title-size);
+  color: var(--heading-text-color);
+}
+
+.type-heading-large {
+  font-size: var(--type-heading-large-size);
+  line-height: var(--type-heading-large-line-height);
+  color: var(--heading-text-color);
+  font-weight: 300;
+  letter-spacing: -1px;
+}
+
+.type-heading-medium {
+  font-size: var(--type-heading-medium-size);
+  color: var(--heading-text-color);
+  font-weight: 300;
+}
+
+// Currently only used as modal/error heading
+.type-heading-small {
+  font-size: var(--type-heading-small-size);
+  color: var(--heading-text-color);
+}
+
+.type-label {
+  font-size: var(--type-label-size);
+  color: var(--heading-text-color);
+}
+
+.type-note {
+  font-size: var(--type-note-size);
+  font-style: italic;
+  color: var(--note-text-color);
+}
+
+.type-table-head {
+  font-weight: 500;
+}
+
+.type-body-serif {
+  font-family: var(--family-serif);
+  font-size: var(--type-body-serif-size);
+  line-height: var(--type-body-serif-line-height);
+}
+
+.type-body-sans {
+  font-family: var(--family-sans-serif);
+  font-size: var(--type-body-sans-size);
+  line-height: var(--type-body-sans-line-height);
+}
+
+// Tags
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+label {
+  display: block;
+}
+
+fieldset {
+  border: 0;
+  padding: 10px 0 20px;
+
+  &.centered {
+    border-top: 1px solid var(--blue-grey-200);
+    legend {
+      color: var(--blue-grey-400);
+      padding: 10px 20px;
+      text-align: center;
+    }
+  }
+}
+
+// TODO: Get rid of the old font classes below once the places they're used are cleaned up
+
+.x-small {
+  max-width: var(--width-x-small);
+}
+
+.small {
+  max-width: var(--width-small);
+}
+
+.normal {
+  max-width: var(--width-medium);
+}
+
+.large {
+  max-width: var(--width-large);
+}
+
+.x-large {
+  max-width: var(--width-x-large);
+}
+
+.style-input {
+  width: 100%;
+  border: var(--input-border-width) solid var(--input-border-color);
+  border-radius: var(--border-radius);
+  color: var(--blue-grey-400);
+  padding: 10px;
+  line-height: 1.5;
+  transition: var(--fast) var(--transition);
+  transition-property: color, border-color, padding;
+  height: var(--input-height);
+
+  &::placeholder {
+    color: var(--blue-grey-300);
+  }
+
+  &:focus {
+    color: var(--blue-grey-800);
+    border-color: var(--blue-grey-800);
+    outline: 0;
+  }
+
+  &:focus + i {
+    color: var(--blue-grey-800);
+  }
+
+  &[disabled],
+  &:read-only {
+    background-color: var(--blue-grey-50);
+    cursor: not-allowed;
+  }
+}
+
+.no-wrap {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px white inset;
+}
