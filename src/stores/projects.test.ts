@@ -17,7 +17,38 @@ describe('Stores / Projects', () => {
 		jest.clearAllMocks();
 	});
 
-	describe('getProjects', () => {
+	describe('Getters / currentProject', () => {
+		const dummyProject = {
+			key: 'my-project',
+			api: {
+				requires2FA: false,
+				project_color: '#abcabc',
+				project_logo: null,
+				project_background: null,
+				project_foreground: null,
+				project_name: 'Test',
+				project_public_note: '',
+				default_locale: 'en-US',
+				telemetry: true
+			}
+		};
+
+		it('Returns the correct project based on the currentProjectKey state', () => {
+			const projectsStore = useProjectsStore();
+			projectsStore.state.projects = [dummyProject];
+			projectsStore.state.currentProjectKey = 'my-project';
+			expect(projectsStore.currentProject.value).toEqual(dummyProject);
+		});
+
+		it('Returns null if non-existing project is read', () => {
+			const projectsStore = useProjectsStore();
+			projectsStore.state.projects = [dummyProject];
+			projectsStore.state.currentProjectKey = 'non-existing-project';
+			expect(projectsStore.currentProject.value).toEqual(null);
+		});
+	});
+
+	describe('Actions / getProjects', () => {
 		it('Fetches the project info for each individual project', async () => {
 			const spy = jest.spyOn(api, 'get');
 

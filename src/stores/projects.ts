@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import { Project } from '@/types/project';
 import api from '@/api';
+import router from '@/router';
 
 interface ProjectWithKey extends Project {
 	key: string;
@@ -22,8 +23,14 @@ export const useProjectsStore = createStore({
 	state: () => ({
 		needsInstall: false,
 		error: null as any,
-		projects: [] as Projects
+		projects: [] as Projects,
+		currentProjectKey: null as string | null
 	}),
+	getters: {
+		currentProject: (state): ProjectWithKey | ProjectError | null => {
+			return state.projects.find(({ key }) => key === state.currentProjectKey) || null;
+		}
+	},
 	actions: {
 		async getProjects() {
 			try {
