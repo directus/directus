@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { createComponent, reactive, computed } from '@vue/composition-api';
-import getSizeClass from '@/utils/get-size-class';
 import parseCSSVar from '@/utils/parse-css-var';
 import CustomIconBox from './custom-icons/box.vue';
 
