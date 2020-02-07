@@ -1,13 +1,9 @@
 import Vue from 'vue';
-import VueCompositionAPI from '@vue/composition-api';
-import VueRouter from 'vue-router';
 import router from './router';
 import i18n from './lang/';
 
 import './styles/main.scss';
-
-Vue.use(VueCompositionAPI);
-Vue.use(VueRouter);
+import './plugins';
 
 Vue.config.productionTip = false;
 
