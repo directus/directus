@@ -9,10 +9,6 @@ describe('Stores / Projects', () => {
 		Vue.use(VueCompositionAPI);
 	});
 
-	beforeEach(() => {
-		setActiveReq({});
-	});
-
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
@@ -34,14 +30,14 @@ describe('Stores / Projects', () => {
 		};
 
 		it('Returns the correct project based on the currentProjectKey state', () => {
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			projectsStore.state.projects = [dummyProject];
 			projectsStore.state.currentProjectKey = 'my-project';
 			expect(projectsStore.currentProject.value).toEqual(dummyProject);
 		});
 
 		it('Returns null if non-existing project is read', () => {
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			projectsStore.state.projects = [dummyProject];
 			projectsStore.state.currentProjectKey = 'non-existing-project';
 			expect(projectsStore.currentProject.value).toEqual(null);
@@ -69,7 +65,7 @@ describe('Stores / Projects', () => {
 				return Promise.resolve();
 			});
 
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			await projectsStore.getProjects();
 
 			expect(spy).toHaveBeenCalledWith('/server/projects');
@@ -94,7 +90,7 @@ describe('Stores / Projects', () => {
 				return Promise.resolve();
 			});
 
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.error).toEqual({ status: 500, error: 'Error' });
@@ -111,7 +107,7 @@ describe('Stores / Projects', () => {
 				return Promise.resolve();
 			});
 
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.error).toBe(null);
@@ -145,7 +141,7 @@ describe('Stores / Projects', () => {
 				return Promise.resolve();
 			});
 
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.projects).toEqual([
@@ -177,7 +173,7 @@ describe('Stores / Projects', () => {
 				return Promise.resolve();
 			});
 
-			const projectsStore = useProjectsStore();
+			const projectsStore = useProjectsStore({});
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.projects).toEqual([
