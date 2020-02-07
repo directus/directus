@@ -9384,6 +9384,11 @@ mkdirp@0.5.1, mkdirp@0.x, mkdirp@^0.5.1, mkdirp@~0.5.1, mkdirp@~0.5.x:
   dependencies:
     minimist "0.0.8"
 
+mockdate@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/mockdate/-/mockdate-2.0.5.tgz#70c6abf9ed4b2dae65c81dfc170dd1a5cec53620"
+  integrity sha512-ST0PnThzWKcgSLyc+ugLVql45PvESt3Ul/wrdV/OPc/6Pr8dbLAIJsN1cIp41FLzbN+srVTNIRn+5Cju0nyV6A==
+
 moment@^2.18.1:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
@@ -10317,7 +10322,7 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pinia@^0.0.5:
+pinia@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/pinia/-/pinia-0.0.5.tgz#e95fde7c3de5cdef1d4bd71fa0d9c3110862c641"
   integrity sha512-EF3LpCYsA1VSm9EeCK87UHA66NFM/7++D0qnWTzSPgQ+UKoUQytWsXat777bj9WDzjNELxKlyP3Ifv44IURi2g==
