@@ -1,13 +1,12 @@
 import { createStore } from 'pinia';
 import { Project } from '@/types/project';
 import api from '@/api';
-import router from '@/router';
 
-interface ProjectWithKey extends Project {
+export interface ProjectWithKey extends Project {
 	key: string;
 }
 
-interface ProjectError {
+export interface ProjectError {
 	key: string;
 	status: number;
 	error: {
