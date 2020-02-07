@@ -17,7 +17,6 @@
 
 html {
   font-size: 15px;
-  height: 100%;
 }
 
 body {
@@ -30,11 +29,15 @@ body {
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--page-background-color);
-  height: 100%;
 
   &:not(.user-is-tabbing) * {
     outline: 0;
   }
+}
+
+html, body, #root {
+	height: 100%;
+	width: 100%;
 }
 
 input, textarea, [contenteditable], .selectable {
