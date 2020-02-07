@@ -69,6 +69,8 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins';
+
 .public-view {
 	width: 100%;
 	height: 100%;
@@ -87,7 +89,7 @@ export default createComponent({
 		justify-content: space-between;
 		padding: 20px;
 
-		@media (min-width: 660px) {
+		@include breakpoint(small) {
 			padding: 40px 80px;
 		}
 	}
@@ -96,6 +98,10 @@ export default createComponent({
 		display: none;
 		height: 100%;
 		flex-grow: 1;
+
+		@include breakpoint(small) {
+			display: block;
+		}
 	}
 }
 </style>
