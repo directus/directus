@@ -7,7 +7,8 @@ module.exports = {
 		'@storybook/addon-notes/register',
 		'@storybook/addon-actions',
 		'@storybook/addon-knobs',
-		'@storybook/addon-viewport/register'
+		'@storybook/addon-viewport/register',
+		'storybook-addon-themes'
 	],
 	webpackFinal: async (config, { configType }) => {
 		config.resolve.alias = {

@@ -10,5 +10,9 @@ addParameters({
 	},
 	viewport: {
 		viewports: INITIAL_VIEWPORTS
-	}
+	},
+	themes: [
+		{ name: 'Light', class: ['private', 'light'], color: '#ffffff', default: true },
+		{ name: 'Dark', class: ['private', 'dark'], color: '#263238' },
+	]
 });
