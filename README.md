@@ -1,37 +1,54 @@
-<h1>
-  <img src="https://user-images.githubusercontent.com/522079/43096167-3a1b1118-8e86-11e8-9fb2-7b4e3b1368bc.png" width="40" alt="Directus Logo"/>&nbsp;&nbsp;Directus Admin Application</h1>
+# app-next
 
-> **IMPORTANT:** You do not install this App directly, it is included in the Directus Suite, located here: [`directus/directus`](https://github.com/directus/directus). This repository is only used to help organize the codebase.
+## Status: pre-alpha
 
-## Description
+We're aiming to have the app codebase converted to TypeScript and fully unit test covered. This repo serves as a way for us to work on the bigger more foundational parts of the app codebase, without interferance of the legacy parts.
 
-The Directus Admin Application is a Vue.js powered SPA designed to work with the Directus API to let the user manage all the data in the connected project. It's the GUI of working with the data in a Directus installation.
+New components introduced in this repo will land in the current codebase where applicable. Bugfixes will continue to happen on the current codebase, until this version is fully done and merged.
 
-## Installation / Usage
+**This version is in no way shape or form intended to be used in production environments.**
 
-**IMPORTANT:** Unless contributing to the project, you shouldn't build the App from source. Use [`directus/directus`](/directus/directus) instead.
+Once this codebase is complete enough to be used as main front-end, it will be moved to a branch on the main directus/app repo at which point it will be released as an beta / RC until confirmed ready.
 
-1. Clone the repo
-2. Install the depencencies using `yarn`
-3. Run `yarn build` to compile the app to a production bundle.
+## Goals
+
+* Have everything in TypeScript
+* Have full test coverage
+* Have as much of the components in Storybook as possible
+* Rely on global state the least amount possible
+
+## Contributing
+
+If you want to help out in the new version, please open an issue to discuss what you would like to do _before_ opening a pull request. This makes sure we don't do overlapping work or work on something that's not intended to be in the app.
 
 ## Development
 
-You can run the application standalone using the included dev server. Run `yarn serve` in your terminal to fire up the Directus App with Hot Module Reloading and the Vue Devtools integration enabled.
+You need Node.js v10+ and Yarn.
 
-By default, the application will connect to the demo API (https://demo.directus.io) when running in development mode. To connect to your own local API, provide the URL in the `API_URL` environment variable:
+After cloning the repo, run:
 
 ```
-API_URL=http://localhost:8888 yarn serve
+$ yarn # install all dependencies of the project
 ```
 
-## Core Team
+### Scripts
 
-* [Ben Haynes](https://github.com/benhaynes) _(Project Lead)_
-* [Rijk van Zanten](https://github.com/rijkvanzanten) _(Tech Lead)_
+#### `yarn serve`
 
-[Advisors, Sponsors, Partners, and Key Contributors](https://directus.io/organization.html#the-team)
+Bundles the app in dev mode and watches for changes.
 
-## License
+Combine this with the `API_URL` environment variable to point it to a running API instance to debug fully:
 
-Directus is released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html) license. [RANGER Studio LLC](https://rangerstudio.com) owns all Directus trademarks and logos on behalf of our project's community. Copyright © 2006-2019, [RANGER Studio LLC](https://rangerstudio.com).
+```
+$ API_URL=https://local.api.com yarn serve
+```
+
+#### `yarn storybook`
+
+Fires up an instance of Storybook and watches for changes. Very useful to develop individual components in isolation.
+
+#### `yarn test`
+
+Runs all Jest tests in the app. Add the `--coverage` flag to see a print of what test coverage you've achieved.
+
+Please aim for 100% coverage for newly added code.
