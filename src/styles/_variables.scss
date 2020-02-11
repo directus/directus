@@ -341,6 +341,18 @@ body {
   --button-tertiary-background-color-disabled: var(--blue-grey-400);
   --button-tertiary-text-color-disabled: var(--blue-grey-600);
 
+  // Chip colors
+
+  --chip-primary-text-color: var(--black);
+  --chip-primary-background-color: var(--blue-grey-100);
+  --chip-primary-background-color-hover: var(--blue-grey-200);
+  --chip-primary-close-color: var(--blue-grey-700);
+  --chip-primary-close-color-hover: var(--blue-grey-800);
+  --chip-primary-close-color-disabled: var(--blue-grey-200);
+  --chip-primary-background-color-disabled: var(--blue-grey-50);
+  --chip-primary-text-color-disabled: var(--blue-grey-300);
+
+
   // Table
 
   --table-head-border-color: var(--blue-grey-50);

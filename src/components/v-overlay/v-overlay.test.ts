@@ -1,4 +1,4 @@
-import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
+import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 
 const localVue = createLocalVue();
@@ -10,19 +10,19 @@ describe('Overlay', () => {
 	let component: Wrapper<Vue>;
 
 	beforeEach(() => {
-		component = mount(VOverlay, {
+		component = shallowMount(VOverlay, {
 			localVue
 		});
 	});
 
 	it('Is invisible when active prop is false', () => {
-		expect(component.isVisible()).toBe(false);
+		expect(component.classes()).toEqual(['v-overlay']);
 	});
 
 	it('Is visible when active is true', async () => {
 		component.setProps({ active: true });
 		await component.vm.$nextTick();
-		expect(component.isVisible()).toBe(true);
+		expect(component.classes()).toEqual(['v-overlay', 'active']);
 	});
 
 	it('Sets position absolute based on absolute prop', async () => {
@@ -46,7 +46,7 @@ describe('Overlay', () => {
 	});
 
 	it('Adds the has-click class when click event is passed', async () => {
-		const component = mount(VOverlay, {
+		const component = shallowMount(VOverlay, {
 			localVue,
 			listeners: {
 				click: () => {}
