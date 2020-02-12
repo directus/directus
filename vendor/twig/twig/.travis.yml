@@ -36,7 +36,7 @@ jobs:
     include:
         - php: 7.2
         - php: 7.3
-        - php: 7.4snapshot
+        - php: 7.4
         # Drupal does not support 3.x yet
         #- stage: integration tests
         #  php: 7.3

@@ -105,12 +105,6 @@ When calling ``import`` or ``from`` from a ``macro`` tag, the imported macros
 are only defined in the current macro and they override macros defined at the
 template level with the same names.
 
-.. note::
-
-    Before Twig 2.11, it was possible to use macros imported in a block in a
-    "sub-block". When upgrading to 2.11, you need to either move the import in
-    the global scope or reimport the macros explicitly in the "sub-blocks".
-
 Checking if a Macro is defined
 ------------------------------
 

@@ -363,17 +363,17 @@ class UsersService extends AbstractService
     protected function isLastAdmin($id)
     {
         $result = $this->createTableGateway(SchemaManager::COLLECTION_USERS, false)->fetchAll(function (Select $select) use ($id) {
-            $select->columns(['role']);
-            $select->where(['role' => 1]);
-        });
+            $select->columns(['id']);
+            $select->where(['role' => 1 , 'status' =>  DirectusUsersTableGateway::STATUS_ACTIVE]);
+        })->toArray();
 
         $usersIds = [];
-        while ($result->valid()) {
-            $item = $result->current();
-            $usersIds[] = $item['user'];
-            $result->next();
+        if(count($result) > 0) {
+            foreach ($result as $key => $value) {
+                ArrayUtils::push($usersIds,$value['id']);
+            }
         }
-
+        
         return in_array($id, $usersIds) && count($usersIds) === 1;
     }
 

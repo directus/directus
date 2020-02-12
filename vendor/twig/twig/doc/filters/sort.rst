@@ -1,9 +1,6 @@
 ``sort``
 ========
 
-.. versionadded:: 2.12
-    The ``arrow`` argument was added in Twig 2.12.
-
 The ``sort`` filter sorts an array:
 
 .. code-block:: twig

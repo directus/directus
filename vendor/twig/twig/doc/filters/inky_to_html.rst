@@ -1,9 +1,6 @@
 ``inky_to_html``
 ================
 
-.. versionadded:: 2.12
-    The ``inky_to_html`` filter was added in Twig 2.12.
-
 The ``inky_to_html`` filter processes an `inky email template
 <https://github.com/zurb/inky>`_:
 

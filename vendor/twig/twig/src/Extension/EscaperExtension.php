@@ -239,7 +239,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
                 return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
             }
 
-            $string = iconv($charset, 'UTF-8', $string);
+            $string = twig_convert_encoding($string, 'UTF-8', $charset);
             $string = htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
             return iconv('UTF-8', $charset, $string);
@@ -248,7 +248,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
             // escape all non-alphanumeric characters
             // into their \x or \uHHHH representations
             if ('UTF-8' !== $charset) {
-                $string = iconv($charset, 'UTF-8', $string);
+                $string = twig_convert_encoding($string, 'UTF-8', $charset);
             }
 
             if (!preg_match('//u', $string)) {
@@ -296,7 +296,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
 
         case 'css':
             if ('UTF-8' !== $charset) {
-                $string = iconv($charset, 'UTF-8', $string);
+                $string = twig_convert_encoding($string, 'UTF-8', $charset);
             }
 
             if (!preg_match('//u', $string)) {
@@ -317,7 +317,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
 
         case 'html_attr':
             if ('UTF-8' !== $charset) {
-                $string = iconv($charset, 'UTF-8', $string);
+                $string = twig_convert_encoding($string, 'UTF-8', $charset);
             }
 
             if (!preg_match('//u', $string)) {

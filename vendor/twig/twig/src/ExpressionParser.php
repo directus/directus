@@ -638,7 +638,7 @@ class ExpressionParser
                 $stream->expect(/* Token::NAME_TYPE */ 5, null, 'Only variables can be assigned to');
             }
             $value = $token->getValue();
-            if (\in_array(strtolower($value), ['true', 'false', 'none', 'null'])) {
+            if (\in_array(strtr($value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), ['true', 'false', 'none', 'null'])) {
                 throw new SyntaxError(sprintf('You cannot assign a value to "%s".', $value), $token->getLine(), $stream->getSourceContext());
             }
             $targets[] = new AssignNameExpression($value, $token->getLine());

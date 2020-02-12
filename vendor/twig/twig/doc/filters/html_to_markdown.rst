@@ -1,9 +1,6 @@
 ``html_to_markdown``
 ====================
 
-.. versionadded:: 2.12
-    The ``html_to_markdown`` filter was added in Twig 2.12.
-
 The ``html_to_markdown`` filter converts a block of HTML to Markdown:
 
 .. code-block:: twig
@@ -36,7 +33,7 @@ You can also use the filter on an included file:
 
 .. note::
 
-    The ``markdown_to_html`` filter is part of the ``MarkdownExtension`` which
+    The ``html_to_markdown`` filter is part of the ``MarkdownExtension`` which
     is not installed by default. Install it first:
 
     .. code-block:: bash

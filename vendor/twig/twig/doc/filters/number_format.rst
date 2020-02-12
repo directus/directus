@@ -17,7 +17,7 @@ separator using the additional arguments:
 
 To format negative numbers or math calculation, wrap the previous statement
 with parentheses (needed because of Twig's :ref:`precedence of operators
-<twig-expressions>`:
+<twig-expressions>`):
 
 .. code-block:: twig
 

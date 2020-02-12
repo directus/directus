@@ -421,7 +421,10 @@ if (!function_exists('encrypt_static_token')) {
      */
     function encrypt_static_token($token)
     {
-        $enc_key = openssl_digest(php_uname(), 'SHA256', true);
+        $app = Application::getInstance();
+        $config = $app->getConfig();
+        $secret = $config->get('auth.secret_key');
+        $enc_key = openssl_digest($secret, 'SHA256', true);
         $enc_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(TOKEN_CIPHER_METHOD));
         $cryptedToken = openssl_encrypt($token, TOKEN_CIPHER_METHOD, $enc_key, 0, $enc_iv).'::'.bin2hex($enc_iv);
 
@@ -439,8 +442,11 @@ if (!function_exists('decrypt_static_token')) {
      */
     function decrypt_static_token($token)
     {
+        $app = Application::getInstance();
+        $config = $app->getConfig();
+        $secret = $config->get('auth.secret_key');
         list($cryptedToken, $enc_iv) = explode('::', $token);
-        $enc_key = openssl_digest(php_uname(), 'SHA256', true);
+        $enc_key = openssl_digest($secret, 'SHA256', true);
         $token = openssl_decrypt($cryptedToken, TOKEN_CIPHER_METHOD, $enc_key, 0, hex2bin($enc_iv));
 
         return $token;

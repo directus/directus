@@ -1,3 +1,12 @@
+* 3.0.3 (2020-02-11)
+
+ * Add a check to ensure that iconv() is defined
+
+* 3.0.2 (2020-02-11)
+
+ * Avoid exceptions when an intl resource is not found
+ * Fix implementation of case-insensitivity for method names
+
 * 3.0.1 (2019-12-28)
 
  * fixed Symfony 5.0 support for the HTML extra extension
@@ -25,9 +34,14 @@
  * bumped minimum PHP version to 7.2
  * removed PSR-0 classes
 
-* 2.12.4 (2020-XX-XX)
+* 2.12.5 (2020-XX-XX)
 
- * n/a
+ * Add a check to ensure that iconv() is defined
+
+* 2.12.4 (2020-02-11)
+
+ * Avoid exceptions when an intl resource is not found
+ * Fix implementation of case-insensitivity for method names
 
 * 2.12.3 (2019-12-28)
 
@@ -322,9 +336,13 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.42.5 (2019-XX-XX)
+* 1.42.6 (2020-XX-XX)
 
  * n/a
+
+* 1.42.5 (2020-02-11)
+
+ * Fix implementation of case-insensitivity for method names
 
 * 1.42.4 (2019-11-11)
 

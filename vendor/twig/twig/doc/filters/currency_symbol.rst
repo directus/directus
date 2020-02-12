@@ -1,9 +1,6 @@
 ``currency_symbol``
 ===================
 
-.. versionadded:: 2.12
-    The ``currency_symbol`` filter was added in Twig 2.12.
-
 The ``currency_symbol`` filter returns the currency symbol given its three-letter
 code:
 

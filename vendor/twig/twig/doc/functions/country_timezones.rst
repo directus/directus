@@ -1,9 +1,6 @@
 ``country_timezones``
 =====================
 
-.. versionadded:: 2.12
-    The ``country_timezones`` function was added in Twig 2.12.
-
 The ``country_timezones`` function returns the names of the timezones associated
 with a given country code:
 

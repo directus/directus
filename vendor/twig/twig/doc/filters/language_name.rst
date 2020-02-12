@@ -1,9 +1,6 @@
 ``language_name``
 =================
 
-.. versionadded:: 2.12
-    The ``language_name`` filter was added in Twig 2.12.
-
 The ``language_name`` filter returns the language name given its two-letter
 code:
 

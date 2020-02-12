@@ -612,7 +612,7 @@ An extension is a class that implements the following interface::
 
 To keep your extension class clean and lean, inherit from the built-in
 ``\Twig\Extension\AbstractExtension`` class instead of implementing the interface as it provides
-empty implementations for all methods:
+empty implementations for all methods::
 
     class Project_Twig_Extension extends \Twig\Extension\AbstractExtension
     {
