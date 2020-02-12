@@ -86,3 +86,16 @@ export const withClickEvent = () => ({
 <v-icon name="star" @click="click" />
 `
 });
+
+export const leftRight = () => ({
+	template: `
+<div style="display: flex">
+<v-button style="margin-right: 2rem;">
+	<v-icon name="add" left /> Add
+</v-button>
+<v-button>
+	Remove <v-icon name="remove" right />
+</v-button>
+</div>
+`
+});

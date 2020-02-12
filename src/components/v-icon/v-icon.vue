@@ -1,7 +1,7 @@
 <template>
 	<span
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': hasClick }]"
+		:class="[sizeClass, { 'has-click': hasClick, left, right }]"
 		:style="{ color: colorStyle, width: customSize, height: customSize }"
 		:role="hasClick ? 'button' : null"
 		@click="emitClick"
@@ -54,6 +54,14 @@ export default createComponent({
 			default: false
 		},
 		xLarge: {
+			type: Boolean,
+			default: false
+		},
+		left: {
+			type: Boolean,
+			default: false
+		},
+		right: {
 			type: Boolean,
 			default: false
 		}
@@ -157,6 +165,16 @@ export default createComponent({
 		i {
 			font-size: 48px;
 		}
+	}
+
+	&.left {
+		margin-right: 8px;
+		margin-left: -4px;
+	}
+
+	&.right {
+		margin-left: 8px;
+		margin-right: -4px;
 	}
 
 	i {

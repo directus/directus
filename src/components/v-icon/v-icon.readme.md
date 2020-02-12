@@ -28,6 +28,15 @@ You can render the outline variant of the Material Icon by setting the `outline`
 ## Click events
 When you add a click event to the icon, the icon will automatically add a pointer cursor.
 
+## Left / Right
+Oftentimes, you'll use the icon next to some text, for example in a button. When doing this, you can use the `left` / `right` props to add some spacing to the icon:
+
+```html
+<v-button>
+	<v-icon name="add" left> Add new
+</v-button>
+```
+
 ## Props
 | Name      | Description                                                       | Default        |
 |-----------|-------------------------------------------------------------------|----------------|
@@ -39,6 +48,8 @@ When you add a click event to the icon, the icon will automatically add a pointe
 | `small`   | Render the icon small                                             | `false`        |
 | `large`   | Render the icon large                                             | `false`        |
 | `x-large` | Render the icon extra large                                       | `false`        |
+| `left`    | Use when icon is left of text                                     | `false`        |
+| `right`   | Use when icon is right of text                                    | `false`        |
 
 ## Events
 | Event   | Description          | Data         |

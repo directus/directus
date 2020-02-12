@@ -144,6 +144,21 @@ describe('Icon', () => {
 		expect(component.classes()).toContain('has-click');
 	});
 
+	it('Sets the left / right classes if props are given', async () => {
+		component.setProps({
+			left: true
+		});
+		await component.vm.$nextTick();
+		expect(component.classes()).toContain('left');
+
+		component.setProps({
+			left: false,
+			right: true
+		});
+		await component.vm.$nextTick();
+		expect(component.classes()).toContain('right');
+	});
+
 	it('Emits the click event on click of the icon', () => {
 		component.find('span').trigger('click');
 		expect(component.emitted('click')).toBeTruthy();
