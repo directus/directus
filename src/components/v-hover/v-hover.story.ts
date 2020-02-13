@@ -18,7 +18,7 @@ export default {
 
 export const basic = () => `
 <v-hover v-slot="{ hover }" tag="span">
-	<v-icon :color="hover ? '--red' : '--blue'" name="person" x-large />
+	<v-icon :style="{ '--v-icon-color': hover ? 'var(--red)' : 'var(--blue)' }" name="person" x-large />
 </v-hover>
 `;
 

@@ -38,18 +38,6 @@ import { ChangeEvent } from 'react';
 
 export default createComponent({
 	props: {
-		trackColor: {
-			type: String,
-			default: '--slider-track-color'
-		},
-		trackFillColor: {
-			type: String,
-			default: '--slider-track-fill-color'
-		},
-		thumbColor: {
-			type: String,
-			default: '--slider-thumb-color'
-		},
 		showThumbLabel: {
 			type: Boolean,
 			default: false
@@ -77,9 +65,6 @@ export default createComponent({
 	},
 	setup(props, { emit, listeners }) {
 		const styles = computed(() => ({
-			'--_v-slider-track-color': parseCSSVar(props.trackColor),
-			'--_v-slider-track-fill-color': parseCSSVar(props.trackFillColor),
-			'--_v-slider-thumb-color': parseCSSVar(props.thumbColor),
 			'--_v-slider-percentage': ((props.value - props.min) / (props.max - props.min)) * 100
 		}));
 
@@ -104,6 +89,10 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-slider {
+	--v-slider-color: var(--slider-track-color);
+	--v-slider-fill-color: var(--slider-track-fill-color);
+	--v-slider-thumb-color: var(--slider-thumb-color);
+
 	display: flex;
 	align-items: center;
 
@@ -130,7 +119,7 @@ export default createComponent({
 
 			@mixin v-slider-track {
 				height: 2px;
-				background: var(--_v-slider-track-color);
+				background: var(--v-slider-color);
 				box-shadow: none;
 				border: none;
 				border-radius: 2px;
@@ -152,7 +141,7 @@ export default createComponent({
 				height: 14px;
 				width: 14px;
 				border-radius: 50%;
-				background: var(--_v-slider-thumb-color);
+				background: var(--v-slider-thumb-color);
 				margin-top: -6px;
 				cursor: ew-resize;
 				box-shadow: 0 0 0 4px var(--input-background-color);
@@ -177,7 +166,7 @@ export default createComponent({
 			transform: translateY(2px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			height: 2px;
-			background-color: var(--_v-slider-track-fill-color);
+			background-color: var(--v-slider-fill-color);
 			pointer-events: none;
 			z-index: 2;
 		}
@@ -201,7 +190,7 @@ export default createComponent({
 				width: 4px;
 				height: 4px;
 				border-radius: 50%;
-				background-color: var(--_v-slider-track-fill-color);
+				background-color: var(--v-slider-fill-color);
 			}
 		}
 

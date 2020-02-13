@@ -2,7 +2,6 @@
 	<span
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': hasClick, left, right }]"
-		:style="{ color: colorStyle, width: customSize, height: customSize }"
 		:role="hasClick ? 'button' : null"
 		@click="emitClick"
 	>
@@ -25,10 +24,6 @@ export default createComponent({
 			type: String,
 			required: true
 		},
-		color: {
-			type: String,
-			default: 'currentColor'
-		},
 		outline: {
 			type: Boolean,
 			default: false
@@ -36,10 +31,6 @@ export default createComponent({
 		sup: {
 			type: Boolean,
 			default: false
-		},
-		size: {
-			type: Number,
-			default: null
 		},
 		xSmall: {
 			type: Boolean,
@@ -77,15 +68,6 @@ export default createComponent({
 			return null;
 		});
 
-		const customSize = computed<string | null>(() => {
-			if (props.size) return `${props.size}px`;
-			return null;
-		});
-
-		const colorStyle = computed<string>(() => {
-			return parseCSSVar(props.color);
-		});
-
 		const customIconName = computed<string | null>(() => {
 			if (customIcons.includes(props.name)) return `custom-icon-${props.name}`;
 			return null;
@@ -95,9 +77,7 @@ export default createComponent({
 
 		return {
 			sizeClass,
-			colorStyle,
 			customIconName,
-			customSize,
 			hasClick,
 			emitClick
 		};
@@ -111,74 +91,19 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-icon {
+	--v-icon-color: currentColor;
+	--v-icon-size: 24px;
+
+	color: var(--v-icon-color);
 	position: relative;
 	display: inline-block;
 	font-size: 0;
-	width: 24px;
-	height: 24px;
+	width: var(--v-icon-size);
+	height: var(--v-icon-size);
 	vertical-align: middle;
 
-	&.sup {
-		width: 8px;
-		height: 8px;
-		vertical-align: 0px;
-
-		i {
-			font-size: 8px;
-			vertical-align: 5px;
-		}
-	}
-
-	&.x-small {
-		width: 12px;
-		height: 12px;
-
-		i {
-			font-size: 12px;
-		}
-	}
-
-	&.small {
-		width: 18px;
-		height: 18px;
-
-		i {
-			font-size: 18px;
-		}
-	}
-
-	// Default is 24x24
-
-	&.large {
-		width: 36px;
-		height: 36px;
-
-		i {
-			font-size: 36px;
-		}
-	}
-
-	&.x-large {
-		width: 48px;
-		height: 48px;
-
-		i {
-			font-size: 48px;
-		}
-	}
-
-	&.left {
-		margin-right: 8px;
-		margin-left: -4px;
-	}
-
-	&.right {
-		margin-left: 8px;
-		margin-right: -4px;
-	}
-
 	i {
-		font-size: 24px;
+		font-size: var(--v-icon-size);
 		font-family: 'Material Icons';
 		font-weight: normal;
 		font-style: normal;
@@ -208,6 +133,41 @@ export default createComponent({
 
 	&.has-click {
 		cursor: pointer;
+	}
+
+	&.sup {
+		--v-icon-size: 8px;
+		vertical-align: 0px;
+
+		i {
+			vertical-align: 5px;
+		}
+	}
+
+	&.x-small {
+		--v-icon-size: 12px;
+	}
+
+	&.small {
+		--v-icon-size: 18px;
+	}
+
+	&.large {
+		--v-icon-size: 36px;
+	}
+
+	&.x-large {
+		--v-icon-size: 48px;
+	}
+
+	&.left {
+		margin-right: 8px;
+		margin-left: -4px;
+	}
+
+	&.right {
+		margin-left: 8px;
+		margin-right: -4px;
 	}
 }
 </style>

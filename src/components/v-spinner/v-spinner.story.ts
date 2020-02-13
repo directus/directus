@@ -44,33 +44,35 @@ export const interactive = () => ({
 			default: text('Speed (css, eg 200ms)', '1s')
 		},
 		customSize: {
-			default: number('Size (in px)', 0)
+			default: text('Size (in px)', '28px')
 		},
 		customLineSize: {
-			default: number('Line Size (in px)', 0)
+			default: text('Line Size (in px)', '3px')
 		}
 	},
 	template: `
 	<v-spinner
-		:color="color"
-		:background-color="backgroundColor"
+		:style="{
+			'--v-spinner-color': color,
+			'--v-spinner-background-color': backgroundColor,
+			'--v-spinner-speed': speed,
+			'--v-spinner-size': customSize,
+			'--v-spinner-line-size': customLineSize
+		}"
 		:x-small="size === 'xSmall'"
 		:small="size === 'small'"
 		:large="size === 'large'"
 		:x-large="size === 'xLarge'"
-		:size="customSize"
-		:line-size="customLineSize"
-		:speed="speed"
 	/>`
 });
 
 export const colors = () => `
 <div style="display: flex; justify-content: space-around">
-<v-spinner color="--red" />
-<v-spinner color="transparent" background-color="--blue" />
-<v-spinner color="--green" />
-<v-spinner color="--amber" background-color="--red" />
-<v-spinner color="--purple" />
+	<v-spinner style="--v-spinner-color: var(--red)" />
+	<v-spinner style="--v-spinner-color: transparent; --v-spinner-background-color: var(--blue)" />
+	<v-spinner style="--v-spinner-color: var(--green)" />
+	<v-spinner style="--v-spinner-color: var(--amber); --v-spinner-background-color: var(--red)" />
+	<v-spinner style="--v-spinner-color: var(--purple)" />
 </div>
 `;
 
@@ -86,10 +88,10 @@ export const sizes = () => `
 
 export const speed = () => `
 <div style="display: flex; justify-content: space-around">
-<v-spinner speed="5s" />
-<v-spinner speed="2.5s" />
+<v-spinner style="--v-spinner-speed: 5s" />
+<v-spinner style="--v-spinner-speed: 2.5s" />
 <v-spinner  />
-<v-spinner speed="500ms" />
-<v-spinner speed="250ms" />
+<v-spinner style="--v-spinner-speed: 500ms" />
+<v-spinner style="--v-spinner-speed: 250ms" />
 </div>
 `;

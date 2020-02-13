@@ -8,13 +8,15 @@
 
 ## Colors
 
-The switch component accepts any CSS color value, or variable name:
+Color changes are done using the css variable `--v-switch-color`.
 
 ```html
-<v-switch color="#abcabc" />
-<v-switch color="rgba(125, 125, 198, 0.5)" />
-<v-switch color="--red" />
-<v-switch color="--input-border-color" />
+<v-switch/>
+<style>
+.v-switch {
+    --v-switch-color: var(--red);
+}
+</style>
 ```
 
 ## Boolean vs arrays
@@ -45,23 +47,24 @@ Just as with regular checkboxes, you can use `v-model` with both an array and a 
 
 Keep in mind to pass the `value` prop with a unique value when using arrays in `v-model`.
 
-## Events
-
-| Event    | Description                | Data                       |
-|----------|----------------------------|----------------------------|
-| `change` | New state for the checkbox | Boolean or array of values |
-
 ## Props
-
 | Prop         | Description                                                                                            | Default                           |
 |--------------|--------------------------------------------------------------------------------------------------------|-----------------------------------|
 | `value`      | Value for switch. Similar to value attr on checkbox type input in HTML                                 | `--`                              |
 | `inputValue` | Value that's used with `v-model`. Either boolean or array of values                                    | `false`                           |
 | `label`      | Label for the checkbox                                                                                 | `--`                              |
-| `color`      | Color for the checked state of the checkbox. Either CSS var name (fe `--red`) or other valid CSS color | `--input-background-color-active` |
+
+## Events
+| Event    | Description                | Data                       |
+|----------|----------------------------|----------------------------|
+| `change` | New state for the checkbox | Boolean or array of values |
 
 ## Slots
-
 | Slot    | Description                                                                                    |
 |---------|------------------------------------------------------------------------------------------------|
 | `label` | Allows custom markup and HTML to be rendered inside the label. Will override the `label` prop. |
+
+## CSS Variables
+| Variable           | Default                                |
+|--------------------|----------------------------------------|
+| `--v-switch-color` | `var(--input-background-color-active)` |

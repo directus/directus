@@ -63,7 +63,7 @@ export const withText = () => ({
 		:large="size === 'large'"
 		:x-large="size === 'xLarge'"
 		:tile="tile"
-		:color="color"
+		:style="{'--v-avatar-color': color }"
 		:size="customSize"
 	>{{ text }}</v-avatar>`
 });
@@ -103,7 +103,7 @@ export const withImage = () => ({
 		:large="size === 'large'"
 		:x-large="size === 'xLarge'"
 		:tile="tile"
-		:color="color"
+		:style="{'--v-avatar-color': color }"
 		:size="customSize"
 	>
 		<img src="https://randomuser.me/api/portraits/men/97.jpg" />
@@ -145,10 +145,10 @@ export const withIcon = () => ({
 		:large="size === 'large'"
 		:x-large="size === 'xLarge'"
 		:tile="tile"
-		:color="color"
+		:style="{'--v-avatar-color': color }"
 		:size="customSize"
 	>
-		<v-icon name="person" />
+		<v-icon name="person" :style="{'--v-icon-color': 'white'}" />
 	</v-avatar>`
 });
 

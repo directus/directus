@@ -4,6 +4,21 @@
 <v-slider v-model="value" :min="0" :max="100" />
 ```
 
+## Color
+
+The colors can be changed via the css variables `--v-slider-color`, `--v-slider-fill-color` and `--v-slider-thumb-color`.
+
+```html
+<v-slider/>
+<style>
+.v-slider {
+    --v-slider-color: var(--red-400);
+	--v-slider-fill-color: var(--red-700);
+	--v-slider-thumb-color: var(--orange-500);
+}
+</style>
+```
+
 ## Thumb Label
 
 You can show the current value of the slider when the user is sliding by enabling the thumb label. This can be done by setting the `show-thumb-label` prop:
@@ -43,9 +58,6 @@ You can add any custom content before and after the slider (inline). This can be
 | `show-thumb-label` | Show the thumb label on drag of the thumb                    | `false`                     |
 | `show-ticks`       | Show tick for each step                                      | `false`                     |
 | `step`             | In what step the value can be entered                        | `1`                         |
-| `thumb-color`      | Color of the thumb and label                                 | `--slider-thumb-color`      |
-| `track-color`      | Color of the slider track                                    | `--slider-track-color`      |
-| `track-fill-color` | Color of the filled part of the slider track (left of thumb) | `--slider-track-fill-color` |
 | `value`            | Current value of slider. Can be used with `v-model`          | `50`                        |
 
 ## Events
@@ -60,3 +72,10 @@ You can add any custom content before and after the slider (inline). This can be
 | `append`      | Inserted after the slider track    | --                  |
 | `prepend`     | Inserted before the slider track   | --                  |
 | `thumb-label` | Custom content for the thumb label | `{ value: number }` |
+
+## CSS Variables
+| Variable                 | Default                          |
+|--------------------------|----------------------------------|
+| `--v-slider-color`       | `var(--slider-track-color)`      |
+| `--v-slider-fill-color`  | `var(--slider-track-fill-color)` |
+| `--v-slider-thumb-color` | `var(--slider-thumb-color)`      |

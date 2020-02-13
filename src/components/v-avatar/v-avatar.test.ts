@@ -17,12 +17,6 @@ describe('Avatar', () => {
 		expect(component.classes()).toContain('tile');
 	});
 
-	it('Sets the correct custom color', async () => {
-		component.setProps({ color: '--red' });
-		await component.vm.$nextTick();
-		expect((component.vm as any).styles['--_v-avatar-color']).toEqual('var(--red)');
-	});
-
 	describe('Sizes', () => {
 		test('Extra Small', () => {
 			component.setProps({
@@ -62,17 +56,6 @@ describe('Avatar', () => {
 				xLarge: true
 			});
 			component.vm.$nextTick(() => expect(component.classes()).toContain('x-large'));
-		});
-
-		it('Sets the correct custom size', () => {
-			const component = mount(VAvatar, {
-				localVue,
-				propsData: {
-					size: 128
-				}
-			});
-
-			expect((component.vm as any).styles['--_v-avatar-size']).toBe('128px');
 		});
 	});
 });

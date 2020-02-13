@@ -4,7 +4,16 @@ The icon component allows you to render any [Material Design Icons](https://mate
 
 ## Sizes / Colors
 
-The icon component supports multiple sizes and colors. The color prop accepts any valid CSS color. CSS variable names can be passed as well.
+The icon component supports multiple sizes and colors. The color prop accepts any valid CSS color. Color changes are done via the css variable `--v-icon-color` like in the example below.
+
+```html
+<v-icon name="add"/>
+<style>
+.v-icon {
+	--v-icon-color: var(--green-500);
+}
+</style>
+```
 
 | Prop Name      | Size in PX |
 |----------------|------------|
@@ -41,7 +50,6 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 | Name      | Description                                                       | Default        |
 |-----------|-------------------------------------------------------------------|----------------|
 | `name`*   | Name of the icon                                                  | --             |
-| `color`   | CSS color variable name (fe `--blue-grey`) or CSS color value     | `currentColor` |
 | `outline` | Use outline Material Icons. Note: only works for non-custom icons | `false`        |
 | `size`    | Custom pixel size                                                 | `false`        |
 | `x-small` | Render the icon extra small                                       | `false`        |
@@ -55,3 +63,12 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 | Event   | Description          | Data         |
 |---------|----------------------|--------------|
 | `click` | Standard click event | `MouseEvent` |
+
+## Slots
+n/a
+
+## CSS Variables
+| Variable         | Default        |
+|------------------|----------------|
+| `--v-icon-color` | `currentColor` |
+| `--v-icon-size`  | `24px`         |

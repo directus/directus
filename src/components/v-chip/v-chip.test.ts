@@ -65,24 +65,6 @@ describe('Chip', () => {
 		expect(component.find('.close-outline').exists()).toBe(true);
 	});
 
-	it('Sets the correct CSS variables for custom colors', async () => {
-		component.setProps({
-			color: '--red',
-			hoverColor: '--blue',
-			backgroundColor: '--green',
-			hoverBackgroundColor: '--yellow'
-		});
-
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).styles['--_v-chip-color']).toBe('var(--red)');
-		expect((component.vm as any).styles['--_v-chip-hover-color']).toBe('var(--blue)');
-		expect((component.vm as any).styles['--_v-chip-background-color']).toBe('var(--green)');
-		expect((component.vm as any).styles['--_v-chip-hover-background-color']).toBe(
-			'var(--yellow)'
-		);
-	});
-
 	it('Emits a click event when chip is not disabled', async () => {
 		component.setProps({
 			disabled: false

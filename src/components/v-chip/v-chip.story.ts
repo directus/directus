@@ -1,4 +1,11 @@
-import { withKnobs, text, boolean, number, optionsKnob as options } from '@storybook/addon-knobs';
+import {
+	withKnobs,
+	text,
+	boolean,
+	number,
+	color,
+	optionsKnob as options
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VChip from './v-chip.vue';
@@ -57,20 +64,16 @@ export const withText = () => ({
 			default: boolean('Active', true, 'Button')
 		},
 		color: {
-			default: text('Color', '--chip-primary-text-color', 'Colors')
+			default: color('Color', '#000000', 'Colors')
 		},
 		backgroundColor: {
-			default: text('Background Color', '--chip-primary-background-color', 'Colors')
+			default: color('Background Color', '#cfd8dc', 'Colors')
 		},
 		hoverColor: {
-			default: text('Color (hover)', '--chip-primary-text-color', 'Colors')
+			default: color('Color (hover)', '#000000', 'Colors')
 		},
 		hoverBackgroundColor: {
-			default: text(
-				'Background Color (hover)',
-				'--chip-primary-background-color-hover',
-				'Colors'
-			)
+			default: color('Background Color (hover)', '#b0bec5', 'Colors')
 		}
 	},
 	template: `
@@ -78,11 +81,13 @@ export const withText = () => ({
 			:active.sync="active"
 			:label="label"
 			:outlined="outlined"
-			:color="color"
 			:close="close"
-			:background-color="backgroundColor"
-			:hover-color="hoverColor"
-			:hover-background-color="hoverBackgroundColor"
+			:style="{
+				'--v-chip-color': color,
+				'--v-chip-background-color': backgroundColor,
+				'--v-chip-hover-color': hoverColor,
+				'--v-chip-hover-background-color': hoverBackgroundColor
+			}"
 			:disabled="disabled"
 			:x-small="size === 'xSmall'"
 			:small="size === 'small'"
@@ -155,20 +160,16 @@ export const withIcon = () => ({
 			default: boolean('Active', true, 'Button')
 		},
 		color: {
-			default: text('Color', '--chip-primary-text-color', 'Colors')
+			default: color('Color', '#000000', 'Colors')
 		},
 		backgroundColor: {
-			default: text('Background Color', '--chip-primary-background-color', 'Colors')
+			default: color('Background Color', '#cfd8dc', 'Colors')
 		},
 		hoverColor: {
-			default: text('Color (hover)', '--chip-primary-text-color', 'Colors')
+			default: color('Color (hover)', '#000000', 'Colors')
 		},
 		hoverBackgroundColor: {
-			default: text(
-				'Background Color (hover)',
-				'--chip-primary-background-color-hover',
-				'Colors'
-			)
+			default: color('Background Color (hover)', '#b0bec5', 'Colors')
 		}
 	},
 	template: `
@@ -176,11 +177,13 @@ export const withIcon = () => ({
 			:active="active"
 			:label="label"
 			:outlined="outlined"
-			:color="color"
 			:close="close"
-			:background-color="backgroundColor"
-			:hover-color="hoverColor"
-			:hover-background-color="hoverBackgroundColor"
+			:style="{
+				'--v-chip-color': color,
+				'--v-chip-background-color': backgroundColor,
+				'--v-chip-hover-color': hoverColor,
+				'--v-chip-hover-background-color': hoverBackgroundColor
+			}"
 			:disabled="disabled"
 			:x-small="size === 'xSmall'"
 			:small="size === 'small'"
@@ -206,40 +209,46 @@ export const withColor = () => ({
 	template: `
 		<div>
 			<v-chip
-				color="--white"
-				background-color="--red-600"
-				hover-color="--white"
-				hover-background-color="--red-400"
+				style="
+					--v-chip-color: var(--white);
+					--v-chip-background-color: var(--red-600);
+					--v-chip-hover-color: var(--white);
+					--v-chip-hover-background-color: var(--red-400);
+				"
 			>
 				<v-icon
 					name="delete"
-					color="--white"
+					style="--v-icon-color: var(--white)"
 					left
 				/>
 				Delete
 			</v-chip>
 			<v-chip
-				color="--white"
-				background-color="--green-600"
-				hover-color="--white"
-				hover-background-color="--green-400"
+				style="
+					--v-chip-color: var(--white);
+					--v-chip-background-color: var(--green-600);
+					--v-chip-hover-color: var(--white);
+					--v-chip-hover-background-color: var(--green-400);
+				"
 			>
 				<v-icon
 					name="add"
-					color="--white"
+					style="--v-icon-color: var(--white)"
 					left
 				/>
 				Add Item
 			</v-chip>
 			<v-chip
-				color="--white"
-				background-color="--amber-600"
-				hover-color="--white"
-				hover-background-color="--amber-400"
+				style="
+					--v-chip-color: var(--white);
+					--v-chip-background-color: var(--amber-600);
+					--v-chip-hover-color: var(--white);
+					--v-chip-hover-background-color: var(--amber-400);
+				"
 			>
 				<v-icon
 					name="warning"
-					color="--white"
+					style="--v-icon-color: var(--white)"
 					left
 				/>
 				Watch out

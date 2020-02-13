@@ -31,25 +31,13 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
-		backgroundColor: {
-			type: String,
-			default: '--progress-background-color'
-		},
 		bottom: {
 			type: Boolean,
 			default: false
 		},
-		color: {
-			type: String,
-			default: '--progress-background-color-accent'
-		},
 		fixed: {
 			type: Boolean,
 			default: false
-		},
-		height: {
-			type: Number,
-			default: 4
 		},
 		indeterminate: {
 			type: Boolean,
@@ -67,23 +55,18 @@ export default createComponent({
 			type: Number,
 			default: 0
 		}
-	},
-	setup(props) {
-		const styles = computed<object>(() => ({
-			'--_v-progress-linear-background-color': parseCSSVar(props.backgroundColor),
-			'--_v-progress-linear-color': parseCSSVar(props.color),
-			'--_v-progress-linear-height': props.height + 'px'
-		}));
-
-		return { styles };
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	background-color: var(--_v-progress-linear-background-color);
-	height: var(--_v-progress-linear-height);
+	--v-progress-linear-height: 4px;
+	--v-progress-linear-color: var(--progress-background-color-accent);
+	--v-progress-linear-background-color: var(--progress-background-color);
+
+	background-color: var(--v-progress-linear-background-color);
+	height: var(--v-progress-linear-height);
 	position: relative;
 	width: 100%;
 	display: flex;
@@ -96,7 +79,7 @@ export default createComponent({
 		left: 0;
 		position: absolute;
 		height: 100%;
-		background-color: var(--_v-progress-linear-color);
+		background-color: var(--v-progress-linear-color);
 	}
 
 	&.absolute {
@@ -121,7 +104,7 @@ export default createComponent({
 
 	&.rounded,
 	&.rounded .inner {
-		border-radius: calc(var(--_v-progress-linear-height) / 2);
+		border-radius: calc(var(--v-progress-linear-height) / 2);
 	}
 
 	&.top {

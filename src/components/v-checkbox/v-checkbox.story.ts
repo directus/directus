@@ -94,10 +94,10 @@ export const colors = () => ({
 	},
 	template: `
 	<div>
-		<v-checkbox v-model="options" value="red" @change="onChange" color="--red" label="Red" />
-		<v-checkbox v-model="options" value="blue" @change="onChange" color="--blue" label="Blue" />
-		<v-checkbox v-model="options" value="yellow" @change="onChange" color="--amber" label="Yellow" />
-		<v-checkbox v-model="options" value="custom" @change="onChange" :color="customColor" label="Custom..." />
+		<v-checkbox v-model="options" value="red" @change="onChange" :style="{'--v-checkbox-color': 'var(--red)'}" label="Red" />
+		<v-checkbox v-model="options" value="blue" @change="onChange" :style="{'--v-checkbox-color': 'var(--blue)'}" label="Blue" />
+		<v-checkbox v-model="options" value="yellow" @change="onChange" :style="{'--v-checkbox-color': 'var(--amber)'}" label="Yellow" />
+		<v-checkbox v-model="options" value="custom" @change="onChange" :style="{'--v-checkbox-color': customColor}" label="Custom..." />
 	</div>
 	`
 });

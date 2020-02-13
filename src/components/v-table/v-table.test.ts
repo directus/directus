@@ -506,20 +506,6 @@ describe('Table', () => {
 		expect(component.emitted('select')[1]).toEqual([[]]);
 	});
 
-	it('Sets the correct inline styles for given height', async () => {
-		component.setProps({
-			headers: [],
-			items: [],
-			height: 50
-		});
-
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).styles).toEqual({
-			height: '50px'
-		});
-	});
-
 	describe('Sorting', () => {
 		it('Sorts the items by the given sort prop internally', async () => {
 			component.setProps({

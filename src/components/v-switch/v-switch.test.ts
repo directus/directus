@@ -18,17 +18,6 @@ describe('Switch', () => {
 		expect(component.find('span[class="label"]').text()).toContain('Turn me on');
 	});
 
-	it('Uses the correct inline styles for custom colors', () => {
-		const component = mount(VSwitch, {
-			localVue,
-			propsData: {
-				color: '#123123'
-			}
-		});
-
-		expect((component.vm as any).colorStyle['--_v-switch-color']).toBe('#123123');
-	});
-
 	it('Renders as checked when inputValue `true` is given', () => {
 		const component = mount(VSwitch, {
 			localVue,

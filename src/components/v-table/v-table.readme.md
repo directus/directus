@@ -111,7 +111,6 @@ export default createComponent({
 ```
 
 ## Props
-
 | Prop           | Description                                                         | Default |
 |----------------|---------------------------------------------------------------------|---------|
 | `headers`*     | What columns to show in the table. Supports the `.sync` modifier    | --      |
@@ -122,10 +121,8 @@ export default createComponent({
 | `show-resize`  | Show resize handlers                                                | `false` |
 | `selection`    | What items are selected. Can be used with `v-model` as well         | `[]`    |
 | `fixed-header` | Make the header fixed                                               | `false` |
-| `height`       | A fixed height (in px) for the table                                | --      |
 
 ## Events
-
 | Event            | Description                                    | Value                           |
 |------------------|------------------------------------------------|---------------------------------|
 | `update:sort`    | `.sync` event for `sort` prop                  | `{ by: string, desc: boolean }` |
@@ -134,8 +131,12 @@ export default createComponent({
 | `select`         | Emitted when selected items change             | `any[]`                         |
 
 ## Slots
-
 | Slot             | Description                      |
 |------------------|----------------------------------|
 | `header.[value]` | Override individual header cells |
 | `item.[value]`   | Override individual row cells    |
+
+## CSS Variables
+| Variable           | Default |
+|--------------------|---------|
+| `--v-table-height` | `auto`  |

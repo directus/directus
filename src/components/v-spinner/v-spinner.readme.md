@@ -6,24 +6,22 @@
 
 ## Colors
 
-The color of the spinner can be changed through the `color` prop. This prop accepts any valid CSS color string, or a global CSS var prefixed with `--`:
+The color of the spinner can be changed through the `--v-spinner-color` and `--v-spinner-background-color` css variable.
 
 ```html
-<v-spinner color="red" />
-<v-spinner color="#abcabc" />
-<v-spinner color="rgba(255, 125, 81, 0.2)" />
-<v-spinner color="--amber" />
-<v-spinner color="--danger" />
+<v-spinner style="--v-spinner-color: var(--red-400); --v-spinner-background-color: transparent" />
 ```
 
 The background color can be set in similar fashion:
 
 ```html
-<v-spinner background-color="red" />
-<v-spinner background-color="#abcabc" />
-<v-spinner background-color="rgba(255, 125, 81, 0.2)" />
-<v-spinner background-color="--amber" />
-<v-spinner background-color="--danger" />
+<v-spinner/>
+<style>
+.v-spinner {
+    --v-spinner-color: var(--red-100);
+	--v-spinner-background-color: var(--red-600);
+}
+</style>
 ```
 
 
@@ -49,14 +47,24 @@ Alternatively, you can force the font-size through the `size` prop:
 ```
 
 ## Props
-
 | Prop        | Description                       | Default                             |
 |-------------|-----------------------------------|-------------------------------------|
-| `color`     | Color of the spinner              | `--loading-background-color-accent` |
-| `size`      | Size of the spinner in px         | --                                  |
-| `line-size` | Size of the border of the spinner | --                                  |
-| `speed`     | Speed of the spin animation       | `1s`                                |
 | `x-small`   | Render extra small                | `false`                             |
 | `small`     | Render small                      | `false`                             |
 | `large`     | Render large                      | `false`                             |
 | `x-large`   | Render extra large                | `false`                             |
+
+## Slots
+n/a
+
+## Events
+n/a
+
+## CSS Variables
+| Variable                       | Default                                  |
+|--------------------------------|------------------------------------------|
+| `--v-spinner-color`            | `var(--loading-background-color-accent)` |
+| `--v-spinner-background-color` | `var(--loading-background-color)`        |
+| `--v-spinner-speed`            | `1s`                                     |
+| `--v-spinner-size`             | `28px`                                   |
+| `--v-spinner-line-size`        | `3px`                                    |

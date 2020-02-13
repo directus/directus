@@ -59,9 +59,11 @@ export const interactive = () => ({
 	template: `
 	<v-progress-linear
 		:absolute="absolute"
-		:backgroundColor="backgroundColor"
+		:style="{
+			'--v-progress-linear-color': color,
+			'--v-progress-linear-background-color': backgroundColor
+		}"
 		:bottom="bottom"
-		:color="color"
 		:fixed="fixed"
 		:height="height"
 		:indeterminate="indeterminate"
@@ -72,5 +74,5 @@ export const interactive = () => ({
 });
 
 export const withSlot = () => `
-<v-progress-linear :height="25" :value="25" rounded>25%</v-progress-linear>
+<v-progress-linear :style="{ '--v-progress-linear-height': '25px' }" :value="25" rounded>25%</v-progress-linear>
 `;

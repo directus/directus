@@ -1,4 +1,11 @@
-import { withKnobs, text, boolean, number, optionsKnob as options } from '@storybook/addon-knobs';
+import {
+	withKnobs,
+	text,
+	boolean,
+	number,
+	color,
+	optionsKnob as options
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VButton from './v-button.vue';
@@ -66,16 +73,16 @@ export const withText = () => ({
 			default: boolean('Disabled', false, 'Button')
 		},
 		color: {
-			default: text('Color', '--button-primary-text-color', 'Colors')
+			default: color('Color', '#ffffff', 'Colors')
 		},
 		backgroundColor: {
-			default: text('Background Color', '--button-primary-background-color', 'Colors')
+			default: color('Background Color', '#263238', 'Colors')
 		},
 		hoverColor: {
-			default: text('Color (hover)', '--white', 'Colors')
+			default: color('Color (hover)', '#ffffff', 'Colors')
 		},
 		hoverBackgroundColor: {
-			default: text('Background Color (hover)', '--black', 'Colors')
+			default: color('Background Color (hover)', '#37474f', 'Colors')
 		}
 	},
 	template: `
@@ -84,10 +91,12 @@ export const withText = () => ({
 			:rounded="rounded"
 			:outlined="outlined"
 			:icon="icon"
-			:color="color"
-			:background-color="backgroundColor"
-			:hover-color="hoverColor"
-			:hover-background-color="hoverBackgroundColor"
+			:style="{
+				'--v-button-color': color,
+				'--v-button-background-color': backgroundColor,
+				'--v-button-hover-color': hoverColor,
+				'--v-button-hover-background-color': hoverBackgroundColor
+			}"
 			:type="type"
 			:disabled="disabled"
 			:loading="loading"
@@ -168,16 +177,16 @@ export const withIcon = () => ({
 			default: boolean('Disabled', false, 'Button')
 		},
 		color: {
-			default: text('Color', '--button-primary-text-color', 'Colors')
+			default: color('Color', '#ffffff', 'Colors')
 		},
 		backgroundColor: {
-			default: text('Background Color', '--button-primary-background-color', 'Colors')
+			default: color('Background Color', '#263238', 'Colors')
 		},
 		hoverColor: {
-			default: text('Color (hover)', '--white', 'Colors')
+			default: color('Color (hover)', '#ffffff', 'Colors')
 		},
 		hoverBackgroundColor: {
-			default: text('Background Color (hover)', '--black', 'Colors')
+			default: color('Background Color (hover)', '#37474f', 'Colors')
 		}
 	},
 	template: `
@@ -186,10 +195,12 @@ export const withIcon = () => ({
 			:rounded="rounded"
 			:outlined="outlined"
 			:icon="icon"
-			:color="color"
-			:background-color="backgroundColor"
-			:hover-color="hoverColor"
-			:hover-background-color="hoverBackgroundColor"
+			:style="{
+				'--v-button-color': color,
+				'--v-button-background-color': backgroundColor,
+				'--v-button-hover-color': hoverColor,
+				'--v-button-hover-background-color': hoverBackgroundColor
+			}"
 			:type="type"
 			:disabled="disabled"
 			:loading="loading"
@@ -206,6 +217,7 @@ export const withIcon = () => ({
 				:small="iconSize === 'small'"
 				:large="iconSize === 'large'"
 				:x-large="iconSize === 'xLarge'"
+				style="--v-icon-color: var(--white)"
 			/>
 		</v-button>
 	`
@@ -224,40 +236,52 @@ export const sizes = () => `
 export const colors = () => `
 <div>
 	<v-button
-		color="--red"
-		background-color="--red-50"
-		hover-color="--white"
-		hover-background-color="--red"
+		:style="{
+			'--v-button-color': 'var(--red)',
+			'--v-button-background-color': 'var(--red-50)',
+			'--v-button-hover-color': 'var(--white)',
+			'--v-button-hover-background-color': 'var(--red)'
+		}"
 	>
 		Delete
 	</v-button>
 	<v-button
-		color="--white"
-		background-color="--green"
-		hover-background-color="--green-800"
+		:style="{
+			'--v-button-color': 'var(--white)',
+			'--v-button-background-color': 'var(--green)',
+			'--v-button-hover-color': 'var(--white)',
+			'--v-button-hover-background-color': 'var(--green-800)'
+		}"
 	>
 		Save
 	</v-button>
 	<v-button
-		color="--white"
-		background-color="--amber"
-		hover-background-color="--amber-800"
+		:style="{
+			'--v-button-color': 'var(--white)',
+			'--v-button-background-color': 'var(--amber)',
+			'--v-button-hover-color': 'var(--white)',
+			'--v-button-hover-background-color': 'var(--amber-800)'
+		}"
 	>
 		Warn
 	</v-button>
 	<v-button
-		color="--blue-grey-800"
-		background-color="--blue-grey-50"
-		hover-color="--red"
-		hover-background-color="--white"
+		:style="{
+			'--v-button-color': 'var(--blue-grey-800)',
+			'--v-button-background-color': 'var(--blue-grey-50)',
+			'--v-button-hover-color': 'var(--red)',
+			'--v-button-hover-background-color': 'var(--white)'
+		}"
 	>
 		Hover
 	</v-button>
 	<v-button
-		color="--blue-grey-800"
-		background-color="transparent"
-		hover-color="--black"
-		hover-background-color="--blue-grey-100"
+		:style="{
+			'--v-button-color': 'var(--blue-grey-800)',
+			'--v-button-background-color': 'transparent',
+			'--v-button-hover-color': 'var(--black)',
+			'--v-button-hover-background-color': 'var(--blue-grey-100)'
+		}"
 	>
 		Transparent
 	</v-button>

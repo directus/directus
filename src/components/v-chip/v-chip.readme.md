@@ -20,20 +20,21 @@ The chip component supports the following sizes through the use of props:
 
 ## Colors
 
-You can set the color, background color, hover color, and background hover color with the `color`, `background-color`, `hover-color`, and `hover-background-color` props respectively:
+You can set the color, background color, hover color, and background hover color with the `--v-chip-color`, `--v-chip-background-color`, `--v-chip-hover-color`, and `--v-chip-hover-background-color` css variables respectively:
 
 ```html
-<v-chip
-	color="--red"
-	background-color="--red-50"
-	hover-color="--white"
-	hover-background-color="--red"
->
-	I'm a chip!
-</v-chip>
+<v-chip> I'm a chip! </v-chip>
+<style>
+.v-chip {
+	--v-chip-color: var(--red);
+	--v-chip-background-color: var(--red-50);
+	--v-chip-hover-color: var(--white);
+	--v-chip-hover-background-color: var(--red);
+}
+</style>
 ```
 
-## Events
+## Clicks / Closes
 
 There are two events, one when clicking on the chip called `click` and one when clicking on the enabled close icon called `close`.
 
@@ -42,26 +43,35 @@ There are two events, one when clicking on the chip called `click` and one when 
 <v-chip close @close="close">I'm closeable!</v-chip>
 ```
 
+## Props
+| Prop        | Description                                          | Default |
+|-------------|------------------------------------------------------|---------|
+| `active`    | Change visibility. Can be reacted to via `sync`      | `true`  |
+| `close`     | Displays a close icon which triggers the close event | `false` |
+| `closeIcon` | Which icon should be displayed instead of `close   ` | `close` |
+| `outlined`  | No background                                        | `false` |
+| `label`     | Label style                                          | `false` |
+| `disabled`  | Disabled state                                       | `false` |
+| `x-small`   | Render extra small                                   | `false` |
+| `small`     | Render small                                         | `false` |
+| `large`     | Render large                                         | `false` |
+| `x-large`   | Render extra large                                   | `false` |
+
+## Slots
+| Slot      | Description | Data |
+|-----------|-------------|------|
+| _default_ |             | --   |
+
+## Events
 | Event   | Description                                                                                    |
 |---------|------------------------------------------------------------------------------------------------|
 | `click` | Triggers when clicked somewhere on the chip                                                    |
 | `close` | Triggers when the `close` prop is enabled and gets clicked (Doesn't trigger the `click` event) |
 
-## Props
-
-| Prop                     | Description                                          | Default                                 |
-|--------------------------|------------------------------------------------------|-----------------------------------------|
-| `active`                 | Change visibility. Can be reacted to via `sync`      | `true`                                  |
-| `close`                  | Displays a close icon which triggers the close event | `false`                                 |
-| `closeIcon`              | Which icon should be displayed instead of `close   ` | `close`                                 |
-| `outlined`               | No background                                        | `false`                                 |
-| `color`                  | Text color                                           | `--chip-primary-text-color`             |
-| `hover-color`            | Text color on hover                                  | `--chip-primary-text-color`             |
-| `background-color`       | Chip color                                           | `--chip-primary-background-color`       |
-| `hover-background-color` | Chip color on hover                                  | `--chip-primary-background-color-hover` |
-| `label`                  | Label style                                          | `false`                                 |
-| `disabled`               | Disabled state                                       | `false`                                 |
-| `x-small`                | Render extra small                                   | `false`                                 |
-| `small`                  | Render small                                         | `false`                                 |
-| `large`                  | Render large                                         | `false`                                 |
-| `x-large`                | Render extra large                                   | `false`                                 |
+## CSS Variables
+| Variable                          | Default                                      |
+|-----------------------------------|----------------------------------------------|
+| `--v-chip-color`                  | `var(--chip-primary-text-color)`             |
+| `--v-chip-background-color`       | `var(--chip-primary-background-color)`       |
+| `--v-chip-hover-color`            | `var(--chip-primary-text-color)`             |
+| `--v-chip-hover-background-color` | `var(--chip-primary-background-color-hover)` |

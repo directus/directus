@@ -10,18 +10,39 @@ The overlay is a fairly barebones component that's meant to be used with modals 
 
 ## Color
 
-The overlay component supports multiple colors. The color prop accepts any valid CSS color. CSS variable names can be passed as well.
+The colors can be changed via the css variables `--v-overlay-color` and `--v-overlay-opacity`.
+
+```html
+<v-overlay :active="overlay">
+	<v-button @click="overlay = false">Close overlay</v-button>
+</v-overlay>
+<style>
+.v-overlay {
+	--v-overlay-color: var(--red);
+	--v-overlay-opacity: 0.5;
+}
+</style>
+```
 
 ## Props
-
 | Prop       | Description               | Default               |
 |------------|---------------------------|-----------------------|
 | `active`   | Show / hide the overlay   | `false`               |
 | `absolute` | Add `position: absolute;` | `false`               |
-| `color`    | Color for the overlay     | `--modal-smoke-color` |
-| `z-index`  | `z-index` for the overlay | `500`                 |
-| `opacity`  | Opacity for the overlay   | `0.75`                |
 
 ## Slots
+| Slot      | Description | Data |
+|-----------|-------------|------|
+| _default_ |             | --   |
 
-The only slot is the default slot. All content in the overlay will be rendered in the center of the overlay.
+## Events
+| Event   | Description | Value        |
+|---------|-------------|--------------|
+| `click` |             | `MouseEvent` |
+
+## CSS Variables
+| Variable              | Default                    |
+|-----------------------|----------------------------|
+| `--v-overlay-color`   | `var(--modal-smoke-color)` |
+| `--v-overlay-opacity` | `0.75`                     |
+| `--v-overlay-z-index` | `500`                      |

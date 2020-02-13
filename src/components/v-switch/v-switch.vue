@@ -5,7 +5,6 @@
 		type="button"
 		role="switch"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:style="colorStyle"
 		:disabled="disabled"
 	>
 		<span class="switch" />
@@ -37,10 +36,6 @@ export default createComponent({
 			type: String,
 			default: null
 		},
-		color: {
-			type: String,
-			default: '--input-background-color-active'
-		},
 		disabled: {
 			type: Boolean,
 			default: false
@@ -55,13 +50,7 @@ export default createComponent({
 			return props.inputValue === true;
 		});
 
-		const colorStyle = computed(() => {
-			return {
-				'--_v-switch-color': parseCSSVar(props.color)
-			};
-		});
-
-		return { isChecked, toggleInput, colorStyle };
+		return { isChecked, toggleInput };
 
 		function toggleInput(): void {
 			if (props.inputValue instanceof Array) {
@@ -84,6 +73,8 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-switch {
+	--v-switch-color: var(--input-background-color-active);
+
 	font-size: 0;
 	appearance: none;
 	background-color: transparent;
@@ -128,8 +119,8 @@ export default createComponent({
 	&[aria-pressed='true'] {
 		&:not(:disabled) {
 			.switch {
-				background-color: var(--_v-switch-color);
-				border-color: var(--_v-switch-color);
+				background-color: var(--v-switch-color);
+				border-color: var(--v-switch-color);
 
 				&::after {
 					background-color: var(--input-text-color-active);

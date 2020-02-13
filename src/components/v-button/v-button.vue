@@ -3,7 +3,6 @@
 		class="v-button"
 		:class="[sizeClass, { block, rounded, icon, outlined, loading }]"
 		:type="type"
-		:style="styles"
 		:disabled="disabled"
 		@click="!loading ? $emit('click') : null"
 	>
@@ -38,22 +37,6 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
-		color: {
-			type: String,
-			default: '--button-primary-text-color'
-		},
-		backgroundColor: {
-			type: String,
-			default: '--button-primary-background-color'
-		},
-		hoverColor: {
-			type: String,
-			default: '--button-primary-text-color'
-		},
-		hoverBackgroundColor: {
-			type: String,
-			default: '--button-primary-background-color-hover'
-		},
 		type: {
 			type: String,
 			default: 'button'
@@ -65,10 +48,6 @@ export default createComponent({
 		loading: {
 			type: Boolean,
 			default: false
-		},
-		width: {
-			type: Number,
-			default: null
 		},
 		xSmall: {
 			type: Boolean,
@@ -88,29 +67,6 @@ export default createComponent({
 		}
 	},
 	setup(props) {
-		interface Styles {
-			'--_v-button-color': string;
-			'--_v-button-background-color': string;
-			'--_v-button-hover-color': string;
-			'--_v-button-hover-background-color': string;
-			width?: string;
-		}
-
-		const styles = computed<Styles>(() => {
-			let styles: Styles = {
-				'--_v-button-color': parseCSSVar(props.color),
-				'--_v-button-background-color': parseCSSVar(props.backgroundColor),
-				'--_v-button-hover-color': parseCSSVar(props.hoverColor),
-				'--_v-button-hover-background-color': parseCSSVar(props.hoverBackgroundColor)
-			};
-
-			if (props.width && +props.width > 0) {
-				styles.width = props.width + 'px';
-			}
-
-			return styles;
-		});
-
 		const sizeClass = computed<string | null>(() => {
 			if (props.xSmall) return 'x-small';
 			if (props.small) return 'small';
@@ -119,26 +75,33 @@ export default createComponent({
 			return null;
 		});
 
-		return { styles, sizeClass };
+		return { sizeClass };
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .v-button {
-	--_v-button-height: 44px;
+	--v-button-width: auto;
+	--v-button-height: 44px;
+	--v-button-color: var(--button-primary-text-color);
+	--v-button-background-color: var(--button-primary-background-color);
+	--v-button-hover-color: var(--button-primary-text-color);
+	--v-button-hover-background-color: var(--button-primary-background-color-hover);
+	--v-button-font-size: 16px;
 
-	color: var(--_v-button-color);
-	background-color: var(--_v-button-background-color);
+	color: var(--v-button-color);
+	background-color: var(--v-button-background-color);
 	border-radius: var(--border-radius);
 	font-weight: var(--weight-bold);
 	cursor: pointer;
-	border: var(--input-border-width) solid var(--_v-button-background-color);
+	border: var(--input-border-width) solid var(--v-button-background-color);
 
-	font-size: 14px;
+	font-size: var(--v-button-font-size);
 	padding: 0 19px;
 	min-width: 78px;
-	height: var(--_v-button-height);
+	width: var(--v-button-width);
+	height: var(--v-button-height);
 
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -150,9 +113,9 @@ export default createComponent({
 	}
 
 	&:not(.loading):not(:disabled):hover {
-		color: var(--_v-button-hover-color);
-		background-color: var(--_v-button-hover-background-color);
-		border: var(--input-border-width) solid var(--_v-button-hover-background-color);
+		color: var(--v-button-hover-color);
+		background-color: var(--v-button-hover-background-color);
+		border: var(--input-border-width) solid var(--v-button-hover-background-color);
 	}
 
 	&.block {
@@ -161,7 +124,7 @@ export default createComponent({
 	}
 
 	&.rounded {
-		border-radius: calc(var(--button-height) / 2);
+		border-radius: calc(var(--v-button-height) / 2);
 	}
 
 	&.outlined {
@@ -176,29 +139,28 @@ export default createComponent({
 	}
 
 	&.x-small {
-		--_v-button-height: 28px;
-		font-size: 12px;
+		--v-button-height: 28px;
+		--v-button-font-size: 12px;
 		padding: 0 12px;
 		min-width: 48px;
 	}
 
 	&.small {
-		--_v-button-height: 36px;
-		font-size: 14px;
+		--v-button-height: 36px;
+		--v-button-font-size: 14px;
 		padding: 0 16px;
 		min-width: 64px;
 	}
 
 	&.large {
-		--_v-button-height: var(--button-height);
-		font-size: var(--button-font-size);
+		--v-button-height: 52px;
 		padding: 0 23px;
 		min-width: 92px;
 	}
 
 	&.x-large {
-		--_v-button-height: 58px;
-		font-size: 18px;
+		--v-button-height: 58px;
+		--v-button-font-size: 18px;
 		padding: 0 32px;
 		min-width: 120px;
 	}
@@ -206,7 +168,7 @@ export default createComponent({
 	&.icon {
 		min-width: 0;
 		padding: 0;
-		width: var(--_v-button-height);
+		width: var(--v-button-height);
 	}
 
 	.content,

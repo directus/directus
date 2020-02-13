@@ -1,5 +1,5 @@
 <template>
-	<div class="v-avatar" :style="styles" :class="[{ tile }, sizeClass]">
+	<div class="v-avatar" :class="[{ tile }, sizeClass]">
 		<slot />
 	</div>
 </template>
@@ -10,10 +10,6 @@ import parseCSSVar from '../../utils/parse-css-var';
 
 export default createComponent({
 	props: {
-		color: {
-			type: String,
-			default: '--teal'
-		},
 		size: {
 			type: Number,
 			default: null
@@ -40,23 +36,6 @@ export default createComponent({
 		}
 	},
 	setup(props) {
-		type Styles = {
-			'--_v-avatar-color': string;
-			'--_v-avatar-size'?: string;
-		};
-
-		const styles = computed(() => {
-			const styles: Styles = {
-				'--_v-avatar-color': parseCSSVar(props.color)
-			};
-
-			if (props.size) {
-				styles['--_v-avatar-size'] = props.size + 'px';
-			}
-
-			return styles;
-		});
-
 		const sizeClass = computed<string | null>(() => {
 			if (props.xSmall) return 'x-small';
 			if (props.small) return 'small';
@@ -65,22 +44,23 @@ export default createComponent({
 			return null;
 		});
 
-		return { styles, sizeClass };
+		return { sizeClass };
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .v-avatar {
-	--_v-avatar-size: 48px;
+	--v-avatar-color: var(--teal);
+	--v-avatar-size: 48px;
 
-	background-color: var(--_v-avatar-color);
+	background-color: var(--v-avatar-color);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	width: var(--_v-avatar-size);
-	height: var(--_v-avatar-size);
+	width: var(--v-avatar-size);
+	height: var(--v-avatar-size);
 	border-radius: 50%;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -92,19 +72,19 @@ export default createComponent({
 	}
 
 	&.x-small {
-		--_v-avatar-size: 24px;
+		--v-avatar-size: 24px;
 	}
 
 	&.small {
-		--_v-avatar-size: 36px;
+		--v-avatar-size: 36px;
 	}
 
 	&.large {
-		--_v-avatar-size: 56px;
+		--v-avatar-size: 56px;
 	}
 
 	&.x-large {
-		--_v-avatar-size: 64px;
+		--v-avatar-size: 64px;
 	}
 
 	::v-deep {

@@ -31,20 +31,6 @@ describe('Overlay', () => {
 		expect(component.classes()).toContain('absolute');
 	});
 
-	it('Sets the inline styles based on props', async () => {
-		component.setProps({
-			active: true,
-			absolute: true,
-			color: '--red',
-			zIndex: 50,
-			opacity: 0.2
-		});
-		await component.vm.$nextTick();
-		expect((component.vm as any).styles['--_v-overlay-color']).toEqual('var(--red)');
-		expect((component.vm as any).styles['--_v-overlay-z-index']).toEqual(50);
-		expect((component.vm as any).styles['--_v-overlay-opacity']).toEqual(0.2);
-	});
-
 	it('Adds the has-click class when click event is passed', async () => {
 		const component = shallowMount(VOverlay, {
 			localVue,

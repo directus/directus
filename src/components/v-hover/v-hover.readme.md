@@ -12,8 +12,16 @@ You can control how long the hover state persists after the user leaves the elem
 
 ```html
 <v-hover v-slot="{ hover }" :open-delay="250" :close-delay="400">
-  <v-button :color="hover ? red : blue" />
+  <v-button :class="hover ? red : blue" />
 </v-hover>
+<style>
+.v-button.red {
+	--v-button-color: var(--red);
+}
+.v-button.blue {
+	--v-button-color: var(--blue);
+}
+</style>
 ```
 
 ## Props

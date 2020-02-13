@@ -1,10 +1,5 @@
 <template>
-	<div
-		class="v-overlay"
-		:class="{ active, absolute, 'has-click': hasClick }"
-		:style="styles"
-		@click="onClick"
-	>
+	<div class="v-overlay" :class="{ active, absolute, 'has-click': hasClick }" @click="onClick">
 		<div class="overlay" />
 		<div v-if="active" class="content"><slot /></div>
 	</div>
@@ -23,30 +18,12 @@ export default createComponent({
 		absolute: {
 			type: Boolean,
 			default: false
-		},
-		color: {
-			type: String,
-			default: '--modal-smoke-color'
-		},
-		zIndex: {
-			type: Number,
-			default: 500
-		},
-		opacity: {
-			type: Number,
-			default: 0.75
 		}
 	},
 	setup(props, { emit, listeners }) {
-		const styles = computed(() => ({
-			'--_v-overlay-color': parseCSSVar(props.color),
-			'--_v-overlay-z-index': props.zIndex,
-			'--_v-overlay-opacity': props.opacity
-		}));
-
 		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
 
-		return { styles, hasClick, onClick };
+		return { hasClick, onClick };
 
 		function onClick(event: MouseEvent) {
 			emit('click', event);
@@ -57,6 +34,10 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-overlay {
+	--v-overlay-color: var(--modal-smoke-color);
+	--v-overlay-opacity: 0.75;
+	--v-overlay-z-index: 500;
+
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -66,7 +47,7 @@ export default createComponent({
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: var(--_v-overlay-z-index);
+	z-index: var(--v-overlay-z-index);
 
 	&.has-click {
 		cursor: pointer;
@@ -82,7 +63,7 @@ export default createComponent({
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-color: var(--_v-overlay-color);
+		background-color: var(--v-overlay-color);
 		opacity: 0;
 		transition: opacity var(--slow) var(--transition);
 	}
@@ -91,7 +72,7 @@ export default createComponent({
 		pointer-events: auto;
 
 		.overlay {
-			opacity: var(--_v-overlay-opacity);
+			opacity: var(--v-overlay-opacity);
 		}
 	}
 

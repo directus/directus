@@ -13,22 +13,6 @@ describe('Slider', () => {
 		component = mount(VSlider, { localVue });
 	});
 
-	it('Sets the correct inline styles for given props', async () => {
-		component.setProps({
-			trackColor: '--red',
-			trackFillColor: 'papayawhip',
-			thumbColor: '#abcabc'
-		});
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).styles).toEqual({
-			'--_v-slider-percentage': 50,
-			'--_v-slider-track-color': 'var(--red)',
-			'--_v-slider-track-fill-color': 'papayawhip',
-			'--_v-slider-thumb-color': '#abcabc'
-		});
-	});
-
 	it('Calculates the correct percentage based on props/value', async () => {
 		component.setProps({
 			min: 5,

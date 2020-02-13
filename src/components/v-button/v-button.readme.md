@@ -14,33 +14,21 @@ The button component supports the following sizes through the use of props:
 * large
 * x-large
 
-Alternatively, you can force the font-size through the `size` prop:
-
-```html
-<v-button :size="64">Click me!</v-button>
-```
-
 ## Colors
 
-You can set the color, background color, hover color, and background hover color with the `color`, `background-color`, `hover-color`, and `hover-background-color` props respectively:
+You can set the color, background color, hover color, and background hover color with the `--v-button-color`, `--v-button-background-color`, `--v-button-hover-color`, and `--v-button-hover-background-color` css variables respectively:
 
 ```html
-<v-button
-	color="--red"
-	background-color="--red-50"
-	hover-color="--white"
-	hover-background-color="--red"
->
-	Click me
-</v-button>
-```
+<v-button>Click me</v-button>
 
-## Events
-
-The only event that can be added to the button is the `click` event:
-
-```html
-<v-button @click="sayHi">Hello!</v-button>
+<style>
+.v-button {
+	--v-button-color: var(--red);
+	--v-button-background-color: var(--red-50);
+	--v-button-hover-color: var(--white);
+	--v-button-hover-background-color: var(--red);
+}
+</style>
 ```
 
 ## Loading
@@ -65,14 +53,9 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 | `icon`                   | Remove padding / min-width. Meant to be used with just an icon as content | `false`                                   |
 | `outlined`               | No background                                                             | `false`                                   |
 | `rounded`                | Enable rounded corners                                                    | `false`                                   |
-| `color`                  | Text / icon color                                                         | `--button-primary-text-color`             |
-| `hover-color`            | Text / icon color on hover                                                | `--button-primary-text-color`             |
-| `background-color`       | Button color                                                              | `--button-primary-background-color`       |
-| `hover-background-color` | Button color on hover                                                     | `--button-primary-background-color-hover` |
 | `type`                   | HTML `type` attribute                                                     | `button`                                  |
 | `disabled`               | Disabled state                                                            | `false`                                   |
 | `loading`                | Loading state                                                             | `false`                                   |
-| `width`                  | Width in px                                                               | --                                        |
 | `size`                   | Size of the text in the button in px                                      | --                                        |
 | `x-small`                | Render extra small                                                        | `false`                                   |
 | `small`                  | Render small                                                              | `false`                                   |
@@ -83,4 +66,23 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 
 | Slot      | Description                                  |
 |-----------|----------------------------------------------|
+| _default_ | Button content |
 | `loading` | Content that's rendered during loading state |
+
+## Events
+
+| Event   | Description           | Value        |
+|---------|-----------------------|--------------|
+| `click` | User clicks on button | `MouseEvent` |
+
+## CSS Variables
+
+| Variable                            | Default                                        |
+|-------------------------------------|------------------------------------------------|
+| `--v-button-width`                  | `auto`                                         |
+| `--v-button-height`                 | `44px`                                         |
+| `--v-button-color`                  | `var(--button-primary-text-color)`             |
+| `--v-button-background-color`       | `var(--button-primary-background-color)`       |
+| `--v-button-hover-color`            | `var(--button-primary-text-color)`             |
+| `--v-button-hover-background-color` | `var(--button-primary-background-color-hover)` |
+| `--v-button-font-size`              | `16px`                                         |

@@ -75,30 +75,10 @@ describe('Button', () => {
 		expect(component.classes()).toContain('loading');
 	});
 
-	it('Sets the correct CSS variables for custom colors', () => {
-		const component = mount(VButton, {
-			localVue,
-			propsData: {
-				color: '--red',
-				hoverColor: '--blue',
-				backgroundColor: '--green',
-				hoverBackgroundColor: '--yellow'
-			}
-		});
-
-		expect((component.vm as any).styles['--_v-button-color']).toBe('var(--red)');
-		expect((component.vm as any).styles['--_v-button-hover-color']).toBe('var(--blue)');
-		expect((component.vm as any).styles['--_v-button-background-color']).toBe('var(--green)');
-		expect((component.vm as any).styles['--_v-button-hover-background-color']).toBe(
-			'var(--yellow)'
-		);
-	});
-
 	describe('Sizes', () => {
 		const component = mount(VButton, {
 			localVue,
 			propsData: {
-				color: '--blue-grey',
 				name: 'person'
 			}
 		});
@@ -141,17 +121,6 @@ describe('Button', () => {
 				xLarge: true
 			});
 			component.vm.$nextTick(() => expect(component.classes()).toContain('x-large'));
-		});
-
-		it('Sets the correct custom width', () => {
-			const component = mount(VButton, {
-				localVue,
-				propsData: {
-					width: 56
-				}
-			});
-
-			expect((component.vm as any).styles.width).toBe('56px');
 		});
 	});
 });

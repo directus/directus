@@ -60,9 +60,11 @@ export const interactive = () => ({
 <div>
 <v-slider
 	v-model="value"
-	:track-color="trackColor"
-	:track-fill-color="trackFillColor"
-	:thumb-color="thumbColor"
+	:style="{
+		'--v-slider-color': trackColor,
+		'--v-slider-fill-color': trackFillColor,
+		'--v-slider-thumb-color': thumbColor
+	}"
 	:max="max"
 	:min="min"
 	:show-ticks="showTicks"

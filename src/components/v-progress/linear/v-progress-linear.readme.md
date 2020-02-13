@@ -6,13 +6,16 @@
 
 ## Colors
 
-The linear progress component supports colors. The color prop accepts any valid CSS color. CSS variable names can be passed as well, prefixed with `--`:
+The linear progress component supports colors. Colors can be changed via the css variables `--v-progress-linear-color` and `--v-progress-linear-background-color`
 
 ```html
-<v-progress-linear color="red" background-color="black" />
-<v-progress-linear color="#efefef" background-color="#ff00aa" />
-<v-progress-linear color="rgba(0, 25, 89, 0.8)" background-color="papayawhip" />
-<v-progress-linear color="--blue-grey-500" background-color="--blue-grey-200" />
+<v-progress-linear />
+<style>
+.v-overlay {
+    --v-progress-linear-color: red;
+    --v-progress-linear-background-color: var(--black);
+}
+</style>
 ```
 
 ## Indeterminate
@@ -20,15 +23,11 @@ The linear progress component supports colors. The color prop accepts any valid 
 The progress indicator can be rendered in indeterminate mode by passing the `indeterminate` prop. Use this when it's unclear when the progress will be done.
 
 ## Props
-
 | Prop               | Description                                                           | Default                              |
 |--------------------|-----------------------------------------------------------------------|--------------------------------------|
 | `absolute`         | Applies `position: absolute`                                          | `false`                              |
-| `background-color` | Sets the background color. Any CSS value or variable prefixed with -- | `--progress-background-color`        |
 | `bottom`           | Align the progress bar to the bottom                                  | `false`                              |
-| `color`            | Foreground color for the progress bar                                 | `--progress-background-color-accent` |
 | `fixed`            | Applies `position: fixed;` to the element                             | `false`                              |
-| `height`           | Sets the height (in px) for the progress bar                          | `4`                                  |
 | `indeterminate`    | Animates the bar, use when loading progress is unknown                | `false`                              |
 | `rounded`          | Add a border radius to the bar                                        | `false`                              |
 | `top`              | Align progress bar to the top of the parent container                 | `false`                              |
@@ -38,5 +37,13 @@ The progress indicator can be rendered in indeterminate mode by passing the `ind
 n/a
 
 ## Slots
+| Slots     | Description | Value |
+|-----------|-------------|-------|
+| _default_ |             | --    |
 
-The default slot can be used to render any value in the progress bar. Make sure to add the height prop to give the content some breathing room.
+## CSS Variables
+| Variable                               | Default                                   |
+|----------------------------------------|-------------------------------------------|--|
+| `--v-progress-linear-height`           | `4px`                                     |
+| `--v-progress-linear-color`            | `var(--progress-background-color-accent)` |
+| `--v-progress-linear-background-color` | `var(--progress-background-color)`        |

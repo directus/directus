@@ -6,8 +6,9 @@
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
+		:class="{ checked: isChecked }"
 	>
-		<v-icon :name="icon" :color="iconColor" />
+		<v-icon :name="icon" />
 		<span class="label">
 			<slot name="label">{{ label }}</slot>
 		</span>
@@ -36,10 +37,6 @@ export default createComponent({
 			type: String,
 			default: null
 		},
-		color: {
-			type: String,
-			default: '--input-background-color-active'
-		},
 		disabled: {
 			type: Boolean,
 			default: false
@@ -63,13 +60,7 @@ export default createComponent({
 			return isChecked.value ? 'check_box' : 'check_box_outline_blank';
 		});
 
-		const iconColor = computed<string>(() => {
-			if (props.disabled) return '--input-background-color-disabled';
-			if (isChecked.value) return props.color;
-			return '--input-border-color';
-		});
-
-		return { isChecked, toggleInput, icon, iconColor };
+		return { isChecked, toggleInput, icon };
 
 		function toggleInput(): void {
 			if (props.indeterminate) {
@@ -96,6 +87,8 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-checkbox {
+	--v-checkbox-color: var(--input-background-color-active);
+
 	font-size: 0;
 	appearance: none;
 	background-color: transparent;
@@ -114,11 +107,25 @@ export default createComponent({
 		overflow: hidden;
 	}
 
+	& .v-icon {
+		--v-icon-color: var(--input-border-color);
+	}
+
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
 			color: var(--popover-text-color-disabled);
+		}
+
+		.v-icon {
+			--v-icon-color: var(--input-border-color);
+		}
+	}
+
+	&:not(:disabled).checked {
+		.v-icon {
+			--v-icon-color: var(--v-checkbox-color);
 		}
 	}
 }

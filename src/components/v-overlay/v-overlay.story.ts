@@ -47,7 +47,7 @@ export const interactive = () => ({
 	<div style="position: relative; padding: 50px; border: 3px dashed #eee; width: max-content;">
 		<v-button @click="active = true">Show overlay</v-button>
 
-		<v-overlay :active="active" :absolute="absolute" :color="color" :z-index="zIndex" :opacity="opacity">
+		<v-overlay :active="active" :absolute="absolute" :z-index="zIndex" :style="{'--v-overlay-color': color, '--v-overlay-opacity': opacity}">
 		<v-button @click="active = false">Close overlay</v-button>
 		</v-overlay>
 	</div>

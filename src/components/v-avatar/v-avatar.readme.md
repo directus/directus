@@ -12,15 +12,30 @@
 </v-avatar>
 ```
 
-## Sizes / Colors
+## Props
 
-The avatar component supports multiple sizes and colors. The color prop accepts any valid CSS color. CSS variable names can be passed as well.
+| Prop      | Description               | Default |
+|-----------|---------------------------|---------|
+| `size`    | Size in px                | --      |
+| `tile`    | Render as a tile (square) | `false` |
+| `x-small` | Render extra small        | `false` |
+| `small`   | Render small              | `false` |
+| `large`   | Render large              | `false` |
+| `x-large` | Render extra large        | `false` |
 
-| Prop Name      | Size in PX |
-|----------------|------------|
-| `x-small`      | 32         |
-| `small`        | 40         |
-| None (default) | 48         |
-| `large`        | 56         |
-| `x-large`      | 64         |
+## Slots
 
+| Slot      | Description | Data |
+|-----------|-------------|------|
+| _default_ |             | --   |
+
+## Events
+
+n/a
+
+## CSS Variables
+
+| Variable           | Default                     |
+|--------------------|-----------------------------|
+| `--v-avatar-color` | `--avatar-background-color` |
+| `--v-avatar-size`  | --                          |

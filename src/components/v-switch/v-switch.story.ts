@@ -78,10 +78,10 @@ export const colors = () => ({
 	},
 	template: `
 	<div>
-		<v-switch style="margin-bottom: 20px" v-model="options" value="red" @change="onChange" color="--red" label="Red" />
-		<v-switch style="margin-bottom: 20px" v-model="options" value="blue" @change="onChange" color="--blue" label="Blue" />
-		<v-switch style="margin-bottom: 20px" v-model="options" value="yellow" @change="onChange" color="--amber" label="Yellow" />
-		<v-switch style="margin-bottom: 20px" v-model="options" value="custom" @change="onChange" :color="customColor" label="Custom..." />
+		<v-switch v-model="options" value="red" @change="onChange" style="margin-bottom: 20px; --v-switch-color: var(--red)" label="Red" />
+		<v-switch v-model="options" value="blue" @change="onChange" style="margin-bottom: 20px; --v-switch-color: var(--blue)" label="Blue" />
+		<v-switch v-model="options" value="yellow" @change="onChange" style="margin-bottom: 20px; --v-switch-color: var(--amber)" label="Yellow" />
+		<v-switch style="margin-bottom: 20px;" v-model="options" value="custom" @change="onChange" :style="{'--v-switch-color': customColor}" label="Custom..." />
 	</div>
 	`
 });

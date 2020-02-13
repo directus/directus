@@ -1,5 +1,5 @@
 <template>
-	<div class="v-table" :style="styles" :class="{ loading }">
+	<div class="v-table" :class="{ loading }">
 		<table>
 			<table-header
 				:headers.sync="_headers"
@@ -124,10 +124,6 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
-		height: {
-			type: Number,
-			default: null
-		},
 		loading: {
 			type: Boolean,
 			default: false
@@ -215,20 +211,6 @@ export default createComponent({
 			return props.selection.length > 0 && allItemsSelected.value === false;
 		});
 
-		type Styles = {
-			height?: string;
-		};
-
-		const styles = computed<object>(() => {
-			const styles: Styles = {};
-
-			if (props.height) {
-				styles.height = props.height + 'px';
-			}
-
-			return styles;
-		});
-
 		const hasRowClick = computed<boolean>(() => listeners.hasOwnProperty('click:row'));
 
 		return {
@@ -240,7 +222,6 @@ export default createComponent({
 			onItemSelected,
 			onToggleSelectAll,
 			someItemsSelected,
-			styles,
 			onEndDrag,
 			hasRowClick
 		};
@@ -290,8 +271,11 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-table {
+	--v-table-height: auto;
+
 	position: relative;
 	overflow: auto;
+	height: var(--v-table-height);
 
 	table {
 		border-spacing: 0;

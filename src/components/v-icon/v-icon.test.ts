@@ -13,19 +13,6 @@ describe('Icon', () => {
 		component = mount(VIcon, { localVue, propsData: { name: 'person' } });
 	});
 
-	it('Renders the correct markup for a Material Icon', async () => {
-		component.setProps({
-			color: '--blue-grey',
-			name: 'person'
-		});
-
-		await component.vm.$nextTick();
-
-		expect(component.html()).toContain(
-			'<span class="v-icon" style="color: currentColor;"><i class="">person</i></span>'
-		);
-	});
-
 	it('Renders custom icons as inline <svg>', async () => {
 		component.setProps({
 			name: 'box'
@@ -34,26 +21,6 @@ describe('Icon', () => {
 		await component.vm.$nextTick();
 
 		expect(component.contains('svg')).toBe(true);
-	});
-
-	it('Allows Hex/RGB/other CSS for color', async () => {
-		component.setProps({
-			color: 'papayawhip'
-		});
-
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).colorStyle).toBe('papayawhip');
-	});
-
-	it('Passes custom size as px value', async () => {
-		component.setProps({
-			size: 120
-		});
-
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).customSize).toBe('120px');
 	});
 
 	describe('Sizes', () => {

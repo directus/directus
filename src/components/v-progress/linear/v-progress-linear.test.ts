@@ -13,22 +13,6 @@ describe('Progress (Linear)', () => {
 		component = mount(VProgressLinear, { localVue });
 	});
 
-	it('Calculates the correct inline styles', async () => {
-		component.setProps({
-			color: 'red',
-			backgroundColor: '--blue-grey-50',
-			height: 55
-		});
-
-		await component.vm.$nextTick();
-
-		expect((component.vm as any).styles).toEqual({
-			'--_v-progress-linear-color': 'red',
-			'--_v-progress-linear-background-color': 'var(--blue-grey-50)',
-			'--_v-progress-linear-height': '55px'
-		});
-	});
-
 	it('Sets the correct classes based on the props', async () => {
 		component.setProps({
 			absolute: true,

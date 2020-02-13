@@ -11,40 +11,6 @@ describe('Spinner', () => {
 
 	beforeEach(() => (component = mount(VSpinner, { localVue })));
 
-	describe('Styles', () => {
-		test('Color', async () => {
-			component.setProps({ color: '--red' });
-			await component.vm.$nextTick();
-			expect((component.vm as any).styles['--_v-spinner-color']).toBe('var(--red)');
-		});
-
-		test('Background Color', async () => {
-			component.setProps({ backgroundColor: '--red' });
-			await component.vm.$nextTick();
-			expect((component.vm as any).styles['--_v-spinner-background-color']).toBe(
-				'var(--red)'
-			);
-		});
-
-		test('Size', async () => {
-			component.setProps({ size: 58 });
-			await component.vm.$nextTick();
-			expect((component.vm as any).styles['--_v-spinner-size']).toBe('58px');
-		});
-
-		test('Line Size', async () => {
-			component.setProps({ lineSize: 24 });
-			await component.vm.$nextTick();
-			expect((component.vm as any).styles['--_v-spinner-line-size']).toBe('24px');
-		});
-
-		test('Speed', async () => {
-			component.setProps({ speed: '5s' });
-			await component.vm.$nextTick();
-			expect((component.vm as any).styles['--_v-spinner-speed']).toBe('5s');
-		});
-	});
-
 	describe('Sizes', () => {
 		test('Extra Small', () => {
 			component.setProps({

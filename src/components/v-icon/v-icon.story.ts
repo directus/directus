@@ -1,4 +1,11 @@
-import { withKnobs, text, boolean, number, optionsKnob as options } from '@storybook/addon-knobs';
+import {
+	withKnobs,
+	text,
+	boolean,
+	number,
+	color,
+	optionsKnob as options
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VIcon from '../v-icon/';
@@ -23,7 +30,7 @@ export const interactive = () => ({
 			default: text('Icon Name', 'person')
 		},
 		color: {
-			default: text('Color', '--blue-grey-800')
+			default: color('Color', '#37474f')
 		},
 		outline: {
 			default: boolean('Outline', false)
@@ -56,6 +63,7 @@ export const interactive = () => ({
 			:name="name"
 			:outline="outline"
 			:sup="sup"
+			:style="{'--v-icon-color': color}"
 			:x-small="size === 'xSmall'"
 			:small="size === 'small'"
 			:large="size === 'large'"
@@ -65,16 +73,17 @@ export const interactive = () => ({
 	`
 });
 
-export const superscript = () => `<span>Title<v-icon name="star" color="--red" sup /></span>`;
+export const superscript = () =>
+	`<span>Title<v-icon name="star" :style="{ '--v-icon-color': 'var(--blue)' }" sup /></span>`;
 
 export const sizesAndColors = () => `
 <div>
-	<v-icon name="star" color="--light-blue" sup />
-	<v-icon name="accessibility_new" color="--red" x-small />
-	<v-icon name="warning" color="--purple" small />
-	<v-icon name="gesture" color="--blue" />
-	<v-icon name="security" color="--green" large />
-	<v-icon name="person" color="--orange" x-large />
+	<v-icon name="star" :style="{'--v-icon-color': 'var(--light-blue)'}" sup />
+	<v-icon name="accessibility_new" :style="{'--v-icon-color': 'var(--red)'}" x-small />
+	<v-icon name="warning" :style="{'--v-icon-color': 'var(--purple)'}" small />
+	<v-icon name="gesture" :style="{'--v-icon-color': 'var(--blue)'}" />
+	<v-icon name="security" :style="{'--v-icon-color': 'var(--green)'}" large />
+	<v-icon name="person" :style="{'--v-icon-color': 'var(--orange)'}" x-large />
 </div>
 `;
 

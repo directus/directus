@@ -118,22 +118,6 @@ describe('Checkbox', () => {
 		expect((component.vm as any).icon).toBe('indeterminate_check_box');
 	});
 
-	it('Renders the correct iconColor for state', () => {
-		const component = mount(VCheckbox, {
-			localVue,
-			propsData: {
-				inputValue: false,
-				color: '--red'
-			}
-		});
-
-		expect((component.vm as any).iconColor).toBe('--input-border-color');
-
-		component.setProps({ inputValue: true });
-
-		expect((component.vm as any).iconColor).toBe('--red');
-	});
-
 	it('Emits the update:indeterminate event when the checkbox is toggled when indeterminate', () => {
 		const component = mount(VCheckbox, {
 			localVue,

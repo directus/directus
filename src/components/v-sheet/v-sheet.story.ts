@@ -36,52 +36,68 @@ export const interactive = () => ({
 			default: color('Color', '#cfd8dc')
 		},
 		width: {
-			default: number('Width', 0)
+			default: text('Width', 'auto')
 		},
 		height: {
-			default: number('Height', 0)
+			default: text('Height', 'auto')
 		},
 		minWidth: {
-			default: number('Min Width', 0)
+			default: text('Min Width', 'none')
 		},
 		minHeight: {
-			default: number('Min Height', 0)
+			default: text('Min Height', 'var(--input-height)')
 		},
 		maxWidth: {
-			default: number('Max Width', 0)
+			default: text('Max Width', 'none')
 		},
 		maxHeight: {
-			default: number('Max Height', 0)
+			default: text('Max Height', 'none')
 		}
 	},
 	template: `
 	<v-sheet
-		:color="color"
-		:width="width"
-		:height="height"
-		:minWidth="minWidth"
-		:minHeight="minHeight"
-		:maxWidth="maxWidth"
-		:maxHeight="maxHeight"
+		:style="{
+			'--v-sheet-background-color': color,
+			'--v-sheet-width': width,
+			'--v-sheet-height': height,
+			'--v-sheet-min-width': minWidth,
+			'--v-sheet-min-height': minHeight,
+			'--v-sheet-max-width': maxWidth,
+			'--v-sheet-max-height': maxHeight
+		}"
 	>{{ text }}</v-sheet>`
 });
 
 export const colorsSizes = () => `
 <div>
 <v-sheet
-	color="#ef9a9a"
+	style="
+		--v-sheet-background-color: #ef9a9a;
+		--v-sheet-width: 150px;
+		--v-sheet-height: 150px;
+		margin-bottom: 20px;
+	"
 	:width="150"
 	:height="150"
 />
 
 <v-sheet
-	color="#81D4FA"
+	style="
+		--v-sheet-background-color: #81D4FA;
+		--v-sheet-width: 550px;
+		--v-sheet-height: 50px;
+		margin-bottom: 20px;
+	"
 	:width="550"
 	:height="50"
 />
 
 <v-sheet
-	color="#E6EE9C"
+	style="
+		--v-sheet-background-color: #E6EE9C;
+		--v-sheet-width: 220px;
+		--v-sheet-height: 500px;
+	"
 	:width="220"
 	:height="500"
 />
