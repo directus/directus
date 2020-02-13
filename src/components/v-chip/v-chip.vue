@@ -22,6 +22,7 @@
 <script lang="ts">
 import { createComponent, ref, computed } from '@vue/composition-api';
 import parseCSSVar from '@/utils/parse-css-var';
+import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 export default createComponent({
 	props: {
@@ -49,22 +50,7 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
-		xSmall: {
-			type: Boolean,
-			default: false
-		},
-		small: {
-			type: Boolean,
-			default: false
-		},
-		large: {
-			type: Boolean,
-			default: false
-		},
-		xLarge: {
-			type: Boolean,
-			default: false
-		}
+		...sizeProps
 	},
 	setup(props, { emit }) {
 		const _localActive = ref(true);
@@ -80,13 +66,7 @@ export default createComponent({
 			}
 		});
 
-		const sizeClass = computed<string | null>(() => {
-			if (props.xSmall) return 'x-small';
-			if (props.small) return 'small';
-			if (props.large) return 'large';
-			if (props.xLarge) return 'x-large';
-			return null;
-		});
+		const sizeClass = useSizeClass(props);
 
 		return { sizeClass, _active, onClick, onCloseClick };
 

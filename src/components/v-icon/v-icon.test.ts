@@ -23,78 +23,16 @@ describe('Icon', () => {
 		expect(component.contains('svg')).toBe(true);
 	});
 
-	describe('Sizes', () => {
-		test('Superscript', async () => {
-			component.setProps({
-				sup: true,
-				xSmall: false,
-				small: false,
-				large: false,
-				xLarge: false
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('sup');
+	it('Supports superscript size class', async () => {
+		component.setProps({
+			sup: true,
+			xSmall: false,
+			small: false,
+			large: false,
+			xLarge: false
 		});
-
-		test('Extra Small', async () => {
-			component.setProps({
-				sup: false,
-				xSmall: true,
-				small: false,
-				large: false,
-				xLarge: false
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('x-small');
-		});
-
-		test('Small', async () => {
-			component.setProps({
-				sup: false,
-				xSmall: false,
-				small: true,
-				large: false,
-				xLarge: false
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('small');
-		});
-
-		test('Large', async () => {
-			component.setProps({
-				sup: false,
-				xSmall: false,
-				small: false,
-				large: true,
-				xLarge: false
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('large');
-		});
-
-		test('Extra Large', async () => {
-			component.setProps({
-				sup: false,
-				xSmall: false,
-				small: false,
-				large: false,
-				xLarge: true
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('x-large');
-		});
-
-		it('Uses the smallest size prop provided (sup)', async () => {
-			component.setProps({
-				sup: true,
-				xSmall: false,
-				small: true,
-				large: false,
-				xLarge: true
-			});
-			await component.vm.$nextTick();
-			expect(component.classes()).toContain('sup');
-		});
+		await component.vm.$nextTick();
+		expect(component.classes()).toContain('sup');
 	});
 
 	it('Adds the has-click class if a click event is passed', async () => {

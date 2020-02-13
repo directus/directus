@@ -5,6 +5,7 @@ Compositions are reusable pieces of logic that can be used inside Vue components
 ## Table of Contents
 
 * [Event Listener](#event-listener)
+* [Size Class](#size-class)
 * [Time from Now](#time-from-now)
 * [Window Size](#window-size)
 
@@ -33,6 +34,29 @@ export default createComponent({
 });
 ```
 
+---
+
+## Size Class
+
+Shared size class prop handler for base components. Adds `x-small`, `small`, `large`, and `x-large` props to the component, and converts the prop into a string that can be added to classes.
+
+### Usage
+
+```js
+import { createComponent } from '@vue/composition-api';
+import useSizeClass, { sizeProps } from '@/compositions/size-class';
+
+export default createComponent({
+	props: {
+		...sizeProps
+	},
+	setup(props) {
+		const sizeClass = useSizeClass(props);
+	}
+});
+```
+
+---
 
 ## Time from Now
 
@@ -53,6 +77,8 @@ export default createComponent({
 ```
 
 The composition accepts an optional second parameter that controls how often the value is update. You can set this to `0` if you don't want the value to update at all.
+
+---
 
 ## Window Size
 

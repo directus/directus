@@ -16,46 +16,4 @@ describe('Avatar', () => {
 		await component.vm.$nextTick();
 		expect(component.classes()).toContain('tile');
 	});
-
-	describe('Sizes', () => {
-		test('Extra Small', () => {
-			component.setProps({
-				xSmall: true,
-				small: false,
-				large: false,
-				xLarge: false
-			});
-			component.vm.$nextTick(() => expect(component.classes()).toContain('x-small'));
-		});
-
-		test('Small', () => {
-			component.setProps({
-				xSmall: false,
-				small: true,
-				large: false,
-				xLarge: false
-			});
-			component.vm.$nextTick(() => expect(component.classes()).toContain('small'));
-		});
-
-		test('Large', () => {
-			component.setProps({
-				xSmall: false,
-				small: false,
-				large: true,
-				xLarge: false
-			});
-			component.vm.$nextTick(() => expect(component.classes()).toContain('large'));
-		});
-
-		test('Extra Large', () => {
-			component.setProps({
-				xSmall: false,
-				small: false,
-				large: false,
-				xLarge: true
-			});
-			component.vm.$nextTick(() => expect(component.classes()).toContain('x-large'));
-		});
-	});
 });

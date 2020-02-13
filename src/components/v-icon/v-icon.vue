@@ -14,6 +14,7 @@
 import { createComponent, reactive, computed } from '@vue/composition-api';
 import parseCSSVar from '@/utils/parse-css-var';
 import CustomIconBox from './custom-icons/box.vue';
+import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 const customIcons: string[] = ['box'];
 
@@ -32,22 +33,6 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
-		xSmall: {
-			type: Boolean,
-			default: false
-		},
-		small: {
-			type: Boolean,
-			default: false
-		},
-		large: {
-			type: Boolean,
-			default: false
-		},
-		xLarge: {
-			type: Boolean,
-			default: false
-		},
 		left: {
 			type: Boolean,
 			default: false
@@ -55,17 +40,14 @@ export default createComponent({
 		right: {
 			type: Boolean,
 			default: false
-		}
+		},
+		...sizeProps
 	},
 
 	setup(props, { emit, listeners }) {
 		const sizeClass = computed<string | null>(() => {
 			if (props.sup) return 'sup';
-			if (props.xSmall) return 'x-small';
-			if (props.small) return 'small';
-			if (props.large) return 'large';
-			if (props.xLarge) return 'x-large';
-			return null;
+			return useSizeClass(props).value;
 		});
 
 		const customIconName = computed<string | null>(() => {
