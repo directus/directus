@@ -33,18 +33,18 @@ export default createComponent({
 	--v-avatar-color: var(--teal);
 	--v-avatar-size: 48px;
 
-	background-color: var(--v-avatar-color);
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: var(--v-avatar-size);
 	height: var(--v-avatar-size);
-	border-radius: 50%;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	color: var(--white);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	background-color: var(--v-avatar-color);
+	border-radius: 50%;
 
 	&.tile {
 		border-radius: 0;

@@ -87,13 +87,13 @@ export default createComponent({
 	}
 
 	.input {
-		height: 100%;
 		display: flex;
 		align-items: center;
-		border: var(--input-border-width) solid var(--input-border-color);
-		background-color: var(--input-background-color);
-		border-radius: var(--border-radius);
+		height: 100%;
 		padding: var(--input-padding);
+		background-color: var(--input-background-color);
+		border: var(--input-border-width) solid var(--input-border-color);
+		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		.prepend {
@@ -116,18 +116,18 @@ export default createComponent({
 			width: 100%;
 		}
 
+		input {
+			flex-grow: 1;
+			height: 100%;
+			background-color: transparent;
+			border: none;
+			appearance: none;
+		}
+
 		&.monospace {
 			input {
 				font-family: var(--family-monospace);
 			}
-		}
-
-		input {
-			appearance: none;
-			flex-grow: 1;
-			height: 100%;
-			border: none;
-			background-color: transparent;
 		}
 
 		.prefix,

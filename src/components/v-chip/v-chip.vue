@@ -92,14 +92,13 @@ export default createComponent({
 	--v-chip-hover-background-color: var(--chip-primary-background-color-hover);
 
 	display: inline-flex;
+	align-items: center;
 	height: 32px;
 	padding: 0 12px;
-	align-items: center;
-
 	color: var(--v-chip-color);
+	font-weight: var(--weight-normal);
 	background-color: var(--v-chip-background-color);
 	border-radius: 16px;
-	font-weight: var(--weight-normal);
 
 	&:hover {
 		color: var(--v-chip-hover-color);
@@ -121,26 +120,26 @@ export default createComponent({
 	}
 
 	&.x-small {
-		font-size: 12px;
 		height: 20px;
+		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
-		font-size: 14px;
 		height: 24px;
+		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
-		font-size: 16px;
 		height: 44px;
+		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
-		font-size: 18px;
 		height: 48px;
+		font-size: 18px;
 		border-radius: 24px;
 	}
 
@@ -150,16 +149,15 @@ export default createComponent({
 
 		.close-outline {
 			position: relative;
+			right: -4px;
 			display: inline-flex;
-			justify-content: center;
 			align-items: center;
-
+			justify-content: center;
+			width: 14px;
+			height: 14px;
+			margin-left: 4px;
 			background-color: var(--chip-primary-close-color);
 			border-radius: 10px;
-			height: 14px;
-			width: 14px;
-			right: -4px;
-			margin-left: 4px;
 
 			.close {
 				--v-icon-color: var(--v-chip-background-color);

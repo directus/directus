@@ -69,26 +69,30 @@ export default createComponent({
 	--v-button-hover-background-color: var(--button-primary-background-color-hover);
 	--v-button-font-size: 16px;
 
-	color: var(--v-button-color);
-	background-color: var(--v-button-background-color);
-	border-radius: var(--border-radius);
-	font-weight: var(--weight-bold);
-	cursor: pointer;
-	border: var(--input-border-width) solid var(--v-button-background-color);
-
-	font-size: var(--v-button-font-size);
-	padding: 0 19px;
-	min-width: 78px;
+	position: relative;
 	width: var(--v-button-width);
+	min-width: 78px;
 	height: var(--v-button-height);
-
+	padding: 0 19px;
+	color: var(--v-button-color);
+	font-weight: var(--weight-bold);
+	font-size: var(--v-button-font-size);
+	background-color: var(--v-button-background-color);
+	border: var(--input-border-width) solid var(--v-button-background-color);
+	border-radius: var(--border-radius);
+	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
 
-	position: relative;
-
 	&:focus {
 		outline: 0;
+	}
+
+	&:disabled {
+		color: var(--button-primary-text-color-disabled);
+		background-color: var(--button-primary-background-color-disabled);
+		border: var(--input-border-width) solid var(--button-primary-background-color-disabled);
+		cursor: not-allowed;
 	}
 
 	&:not(.loading):not(:disabled):hover {
@@ -110,52 +114,49 @@ export default createComponent({
 		background-color: transparent;
 	}
 
-	&:disabled {
-		background-color: var(--button-primary-background-color-disabled);
-		border: var(--input-border-width) solid var(--button-primary-background-color-disabled);
-		color: var(--button-primary-text-color-disabled);
-		cursor: not-allowed;
-	}
-
 	&.x-small {
 		--v-button-height: 28px;
 		--v-button-font-size: 12px;
-		padding: 0 12px;
+
 		min-width: 48px;
+		padding: 0 12px;
 	}
 
 	&.small {
 		--v-button-height: 36px;
 		--v-button-font-size: 14px;
-		padding: 0 16px;
+
 		min-width: 64px;
+		padding: 0 16px;
 	}
 
 	&.large {
 		--v-button-height: 52px;
-		padding: 0 23px;
+
 		min-width: 92px;
+		padding: 0 23px;
 	}
 
 	&.x-large {
 		--v-button-height: 58px;
 		--v-button-font-size: 18px;
-		padding: 0 32px;
+
 		min-width: 120px;
+		padding: 0 32px;
 	}
 
 	&.icon {
+		width: var(--v-button-height);
 		min-width: 0;
 		padding: 0;
-		width: var(--v-button-height);
 	}
 
 	.content,
 	.spinner {
+		max-width: 100%;
+		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		overflow: hidden;
-		max-width: 100%;
 	}
 
 	.content {

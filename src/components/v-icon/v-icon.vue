@@ -76,29 +76,31 @@ export default createComponent({
 	--v-icon-color: currentColor;
 	--v-icon-size: 24px;
 
-	color: var(--v-icon-color);
 	position: relative;
 	display: inline-block;
-	font-size: 0;
 	width: var(--v-icon-size);
 	height: var(--v-icon-size);
+	color: var(--v-icon-color);
+	font-size: 0;
 	vertical-align: middle;
 
 	i {
-		font-size: var(--v-icon-size);
-		font-family: 'Material Icons';
-		font-weight: normal;
-		font-style: normal;
 		display: inline-block;
+		font-weight: normal;
+		font-size: var(--v-icon-size);
+		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+		font-family: 'Material Icons';
+		font-style: normal;
 		line-height: 1;
-		text-transform: none;
 		letter-spacing: normal;
-		word-wrap: normal;
 		white-space: nowrap;
-		font-feature-settings: 'liga';
+		text-transform: none;
 		vertical-align: middle;
+		word-wrap: normal;
+		font-feature-settings: 'liga';
 
 		&.outline {
+			/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 			font-family: 'Material Icons Outline';
 		}
 	}
@@ -119,7 +121,8 @@ export default createComponent({
 
 	&.sup {
 		--v-icon-size: 8px;
-		vertical-align: 0px;
+
+		vertical-align: 0;
 
 		i {
 			vertical-align: 5px;
@@ -148,8 +151,8 @@ export default createComponent({
 	}
 
 	&.right {
-		margin-left: 8px;
 		margin-right: -4px;
+		margin-left: 8px;
 	}
 }
 </style>

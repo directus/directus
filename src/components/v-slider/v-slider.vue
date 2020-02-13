@@ -101,96 +101,98 @@ export default createComponent({
 	}
 
 	.slider {
-		flex-grow: 1;
 		position: relative;
 		top: -3px;
+		flex-grow: 1;
 
 		input {
-			-webkit-appearance: none;
-			appearance: none;
 			width: 100%;
 			height: 2px;
-
-			/*
-			 * The vendor specific styling for the tracks needs to be separate into individual
-			 * statements. In browsers, if one of the statements is unknown, the whole selector is
-			 * invalidated. We're using these 'local' mixins to facilitate that.
-			 */
-
-			@mixin v-slider-track {
-				height: 2px;
-				background: var(--v-slider-color);
-				box-shadow: none;
-				border: none;
-				border-radius: 2px;
-			}
+			-webkit-appearance: none;
+			appearance: none;
 
 			&::-webkit-slider-runnable-track {
-				@include v-slider-track;
+				height: 2px;
+				background: var(--v-slider-color);
+				border: none;
+				border-radius: 2px;
+				box-shadow: none;
 			}
 
 			&::-moz-range-track {
-				@include v-slider-track;
-			}
-
-			@mixin v-slider-thumb {
-				-webkit-appearance: none;
-				appearance: none;
-				box-shadow: none;
+				height: 2px;
+				background: var(--v-slider-color);
 				border: none;
-				height: 14px;
-				width: 14px;
-				border-radius: 50%;
-				background: var(--v-slider-thumb-color);
-				margin-top: -6px;
-				cursor: ew-resize;
-				box-shadow: 0 0 0 4px var(--input-background-color);
-				z-index: 3;
-				position: relative;
+				border-radius: 2px;
+				box-shadow: none;
 			}
 
 			&::-webkit-slider-thumb {
-				@include v-slider-thumb;
+				position: relative;
+				z-index: 3;
+				width: 14px;
+				height: 14px;
+				margin-top: -6px;
+				background: var(--v-slider-thumb-color);
+				border: none;
+				border-radius: 50%;
+				box-shadow: none;
+				box-shadow: 0 0 0 4px var(--input-background-color);
+				cursor: ew-resize;
+				-webkit-appearance: none;
+				appearance: none;
 			}
 
 			&::-moz-range-thumb {
-				@include v-slider-thumb;
+				position: relative;
+				z-index: 3;
+				width: 14px;
+				height: 14px;
+				margin-top: -6px;
+				background: var(--v-slider-thumb-color);
+				border: none;
+				border-radius: 50%;
+				box-shadow: none;
+				box-shadow: 0 0 0 4px var(--input-background-color);
+				cursor: ew-resize;
+				-webkit-appearance: none;
+				appearance: none;
 			}
 		}
 
 		.fill {
 			position: absolute;
-			left: 0;
-			right: 0;
 			top: 50%;
-			transform: translateY(2px) scaleX(calc(var(--_v-slider-percentage) / 100));
-			transform-origin: left;
+			right: 0;
+			left: 0;
+			z-index: 2;
 			height: 2px;
 			background-color: var(--v-slider-fill-color);
+			transform: translateY(2px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			transform-origin: left;
 			pointer-events: none;
-			z-index: 2;
 		}
 
 		.ticks {
-			opacity: 0;
 			position: absolute;
 			top: 11px;
 			left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
 			width: 100%;
 			height: 4px;
-			pointer-events: none;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
 			padding: 0 7px;
+			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+			pointer-events: none;
 
 			.tick {
 				display: inline-block;
 				width: 4px;
 				height: 4px;
-				border-radius: 50%;
 				background-color: var(--v-slider-fill-color);
+				border-radius: 50%;
 			}
 		}
 
@@ -203,29 +205,29 @@ export default createComponent({
 		}
 
 		.thumb-label {
-			opacity: 0;
 			position: absolute;
-			width: max-content;
-			left: calc(var(--_v-slider-percentage) * 1%);
-			transform: translateX(-50%);
 			top: 10px;
+			left: calc(var(--_v-slider-percentage) * 1%);
+			width: max-content;
+			padding: 4px 8px;
 			color: var(--input-text-color);
+			font-size: var(--input-font-size);
 			background-color: var(--input-background-color-alt);
 			border-radius: var(--border-radius);
-			font-size: var(--input-font-size);
-			padding: 4px 8px;
+			transform: translateX(-50%);
+			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
-			&:before {
-				content: '';
+			&::before {
 				position: absolute;
 				top: -4px;
 				left: calc(50%);
 				width: 10px;
 				height: 10px;
+				background-color: var(--input-background-color-alt);
 				border-radius: var(--border-radius);
 				transform: translateX(-50%) rotate(45deg);
-				background-color: var(--input-background-color-alt);
+				content: '';
 			}
 		}
 

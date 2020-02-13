@@ -1,95 +1,103 @@
 // Roboto
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/roboto-light.woff2") format("woff2"),
-    url("../assets/fonts/roboto-light.woff") format("woff");
-  font-weight: 300;
-  font-style: normal;
-  font-display: block;
+	font-weight: 300;
+	font-family: 'Roboto';
+	font-style: normal;
+	src:
+		url('../assets/fonts/roboto-light.woff2') format('woff2'),
+		url('../assets/fonts/roboto-light.woff') format('woff');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/roboto-regular.woff2") format("woff2"),
-    url("../assets/fonts/roboto-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Roboto';
+	font-style: normal;
+	src:
+		url('../assets/fonts/roboto-regular.woff2') format('woff2'),
+		url('../assets/fonts/roboto-regular.woff') format('woff');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/roboto-medium.woff2") format("woff2"),
-    url("../assets/fonts/roboto-medium.woff") format("woff");
-  font-weight: 500;
-  font-style: normal;
-  font-display: block;
+	font-weight: 500;
+	font-family: 'Roboto';
+	font-style: normal;
+	src:
+		url('../assets/fonts/roboto-medium.woff2') format('woff2'),
+		url('../assets/fonts/roboto-medium.woff') format('woff');
+	font-display: block;
 }
 
 // Roboto Mono
 
 @font-face {
-  font-family: "Roboto Mono";
-  src: url("../assets/fonts/robotomono-regular.woff2") format("woff2"),
-    url("../assets/fonts/robotomono-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Roboto Mono';
+	font-style: normal;
+	src:
+		url('../assets/fonts/robotomono-regular.woff2') format('woff2'),
+		url('../assets/fonts/robotomono-regular.woff') format('woff');
+	font-display: block;
 }
 
 // Merriweather
 
 @font-face {
-  font-family: "Merriweather";
-  src: url("../assets/fonts/merriweather-regular.woff2") format("woff2"),
-    url("../assets/fonts/merriweather-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Merriweather';
+	font-style: normal;
+	src:
+		url('../assets/fonts/merriweather-regular.woff2') format('woff2'),
+		url('../assets/fonts/merriweather-regular.woff') format('woff');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Merriweather";
-  src: url("../assets/fonts/merriweather-italic.woff2") format("woff2"),
-    url("../assets/fonts/merriweather-italic.woff") format("woff");
-  font-weight: 400;
-  font-style: italic;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Merriweather';
+	font-style: italic;
+	src:
+		url('../assets/fonts/merriweather-italic.woff2') format('woff2'),
+		url('../assets/fonts/merriweather-italic.woff') format('woff');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Merriweather";
-  src: url("../assets/fonts/merriweather-bold.woff2") format("woff2"),
-    url("../assets/fonts/merriweather-bold.woff") format("woff");
-  font-weight: 600;
-  font-style: normal;
-  font-display: block;
+	font-weight: 600;
+	font-family: 'Merriweather';
+	font-style: normal;
+	src:
+		url('../assets/fonts/merriweather-bold.woff2') format('woff2'),
+		url('../assets/fonts/merriweather-bold.woff') format('woff');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Merriweather";
-  src: url("../assets/fonts/merriweather-light.woff2") format("woff2"),
-    url("../assets/fonts/merriweather-light.woff") format("woff");
-  font-weight: 300;
-  font-style: normal;
-  font-display: block;
+	font-weight: 300;
+	font-family: 'Merriweather';
+	font-style: normal;
+	src:
+		url('../assets/fonts/merriweather-light.woff2') format('woff2'),
+		url('../assets/fonts/merriweather-light.woff') format('woff');
+	font-display: block;
 }
 
 // Material Icons
 
 @font-face {
-  font-family: "Material Icons";
-  src: url("../assets/fonts/material-icons.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Material Icons';
+	font-style: normal;
+	src: url('../assets/fonts/material-icons.woff2') format('woff2');
+	font-display: block;
 }
 
 @font-face {
-  font-family: "Material Icons Outline";
-  src: url("../assets/fonts/material-icons-outline.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+	font-weight: 400;
+	font-family: 'Material Icons Outline';
+	font-style: normal;
+	src: url('../assets/fonts/material-icons-outline.woff2') format('woff2');
+	font-display: block;
 }

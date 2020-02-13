@@ -97,12 +97,12 @@ export default createComponent({
 <style lang="scss" scoped>
 .v-table_table-row {
 	.cell {
-		border-bottom: 1px solid var(--table-row-border-color);
 		padding: 0 20px;
-		background-color: var(--table-background-color);
-		white-space: nowrap;
 		overflow: hidden;
+		white-space: nowrap;
 		text-overflow: ellipsis;
+		background-color: var(--table-background-color);
+		border-bottom: 1px solid var(--table-row-border-color);
 	}
 
 	&.subdued {

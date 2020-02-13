@@ -72,22 +72,22 @@ export default createComponent({
 @import '@/styles/mixins';
 
 .public-view {
+	display: flex;
 	width: 100%;
 	height: 100%;
-	display: flex;
 
 	.container {
-		background-color: var(--page-background-color);
-		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
-		max-width: 500px;
-		width: 100%;
-		height: 100%;
 		display: flex;
 		flex-direction: column;
-		overflow-y: auto;
-		overflow-x: hidden;
 		justify-content: space-between;
+		width: 100%;
+		max-width: 500px;
+		height: 100%;
 		padding: 20px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		background-color: var(--page-background-color);
+		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 
 		@include breakpoint(small) {
 			padding: 40px 80px;
@@ -96,8 +96,8 @@ export default createComponent({
 
 	.art {
 		display: none;
-		height: 100%;
 		flex-grow: 1;
+		height: 100%;
 
 		@include breakpoint(small) {
 			display: block;

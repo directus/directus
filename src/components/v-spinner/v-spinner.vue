@@ -20,20 +20,17 @@ export default createComponent({
 .v-spinner {
 	--v-spinner-color: var(--loading-background-color-accent);
 	--v-spinner-background-color: var(--loading-background-color);
-
 	--v-spinner-speed: 1s;
 	--v-spinner-size: 28px;
 	--v-spinner-line-size: 3px;
 
+	position: relative;
 	width: var(--v-spinner-size);
 	height: var(--v-spinner-size);
-	position: relative;
-
-	border-radius: 100%;
+	background-color: transparent;
 	border: var(--v-spinner-line-size) solid var(--v-spinner-background-color);
 	border-top: var(--v-spinner-line-size) solid var(--v-spinner-color);
-	background-color: transparent;
-
+	border-radius: 100%;
 	animation: rotate var(--v-spinner-speed) infinite linear;
 
 	&.x-small {

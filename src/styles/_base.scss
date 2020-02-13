@@ -1,192 +1,198 @@
 // Root
 
 ::selection {
-  background: #e1f0fa;
+	background: #e1f0fa;
 }
 
 * {
-  font-size: inherit;
-  font-family: inherit;
-  line-height: inherit;
-  font-weight: inherit;
-  color: inherit;
-  margin: 0;
-  user-select: none;
-  box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0;
+	color: inherit;
+	font-weight: inherit;
+	font-size: inherit;
+	font-family: inherit;
+	line-height: inherit;
+	user-select: none;
 }
 
 html {
-  font-size: 15px;
+	font-size: 15px;
 }
 
 body {
-  font-family: var(--family-sans-serif);
-  font-weight: 400;
-  color: var(--page-text-color);
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--page-background-color);
+	color: var(--page-text-color);
+	font-weight: 400;
+	font-family: var(--family-sans-serif);
+	line-height: 1.3;
+	letter-spacing: 0.01em;
+	background-color: var(--page-background-color);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
 
-  &:not(.user-is-tabbing) * {
-    outline: 0;
-  }
+	&:not(.user-is-tabbing) * {
+		outline: 0;
+	}
 }
 
-html, body, #root {
-	height: 100%;
+html,
+body,
+#root {
 	width: 100%;
+	height: 100%;
 }
 
-input, textarea, [contenteditable], .selectable {
-  user-select: text;
+input,
+textarea,
+[contenteditable],
+.selectable {
+	user-select: text;
 }
 
 // Type Style Classes
 
 // Currently only used for page/modal titles
 .type-title {
-  font-size: var(--type-title-size);
-  color: var(--heading-text-color);
+	color: var(--heading-text-color);
+	font-size: var(--type-title-size);
 }
 
 .type-heading-large {
-  font-size: var(--type-heading-large-size);
-  line-height: var(--type-heading-large-line-height);
-  color: var(--heading-text-color);
-  font-weight: 300;
-  letter-spacing: -1px;
+	color: var(--heading-text-color);
+	font-weight: 300;
+	font-size: var(--type-heading-large-size);
+	line-height: var(--type-heading-large-line-height);
+	letter-spacing: -1px;
 }
 
 .type-heading-medium {
-  font-size: var(--type-heading-medium-size);
-  color: var(--heading-text-color);
-  font-weight: 300;
+	color: var(--heading-text-color);
+	font-weight: 300;
+	font-size: var(--type-heading-medium-size);
 }
 
 // Currently only used as modal/error heading
 .type-heading-small {
-  font-size: var(--type-heading-small-size);
-  color: var(--heading-text-color);
+	color: var(--heading-text-color);
+	font-size: var(--type-heading-small-size);
 }
 
 .type-label {
-  font-size: var(--type-label-size);
-  color: var(--heading-text-color);
+	color: var(--heading-text-color);
+	font-size: var(--type-label-size);
 }
 
 .type-note {
-  font-size: var(--type-note-size);
-  font-style: italic;
-  color: var(--note-text-color);
+	color: var(--note-text-color);
+	font-size: var(--type-note-size);
+	font-style: italic;
 }
 
 .type-table-head {
-  font-weight: 500;
+	font-weight: 500;
 }
 
 .type-body-serif {
-  font-family: var(--family-serif);
-  font-size: var(--type-body-serif-size);
-  line-height: var(--type-body-serif-line-height);
+	font-size: var(--type-body-serif-size);
+	font-family: var(--family-serif);
+	line-height: var(--type-body-serif-line-height);
 }
 
 .type-body-sans {
-  font-family: var(--family-sans-serif);
-  font-size: var(--type-body-sans-size);
-  line-height: var(--type-body-sans-line-height);
+	font-size: var(--type-body-sans-size);
+	font-family: var(--family-sans-serif);
+	line-height: var(--type-body-sans-line-height);
 }
 
 // Tags
 
 button {
-  cursor: pointer;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  padding: 0;
+	padding: 0;
+	background: transparent;
+	border: none;
+	border-radius: 0;
+	cursor: pointer;
 }
 
 label {
-  display: block;
+	display: block;
 }
 
 fieldset {
-  border: 0;
-  padding: 10px 0 20px;
+	padding: 10px 0 20px;
+	border: 0;
 
-  &.centered {
-    border-top: 1px solid var(--blue-grey-200);
-    legend {
-      color: var(--blue-grey-400);
-      padding: 10px 20px;
-      text-align: center;
-    }
-  }
+	&.centered {
+		border-top: 1px solid var(--blue-grey-200);
+
+		legend {
+			padding: 10px 20px;
+			color: var(--blue-grey-400);
+			text-align: center;
+		}
+	}
 }
 
 // TODO: Get rid of the old font classes below once the places they're used are cleaned up
 
 .x-small {
-  max-width: var(--width-x-small);
+	max-width: var(--width-x-small);
 }
 
 .small {
-  max-width: var(--width-small);
+	max-width: var(--width-small);
 }
 
 .normal {
-  max-width: var(--width-medium);
+	max-width: var(--width-medium);
 }
 
 .large {
-  max-width: var(--width-large);
+	max-width: var(--width-large);
 }
 
 .x-large {
-  max-width: var(--width-x-large);
+	max-width: var(--width-x-large);
 }
 
 .style-input {
-  width: 100%;
-  border: var(--input-border-width) solid var(--input-border-color);
-  border-radius: var(--border-radius);
-  color: var(--blue-grey-400);
-  padding: 10px;
-  line-height: 1.5;
-  transition: var(--fast) var(--transition);
-  transition-property: color, border-color, padding;
-  height: var(--input-height);
+	width: 100%;
+	height: var(--input-height);
+	padding: 10px;
+	color: var(--blue-grey-400);
+	line-height: 1.5;
+	border: var(--input-border-width) solid var(--input-border-color);
+	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: color, border-color, padding;
 
-  &::placeholder {
-    color: var(--blue-grey-300);
-  }
+	&::placeholder {
+		color: var(--blue-grey-300);
+	}
 
-  &:focus {
-    color: var(--blue-grey-800);
-    border-color: var(--blue-grey-800);
-    outline: 0;
-  }
+	&:focus {
+		color: var(--blue-grey-800);
+		border-color: var(--blue-grey-800);
+		outline: 0;
+	}
 
-  &:focus + i {
-    color: var(--blue-grey-800);
-  }
+	&:focus + i {
+		color: var(--blue-grey-800);
+	}
 
-  &[disabled],
-  &:read-only {
-    background-color: var(--blue-grey-50);
-    cursor: not-allowed;
-  }
+	&[disabled],
+	&:read-only {
+		background-color: var(--blue-grey-50);
+		cursor: not-allowed;
+	}
 }
 
 .no-wrap {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px white inset;
+	-webkit-box-shadow: 0 0 0 30px white inset;
 }

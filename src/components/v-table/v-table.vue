@@ -274,13 +274,13 @@ export default createComponent({
 	--v-table-height: auto;
 
 	position: relative;
-	overflow: auto;
 	height: var(--v-table-height);
+	overflow: auto;
 
 	table {
-		border-spacing: 0;
 		width: 100%;
 		table-layout: fixed;
+		border-spacing: 0;
 	}
 
 	&.loading {
@@ -299,11 +299,12 @@ export default createComponent({
 		}
 
 		.loading-text {
+			color: var(--input-placeholder-color);
+			text-align: center;
+
 			td {
 				padding: 16px;
 			}
-			color: var(--input-placeholder-color);
-			text-align: center;
 		}
 	}
 

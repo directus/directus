@@ -75,67 +75,60 @@ export default createComponent({
 .v-switch {
 	--v-switch-color: var(--input-background-color-active);
 
-	font-size: 0;
-	appearance: none;
-	background-color: transparent;
-	border-radius: 0;
-	border: none;
 	display: flex;
 	align-items: center;
+	font-size: 0;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+	appearance: none;
 
 	.switch {
-		display: inline-block;
-		height: 24px;
-		width: 44px;
-		border-radius: 12px;
-		border: var(--input-border-width) solid var(--input-border-color);
 		position: relative;
+		display: inline-block;
+		width: 44px;
+		height: 24px;
+		vertical-align: middle;
+		border: var(--input-border-width) solid var(--input-border-color);
+		border-radius: 12px;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;
-		vertical-align: middle;
-
-		&:not(:disabled)hover {
-			border-color: var(--input-border-color-hover);
-		}
 
 		&:focus {
 			outline: 0;
 		}
 
 		&::after {
-			content: '';
-			width: 16px;
-			height: 16px;
 			position: absolute;
 			top: 2px;
 			left: 2px;
 			display: block;
+			width: 16px;
+			height: 16px;
 			background-color: var(--input-border-color);
 			border-radius: 8px;
 			transition: transform var(--fast) var(--transition);
+			content: '';
+		}
+
+		&:hover {
+			border-color: var(--input-border-color-hover);
 		}
 	}
 
-	&[aria-pressed='true'] {
-		&:not(:disabled) {
-			.switch {
-				background-color: var(--v-switch-color);
-				border-color: var(--v-switch-color);
+	&[aria-pressed='true'] .switch {
+		background-color: var(--v-switch-color);
+		border-color: var(--v-switch-color);
 
-				&::after {
-					background-color: var(--input-text-color-active);
-				}
-			}
-		}
-
-		.switch::after {
+		&::after {
+			background-color: var(--input-text-color-active);
 			transform: translateX(20px);
 		}
 	}
 
 	.label:not(:empty) {
-		font-size: var(--input-font-size);
 		margin-left: 8px;
+		font-size: var(--input-font-size);
 		vertical-align: middle;
 	}
 
@@ -144,6 +137,15 @@ export default createComponent({
 
 		.switch {
 			background-color: var(--input-background-color-disabled);
+			border-color: var(--input-border-color);
+
+			&::after {
+				background-color: var(--input-border-color);
+			}
+
+			&:hover {
+				border-color: var(--input-border-color);
+			}
 		}
 
 		.label {

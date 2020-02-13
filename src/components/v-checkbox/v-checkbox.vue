@@ -89,22 +89,22 @@ export default createComponent({
 .v-checkbox {
 	--v-checkbox-color: var(--input-background-color-active);
 
-	font-size: 0;
-	appearance: none;
-	background-color: transparent;
-	border-radius: 0;
-	border: none;
 	display: flex;
 	align-items: center;
+	font-size: 0;
 	text-align: left;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+	appearance: none;
 
 	.label:not(:empty) {
-		font-size: var(--input-font-size);
 		margin-left: 8px;
-		vertical-align: middle;
+		overflow: hidden;
+		font-size: var(--input-font-size);
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		overflow: hidden;
+		vertical-align: middle;
 	}
 
 	& .v-icon {

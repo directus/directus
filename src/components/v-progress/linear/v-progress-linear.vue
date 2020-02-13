@@ -65,19 +65,19 @@ export default createComponent({
 	--v-progress-linear-color: var(--progress-background-color-accent);
 	--v-progress-linear-background-color: var(--progress-background-color);
 
-	background-color: var(--v-progress-linear-background-color);
-	height: var(--v-progress-linear-height);
 	position: relative;
-	width: 100%;
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: var(--v-progress-linear-height);
 	overflow: hidden;
+	background-color: var(--v-progress-linear-background-color);
 
 	.inner {
+		position: absolute;
 		top: 0;
 		left: 0;
-		position: absolute;
 		height: 100%;
 		background-color: var(--v-progress-linear-color);
 	}
@@ -87,7 +87,7 @@ export default createComponent({
 	}
 
 	&.bottom {
-		bottom: 0px;
+		bottom: 0;
 	}
 
 	&.fixed {
@@ -95,11 +95,11 @@ export default createComponent({
 	}
 
 	&.indeterminate .inner {
+		position: relative;
 		width: 100% !important;
 		transform-origin: left;
-		will-change: transform;
 		animation: indeterminate 2s infinite;
-		position: relative;
+		will-change: transform;
 	}
 
 	&.rounded,
@@ -108,7 +108,7 @@ export default createComponent({
 	}
 
 	&.top {
-		top: 0px;
+		top: 0;
 	}
 }
 
@@ -117,10 +117,12 @@ export default createComponent({
 		transform: scaleX(0);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
 	}
+
 	50% {
 		transform: scaleX(1) translateX(25%);
 		animation-timing-function: cubic-bezier(0.4, 0.1, 0.2, 0.9);
 	}
+
 	100% {
 		transform: scaleX(1) translateX(100%);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);

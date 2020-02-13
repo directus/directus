@@ -222,21 +222,21 @@ export default createComponent({
 <style lang="scss" scoped>
 .v-table_table-header {
 	.cell {
-		background-color: var(--table-background-color);
-		padding: 0 20px;
-		border-bottom: 1px solid var(--table-head-border-color);
-		height: 48px;
-		font-size: 14px;
-		font-weight: var(--weight-bold);
 		position: relative;
+		height: 48px;
+		padding: 0 20px;
+		font-weight: var(--weight-bold);
+		font-size: 14px;
+		background-color: var(--table-background-color);
+		border-bottom: 1px solid var(--table-head-border-color);
 	}
 
 	.sortable {
 		.sort-icon {
-			opacity: 0;
-			transform: scaleY(-1) translateX(4px);
-			transition: opacity var(--fast) var(--transition);
 			position: absolute;
+			transform: scaleY(-1) translateX(4px);
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
 		}
 
 		&:hover .sort-icon {
@@ -273,21 +273,21 @@ export default createComponent({
 	}
 
 	.resize-handle {
-		cursor: ew-resize;
+		position: absolute;
+		top: 0;
+		right: 0;
 		width: 5px;
 		height: 100%;
-		position: absolute;
-		right: 0;
-		top: 0;
+		cursor: ew-resize;
 
 		&::after {
-			content: '';
+			position: relative;
+			left: 2px;
 			display: block;
 			width: 1px;
-			position: relative;
 			height: 100%;
-			left: 2px;
 			background-color: var(--table-drag-handle);
+			content: '';
 		}
 
 		&:hover::after {
