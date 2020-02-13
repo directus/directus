@@ -15,6 +15,10 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
+      - name: Lint
+        run: |
+          yarn lint
+          yarn lint:styles
       - name: Run tests
         run: |
           yarn test --coverage
