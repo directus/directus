@@ -4,7 +4,7 @@
 		:class="[sizeClass, { block, rounded, icon, outlined, loading }]"
 		:type="type"
 		:disabled="disabled"
-		@click="!loading ? $emit('click') : null"
+		@click="onClick"
 	>
 		<span class="content" :class="{ invisible: loading }"><slot /></span>
 		<div class="spinner">
@@ -52,9 +52,15 @@ export default createComponent({
 		},
 		...sizeProps
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const sizeClass = useSizeClass(props);
-		return { sizeClass };
+
+		return { sizeClass, onClick };
+
+		function onClick(event: MouseEvent) {
+			if (props.loading === true) return;
+			emit('click', event);
+		}
 	}
 });
 </script>
@@ -84,6 +90,10 @@ export default createComponent({
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
 
+	&:active {
+		transform: scale(0.96);
+	}
+
 	&:focus {
 		outline: 0;
 	}
@@ -93,6 +103,10 @@ export default createComponent({
 		background-color: var(--button-primary-background-color-disabled);
 		border: var(--input-border-width) solid var(--button-primary-background-color-disabled);
 		cursor: not-allowed;
+
+		&:active {
+			transform: unset;
+		}
 	}
 
 	&:not(.loading):not(:disabled):hover {
@@ -149,6 +163,10 @@ export default createComponent({
 		width: var(--v-button-height);
 		min-width: 0;
 		padding: 0;
+
+		&:active {
+			transform: scale(0.94);
+		}
 	}
 
 	.content,

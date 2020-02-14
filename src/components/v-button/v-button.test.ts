@@ -74,4 +74,37 @@ describe('Button', () => {
 
 		expect(component.classes()).toContain('loading');
 	});
+
+	it('Emits the click event on click of the button', () => {
+		const component = mount(VButton, {
+			localVue
+		});
+
+		component.find('button').trigger('click');
+		expect(component.emitted('click')).toBeTruthy();
+	});
+
+	it('Does not emit click event on disabled button', () => {
+		const component = mount(VButton, {
+			localVue,
+			propsData: {
+				disabled: true
+			}
+		});
+
+		component.find('button').trigger('click');
+		expect(component.emitted()).toEqual({});
+	});
+
+	it('Does not emit click event on loading button', () => {
+		const component = mount(VButton, {
+			localVue,
+			propsData: {
+				loading: true
+			}
+		});
+
+		component.find('button').trigger('click');
+		expect(component.emitted()).toEqual({});
+	});
 });
