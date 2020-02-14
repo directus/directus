@@ -69,7 +69,7 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins';
+@import '@/styles/mixins/breakpoint';
 
 .public-view {
 	display: flex;

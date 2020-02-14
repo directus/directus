@@ -88,10 +88,12 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/type-styles';
+
 .v-slider {
-	--v-slider-color: var(--slider-track-color);
-	--v-slider-fill-color: var(--slider-track-fill-color);
-	--v-slider-thumb-color: var(--slider-thumb-color);
+	--v-slider-color: var(--input-border-color);
+	--v-slider-thumb-color: var(--input-foreground-color);
+	--v-slider-fill-color: var(--input-foreground-color);
 
 	display: flex;
 	align-items: center;
@@ -137,7 +139,7 @@ export default createComponent({
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--input-background-color);
+				box-shadow: 0 0 0 4px var(--background-color);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
@@ -153,7 +155,7 @@ export default createComponent({
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--input-background-color);
+				box-shadow: 0 0 0 4px var(--background-color);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
@@ -166,16 +168,17 @@ export default createComponent({
 			right: 0;
 			left: 0;
 			z-index: 2;
+			width: calc(100% - 14px);
 			height: 2px;
 			background-color: var(--v-slider-fill-color);
-			transform: translateY(2px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			transform: translateY(3px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
 		}
 
 		.ticks {
 			position: absolute;
-			top: 11px;
+			top: 12px;
 			left: 0;
 			display: flex;
 			align-items: center;
@@ -210,10 +213,9 @@ export default createComponent({
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: max-content;
 			padding: 4px 8px;
-			color: var(--input-text-color);
-			font-size: var(--input-font-size);
-			background-color: var(--input-background-color-alt);
-			border-radius: var(--border-radius);
+			color: var(--input-foreground-color);
+			background-color: var(--background-color-alt);
+			border-radius: var(--input-border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -224,11 +226,13 @@ export default createComponent({
 				left: calc(50%);
 				width: 10px;
 				height: 10px;
-				background-color: var(--input-background-color-alt);
+				background-color: var(--background-color-alt);
 				border-radius: var(--border-radius);
 				transform: translateX(-50%) rotate(45deg);
 				content: '';
 			}
+
+			@include type-body-sans;
 		}
 
 		&:active {

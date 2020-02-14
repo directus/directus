@@ -225,10 +225,10 @@ export default createComponent({
 		position: relative;
 		height: 48px;
 		padding: 0 20px;
-		font-weight: var(--weight-bold);
+		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--table-background-color);
-		border-bottom: 1px solid var(--table-head-border-color);
+		background-color: var(--input-background-color);
+		border-bottom: 1px solid var(--input-border-color);
 	}
 
 	.sortable {
@@ -286,12 +286,12 @@ export default createComponent({
 			display: block;
 			width: 1px;
 			height: 100%;
-			background-color: var(--table-drag-handle);
+			background-color: var(--input-border-color);
 			content: '';
 		}
 
 		&:hover::after {
-			background-color: var(--table-drag-handle-hover);
+			background-color: var(--input-action-color-hover);
 		}
 	}
 }

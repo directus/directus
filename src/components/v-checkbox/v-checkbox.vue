@@ -86,8 +86,11 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/type-styles';
+@import '@/styles/mixins/no-wrap';
+
 .v-checkbox {
-	--v-checkbox-color: var(--input-background-color-active);
+	--v-checkbox-color: var(--input-foreground-color);
 
 	display: flex;
 	align-items: center;
@@ -100,11 +103,9 @@ export default createComponent({
 
 	.label:not(:empty) {
 		margin-left: 8px;
-		overflow: hidden;
-		font-size: var(--input-font-size);
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		vertical-align: middle;
+
+		@include type-body-sans;
+		@include no-wrap;
 	}
 
 	& .v-icon {
@@ -115,11 +116,17 @@ export default createComponent({
 		cursor: not-allowed;
 
 		.label {
-			color: var(--popover-text-color-disabled);
+			color: var(--foreground-color-secondary);
 		}
 
 		.v-icon {
 			--v-icon-color: var(--input-border-color);
+		}
+	}
+
+	&:not(:disabled):hover {
+		.v-icon {
+			--v-icon-color: var(--input-border-color-hover);
 		}
 	}
 

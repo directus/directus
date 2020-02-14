@@ -20,7 +20,7 @@ The chip component supports the following sizes through the use of props:
 
 ## Colors
 
-You can set the color, background color, hover color, and background hover color with the `--v-chip-color`, `--v-chip-background-color`, `--v-chip-hover-color`, and `--v-chip-hover-background-color` css variables respectively:
+You can set the color, background color, hover color, and background hover color with the `--v-chip-color`, `--v-chip-background-color`, `--v-chip-color-hover`, and `--v-chip-background-color-hover` css variables respectively:
 
 ```html
 <v-chip> I'm a chip! </v-chip>
@@ -28,8 +28,8 @@ You can set the color, background color, hover color, and background hover color
 .v-chip {
 	--v-chip-color: var(--red);
 	--v-chip-background-color: var(--red-50);
-	--v-chip-hover-color: var(--white);
-	--v-chip-hover-background-color: var(--red);
+	--v-chip-color-hover: var(--white);
+	--v-chip-background-color-hover: var(--red);
 }
 </style>
 ```
@@ -69,9 +69,9 @@ There are two events, one when clicking on the chip called `click` and one when 
 | `close` | Triggers when the `close` prop is enabled and gets clicked (Doesn't trigger the `click` event) |
 
 ## CSS Variables
-| Variable                          | Default                                      |
-|-----------------------------------|----------------------------------------------|
-| `--v-chip-color`                  | `var(--chip-primary-text-color)`             |
-| `--v-chip-background-color`       | `var(--chip-primary-background-color)`       |
-| `--v-chip-hover-color`            | `var(--chip-primary-text-color)`             |
-| `--v-chip-hover-background-color` | `var(--chip-primary-background-color-hover)` |
+| Variable                          | Default                               |
+|-----------------------------------|---------------------------------------|
+| `--v-chip-color`                  | `var(--input-foreground-color)`       |
+| `--v-chip-background-color`       | `var(--input-border-color)`           |
+| `--v-chip-color-hover`            | `var(--input-foreground-color-hover)` |
+| `--v-chip-background-color-hover` | `var(--input-border-color-hover)`     |

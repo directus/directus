@@ -62,8 +62,8 @@ export default createComponent({
 <style lang="scss" scoped>
 .v-progress-linear {
 	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--progress-background-color-accent);
-	--v-progress-linear-background-color: var(--progress-background-color);
+	--v-progress-linear-color: var(--input-foreground-color);
+	--v-progress-linear-background-color: var(--input-border-color);
 
 	position: relative;
 	display: flex;

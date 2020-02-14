@@ -1,9 +1,3 @@
-// Root
-
-::selection {
-	background: #e1f0fa;
-}
-
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -31,7 +25,18 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 
 	&:not(.user-is-tabbing) * {
-		outline: 0;
+		outline: none;
+
+		&::-moz-focus-inner,
+		&::-moz-focus-outer {
+			border: none;
+			outline: none;
+		}
+
+		&:focus,
+		&:focus-within {
+			outline: none;
+		}
 	}
 }
 
@@ -48,63 +53,6 @@ textarea,
 .selectable {
 	user-select: text;
 }
-
-// Type Style Classes
-
-// Currently only used for page/modal titles
-.type-title {
-	color: var(--heading-text-color);
-	font-size: var(--type-title-size);
-}
-
-.type-heading-large {
-	color: var(--heading-text-color);
-	font-weight: 300;
-	font-size: var(--type-heading-large-size);
-	line-height: var(--type-heading-large-line-height);
-	letter-spacing: -1px;
-}
-
-.type-heading-medium {
-	color: var(--heading-text-color);
-	font-weight: 300;
-	font-size: var(--type-heading-medium-size);
-}
-
-// Currently only used as modal/error heading
-.type-heading-small {
-	color: var(--heading-text-color);
-	font-size: var(--type-heading-small-size);
-}
-
-.type-label {
-	color: var(--heading-text-color);
-	font-size: var(--type-label-size);
-}
-
-.type-note {
-	color: var(--note-text-color);
-	font-size: var(--type-note-size);
-	font-style: italic;
-}
-
-.type-table-head {
-	font-weight: 500;
-}
-
-.type-body-serif {
-	font-size: var(--type-body-serif-size);
-	font-family: var(--family-serif);
-	line-height: var(--type-body-serif-line-height);
-}
-
-.type-body-sans {
-	font-size: var(--type-body-sans-size);
-	font-family: var(--family-sans-serif);
-	line-height: var(--type-body-sans-line-height);
-}
-
-// Tags
 
 button {
 	padding: 0;
@@ -133,66 +81,6 @@ fieldset {
 	}
 }
 
-// TODO: Get rid of the old font classes below once the places they're used are cleaned up
-
-.x-small {
-	max-width: var(--width-x-small);
-}
-
-.small {
-	max-width: var(--width-small);
-}
-
-.normal {
-	max-width: var(--width-medium);
-}
-
-.large {
-	max-width: var(--width-large);
-}
-
-.x-large {
-	max-width: var(--width-x-large);
-}
-
-.style-input {
-	width: 100%;
-	height: var(--input-height);
-	padding: 10px;
-	color: var(--blue-grey-400);
-	line-height: 1.5;
-	border: var(--input-border-width) solid var(--input-border-color);
-	border-radius: var(--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: color, border-color, padding;
-
-	&::placeholder {
-		color: var(--blue-grey-300);
-	}
-
-	&:focus {
-		color: var(--blue-grey-800);
-		border-color: var(--blue-grey-800);
-		outline: 0;
-	}
-
-	&:focus + i {
-		color: var(--blue-grey-800);
-	}
-
-	&[disabled],
-	&:read-only {
-		background-color: var(--blue-grey-50);
-		cursor: not-allowed;
-	}
-}
-
-.no-wrap {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-input:-webkit-autofill {
-	-webkit-box-shadow: 0 0 0 30px white inset;
+::selection {
+	background: #e1f0fa;
 }

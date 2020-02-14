@@ -12,8 +12,8 @@ The linear progress component supports colors. Colors can be changed via the css
 <v-progress-linear />
 <style>
 .v-overlay {
-    --v-progress-linear-color: red;
-    --v-progress-linear-background-color: var(--black);
+	--v-progress-linear-color: red;
+	--v-progress-linear-background-color: var(--black);
 }
 </style>
 ```
@@ -42,8 +42,8 @@ n/a
 | _default_ |             | --    |
 
 ## CSS Variables
-| Variable                               | Default                                   |
-|----------------------------------------|-------------------------------------------|--|
-| `--v-progress-linear-height`           | `4px`                                     |
-| `--v-progress-linear-color`            | `var(--progress-background-color-accent)` |
-| `--v-progress-linear-background-color` | `var(--progress-background-color)`        |
+| Variable                               | Default                         |
+|----------------------------------------|---------------------------------|--|
+| `--v-progress-linear-height`           | `4px`                           |
+| `--v-progress-linear-color`            | `var(--input-foreground-color)` |
+| `--v-progress-linear-background-color` | `var(--input-border-color)`     |

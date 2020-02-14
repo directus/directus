@@ -43,3 +43,6 @@ Note: all other attached attributes are bound to the input HTMLELement in the co
 | `click:append-outer`  | User clicks on content of outer append slot  | --    |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to `emptied`.
+
+## CSS Variables
+n/a

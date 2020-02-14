@@ -1,0 +1,43 @@
+@import 'mixins/type-styles';
+
+:root {
+	--family-monospace: 'Roboto Mono', monospace;
+	--family-serif: 'Merriweather', serif;
+	--family-sans-serif: 'Roboto', sans-serif;
+}
+
+.type-title {
+	@include type-title;
+}
+
+.type-heading-large {
+	@include type-heading-large;
+}
+
+.type-heading-medium {
+	@include type-heading-medium;
+}
+
+.type-heading-small {
+	@include type-heading-small;
+}
+
+.type-label {
+	@include type-label;
+}
+
+.type-note {
+	@include type-note;
+}
+
+.type-table-head {
+	@include type-table-head;
+}
+
+.type-body-serif {
+	@include type-body-serif;
+}
+
+.type-body-sans {
+	@include type-body-sans;
+}

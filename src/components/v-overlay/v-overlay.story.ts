@@ -29,13 +29,10 @@ export const interactive = () => ({
 			default: boolean('Absolute', false)
 		},
 		color: {
-			default: color('Color', '#263238')
+			default: text('Color', 'rgba(38, 50, 56, 0.75)')
 		},
 		zIndex: {
 			default: number('z-index', 500)
-		},
-		opacity: {
-			default: number('Opacity', 0.75)
 		}
 	},
 	data() {
@@ -47,7 +44,7 @@ export const interactive = () => ({
 	<div style="position: relative; padding: 50px; border: 3px dashed #eee; width: max-content;">
 		<v-button @click="active = true">Show overlay</v-button>
 
-		<v-overlay :active="active" :absolute="absolute" :z-index="zIndex" :style="{'--v-overlay-color': color, '--v-overlay-opacity': opacity}">
+		<v-overlay :active="active" :absolute="absolute" :style="{'--v-overlay-color': color, '--v-overlay-z-index': zIndex }">
 		<v-button @click="active = false">Close overlay</v-button>
 		</v-overlay>
 	</div>
@@ -60,13 +57,10 @@ export const withClick = () => ({
 			default: boolean('Absolute', false)
 		},
 		color: {
-			default: color('Color', '#263238')
+			default: text('Color', 'rgba(38, 50, 56, 0.75)')
 		},
 		zIndex: {
 			default: number('z-index', 500)
-		},
-		opacity: {
-			default: number('Opacity', 0.75)
 		}
 	},
 	data() {
@@ -85,7 +79,14 @@ export const withClick = () => ({
 	<div style="position: relative; padding: 50px; border: 3px dashed #eee; width: max-content;">
 		<v-button @click="active = true">Show overlay</v-button>
 
-		<v-overlay :active="active" :absolute="absolute" :color="color" :z-index="zIndex" :opacity="opacity" @click="click" />
+		<v-overlay
+		:style="{
+			'--v-overlay-color': color,
+			'--v-overlay-z-index': zIndex,
+		}"
+		:active="active"
+		:absolute="absolute"
+		@click="click" />
 	</div>
 	`
 });

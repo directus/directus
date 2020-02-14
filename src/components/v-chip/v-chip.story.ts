@@ -85,8 +85,8 @@ export const withText = () => ({
 			:style="{
 				'--v-chip-color': color,
 				'--v-chip-background-color': backgroundColor,
-				'--v-chip-hover-color': hoverColor,
-				'--v-chip-hover-background-color': hoverBackgroundColor
+				'--v-chip-color-hover': hoverColor,
+				'--v-chip-background-color-hover': hoverBackgroundColor
 			}"
 			:disabled="disabled"
 			:x-small="size === 'xSmall'"
@@ -181,8 +181,8 @@ export const withIcon = () => ({
 			:style="{
 				'--v-chip-color': color,
 				'--v-chip-background-color': backgroundColor,
-				'--v-chip-hover-color': hoverColor,
-				'--v-chip-hover-background-color': hoverBackgroundColor
+				'--v-chip-color-hover': hoverColor,
+				'--v-chip-background-color-hover': hoverBackgroundColor
 			}"
 			:disabled="disabled"
 			:x-small="size === 'xSmall'"
@@ -212,8 +212,8 @@ export const withColor = () => ({
 				style="
 					--v-chip-color: var(--white);
 					--v-chip-background-color: var(--red-600);
-					--v-chip-hover-color: var(--white);
-					--v-chip-hover-background-color: var(--red-400);
+					--v-chip-color-hover: var(--white);
+					--v-chip-background-color-hover: var(--red-400);
 				"
 			>
 				<v-icon
@@ -227,8 +227,8 @@ export const withColor = () => ({
 				style="
 					--v-chip-color: var(--white);
 					--v-chip-background-color: var(--green-600);
-					--v-chip-hover-color: var(--white);
-					--v-chip-hover-background-color: var(--green-400);
+					--v-chip-color-hover: var(--white);
+					--v-chip-background-color-hover: var(--green-400);
 				"
 			>
 				<v-icon
@@ -242,8 +242,8 @@ export const withColor = () => ({
 				style="
 					--v-chip-color: var(--white);
 					--v-chip-background-color: var(--amber-600);
-					--v-chip-hover-color: var(--white);
-					--v-chip-hover-background-color: var(--amber-400);
+					--v-chip-color-hover: var(--white);
+					--v-chip-background-color-hover: var(--amber-400);
 				"
 			>
 				<v-icon

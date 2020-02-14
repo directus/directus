@@ -91,9 +91,10 @@ export default createComponent({
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
+		color: var(--input-foreground-color);
 		background-color: var(--input-background-color);
 		border: var(--input-border-width) solid var(--input-border-color);
-		border-radius: var(--border-radius);
+		border-radius: var(--input-border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		.prepend {
@@ -101,15 +102,21 @@ export default createComponent({
 		}
 
 		&:not(.disabled):hover {
+			color: var(--input-foreground-color-hover);
+			background-color: var(--input-background-color-hover);
 			border-color: var(--input-border-color-hover);
 		}
 
 		&:not(.disabled):focus-within {
+			color: var(--input-foreground-color-focus);
+			background-color: var(--input-background-color-focus);
 			border-color: var(--input-border-color-focus);
 		}
 
 		&.disabled {
+			color: var(--input-foreground-color-disabled);
 			background-color: var(--input-background-color-disabled);
+			border-color: var(--input-border-color-disabled);
 		}
 
 		&.full-width {
@@ -122,6 +129,10 @@ export default createComponent({
 			background-color: transparent;
 			border: none;
 			appearance: none;
+
+			&::placeholder {
+				color: var(--input-foreground-color-empty);
+			}
 		}
 
 		&.monospace {
@@ -132,7 +143,7 @@ export default createComponent({
 
 		.prefix,
 		.suffix {
-			color: var(--input-border-color-focus);
+			color: var(--input-foreground-color-empty);
 		}
 
 		.append {

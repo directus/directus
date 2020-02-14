@@ -12,13 +12,14 @@ export default createComponent({});
 
 <style lang="scss" scoped>
 .v-sheet {
-	--v-sheet-background-color: var(--input-background-color-alt);
+	--v-sheet-background-color: var(--highlight);
 	--v-sheet-height: auto;
 	--v-sheet-min-height: var(--input-height);
 	--v-sheet-max-height: none;
 	--v-sheet-width: auto;
 	--v-sheet-min-width: none;
 	--v-sheet-max-width: none;
+	--v-sheet-padding: 8px;
 
 	width: var(--v-sheet-width);
 	min-width: var(--v-sheet-min-width);
@@ -26,9 +27,9 @@ export default createComponent({});
 	height: var(--v-sheet-height);
 	min-height: var(--v-sheet-min-height);
 	max-height: var(--v-sheet-max-height);
-	padding: 8px;
+	padding: var(--v-sheet-padding);
 	overflow: auto;
 	background-color: var(--v-sheet-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--input-border-radius);
 }
 </style>

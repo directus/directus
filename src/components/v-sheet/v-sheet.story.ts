@@ -33,7 +33,7 @@ export const interactive = () => ({
 			)
 		},
 		color: {
-			default: color('Color', '#cfd8dc')
+			default: color('Color', '#f9fafa')
 		},
 		width: {
 			default: text('Width', 'auto')
@@ -52,6 +52,9 @@ export const interactive = () => ({
 		},
 		maxHeight: {
 			default: text('Max Height', 'none')
+		},
+		padding: {
+			default: text('Padding', '8px')
 		}
 	},
 	template: `
@@ -63,7 +66,8 @@ export const interactive = () => ({
 			'--v-sheet-min-width': minWidth,
 			'--v-sheet-min-height': minHeight,
 			'--v-sheet-max-width': maxWidth,
-			'--v-sheet-max-height': maxHeight
+			'--v-sheet-max-height': maxHeight,
+			'--v-sheet-padding': padding
 		}"
 	>{{ text }}</v-sheet>`
 });

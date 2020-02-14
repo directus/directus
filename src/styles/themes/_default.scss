@@ -1,0 +1,85 @@
+/* stylelint-disable custom-property-empty-line-before, declaration-colon-space-after */
+body {
+	/* Global */
+	--brand: 										var(--blue-grey-900);
+
+	--accent: 										var(--blue-500);
+	--accent-light: 								var(--blue-50);
+	--accent-dark: 									var(--light-blue-800);
+
+	--action: 										var(--blue-grey-800);
+	--action-light: 								var(--blue-grey-50);
+	--action-dark: 									var(--light-blue-900);
+
+	--success: 										var(--green);
+	--success-light: 								var(--green-50);
+	--success-dark: 								var(--green-800);
+
+	--danger: 										var(--red);
+	--danger-light: 								var(--red-50);
+	--danger-dark: 									var(--red-800);
+
+	--warning: 										var(--orange);
+	--warning-dark: 								var(--orange-800);
+	--warning-light: 								var(--orange-50);
+
+	--background-color: 							var(--white);
+	--background-color-alt: 						var(--blue-grey-50);
+	--foreground-color: 							var(--blue-grey-800);
+	--foreground-color-secondary: 					var(--blue-grey-300);
+	--foreground-color-tertiary: 					var(--blue-grey-100);
+
+	--highlight: 									var(--off-white);
+
+	/* Inputs */
+	--input-foreground-color: 						var(--blue-grey-800);
+	--input-foreground-color-hover: 				var(--blue-grey-800);
+	--input-foreground-color-focus: 				var(--blue-grey-800);
+	--input-foreground-color-empty: 				var(--blue-grey-300);
+	--input-foreground-color-disabled: 				var(--blue-grey-200);
+
+	--input-background-color: 						var(--white);
+	--input-background-color-hover:					var(--white);
+	--input-background-color-focus:					var(--white);
+	--input-background-color-empty:					var(--white);
+	--input-background-color-disabled: 				var(--blue-grey-50);
+
+	--input-border-width: 							2px;
+	--input-border-radius: 							3px;
+	--input-border-color: 							var(--blue-grey-100);
+	--input-border-color-hover: 					var(--blue-grey-300);
+	--input-border-color-focus: 					var(--blue-grey-600);
+	--input-border-color-disabled: 					var(--blue-grey-100);
+
+	--input-padding: 								12px;
+	--input-height:									52px;
+
+	--input-action-color:							var(--blue-grey-300);
+	--input-action-color-hover:						var(--blue-grey-600);
+	--input-action-color-disabled:					var(--blue-grey-200);
+
+	/* Buttons */
+	--button-border-width: 							var(--input-border-width);
+	--button-border-radius: 						var(--input-border-radius);
+
+	--button-primary-background-color: 				var(--blue-grey-900);
+	--button-primary-background-color-hover: 		var(--blue-grey-800);
+	--button-primary-background-color-disabled: 	var(--blue-grey-400);
+	--button-primary-foreground-color: 				var(--white);
+	--button-primary-foreground-color-hover: 		var(--white);
+	--button-primary-foreground-color-disabled: 	var(--blue-grey-300);
+
+	--button-secondary-background-color: 			var(--blue-grey-100);
+	--button-secondary-background-color-hover:  	var(--blue-grey-200);
+	--button-secondary-background-color-disabled: 	var(--blue-grey-400);
+	--button-secondary-foreground-color:			var(--white);
+	--button-secondary-foreground-color-hover: 		var(--blue-grey-600);
+	--button-secondary-foreground-color-disabled: 	var(--blue-grey-600);
+
+	/* Misc.
+	   Please try to use one of the variables above if applicable.
+	   Only add variables here if there's no other option
+	*/
+	--overlay-color: 								rgba(38, 50, 56, 0.75);
+	--divider-color:								var(--blue-grey-50);
+}

@@ -86,10 +86,10 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-chip {
-	--v-chip-color: var(--chip-primary-text-color);
-	--v-chip-background-color: var(--chip-primary-background-color);
-	--v-chip-hover-color: var(--chip-primary-text-color);
-	--v-chip-hover-background-color: var(--chip-primary-background-color-hover);
+	--v-chip-color: var(--input-foreground-color);
+	--v-chip-background-color: var(--input-border-color);
+	--v-chip-color-hover: var(--input-foreground-color-hover);
+	--v-chip-background-color-hover: var(--input-border-color-hover);
 
 	display: inline-flex;
 	align-items: center;
@@ -98,11 +98,14 @@ export default createComponent({
 	color: var(--v-chip-color);
 	font-weight: var(--weight-normal);
 	background-color: var(--v-chip-background-color);
+	border: var(--input-border-width) solid var(--v-chip-background-color);
 	border-radius: 16px;
 
 	&:hover {
-		color: var(--v-chip-hover-color);
-		background-color: var(--v-chip-hover-background-color);
+		color: var(--v-chip-color-hover);
+		background-color: var(--v-chip-background-color-hover);
+		border-color: var(--v-chip-background-color-hover);
+		cursor: pointer;
 	}
 
 	&.label {
@@ -111,7 +114,6 @@ export default createComponent({
 
 	&.outlined {
 		background-color: transparent;
-		border: var(--input-border-width) solid var(--v-chip-background-color);
 	}
 
 	&.disabled {
@@ -133,12 +135,14 @@ export default createComponent({
 
 	&.large {
 		height: 44px;
+		padding: 0 20px;
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
 		height: 48px;
+		padding: 0 20px;
 		font-size: 18px;
 		border-radius: 24px;
 	}

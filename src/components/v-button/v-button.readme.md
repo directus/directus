@@ -16,7 +16,7 @@ The button component supports the following sizes through the use of props:
 
 ## Colors
 
-You can set the color, background color, hover color, and background hover color with the `--v-button-color`, `--v-button-background-color`, `--v-button-hover-color`, and `--v-button-hover-background-color` css variables respectively:
+You can set the color, background color, hover color, and background hover color with the `--v-button-color`, `--v-button-background-color`, `--v-button-color-hover`, and `--v-button-background-color-hover` css variables respectively:
 
 ```html
 <v-button>Click me</v-button>
@@ -25,8 +25,8 @@ You can set the color, background color, hover color, and background hover color
 .v-button {
 	--v-button-color: var(--red);
 	--v-button-background-color: var(--red-50);
-	--v-button-hover-color: var(--white);
-	--v-button-hover-background-color: var(--red);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color-hover: var(--red);
 }
 </style>
 ```
@@ -81,8 +81,8 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 |-------------------------------------|------------------------------------------------|
 | `--v-button-width`                  | `auto`                                         |
 | `--v-button-height`                 | `44px`                                         |
-| `--v-button-color`                  | `var(--button-primary-text-color)`             |
+| `--v-button-color`                  | `var(--button-primary-foreground-color)`       |
 | `--v-button-background-color`       | `var(--button-primary-background-color)`       |
-| `--v-button-hover-color`            | `var(--button-primary-text-color)`             |
-| `--v-button-hover-background-color` | `var(--button-primary-background-color-hover)` |
+| `--v-button-color-hover`            | `var(--button-primary-foreground-color-hover)` |
+| `--v-button-background-color-hover` | `var(--button-primary-background-color-hover)` |
 | `--v-button-font-size`              | `16px`                                         |

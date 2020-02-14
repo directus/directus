@@ -18,8 +18,8 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-spinner {
-	--v-spinner-color: var(--loading-background-color-accent);
-	--v-spinner-background-color: var(--loading-background-color);
+	--v-spinner-color: var(--foreground-color);
+	--v-spinner-background-color: var(--background-color-alt);
 	--v-spinner-speed: 1s;
 	--v-spinner-size: 28px;
 	--v-spinner-line-size: 3px;

@@ -1,6 +1,9 @@
-@import 'variables';
-@import 'dark-mode';
-@import 'tooltip';
-@import 'codemirror';
-@import 'fonts';
 @import 'base';
+@import 'colors';
+@import 'fonts';
+@import 'type-styles';
+@import 'variables';
+@import 'themes/default';
+@import 'themes/dark-mode';
+@import 'lib/codemirror';
+@import 'lib/tooltip';

@@ -65,6 +65,6 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 | `label` | Allows custom markup and HTML to be rendered inside the label. Will override the `label` prop. |
 
 ## CSS Variables
-| Variable           | Default                                |
-|--------------------|----------------------------------------|
-| `--v-switch-color` | `var(--input-background-color-active)` |
+| Variable           | Default                         |
+|--------------------|---------------------------------|
+| `--v-switch-color` | `var(--input-foreground-color)` |

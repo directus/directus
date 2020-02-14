@@ -72,8 +72,10 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/type-styles';
+
 .v-switch {
-	--v-switch-color: var(--input-background-color-active);
+	--v-switch-color: var(--input-foreground-color);
 
 	display: flex;
 	align-items: center;
@@ -121,15 +123,16 @@ export default createComponent({
 		border-color: var(--v-switch-color);
 
 		&::after {
-			background-color: var(--input-text-color-active);
+			background-color: var(--background-color);
 			transform: translateX(20px);
 		}
 	}
 
 	.label:not(:empty) {
 		margin-left: 8px;
-		font-size: var(--input-font-size);
 		vertical-align: middle;
+
+		@include type-body-sans;
 	}
 
 	&:disabled {
@@ -149,7 +152,7 @@ export default createComponent({
 		}
 
 		.label {
-			color: var(--popover-text-color-disabled);
+			color: var(--foreground-color-secondary);
 		}
 	}
 }

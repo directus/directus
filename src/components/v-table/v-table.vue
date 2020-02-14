@@ -18,7 +18,7 @@
 			</table-header>
 			<thead v-if="loading" class="loading-indicator">
 				<th :colspan="_headers.length">
-					<v-progress-linear indeterminate v-if="loading" :height="2" />
+					<v-progress-linear indeterminate v-if="loading" />
 				</th>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
@@ -293,13 +293,20 @@ export default createComponent({
 			padding: 0;
 			border: none;
 
+			.v-progress-linear {
+				--v-progress-linear-height: 2px;
+
+				position: relative;
+				top: -1px;
+			}
+
 			th {
 				padding: 0;
 			}
 		}
 
 		.loading-text {
-			color: var(--input-placeholder-color);
+			color: var(--input-foreground-color-empty);
 			text-align: center;
 
 			td {

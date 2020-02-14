@@ -63,10 +63,10 @@ export default createComponent({
 .v-button {
 	--v-button-width: auto;
 	--v-button-height: 44px;
-	--v-button-color: var(--button-primary-text-color);
+	--v-button-color: var(--button-primary-foreground-color);
+	--v-button-color-hover: var(--button-primary-foreground-color-hover);
 	--v-button-background-color: var(--button-primary-background-color);
-	--v-button-hover-color: var(--button-primary-text-color);
-	--v-button-hover-background-color: var(--button-primary-background-color-hover);
+	--v-button-background-color-hover: var(--button-primary-background-color-hover);
 	--v-button-font-size: 16px;
 
 	position: relative;
@@ -75,11 +75,11 @@ export default createComponent({
 	height: var(--v-button-height);
 	padding: 0 19px;
 	color: var(--v-button-color);
-	font-weight: var(--weight-bold);
+	font-weight: 500;
 	font-size: var(--v-button-font-size);
 	background-color: var(--v-button-background-color);
-	border: var(--input-border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	border: var(--button-border-width) solid var(--v-button-background-color);
+	border-radius: var(--button-border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -96,9 +96,9 @@ export default createComponent({
 	}
 
 	&:not(.loading):not(:disabled):hover {
-		color: var(--v-button-hover-color);
-		background-color: var(--v-button-hover-background-color);
-		border: var(--input-border-width) solid var(--v-button-hover-background-color);
+		color: var(--v-button-color-hover);
+		background-color: var(--v-button-background-color-hover);
+		border: var(--button-border-width) solid var(--v-button-background-color-hover);
 	}
 
 	&.block {

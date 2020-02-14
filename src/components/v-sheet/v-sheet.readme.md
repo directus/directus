@@ -44,3 +44,4 @@ n/a
 | `--v-sheet-width`            | `auto`                              |
 | `--v-sheet-min-width`        | `none`                              |
 | `--v-sheet-max-width`        | `none`                              |
+| `--v-sheet-padding`          | `8px`                               |

@@ -1,0 +1,50 @@
+@mixin type-title {
+	color: var(--heading-text-color);
+	font-size: 22px;
+}
+
+@mixin type-heading-large {
+	color: var(--heading-text-color);
+	font-weight: 300;
+	font-size: 48px;
+	line-height: 52px;
+	letter-spacing: -1px;
+}
+
+@mixin type-heading-medium {
+	color: var(--heading-text-color);
+	font-weight: 300;
+	font-size: 28px;
+}
+
+@mixin type-heading-small {
+	color: var(--heading-text-color);
+	font-size: 18px;
+}
+
+@mixin type-label {
+	color: var(--heading-text-color);
+	font-size: 18px;
+}
+
+@mixin type-note {
+	color: var(--note-text-color);
+	font-size: 14px;
+	font-style: italic;
+}
+
+@mixin type-table-head {
+	font-weight: 500;
+}
+
+@mixin type-body-serif {
+	font-size: 16px;
+	font-family: var(--family-serif);
+	line-height: 32px;
+}
+
+@mixin type-body-sans {
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	line-height: 26px;
+}

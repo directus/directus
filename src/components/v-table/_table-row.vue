@@ -1,17 +1,11 @@
 <template>
 	<tr
 		class="v-table_table-row"
-		:class="{ subdued, clickable: hasClickListener }"
+		:class="{ subdued, clickable: hasClickListener, 'sorted-manually': sortedManually }"
 		@click="$emit('click', $event)"
 	>
 		<td v-if="showManualSort" class="manual cell">
-			<v-icon
-				name="drag_handle"
-				class="drag-handle"
-				:color="
-					sortedManually ? '--input-border-color' : '--input-background-color-disabled'
-				"
-			/>
+			<v-icon name="drag_handle" class="drag-handle" />
 		</td>
 		<td v-if="showSelect" class="select cell">
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
@@ -101,8 +95,8 @@ export default createComponent({
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		background-color: var(--table-background-color);
-		border-bottom: 1px solid var(--table-row-border-color);
+		background-color: var(--input-background-color);
+		border-bottom: 1px solid var(--divider-color);
 	}
 
 	&.subdued {
@@ -112,6 +106,20 @@ export default createComponent({
 	&.clickable:hover .cell {
 		background-color: var(--highlight);
 		cursor: pointer;
+	}
+
+	.drag-handle {
+		--v-icon-color: var(--input-action-color-disabled);
+	}
+
+	&.sorted-manually .drag-handle {
+		--v-icon-color: var(--input-action-color);
+
+		&:hover {
+			--v-icon-color: var(--input-action-color-hover);
+
+			cursor: ns-resize;
+		}
 	}
 }
 </style>

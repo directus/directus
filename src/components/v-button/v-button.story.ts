@@ -94,8 +94,8 @@ export const withText = () => ({
 			:style="{
 				'--v-button-color': color,
 				'--v-button-background-color': backgroundColor,
-				'--v-button-hover-color': hoverColor,
-				'--v-button-hover-background-color': hoverBackgroundColor
+				'--v-button-color-hover': hoverColor,
+				'--v-button-background-color-hover': hoverBackgroundColor
 			}"
 			:type="type"
 			:disabled="disabled"
@@ -198,8 +198,8 @@ export const withIcon = () => ({
 			:style="{
 				'--v-button-color': color,
 				'--v-button-background-color': backgroundColor,
-				'--v-button-hover-color': hoverColor,
-				'--v-button-hover-background-color': hoverBackgroundColor
+				'--v-button-color-hover': hoverColor,
+				'--v-button-background-color-hover': hoverBackgroundColor
 			}"
 			:type="type"
 			:disabled="disabled"
@@ -239,8 +239,8 @@ export const colors = () => `
 		:style="{
 			'--v-button-color': 'var(--red)',
 			'--v-button-background-color': 'var(--red-50)',
-			'--v-button-hover-color': 'var(--white)',
-			'--v-button-hover-background-color': 'var(--red)'
+			'--v-button-color-hover': 'var(--white)',
+			'--v-button-background-color-hover': 'var(--red)'
 		}"
 	>
 		Delete
@@ -249,8 +249,8 @@ export const colors = () => `
 		:style="{
 			'--v-button-color': 'var(--white)',
 			'--v-button-background-color': 'var(--green)',
-			'--v-button-hover-color': 'var(--white)',
-			'--v-button-hover-background-color': 'var(--green-800)'
+			'--v-button-color-hover': 'var(--white)',
+			'--v-button-background-color-hover': 'var(--green-800)'
 		}"
 	>
 		Save
@@ -259,8 +259,8 @@ export const colors = () => `
 		:style="{
 			'--v-button-color': 'var(--white)',
 			'--v-button-background-color': 'var(--amber)',
-			'--v-button-hover-color': 'var(--white)',
-			'--v-button-hover-background-color': 'var(--amber-800)'
+			'--v-button-color-hover': 'var(--white)',
+			'--v-button-background-color-hover': 'var(--amber-800)'
 		}"
 	>
 		Warn
@@ -269,8 +269,8 @@ export const colors = () => `
 		:style="{
 			'--v-button-color': 'var(--blue-grey-800)',
 			'--v-button-background-color': 'var(--blue-grey-50)',
-			'--v-button-hover-color': 'var(--red)',
-			'--v-button-hover-background-color': 'var(--white)'
+			'--v-button-color-hover': 'var(--red)',
+			'--v-button-background-color-hover': 'var(--white)'
 		}"
 	>
 		Hover
@@ -279,8 +279,8 @@ export const colors = () => `
 		:style="{
 			'--v-button-color': 'var(--blue-grey-800)',
 			'--v-button-background-color': 'transparent',
-			'--v-button-hover-color': 'var(--black)',
-			'--v-button-hover-background-color': 'var(--blue-grey-100)'
+			'--v-button-color-hover': 'var(--black)',
+			'--v-button-background-color-hover': 'var(--blue-grey-100)'
 		}"
 	>
 		Transparent

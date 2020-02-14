@@ -34,8 +34,7 @@ export default createComponent({
 
 <style lang="scss" scoped>
 .v-overlay {
-	--v-overlay-color: var(--modal-smoke-color);
-	--v-overlay-opacity: 0.75;
+	--v-overlay-color: var(--overlay-color);
 	--v-overlay-z-index: 500;
 
 	position: fixed;
@@ -72,7 +71,7 @@ export default createComponent({
 		pointer-events: auto;
 
 		.overlay {
-			opacity: var(--v-overlay-opacity);
+			opacity: 1;
 		}
 	}
 

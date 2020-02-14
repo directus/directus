@@ -10,7 +10,7 @@ The overlay is a fairly barebones component that's meant to be used with modals 
 
 ## Color
 
-The colors can be changed via the css variables `--v-overlay-color` and `--v-overlay-opacity`.
+The colors can be changed via the css variable `--v-overlay-color`.
 
 ```html
 <v-overlay :active="overlay">
@@ -18,8 +18,7 @@ The colors can be changed via the css variables `--v-overlay-color` and `--v-ove
 </v-overlay>
 <style>
 .v-overlay {
-	--v-overlay-color: var(--red);
-	--v-overlay-opacity: 0.5;
+	--v-overlay-color: rgba(255, 0, 0, 0.5);
 }
 </style>
 ```
@@ -43,6 +42,5 @@ The colors can be changed via the css variables `--v-overlay-color` and `--v-ove
 ## CSS Variables
 | Variable              | Default                    |
 |-----------------------|----------------------------|
-| `--v-overlay-color`   | `var(--modal-smoke-color)` |
-| `--v-overlay-opacity` | `0.75`                     |
+| `--v-overlay-color`   | `var(--overlay-color)`     |
 | `--v-overlay-z-index` | `500`                      |
