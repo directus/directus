@@ -2,14 +2,11 @@
 	<div class="public-view">
 		<div class="container">
 			<public-view-logo :version="version" />
-			<div class="content">
+			<div class="content" :class="{ wide }">
 				<slot />
 			</div>
 			<div class="notice">
-				<slot name="notice">
-					<v-icon name="person" />
-					Not Authenticated
-				</slot>
+				<slot name="notice" />
 			</div>
 		</div>
 		<div class="art" :style="artStyles"></div>
@@ -19,48 +16,46 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { createComponent, computed } from '@vue/composition-api';
-import { ProjectArt } from './types';
 import PublicViewLogo from './_logo.vue';
 import { useProjectsStore, ProjectWithKey, ProjectError } from '@/stores/projects';
-
-const defaultProjectArt: ProjectArt = {
-	color: '#263238',
-	background_image: null,
-	foreground_image: null,
-	note: null
-};
 
 export default createComponent({
 	components: {
 		PublicViewLogo
 	},
+	props: {
+		wide: {
+			type: Boolean,
+			default: false
+		}
+	},
 	setup() {
 		const projectsStore = useProjectsStore();
 
-		const projectArt = computed<ProjectArt>(() => {
-			const { currentProject } = projectsStore;
+		const backgroundStyles = computed<string>(() => {
+			const defaultColor = '#263238';
 
-			if (
-				currentProject.value === null ||
-				(currentProject.value as ProjectError).error !== undefined
-			) {
-				return defaultProjectArt;
+			let currentProject = projectsStore.currentProject.value;
+
+			if (currentProject === null) {
+				return defaultColor;
 			}
 
-			const project = currentProject.value as ProjectWithKey;
+			if ((currentProject as ProjectError).error !== undefined) {
+				return defaultColor;
+			}
 
-			return {
-				color: project.api.project_color,
-				background_image:
-					project.api.project_background?.full_url || defaultProjectArt.background_image,
-				foreground_image:
-					project.api.project_foreground?.full_url || defaultProjectArt.foreground_image,
-				note: project.api.project_public_note || null
-			};
+			currentProject = currentProject as ProjectWithKey;
+
+			if (currentProject.api.project_background?.full_url) {
+				return `url(${currentProject.api.project_background.full_url})`;
+			}
+
+			return currentProject.api.project_color;
 		});
 
 		const artStyles = computed(() => ({
-			background: projectArt.value.background_image || projectArt.value.color
+			background: backgroundStyles.value
 		}));
 
 		return { version, artStyles };
@@ -86,8 +81,12 @@ export default createComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: var(--page-background-color);
+		background-color: var(--background-color);
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
+
+		&.wide {
+			max-width: 872px;
+		}
 
 		@include breakpoint(small) {
 			padding: 40px 80px;
@@ -102,6 +101,10 @@ export default createComponent({
 		@include breakpoint(small) {
 			display: block;
 		}
+	}
+
+	.notice {
+		color: var(--foreground-color-secondary);
 	}
 }
 </style>

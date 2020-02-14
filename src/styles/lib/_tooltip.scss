@@ -2,7 +2,7 @@
 	z-index: 10000;
 	display: block !important;
 	background: var(--tooltip-background-color);
-	border-radius: var(--border-radius);
+	border-radius: 3px;
 
 	& .tooltip-inner {
 		padding: 5px 10px 6px;

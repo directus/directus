@@ -1,4 +1,4 @@
-import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 
 const localVue = createLocalVue();

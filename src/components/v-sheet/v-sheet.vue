@@ -7,7 +7,12 @@
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
 
-export default createComponent({});
+export default createComponent({
+	props: {},
+	setup() {
+		return {};
+	}
+});
 </script>
 
 <style lang="scss" scoped>
