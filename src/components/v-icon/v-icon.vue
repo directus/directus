@@ -6,7 +6,7 @@
 		@click="emitClick"
 	>
 		<component v-if="customIconName" :is="customIconName" />
-		<i v-else :style="{ fontSize: customSize }" :class="{ outline }">{{ name }}</i>
+		<i v-else :class="{ outline }">{{ name }}</i>
 	</span>
 </template>
 
