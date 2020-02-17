@@ -1,9 +1,11 @@
 import Vue from 'vue';
-import router from './router';
-import i18n from './lang/';
 
 import './styles/main.scss';
 import './plugins';
+import './components/register';
+
+import router from './router';
+import i18n from './lang/';
 
 Vue.config.productionTip = false;
 

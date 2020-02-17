@@ -5,12 +5,6 @@ import VHover from './v-hover.vue';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-function sleep(ms: number): Promise<void> {
-	return new Promise(resolve => {
-		setTimeout(resolve, ms);
-	});
-}
-
 describe('Hover', () => {
 	let component: Wrapper<Vue>;
 

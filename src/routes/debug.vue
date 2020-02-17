@@ -1,16 +1,16 @@
 <template>
-	<public-view>
+	<private-view>
 		Hello!
-	</public-view>
+	</private-view>
 </template>
 
 <script lang="ts">
 import { createComponent } from '@vue/composition-api';
-import PublicView from '@/views/public/';
+import PrivateView from '@/views/private/';
 
 export default createComponent({
 	components: {
-		PublicView
+		PrivateView
 	},
 	props: {},
 	setup() {

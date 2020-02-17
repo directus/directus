@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import api from '@/api';
 import { useProjectsStore } from './projects';
-import { setActiveReq } from 'pinia';
 
 describe('Stores / Projects', () => {
 	beforeAll(() => {

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 import { VTooltip } from 'v-tooltip';
@@ -64,7 +65,7 @@ describe('Views / Public', () => {
 			});
 		});
 
-		it('Uses the project color when the current project key is set, but background image is not', () => {
+		it('Uses the project color when the current project key is set, but background image is not', async () => {
 			store.state.projects = [
 				{
 					...mockProject,
@@ -75,6 +76,8 @@ describe('Views / Public', () => {
 				}
 			];
 			store.state.currentProjectKey = 'my-project';
+
+			await component.vm.$nextTick();
 
 			expect((component.vm as any).artStyles).toEqual({
 				background: '#4CAF50'

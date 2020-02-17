@@ -1,0 +1,31 @@
+import Vue from 'vue';
+
+import VAvatar from './v-avatar/';
+import VButton from './v-button/';
+import VCheckbox from './v-checkbox/';
+import VChip from './v-chip/';
+import VHover from './v-hover/';
+import VIcon from './v-icon/';
+import VInput from './v-input/';
+import VOverlay from './v-overlay/';
+import VProgressLinear from './v-progress/linear/';
+import VSheet from './v-sheet/';
+import VSlider from './v-slider/';
+import VSpinner from './v-spinner/';
+import VSwitch from './v-switch/';
+import VTable from './v-table/';
+
+Vue.component('v-avatar', VAvatar);
+Vue.component('v-button', VButton);
+Vue.component('v-checkbox', VCheckbox);
+Vue.component('v-chip', VChip);
+Vue.component('v-hover', VHover);
+Vue.component('v-icon', VIcon);
+Vue.component('v-input', VInput);
+Vue.component('v-overlay', VOverlay);
+Vue.component('v-progress-linear', VProgressLinear);
+Vue.component('v-sheet', VSheet);
+Vue.component('v-slider', VSlider);
+Vue.component('v-spinner', VSpinner);
+Vue.component('v-switch', VSwitch);
+Vue.component('v-table', VTable);
