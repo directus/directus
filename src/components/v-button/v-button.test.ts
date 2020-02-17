@@ -1,12 +1,11 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
+import VButton from './v-button.vue';
+import VProgressCircular from '../v-progress/circular/';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
-localVue.component('v-spinner', VSpinner);
-
-import VButton from './v-button.vue';
-import VSpinner from '../v-spinner/';
+localVue.component('v-progress-circular', VProgressCircular);
 
 describe('Button', () => {
 	it('Renders the provided markup in the default slow', () => {

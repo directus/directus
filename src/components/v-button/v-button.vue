@@ -9,7 +9,7 @@
 		<span class="content" :class="{ invisible: loading }"><slot /></span>
 		<div class="spinner">
 			<slot v-if="loading" name="loading">
-				<v-spinner :x-small="xSmall" :small="small" />
+				<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
 			</slot>
 		</div>
 	</button>
@@ -191,6 +191,11 @@ export default createComponent({
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+
+		.v-progress-circular {
+			--v-progress-circular-color: var(--v-button-color);
+			--v-progress-circular-background-color: transparent;
+		}
 	}
 }
 </style>

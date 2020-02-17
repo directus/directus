@@ -64,6 +64,7 @@ export default createComponent({
 	--v-progress-linear-height: 4px;
 	--v-progress-linear-color: var(--input-foreground-color);
 	--v-progress-linear-background-color: var(--input-border-color);
+	--v-progress-linear-transition: 400ms;
 
 	position: relative;
 	display: flex;
@@ -80,6 +81,7 @@ export default createComponent({
 		left: 0;
 		height: 100%;
 		background-color: var(--v-progress-linear-color);
+		transition: width var(--v-progress-linear-transition) ease-in-out;
 	}
 
 	&.absolute {
