@@ -25,6 +25,7 @@
 				"ignorePseudoElements": ["v-deep"]
 			}
 		],
-		"string-quotes": "single"
+		"string-quotes": "single",
+		"length-zero-no-unit": null
 	}
 }
