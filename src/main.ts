@@ -3,6 +3,7 @@ import Vue from 'vue';
 import './styles/main.scss';
 import './plugins';
 import './components/register';
+import './modules/register';
 
 import router from './router';
 import i18n from './lang/';

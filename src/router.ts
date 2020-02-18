@@ -6,14 +6,6 @@ const router = new VueRouter({
 	mode: 'hash',
 	routes: [
 		{
-			path: '/:project/*',
-			component: Debug
-		},
-		{
-			path: '/',
-			component: Debug
-		},
-		{
 			path: '*',
 			component: Debug
 		}
@@ -46,3 +38,12 @@ export function useRouter() {
 }
 
 export default router;
+
+/**
+ * @TODO
+ * We'll have to add a "resetRouter" function that will unregister all customly registered routes
+ * on logout. This will make sure you don't accidentally still have the route from a custom module
+ * for another given project.
+ *
+ * See https://github.com/vuejs/vue-router/issues/1234
+ */
