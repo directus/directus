@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import './styles/main.scss';
 import './plugins';
+import './directives/register';
 import './components/register';
 import './modules/register';
 

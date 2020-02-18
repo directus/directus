@@ -3,6 +3,8 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 import "../src/styles/main.scss";
 import "../src/plugins";
+import "../src/components/register";
+import "../src/directives/register";
 
 addParameters({
 	docs: {

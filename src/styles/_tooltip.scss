@@ -1,0 +1,110 @@
+#tooltip {
+	$arrow-alignment: 5px;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+	max-width: 260px;
+	padding: 4px 8px;
+	color: var(--tooltip-foreground-color);
+	background-color: var(--tooltip-background-color);
+	border-radius: 4px;
+	transition: opacity 200ms;
+
+	&.inverted {
+		--tooltip-foreground-color: var(--tooltip-foreground-color-inverted);
+		--tooltip-background-color: var(--tooltip-background-color-inverted);
+	}
+
+	&.visible {
+		display: block;
+	}
+
+	&.enter,
+	&.leave-active {
+		opacity: 0;
+	}
+
+	&.enter-active,
+	&.leave {
+		opacity: 1;
+	}
+
+	&::after {
+		position: absolute;
+		top: -5px;
+		left: calc(50% - 5px);
+		width: 0;
+		height: 0;
+		border-right: 5px solid transparent;
+		border-bottom: 5px solid var(--tooltip-background-color);
+		border-left: 5px solid transparent;
+		content: '';
+	}
+
+	&.start::after {
+		right: $arrow-alignment;
+		left: unset;
+	}
+
+	&.end::after {
+		left: $arrow-alignment;
+	}
+
+	&.top::after {
+		top: unset;
+		bottom: -5px;
+		left: calc(50% - 5px);
+		border-top: 5px solid var(--tooltip-background-color);
+		border-right: 5px solid transparent;
+		border-bottom: unset;
+		border-left: 5px solid transparent;
+	}
+
+	&.top.start::after {
+		right: $arrow-alignment;
+		left: unset;
+	}
+
+	&.top.end::after {
+		left: $arrow-alignment;
+	}
+
+	&.left::after {
+		top: calc(50% - 5px);
+		right: -5px;
+		left: unset;
+		border-top: 5px solid transparent;
+		border-right: unset;
+		border-bottom: 5px solid transparent;
+		border-left: 5px solid var(--tooltip-background-color);
+	}
+
+	&.left.start::after {
+		top: unset;
+		bottom: $arrow-alignment;
+	}
+
+	&.left.end::after {
+		top: $arrow-alignment;
+	}
+
+	&.right::after {
+		top: calc(50% - 5px);
+		left: -5px;
+		border-top: 5px solid transparent;
+		border-right: 5px solid var(--tooltip-background-color);
+		border-bottom: 5px solid transparent;
+		border-left: unset;
+	}
+
+	&.right.start::after {
+		top: unset;
+		bottom: $arrow-alignment;
+	}
+
+	&.right.end::after {
+		top: $arrow-alignment;
+	}
+}

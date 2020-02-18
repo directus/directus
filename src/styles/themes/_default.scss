@@ -82,4 +82,9 @@ body {
 	*/
 	--overlay-color: 								rgba(38, 50, 56, 0.75);
 	--divider-color:								var(--blue-grey-50);
+
+	--tooltip-foreground-color: var(--button-primary-foreground-color);
+	--tooltip-background-color: var(--button-primary-background-color-hover);
+	--tooltip-foreground-color-inverted: var(--input-foreground-color);
+	--tooltip-background-color-inverted: var(--button-secondary-background-color);
 }

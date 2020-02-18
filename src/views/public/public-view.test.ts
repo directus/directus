@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
-import { VTooltip } from 'v-tooltip';
 import VIcon from '@/components/v-icon/';
 import { useProjectsStore, ProjectWithKey } from '@/stores/projects';
+import Tooltip from '@/directives/tooltip/tooltip';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
-localVue.directive('tooltip', VTooltip);
 localVue.component('v-icon', VIcon);
+localVue.directive('tooltip', Tooltip);
 
 import PublicView from './public-view.vue';
 
