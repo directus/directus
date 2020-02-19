@@ -12,9 +12,13 @@ import VButton from './v-button.vue';
 import VIcon from '../v-icon/';
 import markdown from './v-button.readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
+import VueRouter from 'vue-router';
 
 Vue.component('v-button', VButton);
 Vue.component('v-icon', VIcon);
+Vue.use(VueRouter);
+
+const router = new VueRouter();
 
 export default {
 	title: 'Components / Button',
@@ -301,4 +305,11 @@ export const customLoading = () => ({
 			..Loading..
 		</template>
 	</v-button>`
+});
+
+export const asLink = () => ({
+	router: router,
+	template: `
+	<v-button to="/login">I'm a link</v-button>
+	`
 });

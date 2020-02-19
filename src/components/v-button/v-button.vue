@@ -1,9 +1,11 @@
 <template>
-	<button
+	<component
+		:is="component"
 		class="v-button"
 		:class="[sizeClass, { block, rounded, icon, outlined, loading }]"
 		:type="type"
 		:disabled="disabled"
+		:to="to"
 		@click="onClick"
 	>
 		<span class="content" :class="{ invisible: loading }"><slot /></span>
@@ -12,11 +14,12 @@
 				<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
 			</slot>
 		</div>
-	</button>
+	</component>
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed, Ref } from '@vue/composition-api';
+import { createComponent, reactive, computed, Ref, PropType } from '@vue/composition-api';
+import { Location } from 'vue-router';
 import parseCSSVar from '@/utils/parse-css-var';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
@@ -50,12 +53,18 @@ export default createComponent({
 			type: Boolean,
 			default: false
 		},
+		to: {
+			type: [String, Object] as PropType<string | Location>,
+			default: null
+		},
 		...sizeProps
 	},
 	setup(props, { emit }) {
 		const sizeClass = useSizeClass(props);
 
-		return { sizeClass, onClick };
+		const component = computed<string>(() => (props.to ? 'router-link' : 'button'));
+
+		return { sizeClass, onClick, component };
 
 		function onClick(event: MouseEvent) {
 			if (props.loading === true) return;
@@ -76,6 +85,9 @@ export default createComponent({
 	--v-button-font-size: 16px;
 
 	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	width: var(--v-button-width);
 	min-width: 78px;
 	height: var(--v-button-height);
@@ -83,6 +95,7 @@ export default createComponent({
 	color: var(--v-button-color);
 	font-weight: 500;
 	font-size: var(--v-button-font-size);
+	text-decoration: none;
 	background-color: var(--v-button-background-color);
 	border: var(--button-border-width) solid var(--v-button-background-color);
 	border-radius: var(--button-border-radius);
@@ -179,7 +192,7 @@ export default createComponent({
 
 	.content {
 		position: relative;
-		top: -1;
+		top: -1px;
 
 		&.invisible {
 			opacity: 0;

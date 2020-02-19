@@ -106,4 +106,15 @@ describe('Button', () => {
 		component.find('button').trigger('click');
 		expect(component.emitted()).toEqual({});
 	});
+
+	it('Renders as a router-link if the to prop is set', () => {
+		const component = mount(VButton, {
+			localVue,
+			propsData: {
+				to: '/login'
+			}
+		});
+
+		expect((component.vm as any).component).toBe('router-link');
+	});
 });
