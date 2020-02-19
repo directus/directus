@@ -1,27 +1,47 @@
 <template>
 	<div class="module-bar">
 		<module-bar-logo />
+		<v-button v-for="module in modules" :key="module.id" icon x-large :to="module.to">
+			<v-icon :name="module.icon" />
+		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { createComponent, computed } from '@vue/composition-api';
 import ModuleBarLogo from './_module-bar-logo.vue';
+import { useModulesStore } from '@/stores/modules/';
+import { useProjectsStore } from '@/stores/projects';
 
 export default createComponent({
 	components: {
 		ModuleBarLogo
 	},
-	setup() {}
+	setup() {
+		const modulesStore = useModulesStore();
+		const projectsStore = useProjectsStore();
+		const { currentProjectKey } = projectsStore.state;
+
+		const modules = computed(() =>
+			modulesStore.state.modules.map(module => ({
+				...module,
+				to: `/${currentProjectKey}/${module.id}/`
+			}))
+		);
+
+		return { modules: modules };
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .module-bar {
-	display: inline-block;
 	width: 64px;
 	height: 100%;
-	font-size: 1rem;
 	background-color: #263238;
+
+	.v-button {
+		--v-button-color: var(--blue-grey-400);
+	}
 }
 </style>

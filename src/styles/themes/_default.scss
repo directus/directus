@@ -65,9 +65,11 @@ body {
 	--button-primary-background-color: 				var(--blue-grey-900);
 	--button-primary-background-color-hover: 		var(--blue-grey-800);
 	--button-primary-background-color-disabled: 	var(--blue-grey-400);
+	--button-primary-background-color-activated: 	var(--off-black);
 	--button-primary-foreground-color: 				var(--white);
 	--button-primary-foreground-color-hover: 		var(--white);
 	--button-primary-foreground-color-disabled: 	var(--blue-grey-300);
+	--button-primary-foreground-color-activated: 	var(--white);
 
 	--button-secondary-background-color: 			var(--blue-grey-100);
 	--button-secondary-background-color-hover:  	var(--blue-grey-200);

@@ -1,6 +1,7 @@
 import VueRouter, { NavigationGuard } from 'vue-router';
 import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
+import { useModulesStore } from '@/stores/modules';
 import LoginRoute from '@/routes/login';
 import api from '@/api';
 
@@ -23,10 +24,12 @@ const router = new VueRouter({
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const projectsStore = useProjectsStore();
+	const modulesStore = useModulesStore();
 
 	// First load
 	if (from.name === null) {
 		await projectsStore.getProjects();
+		modulesStore.registerGlobalModules();
 
 		if (projectsStore.state.needsInstall === true) {
 			return next('/install');

@@ -83,6 +83,7 @@ export default createComponent({
 		top: 0;
 		left: 0;
 		z-index: 50;
+		display: flex;
 		height: 100%;
 		font-size: 0;
 		transform: translateX(-100%);

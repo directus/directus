@@ -1,8 +1,10 @@
-import { ModuleConfig } from '@/modules/types';
+import { ModuleConfig } from '@/types/modules';
 import Users from './users.vue';
 
 const config: ModuleConfig = {
 	id: 'users',
+	icon: 'people',
+	name: i18n => i18n.t('collections.directus_users'),
 	routes: [
 		{
 			path: '/',

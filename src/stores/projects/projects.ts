@@ -1,21 +1,6 @@
 import { createStore } from 'pinia';
-import { Project } from '@/types/project';
+import { Projects, ProjectWithKey, ProjectError } from './types';
 import api from '@/api';
-
-export interface ProjectWithKey extends Project {
-	key: string;
-}
-
-export interface ProjectError {
-	key: string;
-	status: number;
-	error: {
-		code: number;
-		message: string;
-	} | null;
-}
-
-type Projects = (ProjectWithKey | ProjectError)[];
 
 export const useProjectsStore = createStore({
 	id: 'projects',

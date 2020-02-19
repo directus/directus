@@ -1,6 +1,7 @@
 <template>
 	<component
 		:is="component"
+		active-class="activated"
 		class="v-button"
 		:class="[sizeClass, { block, rounded, icon, outlined, loading }]"
 		:type="type"
@@ -80,8 +81,10 @@ export default createComponent({
 	--v-button-height: 44px;
 	--v-button-color: var(--button-primary-foreground-color);
 	--v-button-color-hover: var(--button-primary-foreground-color-hover);
+	--v-button-color-activated: var(--button-primary-foreground-color-activated);
 	--v-button-background-color: var(--button-primary-background-color);
 	--v-button-background-color-hover: var(--button-primary-background-color-hover);
+	--v-button-background-color-activated: var(--button-primary-background-color-activated);
 	--v-button-font-size: 16px;
 
 	position: relative;
@@ -122,7 +125,7 @@ export default createComponent({
 		}
 	}
 
-	&:not(.loading):not(:disabled):hover {
+	&:not(.loading):not(:disabled):not(.activated):hover {
 		color: var(--v-button-color-hover);
 		background-color: var(--v-button-background-color-hover);
 		border: var(--button-border-width) solid var(--v-button-background-color-hover);
@@ -165,7 +168,7 @@ export default createComponent({
 	}
 
 	&.x-large {
-		--v-button-height: 58px;
+		--v-button-height: 64px;
 		--v-button-font-size: 18px;
 
 		min-width: 120px;
@@ -192,7 +195,6 @@ export default createComponent({
 
 	.content {
 		position: relative;
-		top: -1px;
 
 		&.invisible {
 			opacity: 0;
@@ -209,6 +211,11 @@ export default createComponent({
 			--v-progress-circular-color: var(--v-button-color);
 			--v-progress-circular-background-color: transparent;
 		}
+	}
+
+	&.activated {
+		--v-button-color: var(--v-button-color-activated) !important;
+		--v-button-background-color: var(--v-button-background-color-activated) !important;
 	}
 }
 </style>

@@ -4,7 +4,6 @@ import './styles/main.scss';
 import './plugins';
 import './directives/register';
 import './components/register';
-import './modules/register';
 import './views/register';
 
 import router from './router';

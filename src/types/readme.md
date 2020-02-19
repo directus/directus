@@ -1,3 +1,3 @@
 # Types
 
-TypeScript types for the API system objects.
+Shared TypeScript types.

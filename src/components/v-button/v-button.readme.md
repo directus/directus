@@ -73,12 +73,14 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 | `click` | User clicks on button | `MouseEvent` |
 
 ## CSS Variables
-| Variable                            | Default                                        |
-|-------------------------------------|------------------------------------------------|
-| `--v-button-width`                  | `auto`                                         |
-| `--v-button-height`                 | `44px`                                         |
-| `--v-button-color`                  | `var(--button-primary-foreground-color)`       |
-| `--v-button-background-color`       | `var(--button-primary-background-color)`       |
-| `--v-button-color-hover`            | `var(--button-primary-foreground-color-hover)` |
-| `--v-button-background-color-hover` | `var(--button-primary-background-color-hover)` |
-| `--v-button-font-size`              | `16px`                                         |
+| Variable                                | Default                                            |
+|-----------------------------------------|----------------------------------------------------|
+| `--v-button-width`                      | `auto`                                             |
+| `--v-button-height`                     | `44px`                                             |
+| `--v-button-color`                      | `var(--button-primary-foreground-color)`           |
+| `--v-button-color-hover`                | `var(--button-primary-foreground-color-hover)`     |
+| `--v-button-color-activated`            | `var(--button-primary-foreground-color-activated)` |
+| `--v-button-background-color`           | `var(--button-primary-background-color)`           |
+| `--v-button-background-color-hover`     | `var(--button-primary-background-color-hover)`     |
+| `--v-button-background-color-activated` | `var(--button-primary-background-color-activated)` |
+| `--v-button-font-size`                  | `16px`                                             |
