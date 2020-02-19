@@ -1,12 +1,21 @@
 import VueRouter, { NavigationGuard } from 'vue-router';
 import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
+import LoginRoute from '@/routes/login';
+import api from '@/api';
 
 const router = new VueRouter({
 	mode: 'hash',
 	routes: [
 		{
-			path: '*',
+			path: '/:project/login',
+			component: LoginRoute,
+			meta: {
+				public: true
+			}
+		},
+		{
+			path: '/:project/*',
 			component: Debug
 		}
 	]
@@ -26,10 +35,33 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 	if (to.params.project) {
 		projectsStore.state.currentProjectKey = to.params.project;
+	} else if (projectsStore.state.projects.length > 0) {
+		projectsStore.state.currentProjectKey = projectsStore.state.projects[0].key;
+		to.params.project = projectsStore.state.currentProjectKey;
+	}
+
+	if (to.meta?.public === true) {
+		return next();
+	}
+
+	// Check authentication status
+	const loggedIn = await checkAuth(to.params.project);
+
+	if (loggedIn === false) {
+		return next(`/${to.params.project}/login`);
 	}
 
 	return next();
 };
+
+export async function checkAuth(projectKey: string) {
+	try {
+		await api.get(`/${projectKey}/users/me`);
+		return true;
+	} catch {
+		return false;
+	}
+}
 
 router.beforeEach(onBeforeEach);
 
