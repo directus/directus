@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useRequestsStore } from '@/stores/requests';
+import { LogoutReason, logout, checkAuth } from '@/auth';
+import useProjectsStore from './stores/projects';
 
 const api = axios.create({
 	baseURL: getRootPath()
@@ -32,10 +34,26 @@ export const onResponse = (response: AxiosResponse | Response) => {
 	return response;
 };
 
-export const onError = (error: any) => {
+export const onError = async (error: any) => {
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
+
+	// If a request fails with the unauthorized error, it either means that your user doesn't have
+	// access, or that your session doesn't exist / has expired.
+	// In case of the second, we should force the app to logout completely and redirect to the login
+	// view.
+	/* istanbul ignore next */
+	const status = error.response?.status;
+	/* istanbul ignore next */
+	const code = error.response?.data?.error?.code;
+	if (status === 401 && code === 3) {
+		const loggedIn = await checkAuth();
+		if (loggedIn === false) {
+			logout(LogoutReason.ERROR_SESSION_EXPIRED);
+		}
+	}
+
 	return Promise.reject(error);
 };
 

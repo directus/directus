@@ -3,11 +3,37 @@ import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
 import { useModulesStore } from '@/stores/modules';
 import LoginRoute from '@/routes/login';
-import api from '@/api';
+import ProjectChooserRoute from '@/routes/project-chooser';
+import { checkAuth } from '@/auth';
+
+export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
+	const projectsStore = useProjectsStore();
+	projectsStore.state.currentProjectKey = null;
+	next();
+};
 
 const router = new VueRouter({
 	mode: 'hash',
 	routes: [
+		{
+			path: '/',
+			component: ProjectChooserRoute,
+			meta: {
+				public: true
+			},
+			beforeEnter: onBeforeEnterProjectChooser
+		},
+		{
+			path: '/install',
+			component: LoginRoute,
+			meta: {
+				public: true
+			}
+		},
+		{
+			path: '/:project',
+			redirect: '/:project/login'
+		},
 		{
 			path: '/:project/login',
 			component: LoginRoute,
@@ -15,6 +41,9 @@ const router = new VueRouter({
 				public: true
 			}
 		},
+		/** @NOTE
+		 * All modules are registered dynamically as `/:project/:module`
+		 */
 		{
 			path: '/:project/*',
 			component: Debug
@@ -26,51 +55,51 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const projectsStore = useProjectsStore();
 	const modulesStore = useModulesStore();
 
-	// First load
-	if (from.name === null) {
+	// Only on first load is from.name null. On subsequent requests, from.name is undefined | string
+	const firstLoad = from.name === null;
+
+	// Before we do anything, we have to make sure we're aware of the projects that exist in the
+	// platform. We can also use this to (async) register all the globally available modules
+	if (firstLoad) {
 		await projectsStore.getProjects();
 		modulesStore.registerGlobalModules();
+	}
 
-		if (projectsStore.state.needsInstall === true) {
-			return next('/install');
+	// When there aren't any projects, we should redirect to the install page to force the
+	// user to setup a project.
+	if (projectsStore.state.needsInstall === true && to.path !== '/install') {
+		return next('/install');
+	}
+
+	// Keep the projects store currentProjectKey in sync with the route
+	if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
+		const projectExists = await projectsStore.setCurrentProject(to.params.project);
+
+		if (to.path !== '/' && projectExists === false) {
+			return next('/');
 		}
 	}
 
-	if (to.params.project) {
-		projectsStore.state.currentProjectKey = to.params.project;
-	} else if (projectsStore.state.projects.length > 0) {
-		projectsStore.state.currentProjectKey = projectsStore.state.projects[0].key;
-		to.params.project = projectsStore.state.currentProjectKey;
-	}
-
+	// If the route you're trying to open is a public route, like login or password reset, we don't
+	// have to perform the auth check below
 	if (to.meta?.public === true) {
 		return next();
 	}
 
-	// Check authentication status
-	const loggedIn = await checkAuth(to.params.project);
+	// If you're trying to load a full URL (including) project, redirect to the login page of that
+	// project if you're not logged in yet. Otherwise, redirect to the
+	if (firstLoad) {
+		const loggedIn = await checkAuth();
 
-	if (loggedIn === false) {
-		return next(`/${to.params.project}/login`);
+		if (loggedIn === false) {
+			return next(`/${projectsStore.state.currentProjectKey}/login`);
+		}
 	}
 
 	return next();
 };
 
-export async function checkAuth(projectKey: string) {
-	try {
-		await api.get(`/${projectKey}/users/me`);
-		return true;
-	} catch {
-		return false;
-	}
-}
-
 router.beforeEach(onBeforeEach);
-
-export function useRouter() {
-	return router;
-}
 
 export default router;
 

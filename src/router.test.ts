@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import VueRouter, { Route } from 'vue-router';
-import { onBeforeEach, useRouter, checkAuth } from './router';
+import { onBeforeEach, onBeforeEnterProjectChooser } from './router';
 import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
+import useModulesStore from './stores/modules';
+import * as auth from '@/auth';
 
 const route: Route = {
 	name: undefined,
@@ -45,29 +47,54 @@ describe('Router', () => {
 		expect(projectsStore.getProjects).toHaveBeenCalled();
 	});
 
-	it('Redirects to /install if projectStore.needsInstall is true', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
+	it('Registers all global modules on first load', async () => {
+		const modulesStore = useModulesStore({});
+		modulesStore.registerGlobalModules = jest.fn();
 
 		const toRoute = route;
 		const fromRoute = {
 			...route,
 			name: null
 		};
-
 		const callback = jest.fn();
-
-		projectsStore.state.needsInstall = true;
 
 		await onBeforeEach(toRoute, fromRoute as any, callback);
 
-		expect(callback).toHaveBeenCalledWith('/install');
-
-		(projectsStore.getProjects as jest.Mock).mockClear();
+		expect(modulesStore.registerGlobalModules).toHaveBeenCalled();
 	});
 
-	it('Sets the project store currentProjectKey on route changes if project param exists', async () => {
+	it('Redirects to /install if projectsStore indicates that an install is needed', async () => {
 		const projectsStore = useProjectsStore({});
+		projectsStore.state.needsInstall = true;
+
+		const toRoute = route;
+		const fromRoute = route;
+		const callback = jest.fn();
+
+		await onBeforeEach(toRoute, fromRoute, callback);
+
+		expect(callback).toHaveBeenCalledWith('/install');
+	});
+
+	it('Does not redirect to /install if we try to open /install', async () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.state.needsInstall = true;
+
+		const toRoute = {
+			...route,
+			path: '/install'
+		};
+		const fromRoute = route;
+		const callback = jest.fn();
+
+		await onBeforeEach(toRoute, fromRoute, callback);
+
+		expect(callback).not.toHaveBeenCalledWith('/install');
+	});
+
+	it('Keeps projects store in sync with project in route', async () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.setCurrentProject = jest.fn();
 
 		const toRoute = {
 			...route,
@@ -75,173 +102,136 @@ describe('Router', () => {
 				project: 'my-project'
 			}
 		};
-
-		const fromRoute = {
-			...route,
-			name: 'login'
-		};
-
+		const fromRoute = route;
 		const callback = jest.fn();
 
-		await onBeforeEach(toRoute, fromRoute as any, callback);
+		await onBeforeEach(toRoute, fromRoute, callback);
 
-		expect(projectsStore.state.currentProjectKey).toBe('my-project');
+		expect(projectsStore.setCurrentProject).toHaveBeenCalledWith('my-project');
 	});
 
-	it('Sets the currentProjectKey to the first project that exists if the param is not set', async () => {
+	it('Redirects to / when trying to open non-existing project', async () => {
 		const projectsStore = useProjectsStore({});
-		projectsStore.state.projects = [
-			{
-				key: 'another-project',
-				status: 500,
-				error: {
-					code: 400,
-					message: 'its broken'
-				}
-			}
-		];
-
-		const toRoute = {
-			...route
-		};
-
-		const fromRoute = {
-			...route,
-			name: 'login'
-		};
-
-		const callback = jest.fn();
-
-		await onBeforeEach(toRoute, fromRoute as any, callback);
-
-		expect(projectsStore.state.currentProjectKey).toBe('another-project');
-	});
-
-	it('Continues to the route before checking the auth for public routes', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.state.projects = [
-			{
-				key: 'another-project',
-				status: 500,
-				error: {
-					code: 400,
-					message: 'its broken'
-				}
-			}
-		];
+		projectsStore.setCurrentProject = jest.fn(() => Promise.resolve(false));
 
 		const toRoute = {
 			...route,
 			path: '/test',
+			params: {
+				project: 'my-project'
+			}
+		};
+		const fromRoute = route;
+		const callback = jest.fn();
+
+		await onBeforeEach(toRoute, fromRoute, callback);
+
+		expect(callback).toHaveBeenCalledWith('/');
+	});
+
+	it('Does not redirect to / when trying to open /', async () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.setCurrentProject = jest.fn(() => Promise.resolve(false));
+
+		const toRoute = {
+			...route,
+			path: '/',
+			params: {
+				project: 'my-project'
+			}
+		};
+		const fromRoute = route;
+		const callback = jest.fn();
+
+		await onBeforeEach(toRoute, fromRoute, callback);
+
+		expect(callback).not.toHaveBeenCalledWith('/');
+	});
+
+	it('Calls next when trying to open public route', async () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.getProjects = jest.fn();
+
+		const checkAuth = jest.spyOn(auth, 'checkAuth');
+		const toRoute = {
+			...route,
 			meta: {
 				public: true
-			},
-			params: {
-				project: 'my-project'
 			}
 		};
-
 		const fromRoute = {
-			...route
+			...route,
+			name: null
 		};
+		const next = jest.fn();
 
-		const callback = jest.fn();
+		await onBeforeEach(toRoute, fromRoute as any, next);
 
-		await onBeforeEach(toRoute, fromRoute as any, callback);
-
-		expect(callback).toHaveBeenCalled();
-		expect(api.get).not.toHaveBeenCalled();
+		expect(next).toHaveBeenCalledWith();
+		expect(checkAuth).not.toHaveBeenCalled();
 	});
 
-	it('Redirects to the login page if the user is not logged in', async () => {
+	it('Checks if you are authenticated on first load', async () => {
 		const projectsStore = useProjectsStore({});
-		projectsStore.state.projects = [
+		projectsStore.getProjects = jest.fn();
+		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(false));
+		(projectsStore.state.projects as any) = [
 			{
-				key: 'another-project',
-				status: 500,
-				error: {
-					code: 400,
-					message: 'its broken'
-				}
+				key: 'my-project'
 			}
 		];
 
-		(api.get as jest.Mock).mockImplementation(() => Promise.reject());
-
-		const toRoute = {
+		const to = {
 			...route,
 			params: {
 				project: 'my-project'
 			}
 		};
 
-		const fromRoute = {
-			...route
-		};
+		const from = { ...route, name: null };
+		const next = jest.fn();
 
-		const callback = jest.fn();
+		await onBeforeEach(to, from as any, next);
 
-		await onBeforeEach(toRoute, fromRoute as any, callback);
-
-		expect(callback).toHaveBeenCalledWith('/my-project/login');
+		expect(auth.checkAuth).toHaveBeenCalled();
+		expect(next).toHaveBeenCalledWith('/my-project/login');
 	});
 
-	it('Calls the callback when everything is correct', async () => {
-		(api.get as jest.Mock).mockImplementation(() => Promise.resolve());
+	it('Calls next when all checks are done', async () => {
 		const projectsStore = useProjectsStore({});
-		projectsStore.state.projects = [
+		projectsStore.getProjects = jest.fn();
+		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(true));
+		(projectsStore.state.projects as any) = [
 			{
-				key: 'another-project',
-				status: 500,
-				error: {
-					code: 400,
-					message: 'its broken'
-				}
+				key: 'my-project'
 			}
 		];
 
-		const toRoute = {
+		const to = {
 			...route,
 			params: {
 				project: 'my-project'
 			}
 		};
 
-		const fromRoute = {
-			...route
-		};
+		const from = { ...route, name: null };
+		const next = jest.fn();
 
-		const callback = jest.fn();
+		await onBeforeEach(to, from as any, next);
 
-		await onBeforeEach(toRoute, fromRoute as any, callback);
-		expect(callback).toHaveBeenCalled();
+		expect(auth.checkAuth).toHaveBeenCalled();
+		expect(next).toHaveBeenCalledWith();
 	});
 
-	describe('useRouter', () => {
-		it('Returns the store instance', () => {
-			const router = useRouter();
-
-			expect(router instanceof VueRouter).toBe(true);
-		});
-	});
-
-	describe('checkAuth', () => {
-		it('Calls the api with the correct endpoint', async () => {
-			(api.get as jest.Mock).mockImplementation(() => Promise.resolve());
-			await checkAuth('test-project');
-			expect(api.get).toHaveBeenCalledWith('/test-project/users/me');
-		});
-
-		it('Returns true if user is logged in', async () => {
-			(api.get as jest.Mock).mockImplementation(() => Promise.resolve());
-			const loggedIn = await checkAuth('test-project');
-			expect(loggedIn).toBe(true);
-		});
-
-		it('Returns false if user is logged in', async () => {
-			(api.get as jest.Mock).mockImplementation(() => Promise.reject());
-			const loggedIn = await checkAuth('test-project');
-			expect(loggedIn).toBe(false);
+	describe('onBeforeEnterProjectChooser', () => {
+		it('Sets the current project to null on open', () => {
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'my-project';
+			const to = { ...route, path: '/' };
+			const from = route;
+			const next = jest.fn();
+			onBeforeEnterProjectChooser(to, from, next);
+			expect(projectsStore.state.currentProjectKey).toBe(null);
 		});
 	});
 });

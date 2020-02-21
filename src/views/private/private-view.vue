@@ -9,7 +9,7 @@
 				<button @click="navOpen = true">Toggle nav</button>
 				<button @click="drawerOpen = !drawerOpen">Toggle drawer</button>
 			</header>
-			<main></main>
+			<main><slot /></main>
 		</div>
 		<aside class="drawer" :class="{ 'is-open': drawerOpen }"></aside>
 

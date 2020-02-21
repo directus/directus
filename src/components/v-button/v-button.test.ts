@@ -1,10 +1,13 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
+import VueRouter from 'vue-router';
+import router from '@/router';
 import VButton from './v-button.vue';
 import VProgressCircular from '../v-progress/circular/';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
+localVue.use(VueRouter);
 localVue.component('v-progress-circular', VProgressCircular);
 
 describe('Button', () => {
@@ -110,8 +113,9 @@ describe('Button', () => {
 	it('Renders as a router-link if the to prop is set', () => {
 		const component = mount(VButton, {
 			localVue,
+			router: router,
 			propsData: {
-				to: '/login'
+				to: '/'
 			}
 		});
 

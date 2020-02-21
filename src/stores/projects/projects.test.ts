@@ -43,6 +43,54 @@ describe('Stores / Projects', () => {
 		});
 	});
 
+	describe('Actions / setCurrentProject', () => {
+		it('Sets the currentProjectKey state to the passed key if project exists', async () => {
+			const spy = jest.spyOn(api, 'get');
+
+			const projectsStore = useProjectsStore({});
+			(projectsStore.state.projects as any) = [{ key: 'my-project' }];
+			await projectsStore.setCurrentProject('my-project');
+			expect(projectsStore.state.currentProjectKey).toBe('my-project');
+			expect(spy).not.toHaveBeenCalled();
+		});
+
+		it('Retrieves project information for given project key', async () => {
+			const projectsStore = useProjectsStore({});
+			const spy = jest
+				.spyOn(api, 'get')
+				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			await projectsStore.setCurrentProject('my-project');
+			expect(spy).toHaveBeenCalledWith('/my-project/');
+			expect(projectsStore.state.currentProjectKey).toBe('my-project');
+		});
+
+		it('Adds the returned project info the the state ', async () => {
+			const projectsStore = useProjectsStore({});
+			const spy = jest
+				.spyOn(api, 'get')
+				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			await projectsStore.setCurrentProject('my-project');
+			expect(spy).toHaveBeenCalledWith('/my-project/');
+			expect(projectsStore.state.projects[0]).toEqual({ key: 'my-project' });
+		});
+
+		it('Returns true if the project exists', async () => {
+			const projectsStore = useProjectsStore({});
+			const spy = jest
+				.spyOn(api, 'get')
+				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			const result = await projectsStore.setCurrentProject('my-project');
+			expect(result).toBe(true);
+		});
+
+		it('Returns false if the project does not exist', async () => {
+			const projectsStore = useProjectsStore({});
+			jest.spyOn(api, 'get').mockImplementation(() => Promise.reject());
+			const result = await projectsStore.setCurrentProject('my-project');
+			expect(result).toBe(false);
+		});
+	});
+
 	describe('Actions / getProjects', () => {
 		it('Fetches the project info for each individual project', async () => {
 			const spy = jest.spyOn(api, 'get');

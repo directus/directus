@@ -22,7 +22,6 @@
     "@vue/composition-api": "^0.3.4",
     "axios": "^0.19.2",
     "date-fns": "^2.9.0",
-    "debug": "^4.1.1",
     "lodash": "^4.17.15",
     "nanoid": "^2.1.11",
     "pinia": "0.0.5",
