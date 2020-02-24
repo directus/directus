@@ -122,6 +122,7 @@ class Schema
             new Group('auth', [
                 new Value('secret_key', Types::STRING, '<type-a-secret-authentication-key-string>'),
                 new Value('public_key', Types::STRING, '<type-a-public-authentication-key-string>'),
+                new Value('ttl', Types::INTEGER, 20),
                 new Group('social_providers', [
                     new Group('okta?', [
                         new Value('client_id', Types::STRING, ''),
