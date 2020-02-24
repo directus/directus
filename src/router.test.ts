@@ -1,10 +1,14 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
-import VueRouter, { Route } from 'vue-router';
-import { onBeforeEach, onBeforeEnterProjectChooser } from './router';
+import { Route } from 'vue-router';
+import router, {
+	onBeforeEach,
+	onBeforeEnterProjectChooser,
+	replaceRoutes,
+	defaultRoutes
+} from './router';
 import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
-import useModulesStore from './stores/modules';
 import * as auth from '@/auth';
 
 const route: Route = {
@@ -45,22 +49,6 @@ describe('Router', () => {
 		await onBeforeEach(toRoute, fromRoute as any, callback);
 
 		expect(projectsStore.getProjects).toHaveBeenCalled();
-	});
-
-	it('Registers all global modules on first load', async () => {
-		const modulesStore = useModulesStore({});
-		modulesStore.registerGlobalModules = jest.fn();
-
-		const toRoute = route;
-		const fromRoute = {
-			...route,
-			name: null
-		};
-		const callback = jest.fn();
-
-		await onBeforeEach(toRoute, fromRoute as any, callback);
-
-		expect(modulesStore.registerGlobalModules).toHaveBeenCalled();
 	});
 
 	it('Redirects to /install if projectsStore indicates that an install is needed', async () => {
@@ -232,6 +220,14 @@ describe('Router', () => {
 			const next = jest.fn();
 			onBeforeEnterProjectChooser(to, from, next);
 			expect(projectsStore.state.currentProjectKey).toBe(null);
+		});
+	});
+
+	describe('replaceRoutes', () => {
+		it('Calls the handler with the default routes', async () => {
+			const handler = jest.fn(() => []);
+			replaceRoutes(handler);
+			expect(handler).toHaveBeenCalledWith(defaultRoutes);
 		});
 	});
 });

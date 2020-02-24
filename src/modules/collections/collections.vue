@@ -1,5 +1,15 @@
 <template>
-	<h1>Collections</h1>
+	<private-view>
+		<template #navigation>
+			Nav
+		</template>
+
+		Collections
+
+		<template #drawer>
+			Drawer
+		</template>
+	</private-view>
 </template>
 
 <script lang="ts">

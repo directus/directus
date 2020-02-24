@@ -1,5 +1,7 @@
 <template>
-	<h1>Users</h1>
+	<private-view>
+		Users
+	</private-view>
 </template>
 
 <script lang="ts">

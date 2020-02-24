@@ -15,11 +15,19 @@ jest.useFakeTimers();
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-button', VButton);
-localVue.directive('tooltip', Tooltip);
 
 describe('Tooltip', () => {
 	afterEach(() => {
 		document.getElementsByTagName('html')[0].innerHTML = '';
+	});
+
+	describe('Directive', () => {
+		it('Registers onmouseenter and onmouseleave event handlers', () => {
+			const element = document.createElement('div');
+			element.addEventListener = jest.fn();
+			Tooltip.bind!(element, {} as any, null as any, null as any);
+			expect(element.addEventListener).toHaveBeenCalledTimes(2);
+		});
 	});
 
 	describe('onEnterTooltip', () => {
@@ -35,7 +43,7 @@ describe('Tooltip', () => {
 					top: true,
 					instant: true
 				}
-			});
+			})();
 
 			expect(tooltip.className).toBe('visible enter top');
 		});
@@ -52,11 +60,18 @@ describe('Tooltip', () => {
 					top: true,
 					instant: false
 				}
-			});
+			})();
 
 			expect(tooltip.className).toBe('');
 			jest.advanceTimersByTime(650);
 			expect(tooltip.className).toBe('visible top enter-active');
+		});
+	});
+
+	describe('onLeaveTooltip', () => {
+		it('Clears the timeout', () => {
+			onLeaveTooltip()();
+			expect(clearTimeout).toHaveBeenCalled();
 		});
 	});
 
@@ -276,13 +291,6 @@ describe('Tooltip', () => {
 				});
 				expect(tooltip.className).toBe('inverted top');
 			});
-		});
-	});
-
-	describe('onLeaveTooltip', () => {
-		it('Clears the timeout', () => {
-			onLeaveTooltip();
-			expect(clearTimeout).toHaveBeenCalled();
 		});
 	});
 

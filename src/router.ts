@@ -1,7 +1,6 @@
-import VueRouter, { NavigationGuard } from 'vue-router';
+import VueRouter, { NavigationGuard, RouteConfig } from 'vue-router';
 import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
-import { useModulesStore } from '@/stores/modules';
 import LoginRoute from '@/routes/login';
 import ProjectChooserRoute from '@/routes/project-chooser';
 import { checkAuth } from '@/auth';
@@ -12,48 +11,72 @@ export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => 
 	next();
 };
 
+export const defaultRoutes: RouteConfig[] = [
+	{
+		path: '/',
+		component: ProjectChooserRoute,
+		meta: {
+			public: true
+		},
+		beforeEnter: onBeforeEnterProjectChooser
+	},
+	{
+		path: '/install',
+		component: LoginRoute,
+		meta: {
+			public: true
+		}
+	},
+	{
+		path: '/:project',
+		redirect: '/:project/login'
+	},
+	{
+		path: '/:project/login',
+		component: LoginRoute,
+		meta: {
+			public: true
+		}
+	},
+	/**
+	 * @NOTE
+	 * Dynamic modules need to be inserted here. By default, VueRouter.addRoutes adds the route
+	 * to the end of this list, meaning that the Private404 will match before the custom module..
+	 * Vue Router dynamic route registration is under discussion:
+	 * https://github.com/vuejs/vue-router/issues/1156, and has an RFC:
+	 * https://github.com/vuejs/rfcs/pull/122
+	 *
+	 * In order to achieve what we need, we can use the custom replaceRoutes function exported
+	 * below to replace all the routes. This allows us to override this list of routes with the
+	 * list augmented with the module routes in the correct location.
+	 */
+	{
+		path: '/:project/*',
+		// This will be Private404
+		component: Debug
+	},
+	{
+		path: '*',
+		// This will be Public404
+		component: Debug
+	}
+];
+
 const router = new VueRouter({
 	mode: 'hash',
-	routes: [
-		{
-			path: '/',
-			component: ProjectChooserRoute,
-			meta: {
-				public: true
-			},
-			beforeEnter: onBeforeEnterProjectChooser
-		},
-		{
-			path: '/install',
-			component: LoginRoute,
-			meta: {
-				public: true
-			}
-		},
-		{
-			path: '/:project',
-			redirect: '/:project/login'
-		},
-		{
-			path: '/:project/login',
-			component: LoginRoute,
-			meta: {
-				public: true
-			}
-		},
-		/** @NOTE
-		 * All modules are registered dynamically as `/:project/:module`
-		 */
-		{
-			path: '/:project/*',
-			component: Debug
-		}
-	]
+	routes: defaultRoutes
 });
+
+export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfig[]): void {
+	const newRoutes = routeFilter([...defaultRoutes]);
+	const newRouter = new VueRouter({ routes: newRoutes });
+
+	// @ts-ignore - Matcher is not officially part of the public API (https://github.com/vuejs/vue-router/issues/2844#issuecomment-509529927)
+	router.matcher = newRouter.matcher;
+}
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const projectsStore = useProjectsStore();
-	const modulesStore = useModulesStore();
 
 	// Only on first load is from.name null. On subsequent requests, from.name is undefined | string
 	const firstLoad = from.name === null;
@@ -62,7 +85,6 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	// platform. We can also use this to (async) register all the globally available modules
 	if (firstLoad) {
 		await projectsStore.getProjects();
-		modulesStore.registerGlobalModules();
 	}
 
 	// When there aren't any projects, we should redirect to the install page to force the

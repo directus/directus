@@ -5,9 +5,11 @@ import './plugins';
 import './directives/register';
 import './components/register';
 import './views/register';
-
+import { registerGlobalModules } from './modules/register';
 import router from './router';
 import i18n from './lang/';
+
+registerGlobalModules();
 
 Vue.config.productionTip = false;
 

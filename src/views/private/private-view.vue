@@ -2,7 +2,9 @@
 	<div class="private-view">
 		<aside class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div class="module-nav"></div>
+			<div class="module-nav">
+				<slot name="navigation" />
+			</div>
 		</aside>
 		<div class="content">
 			<header>
@@ -11,7 +13,9 @@
 			</header>
 			<main><slot /></main>
 		</div>
-		<aside class="drawer" :class="{ 'is-open': drawerOpen }"></aside>
+		<aside class="drawer" :class="{ 'is-open': drawerOpen }">
+			<slot name="drawer" />
+		</aside>
 
 		<v-overlay
 			v-if="navWithOverlay"

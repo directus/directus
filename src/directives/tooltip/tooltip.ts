@@ -2,9 +2,9 @@ import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 
 const Tooltip: DirectiveOptions = {
-	inserted(element, binding) {
-		element.onmouseenter = () => onEnterTooltip(element, binding);
-		element.onmouseleave = () => onLeaveTooltip();
+	bind(element, binding) {
+		element.addEventListener('onmouseenter', onEnterTooltip(element, binding));
+		element.addEventListener('onmouseleave', onLeaveTooltip());
 	}
 };
 
@@ -13,17 +13,28 @@ export default Tooltip;
 let tooltipTimer: number;
 
 export function onEnterTooltip(element: HTMLElement, binding: DirectiveBinding) {
-	const tooltip = getTooltip();
+	return () => {
+		const tooltip = getTooltip();
 
-	if (binding.modifiers.instant) {
-		animateIn(tooltip);
-		updateTooltip(element, binding, tooltip);
-	} else {
-		tooltipTimer = setTimeout(() => {
+		if (binding.modifiers.instant) {
 			animateIn(tooltip);
 			updateTooltip(element, binding, tooltip);
-		}, 600);
-	}
+		} else {
+			tooltipTimer = setTimeout(() => {
+				animateIn(tooltip);
+				updateTooltip(element, binding, tooltip);
+			}, 600);
+		}
+	};
+}
+
+export function onLeaveTooltip() {
+	return () => {
+		const tooltip = getTooltip();
+
+		clearTimeout(tooltipTimer);
+		animateOut(tooltip);
+	};
 }
 
 export function updateTooltip(
@@ -117,13 +128,6 @@ export function updateTooltip(
 		tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), calc(${top}px - 100%))`;
 		tooltip.classList.add('top');
 	}
-}
-
-export function onLeaveTooltip() {
-	const tooltip = getTooltip();
-
-	clearTimeout(tooltipTimer);
-	animateOut(tooltip);
 }
 
 export function animateIn(tooltip: HTMLElement) {

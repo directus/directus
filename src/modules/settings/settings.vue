@@ -1,5 +1,7 @@
 <template>
-	<h1>Settings</h1>
+	<private-view>
+		Settings
+	</private-view>
 </template>
 
 <script lang="ts">

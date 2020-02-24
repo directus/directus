@@ -1,5 +1,7 @@
 <template>
-	<h1>Files</h1>
+	<private-view>
+		Files
+	</private-view>
 </template>
 
 <script lang="ts">
