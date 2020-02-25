@@ -3,9 +3,9 @@ import FilesModule from './files/';
 import SettingsModule from './settings/';
 import UsersModule from './users/';
 import { RouteConfig } from 'vue-router';
-import { ModuleConfig, Module } from '@/types/modules';
+import { ModuleConfig, Module } from '@/types/extensions';
 import { replaceRoutes } from '@/router';
-import useModulesStore from '@/stores/modules';
+import useExtensionsStore from '@/stores/extensions';
 import { i18n } from '@/lang';
 
 const lib = {
@@ -23,7 +23,7 @@ export function insertBeforeProjectWildcard(routes: RouteConfig[], moduleRoutes:
 }
 
 export function registerModules(modules: ModuleConfig[]) {
-	const modulesStore = useModulesStore();
+	const extensionsStore = useExtensionsStore();
 
 	/** @todo
 	 * This is where we will download the module definitions for custom modules
@@ -51,7 +51,7 @@ export function registerModules(modules: ModuleConfig[]) {
 		};
 	});
 
-	modulesStore.state.modules = modulesForStore;
+	extensionsStore.state.modules = modulesForStore;
 }
 
 export function registerGlobalModules() {

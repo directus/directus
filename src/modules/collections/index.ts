@@ -1,4 +1,4 @@
-import { ModuleConfig } from '@/types/modules';
+import { ModuleConfig } from '@/types/extensions';
 import Collections from './collections.vue';
 
 const config: ModuleConfig = {

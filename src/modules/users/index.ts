@@ -1,4 +1,4 @@
-import { ModuleConfig } from '@/types/modules';
+import { ModuleConfig } from '@/types/extensions';
 import Users from './users.vue';
 
 const config: ModuleConfig = {

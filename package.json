@@ -6,7 +6,7 @@
   "author": "Rijk van Zanten <rijk@rngr.org>",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --modern",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "lint:styles": "stylelint \"**/*.{vue,scss}\"",

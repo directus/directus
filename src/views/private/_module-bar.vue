@@ -10,7 +10,7 @@
 <script lang="ts">
 import { createComponent, computed } from '@vue/composition-api';
 import ModuleBarLogo from './_module-bar-logo.vue';
-import { useModulesStore } from '@/stores/modules/';
+import { useExtensionsStore } from '@/stores/extensions/';
 import { useProjectsStore } from '@/stores/projects';
 
 export default createComponent({
@@ -18,12 +18,12 @@ export default createComponent({
 		ModuleBarLogo
 	},
 	setup() {
-		const modulesStore = useModulesStore();
+		const extensionsStore = useExtensionsStore();
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = projectsStore.state;
 
 		const modules = computed(() =>
-			modulesStore.state.modules.map(module => ({
+			extensionsStore.state.modules.map(module => ({
 				...module,
 				to: `/${currentProjectKey}/${module.id}/`
 			}))

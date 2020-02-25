@@ -3,8 +3,8 @@ import VueCompositionAPI from '@vue/composition-api';
 import { RouteConfig } from 'vue-router';
 import * as router from '@/router';
 import moduleRegistration from './register';
-import { useModulesStore } from '@/stores/modules';
-import { ModuleConfig } from '@/types/modules';
+import { useExtensionsStore } from '@/stores/extensions';
+import { ModuleConfig } from '@/types/extensions';
 
 describe('Modules / Register', () => {
 	beforeAll(() => {
@@ -38,7 +38,7 @@ describe('Modules / Register', () => {
 	});
 
 	it('Adds the modules to the store', () => {
-		const modulesStore = useModulesStore({});
+		const extensionsStore = useExtensionsStore({});
 
 		const testModules: ModuleConfig[] = [
 			{
@@ -55,7 +55,7 @@ describe('Modules / Register', () => {
 
 		moduleRegistration.registerModules(testModules);
 
-		expect(modulesStore.state.modules).toEqual([
+		expect(extensionsStore.state.modules).toEqual([
 			{
 				id: 'test',
 				icon: 'box',
