@@ -63,8 +63,8 @@ You can set the default, active, and hover colors and background colors with css
 | `--v-list-color-hover`             | `var(--foreground-color)`  |
 | `--v-list-color-active`            | `var(--foreground-color)`  |
 | `--v-list-background-color`        | `var(--background-color)`  |
-| `--v-list-background-color-hover`  | `var(--hover-background)`  |
-| `--v-list-background-color-active` | `var(--active-background)` |
+| `--v-list-background-color-hover`  | `var(--background-color-hover)`  |
+| `--v-list-background-color-active` | `var(--background-color-active)` |
 
 ---
 
@@ -137,8 +137,8 @@ Second values are fallback ones, in case the list item is not inside a list wher
 | `--v-list-item-color-hover`             | `var(--v-list-color-hover, var(--foreground-color))`            |
 | `--v-list-item-color-active`            | `var(--v-list-color-active, var(--foreground-color))`           |
 | `--v-list-item-background-color`        | `var(--v-list-background-color, var(--background-color))`       |
-| `--v-list-item-background-color-hover`  | `var(---list-background-color-hover, var(--hover-background))`  |
-| `--v-list-item-background-color-active` | `var(--vlist-background-color-active,var(--active-background))` |
+| `--v-list-item-background-color-hover`  | `var(---list-background-color-hover, var(--background-color-hover))`  |
+| `--v-list-item-background-color-active` | `var(--vlist-background-color-active,var(--background-color-active))` |
 
 ---
 

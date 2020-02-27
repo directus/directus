@@ -23,15 +23,16 @@ body {
 	--warning-dark: 								var(--orange-800);
 	--warning-light: 								var(--orange-50);
 
-	--background-color: 							var(--white);
-	--background-color-alt: 						var(--blue-grey-50);
 	--foreground-color: 							var(--blue-grey-800);
 	--foreground-color-secondary: 					var(--blue-grey-300);
 	--foreground-color-tertiary: 					var(--blue-grey-100);
 
+	--background-color: 							var(--white);
+	--background-color-hover: 						var(--blue-grey-50);
+	--background-color-active:						var(--blue-grey-100);
+	--background-color-alt: 						var(--blue-grey-50);
+
 	--highlight: 									var(--off-white);
-	--hover-background:								var(--blue-grey-50);
-	--active-background:							var(--blue-grey-100);
 
 	/* Inputs */
 	--input-foreground-color: 						var(--blue-grey-800);

@@ -49,11 +49,11 @@ export default createComponent({
 	--v-list-item-background-color: var(--v-list-background-color, var(--background-color));
 	--v-list-item-background-color-hover: var(
 		---list-background-color-hover,
-		var(--hover-background)
+		var(--background-color-hover)
 	);
 	--v-list-item-background-color-active: var(
 		--vlist-background-color-active,
-		var(--active-background)
+		var(--background-color-active)
 	);
 
 	position: relative;

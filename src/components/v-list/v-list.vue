@@ -35,8 +35,8 @@ export default createComponent({
 	--v-list-color-hover: var(--foreground-color);
 	--v-list-color-active: var(--foreground-color);
 	--v-list-background-color: var(--background-color);
-	--v-list-background-color-hover: var(--hover-background);
-	--v-list-background-color-active: var(--active-background);
+	--v-list-background-color-hover: var(--background-color-hover);
+	--v-list-background-color-active: var(--background-color-active);
 
 	width: 100%;
 	min-width: var(--v-list-min-width);
