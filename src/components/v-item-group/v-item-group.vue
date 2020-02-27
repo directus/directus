@@ -52,6 +52,7 @@ export default createComponent({
 				mandatory: mandatory
 			}
 		);
+		return {};
 	}
 });
 </script>

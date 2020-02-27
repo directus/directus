@@ -10,13 +10,15 @@ import Tooltip, {
 	onEnterTooltip
 } from './tooltip';
 
-jest.useFakeTimers();
-
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-button', VButton);
 
 describe('Tooltip', () => {
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
 	afterEach(() => {
 		document.getElementsByTagName('html')[0].innerHTML = '';
 	});

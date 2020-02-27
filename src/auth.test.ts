@@ -12,13 +12,11 @@ describe('Auth', () => {
 		Vue.config.productionTip = false;
 		Vue.config.devtools = false;
 		Vue.use(VueCompositionAPI);
-		jest.spyOn(api, 'get');
-		jest.spyOn(api, 'post');
 	});
 
 	beforeEach(() => {
-		(api.get as jest.Mock).mockClear();
-		(api.post as jest.Mock).mockClear();
+		jest.spyOn(api, 'get');
+		jest.spyOn(api, 'post');
 	});
 
 	describe('checkAuth', () => {

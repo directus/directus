@@ -8,13 +8,11 @@ describe('API', () => {
 	beforeAll(() => {
 		globalThis.window = Object.create(window);
 		Vue.use(VueCompositionAPI);
-		jest.spyOn(auth, 'logout');
-		jest.spyOn(auth, 'checkAuth');
 	});
 
 	beforeEach(() => {
-		(auth.logout as jest.Mock).mockClear();
-		(auth.checkAuth as jest.Mock).mockClear();
+		jest.spyOn(auth, 'logout');
+		jest.spyOn(auth, 'checkAuth');
 	});
 
 	it('Calculates the correct API root URL based on window', () => {
