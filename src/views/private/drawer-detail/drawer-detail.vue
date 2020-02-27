@@ -16,13 +16,12 @@
 
 <script lang="ts">
 import { createComponent, PropType, computed, ref, Ref, inject } from '@vue/composition-api';
-import { Icon } from '@/types/icon';
 import { useGroupable } from '@/compositions/groupable';
 
 export default createComponent({
 	props: {
 		icon: {
-			type: String as PropType<Icon>,
+			type: String,
 			required: true
 		},
 		title: {

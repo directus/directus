@@ -1,17 +1,15 @@
 import Vue from 'vue';
 
-import './styles/main.scss';
 import './plugins';
+
+import i18n from './lang/';
+import router from './router';
+
+import './styles/main.scss';
 import './directives/register';
 import './components/register';
 import './views/register';
-import { registerGlobalModules } from './modules/register';
-import { registerGlobalLayouts } from './layouts/register';
-import router from './router';
-import i18n from './lang/';
-
-registerGlobalModules();
-registerGlobalLayouts();
+import './extensions/register';
 
 Vue.config.productionTip = false;
 

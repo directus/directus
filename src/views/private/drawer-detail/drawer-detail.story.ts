@@ -3,10 +3,15 @@ import markdown from './drawer-detail.readme.md';
 import DrawerDetail from './drawer-detail.vue';
 import PrivateView from '@/views/private';
 import VButton from '@/components/v-button';
+import VueRouter from 'vue-router';
 
 Vue.component('v-button', VButton);
 Vue.component('drawer-detail', DrawerDetail);
 Vue.component('private-view', PrivateView);
+
+Vue.use(VueRouter);
+
+const router = new VueRouter();
 
 export default {
 	title: 'Views / Private / Drawer Detail',
@@ -16,7 +21,9 @@ export default {
 	}
 };
 
-export const basic = () => `
+export const basic = () => ({
+	router: router,
+	template: `
 <private-view>
 	<template #drawer>
 		<drawer-detail icon="person" title="Users">
@@ -35,4 +42,5 @@ export const basic = () => `
 		</drawer-detail>
 	</template>
 </private-view>
-`;
+`
+});

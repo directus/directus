@@ -1,5 +1,5 @@
 <template>
-	<div class="tabular-layout">
+	<div class="layout-tabular">
 		Tabular
 	</div>
 </template>
@@ -16,7 +16,7 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
-.tabular-layout {
+.layout-tabular {
 	background-color: red;
 }
 </style>

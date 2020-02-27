@@ -1,11 +1,11 @@
-import { LayoutConfig } from '@/types/extensions';
-import Component from './tabular.vue';
+import { createLayout } from '@/layouts/create';
+import TabularLayout from './tabular.vue';
 
-const TabularLayout: LayoutConfig = {
+export default createLayout({
 	id: 'tabular',
-	name: 'Tabular',
-	icon: 'box',
-	component: Component
-};
-
-export default TabularLayout;
+	register: ({ i18n }) => ({
+		name: i18n.t('layouts.tabular.tabular'),
+		icon: 'table',
+		component: TabularLayout
+	})
+});

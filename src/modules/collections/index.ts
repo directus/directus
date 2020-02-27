@@ -1,16 +1,16 @@
-import { ModuleConfig } from '@/types/extensions';
 import Collections from './collections.vue';
+import { createModule } from '@/modules/create';
 
-const config: ModuleConfig = {
+export default createModule({
 	id: 'collections',
-	icon: 'box',
-	name: i18n => i18n.tc('collection', 2),
-	routes: [
-		{
-			path: '/',
-			component: Collections
-		}
-	]
-};
-
-export default config;
+	register: ({ i18n }) => ({
+		name: i18n.tc('collection', 2),
+		routes: [
+			{
+				path: '/',
+				component: Collections
+			}
+		],
+		icon: 'box'
+	})
+});
