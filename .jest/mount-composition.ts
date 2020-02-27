@@ -4,7 +4,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-export default function mountComposition(cb: () => any) {
+export default function mountComposition(cb: () => any, mountOptions?: Parameters<typeof mount>[1]) {
 	return mount(
 		{
 			setup() {
@@ -14,6 +14,9 @@ export default function mountComposition(cb: () => any) {
 				return h('div');
 			}
 		},
-		{ localVue }
+		{
+			localVue,
+			...mountOptions
+		}
 	);
 };

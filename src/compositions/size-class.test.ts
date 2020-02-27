@@ -1,4 +1,3 @@
-import VueCompositionAPI, { Ref } from '@vue/composition-api';
 import useSizeClass from './size-class';
 import mountComposition from '../../.jest/mount-composition';
 
