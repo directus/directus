@@ -3,17 +3,33 @@
 		<aside class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav">
-				<slot name="navigation" />
+				<div
+					style="height: 64px; padding: 20px; color: red; font-family: 'Comic Sans MS', cursive;"
+				>
+					PROJECT CHOOSER
+				</div>
+				<div class="module-nav-content">
+					<slot name="navigation" />
+				</div>
 			</div>
 		</aside>
 		<div class="content">
 			<header>
 				<button @click="navOpen = true">Toggle nav</button>
-				<button @click="drawerOpen = !drawerOpen">Toggle drawer</button>
+				<button v-if="drawerHasContent" @click="drawerOpen = !drawerOpen">
+					Toggle drawer
+				</button>
 			</header>
-			<main><slot /></main>
+			<main>
+				<slot />
+			</main>
 		</div>
-		<aside class="drawer" :class="{ 'is-open': drawerOpen }" @click="drawerOpen = true">
+		<aside
+			v-if="drawerHasContent"
+			class="drawer"
+			:class="{ 'is-open': drawerOpen }"
+			@click="drawerOpen = true"
+		>
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
 			</drawer-detail-group>
@@ -50,14 +66,16 @@ export default createComponent({
 		DrawerDetailGroup
 	},
 	props: {},
-	setup() {
-		const navOpen = ref<boolean>(false);
-		const drawerOpen = ref<boolean>(false);
+	setup(props, { slots }) {
+		const navOpen = ref(false);
+		const drawerOpen = ref(false);
 
 		const { width } = useWindowSize();
 
-		const navWithOverlay = computed<boolean>(() => width.value < 960);
-		const drawerWithOverlay = computed<boolean>(() => width.value < 1260);
+		const navWithOverlay = computed(() => width.value < 960);
+		const drawerWithOverlay = computed(() => width.value < 1260);
+
+		const drawerHasContent = computed(() => !!slots.drawer);
 
 		provide('drawer-open', drawerOpen);
 
@@ -66,7 +84,8 @@ export default createComponent({
 			drawerOpen,
 			navWithOverlay,
 			drawerWithOverlay,
-			width
+			width,
+			drawerHasContent
 		};
 	}
 });
@@ -76,6 +95,8 @@ export default createComponent({
 @import '@/styles/mixins/breakpoint';
 
 .private-view {
+	--private-view-content-padding: 32px;
+
 	display: flex;
 	width: 100%;
 	height: 100%;
@@ -109,6 +130,12 @@ export default createComponent({
 			height: 100%;
 			font-size: 1rem;
 			background-color: #eceff1;
+
+			&-content {
+				height: calc(100% - 64px);
+				overflow-x: hidden;
+				overflow-y: auto;
+			}
 		}
 
 		@include breakpoint(medium) {
@@ -119,6 +146,10 @@ export default createComponent({
 
 	.content {
 		flex-grow: 1;
+
+		main {
+			padding: var(--private-view-content-padding);
+		}
 	}
 
 	.drawer {

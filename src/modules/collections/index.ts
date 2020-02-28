@@ -1,4 +1,4 @@
-import Collections from './collections.vue';
+import CollectionsOverview from './routes/collections-overview.vue';
 import { createModule } from '@/modules/create';
 
 export default createModule({
@@ -8,7 +8,7 @@ export default createModule({
 		routes: [
 			{
 				path: '/',
-				component: Collections
+				component: CollectionsOverview
 			}
 		],
 		icon: 'box'

@@ -49,8 +49,9 @@ export const onError = async (error: any) => {
 	const code = error.response?.data?.error?.code;
 	if (status === 401 && code === 3) {
 		const loggedIn = await checkAuth();
+
 		if (loggedIn === false) {
-			logout(LogoutReason.ERROR_SESSION_EXPIRED);
+			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 		}
 	}
 

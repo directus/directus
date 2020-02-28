@@ -164,7 +164,9 @@ describe('API', () => {
 				}
 			});
 		} catch {
-			expect(auth.logout).toHaveBeenCalledWith(auth.LogoutReason.ERROR_SESSION_EXPIRED);
+			expect(auth.logout).toHaveBeenCalledWith({
+				reason: auth.LogoutReason.ERROR_SESSION_EXPIRED
+			});
 		}
 	});
 

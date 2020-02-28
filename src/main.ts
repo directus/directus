@@ -9,7 +9,8 @@ import './styles/main.scss';
 import './directives/register';
 import './components/register';
 import './views/register';
-import './extensions/register';
+import './modules/register';
+import './layouts/register';
 
 Vue.config.productionTip = false;
 

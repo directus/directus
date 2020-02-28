@@ -3,12 +3,19 @@ import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
 import ProjectChooserRoute from '@/routes/project-chooser';
-import { checkAuth } from '@/auth';
+import { checkAuth, logout } from '@/auth';
+import { hydrate } from '@/hydrate';
 
 export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
 	const projectsStore = useProjectsStore();
 	projectsStore.state.currentProjectKey = null;
 	next();
+};
+
+export const onBeforeEnterLogout: NavigationGuard = async (to, from, next) => {
+	const currentProjectKey = to.params.project;
+	await logout({ navigate: false });
+	next(`/${currentProjectKey}/login`);
 };
 
 export const defaultRoutes: RouteConfig[] = [
@@ -37,6 +44,10 @@ export const defaultRoutes: RouteConfig[] = [
 		meta: {
 			public: true
 		}
+	},
+	{
+		path: '/:project/logout',
+		beforeEnter: onBeforeEnterLogout
 	},
 	/**
 	 * @NOTE
@@ -113,7 +124,9 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	if (firstLoad) {
 		const loggedIn = await checkAuth();
 
-		if (loggedIn === false) {
+		if (loggedIn === true) {
+			await hydrate();
+		} else {
 			return next(`/${projectsStore.state.currentProjectKey}/login`);
 		}
 	}

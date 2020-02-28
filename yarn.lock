@@ -858,6 +858,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@directus/format-title@^3.1.0":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@directus/format-title/-/format-title-3.1.1.tgz#a357171870137a7a39de99f1b8e011482174679b"
+  integrity sha512-9M+6ya2VSPhMhMSJCzYmuVFVFgDWYcuNR+4hEpYx/Ma9nFq/V1rWzqQ1fZDQ3iAxilxhAPuhRTUvKDsckwsGWw==
+
 "@emotion/cache@^10.0.27", "@emotion/cache@^10.0.9":
   version "10.0.27"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.27.tgz#7895db204e2c1a991ae33d51262a3a44f6737303"

@@ -52,17 +52,17 @@ You can set the default, active, and hover colors and background colors with css
 | `click` | User clicks on button | `MouseEvent` |
 
 ## CSS Variables
-| Variable                           | Default                    |
-|------------------------------------|----------------------------|
-| `--v-list-padding`                 | `8px 0`                    |
-| `--v-list-max-height`              | `none`                     |
-| `--v-list-max-width`               | `none`                     |
-| `--v-list-min-width`               | `none`                     |
-| `--v-list-min-height`              | `none`                     |
-| `--v-list-color`                   | `var(--foreground-color)`  |
-| `--v-list-color-hover`             | `var(--foreground-color)`  |
-| `--v-list-color-active`            | `var(--foreground-color)`  |
-| `--v-list-background-color`        | `var(--background-color)`  |
+| Variable                           | Default                          |
+|------------------------------------|----------------------------------|
+| `--v-list-padding`                 | `8px 0`                          |
+| `--v-list-max-height`              | `none`                           |
+| `--v-list-max-width`               | `none`                           |
+| `--v-list-min-width`               | `none`                           |
+| `--v-list-min-height`              | `none`                           |
+| `--v-list-color`                   | `var(--foreground-color)`        |
+| `--v-list-color-hover`             | `var(--foreground-color)`        |
+| `--v-list-color-active`            | `var(--foreground-color)`        |
+| `--v-list-background-color`        | `var(--background-color)`        |
 | `--v-list-background-color-hover`  | `var(--background-color-hover)`  |
 | `--v-list-background-color-active` | `var(--background-color-active)` |
 
@@ -124,19 +124,20 @@ Hover styles will only be set if the list item has a to link or a onClick handle
 
 ## CSS Variables
 Second values are fallback ones, in case the list item is not inside a list where those vars are set.
-| Variable                                | Default                                                         |
-|-----------------------------------------|-----------------------------------------------------------------|
-| `--v-list-item-padding`                 | `0 16px`                                                        |
-| `--v-list-item-min-width`               | `none`                                                          |
-| `--v-list-item-max-width`               | `none`                                                          |
-| `--v-list-item-min-height`              | `48px`                                                          |
-| `--v-list-item-max-height`              | `auto`                                                          |
-| `--v-list-item-border-radius`           | `0`                                                             |
-| `--v-list-item-margin-bottom`           | `0`                                                             |
-| `--v-list-item-color`                   | `var(--v-list-color, var(--foreground-color))`                  |
-| `--v-list-item-color-hover`             | `var(--v-list-color-hover, var(--foreground-color))`            |
-| `--v-list-item-color-active`            | `var(--v-list-color-active, var(--foreground-color))`           |
-| `--v-list-item-background-color`        | `var(--v-list-background-color, var(--background-color))`       |
+
+| Variable                                | Default                                                               |
+|-----------------------------------------|-----------------------------------------------------------------------|
+| `--v-list-item-padding`                 | `0 16px`                                                              |
+| `--v-list-item-min-width`               | `none`                                                                |
+| `--v-list-item-max-width`               | `none`                                                                |
+| `--v-list-item-min-height`              | `48px`                                                                |
+| `--v-list-item-max-height`              | `auto`                                                                |
+| `--v-list-item-border-radius`           | `0`                                                                   |
+| `--v-list-item-margin-bottom`           | `0`                                                                   |
+| `--v-list-item-color`                   | `var(--v-list-color, var(--foreground-color))`                        |
+| `--v-list-item-color-hover`             | `var(--v-list-color-hover, var(--foreground-color))`                  |
+| `--v-list-item-color-active`            | `var(--v-list-color-active, var(--foreground-color))`                 |
+| `--v-list-item-background-color`        | `var(--v-list-background-color, var(--background-color))`             |
 | `--v-list-item-background-color-hover`  | `var(---list-background-color-hover, var(--background-color-hover))`  |
 | `--v-list-item-background-color-active` | `var(--vlist-background-color-active,var(--background-color-active))` |
 

@@ -1,15 +1,20 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
+import * as hydration from '@/hydrate';
 import router, {
 	onBeforeEach,
 	onBeforeEnterProjectChooser,
 	replaceRoutes,
-	defaultRoutes
+	defaultRoutes,
+	onBeforeEnterLogout
 } from './router';
 import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
 import * as auth from '@/auth';
+
+jest.mock('@/hydrate');
+jest.mock('@/auth');
 
 const route: Route = {
 	name: undefined,
@@ -183,6 +188,31 @@ describe('Router', () => {
 		expect(next).toHaveBeenCalledWith('/my-project/login');
 	});
 
+	it('Hydrates the store on first load when logged in', async () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.getProjects = jest.fn();
+		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(true));
+		(projectsStore.state.projects as any) = [
+			{
+				key: 'my-project'
+			}
+		];
+
+		const to = {
+			...route,
+			params: {
+				project: 'my-project'
+			}
+		};
+
+		const from = { ...route, name: null };
+		const next = jest.fn();
+
+		await onBeforeEach(to, from as any, next);
+
+		expect(hydration.hydrate).toHaveBeenCalled();
+	});
+
 	it('Calls next when all checks are done', async () => {
 		const projectsStore = useProjectsStore({});
 		projectsStore.getProjects = jest.fn();
@@ -218,6 +248,17 @@ describe('Router', () => {
 			const next = jest.fn();
 			onBeforeEnterProjectChooser(to, from, next);
 			expect(projectsStore.state.currentProjectKey).toBe(null);
+		});
+	});
+
+	describe('onBeforeEnterLogout', () => {
+		it('Calls logout and redirects to login page', async () => {
+			const to = { ...route, path: '/my-project/logout', params: { project: 'my-project' } };
+			const from = route;
+			const next = jest.fn();
+			await onBeforeEnterLogout(to, from, next);
+			expect(auth.logout).toHaveBeenCalled();
+			expect(next).toHaveBeenCalledWith('/my-project/login');
 		});
 	});
 

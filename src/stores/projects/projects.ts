@@ -2,13 +2,6 @@ import { createStore } from 'pinia';
 import { Projects, ProjectWithKey, ProjectError } from './types';
 import api from '@/api';
 
-type ProjectsState = {
-	needsInstall: boolean;
-	error: any;
-	projects: Projects;
-	currentProjectKey: string | null;
-};
-
 export const useProjectsStore = createStore({
 	id: 'projects',
 	state: () => ({

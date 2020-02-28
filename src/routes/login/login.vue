@@ -18,6 +18,7 @@ import { createComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
+import { login } from '@/auth';
 
 export default createComponent({
 	setup() {
@@ -30,18 +31,19 @@ export default createComponent({
 		return { email, password, onSubmit, loggingIn };
 
 		async function onSubmit() {
+			if (email.value === null || password.value === null) return;
+
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 
 			try {
 				loggingIn.value = true;
 
-				await api.post(`/${currentProjectKey}/auth/authenticate`, {
-					mode: 'cookie',
+				await login({
 					email: email.value,
 					password: password.value
 				});
 
-				router.push(`/${currentProjectKey}/`);
+				router.push(`/${currentProjectKey}/collections/`);
 			} catch (error) {
 				console.warn(error);
 			} finally {
