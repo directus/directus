@@ -3,8 +3,8 @@ import { DirectiveBinding } from 'vue/types/options';
 
 const Tooltip: DirectiveOptions = {
 	bind(element, binding) {
-		element.addEventListener('onmouseenter', onEnterTooltip(element, binding));
-		element.addEventListener('onmouseleave', onLeaveTooltip());
+		element.addEventListener('mouseenter', onEnterTooltip(element, binding));
+		element.addEventListener('mouseleave', onLeaveTooltip());
 	}
 };
 
