@@ -2,7 +2,7 @@
 	<div class="private-view">
 		<aside class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div class="module-nav">
+			<div class="module-nav alt-colors">
 				<div
 					style="height: 64px; padding: 20px; color: red; font-family: 'Comic Sans MS', cursive;"
 				>
@@ -26,7 +26,7 @@
 		</div>
 		<aside
 			v-if="drawerHasContent"
-			class="drawer"
+			class="drawer alt-colors"
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>

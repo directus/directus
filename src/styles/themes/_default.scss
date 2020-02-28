@@ -1,5 +1,6 @@
 /* stylelint-disable custom-property-empty-line-before, declaration-colon-space-after */
-body {
+body,
+.default-colors {
 	/* Global */
 	--brand: 										var(--blue-grey-900);
 
@@ -88,8 +89,14 @@ body {
 	--overlay-color: 								rgba(38, 50, 56, 0.75);
 	--divider-color:								var(--blue-grey-50);
 
-	--tooltip-foreground-color: var(--button-primary-foreground-color);
-	--tooltip-background-color: var(--button-primary-background-color-hover);
-	--tooltip-foreground-color-inverted: var(--input-foreground-color);
-	--tooltip-background-color-inverted: var(--button-secondary-background-color);
+	--tooltip-foreground-color:                     var(--button-primary-foreground-color);
+	--tooltip-background-color:                     var(--button-primary-background-color-hover);
+	--tooltip-foreground-color-inverted:            var(--input-foreground-color);
+	--tooltip-background-color-inverted:            var(--button-secondary-background-color);
+}
+
+.alt-colors {
+	--background-color:                             var(--background-color-alt);
+	--background-color-hover:                       #dde3e6;
+	--background-color-active:                      var(--blue-grey-100);
 }
