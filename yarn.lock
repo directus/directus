@@ -858,7 +858,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@directus/format-title@^3.1.0":
+"@directus/format-title@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@directus/format-title/-/format-title-3.1.1.tgz#a357171870137a7a39de99f1b8e011482174679b"
   integrity sha512-9M+6ya2VSPhMhMSJCzYmuVFVFgDWYcuNR+4hEpYx/Ma9nFq/V1rWzqQ1fZDQ3iAxilxhAPuhRTUvKDsckwsGWw==
@@ -14538,10 +14538,10 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
-vue-i18n@^8.15.3:
-  version "8.15.3"
-  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.15.3.tgz#9f947802d9b734fcb92e2ce724da654f2f9fc0f4"
-  integrity sha512-PVNgo6yhOmacZVFjSapZ314oewwLyXHjJwAqjnaPN1GJAJd/dvsrShGzSiJuCX4Hc36G4epJvNXUwO8y7wEKew==
+vue-i18n@^8.15.4:
+  version "8.15.4"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.15.4.tgz#1bfba2b6a6cb6de7b44f0f0aa89ad775fc902bc2"
+  integrity sha512-brhbJRB/gyWlroAhQZU0TNTQzNonbkHmzH4HlJzs7c+DsVIhB5OlRHg3zAl+85kkT8mpxzvBE6Bm1slqnRRmsg==
 
 vue-jest@^3.0.5:
   version "3.0.5"
