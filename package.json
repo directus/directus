@@ -47,7 +47,7 @@
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
-    "@typescript-eslint/typescript-estree": "^2.21.0",
+    "@typescript-eslint/typescript-estree": "^2.22.0",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
     "@vue/cli-plugin-router": "^4.1.0",
