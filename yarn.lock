@@ -2195,10 +2195,10 @@
     ts-jest "^24.2.0"
     vue-jest "^3.0.5"
 
-"@vue/cli-plugin-vuex@^4.1.0", "@vue/cli-plugin-vuex@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-vuex/-/cli-plugin-vuex-4.1.2.tgz#5e728b56ad9de2f062a8944f838affa0297ccb99"
-  integrity sha512-qsf8sfUUtTuFf24iB6vbdapvCTCt4FqLj7r66POutGWmBCTlPHsMaAXMaD2ZD53/hqr8QHd/557IUensSwj5wA==
+"@vue/cli-plugin-vuex@^4.1.2", "@vue/cli-plugin-vuex@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-vuex/-/cli-plugin-vuex-4.2.3.tgz#aa1d8e824dd82b8718c0c40e3906c34ccd752516"
+  integrity sha512-7M4CaoAD4W/GdiDI4+Gh2tATPFBnb/u7bCiLLDsuL9ztypv7l3p4cu43zkDpTCCuufkZFYtZwysOAY8SbGqOjg==
 
 "@vue/cli-service@^4.1.0":
   version "4.1.2"
