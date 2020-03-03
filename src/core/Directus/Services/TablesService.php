@@ -1320,10 +1320,6 @@ class TablesService extends AbstractService
 
         $this->updateColumnsRelation($name, array_merge($toAdd, $toChange));
 
-        foreach ($fields as $fieldData) {
-            $schemaFactory->addNotNullConstraint($fieldData);
-        }
-
         $hookEmitter->run('collection.update', [$name, $data]);
         $hookEmitter->run('collection.update:after', [$name, $data]);
 

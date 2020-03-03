@@ -55,7 +55,7 @@ class Command
      */
     public static function getDefaultName()
     {
-        $class = \get_called_class();
+        $class = static::class;
         $r = new \ReflectionProperty($class, 'defaultName');
 
         return $class === $r->class ? static::$defaultName : null;
@@ -255,7 +255,7 @@ class Command
             $statusCode = $this->execute($input, $output);
 
             if (!\is_int($statusCode)) {
-                @trigger_error(sprintf('Return value of "%s::execute()" should always be of the type int since Symfony 4.4, %s returned.', \get_class($this), \gettype($statusCode)), E_USER_DEPRECATED);
+                @trigger_error(sprintf('Return value of "%s::execute()" should always be of the type int since Symfony 4.4, %s returned.', static::class, \gettype($statusCode)), E_USER_DEPRECATED);
             }
         }
 
@@ -344,7 +344,7 @@ class Command
     public function getDefinition()
     {
         if (null === $this->definition) {
-            throw new LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', \get_class($this)));
+            throw new LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', static::class));
         }
 
         return $this->definition;

@@ -1,6 +1,11 @@
-* 3.2.3 (2017-XX-XX)
+* 3.3.0 (2020-03-03)
 
- * n/a
+ * Drop PHP extension
+ * Bump min PHP version to 7.2.5
+
+* 3.2.3 (2018-01-21)
+
+ * prefixed all function calls with \ for extra speed
 
 * 3.2.2 (2017-07-23)
 

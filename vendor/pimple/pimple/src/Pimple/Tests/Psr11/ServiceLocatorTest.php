@@ -44,7 +44,7 @@ class ServiceLocatorTest extends TestCase
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('service'));
+        $locator = new ServiceLocator($pimple, ['service']);
 
         $this->assertSame($pimple['service'], $locator->get('service'));
     }
@@ -55,52 +55,49 @@ class ServiceLocatorTest extends TestCase
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('alias' => 'service'));
+        $locator = new ServiceLocator($pimple, ['alias' => 'service']);
 
         $this->assertSame($pimple['service'], $locator->get('alias'));
     }
 
-    /**
-     * @expectedException \Pimple\Exception\UnknownIdentifierException
-     * @expectedExceptionMessage Identifier "service" is not defined.
-     */
     public function testCannotAccessAliasedServiceUsingRealIdentifier()
     {
+        $this->expectException(\Pimple\Exception\UnknownIdentifierException::class);
+        $this->expectExceptionMessage('Identifier "service" is not defined.');
+
         $pimple = new Container();
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('alias' => 'service'));
+        $locator = new ServiceLocator($pimple, ['alias' => 'service']);
 
         $service = $locator->get('service');
     }
 
-    /**
-     * @expectedException \Pimple\Exception\UnknownIdentifierException
-     * @expectedExceptionMessage Identifier "foo" is not defined.
-     */
     public function testGetValidatesServiceCanBeLocated()
     {
+        $this->expectException(\Pimple\Exception\UnknownIdentifierException::class);
+        $this->expectExceptionMessage('Identifier "foo" is not defined.');
+
         $pimple = new Container();
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('alias' => 'service'));
+        $locator = new ServiceLocator($pimple, ['alias' => 'service']);
 
         $service = $locator->get('foo');
     }
 
-    /**
-     * @expectedException \Pimple\Exception\UnknownIdentifierException
-     * @expectedExceptionMessage Identifier "invalid" is not defined.
-     */
     public function testGetValidatesTargetServiceExists()
     {
+        $this->expectException(\Pimple\Exception\UnknownIdentifierException::class);
+        $this->expectExceptionMessage('Identifier "invalid" is not defined.');
+
         $pimple = new Container();
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('alias' => 'invalid'));
+        $locator = new ServiceLocator($pimple, ['alias' => 'invalid']);
 
         $service = $locator->get('alias');
     }
@@ -114,7 +111,7 @@ class ServiceLocatorTest extends TestCase
         $pimple['service2'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('service1'));
+        $locator = new ServiceLocator($pimple, ['service1']);
 
         $this->assertTrue($locator->has('service1'));
         $this->assertFalse($locator->has('service2'));
@@ -126,7 +123,7 @@ class ServiceLocatorTest extends TestCase
         $pimple['service'] = function () {
             return new Fixtures\Service();
         };
-        $locator = new ServiceLocator($pimple, array('foo' => 'service', 'bar' => 'invalid'));
+        $locator = new ServiceLocator($pimple, ['foo' => 'service', 'bar' => 'invalid']);
 
         $this->assertTrue($locator->has('foo'));
         $this->assertFalse($locator->has('bar'));

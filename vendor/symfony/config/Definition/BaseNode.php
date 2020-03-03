@@ -524,7 +524,7 @@ abstract class BaseNode implements NodeInterface
     private function doValidateType($value): void
     {
         if (null !== $this->handlingPlaceholder && !$this->allowPlaceholders()) {
-            $e = new InvalidTypeException(sprintf('A dynamic value is not compatible with a "%s" node type at path "%s".', \get_class($this), $this->getPath()));
+            $e = new InvalidTypeException(sprintf('A dynamic value is not compatible with a "%s" node type at path "%s".', static::class, $this->getPath()));
             $e->setPath($this->getPath());
 
             throw $e;

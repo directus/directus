@@ -259,6 +259,7 @@ return array(
     'Directus\\Database\\Exception\\FieldLengthNotSupportedException' => $baseDir . '/src/core/Directus/Database/Exception/FieldLengthNotSupportedException.php',
     'Directus\\Database\\Exception\\FieldLengthRequiredException' => $baseDir . '/src/core/Directus/Database/Exception/FieldLengthRequiredException.php',
     'Directus\\Database\\Exception\\FieldNotFoundException' => $baseDir . '/src/core/Directus/Database/Exception/FieldNotFoundException.php',
+    'Directus\\Database\\Exception\\FieldRequiredException' => $baseDir . '/src/core/Directus/Database/Exception/FieldRequiredException.php',
     'Directus\\Database\\Exception\\ForbiddenFieldAccessException' => $baseDir . '/src/core/Directus/Database/Exception/ForbiddenFieldAccessException.php',
     'Directus\\Database\\Exception\\ForbiddenSystemTableDirectAccessException' => $baseDir . '/src/core/Directus/Database/Exception/ForbiddenSystemTableDirectAccessException.php',
     'Directus\\Database\\Exception\\InvalidFieldException' => $baseDir . '/src/core/Directus/Database/Exception/InvalidFieldException.php',

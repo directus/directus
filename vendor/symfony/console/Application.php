@@ -36,7 +36,6 @@ use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -805,7 +804,7 @@ class Application implements ResetInterface
 
     public function renderThrowable(\Throwable $e, OutputInterface $output): void
     {
-        if (__CLASS__ !== \get_class($this) && __CLASS__ === (new \ReflectionMethod($this, 'renderThrowable'))->getDeclaringClass()->getName() && __CLASS__ !== (new \ReflectionMethod($this, 'renderException'))->getDeclaringClass()->getName()) {
+        if (__CLASS__ !== static::class && __CLASS__ === (new \ReflectionMethod($this, 'renderThrowable'))->getDeclaringClass()->getName() && __CLASS__ !== (new \ReflectionMethod($this, 'renderException'))->getDeclaringClass()->getName()) {
             @trigger_error(sprintf('The "%s::renderException()" method is deprecated since Symfony 4.4, use "renderThrowable()" instead.', __CLASS__), E_USER_DEPRECATED);
 
             if (!$e instanceof \Exception) {
@@ -844,7 +843,7 @@ class Application implements ResetInterface
 
     protected function doRenderThrowable(\Throwable $e, OutputInterface $output): void
     {
-        if (__CLASS__ !== \get_class($this) && __CLASS__ === (new \ReflectionMethod($this, 'doRenderThrowable'))->getDeclaringClass()->getName() && __CLASS__ !== (new \ReflectionMethod($this, 'doRenderException'))->getDeclaringClass()->getName()) {
+        if (__CLASS__ !== static::class && __CLASS__ === (new \ReflectionMethod($this, 'doRenderThrowable'))->getDeclaringClass()->getName() && __CLASS__ !== (new \ReflectionMethod($this, 'doRenderException'))->getDeclaringClass()->getName()) {
             @trigger_error(sprintf('The "%s::doRenderException()" method is deprecated since Symfony 4.4, use "doRenderThrowable()" instead.', __CLASS__), E_USER_DEPRECATED);
 
             if (!$e instanceof \Exception) {
@@ -947,16 +946,6 @@ class Application implements ResetInterface
 
         if (true === $input->hasParameterOption(['--no-interaction', '-n'], true)) {
             $input->setInteractive(false);
-        } elseif (\function_exists('posix_isatty')) {
-            $inputStream = null;
-
-            if ($input instanceof StreamableInputInterface) {
-                $inputStream = $input->getStream();
-            }
-
-            if (!@posix_isatty($inputStream) && false === getenv('SHELL_INTERACTIVE')) {
-                $input->setInteractive(false);
-            }
         }
 
         switch ($shellVerbosity = (int) getenv('SHELL_VERBOSITY')) {

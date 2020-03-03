@@ -20,7 +20,7 @@ class DirectusFileType extends ObjectType
                 */
                 return [
                     'id' => Types::id(),
-                    'filename' => Types::string(),
+                    'filename_disk' => Types::string(),
                     'title' => Types::string(),
                     'description' => Types::string(),
                     'location' => Types::string(),

@@ -33,7 +33,7 @@ class IdentityTranslator implements LegacyTranslatorInterface, TranslatorInterfa
     {
         $this->selector = $selector;
 
-        if (__CLASS__ !== \get_class($this)) {
+        if (__CLASS__ !== static::class) {
             @trigger_error(sprintf('Calling "%s()" is deprecated since Symfony 4.2.', __METHOD__), E_USER_DEPRECATED);
         }
     }

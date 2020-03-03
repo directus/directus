@@ -340,14 +340,19 @@ class Files
             $output = shell_exec("ffprobe {$tmp} -show_entries format=duration:stream=height,width -v quiet -of json");
             #echo($output);
             $media = json_decode($output);
-            $width = $media->streams[0]->width;
-            $height = $media->streams[0]->height;
-            $duration = $media->format->duration;   #seconds
+            if($media && is_object($media)) {
+                $width = $media->streams[0]->width;
+                $height = $media->streams[0]->height;
+                $duration = $media->format->duration;   #seconds
+            }
 
         } elseif (strpos($fileData['type'], 'audio') !== false) {
             $output = shell_exec("ffprobe {$tmp} -show_entries format=duration -v quiet -of json");
             $media = json_decode($output);
-            $duration = $media->format->duration;
+
+            if($media && is_object($media)) {
+                $duration = $media->format->duration;
+            }
         }
         if (isset($handle)) {
             fclose($handle);
@@ -624,7 +629,7 @@ class Files
     private function sanitizeName($fileName)
     {
         // Swap out Non "Letters" with a -
-        $fileName = preg_replace('/[^\\pL\d^\.]+/u', '-', $fileName);
+        $fileName = preg_replace('/[^_\\pL\d^\.]+/u', '-', $fileName);
 
         // Trim out extra -'s
         $fileName = trim($fileName, '-');

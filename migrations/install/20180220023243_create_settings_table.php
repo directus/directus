@@ -303,7 +303,10 @@ class CreateSettingsTable extends AbstractMigration
                             'interface' => 'slug',
                             'width' => 'half',
                             'type' => 'string',
-                            'required' => true
+                            'required' => true,
+                            'options' => [
+                                'onlyOnCreate' => false
+                            ]
                         ],
                         [
                             'field' => 'fit',

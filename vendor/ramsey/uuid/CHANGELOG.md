@@ -21,6 +21,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 
+## [3.9.3] - 2020-02-20
+
+### Fixed
+
+* For v1 UUIDs, round down for timestamps so that microseconds do not bump the
+  timestamp to the next second.
+
+  As an example, consider the case of timestamp `1` with  `600000` microseconds
+  (`1.600000`). This is the first second after midnight on January 1, 1970, UTC.
+  Previous versions of this library had a bug that would round this to `2`, so
+  the rendered time was `1970-01-01 00:00:02`. This was incorrect. Despite
+  having `600000` microseconds, the time should not round up to the next second.
+  Rather, the time should be `1970-01-01 00:00:01.600000`. Since this version of
+  ramsey/uuid does not support microseconds, the microseconds are dropped, and
+  the time is `1970-01-01 00:00:01`. No rounding should occur.
+
+
 ## [3.9.2] - 2019-12-17
 
 ### Fixed
@@ -591,7 +608,8 @@ versions leading up to this release.*
 [ramsey/uuid-doctrine]: https://github.com/ramsey/uuid-doctrine
 [ramsey/uuid-console]: https://github.com/ramsey/uuid-console
 
-[unreleased]: https://github.com/ramsey/uuid/compare/3.9.2...HEAD
+[unreleased]: https://github.com/ramsey/uuid/compare/3.9.3...HEAD
+[3.9.3]: https://github.com/ramsey/uuid/compare/3.9.2...3.9.3
 [3.9.2]: https://github.com/ramsey/uuid/compare/3.9.1...3.9.2
 [3.9.1]: https://github.com/ramsey/uuid/compare/3.9.0...3.9.1
 [3.9.0]: https://github.com/ramsey/uuid/compare/3.8.0...3.9.0

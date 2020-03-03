@@ -38,12 +38,12 @@ use Pimple\Exception\UnknownIdentifierException;
  */
 class Container implements \ArrayAccess
 {
-    private $values = array();
+    private $values = [];
     private $factories;
     private $protected;
-    private $frozen = array();
-    private $raw = array();
-    private $keys = array();
+    private $frozen = [];
+    private $raw = [];
+    private $keys = [];
 
     /**
      * Instantiates the container.
@@ -52,7 +52,7 @@ class Container implements \ArrayAccess
      *
      * @param array $values The parameters or objects
      */
-    public function __construct(array $values = array())
+    public function __construct(array $values = [])
     {
         $this->factories = new \SplObjectStorage();
         $this->protected = new \SplObjectStorage();
@@ -246,7 +246,7 @@ class Container implements \ArrayAccess
         }
 
         if (isset($this->protected[$this->values[$id]])) {
-            @\trigger_error(\sprintf('How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure "%s" should be protected?', $id), \E_USER_DEPRECATED);
+            @\trigger_error(\sprintf('How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure "%s" should be protected?', $id), E_USER_DEPRECATED);
         }
 
         if (!\is_object($callable) || !\method_exists($callable, '__invoke')) {
@@ -285,7 +285,7 @@ class Container implements \ArrayAccess
      *
      * @return static
      */
-    public function register(ServiceProviderInterface $provider, array $values = array())
+    public function register(ServiceProviderInterface $provider, array $values = [])
     {
         $provider->register($this);
 

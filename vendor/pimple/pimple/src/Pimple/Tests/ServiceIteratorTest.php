@@ -45,8 +45,8 @@ class ServiceIteratorTest extends TestCase
         $pimple['service3'] = function () {
             return new Service();
         };
-        $iterator = new ServiceIterator($pimple, array('service1', 'service2'));
+        $iterator = new ServiceIterator($pimple, ['service1', 'service2']);
 
-        $this->assertSame(array('service1' => $pimple['service1'], 'service2' => $pimple['service2']), iterator_to_array($iterator));
+        $this->assertSame(['service1' => $pimple['service1'], 'service2' => $pimple['service2']], iterator_to_array($iterator));
     }
 }

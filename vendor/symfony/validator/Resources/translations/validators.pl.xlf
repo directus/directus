@@ -330,9 +330,45 @@
                 <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
                 <target>Ten kod BIC (Business Identifier Code) nie jest powiązany z międzynarodowym numerem rachunku bankowego (IBAN) {{ iban }}.</target>
             </trans-unit>
+            <trans-unit id="86">
+                <source>This value should be valid JSON.</source>
+                <target>Ta wartość powinna być prawidłowym formatem JSON.</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Ten zbiór powinien zawierać tylko unikalne elementy.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Ta wartość powinna być dodatnia.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Ta wartość powinna być dodatnia lub równa zero.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Ta wartość powinna być ujemna.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Ta wartość powinna być ujemna lub równa zero.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Ta wartość nie jest prawidłową strefą czasową.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>To hasło wyciekło w wyniku naruszenia danych i nie może być użyte. Proszę użyć innego hasła.</target>
+            </trans-unit>
             <trans-unit id="94">
                 <source>This value should be between {{ min }} and {{ max }}.</source>
                 <target>Ta wartość powinna być pomiędzy {{ min }} a {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Ta wartość nie jest prawidłową nazwą hosta.</target>
             </trans-unit>
         </body>
     </file>

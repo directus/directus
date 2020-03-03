@@ -156,7 +156,7 @@ class FilesServices extends AbstractService
         $tableGateway = $this->createTableGateway($this->collection);
 
         $currentItem = $tableGateway->getOneData($id);
-        $currentFileName = ArrayUtils::get($currentItem, 'filename_disk');
+        $currentFileName = ArrayUtils::get($currentItem, 'filename_disk');        
 
         if (array_key_exists('filename_disk', $data) && $data['filename_disk'] !== $currentFileName) {
             $oldFilePath = $currentFileName;
@@ -183,6 +183,9 @@ class FilesServices extends AbstractService
         $recordData = $this->getSaveData($data, true);
 
         $newFile = $tableGateway->updateRecord($id, $recordData, $this->getCRUDParams($params));
+
+        $thumb = $this->container->get('files_thumb');
+        $thumb->deleteThumb($currentItem);
 
         return $tableGateway->wrapData(
             \Directus\append_storage_information([$newFile->toArray()]),

@@ -50,9 +50,19 @@ class FieldsConfig
                     $fields[$v['field']] = Types::directusFile();
                     break;
                 case 'integer':
-                    $fields[$v['field']] = Types::int();
-                    if ($v['primary_key']) {
+                    // Check if this field is actually part of an M2O relation
+                    $other = $this->getOtherCollectionManyToOne(
+                        $v['collection'], $v['field']);
+                    if (!is_null($other)) {
+                        // This field is part of an M2O, pointing to collection
+                        // $other
+                        $fields[$v['field']] = Types::userCollection($other);
+                    } else if ($v['interface'] == 'primary-key') {
+                        // This is the primary key of the table
                         $fields[$v['field']] = Types::id();
+                    } else {
+                        // This is just a plain integer
+                        $fields[$v['field']] = Types::int();
                     }
                     break;
                 case 'decimal':
@@ -62,21 +72,30 @@ class FieldsConfig
                     $fields[$v['field']] = Types::json();
                     break;
                 case 'm2o':
-                    $relation = $this->getRelation('m2o', $v['collection'], $v['field']);
-                    $fields[$v['field']] = Types::userCollection($relation['collection_one']);
+                    $collection = $this->getOtherCollectionManyToOne(
+                        $v['collection'], $v['field']);
+                    $fields[$v['field']] = Types::userCollection($collection);
                     break;
                 case 'o2m':
                     $relation = $this->getRelation('o2m', $v['collection'], $v['field']);
-                    $temp = [];
-                    $temp['type'] = Types::listOf(Types::userCollection($relation['collection_one']));
-                    $temp['resolve'] = function ($value, $args, $context, $info) use ($relation) {
-                        $data = [];
-                        foreach ($value[$info->fieldName] as  $v) {
-                            $data[] = $v[$relation['field_many']];
-                        }
-                        return $data;
-                    };
-                    $fields[$v['field']] = $temp;
+                    if ($v['interface'] == 'one-to-many') {
+                        $fields[$v['field']] = Types::listOf(Types::userCollection($relation['collection_many']));
+                    } else {
+                        $fields[$v['field']] = [];
+                        $fields[$v['field']]['type'] = Types::listOf(Types::userCollection($relation['collection_one']));
+                        $fields[$v['field']]['resolve'] = function ($value, $args, $context, $info) use ($relation) {
+                            $data = [];
+                            foreach ($value[$info->fieldName] as $v) {
+                                $data[] = $v[$relation['field_many']];
+                            }
+                            return $data;
+                        };
+                    }
+                case 'translation': // translation is just an o2m collection
+                    $collection = $this->getOtherCollectionOneToMany(
+                        $v['collection'], $v['field']);
+                    $fields[$v['field']] = Types::listOf(
+                        Types::userCollection($collection));
                     break;
                 case 'sort':
                     $fields[$v['field']] = Types::int();
@@ -86,10 +105,6 @@ class FieldsConfig
                     break;
                 case 'time':
                     $fields[$v['field']] = Types::time();
-                    break;
-                case 'translation':
-                    $relation = $this->getRelation('translation', $v['collection'], $v['field']);
-                    $fields[$v['field']] = Types::listOf(Types::userCollection($relation['collection_many']));
                     break;
                 case 'owner':
                 case 'user_updated':
@@ -183,14 +198,16 @@ class FieldsConfig
                     $filters[$v['field'] . '_null'] = Types::string();
                     $filters[$v['field'] . '_nnull'] = Types::string();
                     break;
+                case 'owner':
+                    $filters[$v['field'] . '_eq'] = Types::int();
+                    $filters[$v['field'] . '_neq'] = Types::int();
+                    $filters[$v['field'] . '_in'] = Types::string();
+                    $filters[$v['field'] . '_nin'] = Types::string();
+                    break;
 
                 default:
-                    /* As the _has and _all not working properly
-                    *  https://github.com/directus/api/issues/576
-                    *  We will fix once the issue in the REST endpoint will fix.
-                    */
-                    // $filters[$v['field'] . '_all'] = Types::nonNull(Types::string());
-                    // $filters[$v['field'] . '_has'] = Types::nonNull(Types::string());
+                    $filters[$v['field'] . '_all'] = Types::nonNull(Types::string());
+                    $filters[$v['field'] . '_has'] = Types::nonNull(Types::string());
             }
         }
         $filters['or'] = Types::listOf(Types::filters($this->collection));
@@ -199,60 +216,57 @@ class FieldsConfig
         return $filters;
     }
 
-    private function getRelation($type, $collection, $field)
+   /**
+     * Given collection and a field on the same collection, which is assumed
+     * to be an one to many relation, returns the name of the other (many)
+     * collection.
+     *
+     * @param string $collection The name of the collection
+     * @param string $field The name of the field
+     * @return string The name of the other (many) collection
+     */
+    private function getOtherCollectionOneToMany($collection, $field)
     {
-        //List all the relation
         $relationsService = new RelationsService($this->container);
-        $relationsData = $relationsService->findAll();
-        $relation = [];
-        switch ($type) {
-            case 'm2o':
-                foreach ($relationsData['data'] as $k => $v) {
-                    if ($v['collection_many'] == $collection && $v['field_many'] == $field) {
-                        $relation = $v;
-                        break;
-                    }
-                }
-                break;
-            case 'o2m':
-                /**
-                 * TODO :: Need to rewrite the code for better readiablity.
-                 */
-                $firstRelation;
+        $relationsData = $relationsService->findAll([
+            'filter' => [
+                'collection_one' => $collection,
+                'field_one' => $field
+            ]
+        ])['data'];
 
-                //1. Find the collection_many
-                foreach ($relationsData['data'] as $k => $v) {
-                    if ($v['collection_one'] == $collection && $v['field_one'] == $field) {
-                        $firstRelation = $v;
-                        break;
-                    }
-                }
-                $collectionMany = $firstRelation['collection_many'];
-                $collection1Id = $firstRelation['id'];
-
-                //2. Find the 2nd collection_one
-                foreach ($relationsData['data'] as $k => $v) {
-                    if ($v['collection_many'] == $collectionMany && $v['id'] != $collection1Id) {
-                        $relation = $v;
-                        break;
-                    }
-                }
-
-                if (count($relation) == 0) {
-                    $relation = $firstRelation;
-                }
-
-                break;
-            case 'translation':
-                foreach ($relationsData['data'] as $k => $v) {
-                    if ($v['collection_one'] == $collection && $v['field_one'] == $field) {
-                        $relation = $v;
-                        break;
-                    }
-                }
-                break;
+        foreach ($relationsData as $v) {
+            if ($v) {
+                return $v['collection_many'];
+            }
         }
 
-        return $relation;
+        return null;
+    }
+
+    /**
+     * Given collection and a field on the same collection, which is assumed
+     * to be a many to one relation, returns the name of the other (one)
+     * collection.
+     *
+     * @param string $collection The name of the collection
+     * @param string $field The name of the field
+     * @return string The name of the other (one) collection
+     */
+    private function getOtherCollectionManyToOne($collection, $field)
+    {
+        $relationsService = new RelationsService($this->container);
+        $relationsData = $relationsService->findAll([
+            'filter' => [
+                'collection_many' => $collection,
+                'field_many' => $field
+            ]
+        ])['data'];
+
+        foreach ($relationsData as $v) {
+            if ($v) { return $v['collection_one']; }
+        }
+
+        return null;
     }
 }

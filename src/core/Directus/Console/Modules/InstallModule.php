@@ -144,7 +144,8 @@ class InstallModule extends ModuleBase
 
         if (empty($projectNames) && !Context::is_env()) {
             $configStub = InstallerUtils::createJsonFileContent($data);
-            file_put_contents(SuperAdminToken::path(), $configStub);
+            $superAdminTokenPath = $this->getBasePath().SuperAdminToken::path();
+            file_put_contents($superAdminTokenPath, $configStub);
         }
 
         InstallerUtils::createConfig($directusPath, $data, $force);

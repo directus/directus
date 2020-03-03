@@ -28,7 +28,7 @@ interface TimeConverterInterface
      *
      * @param string $seconds
      * @param string $microSeconds
-     * @return string[] An array guaranteed to contain `low`, `mid`, and `high` keys
+     * @return string[] An array guaranteed to contain `low`, `mid`, and `hi` keys
      * @throws UnsatisfiedDependencyException if called on a 32-bit system and
      *     `Moontoast\Math\BigNumber` is not present
      * @link http://tools.ietf.org/html/rfc4122#section-4.2.2

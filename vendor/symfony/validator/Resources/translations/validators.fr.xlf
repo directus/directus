@@ -366,6 +366,14 @@
                 <source>This value should be between {{ min }} and {{ max }}.</source>
                 <target>Cette valeur doit être comprise entre {{ min }} et {{ max }}.</target>
             </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Cette valeur n'est pas un nom d'hôte valide.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Le nombre d'éléments de cette collection doit être un multiple de {{ compared_value }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

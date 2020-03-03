@@ -1221,6 +1221,20 @@ class RelationalTableGateway extends BaseTableGateway
             }
         }
 
+        if ($statusField && $this->acl != null && $this->acl->getCollectionStatuses($this->table)) {
+            foreach ($results as $index => &$item) {
+                $statusId = ArrayUtils::get($item, $statusField->getName());
+                $blacklist = $this->acl->getReadFieldBlacklist($this->table, $statusId);
+
+                $item = ArrayUtils::omit($item, $blacklist);
+
+                if (empty($item)) {
+                    unset($results[$index]);
+                }
+            }
+            $results = array_values($results);
+        }
+
         // When the params column list doesn't include the primary key
         // it should be included because each row gateway expects the primary key
         // after all the row gateway are created and initiated it only returns the chosen columns
@@ -1235,15 +1249,10 @@ class RelationalTableGateway extends BaseTableGateway
 
                 return $entry;
             }, $results);
-        }
 
-        if ($statusField && $this->acl != null && $this->acl->getCollectionStatuses($this->table)) {
-            foreach ($results as $index => &$item) {
-                $statusId = ArrayUtils::get($item, $statusField->getName());
-                $blacklist = $this->acl->getReadFieldBlacklist($this->table, $statusId);
-
-                $item = ArrayUtils::omit($item, $blacklist);
-
+            //Removes item from result if it is empty
+            foreach($results as $index => &$item)
+            {
                 if (empty($item)) {
                     unset($results[$index]);
                 }

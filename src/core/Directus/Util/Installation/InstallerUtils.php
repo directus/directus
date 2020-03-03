@@ -470,7 +470,7 @@ class InstallerUtils
         $input = ArrayUtils::omit($data, ['private']);
         $configPath = static::createConfigPathFromData($path, $input);
 
-        static::ensureDirectoryIsWritable($path);
+        static::ensureDirectoryIsWritable($path . '/config');
         if ($force !== true) {
             static::ensureFileDoesNotExists($configPath);
         }

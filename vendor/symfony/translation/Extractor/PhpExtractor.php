@@ -200,7 +200,7 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
      */
     protected function parseTokens($tokens, MessageCatalogue $catalog/*, string $filename*/)
     {
-        if (\func_num_args() < 3 && __CLASS__ !== \get_class($this) && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
+        if (\func_num_args() < 3 && __CLASS__ !== static::class && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
             @trigger_error(sprintf('The "%s()" method will have a new "string $filename" argument in version 5.0, not defining it is deprecated since Symfony 4.3.', __METHOD__), E_USER_DEPRECATED);
         }
         $filename = 2 < \func_num_args() ? func_get_arg(2) : '';

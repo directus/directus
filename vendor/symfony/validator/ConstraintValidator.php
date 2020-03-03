@@ -21,8 +21,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 abstract class ConstraintValidator implements ConstraintValidatorInterface
 {
     /**
-     * Whether to format {@link \DateTime} objects as RFC-3339 dates
-     * ("Y-m-d H:i:s").
+     * Whether to format {@link \DateTime} objects, either with the {@link \IntlDateFormatter}
+     * (if it is available) or as RFC-3339 dates ("Y-m-d H:i:s").
      */
     const PRETTY_DATE = 1;
 
@@ -69,7 +69,8 @@ abstract class ConstraintValidator implements ConstraintValidatorInterface
      * in double quotes ("). Objects, arrays and resources are formatted as
      * "object", "array" and "resource". If the $format bitmask contains
      * the PRETTY_DATE bit, then {@link \DateTime} objects will be formatted
-     * as RFC-3339 dates ("Y-m-d H:i:s").
+     * with the {@link \IntlDateFormatter}. If it is not available, they will be
+     * formatted as RFC-3339 dates ("Y-m-d H:i:s").
      *
      * Be careful when passing message parameters to a constraint violation
      * that (may) contain objects, arrays or resources. These parameters

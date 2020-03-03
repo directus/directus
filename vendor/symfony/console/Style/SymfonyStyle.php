@@ -295,7 +295,7 @@ class SymfonyStyle extends OutputStyle
     {
         if (null !== $default) {
             $values = array_flip($choices);
-            $default = $values[$default];
+            $default = isset($values[$default]) ? $values[$default] : $default;
         }
 
         return $this->askQuestion(new ChoiceQuestion($question, $choices, $default));

@@ -362,6 +362,18 @@
                 <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
                 <target>Mật khẩu này đã bị rò rỉ dữ liệu, không được sử dụng nữa. Xin vui lòng sử dụng mật khẩu khác.</target>
            </trans-unit>
+           <trans-unit id="94">
+               <source>This value should be between {{ min }} and {{ max }}.</source>
+               <target>Giá trị này nên thuộc giữa {{ min }} và {{ max }}.</target>
+           </trans-unit>
+           <trans-unit id="95">
+               <source>This value is not a valid hostname.</source>
+               <target>Giá trị này không phải là tên máy chủ hợp lệ.</target>
+           </trans-unit>
+           <trans-unit id="96">
+               <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+               <target>Số lượng các phần tử trong bộ sưu tập này nên là bội số của {{compared_value}}.</target>
+           </trans-unit>
         </body>
     </file>
 </xliff>

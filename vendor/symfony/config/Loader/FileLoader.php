@@ -73,7 +73,7 @@ abstract class FileLoader extends Loader
      */
     public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null/*, $exclude = null*/)
     {
-        if (\func_num_args() < 5 && __CLASS__ !== \get_class($this) && 0 !== strpos(\get_class($this), 'Symfony\Component\\') && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
+        if (\func_num_args() < 5 && __CLASS__ !== static::class && 0 !== strpos(static::class, 'Symfony\Component\\') && __CLASS__ !== (new \ReflectionMethod($this, __FUNCTION__))->getDeclaringClass()->getName() && !$this instanceof \PHPUnit\Framework\MockObject\MockObject && !$this instanceof \Prophecy\Prophecy\ProphecySubjectInterface) {
             @trigger_error(sprintf('The "%s()" method will have a new "$exclude = null" argument in version 5.0, not defining it is deprecated since Symfony 4.4.', __METHOD__), E_USER_DEPRECATED);
         }
         $exclude = \func_num_args() >= 5 ? func_get_arg(4) : null;
