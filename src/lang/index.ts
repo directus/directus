@@ -92,7 +92,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	i18n.locale = lang;
-	document.querySelector('html')!.setAttribute('lang', lang);
+	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 
 	return true;
 }

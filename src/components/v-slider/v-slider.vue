@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
 import { ChangeEvent } from 'react';
 
 export default defineComponent({
@@ -63,7 +62,7 @@ export default defineComponent({
 			default: 50
 		}
 	},
-	setup(props, { emit, listeners }) {
+	setup(props, { emit }) {
 		const styles = computed(() => ({
 			'--_v-slider-percentage': ((props.value - props.min) / (props.max - props.min)) * 100
 		}));

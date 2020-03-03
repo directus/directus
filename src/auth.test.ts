@@ -4,9 +4,7 @@ import * as hydration from '@/hydrate';
 import api from '@/api';
 import { checkAuth, login, logout, LogoutReason } from './auth';
 import { useProjectsStore } from '@/stores/projects/';
-import { useRequestsStore } from '@/stores/requests/';
 import router from '@/router';
-import { eachMonthOfInterval } from 'date-fns';
 
 jest.mock('@/api');
 jest.mock('@/router');
@@ -84,7 +82,7 @@ describe('Auth', () => {
 
 	describe('logout', () => {
 		it('Does not do anything when there is no current project', async () => {
-			const projectsStore = useProjectsStore({});
+			useProjectsStore({});
 			await logout();
 			expect(hydration.dehydrate).not.toHaveBeenCalled();
 		});

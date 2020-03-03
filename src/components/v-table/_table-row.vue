@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Header, Sort } from './types';
+import { Header } from './types';
 
 export default defineComponent({
 	props: {

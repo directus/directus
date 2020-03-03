@@ -19,9 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, Ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { Location } from 'vue-router';
-import parseCSSVar from '@/utils/parse-css-var';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 export default defineComponent({

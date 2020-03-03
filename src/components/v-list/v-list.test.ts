@@ -1,4 +1,4 @@
-import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import VueRouter from 'vue-router';
 import router from '@/router';

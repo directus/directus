@@ -1,11 +1,4 @@
-import {
-	withKnobs,
-	color,
-	optionsKnob as options,
-	number,
-	text,
-	boolean
-} from '@storybook/addon-knobs';
+import { withKnobs, color, number, boolean } from '@storybook/addon-knobs';
 
 import Vue from 'vue';
 import VProgressLinear from './v-progress-linear.vue';

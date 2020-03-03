@@ -1,11 +1,3 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	color,
-	optionsKnob as options
-} from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VButton from '../../components/v-button';
 import VIcon from '../../components/v-icon';
@@ -17,8 +9,7 @@ Vue.component('v-icon', VIcon);
 
 export default {
 	title: 'Directives / Tooltip',
-	component: VButton,
-	decorators: [withKnobs, withPadding],
+	decorators: [withPadding],
 	parameters: {
 		notes: markdown
 	}

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, Ref, inject } from '@vue/composition-api';
+import { defineComponent, ref, inject } from '@vue/composition-api';
 import { useGroupable } from '@/compositions/groupable';
 
 export default defineComponent({
@@ -29,7 +29,7 @@ export default defineComponent({
 			required: true
 		}
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const { active, toggle } = useGroupable(props.title);
 		const drawerOpen = inject('drawer-open', ref(false));
 		return { active, toggle, drawerOpen };

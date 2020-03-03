@@ -51,7 +51,7 @@ const mockProject: ProjectWithKey = {
 };
 
 describe('Views / Public', () => {
-	let store = useProjectsStore({});
+	const store = useProjectsStore({});
 	let component: Wrapper<Vue>;
 
 	beforeEach(() => {

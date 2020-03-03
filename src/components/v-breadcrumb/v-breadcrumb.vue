@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 
 interface Breadcrumb {
 	to: string;
@@ -36,11 +36,12 @@ export default defineComponent({
 			default: () => []
 		}
 	},
-	setup(props) {
+	setup() {
 		return {};
 	}
 });
 </script>
+
 <style lang="scss" scoped>
 .v-breadcrumb {
 	--v-breadcrumb-color: var(--foreground-color-secondary);

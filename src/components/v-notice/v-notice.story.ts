@@ -1,13 +1,4 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	color,
-	select,
-	optionsKnob as options
-} from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VNotice from './v-notice.vue';
 import VIcon from '../v-icon/';

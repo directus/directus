@@ -1,5 +1,5 @@
 import VueCompositionAPI from '@vue/composition-api';
-import { mount, createLocalVue, Wrapper, shallowMount } from '@vue/test-utils';
+import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

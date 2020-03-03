@@ -76,9 +76,9 @@ describe('Stores / Projects', () => {
 
 		it('Returns true if the project exists', async () => {
 			const projectsStore = useProjectsStore({});
-			const spy = jest
-				.spyOn(api, 'get')
-				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			jest.spyOn(api, 'get').mockImplementation(() =>
+				Promise.resolve({ data: { data: {} } })
+			);
 			const result = await projectsStore.setCurrentProject('my-project');
 			expect(result).toBe(true);
 		});

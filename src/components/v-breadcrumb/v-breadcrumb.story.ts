@@ -1,5 +1,3 @@
-import { array, optionsKnob as options } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import markdown from './v-breadcrumb.readme.md';
 import VIcon from '../v-icon/';

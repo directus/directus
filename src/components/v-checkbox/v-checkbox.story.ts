@@ -1,11 +1,4 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	optionsKnob as options,
-	color
-} from '@storybook/addon-knobs';
+import { withKnobs, color } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VCheckbox from '../v-checkbox';

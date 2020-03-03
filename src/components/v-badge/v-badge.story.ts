@@ -1,4 +1,4 @@
-import { withKnobs, text, boolean, number, optionsKnob as options } from '@storybook/addon-knobs';
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VBadge from './v-badge.vue';
 import VIcon from '../v-icon/';

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import CollectionsNavigation from '../components/collections-navigation.vue';
 import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../compositions/use-navigation';

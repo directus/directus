@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import PrivateView from './private-view.vue';
 import VOverlay from '@/components/v-overlay';

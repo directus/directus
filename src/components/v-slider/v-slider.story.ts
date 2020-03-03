@@ -192,16 +192,14 @@ export const slots = () => ({
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
-		clickMinus(event: MouseEvent) {
-			const self: any = this;
-			if (self.value > 5) {
-				self.value = self.value - 1;
+		clickMinus() {
+			if ((this as any).value > 5) {
+				(this as any).value = (this as any).value - 1;
 			}
 		},
 		clickPlus() {
-			const self: any = this;
-			if (self.value < 15) {
-				self.value = self.value + 1;
+			if ((this as any).value < 15) {
+				(this as any).value = (this as any).value + 1;
 			}
 		}
 	},

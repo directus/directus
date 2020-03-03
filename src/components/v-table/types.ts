@@ -10,9 +10,14 @@ export type HeaderRaw = {
 
 export type Header = Required<HeaderRaw>;
 
+export type Item = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[key: string]: any;
+};
+
 export type ItemSelectEvent = {
 	value: boolean;
-	item: any;
+	item: Item;
 };
 
 export type Sort = {

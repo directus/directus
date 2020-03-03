@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {

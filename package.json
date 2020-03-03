@@ -56,7 +56,7 @@
     "@vue/cli-plugin-vuex": "^4.2.3",
     "@vue/cli-service": "^4.1.0",
     "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^4.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^1.0.0-beta.30",
     "autoprefixer": "^9.7.4",
     "babel-loader": "^8.0.6",

@@ -9,7 +9,6 @@
 </template>
 
 <script lang="ts">
-import { version } from '../../../package.json';
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({

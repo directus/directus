@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 export default defineComponent({

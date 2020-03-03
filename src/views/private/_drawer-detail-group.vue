@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {

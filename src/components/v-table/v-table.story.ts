@@ -809,18 +809,19 @@ export const serverSort = () => ({
 	},
 	methods: {
 		onSort(sort: Sort) {
-			const self: any = this;
-			self.loading = true;
+			(this as any).loading = true;
 
 			setTimeout(() => {
-				self.items = [...self.items].sort((a, b) => (a[sort.by!] > b[sort.by!] ? 1 : -1));
+				(this as any).items = [...(this as any).items].sort((a, b) =>
+					a[sort.by!] > b[sort.by!] ? 1 : -1
+				);
 
 				if (sort.desc === true) {
-					self.items.reverse();
+					(this as any).items.reverse();
 				}
 
-				self.sort = sort;
-				self.loading = false;
+				(this as any).sort = sort;
+				(this as any).loading = false;
 			}, 2000);
 		}
 	},

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import ModuleBarLogo from './_module-bar-logo.vue';
 import { useProjectsStore } from '@/stores/projects';
 import { modules } from '@/modules/';

@@ -1,7 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { useRequestsStore } from '@/stores/requests';
 import { LogoutReason, logout, checkAuth } from '@/auth';
-import useProjectsStore from './stores/projects';
 
 const api = axios.create({
 	baseURL: getRootPath()
@@ -13,6 +12,10 @@ interface RequestConfig extends AxiosRequestConfig {
 
 interface Response extends AxiosResponse {
 	config: RequestConfig;
+}
+
+export interface Error extends AxiosError {
+	response: Response;
 }
 
 export const onRequest = (config: AxiosRequestConfig) => {
@@ -34,7 +37,7 @@ export const onResponse = (response: AxiosResponse | Response) => {
 	return response;
 };
 
-export const onError = async (error: any) => {
+export const onError = async (error: Error) => {
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
@@ -47,6 +50,7 @@ export const onError = async (error: any) => {
 	const status = error.response?.status;
 	/* istanbul ignore next */
 	const code = error.response?.data?.error?.code;
+
 	if (status === 401 && code === 3) {
 		const loggedIn = await checkAuth();
 

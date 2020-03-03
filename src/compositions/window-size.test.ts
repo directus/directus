@@ -1,10 +1,10 @@
-import VueCompositionAPI, { watch } from '@vue/composition-api';
+import { watch } from '@vue/composition-api';
 import useWindowSize from './window-size';
 import mountComposition from '../../.jest/mount-composition';
 
 describe('Compositions / Window Size', () => {
 	it('Adds passed event listener onMounted', async () => {
-		let testWidth: number = 0;
+		let testWidth = 0;
 
 		const component = mountComposition(() => {
 			const { width } = useWindowSize();
@@ -30,12 +30,12 @@ describe('Compositions / Window Size', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn((event, cb) => {
+		window.removeEventListener = jest.fn(event => {
 			delete map[event];
 		});
 
 		const component = mountComposition(() => {
-			const { width } = useWindowSize();
+			useWindowSize();
 		});
 
 		expect(map.resize).toBeTruthy();

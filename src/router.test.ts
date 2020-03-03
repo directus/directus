@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
 import * as hydration from '@/hydrate';
-import router, {
+import {
 	onBeforeEach,
 	onBeforeEnterProjectChooser,
 	replaceRoutes,

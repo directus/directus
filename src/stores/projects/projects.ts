@@ -2,11 +2,16 @@ import { createStore } from 'pinia';
 import { Projects, ProjectWithKey, ProjectError } from './types';
 import api from '@/api';
 
+type LoadingError = null | {
+	status: number;
+	error: string;
+};
+
 export const useProjectsStore = createStore({
 	id: 'projects',
 	state: () => ({
 		needsInstall: false,
-		error: null as any,
+		error: null as LoadingError,
 		projects: [] as Projects,
 		currentProjectKey: null as string | null
 	}),
@@ -47,7 +52,7 @@ export const useProjectsStore = createStore({
 			try {
 				const projectsResponse = await api.get('/server/projects');
 				const projectKeys: string[] = projectsResponse.data.data;
-				let projects: Projects = [];
+				const projects: Projects = [];
 
 				for (let index = 0; index < projectKeys.length; index++) {
 					try {

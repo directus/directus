@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
 
 export default defineComponent({
 	props: {

@@ -1,11 +1,4 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	optionsKnob as options,
-	color
-} from '@storybook/addon-knobs';
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VOverlay from '../v-overlay';
@@ -71,8 +64,7 @@ export const withClick = () => ({
 	methods: {
 		click(event: MouseEvent) {
 			action('click')(event);
-			const self: any = this;
-			self.active = false;
+			(this as any).active = false;
 		}
 	},
 	template: `

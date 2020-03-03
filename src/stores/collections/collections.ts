@@ -4,7 +4,7 @@ import { Collection, CollectionRaw } from './types';
 import useProjectsStore from '@/stores/projects';
 import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty';
-import VueI18n, { LocaleMessages } from 'vue-i18n';
+import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 
 export const useCollectionsStore = createStore({

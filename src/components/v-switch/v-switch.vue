@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
 
 export default defineComponent({
 	model: {
@@ -54,7 +53,7 @@ export default defineComponent({
 
 		function toggleInput(): void {
 			if (props.inputValue instanceof Array) {
-				let newValue = [...props.inputValue];
+				const newValue = [...props.inputValue];
 
 				if (isChecked.value === false) {
 					newValue.push(props.value);

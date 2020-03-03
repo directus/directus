@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from '@vue/composition-api';
 import useEventListener from '@/compositions/event-listener';
-import { Alignment, Header, Sort } from './types';
+import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
@@ -196,7 +196,7 @@ export default defineComponent({
 			}
 		}
 
-		function onMouseUp(event: MouseEvent) {
+		function onMouseUp() {
 			if (dragging.value === true) {
 				dragging.value = false;
 			}

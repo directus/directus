@@ -1,8 +1,25 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
-import { onRequest, onResponse, onError, getRootPath } from './api';
+import { onRequest, onResponse, onError, getRootPath, Error } from './api';
 import * as auth from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
+
+const defaultError: Error = {
+	config: {},
+	isAxiosError: false,
+	toJSON: () => ({}),
+	name: 'error',
+	message: '',
+	response: {
+		data: null,
+		status: 200,
+		statusText: 'OK',
+		headers: {},
+		config: {
+			id: 'abc'
+		}
+	}
+};
 
 describe('API', () => {
 	beforeAll(() => {
@@ -56,80 +73,39 @@ describe('API', () => {
 		const spy = jest.spyOn(store, 'endRequest');
 		try {
 			await onError({
-				response: {
-					config: {
-						id: 'abc'
-					}
-				}
+				...defaultError
 			});
-		} catch (error) {
-			expect(error).toEqual({ response: { config: { id: 'abc' } } });
-		}
+		} catch {}
 
 		expect(spy).toHaveBeenCalledWith('abc');
 	});
 
 	it('Passes the error on to the next catch handler on unrelated 401 errors', async () => {
-		const store = useRequestsStore({});
-		try {
-			await onError({
-				response: {
-					status: 401,
-					config: {
-						id: 'abc'
+		const error = {
+			...defaultError,
+			response: {
+				...defaultError.response,
+				status: 401,
+				config: {
+					id: 'abc'
+				},
+				data: {
+					error: {
+						code: -5
 					}
 				}
-			});
-		} catch (error) {
-			expect(error).toEqual({ response: { status: 401, config: { id: 'abc' } } });
-		}
+			}
+		};
 
-		try {
-			await onError({
-				response: {
-					status: 500,
-					config: {
-						id: 'abc'
-					}
-				}
-			});
-		} catch (error) {
-			expect(error).toEqual({ response: { status: 500, config: { id: 'abc' } } });
-		}
-
-		try {
-			await onError({
-				response: {
-					status: 401,
-					config: {
-						id: 'abc'
-					},
-					data: {
-						error: {
-							code: 5
-						}
-					}
-				}
-			});
-		} catch (error) {
-			expect(error).toEqual({
-				response: {
-					status: 401,
-					config: { id: 'abc' },
-					data: {
-						error: {
-							code: 5
-						}
-					}
-				}
-			});
-		}
+		expect(onError(error)).rejects.toEqual(error);
 	});
 
 	it('Checks the auth status on 401+3 errors', async () => {
 		try {
 			await onError({
+				...defaultError,
 				response: {
+					...defaultError.response,
 					config: {
 						id: 'abc'
 					},
@@ -151,7 +127,9 @@ describe('API', () => {
 
 		try {
 			await onError({
+				...defaultError,
 				response: {
+					...defaultError.response,
 					config: {
 						id: 'abc'
 					},
@@ -175,7 +153,9 @@ describe('API', () => {
 
 		try {
 			await onError({
+				...defaultError,
 				response: {
+					...defaultError.response,
 					config: {
 						id: 'abc'
 					},

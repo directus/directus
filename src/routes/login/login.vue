@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import api from '@/api';
 import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
 import { login } from '@/auth';

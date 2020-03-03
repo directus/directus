@@ -59,15 +59,13 @@
 </template>
 
 <script lang="ts">
-import { VNode } from 'vue';
-import { defineComponent, computed, ref, watch, Ref, PropType } from '@vue/composition-api';
-import { Header, HeaderRaw, ItemSelectEvent, Sort } from './types';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './_table-header.vue';
 import TableRow from './_table-row.vue';
-import { sortBy, clone, mapValues, forEach, pick } from 'lodash';
-const draggable = require('vuedraggable');
-
-const { i18n } = require('@/lang/');
+import { sortBy, clone, forEach, pick } from 'lodash';
+import { i18n } from '@/lang/';
+import draggable from 'vuedraggable';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -93,7 +91,7 @@ export default defineComponent({
 			required: true
 		},
 		items: {
-			type: Array as PropType<object[]>,
+			type: Array as PropType<Item[]>,
 			required: true
 		},
 		itemKey: {
@@ -117,7 +115,7 @@ export default defineComponent({
 			default: false
 		},
 		selection: {
-			type: Array as PropType<any[]>,
+			type: Array as PropType<Item[]>,
 			default: () => []
 		},
 		fixedHeader: {
@@ -141,7 +139,7 @@ export default defineComponent({
 			default: 48
 		}
 	},
-	setup(props, { slots, emit, listeners }) {
+	setup(props, { emit, listeners }) {
 		const _headers = computed({
 			get: () => {
 				return props.headers.map((header: HeaderRaw) => ({
@@ -154,7 +152,7 @@ export default defineComponent({
 					'update:headers',
 					// We'll return the original headers with the updated values, so we don't stage
 					// all the default values
-					newHeaders.map((header, index) => {
+					newHeaders.map(header => {
 						const keysThatArentDefault: string[] = [];
 
 						forEach(header, (value, key: string) => {
@@ -229,13 +227,13 @@ export default defineComponent({
 		function onItemSelected(event: ItemSelectEvent) {
 			emit('item-selected', event);
 
-			const selection: any[] = clone(props.selection);
+			const selection: Item[] = clone(props.selection);
 
 			if (event.value === true) {
 				selection.push(event.item);
 			} else {
 				const itemIndex: number = selection.findIndex(
-					(item: any) => item[props.itemKey] === event.item[props.itemKey]
+					(item: Item) => item[props.itemKey] === event.item[props.itemKey]
 				);
 
 				selection.splice(itemIndex, 1);
@@ -244,8 +242,8 @@ export default defineComponent({
 			emit('select', selection);
 		}
 
-		function getSelectedState(item: any) {
-			const selectedKeys = props.selection.map((item: any) => item[props.itemKey]);
+		function getSelectedState(item: Item) {
+			const selectedKeys = props.selection.map((item: Item) => item[props.itemKey]);
 			return selectedKeys.includes(item[props.itemKey]);
 		}
 

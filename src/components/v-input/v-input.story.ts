@@ -1,5 +1,4 @@
 import { withKnobs } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VInput from './v-input.vue';
 import markdown from './v-input.readme.md';

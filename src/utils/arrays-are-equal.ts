@@ -8,9 +8,8 @@ export default function arraysAreEqual(
 	a1: readonly (string | number)[],
 	a2: readonly (string | number)[]
 ) {
-	let superSet: {
-		[key: string]: any;
-		[key: number]: any;
+	const superSet: {
+		[key: string]: number;
 	} = {};
 
 	for (let i = 0; i < a1.length; i++) {
@@ -26,7 +25,7 @@ export default function arraysAreEqual(
 		superSet[e] = 2;
 	}
 
-	for (let e in superSet) {
+	for (const e in superSet) {
 		if (superSet[e] === 1) {
 			return false;
 		}

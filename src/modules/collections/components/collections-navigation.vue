@@ -9,8 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import VueI18n from 'vue-i18n';
+import { defineComponent } from '@vue/composition-api';
 import useNavigation from '../compositions/use-navigation';
 
 export default defineComponent({

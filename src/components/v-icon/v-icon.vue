@@ -11,8 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from '@vue/composition-api';
-import parseCSSVar from '@/utils/parse-css-var';
+import { defineComponent, computed } from '@vue/composition-api';
 import CustomIconBox from './custom-icons/box.vue';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 

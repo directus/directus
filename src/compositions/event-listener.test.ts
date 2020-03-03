@@ -1,4 +1,4 @@
-import VueCompositionAPI, { ref } from '@vue/composition-api';
+import { ref } from '@vue/composition-api';
 import useEventListener from './event-listener';
 import mountComposition from '../../.jest/mount-composition';
 
@@ -10,7 +10,7 @@ describe('Compositions / Event Listener', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn((event, cb) => {
+		window.removeEventListener = jest.fn(event => {
 			delete map[event];
 		});
 
@@ -35,7 +35,7 @@ describe('Compositions / Event Listener', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn((event, cb) => {
+		window.removeEventListener = jest.fn(event => {
 			delete map[event];
 		});
 

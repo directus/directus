@@ -1,4 +1,4 @@
-import { withKnobs, boolean } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import PublicView from './public-view.vue';
 import markdown from './public-view.readme.md';

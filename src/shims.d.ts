@@ -9,6 +9,11 @@ declare module '*.svg' {
 }
 
 declare module '*.md' {
-	const value: any;
+	const value: string;
 	export default value;
+}
+
+declare module 'vuedraggable' {
+	import Vue from 'vue';
+	export default Vue;
 }

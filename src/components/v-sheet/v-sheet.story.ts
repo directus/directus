@@ -1,15 +1,6 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	color,
-	optionsKnob as options
-} from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
+import { withKnobs, text, color } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VSheet from './v-sheet.vue';
-import VIcon from '../v-icon/';
 import markdown from './v-sheet.readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
