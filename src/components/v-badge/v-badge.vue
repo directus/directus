@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed, Ref } from '@vue/composition-api';
+import { defineComponent, reactive, computed, Ref } from '@vue/composition-api';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		value: {
 			type: String,

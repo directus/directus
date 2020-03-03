@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useProjectsStore } from '@/stores/projects';
 import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
 import { useRequestsStore } from '@/stores/requests';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 		const requestsStore = useRequestsStore();

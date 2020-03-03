@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import api from '@/api';
 
-export default createComponent({
+export default defineComponent({
 	props: {},
 	setup() {
 		return { forceLogout };

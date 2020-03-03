@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, watch, toRefs } from '@vue/composition-api';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		drawerOpen: {
 			type: Boolean,

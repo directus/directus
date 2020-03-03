@@ -17,9 +17,9 @@ Provides the ability to make groups of items out of any nested component. Can be
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const selection = ref([]);
 		return { selection };
@@ -102,9 +102,9 @@ By default, the `v-item-group` component will use the index of the child as mode
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const selection = ref([]);
 		const items = [

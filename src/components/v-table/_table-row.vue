@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 import { Header, Sort } from './types';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,

@@ -7,7 +7,7 @@
 <script lang="ts">
 import Vue, { VNode } from 'vue';
 import {
-	createComponent,
+	defineComponent,
 	ref,
 	provide,
 	PropType,
@@ -20,7 +20,7 @@ import { useGroupableParent } from '@/compositions/groupable';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 import { notEmpty } from '@/utils/is-empty';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		mandatory: {
 			type: Boolean,

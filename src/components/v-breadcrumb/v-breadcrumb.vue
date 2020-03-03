@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from '@vue/composition-api';
 
 interface Breadcrumb {
 	to: string;
@@ -29,7 +29,7 @@ interface Breadcrumb {
 	disabled?: boolean;
 }
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		items: {
 			type: Array as PropType<Breadcrumb[]>,

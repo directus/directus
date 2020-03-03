@@ -15,12 +15,12 @@
 
 <script lang="ts">
 import { version } from '../../../package.json';
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import PublicViewLogo from './_logo.vue';
 import { useProjectsStore } from '@/stores/projects/';
 import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
 
-export default createComponent({
+export default defineComponent({
 	components: {
 		PublicViewLogo
 	},

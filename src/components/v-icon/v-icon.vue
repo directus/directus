@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from '@vue/composition-api';
+import { defineComponent, reactive, computed } from '@vue/composition-api';
 import parseCSSVar from '@/utils/parse-css-var';
 import CustomIconBox from './custom-icons/box.vue';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 const customIcons: string[] = ['box'];
 
-export default createComponent({
+export default defineComponent({
 	components: { CustomIconBox },
 	props: {
 		name: {

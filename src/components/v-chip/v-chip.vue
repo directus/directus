@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import parseCSSVar from '@/utils/parse-css-var';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		active: {
 			type: Boolean,

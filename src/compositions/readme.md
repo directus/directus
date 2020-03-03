@@ -20,10 +20,10 @@ The composition removes the event handler whenever the component is unmounted.
 ### Usage
 
 ```js
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import useEventListener from '@/compositions/event-listener';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		useEventListener(window, 'scroll', onScroll);
 
@@ -43,10 +43,10 @@ Shared size class prop handler for base components. Adds `x-small`, `small`, `la
 ### Usage
 
 ```js
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		...sizeProps
 	},
@@ -65,10 +65,10 @@ Returns ref string time from current datetime based on date-fns formatDistance.
 ### Usage
 
 ```js
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import useTimeFromNow from '@/compositions/time-from-now';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const date = new Date('2020-01-01T13:55');
 		const timeFromNow = useTimeFromNow(date);
@@ -87,10 +87,10 @@ Returns a `ref` of `width` and `height` of the current window size. Updates the 
 ### Usage
 
 ```js
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import useWindowSize from '@/compositions/window-size';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const { width, height } = useWindowSize();
 	}

@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, provide } from '@vue/composition-api';
+import { defineComponent, ref, provide } from '@vue/composition-api';
 import { useGroupable } from '@/compositions/groupable';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		value: {
 			type: String,

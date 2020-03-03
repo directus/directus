@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import CollectionsNavigation from '../components/collections-navigation.vue';
 import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../compositions/use-navigation';
 import router from '@/router';
 
-export default createComponent({
+export default defineComponent({
 	components: {
 		CollectionsNavigation
 	},

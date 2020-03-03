@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { VNode } from 'vue';
-import { createComponent, computed, ref, watch, Ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, Ref, PropType } from '@vue/composition-api';
 import { Header, HeaderRaw, ItemSelectEvent, Sort } from './types';
 import TableHeader from './_table-header.vue';
 import TableRow from './_table-row.vue';
@@ -77,7 +77,7 @@ const HeaderDefaults: Header = {
 	width: null
 };
 
-export default createComponent({
+export default defineComponent({
 	components: {
 		TableHeader,
 		TableRow,

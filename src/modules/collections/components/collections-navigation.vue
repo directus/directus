@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import VueI18n from 'vue-i18n';
 import useNavigation from '../compositions/use-navigation';
 
-export default createComponent({
+export default defineComponent({
 	props: {},
 	setup() {
 		const { navItems } = useNavigation();

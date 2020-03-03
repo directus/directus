@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
 import { login } from '@/auth';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 

@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, computed, watch, provide } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, provide } from '@vue/composition-api';
 import useWindowSize from '@/compositions/window-size';
 import ModuleBar from './_module-bar.vue';
 import api from '@/api';
@@ -60,7 +60,7 @@ import DrawerDetailGroup from './_drawer-detail-group.vue';
 // Breakpoints:
 // 600, 960, 1260, 1900
 
-export default createComponent({
+export default defineComponent({
 	components: {
 		ModuleBar,
 		DrawerDetailGroup

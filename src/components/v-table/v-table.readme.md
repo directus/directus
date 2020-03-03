@@ -86,10 +86,10 @@ Adding the `show-resize` prop allows the user to resize the columns at will. You
 </template>
 
 <script>
-import { createComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { HeaderRaw } from '@/components/v-table/types';
 
-export default createComponent({
+export default defineComponent({
 	setup() {
 		const headers = ref<HeaderRaw[]>([
 			{

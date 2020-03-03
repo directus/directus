@@ -13,9 +13,9 @@
 
 <script lang="ts">
 import { Location } from 'vue-router';
-import { createComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		dense: {
 			type: Boolean,

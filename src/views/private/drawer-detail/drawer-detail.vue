@@ -15,10 +15,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, PropType, computed, ref, Ref, inject } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, Ref, inject } from '@vue/composition-api';
 import { useGroupable } from '@/compositions/groupable';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		icon: {
 			type: String,

@@ -34,12 +34,12 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, onMounted, onBeforeUnmount, PropType } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onBeforeUnmount, PropType } from '@vue/composition-api';
 import useEventListener from '@/compositions/event-listener';
 import { Alignment, Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 
-export default createComponent({
+export default defineComponent({
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
