@@ -13,9 +13,9 @@ module.exports = {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'prettier/prettier': ['error', { singleQuote: true }],
-		'@typescript-eslint/camelcase': null,
-		'@typescript-eslint/no-use-before-define': null,
-		'@typescript-eslint/ban-ts-ignore': null
+		'@typescript-eslint/camelcase': 0,
+		'@typescript-eslint/no-use-before-define': 0,
+		'@typescript-eslint/ban-ts-ignore': 0
 	},
 	parserOptions: {
 		parser: '@typescript-eslint/parser'
@@ -27,9 +27,9 @@ module.exports = {
 				jest: true
 			},
 			rules: {
-				'@typescript-eslint/no-explicit-any': null,
-				'@typescript-eslint/no-empty-function': null,
-				'@typescript-eslint/no-non-null-assertion': null
+				'@typescript-eslint/no-explicit-any': 0,
+				'@typescript-eslint/no-empty-function': 0,
+				'@typescript-eslint/no-non-null-assertion': 0
 			}
 		}
 	]
