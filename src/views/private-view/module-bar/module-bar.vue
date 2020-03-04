@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import ModuleBarLogo from './_module-bar-logo.vue';
+import ModuleBarLogo from '../module-bar-logo/';
 import { useProjectsStore } from '@/stores/projects';
 import { modules } from '@/modules/';
 

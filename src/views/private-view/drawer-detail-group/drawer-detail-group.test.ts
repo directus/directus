@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
-import DrawerDetailGroup from './_drawer-detail-group.vue';
+import DrawerDetailGroup from './drawer-detail-group.vue';
 import VItemGroup from '@/components/v-item-group';
 
 const localVue = createLocalVue();

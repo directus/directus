@@ -1,5 +1,21 @@
 <template>
-	<private-view class="collections-overview">
+	<private-view class="collections-overview" :title="$tc('collection', 2)">
+		<template #title-outer:prepend>
+			<v-button rounded disabled icon secondary><v-icon name="box" /></v-button>
+		</template>
+
+		<template #actions>
+			<v-button rounded icon style="--v-button-background-color: var(--success);">
+				<v-icon name="add" />
+			</v-button>
+			<v-button rounded icon style="--v-button-background-color: var(--warning);">
+				<v-icon name="delete" />
+			</v-button>
+			<v-button rounded icon style="--v-button-background-color: var(--danger);">
+				<v-icon name="favorite" />
+			</v-button>
+		</template>
+
 		<template #navigation>
 			<collections-navigation />
 		</template>

@@ -105,11 +105,7 @@ export default defineComponent({
 	}
 
 	svg {
-		position: relative;
-		top: 2px;
-		left: 2px;
-		width: calc(100% - 4px); // the material icons all have a slight padding
-		height: calc(100% - 4px);
+		display: block;
 		color: inherit;
 		fill: currentColor;
 	}

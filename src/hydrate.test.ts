@@ -47,7 +47,7 @@ describe('Hydration', () => {
 			expect(hydrated).toBe(false);
 		});
 
-		it('Does not hydrate when already hydrated', async () => {
+		it('Does not dehydrate when already dehydrated', async () => {
 			await dehydrate();
 
 			const collectionsStore = useCollectionsStore({});

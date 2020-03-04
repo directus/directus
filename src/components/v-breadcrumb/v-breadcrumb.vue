@@ -8,7 +8,7 @@
 		>
 			<v-icon v-if="index > 0" name="chevron_right" small />
 			<router-link v-if="!item.disabled" :to="item.to" class="section-link">
-				<v-icon v-if="item.icon" :name="item.icon" />
+				<v-icon v-if="item.icon" :name="item.icon" small />
 				{{ item.name }}
 			</router-link>
 			<span v-else class="section-link">
@@ -25,7 +25,6 @@ import { defineComponent, PropType } from '@vue/composition-api';
 interface Breadcrumb {
 	to: string;
 	name: string;
-	icon?: string;
 	disabled?: boolean;
 }
 
@@ -49,11 +48,11 @@ export default defineComponent({
 	--v-breadcrumb-color-disabled: var(--foreground-color-tertiary);
 	--v-breadcrumb-divider-color: var(--foreground-color-tertiary);
 
-	display: inline-block;
+	display: flex;
+	align-items: center;
 
 	.section {
-		display: inline-flex;
-		align-items: center;
+		display: contents;
 
 		.v-icon {
 			--v-icon-color: var(--v-breadcrumb-divider-color);

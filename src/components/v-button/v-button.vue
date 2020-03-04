@@ -3,7 +3,7 @@
 		:is="component"
 		active-class="activated"
 		class="v-button"
-		:class="[sizeClass, { block, rounded, icon, outlined, loading }]"
+		:class="[sizeClass, { block, rounded, icon, outlined, loading, secondary }]"
 		:type="type"
 		:disabled="disabled"
 		:to="to"
@@ -57,6 +57,10 @@ export default defineComponent({
 			type: [String, Object] as PropType<string | Location>,
 			default: null
 		},
+		secondary: {
+			type: Boolean,
+			default: false
+		},
 		...sizeProps
 	},
 	setup(props, { emit }) {
@@ -81,9 +85,11 @@ export default defineComponent({
 	--v-button-color: var(--button-primary-foreground-color);
 	--v-button-color-hover: var(--button-primary-foreground-color-hover);
 	--v-button-color-activated: var(--button-primary-foreground-color-activated);
+	--v-button-color-disabled: var(--button-primary-foreground-color-disabled);
 	--v-button-background-color: var(--button-primary-background-color);
 	--v-button-background-color-hover: var(--button-primary-background-color-hover);
 	--v-button-background-color-activated: var(--button-primary-background-color-activated);
+	--v-button-background-color-disabled: var(--button-primary-background-color-disabled);
 	--v-button-font-size: 16px;
 
 	position: relative;
@@ -105,6 +111,16 @@ export default defineComponent({
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
 
+	&.secondary {
+		--v-button-color: var(--button-secondary-foreground-color);
+		--v-button-color-hover: var(--button-secondary-foreground-color-hover);
+		--v-button-color-activated: var(--button-secondary-foreground-color-activated);
+		--v-button-background-color: var(--button-secondary-background-color);
+		--v-button-background-color-hover: var(--button-secondary-background-color-hover);
+		--v-button-background-color-activated: var(--button-secondary-background-color-activated);
+		--v-button-background-color-disabled: var(--button-secondary-background-color-disabled);
+	}
+
 	&:active {
 		transform: scale(0.96);
 	}
@@ -114,20 +130,14 @@ export default defineComponent({
 	}
 
 	&:disabled {
-		color: var(--button-primary-text-color-disabled);
-		background-color: var(--button-primary-background-color-disabled);
-		border: var(--input-border-width) solid var(--button-primary-background-color-disabled);
+		color: var(--v-button-color-disabled);
+		background-color: var(--v-button-background-color-disabled);
+		border: var(--input-border-width) solid var(--v-button-background-color-disabled);
 		cursor: not-allowed;
 
 		&:active {
-			transform: unset;
+			transform: scale(1);
 		}
-	}
-
-	&:not(.loading):not(:disabled):not(.activated):hover {
-		color: var(--v-button-color-hover);
-		background-color: var(--v-button-background-color-hover);
-		border: var(--button-border-width) solid var(--v-button-background-color-hover);
 	}
 
 	&.block {
@@ -140,6 +150,8 @@ export default defineComponent({
 	}
 
 	&.outlined {
+		--v-button-color: var(--v-button-background-color);
+
 		background-color: transparent;
 	}
 
@@ -178,10 +190,6 @@ export default defineComponent({
 		width: var(--v-button-height);
 		min-width: 0;
 		padding: 0;
-
-		&:active {
-			transform: scale(0.94);
-		}
 	}
 
 	.content,
@@ -215,6 +223,14 @@ export default defineComponent({
 	&.activated {
 		--v-button-color: var(--v-button-color-activated) !important;
 		--v-button-background-color: var(--v-button-background-color-activated) !important;
+	}
+
+	@media (hover: hover) {
+		&:not(.loading):not(:disabled):not(.activated):hover {
+			color: var(--v-button-color-hover);
+			background-color: var(--v-button-background-color-hover);
+			border: var(--button-border-width) solid var(--v-button-background-color-hover);
+		}
 	}
 }
 </style>

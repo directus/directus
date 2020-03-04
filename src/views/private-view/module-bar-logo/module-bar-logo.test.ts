@@ -1,6 +1,6 @@
 import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
-import ModuleBarLogo from './_module-bar-logo.vue';
+import ModuleBarLogo from './module-bar-logo.vue';
 import { useProjectsStore } from '@/stores/projects';
 import { useRequestsStore } from '@/stores/requests';
 

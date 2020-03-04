@@ -14,18 +14,23 @@
 			</div>
 		</aside>
 		<div class="content">
-			<header>
-				<button @click="navOpen = true">Toggle nav</button>
-				<button v-if="drawerHasContent" @click="drawerOpen = !drawerOpen">
-					Toggle drawer
-				</button>
-			</header>
+			<header-bar
+				:title="title"
+				@toggle:drawer="drawerOpen = !drawerOpen"
+				@toggle:nav="navOpen = !navOpen"
+			>
+				<template
+					v-for="(_, scopedSlotName) in $scopedSlots"
+					v-slot:[scopedSlotName]="slotData"
+				>
+					<slot :name="scopedSlotName" v-bind="slotData" />
+				</template>
+			</header-bar>
 			<main>
 				<slot />
 			</main>
 		</div>
 		<aside
-			v-if="drawerHasContent"
 			class="drawer alt-colors"
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
@@ -35,56 +40,38 @@
 			</drawer-detail-group>
 		</aside>
 
-		<v-overlay
-			v-if="navWithOverlay"
-			class="nav-overlay"
-			:active="navOpen"
-			@click="navOpen = false"
-		/>
-		<v-overlay
-			v-if="drawerWithOverlay"
-			class="drawer-overlay"
-			:active="drawerOpen"
-			@click="drawerOpen = false"
-		/>
+		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
+		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, provide } from '@vue/composition-api';
-import useWindowSize from '@/compositions/window-size';
-import ModuleBar from './_module-bar.vue';
-import DrawerDetailGroup from './_drawer-detail-group.vue';
-
-// Breakpoints:
-// 600, 960, 1260, 1900
+import { defineComponent, ref, provide } from '@vue/composition-api';
+import ModuleBar from './module-bar/';
+import DrawerDetailGroup from './drawer-detail-group/';
+import HeaderBar from './header-bar';
 
 export default defineComponent({
 	components: {
 		ModuleBar,
-		DrawerDetailGroup
+		DrawerDetailGroup,
+		HeaderBar
 	},
-	props: {},
-	setup(props, { slots }) {
+	props: {
+		title: {
+			type: String,
+			required: true
+		}
+	},
+	setup() {
 		const navOpen = ref(false);
 		const drawerOpen = ref(false);
-
-		const { width } = useWindowSize();
-
-		const navWithOverlay = computed(() => width.value < 960);
-		const drawerWithOverlay = computed(() => width.value < 1260);
-
-		const drawerHasContent = computed(() => !!slots.drawer);
 
 		provide('drawer-open', drawerOpen);
 
 		return {
 			navOpen,
-			drawerOpen,
-			navWithOverlay,
-			drawerWithOverlay,
-			width,
-			drawerHasContent
+			drawerOpen
 		};
 	}
 });
@@ -94,7 +81,7 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 
 .private-view {
-	--private-view-content-padding: 32px;
+	--private-view-content-padding: 12px;
 
 	display: flex;
 	width: 100%;
@@ -102,10 +89,18 @@ export default defineComponent({
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
+
+		@include breakpoint(medium) {
+			display: none;
+		}
 	}
 
 	.drawer-overlay {
 		--v-overlay-z-index: 29;
+
+		@include breakpoint(large) {
+			display: none;
+		}
 	}
 
 	.navigation {
@@ -149,6 +144,15 @@ export default defineComponent({
 		main {
 			padding: var(--private-view-content-padding);
 		}
+
+		// Offset for partially visible drawer
+		@include breakpoint(medium) {
+			padding-right: 64px;
+		}
+
+		@include breakpoint(large) {
+			padding-right: 0;
+		}
 	}
 
 	.drawer {
@@ -173,6 +177,7 @@ export default defineComponent({
 		@include breakpoint(large) {
 			position: relative;
 			flex-basis: 64px;
+			flex-shrink: 0;
 			transform: none;
 			transition: flex-basis var(--slow) var(--transition);
 
@@ -181,6 +186,10 @@ export default defineComponent({
 				transform: none;
 			}
 		}
+	}
+
+	@include breakpoint(small) {
+		--private-view-content-padding: 32px;
 	}
 }
 </style>
