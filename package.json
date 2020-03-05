@@ -75,7 +75,7 @@
     "regenerator-runtime": "^0.13.3",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
-    "storybook-addon-themes": "^5.3.0",
+    "storybook-addon-themes": "^5.4.0",
     "stylelint": "^13.1.0",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^20.0.0",
