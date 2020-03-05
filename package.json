@@ -33,7 +33,7 @@
     "vuedraggable": "^2.23.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.6",
+    "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "@storybook/addon-actions": "^5.3.12",
     "@storybook/addon-centered": "^5.3.12",
