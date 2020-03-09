@@ -37,7 +37,7 @@ The Directus Suite consists of:
 
 ### Database-First
 
-Directus follows a database-first approach, storing all of your data _unaltered_ in pure SQL databases with that can be completely customized.
+Directus follows a database-first approach, storing all of your data _unaltered_ in pure SQL databases that can be completely customized.
 
 #### Customization & Optimization
 
@@ -45,7 +45,7 @@ Directus mirrors _your_ actual SQL architecture and data, so it will automatical
 
 1. Architect your actual database with meaningful table and column names
 2. Infinitely optimize with indexing, datatypes, lengths, defaults, keys, encoding, etc
-3. Update your database schema at any point and Directus will instantly reflect changes
+3. Update your database schema at any point and Directus will instantly reflect the changes
 4. Create, update, and delete content directly from the database
 
 #### Direct Access & Performance
