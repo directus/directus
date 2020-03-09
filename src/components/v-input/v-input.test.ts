@@ -66,6 +66,6 @@ describe('Input', () => {
 		const input = component.find('input');
 		(input.element as HTMLInputElement).value = 'The value';
 		input.trigger('input');
-		expect(component.emitted('input')[0]).toEqual(['The value']);
+		expect(component.emitted('input')?.[0]).toEqual(['The value']);
 	});
 });

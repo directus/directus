@@ -22,11 +22,11 @@ describe('Views / Private / Header Bar', () => {
 		const navToggle = component.find('.nav-toggle');
 		navToggle.trigger('click');
 
-		expect(component.emitted('toggle:nav')[0]).toBeTruthy();
+		expect(component.emitted('toggle:nav')?.[0]).toBeTruthy();
 
 		const drawerToggle = component.find('.drawer-toggle');
 		drawerToggle.trigger('click');
 
-		expect(component.emitted('toggle:drawer')[0]).toBeTruthy();
+		expect(component.emitted('toggle:drawer')?.[0]).toBeTruthy();
 	});
 });

@@ -64,7 +64,7 @@ describe('Table / Header', () => {
 		await component.vm.$nextTick();
 
 		component.find('th .content').trigger('click');
-		expect(component.emitted('update:sort')[0]).toEqual([{ by: 'col1', desc: false }]);
+		expect(component.emitted('update:sort')?.[0]).toEqual([{ by: 'col1', desc: false }]);
 
 		component.setProps({
 			sort: {
@@ -77,7 +77,7 @@ describe('Table / Header', () => {
 
 		component.find('th .content').trigger('click');
 
-		expect(component.emitted('update:sort')[1]).toEqual([{ by: 'col1', desc: true }]);
+		expect(component.emitted('update:sort')?.[1]).toEqual([{ by: 'col1', desc: true }]);
 
 		component.setProps({
 			sort: {
@@ -89,7 +89,7 @@ describe('Table / Header', () => {
 		await component.vm.$nextTick();
 
 		component.find('th .content').trigger('click');
-		expect(component.emitted('update:sort')[2]).toEqual([{ by: null, desc: false }]);
+		expect(component.emitted('update:sort')?.[2]).toEqual([{ by: null, desc: false }]);
 	});
 
 	it("Doesn't emit the update sort event when dragging", async () => {
@@ -112,7 +112,7 @@ describe('Table / Header', () => {
 
 		component.find(VCheckbox).trigger('click');
 
-		expect(component.emitted('toggle-select-all')[0]).toEqual([true]);
+		expect(component.emitted('toggle-select-all')?.[0]).toEqual([true]);
 	});
 
 	it('Prevents unsortable columns from being sorted', async () => {
@@ -248,7 +248,7 @@ describe('Table / Header', () => {
 
 		component.find('.manual.cell').trigger('click');
 
-		expect(component.emitted('update:sort')[0]).toEqual([
+		expect(component.emitted('update:sort')?.[0]).toEqual([
 			{
 				by: '$manual',
 				desc: false
@@ -267,7 +267,7 @@ describe('Table / Header', () => {
 
 		component.find('.manual.cell').trigger('click');
 
-		expect(component.emitted('update:sort')[1]).toEqual([
+		expect(component.emitted('update:sort')?.[1]).toEqual([
 			{
 				by: null,
 				desc: false
@@ -345,7 +345,7 @@ describe('Table / Header', () => {
 			pageX: 50
 		});
 
-		expect(component.emitted('update:headers')[0][0][0].width).toBe(150);
+		expect(component.emitted('update:headers')?.[0][0][0].width).toBe(150);
 	});
 
 	it("Doesn't trigger on mousemove if dragging is false", async () => {

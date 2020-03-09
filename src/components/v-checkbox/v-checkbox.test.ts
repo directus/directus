@@ -54,7 +54,7 @@ describe('Checkbox', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toBe(true);
+		expect(component.emitted()?.change?.[0][0]).toBe(true);
 	});
 
 	it('Disables the button when disabled prop is set', () => {
@@ -81,7 +81,7 @@ describe('Checkbox', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toEqual(['blue', 'green', 'red']);
+		expect(component.emitted()?.change?.[0][0]).toEqual(['blue', 'green', 'red']);
 	});
 
 	it('Removes value from array', () => {
@@ -96,7 +96,7 @@ describe('Checkbox', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toEqual(['blue', 'green']);
+		expect(component.emitted()?.change?.[0][0]).toEqual(['blue', 'green']);
 	});
 
 	it('Renders the correct icon for state', () => {
@@ -128,6 +128,6 @@ describe('Checkbox', () => {
 
 		component.find('button').trigger('click');
 
-		expect(component.emitted('update:indeterminate')[0]).toEqual([false]);
+		expect(component.emitted('update:indeterminate')?.[0]).toEqual([false]);
 	});
 });

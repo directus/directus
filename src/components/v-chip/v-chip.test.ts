@@ -74,7 +74,7 @@ describe('Chip', () => {
 
 		(component.vm as any).onClick(new Event('click'));
 
-		expect(component.emitted('click')[0][0]).toBeInstanceOf(Event);
+		expect(component.emitted('click')?.[0][0]).toBeInstanceOf(Event);
 	});
 
 	it('Does not emit click when disabled', async () => {
@@ -98,7 +98,7 @@ describe('Chip', () => {
 
 		(component.vm as any).onCloseClick(new Event('click'));
 
-		expect(component.emitted('close')[0][0]).toBeInstanceOf(Event);
+		expect(component.emitted('close')?.[0][0]).toBeInstanceOf(Event);
 	});
 
 	it('Does not emit click when disabled and close button is clicked', async () => {

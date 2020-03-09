@@ -110,7 +110,7 @@ describe('Table / Row', () => {
 
 		component.find(VCheckbox).trigger('click');
 
-		expect(component.emitted('item-selected')[0]).toEqual([
+		expect(component.emitted('item-selected')?.[0]).toEqual([
 			{
 				item: {
 					col1: 'Test',

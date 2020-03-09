@@ -43,6 +43,6 @@ describe('Overlay', () => {
 
 	it('Emits click event', async () => {
 		component.find('.v-overlay').trigger('click');
-		expect(component.emitted('click')[0]).toBeTruthy();
+		expect(component.emitted('click')?.[0]).toBeTruthy();
 	});
 });

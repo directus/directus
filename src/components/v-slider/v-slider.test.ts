@@ -30,7 +30,7 @@ describe('Slider', () => {
 		(input.element as HTMLInputElement).value = '500';
 		input.trigger('input');
 
-		expect(component.emitted('input')[0]).toEqual([500]);
+		expect(component.emitted('input')?.[0]).toEqual([500]);
 	});
 
 	it('Emits just the value on change', async () => {
@@ -38,7 +38,7 @@ describe('Slider', () => {
 		(input.element as HTMLInputElement).value = '500';
 		input.trigger('change');
 
-		expect(component.emitted('change')[0]).toEqual([500]);
+		expect(component.emitted('change')?.[0]).toEqual([500]);
 	});
 
 	it('Renders the prepend/append slots', async () => {

@@ -19,6 +19,6 @@ describe('Components / Item Group', () => {
 			state.onSelectionChange([1, 2, 3]);
 		});
 		const component = mount(VItemGroup, { localVue });
-		expect(component.emitted('input')[0][0]).toEqual([1, 2, 3]);
+		expect(component.emitted('input')?.[0][0]).toEqual([1, 2, 3]);
 	});
 });

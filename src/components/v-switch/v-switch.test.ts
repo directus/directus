@@ -52,7 +52,7 @@ describe('Switch', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toBe(true);
+		expect(component.emitted()?.change?.[0][0]).toBe(true);
 	});
 
 	it('Disables the button when disabled prop is set', () => {
@@ -79,7 +79,7 @@ describe('Switch', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toEqual(['blue', 'green', 'red']);
+		expect(component.emitted()?.change?.[0][0]).toEqual(['blue', 'green', 'red']);
 	});
 
 	it('Removes value from array', () => {
@@ -94,6 +94,6 @@ describe('Switch', () => {
 		const button = component.find('button');
 		button.trigger('click');
 
-		expect(component.emitted().change[0][0]).toEqual(['blue', 'green']);
+		expect(component.emitted()?.change?.[0][0]).toEqual(['blue', 'green']);
 	});
 });

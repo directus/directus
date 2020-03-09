@@ -219,7 +219,7 @@ describe('Table', () => {
 		component.find('th .content').trigger('click');
 
 		expect((component.vm as any)._sort.by).toEqual('col1');
-		expect(component.emitted('update:sort')[0]).toEqual([{ by: 'col1', desc: false }]);
+		expect(component.emitted('update:sort')?.[0]).toEqual([{ by: 'col1', desc: false }]);
 	});
 
 	it('Handles sort desc updates coming from header', async () => {
@@ -258,7 +258,7 @@ describe('Table', () => {
 
 		component.find('th .content').trigger('click');
 
-		expect(component.emitted('update:sort')[0]).toEqual([{ by: 'col1', desc: true }]);
+		expect(component.emitted('update:sort')?.[0]).toEqual([{ by: 'col1', desc: true }]);
 	});
 
 	it('Updates selection correctly', async () => {
@@ -295,7 +295,7 @@ describe('Table', () => {
 
 		component.find('.v-table_table-row .select > *').trigger('click');
 
-		expect(component.emitted('select')[0]).toEqual([
+		expect(component.emitted('select')?.[0]).toEqual([
 			[
 				{
 					col1: 'A',
@@ -343,7 +343,7 @@ describe('Table', () => {
 
 		component.find('.v-table_table-row .select > *').trigger('click');
 
-		expect(component.emitted('select')[1]).toEqual([[]]);
+		expect(component.emitted('select')?.[1]).toEqual([[]]);
 	});
 
 	it('Calculates selected state per row', async () => {
@@ -439,7 +439,7 @@ describe('Table', () => {
 
 		component.find('.v-table_table-header .select > *').trigger('click');
 
-		expect(component.emitted('select')[0]).toEqual([
+		expect(component.emitted('select')?.[0]).toEqual([
 			[
 				{
 					col1: 'A',
@@ -503,7 +503,7 @@ describe('Table', () => {
 
 		component.find('.v-table_table-header .select > *').trigger('click');
 
-		expect(component.emitted('select')[1]).toEqual([[]]);
+		expect(component.emitted('select')?.[1]).toEqual([[]]);
 	});
 
 	describe('Sorting', () => {
@@ -666,7 +666,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		expect(component.emitted('update:items')[0]).toEqual([
+		expect(component.emitted('update:items')?.[0]).toEqual([
 			[
 				{
 					col1: 'A'
@@ -712,7 +712,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		expect(component.emitted('update:headers')[0]).toEqual([
+		expect(component.emitted('update:headers')?.[0]).toEqual([
 			[
 				{
 					text: 'Column 1',
@@ -735,6 +735,6 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		expect(component.emitted('drop')[0]).toEqual([{ oldIndex: 0, newIndex: 5 }]);
+		expect(component.emitted('drop')?.[0]).toEqual([{ oldIndex: 0, newIndex: 5 }]);
 	});
 });
