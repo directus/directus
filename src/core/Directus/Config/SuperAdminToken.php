@@ -40,7 +40,9 @@ class SuperAdminToken
      */
     public static function path()
     {
-        return '/config/__api.json';
+        $basePath = \Directus\get_app_base_path();
+
+        return $basePath.'/config/__api.json';
     }
 
     /**

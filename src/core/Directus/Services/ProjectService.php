@@ -78,8 +78,7 @@ class ProjectService extends AbstractService
         // TODO: this two lines below is duplicated in InstallerModule,
         //       maybe refactor this into a single place?
         $configStub = InstallerUtils::createJsonFileContent($data);
-        $superAdminTokenPath = $basePath.SuperAdminToken::path();
-        file_put_contents($superAdminTokenPath, $configStub);
+        file_put_contents(SuperAdminToken::path(), $configStub);
 
         $basePath = $this->container->get('path_base');
         $force = ArrayUtils::pull($data, 'force', false);
