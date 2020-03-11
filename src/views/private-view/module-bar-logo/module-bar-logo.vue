@@ -1,6 +1,6 @@
 <template>
 	<div class="module-bar-logo">
-		<img class="custom-logo" v-if="customLogoPath" :src="customLogoPath" />
+		<img class="custom-logo" v-if="customLogoPath" :src="customLogoPath" alt="Project Logo" />
 		<div
 			v-else
 			class="logo"

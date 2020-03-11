@@ -1,10 +1,10 @@
 <template>
 	<thead class="v-table_table-header" :class="{ dragging }">
 		<tr :class="{ fixed }">
-			<th v-if="showManualSort" class="manual cell" @click="toggleManualSort">
+			<th v-if="showManualSort" class="manual cell" @click="toggleManualSort" scope="col">
 				<v-icon name="sort" class="drag-handle" small />
 			</th>
-			<th v-if="showSelect" class="select cell">
+			<th v-if="showSelect" class="select cell" scope="col">
 				<v-checkbox
 					:inputValue="allItemsSelected"
 					:indeterminate="someItemsSelected"
@@ -17,6 +17,7 @@
 				:class="getClassesForHeader(header)"
 				:style="getStyleForHeader(header, index)"
 				class="cell"
+				scope="col"
 			>
 				<div class="content" @click="changeSort(header)">
 					<slot :name="`header.${header.value}`" :header="header">{{ header.text }}</slot>
@@ -35,7 +36,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-import useEventListener from '@/compositions/event-listener';
+import useEventListener from '@/compositions/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 

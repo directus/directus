@@ -1,5 +1,5 @@
 <template functional>
-	<a href="https://directus.io" target="_blank" class="logo">
+	<a href="https://directus.io" rel="noopener noreferrer" target="_blank" class="logo">
 		<img
 			v-tooltip.right="{ classes: ['inverted'], content: `Directus v${props.version}` }"
 			alt="Directus Logo"

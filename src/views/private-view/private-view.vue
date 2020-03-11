@@ -1,6 +1,6 @@
 <template>
 	<div class="private-view">
-		<aside class="navigation" :class="{ 'is-open': navOpen }">
+		<aside role="navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<div
@@ -31,6 +31,7 @@
 			</main>
 		</div>
 		<aside
+			role="contentinfo"
 			class="drawer alt-colors"
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"

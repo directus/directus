@@ -1,6 +1,6 @@
 <template>
 	<div class="v-table" :class="{ loading }">
-		<table>
+		<table :summary="_headers.map(header => header.text).join(', ')">
 			<table-header
 				:headers.sync="_headers"
 				:sort.sync="_sort"
@@ -17,7 +17,7 @@
 				</template>
 			</table-header>
 			<thead v-if="loading" class="loading-indicator">
-				<th :colspan="_headers.length">
+				<th :colspan="_headers.length" scope="colgroup">
 					<v-progress-linear indeterminate v-if="loading" />
 				</th>
 			</thead>

@@ -15,10 +15,8 @@ import './interfaces/register';
 
 Vue.config.productionTip = false;
 
-const app = new Vue({
+new Vue({
 	render: h => h('router-view'),
 	router,
 	i18n
 }).$mount('#app');
-
-export default app;

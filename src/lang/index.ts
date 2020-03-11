@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import enUSBase from './en-US/index.json';
 import enUSInterfaces from './en-US/interfaces.json';
 import enUSLayouts from './en-US/layouts.json';
-import dateTimeFormats from './en-US/date-format.json';
+import defaultDateTimeFormats from './en-US/date-format.json';
 
 Vue.use(VueI18n);
 
@@ -16,7 +16,7 @@ export const i18n = new VueI18n({
 		'en-US': merge(enUSBase, enUSInterfaces, enUSLayouts)
 	},
 	dateTimeFormats: {
-		'en-US': dateTimeFormats
+		'en-US': defaultDateTimeFormats
 	},
 	silentTranslationWarn: true
 });

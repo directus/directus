@@ -1,5 +1,5 @@
 import { ref } from '@vue/composition-api';
-import useEventListener from './event-listener';
+import useEventListener from './use-event-listener';
 import mountComposition from '../../.jest/mount-composition';
 
 describe('Compositions / Event Listener', () => {

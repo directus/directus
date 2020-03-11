@@ -1,7 +1,7 @@
 import { onMounted, onUnmounted, ref } from '@vue/composition-api';
 import formatDistance from 'date-fns/formatDistance';
 
-export default function useFormatDistance(date: Date | number, autoUpdate = 60000) {
+export default function useTimeFromNow(date: Date | number, autoUpdate = 60000) {
 	let interval: number;
 
 	const formatOptions = {

@@ -21,7 +21,7 @@ The composition removes the event handler whenever the component is unmounted.
 
 ```js
 import { defineComponent } from '@vue/composition-api';
-import useEventListener from '@/compositions/event-listener';
+import useEventListener from '@/compositions/use-event-listener';
 
 export default defineComponent({
 	setup() {
@@ -66,7 +66,7 @@ Returns ref string time from current datetime based on date-fns formatDistance.
 
 ```js
 import { defineComponent } from '@vue/composition-api';
-import useTimeFromNow from '@/compositions/time-from-now';
+import useTimeFromNow from '@/compositions/use-time-from-now';
 
 export default defineComponent({
 	setup() {

@@ -1,5 +1,5 @@
 import { Ref } from '@vue/composition-api';
-import useTimeFromNow from './time-from-now';
+import useTimeFromNow from './use-time-from-now';
 import mountComposition from '../../.jest/mount-composition';
 import mockdate from 'mockdate';
 

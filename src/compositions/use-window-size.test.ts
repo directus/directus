@@ -1,5 +1,5 @@
 import { watch } from '@vue/composition-api';
-import useWindowSize from './window-size';
+import useWindowSize from './use-window-size';
 import mountComposition from '../../.jest/mount-composition';
 
 describe('Compositions / Window Size', () => {
