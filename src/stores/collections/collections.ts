@@ -16,7 +16,7 @@ export const useCollectionsStore = createStore({
 		visibleCollections: state => {
 			return state.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter(({ hidden }) => hidden === false);
+				.filter(({ hidden }) => hidden !== true);
 		}
 	},
 	actions: {

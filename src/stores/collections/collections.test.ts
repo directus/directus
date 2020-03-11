@@ -42,7 +42,7 @@ describe('Stores / collections', () => {
 				}
 			] as any;
 
-			expect(collectionsStore.visibleCollections).toEqual([
+			expect(collectionsStore.visibleCollections.value).toEqual([
 				{
 					collection: 'test-1'
 				},
@@ -72,12 +72,14 @@ describe('Stores / collections', () => {
 				}
 			] as any;
 
-			expect(collectionsStore.visibleCollections).toEqual([
+			expect(collectionsStore.visibleCollections.value).toEqual([
 				{
-					collection: 'test-2'
+					collection: 'test-2',
+					hidden: false
 				},
 				{
-					collection: 'test-3'
+					collection: 'test-3',
+					hidden: null
 				}
 			]);
 		});

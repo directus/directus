@@ -11,6 +11,7 @@ import './components/register';
 import './views/register';
 import './modules/register';
 import './layouts/register';
+import './interfaces/register';
 
 Vue.config.productionTip = false;
 

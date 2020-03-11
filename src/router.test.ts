@@ -15,6 +15,7 @@ import { hydrate } from '@/hydrate';
 
 jest.mock('@/auth');
 jest.mock('@/hydrate');
+jest.mock('@/api');
 
 const route: Route = {
 	name: undefined,
