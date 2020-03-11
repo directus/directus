@@ -1,7 +1,6 @@
 <template>
 	<div
 		class="v-progress-linear"
-		:style="styles"
 		:class="{
 			absolute,
 			bottom,

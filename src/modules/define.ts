@@ -1,7 +1,7 @@
 import { i18n } from '@/lang/';
 import { Module, ModuleOptions, ModuleContext } from './types';
 
-export function createModule(options: ModuleOptions): Module {
+export function defineModule(options: ModuleOptions): Module {
 	const context: ModuleContext = { i18n };
 
 	const config = {

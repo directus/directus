@@ -1,7 +1,7 @@
-import { createLayout } from '@/layouts/create';
+import { defineLayout } from '@/layouts/define';
 import TabularLayout from './tabular.vue';
 
-export default createLayout({
+export default defineLayout({
 	id: 'tabular',
 	register: ({ i18n }) => ({
 		name: i18n.t('layouts.tabular.tabular'),

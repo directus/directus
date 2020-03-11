@@ -1,7 +1,7 @@
 import { i18n } from '@/lang/';
 import { Layout, LayoutOptions, LayoutContext } from './types';
 
-export function createLayout(options: LayoutOptions): Layout {
+export function defineLayout(options: LayoutOptions): Layout {
 	const context: LayoutContext = { i18n };
 
 	const config = {

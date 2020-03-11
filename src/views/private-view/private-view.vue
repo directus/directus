@@ -140,8 +140,11 @@ export default defineComponent({
 
 	.content {
 		flex-grow: 1;
+		height: 100%;
+		overflow: hidden;
 
 		main {
+			height: calc(100% - 112px); /* TODO: add "collapsed" header state support */
 			padding: var(--private-view-content-padding);
 		}
 
