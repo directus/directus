@@ -1,5 +1,18 @@
 # app-next
 
+[![Coverage Status](https://coveralls.io/repos/github/directus/app-next/badge.svg?branch=master)](https://coveralls.io/github/directus/app-next?branch=master)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=bugs)](https://sonarcloud.io/dashboard?id=app-next)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=code_smells)](https://sonarcloud.io/dashboard?id=app-next)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=app-next)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=ncloc)](https://sonarcloud.io/dashboard?id=app-next)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=app-next)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=alert_status)](https://sonarcloud.io/dashboard?id=app-next)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=app-next)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=security_rating)](https://sonarcloud.io/dashboard?id=app-next)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=sqale_index)](https://sonarcloud.io/dashboard?id=app-next)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=app-next&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=app-next)
+
+
 ## Status: pre-alpha
 
 We're aiming to have the app codebase converted to TypeScript and fully unit test covered. This repo serves as a way for us to work on the bigger more foundational parts of the app codebase, without interferance of the legacy parts.

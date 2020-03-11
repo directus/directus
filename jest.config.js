@@ -5,8 +5,14 @@ module.exports = {
 	restoreMocks: true,
 	clearMocks: true,
 	resetMocks: true,
-	reporters: ['default',  ['jest-sonar', {
-		outputDirectory: "coverage",
-		outputName: "sonar.xml"
-	}]],
+	reporters: [
+		'default',
+		[
+			'jest-sonar',
+			{
+				outputDirectory: 'coverage',
+				outputName: 'sonar.xml'
+			}
+		]
+	]
 };
