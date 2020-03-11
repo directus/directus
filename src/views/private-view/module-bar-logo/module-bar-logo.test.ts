@@ -1,30 +1,22 @@
-import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import ModuleBarLogo from './module-bar-logo.vue';
-import { useProjectsStore } from '@/stores/projects';
 import { useRequestsStore } from '@/stores/requests';
+import { useProjectsStore } from '@/stores/projects';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
 describe('Views / Private / Module Bar / Logo', () => {
-	let component: Wrapper<Vue>;
-	const projectsStore = useProjectsStore();
-	const requestsStore = useRequestsStore();
-
-	beforeEach(() => {
-		component = mount(ModuleBarLogo, { localVue });
-		projectsStore.reset();
-		requestsStore.reset();
-	});
-
-	it('Renders the default rabbit when were not in a project', () => {
+	it('Renders the default rabbit when we are not in a project', () => {
+		const component = shallowMount(ModuleBarLogo, { localVue });
 		expect((component.vm as any).customLogoPath).toBe(null);
 	});
 
 	it('Renders the default rabbit when the current project errored out', () => {
-		projectsStore.state.projects = [
-			{
+		const projectsStore = useProjectsStore({});
+		projectsStore.currentProject = {
+			value: {
 				key: 'my-project',
 				status: 500,
 				error: {
@@ -32,14 +24,17 @@ describe('Views / Private / Module Bar / Logo', () => {
 					message: 'Could not connect to the database'
 				}
 			}
-		];
-		projectsStore.state.currentProjectKey = 'my-project';
+		};
+
+		const component = shallowMount(ModuleBarLogo, { localVue });
+
 		expect((component.vm as any).customLogoPath).toBe(null);
 	});
 
 	it('Renders the default rabbit when the current project does not have a custom logo', () => {
-		projectsStore.state.projects = [
-			{
+		const projectsStore = useProjectsStore({});
+		projectsStore.currentProject = {
+			value: {
 				key: 'my-project',
 				api: {
 					requires2FA: false,
@@ -53,14 +48,17 @@ describe('Views / Private / Module Bar / Logo', () => {
 					project_logo: null
 				}
 			}
-		];
-		projectsStore.state.currentProjectKey = 'my-project';
+		};
+
+		const component = shallowMount(ModuleBarLogo, { localVue });
+
 		expect((component.vm as any).customLogoPath).toBe(null);
 	});
 
-	it('Renders the custom logo if set', async () => {
-		projectsStore.state.projects = [
-			{
+	it('Renders the custom logo if set', () => {
+		const projectsStore = useProjectsStore({});
+		projectsStore.currentProject = {
+			value: {
 				key: 'my-project',
 				api: {
 					requires2FA: false,
@@ -77,27 +75,31 @@ describe('Views / Private / Module Bar / Logo', () => {
 					}
 				}
 			}
-		];
-		projectsStore.state.currentProjectKey = 'my-project';
-		await component.vm.$nextTick();
+		};
+
+		const component = shallowMount(ModuleBarLogo, { localVue });
+
 		expect((component.vm as any).customLogoPath).toBe('abc');
 		expect(component.find('img').attributes().src).toBe('abc');
 	});
 
-	it('Only stops running if the queue is empty', async () => {
-		requestsStore.state.queue = [];
-		await component.vm.$nextTick();
+	it('Only stops running if the queue is empty', () => {
+		const requestsStore = useRequestsStore({});
+		requestsStore.queueHasItems = { value: false };
+
+		let component = shallowMount(ModuleBarLogo, { localVue });
 		(component.vm as any).isRunning = true;
 		(component.vm as any).stopRunningIfQueueIsEmpty();
 		expect((component.vm as any).isRunning).toBe(false);
 
-		requestsStore.state.queue = ['abc'];
-		await component.vm.$nextTick();
+		requestsStore.queueHasItems = { value: true };
+		component = shallowMount(ModuleBarLogo, { localVue });
 		expect((component.vm as any).isRunning).toBe(true);
 		(component.vm as any).stopRunningIfQueueIsEmpty();
 		expect((component.vm as any).isRunning).toBe(true);
-		requestsStore.state.queue = [];
-		await component.vm.$nextTick();
+
+		requestsStore.queueHasItems = { value: false };
+		component = shallowMount(ModuleBarLogo, { localVue });
 		(component.vm as any).stopRunningIfQueueIsEmpty();
 		expect((component.vm as any).isRunning).toBe(false);
 	});

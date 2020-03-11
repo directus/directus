@@ -12,9 +12,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects';
 import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
-import { useRequestsStore } from '@/stores/requests';
+import { useProjectsStore } from '@/stores/projects/';
+import { useRequestsStore } from '@/stores/requests/';
 
 export default defineComponent({
 	setup() {

@@ -1,7 +1,7 @@
 import { RawLocation } from 'vue-router';
 import { useProjectsStore } from '@/stores/projects/';
 import api from '@/api';
-import { hydrate, dehydrate } from './hydrate';
+import { hydrate, dehydrate } from '@/hydrate';
 import router from '@/router';
 
 /**

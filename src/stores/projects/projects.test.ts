@@ -8,10 +8,6 @@ describe('Stores / Projects', () => {
 		Vue.use(VueCompositionAPI);
 	});
 
-	afterEach(() => {
-		jest.clearAllMocks();
-	});
-
 	describe('Getters / currentProject', () => {
 		const dummyProject = {
 			key: 'my-project',

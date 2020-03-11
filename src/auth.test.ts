@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
-import * as hydration from '@/hydrate';
 import api from '@/api';
 import { checkAuth, login, logout, LogoutReason } from './auth';
-import { useProjectsStore } from '@/stores/projects/';
+import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
+import { hydrate, dehydrate } from '@/hydrate';
 
 jest.mock('@/api');
 jest.mock('@/router');
@@ -20,13 +20,13 @@ describe('Auth', () => {
 	beforeEach(() => {
 		jest.spyOn(api, 'get');
 		jest.spyOn(api, 'post');
-		jest.spyOn(hydration, 'hydrate');
-		jest.spyOn(hydration, 'dehydrate');
 	});
 
 	describe('checkAuth', () => {
 		it('Does not ping the API if the curent project key is null', async () => {
-			useProjectsStore({}).state.currentProjectKey = null;
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = null;
+
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({ data: { data: { authenticated: true } } })
 			);
@@ -35,7 +35,9 @@ describe('Auth', () => {
 		});
 
 		it('Calls the api with the correct endpoint', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({ data: { data: { authenticated: true } } })
 			);
@@ -44,7 +46,9 @@ describe('Auth', () => {
 		});
 
 		it('Returns true if user is logged in', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({ data: { data: { authenticated: true } } })
 			);
@@ -53,7 +57,9 @@ describe('Auth', () => {
 		});
 
 		it('Returns false if user is logged out', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({ data: { data: { authenticated: false } } })
 			);
@@ -64,7 +70,9 @@ describe('Auth', () => {
 
 	describe('login', () => {
 		it('Calls /auth/authenticate with the provided credentials', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			await login({ email: 'test', password: 'test' });
 			expect(api.post).toHaveBeenCalledWith('/test-project/auth/authenticate', {
 				mode: 'cookie',
@@ -74,9 +82,12 @@ describe('Auth', () => {
 		});
 
 		it('Calls hydrate on successful login', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			await login({ email: 'test', password: 'test' });
-			expect(hydration.hydrate).toHaveBeenCalled();
+
+			expect(hydrate).toHaveBeenCalled();
 		});
 	});
 
@@ -84,17 +95,21 @@ describe('Auth', () => {
 		it('Does not do anything when there is no current project', async () => {
 			useProjectsStore({});
 			await logout();
-			expect(hydration.dehydrate).not.toHaveBeenCalled();
+			expect(dehydrate).not.toHaveBeenCalled();
 		});
 
 		it('Calls dehydrate', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			await logout();
-			expect(hydration.dehydrate).toHaveBeenCalled();
+			expect(dehydrate).toHaveBeenCalled();
 		});
 
 		it('Posts to /logout on regular sign out', async () => {
-			useProjectsStore({}).state.currentProjectKey = 'test-project';
+			const projectsStore = useProjectsStore({});
+			projectsStore.state.currentProjectKey = 'test-project';
+
 			await logout();
 			expect(api.post).toHaveBeenCalledWith('/test-project/auth/logout');
 		});
@@ -102,6 +117,7 @@ describe('Auth', () => {
 		it('Navigates to the current projects login page', async () => {
 			const projectsStore = useProjectsStore({});
 			projectsStore.state.currentProjectKey = 'my-project';
+
 			await logout();
 			expect(router.push).toHaveBeenCalledWith({
 				path: '/my-project/login',
@@ -114,6 +130,7 @@ describe('Auth', () => {
 		it('Does not navigate when the navigate option is false', async () => {
 			const projectsStore = useProjectsStore({});
 			projectsStore.state.currentProjectKey = 'my-project';
+
 			await logout({ navigate: false });
 			expect(router.push).not.toHaveBeenCalled();
 		});
@@ -121,6 +138,7 @@ describe('Auth', () => {
 		it('Adds the reason query param if any non-default reason is given', async () => {
 			const projectsStore = useProjectsStore({});
 			projectsStore.state.currentProjectKey = 'my-project';
+
 			await logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 			expect(router.push).toHaveBeenCalledWith({
 				path: '/my-project/login',

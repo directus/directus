@@ -10,9 +10,6 @@ export const useRequestsStore = createStore({
 		queueHasItems: state => state.queue.length > 0
 	},
 	actions: {
-		reset() {
-			this.state.queue = [];
-		},
 		startRequest() {
 			const id = nanoid();
 			this.state.queue = [...this.state.queue, id];

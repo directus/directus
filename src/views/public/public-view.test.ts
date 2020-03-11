@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 import VIcon from '@/components/v-icon/';
-import { useProjectsStore } from '@/stores/projects';
+import { useProjectsStore } from '@/stores/projects/';
 import { ProjectWithKey } from '@/stores/projects/types';
 import Tooltip from '@/directives/tooltip/tooltip';
 

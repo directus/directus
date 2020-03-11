@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import api from '@/api';
 import { Collection, CollectionRaw } from './types';
-import useProjectsStore from '@/stores/projects';
+import { useProjectsStore } from '@/stores/projects';
 import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty';
 import VueI18n from 'vue-i18n';
@@ -20,9 +20,9 @@ export const useCollectionsStore = createStore({
 		}
 	},
 	actions: {
-		async getCollections() {
+		async hydrate() {
 			const projectsStore = useProjectsStore();
-			const { currentProjectKey } = projectsStore.state;
+			const currentProjectKey = projectsStore.state.currentProjectKey;
 
 			const response = await api.get(`/${currentProjectKey}/collections`);
 
@@ -54,6 +54,9 @@ export const useCollectionsStore = createStore({
 					icon
 				};
 			});
+		},
+		async dehydrate() {
+			this.reset();
 		}
 	}
 });

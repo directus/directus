@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
-import * as hydration from '@/hydrate';
 import {
 	onBeforeEach,
 	onBeforeEnterProjectChooser,
@@ -9,12 +8,13 @@ import {
 	defaultRoutes,
 	onBeforeEnterLogout
 } from './router';
-import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
 import * as auth from '@/auth';
+import { useProjectsStore } from '@/stores/projects';
+import { hydrate } from '@/hydrate';
 
-jest.mock('@/hydrate');
 jest.mock('@/auth');
+jest.mock('@/hydrate');
 
 const route: Route = {
 	name: undefined,
@@ -39,15 +39,17 @@ describe('Router', () => {
 	});
 
 	it('Fetches the projects using projectsStore on first load', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
-
 		const toRoute = route;
+
 		const fromRoute = {
 			...route,
 			name: null
 		};
+
 		const callback = jest.fn();
+
+		const projectsStore = useProjectsStore({});
+		jest.spyOn(projectsStore, 'getProjects');
 
 		await onBeforeEach(toRoute, fromRoute as any, callback);
 
@@ -85,7 +87,8 @@ describe('Router', () => {
 
 	it('Keeps projects store in sync with project in route', async () => {
 		const projectsStore = useProjectsStore({});
-		projectsStore.setCurrentProject = jest.fn();
+
+		jest.spyOn(projectsStore, 'setCurrentProject');
 
 		const toRoute = {
 			...route,
@@ -102,8 +105,7 @@ describe('Router', () => {
 	});
 
 	it('Redirects to / when trying to open non-existing project', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.setCurrentProject = jest.fn(() => Promise.resolve(false));
+		useProjectsStore({});
 
 		const toRoute = {
 			...route,
@@ -121,8 +123,7 @@ describe('Router', () => {
 	});
 
 	it('Does not redirect to / when trying to open /', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.setCurrentProject = jest.fn(() => Promise.resolve(false));
+		useProjectsStore({});
 
 		const toRoute = {
 			...route,
@@ -141,7 +142,7 @@ describe('Router', () => {
 
 	it('Calls next when trying to open public route', async () => {
 		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
+		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
 
 		const checkAuth = jest.spyOn(auth, 'checkAuth');
 		const toRoute = {
@@ -163,14 +164,16 @@ describe('Router', () => {
 	});
 
 	it('Checks if you are authenticated on first load', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
 		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(false));
-		(projectsStore.state.projects as any) = [
+
+		const projectsStore = useProjectsStore({});
+		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
+
+		projectsStore.state.projects = [
 			{
 				key: 'my-project'
 			}
-		];
+		] as any;
 
 		const to = {
 			...route,
@@ -185,18 +188,18 @@ describe('Router', () => {
 		await onBeforeEach(to, from as any, next);
 
 		expect(auth.checkAuth).toHaveBeenCalled();
-		expect(next).toHaveBeenCalledWith('/my-project/login');
 	});
 
 	it('Hydrates the store on first load when logged in', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
 		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(true));
-		(projectsStore.state.projects as any) = [
+
+		const projectsStore = useProjectsStore({});
+		projectsStore.state.projects = [
 			{
 				key: 'my-project'
 			}
-		];
+		] as any;
+		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
 
 		const to = {
 			...route,
@@ -210,18 +213,19 @@ describe('Router', () => {
 
 		await onBeforeEach(to, from as any, next);
 
-		expect(hydration.hydrate).toHaveBeenCalled();
+		expect(hydrate).toHaveBeenCalled();
 	});
 
 	it('Calls next when all checks are done', async () => {
-		const projectsStore = useProjectsStore({});
-		projectsStore.getProjects = jest.fn();
 		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(true));
-		(projectsStore.state.projects as any) = [
+
+		const projectsStore = useProjectsStore({});
+		projectsStore.state.projects = [
 			{
 				key: 'my-project'
 			}
-		];
+		] as any;
+		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
 
 		const to = {
 			...route,
@@ -243,6 +247,8 @@ describe('Router', () => {
 		it('Sets the current project to null on open', () => {
 			const projectsStore = useProjectsStore({});
 			projectsStore.state.currentProjectKey = 'my-project';
+			jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
+
 			const to = { ...route, path: '/' };
 			const from = route;
 			const next = jest.fn();
