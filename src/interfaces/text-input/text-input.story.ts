@@ -4,7 +4,7 @@ import Vue from 'vue';
 import InterfaceTextInput from './text-input.vue';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
-import { createComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 Vue.component('interface-text-input', InterfaceTextInput);
 
@@ -17,7 +17,7 @@ export default {
 };
 
 export const basic = () =>
-	createComponent({
+	defineComponent({
 		props: {
 			monospace: {
 				default: boolean('Monospace', false, 'Options')

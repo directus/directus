@@ -5,3 +5,10 @@ The focus directive is basically `autofocus`, but works in Vue. Because of the w
 ```html
 <v-input v-focus />
 ```
+
+## Value
+You can pass it a boolean value if you need more fine grained control over when focus is set:
+
+```html
+<v-input v-focus="active" />
+```

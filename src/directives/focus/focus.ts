@@ -1,8 +1,12 @@
 import { DirectiveOptions } from 'vue';
 
 const Focus: DirectiveOptions = {
-	inserted(el) {
-		el.focus();
+	inserted(el, binding) {
+		if (binding.value) {
+			el.focus();
+		} else {
+			el.blur();
+		}
 	}
 };
 

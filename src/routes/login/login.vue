@@ -1,7 +1,7 @@
 <template>
 	<public-view>
 		<form @submit.prevent="onSubmit">
-			<v-input type="email" v-model="email" />
+			<v-input autofocus type="email" v-model="email" />
 			<v-input type="password" v-model="password" />
 			<v-button type="submit" :loading="loggingIn">Login</v-button>
 		</form>
