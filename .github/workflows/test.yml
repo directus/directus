@@ -26,3 +26,9 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sonar Scanner
+        uses: sonarsource/sonarcloud-github-action@master
+        if: success() && github.repository == 'directus/app-next' && github.event_name == 'push'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

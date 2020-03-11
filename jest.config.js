@@ -4,5 +4,9 @@ module.exports = {
 	coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.jest/'],
 	restoreMocks: true,
 	clearMocks: true,
-	resetMocks: true
+	resetMocks: true,
+	reporters: ['default',  ['jest-sonar', {
+		outputDirectory: "coverage",
+		outputName: "sonar.xml"
+	}]],
 };
