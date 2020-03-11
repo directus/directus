@@ -1,12 +1,12 @@
-import CollectionsOverview from './collections-overview.vue';
+import CollectionsOverview from './overview.vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import useNavigation from '../compositions/use-navigation';
+import useNavigation from '../../compositions/use-navigation';
 import VTable from '@/components/v-table';
 import PrivateView from '@/views/private-view/';
 import router from '@/router';
 
-jest.mock('../compositions/use-navigation');
+jest.mock('../../compositions/use-navigation');
 jest.mock('@/router');
 
 const localVue = createLocalVue();

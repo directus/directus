@@ -4,18 +4,6 @@
 			<v-button rounded disabled icon secondary><v-icon name="box" /></v-button>
 		</template>
 
-		<template #actions>
-			<v-button rounded icon style="--v-button-background-color: var(--success);">
-				<v-icon name="add" />
-			</v-button>
-			<v-button rounded icon style="--v-button-background-color: var(--warning);">
-				<v-icon name="delete" />
-			</v-button>
-			<v-button rounded icon style="--v-button-background-color: var(--danger);">
-				<v-icon name="favorite" />
-			</v-button>
-		</template>
-
 		<template #navigation>
 			<collections-navigation />
 		</template>
@@ -30,9 +18,9 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import CollectionsNavigation from '../components/collections-navigation.vue';
+import CollectionsNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
-import useNavigation, { NavItem } from '../compositions/use-navigation';
+import useNavigation, { NavItem } from '../../compositions/use-navigation';
 import router from '@/router';
 
 export default defineComponent({
@@ -58,11 +46,8 @@ export default defineComponent({
 				value: 'note'
 			}
 		];
-
 		const { navItems } = useNavigation();
-
 		return { tableHeaders, navItems, navigateToCollection };
-
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);
 		}

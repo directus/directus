@@ -1,10 +1,10 @@
-import CollectionsNavigation from './collections-navigation.vue';
+import CollectionsNavigation from './navigation.vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import useNavigation from '../compositions/use-navigation';
+import useNavigation from '../../compositions/use-navigation';
 import VList, { VListItem, VListItemContent } from '@/components/v-list';
 
-jest.mock('../compositions/use-navigation');
+jest.mock('../../compositions/use-navigation');
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

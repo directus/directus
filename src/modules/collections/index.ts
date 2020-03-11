@@ -1,5 +1,7 @@
-import CollectionsOverview from './routes/collections-overview.vue';
 import { defineModule } from '@/modules/define';
+import CollectionsOverview from './routes/overview/';
+import CollectionsBrowse from './routes/browse/';
+import CollectionsDetail from './routes/detail/';
 
 export default defineModule({
 	id: 'collections',
@@ -9,6 +11,16 @@ export default defineModule({
 			{
 				path: '/',
 				component: CollectionsOverview
+			},
+			{
+				path: '/:collection',
+				component: CollectionsBrowse,
+				props: true
+			},
+			{
+				path: '/:collection/:primaryKey',
+				component: CollectionsDetail,
+				props: true
 			}
 		],
 		icon: 'box'

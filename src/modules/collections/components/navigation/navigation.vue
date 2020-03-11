@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import useNavigation from '../compositions/use-navigation';
+import useNavigation from '../../compositions/use-navigation';
 
 export default defineComponent({
 	props: {},
