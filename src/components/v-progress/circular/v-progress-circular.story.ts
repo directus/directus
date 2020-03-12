@@ -9,7 +9,7 @@ import {
 
 import Vue from 'vue';
 import VProgressCircular from './v-progress-circular.vue';
-import markdown from './v-progress-circular.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../../.storybook/decorators/with-padding';
 
 Vue.component('v-progress-circular', VProgressCircular);

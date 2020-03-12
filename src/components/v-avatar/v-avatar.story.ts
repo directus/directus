@@ -9,7 +9,7 @@ import {
 import Vue from 'vue';
 import VAvatar from './v-avatar.vue';
 import VIcon from '../v-icon/';
-import markdown from './v-avatar.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-avatar', VAvatar);

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import markdown from './v-breadcrumb.readme.md';
+import markdown from './readme.md';
 import VIcon from '../v-icon/';
 import VBreadcrumb from './v-breadcrumb.vue';
 import withPadding from '../../../.storybook/decorators/with-padding';

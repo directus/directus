@@ -3,7 +3,7 @@ import { Sort } from './types';
 
 import Vue from 'vue';
 import VTable from './v-table.vue';
-import markdown from './v-table.readme.md';
+import markdown from './readme.md';
 import { action } from '@storybook/addon-actions';
 import withPadding from '../../../.storybook/decorators/with-padding';
 

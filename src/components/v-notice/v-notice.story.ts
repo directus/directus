@@ -2,7 +2,7 @@ import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VNotice from './v-notice.vue';
 import VIcon from '../v-icon/';
-import markdown from './v-notice.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-notice', VNotice);

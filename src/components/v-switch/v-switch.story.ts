@@ -2,7 +2,7 @@ import { withKnobs, color } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VSwitch from '../v-switch/';
-import markdown from './v-switch.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-switch', VSwitch);

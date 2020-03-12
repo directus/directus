@@ -7,7 +7,7 @@ import withPadding from '../../../.storybook/decorators/with-padding';
 import VListItemContent from './v-list-item-content.vue';
 import VSheet from '../v-sheet';
 import VueRouter from 'vue-router';
-import markdown from './v-list.readme.md';
+import markdown from './readme.md';
 
 Vue.component('v-list', VList);
 Vue.component('v-list-item', VListItem);

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import markdown from './v-hover.readme.md';
+import markdown from './readme.md';
 import VIcon from '../v-icon/';
 import VHover from './v-hover.vue';
 import withPadding from '../../../.storybook/decorators/with-padding';

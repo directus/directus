@@ -2,7 +2,7 @@ import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VBadge from './v-badge.vue';
 import VIcon from '../v-icon/';
-import markdown from './v-badge.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-badge', VBadge);

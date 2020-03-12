@@ -1,7 +1,7 @@
 import { withKnobs, text, color } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VSheet from './v-sheet.vue';
-import markdown from './v-sheet.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-sheet', VSheet);

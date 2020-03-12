@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VButton from './v-button.vue';
 import VIcon from '../v-icon/';
-import markdown from './v-button.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import VueRouter from 'vue-router';
 

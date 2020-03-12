@@ -2,7 +2,7 @@ import { withKnobs, color } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VCheckbox from '../v-checkbox';
-import markdown from './v-checkbox.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-checkbox', VCheckbox);

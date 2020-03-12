@@ -1,7 +1,7 @@
 import { withKnobs } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VInput from './v-input.vue';
-import markdown from './v-input.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-input', VInput);

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { withKnobs, boolean, number } from '@storybook/addon-knobs';
-import markdown from './v-item-group.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import VItemGroup from './v-item-group.vue';
 import VItem from './v-item.vue';

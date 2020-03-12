@@ -2,7 +2,7 @@ import { withKnobs, color, number, boolean } from '@storybook/addon-knobs';
 
 import Vue from 'vue';
 import VProgressLinear from './v-progress-linear.vue';
-import markdown from './v-progress-linear.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../../.storybook/decorators/with-padding';
 
 Vue.component('v-progress-linear', VProgressLinear);

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VChip from './v-chip.vue';
 import VIcon from '../v-icon/';
-import markdown from './v-chip.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-chip', VChip);

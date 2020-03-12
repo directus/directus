@@ -9,7 +9,7 @@ import {
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VIcon from '../v-icon/';
-import markdown from './v-icon.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-icon', VIcon);

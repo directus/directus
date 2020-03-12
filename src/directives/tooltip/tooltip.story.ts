@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VButton from '../../components/v-button';
 import VIcon from '../../components/v-icon';
-import markdown from './tooltip.readme.md';
+import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
 Vue.component('v-button', VButton);

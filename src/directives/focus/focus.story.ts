@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VInput from '../../components/v-input';
 import Focus from './focus';
-import markdown from './focus.readme.md';
+import markdown from './readme.md';
 import { defineComponent } from '@vue/composition-api';
 import withPadding from '../../../.storybook/decorators/with-padding';
 

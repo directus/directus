@@ -1,7 +1,7 @@
 import { action } from '@storybook/addon-actions';
 import { withKnobs, color, boolean, number } from '@storybook/addon-knobs';
 import Vue from 'vue';
-import markdown from './v-slider.readme.md';
+import markdown from './readme.md';
 import VIcon from '../v-icon/';
 import VSlider from './v-slider.vue';
 import withPadding from '../../../.storybook/decorators/with-padding';
