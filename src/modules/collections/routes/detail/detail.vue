@@ -1,15 +1,7 @@
 <template>
 	<private-view title="Edit">
 		<template v-if="item">
-			<div style="margin-bottom: 20px" v-for="field in visibleFields" :key="field.field">
-				<p>{{ field.name }}</p>
-				<interface-text-input
-					v-if="field.type === 'string'"
-					:value="item[field.field]"
-					:options="{}"
-				/>
-				<span v-else style="font-family: monospace;">{{ item[field.field] }}</span>
-			</div>
+			<v-form :initial-values="item" :collection="collection" />
 		</template>
 
 		<template #navigation>

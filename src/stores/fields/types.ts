@@ -29,8 +29,8 @@ export interface FieldRaw {
 	translation: null | Translation[];
 	readonly: boolean;
 	width: null | Width;
-	validaton: string;
-	group: number;
+	validation: string | null;
+	group: number | null;
 	length: string | number;
 }
 

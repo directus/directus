@@ -16,6 +16,7 @@
 		<div class="content">
 			<header-bar
 				:title="title"
+				:dense="_headerDense"
 				@toggle:drawer="drawerOpen = !drawerOpen"
 				@toggle:nav="navOpen = !navOpen"
 			>
@@ -26,7 +27,7 @@
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
-			<main>
+			<main ref="mainContent" @scroll="onMainScroll" :class="{ 'header-dense': headerDense }">
 				<slot />
 			</main>
 		</div>
@@ -47,10 +48,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide } from '@vue/composition-api';
+import { defineComponent, ref, provide, computed } from '@vue/composition-api';
 import ModuleBar from './module-bar/';
 import DrawerDetailGroup from './drawer-detail-group/';
 import HeaderBar from './header-bar';
+import { throttle } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -62,17 +64,50 @@ export default defineComponent({
 		title: {
 			type: String,
 			required: true
+		},
+		headerDense: {
+			type: Boolean,
+			default: false
+		},
+		headerDenseAuto: {
+			type: Boolean,
+			default: true
 		}
 	},
-	setup() {
+	setup(props) {
+		const mainElement = ref<Element>(null);
+
 		const navOpen = ref(false);
 		const drawerOpen = ref(false);
 
 		provide('drawer-open', drawerOpen);
 
+		const headerDenseAutoState = ref(false);
+
+		const _headerDense = computed<boolean>(() => {
+			if (props.headerDenseAuto === true) {
+				return headerDenseAutoState.value;
+			} else {
+				return props.headerDense;
+			}
+		});
+
+		const onMainScroll = throttle(event => {
+			const { scrollTop } = event.target;
+
+			if (scrollTop <= 5 && headerDenseAutoState.value === true) {
+				headerDenseAutoState.value = false;
+			} else if (scrollTop > 5 && headerDenseAutoState.value === false) {
+				headerDenseAutoState.value = true;
+			}
+		}, 50);
+
 		return {
 			navOpen,
-			drawerOpen
+			drawerOpen,
+			_headerDense,
+			mainElement,
+			onMainScroll
 		};
 	}
 });
@@ -140,13 +175,23 @@ export default defineComponent({
 	}
 
 	.content {
+		position: relative;
 		flex-grow: 1;
 		height: 100%;
 		overflow: hidden;
 
+		.header-bar {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}
+
 		main {
-			height: calc(100% - 112px); /* TODO: add "collapsed" header state support */
+			height: 100%;
 			padding: var(--private-view-content-padding);
+			padding-top: 114px;
+			overflow: auto;
 		}
 
 		// Offset for partially visible drawer
