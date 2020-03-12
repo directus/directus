@@ -3,7 +3,7 @@ import { FieldRaw, Field } from './types';
 import api from '@/api';
 import { useProjectsStore } from '@/stores/projects';
 import VueI18n from 'vue-i18n';
-import { notEmpty } from '@/utils/is-empty';
+import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 

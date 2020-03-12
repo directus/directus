@@ -1,5 +1,5 @@
 import useSizeClass from './size-class';
-import mountComposition from '../../.jest/mount-composition';
+import mountComposition from '../../../.jest/mount-composition';
 
 describe('Compositions / Size Class', () => {
 	it('Extracts the correct class based on given props', () => {

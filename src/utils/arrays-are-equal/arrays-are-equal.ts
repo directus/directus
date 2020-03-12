@@ -1,9 +1,3 @@
-/**
- * Compares two given arrays for equality. Only works for primitive values (no nested objects)
- * @param a1 First array
- * @param a2 Second array
- * @see https://stackoverflow.com/a/55614659/4859211
- */
 export default function arraysAreEqual(
 	a1: readonly (string | number)[],
 	a2: readonly (string | number)[]

@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI, { ref } from '@vue/composition-api';
 import DrawerDetail from './drawer-detail.vue';
-import * as GroupableComposition from '@/compositions/groupable';
+import * as GroupableComposition from '@/compositions/groupable/groupable';
 import VIcon from '@/components/v-icon';
 
 const localVue = createLocalVue();

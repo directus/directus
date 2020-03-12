@@ -2,6 +2,8 @@
 
 Various utility functions that can be reused across components.
 
-## Testing
+## Table of Contents
 
-Please make sure that new utils have unit tests where appropriate.
+* [arraysAreEqual](./arrays-are-equal)
+* [isEmpty / notEmpty](./isEmpty)
+* [registerComponent](./register-component)

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { provide, inject, ref } from '@vue/composition-api';
-import mountComposition from '../../.jest/mount-composition';
+import mountComposition from '../../../.jest/mount-composition';
 import { useGroupable, useGroupableParent } from './groupable';
 
 describe('Groupable', () => {

@@ -1,6 +1,6 @@
 import { Ref } from '@vue/composition-api';
 import useTimeFromNow from './use-time-from-now';
-import mountComposition from '../../.jest/mount-composition';
+import mountComposition from '../../../.jest/mount-composition';
 import mockdate from 'mockdate';
 
 describe('Compositions / Event Listener', () => {
