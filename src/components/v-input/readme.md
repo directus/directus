@@ -25,7 +25,6 @@ You can add any custom (text) prefix/suffix to the value in the input using the 
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any of the standard HTML attributes like `min`, `length`, or `pattern`.
 
 ## Slots
-
 | Slot            | Description                                       | Data                                             |
 |-----------------|---------------------------------------------------|--------------------------------------------------|
 | `prepend-outer` | Before the input                                  | `{ disabled: boolean, value: string | number; }` |
@@ -34,14 +33,13 @@ Note: all other attached attributes are bound to the input HTMLELement in the co
 | `append-outer`  | After the input                                   | `{ disabled: boolean, value: string | number; }` |
 
 ## Events
-
 | Events                | Description                                  | Value |
 |-----------------------|----------------------------------------------|-------|
 | `input`               | Updates `v-model`                            | `any` |
-| `click:prepend-outer` | User clicks on content of outer prepend slot | --    |
-| `click:prepend`       | User clicks on content of inner prepend slot | --    |
 | `click:append`        | User clicks on content of inner append slot  | --    |
+| `click:prepend`       | User clicks on content of inner prepend slot | --    |
 | `click:append-outer`  | User clicks on content of outer append slot  | --    |
+| `click:prepend-outer` | User clicks on content of outer prepend slot | --    |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to `emptied`.
 
