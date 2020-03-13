@@ -78,6 +78,7 @@ export default defineComponent({
 	position: relative;
 	display: inline-block;
 	width: var(--v-icon-size);
+	min-width: var(--v-icon-size);
 	height: var(--v-icon-size);
 	color: var(--v-icon-color);
 	font-size: 0;

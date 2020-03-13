@@ -29,11 +29,14 @@ body,
 	--foreground-color-tertiary: 					var(--blue-grey-100);
 
 	--background-color: 							var(--white);
-	--background-color-hover: 						var(--blue-grey-50);
-	--background-color-active:						var(--blue-grey-100);
+	--background-color-hover: 						var(--blue-grey-25);
+	--background-color-active:						var(--blue-grey-50);
 	--background-color-alt: 						var(--blue-grey-50);
 
 	--highlight: 									var(--off-white);
+
+	--heading-text-color:							var(--foreground-color);
+	--subheading-text-color:						var(--foreground-color-secondary);
 
 	/* Inputs */
 	--input-foreground-color: 						var(--blue-grey-800);

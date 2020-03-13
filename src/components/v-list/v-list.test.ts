@@ -4,12 +4,14 @@ import VueRouter from 'vue-router';
 import router from '@/router';
 import VList from './v-list.vue';
 import VListItem from './v-list-item.vue';
+import VListItemIcon from './v-list-item-icon.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.use(VueRouter);
 localVue.component('v-list-item', VListItem);
 localVue.component('v-list', VList);
+localVue.component('v-list-item-icon', VListItemIcon);
 
 describe('List', () => {
 	it('Renders the provided markup in the default slot', () => {
@@ -34,6 +36,55 @@ describe('List', () => {
 		expect(component.classes()).toContain('dense');
 	});
 
+	it('Adds the three-line class for lines = 3', () => {
+		const component = mount(VList, {
+			localVue,
+			propsData: {
+				lines: 3
+			},
+			slots: {
+				default: `<v-list-item/>
+						<v-list-item/>
+						<v-list-item/>`
+			}
+		});
+
+		expect(component.classes()).toContain('three-line');
+	});
+
+	it('Adds the two-line class for lines = 2', () => {
+		const component = mount(VList, {
+			localVue,
+			propsData: {
+				lines: 2
+			},
+			slots: {
+				default: `<v-list-item/>
+						<v-list-item/>
+						<v-list-item/>`
+			}
+		});
+
+		expect(component.classes()).toContain('two-line');
+	});
+
+	it('Adds the two-line class to only one element, rest is 3', () => {
+		const component = mount(VList, {
+			localVue,
+			propsData: {
+				lines: 3
+			},
+			slots: {
+				default: `<v-list-item :lines="2"/>
+						<v-list-item/>
+						<v-list-item/>`
+			}
+		});
+
+		expect(component.find('.v-list-item:first-of-type').classes()).toContain('two-line');
+		expect(component.classes()).toContain('three-line');
+	});
+
 	it('Adds the nav class for nav lists', () => {
 		const component = mount(VList, {
 			localVue,
@@ -45,6 +96,20 @@ describe('List', () => {
 		expect(component.classes()).toContain('nav');
 	});
 
+	it('Adds the centered class for cenetered icons in items', () => {
+		const component = mount(VListItem, {
+			localVue,
+			slots: {
+				default: `<v-list-item-icon center/>`
+			},
+			propsData: {
+				nav: true
+			}
+		});
+
+		expect(component.find('.v-list-item-icon').classes()).toContain('center');
+	});
+
 	it('Has the right number of list items', () => {
 		const component = mount(VList, {
 			localVue,
@@ -53,8 +118,8 @@ describe('List', () => {
 			},
 			slots: {
 				default: `<v-list-item/>
-                  <v-list-item/>
-                  <v-list-item/>`
+						<v-list-item/>
+						<v-list-item/>`
 			}
 		});
 
@@ -69,7 +134,7 @@ describe('List', () => {
 			},
 			slots: {
 				default: `<v-list-item dense/>
-                  <v-list-item/>`
+						<v-list-item/>`
 			}
 		});
 

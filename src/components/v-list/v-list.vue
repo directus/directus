@@ -1,11 +1,20 @@
 <template>
-	<ul class="v-list" :class="{ dense, nav }">
+	<ul
+		class="v-list"
+		:class="{
+			dense,
+			nav,
+			'three-line': lines === 3,
+			'two-line': lines === 2,
+			'one-line': lines === 1
+		}"
+	>
 		<slot></slot>
 	</ul>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -16,6 +25,10 @@ export default defineComponent({
 		nav: {
 			type: Boolean,
 			default: false
+		},
+		lines: {
+			type: Number as PropType<1 | 2 | 3>,
+			default: null
 		}
 	},
 	setup() {

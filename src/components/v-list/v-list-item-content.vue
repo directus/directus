@@ -9,6 +9,7 @@
 	--v-list-item-content-padding: 12px 0;
 
 	display: flex;
+	flex-basis: 0;
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-wrap: wrap;
@@ -16,6 +17,23 @@
 	align-self: center;
 	padding: var(--v-list-item-content-padding);
 	overflow: hidden;
+
+	.v-list.three-line &,
+	.v-list-item.three-line & {
+		align-self: stretch;
+	}
+
+	::v-deep {
+		& > * {
+			flex-basis: 100%;
+			flex-grow: 1;
+			flex-shrink: 0;
+			line-height: 1.1;
+			&:not(:last-child) {
+				margin-bottom: 2px;
+			}
+		}
+	}
 
 	.v-list.dense &,
 	.v-list-item.dense & {

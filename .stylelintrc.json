@@ -4,10 +4,7 @@
 		"stylelint-config-rational-order",
 		"stylelint-config-prettier"
 	],
-	"plugins": [
-		"stylelint-order",
-		"stylelint-scss"
-	],
+	"plugins": ["stylelint-order", "stylelint-scss"],
 	"rules": {
 		"indentation": "tab",
 		"order/order": [
@@ -27,6 +24,7 @@
 			}
 		],
 		"string-quotes": "single",
-		"length-zero-no-unit": null
+		"length-zero-no-unit": null,
+		"no-descending-specificity": true
 	}
 }

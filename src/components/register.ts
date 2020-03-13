@@ -9,7 +9,13 @@ import VHover from './v-hover/';
 import VIcon from './v-icon/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
-import VList, { VListItem, VListItemContent } from './v-list/';
+import VList, {
+	VListItem,
+	VListItemContent,
+	VListItemIcon,
+	VListItemSubtitle,
+	VListItemTitle
+} from './v-list/';
 import VOverlay from './v-overlay/';
 import VProgressLinear from './v-progress/linear/';
 import VProgressCircular from './v-progress/circular/';
@@ -31,6 +37,9 @@ Vue.component('v-item', VItem);
 Vue.component('v-list', VList);
 Vue.component('v-list-item', VListItem);
 Vue.component('v-list-item-content', VListItemContent);
+Vue.component('v-list-item-icon', VListItemIcon);
+Vue.component('v-list-item-subtitle', VListItemSubtitle);
+Vue.component('v-list-item-title', VListItemTitle);
 Vue.component('v-overlay', VOverlay);
 Vue.component('v-progress-linear', VProgressLinear);
 Vue.component('v-progress-circular', VProgressCircular);

@@ -22,6 +22,34 @@
 	font-size: 18px;
 }
 
+@mixin type-item-title {
+	color: var(--heading-text-color);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 1.2;
+}
+
+@mixin type-item-title-dense {
+	color: var(--heading-text-color);
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.1;
+}
+
+@mixin type-item-subtitle {
+	color: var(--subheading-text-color);
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 1.2;
+}
+
+@mixin type-item-subtitle-dense {
+	color: var(--subheading-text-color);
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.1;
+}
+
 @mixin type-label {
 	color: var(--heading-text-color);
 	font-size: 18px;
