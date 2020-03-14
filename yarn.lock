@@ -1249,18 +1249,18 @@
     qs "^6.6.0"
     ts-dedent "^1.1.0"
 
-"@storybook/addon-notes@^5.3.15":
-  version "5.3.15"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-notes/-/addon-notes-5.3.15.tgz#f2af50bdec7e6d611da86564c439af9b54a33d8f"
-  integrity sha512-r8/LXHJ6nGrnWA4GHz17howuq8QTkE1EHZWY2RGwy2G09nbgxd5mxY+uSCf+3uq4qZFgtjisb0XeyhUYcZHFhw==
+"@storybook/addon-notes@^5.3.17":
+  version "5.3.17"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-notes/-/addon-notes-5.3.17.tgz#717ffc552e34d051ed8bf2ca61a6743a9628be24"
+  integrity sha512-Jmsgz3SXjn3j1YjK50ubJiN6N62Tl7W54WzKPMq9mvu/t8egYBDn0JjTkmn8QMbcXn4JL3Qs7W56uRFj0KewIg==
   dependencies:
-    "@storybook/addons" "5.3.15"
-    "@storybook/api" "5.3.15"
-    "@storybook/client-logger" "5.3.15"
-    "@storybook/components" "5.3.15"
-    "@storybook/core-events" "5.3.15"
-    "@storybook/router" "5.3.15"
-    "@storybook/theming" "5.3.15"
+    "@storybook/addons" "5.3.17"
+    "@storybook/api" "5.3.17"
+    "@storybook/client-logger" "5.3.17"
+    "@storybook/components" "5.3.17"
+    "@storybook/core-events" "5.3.17"
+    "@storybook/router" "5.3.17"
+    "@storybook/theming" "5.3.17"
     core-js "^3.0.1"
     global "^4.3.2"
     markdown-to-jsx "^6.10.3"
