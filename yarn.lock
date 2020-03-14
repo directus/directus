@@ -1179,17 +1179,17 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
-"@storybook/addon-actions@^5.3.12":
-  version "5.3.14"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-5.3.14.tgz#aacc4d2703fc200a4565bfaa9f5870ed70a6fe32"
-  integrity sha512-4lKrTMzw/r6VQiBY24v72WC3jibW7pc9BIJgtPpTmTUQWTxPnkmxDfT81pV4BjS1GFH9VCnU6f5fWK+5lrQlsw==
+"@storybook/addon-actions@^5.3.15":
+  version "5.3.15"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-5.3.15.tgz#9d6c56fa76b5e9f75759e063ae4f5aeeb2041e23"
+  integrity sha512-xglKKeaVV3HQ1vjWnAQe5VmLv1iDwoppXSfoK+jpE3lR5mSjGd+vd2KgW9MCwWa90ubj9u4E6Yj6S3DJS7/x9w==
   dependencies:
-    "@storybook/addons" "5.3.14"
-    "@storybook/api" "5.3.14"
-    "@storybook/client-api" "5.3.14"
-    "@storybook/components" "5.3.14"
-    "@storybook/core-events" "5.3.14"
-    "@storybook/theming" "5.3.14"
+    "@storybook/addons" "5.3.15"
+    "@storybook/api" "5.3.15"
+    "@storybook/client-api" "5.3.15"
+    "@storybook/components" "5.3.15"
+    "@storybook/core-events" "5.3.15"
+    "@storybook/theming" "5.3.15"
     core-js "^3.0.1"
     fast-deep-equal "^2.0.1"
     global "^4.3.2"
