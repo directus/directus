@@ -50,7 +50,7 @@ Vue.component('v-slider', VSlider);
 Vue.component('v-switch', VSwitch);
 Vue.component('v-table', VTable);
 
-import DrawerDetail from '@/views/private-view/drawer-detail/';
+import DrawerDetail from '@/views/private/components/drawer-detail/';
 
 Vue.component('drawer-detail', DrawerDetail);
 

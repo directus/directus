@@ -1,10 +1,10 @@
 import markdown from './readme.md';
 import HeaderBarActions from './header-bar-actions.vue';
 import { defineComponent } from '@vue/composition-api';
-import withPadding from '../../../../.storybook/decorators/with-padding';
+import withPadding from '../../../../../.storybook/decorators/with-padding';
 
 export default {
-	title: 'Views / Private / Header Bar Actions',
+	title: 'Views / Private / Components / Header Bar Actions',
 	decorators: [withPadding],
 	parameters: {
 		notes: markdown

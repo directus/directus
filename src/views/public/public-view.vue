@@ -16,7 +16,7 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
-import PublicViewLogo from './_logo.vue';
+import PublicViewLogo from './components/logo/';
 import { useProjectsStore } from '@/stores/projects/';
 import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
 

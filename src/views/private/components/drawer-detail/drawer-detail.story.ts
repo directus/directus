@@ -1,11 +1,11 @@
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 import markdown from './readme.md';
 import { defineComponent, provide, ref, watch } from '@vue/composition-api';
-import withPadding from '../../../../.storybook/decorators/with-padding';
-import withAltColors from '../../../../.storybook/decorators/with-alt-colors';
+import withPadding from '../../../../../.storybook/decorators/with-padding';
+import withAltColors from '../../../../../.storybook/decorators/with-alt-colors';
 
 export default {
-	title: 'Views / Private / Drawer Detail',
+	title: 'Views / Private / Components / Drawer Detail',
 	decorators: [withKnobs, withAltColors, withPadding],
 	parameters: {
 		notes: markdown

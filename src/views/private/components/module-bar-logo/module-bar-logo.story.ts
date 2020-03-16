@@ -1,12 +1,12 @@
 import markdown from './readme.md';
 import ModuleBarLogo from './module-bar-logo.vue';
-import withPadding from '../../../../.storybook/decorators/with-padding';
+import withPadding from '../../../../../.storybook/decorators/with-padding';
 import useRequestsStore from '@/stores/requests';
 import useProjectsStore from '@/stores/projects';
 import { defineComponent } from '@vue/composition-api';
 
 export default {
-	title: 'Views / Private / Module Bar Logo',
+	title: 'Views / Private / Components / Module Bar Logo',
 	decorators: [withPadding],
 	parameters: {
 		notes: markdown

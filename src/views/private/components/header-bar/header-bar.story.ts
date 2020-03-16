@@ -1,14 +1,14 @@
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import markdown from './readme.md';
-import withBackground from '../../../../.storybook/decorators/with-background';
+import withBackground from '../../../../../.storybook/decorators/with-background';
 
 import { defineComponent } from '@vue/composition-api';
 import HeaderBar from './header-bar.vue';
 import VueRouter from 'vue-router';
 
 export default {
-	title: 'Views / Private / Header Bar',
+	title: 'Views / Private / Components / Header Bar',
 	decorators: [withKnobs, withBackground],
 	parameters: {
 		notes: markdown

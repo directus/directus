@@ -1,6 +1,11 @@
 <template>
 	<div class="private-view">
-		<aside role="navigation" class="navigation" :class="{ 'is-open': navOpen }">
+		<aside
+			role="navigation"
+			aria-label="Module Navigation"
+			class="navigation"
+			:class="{ 'is-open': navOpen }"
+		>
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<div
@@ -34,6 +39,7 @@
 		<aside
 			role="contentinfo"
 			class="drawer alt-colors"
+			aria-label="Module Drawer"
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>
@@ -49,9 +55,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, provide, computed } from '@vue/composition-api';
-import ModuleBar from './module-bar/';
-import DrawerDetailGroup from './drawer-detail-group/';
-import HeaderBar from './header-bar';
+import ModuleBar from './components/module-bar/';
+import DrawerDetailGroup from './components/drawer-detail-group/';
+import HeaderBar from './components/header-bar';
 import { throttle } from 'lodash';
 
 export default defineComponent({

@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import CollectionsBrowse from './browse.vue';
-import PrivateView from '@/views/private-view';
+import PrivateView from '@/views/private';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

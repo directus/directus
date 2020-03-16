@@ -3,7 +3,7 @@ import VueCompositionAPI from '@vue/composition-api';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import useNavigation from '../../compositions/use-navigation';
 import VTable from '@/components/v-table';
-import PrivateView from '@/views/private-view/';
+import PrivateView from '@/views/private';
 import router from '@/router';
 
 jest.mock('../../compositions/use-navigation');

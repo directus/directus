@@ -6,7 +6,7 @@ import useProjectsStore from '@/stores/projects';
 import useRequestsStore from '@/stores/requests';
 
 export default {
-	title: 'Views / Private / Module Bar',
+	title: 'Views / Private / Components / Module Bar',
 	parameters: {
 		notes: markdown
 	}

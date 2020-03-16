@@ -72,7 +72,7 @@ export default defineComponent({
 		width: 40px;
 		height: 32px;
 		margin: 0 auto;
-		background-image: url('../../../assets/sprite.svg');
+		background-image: url('./sprite.svg');
 		background-position: 0% 0%;
 		background-size: 600px 32px;
 	}

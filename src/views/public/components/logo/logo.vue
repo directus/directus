@@ -1,9 +1,9 @@
 <template functional>
 	<a href="https://directus.io" rel="noopener noreferrer" target="_blank" class="logo">
 		<img
-			v-tooltip.right="{ classes: ['inverted'], content: `Directus v${props.version}` }"
+			v-tooltip.right.inverted="`Directus v${props.version}`"
 			alt="Directus Logo"
-			src="../../assets/logo-dark.svg"
+			src="./logo-dark.svg"
 		/>
 	</a>
 </template>
