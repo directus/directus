@@ -1,54 +1,39 @@
 <template>
 	<public-view>
-		<form @submit.prevent="onSubmit">
-			<v-input autofocus type="email" v-model="email" />
-			<v-input type="password" v-model="password" />
-			<v-button type="submit" :loading="loggingIn">Login</v-button>
-		</form>
+		<h1 class="type-heading-large">{{ $t('sign_in') }}</h1>
+
+		<continue-as v-if="alreadyAuthenticated" />
+		<login-form v-else />
 
 		<template #notice>
-			<v-icon name="person" left />
-			Not Authenticated
+			<v-icon name="lock_outlined" left />
+			{{ $t('not_authenticated') }}
 		</template>
 	</public-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects';
-import router from '@/router';
-import { login } from '@/auth';
+import { defineComponent, computed } from '@vue/composition-api';
+import { useUserStore } from '@/stores/user';
+import { notEmpty } from '@/utils/is-empty';
+import LoginForm from './components/login-form/';
+import ContinueAs from './components/continue-as/';
 
 export default defineComponent({
+	components: { LoginForm, ContinueAs },
 	setup() {
-		const projectsStore = useProjectsStore();
+		const userStore = useUserStore();
+		const alreadyAuthenticated = computed<boolean>(() =>
+			notEmpty(userStore.state.currentUser?.id)
+		);
 
-		const loggingIn = ref(false);
-		const email = ref<string>(null);
-		const password = ref<string>(null);
-
-		return { email, password, onSubmit, loggingIn };
-
-		async function onSubmit() {
-			if (email.value === null || password.value === null) return;
-
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
-			try {
-				loggingIn.value = true;
-
-				await login({
-					email: email.value,
-					password: password.value
-				});
-
-				router.push(`/${currentProjectKey}/collections/`);
-			} catch (error) {
-				console.warn(error);
-			} finally {
-				loggingIn.value = false;
-			}
-		}
+		return { alreadyAuthenticated };
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+h1 {
+	margin-bottom: 44px;
+}
+</style>

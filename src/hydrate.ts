@@ -1,6 +1,7 @@
 import { useAppStore } from '@/stores/app/';
 import { useCollectionsStore } from '@/stores/collections/';
 import { useFieldsStore } from '@/stores/fields/';
+import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
 
 type GenericStore = {
@@ -11,7 +12,9 @@ type GenericStore = {
 	[key: string]: any;
 };
 
-export function useStores(stores = [useCollectionsStore, useFieldsStore, useRequestsStore]) {
+export function useStores(
+	stores = [useCollectionsStore, useFieldsStore, useUserStore, useRequestsStore]
+) {
 	return stores.map(useStore => useStore()) as GenericStore[];
 }
 

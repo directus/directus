@@ -1,0 +1,22 @@
+export type User = {
+	id: number;
+	status: string;
+	first_name: string;
+	last_name: string;
+	email: string;
+	token: string;
+	last_access_on: string;
+	last_page: string;
+	external_id: string;
+	'2fa_secret': string;
+	theme: 'auto' | 'dark' | 'light';
+	role: number;
+	password_reset_token: string | null;
+	timezone: string;
+	locale: string;
+	locale_options: null;
+	avatar: null;
+	company: string | null;
+	title: string | null;
+	email_notifications: boolean;
+};

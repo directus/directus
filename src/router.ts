@@ -20,6 +20,7 @@ export const onBeforeEnterLogout: NavigationGuard = async (to, from, next) => {
 
 export const defaultRoutes: RouteConfig[] = [
 	{
+		name: 'project-chooser',
 		path: '/',
 		component: ProjectChooserRoute,
 		meta: {
@@ -28,6 +29,7 @@ export const defaultRoutes: RouteConfig[] = [
 		beforeEnter: onBeforeEnterProjectChooser
 	},
 	{
+		name: 'install',
 		path: '/install',
 		component: LoginRoute,
 		meta: {
@@ -39,6 +41,7 @@ export const defaultRoutes: RouteConfig[] = [
 		redirect: '/:project/login'
 	},
 	{
+		name: 'login',
 		path: '/:project/login',
 		component: LoginRoute,
 		meta: {
@@ -46,6 +49,7 @@ export const defaultRoutes: RouteConfig[] = [
 		}
 	},
 	{
+		name: 'logout',
 		path: '/:project/logout',
 		beforeEnter: onBeforeEnterLogout
 	},
@@ -62,11 +66,13 @@ export const defaultRoutes: RouteConfig[] = [
 	 * list augmented with the module routes in the correct location.
 	 */
 	{
+		name: 'private-404',
 		path: '/:project/*',
 		// This will be Private404
 		component: Debug
 	},
 	{
+		name: 'public-404',
 		path: '*',
 		// This will be Public404
 		component: Debug
@@ -113,12 +119,6 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		}
 	}
 
-	// If the route you're trying to open is a public route, like login or password reset, we don't
-	// have to perform the auth check below
-	if (to.meta?.public === true) {
-		return next();
-	}
-
 	// If you're trying to load a full URL (including) project, redirect to the login page of that
 	// project if you're not logged in yet. Otherwise, redirect to the
 	if (firstLoad) {
@@ -127,7 +127,11 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		if (loggedIn === true) {
 			await hydrate();
 		} else {
-			return next(`/${projectsStore.state.currentProjectKey}/login`);
+			if (to.meta?.public === true) {
+				return next();
+			} else {
+				return next(`/${projectsStore.state.currentProjectKey}/login`);
+			}
 		}
 	}
 

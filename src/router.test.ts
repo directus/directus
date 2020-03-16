@@ -141,29 +141,6 @@ describe('Router', () => {
 		expect(callback).not.toHaveBeenCalledWith('/');
 	});
 
-	it('Calls next when trying to open public route', async () => {
-		const projectsStore = useProjectsStore({});
-		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
-
-		const checkAuth = jest.spyOn(auth, 'checkAuth');
-		const toRoute = {
-			...route,
-			meta: {
-				public: true
-			}
-		};
-		const fromRoute = {
-			...route,
-			name: null
-		};
-		const next = jest.fn();
-
-		await onBeforeEach(toRoute, fromRoute as any, next);
-
-		expect(next).toHaveBeenCalledWith();
-		expect(checkAuth).not.toHaveBeenCalled();
-	});
-
 	it('Checks if you are authenticated on first load', async () => {
 		jest.spyOn(auth, 'checkAuth').mockImplementation(() => Promise.resolve(false));
 
@@ -215,6 +192,27 @@ describe('Router', () => {
 		await onBeforeEach(to, from as any, next);
 
 		expect(hydrate).toHaveBeenCalled();
+	});
+
+	it('Calls next when trying to open public route while being logged in', async () => {
+		const projectsStore = useProjectsStore({});
+		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
+
+		const toRoute = {
+			...route,
+			meta: {
+				public: true
+			}
+		};
+		const fromRoute = {
+			...route,
+			name: null
+		};
+		const next = jest.fn();
+
+		await onBeforeEach(toRoute, fromRoute as any, next);
+
+		expect(next).toHaveBeenCalledWith();
 	});
 
 	it('Calls next when all checks are done', async () => {
