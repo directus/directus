@@ -31,32 +31,34 @@ export default defineComponent({
 		&:first-child {
 			margin-right: 12px;
 		}
-
 		&:last-child {
 			margin-left: 12px;
 		}
 	}
 
-	.v-list,
-	.v-list-item {
-		&.three-line,
-		&.two-line {
-			align-self: flex-start;
-			#{$this}.center {
-				align-self: center;
-			}
-		}
-		&.dense {
-			#{$this} {
-				margin-top: 8px;
-				margin-bottom: 8px;
-				&:not(:only-child) {
-					&:first-child {
-						margin-right: 16px;
+	@at-root {
+		.v-list,
+		.v-list-item {
+			&.three-line,
+			&.two-line {
+				#{$this} {
+					align-self: flex-start;
+					&.center {
+						align-self: center;
 					}
-
-					&:last-child {
-						margin-left: 8px;
+				}
+			}
+			&.dense {
+				#{$this} {
+					margin-top: 8px;
+					margin-bottom: 8px;
+					&:not(:only-child) {
+						&:first-child {
+							margin-right: 8px;
+						}
+						&:last-child {
+							margin-left: 8px;
+						}
 					}
 				}
 			}

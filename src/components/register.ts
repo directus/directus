@@ -14,7 +14,8 @@ import VList, {
 	VListItemContent,
 	VListItemIcon,
 	VListItemSubtitle,
-	VListItemTitle
+	VListItemTitle,
+	VListGroup
 } from './v-list/';
 import VOverlay from './v-overlay/';
 import VProgressLinear from './v-progress/linear/';
@@ -40,6 +41,7 @@ Vue.component('v-list-item-content', VListItemContent);
 Vue.component('v-list-item-icon', VListItemIcon);
 Vue.component('v-list-item-subtitle', VListItemSubtitle);
 Vue.component('v-list-item-title', VListItemTitle);
+Vue.component('v-list-group', VListGroup);
 Vue.component('v-overlay', VOverlay);
 Vue.component('v-progress-linear', VProgressLinear);
 Vue.component('v-progress-circular', VProgressCircular);
@@ -51,3 +53,7 @@ Vue.component('v-table', VTable);
 import DrawerDetail from '@/views/private-view/drawer-detail/';
 
 Vue.component('drawer-detail', DrawerDetail);
+
+import TransitionExpand from './transition/expand';
+
+Vue.component('transition-expand', TransitionExpand);

@@ -10,129 +10,23 @@
 </v-list>
 ```
 
-## Subcomponents
-
-### List Item
-
-A wrapper for list items that formats children nicely. Can be used on its own or inside a list component. Best used with subcomponents (see below).
-
-### List Item Content
-
-A wrapper for the main text content of a list item. It adds some padding and helps control overflow. The parent of `v-list-title` and `v-list-subtitle` components, it's also the main controller of the `dense` option on lists.
-
-### List Item Title
-
-Wrapper that adds typographic styling and margin for the title of the list item. Responsive to `dense` styling.
-
-### List Item Subtitle
-
-Wrapper that adds typographic styling and margin for the subtitle/description of the list item. Responsive to `dense` and `threeLine` props.
-
-```html
-<v-list-item v-for="item in items">
-	<v-list-item-content>
-		<v-list-item-title>{{ item.title }}<v-list-item-title>
-		<v-list-item-subtitle>{{ item.description }}<v-list-item-subtitle>
-	</v-list-item-content>
-</v-list-item>
-```
-
-### List Item Icon
-
-Wrapper for icon, action, or avatar type elements in a list item. Can be used on the left or right of an item.
-
-```html
-<v-list-item v-for="item in items">
-	<v-list-item-icon><v-icon name="info"></v-list-item-icon>
-	<v-list-item-content>
-		<v-list-item-title>{{ item.title }}<v-list-item-title>
-	</v-list-item-content>
-</v-list-item>
-```
-
-## Colors
-
-You can set the default, active, and hover colors and background colors with css variables. You can also set them on individual list items, which will override the list vars. Hover styles will only be set if the list item has a to link or an onClick handler.
-
-```html
-<v-list>
-	<v-list-item v-for="item in items">
-		<v-list-item-content>
-			{{ item.text }}
-		</v-list-item-content>
-	</v-list-item>
-</v-list>
-
-<style>
-	.v-list {
-		--v-list-color: var(--red);
-		--v-list-color-hover: var(--white);
-		--v-list-color-active: var(--white);
-		--v-list-background-color: var(--red-50);
-		--v-list-background-color-hover: var(--red-100);
-		--v-list-background-color-active: var(--red-800);
-	}
-</style>
-```
-
 ## Props
-
-### List (`v-list`)
-
 | Prop        | Description                                                                                                 | Default |
 |-------------|-------------------------------------------------------------------------------------------------------------|---------|
 | `dense`     | Removes some padding to make the list items closer together                                                 | `false` |
 | `threeLine` | Limits list items to three lines of text (1 of title, 2 of subtitle). Only works in webkit enabled browsers | `false` |
 | `nav`       | Adds a small margin and border-radius for nav menu styling                                                  | `false` |
-
-### List Item (`v-list-item`)
-
-| Prop        | Description                                                                                                | Default |
-|-------------|------------------------------------------------------------------------------------------------------------|---------|
-| `dense`     | Removes some padding to make the individual list item shorter                                              | `false` |
-| `threeLine` | Limits list item to three lines of text (1 of title, 2 of subtitle). Only works in webkit enabled browsers | `false` |
-| `to`        | Render as vue router-link with to link                                                                     | `null`  |
-
-### List Item Content (`v-list-item-content`)
-
-### List Item Title (`v-list-item-title`)
-
-### List Item Subtitle (`v-list-item-subtitle`)
-
-n/a
-
-### List Item Icon (`v-list-item-icon`)
-
-| Prop     | Description                                                         | Default |
-|----------|---------------------------------------------------------------------|---------|
-| `center` | Whether to center the element (good for action elements or avatars) | `false` |
-
-## Slots
-
-### List (`v-list`)
-
-### List Item (`v-list-item`)
-
-### List Item Content (`v-list-item-content`)
-
-### List Item Title (`v-list-item-title`)
-
-### List Item Subtitle (`v-list-item-subtitle`)
-
-### List Item Icon (`v-list-item-icon`)
-
-| Slot      | Description   |
-|-----------|---------------|
-| _default_ | Content, etc. |
+| `multiple`  | Allows multiple child groups to be open at once                                                             | `true`  |
 
 ## Events
-
 n/a
 
+## Slots
+| Slot      | Description  | Data |
+|-----------|--------------|------|
+| _default_ | List content |      |
+
 ## CSS Variables
-
-### List (`v-list`)
-
 | Variable                           | Default                          |
 |------------------------------------|----------------------------------|
 | `--v-list-padding`                 | `8px 0`                          |
@@ -147,34 +41,223 @@ n/a
 | `--v-list-background-color-hover`  | `var(--background-color-hover)`  |
 | `--v-list-background-color-active` | `var(--background-color-active)` |
 
-### List Item (`v-list-item`)
+---
 
-| Variable                                | Default                                                               |
-|-----------------------------------------|-----------------------------------------------------------------------|
-| `--v-list-item-padding`                 | `0 16px`                                                              |
-| `--v-list-item-min-width`               | `none`                                                                |
-| `--v-list-item-max-width`               | `none`                                                                |
-| `--v-list-item-min-height`              | `48px`                                                                |
-| `--v-list-item-max-height`              | `auto`                                                                |
-| `--v-list-item-border-radius`           | `0`                                                                   |
-| `--v-list-item-margin-bottom`           | `0`                                                                   |
-| `--v-list-item-color`                   | `var(--v-list-color, var(--foreground-color))`                        |
-| `--v-list-item-color-hover`             | `var(--v-list-color-hover, var(--foreground-color))`                  |
-| `--v-list-item-color-active`            | `var(--v-list-color-active, var(--foreground-color))`                 |
-| `--v-list-item-background-color`        | `var(--v-list-background-color, var(--background-color))`             |
-| `--v-list-item-background-color-hover`  | `var(---list-background-color-hover, var(--background-color-hover))`  |
-| `--v-list-item-background-color-active` | `var(--vlist-background-color-active,var(--background-color-active))` |
+# List Item
 
-### List Item Content (`v-list-item-content`)
+A wrapper for list items that formats children nicely. Can be used on its own or inside a list component. Best used with subcomponents (see below).
 
+## Usage
+
+```html
+<v-list-item>
+	<v-list-item-title>Hello, world!</v-list-item-title>
+</v-list-item>
+```
+
+## Props
+| Prop    | Description                                                          | Default |
+|---------|----------------------------------------------------------------------|---------|
+| `dense` | Removes some padding to make the individual list item shorter        | `false` |
+| `lines` | Sets if the list item will support `1`, `2`, or `3` lines of content | `null`  |
+| `to`    | Render as vue router-link with to link                               | `null`  |
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description       | Data |
+|-----------|-------------------|------|
+| _default_ | List item content |      |
+
+## CSS Variables
+| Variable                                    | Default                                                                 |
+|---------------------------------------------|-------------------------------------------------------------------------|
+| `--v-list-item-one-line-min-height`         | `48px`                                                                  |
+| `--v-list-item-two-line-min-height`         | `60px`                                                                  |
+| `--v-list-item-three-line-min-height`       | `76px`                                                                  |
+| `--v-list-item-one-line-min-height-dense`   | `40px`                                                                  |
+| `--v-list-item-two-line-min-height-dense`   | `48px`                                                                  |
+| `--v-list-item-three-line-min-height-dense` | `64px`                                                                  |
+| `--v-list-item-padding`                     | `0 16px 0 calc(16px + var(--v-list-item-indent, 0px))`                  |
+| `--v-list-item-min-width`                   | `none`                                                                  |
+| `--v-list-item-max-width`                   | `none`                                                                  |
+| `--v-list-item-min-height`                  | `var(--v-list-item-one-line-min-height)`                                |
+| `--v-list-item-max-height`                  | `auto`                                                                  |
+| `--v-list-item-border-radius`               | `0`                                                                     |
+| `--v-list-item-margin-bottom`               | `0`                                                                     |
+| `--v-list-item-color`                       | `var(--v-list-color, var(--foreground-color))`                          |
+| `--v-list-item-color-hover`                 | `var(--v-list-color-hover, var(--foreground-color))`                    |
+| `--v-list-item-color-active`                | `var(--v-list-color-active, var(--foreground-color))`                   |
+| `--v-list-item-background-color`            | `var(--v-list-background-color, var(--background-color))`               |
+| `--v-list-item-background-color-hover`      | `var(--v-list-background-color-hover, var(--background-color-hover))`   |
+| `--v-list-item-background-color-active`     | `var(--v-list-background-color-active, var(--background-color-active))` |
+
+
+---
+
+# List Item Content
+
+A wrapper for the main text content of a list item. It adds some padding and helps control overflow. The parent of `v-list-title` and `v-list-subtitle` components, it's also the main controller of the `dense` option on lists.
+
+## Usage
+
+```html
+<v-list-item-content>Hello, world!</v-list-item-content>
+```
+
+## Props
+n/a
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description               | Data |
+|-----------|---------------------------|------|
+| _default_ | List item content content |      |
+
+## CSS Variables
 | Variable                        | Default  |
 |---------------------------------|----------|
 | `--v-list-item-content-padding` | `12px 0` |
 
-### List Item Title (`v-list-item-title`)
+---
 
-### List Item Subtitle (`v-list-item-subtitle`)
+# List Item Title
 
-### List Item Icon (`v-list-item-icon`)
+Wrapper that adds typographic styling and margin for the subtitle/description of the list item. Responsive to `dense` and `threeLine` props.
 
+## Usage
+
+```html
+<v-list-item-title>Hello, world</v-list-item-title>
+```
+
+## Props
+n/a
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description             | Data |
+|-----------|-------------------------|------|
+| _default_ | List item title content |      |
+
+## CSS Variables
+n/a
+
+---
+
+# List Item Subtitle
+
+Wrapper that adds typographic styling and margin for the subtitle/description of the list item. Responsive to `dense` and `threeLine` props.
+
+## Usage
+
+```html
+<v-list-item-subtitle>This is the subtitle</v-list-item-subtitle>
+```
+
+## Props
+n/a
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description                | Data |
+|-----------|----------------------------|------|
+| _default_ | List item subtitle content |      |
+
+## CSS Variables
+n/a
+
+---
+
+# List Item Icon
+
+Wrapper for icon, action, or avatar type elements in a list item. Can be used on the left or right of an item.
+
+## Usage
+
+```html
+<v-list-item-icon>
+	<v-icon name="person" />
+</v-list-item-icon>
+```
+
+## Props
+| Prop     | Description                                                         | Default |
+|----------|---------------------------------------------------------------------|---------|
+| `center` | Whether to center the element (good for action elements or avatars) | `false` |
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description            | Data |
+|-----------|------------------------|------|
+| _default_ | List item icon content |      |
+
+## CSS Variables
+n/a
+
+---
+
+# List Group
+
+Provides the ability to make a collapsable (sub)group of list items, within a list or independently. List groups can be nested to an arbitrary depth.
+
+```html
+<v-list>
+	<!-- Root level items -->
+	<v-list-item />
+	<v-list-item />
+
+	<v-list-group>
+		<template v-slot:activator>
+			... Click me to expand! ...
+		</template>
+
+		<v-list-item v-for="item in dropDownItems">
+			...item content etc.
+		</v-list-item>
+
+		<v-list-group>
+			<template v-slot:activator>
+				... Click me to expand this subgroup! ...
+			</template>
+
+			<v-list-item />
+			<v-list-item />
+
+			<v-list-group>
+				<template v-slot:activator>
+					... Click me to expand next subgroup! ...
+				</template>
+
+				<v-list-item v-for="item in subGroupDropdownItems">
+				</v-list-item>
+			</v-list-group>
+		</v-list-group>
+	</v-list-group>
+</v-list>
+```
+
+## Props
+| Prop | Description | Default |
+|------|-------------|---------|
+| `multiple` | Allow multiple subgroups to be open at the same time | `true` |
+
+## Events
+n/a
+
+## Slots
+| Slot      | Description   | Data |
+|-----------|---------------|------|
+| _default_ | Group content |      |
+
+## CSS Variables
 n/a

@@ -8,9 +8,13 @@
 				{{ title }}
 			</div>
 		</button>
-		<div class="content" v-show="active">
-			<slot />
-		</div>
+		<transition-expand>
+			<div v-show="active">
+				<div class="content">
+					<slot />
+				</div>
+			</div>
+		</transition-expand>
 	</div>
 </template>
 

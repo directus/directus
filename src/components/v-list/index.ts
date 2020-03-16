@@ -4,6 +4,15 @@ import VListItemContent from './v-list-item-content.vue';
 import VListItemTitle from './v-list-item-title.vue';
 import VListItemSubtitle from './v-list-item-subtitle.vue';
 import VListItemIcon from './v-list-item-icon.vue';
+import VListGroup from './v-list-group.vue';
 
-export { VList, VListItem, VListItemContent, VListItemTitle, VListItemSubtitle, VListItemIcon };
+export {
+	VList,
+	VListItem,
+	VListItemContent,
+	VListItemTitle,
+	VListItemSubtitle,
+	VListItemIcon,
+	VListGroup
+};
 export default VList;

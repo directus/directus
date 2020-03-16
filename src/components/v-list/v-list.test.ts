@@ -5,6 +5,9 @@ import router from '@/router';
 import VList from './v-list.vue';
 import VListItem from './v-list-item.vue';
 import VListItemIcon from './v-list-item-icon.vue';
+import VListGroup from './v-list-group.vue';
+import VIcon from '@/components/v-icon';
+import TransitionExpand from '@/components/transition/expand';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
@@ -12,6 +15,9 @@ localVue.use(VueRouter);
 localVue.component('v-list-item', VListItem);
 localVue.component('v-list', VList);
 localVue.component('v-list-item-icon', VListItemIcon);
+localVue.component('v-list-group', VListGroup);
+localVue.component('v-icon', VIcon);
+localVue.component('transition-expand', TransitionExpand);
 
 describe('List', () => {
 	it('Renders the provided markup in the default slot', () => {
@@ -190,5 +196,28 @@ describe('List', () => {
 
 		component.find('.v-list-item').trigger('click');
 		expect(onClick).toHaveBeenCalled();
+	});
+
+	it('Opens a list group when activator item is clicked', async () => {
+		const component = mount(VList, {
+			localVue,
+			slots: {
+				default: `
+						<v-list-group>
+							<template v-slot:activator>
+								Click me!
+							</template>
+							<v-list-item class="test"/>
+							<v-list-item/>
+						</v-list-group>
+						<v-list-item/>
+						<v-list-item/>
+						`
+			}
+		});
+		expect(component.find('.test').isVisible()).toBe(false);
+		component.find('.activator').trigger('click');
+		await component.vm.$nextTick();
+		expect(component.find('.test').isVisible()).toBe(true);
 	});
 });

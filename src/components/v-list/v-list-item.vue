@@ -54,7 +54,7 @@ export default defineComponent({
 	--v-list-item-one-line-min-height-dense: 40px;
 	--v-list-item-two-line-min-height-dense: 48px;
 	--v-list-item-three-line-min-height-dense: 64px;
-	--v-list-item-padding: 0 16px;
+	--v-list-item-padding: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
 	--v-list-item-min-height: var(--v-list-item-one-line-min-height);
@@ -66,11 +66,11 @@ export default defineComponent({
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-color));
 	--v-list-item-background-color: var(--v-list-background-color, var(--background-color));
 	--v-list-item-background-color-hover: var(
-		---list-background-color-hover,
+		--v-list-background-color-hover,
 		var(--background-color-hover)
 	);
 	--v-list-item-background-color-active: var(
-		--vlist-background-color-active,
+		--v-list-background-color-active,
 		var(--background-color-active)
 	);
 
@@ -136,11 +136,13 @@ export default defineComponent({
 				}
 			}
 		}
-		.v-list.nav #{$this} {
-			--v-list-item-padding: 0 8px;
-			--v-list-item-border-radius: 4px;
-			#{$this}:not(:last-child):not(:only-child) {
-				--v-list-item-margin-bottom: 8px;
+		.v-list.nav {
+			& #{$this} {
+				--v-list-item-padding: 0 8px;
+				--v-list-item-border-radius: 4px;
+				&:not(:last-child):not(:only-child) {
+					--v-list-item-margin-bottom: 8px;
+				}
 			}
 			&.dense #{$this},
 			#{$this}.dense {

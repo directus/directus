@@ -9,7 +9,7 @@ Vue.component('v-item-group', VItemGroup);
 Vue.component('v-item', VItem);
 
 export default {
-	title: 'Components / Groups / Item Group',
+	title: 'Components / Item Group',
 	component: VItemGroup,
 	decorators: [withKnobs, withPadding],
 	parameters: {

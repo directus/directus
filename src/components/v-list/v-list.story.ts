@@ -8,6 +8,7 @@ import VListItemContent from './v-list-item-content.vue';
 import VListItemTitle from './v-list-item-title.vue';
 import VListItemSubTitle from './v-list-item-subtitle.vue';
 import VListItemIcon from './v-list-item-icon.vue';
+import VListGroup from './v-list-group.vue';
 import VSheet from '../v-sheet';
 import VCheckbox from '../v-checkbox';
 import VueRouter from 'vue-router';
@@ -22,6 +23,7 @@ Vue.component('v-list-item-title', VListItemTitle);
 Vue.component('v-list-item-subtitle', VListItemSubTitle);
 Vue.component('v-list-item-icon', VListItemIcon);
 Vue.component('v-checkbox', VCheckbox);
+Vue.component('v-list-group', VListGroup);
 
 Vue.component('v-sheet', VSheet);
 
@@ -74,6 +76,123 @@ export const basic = () =>
 			</v-list-item>
 		</v-list>
 	</v-sheet>`
+	});
+
+export const listGroups = () =>
+	defineComponent({
+		router: router,
+		props: {
+			multiple: {
+				default: boolean('Multiple', true)
+			},
+			multipleGroup: {
+				default: boolean('Multiple (in the nested groups)', true)
+			}
+		},
+		setup() {
+			return {
+				items: [0, 1, 2, 3]
+			};
+		},
+		template: `
+			<v-sheet style="--v-sheet-max-width: 600px;">
+				<v-list :multiple="multiple">
+					<v-list-item>
+						<v-list-item-icon>
+							<v-icon name="home" />
+						</v-list-item-icon>
+						<v-list-item-title>Home</v-list-item-title>
+					</v-list-item>
+					<v-list-group :multiple="multipleGroup">
+						<template v-slot:activator>
+							<v-list-item-icon>
+								<v-icon name="box" />
+							</v-list-item-icon>
+							<v-list-item-title>Collections</v-list-item-title>
+						</template>
+
+						<v-list-item>
+							<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+							<v-list-item-title>Users</v-list-item-title>
+						</v-list-item>
+					</v-list-group>
+					<v-list-group :multiple="multipleGroup">
+						<template v-slot:activator>
+							<v-list-item-icon>
+								<v-icon name="folder" />
+							</v-list-item-icon>
+							<v-list-item-title>Files</v-list-item-title>
+						</template>
+
+						<v-list-group :multiple="multipleGroup">
+							<template v-slot:activator>
+								<v-list-item-icon>
+									<v-icon name="cloud_download" />
+								</v-list-item-icon>
+								<v-list-item-title>Download</v-list-item-title>
+							</template>
+
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 1</v-list-item-title>
+							</v-list-item>
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 2</v-list-item-title>
+							</v-list-item>
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 3</v-list-item-title>
+							</v-list-item>
+						</v-list-group>
+
+						<v-list-group :multiple="multipleGroup">
+							<template v-slot:activator>
+								<v-list-item-icon>
+									<v-icon name="cloud_upload" />
+								</v-list-item-icon>
+								<v-list-item-title>Upload</v-list-item-title>
+							</template>
+
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 1</v-list-item-title>
+							</v-list-item>
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 2</v-list-item-title>
+							</v-list-item>
+							<v-list-item>
+								<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+								<v-list-item-title>Section 3</v-list-item-title>
+							</v-list-item>
+
+							<v-list-group :multiple="multipleGroup">
+								<template v-slot:activator>
+									<v-list-item-icon>
+										<v-icon name="attach_file" />
+									</v-list-item-icon>
+									<v-list-item-title>Sub-sub-sub section</v-list-item-title>
+								</template>
+
+								<v-list-item>
+									<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+									<v-list-item-title>Section 1</v-list-item-title>
+								</v-list-item>
+								<v-list-item>
+									<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+									<v-list-item-title>Section 2</v-list-item-title>
+								</v-list-item>
+								<v-list-item>
+									<v-list-item-icon><v-icon name="person" /></v-list-item-icon>
+									<v-list-item-title>Section 3</v-list-item-title>
+								</v-list-item>
+							</v-list-group>
+						</v-list-group>
+					</v-list-group>
+				</v-list>
+			</v-sheet>
+		`
 	});
 
 export const withSubtitle = () =>

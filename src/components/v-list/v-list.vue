@@ -14,7 +14,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType, ref, toRefs } from '@vue/composition-api';
+import { useGroupableParent } from '@/compositions/groupable';
 
 export default defineComponent({
 	props: {
@@ -29,9 +30,21 @@ export default defineComponent({
 		lines: {
 			type: Number as PropType<1 | 2 | 3>,
 			default: null
+		},
+		multiple: {
+			type: Boolean,
+			default: true
 		}
 	},
-	setup() {
+	setup(props) {
+		useGroupableParent(
+			{},
+			{
+				mandatory: ref(false),
+				multiple: toRefs(props).multiple
+			}
+		);
+
 		return {};
 	}
 });

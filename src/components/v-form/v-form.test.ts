@@ -8,7 +8,7 @@ localVue.use(VueCompositionAPI);
 
 describe('Components / Form', () => {
 	it('Renders', () => {
-		const component = shallowMount(VForm, { localVue });
+		const component = shallowMount(VForm, { localVue, propsData: { collection: 'test' } });
 		expect(component.isVueInstance()).toBe(true);
 	});
 });
