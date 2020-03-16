@@ -45,8 +45,10 @@ class DefaultFilter extends FilterExpression
         parent::__construct($node, $filterName, $arguments, $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->subcompile($this->getNode('node'));
     }
 }
+
+class_alias('Twig\Node\Expression\Filter\DefaultFilter', 'Twig_Node_Expression_Filter_Default');

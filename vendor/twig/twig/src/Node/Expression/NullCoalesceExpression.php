@@ -35,7 +35,7 @@ class NullCoalesceExpression extends ConditionalExpression
         parent::__construct($test, $left, $right, $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         /*
          * This optimizes only one case. PHP 7 also supports more complex expressions
@@ -58,3 +58,5 @@ class NullCoalesceExpression extends ConditionalExpression
         }
     }
 }
+
+class_alias('Twig\Node\Expression\NullCoalesceExpression', 'Twig_Node_Expression_NullCoalesce');

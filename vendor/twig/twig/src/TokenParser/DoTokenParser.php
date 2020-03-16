@@ -12,7 +12,6 @@
 namespace Twig\TokenParser;
 
 use Twig\Node\DoNode;
-use Twig\Node\Node;
 use Twig\Token;
 
 /**
@@ -20,7 +19,7 @@ use Twig\Token;
  */
 final class DoTokenParser extends AbstractTokenParser
 {
-    public function parse(Token $token): Node
+    public function parse(Token $token)
     {
         $expr = $this->parser->getExpressionParser()->parseExpression();
 
@@ -29,8 +28,10 @@ final class DoTokenParser extends AbstractTokenParser
         return new DoNode($expr, $token->getLine(), $this->getTag());
     }
 
-    public function getTag(): string
+    public function getTag()
     {
         return 'do';
     }
 }
+
+class_alias('Twig\TokenParser\DoTokenParser', 'Twig_TokenParser_Do');

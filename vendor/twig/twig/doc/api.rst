@@ -87,6 +87,11 @@ The following options are available:
 
   The charset used by the templates.
 
+* ``base_template_class`` *string* (defaults to ``\Twig\Template``)
+
+  The base template class to use for generated
+  templates.
+
 * ``cache`` *string* or ``false``
 
   An absolute path where to store the compiled templates, or

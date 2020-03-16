@@ -1,6 +1,9 @@
 ``country_name``
 ================
 
+.. versionadded:: 2.12
+    The ``country_name`` filter was added in Twig 2.12.
+
 The ``country_name`` filter returns the country name given its ISO-3166
 two-letter code:
 

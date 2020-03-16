@@ -1,6 +1,9 @@
 ``format_datetime``
 ===================
 
+.. versionadded:: 2.12
+    The ``format_datetime`` filter was added in Twig 2.12.
+
 The ``format_datetime`` filter formats a date time:
 
     public function formatDateTime(Environment $env, $date, ?string $dateFormat = 'medium', ?string $timeFormat = 'medium', string $pattern = '', $timezone = null, string $calendar = 'gregorian', string $locale = null): string

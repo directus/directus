@@ -32,7 +32,7 @@ class BlockReferenceExpression extends AbstractExpression
         parent::__construct($nodes, ['is_defined_test' => false, 'output' => false], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         if ($this->getAttribute('is_defined_test')) {
             $this->compileTemplateCall($compiler, 'hasBlock');
@@ -84,3 +84,5 @@ class BlockReferenceExpression extends AbstractExpression
         return $compiler->raw(')');
     }
 }
+
+class_alias('Twig\Node\Expression\BlockReferenceExpression', 'Twig_Node_Expression_BlockReference');

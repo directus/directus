@@ -31,7 +31,7 @@ class IfNode extends Node
         parent::__construct($nodes, [], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->addDebugInfo($this);
         for ($i = 0, $count = \count($this->getNode('tests')); $i < $count; $i += 2) {
@@ -68,3 +68,5 @@ class IfNode extends Node
             ->write("}\n");
     }
 }
+
+class_alias('Twig\Node\IfNode', 'Twig_Node_If');

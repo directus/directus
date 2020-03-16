@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class SpaceshipBinary extends AbstractBinary
 {
-    public function operator(Compiler $compiler): Compiler
+    public function operator(Compiler $compiler)
     {
         return $compiler->raw('<=>');
     }

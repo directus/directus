@@ -29,9 +29,10 @@ class ArrayExpression extends AbstractExpression
         }
     }
 
-    public function getKeyValuePairs(): array
+    public function getKeyValuePairs()
     {
         $pairs = [];
+
         foreach (array_chunk($this->nodes, 2) as $pair) {
             $pairs[] = [
                 'key' => $pair[0],
@@ -42,7 +43,7 @@ class ArrayExpression extends AbstractExpression
         return $pairs;
     }
 
-    public function hasElement(AbstractExpression $key): bool
+    public function hasElement(AbstractExpression $key)
     {
         foreach ($this->getKeyValuePairs() as $pair) {
             // we compare the string representation of the keys
@@ -55,7 +56,7 @@ class ArrayExpression extends AbstractExpression
         return false;
     }
 
-    public function addElement(AbstractExpression $value, AbstractExpression $key = null): void
+    public function addElement(AbstractExpression $value, AbstractExpression $key = null)
     {
         if (null === $key) {
             $key = new ConstantExpression(++$this->index, $value->getTemplateLine());
@@ -64,7 +65,7 @@ class ArrayExpression extends AbstractExpression
         array_push($this->nodes, $key, $value);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->raw('[');
         $first = true;
@@ -83,3 +84,5 @@ class ArrayExpression extends AbstractExpression
         $compiler->raw(']');
     }
 }
+
+class_alias('Twig\Node\Expression\ArrayExpression', 'Twig_Node_Expression_Array');

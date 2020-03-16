@@ -1,6 +1,9 @@
 ``html_classes``
 ================
 
+.. versionadded:: 2.12
+    The ``html_classes`` function was added in Twig 2.12.
+
 The ``html_classes`` function returns a string by conditionally joining class
 names together:
 

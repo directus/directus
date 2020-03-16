@@ -19,7 +19,7 @@ use Twig\Source;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class FilesystemLoader implements LoaderInterface
+class FilesystemLoader implements LoaderInterface, ExistsLoaderInterface, SourceContextLoaderInterface
 {
     /** Identifier of the main namespace. */
     const MAIN_NAMESPACE = '__main__';
@@ -48,8 +48,12 @@ class FilesystemLoader implements LoaderInterface
 
     /**
      * Returns the paths to the templates.
+     *
+     * @param string $namespace A path namespace
+     *
+     * @return array The array of paths where to look for templates
      */
-    public function getPaths(string $namespace = self::MAIN_NAMESPACE): array
+    public function getPaths($namespace = self::MAIN_NAMESPACE)
     {
         return isset($this->paths[$namespace]) ? $this->paths[$namespace] : [];
     }
@@ -58,16 +62,21 @@ class FilesystemLoader implements LoaderInterface
      * Returns the path namespaces.
      *
      * The main namespace is always defined.
+     *
+     * @return array The array of defined namespaces
      */
-    public function getNamespaces(): array
+    public function getNamespaces()
     {
         return array_keys($this->paths);
     }
 
     /**
-     * @param string|array $paths A path or an array of paths where to look for templates
+     * Sets the paths where templates are stored.
+     *
+     * @param string|array $paths     A path or an array of paths where to look for templates
+     * @param string       $namespace A path namespace
      */
-    public function setPaths($paths, string $namespace = self::MAIN_NAMESPACE): void
+    public function setPaths($paths, $namespace = self::MAIN_NAMESPACE)
     {
         if (!\is_array($paths)) {
             $paths = [$paths];
@@ -80,9 +89,14 @@ class FilesystemLoader implements LoaderInterface
     }
 
     /**
+     * Adds a path where templates are stored.
+     *
+     * @param string $path      A path where to look for templates
+     * @param string $namespace A path namespace
+     *
      * @throws LoaderError
      */
-    public function addPath(string $path, string $namespace = self::MAIN_NAMESPACE): void
+    public function addPath($path, $namespace = self::MAIN_NAMESPACE)
     {
         // invalidate the cache
         $this->cache = $this->errorCache = [];
@@ -96,9 +110,14 @@ class FilesystemLoader implements LoaderInterface
     }
 
     /**
+     * Prepends a path where templates are stored.
+     *
+     * @param string $path      A path where to look for templates
+     * @param string $namespace A path namespace
+     *
      * @throws LoaderError
      */
-    public function prependPath(string $path, string $namespace = self::MAIN_NAMESPACE): void
+    public function prependPath($path, $namespace = self::MAIN_NAMESPACE)
     {
         // invalidate the cache
         $this->cache = $this->errorCache = [];
@@ -117,18 +136,18 @@ class FilesystemLoader implements LoaderInterface
         }
     }
 
-    public function getSourceContext(string $name): Source
+    public function getSourceContext($name)
     {
-        if (null === $path = $this->findTemplate($name)) {
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
             return new Source('', $name, '');
         }
 
         return new Source(file_get_contents($path), $name, $path);
     }
 
-    public function getCacheKey(string $name): string
+    public function getCacheKey($name)
     {
-        if (null === $path = $this->findTemplate($name)) {
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
             return '';
         }
         $len = \strlen($this->rootPath);
@@ -139,10 +158,7 @@ class FilesystemLoader implements LoaderInterface
         return $path;
     }
 
-    /**
-     * @return bool
-     */
-    public function exists(string $name)
+    public function exists($name)
     {
         $name = $this->normalizeName($name);
 
@@ -150,13 +166,13 @@ class FilesystemLoader implements LoaderInterface
             return true;
         }
 
-        return null !== $this->findTemplate($name, false);
+        return null !== ($path = $this->findTemplate($name, false)) && false !== $path;
     }
 
-    public function isFresh(string $name, int $time): bool
+    public function isFresh($name, $time)
     {
         // false support to be removed in 3.0
-        if (null === $path = $this->findTemplate($name)) {
+        if (null === ($path = $this->findTemplate($name)) || false === $path) {
             return false;
         }
 
@@ -164,9 +180,16 @@ class FilesystemLoader implements LoaderInterface
     }
 
     /**
-     * @return string|null
+     * Checks if the template can be found.
+     *
+     * In Twig 3.0, findTemplate must return a string or null (returning false won't work anymore).
+     *
+     * @param string $name  The template name
+     * @param bool   $throw Whether to throw an exception when an error occurs
+     *
+     * @return string|false|null The template name or false/null
      */
-    protected function findTemplate(string $name, bool $throw = true)
+    protected function findTemplate($name, $throw = true)
     {
         $name = $this->normalizeName($name);
 
@@ -176,7 +199,7 @@ class FilesystemLoader implements LoaderInterface
 
         if (isset($this->errorCache[$name])) {
             if (!$throw) {
-                return null;
+                return false;
             }
 
             throw new LoaderError($this->errorCache[$name]);
@@ -188,7 +211,7 @@ class FilesystemLoader implements LoaderInterface
             list($namespace, $shortname) = $this->parseName($name);
         } catch (LoaderError $e) {
             if (!$throw) {
-                return null;
+                return false;
             }
 
             throw $e;
@@ -198,7 +221,7 @@ class FilesystemLoader implements LoaderInterface
             $this->errorCache[$name] = sprintf('There are no registered paths for namespace "%s".', $namespace);
 
             if (!$throw) {
-                return null;
+                return false;
             }
 
             throw new LoaderError($this->errorCache[$name]);
@@ -221,18 +244,18 @@ class FilesystemLoader implements LoaderInterface
         $this->errorCache[$name] = sprintf('Unable to find template "%s" (looked into: %s).', $name, implode(', ', $this->paths[$namespace]));
 
         if (!$throw) {
-            return null;
+            return false;
         }
 
         throw new LoaderError($this->errorCache[$name]);
     }
 
-    private function normalizeName(string $name): string
+    private function normalizeName($name)
     {
         return preg_replace('#/{2,}#', '/', str_replace('\\', '/', $name));
     }
 
-    private function parseName(string $name, string $default = self::MAIN_NAMESPACE): array
+    private function parseName($name, $default = self::MAIN_NAMESPACE)
     {
         if (isset($name[0]) && '@' == $name[0]) {
             if (false === $pos = strpos($name, '/')) {
@@ -248,7 +271,7 @@ class FilesystemLoader implements LoaderInterface
         return [$default, $name];
     }
 
-    private function validateName(string $name): void
+    private function validateName($name)
     {
         if (false !== strpos($name, "\0")) {
             throw new LoaderError('A template name cannot contain NUL bytes.');
@@ -270,7 +293,7 @@ class FilesystemLoader implements LoaderInterface
         }
     }
 
-    private function isAbsolutePath(string $file): bool
+    private function isAbsolutePath($file)
     {
         return strspn($file, '/\\', 0, 1)
             || (\strlen($file) > 3 && ctype_alpha($file[0])
@@ -281,3 +304,5 @@ class FilesystemLoader implements LoaderInterface
         ;
     }
 }
+
+class_alias('Twig\Loader\FilesystemLoader', 'Twig_Loader_Filesystem');

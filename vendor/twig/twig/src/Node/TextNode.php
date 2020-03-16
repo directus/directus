@@ -26,7 +26,7 @@ class TextNode extends Node implements NodeOutputInterface
         parent::__construct([], ['data' => $data], $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->addDebugInfo($this)
@@ -36,3 +36,5 @@ class TextNode extends Node implements NodeOutputInterface
         ;
     }
 }
+
+class_alias('Twig\Node\TextNode', 'Twig_Node_Text');

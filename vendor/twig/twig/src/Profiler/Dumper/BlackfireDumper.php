@@ -18,7 +18,7 @@ use Twig\Profiler\Profile;
  */
 final class BlackfireDumper
 {
-    public function dump(Profile $profile): string
+    public function dump(Profile $profile)
     {
         $data = [];
         $this->dumpProfile('main()', $profile, $data);
@@ -70,3 +70,5 @@ EOF;
         }
     }
 }
+
+class_alias('Twig\Profiler\Dumper\BlackfireDumper', 'Twig_Profiler_Dumper_Blackfire');

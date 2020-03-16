@@ -23,18 +23,12 @@ class ProfilerExtension extends AbstractExtension
         $this->actives[] = $profile;
     }
 
-    /**
-     * @return void
-     */
     public function enter(Profile $profile)
     {
         $this->actives[0]->addProfile($profile);
         array_unshift($this->actives, $profile);
     }
 
-    /**
-     * @return void
-     */
     public function leave(Profile $profile)
     {
         $profile->leave();
@@ -45,8 +39,10 @@ class ProfilerExtension extends AbstractExtension
         }
     }
 
-    public function getNodeVisitors(): array
+    public function getNodeVisitors()
     {
         return [new ProfilerNodeVisitor(\get_class($this))];
     }
 }
+
+class_alias('Twig\Extension\ProfilerExtension', 'Twig_Extension_Profiler');

@@ -19,3 +19,5 @@ namespace Twig\Error;
 class LoaderError extends Error
 {
 }
+
+class_alias('Twig\Error\LoaderError', 'Twig_Error_Loader');

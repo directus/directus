@@ -19,3 +19,5 @@ namespace Twig\Node;
 class BodyNode extends Node
 {
 }
+
+class_alias('Twig\Node\BodyNode', 'Twig_Node_Body');

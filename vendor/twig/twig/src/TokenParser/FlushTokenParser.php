@@ -12,7 +12,6 @@
 namespace Twig\TokenParser;
 
 use Twig\Node\FlushNode;
-use Twig\Node\Node;
 use Twig\Token;
 
 /**
@@ -22,15 +21,17 @@ use Twig\Token;
  */
 final class FlushTokenParser extends AbstractTokenParser
 {
-    public function parse(Token $token): Node
+    public function parse(Token $token)
     {
         $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
 
         return new FlushNode($token->getLine(), $this->getTag());
     }
 
-    public function getTag(): string
+    public function getTag()
     {
         return 'flush';
     }
 }
+
+class_alias('Twig\TokenParser\FlushTokenParser', 'Twig_TokenParser_Flush');

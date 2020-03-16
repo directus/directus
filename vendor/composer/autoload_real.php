@@ -13,6 +13,9 @@ class ComposerAutoloaderInit222904b0230e4d40d3bb66c95b450f9b
         }
     }
 
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
     public static function getLoader()
     {
         if (null !== self::$loader) {
@@ -29,13 +32,22 @@ class ComposerAutoloaderInit222904b0230e4d40d3bb66c95b450f9b
 
             call_user_func(\Composer\Autoload\ComposerStaticInit222904b0230e4d40d3bb66c95b450f9b::getInitializer($loader));
         } else {
+            $map = require __DIR__ . '/autoload_namespaces.php';
+            foreach ($map as $namespace => $path) {
+                $loader->set($namespace, $path);
+            }
+
+            $map = require __DIR__ . '/autoload_psr4.php';
+            foreach ($map as $namespace => $path) {
+                $loader->setPsr4($namespace, $path);
+            }
+
             $classMap = require __DIR__ . '/autoload_classmap.php';
             if ($classMap) {
                 $loader->addClassMap($classMap);
             }
         }
 
-        $loader->setClassMapAuthoritative(true);
         $loader->register(true);
 
         if ($useStaticLoader) {

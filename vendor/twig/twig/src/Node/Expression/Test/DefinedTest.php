@@ -67,8 +67,10 @@ class DefinedTest extends TestExpression
         }
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->subcompile($this->getNode('node'));
     }
 }
+
+class_alias('Twig\Node\Expression\Test\DefinedTest', 'Twig_Node_Expression_Test_Defined');

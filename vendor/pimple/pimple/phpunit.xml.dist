@@ -11,8 +11,4 @@
             <directory>./src/Pimple/Tests</directory>
         </testsuite>
     </testsuites>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
 </phpunit>

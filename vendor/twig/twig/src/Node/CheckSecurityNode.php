@@ -31,7 +31,7 @@ class CheckSecurityNode extends Node
         parent::__construct();
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $tags = $filters = $functions = [];
         foreach (['tags', 'filters', 'functions'] as $type) {
@@ -81,3 +81,5 @@ class CheckSecurityNode extends Node
         ;
     }
 }
+
+class_alias('Twig\Node\CheckSecurityNode', 'Twig_Node_CheckSecurity');

@@ -1478,31 +1478,31 @@
     },
     {
         "name": "pimple/pimple",
-        "version": "v3.3.0",
-        "version_normalized": "3.3.0.0",
+        "version": "v3.2.3",
+        "version_normalized": "3.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/silexphp/Pimple.git",
-            "reference": "e55d12f9d6a0e7f9c85992b73df1267f46279930"
+            "reference": "9e403941ef9d65d20cba7d54e29fe906db42cf32"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/silexphp/Pimple/zipball/e55d12f9d6a0e7f9c85992b73df1267f46279930",
-            "reference": "e55d12f9d6a0e7f9c85992b73df1267f46279930",
+            "url": "https://api.github.com/repos/silexphp/Pimple/zipball/9e403941ef9d65d20cba7d54e29fe906db42cf32",
+            "reference": "9e403941ef9d65d20cba7d54e29fe906db42cf32",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": ">=5.3.0",
             "psr/container": "^1.0"
         },
         "require-dev": {
-            "symfony/phpunit-bridge": "^3.4|^4.4|^5.0"
+            "symfony/phpunit-bridge": "^3.2"
         },
-        "time": "2020-03-03T09:12:48+00:00",
+        "time": "2018-01-21T07:42:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.3.x-dev"
+                "dev-master": "3.2.x-dev"
             }
         },
         "installation-source": "dist",
@@ -1522,7 +1522,7 @@
             }
         ],
         "description": "Pimple, a simple Dependency Injection Container",
-        "homepage": "https://pimple.symfony.com",
+        "homepage": "http://pimple.sensiolabs.org",
         "keywords": [
             "container",
             "dependency injection"
@@ -2480,28 +2480,28 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.0.5",
-        "version_normalized": "5.0.5.0",
+        "version": "v4.4.5",
+        "version_normalized": "4.4.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "3afadc0f57cd74f86379d073e694b0f2cda2a88c"
+            "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/3afadc0f57cd74f86379d073e694b0f2cda2a88c",
-            "reference": "3afadc0f57cd74f86379d073e694b0f2cda2a88c",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/266c9540b475f26122b61ef8b23dd9198f5d1cfd",
+            "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": "^7.1.3",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2020-01-21T08:40:24+00:00",
+        "time": "2020-01-21T08:20:44+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "5.0-dev"
+                "dev-master": "4.4-dev"
             }
         },
         "installation-source": "dist",
@@ -2825,31 +2825,31 @@
     },
     {
         "name": "symfony/service-contracts",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
+        "version": "v1.1.8",
+        "version_normalized": "1.1.8.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/service-contracts.git",
-            "reference": "144c5e51266b281231e947b51223ba14acf1a749"
+            "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/144c5e51266b281231e947b51223ba14acf1a749",
-            "reference": "144c5e51266b281231e947b51223ba14acf1a749",
+            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
+            "reference": "ffc7f5692092df31515df2a5ecf3b7302b3ddacf",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": "^7.1.3",
             "psr/container": "^1.0"
         },
         "suggest": {
             "symfony/service-implementation": ""
         },
-        "time": "2019-11-18T17:27:11+00:00",
+        "time": "2019-10-14T12:27:06+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.0-dev"
+                "dev-master": "1.1-dev"
             }
         },
         "installation-source": "dist",
@@ -2963,30 +2963,30 @@
     },
     {
         "name": "symfony/translation-contracts",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
+        "version": "v1.1.7",
+        "version_normalized": "1.1.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation-contracts.git",
-            "reference": "8cc682ac458d75557203b2f2f14b0b92e1c744ed"
+            "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/8cc682ac458d75557203b2f2f14b0b92e1c744ed",
-            "reference": "8cc682ac458d75557203b2f2f14b0b92e1c744ed",
+            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/364518c132c95642e530d9b2d217acbc2ccac3e6",
+            "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5"
+            "php": "^7.1.3"
         },
         "suggest": {
             "symfony/translation-implementation": ""
         },
-        "time": "2019-11-18T17:27:11+00:00",
+        "time": "2019-09-17T11:12:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.0-dev"
+                "dev-master": "1.1-dev"
             }
         },
         "installation-source": "dist",
@@ -3171,21 +3171,21 @@
     },
     {
         "name": "twig/twig",
-        "version": "v3.0.3",
-        "version_normalized": "3.0.3.0",
+        "version": "v2.12.5",
+        "version_normalized": "2.12.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "3b88ccd180a6b61ebb517aea3b1a8906762a1dc2"
+            "reference": "18772e0190734944277ee97a02a9a6c6555fcd94"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/3b88ccd180a6b61ebb517aea3b1a8906762a1dc2",
-            "reference": "3b88ccd180a6b61ebb517aea3b1a8906762a1dc2",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/18772e0190734944277ee97a02a9a6c6555fcd94",
+            "reference": "18772e0190734944277ee97a02a9a6c6555fcd94",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": "^7.0",
             "symfony/polyfill-ctype": "^1.8",
             "symfony/polyfill-mbstring": "^1.3"
         },
@@ -3193,15 +3193,18 @@
             "psr/container": "^1.0",
             "symfony/phpunit-bridge": "^4.4|^5.0"
         },
-        "time": "2020-02-11T15:33:47+00:00",
+        "time": "2020-02-11T15:31:23+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.0-dev"
+                "dev-master": "2.12-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
+            "psr-0": {
+                "Twig_": "lib/"
+            },
             "psr-4": {
                 "Twig\\": "src/"
             }

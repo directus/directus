@@ -23,12 +23,12 @@ use Twig\Node\Node;
  */
 abstract class AbstractNodeVisitor implements NodeVisitorInterface
 {
-    final public function enterNode(Node $node, Environment $env): Node
+    final public function enterNode(Node $node, Environment $env)
     {
         return $this->doEnterNode($node, $env);
     }
 
-    final public function leaveNode(Node $node, Environment $env): ?Node
+    final public function leaveNode(Node $node, Environment $env)
     {
         return $this->doLeaveNode($node, $env);
     }
@@ -47,3 +47,5 @@ abstract class AbstractNodeVisitor implements NodeVisitorInterface
      */
     abstract protected function doLeaveNode(Node $node, Environment $env);
 }
+
+class_alias('Twig\NodeVisitor\AbstractNodeVisitor', 'Twig_BaseNodeVisitor');

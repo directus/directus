@@ -11,6 +11,7 @@ Tags
     do
     embed
     extends
+    filter
     flush
     for
     from
@@ -20,6 +21,7 @@ Tags
     macro
     sandbox
     set
+    spaceless
     use
     verbatim
     with

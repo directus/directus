@@ -14,7 +14,6 @@ namespace Twig\TokenParser;
 use Twig\Node\EmbedNode;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\NameExpression;
-use Twig\Node\Node;
 use Twig\Token;
 
 /**
@@ -22,7 +21,7 @@ use Twig\Token;
  */
 final class EmbedTokenParser extends IncludeTokenParser
 {
-    public function parse(Token $token): Node
+    public function parse(Token $token)
     {
         $stream = $this->parser->getStream();
 
@@ -59,13 +58,15 @@ final class EmbedTokenParser extends IncludeTokenParser
         return new EmbedNode($module->getTemplateName(), $module->getAttribute('index'), $variables, $only, $ignoreMissing, $token->getLine(), $this->getTag());
     }
 
-    public function decideBlockEnd(Token $token): bool
+    public function decideBlockEnd(Token $token)
     {
         return $token->test('endembed');
     }
 
-    public function getTag(): string
+    public function getTag()
     {
         return 'embed';
     }
 }
+
+class_alias('Twig\TokenParser\EmbedTokenParser', 'Twig_TokenParser_Embed');

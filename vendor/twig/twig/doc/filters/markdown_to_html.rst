@@ -1,6 +1,9 @@
 ``markdown_to_html``
 ====================
 
+.. versionadded:: 2.12
+    The ``markdown_to_html`` filter was added in Twig 2.12.
+
 The ``markdown_to_html`` filter converts a block of Markdown to HTML:
 
 .. code-block:: twig

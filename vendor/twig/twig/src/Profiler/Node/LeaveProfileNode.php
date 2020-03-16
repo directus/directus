@@ -26,7 +26,7 @@ class LeaveProfileNode extends Node
         parent::__construct([], ['var_name' => $varName]);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->write("\n")
@@ -34,3 +34,5 @@ class LeaveProfileNode extends Node
         ;
     }
 }
+
+class_alias('Twig\Profiler\Node\LeaveProfileNode', 'Twig_Profiler_Node_LeaveProfile');

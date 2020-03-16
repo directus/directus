@@ -23,7 +23,7 @@ use Twig\Node\Expression\TestExpression;
  */
 class EvenTest extends TestExpression
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('(')
@@ -33,3 +33,5 @@ class EvenTest extends TestExpression
         ;
     }
 }
+
+class_alias('Twig\Node\Expression\Test\EvenTest', 'Twig_Node_Expression_Test_Even');

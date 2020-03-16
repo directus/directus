@@ -21,7 +21,7 @@ class ConditionalExpression extends AbstractExpression
         parent::__construct(['expr1' => $expr1, 'expr2' => $expr2, 'expr3' => $expr3], [], $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('((')
@@ -34,3 +34,5 @@ class ConditionalExpression extends AbstractExpression
         ;
     }
 }
+
+class_alias('Twig\Node\Expression\ConditionalExpression', 'Twig_Node_Expression_Conditional');

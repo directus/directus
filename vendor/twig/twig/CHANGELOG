@@ -1,40 +1,4 @@
-* 3.0.3 (2020-02-11)
-
- * Add a check to ensure that iconv() is defined
-
-* 3.0.2 (2020-02-11)
-
- * Avoid exceptions when an intl resource is not found
- * Fix implementation of case-insensitivity for method names
-
-* 3.0.1 (2019-12-28)
-
- * fixed Symfony 5.0 support for the HTML extra extension
-
-* 3.0.0 (2019-11-15)
-
- * fixed number formatter in Intl extra extension when using a formatter prototype
-
-* 3.0.0-BETA1 (2019-11-11)
-
- * removed the "if" condition support on the "for" tag
- * made the in, <, >, <=, >=, ==, and != operators more strict when comparing strings and integers/floats
- * removed the "filter" tag
- * added type hints everywhere
- * changed Environment::resolveTemplate() to always return a TemplateWrapper instance
- * removed Template::__toString()
- * removed Parser::isReservedMacroName()
- * removed SanboxedPrintNode
- * removed Node::setTemplateName()
- * made classes maked as "@final" final
- * removed InitRuntimeInterface, ExistsLoaderInterface, and SourceContextLoaderInterface
- * removed the "spaceless" tag
- * removed Twig\Environment::getBaseTemplateClass() and Twig\Environment::setBaseTemplateClass()
- * removed the "base_template_class" option on Twig\Environment
- * bumped minimum PHP version to 7.2
- * removed PSR-0 classes
-
-* 2.12.5 (2020-XX-XX)
+* 2.12.5 (2020-02-11)
 
  * Add a check to ensure that iconv() is defined
 

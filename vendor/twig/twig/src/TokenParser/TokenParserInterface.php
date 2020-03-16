@@ -26,7 +26,7 @@ interface TokenParserInterface
     /**
      * Sets the parser associated with this token parser.
      */
-    public function setParser(Parser $parser): void;
+    public function setParser(Parser $parser);
 
     /**
      * Parses a token and returns a node.
@@ -40,7 +40,13 @@ interface TokenParserInterface
     /**
      * Gets the tag name associated with this token parser.
      *
-     * @return string
+     * @return string The tag name
      */
     public function getTag();
 }
+
+class_alias('Twig\TokenParser\TokenParserInterface', 'Twig_TokenParserInterface');
+
+// Ensure that the aliased name is loaded to keep BC for classes implementing the typehint with the old aliased name.
+class_exists('Twig\Token');
+class_exists('Twig\Parser');

@@ -1,6 +1,9 @@
 ``format_number``
 =================
 
+.. versionadded:: 2.12
+    The ``format_number`` filter was added in Twig 2.12.
+
 The ``format_number`` filter formats a number:
 
 .. code-block:: twig

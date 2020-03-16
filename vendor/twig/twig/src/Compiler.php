@@ -15,6 +15,8 @@ namespace Twig;
 use Twig\Node\Node;
 
 /**
+ * Compiles a node to PHP code.
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class Compiler
@@ -33,20 +35,34 @@ class Compiler
         $this->env = $env;
     }
 
-    public function getEnvironment(): Environment
+    /**
+     * Returns the environment instance related to this compiler.
+     *
+     * @return Environment
+     */
+    public function getEnvironment()
     {
         return $this->env;
     }
 
-    public function getSource(): string
+    /**
+     * Gets the current PHP code after compilation.
+     *
+     * @return string The PHP code
+     */
+    public function getSource()
     {
         return $this->source;
     }
 
     /**
+     * Compiles a node.
+     *
+     * @param int $indentation The current indentation
+     *
      * @return $this
      */
-    public function compile(Node $node, int $indentation = 0)
+    public function compile(Node $node, $indentation = 0)
     {
         $this->lastLine = null;
         $this->source = '';
@@ -62,10 +78,7 @@ class Compiler
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function subcompile(Node $node, bool $raw = true)
+    public function subcompile(Node $node, $raw = true)
     {
         if (false === $raw) {
             $this->source .= str_repeat(' ', $this->indentation * 4);
@@ -79,9 +92,11 @@ class Compiler
     /**
      * Adds a raw string to the compiled code.
      *
+     * @param string $string The string
+     *
      * @return $this
      */
-    public function raw(string $string)
+    public function raw($string)
     {
         $this->source .= $string;
 
@@ -105,9 +120,11 @@ class Compiler
     /**
      * Adds a quoted string to the compiled code.
      *
+     * @param string $value The string
+     *
      * @return $this
      */
-    public function string(string $value)
+    public function string($value)
     {
         $this->source .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
 
@@ -116,6 +133,8 @@ class Compiler
 
     /**
      * Returns a PHP representation of a given value.
+     *
+     * @param mixed $value The value to convert
      *
      * @return $this
      */
@@ -156,6 +175,8 @@ class Compiler
     }
 
     /**
+     * Adds debugging information.
+     *
      * @return $this
      */
     public function addDebugInfo(Node $node)
@@ -173,7 +194,7 @@ class Compiler
         return $this;
     }
 
-    public function getDebugInfo(): array
+    public function getDebugInfo()
     {
         ksort($this->debugInfo);
 
@@ -181,9 +202,13 @@ class Compiler
     }
 
     /**
+     * Indents the generated code.
+     *
+     * @param int $step The number of indentation to add
+     *
      * @return $this
      */
-    public function indent(int $step = 1)
+    public function indent($step = 1)
     {
         $this->indentation += $step;
 
@@ -191,11 +216,15 @@ class Compiler
     }
 
     /**
+     * Outdents the generated code.
+     *
+     * @param int $step The number of indentation to remove
+     *
      * @return $this
      *
      * @throws \LogicException When trying to outdent too much so the indentation would become negative
      */
-    public function outdent(int $step = 1)
+    public function outdent($step = 1)
     {
         // can't outdent by more steps than the current indentation level
         if ($this->indentation < $step) {
@@ -207,8 +236,10 @@ class Compiler
         return $this;
     }
 
-    public function getVarName(): string
+    public function getVarName()
     {
         return sprintf('__internal_%s', hash('sha256', __METHOD__.$this->varNameSalt++));
     }
 }
+
+class_alias('Twig\Compiler', 'Twig_Compiler');

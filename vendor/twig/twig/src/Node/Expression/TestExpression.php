@@ -26,7 +26,7 @@ class TestExpression extends CallExpression
         parent::__construct($nodes, ['name' => $name], $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $name = $this->getAttribute('name');
         $test = $compiler->getEnvironment()->getTest($name);
@@ -40,3 +40,5 @@ class TestExpression extends CallExpression
         $this->compileCallable($compiler);
     }
 }
+
+class_alias('Twig\Node\Expression\TestExpression', 'Twig_Node_Expression_Test');

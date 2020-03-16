@@ -27,7 +27,7 @@ class ImportNode extends Node
         parent::__construct(['expr' => $expr, 'var' => $var], ['global' => $global], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->addDebugInfo($this)
@@ -61,3 +61,5 @@ class ImportNode extends Node
         $compiler->raw(";\n");
     }
 }
+
+class_alias('Twig\Node\ImportNode', 'Twig_Node_Import');

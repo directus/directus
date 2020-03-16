@@ -1,6 +1,9 @@
 ``locale_name``
 ===============
 
+.. versionadded:: 2.12
+    The ``locale_name`` filter was added in Twig 2.12.
+
 The ``locale_name`` filter returns the locale name given its two-letter
 code:
 

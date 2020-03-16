@@ -16,8 +16,10 @@ use Twig\Compiler;
 
 class NotUnary extends AbstractUnary
 {
-    public function operator(Compiler $compiler): Compiler
+    public function operator(Compiler $compiler)
     {
-        return $compiler->raw('!');
+        $compiler->raw('!');
     }
 }
+
+class_alias('Twig\Node\Expression\Unary\NotUnary', 'Twig_Node_Expression_Unary_Not');

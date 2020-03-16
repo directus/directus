@@ -23,7 +23,7 @@ use Twig\Node\Expression\TestExpression;
  */
 class DivisiblebyTest extends TestExpression
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('(0 == ')
@@ -34,3 +34,5 @@ class DivisiblebyTest extends TestExpression
         ;
     }
 }
+
+class_alias('Twig\Node\Expression\Test\DivisiblebyTest', 'Twig_Node_Expression_Test_Divisibleby');

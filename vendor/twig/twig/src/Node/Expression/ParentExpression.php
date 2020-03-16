@@ -26,7 +26,7 @@ class ParentExpression extends AbstractExpression
         parent::__construct([], ['output' => false, 'name' => $name], $lineno, $tag);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         if ($this->getAttribute('output')) {
             $compiler
@@ -44,3 +44,5 @@ class ParentExpression extends AbstractExpression
         }
     }
 }
+
+class_alias('Twig\Node\Expression\ParentExpression', 'Twig_Node_Expression_Parent');

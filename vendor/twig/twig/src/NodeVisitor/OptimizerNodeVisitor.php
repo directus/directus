@@ -35,12 +35,14 @@ use Twig\Node\PrintNode;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-final class OptimizerNodeVisitor implements NodeVisitorInterface
+final class OptimizerNodeVisitor extends AbstractNodeVisitor
 {
     const OPTIMIZE_ALL = -1;
     const OPTIMIZE_NONE = 0;
     const OPTIMIZE_FOR = 2;
     const OPTIMIZE_RAW_FILTER = 4;
+    // obsolete, does not do anything
+    const OPTIMIZE_VAR_ACCESS = 8;
 
     private $loops = [];
     private $loopsTargets = [];
@@ -51,14 +53,14 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
      */
     public function __construct(int $optimizers = -1)
     {
-        if (!\is_int($optimizers) || $optimizers > (self::OPTIMIZE_FOR | self::OPTIMIZE_RAW_FILTER)) {
+        if (!\is_int($optimizers) || $optimizers > (self::OPTIMIZE_FOR | self::OPTIMIZE_RAW_FILTER | self::OPTIMIZE_VAR_ACCESS)) {
             throw new \InvalidArgumentException(sprintf('Optimizer mode "%s" is not valid.', $optimizers));
         }
 
         $this->optimizers = $optimizers;
     }
 
-    public function enterNode(Node $node, Environment $env): Node
+    protected function doEnterNode(Node $node, Environment $env)
     {
         if (self::OPTIMIZE_FOR === (self::OPTIMIZE_FOR & $this->optimizers)) {
             $this->enterOptimizeFor($node, $env);
@@ -67,7 +69,7 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
         return $node;
     }
 
-    public function leaveNode(Node $node, Environment $env): ?Node
+    protected function doLeaveNode(Node $node, Environment $env)
     {
         if (self::OPTIMIZE_FOR === (self::OPTIMIZE_FOR & $this->optimizers)) {
             $this->leaveOptimizeFor($node, $env);
@@ -123,7 +125,7 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
     /**
      * Optimizes "for" tag by removing the "loop" variable creation whenever possible.
      */
-    private function enterOptimizeFor(Node $node, Environment $env): void
+    private function enterOptimizeFor(Node $node, Environment $env)
     {
         if ($node instanceof ForNode) {
             // disable the loop variable by default
@@ -187,7 +189,7 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
     /**
      * Optimizes "for" tag by removing the "loop" variable creation whenever possible.
      */
-    private function leaveOptimizeFor(Node $node, Environment $env): void
+    private function leaveOptimizeFor(Node $node, Environment $env)
     {
         if ($node instanceof ForNode) {
             array_shift($this->loops);
@@ -196,20 +198,22 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
         }
     }
 
-    private function addLoopToCurrent(): void
+    private function addLoopToCurrent()
     {
         $this->loops[0]->setAttribute('with_loop', true);
     }
 
-    private function addLoopToAll(): void
+    private function addLoopToAll()
     {
         foreach ($this->loops as $loop) {
             $loop->setAttribute('with_loop', true);
         }
     }
 
-    public function getPriority(): int
+    public function getPriority()
     {
         return 255;
     }
 }
+
+class_alias('Twig\NodeVisitor\OptimizerNodeVisitor', 'Twig_NodeVisitor_Optimizer');

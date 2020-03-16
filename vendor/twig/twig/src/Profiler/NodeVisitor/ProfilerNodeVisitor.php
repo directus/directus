@@ -17,7 +17,7 @@ use Twig\Node\BodyNode;
 use Twig\Node\MacroNode;
 use Twig\Node\ModuleNode;
 use Twig\Node\Node;
-use Twig\NodeVisitor\NodeVisitorInterface;
+use Twig\NodeVisitor\AbstractNodeVisitor;
 use Twig\Profiler\Node\EnterProfileNode;
 use Twig\Profiler\Node\LeaveProfileNode;
 use Twig\Profiler\Profile;
@@ -25,7 +25,7 @@ use Twig\Profiler\Profile;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  */
-final class ProfilerNodeVisitor implements NodeVisitorInterface
+final class ProfilerNodeVisitor extends AbstractNodeVisitor
 {
     private $extensionName;
 
@@ -34,12 +34,12 @@ final class ProfilerNodeVisitor implements NodeVisitorInterface
         $this->extensionName = $extensionName;
     }
 
-    public function enterNode(Node $node, Environment $env): Node
+    protected function doEnterNode(Node $node, Environment $env)
     {
         return $node;
     }
 
-    public function leaveNode(Node $node, Environment $env): ?Node
+    protected function doLeaveNode(Node $node, Environment $env)
     {
         if ($node instanceof ModuleNode) {
             $varName = $this->getVarName();
@@ -69,8 +69,10 @@ final class ProfilerNodeVisitor implements NodeVisitorInterface
         return sprintf('__internal_%s', hash('sha256', $this->extensionName));
     }
 
-    public function getPriority(): int
+    public function getPriority()
     {
         return 0;
     }
 }
+
+class_alias('Twig\Profiler\NodeVisitor\ProfilerNodeVisitor', 'Twig_Profiler_NodeVisitor_Profiler');

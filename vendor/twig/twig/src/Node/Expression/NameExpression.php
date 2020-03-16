@@ -27,7 +27,7 @@ class NameExpression extends AbstractExpression
         parent::__construct([], ['name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $name = $this->getAttribute('name');
 
@@ -95,3 +95,5 @@ class NameExpression extends AbstractExpression
         return !$this->isSpecial() && !$this->getAttribute('is_defined_test');
     }
 }
+
+class_alias('Twig\Node\Expression\NameExpression', 'Twig_Node_Expression_Name');

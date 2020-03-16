@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class StartsWithBinary extends AbstractBinary
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $left = $compiler->getVarName();
         $right = $compiler->getVarName();
@@ -28,8 +28,10 @@ class StartsWithBinary extends AbstractBinary
         ;
     }
 
-    public function operator(Compiler $compiler): Compiler
+    public function operator(Compiler $compiler)
     {
         return $compiler->raw('');
     }
 }
+
+class_alias('Twig\Node\Expression\Binary\StartsWithBinary', 'Twig_Node_Expression_Binary_StartsWith');

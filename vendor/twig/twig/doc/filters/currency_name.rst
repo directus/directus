@@ -1,6 +1,9 @@
 ``currency_name``
 =================
 
+.. versionadded:: 2.12
+    The ``currency_name`` filter was added in Twig 2.12.
+
 The ``currency_name`` filter returns the currency name given its three-letter
 code:
 

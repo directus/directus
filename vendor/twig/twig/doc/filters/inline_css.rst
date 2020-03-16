@@ -1,6 +1,9 @@
 ``inline_css``
 ==============
 
+.. versionadded:: 2.12
+    The ``inline_css`` filter was added in Twig 2.12.
+
 The ``inline_css`` filter inline CSS styles in HTML documents:
 
 .. code-block:: twig

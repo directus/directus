@@ -23,10 +23,13 @@ use Twig\Node\Node;
 use Twig\Node\NodeCaptureInterface;
 use Twig\Node\NodeOutputInterface;
 use Twig\Node\PrintNode;
+use Twig\Node\SpacelessNode;
 use Twig\Node\TextNode;
 use Twig\TokenParser\TokenParserInterface;
 
 /**
+ * Default parser implementation.
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class Parser
@@ -51,12 +54,12 @@ class Parser
         $this->env = $env;
     }
 
-    public function getVarName(): string
+    public function getVarName()
     {
         return sprintf('__internal_%s', hash('sha256', __METHOD__.$this->stream->getSourceContext()->getCode().$this->varNameSalt++));
     }
 
-    public function parse(TokenStream $stream, $test = null, bool $dropNeedle = false): ModuleNode
+    public function parse(TokenStream $stream, $test = null, $dropNeedle = false)
     {
         $vars = get_object_vars($this);
         unset($vars['stack'], $vars['env'], $vars['handlers'], $vars['visitors'], $vars['expressionParser'], $vars['reservedMacroNames']);
@@ -123,7 +126,7 @@ class Parser
         return $node;
     }
 
-    public function subparse($test, bool $dropNeedle = false): Node
+    public function subparse($test, $dropNeedle = false)
     {
         $lineno = $this->getCurrentToken()->getLine();
         $rv = [];
@@ -197,7 +200,7 @@ class Parser
         return new Node($rv, [], $lineno);
     }
 
-    public function getBlockStack(): array
+    public function getBlockStack()
     {
         return $this->blockStack;
     }
@@ -207,47 +210,57 @@ class Parser
         return isset($this->blockStack[\count($this->blockStack) - 1]) ? $this->blockStack[\count($this->blockStack) - 1] : null;
     }
 
-    public function popBlockStack(): void
+    public function popBlockStack()
     {
         array_pop($this->blockStack);
     }
 
-    public function pushBlockStack($name): void
+    public function pushBlockStack($name)
     {
         $this->blockStack[] = $name;
     }
 
-    public function hasBlock(string $name): bool
+    public function hasBlock($name)
     {
         return isset($this->blocks[$name]);
     }
 
-    public function getBlock(string $name): Node
+    public function getBlock($name)
     {
         return $this->blocks[$name];
     }
 
-    public function setBlock(string $name, BlockNode $value): void
+    public function setBlock($name, BlockNode $value)
     {
         $this->blocks[$name] = new BodyNode([$value], [], $value->getTemplateLine());
     }
 
-    public function hasMacro(string $name): bool
+    public function hasMacro($name)
     {
         return isset($this->macros[$name]);
     }
 
-    public function setMacro(string $name, MacroNode $node): void
+    public function setMacro($name, MacroNode $node)
     {
         $this->macros[$name] = $node;
     }
 
-    public function addTrait($trait): void
+    /**
+     * @deprecated since Twig 2.7 as there are no reserved macro names anymore, will be removed in 3.0.
+     */
+    public function isReservedMacroName($name)
+    {
+        @trigger_error(sprintf('The "%s" method is deprecated since Twig 2.7 and will be removed in 3.0.', __METHOD__), E_USER_DEPRECATED);
+
+        return false;
+    }
+
+    public function addTrait($trait)
     {
         $this->traits[] = $trait;
     }
 
-    public function hasTraits(): bool
+    public function hasTraits()
     {
         return \count($this->traits) > 0;
     }
@@ -259,70 +272,80 @@ class Parser
         $this->embeddedTemplates[] = $template;
     }
 
-    public function addImportedSymbol(string $type, string $alias, string $name = null, AbstractExpression $node = null): void
+    public function addImportedSymbol($type, $alias, $name = null, AbstractExpression $node = null)
     {
         $this->importedSymbols[0][$type][$alias] = ['name' => $name, 'node' => $node];
     }
 
-    public function getImportedSymbol(string $type, string $alias)
+    public function getImportedSymbol($type, $alias)
     {
         // if the symbol does not exist in the current scope (0), try in the main/global scope (last index)
         return $this->importedSymbols[0][$type][$alias] ?? ($this->importedSymbols[\count($this->importedSymbols) - 1][$type][$alias] ?? null);
     }
 
-    public function isMainScope(): bool
+    public function isMainScope()
     {
         return 1 === \count($this->importedSymbols);
     }
 
-    public function pushLocalScope(): void
+    public function pushLocalScope()
     {
         array_unshift($this->importedSymbols, []);
     }
 
-    public function popLocalScope(): void
+    public function popLocalScope()
     {
         array_shift($this->importedSymbols);
     }
 
-    public function getExpressionParser(): ExpressionParser
+    /**
+     * @return ExpressionParser
+     */
+    public function getExpressionParser()
     {
         return $this->expressionParser;
     }
 
-    public function getParent(): ?Node
+    public function getParent()
     {
         return $this->parent;
     }
 
-    public function setParent(?Node $parent): void
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
 
-    public function getStream(): TokenStream
+    /**
+     * @return TokenStream
+     */
+    public function getStream()
     {
         return $this->stream;
     }
 
-    public function getCurrentToken(): Token
+    /**
+     * @return Token
+     */
+    public function getCurrentToken()
     {
         return $this->stream->getCurrent();
     }
 
-    private function filterBodyNodes(Node $node, bool $nested = false): ?Node
+    private function filterBodyNodes(Node $node, bool $nested = false)
     {
         // check that the body does not contain non-empty output nodes
         if (
             ($node instanceof TextNode && !ctype_space($node->getAttribute('data')))
             ||
-            (!$node instanceof TextNode && !$node instanceof BlockReferenceNode && $node instanceof NodeOutputInterface)
+            // the "&& !$node instanceof SpacelessNode" part of the condition must be removed in 3.0
+            (!$node instanceof TextNode && !$node instanceof BlockReferenceNode && ($node instanceof NodeOutputInterface && !$node instanceof SpacelessNode))
         ) {
             if (false !== strpos((string) $node, \chr(0xEF).\chr(0xBB).\chr(0xBF))) {
                 $t = substr($node->getAttribute('data'), 3);
                 if ('' === $t || ctype_space($t)) {
                     // bypass empty nodes starting with a BOM
-                    return null;
+                    return;
                 }
             }
 
@@ -335,20 +358,29 @@ class Parser
             return $node;
         }
 
+        // to be removed completely in Twig 3.0
+        if (!$nested && $node instanceof SpacelessNode) {
+            @trigger_error(sprintf('Using the spaceless tag at the root level of a child template in "%s" at line %d is deprecated since Twig 2.5.0 and will become a syntax error in 3.0.', $this->stream->getSourceContext()->getName(), $node->getTemplateLine()), E_USER_DEPRECATED);
+        }
+
         // "block" tags that are not captured (see above) are only used for defining
         // the content of the block. In such a case, nesting it does not work as
         // expected as the definition is not part of the default template code flow.
-        if ($nested && $node instanceof BlockReferenceNode) {
-            throw new SyntaxError('A block definition cannot be nested under non-capturing nodes.', $node->getTemplateLine(), $this->stream->getSourceContext());
+        if ($nested && ($node instanceof BlockReferenceNode || $node instanceof \Twig_Node_BlockReference)) {
+            //throw new SyntaxError('A block definition cannot be nested under non-capturing nodes.', $node->getTemplateLine(), $this->stream->getSourceContext());
+            @trigger_error(sprintf('Nesting a block definition under a non-capturing node in "%s" at line %d is deprecated since Twig 2.5.0 and will become a syntax error in 3.0.', $this->stream->getSourceContext()->getName(), $node->getTemplateLine()), E_USER_DEPRECATED);
+
+            return;
         }
 
-        if ($node instanceof NodeOutputInterface) {
-            return null;
+        // the "&& !$node instanceof SpacelessNode" part of the condition must be removed in 3.0
+        if ($node instanceof NodeOutputInterface && !$node instanceof SpacelessNode) {
+            return;
         }
 
         // here, $nested means "being at the root level of a child template"
-        // we need to discard the wrapping "Node" for the "body" node
-        $nested = $nested || Node::class !== \get_class($node);
+        // we need to discard the wrapping "Twig_Node" for the "body" node
+        $nested = $nested || ('Twig_Node' !== \get_class($node) && Node::class !== \get_class($node));
         foreach ($node as $k => $n) {
             if (null !== $n && null === $this->filterBodyNodes($n, $nested)) {
                 $node->removeNode($k);
@@ -358,3 +390,5 @@ class Parser
         return $node;
     }
 }
+
+class_alias('Twig\Parser', 'Twig_Parser');

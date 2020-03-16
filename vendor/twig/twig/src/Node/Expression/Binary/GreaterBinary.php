@@ -15,25 +15,10 @@ use Twig\Compiler;
 
 class GreaterBinary extends AbstractBinary
 {
-    public function compile(Compiler $compiler): void
-    {
-        if (\PHP_VERSION_ID >= 80000) {
-            parent::compile($compiler);
-
-            return;
-        }
-
-        $compiler
-            ->raw('1 === twig_compare(')
-            ->subcompile($this->getNode('left'))
-            ->raw(', ')
-            ->subcompile($this->getNode('right'))
-            ->raw(')')
-        ;
-    }
-
-    public function operator(Compiler $compiler): Compiler
+    public function operator(Compiler $compiler)
     {
         return $compiler->raw('>');
     }
 }
+
+class_alias('Twig\Node\Expression\Binary\GreaterBinary', 'Twig_Node_Expression_Binary_Greater');

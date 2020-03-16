@@ -1,6 +1,9 @@
 ``u``
 =====
 
+.. versionadded:: 2.12.1
+    The ``u`` filter was added in Twig 2.12.1.
+
 The ``u`` filter wraps a text in a Unicode object (a `Symfony UnicodeString
 instance <https://symfony.com/doc/current/components/string.html>`_) that
 exposes methods to "manipulate" the string.

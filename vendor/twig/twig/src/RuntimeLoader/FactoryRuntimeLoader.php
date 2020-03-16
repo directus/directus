@@ -28,14 +28,14 @@ class FactoryRuntimeLoader implements RuntimeLoaderInterface
         $this->map = $map;
     }
 
-    public function load(string $class)
+    public function load($class)
     {
-        if (!isset($this->map[$class])) {
-            return null;
+        if (isset($this->map[$class])) {
+            $runtimeFactory = $this->map[$class];
+
+            return $runtimeFactory();
         }
-
-        $runtimeFactory = $this->map[$class];
-
-        return $runtimeFactory();
     }
 }
+
+class_alias('Twig\RuntimeLoader\FactoryRuntimeLoader', 'Twig_FactoryRuntimeLoader');

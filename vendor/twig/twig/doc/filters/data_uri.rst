@@ -1,6 +1,9 @@
 ``data_uri``
 ============
 
+.. versionadded:: 2.12
+    The ``data_uri`` filter was added in Twig 2.12.
+
 The ``data_uri`` filter generates a URL using the data scheme as defined in RFC
 2397:
 

@@ -38,7 +38,7 @@ use Psr\Container\ContainerInterface;
 class ServiceLocator implements ContainerInterface
 {
     private $container;
-    private $aliases = [];
+    private $aliases = array();
 
     /**
      * @param PimpleContainer $container The Container instance used to locate services

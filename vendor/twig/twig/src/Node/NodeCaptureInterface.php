@@ -19,3 +19,5 @@ namespace Twig\Node;
 interface NodeCaptureInterface
 {
 }
+
+class_alias('Twig\Node\NodeCaptureInterface', 'Twig_NodeCaptureInterface');

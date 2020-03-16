@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-5.0.0
------
-
- * `Filesystem::dumpFile()` and `appendToFile()` don't accept arrays anymore
-
 4.4.0
 -----
 

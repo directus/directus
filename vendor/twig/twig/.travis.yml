@@ -8,6 +8,7 @@ cache:
 
 env:
     global:
+        - SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT=1
         - SYMFONY_PHPUNIT_DISABLE_RESULT_CACHE=1
 
 before_install:
@@ -15,29 +16,30 @@ before_install:
 
 install:
     - travis_retry composer install
-    - (cd extra/cssinliner-extra && travis_retry composer install)
-    - (cd extra/html-extra && travis_retry composer install)
-    - (cd extra/inky-extra && travis_retry composer install)
-    - (cd extra/intl-extra && travis_retry composer install)
-    - (cd extra/markdown-extra && travis_retry composer install)
-    - (cd extra/string-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/cssinliner-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/html-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/inky-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/intl-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/markdown-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION < 7.2 ]] || cd extra/string-extra && travis_retry composer install)
 
 script:
     - ./vendor/bin/simple-phpunit
-    - (cd extra/cssinliner-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/html-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/inky-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/intl-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/markdown-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/string-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/cssinliner-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/html-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/inky-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/intl-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION = 7.0 ]] || cd extra/markdown-extra && ./vendor/bin/simple-phpunit)
+    - ([[ $TRAVIS_PHP_VERSION < 7.2 ]] || cd extra/string-extra && ./vendor/bin/simple-phpunit)
 
 jobs:
     fast_finish: true
     include:
+        - php: 7.0
+        - php: 7.1
         - php: 7.2
         - php: 7.3
         - php: 7.4
-        # Drupal does not support 3.x yet
-        #- stage: integration tests
-        #  php: 7.3
-        #  script: ./drupal_test.sh
+        - stage: integration tests
+          php: 7.3
+          script: ./drupal_test.sh

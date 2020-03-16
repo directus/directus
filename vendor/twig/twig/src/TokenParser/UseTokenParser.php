@@ -30,7 +30,7 @@ use Twig\Token;
  */
 final class UseTokenParser extends AbstractTokenParser
 {
-    public function parse(Token $token): Node
+    public function parse(Token $token)
     {
         $template = $this->parser->getExpressionParser()->parseExpression();
         $stream = $this->parser->getStream();
@@ -64,8 +64,10 @@ final class UseTokenParser extends AbstractTokenParser
         return new Node();
     }
 
-    public function getTag(): string
+    public function getTag()
     {
         return 'use';
     }
 }
+
+class_alias('Twig\TokenParser\UseTokenParser', 'Twig_TokenParser_Use');

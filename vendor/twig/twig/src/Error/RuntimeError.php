@@ -20,3 +20,5 @@ namespace Twig\Error;
 class RuntimeError extends Error
 {
 }
+
+class_alias('Twig\Error\RuntimeError', 'Twig_Error_Runtime');

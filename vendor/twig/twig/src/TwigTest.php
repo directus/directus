@@ -16,11 +16,13 @@ use Twig\Node\Expression\TestExpression;
 /**
  * Represents a template test.
  *
+ * @final since Twig 2.4.0
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @see https://twig.symfony.com/doc/templates.html#test-operator
  */
-final class TwigTest
+class TwigTest
 {
     private $name;
     private $callable;
@@ -28,10 +30,18 @@ final class TwigTest
     private $arguments = [];
 
     /**
+     * Creates a template test.
+     *
+     * @param string        $name     Name of this test
      * @param callable|null $callable A callable implementing the test. If null, you need to overwrite the "node_class" option to customize compilation.
+     * @param array         $options  Options array
      */
     public function __construct(string $name, $callable = null, array $options = [])
     {
+        if (__CLASS__ !== \get_class($this)) {
+            @trigger_error('Overriding '.__CLASS__.' is deprecated since Twig 2.4.0 and the class will be final in 3.0.', E_USER_DEPRECATED);
+        }
+
         $this->name = $name;
         $this->callable = $callable;
         $this->options = array_merge([
@@ -42,7 +52,7 @@ final class TwigTest
         ], $options);
     }
 
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -57,38 +67,43 @@ final class TwigTest
         return $this->callable;
     }
 
-    public function getNodeClass(): string
+    public function getNodeClass()
     {
         return $this->options['node_class'];
     }
 
-    public function setArguments(array $arguments): void
+    public function setArguments($arguments)
     {
         $this->arguments = $arguments;
     }
 
-    public function getArguments(): array
+    public function getArguments()
     {
         return $this->arguments;
     }
 
-    public function isVariadic(): bool
+    public function isVariadic()
     {
-        return (bool) $this->options['is_variadic'];
+        return $this->options['is_variadic'];
     }
 
-    public function isDeprecated(): bool
+    public function isDeprecated()
     {
         return (bool) $this->options['deprecated'];
     }
 
-    public function getDeprecatedVersion(): string
+    public function getDeprecatedVersion()
     {
-        return \is_bool($this->options['deprecated']) ? '' : $this->options['deprecated'];
+        return $this->options['deprecated'];
     }
 
-    public function getAlternative(): ?string
+    public function getAlternative()
     {
         return $this->options['alternative'];
     }
 }
+
+// For Twig 1.x compatibility
+class_alias('Twig\TwigTest', 'Twig_SimpleTest', false);
+
+class_alias('Twig\TwigTest', 'Twig_Test');

@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class VariadicExpression extends ArrayExpression
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->raw('...');
 

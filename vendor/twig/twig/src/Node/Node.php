@@ -77,9 +77,6 @@ class Node implements \Countable, \IteratorAggregate
         return implode("\n", $repr);
     }
 
-    /**
-     * @return void
-     */
     public function compile(Compiler $compiler)
     {
         foreach ($this->nodes as $node) {
@@ -87,22 +84,28 @@ class Node implements \Countable, \IteratorAggregate
         }
     }
 
-    public function getTemplateLine(): int
+    public function getTemplateLine()
     {
         return $this->lineno;
     }
 
-    public function getNodeTag(): ?string
+    public function getNodeTag()
     {
         return $this->tag;
     }
 
-    public function hasAttribute(string $name): bool
+    /**
+     * @return bool
+     */
+    public function hasAttribute($name)
     {
         return \array_key_exists($name, $this->attributes);
     }
 
-    public function getAttribute(string $name)
+    /**
+     * @return mixed
+     */
+    public function getAttribute($name)
     {
         if (!\array_key_exists($name, $this->attributes)) {
             throw new \LogicException(sprintf('Attribute "%s" does not exist for Node "%s".', $name, \get_class($this)));
@@ -111,22 +114,32 @@ class Node implements \Countable, \IteratorAggregate
         return $this->attributes[$name];
     }
 
-    public function setAttribute(string $name, $value): void
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function setAttribute($name, $value)
     {
         $this->attributes[$name] = $value;
     }
 
-    public function removeAttribute(string $name): void
+    public function removeAttribute($name)
     {
         unset($this->attributes[$name]);
     }
 
-    public function hasNode(string $name): bool
+    /**
+     * @return bool
+     */
+    public function hasNode($name)
     {
         return isset($this->nodes[$name]);
     }
 
-    public function getNode(string $name): self
+    /**
+     * @return Node
+     */
+    public function getNode($name)
     {
         if (!isset($this->nodes[$name])) {
             throw new \LogicException(sprintf('Node "%s" does not exist for Node "%s".', $name, \get_class($this)));
@@ -135,12 +148,12 @@ class Node implements \Countable, \IteratorAggregate
         return $this->nodes[$name];
     }
 
-    public function setNode(string $name, self $node): void
+    public function setNode($name, self $node)
     {
         $this->nodes[$name] = $node;
     }
 
-    public function removeNode(string $name): void
+    public function removeNode($name)
     {
         unset($this->nodes[$name]);
     }
@@ -150,26 +163,49 @@ class Node implements \Countable, \IteratorAggregate
         return \count($this->nodes);
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator()
     {
         return new \ArrayIterator($this->nodes);
     }
 
-    public function getTemplateName(): ?string
+    /**
+     * @deprecated since 2.8 (to be removed in 3.0)
+     */
+    public function setTemplateName($name/*, $triggerDeprecation = true */)
+    {
+        $triggerDeprecation = 2 > \func_num_args() || \func_get_arg(1);
+        if ($triggerDeprecation) {
+            @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0. Use setSourceContext() instead.', E_USER_DEPRECATED);
+        }
+
+        $this->name = $name;
+        foreach ($this->nodes as $node) {
+            $node->setTemplateName($name, $triggerDeprecation);
+        }
+    }
+
+    public function getTemplateName()
     {
         return $this->sourceContext ? $this->sourceContext->getName() : null;
     }
 
-    public function setSourceContext(Source $source): void
+    public function setSourceContext(Source $source)
     {
         $this->sourceContext = $source;
         foreach ($this->nodes as $node) {
             $node->setSourceContext($source);
         }
+
+        $this->setTemplateName($source->getName(), false);
     }
 
-    public function getSourceContext(): ?Source
+    public function getSourceContext()
     {
         return $this->sourceContext;
     }
 }
+
+class_alias('Twig\Node\Node', 'Twig_Node');
+
+// Ensure that the aliased name is loaded to keep BC for classes implementing the typehint with the old aliased name.
+class_exists('Twig\Compiler');

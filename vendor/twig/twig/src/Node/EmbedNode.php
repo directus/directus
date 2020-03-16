@@ -31,7 +31,7 @@ class EmbedNode extends IncludeNode
         $this->setAttribute('index', $index);
     }
 
-    protected function addGetTemplate(Compiler $compiler): void
+    protected function addGetTemplate(Compiler $compiler)
     {
         $compiler
             ->write('$this->loadTemplate(')
@@ -46,3 +46,5 @@ class EmbedNode extends IncludeNode
         ;
     }
 }
+
+class_alias('Twig\Node\EmbedNode', 'Twig_Node_Embed');

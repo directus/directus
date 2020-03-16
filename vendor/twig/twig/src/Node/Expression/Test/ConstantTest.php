@@ -25,7 +25,7 @@ use Twig\Node\Expression\TestExpression;
  */
 class ConstantTest extends TestExpression
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('(')
@@ -47,3 +47,5 @@ class ConstantTest extends TestExpression
         ;
     }
 }
+
+class_alias('Twig\Node\Expression\Test\ConstantTest', 'Twig_Node_Expression_Test_Constant');

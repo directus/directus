@@ -21,15 +21,17 @@ interface SecurityPolicyInterface
     /**
      * @throws SecurityError
      */
-    public function checkSecurity($tags, $filters, $functions): void;
+    public function checkSecurity($tags, $filters, $functions);
 
     /**
      * @throws SecurityNotAllowedMethodError
      */
-    public function checkMethodAllowed($obj, $method): void;
+    public function checkMethodAllowed($obj, $method);
 
     /**
      * @throws SecurityNotAllowedPropertyError
      */
-    public function checkPropertyAllowed($obj, $method): void;
+    public function checkPropertyAllowed($obj, $method);
 }
+
+class_alias('Twig\Sandbox\SecurityPolicyInterface', 'Twig_Sandbox_SecurityPolicyInterface');

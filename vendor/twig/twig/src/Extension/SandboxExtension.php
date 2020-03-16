@@ -30,32 +30,32 @@ final class SandboxExtension extends AbstractExtension
         $this->sandboxedGlobally = $sandboxed;
     }
 
-    public function getTokenParsers(): array
+    public function getTokenParsers()
     {
         return [new SandboxTokenParser()];
     }
 
-    public function getNodeVisitors(): array
+    public function getNodeVisitors()
     {
         return [new SandboxNodeVisitor()];
     }
 
-    public function enableSandbox(): void
+    public function enableSandbox()
     {
         $this->sandboxed = true;
     }
 
-    public function disableSandbox(): void
+    public function disableSandbox()
     {
         $this->sandboxed = false;
     }
 
-    public function isSandboxed(): bool
+    public function isSandboxed()
     {
         return $this->sandboxedGlobally || $this->sandboxed;
     }
 
-    public function isSandboxedGlobally(): bool
+    public function isSandboxedGlobally()
     {
         return $this->sandboxedGlobally;
     }
@@ -65,19 +65,19 @@ final class SandboxExtension extends AbstractExtension
         $this->policy = $policy;
     }
 
-    public function getSecurityPolicy(): SecurityPolicyInterface
+    public function getSecurityPolicy()
     {
         return $this->policy;
     }
 
-    public function checkSecurity($tags, $filters, $functions): void
+    public function checkSecurity($tags, $filters, $functions)
     {
         if ($this->isSandboxed()) {
             $this->policy->checkSecurity($tags, $filters, $functions);
         }
     }
 
-    public function checkMethodAllowed($obj, $method, int $lineno = -1, Source $source = null): void
+    public function checkMethodAllowed($obj, $method, int $lineno = -1, Source $source = null)
     {
         if ($this->isSandboxed()) {
             try {
@@ -91,7 +91,7 @@ final class SandboxExtension extends AbstractExtension
         }
     }
 
-    public function checkPropertyAllowed($obj, $method, int $lineno = -1, Source $source = null): void
+    public function checkPropertyAllowed($obj, $method, int $lineno = -1, Source $source = null)
     {
         if ($this->isSandboxed()) {
             try {
@@ -121,3 +121,5 @@ final class SandboxExtension extends AbstractExtension
         return $obj;
     }
 }
+
+class_alias('Twig\Extension\SandboxExtension', 'Twig_Extension_Sandbox');

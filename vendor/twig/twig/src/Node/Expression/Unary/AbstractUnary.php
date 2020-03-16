@@ -23,12 +23,14 @@ abstract class AbstractUnary extends AbstractExpression
         parent::__construct(['node' => $node], [], $lineno);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler->raw(' ');
         $this->operator($compiler);
         $compiler->subcompile($this->getNode('node'));
     }
 
-    abstract public function operator(Compiler $compiler): Compiler;
+    abstract public function operator(Compiler $compiler);
 }
+
+class_alias('Twig\Node\Expression\Unary\AbstractUnary', 'Twig_Node_Expression_Unary');

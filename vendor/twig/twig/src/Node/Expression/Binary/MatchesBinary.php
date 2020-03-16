@@ -15,7 +15,7 @@ use Twig\Compiler;
 
 class MatchesBinary extends AbstractBinary
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('preg_match(')
@@ -26,8 +26,10 @@ class MatchesBinary extends AbstractBinary
         ;
     }
 
-    public function operator(Compiler $compiler): Compiler
+    public function operator(Compiler $compiler)
     {
         return $compiler->raw('');
     }
 }
+
+class_alias('Twig\Node\Expression\Binary\MatchesBinary', 'Twig_Node_Expression_Binary_Matches');

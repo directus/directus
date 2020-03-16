@@ -41,3 +41,5 @@ class FunctionExpression extends CallExpression
         $this->compileCallable($compiler);
     }
 }
+
+class_alias('Twig\Node\Expression\FunctionExpression', 'Twig_Node_Expression_Function');
