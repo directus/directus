@@ -3,10 +3,12 @@ import VueCompositionAPI, { ref } from '@vue/composition-api';
 import DrawerDetail from './drawer-detail.vue';
 import * as GroupableComposition from '@/compositions/groupable/groupable';
 import VIcon from '@/components/v-icon';
+import TransitionExpand from '@/components/transition/expand';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-icon', VIcon);
+localVue.component('transition-expand', TransitionExpand);
 
 describe('Drawer Detail', () => {
 	it('Uses the useGroupable composition', () => {

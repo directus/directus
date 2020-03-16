@@ -76,3 +76,26 @@
 	font-family: var(--family-sans-serif);
 	line-height: 26px;
 }
+
+@mixin type-card-title {
+	color: var(--heading-text-color);
+	font-weight: 500;
+	font-size: 1.25rem;
+	line-height: 2rem;
+	letter-spacing: 0.0125em;
+}
+
+@mixin type-card-subtitle {
+	color: var(--foreground-color-secondary);
+	font-weight: 400;
+	font-size: 0.875rem;
+	line-height: 1.375rem;
+	letter-spacing: 0.007em;
+}
+
+@mixin type-card-text {
+	font-weight: 400;
+	font-size: 0.875rem;
+	line-height: 1.375rem;
+	letter-spacing: 0.007em;
+}

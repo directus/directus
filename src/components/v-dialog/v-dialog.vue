@@ -68,6 +68,11 @@ export default defineComponent({
 		transition: opacity var(--medium) var(--transition);
 		pointer-events: none;
 
+		.v-card {
+			--v-card-min-width: 400px;
+			--v-card-padding: 24px;
+		}
+
 		.v-sheet {
 			--v-sheet-padding: 24px;
 		}
