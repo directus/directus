@@ -1,4 +1,9 @@
-# useWindowSize(options: WindowSizeOptions = { throttle: 100 }): { width: Ref<number>; height: Ref<number>; }
+# `useWindowSize`
+
+```ts
+function useWindowSize(options: WindowSizeOptions = { throttle: 100 }): { width: Ref<number>; height: Ref<number>; }
+```
+
 Returns the window's width and height in an object. These values are reactive.
 
 The optional `options` parameter allows you to set the throttling speed.

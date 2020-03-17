@@ -13,11 +13,14 @@ type GroupableInstance = {
  */
 export function useGroupable(value?: string | number) {
 	// Injects the registration / toggle functions from the parent scope
-	const parentFunctions = inject('item-group');
+	const parentFunctions = inject('item-group', null);
 
-	// If we're outside of a parent group scope, return immediately
 	if (isEmpty(parentFunctions)) {
-		throw new Error('useGroupable used out of group item parent context');
+		return {
+			active: ref(false),
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			toggle: () => {}
+		};
 	}
 
 	const {

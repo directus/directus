@@ -1,4 +1,9 @@
-# `useTimeFromNow(date: Date | number, autoUpdate: number = 60000): Ref<string>
+# `useTimeFromNow`
+
+```ts
+function useTimeFromNow(date: Date | number, autoUpdate: number = 60000): Ref<string>
+```
+
 Composition that can be used to create a relative time format that is auto updated every `autoUpdate`
 milliseconds.
 

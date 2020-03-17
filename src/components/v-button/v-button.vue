@@ -5,14 +5,16 @@
 		class="v-button"
 		:class="[
 			sizeClass,
-			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary }
+			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary, active }
 		]"
 		:type="type"
 		:disabled="disabled"
 		:to="to"
 		@click="onClick"
 	>
-		<span class="content" :class="{ invisible: loading }"><slot /></span>
+		<span class="content" :class="{ invisible: loading }">
+			<slot v-bind="{ active, toggle }" />
+		</span>
 		<div class="spinner">
 			<slot v-if="loading" name="loading">
 				<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
@@ -25,6 +27,7 @@
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { Location } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
+import { useGroupable } from '@/compositions/groupable';
 
 export default defineComponent({
 	props: {
@@ -64,17 +67,24 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
+		value: {
+			type: [Number, String],
+			default: null
+		},
 		...sizeProps
 	},
 	setup(props, { emit }) {
 		const sizeClass = useSizeClass(props);
 
 		const component = computed<string>(() => (props.to ? 'router-link' : 'button'));
+		const { active, toggle } = useGroupable(props.value);
 
-		return { sizeClass, onClick, component };
+		return { sizeClass, onClick, component, active, toggle };
 
 		function onClick(event: MouseEvent) {
 			if (props.loading === true) return;
+			// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
+			toggle();
 			emit('click', event);
 		}
 	}

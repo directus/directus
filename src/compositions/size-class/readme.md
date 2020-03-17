@@ -1,4 +1,14 @@
-# Size Class
+# `useSizeClass`
+
+```ts
+function useSizeClass(props: {
+	xSmall: boolean;
+	small: boolean;
+	large: boolean;
+	xLarge: boolean;
+}): string;
+```
+
 Set of props and a composition that can inject a standardized sizing prop for components.
 
 A component that uses this composition and the corresponding props will accept the `x-small` through

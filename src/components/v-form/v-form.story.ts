@@ -1,5 +1,3 @@
-import { withKnobs, text, boolean, color, optionsKnob as options } from '@storybook/addon-knobs';
-import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';

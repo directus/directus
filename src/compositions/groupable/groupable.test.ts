@@ -9,10 +9,12 @@ describe('Groupable', () => {
 	});
 
 	describe('Child', () => {
-		it('Returns null if parent injection does not exist or is undefined', () => {
+		it('Returns on-ops if parent injection does not exist or is undefined', () => {
 			mountComposition(() => {
 				provide('item-group', undefined);
-				expect(useGroupable).toThrow();
+				const { active, toggle } = useGroupable();
+				expect(active).toEqual({ value: false });
+				expect(toggle).toBeInstanceOf(Function);
 			});
 		});
 

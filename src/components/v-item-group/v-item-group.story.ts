@@ -38,13 +38,14 @@ export const basic = () => ({
 	<div>
 		<v-item-group v-model="selection" :multiple="multiple" style="display: flex; justify-content: space-around;" :max="max" :mandatory="mandatory">
 			<v-item v-for="n in 5" v-slot:default="{ active, toggle }">
-				<v-button @click="toggle" :style="{
-					'--v-button-width': '150px',
-					'--v-button-background-color-hover': active ? 'var(--blue)' : null,
-					'--v-button-background-color': active ? 'var(--blue)' : null
-				}">
+				<div @click="toggle" :style="{
+					'background-color': active ? 'var(--blue)' : null,
+					'color': active ? 'var(--white)' : 'var(--black)'
+				}"
+				style="display: flex; width: 150px; height: 30px; justify-content: center; align-items: center; border-radius: 5px"
+				>
 					I'm {{ active ? 'active ✨' : 'not active' }}
-				</v-button>
+				</div>
 			</v-item>
 		</v-item-group>
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
@@ -73,13 +74,15 @@ export const customValues = () => ({
 	<div>
 		<v-item-group v-model="selection" :multiple="multiple" style="display: flex; justify-content: space-around;" :max="max" :mandatory="mandatory">
 			<v-item v-for="value in ['item-a', 'item-2', 'unit 2', 'another value', 'what']" v-slot:default="{ active, toggle }" :key="value" :value="value">
-				<v-button @click="toggle" :style="{
-					'--v-button-width': '150px',
-					'--v-button-background-color-hover': active ? 'var(--blue)' : null,
-					'--v-button-background-color': active ? 'var(--blue)' : null
-				}">
+				<div @click="toggle" 
+					:style="{
+						'background-color': active ? 'var(--blue)' : null,
+						'color': active ? 'var(--white)' : 'var(--black)'
+					}"
+					style="display: flex; width: 150px; height: 30px; justify-content: center; align-items: center; border-radius: 5px"
+				>
 					I'm {{ active ? 'active ✨' : 'not active' }}
-				</v-button>
+				</div>
 			</v-item>
 		</v-item-group>
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
