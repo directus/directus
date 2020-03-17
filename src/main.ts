@@ -13,10 +13,12 @@ import './modules/register';
 import './layouts/register';
 import './interfaces/register';
 
+import App from './app.vue';
+
 Vue.config.productionTip = false;
 
 new Vue({
-	render: h => h('router-view'),
+	render: h => h(App),
 	router,
 	i18n
 }).$mount('#app');

@@ -33,15 +33,15 @@ describe('Button', () => {
 		expect(component.classes()).toContain('outlined');
 	});
 
-	it('Adds the block class for block buttons', () => {
+	it('Adds the full-width class for full-width buttons', () => {
 		const component = mount(VButton, {
 			localVue,
 			propsData: {
-				block: true
+				fullWidth: true
 			}
 		});
 
-		expect(component.classes()).toContain('block');
+		expect(component.classes()).toContain('full-width');
 	});
 
 	it('Adds the rounded class for rounded buttons', () => {

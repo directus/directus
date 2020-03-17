@@ -31,5 +31,5 @@ export default function useNavigation() {
 			});
 	});
 
-	return { navItems: navItems.value };
+	return { navItems: navItems };
 }

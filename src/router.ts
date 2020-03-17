@@ -4,7 +4,8 @@ import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
 import ProjectChooserRoute from '@/routes/project-chooser';
 import { checkAuth, logout } from '@/auth';
-import { hydrate } from '@/hydrate';
+import { hydrate, dehydrate } from '@/hydrate';
+import useAppStore from '@/stores/app';
 
 export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
 	const projectsStore = useProjectsStore();
@@ -94,13 +95,10 @@ export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfi
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const projectsStore = useProjectsStore();
+	const appStore = useAppStore();
 
-	// Only on first load is from.name null. On subsequent requests, from.name is undefined | string
-	const firstLoad = from.name === null;
-
-	// Before we do anything, we have to make sure we're aware of the projects that exist in the
-	// platform. We can also use this to (async) register all the globally available modules
-	if (firstLoad) {
+	// Make sure the projects store is aware of all projects that exist
+	if (projectsStore.state.projects === null) {
 		await projectsStore.getProjects();
 	}
 
@@ -112,26 +110,28 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 	// Keep the projects store currentProjectKey in sync with the route
 	if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
+		// If the store is hydrated for the current project, make sure to dehydrate it
+		if (appStore.state.hydrated === true) {
+			await dehydrate();
+		}
+
 		const projectExists = await projectsStore.setCurrentProject(to.params.project);
 
+		// If the project you're trying to access doesn't exist, redirect to `/`
 		if (to.path !== '/' && projectExists === false) {
 			return next('/');
 		}
 	}
 
-	// If you're trying to load a full URL (including) project, redirect to the login page of that
-	// project if you're not logged in yet. Otherwise, redirect to the
-	if (firstLoad) {
-		const loggedIn = await checkAuth();
+	// The store can only be hydrated if you're an authenticated user. If the store is hydrated, we
+	// can safely assume you're logged in
+	if (appStore.state.hydrated === false) {
+		const authenticated = await checkAuth();
 
-		if (loggedIn === true) {
+		if (authenticated === true) {
 			await hydrate();
-		} else {
-			if (to.meta?.public === true) {
-				return next();
-			} else {
-				return next(`/${projectsStore.state.currentProjectKey}/login`);
-			}
+		} else if (to.meta?.public !== true) {
+			return next(`/${to.params.project}/login`);
 		}
 	}
 

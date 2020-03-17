@@ -3,7 +3,10 @@
 		:is="component"
 		active-class="activated"
 		class="v-button"
-		:class="[sizeClass, { block, rounded, icon, outlined, loading, secondary }]"
+		:class="[
+			sizeClass,
+			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary }
+		]"
 		:type="type"
 		:disabled="disabled"
 		:to="to"
@@ -25,7 +28,7 @@ import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 export default defineComponent({
 	props: {
-		block: {
+		fullWidth: {
 			type: Boolean,
 			default: false
 		},
@@ -140,8 +143,8 @@ export default defineComponent({
 		}
 	}
 
-	&.block {
-		display: block;
+	&.full-width {
+		display: flex;
 		min-width: 100%;
 	}
 

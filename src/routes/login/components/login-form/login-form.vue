@@ -1,7 +1,20 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus type="email" v-model="email" :placeholder="$t('email')" full-width />
-		<v-input type="password" v-model="password" :placeholder="$t('password')" full-width />
+		<v-input
+			autofocus
+			autocomplete="username"
+			type="email"
+			v-model="email"
+			:placeholder="$t('email')"
+			full-width
+		/>
+		<v-input
+			type="password"
+			autocomplete="current-password"
+			v-model="password"
+			:placeholder="$t('password')"
+			full-width
+		/>
 		<v-button type="submit" :loading="loggingIn" x-large>{{ $t('sign_in') }}</v-button>
 	</form>
 </template>

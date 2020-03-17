@@ -12,12 +12,12 @@ export const useProjectsStore = createStore({
 	state: () => ({
 		needsInstall: false,
 		error: null as LoadingError,
-		projects: [] as Projects,
+		projects: null as Projects | null,
 		currentProjectKey: null as string | null
 	}),
 	getters: {
 		currentProject: (state): ProjectWithKey | ProjectError | null => {
-			return state.projects.find(({ key }) => key === state.currentProjectKey) || null;
+			return state.projects?.find(({ key }) => key === state.currentProjectKey) || null;
 		}
 	},
 	actions: {
@@ -29,7 +29,8 @@ export const useProjectsStore = createStore({
 		 * Returns a boolean if the operation succeeded or not.
 		 */
 		async setCurrentProject(key: string): Promise<boolean> {
-			const projectKeys = this.state.projects.map(project => project.key);
+			const projects = this.state.projects || ([] as Projects);
+			const projectKeys = projects.map(project => project.key);
 
 			if (projectKeys.includes(key) === false) {
 				try {
@@ -38,7 +39,7 @@ export const useProjectsStore = createStore({
 						key: key,
 						...projectInfoResponse.data.data
 					};
-					this.state.projects = [...this.state.projects, project];
+					this.state.projects = [...projects, project];
 				} catch {
 					return false;
 				}

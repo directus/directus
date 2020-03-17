@@ -67,7 +67,7 @@ describe('Stores / Projects', () => {
 				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
 			await projectsStore.setCurrentProject('my-project');
 			expect(spy).toHaveBeenCalledWith('/my-project/');
-			expect(projectsStore.state.projects[0]).toEqual({ key: 'my-project' });
+			expect(projectsStore.state.projects?.[0]).toEqual({ key: 'my-project' });
 		});
 
 		it('Returns true if the project exists', async () => {

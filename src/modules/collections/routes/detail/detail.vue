@@ -19,6 +19,7 @@ import api from '@/api';
 import CollectionsNavigation from '../../components/navigation/';
 
 export default defineComponent({
+	name: 'collections-detail',
 	components: { CollectionsNavigation },
 	props: {
 		collection: {

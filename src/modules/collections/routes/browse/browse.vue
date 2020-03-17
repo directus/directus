@@ -29,6 +29,7 @@ import { Collection } from '@/stores/collections/types';
 import CollectionsNavigation from '../../components/navigation/';
 
 export default defineComponent({
+	name: 'collections-browse',
 	components: { CollectionsNavigation },
 	props: {
 		collection: {

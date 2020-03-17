@@ -8,11 +8,8 @@
 		>
 			<module-bar />
 			<div class="module-nav alt-colors">
-				<div
-					style="height: 64px; padding: 20px; color: red; font-family: 'Comic Sans MS', cursive;"
-				>
-					PROJECT CHOOSER
-				</div>
+				<project-chooser />
+
 				<div class="module-nav-content">
 					<slot name="navigation" />
 				</div>
@@ -58,13 +55,15 @@ import { defineComponent, ref, provide, computed } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
+import ProjectChooser from './components/project-chooser';
 import { throttle } from 'lodash';
 
 export default defineComponent({
 	components: {
 		ModuleBar,
 		DrawerDetailGroup,
-		HeaderBar
+		HeaderBar,
+		ProjectChooser
 	},
 	props: {
 		title: {

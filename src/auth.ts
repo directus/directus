@@ -12,8 +12,12 @@ export async function checkAuth() {
 
 	if (!currentProjectKey) return false;
 
-	const response = await api.get(`/${currentProjectKey}/auth/check`);
-	return response.data.data.authenticated;
+	try {
+		const response = await api.get(`/${currentProjectKey}/auth/check`);
+		return response.data.data.authenticated;
+	} catch {
+		return false;
+	}
 }
 
 export type LoginCredentials = {

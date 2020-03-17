@@ -24,6 +24,7 @@ import useNavigation, { NavItem } from '../../compositions/use-navigation';
 import router from '@/router';
 
 export default defineComponent({
+	name: 'collections-overview',
 	components: {
 		CollectionsNavigation
 	},

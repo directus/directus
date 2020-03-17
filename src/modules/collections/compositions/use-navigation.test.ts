@@ -34,7 +34,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 			navItems = useNavigation().navItems;
 		});
 
-		expect(navItems).toEqual([
+		expect(navItems.value).toEqual([
 			{
 				collection: 'test',
 				name: 'Test',
@@ -89,8 +89,8 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 			navItems = useNavigation().navItems;
 		});
 
-		expect(navItems[0].name).toBe('A Test');
-		expect(navItems[1].name).toBe('B Test');
-		expect(navItems[2].name).toBe('C Test');
+		expect(navItems.value[0].name).toBe('A Test');
+		expect(navItems.value[1].name).toBe('B Test');
+		expect(navItems.value[2].name).toBe('C Test');
 	});
 });
