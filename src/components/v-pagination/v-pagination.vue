@@ -1,5 +1,19 @@
 <template>
 	<div class="v-pagination">
+		<v-button
+			class="double"
+			v-if="showFirstLast"
+			:disabled="disabled || value === 1"
+			secondary
+			outlined
+			icon
+			small
+			@click="toPage(1)"
+		>
+			<v-icon name="chevron_left" />
+			<v-icon name="chevron_left" />
+		</v-button>
+
 		<v-button :disabled="disabled || value === 1" secondary outlined icon small @click="toPrev">
 			<v-icon name="chevron_left" />
 		</v-button>
@@ -25,6 +39,20 @@
 			small
 			@click="toNext"
 		>
+			<v-icon name="chevron_right" />
+		</v-button>
+
+		<v-button
+			v-if="showFirstLast"
+			:disabled="disabled || value === length"
+			class="double"
+			secondary
+			outlined
+			icon
+			small
+			@click="toPage(length)"
+		>
+			<v-icon name="chevron_right" />
 			<v-icon name="chevron_right" />
 		</v-button>
 	</div>
@@ -54,6 +82,10 @@ export default defineComponent({
 		value: {
 			type: Number,
 			default: null
+		},
+		showFirstLast: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup(props, { emit }) {
@@ -110,10 +142,35 @@ export default defineComponent({
 		&:not(:first-child):not(:last-child) {
 			margin: 0 2px;
 		}
-	}
 
-	.v-button.active {
-		--v-button-background-color: var(--v-pagination-active-color);
+		&.double {
+			position: relative;
+
+			& ::v-deep {
+				.content {
+					display: grid;
+					grid-template-rows: 1fr;
+					grid-template-columns: 1fr;
+				}
+
+				.v-icon {
+					grid-row: 1;
+					grid-column: 1;
+
+					&:first-child {
+						left: -4px;
+					}
+
+					&:last-child {
+						right: -4px;
+					}
+				}
+			}
+		}
+
+		&.active {
+			--v-button-background-color: var(--v-pagination-active-color);
+		}
 	}
 }
 </style>

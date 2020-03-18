@@ -25,6 +25,9 @@ export const basic = () =>
 			},
 			totalVisible: {
 				default: number('Total Visible', 5)
+			},
+			showFirstLast: {
+				default: boolean('Show first/last', false)
 			}
 		},
 		setup() {
@@ -37,6 +40,7 @@ export const basic = () =>
 				:length="length"
 				:total-visible="totalVisible"
 				:disabled="disabled"
+				:show-first-last="showFirstLast"
 			/>
 		`
 	});
