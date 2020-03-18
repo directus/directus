@@ -1,7 +1,7 @@
 <template>
 	<component
 		:is="component"
-		active-class="activated"
+		:active-class="to ? 'activated' : null"
 		class="v-button"
 		:class="[
 			sizeClass,

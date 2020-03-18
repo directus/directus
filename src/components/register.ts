@@ -19,6 +19,7 @@ import VList, {
 } from './v-list/';
 import VNotice from './v-notice/';
 import VOverlay from './v-overlay/';
+import VPagination from './v-pagination/';
 import VProgressLinear from './v-progress/linear/';
 import VProgressCircular from './v-progress/circular/';
 import VSheet from './v-sheet/';
@@ -45,6 +46,7 @@ Vue.component('v-list-item-title', VListItemTitle);
 Vue.component('v-list-group', VListGroup);
 Vue.component('v-notice', VNotice);
 Vue.component('v-overlay', VOverlay);
+Vue.component('v-pagination', VPagination);
 Vue.component('v-progress-linear', VProgressLinear);
 Vue.component('v-progress-circular', VProgressCircular);
 Vue.component('v-sheet', VSheet);
