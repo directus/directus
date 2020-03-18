@@ -87,7 +87,7 @@
     "vue-cli-plugin-storybook": "^1.1.0",
     "vue-loader": "^15.8.3",
     "vue-template-compiler": "^2.6.10",
-    "vuepress": "^1.2.0",
+    "vuepress": "^1.4.0",
     "webpack": "^4.41.5",
     "webpack-merge": "^4.2.2"
   },
