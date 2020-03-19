@@ -73,7 +73,7 @@
     "prettier": "^1.19.1",
     "react": "^16.13.1",
     "react-dom": "^16.12.0",
-    "react-is": "^16.12.0",
+    "react-is": "^16.13.1",
     "regenerator-runtime": "^0.13.5",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.0",
