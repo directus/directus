@@ -26,6 +26,7 @@ import VSheet from './v-sheet/';
 import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
+import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
 
 Vue.component('v-avatar', VAvatar);
 Vue.component('v-button', VButton);
@@ -53,6 +54,10 @@ Vue.component('v-sheet', VSheet);
 Vue.component('v-slider', VSlider);
 Vue.component('v-switch', VSwitch);
 Vue.component('v-table', VTable);
+Vue.component('v-tabs', VTabs);
+Vue.component('v-tab', VTab);
+Vue.component('v-tabs-items', VTabsItems);
+Vue.component('v-tab-item', VTabItem);
 
 import DrawerDetail from '@/views/private/components/drawer-detail/';
 

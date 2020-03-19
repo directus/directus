@@ -44,6 +44,14 @@ export const basic = () =>
 
 export const withImage = () =>
 	defineComponent({
+		props: {
+			disabled: {
+				default: boolean('Disabled', false)
+			},
+			tile: {
+				default: boolean('Tile', false)
+			}
+		},
 		template: `
 			<v-card :disabled="disabled" :tile="tile">
 				<img src="https://images.unsplash.com/photo-1581587118469-a117038c0249?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&ixlib=rb-1.2.1&q=80&w=800" width="800" height="600" style="width: 100%; display: block; height: auto; "/>
