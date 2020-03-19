@@ -71,7 +71,7 @@
     "lint-staged": "^10.0.8",
     "mockdate": "^2.0.5",
     "prettier": "^1.19.1",
-    "react": "^16.12.0",
+    "react": "^16.13.1",
     "react-dom": "^16.12.0",
     "react-is": "^16.12.0",
     "regenerator-runtime": "^0.13.5",
