@@ -60,10 +60,10 @@ export default defineComponent({
 		const error = ref(null);
 		const items = ref([]);
 		const loading = ref(true);
-		const itemCount = ref(0);
+		const itemCount = ref<number>(null);
 		const currentPage = ref(1);
-		const pages = computed<number>(() => Math.ceil(itemCount.value / PAGE_COUNT));
-		const isBigCollection = computed<boolean>(() => itemCount.value > PAGE_COUNT);
+		const pages = computed<number>(() => Math.ceil(itemCount.value || 0 / PAGE_COUNT));
+		const isBigCollection = computed<boolean>(() => (itemCount.value || 0) > PAGE_COUNT);
 		const sort = ref({ by: 'id', desc: false });
 
 		const _selection = computed<Item[]>({
@@ -102,7 +102,7 @@ export default defineComponent({
 			() => props.collection,
 			() => {
 				items.value = [];
-				itemCount.value = 0;
+				itemCount.value = null;
 				currentPage.value = 1;
 				getItems();
 			}
@@ -142,12 +142,24 @@ export default defineComponent({
 					params: {
 						limit: PAGE_COUNT,
 						page: currentPage.value,
-						meta: 'filter_count',
 						sort: sortString
 					}
 				});
+
 				items.value = response.data.data;
-				itemCount.value = response.data.meta.filter_count;
+
+				if (itemCount.value === null) {
+					if (response.data.data.length === PAGE_COUNT) {
+						// Requesting the page filter count in the actual request every time slows
+						// the request down by like 600ms-1s. This makes sure we only fetch the count
+						// once if needed.
+						getTotalCount();
+					} else {
+						// If the response includes less items than the limit, it's safe to assume
+						// it's all the data in the DB
+						itemCount.value = response.data.data.length;
+					}
+				}
 			} catch (error) {
 				error.value = error;
 			} finally {
@@ -185,6 +197,18 @@ export default defineComponent({
 			sort.value = newSort;
 			currentPage.value = 1;
 			getItems();
+		}
+
+		async function getTotalCount() {
+			const response = await api.get(`/${currentProjectKey}/items/${props.collection}`, {
+				params: {
+					limit: 0,
+					fields: primaryKeyField.value.field,
+					meta: 'filter_count'
+				}
+			});
+
+			itemCount.value = response.data.meta.filter_count;
 		}
 	}
 });
