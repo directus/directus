@@ -1,28 +1,40 @@
 <template>
-	<v-table
-		:items="items"
-		:loading="loading"
-		:headers="headers"
-		ref="table"
-		v-model="_selection"
-		fixed-header
-		show-select
-		@click:row="onRowClick"
-		:server-sort="isBigCollection"
-		@update:sort="onSortChange"
-	>
-		<template #footer>
-			<div class="pagination" v-if="isBigCollection">
-				<v-pagination
-					:length="pages"
-					:total-visible="5"
-					show-first-last
-					:value="currentPage"
-					@input="toPage"
-				/>
-			</div>
-		</template>
-	</v-table>
+	<div class="layout-tabular">
+		<portal to="actions:prepend">
+			Search bar here
+		</portal>
+
+		<portal to="drawer">
+			<drawer-detail icon="exposure_plus_2" title="Items per page">
+				Example
+			</drawer-detail>
+		</portal>
+
+		<v-table
+			:items="items"
+			:loading="loading"
+			:headers="headers"
+			ref="table"
+			v-model="_selection"
+			fixed-header
+			show-select
+			@click:row="onRowClick"
+			:server-sort="isBigCollection"
+			@update:sort="onSortChange"
+		>
+			<template #footer>
+				<div class="pagination" v-if="isBigCollection">
+					<v-pagination
+						:length="pages"
+						:total-visible="5"
+						show-first-last
+						:value="currentPage"
+						@input="toPage"
+					/>
+				</div>
+			</template>
+		</v-table>
+	</div>
 </template>
 
 <script lang="ts">
@@ -215,6 +227,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.layout-tabular {
+	display: contents;
+}
+
 .v-table {
 	--v-table-sticky-offset-top: var(--layout-offset-top);
 

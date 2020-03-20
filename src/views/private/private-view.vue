@@ -46,6 +46,7 @@
 
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
+				<portal-target name="drawer" />
 			</drawer-detail-group>
 		</aside>
 
