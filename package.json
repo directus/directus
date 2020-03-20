@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
-    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-centered": "^5.3.17",
     "@storybook/addon-knobs": "^5.3.17",
