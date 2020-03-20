@@ -1,5 +1,6 @@
 import { Component } from 'vue';
 import VueI18n from 'vue-i18n';
+import { VueConstructor } from 'vue/types/umd';
 
 export type LayoutOptions = {
 	id: string;
@@ -17,3 +18,7 @@ export interface Layout extends LayoutConfig {
 }
 
 export type LayoutContext = { i18n: VueI18n };
+
+export interface LayoutComponent extends VueConstructor {
+	refresh: () => Promise<void>;
+}

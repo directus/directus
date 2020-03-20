@@ -44,9 +44,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .drawer-detail {
 	.toggle {
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
+		position: relative;
 		width: 100%;
 		height: 64px;
 		color: var(--foreground-color);
@@ -65,10 +63,17 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 64px;
 		height: 100%;
-		margin-right: 12px;
-		padding: 20px;
-		padding-right: 0;
+	}
+
+	.title {
+		position: absolute;
+		top: 50%;
+		left: 52px;
+		overflow: hidden;
+		white-space: nowrap;
+		transform: translateY(-50%);
 	}
 
 	.content {

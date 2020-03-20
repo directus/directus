@@ -1,6 +1,11 @@
 <template>
 	<div class="v-table" :class="{ loading }">
-		<table :summary="_headers.map(header => header.text).join(', ')">
+		<table
+			:summary="_headers.map(header => header.text).join(', ')"
+			:style="{
+				'--grid-columns': columnStyle
+			}"
+		>
 			<table-header
 				:headers.sync="_headers"
 				:sort.sync="_sort"
@@ -16,14 +21,14 @@
 					<slot :header="header" :name="`header.${header.value}`" />
 				</template>
 			</table-header>
-			<thead v-if="loading" class="loading-indicator">
-				<th :colspan="_headers.length" scope="colgroup">
+			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
+				<th scope="colgroup" :style="{ gridColumn: loadingColSpan }">
 					<v-progress-linear indeterminate v-if="loading" />
 				</th>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
-					<td :colspan="_headers.length">{{ loadingText }}</td>
+					<td :style="{ gridColumn: loadingColSpan }">{{ loadingText }}</td>
 				</tr>
 			</tbody>
 			<draggable
@@ -55,14 +60,15 @@
 				</table-row>
 			</draggable>
 		</table>
+		<slot name="footer" />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
-import TableHeader from './_table-header.vue';
-import TableRow from './_table-row.vue';
+import TableHeader from './table-header/';
+import TableRow from './table-row/';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import draggable from 'vuedraggable';
@@ -184,6 +190,13 @@ export default defineComponent({
 			}
 		});
 
+		const loadingColSpan = computed<string>(() => {
+			let length = _headers.value.length;
+			if (props.showSelect) length = length + 1;
+			if (props.showManualSort) length = length + 1;
+			return `1 / span ${length}`;
+		});
+
 		const _items = computed({
 			get: () => {
 				if (props.serverSort === true || _sort.value.by === '$manual') {
@@ -211,6 +224,22 @@ export default defineComponent({
 
 		const hasRowClick = computed<boolean>(() => listeners.hasOwnProperty('click:row'));
 
+		const columnStyle = computed<string>(() => {
+			let gridTemplateColumns = _headers.value
+				.map((header, index, array) => {
+					if (index !== array.length - 1) {
+						return header.width ? `${header.width}px` : 'min-content';
+					} else {
+						return `minmax(min-content, 1fr)`;
+					}
+				})
+				.reduce((acc, val) => (acc += ' ' + val), '');
+
+			if (props.showSelect) gridTemplateColumns = 'auto ' + gridTemplateColumns;
+			if (props.showManualSort) gridTemplateColumns = 'auto ' + gridTemplateColumns;
+			return gridTemplateColumns;
+		});
+
 		return {
 			_headers,
 			_items,
@@ -221,7 +250,9 @@ export default defineComponent({
 			onToggleSelectAll,
 			someItemsSelected,
 			onEndDrag,
-			hasRowClick
+			hasRowClick,
+			loadingColSpan,
+			columnStyle
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {
@@ -270,15 +301,46 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-table {
 	--v-table-height: auto;
+	--v-table-sticky-offset-top: 0;
 
 	position: relative;
 	height: var(--v-table-height);
-	overflow: auto;
+	overflow-y: auto;
 
 	table {
-		width: 100%;
-		table-layout: fixed;
+		display: grid;
+		grid-template-columns: var(--grid-columns);
+		min-width: 100%;
 		border-spacing: 0;
+
+		::v-deep {
+			tbody,
+			thead,
+			tr {
+				display: contents;
+			}
+
+			td,
+			th {
+				&.align-left {
+					text-align: left;
+				}
+
+				&.align-center {
+					text-align: center;
+				}
+
+				&.align-right {
+					text-align: right;
+				}
+			}
+
+			.sortable-ghost {
+				.cell {
+					background-color: var(--highlight);
+				}
+			}
+		}
 	}
 
 	&.loading {
@@ -301,6 +363,12 @@ export default defineComponent({
 			th {
 				padding: 0;
 			}
+
+			&.sticky th {
+				position: sticky;
+				top: 48px;
+				z-index: +1;
+			}
 		}
 
 		.loading-text {
@@ -309,26 +377,6 @@ export default defineComponent({
 
 			td {
 				padding: 16px;
-			}
-		}
-	}
-
-	::v-deep {
-		.align-left {
-			text-align: left;
-		}
-
-		.align-center {
-			text-align: center;
-		}
-
-		.align-right {
-			text-align: right;
-		}
-
-		.sortable-ghost {
-			.cell {
-				background-color: var(--highlight);
 			}
 		}
 	}

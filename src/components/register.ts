@@ -2,8 +2,11 @@ import Vue from 'vue';
 
 import VAvatar from './v-avatar/';
 import VButton from './v-button/';
+import VBreadcrumb from './v-breadcrumb';
+import VCard, { VCardActions, VCardTitle, VCardSubtitle, VCardText } from './v-card';
 import VCheckbox from './v-checkbox/';
 import VChip from './v-chip/';
+import VDialog from './v-dialog';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VIcon from './v-icon/';
@@ -30,8 +33,15 @@ import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
 
 Vue.component('v-avatar', VAvatar);
 Vue.component('v-button', VButton);
+Vue.component('v-breadcrumb', VBreadcrumb);
+Vue.component('v-card', VCard);
+Vue.component('v-card-title', VCardTitle);
+Vue.component('v-card-subtitle', VCardSubtitle);
+Vue.component('v-card-text', VCardText);
+Vue.component('v-card-actions', VCardActions);
 Vue.component('v-checkbox', VCheckbox);
 Vue.component('v-chip', VChip);
+Vue.component('v-dialog', VDialog);
 Vue.component('v-form', VForm);
 Vue.component('v-hover', VHover);
 Vue.component('v-icon', VIcon);

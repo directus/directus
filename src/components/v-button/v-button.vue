@@ -2,6 +2,7 @@
 	<component
 		:is="component"
 		:active-class="to ? 'activated' : null"
+		:exact="exact"
 		class="v-button"
 		:class="[
 			sizeClass,
@@ -62,6 +63,10 @@ export default defineComponent({
 		to: {
 			type: [String, Object] as PropType<string | Location>,
 			default: null
+		},
+		exact: {
+			type: Boolean,
+			default: false
 		},
 		secondary: {
 			type: Boolean,

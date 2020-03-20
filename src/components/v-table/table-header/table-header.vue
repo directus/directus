@@ -1,9 +1,10 @@
 <template>
-	<thead class="v-table_table-header" :class="{ dragging }">
+	<thead class="table-header" :class="{ dragging }">
 		<tr :class="{ fixed }">
 			<th v-if="showManualSort" class="manual cell" @click="toggleManualSort" scope="col">
 				<v-icon name="sort" class="drag-handle" small />
 			</th>
+
 			<th v-if="showSelect" class="select cell" scope="col">
 				<v-checkbox
 					:inputValue="allItemsSelected"
@@ -11,16 +12,20 @@
 					@change="toggleSelectAll"
 				/>
 			</th>
+
 			<th
 				v-for="(header, index) in headers"
 				:key="header.value"
 				:class="getClassesForHeader(header)"
-				:style="getStyleForHeader(header, index)"
 				class="cell"
 				scope="col"
 			>
 				<div class="content" @click="changeSort(header)">
-					<slot :name="`header.${header.value}`" :header="header">{{ header.text }}</slot>
+					<span v-show="header.width > 90 || header.width === null">
+						<slot :name="`header.${header.value}`" :header="header">
+							{{ header.text }}
+						</slot>
+					</span>
 					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small />
 				</div>
 				<span
@@ -37,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import useEventListener from '@/compositions/use-event-listener';
-import { Header, Sort } from './types';
+import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
@@ -81,7 +86,7 @@ export default defineComponent({
 		const dragStartWidth = ref<number>(0);
 		const dragHeader = ref<Header>(null);
 
-		useEventListener(window, 'mousemove', throttle(onMouseMove, 20));
+		useEventListener(window, 'mousemove', throttle(onMouseMove, 40));
 		useEventListener(window, 'mouseup', onMouseUp);
 
 		return {
@@ -91,7 +96,6 @@ export default defineComponent({
 			dragStartWidth,
 			dragStartX,
 			getClassesForHeader,
-			getStyleForHeader,
 			onMouseMove,
 			onResizeHandleMouseDown,
 			toggleManualSort,
@@ -118,22 +122,6 @@ export default defineComponent({
 			}
 
 			return classes;
-		}
-
-		function getStyleForHeader(header: Header, index: number) {
-			if (header.width !== null) {
-				let width: string;
-
-				if (index === props.headers.length - 1) {
-					width = 'auto';
-				} else {
-					width = header.width + 'px';
-				}
-
-				return { width };
-			}
-
-			return null;
 		}
 
 		/**
@@ -221,7 +209,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-table_table-header {
+.table-header {
 	.cell {
 		position: relative;
 		height: 48px;
@@ -230,12 +218,30 @@ export default defineComponent({
 		font-size: 14px;
 		background-color: var(--input-background-color);
 		border-bottom: 1px solid var(--input-border-color);
+
+		&.select,
+		&.sort {
+			display: flex;
+			align-items: center;
+		}
+
+		.content {
+			display: flex;
+			align-items: center;
+			height: 100%;
+
+			> span {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+		}
 	}
 
 	.sortable {
 		.sort-icon {
-			position: absolute;
-			transform: scaleY(-1) translateX(4px);
+			margin-left: 4px;
+			transform: scaleY(-1);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 		}
@@ -253,7 +259,7 @@ export default defineComponent({
 
 		&.sort-desc {
 			.sort-icon {
-				transform: scaleY(1) translateX(4px);
+				transform: scaleY(1);
 			}
 		}
 	}
@@ -264,13 +270,13 @@ export default defineComponent({
 
 	.select,
 	.manual {
-		width: 42px;
 		padding-right: 0;
 	}
 
 	.fixed th {
 		position: sticky;
-		top: 0;
+		top: var(--v-table-sticky-offset-top);
+		z-index: 2;
 	}
 
 	.resize-handle {

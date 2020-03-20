@@ -1,12 +1,25 @@
 import { Ref, ref, isRef, onMounted, onUnmounted } from '@vue/composition-api';
 import { notEmpty } from '@/utils/is-empty';
-import { ResizeObserver } from 'resize-observer';
+import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
+
+declare global {
+	interface Window {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		ResizeObserver: any;
+	}
+}
 
 export default function useElementSize<T extends Element>(target: T | Ref<T> | Ref<null>) {
 	const width = ref(0);
 	const height = ref(0);
 
-	const resizeObserver = new ResizeObserver(([entry]) => {
+	let RO = ResizeObserverPolyfill;
+
+	if ('ResizeObserver' in window) {
+		RO = window.ResizeObserver;
+	}
+
+	const resizeObserver = new RO(([entry]) => {
 		width.value = entry.contentRect.width;
 		height.value = entry.contentRect.height;
 	});

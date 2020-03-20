@@ -56,7 +56,9 @@ export default defineComponent({
 		});
 
 		const artStyles = computed(() => ({
-			background: backgroundStyles.value
+			background: backgroundStyles.value,
+			backgroundSize: 'cover',
+			backgroundPosition: 'center center'
 		}));
 
 		return { version, artStyles };
@@ -98,6 +100,8 @@ export default defineComponent({
 		display: none;
 		flex-grow: 1;
 		height: 100%;
+		background-position: center center;
+		background-size: cover;
 
 		@include breakpoint(small) {
 			display: block;

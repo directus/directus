@@ -22,14 +22,11 @@ const defaultError: Error = {
 };
 
 describe('API', () => {
-	beforeAll(() => {
-		globalThis.window = Object.create(window);
-		Vue.use(VueCompositionAPI);
-	});
-
 	beforeEach(() => {
 		jest.spyOn(auth, 'logout');
 		jest.spyOn(auth, 'checkAuth');
+		Vue.use(VueCompositionAPI);
+		window = Object.create(window);
 	});
 
 	it('Calculates the correct API root URL based on window', () => {

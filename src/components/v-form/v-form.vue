@@ -2,7 +2,11 @@
 	<div class="v-form" ref="el" :class="gridClass">
 		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
 			<label>{{ field.name }}</label>
-			<interface-text-input :value="initialValues[field.field]" :options="field.options" />
+			<interface-text-input
+				:value="values[field.field]"
+				:options="field.options"
+				@input="onInput(field, $event)"
+			/>
 		</div>
 	</div>
 </template>
@@ -10,8 +14,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/fields';
+import { Field } from '@/stores/fields/types';
 import { useElementSize } from '@/compositions/use-element-size';
 import { isEmpty } from '@/utils/is-empty';
+import { clone } from 'lodash';
 
 type FieldValues = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,6 +25,9 @@ type FieldValues = {
 };
 
 export default defineComponent({
+	model: {
+		prop: 'edits'
+	},
 	props: {
 		collection: {
 			type: String,
@@ -33,7 +42,7 @@ export default defineComponent({
 			default: null
 		}
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const el = ref<Element>(null);
 
 		const fieldsStore = useFieldsStore();
@@ -93,7 +102,18 @@ export default defineComponent({
 			return null;
 		});
 
-		return { el, width, formFields, gridClass };
+		const values = computed(() => {
+			return Object.assign({}, props.initialValues, props.edits);
+		});
+
+		return { el, width, formFields, gridClass, values, onInput };
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		function onInput(field: Field, value: any) {
+			const edits = clone(props.edits);
+			edits[field.field] = value;
+			emit('input', edits);
+		}
 	}
 });
 </script>

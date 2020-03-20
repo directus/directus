@@ -9,15 +9,18 @@ export default defineModule({
 		name: i18n.tc('collection', 2),
 		routes: [
 			{
+				name: 'collections-overview',
 				path: '/',
 				component: CollectionsOverview
 			},
 			{
+				name: 'collections-browse',
 				path: '/:collection',
 				component: CollectionsBrowse,
 				props: true
 			},
 			{
+				name: 'collections-detail',
 				path: '/:collection/:primaryKey',
 				component: CollectionsDetail,
 				props: true

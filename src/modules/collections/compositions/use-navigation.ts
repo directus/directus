@@ -1,6 +1,7 @@
 import { computed } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects';
-import { useCollectionsStore } from '@/stores/collections';
+import { useProjectsStore } from '@/stores/projects/';
+import { useCollectionsStore } from '@/stores/collections/';
+import { Collection } from '@/stores/collections/types';
 import VueI18n from 'vue-i18n';
 
 export type NavItem = {
@@ -16,7 +17,7 @@ export default function useNavigation() {
 
 	const navItems = computed<NavItem[]>(() => {
 		return collectionsStore.visibleCollections.value
-			.map(collection => {
+			.map((collection: Collection) => {
 				const navItem: NavItem = {
 					collection: collection.collection,
 					name: collection.name,

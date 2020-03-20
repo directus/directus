@@ -11,6 +11,15 @@ localVue.component('v-button', VButton);
 localVue.component('v-icon', VIcon);
 
 describe('Views / Private / Header Bar', () => {
+	const observeMock = {
+		observe: () => null,
+		disconnect: () => null // maybe not needed
+	};
+
+	beforeEach(() => {
+		(window as any).IntersectionObserver = jest.fn(() => observeMock);
+	});
+
 	it('Emits toggle event when toggle buttons are clicked', () => {
 		const component = mount(HeaderBar, {
 			localVue,

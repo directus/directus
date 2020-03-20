@@ -48,6 +48,15 @@ export const useFieldsStore = createStore({
 		},
 		async dehydrate() {
 			this.reset();
+		},
+		getPrimaryKeyFieldForCollection(collection: string) {
+			/** @NOTE it's safe to assume every collection has a primary key */
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const primaryKeyField = this.state.fields.find(
+				field => field.collection === collection && field.primary_key === true
+			);
+
+			return primaryKeyField;
 		}
 	}
 });

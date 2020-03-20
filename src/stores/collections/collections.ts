@@ -57,6 +57,13 @@ export const useCollectionsStore = createStore({
 		},
 		async dehydrate() {
 			this.reset();
+		},
+		getCollection(collectionKey: string) {
+			return (
+				this.state.collections.find(
+					collection => collection.collection === collectionKey
+				) || null
+			);
 		}
 	}
 });

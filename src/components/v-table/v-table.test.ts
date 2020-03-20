@@ -4,8 +4,8 @@ import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-import VCheckbox from '../v-checkbox/';
-import VIcon from '../v-icon/';
+import VCheckbox from '@/components/v-checkbox/';
+import VIcon from '@/components/v-icon/';
 
 localVue.component('v-checkbox', VCheckbox);
 localVue.component('v-icon', VIcon);
@@ -15,14 +15,14 @@ import VTable from './v-table.vue';
 describe('Table', () => {
 	let component: Wrapper<Vue>;
 
-	beforeEach(
-		() => (component = mount(VTable, { localVue, propsData: { headers: [], items: [] } }))
-	);
+	beforeEach(() => {
+		component = mount(VTable, { localVue, propsData: { headers: [], items: [] } });
+	});
 
 	it('Renders the correct amount of rows for the given items', async () => {
 		component.setProps({ items: [{}, {}, {}] });
 		await component.vm.$nextTick();
-		expect(component.findAll('.v-table_table-row').length).toBe(3);
+		expect(component.findAll('.table-row').length).toBe(3);
 	});
 
 	it('Adds the defaults to the passed headers', async () => {
@@ -293,7 +293,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		component.find('.v-table_table-row .select > *').trigger('click');
+		component.find('.table-row .select > *').trigger('click');
 
 		expect(component.emitted('select')?.[0]).toEqual([
 			[
@@ -341,7 +341,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		component.find('.v-table_table-row .select > *').trigger('click');
+		component.find('.table-row .select > *').trigger('click');
 
 		expect(component.emitted('select')?.[1]).toEqual([[]]);
 	});
@@ -437,7 +437,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		component.find('.v-table_table-header .select > *').trigger('click');
+		component.find('.table-header .select > *').trigger('click');
 
 		expect(component.emitted('select')?.[0]).toEqual([
 			[
@@ -501,7 +501,7 @@ describe('Table', () => {
 
 		await component.vm.$nextTick();
 
-		component.find('.v-table_table-header .select > *').trigger('click');
+		component.find('.table-header .select > *').trigger('click');
 
 		expect(component.emitted('select')?.[1]).toEqual([[]]);
 	});

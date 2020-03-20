@@ -7,6 +7,8 @@ import markdown from './readme.md';
 import { action } from '@storybook/addon-actions';
 import withPadding from '../../../.storybook/decorators/with-padding';
 
+import { defineComponent } from '@vue/composition-api';
+
 Vue.component('v-table', VTable);
 
 export default {
@@ -372,10 +374,10 @@ selection: {{ selection }}
 	`
 });
 
-export const fixedHeader = () => ({
-	data() {
-		return {
-			headers: [
+export const fixedHeader = () =>
+	defineComponent({
+		setup() {
+			const headers = [
 				{
 					text: 'Name',
 					value: 'name'
@@ -389,8 +391,9 @@ export const fixedHeader = () => ({
 					text: 'Contact',
 					value: 'contact'
 				}
-			],
-			items: [
+			];
+
+			const items = [
 				{
 					id: 1,
 					name: 'Amsterdam',
@@ -511,13 +514,16 @@ export const fixedHeader = () => ({
 					tel: '(330) 777-3240',
 					contact: 'Helenka Killely'
 				}
-			]
-		};
-	},
-	template: `
-	<v-sheet><v-table :headers="headers" :items="items" :height="200" fixed-header /></v-sheet>
-	`
-});
+			];
+
+			return { headers, items };
+		},
+		template: `
+			<v-sheet>
+				<v-table style="--v-table-height: 200px" :headers="headers" :items="items" fixed-header />
+			</v-sheet>
+		`
+	});
 
 export const loading = () => ({
 	data() {
@@ -629,7 +635,7 @@ export const columnWidths = () => ({
 				{
 					text: 'Phone',
 					value: 'tel',
-					width: 150
+					width: 500
 				},
 				{
 					text: 'Contact',

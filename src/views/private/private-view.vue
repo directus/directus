@@ -15,10 +15,9 @@
 				</div>
 			</div>
 		</aside>
-		<div class="content">
+		<div class="content" ref="contentEl">
 			<header-bar
 				:title="title"
-				:dense="_headerDense"
 				@toggle:drawer="drawerOpen = !drawerOpen"
 				@toggle:nav="navOpen = !navOpen"
 			>
@@ -29,7 +28,8 @@
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
-			<main ref="mainContent" @scroll="onMainScroll" :class="{ 'header-dense': headerDense }">
+
+			<main>
 				<slot />
 			</main>
 		</div>
@@ -40,6 +40,10 @@
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>
+			<drawer-button class="drawer-toggle" @click.stop="drawerOpen = !drawerOpen" icon="info">
+				Close Drawer
+			</drawer-button>
+
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
 			</drawer-detail-group>
@@ -51,68 +55,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, computed } from '@vue/composition-api';
+import { defineComponent, ref, provide } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectChooser from './components/project-chooser';
-import { throttle } from 'lodash';
+import DrawerButton from './components/drawer-button/';
 
 export default defineComponent({
 	components: {
 		ModuleBar,
 		DrawerDetailGroup,
 		HeaderBar,
-		ProjectChooser
+		ProjectChooser,
+		DrawerButton
 	},
 	props: {
 		title: {
 			type: String,
 			required: true
-		},
-		headerDense: {
-			type: Boolean,
-			default: false
-		},
-		headerDenseAuto: {
-			type: Boolean,
-			default: true
 		}
 	},
-	setup(props) {
-		const mainElement = ref<Element>(null);
-
+	setup() {
 		const navOpen = ref(false);
 		const drawerOpen = ref(false);
 
 		provide('drawer-open', drawerOpen);
 
-		const headerDenseAutoState = ref(false);
-
-		const _headerDense = computed<boolean>(() => {
-			if (props.headerDenseAuto === true) {
-				return headerDenseAutoState.value;
-			} else {
-				return props.headerDense;
-			}
-		});
-
-		const onMainScroll = throttle(event => {
-			const { scrollTop } = event.target;
-
-			if (scrollTop <= 5 && headerDenseAutoState.value === true) {
-				headerDenseAutoState.value = false;
-			} else if (scrollTop > 5 && headerDenseAutoState.value === false) {
-				headerDenseAutoState.value = true;
-			}
-		}, 50);
-
 		return {
 			navOpen,
-			drawerOpen,
-			_headerDense,
-			mainElement,
-			onMainScroll
+			drawerOpen
 		};
 	}
 });
@@ -122,8 +94,6 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 
 .private-view {
-	--private-view-content-padding: 12px;
-
 	display: flex;
 	width: 100%;
 	height: 100%;
@@ -182,30 +152,21 @@ export default defineComponent({
 	.content {
 		position: relative;
 		flex-grow: 1;
+		width: 100%;
 		height: 100%;
-		overflow: hidden;
-
-		.header-bar {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-		}
+		overflow: auto;
 
 		main {
-			height: 100%;
-			padding: var(--private-view-content-padding);
-			padding-top: 114px;
-			overflow: auto;
+			display: contents;
 		}
 
 		// Offset for partially visible drawer
 		@include breakpoint(medium) {
-			padding-right: 64px;
+			margin-right: 64px;
 		}
 
 		@include breakpoint(large) {
-			padding-right: 0;
+			margin-right: 0;
 		}
 	}
 

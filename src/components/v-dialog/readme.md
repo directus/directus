@@ -30,4 +30,6 @@ Renders an overlay with a flex slot rendering whatever content you pass
 | `toggle` | Change the active state | `boolean` |
 
 ## CSS Variables
-n/a
+| Variable             | Default |
+|----------------------|---------|
+| `--v-dialog-z-index` | `100`   |

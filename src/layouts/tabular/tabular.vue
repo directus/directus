@@ -3,13 +3,30 @@
 		:items="items"
 		:loading="loading"
 		:headers="headers"
+		ref="table"
+		v-model="_selection"
 		fixed-header
+		show-select
 		@click:row="onRowClick"
-	></v-table>
+		:server-sort="isBigCollection"
+		@update:sort="onSortChange"
+	>
+		<template #footer>
+			<div class="pagination" v-if="isBigCollection">
+				<v-pagination
+					:length="pages"
+					:total-visible="5"
+					show-first-last
+					:value="currentPage"
+					@input="toPage"
+				/>
+			</div>
+		</template>
+	</v-table>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref, watch, computed } from '@vue/composition-api';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 import useFieldsStore from '@/stores/fields';
@@ -17,20 +34,46 @@ import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@/stores/fields/types';
 import router from '@/router';
 
+const PAGE_COUNT = 75;
+
 export default defineComponent({
 	props: {
 		collection: {
 			type: String,
 			required: true
+		},
+		selection: {
+			type: Array as PropType<Item[]>,
+			default: () => []
+		},
+		selectMode: {
+			type: Boolean,
+			default: false
 		}
 	},
-	setup(props) {
+	setup(props, { emit }) {
+		const table = ref<Vue>(null);
+
 		const { currentProjectKey } = useProjectsStore().state;
 		const fieldsStore = useFieldsStore();
 
 		const error = ref(null);
 		const items = ref([]);
 		const loading = ref(true);
+		const itemCount = ref(0);
+		const currentPage = ref(1);
+		const pages = computed<number>(() => Math.ceil(itemCount.value / PAGE_COUNT));
+		const isBigCollection = computed<boolean>(() => itemCount.value > PAGE_COUNT);
+		const sort = ref({ by: 'id', desc: false });
+
+		const _selection = computed<Item[]>({
+			get() {
+				return props.selection;
+			},
+			set(newSelection) {
+				emit('update:selection', newSelection);
+			}
+		});
 
 		const fieldsInCurrentCollection = computed<Field[]>(() => {
 			return fieldsStore.state.fields.filter(field => field.collection === props.collection);
@@ -48,17 +91,22 @@ export default defineComponent({
 		});
 
 		const primaryKeyField = computed<Field>(() => {
-			/**
-			 * @NOTE
-			 * It's safe to assume that every collection has a primary key.
-			 */
+			// It's safe to assume that every collection has a primary key.
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			return fieldsInCurrentCollection.value.find(field => field.primary_key === true)!;
 		});
 
 		getItems();
 
-		watch(() => props.collection, getItems);
+		watch(
+			() => props.collection,
+			() => {
+				items.value = [];
+				itemCount.value = 0;
+				currentPage.value = 1;
+				getItems();
+			}
+		);
 
 		return {
 			error,
@@ -66,17 +114,40 @@ export default defineComponent({
 			loading,
 			headers,
 			onRowClick,
-			primaryKeyField
+			primaryKeyField,
+			_selection,
+			refresh,
+			table,
+			itemCount,
+			pages,
+			toPage,
+			currentPage,
+			isBigCollection,
+			onSortChange
 		};
 
+		async function refresh() {
+			await getItems();
+		}
+
 		async function getItems() {
-			items.value = [];
 			error.value = null;
 			loading.value = true;
 
+			let sortString = sort.value.by;
+			if (sort.value.desc === true) sortString = '-' + sortString;
+
 			try {
-				const response = await api.get(`/${currentProjectKey}/items/${props.collection}`);
+				const response = await api.get(`/${currentProjectKey}/items/${props.collection}`, {
+					params: {
+						limit: PAGE_COUNT,
+						page: currentPage.value,
+						meta: 'filter_count',
+						sort: sortString
+					}
+				});
 				items.value = response.data.data;
+				itemCount.value = response.data.meta.filter_count;
 			} catch (error) {
 				error.value = error;
 			} finally {
@@ -85,8 +156,35 @@ export default defineComponent({
 		}
 
 		function onRowClick(item: Item) {
-			const primaryKey = item[primaryKeyField.value.field];
-			router.push(`/${currentProjectKey}/collections/${props.collection}/${primaryKey}`);
+			if (props.selectMode) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(table.value as any).onItemSelected({
+					item,
+					value: _selection.value.includes(item) === false
+				});
+			} else {
+				const primaryKey = item[primaryKeyField.value.field];
+				router.push(`/${currentProjectKey}/collections/${props.collection}/${primaryKey}`);
+			}
+		}
+
+		function toPage(page: number) {
+			currentPage.value = page;
+			getItems();
+			// We know this is only called after the element is mounted
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			table.value!.$el.parentElement!.parentElement!.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		}
+
+		function onSortChange(newSort: { by: string; desc: boolean }) {
+			// Let the table component handle the sorting for small datasets
+			if (isBigCollection.value === false) return;
+			sort.value = newSort;
+			currentPage.value = 1;
+			getItems();
 		}
 	}
 });
@@ -94,6 +192,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-table {
-	height: 100%;
+	--v-table-sticky-offset-top: var(--layout-offset-top);
+
+	display: contents;
+	padding: 0 32px;
+}
+
+.pagination {
+	position: sticky;
+	left: 0;
+	width: 100%;
+	padding: 32px;
+	text-align: center;
 }
 </style>

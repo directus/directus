@@ -4,13 +4,13 @@ import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-import VCheckbox from '../v-checkbox/';
-import VIcon from '../v-icon/';
+import VCheckbox from '@/components/v-checkbox';
+import VIcon from '@/components/v-icon';
 
 localVue.component('v-checkbox', VCheckbox);
 localVue.component('v-icon', VIcon);
 
-import TableHeader from './_table-header.vue';
+import TableHeader from './table-header.vue';
 
 describe('Table / Header', () => {
 	let component: Wrapper<Vue>;
@@ -185,27 +185,6 @@ describe('Table / Header', () => {
 		expect(component.find('th:nth-child(3)').classes()).toContain('align-right');
 	});
 
-	it('Generates the correct inline styles for column widths', async () => {
-		component.setProps({
-			headers: [],
-			sortDesc: false
-		});
-
-		await component.vm.$nextTick();
-
-		const styles = (component.vm as any).getStyleForHeader({
-			text: 'Col2',
-			value: 'col2',
-			align: 'center',
-			sortable: true,
-			width: 150
-		});
-
-		expect(styles).toEqual({
-			width: '150px'
-		});
-	});
-
 	it('Renders the provided element in the nested scoped slot for the header', async () => {
 		const component = mount(TableHeader, {
 			localVue,
@@ -230,7 +209,7 @@ describe('Table / Header', () => {
 			}
 		});
 
-		expect(component.find('.v-table_table-header th:nth-child(2) .content > *').html()).toEqual(
+		expect(component.find('.table-header th:nth-child(2) .content > span > *').html()).toEqual(
 			'<p>Column 2</p>'
 		);
 	});
@@ -354,63 +333,5 @@ describe('Table / Header', () => {
 		});
 
 		expect(component.emitted('update:headers')).toBe(undefined);
-	});
-
-	it('Calculates the right width CSS property based on header', async () => {
-		component.setProps({
-			headers: [
-				{
-					text: 'Col1',
-					value: 'col1',
-					align: 'left',
-					sortable: true
-				},
-				{
-					text: 'Col2',
-					value: 'col2',
-					align: 'left',
-					sortable: true,
-					width: 175
-				},
-				{
-					text: 'Col3',
-					value: 'col3',
-					align: 'left',
-					sortable: true,
-					width: 250
-				}
-			]
-		});
-
-		await component.vm.$nextTick();
-
-		const { getStyleForHeader } = component.vm as any;
-
-		expect(
-			getStyleForHeader(
-				{
-					width: null
-				},
-				0
-			)
-		).toEqual(null);
-
-		expect(
-			getStyleForHeader(
-				{
-					width: 175
-				},
-				1
-			)
-		).toEqual({ width: '175px' });
-
-		expect(
-			getStyleForHeader(
-				{
-					width: 175
-				},
-				2
-			)
-		).toEqual({ width: 'auto' });
 	});
 });

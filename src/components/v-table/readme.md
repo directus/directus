@@ -111,16 +111,21 @@ export default defineComponent({
 ```
 
 ## Props
-| Prop           | Description                                                         | Default |
-|----------------|---------------------------------------------------------------------|---------|
-| `headers`*     | What columns to show in the table. Supports the `.sync` modifier    | --      |
-| `items`*       | The individual items to render as rows                              | --      |
-| `item-key`     | Primary key of the item. Used for keys / selections                 | `id`    |
-| `sort-by`      | What column / order to sort by. Supports the `.sync` modifier       | --      |
-| `show-select`  | Show checkboxes                                                     | `false` |
-| `show-resize`  | Show resize handlers                                                | `false` |
-| `selection`    | What items are selected. Can be used with `v-model` as well         | `[]`    |
-| `fixed-header` | Make the header fixed                                               | `false` |
+| Prop               | Description                                                                                    | Default      |
+|--------------------|------------------------------------------------------------------------------------------------|--------------|
+| `headers`*         | What columns to show in the table. Supports the `.sync` modifier                               | --           |
+| `items`*           | The individual items to render as rows                                                         | --           |
+| `item-key`         | Primary key of the item. Used for keys / selections                                            | `id`         |
+| `sort`             | What column / order to sort by. Supports the `.sync` modifier. `{ by: string, desc: boolean }` | --           |
+| `show-select`      | Show checkboxes                                                                                | `false`      |
+| `show-resize`      | Show resize handlers                                                                           | `false`      |
+| `show-manual-sort` | Show manual sort drag handles                                                                  | `false`      |
+| `selection`        | What items are selected. Can be used with `v-model` as well                                    | `[]`         |
+| `fixed-header`     | Make the header fixed                                                                          | `false`      |
+| `loading`          | Show progress indicator                                                                        | `false`      |
+| `loadingText`      | What text to show when table is loading with no items                                          | `Loading...` |
+| `server-sort`      | Handle sorting on the parent level.                                                            | `false`      |
+| `row-height`       | Height of the individual rows in px                                                            | `48`         |
 
 ## Events
 | Event            | Description                                    | Value                           |

@@ -90,7 +90,7 @@ export default defineComponent({
 
 		.action-buttons {
 			> * {
-				display: block;
+				display: inherit;
 			}
 		}
 	}
@@ -98,7 +98,7 @@ export default defineComponent({
 	@include breakpoint(medium) {
 		.action-buttons {
 			> * {
-				display: block !important;
+				display: inherit !important;
 			}
 		}
 	}

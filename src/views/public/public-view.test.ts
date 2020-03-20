@@ -62,7 +62,9 @@ describe('Views / Public', () => {
 	describe('Background', () => {
 		it('Defaults background art to color when current project key is unknown', () => {
 			expect((component.vm as any).artStyles).toEqual({
-				background: '#263238'
+				background: '#263238',
+				backgroundPosition: 'center center',
+				backgroundSize: 'cover'
 			});
 		});
 
@@ -81,7 +83,9 @@ describe('Views / Public', () => {
 			await component.vm.$nextTick();
 
 			expect((component.vm as any).artStyles).toEqual({
-				background: '#4CAF50'
+				background: '#4CAF50',
+				backgroundPosition: 'center center',
+				backgroundSize: 'cover'
 			});
 		});
 
@@ -99,7 +103,9 @@ describe('Views / Public', () => {
 			store.state.currentProjectKey = 'my-project';
 
 			expect((component.vm as any).artStyles).toEqual({
-				background: '#263238'
+				background: '#263238',
+				backgroundPosition: 'center center',
+				backgroundSize: 'cover'
 			});
 		});
 
@@ -107,7 +113,9 @@ describe('Views / Public', () => {
 			store.state.projects = [mockProject];
 			store.state.currentProjectKey = 'my-project';
 			expect((component.vm as any).artStyles).toEqual({
-				background: `url(${mockProject.api.project_background?.full_url})`
+				background: `url(${mockProject.api.project_background?.full_url})`,
+				backgroundPosition: 'center center',
+				backgroundSize: 'cover'
 			});
 		});
 	});

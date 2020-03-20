@@ -1,21 +1,25 @@
 <template>
 	<tr
-		class="v-table_table-row"
-		:class="{ subdued, clickable: hasClickListener, 'sorted-manually': sortedManually }"
+		class="table-row"
+		:class="{ subdued, clickable: hasClickListener }"
 		@click="$emit('click', $event)"
 	>
 		<td v-if="showManualSort" class="manual cell">
-			<v-icon name="drag_handle" class="drag-handle" />
+			<v-icon
+				name="drag_handle"
+				class="drag-handle"
+				:class="{ 'sorted-manually': sortedManually }"
+			/>
 		</td>
-		<td v-if="showSelect" class="select cell">
+		<td v-if="showSelect" class="select cell" @click.stop>
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
 		</td>
 		<td
 			class="cell"
-			v-for="header in headers"
 			:class="getClassesForCell(header)"
+			v-for="header in headers"
 			:key="header.value"
-			:style="{ height: height + 'px' }"
+			:style="{ height: height + 'px', lineHeight: height + 'px' }"
 		>
 			<slot :name="`item.${header.value}`" :item="item">{{ item[header.value] }}</slot>
 		</td>
@@ -24,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Header } from './types';
+import { Header } from '../types';
 
 export default defineComponent({
 	props: {
@@ -89,7 +93,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-table_table-row {
+.table-row {
 	.cell {
 		padding: 0 20px;
 		overflow: hidden;
@@ -97,28 +101,36 @@ export default defineComponent({
 		text-overflow: ellipsis;
 		background-color: var(--input-background-color);
 		border-bottom: 1px solid var(--divider-color);
+
+		&.select,
+		&.sort {
+			display: flex;
+			align-items: center;
+		}
 	}
 
-	&.subdued {
+	&.subdued .cell {
 		opacity: 0.3;
 	}
 
-	&.clickable:hover .cell {
+	&.clickable:not(.subdued):hover .cell {
 		background-color: var(--highlight);
 		cursor: pointer;
 	}
 
 	.drag-handle {
 		--v-icon-color: var(--input-action-color-disabled);
-	}
-
-	&.sorted-manually .drag-handle {
-		--v-icon-color: var(--input-action-color);
 
 		&:hover {
-			--v-icon-color: var(--input-action-color-hover);
+			.sorted-manually {
+				--v-icon-color: var(--input-action-color);
 
-			cursor: ns-resize;
+				&:hover {
+					--v-icon-color: var(--input-action-color-hover);
+
+					cursor: ns-resize;
+				}
+			}
 		}
 	}
 }

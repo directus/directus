@@ -55,10 +55,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-dialog {
+	--v-dialog-z-index: 100;
+
+	display: contents;
+
 	.container {
 		position: fixed;
 		top: 0;
 		left: 0;
+		z-index: var(--v-dialog-z-index);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -75,15 +80,16 @@ export default defineComponent({
 
 		.v-sheet {
 			--v-sheet-padding: 24px;
+			--v-sheet-max-width: 560px;
 		}
 
 		.v-overlay {
-			--v-overlay-z-index: 100;
+			--v-overlay-z-index: 1;
 		}
 
 		.content {
 			position: relative;
-			z-index: 105;
+			z-index: 2;
 			max-height: 90%;
 			transform: translateY(50px);
 			opacity: 0;

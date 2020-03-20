@@ -1,5 +1,5 @@
 <template>
-	<header class="header-bar" :class="{ dense }">
+	<header class="header-bar" ref="headerEl" :class="{ shadow: showShadow }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('toggle:nav')">
 			<v-icon name="menu" />
 		</v-button>
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
@@ -39,14 +39,29 @@ export default defineComponent({
 		title: {
 			type: String,
 			required: true
-		},
-		dense: {
-			type: Boolean,
-			default: false
 		}
 	},
 	setup() {
-		return {};
+		const headerEl = ref<Element>();
+
+		const showShadow = ref(false);
+
+		const observer = new IntersectionObserver(
+			([e]) => {
+				showShadow.value = e.intersectionRatio < 1;
+			},
+			{ threshold: [1] }
+		);
+
+		onMounted(() => {
+			observer.observe(headerEl.value as HTMLElement);
+		});
+
+		onUnmounted(() => {
+			observer.disconnect();
+		});
+
+		return { headerEl, showShadow };
 	}
 });
 </script>
@@ -56,19 +71,23 @@ export default defineComponent({
 @import '@/styles/mixins/type-styles';
 
 .header-bar {
-	position: relative;
+	position: sticky;
+	top: -1px;
+	left: 0;
+	z-index: 5;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 64px;
+	height: 65px;
+	margin: 24px 0;
 	padding: 0 12px;
 	background-color: var(--background-color);
-	transition: height var(--medium) var(--transition);
+	box-shadow: 0;
+	transition: box-shadow var(--medium) var(--transition);
 
-	&.dense {
-		height: 64px;
-		box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+	&.shadow {
+		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
 	}
 
 	.nav-toggle {
@@ -113,7 +132,6 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		height: 112px;
 		padding: 0 32px;
 	}
 }

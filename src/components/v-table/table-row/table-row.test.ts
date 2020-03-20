@@ -4,13 +4,13 @@ import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-import VCheckbox from '../v-checkbox/';
-import VIcon from '../v-icon/';
+import VCheckbox from '@/components/v-checkbox/';
+import VIcon from '@/components/v-icon/';
 
 localVue.component('v-checkbox', VCheckbox);
 localVue.component('v-icon', VIcon);
 
-import TableRow from './_table-row.vue';
+import TableRow from './table-row.vue';
 
 describe('Table / Row', () => {
 	let component: Wrapper<Vue>;
@@ -38,7 +38,7 @@ describe('Table / Row', () => {
 	});
 
 	it('Renders right amount of cells per row', async () => {
-		expect(component.find('.v-table_table-row').findAll('td').length).toBe(2);
+		expect(component.find('.table-row').findAll('td').length).toBe(2);
 	});
 
 	it('Renders the provided element in the nested scoped slot', async () => {
@@ -65,7 +65,7 @@ describe('Table / Row', () => {
 			}
 		});
 
-		expect(component.find('.v-table_table-row td:nth-child(2) > *').html()).toEqual(
+		expect(component.find('.table-row td:nth-child(2) > *').html()).toEqual(
 			'<p>Test 1 Col 2</p>'
 		);
 	});
