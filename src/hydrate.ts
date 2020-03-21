@@ -3,6 +3,7 @@ import { useCollectionsStore } from '@/stores/collections/';
 import { useFieldsStore } from '@/stores/fields/';
 import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
+import { useCollectionPresetsStore } from '@/stores/collection-presets/';
 
 type GenericStore = {
 	id: string;
@@ -13,7 +14,13 @@ type GenericStore = {
 };
 
 export function useStores(
-	stores = [useCollectionsStore, useFieldsStore, useUserStore, useRequestsStore]
+	stores = [
+		useCollectionsStore,
+		useFieldsStore,
+		useUserStore,
+		useRequestsStore,
+		useCollectionPresetsStore
+	]
 ) {
 	return stores.map(useStore => useStore()) as GenericStore[];
 }

@@ -5,7 +5,7 @@ import api from '@/api';
 import { User } from './types';
 
 export const useUserStore = createStore({
-	id: 'user',
+	id: 'userStore',
 	state: () => ({
 		currentUser: null as User | null
 	}),

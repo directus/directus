@@ -8,7 +8,7 @@ type LoadingError = null | {
 };
 
 export const useProjectsStore = createStore({
-	id: 'projects',
+	id: 'projectsStore',
 	state: () => ({
 		needsInstall: false,
 		error: null as LoadingError,

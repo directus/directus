@@ -8,7 +8,7 @@ import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 
 export const useFieldsStore = createStore({
-	id: 'fields',
+	id: 'fieldsStore',
 	state: () => ({
 		fields: [] as Field[]
 	}),

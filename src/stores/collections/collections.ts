@@ -8,7 +8,7 @@ import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 
 export const useCollectionsStore = createStore({
-	id: 'collections',
+	id: 'collectionsStore',
 	state: () => ({
 		collections: [] as Collection[]
 	}),

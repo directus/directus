@@ -2,7 +2,7 @@ import { createStore } from 'pinia';
 import nanoid from 'nanoid';
 
 export const useRequestsStore = createStore({
-	id: 'requests',
+	id: 'requestsStore',
 	state: () => ({
 		queue: [] as string[]
 	}),
