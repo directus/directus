@@ -23,7 +23,7 @@ describe('Stores / User', () => {
 	});
 
 	describe('Hydrate', () => {
-		it('Calls the right endpoint', () => {
+		it('Calls the right endpoint', async () => {
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
@@ -36,8 +36,12 @@ describe('Stores / User', () => {
 			projectsStore.state.currentProjectKey = 'my-project';
 			const userStore = useUserStore(req);
 
-			userStore.hydrate().then(() => {
-				expect(api.get).toHaveBeenCalledWith('/my-project/users/me');
+			userStore.hydrate();
+
+			expect(api.get).toHaveBeenCalledWith('/my-project/users/me', {
+				params: {
+					fields: '*,avatar.data'
+				}
 			});
 		});
 	});

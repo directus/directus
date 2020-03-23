@@ -1,13 +1,7 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
-import {
-	onBeforeEach,
-	onBeforeEnterProjectChooser,
-	replaceRoutes,
-	defaultRoutes,
-	onBeforeEnterLogout
-} from './router';
+import { onBeforeEach, onBeforeEnterProjectChooser, replaceRoutes, defaultRoutes } from './router';
 import api from '@/api';
 import * as auth from '@/auth';
 import { useProjectsStore } from '@/stores/projects';
@@ -253,17 +247,6 @@ describe('Router', () => {
 			const next = jest.fn();
 			onBeforeEnterProjectChooser(to, from, next);
 			expect(projectsStore.state.currentProjectKey).toBe(null);
-		});
-	});
-
-	describe('onBeforeEnterLogout', () => {
-		it('Calls logout and redirects to login page', async () => {
-			const to = { ...route, path: '/my-project/logout', params: { project: 'my-project' } };
-			const from = route;
-			const next = jest.fn();
-			await onBeforeEnterLogout(to, from, next);
-			expect(auth.logout).toHaveBeenCalled();
-			expect(next).toHaveBeenCalledWith('/my-project/login');
 		});
 	});
 

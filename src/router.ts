@@ -2,8 +2,9 @@ import VueRouter, { NavigationGuard, RouteConfig } from 'vue-router';
 import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
+import LogoutRoute from '@/routes/logout';
 import ProjectChooserRoute from '@/routes/project-chooser';
-import { checkAuth, logout } from '@/auth';
+import { checkAuth } from '@/auth';
 import { hydrate, dehydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
 
@@ -11,12 +12,6 @@ export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => 
 	const projectsStore = useProjectsStore();
 	projectsStore.state.currentProjectKey = null;
 	next();
-};
-
-export const onBeforeEnterLogout: NavigationGuard = async (to, from, next) => {
-	const currentProjectKey = to.params.project;
-	await logout({ navigate: false });
-	next(`/${currentProjectKey}/login`);
 };
 
 export const defaultRoutes: RouteConfig[] = [
@@ -52,7 +47,7 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		name: 'logout',
 		path: '/:project/logout',
-		beforeEnter: onBeforeEnterLogout
+		component: LogoutRoute
 	},
 	/**
 	 * @NOTE

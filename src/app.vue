@@ -1,11 +1,11 @@
 <template>
 	<div id="app">
 		<transition name="fade">
-			<div class="hydrating" v-show="hydrating">
+			<div class="hydrating" v-if="hydrating">
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>
-		<router-view />
+		<router-view v-if="!hydrating" />
 	</div>
 </template>
 

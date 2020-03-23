@@ -3,9 +3,11 @@ import VueCompositionAPI from '@vue/composition-api';
 import PrivateView from './private-view.vue';
 import VOverlay from '@/components/v-overlay';
 import VProgressCircular from '@/components/v-progress/circular';
+import PortalVue from 'portal-vue';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
+localVue.use(PortalVue);
 localVue.component('v-overlay', VOverlay);
 localVue.component('v-progress-circular', VProgressCircular);
 
