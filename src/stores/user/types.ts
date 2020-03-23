@@ -1,3 +1,17 @@
+type Avatar = {
+	data: {
+		thumbnails: Thumbnail[];
+	};
+};
+
+type Thumbnail = {
+	url: string;
+	key: string;
+};
+
+// There's more data returned in thumbnails and the avatar data, but we
+// only care about the thumbnails in this context
+
 export type User = {
 	id: number;
 	status: string;
@@ -15,7 +29,7 @@ export type User = {
 	timezone: string;
 	locale: string;
 	locale_options: null;
-	avatar: null;
+	avatar: null | Avatar;
 	company: string | null;
 	title: string | null;
 	email_notifications: boolean;
