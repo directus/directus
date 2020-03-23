@@ -48,7 +48,7 @@
     "@storybook/vue": "^5.3.17",
     "@types/jest": "^25.1.4",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.24.0",
+    "@typescript-eslint/parser": "^2.25.0",
     "@typescript-eslint/typescript-estree": "^2.25.0",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
