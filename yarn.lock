@@ -13088,10 +13088,10 @@ store2@^2.7.1:
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.10.0.tgz#46b82bb91878daf1b0d56dec2f1d41e54d5103cf"
   integrity sha512-tWEpK0snS2RPUq1i3R6OahfJNjWCQYNxq0+by1amCSuw0mXtymJpzmZIeYpA1UAa+7B0grCpNYIbDcd7AgTbFg==
 
-storybook-addon-themes@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/storybook-addon-themes/-/storybook-addon-themes-5.4.0.tgz#b400f7690e3f901dc0858c94d6afc0deab7d4e40"
-  integrity sha512-D7NAUKqzld5eGSOcCAVU1DM21eWadN/XRq0lwIrSVYiuZRKxBJDQTEjdjeusrIHJRE62Q/QfbxqUhHS0vuNyWQ==
+storybook-addon-themes@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/storybook-addon-themes/-/storybook-addon-themes-5.4.1.tgz#de61b7f243eb80bfd6699eadca351f669d43593e"
+  integrity sha512-pSMiaXxe022Aq9pa2Xx97N0d49ihpgo6+dzlZOj9Vtz3ygoN5M8arnNSppp430lbhpOKfGSK3p8WPNMkfNBnWQ==
   dependencies:
     "@storybook/addons" "^5.3.14"
     "@storybook/client-logger" "^5.3.14"
