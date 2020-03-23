@@ -33,13 +33,11 @@ module.exports = {
 					loader: 'ts-loader',
 					options: {
 						appendTsSuffixTo: [/\.vue$/],
-						transpileOnly: true // used with ForkTsCheckerWebpackPlugin
+						transpileOnly: true
 					},
 				}
 			],
 		});
-
-		config.plugins.push(new ForkTsCheckerWebpackPlugin());
 
 		config.resolve.extensions.push('.ts', '.tsx');
 
