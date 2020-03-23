@@ -52,6 +52,8 @@
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
+
+		<notifications-group />
 	</div>
 </template>
 
@@ -62,6 +64,7 @@ import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectChooser from './components/project-chooser';
 import DrawerButton from './components/drawer-button/';
+import NotificationsGroup from './components/notifications-group/';
 
 export default defineComponent({
 	components: {
@@ -69,7 +72,8 @@ export default defineComponent({
 		DrawerDetailGroup,
 		HeaderBar,
 		ProjectChooser,
-		DrawerButton
+		DrawerButton,
+		NotificationsGroup
 	},
 	props: {
 		title: {
