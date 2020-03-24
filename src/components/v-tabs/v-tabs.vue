@@ -13,12 +13,12 @@ export default defineComponent({
 	props: {
 		vertical: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: Array as PropType<(string | number)[]>,
-			default: undefined
-		}
+			default: undefined,
+		},
 	},
 	setup(props, { emit }) {
 		const { value: selection } = toRefs(props);
@@ -26,23 +26,23 @@ export default defineComponent({
 		const options = toRefs({
 			multiple: false,
 			max: -1,
-			mandatory: true
+			mandatory: true,
 		});
 
 		const { items } = useGroupableParent(
 			{
 				selection: selection,
-				onSelectionChange: update
+				onSelectionChange: update,
 			},
 			options
 		);
 
 		const slideStyle = computed(() => {
-			const activeIndex = items.value.findIndex(item => item.active.value);
+			const activeIndex = items.value.findIndex((item) => item.active.value);
 
 			return {
 				'--_v-tabs-items': items.value.length,
-				'--_v-tabs-selected': activeIndex
+				'--_v-tabs-selected': activeIndex,
 			};
 		});
 
@@ -51,7 +51,7 @@ export default defineComponent({
 		}
 
 		return { update, slideStyle };
-	}
+	},
 });
 </script>
 <style lang="scss" scoped>

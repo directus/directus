@@ -66,27 +66,27 @@ export default defineComponent({
 	props: {
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		length: {
 			type: Number,
 			default: null,
 			required: true,
-			validator: (val: number) => val % 1 === 0
+			validator: (val: number) => val % 1 === 0,
 		},
 		totalVisible: {
 			type: Number,
 			default: undefined,
-			validator: (val: number) => val >= 0
+			validator: (val: number) => val >= 0,
 		},
 		value: {
 			type: Number,
-			default: null
+			default: null,
 		},
 		showFirstLast: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const visiblePages = computed<number[]>(() => {
@@ -112,7 +112,7 @@ export default defineComponent({
 				}
 			}
 
-			return Array.from(Array(endPage + 1 - startPage).keys()).map(i => startPage + i);
+			return Array.from(Array(endPage + 1 - startPage).keys()).map((i) => startPage + i);
 		});
 
 		return { toPage, toPrev, toNext, visiblePages };
@@ -128,7 +128,7 @@ export default defineComponent({
 		function toPage(page: number) {
 			emit('input', page);
 		}
-	}
+	},
 });
 </script>
 

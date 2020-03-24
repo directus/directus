@@ -16,12 +16,12 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: null
+			default: null,
 		},
 		options: {
 			type: Object as PropType<Options>,
-			required: true
-		}
-	}
+			required: true,
+		},
+	},
 });
 </script>

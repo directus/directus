@@ -40,7 +40,7 @@ export default defineComponent({
 		});
 
 		return { name, lastPage, signOutLink };
-	}
+	},
 });
 </script>
 

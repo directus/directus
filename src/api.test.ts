@@ -16,9 +16,9 @@ const defaultError: Error = {
 		statusText: 'OK',
 		headers: {},
 		config: {
-			id: 'abc'
-		}
-	}
+			id: 'abc',
+		},
+	},
 };
 
 describe('API', () => {
@@ -32,9 +32,9 @@ describe('API', () => {
 	it('Calculates the correct API root URL based on window', () => {
 		Object.defineProperty(window, 'location', {
 			value: {
-				pathname: '/api/nested/admin'
+				pathname: '/api/nested/admin',
 			},
-			writable: true
+			writable: true,
 		});
 
 		const result = getRootPath();
@@ -59,8 +59,8 @@ describe('API', () => {
 			statusText: 'OK',
 			headers: {},
 			config: {
-				id: 'abc'
-			}
+				id: 'abc',
+			},
 		});
 		expect(spy).toHaveBeenCalledWith('abc');
 	});
@@ -70,7 +70,7 @@ describe('API', () => {
 		const spy = jest.spyOn(store, 'endRequest');
 		try {
 			await onError({
-				...defaultError
+				...defaultError,
 			});
 		} catch {}
 
@@ -84,14 +84,14 @@ describe('API', () => {
 				...defaultError.response,
 				status: 401,
 				config: {
-					id: 'abc'
+					id: 'abc',
 				},
 				data: {
 					error: {
-						code: -5
-					}
-				}
-			}
+						code: -5,
+					},
+				},
+			},
 		};
 
 		expect(onError(error)).rejects.toEqual(error);
@@ -104,15 +104,15 @@ describe('API', () => {
 				response: {
 					...defaultError.response,
 					config: {
-						id: 'abc'
+						id: 'abc',
 					},
 					status: 401,
 					data: {
 						error: {
-							code: 3
-						}
-					}
-				}
+							code: 3,
+						},
+					},
+				},
 			});
 		} catch {
 			expect(auth.checkAuth).toHaveBeenCalled();
@@ -128,19 +128,19 @@ describe('API', () => {
 				response: {
 					...defaultError.response,
 					config: {
-						id: 'abc'
+						id: 'abc',
 					},
 					status: 401,
 					data: {
 						error: {
-							code: 3
-						}
-					}
-				}
+							code: 3,
+						},
+					},
+				},
 			});
 		} catch {
 			expect(auth.logout).toHaveBeenCalledWith({
-				reason: auth.LogoutReason.ERROR_SESSION_EXPIRED
+				reason: auth.LogoutReason.ERROR_SESSION_EXPIRED,
 			});
 		}
 	});
@@ -154,15 +154,15 @@ describe('API', () => {
 				response: {
 					...defaultError.response,
 					config: {
-						id: 'abc'
+						id: 'abc',
 					},
 					status: 401,
 					data: {
 						error: {
-							code: 3
-						}
-					}
-				}
+							code: 3,
+						},
+					},
+				},
 			});
 		} catch {
 			expect(auth.logout).not.toHaveBeenCalled();

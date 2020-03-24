@@ -4,7 +4,7 @@ import {
 	optionsKnob as options,
 	number,
 	text,
-	boolean
+	boolean,
 } from '@storybook/addon-knobs';
 
 import Vue from 'vue';
@@ -19,23 +19,23 @@ export default {
 	component: VProgressCircular,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
 	props: {
 		value: {
-			default: number('Value', 60)
+			default: number('Value', 60),
 		},
 		indeterminate: {
-			default: boolean('Indeterminate', false)
+			default: boolean('Indeterminate', false),
 		},
 		color: {
-			default: color('Color', '#263238')
+			default: color('Color', '#263238'),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#cfd8dc')
+			default: color('Background Color', '#cfd8dc'),
 		},
 		size: {
 			default: options(
@@ -45,23 +45,23 @@ export const interactive = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				}
-			)
+			),
 		},
 		speed: {
-			default: text('Speed (css, eg 200ms)', '2s')
+			default: text('Speed (css, eg 200ms)', '2s'),
 		},
 		customSize: {
-			default: text('Size (in px)', '')
+			default: text('Size (in px)', ''),
 		},
 		customLineSize: {
-			default: text('Line Size (in px)', '')
-		}
+			default: text('Line Size (in px)', ''),
+		},
 	},
 	template: `
 	<v-progress-circular
@@ -78,7 +78,7 @@ export const interactive = () => ({
 		:small="size === 'small'"
 		:large="size === 'large'"
 		:x-large="size === 'xLarge'"
-	/>`
+	/>`,
 });
 
 export const colors = () => `

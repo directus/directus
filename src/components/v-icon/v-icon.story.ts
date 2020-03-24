@@ -4,7 +4,7 @@ import {
 	boolean,
 	number,
 	color,
-	optionsKnob as options
+	optionsKnob as options,
 } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
@@ -19,24 +19,24 @@ export default {
 	component: VIcon,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
 	methods: { onClick: action('click') },
 	props: {
 		name: {
-			default: text('Icon Name', 'person')
+			default: text('Icon Name', 'person'),
 		},
 		color: {
-			default: color('Color', '#37474f')
+			default: color('Color', '#37474f'),
 		},
 		outline: {
-			default: boolean('Outline', false)
+			default: boolean('Outline', false),
 		},
 		sup: {
-			default: boolean('Superscript', false)
+			default: boolean('Superscript', false),
 		},
 		size: {
 			default: options(
@@ -46,17 +46,17 @@ export const interactive = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				}
-			)
+			),
 		},
 		customSize: {
-			default: number('Size (in px)', 0)
-		}
+			default: number('Size (in px)', 0),
+		},
 	},
 	template: `
 		<v-icon
@@ -70,7 +70,7 @@ export const interactive = () => ({
 			:x-large="size === 'xLarge'"
 			:size="customSize"
 		/>
-	`
+	`,
 });
 
 export const superscript = () =>
@@ -89,11 +89,11 @@ export const sizesAndColors = () => `
 
 export const withClickEvent = () => ({
 	methods: {
-		click: action('click')
+		click: action('click'),
 	},
 	template: `
 <v-icon name="star" @click="click" />
-`
+`,
 });
 
 export const leftRight = () => ({
@@ -106,5 +106,5 @@ export const leftRight = () => ({
 	Remove <v-icon name="remove" right />
 </v-button>
 </div>
-`
+`,
 });

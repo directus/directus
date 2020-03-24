@@ -12,16 +12,16 @@ export default defineComponent({
 	props: {
 		xAxis: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		expandedParentClass: {
 			type: String,
-			default: ''
-		}
+			default: '',
+		},
 	},
 	setup(props) {
 		const methods = ExpandMethods(props.expandedParentClass, props.xAxis);
 		return { methods };
-	}
+	},
 });
 </script>

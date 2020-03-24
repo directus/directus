@@ -14,8 +14,8 @@ export default {
 	title: 'Components / Tabs',
 	decorators: [withKnobs, withPadding, withBackground],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -23,8 +23,8 @@ export const basic = () =>
 		components: { VTabs, VTab, VTabsItems, VTabItem },
 		props: {
 			withIcons: {
-				default: boolean('With Icons', false)
-			}
+				default: boolean('With Icons', false),
+			},
 		},
 		setup() {
 			const selection = ref([]);
@@ -50,7 +50,7 @@ export const basic = () =>
 
 				<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 			</div>
-		`
+		`,
 	});
 
 export const vertical = () =>
@@ -58,8 +58,8 @@ export const vertical = () =>
 		components: { VTabs, VTab },
 		props: {
 			withIcons: {
-				default: boolean('With Icons', false)
-			}
+				default: boolean('With Icons', false),
+			},
 		},
 		setup() {
 			const selection = ref([]);
@@ -87,5 +87,5 @@ export const vertical = () =>
 
 				<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 			</div>
-		`
+		`,
 	});

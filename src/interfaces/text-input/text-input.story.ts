@@ -12,25 +12,25 @@ export default {
 	title: 'Interfaces / Text Input',
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
 	defineComponent({
 		props: {
 			monospace: {
-				default: boolean('Monospace', false, 'Options')
+				default: boolean('Monospace', false, 'Options'),
 			},
 			trim: {
-				default: boolean('Trim', false, 'Options')
+				default: boolean('Trim', false, 'Options'),
 			},
 			showCharacterCount: {
-				default: boolean('Show Character Count', false, 'Options')
+				default: boolean('Show Character Count', false, 'Options'),
 			},
 			placeholder: {
-				default: text('Placeholder', 'Enter a value...', 'Options')
-			}
+				default: text('Placeholder', 'Enter a value...', 'Options'),
+			},
 		},
 		setup() {
 			const onInput = action('input');
@@ -41,5 +41,5 @@ export const basic = () =>
 				:options="{ monospace, trim, showCharacterCount, placeholder }"
 				@input="onInput"
 			/>
-		`
+		`,
 	});

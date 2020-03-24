@@ -11,9 +11,9 @@ export default defineComponent({
 	props: {
 		center: {
 			type: Boolean,
-			default: false
-		}
-	}
+			default: false,
+		},
+	},
 });
 </script>
 

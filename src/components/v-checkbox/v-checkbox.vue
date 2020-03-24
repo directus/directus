@@ -21,29 +21,29 @@ import { defineComponent, computed } from '@vue/composition-api';
 export default defineComponent({
 	model: {
 		prop: 'inputValue',
-		event: 'change'
+		event: 'change',
 	},
 	props: {
 		value: {
 			type: String,
-			default: null
+			default: null,
 		},
 		inputValue: {
 			type: [Boolean, Array],
-			default: false
+			default: false,
 		},
 		label: {
 			type: String,
-			default: null
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		indeterminate: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
@@ -80,7 +80,7 @@ export default defineComponent({
 				emit('change', !isChecked.value);
 			}
 		}
-	}
+	},
 });
 </script>
 

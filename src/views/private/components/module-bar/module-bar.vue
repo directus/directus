@@ -20,19 +20,19 @@ import ModuleBarAvatar from '../module-bar-avatar/';
 export default defineComponent({
 	components: {
 		ModuleBarLogo,
-		ModuleBarAvatar
+		ModuleBarAvatar,
 	},
 	setup() {
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = projectsStore.state;
 
-		const _modules = modules.map(module => ({
+		const _modules = modules.map((module) => ({
 			...module,
-			to: `/${currentProjectKey}/${module.id}/`
+			to: `/${currentProjectKey}/${module.id}/`,
 		}));
 
 		return { _modules };
-	}
+	},
 });
 </script>
 

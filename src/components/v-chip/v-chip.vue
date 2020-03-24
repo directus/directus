@@ -27,29 +27,29 @@ export default defineComponent({
 	props: {
 		active: {
 			type: Boolean,
-			default: null
+			default: null,
 		},
 		close: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		closeIcon: {
 			type: String,
-			default: 'close'
+			default: 'close',
 		},
 		outlined: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		label: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
-		...sizeProps
+		...sizeProps,
 	},
 	setup(props, { emit }) {
 		const _localActive = ref(true);
@@ -62,7 +62,7 @@ export default defineComponent({
 			set: (active: boolean) => {
 				emit('update:active', active);
 				_localActive.value = active;
-			}
+			},
 		});
 
 		const sizeClass = useSizeClass(props);
@@ -79,7 +79,7 @@ export default defineComponent({
 			_active.value = !_active.value;
 			emit('close', event);
 		}
-	}
+	},
 });
 </script>
 

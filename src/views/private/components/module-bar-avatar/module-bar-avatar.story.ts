@@ -11,8 +11,8 @@ export default {
 	title: 'Views / Private / Components / Module Bar Avatar',
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -29,14 +29,14 @@ export const basic = () =>
 			userStore.state.currentUser = {
 				first_name: 'Admin',
 				last_name: 'User',
-				avatar: null
+				avatar: null,
 			} as any;
 		},
 		template: `
 			<div style="width: max-content; padding-top: 128px; background-color: #263238;">
 				<module-bar-avatar />
 			</div>
-		`
+		`,
 	});
 
 export const withAvatar = () =>
@@ -58,16 +58,16 @@ export const withAvatar = () =>
 						thumbnails: [
 							{
 								key: 'directus-small-crop',
-								url: 'https://randomuser.me/api/portraits/women/44.jpg'
-							}
-						]
-					}
-				}
+								url: 'https://randomuser.me/api/portraits/women/44.jpg',
+							},
+						],
+					},
+				},
 			} as any;
 		},
 		template: `
 			<div style="width: max-content; padding-top: 128px; background-color: #263238;">
 				<module-bar-avatar />
 			</div>
-		`
+		`,
 	});

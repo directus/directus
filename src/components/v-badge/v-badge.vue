@@ -16,29 +16,29 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: null
+			default: null,
 		},
 		dot: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		left: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		bottom: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		icon: {
 			type: String,
-			default: null
+			default: null,
 		},
 		bordered: {
 			type: Boolean,
-			default: false
-		}
-	}
+			default: false,
+		},
+	},
 });
 </script>
 

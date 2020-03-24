@@ -6,7 +6,7 @@ import {
 	onAfterEach,
 	onBeforeEnterProjectChooser,
 	replaceRoutes,
-	defaultRoutes
+	defaultRoutes,
 } from './router';
 import api from '@/api';
 import * as auth from '@/auth';
@@ -25,7 +25,7 @@ const route: Route = {
 	hash: '',
 	params: {},
 	fullPath: '',
-	matched: []
+	matched: [],
 };
 
 describe('Router', () => {
@@ -45,7 +45,7 @@ describe('Router', () => {
 
 		const fromRoute = {
 			...route,
-			name: null
+			name: null,
 		};
 
 		const callback = jest.fn();
@@ -77,7 +77,7 @@ describe('Router', () => {
 
 		const toRoute = {
 			...route,
-			path: '/install'
+			path: '/install',
 		};
 		const fromRoute = route;
 		const callback = jest.fn();
@@ -95,8 +95,8 @@ describe('Router', () => {
 		const toRoute = {
 			...route,
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 		const fromRoute = route;
 		const callback = jest.fn();
@@ -113,8 +113,8 @@ describe('Router', () => {
 			...route,
 			path: '/test',
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 		const fromRoute = route;
 		const callback = jest.fn();
@@ -131,8 +131,8 @@ describe('Router', () => {
 			...route,
 			path: '/',
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 		const fromRoute = route;
 		const callback = jest.fn();
@@ -150,15 +150,15 @@ describe('Router', () => {
 
 		projectsStore.state.projects = [
 			{
-				key: 'my-project'
-			}
+				key: 'my-project',
+			},
 		] as any;
 
 		const to = {
 			...route,
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 
 		const from = { ...route, name: null };
@@ -175,16 +175,16 @@ describe('Router', () => {
 		const projectsStore = useProjectsStore({});
 		projectsStore.state.projects = [
 			{
-				key: 'my-project'
-			}
+				key: 'my-project',
+			},
 		] as any;
 		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
 
 		const to = {
 			...route,
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 
 		const from = { ...route, name: null };
@@ -202,12 +202,12 @@ describe('Router', () => {
 		const toRoute = {
 			...route,
 			meta: {
-				public: true
-			}
+				public: true,
+			},
 		};
 		const fromRoute = {
 			...route,
-			name: null
+			name: null,
 		};
 		const next = jest.fn();
 
@@ -222,16 +222,16 @@ describe('Router', () => {
 		const projectsStore = useProjectsStore({});
 		projectsStore.state.projects = [
 			{
-				key: 'my-project'
-			}
+				key: 'my-project',
+			},
 		] as any;
 		jest.spyOn(projectsStore, 'getProjects').mockResolvedValue();
 
 		const to = {
 			...route,
 			params: {
-				project: 'my-project'
-			}
+				project: 'my-project',
+			},
 		};
 
 		const from = { ...route, name: null };
@@ -275,8 +275,8 @@ describe('Router', () => {
 			const to = {
 				fullPath: '/test',
 				meta: {
-					public: false
-				}
+					public: false,
+				},
 			} as any;
 
 			onAfterEach(to);
@@ -295,8 +295,8 @@ describe('Router', () => {
 			const to = {
 				fullPath: '/test',
 				meta: {
-					public: true
-				}
+					public: true,
+				},
 			} as any;
 
 			onAfterEach(to);

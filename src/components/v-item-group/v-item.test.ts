@@ -16,9 +16,9 @@ describe('Components / Item Group / Item', () => {
 				'item-group': {
 					register: jest.fn(),
 					unregister: jest.fn(),
-					toggle: jest.fn()
-				}
-			}
+					toggle: jest.fn(),
+				},
+			},
 		});
 		expect(composition.useGroupable).toHaveBeenCalled();
 	});

@@ -13,28 +13,28 @@ jest.mock('@/compositions/groupable', () => ({
 				value: [
 					{
 						active: {
-							value: false
-						}
+							value: false,
+						},
 					},
 					{
 						active: {
-							value: false
-						}
+							value: false,
+						},
 					},
 					{
 						active: {
-							value: true
-						}
+							value: true,
+						},
 					},
 					{
 						active: {
-							value: false
-						}
-					}
-				]
-			}
+							value: false,
+						},
+					},
+				],
+			},
 		} as any;
-	}
+	},
 }));
 
 describe('Components / Tabs', () => {
@@ -49,7 +49,7 @@ describe('Components / Tabs', () => {
 
 		expect((component.vm as any).slideStyle).toEqual({
 			'--_v-tabs-items': 4,
-			'--_v-tabs-selected': 2
+			'--_v-tabs-selected': 2,
 		});
 	});
 });

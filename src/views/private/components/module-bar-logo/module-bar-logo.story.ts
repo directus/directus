@@ -9,8 +9,8 @@ export default {
 	title: 'Views / Private / Components / Module Bar Logo',
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -22,7 +22,7 @@ export const basic = () =>
 		},
 		template: `
 			<module-bar-logo />
-		`
+		`,
 	});
 
 export const withQueue = () =>
@@ -35,7 +35,7 @@ export const withQueue = () =>
 		},
 		template: `
 		<module-bar-logo />
-	`
+	`,
 	});
 
 export const withCustomLogo = () =>
@@ -57,28 +57,28 @@ export const withCustomLogo = () =>
 							full_url:
 								'https://demo.directus.io/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 							url:
-								'/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg'
+								'/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 						},
 						project_color: '#4CAF50',
 						project_foreground: null,
 						project_background: null,
 						telemetry: true,
 						default_locale: 'en-US',
-						project_public_note: null
+						project_public_note: null,
 					},
 					server: {
 						max_upload_size: 104857600,
 						general: {
 							php_version: '7.2.22',
-							php_api: 'fpm-fcgi'
-						}
-					}
-				}
+							php_api: 'fpm-fcgi',
+						},
+					},
+				},
 			];
 			projectsStore.state.currentProjectKey = 'my-project';
 		},
 		template: `
-			<module-bar-logo />	`
+			<module-bar-logo />	`,
 	});
 
 export const withCustomColor = () =>
@@ -90,5 +90,5 @@ export const withCustomColor = () =>
 		},
 		template: `
 		<module-bar-logo style="--brand: red;" />
-	`
+	`,
 	});

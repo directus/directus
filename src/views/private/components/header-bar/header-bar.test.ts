@@ -15,7 +15,7 @@ localVue.component('v-icon', VIcon);
 describe('Views / Private / Header Bar', () => {
 	const observeMock = {
 		observe: () => null,
-		disconnect: () => null // maybe not needed
+		disconnect: () => null, // maybe not needed
 	};
 
 	beforeEach(() => {
@@ -26,8 +26,8 @@ describe('Views / Private / Header Bar', () => {
 		const component = mount(HeaderBar, {
 			localVue,
 			propsData: {
-				title: 'Title'
-			}
+				title: 'Title',
+			},
 		});
 
 		const navToggle = component.find('.nav-toggle');

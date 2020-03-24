@@ -11,16 +11,16 @@ export default {
 	title: 'Components / Dialog',
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
 	defineComponent({
 		props: {
 			persistent: {
-				default: boolean('Peristent', false)
-			}
+				default: boolean('Peristent', false),
+			},
 		},
 		setup() {
 			const active = ref(false);
@@ -38,15 +38,15 @@ export const basic = () =>
 					</v-sheet>
 				</v-dialog>
 			</div>
-		`
+		`,
 	});
 
 export const activatorSlot = () =>
 	defineComponent({
 		props: {
 			persistent: {
-				default: boolean('Peristent', false)
-			}
+				default: boolean('Peristent', false),
+			},
 		},
 		setup() {
 			const active = ref(false);
@@ -66,5 +66,5 @@ export const activatorSlot = () =>
 					</v-sheet>
 				</v-dialog>
 			</div>
-		`
+		`,
 	});

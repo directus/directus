@@ -22,18 +22,18 @@ describe('Table / Row', () => {
 				headers: [
 					{
 						text: 'Column 1',
-						value: 'col1'
+						value: 'col1',
 					},
 					{
 						text: 'Column 2',
-						value: 'col2'
-					}
+						value: 'col2',
+					},
 				],
 				item: {
 					col1: 'Test',
-					col2: 'Test 2'
-				}
-			}
+					col2: 'Test 2',
+				},
+			},
 		});
 	});
 
@@ -48,21 +48,21 @@ describe('Table / Row', () => {
 				headers: [
 					{
 						text: 'Column 1',
-						value: 'col1'
+						value: 'col1',
 					},
 					{
 						text: 'Column 2',
-						value: 'col2'
-					}
+						value: 'col2',
+					},
 				],
 				item: {
 					col1: 'Test 1 Col 1',
-					col2: 'Test 1 Col 2'
-				}
+					col2: 'Test 1 Col 2',
+				},
 			},
 			scopedSlots: {
-				'item.col2': '<template slot-scope="{item}"><p>{{ item.col2 }}</p></template>'
-			}
+				'item.col2': '<template slot-scope="{item}"><p>{{ item.col2 }}</p></template>',
+			},
 		});
 
 		expect(component.find('.table-row td:nth-child(2) > *').html()).toEqual(
@@ -77,21 +77,21 @@ describe('Table / Row', () => {
 					text: 'Col1',
 					value: 'col1',
 					sortable: true,
-					align: 'left'
+					align: 'left',
 				},
 				{
 					text: 'Col2',
 					value: 'col2',
 					sortable: true,
-					align: 'center'
+					align: 'center',
 				},
 				{
 					text: 'Col3',
 					value: 'col3',
 					sortable: true,
-					align: 'right'
-				}
-			]
+					align: 'right',
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -103,7 +103,7 @@ describe('Table / Row', () => {
 
 	it('Emits item selection changes on checkbox click', async () => {
 		component.setProps({
-			showSelect: true
+			showSelect: true,
 		});
 
 		await component.vm.$nextTick();
@@ -114,10 +114,10 @@ describe('Table / Row', () => {
 			{
 				item: {
 					col1: 'Test',
-					col2: 'Test 2'
+					col2: 'Test 2',
 				},
-				value: true
-			}
+				value: true,
+			},
 		]);
 	});
 });

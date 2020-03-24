@@ -21,37 +21,37 @@ export default defineComponent({
 	props: {
 		id: {
 			type: String,
-			required: true
+			required: true,
 		},
 		title: {
 			type: String,
-			required: true
+			required: true,
 		},
 		text: {
 			type: String,
-			default: null
+			default: null,
 		},
 		icon: {
 			type: String,
-			default: null
+			default: null,
 		},
 		type: {
 			type: String,
 			default: 'info',
-			validator: (val: string) => ['info', 'success', 'warning', 'error'].includes(val)
+			validator: (val: string) => ['info', 'success', 'warning', 'error'].includes(val),
 		},
 		persist: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		tail: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		dense: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props) {
 		const notificationsStore = useNotificationsStore();
@@ -67,7 +67,7 @@ export default defineComponent({
 		function close() {
 			notificationsStore.remove(props.id);
 		}
-	}
+	},
 });
 </script>
 

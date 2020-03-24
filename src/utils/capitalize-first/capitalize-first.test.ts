@@ -6,7 +6,7 @@ describe('Utils / capitalizeFirst', () => {
 			['test', 'Test'],
 			['directus', 'Directus'],
 			['123', '123'],
-			['_abc', '_abc']
+			['_abc', '_abc'],
 		];
 
 		for (const testCase of testCases) {

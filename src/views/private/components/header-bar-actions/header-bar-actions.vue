@@ -29,7 +29,7 @@ export default defineComponent({
 	setup() {
 		const active = ref(false);
 		return { active };
-	}
+	},
 });
 </script>
 

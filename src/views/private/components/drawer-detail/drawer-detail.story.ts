@@ -8,22 +8,22 @@ export default {
 	title: 'Views / Private / Components / Drawer Detail',
 	decorators: [withKnobs, withAltColors, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
 	defineComponent({
 		props: {
 			drawerOpen: {
-				default: boolean('Drawer open', true)
+				default: boolean('Drawer open', true),
 			},
 			icon: {
-				default: text('Icon', 'person')
+				default: text('Icon', 'person'),
 			},
 			title: {
-				default: text('Title', 'People')
-			}
+				default: text('Title', 'People'),
+			},
 		},
 		setup(props) {
 			const open = ref(false);
@@ -31,18 +31,18 @@ export const basic = () =>
 
 			watch(
 				() => props.drawerOpen,
-				newOpen => (open.value = newOpen)
+				(newOpen) => (open.value = newOpen)
 			);
 
 			provide('item-group', {
 				register: () => {},
 				unregister: () => {},
-				toggle: () => {}
+				toggle: () => {},
 			});
 		},
 		template: `
 			<drawer-detail :title="title" :icon="icon">
 				Content
 			</drawer-detail>
-		`
+		`,
 	});

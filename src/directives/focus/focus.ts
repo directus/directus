@@ -7,7 +7,7 @@ const Focus: DirectiveOptions = {
 		} else {
 			el.blur();
 		}
-	}
+	},
 };
 
 export default Focus;

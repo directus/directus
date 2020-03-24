@@ -11,8 +11,8 @@ export default {
 	component: VSheet,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
@@ -21,32 +21,32 @@ export const interactive = () => ({
 			default: text(
 				'Text',
 				'A sheet is component holds other components. It provides an extra visual layer on the page.'
-			)
+			),
 		},
 		color: {
-			default: color('Color', '#f9fafa')
+			default: color('Color', '#f9fafa'),
 		},
 		width: {
-			default: text('Width', 'auto')
+			default: text('Width', 'auto'),
 		},
 		height: {
-			default: text('Height', 'auto')
+			default: text('Height', 'auto'),
 		},
 		minWidth: {
-			default: text('Min Width', 'none')
+			default: text('Min Width', 'none'),
 		},
 		minHeight: {
-			default: text('Min Height', 'var(--input-height)')
+			default: text('Min Height', 'var(--input-height)'),
 		},
 		maxWidth: {
-			default: text('Max Width', 'none')
+			default: text('Max Width', 'none'),
 		},
 		maxHeight: {
-			default: text('Max Height', 'none')
+			default: text('Max Height', 'none'),
 		},
 		padding: {
-			default: text('Padding', '8px')
-		}
+			default: text('Padding', '8px'),
+		},
 	},
 	template: `
 	<v-sheet
@@ -60,7 +60,7 @@ export const interactive = () => ({
 			'--v-sheet-max-height': maxHeight,
 			'--v-sheet-padding': padding
 		}"
-	>{{ text }}</v-sheet>`
+	>{{ text }}</v-sheet>`,
 });
 
 export const colorsSizes = () => `

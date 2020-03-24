@@ -12,14 +12,14 @@ export default {
 	component: VInput,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () => ({
 	data() {
 		return {
-			value: ''
+			value: '',
 		};
 	},
 	template: `
@@ -29,20 +29,20 @@ export const basic = () => ({
 value: {{ value }}
 </pre>
 </div>
-`
+`,
 });
 
 export const monospace = () => ({
 	data() {
 		return {
-			value: ''
+			value: '',
 		};
 	},
 	template: `
 <div>
 <v-input v-model="value" placeholder="Enter content..." monospace />
 </div>
-`
+`,
 });
 
 export const disabled = () => `<v-input value="I'm disabled" disabled />`;
@@ -61,7 +61,7 @@ export const prefixSuffix = () => `
 export const withSlots = () => ({
 	data() {
 		return {
-			value: ''
+			value: '',
 		};
 	},
 	template: `
@@ -85,5 +85,5 @@ export const withSlots = () => ({
 		<template #append>append</template>
 	</v-input>
 	</div>
-	`
+	`,
 });

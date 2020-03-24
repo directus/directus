@@ -17,17 +17,17 @@ import { defineComponent, ref } from '@vue/composition-api';
 export default defineComponent({
 	model: {
 		prop: 'active',
-		event: 'toggle'
+		event: 'toggle',
 	},
 	props: {
 		active: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		persistent: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const className = ref<string>(null);
@@ -49,7 +49,7 @@ export default defineComponent({
 				className.value = null;
 			}, 200);
 		}
-	}
+	},
 });
 </script>
 

@@ -71,7 +71,7 @@
     "jest-sonar": "^0.2.5",
     "lint-staged": "^10.0.9",
     "mockdate": "^2.0.5",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",

@@ -38,7 +38,7 @@ export default defineComponent({
 		);
 
 		return { alreadyAuthenticated, currentProject };
-	}
+	},
 });
 </script>
 

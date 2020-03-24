@@ -22,7 +22,7 @@ export default defineComponent({
 		const queue = toRefs(notificationsStore.state).queue;
 
 		return { queue };
-	}
+	},
 });
 </script>
 

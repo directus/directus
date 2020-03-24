@@ -12,25 +12,25 @@ export default {
 	component: VOverlay,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
 	props: {
 		absolute: {
-			default: boolean('Absolute', false)
+			default: boolean('Absolute', false),
 		},
 		color: {
-			default: text('Color', 'rgba(38, 50, 56, 0.75)')
+			default: text('Color', 'rgba(38, 50, 56, 0.75)'),
 		},
 		zIndex: {
-			default: number('z-index', 500)
-		}
+			default: number('z-index', 500),
+		},
 	},
 	data() {
 		return {
-			active: false
+			active: false,
 		};
 	},
 	template: `
@@ -41,31 +41,31 @@ export const interactive = () => ({
 		<v-button @click="active = false">Close overlay</v-button>
 		</v-overlay>
 	</div>
-	`
+	`,
 });
 
 export const withClick = () => ({
 	props: {
 		absolute: {
-			default: boolean('Absolute', false)
+			default: boolean('Absolute', false),
 		},
 		color: {
-			default: text('Color', 'rgba(38, 50, 56, 0.75)')
+			default: text('Color', 'rgba(38, 50, 56, 0.75)'),
 		},
 		zIndex: {
-			default: number('z-index', 500)
-		}
+			default: number('z-index', 500),
+		},
 	},
 	data() {
 		return {
-			active: false
+			active: false,
 		};
 	},
 	methods: {
 		click(event: MouseEvent) {
 			action('click')(event);
 			(this as any).active = false;
-		}
+		},
 	},
 	template: `
 	<div style="position: relative; padding: 50px; border: 3px dashed #eee; width: max-content;">
@@ -80,5 +80,5 @@ export const withClick = () => ({
 		:absolute="absolute"
 		@click="click" />
 	</div>
-	`
+	`,
 });

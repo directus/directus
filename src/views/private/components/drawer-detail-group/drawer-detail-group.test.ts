@@ -12,8 +12,8 @@ describe('Views / Private / Drawer Detail Group', () => {
 		const component = shallowMount(DrawerDetailGroup, {
 			localVue,
 			propsData: {
-				drawerOpen: true
-			}
+				drawerOpen: true,
+			},
 		});
 
 		(component.vm as any).openDetail = ['test'];

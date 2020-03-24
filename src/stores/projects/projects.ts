@@ -13,12 +13,12 @@ export const useProjectsStore = createStore({
 		needsInstall: false,
 		error: null as LoadingError,
 		projects: null as Projects | null,
-		currentProjectKey: null as string | null
+		currentProjectKey: null as string | null,
 	}),
 	getters: {
 		currentProject: (state): ProjectWithKey | ProjectError | null => {
 			return state.projects?.find(({ key }) => key === state.currentProjectKey) || null;
-		}
+		},
 	},
 	actions: {
 		/**
@@ -30,14 +30,14 @@ export const useProjectsStore = createStore({
 		 */
 		async setCurrentProject(key: string): Promise<boolean> {
 			const projects = this.state.projects || ([] as Projects);
-			const projectKeys = projects.map(project => project.key);
+			const projectKeys = projects.map((project) => project.key);
 
 			if (projectKeys.includes(key) === false) {
 				try {
 					const projectInfoResponse = await api.get(`/${key}/`);
 					const project: ProjectWithKey = {
 						key: key,
-						...projectInfoResponse.data.data
+						...projectInfoResponse.data.data,
 					};
 					this.state.projects = [...projects, project];
 				} catch {
@@ -60,14 +60,14 @@ export const useProjectsStore = createStore({
 						const projectInfoResponse = await api.get(`/${projectKeys[index]}/`);
 						projects.push({
 							key: projectKeys[index],
-							...projectInfoResponse.data.data
+							...projectInfoResponse.data.data,
 						});
 					} catch (error) {
 						/* istanbul ignore next */
 						projects.push({
 							key: projectKeys[index],
 							status: error.response?.status,
-							error: error.response?.data?.error?.message ?? error.message
+							error: error.response?.data?.error?.message ?? error.message,
 						});
 					}
 				}
@@ -81,10 +81,10 @@ export const useProjectsStore = createStore({
 					this.state.error = {
 						/* istanbul ignore next */
 						status: error.response?.status,
-						error: error.message
+						error: error.message,
 					};
 				}
 			}
-		}
-	}
+		},
+	},
 });

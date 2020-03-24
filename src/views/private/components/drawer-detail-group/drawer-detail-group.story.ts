@@ -11,8 +11,8 @@ export default {
 	title: 'Views / Private / Components / Drawer Detail Group',
 	decorators: [withKnobs, withAltColors, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -37,5 +37,5 @@ export const basic = () =>
 
 				<v-input full-width placeholder="I'm an input" />
 			</drawer-detail>
-		</drawer-detail-group>`
+		</drawer-detail-group>`,
 	});

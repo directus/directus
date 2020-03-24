@@ -7,13 +7,13 @@ import { User } from './types';
 export const useUserStore = createStore({
 	id: 'userStore',
 	state: () => ({
-		currentUser: null as User | null
+		currentUser: null as User | null,
 	}),
 	getters: {
 		fullName(state) {
 			if (state.currentUser === null) return null;
 			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
-		}
+		},
 	},
 	actions: {
 		async hydrate() {
@@ -22,8 +22,8 @@ export const useUserStore = createStore({
 
 			const { data } = await api.get(`/${currentProjectKey}/users/me`, {
 				params: {
-					fields: '*,avatar.data'
-				}
+					fields: '*,avatar.data',
+				},
 			});
 
 			this.state.currentUser = data.data;
@@ -36,12 +36,12 @@ export const useUserStore = createStore({
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 
 			await api.patch(`/${currentProjectKey}/users/me/tracking/page`, {
-				last_page: page
+				last_page: page,
 			});
 
 			if (this.state.currentUser) {
 				this.state.currentUser.last_page = page;
 			}
-		}
-	}
+		},
+	},
 });

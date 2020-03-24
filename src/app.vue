@@ -19,7 +19,7 @@ export default defineComponent({
 		const { hydrating } = toRefs(appStore.state);
 
 		return { hydrating };
-	}
+	},
 });
 </script>
 

@@ -12,17 +12,17 @@ export default {
 	component: VSwitch,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const booleanState = () => ({
 	methods: {
-		onChange: action('change')
+		onChange: action('change'),
 	},
 	data() {
 		return {
-			checked: false
+			checked: false,
 		};
 	},
 	template: `
@@ -30,16 +30,16 @@ export const booleanState = () => ({
 		<v-switch v-model="checked" @change="onChange" />
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">{{checked}}</pre>
 	</div>
-	`
+	`,
 });
 
 export const arrayState = () => ({
 	methods: {
-		onChange: action('change')
+		onChange: action('change'),
 	},
 	data() {
 		return {
-			options: ['html', 'css']
+			options: ['html', 'css'],
 		};
 	},
 	template: `
@@ -49,7 +49,7 @@ export const arrayState = () => ({
 		<v-switch style="margin-bottom: 20px" v-model="options" value="js" @change="onChange" label="JS" />
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">{{options}}</pre>
 	</div>
-	`
+	`,
 });
 
 export const disabled = () =>
@@ -57,17 +57,17 @@ export const disabled = () =>
 
 export const colors = () => ({
 	methods: {
-		onChange: action('change')
+		onChange: action('change'),
 	},
 	data() {
 		return {
-			options: ['red', 'yellow', 'custom']
+			options: ['red', 'yellow', 'custom'],
 		};
 	},
 	props: {
 		customColor: {
-			default: color('Custom color', '#4CAF50')
-		}
+			default: color('Custom color', '#4CAF50'),
+		},
 	},
 	template: `
 	<div>
@@ -76,16 +76,16 @@ export const colors = () => ({
 		<v-switch v-model="options" value="yellow" @change="onChange" style="margin-bottom: 20px; --v-switch-color: var(--amber)" label="Yellow" />
 		<v-switch style="margin-bottom: 20px;" v-model="options" value="custom" @change="onChange" :style="{'--v-switch-color': customColor}" label="Custom..." />
 	</div>
-	`
+	`,
 });
 
 export const htmlLabel = () => ({
 	methods: {
-		onChange: action('change')
+		onChange: action('change'),
 	},
 	data() {
 		return {
-			checked: true
+			checked: true,
 		};
 	},
 	template: `
@@ -94,5 +94,5 @@ export const htmlLabel = () => ({
 				Any <i>custom</i> markup in here
 			</template>
 		</v-switch>
-	`
+	`,
 });

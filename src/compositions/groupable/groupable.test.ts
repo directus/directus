@@ -45,7 +45,7 @@ describe('Groupable', () => {
 
 			expect(register).toHaveBeenCalledWith({
 				active: { value: false },
-				value: 'custom-value'
+				value: 'custom-value',
 			});
 		});
 
@@ -111,7 +111,7 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					providedFunctions.register(testItem);
@@ -127,7 +127,7 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					providedFunctions.register(testItem);
@@ -144,7 +144,7 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					result.items.value = [testItem];
@@ -167,7 +167,7 @@ describe('Groupable', () => {
 			it('Uses passed in state if provided', () => {
 				mountComposition(() => {
 					const result: any = useGroupableParent({
-						selection: ref([0])
+						selection: ref([0]),
 					});
 
 					expect(result.selection.value).toEqual([0]);
@@ -179,7 +179,7 @@ describe('Groupable', () => {
 
 				mountComposition(() => {
 					const result: any = useGroupableParent({
-						onSelectionChange: onSelectionChange
+						onSelectionChange: onSelectionChange,
 					});
 
 					result.selection.value = [0];
@@ -208,7 +208,7 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					providedFunctions.register(testItem);
@@ -227,7 +227,7 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					providedFunctions.register(testItem);
@@ -246,12 +246,12 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					providedFunctions.register(testItem);
@@ -271,12 +271,12 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					providedFunctions.register(testItem);
@@ -296,12 +296,12 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					providedFunctions.register(testItem);
@@ -319,24 +319,24 @@ describe('Groupable', () => {
 				mountComposition(() => {
 					const result: any = useGroupableParent(undefined, {
 						max: ref(2),
-						multiple: ref(true)
+						multiple: ref(true),
 					});
 
 					const providedFunctions: any = inject('item-group');
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					const testItem3 = {
 						active: ref(false),
-						value: 'test3'
+						value: 'test3',
 					};
 
 					providedFunctions.register(testItem);
@@ -355,19 +355,19 @@ describe('Groupable', () => {
 				mountComposition(() => {
 					const result: any = useGroupableParent(undefined, {
 						multiple: ref(true),
-						max: ref(-1)
+						max: ref(-1),
 					});
 
 					const providedFunctions: any = inject('item-group');
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					providedFunctions.register(testItem);
@@ -383,24 +383,24 @@ describe('Groupable', () => {
 				mountComposition(() => {
 					const result: any = useGroupableParent(undefined, {
 						mandatory: ref(true),
-						multiple: ref(true)
+						multiple: ref(true),
 					});
 
 					const providedFunctions: any = inject('item-group');
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					const testItem3 = {
 						active: ref(false),
-						value: 'test3'
+						value: 'test3',
 					};
 
 					providedFunctions.register(testItem);
@@ -428,16 +428,16 @@ describe('Groupable', () => {
 
 					const testItem = {
 						active: ref(false),
-						value: 'test'
+						value: 'test',
 					};
 
 					const testItem2 = {
 						active: ref(false),
-						value: 'test2'
+						value: 'test2',
 					};
 
 					const testItem3 = {
-						active: ref(true)
+						active: ref(true),
 					};
 
 					providedFunctions.register(testItem);
@@ -467,16 +467,16 @@ describe('Groupable', () => {
 
 				const testItem = {
 					active: ref(false),
-					value: 'test'
+					value: 'test',
 				};
 
 				const testItem2 = {
 					active: ref(false),
-					value: 'test2'
+					value: 'test2',
 				};
 
 				const testItem3 = {
-					active: ref(false)
+					active: ref(false),
 				};
 
 				providedFunctions.register(testItem);

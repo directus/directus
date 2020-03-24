@@ -29,8 +29,8 @@ describe('Stores / Fields', () => {
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -49,10 +49,10 @@ describe('Stores / Fields', () => {
 					data: {
 						data: [
 							{
-								field: 'test_field'
-							}
-						]
-					}
+								field: 'test_field',
+							},
+						],
+					},
 				})
 			);
 
@@ -76,16 +76,16 @@ describe('Stores / Fields', () => {
 								translation: [
 									{
 										locale: 'en-US',
-										translation: 'Test field'
+										translation: 'Test field',
 									},
 									{
 										locale: 'nl-NL',
-										translation: 'Test veld'
-									}
-								]
-							}
-						]
-					}
+										translation: 'Test veld',
+									},
+								],
+							},
+						],
+					},
 				})
 			);
 
@@ -97,14 +97,14 @@ describe('Stores / Fields', () => {
 
 			expect(i18n.mergeLocaleMessage).toHaveBeenCalledWith('en-US', {
 				fields: {
-					test_field: 'Test field'
-				}
+					test_field: 'Test field',
+				},
 			});
 
 			expect(i18n.mergeLocaleMessage).toHaveBeenCalledWith('nl-NL', {
 				fields: {
-					test_field: 'Test veld'
-				}
+					test_field: 'Test veld',
+				},
 			});
 		});
 	});

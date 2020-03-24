@@ -21,9 +21,9 @@ describe('Views / Private / Module Bar / Logo', () => {
 				status: 500,
 				error: {
 					code: 400,
-					message: 'Could not connect to the database'
-				}
-			}
+					message: 'Could not connect to the database',
+				},
+			},
 		};
 
 		const component = shallowMount(ModuleBarLogo, { localVue });
@@ -45,9 +45,9 @@ describe('Views / Private / Module Bar / Logo', () => {
 					default_locale: 'en-US',
 					telemetry: false,
 					project_name: 'test',
-					project_logo: null
-				}
-			}
+					project_logo: null,
+				},
+			},
 		};
 
 		const component = shallowMount(ModuleBarLogo, { localVue });
@@ -71,10 +71,10 @@ describe('Views / Private / Module Bar / Logo', () => {
 					project_name: 'test',
 					project_logo: {
 						full_url: 'abc',
-						url: 'abc'
-					}
-				}
-			}
+						url: 'abc',
+					},
+				},
+			},
 		};
 
 		const component = shallowMount(ModuleBarLogo, { localVue });

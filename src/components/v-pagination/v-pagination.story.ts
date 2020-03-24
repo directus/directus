@@ -9,8 +9,8 @@ export default {
 	title: 'Components / Pagination',
 	decorators: [withPadding, withKnobs],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -18,17 +18,17 @@ export const basic = () =>
 		components: { VPagination },
 		props: {
 			disabled: {
-				default: boolean('Disabled', false)
+				default: boolean('Disabled', false),
 			},
 			length: {
-				default: number('Length', 10)
+				default: number('Length', 10),
 			},
 			totalVisible: {
-				default: number('Total Visible', 5)
+				default: number('Total Visible', 5),
 			},
 			showFirstLast: {
-				default: boolean('Show first/last', false)
-			}
+				default: boolean('Show first/last', false),
+			},
 		},
 		setup() {
 			const currentPage = ref(1);
@@ -42,5 +42,5 @@ export const basic = () =>
 				:disabled="disabled"
 				:show-first-last="showFirstLast"
 			/>
-		`
+		`,
 	});

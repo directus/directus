@@ -18,7 +18,7 @@ import VList, {
 	VListItemIcon,
 	VListItemSubtitle,
 	VListItemTitle,
-	VListGroup
+	VListGroup,
 } from './v-list/';
 import VNotice from './v-notice/';
 import VOverlay from './v-overlay/';

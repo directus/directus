@@ -34,37 +34,37 @@ export default defineComponent({
 	props: {
 		autofocus: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		prefix: {
 			type: String,
-			default: null
+			default: null,
 		},
 		suffix: {
 			type: String,
-			default: null
+			default: null,
 		},
 		monospace: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		fullWidth: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: [String, Number],
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const _listeners = computed(() => ({
 			...listeners,
-			input: emitValue
+			input: emitValue,
 		}));
 
 		return { _listeners };
@@ -72,7 +72,7 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			emit('input', (event.target as HTMLInputElement).value);
 		}
-	}
+	},
 });
 </script>
 

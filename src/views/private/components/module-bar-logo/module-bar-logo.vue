@@ -36,7 +36,7 @@ export default defineComponent({
 
 		watch(
 			() => queueHasItems.value,
-			hasItems => {
+			(hasItems) => {
 				if (hasItems) isRunning.value = true;
 			}
 		);
@@ -46,7 +46,7 @@ export default defineComponent({
 		function stopRunningIfQueueIsEmpty() {
 			if (queueHasItems.value === false) isRunning.value = false;
 		}
-	}
+	},
 });
 </script>
 

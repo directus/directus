@@ -34,40 +34,40 @@ export default defineComponent({
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
-			required: true
+			required: true,
 		},
 		item: {
 			type: Object,
-			required: true
+			required: true,
 		},
 		showSelect: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		showManualSort: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		isSelected: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		subdued: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		sortedManually: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		hasClickListener: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		height: {
 			type: Number,
-			default: 48
-		}
+			default: 48,
+		},
 	},
 	setup(props, { emit }) {
 		return { getClassesForCell, toggleSelect };
@@ -85,10 +85,10 @@ export default defineComponent({
 		function toggleSelect() {
 			emit('item-selected', {
 				item: props.item,
-				value: !props.isSelected
+				value: !props.isSelected,
 			});
 		}
-	}
+	},
 });
 </script>
 

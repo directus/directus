@@ -11,21 +11,21 @@ export default defineModule({
 			{
 				name: 'collections-overview',
 				path: '/',
-				component: CollectionsOverview
+				component: CollectionsOverview,
 			},
 			{
 				name: 'collections-browse',
 				path: '/:collection',
 				component: CollectionsBrowse,
-				props: true
+				props: true,
 			},
 			{
 				name: 'collections-detail',
 				path: '/:collection/:primaryKey',
 				component: CollectionsDetail,
-				props: true
-			}
+				props: true,
+			},
 		],
-		icon: 'box'
-	})
+		icon: 'box',
+	}),
 });

@@ -10,7 +10,7 @@ import formatTitle from '@directus/format-title';
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
 	state: () => ({
-		fields: [] as Field[]
+		fields: [] as Field[],
 	}),
 	actions: {
 		async hydrate() {
@@ -21,7 +21,7 @@ export const useFieldsStore = createStore({
 
 			const fields: FieldRaw[] = response.data.data;
 
-			this.state.fields = fields.map(field => {
+			this.state.fields = fields.map((field) => {
 				let name: string | VueI18n.TranslateResult;
 
 				if (notEmpty(field.translation)) {
@@ -30,8 +30,8 @@ export const useFieldsStore = createStore({
 
 						i18n.mergeLocaleMessage(locale, {
 							fields: {
-								[field.field]: translation
-							}
+								[field.field]: translation,
+							},
 						});
 					}
 
@@ -42,7 +42,7 @@ export const useFieldsStore = createStore({
 
 				return {
 					...field,
-					name
+					name,
 				};
 			});
 		},
@@ -53,10 +53,10 @@ export const useFieldsStore = createStore({
 			/** @NOTE it's safe to assume every collection has a primary key */
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.state.fields.find(
-				field => field.collection === collection && field.primary_key === true
+				(field) => field.collection === collection && field.primary_key === true
 			);
 
 			return primaryKeyField;
-		}
-	}
+		},
+	},
 });

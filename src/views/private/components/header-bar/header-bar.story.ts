@@ -11,8 +11,8 @@ export default {
 	title: 'Views / Private / Components / Header Bar',
 	decorators: [withKnobs, withBackground],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -20,14 +20,14 @@ export const basic = () =>
 		components: { HeaderBar },
 		props: {
 			title: {
-				default: text('Title', 'Hello World')
+				default: text('Title', 'Hello World'),
 			},
 			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false)
+				default: boolean('Show Drawer Toggle', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
-			}
+				default: boolean('Dense', false),
+			},
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
@@ -45,7 +45,7 @@ export const basic = () =>
 				@update:nav-open="navToggle"
 				@update:drawer-open="drawerToggle"
 			/>
-		`
+		`,
 	});
 
 export const withBreadcrumb = () =>
@@ -54,14 +54,14 @@ export const withBreadcrumb = () =>
 		components: { HeaderBar },
 		props: {
 			title: {
-				default: text('Title', 'Hello World')
+				default: text('Title', 'Hello World'),
 			},
 			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false)
+				default: boolean('Show Drawer Toggle', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
-			}
+				default: boolean('Dense', false),
+			},
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
@@ -92,7 +92,7 @@ export const withBreadcrumb = () =>
 					]" />
 				</template>
 			</header-bar>
-		`
+		`,
 	});
 
 export const withBackButton = () =>
@@ -101,14 +101,14 @@ export const withBackButton = () =>
 		components: { HeaderBar },
 		props: {
 			title: {
-				default: text('Title', 'Hello World')
+				default: text('Title', 'Hello World'),
 			},
 			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false)
+				default: boolean('Show Drawer Toggle', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
-			}
+				default: boolean('Dense', false),
+			},
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
@@ -132,26 +132,26 @@ export const withBackButton = () =>
 					</v-button>
 				</template>
 			</header-bar>
-		`
+		`,
 	});
 
 export const slots = () => {
 	const SlotLabel = defineComponent({
-		template: `<span style="display: block; font-size: 10px; padding: 2px; border-radius: 2px; font-family: monospace; color: red; background-color: rgba(255, 0, 0, 0.2)"><slot /></span>`
+		template: `<span style="display: block; font-size: 10px; padding: 2px; border-radius: 2px; font-family: monospace; color: red; background-color: rgba(255, 0, 0, 0.2)"><slot /></span>`,
 	});
 
 	return defineComponent({
 		components: { HeaderBar, SlotLabel },
 		props: {
 			title: {
-				default: text('Title', 'Hello World')
+				default: text('Title', 'Hello World'),
 			},
 			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false)
+				default: boolean('Show Drawer Toggle', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
-			}
+				default: boolean('Dense', false),
+			},
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
@@ -194,7 +194,7 @@ export const slots = () => {
 					<slot-label>actions:append</slot-label>
 				</template>
 			</header-bar>
-		`
+		`,
 	});
 };
 
@@ -203,14 +203,14 @@ export const withActions = () =>
 		components: { HeaderBar },
 		props: {
 			title: {
-				default: text('Title', 'Hello World')
+				default: text('Title', 'Hello World'),
 			},
 			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false)
+				default: boolean('Show Drawer Toggle', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
-			}
+				default: boolean('Dense', false),
+			},
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
@@ -240,5 +240,5 @@ export const withActions = () =>
 					</v-button>
 				</template>
 			</header-bar>
-		`
+		`,
 	});

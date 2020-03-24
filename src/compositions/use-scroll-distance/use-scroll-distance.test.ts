@@ -31,7 +31,7 @@ describe('Compositions / useScrollDistance', () => {
 				<div ref="el" style="max-width: 150px; max-height: 150px; overflow: auto;">
 					<div style="width: 600px; height: 600px;" />
 				</div>
-			`
+			`,
 		});
 
 		shallowMount(TestComponent, { localVue });
@@ -75,7 +75,7 @@ describe('Compositions / useScrollDistance', () => {
 				<v-sheet ref="el" style="max-width: 150px; max-height: 150px; overflow: auto;">
 					<div style="width: 600px; height: 600px;" />
 				</v-sheet>
-			`
+			`,
 		});
 
 		shallowMount(TestComponent, { localVue }).destroy();

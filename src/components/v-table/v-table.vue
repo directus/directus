@@ -1,9 +1,9 @@
 <template>
 	<div class="v-table" :class="{ loading }">
 		<table
-			:summary="_headers.map(header => header.text).join(', ')"
+			:summary="_headers.map((header) => header.text).join(', ')"
 			:style="{
-				'--grid-columns': columnStyle
+				'--grid-columns': columnStyle,
 			}"
 		>
 			<table-header
@@ -78,79 +78,79 @@ const HeaderDefaults: Header = {
 	value: '',
 	align: 'left',
 	sortable: true,
-	width: null
+	width: null,
 };
 
 export default defineComponent({
 	components: {
 		TableHeader,
 		TableRow,
-		draggable
+		draggable,
 	},
 	model: {
 		prop: 'selection',
-		event: 'select'
+		event: 'select',
 	},
 	props: {
 		headers: {
 			type: Array as PropType<HeaderRaw[]>,
-			required: true
+			required: true,
 		},
 		items: {
 			type: Array as PropType<Item[]>,
-			required: true
+			required: true,
 		},
 		itemKey: {
 			type: String,
-			default: 'id'
+			default: 'id',
 		},
 		sort: {
 			type: Object as PropType<Sort>,
-			default: null
+			default: null,
 		},
 		showSelect: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		showResize: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		showManualSort: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		selection: {
 			type: Array as PropType<Item[]>,
-			default: () => []
+			default: () => [],
 		},
 		fixedHeader: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		loading: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		loadingText: {
 			type: String,
-			default: i18n.t('loading')
+			default: i18n.t('loading'),
 		},
 		serverSort: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		rowHeight: {
 			type: Number,
-			default: 48
-		}
+			default: 48,
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const _headers = computed({
 			get: () => {
 				return props.headers.map((header: HeaderRaw) => ({
 					...HeaderDefaults,
-					...header
+					...header,
 				}));
 			},
 			set: (newHeaders: Header[]) => {
@@ -158,7 +158,7 @@ export default defineComponent({
 					'update:headers',
 					// We'll return the original headers with the updated values, so we don't stage
 					// all the default values
-					newHeaders.map(header => {
+					newHeaders.map((header) => {
 						const keysThatArentDefault: string[] = [];
 
 						forEach(header, (value, key: string) => {
@@ -172,14 +172,14 @@ export default defineComponent({
 						return pick(header, keysThatArentDefault);
 					})
 				);
-			}
+			},
 		});
 
 		// In case the sort prop isn't used, we'll use this local sort state as a fallback.
 		// This allows the table to allow inline sorting on column ootb without the need for
 		const _localSort = ref<Sort>({
 			by: null,
-			desc: false
+			desc: false,
 		});
 
 		const _sort = computed({
@@ -187,7 +187,7 @@ export default defineComponent({
 			set: (newSort: Sort) => {
 				emit('update:sort', newSort);
 				_localSort.value = newSort;
-			}
+			},
 		});
 
 		const loadingColSpan = computed<string>(() => {
@@ -211,7 +211,7 @@ export default defineComponent({
 			},
 			set: (value: object[]) => {
 				emit('update:items', value);
-			}
+			},
 		});
 
 		const allItemsSelected = computed<boolean>(() => {
@@ -252,7 +252,7 @@ export default defineComponent({
 			onEndDrag,
 			hasRowClick,
 			loadingColSpan,
-			columnStyle
+			columnStyle,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {
@@ -294,7 +294,7 @@ export default defineComponent({
 		function onEndDrag(event: VueDraggableDropEvent) {
 			emit('drop', { oldIndex: event.oldIndex, newIndex: event.newIndex });
 		}
-	}
+	},
 });
 </script>
 

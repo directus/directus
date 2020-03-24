@@ -10,8 +10,8 @@ import i18n from '@/lang/';
 export default {
 	title: 'Views / Private / Components / Module Bar',
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -29,5 +29,5 @@ export const basic = () =>
 		},
 		template: `
 			<module-bar />
-		`
+		`,
 	});

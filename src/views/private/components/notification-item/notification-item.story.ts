@@ -9,8 +9,8 @@ export default {
 	title: 'Views / Private / Components / Notification Item',
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: readme
-	}
+		notes: readme,
+	},
 };
 
 export const basic = () =>
@@ -55,7 +55,7 @@ export const basic = () =>
 					tail
 				/>
 			</div>
-		`
+		`,
 	});
 
 export const interactive = () =>
@@ -63,26 +63,26 @@ export const interactive = () =>
 		components: { NotificationItem },
 		props: {
 			title: {
-				default: text('Title', 'This is a notification')
+				default: text('Title', 'This is a notification'),
 			},
 			text: {
-				default: text('Body text', '')
+				default: text('Body text', ''),
 			},
 			icon: {
-				default: text('Icon', 'box')
+				default: text('Icon', 'box'),
 			},
 			type: {
-				default: select('Type', ['info', 'success', 'warning', 'error'], 'info')
+				default: select('Type', ['info', 'success', 'warning', 'error'], 'info'),
 			},
 			persist: {
-				default: boolean('Persist', false)
+				default: boolean('Persist', false),
 			},
 			dense: {
-				default: boolean('Dense', false)
+				default: boolean('Dense', false),
 			},
 			tail: {
-				default: boolean('Tail', false)
-			}
+				default: boolean('Tail', false),
+			},
 		},
 		template: `
 			<notification-item
@@ -95,5 +95,5 @@ export const interactive = () =>
 				:dense="dense"
 				:tail="tail"
 			/>
-		`
+		`,
 	});

@@ -6,7 +6,7 @@
 			nav,
 			'three-line': lines === 3,
 			'two-line': lines === 2,
-			'one-line': lines === 1
+			'one-line': lines === 1,
 		}"
 	>
 		<slot></slot>
@@ -21,32 +21,32 @@ export default defineComponent({
 	props: {
 		dense: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		nav: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		lines: {
 			type: Number as PropType<1 | 2 | 3>,
-			default: null
+			default: null,
 		},
 		multiple: {
 			type: Boolean,
-			default: true
-		}
+			default: true,
+		},
 	},
 	setup(props) {
 		useGroupableParent(
 			{},
 			{
 				mandatory: ref(false),
-				multiple: toRefs(props).multiple
+				multiple: toRefs(props).multiple,
 			}
 		);
 
 		return {};
-	}
+	},
 });
 </script>
 

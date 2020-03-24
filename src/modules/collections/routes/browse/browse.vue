@@ -86,8 +86,8 @@ const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 			params: {
 				limit: 1,
 				fields: primaryKeyField.field,
-				single: true
-			}
+				single: true,
+			},
 		});
 
 		const primaryKey = item.data.data[primaryKeyField.field];
@@ -111,8 +111,8 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props) {
 		const layout = ref<LayoutComponent>(null);
@@ -135,8 +135,8 @@ export default defineComponent({
 		const breadcrumb = [
 			{
 				name: i18n.tc('collection', 2),
-				to: `/${currentProjectKey.value}/collections`
-			}
+				to: `/${currentProjectKey.value}/collections`,
+			},
 		];
 
 		const currentCollection = computed(() => collectionsStore.getCollection(props.collection));
@@ -147,7 +147,7 @@ export default defineComponent({
 
 		const batchLink = computed<string>(() => {
 			const batchPrimaryKeys = selection.value
-				.map(item => item[primaryKeyField.field])
+				.map((item) => item[primaryKeyField.field])
 				.join();
 			return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
 		});
@@ -164,7 +164,7 @@ export default defineComponent({
 			confirmDelete,
 			batchDelete,
 			deleting,
-			layout
+			layout,
 		};
 
 		async function batchDelete() {
@@ -173,7 +173,7 @@ export default defineComponent({
 			confirmDelete.value = false;
 
 			const batchPrimaryKeys = selection.value
-				.map(item => item[primaryKeyField.field])
+				.map((item) => item[primaryKeyField.field])
 				.join();
 
 			await api.delete(`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`);
@@ -184,7 +184,7 @@ export default defineComponent({
 			deleting.value = false;
 			confirmDelete.value = false;
 		}
-	}
+	},
 });
 </script>
 

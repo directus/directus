@@ -45,7 +45,7 @@ export default defineComponent({
 
 				await login({
 					email: email.value,
-					password: password.value
+					password: password.value,
 				});
 
 				router.push(`/${currentProjectKey}/collections/`);
@@ -55,7 +55,7 @@ export default defineComponent({
 				loggingIn.value = false;
 			}
 		}
-	}
+	},
 });
 </script>
 

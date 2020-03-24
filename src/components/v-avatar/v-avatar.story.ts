@@ -4,7 +4,7 @@ import {
 	boolean,
 	number,
 	color,
-	optionsKnob as options
+	optionsKnob as options,
 } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VAvatar from './v-avatar.vue';
@@ -20,20 +20,20 @@ export default {
 	component: VAvatar,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withText = () => ({
 	props: {
 		text: {
-			default: text('Text', 'RVZ')
+			default: text('Text', 'RVZ'),
 		},
 		tile: {
-			default: boolean('Tile', false)
+			default: boolean('Tile', false),
 		},
 		color: {
-			default: color('Color', '#009688')
+			default: color('Color', '#009688'),
 		},
 		size: {
 			default: options(
@@ -43,17 +43,17 @@ export const withText = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				}
-			)
+			),
 		},
 		customSize: {
-			default: number('Size (in px)', 0)
-		}
+			default: number('Size (in px)', 0),
+		},
 	},
 	template: `
 	<v-avatar
@@ -64,16 +64,16 @@ export const withText = () => ({
 		:tile="tile"
 		:style="{'--v-avatar-color': color }"
 		:size="customSize"
-	>{{ text }}</v-avatar>`
+	>{{ text }}</v-avatar>`,
 });
 
 export const withImage = () => ({
 	props: {
 		tile: {
-			default: boolean('Tile', false)
+			default: boolean('Tile', false),
 		},
 		color: {
-			default: color('Color', '#009688')
+			default: color('Color', '#009688'),
 		},
 		size: {
 			default: options(
@@ -83,17 +83,17 @@ export const withImage = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				}
-			)
+			),
 		},
 		customSize: {
-			default: number('Size (in px)', 0)
-		}
+			default: number('Size (in px)', 0),
+		},
 	},
 	template: `
 	<v-avatar
@@ -106,16 +106,16 @@ export const withImage = () => ({
 		:size="customSize"
 	>
 		<img src="https://randomuser.me/api/portraits/men/97.jpg" />
-	</v-avatar>`
+	</v-avatar>`,
 });
 
 export const withIcon = () => ({
 	props: {
 		tile: {
-			default: boolean('Tile', false)
+			default: boolean('Tile', false),
 		},
 		color: {
-			default: color('Color', '#009688')
+			default: color('Color', '#009688'),
 		},
 		size: {
 			default: options(
@@ -125,17 +125,17 @@ export const withIcon = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				}
-			)
+			),
 		},
 		customSize: {
-			default: number('Size (in px)', 0)
-		}
+			default: number('Size (in px)', 0),
+		},
 	},
 	template: `
 	<v-avatar
@@ -148,7 +148,7 @@ export const withIcon = () => ({
 		:size="customSize"
 	>
 		<v-icon name="person" :style="{'--v-icon-color': 'white'}" />
-	</v-avatar>`
+	</v-avatar>`,
 });
 
 export const sizes = () => ({
@@ -170,5 +170,5 @@ export const sizes = () => ({
 			<img src="https://randomuser.me/api/portraits/men/97.jpg" />
 		</v-avatar>
 	</div>
-	`
+	`,
 });

@@ -30,9 +30,9 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
-				}
-			]
+					value: 'col1',
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -43,8 +43,8 @@ describe('Table', () => {
 				value: 'col1',
 				sortable: true,
 				align: 'left',
-				width: null
-			}
+				width: null,
+			},
 		]);
 	});
 
@@ -53,31 +53,31 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			sort: {
 				by: 'col1',
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -85,16 +85,16 @@ describe('Table', () => {
 		expect((component.vm as any)._items).toEqual([
 			{
 				col1: 'A',
-				col2: 3
+				col2: 3,
 			},
 			{
 				col1: 'B',
-				col2: 2
+				col2: 2,
 			},
 			{
 				col1: 'C',
-				col2: 1
-			}
+				col2: 1,
+			},
 		]);
 	});
 
@@ -103,41 +103,41 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
-			]
+					col2: 2,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -151,33 +151,33 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
-				}
-			]
+					col2: 3,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -191,27 +191,27 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
-			]
+					col2: 2,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -227,31 +227,31 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			sort: {
 				by: 'col1',
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -266,29 +266,29 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [],
-			showSelect: true
+			showSelect: true,
 		});
 
 		await component.vm.$nextTick();
@@ -299,44 +299,44 @@ describe('Table', () => {
 			[
 				{
 					col1: 'A',
-					col2: 3
-				}
-			]
+					col2: 3,
+				},
+			],
 		]);
 
 		component.setProps({
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
-				}
+					col2: 3,
+				},
 			],
 			showSelect: true,
-			itemKey: 'col1'
+			itemKey: 'col1',
 		});
 
 		await component.vm.$nextTick();
@@ -351,35 +351,35 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
-				}
+					col2: 3,
+				},
 			],
 			showSelect: true,
-			itemKey: 'col1'
+			itemKey: 'col1',
 		});
 
 		await component.vm.$nextTick();
@@ -387,14 +387,14 @@ describe('Table', () => {
 		expect(
 			(component.vm as any).getSelectedState({
 				col1: 'A',
-				col2: 3
+				col2: 3,
 			})
 		).toEqual(true);
 
 		expect(
 			(component.vm as any).getSelectedState({
 				col1: 'C',
-				col2: 1
+				col2: 1,
 			})
 		).toEqual(false);
 	});
@@ -404,35 +404,35 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
-				}
+					col2: 3,
+				},
 			],
 			showSelect: true,
-			itemKey: 'col1'
+			itemKey: 'col1',
 		});
 
 		await component.vm.$nextTick();
@@ -443,60 +443,60 @@ describe('Table', () => {
 			[
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
-			]
+					col2: 2,
+				},
+			],
 		]);
 
 		component.setProps({
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
+					value: 'col2',
+				},
 			],
 			items: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			selection: [
 				{
 					col1: 'A',
-					col2: 3
+					col2: 3,
 				},
 				{
 					col1: 'C',
-					col2: 1
+					col2: 1,
 				},
 				{
 					col1: 'B',
-					col2: 2
-				}
+					col2: 2,
+				},
 			],
 			showSelect: true,
-			itemKey: 'col1'
+			itemKey: 'col1',
 		});
 
 		await component.vm.$nextTick();
@@ -511,33 +511,33 @@ describe('Table', () => {
 			component.setProps({
 				items: [
 					{
-						col1: 'A'
+						col1: 'A',
 					},
 					{
-						col1: 'C'
+						col1: 'C',
 					},
 					{
-						col1: 'B'
-					}
+						col1: 'B',
+					},
 				],
 				sort: {
 					by: 'col1',
-					desc: false
-				}
+					desc: false,
+				},
 			});
 
 			await component.vm.$nextTick();
 
 			expect((component.vm as any)._items).toEqual([
 				{
-					col1: 'A'
+					col1: 'A',
 				},
 				{
-					col1: 'B'
+					col1: 'B',
 				},
 				{
-					col1: 'C'
-				}
+					col1: 'C',
+				},
 			]);
 		});
 
@@ -545,33 +545,33 @@ describe('Table', () => {
 			component.setProps({
 				items: [
 					{
-						col1: 'A'
+						col1: 'A',
 					},
 					{
-						col1: 'C'
+						col1: 'C',
 					},
 					{
-						col1: 'B'
-					}
+						col1: 'B',
+					},
 				],
 				sort: {
 					by: 'col1',
-					desc: true
-				}
+					desc: true,
+				},
 			});
 
 			await component.vm.$nextTick();
 
 			expect((component.vm as any)._items).toEqual([
 				{
-					col1: 'C'
+					col1: 'C',
 				},
 				{
-					col1: 'B'
+					col1: 'B',
 				},
 				{
-					col1: 'A'
-				}
+					col1: 'A',
+				},
 			]);
 		});
 
@@ -579,34 +579,34 @@ describe('Table', () => {
 			component.setProps({
 				items: [
 					{
-						col1: 'A'
+						col1: 'A',
 					},
 					{
-						col1: 'C'
+						col1: 'C',
 					},
 					{
-						col1: 'B'
-					}
+						col1: 'B',
+					},
 				],
 				sort: {
 					by: 'col1',
-					desc: false
+					desc: false,
 				},
-				serverSort: true
+				serverSort: true,
 			});
 
 			await component.vm.$nextTick();
 
 			expect((component.vm as any)._items).toEqual([
 				{
-					col1: 'A'
+					col1: 'A',
 				},
 				{
-					col1: 'C'
+					col1: 'C',
 				},
 				{
-					col1: 'B'
-				}
+					col1: 'B',
+				},
 			]);
 		});
 
@@ -614,54 +614,54 @@ describe('Table', () => {
 			component.setProps({
 				items: [
 					{
-						col1: 'A'
+						col1: 'A',
 					},
 					{
-						col1: 'C'
+						col1: 'C',
 					},
 					{
-						col1: 'B'
-					}
+						col1: 'B',
+					},
 				],
 				sort: {
 					by: '$manual',
-					desc: false
-				}
+					desc: false,
+				},
 			});
 
 			await component.vm.$nextTick();
 
 			expect((component.vm as any)._items).toEqual([
 				{
-					col1: 'A'
+					col1: 'A',
 				},
 				{
-					col1: 'C'
+					col1: 'C',
 				},
 				{
-					col1: 'B'
-				}
+					col1: 'B',
+				},
 			]);
 		});
 	});
 
 	it('Emits the update:items event when the internal items array is updated', async () => {
 		component.setProps({
-			items: []
+			items: [],
 		});
 
 		await component.vm.$nextTick();
 
 		(component.vm as any)._items = [
 			{
-				col1: 'A'
+				col1: 'A',
 			},
 			{
-				col1: 'C'
+				col1: 'C',
 			},
 			{
-				col1: 'B'
-			}
+				col1: 'B',
+			},
 		];
 
 		await component.vm.$nextTick();
@@ -669,15 +669,15 @@ describe('Table', () => {
 		expect(component.emitted('update:items')?.[0]).toEqual([
 			[
 				{
-					col1: 'A'
+					col1: 'A',
 				},
 				{
-					col1: 'C'
+					col1: 'C',
 				},
 				{
-					col1: 'B'
-				}
-			]
+					col1: 'B',
+				},
+			],
 		]);
 	});
 
@@ -686,13 +686,13 @@ describe('Table', () => {
 			headers: [
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
-					value: 'col2'
-				}
-			]
+					value: 'col2',
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -701,13 +701,13 @@ describe('Table', () => {
 			{
 				text: 'Column 1',
 				value: 'col1',
-				width: null // default, should be removed
+				width: null, // default, should be removed
 			},
 			{
 				text: 'Column 2',
 				value: 'col2',
-				width: 150 // should be staged
-			}
+				width: 150, // should be staged
+			},
 		];
 
 		await component.vm.$nextTick();
@@ -716,21 +716,21 @@ describe('Table', () => {
 			[
 				{
 					text: 'Column 1',
-					value: 'col1'
+					value: 'col1',
 				},
 				{
 					text: 'Column 2',
 					value: 'col2',
-					width: 150
-				}
-			]
+					width: 150,
+				},
+			],
 		]);
 	});
 
 	it('Passes on indexes from VueDraggable drop event', async () => {
 		(component.vm as any).onEndDrag({
 			oldIndex: 0,
-			newIndex: 5
+			newIndex: 5,
 		});
 
 		await component.vm.$nextTick();

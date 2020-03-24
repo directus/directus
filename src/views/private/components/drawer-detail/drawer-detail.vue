@@ -26,18 +26,18 @@ export default defineComponent({
 	props: {
 		icon: {
 			type: String,
-			required: true
+			required: true,
 		},
 		title: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props) {
 		const { active, toggle } = useGroupable(props.title);
 		const drawerOpen = inject('drawer-open', ref(false));
 		return { active, toggle, drawerOpen };
-	}
+	},
 });
 </script>
 

@@ -12,12 +12,12 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props) {
 		const { active, toggle } = useGroupable(props.value);
 		return { active, toggle };
-	}
+	},
 });
 </script>

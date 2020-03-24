@@ -19,19 +19,19 @@ export default {
 	title: 'Components / Card',
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
 	defineComponent({
 		props: {
 			disabled: {
-				default: boolean('Disabled', false)
+				default: boolean('Disabled', false),
 			},
 			tile: {
-				default: boolean('Tile', false)
-			}
+				default: boolean('Tile', false),
+			},
 		},
 		template: `
 			<v-card :disabled="disabled" :tile="tile">
@@ -39,18 +39,18 @@ export const basic = () =>
 				<v-card-subtitle>This is the subtitle</v-card-subtitle>
 				<v-card-text>Black ray-bans, you know she's with the band. Such a sight to see and it's all for me. Heaven is jealous of our love, angels are crying from up above. Turned the bedroom into a fair (a fair!) It’s in the palm of your hand now baby.</v-card-text>
 			</v-card>
-		`
+		`,
 	});
 
 export const withImage = () =>
 	defineComponent({
 		props: {
 			disabled: {
-				default: boolean('Disabled', false)
+				default: boolean('Disabled', false),
 			},
 			tile: {
-				default: boolean('Tile', false)
-			}
+				default: boolean('Tile', false),
+			},
 		},
 		template: `
 			<v-card :disabled="disabled" :tile="tile">
@@ -59,7 +59,7 @@ export const withImage = () =>
 				<v-card-subtitle>This is the subtitle</v-card-subtitle>
 				<v-card-text>Black ray-bans, you know she's with the band. Such a sight to see and it's all for me. Heaven is jealous of our love, angels are crying from up above. Turned the bedroom into a fair (a fair!) It’s in the palm of your hand now baby.</v-card-text>
 			</v-card>
-		`
+		`,
 	});
 
 export const withActions = () =>
@@ -74,7 +74,7 @@ export const withActions = () =>
 					<v-button small>Click me</v-button>
 				</v-card-actions>
 			</v-card>
-		`
+		`,
 	});
 
 export const asDialog = () =>
@@ -97,5 +97,5 @@ export const asDialog = () =>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-	`
+	`,
 	});

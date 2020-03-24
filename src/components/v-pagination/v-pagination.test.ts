@@ -19,8 +19,8 @@ describe('Components / Pagination', () => {
 			propsData: {
 				length: 5,
 				totalVisible: 5,
-				value: 1
-			}
+				value: 1,
+			},
 		});
 	});
 
@@ -29,7 +29,7 @@ describe('Components / Pagination', () => {
 			component.setProps({
 				totalVisible: undefined,
 				length: 5,
-				value: 1
+				value: 1,
 			});
 
 			await component.vm.$nextTick();
@@ -41,7 +41,7 @@ describe('Components / Pagination', () => {
 			component.setProps({
 				totalVisible: 5,
 				length: 15,
-				value: 2
+				value: 2,
 			});
 
 			await component.vm.$nextTick();
@@ -53,7 +53,7 @@ describe('Components / Pagination', () => {
 			component.setProps({
 				totalVisible: 5,
 				length: 15,
-				value: 5
+				value: 5,
 			});
 
 			await component.vm.$nextTick();
@@ -65,7 +65,7 @@ describe('Components / Pagination', () => {
 			component.setProps({
 				totalVisible: 6,
 				length: 15,
-				value: 7
+				value: 7,
 			});
 
 			await component.vm.$nextTick();
@@ -77,7 +77,7 @@ describe('Components / Pagination', () => {
 			component.setProps({
 				totalVisible: 6,
 				length: 15,
-				value: 14
+				value: 14,
 			});
 
 			await component.vm.$nextTick();
@@ -90,7 +90,7 @@ describe('Components / Pagination', () => {
 		component.setProps({
 			totalVisible: 5,
 			length: 10,
-			value: 3
+			value: 3,
 		});
 
 		await component.vm.$nextTick();
@@ -104,7 +104,7 @@ describe('Components / Pagination', () => {
 		component.setProps({
 			totalVisible: 5,
 			length: 10,
-			value: 3
+			value: 3,
 		});
 
 		await component.vm.$nextTick();
@@ -118,7 +118,7 @@ describe('Components / Pagination', () => {
 		component.setProps({
 			totalVisible: 5,
 			length: 10,
-			value: 3
+			value: 3,
 		});
 
 		await component.vm.$nextTick();

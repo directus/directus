@@ -14,21 +14,21 @@ export default {
 	component: VChip,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withText = () => ({
 	methods: { onClick: action('click'), onClose: action('close') },
 	props: {
 		text: {
-			default: text('Text in chip', 'Click me')
+			default: text('Text in chip', 'Click me'),
 		},
 		label: {
-			default: boolean('Label', false, 'Button')
+			default: boolean('Label', false, 'Button'),
 		},
 		outlined: {
-			default: boolean('Outlined', false, 'Button')
+			default: boolean('Outlined', false, 'Button'),
 		},
 		size: {
 			default: options(
@@ -38,36 +38,36 @@ export const withText = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		close: {
-			default: boolean('Close', false, 'Button')
+			default: boolean('Close', false, 'Button'),
 		},
 		disabled: {
-			default: boolean('Disabled', false, 'Button')
+			default: boolean('Disabled', false, 'Button'),
 		},
 		active: {
-			default: boolean('Active', true, 'Button')
+			default: boolean('Active', true, 'Button'),
 		},
 		color: {
-			default: color('Color', '#000000', 'Colors')
+			default: color('Color', '#000000', 'Colors'),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#cfd8dc', 'Colors')
+			default: color('Background Color', '#cfd8dc', 'Colors'),
 		},
 		hoverColor: {
-			default: color('Color (hover)', '#000000', 'Colors')
+			default: color('Color (hover)', '#000000', 'Colors'),
 		},
 		hoverBackgroundColor: {
-			default: color('Background Color (hover)', '#b0bec5', 'Colors')
-		}
+			default: color('Background Color (hover)', '#b0bec5', 'Colors'),
+		},
 	},
 	template: `
 		<v-chip
@@ -91,23 +91,23 @@ export const withText = () => ({
 		>
 			{{ text }}
 		</v-chip>
-	`
+	`,
 });
 
 export const withIcon = () => ({
 	methods: { onClick: action('click'), onClose: action('close') },
 	props: {
 		iconName: {
-			default: text('Material Icon', 'add')
+			default: text('Material Icon', 'add'),
 		},
 		text: {
-			default: text('Text in chip', 'Click me')
+			default: text('Text in chip', 'Click me'),
 		},
 		label: {
-			default: boolean('Label', false, 'Button')
+			default: boolean('Label', false, 'Button'),
 		},
 		outlined: {
-			default: boolean('Outlined', false, 'Button')
+			default: boolean('Outlined', false, 'Button'),
 		},
 		size: {
 			default: options(
@@ -117,14 +117,14 @@ export const withIcon = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		iconSize: {
 			default: options(
@@ -134,36 +134,36 @@ export const withIcon = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		close: {
-			default: boolean('Close', false, 'Button')
+			default: boolean('Close', false, 'Button'),
 		},
 		disabled: {
-			default: boolean('Disabled', false, 'Button')
+			default: boolean('Disabled', false, 'Button'),
 		},
 		active: {
-			default: boolean('Active', true, 'Button')
+			default: boolean('Active', true, 'Button'),
 		},
 		color: {
-			default: color('Color', '#000000', 'Colors')
+			default: color('Color', '#000000', 'Colors'),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#cfd8dc', 'Colors')
+			default: color('Background Color', '#cfd8dc', 'Colors'),
 		},
 		hoverColor: {
-			default: color('Color (hover)', '#000000', 'Colors')
+			default: color('Color (hover)', '#000000', 'Colors'),
 		},
 		hoverBackgroundColor: {
-			default: color('Background Color (hover)', '#b0bec5', 'Colors')
-		}
+			default: color('Background Color (hover)', '#b0bec5', 'Colors'),
+		},
 	},
 	template: `
 		<v-chip
@@ -195,7 +195,7 @@ export const withIcon = () => ({
 			/>
 			{{ text }}
 		</v-chip>
-	`
+	`,
 });
 
 export const withColor = () => ({
@@ -247,7 +247,7 @@ export const withColor = () => ({
 				Watch out
 			</v-chip>
 		</div>
-	`
+	`,
 });
 
 export const sizes = () => ({
@@ -259,5 +259,5 @@ export const sizes = () => ({
 			<v-chip large>Large</v-chip>
 			<v-chip x-large>Extra large</v-chip>
 		</div>
-	`
+	`,
 });

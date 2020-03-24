@@ -6,7 +6,7 @@
 		class="v-button"
 		:class="[
 			sizeClass,
-			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary, active }
+			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary, active },
 		]"
 		:type="type"
 		:disabled="disabled"
@@ -34,49 +34,49 @@ export default defineComponent({
 	props: {
 		fullWidth: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		rounded: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		outlined: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		icon: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		type: {
 			type: String,
-			default: 'button'
+			default: 'button',
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		loading: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		to: {
 			type: [String, Object] as PropType<string | Location>,
-			default: null
+			default: null,
 		},
 		exact: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		secondary: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: [Number, String],
-			default: null
+			default: null,
 		},
-		...sizeProps
+		...sizeProps,
 	},
 	setup(props, { emit }) {
 		const sizeClass = useSizeClass(props);
@@ -92,7 +92,7 @@ export default defineComponent({
 			toggle();
 			emit('click', event);
 		}
-	}
+	},
 });
 </script>
 

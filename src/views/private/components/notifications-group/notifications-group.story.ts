@@ -9,34 +9,34 @@ export default {
 	title: 'Views / Private / Components / Notifications Group',
 	decorators: [withPadding],
 	parameters: {
-		notes: readme
-	}
+		notes: readme,
+	},
 };
 
 const demoNotifications: NotificationRaw[] = [
 	{
 		title: 'Saved successfully',
 		icon: 'check',
-		type: 'success'
+		type: 'success',
 	},
 	{
 		title: 'Whoops...',
 		text: 'Something went wrong. Please try again later.',
 		persist: true,
 		icon: 'error',
-		type: 'error'
+		type: 'error',
 	},
 	{
 		title: 'Multiple users are editing this item',
 		text: 'Ben Haynes is currently editing this item.',
 		type: 'warning',
-		icon: 'warning'
+		icon: 'warning',
 	},
 	{
 		title: 'Update available',
 		text: 'Directus v9 has been released.',
-		type: 'info'
-	}
+		type: 'info',
+	},
 ];
 
 export const basic = () =>
@@ -57,5 +57,5 @@ export const basic = () =>
 			<v-button @click="add">Add notification</v-button>
 			<notifications-group />
 		</div>
-	`
+	`,
 	});

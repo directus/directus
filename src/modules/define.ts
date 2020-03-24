@@ -6,12 +6,12 @@ export function defineModule(options: ModuleOptions): Module {
 
 	const config = {
 		id: options.id,
-		...options.register(context)
+		...options.register(context),
 	};
 
-	config.routes = config.routes.map(route => ({
+	config.routes = config.routes.map((route) => ({
 		...route,
-		path: `/:project/${config.id}${route.path}`
+		path: `/:project/${config.id}${route.path}`,
 	}));
 
 	return config;

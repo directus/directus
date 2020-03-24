@@ -26,7 +26,7 @@ import router from '@/router';
 export default defineComponent({
 	name: 'collections-overview',
 	components: {
-		CollectionsNavigation
+		CollectionsNavigation,
 	},
 	props: {},
 	setup() {
@@ -35,24 +35,24 @@ export default defineComponent({
 				text: '',
 				value: 'icon',
 				width: 42,
-				sortable: false
+				sortable: false,
 			},
 			{
 				text: i18n.tc('collection', 1),
 				value: 'name',
-				width: 300
+				width: 300,
 			},
 			{
 				text: i18n.t('note'),
-				value: 'note'
-			}
+				value: 'note',
+			},
 		];
 		const { navItems } = useNavigation();
 		return { tableHeaders, navItems, navigateToCollection };
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);
 		}
-	}
+	},
 });
 </script>
 

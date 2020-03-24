@@ -22,7 +22,7 @@ export default function useNavigation() {
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.icon,
-					to: `/${projectsStore.state.currentProjectKey}/collections/${collection.collection}`
+					to: `/${projectsStore.state.currentProjectKey}/collections/${collection.collection}`,
 				};
 
 				return navItem;

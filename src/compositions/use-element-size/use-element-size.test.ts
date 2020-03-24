@@ -7,7 +7,7 @@ jest.mock('resize-observer');
 
 const mockResizeObserver = {
 	observe: jest.fn(),
-	disconnect: jest.fn()
+	disconnect: jest.fn(),
 };
 
 describe('Compositions / useElementSize', () => {
@@ -69,7 +69,7 @@ describe('Compositions / useElementSize', () => {
 	it('Sets the returned width and height refs on ResizeObserver handler', () => {
 		let handler: (_: any) => void;
 
-		(ResizeObserver as jest.Mock).mockImplementation(constructorParam => {
+		(ResizeObserver as jest.Mock).mockImplementation((constructorParam) => {
 			handler = constructorParam;
 			return mockResizeObserver;
 		});
@@ -85,9 +85,9 @@ describe('Compositions / useElementSize', () => {
 				{
 					contentRect: {
 						width: 150,
-						height: 150
-					}
-				}
+						height: 150,
+					},
+				},
 			]);
 
 			expect(width.value).toBe(150);

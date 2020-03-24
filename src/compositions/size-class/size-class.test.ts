@@ -8,7 +8,7 @@ describe('Compositions / Size Class', () => {
 			small: false,
 			large: false,
 			xLarge: false,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {
@@ -21,7 +21,7 @@ describe('Compositions / Size Class', () => {
 			small: false,
 			large: false,
 			xLarge: false,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {
@@ -34,7 +34,7 @@ describe('Compositions / Size Class', () => {
 			small: true,
 			large: false,
 			xLarge: false,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {
@@ -47,7 +47,7 @@ describe('Compositions / Size Class', () => {
 			small: false,
 			large: true,
 			xLarge: false,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {
@@ -60,7 +60,7 @@ describe('Compositions / Size Class', () => {
 			small: false,
 			large: false,
 			xLarge: true,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {
@@ -75,7 +75,7 @@ describe('Compositions / Size Class', () => {
 			small: true,
 			large: true,
 			xLarge: true,
-			ignoredKey: 'test'
+			ignoredKey: 'test',
 		};
 
 		mountComposition(() => {

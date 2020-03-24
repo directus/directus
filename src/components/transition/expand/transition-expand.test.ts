@@ -17,7 +17,7 @@ const ExpandTestUtil = defineComponent({
 		<div>
 			<slot v-bind="{ active, toggle }" />
 		</div>
-	`
+	`,
 });
 
 describe('Expand Transition', () => {
@@ -32,8 +32,8 @@ describe('Expand Transition', () => {
                                 <div v-show="foo.active" class="test"> Content </div>
                             </transition-expand>
                         </div>
-                    `
-			}
+                    `,
+			},
 		});
 
 		expect(component.find('.test').isVisible()).toBe(false);

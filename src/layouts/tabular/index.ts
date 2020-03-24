@@ -6,6 +6,6 @@ export default defineLayout({
 	register: ({ i18n }) => ({
 		name: i18n.t('layouts.tabular.tabular'),
 		icon: 'table',
-		component: TabularLayout
-	})
+		component: TabularLayout,
+	}),
 });

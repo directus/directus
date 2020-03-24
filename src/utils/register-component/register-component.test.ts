@@ -7,7 +7,7 @@ describe('Utils / Register Component', () => {
 		const component: Component = {
 			render(h) {
 				return h('div');
-			}
+			},
 		};
 		registerComponent('test', component);
 		expect(spy).toHaveBeenCalledWith('test', component);

@@ -16,7 +16,7 @@ describe('Stores / Notifications', () => {
 			const id = store.add({ title: 'test' });
 			expect(store.state.queue[0]).toEqual({
 				id,
-				title: 'test'
+				title: 'test',
 			});
 		});
 	});
@@ -27,27 +27,27 @@ describe('Stores / Notifications', () => {
 			store.state.queue = [
 				{
 					id: 'abc',
-					title: 'test'
+					title: 'test',
 				},
 				{
 					id: 'def',
-					title: 'test'
+					title: 'test',
 				},
 				{
 					id: 'ghi',
-					title: 'test'
-				}
+					title: 'test',
+				},
 			];
 			store.remove('def');
 			expect(store.state.queue).toEqual([
 				{
 					id: 'abc',
-					title: 'test'
+					title: 'test',
 				},
 				{
 					id: 'ghi',
-					title: 'test'
-				}
+					title: 'test',
+				},
 			]);
 		});
 	});

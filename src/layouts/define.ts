@@ -6,7 +6,7 @@ export function defineLayout(options: LayoutOptions): Layout {
 
 	const config = {
 		id: options.id,
-		...options.register(context)
+		...options.register(context),
 	};
 
 	return config;

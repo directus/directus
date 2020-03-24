@@ -39,38 +39,38 @@ export default defineComponent({
 	props: {
 		showThumbLabel: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		max: {
 			type: Number,
-			default: 100
+			default: 100,
 		},
 		min: {
 			type: Number,
-			default: 0
+			default: 0,
 		},
 		step: {
 			type: Number,
-			default: 1
+			default: 1,
 		},
 		showTicks: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: Number,
-			default: 50
-		}
+			default: 50,
+		},
 	},
 	setup(props, { emit }) {
 		const styles = computed(() => ({
-			'--_v-slider-percentage': ((props.value - props.min) / (props.max - props.min)) * 100
+			'--_v-slider-percentage': ((props.value - props.min) / (props.max - props.min)) * 100,
 		}));
 
 		return {
 			styles,
 			onChange,
-			onInput
+			onInput,
 		};
 
 		function onChange(event: ChangeEvent) {
@@ -82,7 +82,7 @@ export default defineComponent({
 			const target = event.target as HTMLInputElement;
 			emit('input', Number(target.value));
 		}
-	}
+	},
 });
 </script>
 

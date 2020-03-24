@@ -10,8 +10,8 @@ export default {
 	component: PublicView,
 	decorators: [withKnobs],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () => `

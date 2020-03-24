@@ -16,6 +16,6 @@ export default defineComponent({
 		function forceLogout() {
 			api.get('https://demo.directus.io/thumper/items/mailing_list');
 		}
-	}
+	},
 });
 </script>

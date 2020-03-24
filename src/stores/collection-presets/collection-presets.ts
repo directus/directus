@@ -7,7 +7,7 @@ import api from '@/api';
 export const useCollectionPresetsStore = createStore({
 	id: 'collectionPresetsStore',
 	state: () => ({
-		collectionPresets: [] as CollectionPreset[]
+		collectionPresets: [] as CollectionPreset[],
 	}),
 	actions: {
 		async hydrate() {
@@ -20,26 +20,26 @@ export const useCollectionPresetsStore = createStore({
 				// All user saved bookmarks and presets
 				api.get(`/${currentProjectKey}/collection_presets`, {
 					params: {
-						'filter[user][eq]': id
-					}
+						'filter[user][eq]': id,
+					},
 				}),
 				// All role saved bookmarks and presets
 				api.get(`/${currentProjectKey}/collection_presets`, {
 					params: {
 						'filter[role][eq]': role,
-						'filter[user][null]': 1
-					}
+						'filter[user][null]': 1,
+					},
 				}),
 				// All global saved bookmarks and presets
 				api.get(`/${currentProjectKey}/collection_presets`, {
 					params: {
 						'filter[role][null]': 1,
-						'filter[user][null]': 1
-					}
-				})
+						'filter[user][null]': 1,
+					},
+				}),
 			]);
 
-			this.state.collectionPresets = values.map(response => response.data.data).flat();
+			this.state.collectionPresets = values.map((response) => response.data.data).flat();
 		},
 		async dehydrate() {
 			this.reset();
@@ -59,7 +59,7 @@ export const useCollectionPresetsStore = createStore({
 				updates
 			);
 
-			this.state.collectionPresets = this.state.collectionPresets.map(preset => {
+			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				const updatedPreset = response.data.data;
 				if (preset.id === updatedPreset.id) {
 					return updatedPreset;
@@ -73,9 +73,9 @@ export const useCollectionPresetsStore = createStore({
 
 			await api.delete(`/${currentProjectKey}/collection_presets/${id}`);
 
-			this.state.collectionPresets = this.state.collectionPresets.filter(preset => {
+			this.state.collectionPresets = this.state.collectionPresets.filter((preset) => {
 				return preset.id !== id;
 			});
-		}
-	}
+		},
+	},
 });

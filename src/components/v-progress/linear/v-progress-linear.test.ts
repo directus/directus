@@ -20,7 +20,7 @@ describe('Progress (Linear)', () => {
 			fixed: false,
 			indeterminate: false,
 			rounded: false,
-			top: true
+			top: true,
 		});
 
 		await component.vm.$nextTick();
@@ -33,7 +33,7 @@ describe('Progress (Linear)', () => {
 			fixed: true,
 			indeterminate: false,
 			rounded: false,
-			top: false
+			top: false,
 		});
 
 		await component.vm.$nextTick();
@@ -46,7 +46,7 @@ describe('Progress (Linear)', () => {
 			fixed: false,
 			indeterminate: true,
 			rounded: true,
-			top: false
+			top: false,
 		});
 
 		await component.vm.$nextTick();

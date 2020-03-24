@@ -18,7 +18,7 @@ import App from './app.vue';
 Vue.config.productionTip = false;
 
 new Vue({
-	render: h => h(App),
+	render: (h) => h(App),
 	router,
-	i18n
+	i18n,
 }).$mount('#app');

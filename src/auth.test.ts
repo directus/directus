@@ -77,7 +77,7 @@ describe('Auth', () => {
 			expect(api.post).toHaveBeenCalledWith('/test-project/auth/authenticate', {
 				mode: 'cookie',
 				email: 'test',
-				password: 'test'
+				password: 'test',
 			});
 		});
 
@@ -122,8 +122,8 @@ describe('Auth', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				path: '/my-project/login',
 				query: {
-					reason: LogoutReason.SIGN_OUT
-				}
+					reason: LogoutReason.SIGN_OUT,
+				},
 			});
 		});
 
@@ -143,8 +143,8 @@ describe('Auth', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				path: '/my-project/login',
 				query: {
-					reason: LogoutReason.ERROR_SESSION_EXPIRED
-				}
+					reason: LogoutReason.ERROR_SESSION_EXPIRED,
+				},
 			});
 		});
 	});

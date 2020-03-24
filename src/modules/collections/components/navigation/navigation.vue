@@ -19,6 +19,6 @@ export default defineComponent({
 		const { navItems } = useNavigation();
 
 		return { navItems };
-	}
+	},
 });
 </script>

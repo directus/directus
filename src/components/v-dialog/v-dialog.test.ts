@@ -22,8 +22,8 @@ describe('Components / Dialog', () => {
 			localVue,
 			propsData: {
 				persistent: false,
-				active: false
-			}
+				active: false,
+			},
 		});
 
 		(component.vm as any).emitToggle();
@@ -36,8 +36,8 @@ describe('Components / Dialog', () => {
 			localVue,
 			propsData: {
 				persistent: true,
-				active: false
-			}
+				active: false,
+			},
 		});
 
 		(component.vm as any).emitToggle();
@@ -48,7 +48,7 @@ describe('Components / Dialog', () => {
 
 	it('Adds the nudge class', () => {
 		const component = shallowMount(VDialog, {
-			localVue
+			localVue,
 		});
 
 		(component.vm as any).nudge();

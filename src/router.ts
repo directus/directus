@@ -21,34 +21,34 @@ export const defaultRoutes: RouteConfig[] = [
 		path: '/',
 		component: ProjectChooserRoute,
 		meta: {
-			public: true
+			public: true,
 		},
-		beforeEnter: onBeforeEnterProjectChooser
+		beforeEnter: onBeforeEnterProjectChooser,
 	},
 	{
 		name: 'install',
 		path: '/install',
 		component: LoginRoute,
 		meta: {
-			public: true
-		}
+			public: true,
+		},
 	},
 	{
 		path: '/:project',
-		redirect: '/:project/login'
+		redirect: '/:project/login',
 	},
 	{
 		name: 'login',
 		path: '/:project/login',
 		component: LoginRoute,
 		meta: {
-			public: true
-		}
+			public: true,
+		},
 	},
 	{
 		name: 'logout',
 		path: '/:project/logout',
-		component: LogoutRoute
+		component: LogoutRoute,
 	},
 	/**
 	 * @NOTE
@@ -66,19 +66,19 @@ export const defaultRoutes: RouteConfig[] = [
 		name: 'private-404',
 		path: '/:project/*',
 		// This will be Private404
-		component: Debug
+		component: Debug,
 	},
 	{
 		name: 'public-404',
 		path: '*',
 		// This will be Public404
-		component: Debug
-	}
+		component: Debug,
+	},
 ];
 
 const router = new VueRouter({
 	mode: 'hash',
-	routes: defaultRoutes
+	routes: defaultRoutes,
 });
 
 export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfig[]): void {

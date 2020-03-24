@@ -11,8 +11,8 @@ describe('Switch', () => {
 		const component = mount(VSwitch, {
 			localVue,
 			propsData: {
-				label: 'Turn me on'
-			}
+				label: 'Turn me on',
+			},
 		});
 
 		expect(component.find('span[class="label"]').text()).toContain('Turn me on');
@@ -22,8 +22,8 @@ describe('Switch', () => {
 		const component = mount(VSwitch, {
 			localVue,
 			propsData: {
-				inputValue: true
-			}
+				inputValue: true,
+			},
 		});
 
 		expect((component.vm as any).isChecked).toBe(true);
@@ -34,8 +34,8 @@ describe('Switch', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['red']
-			}
+				inputValue: ['red'],
+			},
 		});
 
 		expect((component.vm as any).isChecked).toBe(true);
@@ -45,8 +45,8 @@ describe('Switch', () => {
 		const component = mount(VSwitch, {
 			localVue,
 			propsData: {
-				inputValue: false
-			}
+				inputValue: false,
+			},
 		});
 
 		const button = component.find('button');
@@ -59,8 +59,8 @@ describe('Switch', () => {
 		const component = mount(VSwitch, {
 			localVue,
 			propsData: {
-				disabled: true
-			}
+				disabled: true,
+			},
 		});
 
 		const button = component.find('button');
@@ -72,8 +72,8 @@ describe('Switch', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['blue', 'green']
-			}
+				inputValue: ['blue', 'green'],
+			},
 		});
 
 		const button = component.find('button');
@@ -87,8 +87,8 @@ describe('Switch', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['blue', 'green', 'red']
-			}
+				inputValue: ['blue', 'green', 'red'],
+			},
 		});
 
 		const button = component.find('button');

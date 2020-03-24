@@ -32,12 +32,12 @@ export default defineComponent({
 	props: {
 		items: {
 			type: Array as PropType<Breadcrumb[]>,
-			default: () => []
-		}
+			default: () => [],
+		},
 	},
 	setup() {
 		return {};
-	}
+	},
 });
 </script>
 

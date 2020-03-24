@@ -7,8 +7,8 @@ export default {
 	title: 'Views / Private / Components / Header Bar Actions',
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -28,5 +28,5 @@ export const basic = () =>
 					</v-button>
 				</header-bar-actions>
 			</div>
-		`
+		`,
 	});

@@ -15,8 +15,8 @@ export default defineComponent({
 	props: {
 		version: {
 			type: String,
-			required: true
-		}
-	}
+			required: true,
+		},
+	},
 });
 </script>

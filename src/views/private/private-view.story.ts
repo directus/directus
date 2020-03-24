@@ -14,8 +14,8 @@ Vue.use(VueRouter);
 export default {
 	title: 'Views / Private',
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -32,5 +32,5 @@ export const basic = () =>
 		},
 		template: `
 			<private-view />
-		`
+		`,
 	});

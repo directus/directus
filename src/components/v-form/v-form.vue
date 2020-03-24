@@ -26,21 +26,21 @@ type FieldValues = {
 
 export default defineComponent({
 	model: {
-		prop: 'edits'
+		prop: 'edits',
 	},
 	props: {
 		collection: {
 			type: String,
-			required: true
+			required: true,
 		},
 		initialValues: {
 			type: Object as PropType<FieldValues>,
-			default: null
+			default: null,
 		},
 		edits: {
 			type: Object as PropType<FieldValues>,
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const el = ref<Element>(null);
@@ -48,14 +48,14 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const fieldsInCollection = computed(() =>
-			fieldsStore.state.fields.filter(field => field.collection === props.collection)
+			fieldsStore.state.fields.filter((field) => field.collection === props.collection)
 		);
 
 		const formFields = computed(() => {
 			let fields = [...fieldsInCollection.value];
 
 			// Filter out the fields that are marked hidden on detail
-			fields = fields.filter(field => {
+			fields = fields.filter((field) => {
 				const hiddenDetail = field.hidden_detail;
 				if (isEmpty(hiddenDetail)) return true;
 				return hiddenDetail === false;
@@ -114,7 +114,7 @@ export default defineComponent({
 			edits[field.field] = value;
 			emit('input', edits);
 		}
-	}
+	},
 });
 </script>
 

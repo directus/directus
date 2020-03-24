@@ -3,7 +3,7 @@ import { useRequestsStore } from '@/stores/requests';
 import { LogoutReason, logout, checkAuth } from '@/auth';
 
 const api = axios.create({
-	baseURL: getRootPath()
+	baseURL: getRootPath(),
 });
 
 interface RequestConfig extends AxiosRequestConfig {
@@ -24,7 +24,7 @@ export const onRequest = (config: AxiosRequestConfig) => {
 
 	const requestConfig: RequestConfig = {
 		id: id,
-		...config
+		...config,
 	};
 
 	return requestConfig;

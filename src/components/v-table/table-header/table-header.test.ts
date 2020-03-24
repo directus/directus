@@ -22,14 +22,14 @@ describe('Table / Header', () => {
 				headers: [
 					{
 						text: 'Column 1',
-						value: 'col1'
-					}
+						value: 'col1',
+					},
 				],
 				sort: {
 					by: null,
-					desc: false
-				}
-			}
+					desc: false,
+				},
+			},
 		});
 	});
 
@@ -37,8 +37,8 @@ describe('Table / Header', () => {
 		component.setProps({
 			sort: {
 				by: 'col1',
-				desc: true
-			}
+				desc: true,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -47,7 +47,7 @@ describe('Table / Header', () => {
 			text: 'Column 1',
 			value: 'col1',
 			align: 'center',
-			sortable: true
+			sortable: true,
 		});
 
 		expect(classes).toEqual(['align-center', 'sortable', 'sort-desc']);
@@ -57,8 +57,8 @@ describe('Table / Header', () => {
 		component.setProps({
 			sort: {
 				by: null,
-				desc: true
-			}
+				desc: true,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -69,8 +69,8 @@ describe('Table / Header', () => {
 		component.setProps({
 			sort: {
 				by: 'col1',
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -82,8 +82,8 @@ describe('Table / Header', () => {
 		component.setProps({
 			sort: {
 				by: 'col1',
-				desc: true
-			}
+				desc: true,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -104,8 +104,8 @@ describe('Table / Header', () => {
 			showSelect: true,
 			sort: {
 				by: null,
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -121,9 +121,9 @@ describe('Table / Header', () => {
 				{
 					text: 'Column 1',
 					value: 'col1',
-					sortable: false
-				}
-			]
+					sortable: false,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -140,15 +140,15 @@ describe('Table / Header', () => {
 					text: 'Col1',
 					value: 'col1',
 					align: 'left',
-					sortable: true
+					sortable: true,
 				},
 				{
 					text: 'Col2',
 					value: 'col2',
 					align: 'left',
-					sortable: true
-				}
-			]
+					sortable: true,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -163,19 +163,19 @@ describe('Table / Header', () => {
 				{
 					text: 'Col1',
 					value: 'col1',
-					align: 'left'
+					align: 'left',
 				},
 				{
 					text: 'Col2',
 					value: 'col2',
-					align: 'center'
+					align: 'center',
 				},
 				{
 					text: 'Col3',
 					value: 'col3',
-					align: 'right'
-				}
-			]
+					align: 'right',
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -192,21 +192,22 @@ describe('Table / Header', () => {
 				headers: [
 					{
 						text: 'Column 1',
-						value: 'col1'
+						value: 'col1',
 					},
 					{
 						text: 'Column 2',
-						value: 'col2'
-					}
+						value: 'col2',
+					},
 				],
 				sort: {
 					by: null,
-					desc: false
-				}
+					desc: false,
+				},
 			},
 			scopedSlots: {
-				'header.col2': '<template slot-scope="{header}"><p>{{ header.text }}</p></template>'
-			}
+				'header.col2':
+					'<template slot-scope="{header}"><p>{{ header.text }}</p></template>',
+			},
 		});
 
 		expect(component.find('.table-header th:nth-child(2) .content > span > *').html()).toEqual(
@@ -219,8 +220,8 @@ describe('Table / Header', () => {
 			showManualSort: true,
 			sort: {
 				by: null,
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -230,16 +231,16 @@ describe('Table / Header', () => {
 		expect(component.emitted('update:sort')?.[0]).toEqual([
 			{
 				by: '$manual',
-				desc: false
-			}
+				desc: false,
+			},
 		]);
 
 		component.setProps({
 			showManualSort: true,
 			sort: {
 				by: '$manual',
-				desc: false
-			}
+				desc: false,
+			},
 		});
 
 		await component.vm.$nextTick();
@@ -249,8 +250,8 @@ describe('Table / Header', () => {
 		expect(component.emitted('update:sort')?.[1]).toEqual([
 			{
 				by: null,
-				desc: false
-			}
+				desc: false,
+			},
 		]);
 	});
 
@@ -262,15 +263,15 @@ describe('Table / Header', () => {
 					text: 'Col1',
 					value: 'col1',
 					align: 'left',
-					sortable: true
+					sortable: true,
 				},
 				{
 					text: 'Col2',
 					value: 'col2',
 					align: 'left',
-					sortable: true
-				}
-			]
+					sortable: true,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -294,15 +295,15 @@ describe('Table / Header', () => {
 					text: 'Col1',
 					value: 'col1',
 					align: 'left',
-					sortable: true
+					sortable: true,
 				},
 				{
 					text: 'Col2',
 					value: 'col2',
 					align: 'left',
-					sortable: true
-				}
-			]
+					sortable: true,
+				},
+			],
 		});
 
 		await component.vm.$nextTick();
@@ -315,13 +316,13 @@ describe('Table / Header', () => {
 			text: 'Col1',
 			value: 'col1',
 			align: 'left',
-			sortable: true
+			sortable: true,
 		};
 
 		await component.vm.$nextTick();
 
 		(component.vm as any).onMouseMove({
-			pageX: 50
+			pageX: 50,
 		});
 
 		expect(component.emitted('update:headers')?.[0][0][0].width).toBe(150);
@@ -329,7 +330,7 @@ describe('Table / Header', () => {
 
 	it("Doesn't trigger on mousemove if dragging is false", async () => {
 		(component.vm as any).onMouseMove({
-			pageX: 50
+			pageX: 50,
 		});
 
 		expect(component.emitted('update:headers')).toBe(undefined);

@@ -11,8 +11,8 @@ module.exports = {
 			'jest-sonar',
 			{
 				outputDirectory: 'coverage',
-				outputName: 'sonar.xml'
-			}
-		]
-	]
+				outputName: 'sonar.xml',
+			},
+		],
+	],
 };

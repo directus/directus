@@ -15,7 +15,7 @@ describe('Icon', () => {
 
 	it('Renders custom icons as inline <svg>', async () => {
 		component.setProps({
-			name: 'box'
+			name: 'box',
 		});
 
 		await component.vm.$nextTick();
@@ -29,7 +29,7 @@ describe('Icon', () => {
 			xSmall: false,
 			small: false,
 			large: false,
-			xLarge: false
+			xLarge: false,
 		});
 		await component.vm.$nextTick();
 		expect(component.classes()).toContain('sup');
@@ -39,11 +39,11 @@ describe('Icon', () => {
 		const component = mount(VIcon, {
 			localVue,
 			propsData: {
-				name: 'person'
+				name: 'person',
 			},
 			listeners: {
-				click: () => {}
-			}
+				click: () => {},
+			},
 		});
 
 		expect(component.classes()).toContain('has-click');
@@ -51,14 +51,14 @@ describe('Icon', () => {
 
 	it('Sets the left / right classes if props are given', async () => {
 		component.setProps({
-			left: true
+			left: true,
 		});
 		await component.vm.$nextTick();
 		expect(component.classes()).toContain('left');
 
 		component.setProps({
 			left: false,
-			right: true
+			right: true,
 		});
 		await component.vm.$nextTick();
 		expect(component.classes()).toContain('right');

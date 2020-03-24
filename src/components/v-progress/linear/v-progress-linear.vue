@@ -7,13 +7,13 @@
 			fixed,
 			indeterminate,
 			rounded,
-			top
+			top,
 		}"
 	>
 		<div
 			class="inner"
 			:style="{
-				width: value + '%'
+				width: value + '%',
 			}"
 		/>
 		<slot :value="value" />
@@ -27,33 +27,33 @@ export default defineComponent({
 	props: {
 		absolute: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		bottom: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		fixed: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		indeterminate: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		rounded: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		top: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: Number,
-			default: 0
-		}
-	}
+			default: 0,
+		},
+	},
 });
 </script>
 

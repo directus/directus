@@ -12,8 +12,8 @@ export default {
 	title: 'Directives / Focus',
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withText = () =>
@@ -24,5 +24,5 @@ export const withText = () =>
 				<v-input autofocus style="margin-bottom: 20px;" />
 				<v-input style="margin-bottom: 20px;" />
 			</div>
-		`
+		`,
 	});

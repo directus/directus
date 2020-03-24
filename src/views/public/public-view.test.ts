@@ -23,31 +23,31 @@ const mockProject: ProjectWithKey = {
 		project_logo: {
 			full_url:
 				'http://localhost:8080/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
-			url: '/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg'
+			url: '/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 		},
 		project_color: '#4CAF50',
 		project_foreground: {
 			full_url:
 				'http://localhost:8080/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg',
-			url: '/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg'
+			url: '/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg',
 		},
 		project_background: {
 			full_url:
 				'http://localhost:8080/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg',
-			url: '/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg'
+			url: '/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg',
 		},
 		telemetry: true,
 		default_locale: 'en-US',
 		project_public_note:
-			'**Welcome to the Directus Public Demo!**\n\nYou can sign in with `admin@example.com` and `password`. Occasionally users break things, but don’t worry… the whole server resets each hour.'
+			'**Welcome to the Directus Public Demo!**\n\nYou can sign in with `admin@example.com` and `password`. Occasionally users break things, but don’t worry… the whole server resets each hour.',
 	},
 	server: {
 		max_upload_size: 104857600,
 		general: {
 			php_version: '7.2.22-1+0~20190902.26+debian9~1.gbpd64eb7',
-			php_api: 'fpm-fcgi'
-		}
-	}
+			php_api: 'fpm-fcgi',
+		},
+	},
 };
 
 describe('Views / Public', () => {
@@ -64,7 +64,7 @@ describe('Views / Public', () => {
 			expect((component.vm as any).artStyles).toEqual({
 				background: '#263238',
 				backgroundPosition: 'center center',
-				backgroundSize: 'cover'
+				backgroundSize: 'cover',
 			});
 		});
 
@@ -74,9 +74,9 @@ describe('Views / Public', () => {
 					...mockProject,
 					api: {
 						...mockProject.api,
-						project_background: null
-					}
-				}
+						project_background: null,
+					},
+				},
 			];
 			store.state.currentProjectKey = 'my-project';
 
@@ -85,7 +85,7 @@ describe('Views / Public', () => {
 			expect((component.vm as any).artStyles).toEqual({
 				background: '#4CAF50',
 				backgroundPosition: 'center center',
-				backgroundSize: 'cover'
+				backgroundSize: 'cover',
 			});
 		});
 
@@ -96,16 +96,16 @@ describe('Views / Public', () => {
 					status: 500,
 					error: {
 						code: 250,
-						message: 'Test error'
-					}
-				}
+						message: 'Test error',
+					},
+				},
 			];
 			store.state.currentProjectKey = 'my-project';
 
 			expect((component.vm as any).artStyles).toEqual({
 				background: '#263238',
 				backgroundPosition: 'center center',
-				backgroundSize: 'cover'
+				backgroundSize: 'cover',
 			});
 		});
 
@@ -115,7 +115,7 @@ describe('Views / Public', () => {
 			expect((component.vm as any).artStyles).toEqual({
 				background: `url(${mockProject.api.project_background?.full_url})`,
 				backgroundPosition: 'center center',
-				backgroundSize: 'cover'
+				backgroundSize: 'cover',
 			});
 		});
 	});

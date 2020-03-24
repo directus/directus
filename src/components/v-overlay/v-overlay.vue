@@ -12,12 +12,12 @@ export default defineComponent({
 	props: {
 		active: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		absolute: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
@@ -27,7 +27,7 @@ export default defineComponent({
 		function onClick(event: MouseEvent) {
 			emit('click', event);
 		}
-	}
+	},
 });
 </script>
 

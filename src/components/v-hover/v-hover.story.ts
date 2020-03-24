@@ -12,8 +12,8 @@ export default {
 	component: VHover,
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () => `

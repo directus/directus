@@ -34,7 +34,7 @@ export async function login(credentials: LoginCredentials) {
 	await api.post(`/${currentProjectKey}/auth/authenticate`, {
 		mode: 'cookie',
 		email: email,
-		password: password
+		password: password,
 	});
 
 	await hydrate();
@@ -42,7 +42,7 @@ export async function login(credentials: LoginCredentials) {
 
 export enum LogoutReason {
 	SIGN_OUT = 'SIGN_OUT',
-	ERROR_SESSION_EXPIRED = 'ERROR_SESSION_EXPIRED'
+	ERROR_SESSION_EXPIRED = 'ERROR_SESSION_EXPIRED',
 }
 
 export type LogoutOptions = {
@@ -56,7 +56,7 @@ export type LogoutOptions = {
 export async function logout(optionsRaw: LogoutOptions = {}) {
 	const defaultOptions: Required<LogoutOptions> = {
 		navigate: true,
-		reason: LogoutReason.SIGN_OUT
+		reason: LogoutReason.SIGN_OUT,
 	};
 
 	const options = { ...defaultOptions, ...optionsRaw };
@@ -77,7 +77,7 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 	if (options.navigate === true) {
 		const location: RawLocation = {
 			path: `/${currentProjectKey}/login`,
-			query: { reason: options.reason }
+			query: { reason: options.reason },
 		};
 
 		router.push(location);

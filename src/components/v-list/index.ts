@@ -13,6 +13,6 @@ export {
 	VListItemTitle,
 	VListItemSubtitle,
 	VListItemIcon,
-	VListGroup
+	VListGroup,
 };
 export default VList;

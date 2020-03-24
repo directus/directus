@@ -13,7 +13,7 @@ export default defineComponent({
 		onMounted(() => {
 			logout();
 		});
-	}
+	},
 });
 </script>
 

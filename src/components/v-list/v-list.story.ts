@@ -35,35 +35,35 @@ export default {
 	component: VList,
 	decorators: [withKnobs, withPadding, withBackground],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
 	defineComponent({
 		props: {
 			dense: {
-				default: boolean('Dense', false, 'Full List')
+				default: boolean('Dense', false, 'Full List'),
 			},
 			dense0: {
-				default: boolean('Dense', false, 'List Item 0')
+				default: boolean('Dense', false, 'List Item 0'),
 			},
 			dense1: {
-				default: boolean('Dense', false, 'List Item 1')
+				default: boolean('Dense', false, 'List Item 1'),
 			},
 			dense2: {
-				default: boolean('Dense', false, 'List Item 2')
+				default: boolean('Dense', false, 'List Item 2'),
 			},
 			dense3: {
-				default: boolean('Dense', false, 'List Item 3')
+				default: boolean('Dense', false, 'List Item 3'),
 			},
 			nav: {
-				default: boolean('Nav', false, 'Full List')
-			}
+				default: boolean('Nav', false, 'Full List'),
+			},
 		},
 		setup() {
 			return {
-				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3']
+				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3'],
 			};
 		},
 		template: `
@@ -75,7 +75,7 @@ export const basic = () =>
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
-	</v-sheet>`
+	</v-sheet>`,
 	});
 
 export const listGroups = () =>
@@ -83,15 +83,15 @@ export const listGroups = () =>
 		router: router,
 		props: {
 			multiple: {
-				default: boolean('Multiple', true)
+				default: boolean('Multiple', true),
 			},
 			multipleGroup: {
-				default: boolean('Multiple (in the nested groups)', true)
-			}
+				default: boolean('Multiple (in the nested groups)', true),
+			},
 		},
 		setup() {
 			return {
-				items: [0, 1, 2, 3]
+				items: [0, 1, 2, 3],
 			};
 		},
 		template: `
@@ -192,7 +192,7 @@ export const listGroups = () =>
 					</v-list-group>
 				</v-list>
 			</v-sheet>
-		`
+		`,
 	});
 
 export const withSubtitle = () =>
@@ -200,19 +200,19 @@ export const withSubtitle = () =>
 		router: router,
 		props: {
 			dense: {
-				default: boolean('Dense', false, 'Full List')
+				default: boolean('Dense', false, 'Full List'),
 			},
 			dense0: {
-				default: boolean('Dense', false, 'List Item 0')
+				default: boolean('Dense', false, 'List Item 0'),
 			},
 			dense1: {
-				default: boolean('Dense', false, 'List Item 1')
+				default: boolean('Dense', false, 'List Item 1'),
 			},
 			dense2: {
-				default: boolean('Dense', false, 'List Item 2')
+				default: boolean('Dense', false, 'List Item 2'),
 			},
 			dense3: {
-				default: boolean('Dense', false, 'List Item 3')
+				default: boolean('Dense', false, 'List Item 3'),
 			},
 			lines0: {
 				default: select(
@@ -220,7 +220,7 @@ export const withSubtitle = () =>
 					{ One: 1, Two: 2, Three: 3, Off: null },
 					null,
 					'List Item 0'
-				)
+				),
 			},
 			lines1: {
 				default: select(
@@ -228,7 +228,7 @@ export const withSubtitle = () =>
 					{ One: 1, Two: 2, Three: 3, Off: null },
 					null,
 					'List Item 1'
-				)
+				),
 			},
 			lines2: {
 				default: select(
@@ -236,7 +236,7 @@ export const withSubtitle = () =>
 					{ One: 1, Two: 2, Three: 3, Off: null },
 					null,
 					'List Item 2'
-				)
+				),
 			},
 			lines3: {
 				default: select(
@@ -244,17 +244,22 @@ export const withSubtitle = () =>
 					{ One: 1, Two: 2, Three: 3, Off: null },
 					null,
 					'List Item 3'
-				)
+				),
 			},
 			nav: {
-				default: boolean('Nav', false, 'Full List')
+				default: boolean('Nav', false, 'Full List'),
 			},
 			dynamicSubtitle: {
-				default: text('Subtitle 3', '', 'Full List')
+				default: text('Subtitle 3', '', 'Full List'),
 			},
 			lines: {
-				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'Full List')
-			}
+				default: select(
+					'Lines',
+					{ One: 1, Two: 2, Three: 3, Off: null },
+					null,
+					'Full List'
+				),
+			},
 		},
 		setup() {
 			return {
@@ -263,14 +268,14 @@ export const withSubtitle = () =>
 					1: {
 						title: 'List Item 1',
 						subtitle:
-							"This is another example of a list item subtitle. But this time, it's pretty long so you can see who two-line and three-line wrapping work"
+							"This is another example of a list item subtitle. But this time, it's pretty long so you can see who two-line and three-line wrapping work",
 					},
 					2: {
 						title: 'List Item 2',
 						subtitle:
-							"This is yet another example of a list subtitle. It's of medium length."
-					}
-				}
+							"This is yet another example of a list subtitle. It's of medium length.",
+					},
+				},
 			};
 		},
 		template: `
@@ -289,7 +294,7 @@ export const withSubtitle = () =>
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
-	</v-sheet>`
+	</v-sheet>`,
 	});
 
 export const withIconsToo = () =>
@@ -297,29 +302,34 @@ export const withIconsToo = () =>
 		router: router,
 		props: {
 			dense: {
-				default: boolean('Dense', false, 'Full List')
+				default: boolean('Dense', false, 'Full List'),
 			},
 			nav: {
-				default: boolean('Nav', false, 'Full List')
+				default: boolean('Nav', false, 'Full List'),
 			},
 			subtitle: {
-				default: boolean('Subtitle', false, 'Full List')
+				default: boolean('Subtitle', false, 'Full List'),
 			},
 			lines: {
-				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'Full List')
+				default: select(
+					'Lines',
+					{ One: 1, Two: 2, Three: 3, Off: null },
+					null,
+					'Full List'
+				),
 			},
 			leftIconCenter: {
-				default: boolean('Left Icon Centered', false, 'Full List')
+				default: boolean('Left Icon Centered', false, 'Full List'),
 			},
 			rightIconCenter: {
-				default: boolean('Right Icon Centered', true, 'Full List')
+				default: boolean('Right Icon Centered', true, 'Full List'),
 			},
 			leftIcon: {
-				default: boolean('Left Icon', true, 'Full List')
+				default: boolean('Left Icon', true, 'Full List'),
 			},
 			rightIcon: {
-				default: boolean('Right Icon', false, 'Full List')
-			}
+				default: boolean('Right Icon', false, 'Full List'),
+			},
 		},
 		setup() {
 			const onChange = action('change');
@@ -329,26 +339,26 @@ export const withIconsToo = () =>
 					0: {
 						title: 'List Item 0',
 						subtitle: 'This is a list item subtitle.',
-						checked: false
+						checked: false,
 					},
 					1: {
 						title: 'List Item 1',
 						subtitle:
 							"This is another example of a list item subtitle. But this time, it's pretty long so you can see who two-line and three-line wrapping work",
-						checked: false
+						checked: false,
 					},
 					2: {
 						title: 'List Item 2',
 						subtitle:
 							"This is yet another example of a list subtitle. It's of medium length.",
-						checked: false
+						checked: false,
 					},
 					3: {
 						title: 'List Item 3',
 						subtitle: '',
-						checked: false
-					}
-				})
+						checked: false,
+					},
+				}),
 			};
 		},
 		template: `
@@ -367,7 +377,7 @@ export const withIconsToo = () =>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
-	</v-sheet>`
+	</v-sheet>`,
 	});
 
 export const withLinks = () =>
@@ -375,27 +385,27 @@ export const withLinks = () =>
 		router: router,
 		props: {
 			dense: {
-				default: boolean('Dense', false, 'Full List')
+				default: boolean('Dense', false, 'Full List'),
 			},
 			dense0: {
-				default: boolean('Dense', false, 'List Item 0')
+				default: boolean('Dense', false, 'List Item 0'),
 			},
 			dense1: {
-				default: boolean('Dense', false, 'List Item 1')
+				default: boolean('Dense', false, 'List Item 1'),
 			},
 			dense2: {
-				default: boolean('Dense', false, 'List Item 2')
+				default: boolean('Dense', false, 'List Item 2'),
 			},
 			dense3: {
-				default: boolean('Dense', false, 'List Item 3')
+				default: boolean('Dense', false, 'List Item 3'),
 			},
 			nav: {
-				default: boolean('Nav', false, 'Full List')
-			}
+				default: boolean('Nav', false, 'Full List'),
+			},
 		},
 		setup() {
 			return {
-				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3']
+				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3'],
 			};
 		},
 		template: `
@@ -407,7 +417,7 @@ export const withLinks = () =>
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
-	</v-sheet>`
+	</v-sheet>`,
 	});
 
 export const withClicks = () =>
@@ -416,7 +426,7 @@ export const withClicks = () =>
 		setup() {
 			return {
 				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3'],
-				clickHandler: action('onClick')
+				clickHandler: action('onClick'),
 			};
 		},
 		template: `
@@ -428,7 +438,7 @@ export const withClicks = () =>
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
-	</v-sheet>`
+	</v-sheet>`,
 	});
 
 export const orphanListItems = () =>
@@ -436,21 +446,21 @@ export const orphanListItems = () =>
 		router: router,
 		props: {
 			dense0: {
-				default: boolean('Dense', false, 'List Item 0')
+				default: boolean('Dense', false, 'List Item 0'),
 			},
 			dense1: {
-				default: boolean('Dense', false, 'List Item 1')
+				default: boolean('Dense', false, 'List Item 1'),
 			},
 			dense2: {
-				default: boolean('Dense', false, 'List Item 2')
+				default: boolean('Dense', false, 'List Item 2'),
 			},
 			dense3: {
-				default: boolean('Dense', false, 'List Item 3')
-			}
+				default: boolean('Dense', false, 'List Item 3'),
+			},
 		},
 		setup() {
 			return {
-				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3']
+				items: ['Item 0', 'Item 1', 'Item 2', 'Item 3'],
 			};
 		},
 		template: `
@@ -460,5 +470,5 @@ export const orphanListItems = () =>
 				{{item}}
 			</v-list-item-content>
 		</v-list-item>
-	</v-sheet>`
+	</v-sheet>`,
 	});

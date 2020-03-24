@@ -12,20 +12,20 @@ export default defineComponent({
 	props: {
 		success: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		warning: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		danger: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		icon: {
 			type: [String, Boolean],
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props) {
 		const iconName = computed(() => {
@@ -57,7 +57,7 @@ export default defineComponent({
 		});
 
 		return { iconName, className };
-	}
+	},
 });
 </script>
 

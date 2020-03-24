@@ -11,8 +11,8 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Array as PropType<(string | number)[]>,
-			default: undefined
-		}
+			default: undefined,
+		},
 	},
 	setup(props, { emit }) {
 		function update(newSelection: readonly (string | number)[]) {
@@ -20,6 +20,6 @@ export default defineComponent({
 		}
 
 		return { update };
-	}
+	},
 });
 </script>

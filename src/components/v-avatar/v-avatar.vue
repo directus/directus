@@ -12,18 +12,18 @@ export default defineComponent({
 	props: {
 		size: {
 			type: Number,
-			default: null
+			default: null,
 		},
 		tile: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
-		...sizeProps
+		...sizeProps,
 	},
 	setup(props) {
 		const sizeClass = useSizeClass(props);
 		return { sizeClass };
-	}
+	},
 });
 </script>
 

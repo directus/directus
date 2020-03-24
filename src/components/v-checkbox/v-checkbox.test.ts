@@ -13,8 +13,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				label: 'Turn me on'
-			}
+				label: 'Turn me on',
+			},
 		});
 
 		expect(component.find('span[class="label"]').text()).toContain('Turn me on');
@@ -24,8 +24,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				inputValue: true
-			}
+				inputValue: true,
+			},
 		});
 
 		expect((component.vm as any).isChecked).toBe(true);
@@ -36,8 +36,8 @@ describe('Checkbox', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['red']
-			}
+				inputValue: ['red'],
+			},
 		});
 
 		expect((component.vm as any).isChecked).toBe(true);
@@ -47,8 +47,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				inputValue: false
-			}
+				inputValue: false,
+			},
 		});
 
 		const button = component.find('button');
@@ -61,8 +61,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				disabled: true
-			}
+				disabled: true,
+			},
 		});
 
 		const button = component.find('button');
@@ -74,8 +74,8 @@ describe('Checkbox', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['blue', 'green']
-			}
+				inputValue: ['blue', 'green'],
+			},
 		});
 
 		const button = component.find('button');
@@ -89,8 +89,8 @@ describe('Checkbox', () => {
 			localVue,
 			propsData: {
 				value: 'red',
-				inputValue: ['blue', 'green', 'red']
-			}
+				inputValue: ['blue', 'green', 'red'],
+			},
 		});
 
 		const button = component.find('button');
@@ -103,8 +103,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				inputValue: false
-			}
+				inputValue: false,
+			},
 		});
 
 		expect((component.vm as any).icon).toBe('check_box_outline_blank');
@@ -122,8 +122,8 @@ describe('Checkbox', () => {
 		const component = mount(VCheckbox, {
 			localVue,
 			propsData: {
-				indeterminate: true
-			}
+				indeterminate: true,
+			},
 		});
 
 		component.find('button').trigger('click');

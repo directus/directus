@@ -13,12 +13,12 @@ export const i18n = new VueI18n({
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {
-		'en-US': merge(enUSBase, enUSInterfaces, enUSLayouts)
+		'en-US': merge(enUSBase, enUSInterfaces, enUSLayouts),
 	},
 	dateTimeFormats: {
-		'en-US': defaultDateTimeFormats
+		'en-US': defaultDateTimeFormats,
 	},
-	silentTranslationWarn: true
+	silentTranslationWarn: true,
 });
 
 export const availableLanguages = {
@@ -52,7 +52,7 @@ export const availableLanguages = {
 	'zh-TW': 'Taiwanese Mandarin (Taiwan)',
 	'tr-TR': 'Turkish (Turkey)',
 	'uk-UA': 'Ukrainian (Ukraine)',
-	'vi-VN': 'Vietnamese (Vietnam)'
+	'vi-VN': 'Vietnamese (Vietnam)',
 };
 
 export type Language = keyof typeof availableLanguages;
@@ -72,10 +72,10 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		const translations = await Promise.all([
 			import(`@/lang/${lang}/index.json`),
 			import(`@/lang/${lang}/interfaces.json`),
-			import(`@/lang/${lang}/layouts.json`)
+			import(`@/lang/${lang}/layouts.json`),
 		]);
 
-		translations.forEach(msgs => i18n.mergeLocaleMessage(lang, msgs));
+		translations.forEach((msgs) => i18n.mergeLocaleMessage(lang, msgs));
 		loadedLanguages.push(lang);
 
 		// The date-format json file may or may not exist, as it's not handled by Crowdin.

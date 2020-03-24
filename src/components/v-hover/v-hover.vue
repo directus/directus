@@ -11,20 +11,20 @@ export default defineComponent({
 	props: {
 		closeDelay: {
 			type: Number,
-			default: 0
+			default: 0,
 		},
 		openDelay: {
 			type: Number,
-			default: 0
+			default: 0,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		tag: {
 			type: String,
-			default: 'div'
-		}
+			default: 'div',
+		},
 	},
 	setup(props) {
 		const hover = ref<boolean>(false);
@@ -46,6 +46,6 @@ export default defineComponent({
 				hover.value = false;
 			}, props.closeDelay);
 		}
-	}
+	},
 });
 </script>

@@ -24,8 +24,8 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			slots: {
-				default: `<v-list-item>Item Text</v-list-item>`
-			}
+				default: `<v-list-item>Item Text</v-list-item>`,
+			},
 		});
 
 		expect(component.text()).toContain('Item Text');
@@ -35,8 +35,8 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				dense: true
-			}
+				dense: true,
+			},
 		});
 
 		expect(component.classes()).toContain('dense');
@@ -46,13 +46,13 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				lines: 3
+				lines: 3,
 			},
 			slots: {
 				default: `<v-list-item/>
 						<v-list-item/>
-						<v-list-item/>`
-			}
+						<v-list-item/>`,
+			},
 		});
 
 		expect(component.classes()).toContain('three-line');
@@ -62,13 +62,13 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				lines: 2
+				lines: 2,
 			},
 			slots: {
 				default: `<v-list-item/>
 						<v-list-item/>
-						<v-list-item/>`
-			}
+						<v-list-item/>`,
+			},
 		});
 
 		expect(component.classes()).toContain('two-line');
@@ -78,13 +78,13 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				lines: 3
+				lines: 3,
 			},
 			slots: {
 				default: `<v-list-item :lines="2"/>
 						<v-list-item/>
-						<v-list-item/>`
-			}
+						<v-list-item/>`,
+			},
 		});
 
 		expect(component.find('.v-list-item:first-of-type').classes()).toContain('two-line');
@@ -95,8 +95,8 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				nav: true
-			}
+				nav: true,
+			},
 		});
 
 		expect(component.classes()).toContain('nav');
@@ -106,11 +106,11 @@ describe('List', () => {
 		const component = mount(VListItem, {
 			localVue,
 			slots: {
-				default: `<v-list-item-icon center/>`
+				default: `<v-list-item-icon center/>`,
 			},
 			propsData: {
-				nav: true
-			}
+				nav: true,
+			},
 		});
 
 		expect(component.find('.v-list-item-icon').classes()).toContain('center');
@@ -120,13 +120,13 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				dense: false
+				dense: false,
 			},
 			slots: {
 				default: `<v-list-item/>
 						<v-list-item/>
-						<v-list-item/>`
-			}
+						<v-list-item/>`,
+			},
 		});
 
 		expect(component.findAll('.v-list-item').length).toEqual(3);
@@ -136,12 +136,12 @@ describe('List', () => {
 		const component = mount(VList, {
 			localVue,
 			propsData: {
-				dense: false
+				dense: false,
 			},
 			slots: {
 				default: `<v-list-item dense/>
-						<v-list-item/>`
-			}
+						<v-list-item/>`,
+			},
 		});
 
 		expect(component.find('.v-list-item:first-of-type').classes()).toContain('dense');
@@ -153,8 +153,8 @@ describe('List', () => {
 			localVue,
 			router: router,
 			propsData: {
-				to: '/'
-			}
+				to: '/',
+			},
 		});
 
 		expect(component.classes()).toContain('link');
@@ -165,8 +165,8 @@ describe('List', () => {
 			localVue,
 			router: router,
 			propsData: {
-				to: '/'
-			}
+				to: '/',
+			},
 		});
 
 		expect((component.vm as any).component).toBe('router-link');
@@ -178,8 +178,8 @@ describe('List', () => {
 		const component = mount(VListItem, {
 			localVue,
 			listeners: {
-				click: onClick
-			}
+				click: onClick,
+			},
 		});
 
 		expect(component.classes()).toContain('link');
@@ -190,8 +190,8 @@ describe('List', () => {
 		const component = mount(VListItem, {
 			localVue,
 			listeners: {
-				click: onClick
-			}
+				click: onClick,
+			},
 		});
 
 		component.find('.v-list-item').trigger('click');
@@ -212,8 +212,8 @@ describe('List', () => {
 						</v-list-group>
 						<v-list-item/>
 						<v-list-item/>
-						`
-			}
+						`,
+			},
 		});
 		expect(component.find('.test').isVisible()).toBe(false);
 		component.find('.activator').trigger('click');

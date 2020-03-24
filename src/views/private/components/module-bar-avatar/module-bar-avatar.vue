@@ -43,7 +43,7 @@ export default defineComponent({
 			if (userStore.state.currentUser === null) return null;
 			if (userStore.state.currentUser.avatar === null) return null;
 
-			const thumbnail = userStore.state.currentUser.avatar.data.thumbnails.find(thumb => {
+			const thumbnail = userStore.state.currentUser.avatar.data.thumbnails.find((thumb) => {
 				return thumb.key === 'directus-small-crop';
 			});
 
@@ -67,7 +67,7 @@ export default defineComponent({
 		const userFullName = userStore.fullName;
 
 		return { userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
-	}
+	},
 });
 </script>
 

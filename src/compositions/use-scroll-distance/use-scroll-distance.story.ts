@@ -5,7 +5,7 @@ import Vue from 'vue';
 
 export default {
 	title: 'Compositions / Scroll Distance',
-	decorators: [withPadding]
+	decorators: [withPadding],
 };
 
 export const basic = () =>
@@ -25,5 +25,5 @@ top: {{ top }}
 left: {{ left }}
 				</pre>
 			</div>
-		`
+		`,
 	});

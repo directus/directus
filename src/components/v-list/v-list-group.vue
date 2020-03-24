@@ -24,19 +24,19 @@ export default defineComponent({
 	props: {
 		multiple: {
 			type: Boolean,
-			default: true
-		}
+			default: true,
+		},
 	},
 	setup(props) {
 		const { active, toggle } = useGroupable();
 		useGroupableParent(
 			{},
 			{
-				multiple: toRefs(props).multiple
+				multiple: toRefs(props).multiple,
 			}
 		);
 		return { active, toggle };
-	}
+	},
 });
 </script>
 

@@ -4,10 +4,10 @@ import nanoid from 'nanoid';
 export const useRequestsStore = createStore({
 	id: 'requestsStore',
 	state: () => ({
-		queue: [] as string[]
+		queue: [] as string[],
 	}),
 	getters: {
-		queueHasItems: state => state.queue.length > 0
+		queueHasItems: (state) => state.queue.length > 0,
 	},
 	actions: {
 		startRequest() {
@@ -17,6 +17,6 @@ export const useRequestsStore = createStore({
 		},
 		endRequest(id: string) {
 			this.state.queue = this.state.queue.filter((queueID: string) => queueID !== id);
-		}
-	}
+		},
+	},
 });

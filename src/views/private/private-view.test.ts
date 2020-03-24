@@ -16,8 +16,8 @@ describe('Views / Private', () => {
 		const component = shallowMount(PrivateView, {
 			localVue,
 			propsData: {
-				title: 'Title'
-			}
+				title: 'Title',
+			},
 		});
 
 		expect(component.find('.navigation').classes()).toEqual(['navigation']);
@@ -33,8 +33,8 @@ describe('Views / Private', () => {
 		const component = shallowMount(PrivateView, {
 			localVue,
 			propsData: {
-				title: 'Title'
-			}
+				title: 'Title',
+			},
 		});
 
 		expect(component.find('.drawer').classes()).toEqual(['drawer', 'alt-colors']);

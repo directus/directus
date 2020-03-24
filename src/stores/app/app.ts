@@ -5,6 +5,6 @@ export const useAppStore = createStore({
 	state: () => ({
 		hydrated: false,
 		hydrating: false,
-		error: null
-	})
+		error: null,
+	}),
 });

@@ -19,10 +19,10 @@ export function useStores(
 		useFieldsStore,
 		useUserStore,
 		useRequestsStore,
-		useCollectionPresetsStore
+		useCollectionPresetsStore,
 	]
 ) {
-	return stores.map(useStore => useStore()) as GenericStore[];
+	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
 /* istanbul ignore next: useStores has a test already */

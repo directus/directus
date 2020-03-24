@@ -13,7 +13,7 @@ describe('Spinner', () => {
 
 	it('Adds the correct classes based on props', async () => {
 		component.setProps({
-			indeterminate: true
+			indeterminate: true,
 		});
 		await component.vm.$nextTick();
 		expect(component.find('svg').classes()).toContain('indeterminate');
@@ -21,43 +21,43 @@ describe('Spinner', () => {
 
 	it('Calculates the correct stroke-dasharray', async () => {
 		component.setProps({
-			value: 0
+			value: 0,
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).circleStyle).toEqual({
-			'stroke-dasharray': '0, 78.5'
+			'stroke-dasharray': '0, 78.5',
 		});
 
 		component.setProps({
-			value: 25
+			value: 25,
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).circleStyle).toEqual({
-			'stroke-dasharray': '19.625, 78.5'
+			'stroke-dasharray': '19.625, 78.5',
 		});
 
 		component.setProps({
-			value: 50
+			value: 50,
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).circleStyle).toEqual({
-			'stroke-dasharray': '39.25, 78.5'
+			'stroke-dasharray': '39.25, 78.5',
 		});
 
 		component.setProps({
-			value: 75
+			value: 75,
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).circleStyle).toEqual({
-			'stroke-dasharray': '58.875, 78.5'
+			'stroke-dasharray': '58.875, 78.5',
 		});
 
 		component.setProps({
-			value: 100
+			value: 100,
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).circleStyle).toEqual({
-			'stroke-dasharray': '78.5, 78.5'
+			'stroke-dasharray': '78.5, 78.5',
 		});
 	});
 });

@@ -5,7 +5,7 @@ export default function useTimeFromNow(date: Date | number, autoUpdate = 60000) 
 	let interval: number;
 
 	const formatOptions = {
-		addSuffix: true
+		addSuffix: true,
 	};
 
 	const formattedDate = ref(formatDistance(date, new Date(), formatOptions));

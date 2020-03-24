@@ -13,26 +13,26 @@ export default {
 	component: VItemGroup,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () => ({
 	data() {
 		return {
-			selection: null
+			selection: null,
 		};
 	},
 	props: {
 		mandatory: {
-			default: boolean('Mandatory', false)
+			default: boolean('Mandatory', false),
 		},
 		max: {
-			default: number('Max', -1)
+			default: number('Max', -1),
 		},
 		multiple: {
-			default: boolean('Multiple', false)
-		}
+			default: boolean('Multiple', false),
+		},
 	},
 	template: `
 	<div>
@@ -50,25 +50,25 @@ export const basic = () => ({
 		</v-item-group>
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 	</div>
-	`
+	`,
 });
 
 export const customValues = () => ({
 	data() {
 		return {
-			selection: null
+			selection: null,
 		};
 	},
 	props: {
 		mandatory: {
-			default: boolean('Mandatory', false)
+			default: boolean('Mandatory', false),
 		},
 		max: {
-			default: number('Max', -1)
+			default: number('Max', -1),
 		},
 		multiple: {
-			default: boolean('Multiple', false)
-		}
+			default: boolean('Multiple', false),
+		},
 	},
 	template: `
 	<div>
@@ -87,5 +87,5 @@ export const customValues = () => ({
 		</v-item-group>
 		<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 	</div>
-	`
+	`,
 });

@@ -35,7 +35,7 @@ describe('Hover', () => {
 	it('Adds delays to enter/leave based on props', async () => {
 		component.setProps({
 			openDelay: 300,
-			closeDelay: 600
+			closeDelay: 600,
 		});
 
 		component.find('div').trigger('mouseenter');

@@ -18,8 +18,8 @@ describe('Chip', () => {
 		const component = mount(VChip, {
 			localVue,
 			slots: {
-				default: 'Click me'
-			}
+				default: 'Click me',
+			},
 		});
 
 		expect(component.text()).toContain('Click me');
@@ -27,7 +27,7 @@ describe('Chip', () => {
 
 	it('Hides the whole component', async () => {
 		component.setProps({
-			active: false
+			active: false,
 		});
 
 		await component.vm.$nextTick();
@@ -37,7 +37,7 @@ describe('Chip', () => {
 
 	it('Adds the outline class for outline chips', async () => {
 		component.setProps({
-			outlined: true
+			outlined: true,
 		});
 
 		await component.vm.$nextTick();
@@ -47,7 +47,7 @@ describe('Chip', () => {
 
 	it('Adds the label class for block chips', async () => {
 		component.setProps({
-			label: true
+			label: true,
 		});
 
 		await component.vm.$nextTick();
@@ -57,7 +57,7 @@ describe('Chip', () => {
 
 	it('Adds the close icon for icon chips', async () => {
 		component.setProps({
-			close: true
+			close: true,
 		});
 
 		await component.vm.$nextTick();
@@ -67,7 +67,7 @@ describe('Chip', () => {
 
 	it('Emits a click event when chip is not disabled', async () => {
 		component.setProps({
-			disabled: false
+			disabled: false,
 		});
 
 		await component.vm.$nextTick();
@@ -79,7 +79,7 @@ describe('Chip', () => {
 
 	it('Does not emit click when disabled', async () => {
 		component.setProps({
-			disabled: true
+			disabled: true,
 		});
 
 		await component.vm.$nextTick();
@@ -91,7 +91,7 @@ describe('Chip', () => {
 
 	it('Emits a click event when chip is not disabled and close button is clicked', async () => {
 		component.setProps({
-			disabled: false
+			disabled: false,
 		});
 
 		await component.vm.$nextTick();
@@ -103,7 +103,7 @@ describe('Chip', () => {
 
 	it('Does not emit click when disabled and close button is clicked', async () => {
 		component.setProps({
-			disabled: true
+			disabled: true,
 		});
 
 		await component.vm.$nextTick();

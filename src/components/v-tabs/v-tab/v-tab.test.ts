@@ -4,13 +4,13 @@ import VTab from './v-tab.vue';
 
 const mockUseGroupableContent = {
 	active: {
-		value: false
+		value: false,
 	},
-	toggle: jest.fn()
+	toggle: jest.fn(),
 };
 
 jest.mock('@/compositions/groupable', () => ({
-	useGroupable: () => mockUseGroupableContent
+	useGroupable: () => mockUseGroupableContent,
 }));
 
 const localVue = createLocalVue();
@@ -28,8 +28,8 @@ describe('Components / Tabs / Tab', () => {
 		const component = shallowMount(VTab, {
 			localVue,
 			propsData: {
-				disabled: true
-			}
+				disabled: true,
+			},
 		});
 		component.trigger('click');
 		expect(mockUseGroupableContent.toggle).not.toHaveBeenCalled();

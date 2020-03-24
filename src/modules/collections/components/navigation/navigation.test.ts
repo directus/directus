@@ -6,7 +6,7 @@ import VList, {
 	VListItem,
 	VListItemContent,
 	VListItemIcon,
-	VListItemTitle
+	VListItemTitle,
 } from '@/components/v-list';
 import VIcon from '@/components/v-icon';
 
@@ -24,7 +24,7 @@ describe('Modules / Collections / Components / CollectionsNavigation', () => {
 		jest.spyOn(useNavigation, 'default').mockImplementation(
 			() =>
 				({
-					navItems: []
+					navItems: [],
 				} as any)
 		);
 		shallowMount(CollectionsNavigation, { localVue });

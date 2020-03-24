@@ -8,8 +8,8 @@ export default defineInterface({
 		name: i18n.t('interfaces.text-input.text-input'),
 		icon: 'box',
 		component: InterfaceTextInput,
-		display: value => {
+		display: (value) => {
 			return formatTitle(value);
-		}
-	})
+		},
+	}),
 });

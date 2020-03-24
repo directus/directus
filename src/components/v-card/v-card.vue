@@ -11,16 +11,16 @@ export default defineComponent({
 	props: {
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		tile: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup() {
 		return {};
-	}
+	},
 });
 </script>
 

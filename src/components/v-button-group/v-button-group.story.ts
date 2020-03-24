@@ -10,8 +10,8 @@ export default {
 	title: 'Components / Button Group',
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const basic = () =>
@@ -19,20 +19,20 @@ export const basic = () =>
 		components: { VButtonGroup, VButton, VItemGroup },
 		props: {
 			mandatory: {
-				default: boolean('Mandatory', false)
+				default: boolean('Mandatory', false),
 			},
 			max: {
-				default: number('Max', -1)
+				default: number('Max', -1),
 			},
 			multiple: {
-				default: boolean('Multiple', false)
+				default: boolean('Multiple', false),
 			},
 			rounded: {
-				default: boolean('Rounded', false)
+				default: boolean('Rounded', false),
 			},
 			tile: {
-				default: boolean('Tile', false)
-			}
+				default: boolean('Tile', false),
+			},
 		},
 		setup() {
 			const selection = ref([]);
@@ -51,7 +51,7 @@ export const basic = () =>
 				</v-button-group>
 				<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 			</div>
-		`
+		`,
 	});
 
 export const withCustomValues = () =>
@@ -59,20 +59,20 @@ export const withCustomValues = () =>
 		components: { VButtonGroup, VButton, VItemGroup },
 		props: {
 			mandatory: {
-				default: boolean('Mandatory', false)
+				default: boolean('Mandatory', false),
 			},
 			max: {
-				default: number('Max', -1)
+				default: number('Max', -1),
 			},
 			multiple: {
-				default: boolean('Multiple', false)
+				default: boolean('Multiple', false),
 			},
 			rounded: {
-				default: boolean('Rounded', false)
+				default: boolean('Rounded', false),
 			},
 			tile: {
-				default: boolean('Tile', false)
-			}
+				default: boolean('Tile', false),
+			},
 		},
 		setup() {
 			const selection = ref([]);
@@ -94,5 +94,5 @@ export const withCustomValues = () =>
 				</v-button-group>
 				<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">v-model value: {{JSON.stringify(selection)}}</pre>
 			</div>
-		`
+		`,
 	});

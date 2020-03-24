@@ -22,13 +22,13 @@ import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
 
 export default defineComponent({
 	components: {
-		PublicViewLogo
+		PublicViewLogo,
 	},
 	props: {
 		wide: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup() {
 		const projectsStore = useProjectsStore();
@@ -58,11 +58,11 @@ export default defineComponent({
 		const artStyles = computed(() => ({
 			background: backgroundStyles.value,
 			backgroundSize: 'cover',
-			backgroundPosition: 'center center'
+			backgroundPosition: 'center center',
 		}));
 
 		return { version, artStyles };
-	}
+	},
 });
 </script>
 

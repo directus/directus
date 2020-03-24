@@ -5,7 +5,7 @@ const Tooltip: DirectiveOptions = {
 	bind(element, binding) {
 		element.addEventListener('mouseenter', onEnterTooltip(element, binding));
 		element.addEventListener('mouseleave', onLeaveTooltip());
-	}
+	},
 };
 
 export default Tooltip;

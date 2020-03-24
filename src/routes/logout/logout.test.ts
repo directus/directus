@@ -13,7 +13,7 @@ localVue.use(VueCompositionAPI);
 describe('Routes / Logout', () => {
 	it('Calls logout on mount', async () => {
 		const component = shallowMount(LogoutRoute, {
-			localVue
+			localVue,
 		});
 
 		await component.vm.$nextTick();

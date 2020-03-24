@@ -6,7 +6,7 @@ export function defineInterface(options: InterfaceOptions): Interface {
 
 	const config = {
 		id: options.id,
-		...options.register(context)
+		...options.register(context),
 	};
 
 	return config;

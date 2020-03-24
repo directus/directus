@@ -49,36 +49,36 @@ export default defineComponent({
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
-			required: true
+			required: true,
 		},
 		sort: {
 			type: Object as PropType<Sort>,
-			required: true
+			required: true,
 		},
 		showSelect: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		showResize: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		showManualSort: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		someItemsSelected: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		allItemsSelected: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		fixed: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const dragging = ref<boolean>(false);
@@ -99,7 +99,7 @@ export default defineComponent({
 			onMouseMove,
 			onResizeHandleMouseDown,
 			toggleManualSort,
-			toggleSelectAll
+			toggleSelectAll,
 		};
 
 		function getClassesForHeader(header: Header) {
@@ -137,18 +137,18 @@ export default defineComponent({
 				if (props.sort.desc === false) {
 					emit('update:sort', {
 						by: props.sort.by,
-						desc: true
+						desc: true,
 					});
 				} else {
 					emit('update:sort', {
 						by: null,
-						desc: false
+						desc: false,
 					});
 				}
 			} else {
 				emit('update:sort', {
 					by: header.value,
-					desc: false
+					desc: false,
 				});
 			}
 		}
@@ -175,7 +175,7 @@ export default defineComponent({
 					if (existing.value === dragHeader.value?.value) {
 						return {
 							...existing,
-							width: Math.max(50, newWidth)
+							width: Math.max(50, newWidth),
 						};
 					}
 
@@ -195,16 +195,16 @@ export default defineComponent({
 			if (props.sort.by === '$manual') {
 				emit('update:sort', {
 					by: null,
-					desc: false
+					desc: false,
 				});
 			} else {
 				emit('update:sort', {
 					by: '$manual',
-					desc: false
+					desc: false,
 				});
 			}
 		}
-	}
+	},
 });
 </script>
 

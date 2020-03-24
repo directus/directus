@@ -10,14 +10,14 @@ import formatTitle from '@directus/format-title';
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
 	state: () => ({
-		collections: [] as Collection[]
+		collections: [] as Collection[],
 	}),
 	getters: {
-		visibleCollections: state => {
+		visibleCollections: (state) => {
 			return state.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter(({ hidden }) => hidden !== true);
-		}
+		},
 	},
 	actions: {
 		async hydrate() {
@@ -38,8 +38,8 @@ export const useCollectionsStore = createStore({
 
 						i18n.mergeLocaleMessage(locale, {
 							collections: {
-								[collection.collection]: translation
-							}
+								[collection.collection]: translation,
+							},
 						});
 					}
 
@@ -51,7 +51,7 @@ export const useCollectionsStore = createStore({
 				return {
 					...collection,
 					name,
-					icon
+					icon,
 				};
 			});
 		},
@@ -61,9 +61,9 @@ export const useCollectionsStore = createStore({
 		getCollection(collectionKey: string) {
 			return (
 				this.state.collections.find(
-					collection => collection.collection === collectionKey
+					(collection) => collection.collection === collectionKey
 				) || null
 			);
-		}
-	}
+		},
+	},
 });

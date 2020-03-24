@@ -40,8 +40,8 @@ export default defineComponent({
 	props: {
 		title: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup() {
 		const headerEl = ref<Element>();
@@ -64,7 +64,7 @@ export default defineComponent({
 		});
 
 		return { headerEl, showShadow };
-	}
+	},
 });
 </script>
 

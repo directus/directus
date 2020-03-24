@@ -12,12 +12,12 @@ export default defineComponent({
 	props: {
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: String,
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props) {
 		const { active, toggle } = useGroupable(props.value);
@@ -26,7 +26,7 @@ export default defineComponent({
 		function onClick() {
 			if (props.disabled === false) toggle();
 		}
-	}
+	},
 });
 </script>
 

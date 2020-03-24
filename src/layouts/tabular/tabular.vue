@@ -52,16 +52,16 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true
+			required: true,
 		},
 		selection: {
 			type: Array as PropType<Item[]>,
-			default: () => []
+			default: () => [],
 		},
 		selectMode: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const table = ref<Vue>(null);
@@ -84,28 +84,30 @@ export default defineComponent({
 			},
 			set(newSelection) {
 				emit('update:selection', newSelection);
-			}
+			},
 		});
 
 		const fieldsInCurrentCollection = computed<Field[]>(() => {
-			return fieldsStore.state.fields.filter(field => field.collection === props.collection);
+			return fieldsStore.state.fields.filter(
+				(field) => field.collection === props.collection
+			);
 		});
 
 		const visibleFields = computed<Field[]>(() => {
-			return fieldsInCurrentCollection.value.filter(field => field.hidden_browse === false);
+			return fieldsInCurrentCollection.value.filter((field) => field.hidden_browse === false);
 		});
 
 		const headers = computed<HeaderRaw[]>(() => {
-			return visibleFields.value.map(field => ({
+			return visibleFields.value.map((field) => ({
 				text: field.name,
-				value: field.field
+				value: field.field,
 			}));
 		});
 
 		const primaryKeyField = computed<Field>(() => {
 			// It's safe to assume that every collection has a primary key.
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			return fieldsInCurrentCollection.value.find(field => field.primary_key === true)!;
+			return fieldsInCurrentCollection.value.find((field) => field.primary_key === true)!;
 		});
 
 		getItems();
@@ -135,7 +137,7 @@ export default defineComponent({
 			toPage,
 			currentPage,
 			isBigCollection,
-			onSortChange
+			onSortChange,
 		};
 
 		async function refresh() {
@@ -154,8 +156,8 @@ export default defineComponent({
 					params: {
 						limit: PAGE_COUNT,
 						page: currentPage.value,
-						sort: sortString
-					}
+						sort: sortString,
+					},
 				});
 
 				items.value = response.data.data;
@@ -184,7 +186,7 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(table.value as any).onItemSelected({
 					item,
-					value: _selection.value.includes(item) === false
+					value: _selection.value.includes(item) === false,
 				});
 			} else {
 				const primaryKey = item[primaryKeyField.value.field];
@@ -199,7 +201,7 @@ export default defineComponent({
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			table.value!.$el.parentElement!.parentElement!.scrollTo({
 				top: 0,
-				behavior: 'smooth'
+				behavior: 'smooth',
 			});
 		}
 
@@ -216,13 +218,13 @@ export default defineComponent({
 				params: {
 					limit: 0,
 					fields: primaryKeyField.value.field,
-					meta: 'filter_count'
-				}
+					meta: 'filter_count',
+				},
 			});
 
 			itemCount.value = response.data.meta.filter_count;
 		}
-	}
+	},
 });
 </script>
 

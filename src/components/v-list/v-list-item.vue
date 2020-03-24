@@ -9,7 +9,7 @@
 			link: isClickable,
 			'three-line': lines === 3,
 			'two-line': lines === 2,
-			'one-line': lines === 1
+			'one-line': lines === 1,
 		}"
 		v-on="$listeners"
 	>
@@ -25,22 +25,22 @@ export default defineComponent({
 	props: {
 		dense: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		lines: {
 			type: Number as PropType<1 | 2 | 3>,
-			default: null
+			default: null,
 		},
 		to: {
 			type: [String, Object] as PropType<string | Location>,
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props, { listeners }) {
 		const component = computed<string>(() => (props.to ? 'router-link' : 'li'));
 		const isClickable = computed(() => Boolean(props.to || listeners.click !== undefined));
 		return { component, isClickable };
-	}
+	},
 });
 </script>
 

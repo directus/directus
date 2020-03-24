@@ -18,8 +18,8 @@ describe('Compositions / Collection Presets', () => {
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -34,22 +34,22 @@ describe('Compositions / Collection Presets', () => {
 
 				expect(api.get).toHaveBeenCalledWith(`/my-project/collection_presets`, {
 					params: {
-						'filter[user][eq]': 15
-					}
+						'filter[user][eq]': 15,
+					},
 				});
 
 				expect(api.get).toHaveBeenCalledWith(`/my-project/collection_presets`, {
 					params: {
 						'filter[role][eq]': 25,
-						'filter[user][null]': 1
-					}
+						'filter[user][null]': 1,
+					},
 				});
 
 				expect(api.get).toHaveBeenCalledWith(`/my-project/collection_presets`, {
 					params: {
 						'filter[role][null]': 1,
-						'filter[user][null]': 1
-					}
+						'filter[user][null]': 1,
+					},
 				});
 			});
 		});
@@ -71,8 +71,8 @@ describe('Compositions / Collection Presets', () => {
 			(api.post as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -82,11 +82,11 @@ describe('Compositions / Collection Presets', () => {
 				projectsStore.state.currentProjectKey = 'my-project';
 
 				await collectionPresetsStore.createCollectionPreset({
-					title: 'test'
+					title: 'test',
 				});
 
 				expect(api.post).toHaveBeenCalledWith('/my-project/collection_presets', {
-					title: 'test'
+					title: 'test',
 				});
 			});
 		});
@@ -97,8 +97,8 @@ describe('Compositions / Collection Presets', () => {
 			(api.patch as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -108,11 +108,11 @@ describe('Compositions / Collection Presets', () => {
 				projectsStore.state.currentProjectKey = 'my-project';
 
 				await collectionPresetsStore.updateCollectionPreset(15, {
-					title: 'test'
+					title: 'test',
 				});
 
 				expect(api.patch).toHaveBeenCalledWith('/my-project/collection_presets/15', {
-					title: 'test'
+					title: 'test',
 				});
 			});
 		});

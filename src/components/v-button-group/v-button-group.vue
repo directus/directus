@@ -19,28 +19,28 @@ export default defineComponent({
 	props: {
 		mandatory: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		max: {
 			type: Number,
-			default: -1
+			default: -1,
 		},
 		multiple: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: Array as PropType<(string | number)[]>,
-			default: undefined
+			default: undefined,
 		},
 		rounded: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		tile: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		function update(newSelection: readonly (string | number)[]) {
@@ -48,7 +48,7 @@ export default defineComponent({
 		}
 
 		return { update };
-	}
+	},
 });
 </script>
 <style lang="scss" scoped>

@@ -44,23 +44,23 @@ describe('Views / Private / Module Bar Avatar', () => {
 					thumbnails: [
 						{
 							key: 'test',
-							url: 'test'
+							url: 'test',
 						},
 						{
 							key: 'directus-small-crop',
-							url: 'test1'
-						}
-					]
-				}
-			}
+							url: 'test1',
+						},
+					],
+				},
+			},
 		} as any;
 
 		const component = shallowMount(ModuleBarAvatar, {
 			localVue,
 			i18n,
 			stubs: {
-				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>'
-			}
+				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>',
+			},
 		});
 
 		expect((component.vm as any).avatarURL).toBe('test1');
@@ -72,15 +72,15 @@ describe('Views / Private / Module Bar Avatar', () => {
 
 		userStore.state.currentUser = {
 			id: 1,
-			avatar: null
+			avatar: null,
 		} as any;
 
 		const component = shallowMount(ModuleBarAvatar, {
 			localVue,
 			i18n,
 			stubs: {
-				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>'
-			}
+				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>',
+			},
 		});
 
 		expect((component.vm as any).avatarURL).toBe(null);
@@ -97,19 +97,19 @@ describe('Views / Private / Module Bar Avatar', () => {
 					thumbnails: [
 						{
 							key: 'fake',
-							url: 'non-existent'
-						}
-					]
-				}
-			}
+							url: 'non-existent',
+						},
+					],
+				},
+			},
 		} as any;
 
 		const component = shallowMount(ModuleBarAvatar, {
 			localVue,
 			i18n,
 			stubs: {
-				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>'
-			}
+				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>',
+			},
 		});
 
 		expect((component.vm as any).avatarURL).toBe(null);
@@ -122,15 +122,15 @@ describe('Views / Private / Module Bar Avatar', () => {
 
 		userStore.state.currentUser = {
 			id: 1,
-			avatar: null
+			avatar: null,
 		} as any;
 
 		const component = shallowMount(ModuleBarAvatar, {
 			localVue,
 			i18n,
 			stubs: {
-				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>'
-			}
+				'v-hover': '<div><slot v-bind="{ hover: false }" /></div>',
+			},
 		});
 
 		expect((component.vm as any).userProfileLink).toBe('/my-project/users/1');

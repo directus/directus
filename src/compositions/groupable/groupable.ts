@@ -19,14 +19,14 @@ export function useGroupable(value?: string | number) {
 		return {
 			active: ref(false),
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			toggle: () => {}
+			toggle: () => {},
 		};
 	}
 
 	const {
 		register,
 		unregister,
-		toggle
+		toggle,
 	}: {
 		register: (item: GroupableInstance) => void;
 		unregister: (item: GroupableInstance) => void;
@@ -44,7 +44,7 @@ export function useGroupable(value?: string | number) {
 		toggle: () => {
 			active.value = !active.value;
 			toggle(item);
-		}
+		},
 	};
 }
 
@@ -90,7 +90,7 @@ export function useGroupableParent(
 			}
 
 			_selection.value = newSelection;
-		}
+		},
 	});
 
 	// Provide the needed functions to all children groupable components. Note: nested item groups
@@ -125,7 +125,7 @@ export function useGroupableParent(
 
 	// Remove a child within the context of this group. Needed to avoid memory leaks.
 	function unregister(item: GroupableInstance) {
-		items.value = items.value.filter(existingItem => {
+		items.value = items.value.filter((existingItem) => {
 			return existingItem !== item;
 		});
 	}
@@ -161,7 +161,7 @@ export function useGroupableParent(
 				return;
 			}
 
-			selection.value = selection.value.filter(value => value !== itemValue);
+			selection.value = selection.value.filter((value) => value !== itemValue);
 			return;
 		}
 
@@ -185,13 +185,13 @@ export function useGroupableParent(
 	// the index of the item in the items array (by default), or the custom value that's passed in
 	// the groupable composition
 	function getValueForItem(item: GroupableInstance) {
-		return item.value || items.value.findIndex(child => item === child);
+		return item.value || items.value.findIndex((child) => item === child);
 	}
 
 	// Loop over all children and make sure their internal active state matches the selection array
 	// of the parent
 	function updateChildren() {
-		items.value.forEach(item => {
+		items.value.forEach((item) => {
 			item.active.value = selection.value.includes(getValueForItem(item));
 		});
 	}

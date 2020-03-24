@@ -3,20 +3,20 @@ import { computed } from '@vue/composition-api';
 export const sizeProps = {
 	xSmall: {
 		type: Boolean,
-		default: false
+		default: false,
 	},
 	small: {
 		type: Boolean,
-		default: false
+		default: false,
 	},
 	large: {
 		type: Boolean,
-		default: false
+		default: false,
 	},
 	xLarge: {
 		type: Boolean,
-		default: false
-	}
+		default: false,
+	},
 };
 
 interface RequiredProps {

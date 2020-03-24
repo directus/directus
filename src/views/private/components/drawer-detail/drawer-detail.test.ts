@@ -18,16 +18,16 @@ describe('Drawer Detail', () => {
 			localVue,
 			propsData: {
 				icon: 'person',
-				title: 'Users'
+				title: 'Users',
 			},
 			provide: {
 				'drawer-open': ref(false),
 				'item-group': {
 					register: () => {},
 					unregister: () => {},
-					toggle: () => {}
-				}
-			}
+					toggle: () => {},
+				},
+			},
 		});
 		expect(GroupableComposition.useGroupable).toHaveBeenCalled();
 	});
@@ -39,16 +39,16 @@ describe('Drawer Detail', () => {
 			localVue,
 			propsData: {
 				icon: 'person',
-				title: 'Users'
+				title: 'Users',
 			},
 			provide: {
 				'drawer-open': ref(false),
 				'item-group': {
 					register: () => {},
 					unregister: () => {},
-					toggle: () => {}
-				}
-			}
+					toggle: () => {},
+				},
+			},
 		});
 		expect(GroupableComposition.useGroupable).toHaveBeenCalledWith('Users');
 	});

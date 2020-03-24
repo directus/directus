@@ -11,8 +11,8 @@ describe('Sheet', () => {
 		const component = mount(VSheet, {
 			localVue,
 			slots: {
-				default: '<div>Hello</div>'
-			}
+				default: '<div>Hello</div>',
+			},
 		});
 
 		expect(component.find('.v-sheet > *').html()).toBe('<div>Hello</div>');

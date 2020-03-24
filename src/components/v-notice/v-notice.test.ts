@@ -14,8 +14,8 @@ describe('Notice', () => {
 		component = mount(VNotice, {
 			localVue,
 			slots: {
-				default: 'I like pizza'
-			}
+				default: 'I like pizza',
+			},
 		});
 	});
 
@@ -25,7 +25,7 @@ describe('Notice', () => {
 
 	it('Uses the right color / icon combo for success', async () => {
 		component.setProps({
-			success: true
+			success: true,
 		});
 
 		await component.vm.$nextTick();
@@ -36,7 +36,7 @@ describe('Notice', () => {
 
 	it('Uses the right color / icon combo for warning', async () => {
 		component.setProps({
-			warning: true
+			warning: true,
 		});
 
 		await component.vm.$nextTick();
@@ -47,7 +47,7 @@ describe('Notice', () => {
 
 	it('Uses the right color / icon combo for danger', async () => {
 		component.setProps({
-			danger: true
+			danger: true,
 		});
 
 		await component.vm.$nextTick();
@@ -60,7 +60,7 @@ describe('Notice', () => {
 		component.setProps({
 			success: true,
 			warning: true,
-			danger: true
+			danger: true,
 		});
 
 		await component.vm.$nextTick();
@@ -71,7 +71,7 @@ describe('Notice', () => {
 
 	it('Allows setting a custom icon', async () => {
 		component.setProps({
-			icon: 'person'
+			icon: 'person',
 		});
 		await component.vm.$nextTick();
 		expect((component.vm as any).iconName).toBe('person');

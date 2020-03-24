@@ -30,7 +30,7 @@ describe('Compositions / Window Size', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn(event => {
+		window.removeEventListener = jest.fn((event) => {
 			delete map[event];
 		});
 

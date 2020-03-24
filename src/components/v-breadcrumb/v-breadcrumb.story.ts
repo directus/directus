@@ -18,8 +18,8 @@ export default {
 	component: VBreadcrumb,
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const example = () => ({
@@ -31,5 +31,5 @@ export const example = () => ({
 		{disabled: false, to: 'Test', name: 'New York'},
 		{disabled: true, to: 'Test', name: 'Berlin'}
 	]"/>
-	`
+	`,
 });

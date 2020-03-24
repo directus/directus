@@ -10,9 +10,9 @@ Vue.component('v-form', VForm);
 export default {
 	title: 'Components / Form',
 	parameters: {
-		notes: markdown
+		notes: markdown,
 	},
-	decorators: [withPadding]
+	decorators: [withPadding],
 };
 
 export const basic = () =>
@@ -38,7 +38,7 @@ export const basic = () =>
 					hidden_browse: false,
 					required: false,
 					options: {
-						monospace: true
+						monospace: true,
 					},
 					locked: false,
 					translation: null,
@@ -47,8 +47,8 @@ export const basic = () =>
 					validation: null,
 					group: null,
 					length: '65535',
-					name: 'Title'
-				}
+					name: 'Title',
+				},
 			];
 		},
 		template: `
@@ -58,5 +58,5 @@ export const basic = () =>
 				title: 'Hello World!'
 			}"
 		/>
-	`
+	`,
 	});

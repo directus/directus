@@ -29,29 +29,29 @@ describe('Stores / collections', () => {
 			const collectionsStore = useCollectionsStore(req);
 			collectionsStore.state.collections = [
 				{
-					collection: 'test-1'
+					collection: 'test-1',
 				},
 				{
-					collection: 'test-2'
+					collection: 'test-2',
 				},
 				{
-					collection: 'directus_test'
+					collection: 'directus_test',
 				},
 				{
-					collection: 'test-3'
-				}
+					collection: 'test-3',
+				},
 			] as any;
 
 			expect(collectionsStore.visibleCollections.value).toEqual([
 				{
-					collection: 'test-1'
+					collection: 'test-1',
 				},
 				{
-					collection: 'test-2'
+					collection: 'test-2',
 				},
 				{
-					collection: 'test-3'
-				}
+					collection: 'test-3',
+				},
 			]);
 		});
 
@@ -60,27 +60,27 @@ describe('Stores / collections', () => {
 			collectionsStore.state.collections = [
 				{
 					collection: 'test-1',
-					hidden: true
+					hidden: true,
 				},
 				{
 					collection: 'test-2',
-					hidden: false
+					hidden: false,
 				},
 				{
 					collection: 'test-3',
-					hidden: null
-				}
+					hidden: null,
+				},
 			] as any;
 
 			expect(collectionsStore.visibleCollections.value).toEqual([
 				{
 					collection: 'test-2',
-					hidden: false
+					hidden: false,
 				},
 				{
 					collection: 'test-3',
-					hidden: null
-				}
+					hidden: null,
+				},
 			]);
 		});
 	});
@@ -90,8 +90,8 @@ describe('Stores / collections', () => {
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -110,10 +110,10 @@ describe('Stores / collections', () => {
 					data: {
 						data: [
 							{
-								collection: 'test_collection'
-							}
-						]
-					}
+								collection: 'test_collection',
+							},
+						],
+					},
 				})
 			);
 
@@ -137,16 +137,16 @@ describe('Stores / collections', () => {
 								translation: [
 									{
 										locale: 'en-US',
-										translation: 'Test collection'
+										translation: 'Test collection',
 									},
 									{
 										locale: 'nl-NL',
-										translation: 'Test verzameling'
-									}
-								]
-							}
-						]
-					}
+										translation: 'Test verzameling',
+									},
+								],
+							},
+						],
+					},
 				})
 			);
 
@@ -158,14 +158,14 @@ describe('Stores / collections', () => {
 
 			expect(i18n.mergeLocaleMessage).toHaveBeenCalledWith('en-US', {
 				collections: {
-					test_collection: 'Test collection'
-				}
+					test_collection: 'Test collection',
+				},
 			});
 
 			expect(i18n.mergeLocaleMessage).toHaveBeenCalledWith('nl-NL', {
 				collections: {
-					test_collection: 'Test verzameling'
-				}
+					test_collection: 'Test verzameling',
+				},
 			});
 		});
 	});

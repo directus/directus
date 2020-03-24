@@ -5,7 +5,7 @@ import nanoid from 'nanoid';
 export const useNotificationsStore = createStore({
 	id: 'useNotifications',
 	state: () => ({
-		queue: [] as Notification[]
+		queue: [] as Notification[],
 	}),
 	actions: {
 		add(notification: NotificationRaw) {
@@ -14,13 +14,13 @@ export const useNotificationsStore = createStore({
 				...this.state.queue,
 				{
 					...notification,
-					id
-				}
+					id,
+				},
 			];
 			return id;
 		},
 		remove(id: string) {
-			this.state.queue = this.state.queue.filter(n => n.id !== id);
-		}
-	}
+			this.state.queue = this.state.queue.filter((n) => n.id !== id);
+		},
+	},
 });

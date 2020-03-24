@@ -73,13 +73,13 @@ export default defineComponent({
 		HeaderBar,
 		ProjectChooser,
 		DrawerButton,
-		NotificationsGroup
+		NotificationsGroup,
 	},
 	props: {
 		title: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup() {
 		const navOpen = ref(false);
@@ -89,9 +89,9 @@ export default defineComponent({
 
 		return {
 			navOpen,
-			drawerOpen
+			drawerOpen,
 		};
-	}
+	},
 });
 </script>
 

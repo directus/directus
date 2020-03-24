@@ -12,42 +12,42 @@ export default {
 	component: VProgressLinear,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
 	props: {
 		absolute: {
-			default: boolean('Absolute', false)
+			default: boolean('Absolute', false),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#cfd8dc')
+			default: color('Background Color', '#cfd8dc'),
 		},
 		bottom: {
-			default: boolean('Bottom', false)
+			default: boolean('Bottom', false),
 		},
 		color: {
-			default: color('Color', '#263238')
+			default: color('Color', '#263238'),
 		},
 		fixed: {
-			default: boolean('Fixed', false)
+			default: boolean('Fixed', false),
 		},
 		height: {
-			default: number('Height', 4)
+			default: number('Height', 4),
 		},
 		indeterminate: {
-			default: boolean('Indeterminate', false)
+			default: boolean('Indeterminate', false),
 		},
 		rounded: {
-			default: boolean('Rounded', false)
+			default: boolean('Rounded', false),
 		},
 		top: {
-			default: boolean('Top', false)
+			default: boolean('Top', false),
 		},
 		value: {
-			default: number('Value (percentage)', 50)
-		}
+			default: number('Value (percentage)', 50),
+		},
 	},
 	template: `
 	<v-progress-linear
@@ -63,7 +63,7 @@ export const interactive = () => ({
 		:rounded="rounded"
 		:top="top"
 		:value="value"
-	/>`
+	/>`,
 });
 
 export const withSlot = () => `

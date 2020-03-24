@@ -4,7 +4,7 @@ import {
 	boolean,
 	number,
 	color,
-	optionsKnob as options
+	optionsKnob as options,
 } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
@@ -25,36 +25,36 @@ export default {
 	component: VButton,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withText = () => ({
 	methods: { onClick: action('click') },
 	props: {
 		text: {
-			default: text('Text in button', 'Click me')
+			default: text('Text in button', 'Click me'),
 		},
 		block: {
-			default: boolean('Block', false, 'Button')
+			default: boolean('Block', false, 'Button'),
 		},
 		rounded: {
-			default: boolean('Rounded', false, 'Button')
+			default: boolean('Rounded', false, 'Button'),
 		},
 		icon: {
-			default: boolean('Icon mode', false, 'Button')
+			default: boolean('Icon mode', false, 'Button'),
 		},
 		outlined: {
-			default: boolean('Outlined', false, 'Button')
+			default: boolean('Outlined', false, 'Button'),
 		},
 		type: {
-			default: text('Type attribute', 'button', 'Button')
+			default: text('Type attribute', 'button', 'Button'),
 		},
 		loading: {
-			default: boolean('Loading', false, 'Button')
+			default: boolean('Loading', false, 'Button'),
 		},
 		width: {
-			default: number('Width', 0, {}, 'Button')
+			default: number('Width', 0, {}, 'Button'),
 		},
 		size: {
 			default: options(
@@ -64,30 +64,30 @@ export const withText = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		disabled: {
-			default: boolean('Disabled', false, 'Button')
+			default: boolean('Disabled', false, 'Button'),
 		},
 		color: {
-			default: color('Color', '#ffffff', 'Colors')
+			default: color('Color', '#ffffff', 'Colors'),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#263238', 'Colors')
+			default: color('Background Color', '#263238', 'Colors'),
 		},
 		hoverColor: {
-			default: color('Color (hover)', '#ffffff', 'Colors')
+			default: color('Color (hover)', '#ffffff', 'Colors'),
 		},
 		hoverBackgroundColor: {
-			default: color('Background Color (hover)', '#37474f', 'Colors')
-		}
+			default: color('Background Color (hover)', '#37474f', 'Colors'),
+		},
 	},
 	template: `
 		<v-button
@@ -113,35 +113,35 @@ export const withText = () => ({
 		>
 			{{ text }}
 		</v-button>
-	`
+	`,
 });
 
 export const withIcon = () => ({
 	methods: { onClick: action('click') },
 	props: {
 		iconName: {
-			default: text('Material Icon', 'add')
+			default: text('Material Icon', 'add'),
 		},
 		block: {
-			default: boolean('Block', false, 'Button')
+			default: boolean('Block', false, 'Button'),
 		},
 		rounded: {
-			default: boolean('Rounded', true, 'Button')
+			default: boolean('Rounded', true, 'Button'),
 		},
 		icon: {
-			default: boolean('Icon mode', true, 'Button')
+			default: boolean('Icon mode', true, 'Button'),
 		},
 		outlined: {
-			default: boolean('Outlined', false, 'Button')
+			default: boolean('Outlined', false, 'Button'),
 		},
 		type: {
-			default: text('Type attribute', 'button', 'Button')
+			default: text('Type attribute', 'button', 'Button'),
 		},
 		loading: {
-			default: boolean('Loading', false, 'Button')
+			default: boolean('Loading', false, 'Button'),
 		},
 		width: {
-			default: number('Width', 0, {}, 'Button')
+			default: number('Width', 0, {}, 'Button'),
 		},
 		size: {
 			default: options(
@@ -151,14 +151,14 @@ export const withIcon = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		iconSize: {
 			default: options(
@@ -168,30 +168,30 @@ export const withIcon = () => ({
 					Small: 'small',
 					'(default)': 'default',
 					Large: 'large',
-					'Extra Large': 'xLarge'
+					'Extra Large': 'xLarge',
 				},
 				'default',
 				{
-					display: 'select'
+					display: 'select',
 				},
 				'Button'
-			)
+			),
 		},
 		disabled: {
-			default: boolean('Disabled', false, 'Button')
+			default: boolean('Disabled', false, 'Button'),
 		},
 		color: {
-			default: color('Color', '#ffffff', 'Colors')
+			default: color('Color', '#ffffff', 'Colors'),
 		},
 		backgroundColor: {
-			default: color('Background Color', '#263238', 'Colors')
+			default: color('Background Color', '#263238', 'Colors'),
 		},
 		hoverColor: {
-			default: color('Color (hover)', '#ffffff', 'Colors')
+			default: color('Color (hover)', '#ffffff', 'Colors'),
 		},
 		hoverBackgroundColor: {
-			default: color('Background Color (hover)', '#37474f', 'Colors')
-		}
+			default: color('Background Color (hover)', '#37474f', 'Colors'),
+		},
 	},
 	template: `
 		<v-button
@@ -224,7 +224,7 @@ export const withIcon = () => ({
 				style="--v-icon-color: var(--white)"
 			/>
 		</v-button>
-	`
+	`,
 });
 
 export const sizes = () => `
@@ -295,8 +295,8 @@ export const colors = () => `
 export const customLoading = () => ({
 	props: {
 		loading: {
-			default: boolean('Loading', true)
-		}
+			default: boolean('Loading', true),
+		},
 	},
 	template: `
 	<v-button :loading="loading">
@@ -304,12 +304,12 @@ export const customLoading = () => ({
 		<template #loading>
 			..Loading..
 		</template>
-	</v-button>`
+	</v-button>`,
 });
 
 export const asLink = () => ({
 	router: router,
 	template: `
 	<v-button to="/login">I'm a link</v-button>
-	`
+	`,
 });

@@ -25,23 +25,23 @@ export default defineComponent({
 	props: {
 		indeterminate: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		value: {
 			type: Number,
-			default: 0
+			default: 0,
 		},
-		...sizeProps
+		...sizeProps,
 	},
 	setup(props) {
 		const sizeClass = useSizeClass(props);
 
 		const circleStyle = computed(() => ({
-			'stroke-dasharray': (props.value / 100) * 78.5 + ', 78.5'
+			'stroke-dasharray': (props.value / 100) * 78.5 + ', 78.5',
 		}));
 
 		return { sizeClass, circleStyle };
-	}
+	},
 });
 </script>
 

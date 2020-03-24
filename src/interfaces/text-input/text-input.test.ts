@@ -17,12 +17,12 @@ describe('Interfaces / Text Input', () => {
 					monospace: false,
 					trim: false,
 					showCharacterCount: false,
-					placeholder: 'Enter value...'
-				}
+					placeholder: 'Enter value...',
+				},
 			},
 			listeners: {
-				input: () => {}
-			}
+				input: () => {},
+			},
 		});
 		expect(component.find(VInput).exists()).toBe(true);
 	});

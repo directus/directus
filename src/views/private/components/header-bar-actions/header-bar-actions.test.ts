@@ -13,7 +13,7 @@ localVue.component('v-icon', VIcon);
 describe('Views / Private / Header Bar Actions', () => {
 	it('Renders', () => {
 		const component = mount(HeaderBarActions, {
-			localVue
+			localVue,
 		});
 
 		expect(component.isVueInstance()).toBeTruthy();

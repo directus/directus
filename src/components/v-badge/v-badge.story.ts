@@ -13,36 +13,36 @@ export default {
 	component: VBadge,
 	decorators: [withKnobs, withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withButton = () => ({
 	props: {
 		value: {
-			default: text('Text in badge', '3', 'Badge')
+			default: text('Text in badge', '3', 'Badge'),
 		},
 		dot: {
-			default: boolean('Dot', false, 'Badge')
+			default: boolean('Dot', false, 'Badge'),
 		},
 		left: {
-			default: boolean('Left', false, 'Badge')
+			default: boolean('Left', false, 'Badge'),
 		},
 		bottom: {
-			default: boolean('Bottom', false, 'Badge')
+			default: boolean('Bottom', false, 'Badge'),
 		},
 		offsetX: {
-			default: number('Offset X', 0, undefined, 'Badge')
+			default: number('Offset X', 0, undefined, 'Badge'),
 		},
 		offsetY: {
-			default: number('Offset Y', 0, undefined, 'Badge')
+			default: number('Offset Y', 0, undefined, 'Badge'),
 		},
 		icon: {
-			default: text('Icon', '', 'Badge')
+			default: text('Icon', '', 'Badge'),
 		},
 		bordered: {
-			default: boolean('Bordered', false, 'Badge')
-		}
+			default: boolean('Bordered', false, 'Badge'),
+		},
 	},
 	template: `
 		<v-badge
@@ -59,35 +59,35 @@ export const withButton = () => ({
 		>
 			<v-button>Click me!</v-button>
 		</v-badge>
-	`
+	`,
 });
 
 export const withText = () => ({
 	props: {
 		value: {
-			default: text('Text in badge', '3', 'Badge')
+			default: text('Text in badge', '3', 'Badge'),
 		},
 		dot: {
-			default: boolean('Dot', false, 'Badge')
+			default: boolean('Dot', false, 'Badge'),
 		},
 		left: {
-			default: boolean('Left', false, 'Badge')
+			default: boolean('Left', false, 'Badge'),
 		},
 		bottom: {
-			default: boolean('Bottom', false, 'Badge')
+			default: boolean('Bottom', false, 'Badge'),
 		},
 		offsetX: {
-			default: number('Offset X', 0, undefined, 'Badge')
+			default: number('Offset X', 0, undefined, 'Badge'),
 		},
 		offsetY: {
-			default: number('Offset Y', 0, undefined, 'Badge')
+			default: number('Offset Y', 0, undefined, 'Badge'),
 		},
 		icon: {
-			default: text('Icon', '', 'Badge')
+			default: text('Icon', '', 'Badge'),
 		},
 		bordered: {
-			default: boolean('Bordered', false, 'Badge')
-		}
+			default: boolean('Bordered', false, 'Badge'),
+		},
 	},
 	template: `
 		<v-badge
@@ -104,26 +104,26 @@ export const withText = () => ({
 		>
 			Example text.
 		</v-badge>
-	`
+	`,
 });
 
 export const withAvatar = () => ({
 	props: {
 		value: {
-			default: text('Text in badge', '3', 'Badge')
+			default: text('Text in badge', '3', 'Badge'),
 		},
 		dot: {
-			default: boolean('Dot', false, 'Badge')
+			default: boolean('Dot', false, 'Badge'),
 		},
 		left: {
-			default: boolean('Left', false, 'Badge')
+			default: boolean('Left', false, 'Badge'),
 		},
 		bottom: {
-			default: boolean('Bottom', false, 'Badge')
+			default: boolean('Bottom', false, 'Badge'),
 		},
 		icon: {
-			default: text('Icon', '', 'Badge')
-		}
+			default: text('Icon', '', 'Badge'),
+		},
 	},
 	template: `
 		<v-badge
@@ -140,7 +140,7 @@ export const withAvatar = () => ({
 		>
 			<v-avatar>RVZ</v-avatar>
 		</v-badge>
-	`
+	`,
 });
 
 export const colors = () => ({
@@ -165,5 +165,5 @@ export const colors = () => ({
 				<v-button>Click me!</v-button>
 			</v-badge>
 		</div>
-	`
+	`,
 });

@@ -10,7 +10,7 @@ describe('Compositions / Event Listener', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn(event => {
+		window.removeEventListener = jest.fn((event) => {
 			delete map[event];
 		});
 
@@ -35,7 +35,7 @@ describe('Compositions / Event Listener', () => {
 			map[event] = cb;
 		});
 
-		window.removeEventListener = jest.fn(event => {
+		window.removeEventListener = jest.fn((event) => {
 			delete map[event];
 		});
 

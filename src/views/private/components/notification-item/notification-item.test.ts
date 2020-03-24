@@ -18,8 +18,8 @@ describe('Views / Private / Components / Notification Item', () => {
 			localVue,
 			propsData: {
 				id: '123',
-				title: 'Test'
-			}
+				title: 'Test',
+			},
 		});
 		jest.runAllTimers();
 		expect(notificationsStore.remove).toHaveBeenCalledWith('123');
@@ -35,8 +35,8 @@ describe('Views / Private / Components / Notification Item', () => {
 			propsData: {
 				id: '123',
 				title: 'Test',
-				persist: true
-			}
+				persist: true,
+			},
 		});
 		jest.runAllTimers();
 		expect(notificationsStore.remove).not.toHaveBeenCalledWith('123');
@@ -50,8 +50,8 @@ describe('Views / Private / Components / Notification Item', () => {
 			propsData: {
 				id: '123',
 				title: 'Test',
-				persist: true
-			}
+				persist: true,
+			},
 		});
 
 		component.find('.close').trigger('click');

@@ -11,7 +11,7 @@ describe('Overlay', () => {
 
 	beforeEach(() => {
 		component = shallowMount(VOverlay, {
-			localVue
+			localVue,
 		});
 	});
 
@@ -35,8 +35,8 @@ describe('Overlay', () => {
 		const component = shallowMount(VOverlay, {
 			localVue,
 			listeners: {
-				click: () => {}
-			}
+				click: () => {},
+			},
 		});
 		expect(component.classes()).toContain('has-click');
 	});

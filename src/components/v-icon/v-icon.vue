@@ -22,25 +22,25 @@ export default defineComponent({
 	props: {
 		name: {
 			type: String,
-			required: true
+			required: true,
 		},
 		outline: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		sup: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		left: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		right: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
-		...sizeProps
+		...sizeProps,
 	},
 
 	setup(props, { emit, listeners }) {
@@ -60,13 +60,13 @@ export default defineComponent({
 			sizeClass,
 			customIconName,
 			hasClick,
-			emitClick
+			emitClick,
 		};
 
 		function emitClick(event: MouseEvent) {
 			emit('click', event);
 		}
-	}
+	},
 });
 </script>
 

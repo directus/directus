@@ -24,8 +24,8 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				hidden: false,
 				managed: true,
 				single: false,
-				translation: null
-			}
+				translation: null,
+			},
 		];
 
 		let navItems: any;
@@ -39,8 +39,8 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				collection: 'test',
 				name: 'Test',
 				to: '/my-project/collections/test',
-				icon: 'box'
-			}
+				icon: 'box',
+			},
 		]);
 	});
 
@@ -59,7 +59,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				hidden: false,
 				managed: true,
 				single: false,
-				translation: null
+				translation: null,
 			},
 			{
 				collection: 'test2',
@@ -69,7 +69,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				hidden: false,
 				managed: true,
 				single: false,
-				translation: null
+				translation: null,
 			},
 			{
 				collection: 'test3',
@@ -79,8 +79,8 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				hidden: false,
 				managed: true,
 				single: false,
-				translation: null
-			}
+				translation: null,
+			},
 		];
 
 		let navItems: any;

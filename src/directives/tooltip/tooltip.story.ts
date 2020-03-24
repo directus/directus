@@ -11,8 +11,8 @@ export default {
 	title: 'Directives / Tooltip',
 	decorators: [withPadding],
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const withText = () => ({
@@ -44,5 +44,5 @@ export const withText = () => ({
             <v-icon style="margin: 30px" v-tooltip.bottom="'This is a really long text which wont fit into a single line!'" name="info" />
             <v-icon style="margin: 30px" v-tooltip.right="'This is a really long text which wont fit into a single line!'" name="info" />
         </div>
-	`
+	`,
 });

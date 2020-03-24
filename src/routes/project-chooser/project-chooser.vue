@@ -18,13 +18,13 @@ export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 
-		const projects = projectsStore.state.projects?.map(project => ({
+		const projects = projectsStore.state.projects?.map((project) => ({
 			...project,
-			link: `/${project.key}/login`
+			link: `/${project.key}/login`,
 		}));
 
 		return { projects };
-	}
+	},
 });
 </script>
 

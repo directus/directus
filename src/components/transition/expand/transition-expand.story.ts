@@ -6,9 +6,9 @@ import withPadding from '../../../../.storybook/decorators/with-padding';
 export default {
 	title: 'Transition / Expand',
 	parameters: {
-		notes: markdown
+		notes: markdown,
 	},
-	decorators: [withPadding]
+	decorators: [withPadding],
 };
 
 export const basic = () =>
@@ -36,5 +36,5 @@ export const basic = () =>
 					</div>
 				</transition-expand>
 			</div>
-		`
+		`,
 	});

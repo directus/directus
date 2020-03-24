@@ -7,7 +7,7 @@ import Tooltip, {
 	animateOut,
 	onLeaveTooltip,
 	updateTooltip,
-	onEnterTooltip
+	onEnterTooltip,
 } from './tooltip';
 
 const localVue = createLocalVue();
@@ -43,8 +43,8 @@ describe('Tooltip', () => {
 				name: 'tooltip',
 				modifiers: {
 					top: true,
-					instant: true
-				}
+					instant: true,
+				},
 			})();
 
 			expect(tooltip.className).toBe('visible enter top');
@@ -60,8 +60,8 @@ describe('Tooltip', () => {
 				name: 'tooltip',
 				modifiers: {
 					top: true,
-					instant: false
-				}
+					instant: false,
+				},
 			})();
 
 			expect(tooltip.className).toBe('');
@@ -95,7 +95,7 @@ describe('Tooltip', () => {
 					div,
 					{
 						name: 'tooltip',
-						modifiers: modifiers
+						modifiers: modifiers,
 					},
 					tooltip
 				);
@@ -109,7 +109,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('top');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -124,7 +124,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: true,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('start top');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -139,7 +139,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: true,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('end top');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -154,7 +154,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('right');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -169,7 +169,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: true,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('start right');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -184,7 +184,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: true,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('end right');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -199,7 +199,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('bottom');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -214,7 +214,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: true,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('start bottom');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -229,7 +229,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: true,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('end bottom');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -244,7 +244,7 @@ describe('Tooltip', () => {
 					left: true,
 					start: false,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('left');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -259,7 +259,7 @@ describe('Tooltip', () => {
 					left: true,
 					start: true,
 					end: false,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('start left');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -274,7 +274,7 @@ describe('Tooltip', () => {
 					left: true,
 					start: false,
 					end: true,
-					inverted: false
+					inverted: false,
 				});
 				expect(tooltip.className).toBe('end left');
 				expect(tooltip.getAttribute('style')).toBe(
@@ -289,7 +289,7 @@ describe('Tooltip', () => {
 					left: false,
 					start: false,
 					end: false,
-					inverted: true
+					inverted: true,
 				});
 				expect(tooltip.className).toBe('inverted top');
 			});

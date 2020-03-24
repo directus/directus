@@ -6,9 +6,9 @@ import withPadding from '../../../../../.storybook/decorators/with-padding';
 export default {
 	title: 'Views / Public / Components / Logo',
 	parameters: {
-		notes: markdown
+		notes: markdown,
 	},
-	decorators: [withPadding]
+	decorators: [withPadding],
 };
 
 export const basic = () =>
@@ -16,5 +16,5 @@ export const basic = () =>
 		components: { PublicViewLogo },
 		template: `
 		<public-view-logo version="9.0.0" />
-	`
+	`,
 	});

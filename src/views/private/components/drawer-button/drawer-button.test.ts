@@ -12,8 +12,8 @@ describe('Views / Private / Components / Drawer Button', () => {
 		const component = shallowMount(DrawerButton, {
 			localVue,
 			provide: {
-				'drawer-open': false
-			}
+				'drawer-open': false,
+			},
 		});
 
 		expect(component.find('.title').exists()).toBe(false);

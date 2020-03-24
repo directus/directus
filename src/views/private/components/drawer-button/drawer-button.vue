@@ -20,18 +20,18 @@ export default defineComponent({
 	props: {
 		to: {
 			type: String,
-			default: null
+			default: null,
 		},
 		icon: {
 			type: String,
-			default: 'box'
-		}
+			default: 'box',
+		},
 	},
 	setup() {
 		const drawerOpen = inject('drawer-open', ref(false));
 
 		return { drawerOpen };
-	}
+	},
 });
 </script>
 

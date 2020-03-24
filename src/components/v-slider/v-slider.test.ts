@@ -17,7 +17,7 @@ describe('Slider', () => {
 		component.setProps({
 			min: 5,
 			max: 25,
-			value: 10
+			value: 10,
 		});
 
 		await component.vm.$nextTick();
@@ -46,8 +46,8 @@ describe('Slider', () => {
 			localVue,
 			slots: {
 				prepend: '<div>prepend</div>',
-				append: '<div>append</div>'
-			}
+				append: '<div>append</div>',
+			},
 		});
 
 		expect(component.find('.prepend > div').html()).toBe('<div>prepend</div>');

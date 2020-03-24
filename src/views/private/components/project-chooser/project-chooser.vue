@@ -23,7 +23,7 @@ export default defineComponent({
 			projects,
 			currentProjectKey,
 			navigateToProject,
-			projectsStore
+			projectsStore,
 		};
 
 		function navigateToProject(event: InputEvent) {
@@ -39,7 +39,7 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				.catch(() => {});
 		}
-	}
+	},
 });
 </script>
 

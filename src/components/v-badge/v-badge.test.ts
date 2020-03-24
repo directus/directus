@@ -17,7 +17,7 @@ describe('Chip', () => {
 
 	it('Adds the dot prop to the badge', async () => {
 		component.setProps({
-			dot: true
+			dot: true,
 		});
 
 		await component.vm.$nextTick();
@@ -27,7 +27,7 @@ describe('Chip', () => {
 
 	it('Adds the bordered prop to the badge', async () => {
 		component.setProps({
-			bordered: true
+			bordered: true,
 		});
 
 		await component.vm.$nextTick();
@@ -37,7 +37,7 @@ describe('Chip', () => {
 
 	it('Display the badge on the left', async () => {
 		component.setProps({
-			left: true
+			left: true,
 		});
 
 		await component.vm.$nextTick();
@@ -47,7 +47,7 @@ describe('Chip', () => {
 
 	it('Display the badge on the bottom', async () => {
 		component.setProps({
-			bottom: true
+			bottom: true,
 		});
 
 		await component.vm.$nextTick();
@@ -57,7 +57,7 @@ describe('Chip', () => {
 
 	it('Checks if the icon exists and if the name matches', async () => {
 		component.setProps({
-			icon: 'add'
+			icon: 'add',
 		});
 
 		await component.vm.$nextTick();

@@ -11,7 +11,7 @@ interface HTMLExpandElement extends HTMLElement {
 	};
 }
 
-export default function(expandedParentClass = '', xAxis = false) {
+export default function (expandedParentClass = '', xAxis = false) {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as
 		| 'offsetHeight'
@@ -24,7 +24,7 @@ export default function(expandedParentClass = '', xAxis = false) {
 				transition: el.style.transition,
 				visibility: el.style.visibility,
 				overflow: el.style.overflow,
-				[sizeProperty]: el.style[sizeProperty]
+				[sizeProperty]: el.style[sizeProperty],
 			};
 		},
 
@@ -62,7 +62,7 @@ export default function(expandedParentClass = '', xAxis = false) {
 				transition: '',
 				visibility: '',
 				overflow: el.style.overflow,
-				[sizeProperty]: el.style[sizeProperty]
+				[sizeProperty]: el.style[sizeProperty],
 			};
 
 			el.style.overflow = 'hidden';
@@ -73,7 +73,7 @@ export default function(expandedParentClass = '', xAxis = false) {
 		},
 
 		afterLeave,
-		leaveCancelled: afterLeave
+		leaveCancelled: afterLeave,
 	};
 
 	function afterLeave(el: HTMLExpandElement) {

@@ -14,47 +14,47 @@ export default {
 	decorators: [withKnobs, withPadding],
 	component: VSlider,
 	parameters: {
-		notes: markdown
-	}
+		notes: markdown,
+	},
 };
 
 export const interactive = () => ({
 	data() {
 		return {
-			value: 15
+			value: 15,
 		};
 	},
 	props: {
 		trackColor: {
-			default: color('Track Color', '#cfd8dc')
+			default: color('Track Color', '#cfd8dc'),
 		},
 		trackFillColor: {
-			default: color('Track Fill Color', '#37474f')
+			default: color('Track Fill Color', '#37474f'),
 		},
 		thumbColor: {
-			default: color('Thumb Color', '#37474f')
+			default: color('Thumb Color', '#37474f'),
 		},
 		showThumbLabel: {
-			default: boolean('Show Thumb Label', false)
+			default: boolean('Show Thumb Label', false),
 		},
 		showTicks: {
-			default: boolean('Show Ticks', false)
+			default: boolean('Show Ticks', false),
 		},
 		max: {
-			default: number('Max value', 25)
+			default: number('Max value', 25),
 		},
 		min: {
-			default: number('Min value', 5)
+			default: number('Min value', 5),
 		},
 		step: {
-			default: number('Step', 1)
-		}
+			default: number('Step', 1),
+		},
 	},
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
 		clickPrepend: action('click:prepend'),
-		clickAppend: action('click:append')
+		clickAppend: action('click:append'),
 	},
 	template: `
 <div>
@@ -76,20 +76,20 @@ export const interactive = () => ({
 value: {{value}}
 </pre>
 </div>
-`
+`,
 });
 
 export const withTicks = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
 		clickPrepend: action('click:prepend'),
-		clickAppend: action('click:append')
+		clickAppend: action('click:append'),
 	},
 	template: `
 <v-slider
@@ -100,20 +100,20 @@ export const withTicks = () => ({
 	@input="onInput"
 	@change="onChange"
 />
-`
+`,
 });
 
 export const withThumbLabel = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
 		clickPrepend: action('click:prepend'),
-		clickAppend: action('click:append')
+		clickAppend: action('click:append'),
 	},
 	template: `
 <v-slider
@@ -124,20 +124,20 @@ export const withThumbLabel = () => ({
 	@input="onInput"
 	@change="onChange"
 />
-`
+`,
 });
 
 export const appendSlot = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
 		clickPrepend: action('click:prepend'),
-		clickAppend: action('click:append')
+		clickAppend: action('click:append'),
 	},
 	template: `
 <v-slider
@@ -152,20 +152,20 @@ export const appendSlot = () => ({
 		{{ value }} / 15
 	</template>
 </v-slider>
-`
+`,
 });
 
 export const prependSlot = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
 		onInput: action('input'),
 		onChange: action('change'),
 		clickPrepend: action('click:prepend'),
-		clickAppend: action('click:append')
+		clickAppend: action('click:append'),
 	},
 	template: `
 <v-slider
@@ -180,13 +180,13 @@ export const prependSlot = () => ({
 		<v-icon name="star" />
 	</template>
 </v-slider>
-`
+`,
 });
 
 export const slots = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
@@ -201,7 +201,7 @@ export const slots = () => ({
 			if ((this as any).value < 15) {
 				(this as any).value = (this as any).value + 1;
 			}
-		}
+		},
 	},
 	template: `
 <v-slider
@@ -219,18 +219,18 @@ export const slots = () => ({
 		<v-icon name="add" @click="clickPlus" />
 	</template>
 </v-slider>
-`
+`,
 });
 
 export const thumbLabelSlot = () => ({
 	data() {
 		return {
-			value: 12
+			value: 12,
 		};
 	},
 	methods: {
 		onInput: action('input'),
-		onChange: action('change')
+		onChange: action('change'),
 	},
 	template: `
 <v-slider
@@ -245,5 +245,5 @@ export const thumbLabelSlot = () => ({
 		Units: {{ value }}
 	</template>
 </v-slider>
-`
+`,
 });

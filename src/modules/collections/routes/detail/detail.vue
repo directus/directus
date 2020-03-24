@@ -75,12 +75,12 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true
+			required: true,
 		},
 		primaryKey: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props) {
 		const projectsStore = useProjectsStore();
@@ -92,12 +92,14 @@ export default defineComponent({
 		const isNew = computed<boolean>(() => props.primaryKey === '+');
 
 		const fieldsInCurrentCollection = computed<Field[]>(() => {
-			return fieldsStore.state.fields.filter(field => field.collection === props.collection);
+			return fieldsStore.state.fields.filter(
+				(field) => field.collection === props.collection
+			);
 		});
 
 		const visibleFields = computed<Field[]>(() => {
 			return fieldsInCurrentCollection.value
-				.filter(field => field.hidden_browse === false)
+				.filter((field) => field.hidden_browse === false)
 				.sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
 		});
 
@@ -119,12 +121,12 @@ export default defineComponent({
 		const breadcrumb = computed(() => [
 			{
 				name: i18n.tc('collection', 2),
-				to: `/${currentProjectKey.value}/collections/`
+				to: `/${currentProjectKey.value}/collections/`,
 			},
 			{
 				name: currentCollection.name,
-				to: `/${currentProjectKey.value}/collections/${props.collection}/`
-			}
+				to: `/${currentProjectKey.value}/collections/${props.collection}/`,
+			},
 		]);
 
 		const edits = ref({});
@@ -145,7 +147,7 @@ export default defineComponent({
 			saving,
 			deleting,
 			deleteAndQuit,
-			confirmDelete
+			confirmDelete,
 		};
 
 		async function fetchItem() {
@@ -165,7 +167,7 @@ export default defineComponent({
 		function useDefaultValues() {
 			const defaults: Values = {};
 
-			visibleFields.value.forEach(field => {
+			visibleFields.value.forEach((field) => {
 				defaults[field.field] = field.default_value;
 			});
 
@@ -210,7 +212,7 @@ export default defineComponent({
 				deleting.value = false;
 			}
 		}
-	}
+	},
 });
 </script>
 

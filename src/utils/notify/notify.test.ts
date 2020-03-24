@@ -13,7 +13,7 @@ describe('Utils / Notify', () => {
 		jest.spyOn(notificationsStore as any, 'add');
 
 		const notification = {
-			title: 'test'
+			title: 'test',
 		};
 
 		notify(notification);

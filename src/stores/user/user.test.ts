@@ -27,8 +27,8 @@ describe('Stores / User', () => {
 			(api.get as jest.Mock).mockImplementation(() =>
 				Promise.resolve({
 					data: {
-						data: []
-					}
+						data: [],
+					},
 				})
 			);
 
@@ -40,8 +40,8 @@ describe('Stores / User', () => {
 
 			expect(api.get).toHaveBeenCalledWith('/my-project/users/me', {
 				params: {
-					fields: '*,avatar.data'
-				}
+					fields: '*,avatar.data',
+				},
 			});
 		});
 	});
@@ -62,7 +62,7 @@ describe('Stores / User', () => {
 
 			userStore.state.currentUser = {
 				id: 5,
-				last_page: 'test'
+				last_page: 'test',
 			} as any;
 
 			projectsStore.state.currentProjectKey = 'my-project';
@@ -70,7 +70,7 @@ describe('Stores / User', () => {
 			await userStore.trackPage('/example');
 
 			expect(api.patch).toHaveBeenCalledWith('/my-project/users/me/tracking/page', {
-				last_page: '/example'
+				last_page: '/example',
 			});
 		});
 
@@ -80,7 +80,7 @@ describe('Stores / User', () => {
 
 			userStore.state.currentUser = {
 				id: 5,
-				last_page: 'test'
+				last_page: 'test',
 			} as any;
 
 			projectsStore.state.currentProjectKey = 'my-project';
