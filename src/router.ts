@@ -1,4 +1,4 @@
-import VueRouter, { NavigationGuard, RouteConfig } from 'vue-router';
+import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
@@ -7,6 +7,7 @@ import ProjectChooserRoute from '@/routes/project-chooser';
 import { checkAuth } from '@/auth';
 import { hydrate, dehydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
+import useUserStore from '@/stores/user';
 
 export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
 	const projectsStore = useProjectsStore();
@@ -133,7 +134,20 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	return next();
 };
 
+export const onAfterEach = (to: Route) => {
+	const userStore = useUserStore();
+
+	if (to.meta.public !== true) {
+		// The timeout gives the page some breathing room to load. No need to clog up the thread with
+		// this call while more important things are loading
+		setTimeout(() => {
+			userStore.trackPage(to.fullPath);
+		}, 2500);
+	}
+};
+
 router.beforeEach(onBeforeEach);
+router.afterEach(onAfterEach);
 
 export default router;
 

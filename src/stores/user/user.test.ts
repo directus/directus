@@ -54,4 +54,40 @@ describe('Stores / User', () => {
 			expect(userStore.reset).toHaveBeenCalled();
 		});
 	});
+
+	describe('Track Page', () => {
+		it('Calls the right endpoint on tracking', async () => {
+			const userStore = useUserStore(req);
+			const projectsStore = useProjectsStore(req);
+
+			userStore.state.currentUser = {
+				id: 5,
+				last_page: 'test'
+			} as any;
+
+			projectsStore.state.currentProjectKey = 'my-project';
+
+			await userStore.trackPage('/example');
+
+			expect(api.patch).toHaveBeenCalledWith('/my-project/users/me/tracking/page', {
+				last_page: '/example'
+			});
+		});
+
+		it('Updates the store with the new last page', async () => {
+			const userStore = useUserStore(req);
+			const projectsStore = useProjectsStore(req);
+
+			userStore.state.currentUser = {
+				id: 5,
+				last_page: 'test'
+			} as any;
+
+			projectsStore.state.currentProjectKey = 'my-project';
+
+			await userStore.trackPage('/example');
+
+			expect(userStore.state.currentUser!.last_page).toBe('/example');
+		});
+	});
 });

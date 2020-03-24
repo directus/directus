@@ -1,11 +1,18 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
-import { onBeforeEach, onBeforeEnterProjectChooser, replaceRoutes, defaultRoutes } from './router';
+import {
+	onBeforeEach,
+	onAfterEach,
+	onBeforeEnterProjectChooser,
+	replaceRoutes,
+	defaultRoutes
+} from './router';
 import api from '@/api';
 import * as auth from '@/auth';
 import { useProjectsStore } from '@/stores/projects';
 import { hydrate } from '@/hydrate';
+import useUserStore from '@/stores/user';
 
 jest.mock('@/auth');
 jest.mock('@/hydrate');
@@ -255,6 +262,48 @@ describe('Router', () => {
 			const handler = jest.fn(() => []);
 			replaceRoutes(handler);
 			expect(handler).toHaveBeenCalledWith(defaultRoutes);
+		});
+	});
+
+	describe('onAfterEach', () => {
+		it('Calls the userStore trackPage method after some time', () => {
+			jest.useFakeTimers();
+			const userStore = useUserStore({});
+
+			jest.spyOn(userStore, 'trackPage');
+
+			const to = {
+				fullPath: '/test',
+				meta: {
+					public: false
+				}
+			} as any;
+
+			onAfterEach(to);
+
+			jest.runAllTimers();
+
+			expect(userStore.trackPage).toHaveBeenCalledWith('/test');
+		});
+
+		it('Does not track the page for public pages', () => {
+			jest.useFakeTimers();
+			const userStore = useUserStore({});
+
+			jest.spyOn(userStore, 'trackPage');
+
+			const to = {
+				fullPath: '/test',
+				meta: {
+					public: true
+				}
+			} as any;
+
+			onAfterEach(to);
+
+			jest.runAllTimers();
+
+			expect(userStore.trackPage).not.toHaveBeenCalledWith('/test');
 		});
 	});
 });

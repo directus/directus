@@ -30,6 +30,18 @@ export const useUserStore = createStore({
 		},
 		async dehydrate() {
 			this.reset();
+		},
+		async trackPage(page: string) {
+			const projectsStore = useProjectsStore();
+			const currentProjectKey = projectsStore.state.currentProjectKey;
+
+			await api.patch(`/${currentProjectKey}/users/me/tracking/page`, {
+				last_page: page
+			});
+
+			if (this.state.currentUser) {
+				this.state.currentUser.last_page = page;
+			}
 		}
 	}
 });
