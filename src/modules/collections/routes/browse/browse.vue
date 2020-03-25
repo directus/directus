@@ -77,7 +77,7 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPresetsStore from '@/stores/collection-presets';
-import { debounce, clone } from 'lodash';
+import { debounce } from 'lodash';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();

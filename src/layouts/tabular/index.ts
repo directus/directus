@@ -1,11 +1,9 @@
 import { defineLayout } from '@/layouts/define';
 import TabularLayout from './tabular.vue';
 
-export default defineLayout({
+export default defineLayout(({ i18n }) => ({
 	id: 'tabular',
-	register: ({ i18n }) => ({
-		name: i18n.t('layouts.tabular.tabular'),
-		icon: 'table',
-		component: TabularLayout,
-	}),
-});
+	name: i18n.t('layouts.tabular.tabular'),
+	icon: 'table',
+	component: TabularLayout,
+}));

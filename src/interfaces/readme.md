@@ -4,7 +4,7 @@ can be seen as the individual fields in a form, where the field is a single colu
 
 ## Defining interfaces
 Interfaces need to be defined through the `defineInterface` function. This allows the interface to
-register things like it's name, options, and the way it displays data across the platform.
+register things like it's name and options.
 
 ```js
 export default defineInterface({
@@ -12,10 +12,7 @@ export default defineInterface({
 	register: ({ i18n }) => ({
 		name: i18n.t('interfaces.text-input.text-input'),
 		icon: 'box',
-		component: InterfaceTextInput,
-		display: value => {
-			return formatTitle(value);
-		}
+		component: InterfaceTextInput
 	})
 });
 ```
@@ -44,19 +41,3 @@ wizard.
 #### `component`
 The Vue component that makes up the input of the interface. This is the component that will be rendered
 in the edit form.
-
-#### `display`
-Next to the actual input, interfaces have the ability to define the way it's value it's shown elsewhere
-in the platform. This can be useful if the data needs to be manipulated before it can shown to the
-end user in a way that makes sense. For example, one might want to convert a hex value into a color
-swatch when the value is being shown in the platform.
-
-This value can either be:
-
-* `null`
-  render the raw value as stored in the database
-* `(val) => string | number`
-  a callback function that converts the value before being shown
-* Vue Component
-  a custom Vue component that will be rendered inline. Ideally this is a functional component, to
-  ensure performance when looking at large datasets.

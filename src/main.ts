@@ -12,6 +12,7 @@ import './views/register';
 import './modules/register';
 import './layouts/register';
 import './interfaces/register';
+import './displays/register';
 
 import App from './app.vue';
 

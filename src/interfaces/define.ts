@@ -1,13 +1,15 @@
 import { i18n } from '@/lang';
-import { Interface, InterfaceOptions, InterfaceContext } from './types';
+import { InterfaceDefineParam, InterfaceContext, InterfaceConfig } from './types';
 
-export function defineInterface(options: InterfaceOptions): Interface {
-	const context: InterfaceContext = { i18n };
+export function defineInterface(config: InterfaceDefineParam): InterfaceConfig {
+	let options: InterfaceConfig;
 
-	const config = {
-		id: options.id,
-		...options.register(context),
-	};
+	if (typeof config === 'function') {
+		const context: InterfaceContext = { i18n };
+		options = config(context);
+	} else {
+		options = config;
+	}
 
-	return config;
+	return options;
 }

@@ -5,6 +5,10 @@ import "../src/styles/main.scss";
 import "../src/plugins";
 import "../src/components/register";
 import "../src/directives/register";
+import "../src/interfaces/register";
+import "../src/displays/register";
+import "../src/views/register";
+import "../src/layouts/register";
 
 addParameters({
 	docs: {
