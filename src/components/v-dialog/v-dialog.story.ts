@@ -19,7 +19,7 @@ export const basic = () =>
 	defineComponent({
 		props: {
 			persistent: {
-				default: boolean('Peristent', false),
+				default: boolean('Persistent', false),
 			},
 		},
 		setup() {
@@ -37,6 +37,7 @@ export const basic = () =>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>
 				</v-dialog>
+				<portal-target name="dialog-outlet" />
 			</div>
 		`,
 	});
@@ -45,7 +46,7 @@ export const activatorSlot = () =>
 	defineComponent({
 		props: {
 			persistent: {
-				default: boolean('Peristent', false),
+				default: boolean('Persistent', false),
 			},
 		},
 		setup() {
@@ -55,7 +56,7 @@ export const activatorSlot = () =>
 		},
 		template: `
 			<div>
-			<v-dialog v-model="active" :persistent="persistent">
+				<v-dialog v-model="active" :persistent="persistent">
 					<template #activator="{ on }">
 						<p @click="on">Click me to active</p>
 					</template>
@@ -65,6 +66,7 @@ export const activatorSlot = () =>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>
 				</v-dialog>
+				<portal-target name="dialog-outlet" />
 			</div>
 		`,
 	});

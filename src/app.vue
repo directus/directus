@@ -6,6 +6,7 @@
 			</div>
 		</transition>
 		<router-view v-if="!hydrating" />
+		<portal-target name="dialog-outlet" />
 	</div>
 </template>
 

@@ -1,11 +1,13 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
+import PortalVue from 'portal-vue';
 import VDialog from './v-dialog.vue';
 import VOverlay from '@/components/v-overlay';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-overlay', VOverlay);
+localVue.use(PortalVue);
 
 describe('Components / Dialog', () => {
 	beforeEach(() => {
