@@ -4,6 +4,8 @@ import { useUserStore } from '@/stores/user/';
 import { useProjectsStore } from '@/stores/projects/';
 import api from '@/api';
 
+import defaultCollectionPreset from './default-collection-preset';
+
 export const useCollectionPresetsStore = createStore({
 	id: 'collectionPresetsStore',
 	state: () => ({
@@ -44,14 +46,14 @@ export const useCollectionPresetsStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
-		async createCollectionPreset(newPreset: Partial<CollectionPreset>) {
+		async create(newPreset: Partial<CollectionPreset>) {
 			const { currentProjectKey } = useProjectsStore().state;
 
 			const response = await api.post(`/${currentProjectKey}/collection_presets`, newPreset);
 
 			this.state.collectionPresets.push(response.data.data);
 		},
-		async updateCollectionPreset(id: number, updates: Partial<CollectionPreset>) {
+		async update(id: number, updates: Partial<CollectionPreset>) {
 			const { currentProjectKey } = useProjectsStore().state;
 
 			const response = await api.patch(
@@ -68,7 +70,7 @@ export const useCollectionPresetsStore = createStore({
 				return preset;
 			});
 		},
-		async deleteCollectionPreset(id: number) {
+		async delete(id: number) {
 			const { currentProjectKey } = useProjectsStore().state;
 
 			await api.delete(`/${currentProjectKey}/collection_presets/${id}`);
@@ -76,6 +78,87 @@ export const useCollectionPresetsStore = createStore({
 			this.state.collectionPresets = this.state.collectionPresets.filter((preset) => {
 				return preset.id !== id;
 			});
+		},
+
+		/**
+		 * Retrieves the most specific preset that applies to the given collection for the current
+		 * user. If the user doesn't have a preset for this collection, it will fallback to the
+		 * role and collection presets respectivly.
+		 */
+		getPresetForCollection(collection: string) {
+			const userStore = useUserStore();
+
+			if (userStore.state.currentUser === null) return null;
+
+			const { id: userID, role: userRole } = userStore.state.currentUser;
+
+			const defaultPreset = {
+				...defaultCollectionPreset,
+				collection: collection,
+			};
+
+			const availablePresets = this.state.collectionPresets.filter((preset) => {
+				const userMatches = preset.user === userID || preset.user === null;
+				const roleMatches = preset.role === userRole || preset.role === null;
+				const collectionMatches = preset.collection === collection;
+
+				// Filter out all bookmarks
+				if (preset.title) return false;
+
+				if (userMatches && collectionMatches) return true;
+				if (roleMatches && collectionMatches) return true;
+				return false;
+			});
+
+			if (availablePresets.length === 0) return defaultPreset;
+			if (availablePresets.length === 1) return availablePresets[0];
+
+			// In order of specificity: user-role-collection
+			const userPreset = availablePresets.find((preset) => preset.user === userID);
+			if (userPreset) return userPreset;
+
+			const rolePreset = availablePresets.find((preset) => preset.role === userRole);
+			if (rolePreset) return rolePreset;
+
+			// If the other two already came up empty, we can assume there's only one preset. That
+			// being said, as a safety precaution, we'll use the last saved preset in case there are
+			// duplicates in the DB
+			const collectionPreset = availablePresets[availablePresets.length - 1];
+			return collectionPreset;
+		},
+
+		/**
+		 * Saves the given preset. If it's the default preset, it saves it as a new preset. If the
+		 * preset already exists, but doesn't have a user associated, it will create a preset for
+		 * the user. If the preset already exists and is for a user, we update the preset.
+		 */
+		async savePreset(preset: CollectionPreset) {
+			const userStore = useUserStore();
+			if (userStore.state.currentUser === null) return null;
+			const { id: userID } = userStore.state.currentUser;
+
+			// Clone the preset to make sure the future deletes don't affect the original object
+			preset = { ...preset };
+
+			if (preset.id === undefined || preset.id === null) {
+				return this.create({
+					...preset,
+					user: userID,
+				});
+			}
+
+			if (preset.user !== userID) {
+				if (preset.hasOwnProperty('id')) delete preset.id;
+
+				return this.create({
+					...preset,
+					user: userID,
+				});
+			} else {
+				const id = preset.id;
+				delete preset.id;
+				return this.update(id, preset);
+			}
 		},
 	},
 });

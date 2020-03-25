@@ -15,6 +15,7 @@
 				:all-items-selected="allItemsSelected"
 				:fixed="fixedHeader"
 				:show-manual-sort="showManualSort"
+				:must-sort="mustSort"
 				@toggle-select-all="onToggleSelectAll"
 			>
 				<template v-for="header in _headers" #[`header.${header.value}`]>
@@ -107,6 +108,10 @@ export default defineComponent({
 		sort: {
 			type: Object as PropType<Sort>,
 			default: null,
+		},
+		mustSort: {
+			type: Boolean,
+			default: false,
 		},
 		showSelect: {
 			type: Boolean,

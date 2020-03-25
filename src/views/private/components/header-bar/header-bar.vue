@@ -22,10 +22,8 @@
 		<div class="spacer" />
 
 		<slot name="actions:prepend" />
-		<portal-target name="actions:prepend" />
 		<header-bar-actions @toggle:drawer="$emit('toggle:drawer')">
 			<slot name="actions" />
-			<portal-target name="actions" />
 		</header-bar-actions>
 		<slot name="actions:append" />
 	</header>

@@ -106,11 +106,9 @@
 
   "modules": {},
 
-  "comfortable": "Comfortable",
   "coming_soon": "Coming Soon",
   "comment": "Comment",
   "comments": "Comments",
-  "compact": "Compact",
   "config_error": "Missing Config",
   "config_error_copy": "Make sure you've created the application's configuration file",
   "confirm": "Confirm",
@@ -118,7 +116,6 @@
   "contains": "Contains",
   "continue": "Continue",
   "continue_as": "<b>{name}</b> is already authenticated for this project. If you recognize this account, please press continue.",
-  "cozy": "Cozy",
   "create": "Create",
   "create_collection": "Create Collection",
   "create_field": "Create Field",

@@ -10,6 +10,8 @@
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
+		<template #drawer><portal-target name="drawer" /></template>
+
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
@@ -56,6 +58,8 @@
 			ref="layout"
 			:collection="collection"
 			:selection.sync="selection"
+			:view-options.sync="viewOptions"
+			:view-query.sync="viewQuery"
 		/>
 	</private-view>
 	<!-- @TODO: Render real 404 view here -->
@@ -63,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { NavigationGuard } from 'vue-router';
 import CollectionsNavigation from '../../components/navigation/';
 import useCollectionsStore from '@/stores/collections';
@@ -72,6 +76,8 @@ import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
+import useCollectionPresetsStore from '@/stores/collection-presets';
+import { debounce, clone } from 'lodash';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -116,44 +122,18 @@ export default defineComponent({
 	},
 	setup(props) {
 		const layout = ref<LayoutComponent>(null);
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const projectsStore = useProjectsStore();
+		const collectionPresetsStore = useCollectionPresetsStore();
 
-		const { currentProjectKey } = toRefs(projectsStore.state);
-
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(props.collection);
-
-		const selection = ref<Item[]>([]);
-
-		// Whenever the collection changes we're working on, we have to clear the selection
-		watch(
-			() => props.collection,
-			() => (selection.value = [])
-		);
-
-		const breadcrumb = [
-			{
-				name: i18n.tc('collection', 2),
-				to: `/${currentProjectKey.value}/collections`,
-			},
-		];
-
-		const currentCollection = computed(() => collectionsStore.getCollection(props.collection));
-
-		const addNewLink = computed<string>(
-			() => `/${currentProjectKey}/collections/${props.collection}/+`
-		);
-
-		const batchLink = computed<string>(() => {
-			const batchPrimaryKeys = selection.value
-				.map((item) => item[primaryKeyField.field])
-				.join();
-			return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
-		});
-
-		const confirmDelete = ref(false);
-		const deleting = ref(false);
+		const { selection } = useSelection();
+		const { currentCollection, primaryKeyField } = useCollectionInfo();
+		const { addNewLink, batchLink } = useLinks();
+		const { viewOptions, viewQuery } = useCollectionPreset();
+		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+		const { breadcrumb } = useBreadcrumb();
 
 		return {
 			currentCollection,
@@ -165,24 +145,147 @@ export default defineComponent({
 			batchDelete,
 			deleting,
 			layout,
+			viewOptions,
+			viewQuery,
 		};
 
-		async function batchDelete() {
-			deleting.value = true;
+		function useSelection() {
+			const selection = ref<Item[]>([]);
 
-			confirmDelete.value = false;
+			// Whenever the collection changes we're working on, we have to clear the selection
+			watch(
+				() => props.collection,
+				() => (selection.value = [])
+			);
 
-			const batchPrimaryKeys = selection.value
-				.map((item) => item[primaryKeyField.field])
-				.join();
+			return { selection };
+		}
 
-			await api.delete(`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`);
+		function useCollectionInfo() {
+			const currentCollection = computed(() =>
+				collectionsStore.getCollection(props.collection)
+			);
+			const primaryKeyField = computed(() =>
+				fieldsStore.getPrimaryKeyFieldForCollection(props.collection)
+			);
 
-			await layout.value?.refresh();
+			return { currentCollection, primaryKeyField };
+		}
 
-			selection.value = [];
-			deleting.value = false;
-			confirmDelete.value = false;
+		function useBatchDelete() {
+			const confirmDelete = ref(false);
+			const deleting = ref(false);
+
+			return { confirmDelete, deleting, batchDelete };
+
+			async function batchDelete() {
+				const currentProjectKey = projectsStore.state.currentProjectKey;
+
+				deleting.value = true;
+
+				confirmDelete.value = false;
+
+				const batchPrimaryKeys = selection.value
+					.map((item) => item[primaryKeyField.value.field])
+					.join();
+
+				await api.delete(
+					`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`
+				);
+
+				await layout.value?.refresh();
+
+				selection.value = [];
+				deleting.value = false;
+				confirmDelete.value = false;
+			}
+		}
+
+		function useLinks() {
+			const addNewLink = computed<string>(() => {
+				const currentProjectKey = projectsStore.state.currentProjectKey;
+				return `/${currentProjectKey}/collections/${props.collection}/+`;
+			});
+
+			const batchLink = computed<string>(() => {
+				const currentProjectKey = projectsStore.state.currentProjectKey;
+				const batchPrimaryKeys = selection.value
+					.map((item) => item[primaryKeyField.value.field])
+					.join();
+				return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
+			});
+
+			return { addNewLink, batchLink };
+		}
+
+		function useCollectionPreset() {
+			const savePreset = debounce(collectionPresetsStore.savePreset, 450);
+			const localPreset = ref({
+				...collectionPresetsStore.getPresetForCollection(props.collection),
+			});
+
+			watch(
+				() => localPreset.value,
+				(newPreset) => {
+					savePreset(newPreset);
+				}
+			);
+
+			watch(
+				() => props.collection,
+				() => {
+					localPreset.value = {
+						...collectionPresetsStore.getPresetForCollection(props.collection),
+					};
+				}
+			);
+
+			const viewOptions = computed({
+				get() {
+					return localPreset.value.view_options?.[localPreset.value.view_type] || null;
+				},
+				set(val) {
+					localPreset.value = {
+						...localPreset.value,
+						view_options: {
+							...localPreset.value.view_options,
+							[localPreset.value.view_type]: val,
+						},
+					};
+				},
+			});
+
+			const viewQuery = computed({
+				get() {
+					return localPreset.value.view_query?.[localPreset.value.view_type] || null;
+				},
+				set(val) {
+					localPreset.value = {
+						...localPreset.value,
+						view_query: {
+							...localPreset.value.view_query,
+							[localPreset.value.view_type]: val,
+						},
+					};
+				},
+			});
+
+			return { viewOptions, viewQuery };
+		}
+
+		function useBreadcrumb() {
+			const breadcrumb = computed(() => {
+				const currentProjectKey = projectsStore.state.currentProjectKey;
+
+				return [
+					{
+						name: i18n.tc('collection', 2),
+						to: `/${currentProjectKey}/collections`,
+					},
+				];
+			});
+
+			return { breadcrumb };
 		}
 	},
 });

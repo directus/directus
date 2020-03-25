@@ -126,6 +126,7 @@ export default defineComponent({
 | `loadingText`      | What text to show when table is loading with no items                                          | `Loading...` |
 | `server-sort`      | Handle sorting on the parent level.                                                            | `false`      |
 | `row-height`       | Height of the individual rows in px                                                            | `48`         |
+| `must-sort`        | Requires the sort to be on a particular column                                                 | `false`      |
 
 ## Events
 | Event            | Description                                    | Value                           |

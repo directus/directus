@@ -27,7 +27,7 @@ export type Filter = {
 };
 
 export type CollectionPreset = {
-	id: number;
+	id?: number;
 	title: string | null;
 	user: number | null;
 	role: number | null;

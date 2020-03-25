@@ -46,7 +46,6 @@
 
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
-				<portal-target name="drawer" />
 			</drawer-detail-group>
 		</aside>
 
@@ -84,12 +83,15 @@ export default defineComponent({
 	setup() {
 		const navOpen = ref(false);
 		const drawerOpen = ref(false);
+		const contentEl = ref<Element>();
 
 		provide('drawer-open', drawerOpen);
+		provide('main-element', contentEl);
 
 		return {
 			navOpen,
 			drawerOpen,
+			contentEl,
 		};
 	},
 });

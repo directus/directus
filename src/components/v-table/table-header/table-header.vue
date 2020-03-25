@@ -79,6 +79,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		mustSort: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const dragging = ref<boolean>(false);
@@ -124,33 +128,35 @@ export default defineComponent({
 			return classes;
 		}
 
-		/**
-		 * If current sort is not this field, use this field in ascending order
-		 * If current sort is field, reverse sort order to descending
-		 * If current sort is field and sort is desc, set sort field to null (default)
-		 */
 		function changeSort(header: Header) {
 			if (header.sortable === false) return;
 			if (dragging.value === true) return;
 
 			if (header.value === props.sort.by) {
+				if (props.mustSort) {
+					return emit('update:sort', {
+						by: props.sort.by,
+						desc: !props.sort.desc,
+					});
+				}
+
 				if (props.sort.desc === false) {
-					emit('update:sort', {
+					return emit('update:sort', {
 						by: props.sort.by,
 						desc: true,
 					});
-				} else {
-					emit('update:sort', {
-						by: null,
-						desc: false,
-					});
 				}
-			} else {
-				emit('update:sort', {
-					by: header.value,
+
+				return emit('update:sort', {
+					by: null,
 					desc: false,
 				});
 			}
+
+			return emit('update:sort', {
+				by: header.value,
+				desc: false,
+			});
 		}
 
 		function toggleSelectAll() {
@@ -286,6 +292,8 @@ export default defineComponent({
 		width: 5px;
 		height: 100%;
 		cursor: ew-resize;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
 
 		&::after {
 			position: relative;
@@ -300,6 +308,10 @@ export default defineComponent({
 		&:hover::after {
 			background-color: var(--input-action-color-hover);
 		}
+	}
+
+	th:hover .resize-handle {
+		opacity: 1;
 	}
 }
 </style>
