@@ -22,7 +22,7 @@
     "@types/nanoid": "^2.1.0",
     "@vue/composition-api": "^0.5.0",
     "axios": "^0.19.2",
-    "date-fns": "^2.11.0",
+    "date-fns": "^2.11.1",
     "lodash": "^4.17.15",
     "nanoid": "^2.1.11",
     "pinia": "0.0.5",
