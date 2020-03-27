@@ -80,6 +80,7 @@ export default defineComponent({
 .v-input {
 	display: flex;
 	align-items: center;
+	width: max-content;
 	height: var(--input-height);
 
 	.prepend-outer {

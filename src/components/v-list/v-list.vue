@@ -64,7 +64,8 @@ export default defineComponent({
 	--v-list-background-color-hover: var(--background-color-hover);
 	--v-list-background-color-active: var(--background-color-active);
 
-	width: 100%;
+	position: static;
+	display: block;
 	min-width: var(--v-list-min-width);
 	max-width: var(--v-list-max-width);
 	min-height: var(--v-list-min-height);

@@ -3,6 +3,8 @@ import Vue from 'vue';
 import VInput from './v-input.vue';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
+import { defineComponent } from '@vue/composition-api';
+import VMenu from '@/components/v-menu';
 
 Vue.component('v-input', VInput);
 Vue.directive('focus', {});
@@ -87,3 +89,25 @@ export const withSlots = () => ({
 	</div>
 	`,
 });
+
+export const withMenu = () =>
+	defineComponent({
+		components: { VMenu },
+		template: `
+			<v-menu placement="bottom-start" close-on-content-click attached>
+				<template #activator="{ toggle, active }">
+					<v-input placeholder="Enter value...">
+						<template #append><v-icon @click="toggle" name="public" :style="{
+							'--v-icon-color': active ? 'var(--blue)' : 'currentColor'
+						}" /></template>
+					</v-input>
+				</template>
+
+				<v-list>
+					<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
+						Item {{i}}
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		`,
+	});

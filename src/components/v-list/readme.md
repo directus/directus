@@ -11,24 +11,28 @@
 ```
 
 ## Props
+
 | Prop        | Description                                                                                                 | Default |
-|-------------|-------------------------------------------------------------------------------------------------------------|---------|
+| ----------- | ----------------------------------------------------------------------------------------------------------- | ------- |
 | `dense`     | Removes some padding to make the list items closer together                                                 | `false` |
 | `threeLine` | Limits list items to three lines of text (1 of title, 2 of subtitle). Only works in webkit enabled browsers | `false` |
 | `nav`       | Adds a small margin and border-radius for nav menu styling                                                  | `false` |
 | `multiple`  | Allows multiple child groups to be open at once                                                             | `true`  |
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description  | Data |
-|-----------|--------------|------|
+| --------- | ------------ | ---- |
 | _default_ | List content |      |
 
 ## CSS Variables
+
 | Variable                           | Default                          |
-|------------------------------------|----------------------------------|
+| ---------------------------------- | -------------------------------- |
 | `--v-list-padding`                 | `8px 0`                          |
 | `--v-list-max-height`              | `none`                           |
 | `--v-list-max-width`               | `none`                           |
@@ -56,23 +60,27 @@ A wrapper for list items that formats children nicely. Can be used on its own or
 ```
 
 ## Props
+
 | Prop    | Description                                                          | Default |
-|---------|----------------------------------------------------------------------|---------|
+| ------- | -------------------------------------------------------------------- | ------- |
 | `dense` | Removes some padding to make the individual list item shorter        | `false` |
 | `lines` | Sets if the list item will support `1`, `2`, or `3` lines of content | `null`  |
 | `to`    | Render as vue router-link with to link                               | `null`  |
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description       | Data |
-|-----------|-------------------|------|
+| --------- | ----------------- | ---- |
 | _default_ | List item content |      |
 
 ## CSS Variables
+
 | Variable                                    | Default                                                                 |
-|---------------------------------------------|-------------------------------------------------------------------------|
+| ------------------------------------------- | ----------------------------------------------------------------------- |
 | `--v-list-item-one-line-min-height`         | `48px`                                                                  |
 | `--v-list-item-two-line-min-height`         | `60px`                                                                  |
 | `--v-list-item-three-line-min-height`       | `76px`                                                                  |
@@ -93,7 +101,6 @@ n/a
 | `--v-list-item-background-color-hover`      | `var(--v-list-background-color-hover, var(--background-color-hover))`   |
 | `--v-list-item-background-color-active`     | `var(--v-list-background-color-active, var(--background-color-active))` |
 
-
 ---
 
 # List Item Content
@@ -107,19 +114,23 @@ A wrapper for the main text content of a list item. It adds some padding and hel
 ```
 
 ## Props
+
 n/a
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description               | Data |
-|-----------|---------------------------|------|
+| --------- | ------------------------- | ---- |
 | _default_ | List item content content |      |
 
 ## CSS Variables
+
 | Variable                        | Default  |
-|---------------------------------|----------|
+| ------------------------------- | -------- |
 | `--v-list-item-content-padding` | `12px 0` |
 
 ---
@@ -135,17 +146,21 @@ Wrapper that adds typographic styling and margin for the subtitle/description of
 ```
 
 ## Props
+
 n/a
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description             | Data |
-|-----------|-------------------------|------|
+| --------- | ----------------------- | ---- |
 | _default_ | List item title content |      |
 
 ## CSS Variables
+
 n/a
 
 ---
@@ -161,17 +176,21 @@ Wrapper that adds typographic styling and margin for the subtitle/description of
 ```
 
 ## Props
+
 n/a
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description                | Data |
-|-----------|----------------------------|------|
+| --------- | -------------------------- | ---- |
 | _default_ | List item subtitle content |      |
 
 ## CSS Variables
+
 n/a
 
 ---
@@ -189,19 +208,23 @@ Wrapper for icon, action, or avatar type elements in a list item. Can be used on
 ```
 
 ## Props
+
 | Prop     | Description                                                         | Default |
-|----------|---------------------------------------------------------------------|---------|
+| -------- | ------------------------------------------------------------------- | ------- |
 | `center` | Whether to center the element (good for action elements or avatars) | `false` |
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description            | Data |
-|-----------|------------------------|------|
+| --------- | ---------------------- | ---- |
 | _default_ | List item icon content |      |
 
 ## CSS Variables
+
 n/a
 
 ---
@@ -247,17 +270,21 @@ Provides the ability to make a collapsable (sub)group of list items, within a li
 ```
 
 ## Props
-| Prop | Description | Default |
-|------|-------------|---------|
-| `multiple` | Allow multiple subgroups to be open at the same time | `true` |
+
+| Prop       | Description                                          | Default |
+| ---------- | ---------------------------------------------------- | ------- |
+| `multiple` | Allow multiple subgroups to be open at the same time | `true`  |
 
 ## Events
+
 n/a
 
 ## Slots
+
 | Slot      | Description   | Data |
-|-----------|---------------|------|
+| --------- | ------------- | ---- |
 | _default_ | Group content |      |
 
 ## CSS Variables
+
 n/a
