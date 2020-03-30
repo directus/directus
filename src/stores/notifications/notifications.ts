@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { Notification, NotificationRaw } from './types';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 
 export const useNotificationsStore = createStore({
 	id: 'useNotifications',
