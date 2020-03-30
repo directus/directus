@@ -30,6 +30,8 @@ Renders a dropdown input.
 | `value`       | Currently selected item(s)                          |         |
 | `multiple`    | Allow multiple items to be selected                 | `false` |
 | `placeholder` | What placeholder to show when no items are selected |         |
+| `full-width`  | Render the select at full width                     |         |
+| `monospace`   | Render the value and options monospaced             |         |
 
 
 ## Events

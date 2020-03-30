@@ -31,10 +31,35 @@
 				</template>
 				<field-setup :field="field" />
 			</v-dialog>
-			<v-list-item>
-				<v-list-item-icon><v-icon name="control_point_duplicate" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
-			</v-list-item>
+			<v-dialog v-model="duplicateActive">
+				<template #activator="{ on }">
+					<v-list-item @click="on">
+						<v-list-item-icon>
+							<v-icon name="control_point_duplicate" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+					</v-list-item>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
+					<v-card-text>
+						<span class="label">{{ $tc('collection', 0) }}</span>
+						<v-select monospace :items="collections" v-model="duplicateTo" full-width />
+
+						<span class="label">{{ $tc('field', 0) }}</span>
+						<v-input monospace v-model="duplicateName" full-width />
+					</v-card-text>
+					<v-card-actions>
+						<v-button secondary @click="duplicateActive = false">
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="saveDuplicate" :loading="duplicating">
+							{{ $t('duplicate') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 			<v-divider inset />
 			<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
 				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
@@ -83,9 +108,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
+import useCollectionsStore from '@/stores/collections/';
 import FieldSetup from '../field-setup/';
 
 export default defineComponent({
@@ -103,10 +129,31 @@ export default defineComponent({
 	setup(props) {
 		const editActive = ref(false);
 		const fieldsStore = useFieldsStore();
+		const collectionsStore = useCollectionsStore();
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
+		const {
+			duplicateActive,
+			duplicateName,
+			collections,
+			duplicateTo,
+			saveDuplicate,
+			duplicating,
+		} = useDuplicate();
 
-		return { editActive, setWidth, deleteActive, deleting, deleteField };
+		return {
+			editActive,
+			setWidth,
+			deleteActive,
+			deleting,
+			deleteField,
+			duplicateActive,
+			collections,
+			duplicateName,
+			duplicateTo,
+			saveDuplicate,
+			duplicating,
+		};
 
 		function setWidth(width: string) {
 			fieldsStore.updateField(props.field.collection, props.field.field, { width });
@@ -126,6 +173,50 @@ export default defineComponent({
 				await fieldsStore.deleteField(props.field.collection, props.field.field);
 				deleting.value = false;
 				deleteActive.value = false;
+			}
+		}
+
+		function useDuplicate() {
+			const duplicateActive = ref(false);
+			const duplicateName = ref(props.field.field + '_copy');
+			const duplicating = ref(false);
+			const collections = computed(() =>
+				collectionsStore.state.collections
+					.map(({ collection }) => collection)
+					.filter((collection) => collection.startsWith('directus_') === false)
+			);
+			const duplicateTo = ref(props.field.collection);
+
+			return {
+				duplicateActive,
+				duplicateName,
+				collections,
+				duplicateTo,
+				saveDuplicate,
+				duplicating,
+			};
+
+			async function saveDuplicate() {
+				const newField = {
+					...props.field,
+					field: duplicateName.value,
+					collection: duplicateTo.value,
+				};
+
+				delete newField.id;
+				delete newField.sort;
+				delete newField.name;
+
+				duplicating.value = true;
+
+				try {
+					await fieldsStore.createField(duplicateTo.value, newField);
+					duplicateActive.value = false;
+				} catch (error) {
+					console.log(error);
+				} finally {
+					duplicating.value = false;
+				}
 			}
 		}
 	},

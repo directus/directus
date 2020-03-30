@@ -50,6 +50,46 @@ export const useFieldsStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
+		async createField(collectionKey: string, newField: Field) {
+			const projectsStore = useProjectsStore();
+			const currentProjectKey = projectsStore.state.currentProjectKey;
+
+			const stateClone = [...this.state.fields];
+
+			// Update locally first, so the changes are visible immediately
+			this.state.fields = [...this.state.fields, newField];
+
+			// Save to API, and update local state again to make sure everything is in sync with the
+			// API
+			try {
+				const response = await api.post(
+					`/${currentProjectKey}/fields/${collectionKey}`,
+					newField
+				);
+
+				this.state.fields = this.state.fields.map((field) => {
+					if (field.collection === collectionKey && field.field === newField.field) {
+						return response.data.data;
+					}
+
+					return field;
+				});
+
+				notify({
+					title: i18n.t('field_create_success', { field: newField.field }),
+					type: 'success',
+				});
+			} catch (error) {
+				notify({
+					title: i18n.t('field_create_failure', { field: newField.field }),
+					type: 'error',
+				});
+
+				// reset the changes if the api sync failed
+				this.state.fields = stateClone;
+				throw error;
+			}
+		},
 		async updateField(
 			collectionKey: string,
 			fieldKey: string,

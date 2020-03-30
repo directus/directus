@@ -16,6 +16,7 @@
 	"field_delete_failure": "Could not delete '{field}'",
 	"fields_update_success": "Fields updated",
 	"fields_update_failure": "Could not update fields",
+	"duplicate_where_to": "Where would you like to duplicate this field to?",
 
   "about_directus": "About Directus",
   "activity": "Activity",

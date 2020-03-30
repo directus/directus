@@ -52,13 +52,13 @@ export function usePopper(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const modifiers: Partial<Modifier<any>>[] = [
 			popperOffsets,
-			preventOverflow,
 			{
 				...offset,
 				options: {
 					offset: options.value.attached ? [0, -2] : [0, 8],
 				},
 			},
+			preventOverflow,
 			computeStyles,
 			flip,
 			eventListeners,

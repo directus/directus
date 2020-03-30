@@ -42,6 +42,7 @@ import Draggable from 'vuedraggable';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
 import FieldSelect from '../field-select/';
+import { sortBy } from 'lodash';
 
 type DraggableEvent = {
 	moved?: {
@@ -68,19 +69,17 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const sortedVisibleFields = computed(() =>
-			[...fields.value]
-				.filter(({ hidden_detail }) => hidden_detail === false)
-				.sort((a, b) => {
-					return (a.sort || 0) > (b.sort || 0) ? 1 : -1;
-				})
+			sortBy(
+				[...fields.value].filter(({ hidden_detail }) => hidden_detail === false),
+				(field) => field.sort || Infinity
+			)
 		);
 
 		const sortedHiddenFields = computed(() =>
-			[...fields.value]
-				.filter(({ hidden_detail }) => hidden_detail === true)
-				.sort((a, b) => {
-					return (a.sort || -1) > (b.sort || -1) ? 1 : -1;
-				})
+			sortBy(
+				[...fields.value].filter(({ hidden_detail }) => hidden_detail === true),
+				(field) => field.sort || Infinity
+			)
 		);
 
 		return { sortedVisibleFields, sortedHiddenFields, handleChange, toggleVisibility };

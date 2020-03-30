@@ -1,7 +1,14 @@
 <template>
 	<v-menu class="v-select" attached :close-on-content-click="multiple === false">
 		<template #activator="{ toggle }">
-			<v-input readonly :value="displayValue" @click="toggle" :placeholder="placeholder">
+			<v-input
+				:full-width="fullWidth"
+				:monospace="monospace"
+				readonly
+				:value="displayValue"
+				@click="toggle"
+				:placeholder="placeholder"
+			>
 				<template #append><v-icon name="expand_more" /></template>
 			</v-input>
 		</template>
@@ -16,7 +23,9 @@
 				@click="multiple ? null : $emit('input', item.value)"
 			>
 				<v-list-item-content>
-					<v-list-item-title v-if="multiple === false">{{ item.text }}</v-list-item-title>
+					<v-list-item-title v-if="multiple === false">
+						<span :class="{ monospace }">{{ item.text }}</span>
+					</v-list-item-title>
 					<v-checkbox
 						v-else
 						:inputValue="value || []"
@@ -68,6 +77,14 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		fullWidth: {
+			type: Boolean,
+			default: false,
+		},
+		monospace: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const _items = computed(() =>
@@ -106,3 +123,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.monospace {
+	font-family: var(--family-monospace);
+}
+</style>

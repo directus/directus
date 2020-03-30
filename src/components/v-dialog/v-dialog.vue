@@ -94,7 +94,7 @@ export default defineComponent({
 		position: relative;
 		z-index: 2;
 		max-height: 90%;
-		transform: translateY(50px);
+		transform: translateY(-50px);
 		opacity: 0;
 		transition: var(--medium) var(--transition-in);
 		transition-property: opacity, transform;
@@ -105,7 +105,7 @@ export default defineComponent({
 		pointer-events: all;
 
 		.content {
-			transform: translateY(0);
+			transform: translateY(-100px);
 			opacity: 1;
 		}
 	}

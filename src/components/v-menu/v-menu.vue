@@ -193,6 +193,7 @@ export default defineComponent({
 	}
 
 	.v-menu-content {
+		max-height: 50vh;
 		overflow-x: hidden;
 		overflow-y: auto;
 		background-color: var(--highlight);
