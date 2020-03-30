@@ -16,7 +16,7 @@ describe('Routes / Logout', () => {
 			localVue,
 		});
 
-		await component.vm.$nextTick();
+		await (component.vm as any).$nextTick();
 
 		expect(logout).toHaveBeenCalled();
 	});

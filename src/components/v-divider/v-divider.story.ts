@@ -35,6 +35,24 @@ export const basic = () =>
 		`,
 	});
 
+export const withText = () =>
+	defineComponent({
+		components: { VDivider },
+		props: {
+			vertical: {
+				default: boolean('Vertical', false),
+			},
+			inset: {
+				default: boolean('Inset', false),
+			},
+		},
+		template: `
+			<v-divider :vertical="vertical" :inset="inset">
+				This is a divider.
+			</v-divider>
+		`,
+	});
+
 export const inList = () =>
 	defineComponent({
 		components: {

@@ -61,11 +61,12 @@ A wrapper for list items that formats children nicely. Can be used on its own or
 
 ## Props
 
-| Prop    | Description                                                          | Default |
-| ------- | -------------------------------------------------------------------- | ------- |
-| `dense` | Removes some padding to make the individual list item shorter        | `false` |
-| `lines` | Sets if the list item will support `1`, `2`, or `3` lines of content | `null`  |
-| `to`    | Render as vue router-link with to link                               | `null`  |
+| Prop       | Description                                                          | Default |
+|------------|----------------------------------------------------------------------|---------|
+| `dense`    | Removes some padding to make the individual list item shorter        | `false` |
+| `lines`    | Sets if the list item will support `1`, `2`, or `3` lines of content | `null`  |
+| `to`       | Render as vue router-link with to link                               | `null`  |
+| `disabled` | Disable the list item                                                | `false`  |
 
 ## Events
 

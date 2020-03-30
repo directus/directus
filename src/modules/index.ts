@@ -1,3 +1,4 @@
 import CollectionsModule from './collections/';
-export const modules = [CollectionsModule];
+import SettingsModule from './settings/';
+export const modules = [CollectionsModule, SettingsModule];
 export default modules;

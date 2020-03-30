@@ -1,7 +1,9 @@
 import { i18n } from '@/lang/';
 import { ModuleDefineParam, ModuleContext, ModuleConfig } from './types';
 
-export function defineModule(config: ModuleDefineParam): ModuleConfig {
+export function defineModule(
+	config: ModuleDefineParam | ((context: ModuleContext) => ModuleConfig)
+): ModuleConfig {
 	let options: ModuleConfig;
 
 	if (typeof config === 'function') {
@@ -11,10 +13,17 @@ export function defineModule(config: ModuleDefineParam): ModuleConfig {
 		options = config;
 	}
 
-	options.routes = options.routes.map((route) => ({
-		...route,
-		path: `/:project/${options.id}${route.path}`,
-	}));
+	options.routes = options.routes.map((route) => {
+		if (route.path) {
+			route.path = `/:project/${options.id}${route.path}`;
+		}
+
+		if (route.redirect) {
+			route.redirect = `/:project/${options.id}${route.redirect}`;
+		}
+
+		return route;
+	});
 
 	return options;
 }

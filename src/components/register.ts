@@ -7,6 +7,7 @@ import VCard, { VCardActions, VCardTitle, VCardSubtitle, VCardText } from './v-c
 import VCheckbox from './v-checkbox/';
 import VChip from './v-chip/';
 import VDialog from './v-dialog';
+import VDivider from './v-divider';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VIcon from './v-icon/';
@@ -20,6 +21,7 @@ import VList, {
 	VListItemTitle,
 	VListGroup,
 } from './v-list/';
+import VMenu from './v-menu/';
 import VNotice from './v-notice/';
 import VOverlay from './v-overlay/';
 import VPagination from './v-pagination/';
@@ -42,6 +44,7 @@ Vue.component('v-card-actions', VCardActions);
 Vue.component('v-checkbox', VCheckbox);
 Vue.component('v-chip', VChip);
 Vue.component('v-dialog', VDialog);
+Vue.component('v-divider', VDivider);
 Vue.component('v-form', VForm);
 Vue.component('v-hover', VHover);
 Vue.component('v-icon', VIcon);
@@ -55,6 +58,7 @@ Vue.component('v-list-item-icon', VListItemIcon);
 Vue.component('v-list-item-subtitle', VListItemSubtitle);
 Vue.component('v-list-item-title', VListItemTitle);
 Vue.component('v-list-group', VListGroup);
+Vue.component('v-menu', VMenu);
 Vue.component('v-notice', VNotice);
 Vue.component('v-overlay', VOverlay);
 Vue.component('v-pagination', VPagination);

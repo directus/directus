@@ -10,8 +10,9 @@
 			'three-line': lines === 3,
 			'two-line': lines === 2,
 			'one-line': lines === 1,
+			disabled,
 		}"
-		v-on="$listeners"
+		v-on="disabled === false && $listeners"
 	>
 		<slot></slot>
 	</component>
@@ -34,6 +35,10 @@ export default defineComponent({
 		to: {
 			type: [String, Object] as PropType<string | Location>,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { listeners }) {
@@ -98,17 +103,22 @@ export default defineComponent({
 		transition-property: background-color, color;
 		user-select: none;
 
-		&:hover {
+		&:not(.disabled):hover {
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
-		&:active,
+		&:not(.disabled):active,
 		&.active {
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
 	}
+
+	&.disabled {
+		--v-list-item-color: var(--foreground-color-secondary);
+	}
+
 	@at-root {
 		.v-list,
 		#{$this},

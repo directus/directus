@@ -3,14 +3,20 @@
 		class="v-menu"
 		v-click-outside="{
 			handler: deactivate,
-			disabled: closeOnClick === false,
+			disabled: isActive === false || closeOnClick === false,
 		}"
 	>
 		<div ref="activator" class="v-menu-activator">
 			<slot name="activator" v-bind="{ toggle: toggle, active: isActive }" />
 		</div>
 
-		<div ref="popper" class="v-menu-popper">
+		<div
+			ref="popper"
+			class="v-menu-popper"
+			:class="{ active: isActive }"
+			:data-placement="popperPlacement"
+			:style="styles"
+		>
 			<div v-show="showArrow" class="arrow" :class="{ active: isActive }" data-popper-arrow />
 			<div :class="{ active: isActive }" class="v-menu-content" @click="onContentClick">
 				<slot />
@@ -59,7 +65,7 @@ export default defineComponent({
 			return (activator.value as HTMLElement)?.childNodes[0] as HTMLElement;
 		});
 
-		const { placement: popperPlacement } = usePopper(
+		const { start, stop, styles, placement: popperPlacement } = usePopper(
 			reference,
 			popper,
 			computed(() => ({
@@ -77,9 +83,10 @@ export default defineComponent({
 			popper,
 			isActive,
 			toggle,
-			popperPlacement,
 			deactivate,
 			onContentClick,
+			styles,
+			popperPlacement,
 		};
 
 		function useActiveState() {
@@ -92,7 +99,13 @@ export default defineComponent({
 
 					return localIsActive.value;
 				},
-				set(newActive) {
+				async set(newActive) {
+					if (newActive === true) {
+						await start();
+					} else {
+						stop();
+					}
+
 					emit('input', newActive);
 					localIsActive.value = newActive;
 				},
@@ -132,6 +145,14 @@ export default defineComponent({
 }
 
 .v-menu-popper {
+	position: absolute;
+	z-index: 5;
+	pointer-events: none;
+
+	&.active {
+		pointer-events: all;
+	}
+
 	.arrow,
 	.arrow::before {
 		position: absolute;
@@ -155,20 +176,20 @@ export default defineComponent({
 		}
 	}
 
-	&[data-popper-placement^='top'] .arrow {
+	&[data-placement^='top'] .arrow {
 		bottom: -4px;
 	}
 
-	&[data-popper-placement^='bottom'] .arrow {
+	&[data-placement^='bottom'] .arrow {
 		top: -4px;
 	}
 
-	&[data-popper-placement^='right'] .arrow {
+	&[data-placement^='right'] .arrow {
 		left: -4px;
 	}
 
-	&[data-popper-placement^='left'] .arrow {
-		left: -4px;
+	&[data-placement^='left'] .arrow {
+		right: -4px;
 	}
 
 	.v-menu-content {
@@ -177,11 +198,11 @@ export default defineComponent({
 		background-color: var(--highlight);
 		border: 2px solid var(--input-border-color);
 		border-radius: var(--input-border-radius);
+		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 		opacity: 0;
 		transition-timing-function: var(--transition-out);
 		transition-duration: var(--fast);
 		transition-property: opacity, transform;
-		pointer-events: none;
 		contain: content;
 
 		.v-list {
@@ -189,62 +210,62 @@ export default defineComponent({
 		}
 	}
 
-	&[data-popper-placement='top'] .v-menu-content {
+	&[data-placement='top'] .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: bottom center;
 	}
 
-	&[data-popper-placement='top-start'] .v-menu-content {
+	&[data-placement='top-start'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom left;
 	}
 
-	&[data-popper-placement='top-end'] .v-menu-content {
+	&[data-placement='top-end'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom right;
 	}
 
-	&[data-popper-placement='right'] .v-menu-content {
+	&[data-placement='right'] .v-menu-content {
 		transform: scaleX(0.8);
 		transform-origin: center left;
 	}
 
-	&[data-popper-placement='right-start'] .v-menu-content {
+	&[data-placement='right-start'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: top left;
 	}
 
-	&[data-popper-placement='right-end'] .v-menu-content {
+	&[data-placement='right-end'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom left;
 	}
 
-	&[data-popper-placement='bottom'] .v-menu-content {
+	&[data-placement='bottom'] .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top center;
 	}
 
-	&[data-popper-placement='bottom-start'] .v-menu-content {
+	&[data-placement='bottom-start'] .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top left;
 	}
 
-	&[data-popper-placement='bottom-end'] .v-menu-content {
+	&[data-placement='bottom-end'] .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top right;
 	}
 
-	&[data-popper-placement='left'] .v-menu-content {
+	&[data-placement='left'] .v-menu-content {
 		transform: scaleX(0.8);
 		transform-origin: center right;
 	}
 
-	&[data-popper-placement='left-start'] .v-menu-content {
+	&[data-placement='left-start'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: top right;
 	}
 
-	&[data-popper-placement='left-end'] .v-menu-content {
+	&[data-placement='left-end'] .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom right;
 	}
@@ -254,7 +275,6 @@ export default defineComponent({
 		opacity: 1;
 		transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
 		transition-duration: var(--medium);
-		pointer-events: all;
 	}
 }
 </style>

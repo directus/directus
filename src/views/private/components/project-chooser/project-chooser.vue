@@ -1,12 +1,21 @@
 <template>
-	<div class="project-chooser">
-		<span>{{ currentProjectKey }}</span>
-		<select :value="currentProjectKey" @change="navigateToProject">
-			<option v-for="project in projects" :key="project.key" :value="project.key">
+	<v-menu attached>
+		<template #activator="{ toggle }">
+			<div class="project-chooser">
+				<span @click="toggle">{{ currentProjectKey }}</span>
+			</div>
+		</template>
+
+		<v-list>
+			<v-list-item
+				v-for="project in projects"
+				:key="project.key"
+				@click="navigateToProject(project.key)"
+			>
 				{{ (project.api && project.api.project_name) || project.key }}
-			</option>
-		</select>
-	</div>
+			</v-list-item>
+		</v-list>
+	</v-menu>
 </template>
 
 <script lang="ts">
@@ -26,9 +35,9 @@ export default defineComponent({
 			projectsStore,
 		};
 
-		function navigateToProject(event: InputEvent) {
+		function navigateToProject(key: string) {
 			router
-				.push(`/${(event.target as HTMLSelectElement).value}/collections`)
+				.push(`/${key}/collections`)
 				/** @NOTE
 				 * Vue Router considers a navigation change _in_ the navigation guard a rejection
 				 * so when this push goes from /collections to /login, it will throw.

@@ -106,7 +106,7 @@ export default defineComponent({
 	}
 
 	svg {
-		display: block;
+		display: inline-block;
 		color: inherit;
 		fill: currentColor;
 	}

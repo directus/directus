@@ -1,6 +1,7 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DisplayHandlerFunction = (value: any) => string | null;
 
 export type DisplayConfig = {

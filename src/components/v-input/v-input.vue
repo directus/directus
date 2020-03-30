@@ -1,9 +1,9 @@
 <template>
-	<div class="v-input">
+	<div class="v-input" :class="{ 'full-width': fullWidth }">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="value" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled, monospace, 'full-width': fullWidth }">
+		<div class="input" :class="{ disabled, monospace }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="value" :disabled="disabled" />
 			</div>
@@ -102,13 +102,13 @@ export default defineComponent({
 			margin-right: 8px;
 		}
 
-		&:not(.disabled):hover {
+		&:hover {
 			color: var(--input-foreground-color-hover);
 			background-color: var(--input-background-color-hover);
 			border-color: var(--input-border-color-hover);
 		}
 
-		&:not(.disabled):focus-within {
+		&:focus-within {
 			color: var(--input-foreground-color-focus);
 			background-color: var(--input-background-color-focus);
 			border-color: var(--input-border-color-focus);
@@ -118,10 +118,6 @@ export default defineComponent({
 			color: var(--input-foreground-color-disabled);
 			background-color: var(--input-background-color-disabled);
 			border-color: var(--input-border-color-disabled);
-		}
-
-		&.full-width {
-			width: 100%;
 		}
 
 		input {
@@ -154,6 +150,14 @@ export default defineComponent({
 
 	.append-outer {
 		margin-left: 8px;
+	}
+
+	&.full-width {
+		width: 100%;
+
+		.input {
+			width: 100%;
+		}
 	}
 }
 </style>

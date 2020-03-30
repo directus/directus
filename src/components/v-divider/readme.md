@@ -18,7 +18,10 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 n/a
 
 ## Slots
-n/a
+
+| Slot      | Description                                                 | Data |
+|-----------|-------------------------------------------------------------|------|
+| _default_ | Label on the divider. This isn't rendered in vertical mode. |      |
 
 ## CSS Variables
 | Variable            | Default                             |

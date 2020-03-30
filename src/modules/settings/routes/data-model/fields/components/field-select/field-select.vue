@@ -1,0 +1,149 @@
+<template>
+	<v-menu attached :class="hidden ? 'full' : field.width" close-on-content-click>
+		<template #activator="{ toggle }">
+			<v-input
+				class="field"
+				:class="{ hidden }"
+				readonly
+				@click="toggle"
+				:value="field.field"
+				full-width
+			>
+				<template #prepend>
+					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+				</template>
+
+				<template #append>
+					<v-icon name="expand_more" />
+				</template>
+			</v-input>
+		</template>
+
+		<v-list dense>
+			<v-dialog v-model="editActive" persistent>
+				<template #activator="{ on }">
+					<v-list-item @click="on">
+						<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ $t('edit_field') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+				<field-setup :field="field" />
+			</v-dialog>
+			<v-list-item>
+				<v-list-item-icon><v-icon name="control_point_duplicate" /></v-list-item-icon>
+				<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+			</v-list-item>
+			<v-divider inset />
+			<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
+				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
+				<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+			</v-list-item>
+			<v-list-item @click="setWidth('full')" :disabled="hidden || field.width === 'full'">
+				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
+				<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+			</v-list-item>
+			<v-list-item @click="setWidth('fill')" :disabled="hidden || field.width === 'fill'">
+				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+				<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+			</v-list-item>
+			<v-divider inset />
+			<v-list-item @click="$emit('toggle-visibility', field)">
+				<template v-if="field.hidden_detail === false">
+					<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
+				</template>
+				<template v-else>
+					<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
+				</template>
+			</v-list-item>
+
+			<v-dialog v-model="deleteActive">
+				<template #activator="{ on }">
+					<v-list-item @click="on">
+						<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ $t('delete_field') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+
+				<v-card>
+					<v-card-title>Are you sure you want to delete this field?</v-card-title>
+					<v-card-actions>
+						<v-button @click="deleteActive = false" secondary>Cancel</v-button>
+						<v-button :loading="deleting" @click="deleteField">Delete</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</v-list>
+	</v-menu>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { Field } from '@/stores/fields/types';
+import useFieldsStore from '@/stores/fields/';
+import FieldSetup from '../field-setup/';
+
+export default defineComponent({
+	components: { FieldSetup },
+	props: {
+		field: {
+			type: Object as PropType<Field>,
+			required: true,
+		},
+		hidden: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	setup(props) {
+		const editActive = ref(false);
+		const fieldsStore = useFieldsStore();
+
+		const { deleteActive, deleting, deleteField } = useDeleteField();
+
+		return { editActive, setWidth, deleteActive, deleting, deleteField };
+
+		function setWidth(width: string) {
+			fieldsStore.updateField(props.field.collection, props.field.field, { width });
+		}
+
+		function useDeleteField() {
+			const deleteActive = ref(false);
+			const deleting = ref(false);
+
+			return {
+				deleteActive,
+				deleting,
+				deleteField,
+			};
+
+			async function deleteField() {
+				await fieldsStore.deleteField(props.field.collection, props.field.field);
+				deleting.value = false;
+				deleteActive.value = false;
+			}
+		}
+	},
+});
+</script>
+
+<style lang="scss" scoped>
+// The default display: contents doens't play nicely with drag and drop
+.v-menu {
+	display: block;
+}
+
+.full,
+.fill {
+	grid-column: 1 / span 2;
+}
+
+.v-input.hidden {
+	--input-background-color: var(--background-color-alt);
+}
+</style>
