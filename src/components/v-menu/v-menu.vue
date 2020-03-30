@@ -13,7 +13,7 @@
 		<div
 			ref="popper"
 			class="v-menu-popper"
-			:class="{ active: isActive }"
+			:class="{ active: isActive, attached }"
 			:data-placement="popperPlacement"
 			:style="styles"
 		>
@@ -275,6 +275,13 @@ export default defineComponent({
 		opacity: 1;
 		transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
 		transition-duration: var(--medium);
+	}
+
+	&.attached {
+		.v-menu-content {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
 	}
 }
 </style>
