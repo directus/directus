@@ -5,6 +5,7 @@
 		class="v-list-item"
 		:to="to"
 		:class="{
+			active,
 			dense,
 			link: isClickable,
 			'three-line': lines === 3,
@@ -37,6 +38,10 @@ export default defineComponent({
 			default: null,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		active: {
 			type: Boolean,
 			default: false,
 		},

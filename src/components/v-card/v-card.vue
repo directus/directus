@@ -28,13 +28,15 @@ export default defineComponent({
 .v-card {
 	--v-card-min-width: none;
 	--v-card-max-width: 400px;
+	--v-card-height: auto;
 	--v-card-min-height: none;
-	--v-card-max-height: none;
+	--v-card-max-height: min-content;
 	--v-card-padding: 16px;
 	--v-card-background-color: var(--highlight);
 
 	min-width: var(--v-card-min-width);
 	max-width: var(--v-card-max-width);
+	height: var(--v-card-height);
 	min-height: var(--v-card-min-height);
 	max-height: var(--v-card-max-height);
 	background-color: var(--v-card-background-color);

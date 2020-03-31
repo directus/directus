@@ -11,9 +11,9 @@ type GroupableInstance = {
  * Used to make child item part of the group context. Needs to be used in a component that is a child
  * of a component that has the `useGroupableParent` composition enabled
  */
-export function useGroupable(value?: string | number) {
+export function useGroupable(value?: string | number, group = 'item-group') {
 	// Injects the registration / toggle functions from the parent scope
-	const parentFunctions = inject('item-group', null);
+	const parentFunctions = inject(group, null);
 
 	if (isEmpty(parentFunctions)) {
 		return {
@@ -65,7 +65,8 @@ type GroupableParentOptions = {
  */
 export function useGroupableParent(
 	state: GroupableParentState = {},
-	options: GroupableParentOptions = {}
+	options: GroupableParentOptions = {},
+	group = 'item-group'
 ) {
 	// References to the active state and value of the individual child items
 	const items = ref<GroupableInstance[]>([]);
@@ -95,7 +96,7 @@ export function useGroupableParent(
 
 	// Provide the needed functions to all children groupable components. Note: nested item groups
 	// will override the item-group namespace, making nested item groups possible.
-	provide('item-group', { register, unregister, toggle });
+	provide(group, { register, unregister, toggle });
 
 	// Whenever the value of the selection changes, we have to update all the children's internal
 	// states. If not, you can have an activated item that's not actually active.

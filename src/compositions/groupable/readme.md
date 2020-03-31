@@ -8,7 +8,7 @@ the functionality of the `v-item-group` base component, and other groupable comp
 Use the `useGroupableParent` function in a parent component that will contain one or more components
 in it's slots (deeply nested or not) that use the `useGroupable` compositions.
 
-### `useGroupableParent(state: GroupableParentState, options: GroupableParentOptions): void`
+### `useGroupableParent(state: GroupableParentState, options: GroupableParentOptions, group: string): void`
 
 The `useGroupableParent` composition accepts two paremeters: state and options.
 State includes a `selection` key that can be used to pass an array of selected items, so you can
@@ -42,7 +42,10 @@ export default defineComponent({
 });
 ```
 
-### `useGroupable(value: string | number): { active: Ref<boolean>; toggle: () => void; }`
+The optional group parameter allows you to control to what group this parent is registered. This
+can be useful when you have complexly nested groups.
+
+### `useGroupable(value: string | number | undefined, group: string): { active: Ref<boolean>; toggle: () => void; }`
 Registers this component as a child of the first parent component that uses the `useGroupableParent`
 component.
 
@@ -61,3 +64,6 @@ export default defineComponent({
 	}
 });
 ```
+
+The optional group parameter allows you to control to what group this child is registered. This
+can be useful when you have complexly nested groups.

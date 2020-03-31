@@ -1,11 +1,20 @@
 <template>
-	<div class="v-tab" :class="{ active, disabled }" @click="onClick">
+	<v-list-item
+		v-if="vertical"
+		class="v-tab vertical"
+		:active="active"
+		:disabled="disabled"
+		@click="onClick"
+	>
+		<slot v-bind="{ active, toggle }" />
+	</v-list-item>
+	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
 		<slot v-bind="{ active, toggle }" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, inject, ref } from '@vue/composition-api';
 import { useGroupable } from '@/compositions/groupable';
 
 export default defineComponent({
@@ -20,8 +29,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.value);
-		return { active, toggle, onClick };
+		const { active, toggle } = useGroupable(props.value, 'v-tabs');
+		const vertical = inject('v-tabs-vertical', ref(false));
+
+		return { active, toggle, onClick, vertical };
 
 		function onClick() {
 			if (props.disabled === false) toggle();
@@ -31,7 +42,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-tab {
+.v-tab.horizontal {
 	--v-tab-color: var(--input-foreground-color);
 	--v-tab-background-color: var(--input-background-color);
 	--v-tab-color-active: var(--input-foreground-color);

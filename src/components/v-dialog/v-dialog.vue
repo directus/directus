@@ -3,12 +3,12 @@
 		<slot name="activator" v-bind="{ on: () => $emit('toggle', true) }" />
 
 		<portal to="dialog-outlet">
-			<div class="container" :class="[{ active }, className]">
-				<v-overlay :active="active" absolute @click="emitToggle" />
-				<div class="content">
+			<transition name="dialog">
+				<div v-if="active" class="container" :class="[className]">
+					<v-overlay active absolute @click="emitToggle" />
 					<slot />
 				</div>
-			</div>
+			</transition>
 		</portal>
 	</div>
 </template>
@@ -56,6 +56,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .v-dialog {
 	--v-dialog-z-index: 100;
 
@@ -72,9 +74,7 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: 100%;
-	opacity: 0;
 	transition: opacity var(--medium) var(--transition);
-	pointer-events: none;
 
 	.v-card {
 		--v-card-min-width: 400px;
@@ -90,28 +90,13 @@ export default defineComponent({
 		--v-overlay-z-index: 1;
 	}
 
-	.content {
-		position: relative;
-		z-index: 2;
-		max-height: 90%;
-		transform: translateY(-50px);
-		opacity: 0;
-		transition: var(--medium) var(--transition-in);
-		transition-property: opacity, transform;
-	}
-
-	&.active {
-		opacity: 1;
-		pointer-events: all;
-
-		.content {
-			transform: translateY(-100px);
-			opacity: 1;
-		}
-	}
-
 	&.nudge {
 		animation: nudge 200ms;
+	}
+
+	::v-deep > * {
+		z-index: 2;
+		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 	}
 }
 
@@ -126,6 +111,26 @@ export default defineComponent({
 
 	100% {
 		transform: scale(1);
+	}
+}
+
+.dialog-enter-active,
+.dialog-leave-active {
+	transition: opacity var(--slow) var(--transition);
+
+	::v-deep > *:not(.v-overlay) {
+		transform: translateY(0px);
+		transition: transform var(--slow) var(--transition-in);
+	}
+}
+
+.dialog-enter,
+.dialog-leave-to {
+	opacity: 0;
+
+	::v-deep > *:not(.v-overlay) {
+		transform: translateY(50px);
+		transition: transform var(--slow) var(--transition-out);
 	}
 }
 </style>

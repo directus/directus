@@ -1,12 +1,15 @@
 <template>
-	<div class="v-tabs" :class="{ vertical }">
+	<v-list class="v-tabs vertical alt-colors" v-if="vertical" nav>
 		<slot />
-		<div class="slider" :style="slideStyle"></div>
+	</v-list>
+	<div v-else class="v-tabs horizontal">
+		<slot />
+		<div class="slider" :style="slideStyle" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs, computed } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs, computed, provide, ref } from '@vue/composition-api';
 import { useGroupableParent } from '@/compositions/groupable';
 
 export default defineComponent({
@@ -21,20 +24,20 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value: selection } = toRefs(props);
+		const { value: selection, vertical } = toRefs(props);
 
-		const options = toRefs({
-			multiple: false,
-			max: -1,
-			mandatory: true,
-		});
+		provide('v-tabs-vertical', vertical);
 
 		const { items } = useGroupableParent(
 			{
 				selection: selection,
 				onSelectionChange: update,
 			},
-			options
+			{
+				multiple: ref(false),
+				mandatory: ref(true),
+			},
+			'v-tabs'
 		);
 
 		const slideStyle = computed(() => {
@@ -50,12 +53,12 @@ export default defineComponent({
 			emit('input', newSelection);
 		}
 
-		return { update, slideStyle };
+		return { update, slideStyle, items };
 	},
 });
 </script>
 <style lang="scss" scoped>
-.v-tabs {
+.v-tabs.horizontal {
 	--v-tabs-underline-color: var(--foreground-color);
 
 	position: relative;
@@ -82,21 +85,6 @@ export default defineComponent({
 		background-color: var(--v-tabs-underline-color);
 		transition: var(--medium) cubic-bezier(0.66, 0, 0.33, 1);
 		transition-property: left, top;
-	}
-
-	&.vertical {
-		flex-direction: column;
-
-		::v-deep .v-tab {
-			justify-content: flex-start;
-		}
-
-		.slider {
-			top: calc(100% / var(--_v-tabs-items) * var(--_v-tabs-selected));
-			left: 0;
-			width: 2px;
-			height: calc(100% / var(--_v-tabs-items));
-		}
 	}
 }
 </style>
