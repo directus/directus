@@ -1,16 +1,15 @@
 <template>
 	<v-input
-		:monospace="options.monospace"
+		:monospace="monospace"
 		:value="value"
 		@input="$listeners.input"
-		:placeholder="options.placeholder"
+		:placeholder="placeholder"
 		full-width
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
-import { Options } from './types';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -18,9 +17,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		options: {
-			type: Object as PropType<Options>,
-			required: true,
+		monospace: {
+			type: Boolean,
+			default: false,
+		},
+		placeholder: {
+			type: String,
+			default: false,
 		},
 	},
 });

@@ -5,7 +5,7 @@ type Translation = {
 	translation: string;
 };
 
-type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
+export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
 export interface FieldRaw {
 	id: number;

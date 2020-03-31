@@ -4,6 +4,7 @@ import withPadding from '../../../.storybook/decorators/with-padding';
 import VForm from './v-form.vue';
 import { defineComponent } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/fields';
+import { FormField } from './types';
 
 Vue.component('v-form', VForm);
 
@@ -15,7 +16,7 @@ export default {
 	decorators: [withPadding],
 };
 
-export const basic = () =>
+export const collection = () =>
 	defineComponent({
 		setup() {
 			const fieldsStore = useFieldsStore({});
@@ -52,11 +53,53 @@ export const basic = () =>
 			];
 		},
 		template: `
-		<v-form
-			collection="articles"
-			:initial-values="{
-				title: 'Hello World!'
-			}"
-		/>
-	`,
+			<v-form
+				collection="articles"
+				:initial-values="{
+					title: 'Hello World!'
+				}"
+			/>
+		`,
+	});
+
+export const fields = () =>
+	defineComponent({
+		setup() {
+			const fields: FormField[] = [
+				{
+					field: 'field',
+					name: 'My Field',
+					interface: 'text-input',
+					width: 'half',
+					options: { placeholder: 'First Field' },
+					sort: 1,
+				},
+				{
+					field: 'another-field',
+					name: 'Another Field',
+					interface: 'text-input',
+					width: 'half',
+					options: null,
+					sort: 2,
+				},
+				{
+					field: 'third-field',
+					name: 'A Third Field',
+					interface: 'text-input',
+					width: 'full',
+					options: null,
+					sort: 3,
+				},
+			];
+
+			return { fields };
+		},
+		template: `
+			<v-form
+				:fields="fields"
+				:initial-values="{
+					title: 'Hello World!'
+				}"
+			/>
+		`,
 	});

@@ -4,8 +4,8 @@
 			<label>{{ field.name }}</label>
 			<interface-text-input
 				:value="values[field.field]"
-				:options="field.options"
 				@input="onInput(field, $event)"
+				v-bind="field.options"
 			/>
 		</div>
 	</div>
@@ -18,6 +18,7 @@ import { Field } from '@/stores/fields/types';
 import { useElementSize } from '@/compositions/use-element-size';
 import { isEmpty } from '@/utils/is-empty';
 import { clone } from 'lodash';
+import { FormField } from './types';
 
 type FieldValues = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +32,11 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true,
+			default: undefined,
+		},
+		fields: {
+			type: Array as PropType<FormField[]>,
+			default: undefined,
 		},
 		initialValues: {
 			type: Object as PropType<FieldValues>,
@@ -44,25 +49,34 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const el = ref<Element>(null);
-
 		const fieldsStore = useFieldsStore();
 
-		const fieldsInCollection = computed(() =>
-			fieldsStore.state.fields.filter((field) => field.collection === props.collection)
-		);
+		const fields = computed(() => {
+			if (props.collection) {
+				return fieldsStore.state.fields.filter(
+					(field) => field.collection === props.collection
+				);
+			}
+
+			if (props.fields) {
+				return props.fields;
+			}
+
+			throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+		});
 
 		const formFields = computed(() => {
-			let fields = [...fieldsInCollection.value];
+			let formFields = [...fields.value];
 
 			// Filter out the fields that are marked hidden on detail
-			fields = fields.filter((field) => {
+			formFields = formFields.filter((field) => {
 				const hiddenDetail = field.hidden_detail;
 				if (isEmpty(hiddenDetail)) return true;
 				return hiddenDetail === false;
 			});
 
 			// Sort the fields on the sort column value
-			fields = fields.sort((a, b) => {
+			formFields = formFields.sort((a, b) => {
 				if (a.sort == b.sort) return 0;
 				if (a.sort === null) return 1;
 				if (b.sort === null) return -1;
@@ -71,11 +85,11 @@ export default defineComponent({
 
 			// Change the class to half-right if the current element is preceded by another half width field
 			// this makes them align side by side
-			fields = fields.map((field, index, fields) => {
+			formFields = formFields.map((field, index, formFields) => {
 				if (index === 0) return field;
 
 				if (field.width === 'half') {
-					const prevField = fields[index - 1];
+					const prevField = formFields[index - 1];
 
 					if (prevField.width === 'half') {
 						field.width = 'half-right';
@@ -85,7 +99,7 @@ export default defineComponent({
 				return field;
 			});
 
-			return fields;
+			return formFields;
 		});
 
 		const { width } = useElementSize(el);
