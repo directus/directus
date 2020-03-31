@@ -43,7 +43,7 @@
     "@storybook/addon-links": "^5.3.17",
     "@storybook/addon-notes": "^5.3.17",
     "@storybook/addon-viewport": "^5.3.17",
-    "@storybook/addons": "^5.3.17",
+    "@storybook/addons": "^5.3.18",
     "@storybook/core": "^5.3.12",
     "@storybook/vue": "^5.3.17",
     "@types/jest": "^25.1.4",
