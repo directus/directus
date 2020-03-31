@@ -38,7 +38,7 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@storybook/addon-actions": "^5.3.17",
-    "@storybook/addon-centered": "^5.3.17",
+    "@storybook/addon-centered": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.17",
     "@storybook/addon-links": "^5.3.18",
     "@storybook/addon-notes": "^5.3.17",
