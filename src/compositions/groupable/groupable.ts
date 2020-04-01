@@ -49,7 +49,7 @@ export function useGroupable(value?: string | number, group = 'item-group') {
 }
 
 type GroupableParentState = {
-	selection?: Ref<(string | number)[]>;
+	selection?: Ref<(string | number)[]> | Ref<readonly (string | number)[]>;
 	onSelectionChange?: (newSelectionValues: readonly (string | number)[]) => void;
 };
 
@@ -77,7 +77,7 @@ export function useGroupableParent(
 
 	// Uses either the internal state, or the passed in state. Will call the onSelectionChange
 	// handler if it's passed
-	const selection = computed<(number | string)[]>({
+	const selection = computed<readonly (number | string)[]>({
 		get() {
 			if (notEmpty(state.selection) && notEmpty(state.selection.value)) {
 				return state.selection.value;
@@ -90,7 +90,7 @@ export function useGroupableParent(
 				state.onSelectionChange(newSelection);
 			}
 
-			_selection.value = newSelection;
+			_selection.value = [...newSelection];
 		},
 	});
 

@@ -23,7 +23,7 @@ export default defineComponent({
 		},
 		placeholder: {
 			type: String,
-			default: false,
+			default: null,
 		},
 	},
 });
