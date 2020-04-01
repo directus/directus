@@ -6,7 +6,17 @@
 		class="v-button"
 		:class="[
 			sizeClass,
-			{ 'full-width': fullWidth, rounded, icon, outlined, loading, secondary, active },
+			`align-${align}`,
+			{
+				'full-width': fullWidth,
+				rounded,
+				icon,
+				outlined,
+				loading,
+				secondary,
+				active,
+				dashed,
+			},
 		]"
 		:type="type"
 		:disabled="disabled"
@@ -76,6 +86,15 @@ export default defineComponent({
 			type: [Number, String],
 			default: null,
 		},
+		dashed: {
+			type: Boolean,
+			default: false,
+		},
+		align: {
+			type: String,
+			default: 'center',
+			validator: (val: string) => ['left', 'center', 'right'].includes(val),
+		},
 		...sizeProps,
 	},
 	setup(props, { emit }) {
@@ -113,7 +132,6 @@ export default defineComponent({
 	position: relative;
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
 	width: var(--v-button-width);
 	min-width: 78px;
 	height: var(--v-button-height);
@@ -128,6 +146,18 @@ export default defineComponent({
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
+
+	&.align-left {
+		justify-content: flex-start;
+	}
+
+	&.align-center {
+		justify-content: center;
+	}
+
+	&.align-right {
+		justify-content: flex-end;
+	}
 
 	&.secondary {
 		--v-button-color: var(--button-secondary-foreground-color);
@@ -158,11 +188,6 @@ export default defineComponent({
 		}
 	}
 
-	&.full-width {
-		display: flex;
-		min-width: 100%;
-	}
-
 	&.rounded {
 		border-radius: calc(var(--v-button-height) / 2);
 	}
@@ -171,6 +196,10 @@ export default defineComponent({
 		--v-button-color: var(--v-button-background-color);
 
 		background-color: transparent;
+	}
+
+	&.dashed {
+		border-style: dashed;
 	}
 
 	&.x-small {
@@ -208,6 +237,11 @@ export default defineComponent({
 		width: var(--v-button-height);
 		min-width: 0;
 		padding: 0;
+	}
+
+	&.full-width {
+		display: flex;
+		min-width: 100%;
 	}
 
 	.content,

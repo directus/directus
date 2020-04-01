@@ -4,6 +4,7 @@ import {
 	boolean,
 	number,
 	color,
+	select,
 	optionsKnob as options,
 } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
@@ -13,6 +14,8 @@ import VIcon from '../v-icon/';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import VueRouter from 'vue-router';
+
+import { defineComponent } from '@vue/composition-api';
 
 Vue.component('v-button', VButton);
 Vue.component('v-icon', VIcon);
@@ -35,6 +38,9 @@ export const withText = () => ({
 		text: {
 			default: text('Text in button', 'Click me'),
 		},
+		align: {
+			default: select('Align', ['left', 'center', 'right'], 'center', 'Button'),
+		},
 		block: {
 			default: boolean('Block', false, 'Button'),
 		},
@@ -46,6 +52,12 @@ export const withText = () => ({
 		},
 		outlined: {
 			default: boolean('Outlined', false, 'Button'),
+		},
+		dashed: {
+			default: boolean('Dashed', false, 'Button'),
+		},
+		fullWidth: {
+			default: boolean('Full-width', false, 'Button'),
 		},
 		type: {
 			default: text('Type attribute', 'button', 'Button'),
@@ -94,6 +106,8 @@ export const withText = () => ({
 			:block="block"
 			:rounded="rounded"
 			:outlined="outlined"
+			:align="align"
+			:dashed="dashed"
 			:icon="icon"
 			:style="{
 				'--v-button-color': color,
@@ -109,6 +123,7 @@ export const withText = () => ({
 			:small="size === 'small'"
 			:large="size === 'large'"
 			:x-large="size === 'xLarge'"
+			:full-width="fullWidth"
 			@click="onClick"
 		>
 			{{ text }}
@@ -313,3 +328,17 @@ export const asLink = () => ({
 	<v-button to="/login">I'm a link</v-button>
 	`,
 });
+
+export const addNewStyle = () =>
+	defineComponent({
+		template: `
+			<v-button full-width dashed outlined align="left" style="
+				--v-button-color: var(--blue);
+				--v-button-background-color: var(--blue);
+				--v-button-color-hover: var(--white);
+				--v-button-background-color-hover: var(--blue);
+			">
+				<v-icon name="add" left /> Add new row
+			</v-button>
+		`,
+	});

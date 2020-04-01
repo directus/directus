@@ -47,20 +47,22 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 
 ## Props
 
-| Prop       | Description                                                               | Default  |
-|------------|---------------------------------------------------------------------------|----------|
-| `block`    | Enable full width (display block)                                         | `false`  |
-| `icon`     | Remove padding / min-width. Meant to be used with just an icon as content | `false`  |
-| `outlined` | No background                                                             | `false`  |
-| `rounded`  | Enable rounded corners                                                    | `false`  |
-| `type`     | HTML `type` attribute                                                     | `button` |
-| `disabled` | Disabled state                                                            | `false`  |
-| `loading`  | Loading state                                                             | `false`  |
-| `x-small`  | Render extra small                                                        | `false`  |
-| `small`    | Render small                                                              | `false`  |
-| `large`    | Render large                                                              | `false`  |
-| `x-large`  | Render extra large                                                        | `false`  |
-| `to`       | Render as vue router-link                                                 | `false`  |
+| Prop       | Description                                                               | Default    |
+|------------|---------------------------------------------------------------------------|------------|
+| `block`    | Enable full width (display block)                                         | `false`    |
+| `icon`     | Remove padding / min-width. Meant to be used with just an icon as content | `false`    |
+| `outlined` | No background                                                             | `false`    |
+| `rounded`  | Enable rounded corners                                                    | `false`    |
+| `type`     | HTML `type` attribute                                                     | `'button'` |
+| `disabled` | Disabled state                                                            | `false`    |
+| `loading`  | Loading state                                                             | `false`    |
+| `x-small`  | Render extra small                                                        | `false`    |
+| `small`    | Render small                                                              | `false`    |
+| `large`    | Render large                                                              | `false`    |
+| `x-large`  | Render extra large                                                        | `false`    |
+| `to`       | Render as vue router-link                                                 | `false`    |
+| `align`    | Align content in button. One of `left | center | right`                   | `'center'` |
+| `dashed`   | Render the border dashed. Meant to be used with `outlined`.               | `false`    |
 
 ## Slots
 
