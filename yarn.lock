@@ -14550,10 +14550,10 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vue-cli-plugin-storybook@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/vue-cli-plugin-storybook/-/vue-cli-plugin-storybook-1.2.1.tgz#6127eb200b3726ccf4d18dc92cf8eaf754a7703b"
-  integrity sha512-+mODLG72ll94FtsmNr15PxUTpW5CAd/04P875bq6xhH1JM5eeoZe6oMk2VGRaQPS6+9E3g29HuFeNb1V2c74mg==
+vue-cli-plugin-storybook@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/vue-cli-plugin-storybook/-/vue-cli-plugin-storybook-1.2.2.tgz#dad9d628fd58712981b44d370eaa4881deffdeec"
+  integrity sha512-dLwvDPrUhv/56YB/BmPxuCCW2VG0ZJ2EFrAcbaGIb0OZRz6s4rYqkZtSF6giMQEAaLr0L69+R3BtD7XGPfc0cQ==
   dependencies:
     chalk "^3.0.0"
     commander "^2.19.0"
