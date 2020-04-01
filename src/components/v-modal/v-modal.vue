@@ -91,6 +91,7 @@ export default defineComponent({
 
 	.header {
 		display: flex;
+		flex-shrink: 0;
 		align-items: center;
 		height: 60px;
 		padding: 0 16px;
@@ -168,11 +169,16 @@ export default defineComponent({
 
 	.footer {
 		display: flex;
+		flex-shrink: 0;
 		align-items: center;
 		justify-content: flex-end;
 		height: 60px;
 		padding: 0 16px;
 		border-top: 2px solid var(--background-color-alt);
+
+		::v-deep > *:not(:last-child) {
+			margin-right: 8px;
+		}
 
 		@include breakpoint(medium) {
 			padding: 0 24px;

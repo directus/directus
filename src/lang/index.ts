@@ -4,6 +4,7 @@ import { merge } from 'lodash';
 
 import enUSBase from './en-US/index.json';
 import enUSInterfaces from './en-US/interfaces.json';
+import enUSDisplays from './en-US/displays.json';
 import enUSLayouts from './en-US/layouts.json';
 import defaultDateTimeFormats from './en-US/date-format.json';
 
@@ -13,7 +14,7 @@ export const i18n = new VueI18n({
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {
-		'en-US': merge(enUSBase, enUSInterfaces, enUSLayouts),
+		'en-US': merge(enUSBase, enUSInterfaces, enUSDisplays, enUSLayouts),
 	},
 	dateTimeFormats: {
 		'en-US': defaultDateTimeFormats,
@@ -72,6 +73,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		const translations = await Promise.all([
 			import(`@/lang/${lang}/index.json`),
 			import(`@/lang/${lang}/interfaces.json`),
+			import(`@/lang/${lang}/displays.json`),
 			import(`@/lang/${lang}/layouts.json`),
 		]);
 

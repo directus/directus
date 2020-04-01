@@ -17,6 +17,7 @@ export function usePopper(
 ) {
 	const popperInstance = ref<Instance>(null);
 	const styles = ref({});
+	const arrowStyles = ref({});
 
 	// The internal placement can change based on the flip / overflow modifiers
 	const placement = ref(options.value.placement);
@@ -32,7 +33,7 @@ export function usePopper(
 		});
 	});
 
-	return { popperInstance, placement, start, stop, styles };
+	return { popperInstance, placement, start, stop, styles, arrowStyles };
 
 	function start() {
 		return new Promise((resolve) => {
@@ -76,6 +77,7 @@ export function usePopper(
 				phase: 'write',
 				fn({ state }) {
 					styles.value = state.styles.popper;
+					arrowStyles.value = state.styles.arrow;
 					callback();
 				},
 			},

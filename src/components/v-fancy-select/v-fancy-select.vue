@@ -32,12 +32,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { FancySelectOption } from './types';
+import { FancySelectItem } from './types';
 
 export default defineComponent({
 	props: {
 		items: {
-			type: Array as PropType<FancySelectOption[]>,
+			type: Array as PropType<FancySelectItem[]>,
 			required: true,
 		},
 		value: {
@@ -60,7 +60,7 @@ export default defineComponent({
 
 		return { toggle, visibleItems };
 
-		function toggle(item: FancySelectOption) {
+		function toggle(item: FancySelectItem) {
 			if (props.disabled === true) return;
 			if (props.value === item.value) emit('input', null);
 			else emit('input', item.value);

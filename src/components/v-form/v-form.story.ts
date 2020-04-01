@@ -50,7 +50,7 @@ export const collection = () =>
 					length: '65535',
 					name: 'Title',
 				},
-			];
+			] as any;
 		},
 		template: `
 			<v-form

@@ -17,6 +17,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 		monospace: {
 			type: Boolean,
 			default: false,

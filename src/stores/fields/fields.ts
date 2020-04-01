@@ -22,33 +22,34 @@ export const useFieldsStore = createStore({
 
 			const fields: FieldRaw[] = response.data.data;
 
-			this.state.fields = fields.map((field) => {
-				let name: string | VueI18n.TranslateResult;
-
-				if (notEmpty(field.translation)) {
-					for (let i = 0; i < field.translation.length; i++) {
-						const { locale, translation } = field.translation[i];
-
-						i18n.mergeLocaleMessage(locale, {
-							fields: {
-								[field.field]: translation,
-							},
-						});
-					}
-
-					name = i18n.t(`fields.${field.field}`);
-				} else {
-					name = formatTitle(field.field);
-				}
-
-				return {
-					...field,
-					name,
-				};
-			});
+			this.state.fields = fields.map(this.addTranslationsForField);
 		},
 		async dehydrate() {
 			this.reset();
+		},
+		addTranslationsForField(field: Field) {
+			let name: string | VueI18n.TranslateResult;
+
+			if (notEmpty(field.translation) && field.translation.length > 0) {
+				for (let i = 0; i < field.translation.length; i++) {
+					const { locale, translation } = field.translation[i];
+
+					i18n.mergeLocaleMessage(locale, {
+						fields: {
+							[field.field]: translation,
+						},
+					});
+				}
+
+				name = i18n.t(`fields.${field.field}`);
+			} else {
+				name = formatTitle(field.field);
+			}
+
+			return {
+				...field,
+				name,
+			};
 		},
 		async createField(collectionKey: string, newField: Field) {
 			const projectsStore = useProjectsStore();
@@ -69,7 +70,7 @@ export const useFieldsStore = createStore({
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
-						return response.data.data;
+						return this.addTranslationsForField(response.data.data);
 					}
 
 					return field;
@@ -122,7 +123,7 @@ export const useFieldsStore = createStore({
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {
-						return response.data.data;
+						return this.addTranslationsForField(response.data.data);
 					}
 
 					return field;
@@ -179,7 +180,7 @@ export const useFieldsStore = createStore({
 						const newDataForField = response.data.data.find(
 							(update: Field) => update.field === field.field
 						);
-						if (newDataForField) return newDataForField;
+						if (newDataForField) return this.addTranslationsForField(newDataForField);
 					}
 
 					return field;

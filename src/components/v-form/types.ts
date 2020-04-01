@@ -1,4 +1,7 @@
 import { Field } from '@/stores/fields/types';
+import { TranslateResult } from 'vue-i18n';
 
-export type FormField = Pick<Field, 'field' | 'name' | 'interface' | 'options' | 'sort' | 'width'> &
-	Partial<Field>;
+export type FormField = Partial<Field> & {
+	field: string;
+	name: string | TranslateResult;
+};

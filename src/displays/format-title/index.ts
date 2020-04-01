@@ -6,4 +6,5 @@ export default defineDisplay({
 	name: 'Format Title',
 	icon: 'text_format',
 	handler: handler,
+	options: null,
 });

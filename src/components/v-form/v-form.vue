@@ -3,6 +3,7 @@
 		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
 			<label>{{ field.name }}</label>
 			<interface-text-input
+				:disabled="field.readonly"
 				:value="values[field.field]"
 				@input="onInput(field, $event)"
 				v-bind="field.options"
@@ -78,8 +79,8 @@ export default defineComponent({
 			// Sort the fields on the sort column value
 			formFields = formFields.sort((a, b) => {
 				if (a.sort == b.sort) return 0;
-				if (a.sort === null) return 1;
-				if (b.sort === null) return -1;
+				if (a.sort === null || a.sort === undefined) return 1;
+				if (b.sort === null || b.sort === undefined) return -1;
 				return a.sort > b.sort ? 1 : -1;
 			});
 
@@ -124,7 +125,7 @@ export default defineComponent({
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function onInput(field: Field, value: any) {
-			const edits = clone(props.edits);
+			const edits = props.edits ? clone(props.edits) : {};
 			edits[field.field] = value;
 			emit('input', edits);
 		}

@@ -6,4 +6,12 @@ export default defineDisplay(({ i18n }) => ({
 	name: i18n.t('displays.icon.icon'),
 	icon: 'box',
 	handler: DisplayIcon,
+	options: [
+		{
+			field: 'icon',
+			name: 'Icon',
+			interface: 'icon',
+			width: 'half',
+		},
+	],
 }));

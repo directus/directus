@@ -17,7 +17,12 @@
 			:data-placement="popperPlacement"
 			:style="styles"
 		>
-			<div v-show="showArrow" class="arrow" :class="{ active: isActive }" data-popper-arrow />
+			<div
+				class="arrow"
+				:class="{ active: showArrow && isActive }"
+				:style="arrowStyles"
+				data-popper-arrow
+			/>
 			<div :class="{ active: isActive }" class="v-menu-content" @click="onContentClick">
 				<slot />
 			</div>
@@ -65,7 +70,7 @@ export default defineComponent({
 			return (activator.value as HTMLElement)?.childNodes[0] as HTMLElement;
 		});
 
-		const { start, stop, styles, placement: popperPlacement } = usePopper(
+		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
 			reference,
 			popper,
 			computed(() => ({
@@ -86,6 +91,7 @@ export default defineComponent({
 			deactivate,
 			onContentClick,
 			styles,
+			arrowStyles,
 			popperPlacement,
 		};
 

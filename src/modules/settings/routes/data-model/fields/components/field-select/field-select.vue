@@ -6,7 +6,7 @@
 				:class="{ hidden }"
 				readonly
 				@click="toggle"
-				:value="field.field"
+				:value="field.name"
 				full-width
 			>
 				<template #prepend>
@@ -20,17 +20,13 @@
 		</template>
 
 		<v-list dense>
-			<v-dialog v-model="editActive" persistent>
-				<template #activator="{ on }">
-					<v-list-item @click="on">
-						<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ $t('edit_field') }}
-						</v-list-item-content>
-					</v-list-item>
-				</template>
-				<field-setup :field="field" />
-			</v-dialog>
+			<v-list-item @click="$emit('edit')">
+				<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+				<v-list-item-content>
+					{{ $t('edit_field') }}
+				</v-list-item-content>
+			</v-list-item>
+
 			<v-dialog v-model="duplicateActive">
 				<template #activator="{ on }">
 					<v-list-item @click="on">
@@ -112,10 +108,8 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
 import useCollectionsStore from '@/stores/collections/';
-import FieldSetup from '../field-setup/';
 
 export default defineComponent({
-	components: { FieldSetup },
 	props: {
 		field: {
 			type: Object as PropType<Field>,

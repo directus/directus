@@ -21,10 +21,12 @@ export interface FieldRaw {
 	type: string;
 	sort: null | number;
 	interface: string;
+	options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
+	display: string;
+	display_options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
 	hidden_detail: boolean;
 	hidden_browse: boolean;
 	required: boolean;
-	options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
 	locked: boolean;
 	translation: null | Translation[];
 	readonly: boolean;

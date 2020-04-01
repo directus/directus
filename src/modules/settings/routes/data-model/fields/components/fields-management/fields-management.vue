@@ -12,8 +12,21 @@
 				:key="field.field"
 				:field="field"
 				@toggle-visibility="toggleVisibility($event, 'visible')"
+				@edit="openFieldSetup(field)"
 			/>
 		</draggable>
+
+		<v-button
+			class="add-field"
+			align="left"
+			dashed
+			outlined
+			full-width
+			@click="openFieldSetup()"
+		>
+			<v-icon name="add" left />
+			{{ $t('add_field') }}
+		</v-button>
 
 		<v-divider>{{ $t('hidden_detail') }}</v-divider>
 
@@ -30,18 +43,27 @@
 				:field="field"
 				hidden
 				@toggle-visibility="toggleVisibility($event, 'hidden')"
+				@edit="openFieldSetup(field)"
 			/>
 		</draggable>
+
+		<field-setup
+			:collection="collection"
+			:active="fieldSetupActive"
+			:existing-field="editingField"
+			@toggle="closeFieldSetup"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import useCollection from '@/compositions/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
 import FieldSelect from '../field-select/';
+import FieldSetup from '../field-setup/';
 import { sortBy } from 'lodash';
 
 type DraggableEvent = {
@@ -57,7 +79,7 @@ type DraggableEvent = {
 };
 
 export default defineComponent({
-	components: { Draggable, FieldSelect },
+	components: { Draggable, FieldSelect, FieldSetup },
 	props: {
 		collection: {
 			type: String,
@@ -82,7 +104,18 @@ export default defineComponent({
 			)
 		);
 
-		return { sortedVisibleFields, sortedHiddenFields, handleChange, toggleVisibility };
+		const { fieldSetupActive, editingField, openFieldSetup, closeFieldSetup } = useFieldSetup();
+
+		return {
+			sortedVisibleFields,
+			sortedHiddenFields,
+			handleChange,
+			toggleVisibility,
+			fieldSetupActive,
+			editingField,
+			openFieldSetup,
+			closeFieldSetup,
+		};
 
 		function handleChange(event: DraggableEvent, location: 'visible' | 'hidden') {
 			if (event.added !== undefined) {
@@ -182,6 +215,26 @@ export default defineComponent({
 
 			fieldsStore.updateFields(element.collection, updates);
 		}
+
+		function useFieldSetup() {
+			const fieldSetupActive = ref(false);
+			const editingField = ref<Field>(null);
+
+			return { fieldSetupActive, editingField, openFieldSetup, closeFieldSetup };
+
+			function openFieldSetup(field: Field | null) {
+				if (field) {
+					editingField.value = field;
+				}
+
+				fieldSetupActive.value = true;
+			}
+
+			function closeFieldSetup() {
+				editingField.value = null;
+				fieldSetupActive.value = false;
+			}
+		}
 	},
 });
 </script>
@@ -189,6 +242,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-divider {
 	margin: var(--private-view-content-padding) 0;
+}
+
+.add-field {
+	margin-top: 24px;
 }
 
 .visible,

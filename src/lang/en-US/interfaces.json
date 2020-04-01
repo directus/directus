@@ -520,7 +520,7 @@
 			"validation_message_default": "Please enter a valid tag"
 		},
 		"text-input": {
-			"input": "Text Input",
+			"text-input": "Text Input",
 			"placeholder": "Placeholder",
 			"trim": "Trim",
 			"trim_comment": "Trim surrounding whitespace from the value before saving",
