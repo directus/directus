@@ -9,39 +9,6 @@ localVue.use(VueCompositionAPI);
 localVue.component('v-icon', VIcon);
 
 describe('Views / Private / Components / Notification Item', () => {
-	it('Calls remove with the notification ID automatically', () => {
-		jest.useFakeTimers();
-
-		const notificationsStore = useNotificationsStore();
-		jest.spyOn(notificationsStore as any, 'remove');
-		mount(NotificationItem, {
-			localVue,
-			propsData: {
-				id: '123',
-				title: 'Test',
-			},
-		});
-		jest.runAllTimers();
-		expect(notificationsStore.remove).toHaveBeenCalledWith('123');
-	});
-
-	it('Does not call remove with id after 1 second when persist is enabled', () => {
-		jest.useFakeTimers();
-
-		const notificationsStore = useNotificationsStore();
-		jest.spyOn(notificationsStore as any, 'remove');
-		mount(NotificationItem, {
-			localVue,
-			propsData: {
-				id: '123',
-				title: 'Test',
-				persist: true,
-			},
-		});
-		jest.runAllTimers();
-		expect(notificationsStore.remove).not.toHaveBeenCalledWith('123');
-	});
-
 	it('Calls remove with id on close click if persist is enabled', () => {
 		const notificationsStore = useNotificationsStore();
 		jest.spyOn(notificationsStore as any, 'remove');
@@ -51,6 +18,7 @@ describe('Views / Private / Components / Notification Item', () => {
 				id: '123',
 				title: 'Test',
 				persist: true,
+				showClose: true,
 			},
 		});
 

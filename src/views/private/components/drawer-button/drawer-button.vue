@@ -2,6 +2,7 @@
 	<component
 		class="drawer-button"
 		:is="to ? 'router-link' : 'button'"
+		:class="{ active }"
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
@@ -25,6 +26,10 @@ export default defineComponent({
 		icon: {
 			type: String,
 			default: 'box',
+		},
+		active: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup() {
@@ -64,12 +69,8 @@ export default defineComponent({
 		transform: translateY(-50%);
 	}
 
-	.fade-enter-active,
-	.fade-leave-active {
-		transition: opacity var(--medium) var(--transition);
-	}
-	.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-		opacity: 0;
+	&.active {
+		background-color: var(--background-normal-alt);
 	}
 }
 </style>

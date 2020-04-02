@@ -40,30 +40,39 @@
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>
-			<drawer-button class="drawer-toggle" @click.stop="drawerOpen = !drawerOpen" icon="info">
-				Close Drawer
+			<drawer-button
+				class="drawer-toggle"
+				@click.stop="drawerOpen = !drawerOpen"
+				:icon="drawerOpen ? 'chevron_right' : 'chevron_left'"
+			>
+				{{ $t('collapse_sidebar') }}
 			</drawer-button>
 
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
 			</drawer-detail-group>
+
+			<div class="spacer" />
+
+			<notifications-preview v-model="navigationsInline" />
 		</aside>
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
-		<notifications-group />
+		<notifications-group v-if="navigationsInline === false" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide } from '@vue/composition-api';
+import { defineComponent, ref, provide, watch } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectChooser from './components/project-chooser';
 import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
+import NotificationsPreview from './components/notifications-preview/';
 
 export default defineComponent({
 	components: {
@@ -73,6 +82,7 @@ export default defineComponent({
 		ProjectChooser,
 		DrawerButton,
 		NotificationsGroup,
+		NotificationsPreview,
 	},
 	props: {
 		title: {
@@ -84,6 +94,13 @@ export default defineComponent({
 		const navOpen = ref(false);
 		const drawerOpen = ref(false);
 		const contentEl = ref<Element>();
+		const navigationsInline = ref(false);
+
+		watch(drawerOpen, (open: boolean) => {
+			if (open === false) {
+				navigationsInline.value = false;
+			}
+		});
 
 		provide('drawer-open', drawerOpen);
 		provide('main-element', contentEl);
@@ -92,6 +109,7 @@ export default defineComponent({
 			navOpen,
 			drawerOpen,
 			contentEl,
+			navigationsInline,
 		};
 	},
 });
@@ -182,11 +200,17 @@ export default defineComponent({
 		top: 0;
 		right: 0;
 		z-index: 30;
+		display: flex;
+		flex-direction: column;
 		width: 284px;
 		height: 100%;
 		background-color: var(--background-normal);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
+
+		.spacer {
+			flex-grow: 1;
+		}
 
 		&.is-open {
 			transform: translateX(0);

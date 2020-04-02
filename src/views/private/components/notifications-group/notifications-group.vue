@@ -6,6 +6,7 @@
 			v-bind="notification"
 			:tail="index === queue.length - 1"
 			dense
+			:show-close="notification.persist === true"
 		/>
 	</transition-group>
 </template>

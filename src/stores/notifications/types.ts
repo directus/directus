@@ -11,4 +11,5 @@ export interface NotificationRaw {
 
 export interface Notification extends NotificationRaw {
 	readonly id: string;
+	readonly timestamp: number;
 }

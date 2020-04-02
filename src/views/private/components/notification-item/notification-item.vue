@@ -9,7 +9,7 @@
 			<p v-if="text" class="text selectable">{{ text }}</p>
 		</div>
 
-		<v-icon v-if="persist" name="close" @click="close" class="close" />
+		<v-icon v-if="showClose" name="close" @click="close" class="close" />
 	</div>
 </template>
 
@@ -40,10 +40,6 @@ export default defineComponent({
 			default: 'info',
 			validator: (val: string) => ['info', 'success', 'warning', 'error'].includes(val),
 		},
-		persist: {
-			type: Boolean,
-			default: false,
-		},
 		tail: {
 			type: Boolean,
 			default: false,
@@ -52,20 +48,20 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		showClose: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const notificationsStore = useNotificationsStore();
 
-		if (props.persist !== true) {
-			setTimeout(() => {
-				close();
-			}, 3000);
-		}
-
 		return { close };
 
 		function close() {
-			notificationsStore.remove(props.id);
+			if (props.showClose === true) {
+				notificationsStore.remove(props.id);
+			}
 		}
 	},
 });

@@ -14,10 +14,8 @@ describe('Stores / Notifications', () => {
 		mountComposition(() => {
 			const store = useNotificationsStore({});
 			const id = store.add({ title: 'test' });
-			expect(store.state.queue[0]).toEqual({
-				id,
-				title: 'test',
-			});
+			jest.spyOn(Date, 'now').mockImplementation(() => 15);
+			expect(store.state.queue[0].id).toBe(id);
 		});
 	});
 
@@ -28,27 +26,22 @@ describe('Stores / Notifications', () => {
 				{
 					id: 'abc',
 					title: 'test',
+					timestamp: 1,
 				},
 				{
 					id: 'def',
 					title: 'test',
+					timestamp: 2,
 				},
 				{
 					id: 'ghi',
 					title: 'test',
+					timestamp: 3,
 				},
 			];
 			store.remove('def');
-			expect(store.state.queue).toEqual([
-				{
-					id: 'abc',
-					title: 'test',
-				},
-				{
-					id: 'ghi',
-					title: 'test',
-				},
-			]);
+			expect(store.state.queue[0].id).toBe('abc');
+			expect(store.state.queue[1].id).toBe('ghi');
 		});
 	});
 });
