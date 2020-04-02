@@ -22,7 +22,7 @@ n/a
 ## CSS Variables
 | Prop                            | Default                             |
 |---------------------------------|-------------------------------------|
-| `--v-breadcrumb-color`          | `var(--foreground-color-secondary)` |
-| `--v-breadcrumb-color-hover`    | `var(--foreground-color)`           |
-| `--v-breadcrumb-color-disabled` | `var(--foreground-color-tertiary)`  |
-| `--v-breadcrumb-divider-color`  | `var(--foreground-color-tertiary)`  |
+| `--v-breadcrumb-color`          | `var(--foreground-subdued)` |
+| `--v-breadcrumb-color-hover`    | `var(--foreground-normal)`           |
+| `--v-breadcrumb-color-disabled` | `var(--foreground-subdued)`  |
+| `--v-breadcrumb-divider-color`  | `var(--foreground-subdued)`  |

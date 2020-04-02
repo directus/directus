@@ -6,14 +6,14 @@
 		font-weight: inherit;
 		font-family: var(--family-monospace);
 		line-height: 18px;
-		background-color: var(--input-background-color);
-		border: var(--input-border-width) solid var(--input-border-color);
+		background-color: var(--background-page);
+		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: all var(--fast) var(--transition);
 	}
 
 	.CodeMirror:hover {
-		border-color: var(--input-border-color-hover);
+		border-color: var(--border-normal);
 		transition: none;
 	}
 
@@ -25,11 +25,11 @@
 	.CodeMirror-line::selection,
 	.CodeMirror-line > span::selection,
 	.CodeMirror-line > span > span::selection {
-		background: var(--highlight);
+		background: var(--background-subdued);
 	}
 
 	.CodeMirror.CodeMirror-focused {
-		border-color: var(--input-border-color-focus);
+		border-color: var(--primary);
 	}
 
 	.cm-matchhighlight {
@@ -42,7 +42,7 @@
 	}
 
 	.CodeMirror-activeline-background {
-		background: var(--input-background-color-alt);
+		background: var(--background-page-alt);
 	}
 
 	.CodeMirror pre {
@@ -50,8 +50,8 @@
 	}
 
 	.CodeMirror-gutters {
-		background-color: var(--input-background-color-alt);
-		border-right: 2px solid var(--input-border-color);
+		background-color: var(--background-page-alt);
+		border-right: 2px solid var(--border-normal);
 	}
 
 	.CodeMirror-linenumber {
@@ -87,7 +87,7 @@
 	}
 
 	.cm-s-default .cm-atom {
-		color: var(--accent);
+		color: var(--primary);
 	}
 
 	.cm-s-default .cm-attribute {
@@ -100,7 +100,7 @@
 
 	.CodeMirror .CodeMirror-matchingbracket {
 		color: inherit;
-		border-bottom: 1px solid var(--accent);
+		border-bottom: 1px solid var(--primary);
 	}
 
 	.CodeMirror .CodeMirror-nonmatchingbracket {

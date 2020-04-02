@@ -1,21 +1,33 @@
 <template>
 	<private-view :title="collectionInfo.name">
+		<template #title-outer:prepend>
+			<v-button rounded disabled icon secondary>
+				<v-icon name="account_tree" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #navigation>
 			<settings-navigation />
 		</template>
 
 		<div class="fields">
-			<h2 class="title">{{ $t('fields_and_layout') }}</h2>
+			<h2 class="title type-label">{{ $t('fields_and_layout') }}</h2>
 			<fields-management :collection="collection" />
 		</div>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
 import useCollection from '@/compositions/use-collection/';
 import FieldsManagement from './components/fields-management';
+import useProjectsStore from '@/stores/projects';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -26,23 +38,30 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const projectsStore = useProjectsStore();
 		const { info: collectionInfo, fields } = useCollection(props.collection);
 
-		return { collectionInfo, fields };
+		const breadcrumb = computed(() => {
+			return [
+				{
+					name: i18n.t('settings_data_model'),
+					to: `/${projectsStore.state.currentProjectKey}/settings/data-model`,
+				},
+			];
+		});
+
+		return { collectionInfo, fields, breadcrumb };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles';
-
 .title {
 	margin-bottom: 12px;
-	@include type-heading-small;
 }
 
 .fields {
 	max-width: 800px;
-	padding: var(--private-view-content-padding);
+	padding: var(--content-padding);
 }
 </style>

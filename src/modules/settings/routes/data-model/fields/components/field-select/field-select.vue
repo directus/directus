@@ -229,6 +229,6 @@ export default defineComponent({
 }
 
 .v-input.hidden {
-	--input-background-color: var(--background-color-alt);
+	--background-page: var(--background-normal);
 }
 </style>

@@ -55,7 +55,7 @@ export default defineComponent({
 
 | Variable                                   | Default                                            |
 |--------------------------------------------|----------------------------------------------------|
-| `--v-button-group-background-color-active` | `var(--button-primary-background-color-disabled)`  |
+| `--v-button-group-background-color-active` | `var(--primary-alt)`  |
 
 
 

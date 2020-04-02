@@ -28,7 +28,7 @@ n/a
 ## CSS Variables
 | Variable                          | Default                         |
 |-----------------------------------|---------------------------------|
-| `--v-tab-color`                   | `var(--input-foreground-color)` |
-| `--v-tab-background-color`        | `var(--input-background-color)` |
-| `--v-tab-color-active`            | `var(--input-foreground-color)` |
-| `--v-tab-background-color-active` | `var(--input-background-color)` |
+| `--v-tab-color`                   | `var(--foreground-normal)` |
+| `--v-tab-background-color`        | `var(--background-page)` |
+| `--v-tab-color-active`            | `var(--foreground-normal)` |
+| `--v-tab-background-color-active` | `var(--background-page)` |

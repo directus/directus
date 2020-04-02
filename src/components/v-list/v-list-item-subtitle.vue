@@ -5,8 +5,6 @@
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles';
-
 .v-list-item-subtitle {
 	$this: &;
 
@@ -17,11 +15,6 @@
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-
-	.v-list.dense &,
-	.v-list-item.dense & {
-		@include type-item-subtitle-dense;
-	}
 
 	@at-root {
 		.v-list,
@@ -42,7 +35,5 @@
 			}
 		}
 	}
-
-	@include type-item-subtitle;
 }
 </style>

@@ -1,89 +1,83 @@
-/* stylelint-disable custom-property-empty-line-before, declaration-colon-space-after */
+/* stylelint-disable */
 body,
 .default-colors {
-	/* Global */
-	--brand: 										var(--blue-grey-900);
-	--accent: 										var(--blue-500);
-	--accent-light: 								var(--blue-50);
-	--accent-dark: 									var(--light-blue-800);
-	--action: 										var(--blue-grey-800);
-	--action-light: 								var(--blue-grey-50);
-	--action-dark: 									var(--light-blue-900);
-	--success: 										var(--green);
-	--success-light: 								var(--green-50);
-	--success-dark: 								var(--green-800);
-	--danger: 										var(--red);
-	--danger-light: 								var(--red-50);
-	--danger-dark: 									var(--red-800);
-	--warning: 										var(--orange);
-	--warning-dark: 								var(--orange-800);
-	--warning-light: 								var(--orange-50);
-	--foreground-color: 							var(--blue-grey-800);
-	--foreground-color-secondary: 					var(--blue-grey-300);
-	--foreground-color-tertiary: 					var(--blue-grey-100);
-	--background-color: 							var(--white);
-	--background-color-hover: 						var(--blue-grey-25);
-	--background-color-active:						var(--blue-grey-50);
-	--background-color-alt: 						var(--blue-grey-50);
-	--highlight: 									var(--off-white);
-	--heading-text-color:							var(--foreground-color);
-	--subheading-text-color:						var(--foreground-color-secondary);
+	--brand: var(--primary); // will be overriden with directus_settings.project_color
 
-	/* Inputs */
-	--input-foreground-color: 						var(--blue-grey-800);
-	--input-foreground-color-hover: 				var(--blue-grey-800);
-	--input-foreground-color-focus: 				var(--blue-grey-800);
-	--input-foreground-color-empty: 				var(--blue-grey-300);
-	--input-foreground-color-disabled: 				var(--blue-grey-200);
-	--input-background-color: 						var(--white);
-	--input-background-color-hover:					var(--white);
-	--input-background-color-focus:					var(--white);
-	--input-background-color-empty:					var(--white);
-	--input-background-color-disabled: 				var(--blue-grey-50);
-	--input-border-width: 							2px;
-	--input-border-radius: 							4px;
-	--input-border-color: 							var(--blue-grey-100);
-	--input-border-color-hover: 					var(--blue-grey-300);
-	--input-border-color-focus: 					var(--blue-grey-600);
-	--input-border-color-disabled: 					var(--blue-grey-100);
-	--input-padding: 								12px;
-	--input-height:									52px;
-	--input-action-color:							var(--blue-grey-300);
-	--input-action-color-hover:						var(--blue-grey-600);
-	--input-action-color-disabled:					var(--blue-grey-200);
+	--border-normal: #D6DFE2;
+	--border-normal-alt: #BDCCD2;
+	--border-subdued: #ECEFF1;
 
-	/* Buttons */
-	--button-border-width: 							var(--input-border-width);
-	--button-border-radius: 						var(--input-border-radius);
-	--button-primary-background-color: 				var(--blue-grey-900);
-	--button-primary-background-color-hover: 		var(--blue-grey-800);
-	--button-primary-background-color-disabled: 	var(--blue-grey-400);
-	--button-primary-background-color-activated: 	var(--off-black);
-	--button-primary-foreground-color: 				var(--white);
-	--button-primary-foreground-color-hover: 		var(--white);
-	--button-primary-foreground-color-disabled: 	var(--blue-grey-300);
-	--button-primary-foreground-color-activated: 	var(--white);
-	--button-secondary-background-color: 			var(--blue-grey-100);
-	--button-secondary-background-color-hover:  	var(--blue-grey-200);
-	--button-secondary-background-color-disabled: 	var(--blue-grey-50);
-	--button-secondary-foreground-color:			var(--white);
-	--button-secondary-foreground-color-hover: 		var(--blue-grey-600);
-	--button-secondary-foreground-color-disabled: 	var(--blue-grey-400);
+	--foreground-normal: #263238;
+	--foreground-subdued: #B0BEC5;
+	--foreground-inverted:#FFF;
 
-	/* Misc.
-	   Please try to use one of the variables above if applicable.
-	   Only add variables here if there's no other option
-	*/
-	--overlay-color: 								rgba(38, 50, 56, 0.75);
-	--divider-color:								var(--blue-grey-50);
-	--tooltip-foreground-color:                     var(--button-primary-foreground-color);
-	--tooltip-background-color:                     var(--button-primary-background-color-hover);
-	--tooltip-foreground-color-inverted:            var(--input-foreground-color);
-	--tooltip-background-color-inverted:            var(--button-secondary-background-color);
+	--background-normal: #ECEFF1;
+	--background-normal-alt: #DDE3E6;
+	--background-subdued: #F5F7F8;
+	--background-page: #FFF;
+	--background-inverted: #263238;
+
+	--module-background: #13181A;
+	--module-background-alt: #090C0D;
+	--module-icon: #607D8B;
+	--module-icon-alt: #FFF;
+
+	--primary-10: #EAF2FD;
+	--primary-25: #CBDFFB;
+	--primary-50: #97BFF6;
+	--primary-75: #63A0F1;
+	--primary: #2F80ED;
+	--primary-alt: #E9F4FE;
+	--primary-125: #2D6CC0;
+	--primary-150: #2A5992;
+	--primary-175: #284565;
+	--primary-190: #273A4A;
+
+	--secondary-10: #F5EEFC;
+	--secondary-25: #E6D3F7;
+	--secondary-50: #CCA7EF;
+	--secondary-75: #B47DE8;
+	--secondary: #9B51E0;
+	--secondary-alt: #F5EEFC;
+	--secondary-125: #7E49B6;
+	--secondary-150: #60418C;
+	--secondary-175: #433A62;
+	--secondary-190: #323549;
+
+	--success-10: #E9F7EF;
+	--success-25: #C9EBD7;
+	--success-50: #93D7AF;
+	--success-75: #5DC288;
+	--success: #27AE60;
+	--success-alt: #EAF7F0;
+	--success-125: #278F56;
+	--success-150: #26704C;
+	--success-175: #265142;
+	--success-190: #263E3C;
+
+	--warning-10: #FEF5ED;
+	--warning-25: #FCE5D2;
+	--warning-50: #F8CCA4;
+	--warning-75: #F5B377;
+	--warning: #F2994A;
+	--warning-alt: #FEF5ED;
+	--warning-125: #BF7F46;
+	--warning-150: #8C6541;
+	--warning-175: #594C3D;
+	--warning-190: #3A3C3A;
+
+	--danger-10: #FDEEEE;
+	--danger-25: #FAD5D5;
+	--danger-50: #F5ABAB;
+	--danger-75: #F08181;
+	--danger: #EB5757;
+	--danger-alt: #FDEFEF;
+	--danger-125: #BA4E4F;
+	--danger-150: #884448;
+	--danger-175: #573B40;
+	--danger-190: #3A363B;
 }
 
 .alt-colors {
-	--background-color:                             var(--background-color-alt);
-	--background-color-hover:                       #dde3e6;
-	--background-color-active:                      var(--blue-grey-100);
+	--background-subdued: var(--background-page);
 }

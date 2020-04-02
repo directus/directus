@@ -47,8 +47,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-progress-circular {
-	--v-progress-circular-color: var(--input-foreground-color);
-	--v-progress-circular-background-color: var(--input-border-color);
+	--v-progress-circular-color: var(--foreground-normal);
+	--v-progress-circular-background-color: var(--border-normal);
 	--v-progress-circular-transition: 400ms;
 	--v-progress-circular-speed: 2s;
 	--v-progress-circular-size: 28px;

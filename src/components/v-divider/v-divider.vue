@@ -24,8 +24,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	--v-divider-color: var(--input-border-color);
-	--v-divider-label-color: var(--input-action-color);
+	--v-divider-color: var(--border-normal);
+	--v-divider-label-color: var(--foreground-subdued);
 
 	display: flex;
 	flex-basis: 0px;

@@ -7,14 +7,14 @@
 	display: none;
 	max-width: 260px;
 	padding: 4px 8px;
-	color: var(--tooltip-foreground-color);
-	background-color: var(--tooltip-background-color);
+	color: var(--foreground-inverted);
+	background-color: var(--background-inverted);
 	border-radius: 4px;
 	transition: opacity 200ms;
 
 	&.inverted {
-		--tooltip-foreground-color: var(--tooltip-foreground-color-inverted);
-		--tooltip-background-color: var(--tooltip-background-color-inverted);
+		--tooltip-foreground-color: var(--foreground-normal);
+		--tooltip-background-color: var(--background-subdued);
 	}
 
 	&.visible {

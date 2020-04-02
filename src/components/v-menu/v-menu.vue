@@ -169,7 +169,7 @@ export default defineComponent({
 
 	.arrow {
 		&::before {
-			background: var(--input-border-color);
+			background: var(--border-normal);
 			transform: rotate(45deg) scale(0);
 			transition: transform var(--fast) var(--transition-out);
 			transition-delay: 0;
@@ -202,9 +202,9 @@ export default defineComponent({
 		max-height: 50vh;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: var(--highlight);
-		border: 2px solid var(--input-border-color);
-		border-radius: var(--input-border-radius);
+		background-color: var(--background-subdued);
+		border: 2px solid var(--border-normal);
+		border-radius: var(--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 		opacity: 0;
 		transition-timing-function: var(--transition-out);

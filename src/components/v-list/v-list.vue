@@ -57,12 +57,11 @@ export default defineComponent({
 	--v-list-max-width: none;
 	--v-list-min-width: none;
 	--v-list-min-height: none;
-	--v-list-color: var(--foreground-color);
-	--v-list-color-hover: var(--foreground-color);
-	--v-list-color-active: var(--foreground-color);
-	--v-list-background-color: var(--background-color);
-	--v-list-background-color-hover: var(--background-color-hover);
-	--v-list-background-color-active: var(--background-color-active);
+	--v-list-color: var(--foreground-normal);
+	--v-list-color-hover: var(--foreground-normal);
+	--v-list-color-active: var(--foreground-normal);
+	--v-list-background-color-hover: var(--background-normal-alt);
+	--v-list-background-color-active: var(--background-normal-alt);
 
 	position: static;
 	display: block;
@@ -73,8 +72,7 @@ export default defineComponent({
 	padding: var(--v-list-padding);
 	overflow: auto;
 	color: var(--v-list-color);
-	background-color: var(--v-list-background-color);
-	border-radius: var(--input-border-radius);
+	border-radius: var(--border-radius);
 
 	&.nav {
 		--v-list-padding: 8px;

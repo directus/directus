@@ -38,12 +38,11 @@ n/a
 | `--v-list-max-width`               | `none`                           |
 | `--v-list-min-width`               | `none`                           |
 | `--v-list-min-height`              | `none`                           |
-| `--v-list-color`                   | `var(--foreground-color)`        |
-| `--v-list-color-hover`             | `var(--foreground-color)`        |
-| `--v-list-color-active`            | `var(--foreground-color)`        |
-| `--v-list-background-color`        | `var(--background-color)`        |
-| `--v-list-background-color-hover`  | `var(--background-color-hover)`  |
-| `--v-list-background-color-active` | `var(--background-color-active)` |
+| `--v-list-color`                   | `var(--foreground-normal)`        |
+| `--v-list-color-hover`             | `var(--foreground-normal)`        |
+| `--v-list-color-active`            | `var(--foreground-normal)`        |
+| `--v-list-background-color-hover`  | `var(--background-normal-alt)`  |
+| `--v-list-background-color-active` | `var(--background-normal-alt)` |
 
 ---
 
@@ -96,12 +95,11 @@ n/a
 | `--v-list-item-max-height`                  | `auto`                                                                  |
 | `--v-list-item-border-radius`               | `0`                                                                     |
 | `--v-list-item-margin-bottom`               | `0`                                                                     |
-| `--v-list-item-color`                       | `var(--v-list-color, var(--foreground-color))`                          |
-| `--v-list-item-color-hover`                 | `var(--v-list-color-hover, var(--foreground-color))`                    |
-| `--v-list-item-color-active`                | `var(--v-list-color-active, var(--foreground-color))`                   |
-| `--v-list-item-background-color`            | `var(--v-list-background-color, var(--background-color))`               |
-| `--v-list-item-background-color-hover`      | `var(--v-list-background-color-hover, var(--background-color-hover))`   |
-| `--v-list-item-background-color-active`     | `var(--v-list-background-color-active, var(--background-color-active))` |
+| `--v-list-item-color`                       | `var(--v-list-color, var(--foreground-normal))`                          |
+| `--v-list-item-color-hover`                 | `var(--v-list-color-hover, var(--foreground-normal))`                    |
+| `--v-list-item-color-active`                | `var(--v-list-color-active, var(--foreground-normal))`                   |
+| `--v-list-item-background-color-hover`      | `var(--v-list-background-color-hover, var(--background-normal-alt))`   |
+| `--v-list-item-background-color-active`     | `var(--v-list-background-color-active, var(--background-normal-alt))` |
 
 ---
 

@@ -19,7 +19,7 @@
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label">
-					<slot name="thumb-label" :value="value">
+					<slot name="thumb-label type-text" :value="value">
 						{{ value }}
 					</slot>
 				</div>
@@ -87,12 +87,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles';
-
 .v-slider {
-	--v-slider-color: var(--input-border-color);
-	--v-slider-thumb-color: var(--input-foreground-color);
-	--v-slider-fill-color: var(--input-foreground-color);
+	--v-slider-color: var(--border-normal);
+	--v-slider-thumb-color: var(--foreground-normal);
+	--v-slider-fill-color: var(--foreground-normal);
 
 	display: flex;
 	align-items: center;
@@ -138,7 +136,7 @@ export default defineComponent({
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--background-color);
+				box-shadow: 0 0 0 4px var(--background-page);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
@@ -154,7 +152,7 @@ export default defineComponent({
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--background-color);
+				box-shadow: 0 0 0 4px var(--background-page);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
@@ -212,9 +210,9 @@ export default defineComponent({
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: max-content;
 			padding: 4px 8px;
-			color: var(--input-foreground-color);
-			background-color: var(--background-color-alt);
-			border-radius: var(--input-border-radius);
+			color: var(--foreground-normal);
+			background-color: var(--background-normal);
+			border-radius: var(--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -225,13 +223,11 @@ export default defineComponent({
 				left: calc(50%);
 				width: 10px;
 				height: 10px;
-				background-color: var(--background-color-alt);
+				background-color: var(--background-normal);
 				border-radius: var(--border-radius);
 				transform: translateX(-50%) rotate(45deg);
 				content: '';
 			}
-
-			@include type-body-sans;
 		}
 
 		&:active {

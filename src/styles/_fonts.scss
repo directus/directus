@@ -1,46 +1,57 @@
-@font-face {
-	font-weight: 300;
-	font-family: 'Roboto';
-	font-style: normal;
-	src:
-		url('../assets/fonts/roboto-light.woff2') format('woff2'),
-		url('../assets/fonts/roboto-light.woff') format('woff');
-	font-display: block;
-}
+// Sans Serif
 
 @font-face {
 	font-weight: 400;
-	font-family: 'Roboto';
+	font-family: 'Inter';
 	font-style: normal;
 	src:
-		url('../assets/fonts/roboto-regular.woff2') format('woff2'),
-		url('../assets/fonts/roboto-regular.woff') format('woff');
+		url('../assets/fonts/Inter-Regular.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Regular.woff') format('woff');
 	font-display: block;
 }
 
 @font-face {
 	font-weight: 500;
-	font-family: 'Roboto';
+	font-family: 'Inter';
 	font-style: normal;
 	src:
-		url('../assets/fonts/roboto-medium.woff2') format('woff2'),
-		url('../assets/fonts/roboto-medium.woff') format('woff');
+		url('../assets/fonts/Inter-Medium.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Medium.woff') format('woff');
 	font-display: block;
 }
 
-// Roboto Mono
+@font-face {
+	font-weight: 500;
+	font-family: 'Inter';
+	font-style: italic;
+	src:
+		url('../assets/fonts/Inter-MediumItalic.woff2') format('woff2'),
+		url('../assets/fonts/Inter-MediumItalic.woff') format('woff');
+	font-display: block;
+}
+
+@font-face {
+	font-weight: 600;
+	font-family: 'Inter';
+	font-style: normal;
+	src:
+		url('../assets/fonts/Inter-SemiBold.woff2') format('woff2'),
+		url('../assets/fonts/Inter-SemiBold.woff') format('woff');
+	font-display: block;
+}
+
+// Monospace
 
 @font-face {
 	font-weight: 400;
-	font-family: 'Roboto Mono';
+	font-family: 'Fira Code';
 	font-style: normal;
 	src:
-		url('../assets/fonts/robotomono-regular.woff2') format('woff2'),
-		url('../assets/fonts/robotomono-regular.woff') format('woff');
-	font-display: block;
+		url('../assets/fonts/FiraCode-Regular.woff2') format('woff2'),
+		url('../assets/fonts/FiraCode-Regular.woff') format('woff');
 }
 
-// Merriweather
+// Serif
 
 @font-face {
 	font-weight: 400;

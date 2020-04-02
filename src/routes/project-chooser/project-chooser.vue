@@ -1,6 +1,6 @@
 <template>
 	<public-view>
-		<h1 class="type-heading-large">{{ $t('choose_project') }}</h1>
+		<h1 class="type-title">{{ $t('choose_project') }}</h1>
 
 		<v-button v-for="project in projects" :to="project.link" full-width :key="project.key">
 			{{ (project.api && project.api.project_name) || project.key }}

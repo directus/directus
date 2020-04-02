@@ -99,8 +99,8 @@ export default defineComponent({
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		background-color: var(--input-background-color);
-		border-bottom: 1px solid var(--divider-color);
+		background-color: var(--background-page);
+		border-bottom: 1px solid var(--background-normal-alt);
 
 		&.select,
 		&.sort {
@@ -114,19 +114,19 @@ export default defineComponent({
 	}
 
 	&.clickable:not(.subdued):hover .cell {
-		background-color: var(--highlight);
+		background-color: var(--background-subdued);
 		cursor: pointer;
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--input-action-color-disabled);
+		--v-icon-color: var(--background-normal-alt);
 
 		&:hover {
 			.sorted-manually {
-				--v-icon-color: var(--input-action-color);
+				--v-icon-color: var(--foreground-normal);
 
 				&:hover {
-					--v-icon-color: var(--input-action-color-hover);
+					--v-icon-color: var(--foreground-subdued);
 
 					cursor: ns-resize;
 				}

@@ -82,7 +82,7 @@ export default defineComponent({
 	margin-bottom: 4px;
 	padding: 12px;
 	color: var(--white);
-	border-radius: var(--button-border-radius);
+	border-radius: var(--border-radius);
 
 	.icon {
 		display: block;
@@ -142,14 +142,14 @@ export default defineComponent({
 	}
 
 	&.info {
-		background-color: var(--accent);
+		background-color: var(--primary);
 
 		&.tail::after {
-			background-color: var(--accent);
+			background-color: var(--primary);
 		}
 
 		.text {
-			color: var(--accent-light);
+			color: var(--primary-alt);
 		}
 	}
 
@@ -161,7 +161,7 @@ export default defineComponent({
 		}
 
 		.text {
-			color: var(--success-light);
+			color: var(--success-alt);
 		}
 	}
 
@@ -173,7 +173,7 @@ export default defineComponent({
 		}
 
 		.text {
-			color: var(--warning-light);
+			color: var(--warning-alt);
 		}
 	}
 
@@ -185,7 +185,7 @@ export default defineComponent({
 		}
 
 		.text {
-			color: var(--danger-light);
+			color: var(--danger-alt);
 		}
 	}
 }

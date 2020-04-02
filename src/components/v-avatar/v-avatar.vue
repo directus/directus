@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-avatar {
-	--v-avatar-color: var(--action);
+	--v-avatar-color: var(--primary);
 	--v-avatar-size: 48px;
 
 	position: relative;

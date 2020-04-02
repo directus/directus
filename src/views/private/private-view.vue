@@ -184,7 +184,7 @@ export default defineComponent({
 		z-index: 30;
 		width: 284px;
 		height: 100%;
-		background-color: var(--background-color-alt);
+		background-color: var(--background-normal);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 
@@ -211,7 +211,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		--private-view-content-padding: 32px;
+		--content-padding: 32px;
 	}
 }
 </style>

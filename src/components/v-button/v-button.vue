@@ -16,6 +16,7 @@
 				secondary,
 				active,
 				dashed,
+				tile,
 			},
 		]"
 		:type="type"
@@ -90,6 +91,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		tile: {
+			type: Boolean,
+			default: false,
+		},
 		align: {
 			type: String,
 			default: 'center',
@@ -119,14 +124,12 @@ export default defineComponent({
 .v-button {
 	--v-button-width: auto;
 	--v-button-height: 44px;
-	--v-button-color: var(--button-primary-foreground-color);
-	--v-button-color-hover: var(--button-primary-foreground-color-hover);
-	--v-button-color-activated: var(--button-primary-foreground-color-activated);
-	--v-button-color-disabled: var(--button-primary-foreground-color-disabled);
-	--v-button-background-color: var(--button-primary-background-color);
-	--v-button-background-color-hover: var(--button-primary-background-color-hover);
-	--v-button-background-color-activated: var(--button-primary-background-color-activated);
-	--v-button-background-color-disabled: var(--button-primary-background-color-disabled);
+	--v-button-color: var(--foreground-inverted);
+	--v-button-color-activated: var(--foreground-inverted);
+	--v-button-color-disabled: var(--foreground-subdued);
+	--v-button-background-color: var(--primary);
+	--v-button-background-color-activated: var(--primary);
+	--v-button-background-color-disabled: var(--background-subdued);
 	--v-button-font-size: 16px;
 
 	position: relative;
@@ -141,8 +144,8 @@ export default defineComponent({
 	font-size: var(--v-button-font-size);
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
-	border: var(--button-border-width) solid var(--v-button-background-color);
-	border-radius: var(--button-border-radius);
+	border: var(--border-width) solid var(--v-button-background-color);
+	border-radius: var(--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -160,13 +163,12 @@ export default defineComponent({
 	}
 
 	&.secondary {
-		--v-button-color: var(--button-secondary-foreground-color);
-		--v-button-color-hover: var(--button-secondary-foreground-color-hover);
-		--v-button-color-activated: var(--button-secondary-foreground-color-activated);
-		--v-button-background-color: var(--button-secondary-background-color);
-		--v-button-background-color-hover: var(--button-secondary-background-color-hover);
-		--v-button-background-color-activated: var(--button-secondary-background-color-activated);
-		--v-button-background-color-disabled: var(--button-secondary-background-color-disabled);
+		--v-button-color: var(--foreground-color);
+		--v-button-color-hover: var(--foreground-color);
+		--v-button-color-activated: var(--foreground-color);
+		--v-button-background-color: var(--background-normal-alt);
+		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-background-color-activated: var(--background-normal-alt);
 	}
 
 	&:active {
@@ -180,7 +182,7 @@ export default defineComponent({
 	&:disabled {
 		color: var(--v-button-color-disabled);
 		background-color: var(--v-button-background-color-disabled);
-		border: var(--input-border-width) solid var(--v-button-background-color-disabled);
+		border: var(--border-width) solid var(--v-button-background-color-disabled);
 		cursor: not-allowed;
 
 		&:active {
@@ -196,6 +198,10 @@ export default defineComponent({
 		--v-button-color: var(--v-button-background-color);
 
 		background-color: transparent;
+
+		&.secondary {
+			--v-button-color: var(--foreground-subdued);
+		}
 	}
 
 	&.dashed {
@@ -277,12 +283,8 @@ export default defineComponent({
 		--v-button-background-color: var(--v-button-background-color-activated) !important;
 	}
 
-	@media (hover: hover) {
-		&:not(.loading):not(:disabled):not(.activated):hover {
-			color: var(--v-button-color-hover);
-			background-color: var(--v-button-background-color-hover);
-			border: var(--button-border-width) solid var(--v-button-background-color-hover);
-		}
+	&.tile {
+		border-radius: 0;
 	}
 }
 </style>

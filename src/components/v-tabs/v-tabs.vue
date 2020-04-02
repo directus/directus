@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .v-tabs.horizontal {
-	--v-tabs-underline-color: var(--foreground-color);
+	--v-tabs-underline-color: var(--foreground-normal);
 
 	position: relative;
 	display: flex;

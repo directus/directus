@@ -12,7 +12,7 @@
 			<slot name="headline" />
 			<div class="title">
 				<slot name="title:prepend" />
-				<h1>{{ title }}</h1>
+				<h1 class="type-title">{{ title }}</h1>
 				<slot name="title:append" />
 			</div>
 		</div>
@@ -68,7 +68,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
-@import '@/styles/mixins/type-styles';
 
 .header-bar {
 	position: sticky;
@@ -82,7 +81,7 @@ export default defineComponent({
 	height: 65px;
 	margin: 24px 0;
 	padding: 0 12px;
-	background-color: var(--background-color);
+	background-color: var(--background-page);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition);
 
@@ -114,7 +113,6 @@ export default defineComponent({
 
 		h1 {
 			flex-grow: 1;
-			@include type-title;
 		}
 	}
 

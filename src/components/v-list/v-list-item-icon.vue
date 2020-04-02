@@ -18,8 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles';
-
 .v-list-item-icon {
 	$this: &;
 

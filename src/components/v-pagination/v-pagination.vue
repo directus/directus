@@ -134,7 +134,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-pagination {
-	--v-pagination-active-color: var(--accent);
+	--v-pagination-active-color: var(--primary);
 
 	.v-button {
 		vertical-align: middle;

@@ -59,7 +59,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: center;
 	height: 64px;
-	background-color: var(--highlight);
+	background-color: var(--background-subdued);
 
 	select {
 		position: absolute;

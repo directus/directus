@@ -17,7 +17,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-sheet {
-	--v-sheet-background-color: var(--highlight);
+	--v-sheet-background-color: var(--background-subdued);
 	--v-sheet-height: auto;
 	--v-sheet-min-height: var(--input-height);
 	--v-sheet-max-height: none;
@@ -35,6 +35,6 @@ export default defineComponent({
 	padding: var(--v-sheet-padding);
 	overflow: auto;
 	background-color: var(--v-sheet-background-color);
-	border-radius: var(--input-border-radius);
+	border-radius: var(--border-radius);
 }
 </style>

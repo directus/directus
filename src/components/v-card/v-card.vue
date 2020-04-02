@@ -32,7 +32,7 @@ export default defineComponent({
 	--v-card-min-height: none;
 	--v-card-max-height: min-content;
 	--v-card-padding: 16px;
-	--v-card-background-color: var(--highlight);
+	--v-card-background-color: var(--background-subdued);
 
 	min-width: var(--v-card-min-width);
 	max-width: var(--v-card-max-width);
@@ -40,11 +40,11 @@ export default defineComponent({
 	min-height: var(--v-card-min-height);
 	max-height: var(--v-card-max-height);
 	background-color: var(--v-card-background-color);
-	border-radius: var(--input-border-radius);
+	border-radius: var(--border-radius);
 
 	& > :first-child {
-		border-top-left-radius: var(--input-border-radius);
-		border-top-right-radius: var(--input-border-radius);
+		border-top-left-radius: var(--border-radius);
+		border-top-right-radius: var(--border-radius);
 	}
 
 	&.disabled {

@@ -23,6 +23,6 @@ n/a
 ## CSS Variables
 | Variable                      | Default                    |
 |-------------------------------|----------------------------|
-| `--v-notice-color`            | `var(--foreground-color);` |
-| `--v-notice-background-color` | `var(--action-light);`     |
-| `--v-notice-icon-color`       | `var(--action);`           |
+| `--v-notice-color`            | `var(--foreground-normal);` |
+| `--v-notice-background-color` | `var(--primary-alt);`     |
+| `--v-notice-icon-color`       | `var(--primary);`           |

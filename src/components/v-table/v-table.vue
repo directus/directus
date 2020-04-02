@@ -342,7 +342,7 @@ export default defineComponent({
 
 			.sortable-ghost {
 				.cell {
-					background-color: var(--highlight);
+					background-color: var(--background-subdued);
 				}
 			}
 		}
@@ -377,7 +377,7 @@ export default defineComponent({
 		}
 
 		.loading-text {
-			color: var(--input-foreground-color-empty);
+			color: var(--foreground-subdued);
 			text-align: center;
 
 			td {

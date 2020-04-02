@@ -85,7 +85,7 @@ export default defineComponent({
 	vertical-align: middle;
 
 	i {
-		display: inline-block;
+		display: block;
 		font-weight: normal;
 		font-size: var(--v-icon-size);
 		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
@@ -95,7 +95,6 @@ export default defineComponent({
 		letter-spacing: normal;
 		white-space: nowrap;
 		text-transform: none;
-		vertical-align: middle;
 		word-wrap: normal;
 		font-feature-settings: 'liga';
 

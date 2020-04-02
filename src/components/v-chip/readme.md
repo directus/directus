@@ -71,7 +71,7 @@ There are two events, one when clicking on the chip called `click` and one when 
 ## CSS Variables
 | Variable                          | Default                               |
 |-----------------------------------|---------------------------------------|
-| `--v-chip-color`                  | `var(--input-foreground-color)`       |
-| `--v-chip-background-color`       | `var(--input-border-color)`           |
-| `--v-chip-color-hover`            | `var(--input-foreground-color-hover)` |
-| `--v-chip-background-color-hover` | `var(--input-border-color-hover)`     |
+| `--v-chip-color`                  | `var(--foreground-normal)`       |
+| `--v-chip-background-color`       | `var(--border-normal)`           |
+| `--v-chip-color-hover`            | `var(--foreground-normal)` |
+| `--v-chip-background-color-hover` | `var(--border-normal)`     |

@@ -222,8 +222,8 @@ export default defineComponent({
 		padding: 0 20px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--input-background-color);
-		border-bottom: 1px solid var(--input-border-color);
+		background-color: var(--background-page);
+		border-bottom: 1px solid var(--border-normal);
 
 		&.select,
 		&.sort {
@@ -235,6 +235,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			height: 100%;
+			font-weight: 600;
 
 			> span {
 				overflow: hidden;
@@ -301,12 +302,12 @@ export default defineComponent({
 			display: block;
 			width: 1px;
 			height: 100%;
-			background-color: var(--input-border-color);
+			background-color: var(--border-normal);
 			content: '';
 		}
 
 		&:hover::after {
-			background-color: var(--input-action-color-hover);
+			background-color: var(--foreground-subdued);
 		}
 	}
 

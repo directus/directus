@@ -82,7 +82,7 @@ export default defineComponent({
 	max-width: 916px;
 	height: calc(100% - 16px);
 	max-height: 760px;
-	background-color: var(--background-color);
+	background-color: var(--background-page);
 	border-radius: 4px;
 
 	.spacer {
@@ -95,7 +95,7 @@ export default defineComponent({
 		align-items: center;
 		height: 60px;
 		padding: 0 16px;
-		border-bottom: 2px solid var(--background-color-alt);
+		border-bottom: 2px solid var(--background-normal);
 
 		.title {
 			margin-right: 12px;
@@ -103,7 +103,7 @@ export default defineComponent({
 		}
 
 		.subtitle {
-			color: var(--foreground-color-secondary);
+			color: var(--foreground-subdued);
 		}
 
 		.menu-toggle {
@@ -133,7 +133,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			width: 220px;
 			height: 100%;
-			background-color: var(--background-color-alt);
+			background-color: var(--background-normal);
 			transform: translateX(-100%);
 			transition: transform var(--slow) var(--transition-out);
 
@@ -174,7 +174,7 @@ export default defineComponent({
 		justify-content: flex-end;
 		height: 60px;
 		padding: 0 16px;
-		border-top: 2px solid var(--background-color-alt);
+		border-top: 2px solid var(--background-normal);
 
 		::v-deep > *:not(:last-child) {
 			margin-right: 8px;

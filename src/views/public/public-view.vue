@@ -84,7 +84,7 @@ export default defineComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: var(--background-color);
+		background-color: var(--background-page);
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 
 		&.wide {
@@ -109,7 +109,7 @@ export default defineComponent({
 	}
 
 	.notice {
-		color: var(--foreground-color-secondary);
+		color: var(--foreground-subdued);
 	}
 }
 </style>

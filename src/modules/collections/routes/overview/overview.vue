@@ -58,7 +58,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .icon {
-	--v-icon-color: var(--foreground-color-secondary);
+	--v-icon-color: var(--foreground-subdued);
 
 	::v-deep i {
 		vertical-align: unset;

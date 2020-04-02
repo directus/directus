@@ -22,6 +22,7 @@
 			dashed
 			outlined
 			full-width
+			large
 			@click="openFieldSetup()"
 		>
 			<v-icon name="add" left />
@@ -241,7 +242,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: var(--private-view-content-padding) 0;
+	margin: var(--content-padding) 0;
 }
 
 .add-field {

@@ -82,8 +82,8 @@ export default defineComponent({
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--background-color-alt);
-	border: 2px solid var(--background-color-alt);
+	background-color: var(--background-normal);
+	border: 2px solid var(--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -92,7 +92,7 @@ export default defineComponent({
 	transition-property: background-color, border-color;
 
 	&:not(.disabled):hover {
-		border-color: var(--action);
+		border-color: var(--background-normal-alt);
 	}
 
 	&.disabled {
@@ -106,7 +106,7 @@ export default defineComponent({
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-color);
+		background-color: var(--background-page);
 		border-radius: 50%;
 	}
 
@@ -120,16 +120,16 @@ export default defineComponent({
 
 	&.active {
 		z-index: 2;
-		color: var(--accent);
-		background-color: var(--accent-light);
-		border-color: var(--accent);
+		color: var(--primary);
+		background-color: var(--primary-alt);
+		border-color: var(--primary);
 
 		.v-icon {
-			--v-icon-color: var(--accent);
+			--v-icon-color: var(--primary);
 		}
 
 		&:hover {
-			border-color: var(--accent);
+			border-color: var(--primary);
 		}
 	}
 }

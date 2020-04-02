@@ -45,5 +45,5 @@ n/a
 | Variable                               | Default                         |
 |----------------------------------------|---------------------------------|--|
 | `--v-progress-linear-height`           | `4px`                           |
-| `--v-progress-linear-color`            | `var(--input-foreground-color)` |
-| `--v-progress-linear-background-color` | `var(--input-border-color)`     |
+| `--v-progress-linear-color`            | `var(--foreground-normal)` |
+| `--v-progress-linear-background-color` | `var(--border-normal)`     |

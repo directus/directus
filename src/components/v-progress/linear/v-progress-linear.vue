@@ -60,8 +60,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-progress-linear {
 	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--input-foreground-color);
-	--v-progress-linear-background-color: var(--input-border-color);
+	--v-progress-linear-color: var(--foreground-normal);
+	--v-progress-linear-background-color: var(--border-normal);
 	--v-progress-linear-transition: 400ms;
 
 	position: relative;

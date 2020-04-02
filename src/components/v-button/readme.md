@@ -63,6 +63,7 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 | `to`       | Render as vue router-link                                                 | `false`    |
 | `align`    | Align content in button. One of `left | center | right`                   | `'center'` |
 | `dashed`   | Render the border dashed. Meant to be used with `outlined`.               | `false`    |
+| `tile`     | Render without border radius                                              | `false`    |
 
 ## Slots
 
@@ -83,12 +84,12 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 |-----------------------------------------|----------------------------------------------------|
 | `--v-button-width`                      | `auto`                                             |
 | `--v-button-height`                     | `44px`                                             |
-| `--v-button-color`                      | `var(--button-primary-foreground-color)`           |
-| `--v-button-color-hover`                | `var(--button-primary-foreground-color-hover)`     |
-| `--v-button-color-activated`            | `var(--button-primary-foreground-color-activated)` |
-| `--v-button-color-disabled`             | `var(--button-primary-foreground-color-disabled)`  |
-| `--v-button-background-color`           | `var(--button-primary-background-color)`           |
-| `--v-button-background-color-hover`     | `var(--button-primary-background-color-hover)`     |
-| `--v-button-background-color-activated` | `var(--button-primary-background-color-activated)` |
-| `--v-button-background-color-disabled`  | `var(--button-primary-background-color-disabled)`  |
+| `--v-button-color`                      | `var(--foreground-inverted)`           |
+| `--v-button-color-hover`                | `var(--foreground-inverted)`     |
+| `--v-button-color-activated`            | `var(--foreground-inverted)` |
+| `--v-button-color-disabled`             | `var(--primary)`  |
+| `--v-button-background-color`           | `var(--primary)`           |
+| `--v-button-background-color-hover`     | `var(--primary)`     |
+| `--v-button-background-color-activated` | `var(--primary)` |
+| `--v-button-background-color-disabled`  | `var(--primary-alt)`  |
 | `--v-button-font-size`                  | `16px`                                             |

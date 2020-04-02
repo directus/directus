@@ -26,4 +26,4 @@ n/a
 ## CSS Variables
 | Variable            | Default                             |
 |---------------------|-------------------------------------|
-| `--v-divider-color` | `var(--foreground-color-tertiary)` |
+| `--v-divider-color` | `var(--foreground-subdued)` |

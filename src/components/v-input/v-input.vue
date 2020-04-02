@@ -92,10 +92,10 @@ export default defineComponent({
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
-		color: var(--input-foreground-color);
-		background-color: var(--input-background-color);
-		border: var(--input-border-width) solid var(--input-border-color);
-		border-radius: var(--input-border-radius);
+		color: var(--foreground-normal);
+		background-color: var(--background-page);
+		border: var(--border-width) solid var(--border-normal);
+		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		.prepend {
@@ -103,21 +103,21 @@ export default defineComponent({
 		}
 
 		&:hover {
-			color: var(--input-foreground-color-hover);
-			background-color: var(--input-background-color-hover);
-			border-color: var(--input-border-color-hover);
+			color: var(--foreground-normal);
+			background-color: var(--background-page);
+			border-color: var(--border-normal);
 		}
 
 		&:focus-within {
-			color: var(--input-foreground-color-focus);
-			background-color: var(--input-background-color-focus);
-			border-color: var(--input-border-color-focus);
+			color: var(--foreground-normal);
+			background-color: var(--background-page);
+			border-color: var(--primary);
 		}
 
 		&.disabled {
-			color: var(--input-foreground-color-disabled);
-			background-color: var(--input-background-color-disabled);
-			border-color: var(--input-border-color-disabled);
+			color: var(--foreground-subdued);
+			background-color: var(--background-normal-alt);
+			border-color: var(--border-normal-alt);
 		}
 
 		input {
@@ -128,7 +128,7 @@ export default defineComponent({
 			appearance: none;
 
 			&::placeholder {
-				color: var(--input-foreground-color-empty);
+				color: var(--foreground-subdued);
 			}
 		}
 
@@ -140,7 +140,7 @@ export default defineComponent({
 
 		.prefix,
 		.suffix {
-			color: var(--input-foreground-color-empty);
+			color: var(--foreground-subdued);
 		}
 
 		.append {

@@ -2,7 +2,7 @@
 	<div class="module-bar">
 		<module-bar-logo />
 		<div class="modules">
-			<v-button v-for="module in _modules" :key="module.id" icon x-large :to="module.to">
+			<v-button v-for="module in _modules" :key="module.id" icon x-large :to="module.to" tile>
 				<v-icon :name="module.icon" />
 			</v-button>
 		</div>
@@ -42,7 +42,7 @@ export default defineComponent({
 	flex-direction: column;
 	width: 64px;
 	height: 100%;
-	background-color: #263238;
+	background-color: var(--module-background);
 
 	.modules {
 		flex-grow: 1;
@@ -51,7 +51,9 @@ export default defineComponent({
 	}
 
 	.v-button {
-		--v-button-color: var(--blue-grey-400);
+		--v-button-color: var(--module-icon);
+		--v-button-background-color: var(--module-background);
+		--v-button-background-color-activated: var(--module-background-alt);
 	}
 }
 </style>

@@ -32,7 +32,7 @@ export const basic = () =>
 				<v-button @click="active = !active">Activate</v-button>
 				<v-dialog v-model="active" :persistent="persistent">
 					<v-sheet>
-						<h2 class="type-heading-small" style="margin-bottom: 20px">Are you sure you want to delete this item?</h2>
+						<h2 class="type-label" style="margin-bottom: 20px">Are you sure you want to delete this item?</h2>
 						<v-button @click="active = false" secondary outlined>Cancel</v-button>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>
@@ -61,7 +61,7 @@ export const activatorSlot = () =>
 						<p @click="on">Click me to active</p>
 					</template>
 					<v-sheet>
-						<h2 class="type-heading-small" style="margin-bottom: 20px">Are you sure you want to delete this item?</h2>
+						<h2 class="type-label" style="margin-bottom: 20px">Are you sure you want to delete this item?</h2>
 						<v-button @click="active = false" secondary outlined>Cancel</v-button>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>

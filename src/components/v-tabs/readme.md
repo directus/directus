@@ -52,4 +52,4 @@ export default defineComponent({
 ## CSS Variables
 | Variable                   | Default                   |
 |----------------------------|---------------------------|
-| `--v-tabs-underline-color` | `var(--foreground-color)` |
+| `--v-tabs-underline-color` | `var(--foreground-normal)` |

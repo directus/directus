@@ -293,7 +293,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .private-view {
-	--private-view-content-padding: 0 !important;
+	--content-padding: 0 !important;
 }
 
 .action-delete {
@@ -303,7 +303,7 @@ export default defineComponent({
 
 .action-batch {
 	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-dark);
+	--v-button-background-color-hover: var(--warning-150);
 }
 
 .layout {

@@ -55,7 +55,7 @@ n/a
 | `--v-card-min-height`       | `none`             |
 | `--v-card-max-height`       | `none`             |
 | `--v-card-padding`          | `16px`             |
-| `--v-card-background-color` | `var(--highlight)` |
+| `--v-card-background-color` | `var(--background-subdued)` |
 
 ---
 

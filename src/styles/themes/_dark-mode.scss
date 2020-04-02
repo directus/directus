@@ -1,6 +1,6 @@
 // Dark Mode
 @mixin dark-mode {
-	--background-color: var(--black);
+	--background-page: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {

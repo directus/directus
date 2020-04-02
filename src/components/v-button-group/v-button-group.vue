@@ -53,11 +53,11 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .v-button-group {
-	--v-button-group-background-color-active: var(--button-primary-background-color-disabled);
+	--v-button-group-background-color-active: var(--primary-alt);
 
 	.v-item-group {
 		::v-deep .v-button {
-			--button-border-radius: 0px;
+			--border-radius: 0px;
 
 			&:active {
 				transform: unset;
@@ -69,34 +69,32 @@ export default defineComponent({
 			}
 
 			&:first-child {
-				--button-border-radius: var(--input-border-radius) 0px 0px
-					var(--input-border-radius);
+				--border-radius: var(--border-radius) 0px 0px var(--border-radius);
 			}
 
 			&:last-child {
-				--button-border-radius: 0px var(--input-border-radius) var(--input-border-radius)
-					0px;
+				--border-radius: 0px var(--border-radius) var(--border-radius) 0px;
 			}
 		}
 	}
 
 	&.tile .v-item-group ::v-deep .v-button {
 		&:first-child {
-			--button-border-radius: 0px;
+			--border-radius: 0px;
 		}
 
 		&:last-child {
-			--button-border-radius: 0px;
+			--border-radius: 0px;
 		}
 	}
 
 	&.rounded:not(.tile) .v-item-group ::v-deep .v-button {
 		&:first-child {
-			--button-border-radius: var(--v-button-height) 0px 0px var(--v-button-height);
+			--border-radius: var(--v-button-height) 0px 0px var(--v-button-height);
 		}
 
 		&:last-child {
-			--button-border-radius: 0px var(--v-button-height) var(--v-button-height) 0px;
+			--border-radius: 0px var(--v-button-height) var(--v-button-height) 0px;
 		}
 	}
 }

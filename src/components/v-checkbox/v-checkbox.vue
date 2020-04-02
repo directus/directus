@@ -9,7 +9,7 @@
 		:class="{ checked: isChecked }"
 	>
 		<v-icon :name="icon" />
-		<span class="label">
+		<span class="label type-label">
 			<slot name="label">{{ label }}</slot>
 		</span>
 	</button>
@@ -85,11 +85,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles';
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
-	--v-checkbox-color: var(--input-foreground-color);
+	--v-checkbox-color: var(--foreground-normal);
 
 	display: flex;
 	align-items: center;
@@ -103,29 +102,28 @@ export default defineComponent({
 	.label:not(:empty) {
 		margin-left: 8px;
 
-		@include type-body-sans;
 		@include no-wrap;
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--input-border-color);
+		--v-icon-color: var(--border-normal);
 	}
 
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-color-secondary);
+			color: var(--foreground-subdued);
 		}
 
 		.v-icon {
-			--v-icon-color: var(--input-border-color);
+			--v-icon-color: var(--border-normal);
 		}
 	}
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--input-border-color-hover);
+			--v-icon-color: var(--border-normal);
 		}
 	}
 

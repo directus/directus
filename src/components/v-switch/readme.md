@@ -14,7 +14,7 @@ Color changes are done using the css variable `--v-switch-color`.
 <v-switch/>
 <style>
 .v-switch {
-    --v-switch-color: var(--red);
+	--v-switch-color: var(--red);
 }
 </style>
 ```
@@ -67,4 +67,4 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 ## CSS Variables
 | Variable           | Default                         |
 |--------------------|---------------------------------|
-| `--v-switch-color` | `var(--input-foreground-color)` |
+| `--v-switch-color` | `var(--foreground-normal)` |

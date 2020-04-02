@@ -56,6 +56,9 @@ export const withText = () => ({
 		dashed: {
 			default: boolean('Dashed', false, 'Button'),
 		},
+		tile: {
+			default: boolean('Tile', false, 'Button'),
+		},
 		fullWidth: {
 			default: boolean('Full-width', false, 'Button'),
 		},
@@ -108,6 +111,7 @@ export const withText = () => ({
 			:outlined="outlined"
 			:align="align"
 			:dashed="dashed"
+			:tile="tile"
 			:icon="icon"
 			:style="{
 				'--v-button-color': color,

@@ -106,6 +106,10 @@ export default defineComponent({
 }
 
 .hidden {
-	color: var(--foreground-color-secondary);
+	color: var(--foreground-subdued);
+}
+
+.v-table {
+	padding: var(--content-padding);
 }
 </style>

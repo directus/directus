@@ -71,17 +71,16 @@ export default defineComponent({
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: 0;
 	--v-list-item-margin-bottom: 0;
-	--v-list-item-color: var(--v-list-color, var(--foreground-color));
-	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-color));
-	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-color));
-	--v-list-item-background-color: var(--v-list-background-color, var(--background-color));
+	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
+	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
+	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
 	--v-list-item-background-color-hover: var(
 		--v-list-background-color-hover,
-		var(--background-color-hover)
+		var(--background-normal-alt)
 	);
 	--v-list-item-background-color-active: var(
 		--v-list-background-color-active,
-		var(--background-color-active)
+		var(--background-normal-alt)
 	);
 
 	position: relative;
@@ -99,7 +98,6 @@ export default defineComponent({
 	overflow: hidden;
 	color: var(--v-list-item-color);
 	text-decoration: none;
-	background-color: var(--v-list-item-background-color);
 	border-radius: var(--v-list-item-border-radius);
 
 	&.link {
@@ -121,7 +119,7 @@ export default defineComponent({
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-color-secondary);
+		--v-list-item-color: var(--foreground-subdued);
 	}
 
 	@at-root {

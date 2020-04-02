@@ -1,6 +1,6 @@
 <template>
 	<public-view>
-		<h1 class="type-heading-large">{{ $t('sign_in') }}</h1>
+		<h1 class="type-title">{{ $t('sign_in') }}</h1>
 
 		<continue-as v-if="alreadyAuthenticated" />
 		<project-error

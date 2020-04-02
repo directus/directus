@@ -16,10 +16,11 @@ html {
 
 body {
 	color: var(--page-text-color);
-	font-weight: 400;
+	font-weight: 500;
+	font-size: 14px;
 	font-family: var(--family-sans-serif);
-	line-height: 1.3;
-	letter-spacing: 0.01em;
+	font-style: normal;
+	line-height: 22px;
 	background-color: var(--page-background-color);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
