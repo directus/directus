@@ -117,11 +117,7 @@ export default defineComponent({
 	&.sup {
 		--v-icon-size: 8px;
 
-		vertical-align: 0;
-
-		i {
-			vertical-align: 5px;
-		}
+		vertical-align: 5px;
 	}
 
 	&.x-small {

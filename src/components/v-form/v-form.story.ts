@@ -2,9 +2,10 @@ import Vue from 'vue';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import VForm from './v-form.vue';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/fields';
 import { FormField } from './types';
+import { i18n } from '@/lang';
 
 Vue.component('v-form', VForm);
 
@@ -18,6 +19,7 @@ export default {
 
 export const collection = () =>
 	defineComponent({
+		i18n,
 		setup() {
 			const fieldsStore = useFieldsStore({});
 			fieldsStore.state.fields = [
@@ -64,6 +66,7 @@ export const collection = () =>
 
 export const fields = () =>
 	defineComponent({
+		i18n,
 		setup() {
 			const fields: FormField[] = [
 				{
@@ -80,7 +83,9 @@ export const fields = () =>
 					interface: 'text-input',
 					width: 'half',
 					options: null,
+					note: 'I am required',
 					sort: 2,
+					required: true,
 				},
 				{
 					field: 'third-field',
@@ -89,16 +94,20 @@ export const fields = () =>
 					width: 'full',
 					options: null,
 					sort: 3,
+					default_value: 'This is my default value',
 				},
 			];
 
-			return { fields };
+			const edits = ref({});
+
+			return { fields, edits };
 		},
 		template: `
 			<v-form
+				v-model="edits"
 				:fields="fields"
 				:initial-values="{
-					title: 'Hello World!'
+					'third-field': 'Hello World!'
 				}"
 			/>
 		`,
