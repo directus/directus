@@ -1,4 +1,11 @@
 :root {
+	--brand: var(--primary); // will be overriden with directus_settings.project_color
+	--white: #fff;
+	--black: #090C0D;
+	--module-background: #13181A;
+	--module-background-alt: #090C0D;
+	--module-icon: #607D8B;
+	--module-icon-alt: #FFF;
 	--transition: cubic-bezier(0.4, 0, 0.2, 1);
 	--transition-in: cubic-bezier(0, 0, 0.2, 1);
 	--transition-out: cubic-bezier(0.4, 0, 1, 1);

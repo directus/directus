@@ -1,8 +1,6 @@
 /* stylelint-disable */
-body,
-.default-colors {
-	--brand: var(--primary); // will be overriden with directus_settings.project_color
 
+@mixin light {
 	--border-normal: #D6DFE2;
 	--border-normal-alt: #BDCCD2;
 	--border-subdued: #ECEFF1;
@@ -16,11 +14,6 @@ body,
 	--background-subdued: #F5F7F8;
 	--background-page: #FFF;
 	--background-inverted: #263238;
-
-	--module-background: #13181A;
-	--module-background-alt: #090C0D;
-	--module-icon: #607D8B;
-	--module-icon-alt: #FFF;
 
 	--primary-10: #EAF2FD;
 	--primary-25: #CBDFFB;
@@ -76,8 +69,9 @@ body,
 	--danger-150: #884448;
 	--danger-175: #573B40;
 	--danger-190: #3A363B;
+
+	.alt-colors {
+		--background-subdued: var(--background-page);
+	}
 }
 
-.alt-colors {
-	--background-subdued: var(--background-page);
-}

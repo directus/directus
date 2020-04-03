@@ -68,6 +68,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .project-chooser {
 	position: relative;
+	color: var(--foreground-normal);
 	background-color: var(--background-normal-alt);
 
 	.toggle {

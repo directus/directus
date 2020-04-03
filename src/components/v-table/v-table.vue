@@ -327,6 +327,8 @@ export default defineComponent({
 
 			td,
 			th {
+				color: var(--foreground-normal);
+
 				&.align-left {
 					text-align: left;
 				}

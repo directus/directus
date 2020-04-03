@@ -11,13 +11,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs, watch } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
+import { useUserStore } from '@/stores/user';
 
 export default defineComponent({
 	setup() {
 		const appStore = useAppStore();
 		const { hydrating } = toRefs(appStore.state);
+
+		const userStore = useUserStore();
+
+		watch(
+			() => userStore.state.currentUser,
+			(newUser) => {
+				document.body.classList.remove('dark');
+				document.body.classList.remove('light');
+				document.body.classList.remove('auto');
+
+				if (newUser !== undefined && newUser !== null) {
+					document.body.classList.add(newUser.theme);
+				}
+			}
+		);
 
 		return { hydrating };
 	},

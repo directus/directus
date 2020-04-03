@@ -15,13 +15,13 @@ html {
 }
 
 body {
-	color: var(--page-text-color);
+	color: var(--foreground-normal);
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 22px;
-	background-color: var(--page-background-color);
+	background-color: var(--background-page);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;

@@ -1,5 +1,5 @@
 <template>
-	<div class="private-view">
+	<div class="private-view" :class="theme">
 		<aside
 			role="navigation"
 			aria-label="Module Navigation"
@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, watch } from '@vue/composition-api';
+import { defineComponent, ref, provide, watch, computed } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -73,6 +73,7 @@ import ProjectChooser from './components/project-chooser';
 import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
+import useUserStore from '@/stores/user';
 
 export default defineComponent({
 	components: {
@@ -95,6 +96,11 @@ export default defineComponent({
 		const drawerOpen = ref(false);
 		const contentEl = ref<Element>();
 		const navigationsInline = ref(false);
+		const userStore = useUserStore();
+
+		const theme = computed(() => {
+			return userStore.state.currentUser?.theme || 'auto';
+		});
 
 		watch(drawerOpen, (open: boolean) => {
 			if (open === false) {
@@ -110,6 +116,7 @@ export default defineComponent({
 			drawerOpen,
 			contentEl,
 			navigationsInline,
+			theme,
 		};
 	},
 });
@@ -122,6 +129,7 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	background-color: var(--background-page);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -159,7 +167,7 @@ export default defineComponent({
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: #eceff1;
+			background-color: var(--background-normal);
 
 			&-content {
 				height: calc(100% - 64px);

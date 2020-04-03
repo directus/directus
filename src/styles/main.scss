@@ -1,9 +1,26 @@
 @import 'base';
-@import 'colors';
 @import 'fonts';
 @import 'variables';
 @import 'tooltip';
 @import 'type-styles';
-@import 'themes/default';
-@import 'themes/dark-mode';
+@import 'themes/dark';
+@import 'themes/light';
 @import 'lib/codemirror';
+
+body.light {
+	@include light;
+}
+
+body.dark {
+	@include dark;
+}
+
+body.auto {
+	@media (prefers-color-scheme: dark) {
+		@include dark;
+	}
+
+	@media (prefers-color-scheme: light) {
+		@include light;
+	}
+}

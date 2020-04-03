@@ -124,8 +124,8 @@ export default defineComponent({
 .v-button {
 	--v-button-width: auto;
 	--v-button-height: 44px;
-	--v-button-color: var(--foreground-inverted);
-	--v-button-color-activated: var(--foreground-inverted);
+	--v-button-color: var(--white);
+	--v-button-color-activated: var(--white);
 	--v-button-color-disabled: var(--foreground-subdued);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-activated: var(--primary);

@@ -31,8 +31,9 @@ export default defineComponent({
 pre {
 	max-width: max-content;
 	padding: 0.5rem;
+	color: var(--foreground-normal);
 	font-family: monospace;
-	background-color: #eee;
+	background-color: var(--background-subdued);
 	border-radius: 8px;
 }
 </style>
