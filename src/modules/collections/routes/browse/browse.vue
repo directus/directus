@@ -62,8 +62,7 @@
 			:view-query.sync="viewQuery"
 		/>
 	</private-view>
-	<!-- @TODO: Render real 404 view here -->
-	<p v-else>Not found</p>
+	<collections-not-found v-else />
 </template>
 
 <script lang="ts">
@@ -78,10 +77,13 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPresetsStore from '@/stores/collection-presets';
 import { debounce } from 'lodash';
+import CollectionsNotFound from '../not-found/';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
 	const collectionInfo = collectionsStore.getCollection(to.params.collection);
+
+	if (collectionInfo === null) return next();
 
 	if (collectionInfo.single === true) {
 		const fieldsStore = useFieldsStore();
@@ -113,7 +115,7 @@ export default defineComponent({
 	beforeRouteEnter: redirectIfNeeded,
 	beforeRouteUpdate: redirectIfNeeded,
 	name: 'collections-browse',
-	components: { CollectionsNavigation },
+	components: { CollectionsNavigation, CollectionsNotFound },
 	props: {
 		collection: {
 			type: String,

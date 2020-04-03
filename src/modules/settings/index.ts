@@ -3,6 +3,7 @@ import SettingsGlobal from './routes/global';
 import { SettingsCollections, SettingsFields } from './routes/data-model/';
 import SettingsRoles from './routes/roles';
 import SettingsWebhooks from './routes/webhooks';
+import SettingsNotFound from './routes/not-found';
 
 export default defineModule(({ i18n }) => ({
 	id: 'settings',
@@ -38,6 +39,11 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-webhooks',
 			path: '/webhooks',
 			component: SettingsWebhooks,
+		},
+		{
+			name: 'settings-not-found',
+			path: '*',
+			component: SettingsNotFound,
 		},
 	],
 }));

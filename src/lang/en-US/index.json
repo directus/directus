@@ -64,6 +64,8 @@
 	"collapse_sidebar": "Collapse Sidebar",
 	"notifications": "Notifications",
 	"show_all_activity": "Show All Activity",
+	"page_not_found": "Page Not Found",
+	"page_not_found_body": "The page you are looking for doesn't seem to exist.",
 
   "about_directus": "About Directus",
   "activity": "Activity",
@@ -455,8 +457,6 @@
   "options": "Options",
   "other": "Other",
   "otp": "One-Time Password",
-  "page_not_found": "Page Not Found",
-  "page_not_found_body": "The page you are looking for doesn't seem to exist.",
   "password": "Password",
   "password_reset_sending": "Sending email...",
   "password_reset_sent": "If a valid user with this email address exists in Directus, we've sent you a secure link to reset your password.",

@@ -2,6 +2,7 @@ import { defineModule } from '@/modules/define';
 import CollectionsOverview from './routes/overview/';
 import CollectionsBrowse from './routes/browse/';
 import CollectionsDetail from './routes/detail/';
+import CollectionsItemNotFound from './routes/not-found';
 
 export default defineModule(({ i18n }) => ({
 	id: 'collections',
@@ -24,6 +25,11 @@ export default defineModule(({ i18n }) => ({
 			path: '/:collection/:primaryKey',
 			component: CollectionsDetail,
 			props: true,
+		},
+		{
+			name: 'collections-item-not-found',
+			path: '/:collection/*',
+			component: CollectionsItemNotFound,
 		},
 	],
 }));

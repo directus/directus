@@ -31,6 +31,9 @@ export default defineComponent({
 
 				if (newUser !== undefined && newUser !== null) {
 					document.body.classList.add(newUser.theme);
+				} else {
+					// Default to light mode
+					document.body.classList.add('light');
 				}
 			}
 		);

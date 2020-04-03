@@ -73,6 +73,7 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	color: #263238;
 
 	.container {
 		display: flex;
@@ -84,7 +85,7 @@ export default defineComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: var(--white);
+		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 
 		&.wide {
@@ -110,6 +111,14 @@ export default defineComponent({
 
 	.notice {
 		color: #b0bec5;
+	}
+
+	& ::v-deep {
+		.type-title,
+		.type-text,
+		.type-label {
+			color: #263238;
+		}
 	}
 }
 </style>

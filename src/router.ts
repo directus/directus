@@ -1,5 +1,4 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
-import Debug from '@/routes/debug.vue';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
@@ -8,6 +7,7 @@ import { checkAuth } from '@/auth';
 import { hydrate, dehydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
+import PrivateNotFoundRoute from '@/routes/private-not-found';
 
 export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
 	const projectsStore = useProjectsStore();
@@ -65,14 +65,7 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		name: 'private-404',
 		path: '/:project/*',
-		// This will be Private404
-		component: Debug,
-	},
-	{
-		name: 'public-404',
-		path: '*',
-		// This will be Public404
-		component: Debug,
+		component: PrivateNotFoundRoute,
 	},
 ];
 

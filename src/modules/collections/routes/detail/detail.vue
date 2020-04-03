@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('editing', { collection: currentCollection.name })">
+	<private-view v-if="item" :title="$t('editing', { collection: currentCollection.name })">
 		<template #title-outer:prepend>
 			<v-button rounded icon secondary exact :to="breadcrumb[1].to">
 				<v-icon name="arrow_back" />
@@ -13,7 +13,13 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -43,7 +49,7 @@
 			</v-button>
 		</template>
 
-		<template v-if="item">
+		<template>
 			<v-form :initial-values="item" :collection="collection" v-model="edits" />
 		</template>
 
@@ -51,10 +57,11 @@
 			<collections-navigation />
 		</template>
 	</private-view>
+	<collections-not-found v-else />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs, watch } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import useFieldsStore from '@/stores/fields';
 import { Field } from '@/stores/fields/types';
@@ -63,6 +70,7 @@ import CollectionsNavigation from '../../components/navigation/';
 import useCollectionsStore from '../../../../stores/collections';
 import { i18n } from '@/lang';
 import router from '@/router';
+import CollectionsNotFound from '../not-found/';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,7 +79,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
-	components: { CollectionsNavigation },
+	components: { CollectionsNavigation, CollectionsNotFound },
 	props: {
 		collection: {
 			type: String,
@@ -117,6 +125,8 @@ export default defineComponent({
 		} else {
 			fetchItem();
 		}
+
+		watch(() => props.primaryKey, fetchItem);
 
 		const breadcrumb = computed(() => [
 			{
