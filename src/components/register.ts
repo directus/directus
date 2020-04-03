@@ -13,6 +13,7 @@ import VForm from './v-form';
 import VHover from './v-hover/';
 import VModal from './v-modal/';
 import VIcon from './v-icon/';
+import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
 import VList, {
@@ -54,6 +55,7 @@ Vue.component('v-form', VForm);
 Vue.component('v-hover', VHover);
 Vue.component('v-modal', VModal);
 Vue.component('v-icon', VIcon);
+Vue.component('v-info', VInfo);
 Vue.component('v-input', VInput);
 Vue.component('v-item-group', VItemGroup);
 Vue.component('v-item', VItem);
