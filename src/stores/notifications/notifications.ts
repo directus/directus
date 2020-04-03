@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { reverse, sortBy } from 'lodash';
 
 export const useNotificationsStore = createStore({
-	id: 'useNotifications',
+	id: 'notificationsStore',
 	state: () => ({
 		queue: [] as Notification[],
 		previous: [] as Notification[],

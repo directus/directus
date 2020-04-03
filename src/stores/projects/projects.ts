@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { Projects, ProjectWithKey, ProjectError } from './types';
+import { ProjectWithKey } from './types';
 import api from '@/api';
 
 type LoadingError = null | {
@@ -12,11 +12,11 @@ export const useProjectsStore = createStore({
 	state: () => ({
 		needsInstall: false,
 		error: null as LoadingError,
-		projects: null as Projects | null,
+		projects: null as ProjectWithKey[] | null,
 		currentProjectKey: null as string | null,
 	}),
 	getters: {
-		currentProject: (state): ProjectWithKey | ProjectError | null => {
+		currentProject: (state): ProjectWithKey | null => {
 			return state.projects?.find(({ key }) => key === state.currentProjectKey) || null;
 		},
 	},
@@ -29,7 +29,7 @@ export const useProjectsStore = createStore({
 		 * Returns a boolean if the operation succeeded or not.
 		 */
 		async setCurrentProject(key: string): Promise<boolean> {
-			const projects = this.state.projects || ([] as Projects);
+			const projects = this.state.projects || ([] as ProjectWithKey[]);
 			const projectKeys = projects.map((project) => project.key);
 
 			if (projectKeys.includes(key) === false) {
@@ -53,7 +53,7 @@ export const useProjectsStore = createStore({
 			try {
 				const projectsResponse = await api.get('/server/projects');
 				const projectKeys: string[] = projectsResponse.data.data;
-				const projects: Projects = [];
+				const projects: ProjectWithKey[] = [];
 
 				for (let index = 0; index < projectKeys.length; index++) {
 					try {

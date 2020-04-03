@@ -4,6 +4,7 @@ import { useFieldsStore } from '@/stores/fields/';
 import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
 import { useCollectionPresetsStore } from '@/stores/collection-presets/';
+import { useSettingsStore } from '@/stores/settings/';
 
 type GenericStore = {
 	id: string;
@@ -20,6 +21,7 @@ export function useStores(
 		useUserStore,
 		useRequestsStore,
 		useCollectionPresetsStore,
+		useSettingsStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];

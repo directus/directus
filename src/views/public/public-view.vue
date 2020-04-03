@@ -18,7 +18,6 @@ import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
 import PublicViewLogo from './components/logo/';
 import { useProjectsStore } from '@/stores/projects/';
-import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
 
 export default defineComponent({
 	components: {
@@ -42,17 +41,17 @@ export default defineComponent({
 				return defaultColor;
 			}
 
-			if ((currentProject as ProjectError).error !== undefined) {
+			if (currentProject.error !== undefined) {
 				return defaultColor;
 			}
 
-			currentProject = currentProject as ProjectWithKey;
+			currentProject = currentProject;
 
-			if (currentProject.api.project_background?.full_url) {
-				return `url(${currentProject.api.project_background.full_url})`;
+			if (currentProject.api?.project_background?.full_url) {
+				return `url(${currentProject.api?.project_background.full_url})`;
 			}
 
-			return currentProject.api.project_color;
+			return currentProject.api?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({

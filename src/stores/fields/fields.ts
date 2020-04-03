@@ -18,9 +18,23 @@ export const useFieldsStore = createStore({
 			const projectsStore = useProjectsStore();
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 
-			const response = await api.get(`/${currentProjectKey}/fields`);
+			const fieldsResponse = await api.get(`/${currentProjectKey}/fields`);
 
-			const fields: FieldRaw[] = response.data.data;
+			const fields: FieldRaw[] = fieldsResponse.data.data.filter(
+				({ collection }: FieldRaw) => collection !== 'directus_settings'
+			);
+
+			/**
+			 * @NOTE
+			 *
+			 * directus_settings is a bit of a special case. It's actual fields (key / value) are not
+			 * what we're looking for here. Instead, we want all the "fake" fields that make up the
+			 * form. This extra bit of logic is needed to make sure the app doesn't differentiate
+			 * between settings and regular collections.
+			 */
+
+			const settingsResponse = await api.get(`/${currentProjectKey}/settings/fields`);
+			fields.push(...settingsResponse.data.data);
 
 			this.state.fields = fields.map(this.addTranslationsForField);
 		},

@@ -77,7 +77,7 @@ describe('Views / Public', () => {
 						project_background: null,
 					},
 				},
-			];
+			] as any;
 			store.state.currentProjectKey = 'my-project';
 
 			await component.vm.$nextTick();
@@ -113,7 +113,7 @@ describe('Views / Public', () => {
 			store.state.projects = [mockProject];
 			store.state.currentProjectKey = 'my-project';
 			expect((component.vm as any).artStyles).toEqual({
-				background: `url(${mockProject.api.project_background?.full_url})`,
+				background: `url(${mockProject.api?.project_background?.full_url})`,
 				backgroundPosition: 'center center',
 				backgroundSize: 'cover',
 			});

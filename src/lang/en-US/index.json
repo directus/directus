@@ -67,6 +67,11 @@
 	"page_not_found": "Page Not Found",
 	"page_not_found_body": "The page you are looking for doesn't seem to exist.",
 
+	"setting_update_success": "Setting {setting} updated",
+	"setting_update_failed": "Updating setting {setting} failed",
+	"settings_update_success": "Settings updated",
+	"settings_update_failed": "Updating settings failed",
+
   "about_directus": "About Directus",
   "activity": "Activity",
   "activity_log": "Activity Log",

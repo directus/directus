@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" :style="brandStyle">
 		<transition name="fade">
 			<div class="hydrating" v-if="hydrating">
 				<v-progress-circular indeterminate />
@@ -11,16 +11,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
+import { useProjectsStore } from '@/stores/projects';
+import { ProjectWithKey } from './stores/projects/types';
 
 export default defineComponent({
 	setup() {
 		const appStore = useAppStore();
+		const userStore = useUserStore();
+		const projectsStore = useProjectsStore();
+
 		const { hydrating } = toRefs(appStore.state);
 
-		const userStore = useUserStore();
+		const brandStyle = computed(() => {
+			if (
+				projectsStore.currentProject.value &&
+				projectsStore.currentProject.value.hasOwnProperty('api')
+			) {
+				const project = projectsStore.currentProject.value as ProjectWithKey;
+
+				return {
+					'--brand': project?.api?.project_color || 'var(--primary)',
+				};
+			}
+
+			return null;
+		});
 
 		watch(
 			() => userStore.state.currentUser,
@@ -38,7 +56,7 @@ export default defineComponent({
 			}
 		);
 
-		return { hydrating };
+		return { hydrating, brandStyle };
 	},
 });
 </script>

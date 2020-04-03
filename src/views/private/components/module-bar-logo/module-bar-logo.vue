@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import { ProjectWithKey, ProjectError } from '@/stores/projects/types';
+import { ProjectWithKey } from '@/stores/projects/types';
 import { useProjectsStore } from '@/stores/projects/';
 import { useRequestsStore } from '@/stores/requests/';
 
@@ -23,11 +23,11 @@ export default defineComponent({
 
 		const customLogoPath = computed<string | null>(() => {
 			if (projectsStore.currentProject.value === null) return null;
-			if ((projectsStore.currentProject.value as ProjectError).error !== undefined) {
+			if (projectsStore.currentProject.value.error !== undefined) {
 				return null;
 			}
 			const currentProject = projectsStore.currentProject.value as ProjectWithKey;
-			return currentProject.api.project_logo?.full_url || null;
+			return currentProject.api?.project_logo?.full_url || null;
 		});
 
 		const isRunning = ref(false);

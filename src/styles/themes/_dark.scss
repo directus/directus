@@ -70,4 +70,8 @@
 	--danger-50: #884448;
 	--danger-25: #573B40;
 	--danger-10: #3A363B;
+
+	.alt-colors {
+		--background-subdued: var(--background-page);
+	}
 }
