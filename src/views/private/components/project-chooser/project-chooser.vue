@@ -1,25 +1,33 @@
 <template>
-	<v-menu attached>
-		<template #activator="{ toggle }">
-			<div class="project-chooser">
-				<span @click="toggle">{{ currentProjectKey }}</span>
-			</div>
-		</template>
+	<div class="project-chooser">
+		<button class="toggle" :disabled="projects.length === 1" @click="active = !active">
+			{{ currentProject.api.project_name }}
+		</button>
+		<transition-expand>
+			<div v-if="active" class="options-wrapper">
+				<div class="options">
+					<v-divider />
 
-		<v-list>
-			<v-list-item
-				v-for="project in projects"
-				:key="project.key"
-				@click="navigateToProject(project.key)"
-			>
-				{{ (project.api && project.api.project_name) || project.key }}
-			</v-list-item>
-		</v-list>
-	</v-menu>
+					<router-link
+						v-for="project in projects"
+						class="router-link"
+						:key="project.key"
+						:to="`/${project.key}/collections`"
+					>
+						<v-radio
+							:inputValue="currentProjectKey"
+							:value="project.key"
+							:label="(project.api && project.api.project_name) || project.key"
+						/>
+					</router-link>
+				</div>
+			</div>
+		</transition-expand>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs, ref } from '@vue/composition-api';
 import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
 
@@ -27,12 +35,17 @@ export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 		const { projects, currentProjectKey } = toRefs(projectsStore.state);
+		const active = ref(false);
+
+		const currentProject = projectsStore.currentProject;
 
 		return {
 			projects,
 			currentProjectKey,
 			navigateToProject,
 			projectsStore,
+			currentProject,
+			active,
 		};
 
 		function navigateToProject(key: string) {
@@ -55,20 +68,40 @@ export default defineComponent({
 <style lang="scss" scoped>
 .project-chooser {
 	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 64px;
-	background-color: var(--background-subdued);
+	background-color: var(--background-normal-alt);
 
-	select {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.toggle {
 		width: 100%;
-		height: 100%;
-		cursor: pointer;
-		opacity: 0;
+		height: 64px;
+		padding: 0 20px;
+		text-align: left;
+	}
+
+	.options-wrapper {
+		position: absolute;
+		z-index: 3;
+		width: 100%;
+	}
+
+	.options {
+		padding: 20px;
+		padding-top: 0;
+		background-color: var(--background-normal-alt);
+	}
+
+	.v-divider {
+		--v-divider-color: var(--background-normal);
+
+		margin-bottom: 20px;
+	}
+
+	.router-link {
+		display: block;
+		text-decoration: none;
+
+		&:not(:last-child) {
+			margin-bottom: 12px;
+		}
 	}
 }
 </style>

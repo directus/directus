@@ -108,6 +108,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
 		// If the store is hydrated for the current project, make sure to dehydrate it
 		if (appStore.state.hydrated === true) {
+			appStore.state.hydrating = true;
 			await dehydrate();
 		}
 
@@ -125,6 +126,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		const authenticated = await checkAuth();
 
 		if (authenticated === true) {
+			appStore.state.hydrating = false;
 			await hydrate();
 		} else if (to.meta?.public !== true) {
 			return next(`/${to.params.project}/login`);

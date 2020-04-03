@@ -1,11 +1,11 @@
 <template>
 	<button
 		class="v-radio"
-		@click="emitValue"
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
 		:class="{ checked: isChecked }"
+		@click="emitValue"
 	>
 		<v-icon :name="icon" />
 		<span class="label type-label">
