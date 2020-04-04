@@ -55,7 +55,7 @@
     "@vue/cli-plugin-router": "^4.1.0",
     "@vue/cli-plugin-typescript": "^4.1.0",
     "@vue/cli-plugin-unit-jest": "^4.1.0",
-    "@vue/cli-plugin-vuex": "^4.2.3",
+    "@vue/cli-plugin-vuex": "^4.3.0",
     "@vue/cli-service": "^4.1.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
