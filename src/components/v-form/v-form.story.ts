@@ -6,6 +6,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/fields';
 import { FormField } from './types';
 import { i18n } from '@/lang';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
 
 Vue.component('v-form', VForm);
 
@@ -14,7 +15,7 @@ export default {
 	parameters: {
 		notes: markdown,
 	},
-	decorators: [withPadding],
+	decorators: [withPadding, withKnobs],
 };
 
 export const collection = () =>
@@ -67,6 +68,11 @@ export const collection = () =>
 export const fields = () =>
 	defineComponent({
 		i18n,
+		props: {
+			loading: {
+				default: boolean('Loading', false),
+			},
+		},
 		setup() {
 			const fields: FormField[] = [
 				{
@@ -105,6 +111,7 @@ export const fields = () =>
 		template: `
 			<v-form
 				v-model="edits"
+				:loading="loading"
 				:fields="fields"
 				:initial-values="{
 					'third-field': 'Hello World!'

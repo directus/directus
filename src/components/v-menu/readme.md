@@ -74,6 +74,7 @@ Strap in
 | `offsetY`   | Positions the menu along the Y-Axis so as not to cover any of the activator  | `false`     |
 | `positionX` | "left" css value of menu. Only works with `absolute` or `fixed`              | `undefined` |
 | `positionY` | "top" css value of menu. Only works with `absolute` or `fixed`               | `undefined` |
+| `disabled`  | Prevent the menu from being opened by clicking on the activator              | `false`     |
 
 ### Behavior
 

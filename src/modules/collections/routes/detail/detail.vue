@@ -1,5 +1,6 @@
 <template>
-	<private-view v-if="item" :title="$t('editing', { collection: currentCollection.name })">
+	<collections-not-found v-if="error && error.code === 404" />
+	<private-view v-else :title="$t('editing', { collection: collectionInfo.name })">
 		<template #title-outer:prepend>
 			<v-button rounded icon secondary exact :to="breadcrumb[1].to">
 				<v-icon name="arrow_back" />
@@ -49,28 +50,28 @@
 			</v-button>
 		</template>
 
-		<template>
-			<v-form :initial-values="item" :collection="collection" v-model="edits" />
-		</template>
-
 		<template #navigation>
 			<collections-navigation />
 		</template>
+
+		<v-form
+			:loading="loading"
+			:initial-values="item"
+			:collection="collection"
+			v-model="edits"
+		/>
 	</private-view>
-	<collections-not-found v-else />
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs, watch } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
-import useFieldsStore from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
 import api from '@/api';
 import CollectionsNavigation from '../../components/navigation/';
-import useCollectionsStore from '../../../../stores/collections';
 import { i18n } from '@/lang';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
+import useCollection from '@/compositions/use-collection';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,64 +93,28 @@ export default defineComponent({
 	},
 	setup(props) {
 		const projectsStore = useProjectsStore();
-		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
-
 		const { currentProjectKey } = toRefs(projectsStore.state);
+
+		const { info: collectionInfo } = useCollection(props.collection);
 
 		const isNew = computed<boolean>(() => props.primaryKey === '+');
 
-		const fieldsInCurrentCollection = computed<Field[]>(() => {
-			return fieldsStore.state.fields.filter(
-				(field) => field.collection === props.collection
-			);
-		});
+		const edits = ref({});
+		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
-		const visibleFields = computed<Field[]>(() => {
-			return fieldsInCurrentCollection.value
-				.filter((field) => field.hidden_browse === false)
-				.sort((a, b) => (a.sort || Infinity) - (b.sort || Infinity));
-		});
-
-		const item = ref<Values>(null);
-		const error = ref(null);
-		const loading = ref(false);
-		const saving = ref(false);
-		const deleting = ref(false);
-		const confirmDelete = ref(false);
-
-		const currentCollection = collectionsStore.getCollection(props.collection);
-
-		if (isNew.value === true) {
-			useDefaultValues();
-		} else {
-			fetchItem();
-		}
+		const { item, error, loading, saving, fetchItem, saveAndQuit } = useItem();
+		const { breadcrumb } = useBreadcrumb();
+		const { deleting, confirmDelete, deleteAndQuit } = useDelete();
 
 		watch(() => props.primaryKey, fetchItem);
 
-		const breadcrumb = computed(() => [
-			{
-				name: i18n.tc('collection', 2),
-				to: `/${currentProjectKey.value}/collections/`,
-			},
-			{
-				name: currentCollection.name,
-				to: `/${currentProjectKey.value}/collections/${props.collection}/`,
-			},
-		]);
-
-		const edits = ref({});
-
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		if (isNew.value === false) fetchItem();
 
 		return {
-			visibleFields,
 			item,
 			loading,
 			error,
 			isNew,
-			currentCollection,
 			breadcrumb,
 			edits,
 			hasEdits,
@@ -158,68 +123,93 @@ export default defineComponent({
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
+			collectionInfo,
 		};
 
-		async function fetchItem() {
-			loading.value = true;
-			try {
-				const response = await api.get(
-					`/${currentProjectKey.value}/items/${props.collection}/${props.primaryKey}`
-				);
-				item.value = response.data.data;
-			} catch (error) {
-				error.value = error;
-			} finally {
-				loading.value = false;
-			}
+		function useBreadcrumb() {
+			const breadcrumb = computed(() => [
+				{
+					name: i18n.tc('collection', 2),
+					to: `/${currentProjectKey.value}/collections/`,
+				},
+				{
+					name: collectionInfo.value?.name,
+					to: `/${currentProjectKey.value}/collections/${props.collection}/`,
+				},
+			]);
+
+			return { breadcrumb };
 		}
 
-		function useDefaultValues() {
-			const defaults: Values = {};
+		function useItem() {
+			const item = ref<Values>(null);
+			const error = ref(null);
+			const loading = ref(true);
+			const saving = ref(false);
 
-			visibleFields.value.forEach((field) => {
-				defaults[field.field] = field.default_value;
-			});
+			return { item, error, loading, saving, fetchItem, saveAndQuit };
 
-			item.value = defaults;
-		}
-
-		async function saveAndQuit() {
-			saving.value = true;
-
-			try {
-				if (isNew.value === true) {
-					await api.post(`/${currentProjectKey}/items/${props.collection}`, edits.value);
-				} else {
-					await api.patch(
-						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`,
-						edits.value
+			async function fetchItem() {
+				loading.value = true;
+				try {
+					const response = await api.get(
+						`/${currentProjectKey.value}/items/${props.collection}/${props.primaryKey}`
 					);
+					item.value = response.data.data;
+				} catch (error) {
+					error.value = error;
+				} finally {
+					loading.value = false;
 				}
-			} catch (error) {
-				/** @TODO show real notification */
-				alert(error);
-			} finally {
+			}
+
+			async function saveAndQuit() {
 				saving.value = true;
-				router.push(`/${currentProjectKey}/collections/${props.collection}`);
+
+				try {
+					if (isNew.value === true) {
+						await api.post(
+							`/${currentProjectKey}/items/${props.collection}`,
+							edits.value
+						);
+					} else {
+						await api.patch(
+							`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`,
+							edits.value
+						);
+					}
+				} catch (error) {
+					/** @TODO show real notification */
+					alert(error);
+				} finally {
+					saving.value = true;
+					router.push(`/${currentProjectKey}/collections/${props.collection}`);
+				}
 			}
 		}
 
-		async function deleteAndQuit() {
-			if (isNew.value === true) return;
+		function useDelete() {
+			const deleting = ref(false);
+			const confirmDelete = ref(false);
 
-			deleting.value = true;
+			return { deleting, confirmDelete, deleteAndQuit };
 
-			try {
-				await api.delete(
-					`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`
-				);
-			} catch (error) {
-				/** @TODO show real notification */
-				alert(error);
-			} finally {
-				router.push(`/${currentProjectKey}/collections/${props.collection}`);
-				deleting.value = false;
+			async function deleteAndQuit() {
+				if (isNew.value === true) return;
+
+				deleting.value = true;
+
+				try {
+					await api.delete(
+						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`
+					);
+				} catch (error) {
+					/** @TODO show real notification */
+					alert(error);
+				} finally {
+					router.push(`/${currentProjectKey}/collections/${props.collection}`);
+					deleting.value = false;
+				}
 			}
 		}
 	},

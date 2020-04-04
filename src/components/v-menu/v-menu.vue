@@ -61,6 +61,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement>(null);
@@ -128,6 +132,7 @@ export default defineComponent({
 			}
 
 			function toggle() {
+				if (props.disabled === true) return;
 				isActive.value = !isActive.value;
 			}
 		}

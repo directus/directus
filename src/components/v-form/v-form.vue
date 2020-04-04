@@ -1,7 +1,7 @@
 <template>
 	<div class="v-form" ref="el" :class="gridClass">
 		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
-			<v-menu placement="bottom-start" show-arrow close-on-content-click>
+			<v-menu placement="bottom-start" show-arrow close-on-content-click :disabled="loading">
 				<template #activator="{ toggle }">
 					<label class="label type-label" @click="toggle">
 						{{ field.name }}
@@ -31,6 +31,7 @@
 						<v-list-item-content>{{ $t('reset_to_default') }}</v-list-item-content>
 					</v-list-item>
 					<v-list-item
+						v-if="initialValues"
 						@click="setValue(field, initialValues[field.field])"
 						:disabled="
 							initialValues[field.field] === undefined ||
@@ -45,12 +46,15 @@
 				</v-list>
 			</v-menu>
 
-			<interface-text-input
-				:disabled="field.readonly"
-				:value="values[field.field]"
-				@input="setValue(field, $event)"
-				v-bind="field.options"
-			/>
+			<div class="interface">
+				<v-skeleton-loader v-if="loading" />
+				<interface-text-input
+					:disabled="field.readonly"
+					:value="values[field.field] || field.default_value || null"
+					@input="setValue(field, $event)"
+					v-bind="field.options"
+				/>
+			</div>
 
 			<small class="note" v-if="field.note">{{ field.note }}</small>
 		</div>
@@ -91,6 +95,10 @@ export default defineComponent({
 		edits: {
 			type: Object as PropType<FieldValues>,
 			default: null,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -222,6 +230,18 @@ export default defineComponent({
 
 	& > .fill {
 		grid-column: start / fill;
+	}
+}
+
+.interface {
+	position: relative;
+
+	::v-deep .v-skeleton-loader {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 }
 
