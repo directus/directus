@@ -38,6 +38,7 @@ import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
 import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
+import VTextarea from './v-textarea';
 
 Vue.component('v-avatar', VAvatar);
 Vue.component('v-button', VButton);
@@ -84,6 +85,7 @@ Vue.component('v-tabs', VTabs);
 Vue.component('v-tab', VTab);
 Vue.component('v-tabs-items', VTabsItems);
 Vue.component('v-tab-item', VTabItem);
+Vue.component('v-textarea', VTextarea);
 
 import DrawerDetail from '@/views/private/components/drawer-detail/';
 
