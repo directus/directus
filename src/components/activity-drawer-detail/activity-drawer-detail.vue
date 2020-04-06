@@ -1,69 +1,67 @@
 <template>
-	<div class="activity-drawer-detail">
-		<drawer-detail title="Comments" icon="mode_comment">
-			<form @submit.prevent="postComment">
-				<v-textarea
-					:placeholder="$t('leave_comment')"
-					v-model="newCommentContent"
-					expand-on-focus
-				>
-					<template #append>
-						<v-button
-							:disabled="!newCommentContent || newCommentContent.length === 0"
-							:loading="saving"
-							class="post-comment"
-							@click="postComment"
-							x-small
-						>
-							{{ $t('submit') }}
-						</v-button>
-					</template>
-				</v-textarea>
-			</form>
-			<transition-group name="slide" tag="div">
-				<div class="activity-record" v-for="act in activity" :key="act.id">
-					<div class="activity-header">
-						<v-avatar small>
-							<v-icon name="person_outline" />
-						</v-avatar>
-						<div class="name">
-							<template v-if="act.action_by && act.action_by">
-								{{ act.action_by.first_name }} {{ act.action_by.last_name }}
-							</template>
-							<template v-else-if="act.action.by && action.action_by">
-								{{ $t('private_user') }}
-							</template>
-							<template v-else>
-								{{ $t('external') }}
-							</template>
-						</div>
-						<div class="date" v-tooltip.start="new Date(act.action_on)">
-							{{ act.date_relative }}
-						</div>
+	<drawer-detail title="Comments" icon="mode_comment">
+		<form @submit.prevent="postComment">
+			<v-textarea
+				:placeholder="$t('leave_comment')"
+				v-model="newCommentContent"
+				expand-on-focus
+			>
+				<template #append>
+					<v-button
+						:disabled="!newCommentContent || newCommentContent.length === 0"
+						:loading="saving"
+						class="post-comment"
+						@click="postComment"
+						x-small
+					>
+						{{ $t('submit') }}
+					</v-button>
+				</template>
+			</v-textarea>
+		</form>
+		<transition-group name="slide" tag="div">
+			<div class="activity-record" v-for="act in activity" :key="act.id">
+				<div class="activity-header">
+					<v-avatar small>
+						<v-icon name="person_outline" />
+					</v-avatar>
+					<div class="name">
+						<template v-if="act.action_by && act.action_by">
+							{{ act.action_by.first_name }} {{ act.action_by.last_name }}
+						</template>
+						<template v-else-if="act.action.by && action.action_by">
+							{{ $t('private_user') }}
+						</template>
+						<template v-else>
+							{{ $t('external') }}
+						</template>
 					</div>
-
-					<div class="content">
-						<template v-if="act.comment">
-							<span v-html="marked(act.comment)" />
-						</template>
-						<template v-else-if="act.action === 'create'">
-							{{ $t('activity_delta_created') }}
-						</template>
-						<template v-else-if="act.action === 'update'">
-							{{ $t('activity_delta_updated') }}
-						</template>
-						<template v-else-if="act.action === 'delete'">
-							{{ $t('activity_delta_deleted') }}
-						</template>
+					<div class="date" v-tooltip.start="new Date(act.action_on)">
+						{{ act.date_relative }}
 					</div>
 				</div>
-			</transition-group>
 
-			<div class="activity-record">
-				<div class="content">{{ $t('activity_delta_created_externally') }}</div>
+				<div class="content">
+					<template v-if="act.comment">
+						<span v-html="marked(act.comment)" />
+					</template>
+					<template v-else-if="act.action === 'create'">
+						{{ $t('activity_delta_created') }}
+					</template>
+					<template v-else-if="act.action === 'update'">
+						{{ $t('activity_delta_updated') }}
+					</template>
+					<template v-else-if="act.action === 'delete'">
+						{{ $t('activity_delta_deleted') }}
+					</template>
+				</div>
 			</div>
-		</drawer-detail>
-	</div>
+		</transition-group>
+
+		<div class="activity-record">
+			<div class="content">{{ $t('activity_delta_created_externally') }}</div>
+		</div>
+	</drawer-detail>
 </template>
 
 <script lang="ts">

@@ -8,7 +8,7 @@
 				{{ title }}
 			</div>
 		</button>
-		<transition-expand>
+		<transition-expand class="scroll-container">
 			<div v-show="active">
 				<div class="content">
 					<slot />
@@ -43,8 +43,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer-detail {
+	display: contents;
+
 	.toggle {
 		position: relative;
+		flex-shrink: 0;
 		width: 100%;
 		height: 64px;
 		color: var(--foreground-normal);
@@ -74,6 +77,12 @@ export default defineComponent({
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);
+	}
+
+	.scroll-container {
+		flex-grow: 1;
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 
 	.content {

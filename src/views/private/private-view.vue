@@ -212,6 +212,7 @@ export default defineComponent({
 		flex-direction: column;
 		width: 284px;
 		height: 100%;
+		overflow: hidden;
 		background-color: var(--background-normal);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);

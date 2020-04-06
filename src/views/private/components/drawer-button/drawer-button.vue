@@ -43,6 +43,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .drawer-button {
 	position: relative;
+	flex-shrink: 0;
 	width: 100%;
 	height: 64px;
 	color: var(--foreground-normal);

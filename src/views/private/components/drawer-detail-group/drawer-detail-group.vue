@@ -33,3 +33,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.drawer-detail-group {
+	display: contents;
+}
+</style>
