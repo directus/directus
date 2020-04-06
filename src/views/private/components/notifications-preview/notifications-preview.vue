@@ -78,11 +78,17 @@ export default defineComponent({
 	width: 100%;
 }
 
+.drawer-button {
+	background-color: var(--background-normal-alt);
+}
+
 .inline {
 	position: absolute;
 	right: 0;
 	bottom: 100%;
 	width: 100%;
+	background-color: var(--background-normal);
+	box-shadow: 0px -4px 12px rgba(38, 50, 56, 0.1);
 
 	.padding-box {
 		position: relative;

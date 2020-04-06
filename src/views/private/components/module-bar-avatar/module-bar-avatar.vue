@@ -74,6 +74,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .module-bar-avatar {
 	position: relative;
+
+	.v-avatar {
+		--v-avatar-color: var(--module-background-alt);
+	}
 }
 
 .sign-out {
