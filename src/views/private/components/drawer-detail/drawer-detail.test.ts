@@ -50,6 +50,6 @@ describe('Drawer Detail', () => {
 				},
 			},
 		});
-		expect(GroupableComposition.useGroupable).toHaveBeenCalledWith('Users');
+		expect(GroupableComposition.useGroupable).toHaveBeenCalledWith('Users', 'drawer-detail');
 	});
 });

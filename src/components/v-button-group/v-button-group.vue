@@ -2,10 +2,11 @@
 	<div class="v-button-group" :class="{ rounded, tile }">
 		<v-item-group
 			:value="value"
-			@input="update"
 			:mandatory="mandatory"
 			:max="max"
 			:multiple="multiple"
+			scope="button-group"
+			@input="update"
 		>
 			<slot />
 		</v-item-group>

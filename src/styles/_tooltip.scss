@@ -1,9 +1,13 @@
 #tooltip {
 	$arrow-alignment: 5px;
 
+	--tooltip-foreground-color: var(--foreground-inverted);
+	--tooltip-background-color: var(--background-inverted);
+
 	position: absolute;
 	top: 0;
 	left: 0;
+	z-index: 50;
 	display: none;
 	max-width: 260px;
 	padding: 4px 8px;

@@ -1,19 +1,23 @@
 import { onMounted, onUnmounted, ref } from '@vue/composition-api';
-import formatDistance from 'date-fns/formatDistance';
+import localizedFormatDistance from '@/utils/localized-format-distance/';
 
-export default function useTimeFromNow(date: Date | number, autoUpdate = 60000) {
+export async function useTimeFromNow(date: Date | number, autoUpdate = 60000) {
 	let interval: number;
 
 	const formatOptions = {
 		addSuffix: true,
 	};
 
-	const formattedDate = ref(formatDistance(date, new Date(), formatOptions));
+	const formattedDate = ref(await localizedFormatDistance(date, new Date(), formatOptions));
 
 	if (autoUpdate !== 0) {
 		onMounted(() => {
-			interval = setInterval(() => {
-				formattedDate.value = formatDistance(date, new Date(), formatOptions);
+			interval = setInterval(async () => {
+				formattedDate.value = await localizedFormatDistance(
+					date,
+					new Date(),
+					formatOptions
+				);
 			}, autoUpdate);
 		});
 

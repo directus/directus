@@ -106,7 +106,7 @@ export default defineComponent({
 		const sizeClass = useSizeClass(props);
 
 		const component = computed<string>(() => (props.to ? 'router-link' : 'button'));
-		const { active, toggle } = useGroupable(props.value);
+		const { active, toggle } = useGroupable(props.value, 'button-group');
 
 		return { sizeClass, onClick, component, active, toggle };
 

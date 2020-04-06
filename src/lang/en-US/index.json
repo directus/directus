@@ -72,10 +72,21 @@
 	"settings_update_success": "Settings updated",
 	"settings_update_failed": "Updating settings failed",
 
+	"activity_delta_created": "Created this item",
+	"activity_delta_created_externally": "Created externally",
+	"activity_delta_updated": "Updated this item",
+	"activity_delta_deleted": "Deleted this item",
+	"private_user": "Private User",
+
+	"leave_comment": "Leave a comment...",
+	"post_comment_success": "Comment posted",
+	"post_comment_failed": "Couldn't post comment",
+
+	"submit": "Submit",
+
   "about_directus": "About Directus",
   "activity": "Activity",
   "activity_log": "Activity Log",
-  "activity_outside_directus": "Item created outside of Directus",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
   "add_note": "Add a helpful note for users...",
@@ -385,7 +396,6 @@
   "keep_editing": "Keep Editing",
   "latency": "Latency",
   "learn_more": "Learn More",
-  "leave_comment": "Leave a comment...",
   "length_disabled_placeholder": "Length is determined by the datatype",
   "less_than": "Less than",
   "less_than_equal": "Less than or equal to",
@@ -561,7 +571,6 @@
   "spacing": "Spacing",
   "status": "Status",
   "statuses": "Statuses",
-  "submit": "Submit",
   "text": "Text",
   "translation": "Translation",
   "translated_field_name": "Translated field name...",

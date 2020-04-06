@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="drawer-detail-group" v-model="openDetail">
+	<v-item-group class="drawer-detail-group" v-model="openDetail" scope="drawer-detail">
 		<slot />
 	</v-item-group>
 </template>

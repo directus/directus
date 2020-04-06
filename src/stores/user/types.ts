@@ -1,4 +1,4 @@
-type Avatar = {
+export type Avatar = {
 	data: {
 		thumbnails: Thumbnail[];
 	};

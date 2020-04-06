@@ -60,6 +60,10 @@
 			:collection="collection"
 			v-model="edits"
 		/>
+
+		<template #drawer>
+			<activity-drawer-detail :collection="collection" :primary-key="primaryKey" />
+		</template>
 	</private-view>
 </template>
 
@@ -72,6 +76,7 @@ import { i18n } from '@/lang';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
+import ActivityDrawerDetail from '@/components/activity-drawer-detail';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,7 +85,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
-	components: { CollectionsNavigation, CollectionsNotFound },
+	components: { CollectionsNavigation, CollectionsNotFound, ActivityDrawerDetail },
 	props: {
 		collection: {
 			type: String,
@@ -169,12 +174,12 @@ export default defineComponent({
 				try {
 					if (isNew.value === true) {
 						await api.post(
-							`/${currentProjectKey}/items/${props.collection}`,
+							`/${currentProjectKey.value}/items/${props.collection}`,
 							edits.value
 						);
 					} else {
 						await api.patch(
-							`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`,
+							`/${currentProjectKey.value}/items/${props.collection}/${props.primaryKey}`,
 							edits.value
 						);
 					}
@@ -183,7 +188,7 @@ export default defineComponent({
 					alert(error);
 				} finally {
 					saving.value = true;
-					router.push(`/${currentProjectKey}/collections/${props.collection}`);
+					router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
 				}
 			}
 		}

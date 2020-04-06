@@ -26,6 +26,10 @@ export default defineComponent({
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
+		scope: {
+			type: String,
+			default: 'item-group',
+		},
 	},
 	setup(props, { emit }) {
 		const { value: selection, multiple, max, mandatory } = toRefs(props);
@@ -38,7 +42,8 @@ export default defineComponent({
 				multiple: multiple,
 				max: max,
 				mandatory: mandatory,
-			}
+			},
+			props.scope
 		);
 		return {};
 	},

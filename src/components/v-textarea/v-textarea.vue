@@ -5,22 +5,18 @@
 			disabled,
 			'expand-on-focus': expandOnFocus,
 			'full-width': fullWidth,
+			'has-content': hasContent,
 		}"
 	>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<textarea
 			v-bind="$attrs"
 			v-focus="autofocus"
 			v-on="_listeners"
-			:class="{
-				monospace,
-				'allow-resize-x': !allowResizeY && allowResizeX,
-				'allow-resize-y': !allowResizeX && allowResizeY,
-				'allow-resize-both': allowResizeX && allowResizeY,
-			}"
+			:class="{ monospace }"
 			:disabled="disabled"
 			:value="value"
 		/>
+		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
 	</div>
 </template>
@@ -47,7 +43,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Number],
+			type: String,
 			default: null,
 		},
 		expandOnFocus: {
@@ -61,7 +57,9 @@ export default defineComponent({
 			input: emitValue,
 		}));
 
-		return { _listeners };
+		const hasContent = computed(() => props.value && props.value.length > 0);
+
+		return { _listeners, hasContent };
 
 		function emitValue(event: InputEvent) {
 			emit('input', (event.target as HTMLInputElement).value);
@@ -97,9 +95,21 @@ export default defineComponent({
 		height: var(--input-height);
 		transition: height var(--medium) var(--transition);
 
+		.append,
+		.prepend {
+			opacity: 0;
+			transition: opacity var(--medium) var(--transition);
+		}
+
 		&:focus,
-		&:focus-within {
+		&:focus-within,
+		&.has-content {
 			height: var(--v-textarea-max-height);
+
+			.append,
+			.prepend {
+				opacity: 1;
+			}
 		}
 	}
 

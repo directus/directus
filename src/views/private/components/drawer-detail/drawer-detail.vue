@@ -34,7 +34,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.title);
+		const { active, toggle } = useGroupable(props.title, 'drawer-detail');
 		const drawerOpen = inject('drawer-open', ref(false));
 		return { active, toggle, drawerOpen };
 	},

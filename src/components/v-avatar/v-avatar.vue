@@ -43,7 +43,7 @@ export default defineComponent({
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);
-	border-radius: 50%;
+	border-radius: var(--border-radius);
 
 	&.tile {
 		border-radius: 0;
