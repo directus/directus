@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
 import useCollection from '@/compositions/use-collection/';
 import FieldsManagement from './components/fields-management';
@@ -39,7 +39,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const projectsStore = useProjectsStore();
-		const { info: collectionInfo, fields } = useCollection(props.collection);
+		const { collection } = toRefs(props);
+		const { info: collectionInfo, fields } = useCollection(collection);
 
 		const breadcrumb = computed(() => {
 			return [

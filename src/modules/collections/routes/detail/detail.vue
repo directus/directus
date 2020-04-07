@@ -20,6 +20,7 @@
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
+						v-if="collectionInfo.single === false"
 					>
 						<v-icon name="delete" />
 					</v-button>
@@ -47,6 +48,16 @@
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="collectionInfo.single === false"
+						:disabled="hasEdits === false"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@save-as-copy="saveAsCopyAndNavigate"
+					/>
+				</template>
 			</v-button>
 		</template>
 
@@ -62,21 +73,26 @@
 		/>
 
 		<template #drawer>
-			<activity-drawer-detail :collection="collection" :primary-key="primaryKey" />
+			<activity-drawer-detail
+				v-if="isNew === false"
+				:collection="collection"
+				:primary-key="primaryKey"
+			/>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
-import api from '@/api';
 import CollectionsNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
-import ActivityDrawerDetail from '@/components/activity-drawer-detail';
+import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
+import useItem from '@/compositions/use-item';
+import SaveOptions from '@/views/private/components/save-options';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,7 +101,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
-	components: { CollectionsNavigation, CollectionsNotFound, ActivityDrawerDetail },
+	components: { CollectionsNavigation, CollectionsNotFound, ActivityDrawerDetail, SaveOptions },
 	props: {
 		collection: {
 			type: String,
@@ -99,21 +115,27 @@ export default defineComponent({
 	setup(props) {
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
+		const { collection, primaryKey } = toRefs(props);
 
-		const { info: collectionInfo } = useCollection(props.collection);
+		const { info: collectionInfo } = useCollection(collection);
+		const { breadcrumb } = useBreadcrumb();
 
-		const isNew = computed<boolean>(() => props.primaryKey === '+');
+		const {
+			isNew,
+			edits,
+			item,
+			saving,
+			loading,
+			error,
+			save,
+			remove,
+			deleting,
+			saveAsCopy,
+		} = useItem(collection, primaryKey);
 
-		const edits = ref({});
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
-		const { item, error, loading, saving, fetchItem, saveAndQuit } = useItem();
-		const { breadcrumb } = useBreadcrumb();
-		const { deleting, confirmDelete, deleteAndQuit } = useDelete();
-
-		watch(() => props.primaryKey, fetchItem);
-
-		if (isNew.value === false) fetchItem();
+		const confirmDelete = ref(false);
 
 		return {
 			item,
@@ -123,12 +145,15 @@ export default defineComponent({
 			breadcrumb,
 			edits,
 			hasEdits,
-			saveAndQuit,
 			saving,
-			deleting,
+			collectionInfo,
+			saveAndQuit,
 			deleteAndQuit,
 			confirmDelete,
-			collectionInfo,
+			deleting,
+			saveAndStay,
+			saveAndAddNew,
+			saveAsCopyAndNavigate,
 		};
 
 		function useBreadcrumb() {
@@ -146,76 +171,30 @@ export default defineComponent({
 			return { breadcrumb };
 		}
 
-		function useItem() {
-			const item = ref<Values>(null);
-			const error = ref(null);
-			const loading = ref(true);
-			const saving = ref(false);
-
-			return { item, error, loading, saving, fetchItem, saveAndQuit };
-
-			async function fetchItem() {
-				loading.value = true;
-				try {
-					const response = await api.get(
-						`/${currentProjectKey.value}/items/${props.collection}/${props.primaryKey}`
-					);
-					item.value = response.data.data;
-				} catch (error) {
-					error.value = error;
-				} finally {
-					loading.value = false;
-				}
-			}
-
-			async function saveAndQuit() {
-				saving.value = true;
-
-				try {
-					if (isNew.value === true) {
-						await api.post(
-							`/${currentProjectKey.value}/items/${props.collection}`,
-							edits.value
-						);
-					} else {
-						await api.patch(
-							`/${currentProjectKey.value}/items/${props.collection}/${props.primaryKey}`,
-							edits.value
-						);
-					}
-				} catch (error) {
-					/** @TODO show real notification */
-					alert(error);
-				} finally {
-					saving.value = true;
-					router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
-				}
-			}
+		async function saveAndQuit() {
+			await save();
+			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
 		}
 
-		function useDelete() {
-			const deleting = ref(false);
-			const confirmDelete = ref(false);
+		async function saveAndStay() {
+			await save();
+		}
 
-			return { deleting, confirmDelete, deleteAndQuit };
+		async function saveAndAddNew() {
+			await save();
+			router.push(`/${currentProjectKey.value}/collections/${props.collection}/+`);
+		}
 
-			async function deleteAndQuit() {
-				if (isNew.value === true) return;
+		async function saveAsCopyAndNavigate() {
+			const newPrimaryKey = await saveAsCopy();
+			router.push(
+				`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`
+			);
+		}
 
-				deleting.value = true;
-
-				try {
-					await api.delete(
-						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`
-					);
-				} catch (error) {
-					/** @TODO show real notification */
-					alert(error);
-				} finally {
-					router.push(`/${currentProjectKey}/collections/${props.collection}`);
-					deleting.value = false;
-				}
-			}
+		async function deleteAndQuit() {
+			await remove();
+			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
 		}
 	},
 });

@@ -1,6 +1,6 @@
 import { useCollection } from './use-collection';
 import Vue from 'vue';
-import VueCompositionAPI from '@vue/composition-api';
+import VueCompositionAPI, { ref } from '@vue/composition-api';
 import useCollectionsStore from '@/stores/collections/';
 import useFieldsStore from '@/stores/fields/';
 
@@ -47,7 +47,7 @@ describe('Compositions / useCollection', () => {
 			},
 		] as any;
 
-		const { info, fields, primaryKeyField } = useCollection('files');
+		const { info, fields, primaryKeyField } = useCollection(ref('files'));
 
 		expect(info.value).toEqual({
 			collection: 'files',

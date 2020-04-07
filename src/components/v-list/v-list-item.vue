@@ -58,12 +58,12 @@ export default defineComponent({
 .v-list-item {
 	$this: &;
 
-	--v-list-item-one-line-min-height: 48px;
-	--v-list-item-two-line-min-height: 60px;
-	--v-list-item-three-line-min-height: 76px;
-	--v-list-item-one-line-min-height-dense: 40px;
-	--v-list-item-two-line-min-height-dense: 48px;
-	--v-list-item-three-line-min-height-dense: 64px;
+	--v-list-item-one-line-min-height: 40px;
+	--v-list-item-two-line-min-height: 52px;
+	--v-list-item-three-line-min-height: 64px;
+	--v-list-item-one-line-min-height-dense: 32px;
+	--v-list-item-two-line-min-height-dense: 36px;
+	--v-list-item-three-line-min-height-dense: 52px;
 	--v-list-item-padding: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
@@ -136,7 +136,10 @@ export default defineComponent({
 			&.three-line {
 				--v-list-item-min-height: var(--v-list-item-three-line-min-height);
 			}
-			&.dense {
+		}
+
+		.v-list.dense {
+			& #{$this} {
 				--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
 				&.one-line {
 					--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
@@ -149,6 +152,7 @@ export default defineComponent({
 				}
 			}
 		}
+
 		.v-list.nav {
 			& #{$this} {
 				--v-list-item-padding: 0 8px;

@@ -30,12 +30,12 @@ describe('Views / Private / Header Bar', () => {
 			},
 		});
 
-		const navToggle = component.find('.nav-toggle');
+		const navToggle = component.find('.nav-toggle > .button');
 		navToggle.trigger('click');
 
 		expect(component.emitted('toggle:nav')?.[0]).toBeTruthy();
 
-		const drawerToggle = component.find('.drawer-toggle');
+		const drawerToggle = component.find('.drawer-toggle > .button');
 		drawerToggle.trigger('click');
 
 		expect(component.emitted('toggle:drawer')?.[0]).toBeTruthy();

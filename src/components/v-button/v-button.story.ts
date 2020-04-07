@@ -346,3 +346,45 @@ export const addNewStyle = () =>
 			</v-button>
 		`,
 	});
+
+export const withSlots = () =>
+	defineComponent({
+		template: `
+			<v-button>
+				<template #prepend-outer>
+					<v-sheet
+						style="
+							--v-sheet-color: var(--secondary);
+							--v-sheet-background-color: var(--secondary-alt);
+							--v-sheet-min-height: 0;
+						"
+					>prepend-outer</v-sheet>
+				</template>
+
+				Click me
+
+				<template #append-outer>
+					<v-sheet
+						style="
+							--v-sheet-color: var(--secondary);
+							--v-sheet-background-color: var(--secondary-alt);
+							--v-sheet-min-height: 0;
+						"
+					>append-outer</v-sheet>
+				</template>
+			</v-button>
+		`,
+	});
+
+export const withSlotsWhereItMakesSense = () =>
+	defineComponent({
+		template: `
+			<v-button icon rounded>
+				<v-icon name="check" />
+
+				<template #append-outer>
+					<v-icon name="more_vert" />
+				</template>
+			</v-button>
+		`,
+	});

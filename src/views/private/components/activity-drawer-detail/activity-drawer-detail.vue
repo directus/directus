@@ -1,5 +1,5 @@
 <template>
-	<drawer-detail title="Comments" icon="mode_comment">
+	<drawer-detail :title="$t('comments')" icon="mode_comment">
 		<form @submit.prevent="postComment">
 			<v-textarea
 				:placeholder="$t('leave_comment')"

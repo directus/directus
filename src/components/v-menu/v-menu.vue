@@ -157,6 +157,7 @@ export default defineComponent({
 
 .v-menu-popper {
 	position: absolute;
+	left: -999px;
 	z-index: 5;
 	pointer-events: none;
 

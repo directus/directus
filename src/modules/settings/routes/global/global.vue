@@ -32,7 +32,7 @@ export default defineComponent({
 	components: { SettingsNavigation },
 	setup() {
 		const settingsStore = useSettingsStore();
-		const { fields } = useCollection('directus_settings');
+		const { fields } = useCollection(ref('directus_settings'));
 
 		const initialValues = settingsStore.formatted;
 

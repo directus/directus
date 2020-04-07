@@ -30,7 +30,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.classes()).toContain('outlined');
+		expect(component.find('.button').classes()).toContain('outlined');
 	});
 
 	it('Adds the full-width class for full-width buttons', () => {
@@ -41,7 +41,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.classes()).toContain('full-width');
+		expect(component.find('.button').classes()).toContain('full-width');
 	});
 
 	it('Adds the rounded class for rounded buttons', () => {
@@ -52,7 +52,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.classes()).toContain('rounded');
+		expect(component.find('.button').classes()).toContain('rounded');
 	});
 
 	it('Adds the icon class for icon buttons', () => {
@@ -63,7 +63,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.classes()).toContain('icon');
+		expect(component.find('.button').classes()).toContain('icon');
 	});
 
 	it('Adds the loading class for loading buttons', () => {
@@ -74,7 +74,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.classes()).toContain('loading');
+		expect(component.find('.button').classes()).toContain('loading');
 	});
 
 	it('Emits the click event on click of the button', () => {

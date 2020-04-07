@@ -67,10 +67,12 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 
 ## Slots
 
-| Slot      | Description                                  |
-|-----------|----------------------------------------------|
-| _default_ | Button content                               |
-| `loading` | Content that's rendered during loading state |
+| Slot            | Description                                  |
+|-----------------|----------------------------------------------|
+| _default_       | Button content                               |
+| `loading`       | Content that's rendered during loading state |
+| `prepend-outer` | Content that's rendered before the button    |
+| `append-outer`  | Content that's rendered after the button     |
 
 ## Events
 

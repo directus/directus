@@ -20,6 +20,7 @@ import VList, {
 	VListItem,
 	VListItemContent,
 	VListItemIcon,
+	VListItemHint,
 	VListItemSubtitle,
 	VListItemTitle,
 	VListGroup,
@@ -65,6 +66,7 @@ Vue.component('v-list', VList);
 Vue.component('v-list-item', VListItem);
 Vue.component('v-list-item-content', VListItemContent);
 Vue.component('v-list-item-icon', VListItemIcon);
+Vue.component('v-list-item-hint', VListItemHint);
 Vue.component('v-list-item-subtitle', VListItemSubtitle);
 Vue.component('v-list-item-title', VListItemTitle);
 Vue.component('v-list-group', VListGroup);

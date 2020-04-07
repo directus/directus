@@ -82,6 +82,14 @@
 	"post_comment_success": "Comment posted",
 	"post_comment_failed": "Couldn't post comment",
 
+	"item_create_success": "Item Created",
+	"item_create_failed": "Couldn't Create Item",
+	"item_update_success": "Item Updated",
+	"item_update_failed": "Couldn't Update Item",
+	"item_delete_success": "Item Deleted",
+	"item_delete_failed": "Couldn't Delete Item",
+	"item_in": "Item {primaryKey} in {collection}",
+
 	"submit": "Submit",
 
 	"name": "Name",
@@ -101,6 +109,12 @@
 	"auto_increment_integer": "Auto-incremented integer",
 	"generated_uuid": "Generated UUID",
 	"manual_string": "Manually entered string",
+
+	"save_and_add_new": "Save and Add New",
+	"save_and_stay": "Save and Stay",
+	"save_as_copy": "Save as Copy",
+
+	"comments": "Comments",
 
 
   "about_directus": "About Directus",
@@ -207,7 +221,6 @@
 
   "coming_soon": "Coming Soon",
   "comment": "Comment",
-  "comments": "Comments",
   "config_error": "Missing Config",
   "config_error_copy": "Make sure you've created the application's configuration file",
   "confirm": "Confirm",
@@ -535,10 +548,7 @@
   "role_settings": "Role Settings",
   "roles": "User Roles",
   "save": "Save",
-  "save_and_add": "Save and Add New",
-  "save_and_stay": "Save and Stay",
   "save_as_bookmark": "Save as Bookmark",
-  "save_as_copy": "Save as Copy",
   "scan_in_authenticator": "Scan this code in your authenticator app",
   "schema": "Schema",
   "search": "Search",

@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs } from '@vue/composition-api';
 import useCollection from '@/compositions/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/stores/fields/types';
@@ -88,7 +88,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { fields } = useCollection(props.collection);
+		const { collection } = toRefs(props);
+		const { fields } = useCollection(collection);
 		const fieldsStore = useFieldsStore();
 
 		const sortedVisibleFields = computed(() =>

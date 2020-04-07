@@ -80,7 +80,6 @@ export default defineComponent({
 	}
 
 	.scroll-container {
-		flex-grow: 1;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
