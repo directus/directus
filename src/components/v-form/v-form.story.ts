@@ -7,6 +7,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { FormField } from './types';
 import { i18n } from '@/lang';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
+import RawValue from '../../../.storybook/raw-value.vue';
 
 Vue.component('v-form', VForm);
 
@@ -68,9 +69,13 @@ export const collection = () =>
 export const fields = () =>
 	defineComponent({
 		i18n,
+		components: { RawValue },
 		props: {
 			loading: {
 				default: boolean('Loading', false),
+			},
+			batchMode: {
+				default: boolean('Batch', false),
 			},
 		},
 		setup() {
@@ -109,13 +114,17 @@ export const fields = () =>
 			return { fields, edits };
 		},
 		template: `
-			<v-form
-				v-model="edits"
-				:loading="loading"
-				:fields="fields"
-				:initial-values="{
-					'third-field': 'Hello World!'
-				}"
-			/>
+			<div>
+				<v-form
+					v-model="edits"
+					:loading="loading"
+					:batch-mode="batchMode"
+					:fields="fields"
+					:initial-values="{
+						'third-field': 'Hello World!'
+					}"
+				/>
+				<raw-value>{{ edits }}</raw-value>
+			</div>
 		`,
 	});

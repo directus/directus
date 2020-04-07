@@ -1,13 +1,26 @@
 <template>
 	<div class="v-form" ref="el" :class="gridClass">
 		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
-			<v-menu placement="bottom-start" show-arrow close-on-content-click :disabled="loading">
+			<v-menu
+				placement="bottom-start"
+				show-arrow
+				close-on-content-click
+				:disabled="loading || field.readonly === true"
+			>
 				<template #activator="{ toggle }">
-					<label class="label type-label" @click="toggle">
-						{{ field.name }}
-						<v-icon class="required" sup name="star" v-if="field.required" />
-						<v-icon class="ctx-arrow" name="arrow_drop_down" />
-					</label>
+					<div class="label type-label">
+						<v-checkbox
+							v-if="batchMode"
+							@change="toggleBatchField(field)"
+							:input-value="batchActiveFields"
+							:value="field.field"
+						/>
+						<span @click="toggle">
+							{{ field.name }}
+							<v-icon class="required" sup name="star" v-if="field.required" />
+							<v-icon class="ctx-arrow" name="arrow_drop_down" />
+						</span>
+					</div>
 				</template>
 
 				<v-list>
@@ -19,7 +32,7 @@
 						<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 					</v-list-item>
 					<v-list-item
-						@click="setValue(field, field.default_value)"
+						@click="unsetValue(field)"
 						:disabled="
 							field.default_value === undefined ||
 							values[field.field] === field.default_value
@@ -32,7 +45,7 @@
 					</v-list-item>
 					<v-list-item
 						v-if="initialValues"
-						@click="setValue(field, initialValues[field.field])"
+						@click="unsetValue(field)"
 						:disabled="
 							initialValues[field.field] === undefined ||
 							values[field.field] === initialValues[field.field]
@@ -46,11 +59,19 @@
 				</v-list>
 			</v-menu>
 
-			<div class="interface">
+			<div
+				class="interface"
+				:class="{
+					subdued: batchMode && batchActiveFields.includes(field.field) === false,
+				}"
+			>
 				<v-skeleton-loader v-if="loading" />
 				<interface-text-input
 					v-bind="field.options"
-					:disabled="field.readonly"
+					:disabled="
+						field.readonly ||
+						(batchMode && batchActiveFields.includes(field.field) === false)
+					"
 					:value="
 						values[field.field] === undefined
 							? field.default_value
@@ -104,6 +125,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		batchMode: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const el = ref<Element>(null);
@@ -115,7 +140,18 @@ export default defineComponent({
 
 		const { formFields, gridClass } = useForm();
 
-		return { el, formFields, gridClass, values, setValue };
+		const { toggleBatchField, batchActiveFields } = useBatch();
+
+		return {
+			el,
+			formFields,
+			gridClass,
+			values,
+			setValue,
+			batchActiveFields,
+			toggleBatchField,
+			unsetValue,
+		};
 
 		function useForm() {
 			const fields = computed(() => {
@@ -192,6 +228,32 @@ export default defineComponent({
 			edits[field.field] = value;
 			emit('input', edits);
 		}
+
+		function unsetValue(field: Field) {
+			if (props.edits?.hasOwnProperty(field.field)) {
+				const newEdits = { ...props.edits };
+				delete newEdits[field.field];
+				emit('input', newEdits);
+			}
+		}
+
+		function useBatch() {
+			const batchActiveFields = ref<string[]>([]);
+
+			return { batchActiveFields, toggleBatchField };
+
+			function toggleBatchField(field: Field) {
+				if (batchActiveFields.value.includes(field.field)) {
+					batchActiveFields.value = batchActiveFields.value.filter(
+						(fieldKey) => fieldKey !== field.field
+					);
+
+					unsetValue(field);
+				} else {
+					batchActiveFields.value = [...batchActiveFields.value, field.field];
+				}
+			}
+		}
 	},
 });
 </script>
@@ -247,12 +309,21 @@ export default defineComponent({
 		width: 100%;
 		height: 100%;
 	}
+
+	&.subdued {
+		opacity: 0.5;
+	}
 }
 
 .label {
+	display: flex;
 	width: max-content;
 	margin-bottom: 8px;
 	cursor: pointer;
+
+	.v-checkbox {
+		margin-right: 4px;
+	}
 
 	.required {
 		--v-icon-color: var(--primary);
