@@ -87,6 +87,7 @@ export default defineComponent({
 
 	&.show {
 		transform: translateY(-100%);
+		transition: transform var(--fast) var(--transition);
 	}
 
 	.v-icon {

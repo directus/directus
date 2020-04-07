@@ -51,6 +51,7 @@
 
 		<v-table
 			v-model="_selection"
+			v-if="loading || itemCount > 0"
 			ref="table"
 			fixed-header
 			show-select
@@ -77,6 +78,8 @@
 				</div>
 			</template>
 		</v-table>
+
+		<v-info v-else :title="$tc('item_count', 0)" icon="box" />
 	</div>
 </template>
 
@@ -387,5 +390,9 @@ export default defineComponent({
 	width: 100%;
 	padding: 32px;
 	text-align: center;
+}
+
+.v-info {
+	margin: 20vh 0;
 }
 </style>

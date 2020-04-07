@@ -116,6 +116,8 @@
 
 	"comments": "Comments",
 
+	"item_count": "No Items | One Item | {count} Items",
+
 
   "about_directus": "About Directus",
   "activity": "Activity",
@@ -415,7 +417,6 @@
   "is_empty": "Is empty",
   "is_not_null": "Is not NULL",
   "is_null": "Is NULL",
-  "item_count": "No Items | One Item | {count} Items",
   "item_count_filter": "No Results | One Result | {count} Results",
   "item_deleted": "Item Deleted",
   "item_saved": "Item Saved | {count} Items Saved",

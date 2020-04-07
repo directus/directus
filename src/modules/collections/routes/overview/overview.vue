@@ -64,4 +64,9 @@ export default defineComponent({
 		vertical-align: unset;
 	}
 }
+
+.v-table {
+	padding: var(--content-padding);
+	padding-top: 0;
+}
 </style>
