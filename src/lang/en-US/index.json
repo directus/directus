@@ -82,13 +82,13 @@
 	"post_comment_success": "Comment posted",
 	"post_comment_failed": "Couldn't post comment",
 
-	"item_create_success": "Item Created",
-	"item_create_failed": "Couldn't Create Item",
-	"item_update_success": "Item Updated",
-	"item_update_failed": "Couldn't Update Item",
-	"item_delete_success": "Item Deleted",
-	"item_delete_failed": "Couldn't Delete Item",
-	"item_in": "Item {primaryKey} in {collection}",
+	"item_create_success": "Item Created | Items Created",
+	"item_create_failed": "Couldn't Create Item | Couldn't Create Items",
+	"item_update_success": "Item Updated | Items Updated",
+	"item_update_failed": "Couldn't Update Item | Couldn't Update Items",
+	"item_delete_success": "Item Deleted | Items Deleted",
+	"item_delete_failed": "Couldn't Delete Item | Couldn't Delete Items",
+	"item_in": "Item {primaryKey} in {collection} | Items {primaryKey} in {collection}",
 
 	"submit": "Submit",
 

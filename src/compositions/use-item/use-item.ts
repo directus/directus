@@ -4,6 +4,7 @@ import useProjectsStore from '@/stores/projects';
 import notify from '@/utils/notify';
 import i18n from '@/lang';
 import useCollection from '@/compositions/use-collection';
+import { AxiosResponse } from 'axios';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number>) {
 	const { primaryKeyField } = useCollection(collection);
@@ -15,6 +16,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const deleting = ref(false);
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
+	const isBatch = computed(
+		() => typeof primaryKey.value === 'string' && primaryKey.value.includes(',')
+	);
 
 	watch([collection, primaryKey], refresh);
 
@@ -30,6 +34,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		remove,
 		deleting,
 		saveAsCopy,
+		isBatch,
 	};
 
 	async function getItem() {
@@ -40,7 +45,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.get(
 				`/${currentProjectKey}/items/${collection.value}/${primaryKey.value}`
 			);
-			item.value = response.data.data;
+
+			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
 		} finally {
@@ -62,10 +68,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				);
 
 				notify({
-					title: i18n.t('item_create_success'),
-					text: i18n.t('item_in', {
+					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
+					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
-						primaryKey: primaryKey.value,
+						primaryKey: isBatch.value
+							? (primaryKey.value as string).split(',').join(', ')
+							: primaryKey.value,
 					}),
 					type: 'success',
 				});
@@ -76,33 +84,39 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				);
 
 				notify({
-					title: i18n.t('item_update_success'),
-					text: i18n.t('item_in', {
+					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
+					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
-						primaryKey: primaryKey.value,
+						primaryKey: isBatch.value
+							? (primaryKey.value as string).split(',').join(', ')
+							: primaryKey.value,
 					}),
 					type: 'success',
 				});
 			}
 
-			item.value = response.data.data;
+			setItemValueToResponse(response);
 			edits.value = {};
 		} catch (err) {
 			if (isNew.value) {
 				notify({
 					title: i18n.t('item_create_failed'),
-					text: i18n.t('item_in', {
+					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
-						primaryKey: primaryKey.value,
+						primaryKey: isBatch.value
+							? (primaryKey.value as string).split(',').join(', ')
+							: primaryKey.value,
 					}),
 					type: 'error',
 				});
 			} else {
 				notify({
 					title: i18n.t('item_update_failed'),
-					text: i18n.t('item_in', {
+					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
-						primaryKey: primaryKey.value,
+						primaryKey: isBatch.value
+							? (primaryKey.value as string).split(',').join(', ')
+							: primaryKey.value,
 					}),
 					type: 'error',
 				});
@@ -137,9 +151,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.t('item_create_success'),
-				text: i18n.t('item_in', {
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: primaryKey.value,
+					primaryKey: isBatch.value
+						? (primaryKey.value as string).split(',').join(', ')
+						: primaryKey.value,
 				}),
 				type: 'success',
 			});
@@ -148,9 +164,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err) {
 			notify({
 				title: i18n.t('item_create_failed'),
-				text: i18n.t('item_in', {
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: primaryKey.value,
+					primaryKey: isBatch.value
+						? (primaryKey.value as string).split(',').join(', ')
+						: primaryKey.value,
 				}),
 				type: 'error',
 			});
@@ -171,19 +189,23 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			item.value = null;
 
 			notify({
-				title: i18n.t('item_delete_success'),
-				text: i18n.t('item_in', {
+				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: primaryKey.value,
+					primaryKey: isBatch.value
+						? (primaryKey.value as string).split(',').join(', ')
+						: primaryKey.value,
 				}),
 				type: 'success',
 			});
 		} catch (err) {
 			notify({
-				title: i18n.t('item_delete_failed'),
-				text: i18n.t('item_in', {
+				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: primaryKey.value,
+					primaryKey: isBatch.value
+						? (primaryKey.value as string).split(',').join(', ')
+						: primaryKey.value,
 				}),
 				type: 'error',
 			});
@@ -204,6 +226,25 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			item.value = null;
 		} else {
 			getItem();
+		}
+	}
+
+	function setItemValueToResponse(response: AxiosResponse) {
+		if (isBatch.value === false) {
+			item.value = response.data.data;
+		} else {
+			const valuesThatAreEqual = { ...response.data.data[0] };
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			response.data.data.forEach((existingItem: any) => {
+				for (const [key, value] of Object.entries(existingItem)) {
+					if (valuesThatAreEqual[key] !== value) {
+						delete valuesThatAreEqual[key];
+					}
+				}
+			});
+
+			item.value = valuesThatAreEqual;
 		}
 	}
 }

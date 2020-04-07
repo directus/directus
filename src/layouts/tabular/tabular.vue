@@ -45,7 +45,12 @@
 			</drawer-detail>
 
 			<drawer-detail icon="format_list_numbered" :title="$t('layouts.tabular.per_page')">
-				<v-select full-width v-model="limit" :items="['10', '25', '50', '100', '250']" />
+				<v-select
+					full-width
+					@input="limit = +$event"
+					:value="`${limit}`"
+					:items="['10', '25', '50', '100', '250']"
+				/>
 			</drawer-detail>
 		</portal>
 
@@ -62,7 +67,7 @@
 			:loading="loading"
 			:headers.sync="tableHeaders"
 			:row-height="tableRowHeight"
-			:server-sort="totalPages > 1"
+			:server-sort="itemCount === limit || totalPages > 1"
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
 		>
@@ -345,7 +350,7 @@ export default defineComponent({
 			};
 
 			function onRowClick(item: Item) {
-				if (props.selectMode) {
+				if (props.selectMode || _selection.value.length > 0) {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					(table.value as any).onItemSelected({
 						item,

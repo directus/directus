@@ -97,15 +97,13 @@ export function useItems(collection: Ref<string>, options: Options) {
 			items.value = response.data.data;
 
 			if (itemCount.value === null) {
-				if (response.data.data.length === +limit.value) {
+				itemCount.value = response.data.data.length;
+
+				if (response.data.data.length === limit.value) {
 					// Requesting the page filter count in the actual request every time slows
 					// the request down by like 600ms-1s. This makes sure we only fetch the count
 					// once if needed.
 					getTotalCount();
-				} else {
-					// If the response includes less items than the limit, it's safe to assume
-					// it's all the data in the DB
-					itemCount.value = response.data.data.length;
 				}
 			}
 		} catch (err) {

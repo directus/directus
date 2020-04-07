@@ -5,7 +5,11 @@
 				placement="bottom-start"
 				show-arrow
 				close-on-content-click
-				:disabled="loading || field.readonly === true"
+				:disabled="
+					loading ||
+					field.readonly === true ||
+					(batchMode && batchActiveFields.includes(field.field) === false)
+				"
 			>
 				<template #activator="{ toggle }">
 					<div class="label type-label">

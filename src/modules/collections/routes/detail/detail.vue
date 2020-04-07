@@ -69,6 +69,7 @@
 			:loading="loading"
 			:initial-values="item"
 			:collection="collection"
+			:batch-mode="isBatch"
 			v-model="edits"
 		/>
 
@@ -131,6 +132,7 @@ export default defineComponent({
 			remove,
 			deleting,
 			saveAsCopy,
+			isBatch,
 		} = useItem(collection, primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
@@ -154,6 +156,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
+			isBatch,
 		};
 
 		function useBreadcrumb() {
