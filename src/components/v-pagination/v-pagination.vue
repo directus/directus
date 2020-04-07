@@ -170,6 +170,7 @@ export default defineComponent({
 
 		&.active {
 			--v-button-background-color: var(--v-pagination-active-color);
+			--v-button-color: var(--foreground-inverted);
 		}
 	}
 }

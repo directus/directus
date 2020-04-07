@@ -5,7 +5,7 @@
 				<draggable v-model="activeFields">
 					<v-checkbox
 						v-for="field in activeFields"
-						v-model="activeFieldKeys"
+						v-model="fields"
 						:key="field.field"
 						:value="field.field"
 						:label="field.name"
@@ -13,10 +13,10 @@
 				</draggable>
 
 				<v-checkbox
-					v-for="field in visibleFields.filter(
-						(field) => activeFieldKeys.includes(field.field) === false
+					v-for="field in availableFields.filter(
+						(field) => fields.includes(field.field) === false
 					)"
-					v-model="activeFieldKeys"
+					v-model="fields"
 					:key="field.field"
 					:value="field.field"
 					:label="field.name"
@@ -24,19 +24,28 @@
 			</drawer-detail>
 
 			<drawer-detail icon="line_weight" :title="$t('layouts.tabular.spacing')">
-				<select v-model="spacing">
-					<option value="compact">{{ $t('layouts.tabular.compact') }}</option>
-					<option value="cozy">{{ $t('layouts.tabular.cozy') }}</option>
-					<option value="comfortable">{{ $t('layouts.tabular.comfortable') }}</option>
-				</select>
+				<v-select
+					full-width
+					v-model="tableSpacing"
+					:items="[
+						{
+							text: $t('layouts.tabular.compact'),
+							value: 'compact',
+						},
+						{
+							text: $t('layouts.tabular.cozy'),
+							value: 'cozy',
+						},
+						{
+							text: $t('layouts.tabular.comfortable'),
+							value: 'comfortable',
+						},
+					]"
+				/>
 			</drawer-detail>
 
 			<drawer-detail icon="format_list_numbered" :title="$t('layouts.tabular.per_page')">
-				<select v-model="perPage">
-					<option v-for="amount in [10, 25, 50, 100, 250]" :key="amount" :value="amount">
-						{{ amount }}
-					</option>
-				</select>
+				<v-select full-width v-model="limit" :items="['10', '25', '50', '100', '250']" />
 			</drawer-detail>
 		</portal>
 
@@ -50,19 +59,19 @@
 			:sort="tableSort"
 			:items="items"
 			:loading="loading"
-			:headers.sync="headers"
-			:row-height="rowHeight"
-			:server-sort="isBigCollection"
+			:headers.sync="tableHeaders"
+			:row-height="tableRowHeight"
+			:server-sort="totalPages > 1"
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
 		>
 			<template #footer>
-				<div class="pagination" v-if="isBigCollection">
+				<div class="pagination" v-if="totalPages > 1">
 					<v-pagination
-						:length="pages"
+						:length="totalPages"
 						:total-visible="5"
 						show-first-last
-						:value="currentPage"
+						:value="page"
 						@input="toPage"
 					/>
 				</div>
@@ -73,27 +82,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, PropType, ref, watch, computed, inject } from '@vue/composition-api';
-import api from '@/api';
+import { defineComponent, PropType, ref, computed, inject, toRefs } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
-import useFieldsStore from '@/stores/fields';
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@/stores/fields/types';
 import router from '@/router';
 import useSync from '@/compositions/use-sync';
 import { debounce } from 'lodash';
 import Draggable from 'vuedraggable';
+import useCollection from '@/compositions/use-collection';
+import useItems from '@/compositions/use-items';
 
 type ViewOptions = {
 	widths?: {
 		[field: string]: number;
 	};
-	perPage?: number;
+	limit?: number;
 	spacing?: 'comfortable' | 'cozy' | 'compact';
 };
 
 export type ViewQuery = {
-	fields?: string;
+	fields?: string[];
 	sort?: string;
 };
 
@@ -122,70 +131,136 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const projectsStore = useProjectsStore();
+
 		const table = ref<Vue>(null);
 		const mainElement = inject('main-element', ref<Element>(null));
-
-		const projectsStore = useProjectsStore();
-		const fieldsStore = useFieldsStore();
-		const { currentProjectKey } = projectsStore.state;
 
 		const _selection = useSync(props, 'selection', emit);
 		const _viewOptions = useSync(props, 'viewOptions', emit);
 		const _viewQuery = useSync(props, 'viewQuery', emit);
 
-		const { visibleFields, primaryKeyField } = useCollectionInfo();
+		const { collection } = toRefs(props);
+		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const availableFields = computed(() =>
+			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
+		);
+
+		const { sort, limit, page, fields } = useItemOptions();
+
+		const { items, loading, error, totalPages, itemCount } = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields,
+		});
 
 		const {
-			isBigCollection,
-			pages,
-			getItems,
-			error,
-			items,
-			loading,
-			itemCount,
-			currentPage,
-			toPage,
-			sort,
-			perPage,
-			activeFieldKeys,
+			tableSort,
+			tableHeaders,
+			tableRowHeight,
+			onRowClick,
+			onSortChange,
 			activeFields,
-		} = useItems();
-
-		const { headers, rowHeight, spacing, onRowClick, tableSort, onSortChange } = useTable();
-
-		getItems();
+			tableSpacing,
+		} = useTable();
 
 		return {
-			error,
+			_selection,
+			table,
+			tableHeaders,
 			items,
 			loading,
-			headers,
-			onRowClick,
-			primaryKeyField,
-			_selection,
-			refresh,
-			table,
-			itemCount,
-			pages,
-			toPage,
-			currentPage,
-			isBigCollection,
-			onSortChange,
-			rowHeight,
-			_viewOptions,
-			spacing,
+			error,
+			totalPages,
 			tableSort,
-			perPage,
-			visibleFields,
-			activeFieldKeys,
+			onRowClick,
+			onSortChange,
+			tableRowHeight,
+			page,
+			toPage,
+			itemCount,
+			availableFields,
+			fields,
+			limit,
 			activeFields,
+			tableSpacing,
 		};
 
-		async function refresh() {
-			await getItems();
+		function toPage(newPage: number) {
+			page.value = newPage;
+			mainElement.value?.scrollTo({
+				top: 0,
+				behavior: 'smooth',
+			});
+		}
+
+		function useItemOptions() {
+			const page = ref(1);
+
+			const sort = computed({
+				get() {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					return _viewQuery.value?.sort || primaryKeyField.value!.field;
+				},
+				set(newSort: string) {
+					page.value = 1;
+					_viewQuery.value = {
+						..._viewQuery.value,
+						sort: newSort,
+					};
+				},
+			});
+
+			const limit = computed({
+				get() {
+					return _viewOptions.value?.limit || 25;
+				},
+				set(newLimit: number) {
+					page.value = 1;
+					_viewOptions.value = {
+						..._viewOptions.value,
+						limit: newLimit,
+					};
+				},
+			});
+
+			const fields = computed({
+				get() {
+					if (_viewQuery.value?.fields) {
+						// This shouldn't be the case, but double check just in case it's stored
+						// differently in the DB from previous versions
+						if (typeof _viewQuery.value.fields === 'string') {
+							return (_viewQuery.value.fields as string).split(',');
+						}
+					}
+
+					return (
+						_viewQuery.value?.fields ||
+						availableFields.value.slice(0, 4).map(({ field }) => field)
+					);
+				},
+				set(newFields: string[]) {
+					_viewQuery.value = {
+						..._viewQuery.value,
+						fields: newFields,
+					};
+				},
+			});
+
+			return { sort, limit, page, fields };
 		}
 
 		function useTable() {
+			const tableSort = computed(() => {
+				if (sort.value.startsWith('-')) {
+					return { by: sort.value.substring(1), desc: true };
+				} else {
+					return { by: sort.value, desc: false };
+				}
+			});
+
 			const localWidths = ref<{ [field: string]: number }>({});
 
 			const saveWidthsToViewOptions = debounce(() => {
@@ -195,7 +270,18 @@ export default defineComponent({
 				};
 			}, 350);
 
-			const headers = computed<HeaderRaw[]>({
+			const activeFields = computed<Field[]>({
+				get() {
+					return fields.value
+						.map((key) => availableFields.value.find((field) => field.field === key))
+						.filter((f) => f) as Field[];
+				},
+				set(val) {
+					fields.value = val.map((field) => field.field);
+				},
+			});
+
+			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => ({
 						text: field.name,
@@ -221,21 +307,7 @@ export default defineComponent({
 				},
 			});
 
-			const rowHeight = computed<number>(() => {
-				const spacing = props.viewOptions?.spacing || 'comfortable';
-
-				switch (spacing) {
-					case 'compact':
-						return 32;
-					case 'cozy':
-					default:
-						return 48;
-					case 'comfortable':
-						return 64;
-				}
-			});
-
-			const spacing = computed({
+			const tableSpacing = computed({
 				get() {
 					return _viewOptions.value?.spacing || 'cozy';
 				},
@@ -247,21 +319,26 @@ export default defineComponent({
 				},
 			});
 
-			const tableSort = computed(() => {
-				if (sort.value.startsWith('-')) {
-					return { by: sort.value.substring(1), desc: true };
-				} else {
-					return { by: sort.value, desc: false };
+			const tableRowHeight = computed<number>(() => {
+				switch (tableSpacing.value) {
+					case 'compact':
+						return 32;
+					case 'cozy':
+					default:
+						return 48;
+					case 'comfortable':
+						return 64;
 				}
 			});
 
 			return {
-				headers,
-				rowHeight,
-				spacing,
+				tableSort,
+				tableHeaders,
+				tableSpacing,
+				tableRowHeight,
 				onRowClick,
 				onSortChange,
-				tableSort,
+				activeFields,
 			};
 
 			function onRowClick(item: Item) {
@@ -272,9 +349,10 @@ export default defineComponent({
 						value: _selection.value.includes(item) === false,
 					});
 				} else {
-					const primaryKey = item[primaryKeyField.value.field];
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					const primaryKey = item[primaryKeyField.value!.field];
 					router.push(
-						`/${currentProjectKey}/collections/${props.collection}/${primaryKey}`
+						`/${projectsStore.state.currentProjectKey}/collections/${props.collection}/${primaryKey}`
 					);
 				}
 			}
@@ -286,212 +364,21 @@ export default defineComponent({
 				sort.value = sortString;
 			}
 		}
-
-		function useCollectionInfo() {
-			const fieldsInCurrentCollection = computed<Field[]>(() => {
-				return fieldsStore.state.fields.filter(
-					(field) => field.collection === props.collection
-				);
-			});
-
-			const visibleFields = computed<Field[]>(() => {
-				return fieldsInCurrentCollection.value.filter(
-					(field) => field.hidden_browse === false
-				);
-			});
-
-			const primaryKeyField = computed<Field>(() => {
-				// It's safe to assume that every collection has a primary key.
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				return fieldsInCurrentCollection.value.find((field) => field.primary_key === true)!;
-			});
-
-			return { fieldsInCurrentCollection, visibleFields, primaryKeyField };
-		}
-
-		function useItems() {
-			const error = ref(null);
-			const items = ref([]);
-			const loading = ref(true);
-			const itemCount = ref<number>(null);
-			const currentPage = ref(1);
-			const perPage = computed<number>({
-				get() {
-					return props.viewOptions?.perPage || 25;
-				},
-				set(val) {
-					_viewOptions.value = {
-						..._viewOptions.value,
-						perPage: val,
-					};
-
-					currentPage.value = 1;
-
-					Vue.nextTick().then(() => {
-						getItems();
-					});
-				},
-			});
-			const pages = computed<number>(() => Math.ceil(itemCount.value || 0 / perPage.value));
-			const isBigCollection = computed<boolean>(() => (itemCount.value || 0) > perPage.value);
-
-			const sort = computed<string>({
-				get() {
-					return _viewQuery.value?.sort || primaryKeyField.value.field;
-				},
-				set(newSort) {
-					_viewQuery.value = {
-						..._viewQuery.value,
-						sort: newSort,
-					};
-
-					// Let the table component handle the sorting for small datasets
-					if (isBigCollection.value === false) return;
-
-					currentPage.value = 1;
-
-					Vue.nextTick().then(() => {
-						getItems();
-					});
-				},
-			});
-
-			const activeFieldKeys = computed<string[]>({
-				get() {
-					return (
-						_viewQuery.value?.fields?.split(',') ||
-						visibleFields.value.map((field) => field.field)
-					);
-				},
-				set(newFields: string[]) {
-					_viewQuery.value = {
-						..._viewQuery.value,
-						fields: newFields.join(','),
-					};
-
-					Vue.nextTick().then(() => {
-						getItems();
-					});
-				},
-			});
-
-			const activeFields = computed<Field[]>({
-				get() {
-					return activeFieldKeys.value
-						.map((key) => visibleFields.value.find((field) => field.field === key))
-						.filter((f) => f) as Field[];
-				},
-				set(val) {
-					activeFieldKeys.value = val.map((field) => field.field);
-				},
-			});
-
-			watch(
-				() => props.collection,
-				() => {
-					items.value = [];
-					itemCount.value = null;
-					currentPage.value = 1;
-					getItems();
-				}
-			);
-
-			return {
-				isBigCollection,
-				pages,
-				getItems,
-				getTotalCount,
-				error,
-				items,
-				loading,
-				itemCount,
-				sort,
-				toPage,
-				currentPage,
-				perPage,
-				activeFieldKeys,
-				activeFields,
-			};
-
-			async function getTotalCount() {
-				const response = await api.get(`/${currentProjectKey}/items/${props.collection}`, {
-					params: {
-						limit: 0,
-						fields: primaryKeyField.value.field,
-						meta: 'filter_count',
-					},
-				});
-
-				itemCount.value = response.data.meta.filter_count;
-			}
-
-			async function getItems() {
-				error.value = null;
-				loading.value = true;
-
-				const fieldsToFetch = [...activeFieldKeys.value];
-
-				if (fieldsToFetch.includes(primaryKeyField.value.field) === false) {
-					fieldsToFetch.push(primaryKeyField.value.field);
-				}
-
-				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${props.collection}`,
-						{
-							params: {
-								fields: fieldsToFetch,
-								limit: perPage.value,
-								page: currentPage.value,
-								sort: sort.value,
-							},
-						}
-					);
-
-					items.value = response.data.data;
-
-					if (itemCount.value === null) {
-						if (response.data.data.length === perPage.value) {
-							// Requesting the page filter count in the actual request every time slows
-							// the request down by like 600ms-1s. This makes sure we only fetch the count
-							// once if needed.
-							getTotalCount();
-						} else {
-							// If the response includes less items than the limit, it's safe to assume
-							// it's all the data in the DB
-							itemCount.value = response.data.data.length;
-						}
-					}
-				} catch (error) {
-					error.value = error;
-				} finally {
-					loading.value = false;
-				}
-			}
-
-			function toPage(page: number) {
-				currentPage.value = page;
-				getItems();
-				mainElement.value?.scrollTo({
-					top: 0,
-					behavior: 'smooth',
-				});
-			}
-		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .layout-tabular {
-	display: contents;
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 .v-table {
 	--v-table-sticky-offset-top: var(--layout-offset-top);
 
 	display: contents;
-	padding: 0 32px;
 }
 
 .pagination {

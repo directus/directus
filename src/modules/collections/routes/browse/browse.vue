@@ -294,10 +294,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.private-view {
-	--content-padding: 0 !important;
-}
-
 .action-delete {
 	--v-button-background-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-dark);

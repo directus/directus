@@ -1,5 +1,5 @@
 <template>
-	<div class="v-button">
+	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
@@ -10,12 +10,10 @@
 				sizeClass,
 				`align-${align}`,
 				{
-					'full-width': fullWidth,
 					rounded,
 					icon,
 					outlined,
 					loading,
-					secondary,
 					active,
 					dashed,
 					tile,
@@ -139,6 +137,20 @@ export default defineComponent({
 	display: inline-flex;
 	align-items: center;
 
+	&.secondary {
+		--v-button-color: var(--foreground-color);
+		--v-button-color-hover: var(--foreground-color);
+		--v-button-color-activated: var(--foreground-color);
+		--v-button-background-color: var(--background-normal-alt);
+		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-background-color-activated: var(--background-normal-alt);
+	}
+
+	&.full-width {
+		display: flex;
+		min-width: 100%;
+	}
+
 	.button {
 		position: relative;
 		display: flex;
@@ -168,15 +180,6 @@ export default defineComponent({
 
 		&.align-right {
 			justify-content: flex-end;
-		}
-
-		&.secondary {
-			--v-button-color: var(--foreground-color);
-			--v-button-color-hover: var(--foreground-color);
-			--v-button-color-activated: var(--foreground-color);
-			--v-button-background-color: var(--background-normal-alt);
-			--v-button-background-color-hover: var(--background-normal-alt);
-			--v-button-background-color-activated: var(--background-normal-alt);
 		}
 
 		&:active {
@@ -251,11 +254,6 @@ export default defineComponent({
 			width: var(--v-button-height);
 			min-width: 0;
 			padding: 0;
-		}
-
-		&.full-width {
-			display: flex;
-			min-width: 100%;
 		}
 
 		.content,

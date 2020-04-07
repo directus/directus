@@ -122,6 +122,7 @@ export default defineComponent({
 
 		input {
 			flex-grow: 1;
+			width: 20px; // auto grows
 			height: 100%;
 			background-color: transparent;
 			border: none;

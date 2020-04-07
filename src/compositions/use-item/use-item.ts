@@ -16,12 +16,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 
-	if (isNew.value === false) {
-		getItem();
-	}
-
-	watch(collection, refresh);
-	watch(primaryKey, refresh);
+	watch([collection, primaryKey], refresh);
 
 	return {
 		edits,

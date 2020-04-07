@@ -41,7 +41,7 @@ describe('Button', () => {
 			},
 		});
 
-		expect(component.find('.button').classes()).toContain('full-width');
+		expect(component.classes()).toContain('full-width');
 	});
 
 	it('Adds the rounded class for rounded buttons', () => {
