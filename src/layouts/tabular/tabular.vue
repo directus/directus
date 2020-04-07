@@ -202,7 +202,7 @@ export default defineComponent({
 						value: field.field,
 						width:
 							localWidths.value[field.field] ||
-							_viewOptions.value.widths?.[field.field] ||
+							_viewOptions.value?.widths?.[field.field] ||
 							null,
 					}));
 				},

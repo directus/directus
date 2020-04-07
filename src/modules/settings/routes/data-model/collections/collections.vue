@@ -7,15 +7,9 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="addNewActive" persistent>
-				<template #activator="{ on }">
-					<v-button rounded icon @click="on">
-						<v-icon name="add" />
-					</v-button>
-				</template>
-
-				<new-collection @cancel="addNewActive = false" />
-			</v-dialog>
+			<v-button rounded icon @click="addNewActive = true">
+				<v-icon name="add" />
+			</v-button>
 		</template>
 
 		<template #navigation>
@@ -44,6 +38,8 @@
 				</span>
 			</template>
 		</v-table>
+
+		<new-collection v-model="addNewActive" />
 	</private-view>
 </template>
 

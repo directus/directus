@@ -49,10 +49,14 @@
 			<div class="interface">
 				<v-skeleton-loader v-if="loading" />
 				<interface-text-input
-					:disabled="field.readonly"
-					:value="values[field.field] || field.default_value || null"
-					@input="setValue(field, $event)"
 					v-bind="field.options"
+					:disabled="field.readonly"
+					:value="
+						values[field.field] === undefined
+							? field.default_value
+							: values[field.field]
+					"
+					@input="setValue(field, $event)"
 				/>
 			</div>
 

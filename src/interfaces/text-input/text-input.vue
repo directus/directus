@@ -2,9 +2,10 @@
 	<v-input
 		:monospace="monospace"
 		:value="value"
-		@input="$listeners.input"
 		:placeholder="placeholder"
+		:disabled="disabled"
 		full-width
+		@input="$listeners.input"
 	/>
 </template>
 
