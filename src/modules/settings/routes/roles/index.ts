@@ -1,4 +1,5 @@
-import SettingsRoles from './roles.vue';
+import SettingsRolesBrowse from './browse/';
+import SettingsRolesDetail from './detail/';
 
-export { SettingsRoles };
-export default SettingsRoles;
+export { SettingsRolesBrowse, SettingsRolesDetail };
+export default { SettingsRolesBrowse, SettingsRolesDetail };

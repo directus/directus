@@ -1,8 +1,8 @@
 <template>
-	<private-view :title="$t('webhooks')">
+	<private-view :title="$t('roles')">
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon secondary>
-				<v-icon name="send" />
+				<v-icon name="people" />
 			</v-button>
 		</template>
 
@@ -52,11 +52,11 @@
 		<layout-tabular
 			class="layout"
 			ref="layout"
-			collection="directus_webhooks"
+			collection="directus_roles"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/settings/webhooks/{{primaryKey}}'"
+			:detail-route="'/{{project}}/settings/roles/{{primaryKey}}'"
 		/>
 	</private-view>
 </template>
@@ -76,7 +76,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-browse',
+	name: 'roles-browse',
 	components: { SettingsNavigation },
 	props: {},
 	setup() {
@@ -85,7 +85,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_webhooks'));
+		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_roles'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
@@ -118,7 +118,7 @@ export default defineComponent({
 
 				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
 
-				await api.delete(`/${currentProjectKey}/settings/webhooks/${batchPrimaryKeys}`);
+				await api.delete(`/${currentProjectKey}/settings/roles/${batchPrimaryKeys}`);
 
 				await layout.value?.refresh();
 
@@ -131,13 +131,13 @@ export default defineComponent({
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/settings/webhooks/+`;
+				return `/${currentProjectKey}/settings/roles/+`;
 			});
 
 			const batchLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
 				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
-				return `/${currentProjectKey}/settings/webhooks/${batchPrimaryKeys}`;
+				return `/${currentProjectKey}/settings/roles/${batchPrimaryKeys}`;
 			});
 
 			return { addNewLink, batchLink };

@@ -122,6 +122,8 @@
 	"files": "Files",
 	"activity": "Activity",
 	"webhooks": "Webhooks",
+	"roles": "User Roles",
+
 
 
   "about_directus": "About Directus",
@@ -545,7 +547,6 @@
   "revert_copy": "Do you want to revert this item to how it was on {date}?",
   "role_count": "No Roles | One Role | {count} Roles",
   "role_settings": "Role Settings",
-  "roles": "User Roles",
   "save": "Save",
   "save_as_bookmark": "Save as Bookmark",
   "scan_in_authenticator": "Scan this code in your authenticator app",

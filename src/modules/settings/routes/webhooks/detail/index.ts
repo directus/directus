@@ -1,4 +1,4 @@
-import FilesDetail from './detail.vue';
+import WebhooksDetail from './detail.vue';
 
-export { FilesDetail };
-export default FilesDetail;
+export { WebhooksDetail };
+export default WebhooksDetail;

@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('editing', { collection: $t('webhooks') })">
+	<private-view :title="$t('editing', { collection: $t('roles') })">
 		<template #title-outer:prepend>
 			<v-button rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -63,9 +63,9 @@
 		</template>
 
 		<v-form
+			collection="directus_roles"
 			:loading="loading"
 			:initial-values="item"
-			collection="directus_webhooks"
 			:batch-mode="isBatch"
 			v-model="edits"
 		/>
@@ -73,7 +73,7 @@
 		<template #drawer>
 			<activity-drawer-detail
 				v-if="isNew === false"
-				collection="directus_webhooks"
+				collection="directus_roles"
 				:primary-key="primaryKey"
 			/>
 		</template>
@@ -96,7 +96,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'webhooks-detail',
+	name: 'roles-detail',
 	components: { SettingsNavigation, ActivityDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {
@@ -122,7 +122,7 @@ export default defineComponent({
 			deleting,
 			saveAsCopy,
 			isBatch,
-		} = useItem(ref('directus_webhooks'), primaryKey);
+		} = useItem(ref('directus_roles'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
@@ -150,8 +150,8 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('webhooks'),
-					to: `/${currentProjectKey.value}/settings/webhooks/`,
+					name: i18n.t('roles'),
+					to: `/${currentProjectKey.value}/settings/roles/`,
 				},
 			]);
 
@@ -160,7 +160,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
-			router.push(`/${currentProjectKey.value}/settings/webhooks`);
+			router.push(`/${currentProjectKey.value}/settings/roles`);
 		}
 
 		async function saveAndStay() {
@@ -169,17 +169,17 @@ export default defineComponent({
 
 		async function saveAndAddNew() {
 			await save();
-			router.push(`/${currentProjectKey.value}/settings/webhooks/+`);
+			router.push(`/${currentProjectKey.value}/settings/roles/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/settings/webhooks/${newPrimaryKey}`);
+			router.push(`/${currentProjectKey.value}/settings/roles/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/settings/webhooks`);
+			router.push(`/${currentProjectKey.value}/settings/roles`);
 		}
 	},
 });
