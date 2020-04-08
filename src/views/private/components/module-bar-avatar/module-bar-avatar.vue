@@ -84,10 +84,10 @@ export default defineComponent({
 	position: absolute;
 	top: 0;
 	left: 0;
+	transition: transform var(--fast) var(--transition);
 
 	&.show {
 		transform: translateY(-100%);
-		transition: transform var(--fast) var(--transition);
 	}
 
 	.v-icon {

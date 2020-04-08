@@ -190,6 +190,15 @@ export default defineComponent({
 					return a.sort > b.sort ? 1 : -1;
 				});
 
+				// Make sure all form fields have a width associated with it
+				formFields = formFields.map((field) => {
+					if (!field.width) {
+						field.width = 'full';
+					}
+
+					return field;
+				});
+
 				// Change the class to half-right if the current element is preceded by another half width field
 				// this makes them align side by side
 				formFields = formFields.map((field, index, formFields) => {

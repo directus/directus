@@ -25,6 +25,7 @@
     "date-fns": "^2.11.1",
     "lodash": "^4.17.15",
     "marked": "^0.8.2",
+    "micromustache": "^7.1.0",
     "nanoid": "^3.0.2",
     "pinia": "0.0.5",
     "portal-vue": "^2.1.7",

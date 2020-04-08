@@ -9715,6 +9715,11 @@ micromatch@^4.0.0, micromatch@^4.0.2:
     braces "^3.0.1"
     picomatch "^2.0.5"
 
+micromustache@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/micromustache/-/micromustache-7.1.0.tgz#53eebe9a4fe0ac9b9990535e090f797e2934d5e1"
+  integrity sha512-DXUYQI8qPsfOx3AkiGzyOx0cn7NgCqFYsV0Asa/ZQUna2Er4mwpAdA9iANA92WYvUowHf+jBsVvIZxiRe1z1Ig==
+
 miller-rabin@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/miller-rabin/-/miller-rabin-4.0.1.tgz#f080351c865b0dc562a8462966daa53543c78a4d"

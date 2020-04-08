@@ -100,6 +100,7 @@ import { debounce } from 'lodash';
 import Draggable from 'vuedraggable';
 import useCollection from '@/compositions/use-collection';
 import useItems from '@/compositions/use-items';
+import { render } from 'micromustache';
 
 type ViewOptions = {
 	widths?: {
@@ -125,10 +126,6 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			default: () => [],
 		},
-		selectMode: {
-			type: Boolean,
-			default: false,
-		},
 		viewOptions: {
 			type: Object as PropType<ViewOptions>,
 			default: null,
@@ -137,9 +134,17 @@ export default defineComponent({
 			type: Object as PropType<ViewQuery>,
 			default: null,
 		},
+		selectMode: {
+			type: Boolean,
+			default: false,
+		},
+		detailRoute: {
+			type: String,
+			default: `/{{project}}/collections/{{collection}}/{{primaryKey}}`,
+		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
+		const { currentProjectKey } = toRefs(useProjectsStore().state);
 
 		const table = ref<Vue>(null);
 		const mainElement = inject('main-element', ref<Element>(null));
@@ -360,7 +365,11 @@ export default defineComponent({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const primaryKey = item[primaryKeyField.value!.field];
 					router.push(
-						`/${projectsStore.state.currentProjectKey}/collections/${props.collection}/${primaryKey}`
+						render(props.detailRoute, {
+							project: currentProjectKey.value,
+							collection: collection.value,
+							primaryKey,
+						})
 					);
 				}
 			}

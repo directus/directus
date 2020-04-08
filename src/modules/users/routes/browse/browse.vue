@@ -1,14 +1,9 @@
 <template>
-	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="currentCollection.name">
+	<private-view :title="$t('users')">
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon secondary>
-				<v-icon :name="currentCollection.icon" />
+				<v-icon name="people" />
 			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #drawer><portal-target name="drawer" /></template>
@@ -51,60 +46,29 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation />
+			<users-navigation />
 		</template>
 
 		<layout-tabular
 			class="layout"
 			ref="layout"
-			:collection="collection"
+			collection="directus_users"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
+			:detail-route="'/{{project}}/users/{{primaryKey}}'"
 		/>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
-import { NavigationGuard } from 'vue-router';
-import CollectionsNavigation from '../../components/navigation/';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
+import { defineComponent, computed, ref } from '@vue/composition-api';
+import UsersNavigation from '../../components/navigation/';
 import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import CollectionsNotFound from '../not-found/';
-import useCollection from '@/compositions/use-collection';
 import useCollectionPreset from '@/compositions/use-collection-preset';
-
-const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
-	const collectionsStore = useCollectionsStore();
-	const collectionInfo = collectionsStore.getCollection(to.params.collection);
-
-	if (collectionInfo === null) return next();
-
-	if (collectionInfo.single === true) {
-		const fieldsStore = useFieldsStore();
-
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(to.params.collection);
-
-		const item = await api.get(`/${to.params.project}/items/${to.params.collection}`, {
-			params: {
-				limit: 1,
-				fields: primaryKeyField.field,
-				single: true,
-			},
-		});
-
-		const primaryKey = item.data.data[primaryKeyField.field];
-
-		return next(`/${to.params.project}/collections/${to.params.collection}/${primaryKey}`);
-	}
-
-	return next();
-};
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,32 +76,21 @@ type Item = {
 };
 
 export default defineComponent({
-	beforeRouteEnter: redirectIfNeeded,
-	beforeRouteUpdate: redirectIfNeeded,
-	name: 'collections-browse',
-	components: { CollectionsNavigation, CollectionsNotFound },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
+	name: 'users-browse',
+	components: { UsersNavigation },
+	props: {},
+	setup() {
 		const layout = ref<LayoutComponent>(null);
-
-		const { collection } = toRefs(props);
-
 		const projectsStore = useProjectsStore();
 
-		const { selection } = useSelection();
-		const { info: currentCollection, primaryKeyField } = useCollection(collection);
+		const selection = ref<Item[]>([]);
+
+		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_users'));
 		const { addNewLink, batchLink } = useLinks();
-		const { viewOptions, viewQuery } = useCollectionPreset(collection);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
 
 		return {
-			currentCollection,
 			addNewLink,
 			batchLink,
 			selection,
@@ -149,18 +102,6 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 		};
-
-		function useSelection() {
-			const selection = ref<Item[]>([]);
-
-			// Whenever the collection changes we're working on, we have to clear the selection
-			watch(
-				() => props.collection,
-				() => (selection.value = [])
-			);
-
-			return { selection };
-		}
 
 		function useBatchDelete() {
 			const confirmDelete = ref(false);
@@ -175,14 +116,9 @@ export default defineComponent({
 
 				confirmDelete.value = false;
 
-				const batchPrimaryKeys = selection.value
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					.map((item) => item[primaryKeyField.value!.field])
-					.join();
+				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
 
-				await api.delete(
-					`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`
-				);
+				await api.delete(`/${currentProjectKey}/users/${batchPrimaryKeys}`);
 
 				await layout.value?.refresh();
 
@@ -195,16 +131,13 @@ export default defineComponent({
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/collections/${props.collection}/+`;
+				return `/${currentProjectKey}/users/+`;
 			});
 
 			const batchLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
-				const batchPrimaryKeys = selection.value
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					.map((item) => item[primaryKeyField.value!.field])
-					.join();
-				return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
+				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
+				return `/${currentProjectKey}/users/${batchPrimaryKeys}`;
 			});
 
 			return { addNewLink, batchLink };

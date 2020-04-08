@@ -85,7 +85,11 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 
 		try {
-			const response = await api.get(`/${currentProjectKey}/items/${collection.value}`, {
+			const endpoint = collection.value.startsWith('directus_')
+				? `/${currentProjectKey}/${collection.value.substring(9)}`
+				: `/${currentProjectKey}/items/${collection.value}`;
+
+			const response = await api.get(endpoint, {
 				params: {
 					limit: limit.value,
 					fields: fieldsToFetch,

@@ -118,6 +118,10 @@
 
 	"item_count": "No Items | One Item | {count} Items",
 
+	"users": "Users",
+	"files": "Files",
+	"Activity": "Activity",
+
 
   "about_directus": "About Directus",
   "activity": "Activity",
@@ -164,12 +168,6 @@
   "collection_removed": "Collection Removed",
   "collection_updated": "Collection Updated",
   "collections_and_fields": "Collection & Fields",
-
-  "collections": {
-    "directus_activity": "Activity",
-    "directus_files": "Files",
-    "directus_users": "Users"
-  },
 
   "fields": {
     "directus_activity": {

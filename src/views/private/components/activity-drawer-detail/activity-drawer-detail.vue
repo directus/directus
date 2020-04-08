@@ -129,6 +129,7 @@ export default defineComponent({
 							params: {
 								'filter[collection][eq]': collection,
 								'filter[item][eq]': primaryKey,
+								'filter[action][in]': 'comment,create,update,delete',
 								sort: '-id', // directus_activity has auto increment and is therefore in chronological order
 								fields: [
 									'id',

@@ -20,6 +20,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		() => typeof primaryKey.value === 'string' && primaryKey.value.includes(',')
 	);
 
+	const endpoint = computed(() => {
+		const currentProjectKey = useProjectsStore().state.currentProjectKey;
+		return collection.value.startsWith('directus_')
+			? `/${currentProjectKey}/${collection.value.substring(9)}`
+			: `/${currentProjectKey}/items/${collection.value}`;
+	});
+
 	watch([collection, primaryKey], refresh);
 
 	return {
@@ -38,13 +45,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	};
 
 	async function getItem() {
-		const currentProjectKey = useProjectsStore().state.currentProjectKey;
 		loading.value = true;
 
 		try {
-			const response = await api.get(
-				`/${currentProjectKey}/items/${collection.value}/${primaryKey.value}`
-			);
+			const response = await api.get(`${endpoint.value}/${primaryKey.value}`);
 
 			setItemValueToResponse(response);
 		} catch (err) {
@@ -55,17 +59,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	async function save() {
-		const currentProjectKey = useProjectsStore().state.currentProjectKey;
 		saving.value = true;
 
 		try {
 			let response;
 
 			if (isNew.value === true) {
-				response = await api.post(
-					`/${currentProjectKey}/items/${collection.value}`,
-					edits.value
-				);
+				response = await api.post(endpoint.value, edits.value);
 
 				notify({
 					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
@@ -78,10 +78,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					type: 'success',
 				});
 			} else {
-				response = await api.patch(
-					`/${currentProjectKey}/items/${collection.value}/${primaryKey.value}`,
-					edits.value
-				);
+				response = await api.patch(`${endpoint.value}/${primaryKey.value}`, edits.value);
 
 				notify({
 					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
@@ -129,7 +126,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	async function saveAsCopy() {
-		const currentProjectKey = useProjectsStore().state.currentProjectKey;
 		saving.value = true;
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,10 +140,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 
 		try {
-			const response = await api.post(
-				`/${currentProjectKey}/items/${collection.value}`,
-				newItem
-			);
+			const response = await api.post(endpoint.value, newItem);
 
 			notify({
 				title: i18n.t('item_create_success'),
@@ -180,11 +173,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	async function remove() {
-		const currentProjectKey = useProjectsStore().state.currentProjectKey;
 		deleting.value = true;
 
 		try {
-			await api.delete(`/${currentProjectKey}/items/${collection.value}/${primaryKey.value}`);
+			await api.delete(`${endpoint.value}/${primaryKey.value}`);
 
 			item.value = null;
 
