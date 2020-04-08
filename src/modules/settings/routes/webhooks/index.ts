@@ -1,4 +1,5 @@
-import SettingsWebhooks from './webhooks.vue';
+import SettingsWebhooksBrowse from './browse';
+import SettingsWebhooksDetail from './detail';
 
-export { SettingsWebhooks };
-export default SettingsWebhooks;
+export { SettingsWebhooksBrowse, SettingsWebhooksDetail };
+export default { SettingsWebhooksBrowse, SettingsWebhooksDetail };

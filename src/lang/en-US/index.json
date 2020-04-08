@@ -120,11 +120,11 @@
 
 	"users": "Users",
 	"files": "Files",
-	"Activity": "Activity",
+	"activity": "Activity",
+	"webhooks": "Webhooks",
 
 
   "about_directus": "About Directus",
-  "activity": "Activity",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
