@@ -96,7 +96,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'collections-detail',
+	name: 'users-detail',
 	components: { UsersNavigation, ActivityDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {

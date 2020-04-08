@@ -59,7 +59,7 @@
 			v-if="loading || itemCount > 0"
 			ref="table"
 			fixed-header
-			show-select
+			:show-select="selection !== undefined"
 			show-resize
 			must-sort
 			:sort="tableSort"
@@ -124,7 +124,7 @@ export default defineComponent({
 		},
 		selection: {
 			type: Array as PropType<Item[]>,
-			default: () => [],
+			default: undefined,
 		},
 		viewOptions: {
 			type: Object as PropType<ViewOptions>,
@@ -355,11 +355,11 @@ export default defineComponent({
 			};
 
 			function onRowClick(item: Item) {
-				if (props.selectMode || _selection.value.length > 0) {
+				if (props.selectMode || _selection.value?.length > 0) {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					(table.value as any).onItemSelected({
 						item,
-						value: _selection.value.includes(item) === false,
+						value: _selection.value?.includes(item) === false,
 					});
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

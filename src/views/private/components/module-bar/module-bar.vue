@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, Ref } from '@vue/composition-api';
 import { useProjectsStore } from '@/stores/projects';
 import { modules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
@@ -26,10 +26,22 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = projectsStore.state;
 
-		const _modules = modules.map((module) => ({
-			...module,
-			to: `/${currentProjectKey}/${module.id}/`,
-		}));
+		const _modules = modules
+			.map((module) => ({
+				...module,
+				to: `/${currentProjectKey}/${module.id}/`,
+			}))
+			.filter((module) => {
+				if (module.hidden !== undefined) {
+					if (
+						(module.hidden as boolean) === true ||
+						(module.hidden as Ref<boolean>).value === true
+					) {
+						return false;
+					}
+				}
+				return true;
+			});
 
 		return { _modules };
 	},
