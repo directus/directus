@@ -17,6 +17,7 @@
 					active,
 					dashed,
 					tile,
+					'full-width': fullWidth,
 				},
 			]"
 			:type="type"
@@ -254,6 +255,10 @@ export default defineComponent({
 			width: var(--v-button-height);
 			min-width: 0;
 			padding: 0;
+		}
+
+		&.full-width {
+			min-width: 100%;
 		}
 
 		.content,
