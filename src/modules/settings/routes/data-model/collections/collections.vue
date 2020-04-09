@@ -28,7 +28,7 @@
 
 			<template #item.collection="{ item }">
 				<span class="collection" :class="{ hidden: item.hidden }">
-					{{ item.collection }}
+					{{ item.name }}
 				</span>
 			</template>
 
@@ -93,10 +93,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.collection {
-	font-family: var(--family-monospace);
-}
-
 .icon ::v-deep i {
 	vertical-align: baseline;
 }

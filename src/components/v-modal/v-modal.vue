@@ -162,7 +162,7 @@ export default defineComponent({
 			overflow: auto;
 
 			@include breakpoint(medium) {
-				padding: 24px;
+				padding: 32px;
 			}
 		}
 	}

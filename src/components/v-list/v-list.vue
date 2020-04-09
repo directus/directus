@@ -52,7 +52,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-list {
-	--v-list-padding: 8px 0;
+	--v-list-padding: 4px 0;
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: none;
@@ -75,7 +75,12 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 
 	&.nav {
-		--v-list-padding: 8px;
+		--v-list-padding: 12px;
+	}
+
+	::v-deep .v-divider {
+		max-width: calc(100% - 16px);
+		margin: 8px;
 	}
 }
 </style>

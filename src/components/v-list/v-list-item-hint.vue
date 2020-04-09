@@ -23,7 +23,7 @@ export default defineComponent({
 
 	display: inline-flex;
 	align-self: center;
-	margin: 12px 0;
+	margin: 8px 0;
 	color: var(--foreground-subdued);
 
 	&:not(:only-child) {
@@ -49,14 +49,14 @@ export default defineComponent({
 			}
 			&.dense {
 				#{$this} {
-					margin-top: 8px;
-					margin-bottom: 8px;
+					margin-top: 4px;
+					margin-bottom: 4px;
 					&:not(:only-child) {
 						&:first-child {
-							margin-right: 8px;
+							margin-right: 16px;
 						}
 						&:last-child {
-							margin-left: 8px;
+							margin-left: 16px;
 						}
 					}
 				}

@@ -28,7 +28,8 @@
 			flex-basis: 100%;
 			flex-grow: 1;
 			flex-shrink: 0;
-			line-height: 1.1;
+			line-height: 1;
+
 			&:not(:last-child) {
 				margin-bottom: 2px;
 			}
@@ -37,7 +38,7 @@
 
 	.v-list.dense &,
 	.v-list-item.dense & {
-		--v-list-item-content-padding: 8px 0;
+		--v-list-item-content-padding: 4px 0;
 	}
 }
 </style>

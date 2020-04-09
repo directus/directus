@@ -1,5 +1,5 @@
 <template>
-	<v-list nav dense>
+	<v-list nav>
 		<v-list-item v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
 			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 			<v-list-item-content>

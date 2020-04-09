@@ -17,7 +17,7 @@ describe('Checkbox', () => {
 			},
 		});
 
-		expect(component.find('span[class="label type-label"]').text()).toContain('Turn me on');
+		expect(component.find('span[class="label type-text"]').text()).toContain('Turn me on');
 	});
 
 	it('Renders as checked when inputValue `true` is given', () => {

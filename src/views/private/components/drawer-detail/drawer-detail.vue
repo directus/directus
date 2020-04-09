@@ -85,7 +85,7 @@ export default defineComponent({
 	}
 
 	.content {
-		padding: 12px;
+		padding: 20px;
 	}
 }
 </style>

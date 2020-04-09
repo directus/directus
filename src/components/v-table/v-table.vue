@@ -364,7 +364,7 @@ export default defineComponent({
 				--v-progress-linear-height: 2px;
 
 				position: relative;
-				top: -1px;
+				top: -2px;
 			}
 
 			th {
@@ -379,11 +379,11 @@ export default defineComponent({
 		}
 
 		.loading-text {
-			color: var(--foreground-subdued);
 			text-align: center;
 
 			td {
 				padding: 16px;
+				color: var(--foreground-subdued);
 			}
 		}
 	}

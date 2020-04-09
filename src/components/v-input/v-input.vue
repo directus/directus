@@ -105,7 +105,7 @@ export default defineComponent({
 		&:hover {
 			color: var(--foreground-normal);
 			background-color: var(--background-page);
-			border-color: var(--border-normal);
+			border-color: var(--border-normal-alt);
 		}
 
 		&:focus-within {
@@ -116,8 +116,8 @@ export default defineComponent({
 
 		&.disabled {
 			color: var(--foreground-subdued);
-			background-color: var(--background-normal-alt);
-			border-color: var(--border-normal-alt);
+			background-color: var(--background-subdued);
+			border-color: var(--border-normal);
 		}
 
 		input {

@@ -76,12 +76,12 @@ export default defineComponent({
 	height: 100%;
 	transition: opacity var(--medium) var(--transition);
 
-	.v-card {
-		--v-card-min-width: 400px;
-		--v-card-padding: 24px;
+	::v-deep .v-card {
+		--v-card-min-width: 540px;
+		--v-card-padding: 20px;
 	}
 
-	.v-sheet {
+	::v-deep .v-sheet {
 		--v-sheet-padding: 24px;
 		--v-sheet-max-width: 560px;
 	}

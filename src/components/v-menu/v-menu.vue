@@ -153,12 +153,22 @@ export default defineComponent({
 
 .v-menu-activator {
 	display: contents;
+	&::before {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 2px;
+		height: 2px;
+		background: var(--border-normal);
+		content: '';
+	}
 }
 
 .v-menu-popper {
 	position: absolute;
 	left: -999px;
 	z-index: 5;
+	transform: translateY(2px);
 	pointer-events: none;
 
 	&.active {
@@ -206,6 +216,7 @@ export default defineComponent({
 
 	.v-menu-content {
 		max-height: 50vh;
+		padding: 0 4px;
 		overflow-x: hidden;
 		overflow-y: auto;
 		background-color: var(--background-subdued);
@@ -287,11 +298,12 @@ export default defineComponent({
 		transform: scaleY(1) scaleX(1);
 		opacity: 1;
 		transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
-		transition-duration: var(--medium);
+		transition-duration: var(--fast);
 	}
 
 	&.attached {
 		.v-menu-content {
+			border-top: none;
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
 		}

@@ -56,7 +56,7 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-			<v-divider inset />
+			<v-divider />
 			<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
 				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
@@ -69,7 +69,7 @@
 				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 			</v-list-item>
-			<v-divider inset />
+			<v-divider />
 			<v-list-item @click="$emit('toggle-visibility', field)">
 				<template v-if="field.hidden_detail === false">
 					<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
@@ -229,6 +229,12 @@ export default defineComponent({
 }
 
 .v-input.hidden {
-	--background-page: var(--background-normal);
+	--background-page: var(--background-subdued);
+}
+
+.v-icon {
+	--v-icon-color: var(--foreground-subdued);
+
+	pointer-events: none;
 }
 </style>

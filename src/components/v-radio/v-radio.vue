@@ -80,7 +80,7 @@ export default defineComponent({
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--border-normal);
+		--v-icon-color: var(--foreground-subdued);
 	}
 
 	&:disabled {
@@ -91,13 +91,13 @@ export default defineComponent({
 		}
 
 		.v-icon {
-			--v-icon-color: var(--border-normal);
+			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--border-normal);
+			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 

@@ -301,7 +301,7 @@
   "db_user": "Database User",
   "default": "Default",
   "delete": "Delete",
-  "delete_are_you_sure": "Are you sure you want to delete this item? This action can not be undone.",
+  "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_bookmark": "Delete Bookmark",
   "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",
   "delete_collection_are_you_sure": "Are you sure you want to delete this collection? This action can not be undone.",

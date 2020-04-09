@@ -9,7 +9,7 @@
 		:class="{ checked: isChecked }"
 	>
 		<v-icon :name="icon" />
-		<span class="label type-label">
+		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
 	</button>
@@ -106,7 +106,7 @@ export default defineComponent({
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--border-normal);
+		--v-icon-color: var(--foreground-subdued);
 	}
 
 	&:disabled {
@@ -117,13 +117,13 @@ export default defineComponent({
 		}
 
 		.v-icon {
-			--v-icon-color: var(--border-normal);
+			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--border-normal);
+			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 

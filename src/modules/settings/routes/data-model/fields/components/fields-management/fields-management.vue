@@ -253,7 +253,7 @@ export default defineComponent({
 .visible,
 .hidden {
 	display: grid;
-	grid-gap: 24px 36px;
+	grid-gap: 20px 32px;
 	grid-template-columns: 1fr 1fr;
 }
 

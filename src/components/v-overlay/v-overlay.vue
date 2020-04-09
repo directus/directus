@@ -33,7 +33,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-overlay {
-	--v-overlay-color: rgba(38, 50, 56, 0.75);
+	--v-overlay-color: rgba(38, 50, 56, 0.9);
 	--v-overlay-z-index: 500;
 
 	position: fixed;

@@ -56,7 +56,7 @@ export function usePopper(
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, -2] : [0, 8],
+					offset: options.value.attached ? [0, 0] : [0, 8],
 				},
 			},
 			preventOverflow,

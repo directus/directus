@@ -27,7 +27,7 @@
 					</div>
 				</template>
 
-				<v-list>
+				<v-list dense>
 					<v-list-item
 						@click="setValue(field, null)"
 						:disabled="values[field.field] === null"
@@ -340,6 +340,8 @@ export default defineComponent({
 
 	.required {
 		--v-icon-color: var(--primary);
+
+		margin-left: -2px;
 	}
 
 	.ctx-arrow {

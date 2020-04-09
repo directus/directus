@@ -218,12 +218,12 @@ export default defineComponent({
 .table-header {
 	.cell {
 		position: relative;
-		height: 48px;
-		padding: 0 20px;
+		height: 50px; // +2px for bottom border
+		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--background-page);
-		border-bottom: 1px solid var(--border-normal);
+		border-bottom: 2px solid var(--border-subdued);
 
 		&.select,
 		&.sort {
@@ -246,15 +246,17 @@ export default defineComponent({
 	}
 
 	.sortable {
+		cursor: pointer;
 		.sort-icon {
 			margin-left: 4px;
+			color: var(--foreground-subdued);
 			transform: scaleY(-1);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 		}
 
 		&:hover .sort-icon {
-			opacity: 0.5;
+			opacity: 1;
 		}
 
 		&.sort-asc,
@@ -298,11 +300,12 @@ export default defineComponent({
 
 		&::after {
 			position: relative;
+			top: 20%;
 			left: 2px;
 			display: block;
-			width: 1px;
-			height: 100%;
-			background-color: var(--border-normal);
+			width: 2px;
+			height: 60%;
+			background-color: var(--border-subdued);
 			content: '';
 		}
 

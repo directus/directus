@@ -144,7 +144,7 @@ export default defineComponent({
 	--v-button-color-disabled: var(--foreground-subdued);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-activated: var(--primary);
-	--v-button-background-color-disabled: var(--background-subdued);
+	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
 
 	display: inline-flex;
@@ -245,14 +245,14 @@ export default defineComponent({
 			--v-button-font-size: 14px;
 
 			min-width: 64px;
-			padding: 0 16px;
+			padding: 0 12px;
 		}
 
 		&.large {
 			--v-button-height: 52px;
 
 			min-width: 92px;
-			padding: 0 23px;
+			padding: 0 12px;
 		}
 
 		&.x-large {
@@ -260,7 +260,7 @@ export default defineComponent({
 			--v-button-font-size: 18px;
 
 			min-width: 120px;
-			padding: 0 32px;
+			padding: 0 12px;
 		}
 
 		&.icon {

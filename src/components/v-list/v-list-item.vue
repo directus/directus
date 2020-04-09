@@ -65,11 +65,13 @@ export default defineComponent({
 	--v-list-item-two-line-min-height-dense: 36px;
 	--v-list-item-three-line-min-height-dense: 52px;
 	--v-list-item-padding: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
+	--v-list-item-padding-dense: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
+	--v-list-item-margin-dense: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
 	--v-list-item-min-height: var(--v-list-item-one-line-min-height);
 	--v-list-item-max-height: auto;
-	--v-list-item-border-radius: 0;
+	--v-list-item-border-radius: var(--border-radius);
 	--v-list-item-margin-bottom: 0;
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
@@ -141,6 +143,9 @@ export default defineComponent({
 		.v-list.dense {
 			& #{$this} {
 				--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
+
+				margin: var(--v-list-item-margin-dense);
+				padding: var(--v-list-item-padding-dense);
 				&.one-line {
 					--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
 				}
@@ -158,7 +163,7 @@ export default defineComponent({
 				--v-list-item-padding: 0 8px;
 				--v-list-item-border-radius: 4px;
 				&:not(:last-child):not(:only-child) {
-					--v-list-item-margin-bottom: 8px;
+					--v-list-item-margin-bottom: 4px;
 				}
 			}
 			&.dense #{$this},

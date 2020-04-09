@@ -24,7 +24,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	--v-divider-color: var(--border-normal);
+	--v-divider-color: var(--border-subdued);
 	--v-divider-label-color: var(--foreground-subdued);
 
 	display: flex;
@@ -49,8 +49,8 @@ export default defineComponent({
 	}
 
 	&.inset:not(.vertical) {
-		max-width: calc(100% - 52px);
-		margin-left: 52px;
+		max-width: calc(100% - 16px);
+		margin-left: 8px;
 	}
 
 	&.vertical {

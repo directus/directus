@@ -95,17 +95,21 @@ export default defineComponent({
 <style lang="scss" scoped>
 .table-row {
 	.cell {
-		padding: 0 20px;
+		padding: 0 0 0 12px;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--background-page);
-		border-bottom: 1px solid var(--background-normal-alt);
+		border-bottom: 2px solid var(--border-subdued);
 
 		&.select,
 		&.sort {
 			display: flex;
 			align-items: center;
+		}
+
+		&:last-child {
+			padding: 0 12px 0 12px;
 		}
 	}
 
