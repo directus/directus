@@ -13,17 +13,19 @@ export function defineModule(
 		options = config;
 	}
 
-	options.routes = options.routes.map((route) => {
-		if (route.path) {
-			route.path = `/:project/${options.id}${route.path}`;
-		}
+	if (options.routes !== undefined) {
+		options.routes = options.routes.map((route) => {
+			if (route.path) {
+				route.path = `/:project/${options.id}${route.path}`;
+			}
 
-		if (route.redirect) {
-			route.redirect = `/:project/${options.id}${route.redirect}`;
-		}
+			if (route.redirect) {
+				route.redirect = `/:project/${options.id}${route.redirect}`;
+			}
 
-		return route;
-	});
+			return route;
+		});
+	}
 
 	return options;
 }

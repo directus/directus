@@ -2,7 +2,15 @@
 	<div class="module-bar">
 		<module-bar-logo />
 		<div class="modules">
-			<v-button v-for="module in _modules" :key="module.id" icon x-large :to="module.to" tile>
+			<v-button
+				v-for="module in _modules"
+				:key="module.id"
+				icon
+				x-large
+				:to="module.to"
+				:href="module.href"
+				tile
+			>
 				<v-icon :name="module.icon" />
 			</v-button>
 		</div>
@@ -29,7 +37,8 @@ export default defineComponent({
 		const _modules = modules
 			.map((module) => ({
 				...module,
-				to: `/${currentProjectKey}/${module.id}/`,
+				href: module.link || null,
+				to: module.link === undefined ? `/${currentProjectKey}/${module.id}/` : null,
 			}))
 			.filter((module) => {
 				if (module.hidden !== undefined) {

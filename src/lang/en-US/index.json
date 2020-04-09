@@ -124,6 +124,7 @@
 	"webhooks": "Webhooks",
 	"roles": "User Roles",
 
+	"help_and_docs": "Help & Docs",
 
 
   "about_directus": "About Directus",
@@ -390,7 +391,6 @@
   "forgot_password": "Forgot Password",
   "greater_than": "Greater than",
   "greater_than_equal": "Greater than or equal to",
-  "help_and_docs": "Help & Docs",
   "hidden": "Hidden",
   "hidden_browse": "Hidden on Browse",
   "hidden_detail": "Hidden on Detail",

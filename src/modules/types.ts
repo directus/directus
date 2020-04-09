@@ -7,7 +7,8 @@ export type ModuleConfig = {
 	hidden?: boolean | Ref<boolean>;
 	icon: string;
 	name: string | VueI18n.TranslateResult;
-	routes: RouteConfig[];
+	routes?: RouteConfig[];
+	link?: string;
 };
 
 export type ModuleContext = { i18n: VueI18n };

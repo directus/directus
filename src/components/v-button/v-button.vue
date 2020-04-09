@@ -23,6 +23,9 @@
 			:type="type"
 			:disabled="disabled"
 			:to="to"
+			:href="href"
+			:target="component === 'a' ? '_blank' : null"
+			:ref="component === 'a' ? 'noopener noreferer' : null"
 			@click="onClick"
 		>
 			<span class="content" :class="{ invisible: loading }">
@@ -43,6 +46,7 @@ import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { Location } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 import { useGroupable } from '@/compositions/groupable';
+import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	props: {
@@ -78,6 +82,10 @@ export default defineComponent({
 			type: [String, Object] as PropType<string | Location>,
 			default: null,
 		},
+		href: {
+			type: String,
+			default: null,
+		},
 		exact: {
 			type: Boolean,
 			default: false,
@@ -108,7 +116,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const sizeClass = useSizeClass(props);
 
-		const component = computed<string>(() => (props.to ? 'router-link' : 'button'));
+		const component = computed<'a' | 'router-link' | 'button'>(() => {
+			if (notEmpty(props.href)) return 'a';
+			if (notEmpty(props.to)) return 'router-link';
+			return 'button';
+		});
 		const { active, toggle } = useGroupable(props.value, 'button-group');
 
 		return { sizeClass, onClick, component, active, toggle };

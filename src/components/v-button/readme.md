@@ -60,7 +60,8 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 | `small`    | Render small                                                              | `false`    |
 | `large`    | Render large                                                              | `false`    |
 | `x-large`  | Render extra large                                                        | `false`    |
-| `to`       | Render as vue router-link                                                 | `false`    |
+| `to`       | Render as vue router-link                                                 | `null`     |
+| `href`     | Render as anchor                                                          | `null`     |
 | `align`    | Align content in button. One of `left | center | right`                   | `'center'` |
 | `dashed`   | Render the border dashed. Meant to be used with `outlined`.               | `false`    |
 | `tile`     | Render without border radius                                              | `false`    |

@@ -2,7 +2,10 @@ import { RouteConfig } from 'vue-router';
 import { replaceRoutes } from '@/router';
 import modules from './index';
 
-const moduleRoutes: RouteConfig[] = modules.map((module) => module.routes).flat();
+const moduleRoutes: RouteConfig[] = modules
+	.map((module) => module.routes)
+	.filter((r) => r)
+	.flat();
 
 replaceRoutes((routes) => insertBeforeProjectWildcard(routes, moduleRoutes));
 
