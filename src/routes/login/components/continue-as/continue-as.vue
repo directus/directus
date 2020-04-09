@@ -1,45 +1,66 @@
 <template>
 	<div class="continue-as">
-		<p v-html="$t('continue_as', { name })" />
-		<div class="actions">
-			<router-link :to="signOutLink">
-				{{ $t('sign_out') }}
-			</router-link>
-			<v-button large :to="lastPage">{{ $t('continue') }}</v-button>
-		</div>
+		<v-progress-circular v-if="loading" indeterminate />
+		<template v-else>
+			<p v-html="$t('continue_as', { name })" />
+			<div class="actions">
+				<router-link :to="signOutLink">
+					{{ $t('sign_out') }}
+				</router-link>
+				<v-button large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
+			</div>
+		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import useUserStore from '../../../../stores/user';
-import useProjectsStore from '../../../../stores/projects';
+import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import useProjectsStore from '@/stores/projects';
+import api from '@/api';
+import { hydrate } from '@/hydrate';
+import router from '@/router';
 
 export default defineComponent({
 	setup() {
-		const userStore = useUserStore();
 		const projectsStore = useProjectsStore();
-
-		const name = computed<string>(
-			() =>
-				userStore.state.currentUser?.first_name +
-				' ' +
-				userStore.state.currentUser?.last_name
-		);
-
-		/** @NOTE
-		 * This component is only rendered if the current user already exists. It's safe to assume
-		 * that userStore.state.currentUser exists in this context
-		 */
-
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const lastPage = userStore.state.currentUser!.last_page;
 
 		const signOutLink = computed<string>(() => {
 			return `/${projectsStore.state.currentProjectKey}/logout`;
 		});
 
-		return { name, lastPage, signOutLink };
+		const loading = ref(false);
+		const error = ref(null);
+		const name = ref<string>(null);
+		const lastPage = ref<string>(null);
+
+		watch(() => projectsStore.state.currentProjectKey, fetchUser);
+
+		return { name, lastPage, signOutLink, loading, error, hydrateAndLogin };
+
+		async function fetchUser(projectKey: string | null) {
+			loading.value = true;
+			error.value = null;
+
+			try {
+				const response = await api.get(`/${projectKey}/users/me`, {
+					params: {
+						fields: ['first_name', 'last_name', 'last_page'],
+					},
+				});
+
+				name.value = response.data.data.first_name + ' ' + response.data.data.last_name;
+				lastPage.value = response.data.data.last_page;
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+		}
+
+		async function hydrateAndLogin() {
+			await hydrate();
+			router.push(`/${projectsStore.state.currentProjectKey}/collections/`);
+		}
 	},
 });
 </script>

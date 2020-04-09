@@ -8,37 +8,6 @@ describe('Stores / Projects', () => {
 		Vue.use(VueCompositionAPI);
 	});
 
-	describe('Getters / currentProject', () => {
-		const dummyProject = {
-			key: 'my-project',
-			api: {
-				requires2FA: false,
-				project_color: '#abcabc',
-				project_logo: null,
-				project_background: null,
-				project_foreground: null,
-				project_name: 'Test',
-				project_public_note: '',
-				default_locale: 'en-US',
-				telemetry: true,
-			},
-		};
-
-		it('Returns the correct project based on the currentProjectKey state', () => {
-			const projectsStore = useProjectsStore({});
-			projectsStore.state.projects = [dummyProject];
-			projectsStore.state.currentProjectKey = 'my-project';
-			expect(projectsStore.currentProject.value).toEqual(dummyProject);
-		});
-
-		it('Returns null if non-existing project is read', () => {
-			const projectsStore = useProjectsStore({});
-			projectsStore.state.projects = [dummyProject];
-			projectsStore.state.currentProjectKey = 'non-existing-project';
-			expect(projectsStore.currentProject.value).toEqual(null);
-		});
-	});
-
 	describe('Actions / setCurrentProject', () => {
 		it('Sets the currentProjectKey state to the passed key if project exists', async () => {
 			const spy = jest.spyOn(api, 'get');
@@ -117,8 +86,8 @@ describe('Stores / Projects', () => {
 
 			expect(projectsStore.state.error).toBe(null);
 			expect(projectsStore.state.projects).toEqual([
-				{ key: 'my-project' },
-				{ key: 'another-project' },
+				{ key: 'my-project', authenticated: false },
+				{ key: 'another-project', authenticated: false },
 			]);
 		});
 
@@ -188,8 +157,16 @@ describe('Stores / Projects', () => {
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.projects).toEqual([
-				{ key: 'my-project' },
-				{ key: 'another-project', error: 'error message', status: 500 },
+				{ key: 'my-project', authenticated: false },
+				{
+					key: 'another-project',
+					error: {
+						code: 10,
+						message: 'error message',
+					},
+					status: 500,
+					authenticated: false,
+				},
 			]);
 		});
 
@@ -220,8 +197,16 @@ describe('Stores / Projects', () => {
 			await projectsStore.getProjects();
 
 			expect(projectsStore.state.projects).toEqual([
-				{ key: 'my-project' },
-				{ key: 'another-project', error: 'Error fallback', status: 500 },
+				{ key: 'my-project', authenticated: false },
+				{
+					key: 'another-project',
+					error: {
+						message: 'Error fallback',
+						code: null,
+					},
+					status: 500,
+					authenticated: false,
+				},
 			]);
 		});
 	});

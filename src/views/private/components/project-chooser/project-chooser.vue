@@ -1,7 +1,7 @@
 <template>
 	<div class="project-chooser">
 		<button class="toggle" :disabled="projects.length === 1" @click="active = !active">
-			{{ currentProject.api.project_name }}
+			{{ currentProject.name }}
 		</button>
 		<transition-expand>
 			<div v-if="active" class="options-wrapper">
@@ -17,7 +17,7 @@
 						<v-radio
 							:inputValue="currentProjectKey"
 							:value="project.key"
-							:label="(project.api && project.api.project_name) || project.key"
+							:label="project.name || project.key"
 						/>
 					</router-link>
 				</div>

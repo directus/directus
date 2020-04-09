@@ -44,4 +44,5 @@ export interface Project {
 
 export interface ProjectWithKey extends Project {
 	key: string;
+	authenticated: boolean;
 }

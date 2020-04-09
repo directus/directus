@@ -14,7 +14,7 @@ interface Response extends AxiosResponse {
 	config: RequestConfig;
 }
 
-export interface Error extends AxiosError {
+export interface RequestError extends AxiosError {
 	response: Response;
 }
 
@@ -37,7 +37,7 @@ export const onResponse = (response: AxiosResponse | Response) => {
 	return response;
 };
 
-export const onError = async (error: Error) => {
+export const onError = async (error: RequestError) => {
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);

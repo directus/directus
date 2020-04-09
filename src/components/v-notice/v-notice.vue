@@ -63,7 +63,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-notice {
-	--v-notice-color: var(--foreground-normal);
+	--v-notice-color: var(--primary);
 	--v-notice-background-color: var(--primary-alt);
 	--v-notice-icon-color: var(--primary);
 
@@ -71,6 +71,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: auto;
+	min-height: var(--input-height);
 	padding: 12px 16px;
 	color: var(--v-notice-color);
 	background-color: var(--v-notice-background-color);
@@ -83,16 +84,19 @@ export default defineComponent({
 	&.success {
 		--v-notice-icon-color: var(--success);
 		--v-notice-background-color: var(--success-alt);
+		--v-notice-color: var(--success);
 	}
 
 	&.warning {
 		--v-notice-icon-color: var(--warning);
 		--v-notice-background-color: var(--warning-alt);
+		--v-notice-color: var(--warning);
 	}
 
 	&.danger {
 		--v-notice-icon-color: var(--danger);
 		--v-notice-background-color: var(--danger-alt);
+		--v-notice-color: var(--danger);
 	}
 }
 </style>

@@ -1,6 +1,6 @@
 import markdown from './readme.md';
 import { defineComponent } from '@vue/composition-api';
-import PublicViewLogo from './logo.vue';
+import ProjectChooser from './project-chooser.vue';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 
 export default {
@@ -13,8 +13,8 @@ export default {
 
 export const basic = () =>
 	defineComponent({
-		components: { PublicViewLogo },
+		components: { ProjectChooser },
 		template: `
-		<public-view-logo version="9.0.0" />
-	`,
+			<project-chooser />
+		`,
 	});

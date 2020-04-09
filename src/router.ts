@@ -2,6 +2,7 @@ import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
+import ResetPasswordRoute from '@/routes/reset-password';
 import ProjectChooserRoute from '@/routes/project-chooser';
 import { checkAuth } from '@/auth';
 import { hydrate, dehydrate } from '@/hydrate';
@@ -46,9 +47,20 @@ export const defaultRoutes: RouteConfig[] = [
 		},
 	},
 	{
+		name: 'reset-password',
+		path: '/:project/reset-password',
+		component: ResetPasswordRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
 		name: 'logout',
 		path: '/:project/logout',
 		component: LogoutRoute,
+		meta: {
+			public: true,
+		},
 	},
 	/**
 	 * @NOTE
@@ -98,9 +110,10 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	}
 
 	// Keep the projects store currentProjectKey in sync with the route
+	// If we switch projects to a public route, we don't need the store to be hyrdated
 	if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
 		// If the store is hydrated for the current project, make sure to dehydrate it
-		if (appStore.state.hydrated === true) {
+		if (to.meta?.public !== true && appStore.state.hydrated === true) {
 			appStore.state.hydrating = true;
 			await dehydrate();
 		}
@@ -115,13 +128,14 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 	// The store can only be hydrated if you're an authenticated user. If the store is hydrated, we
 	// can safely assume you're logged in
-	if (appStore.state.hydrated === false) {
+	if (to.meta?.public !== true && appStore.state.hydrated === false) {
 		const authenticated = await checkAuth();
 
 		if (authenticated === true) {
 			appStore.state.hydrating = false;
 			await hydrate();
 		} else if (to.meta?.public !== true) {
+			appStore.state.hydrating = false;
 			return next(`/${to.params.project}/login`);
 		}
 	}

@@ -73,6 +73,7 @@ export const withCustomLogo = () =>
 							php_api: 'fpm-fcgi',
 						},
 					},
+					authenticated: true,
 				},
 			];
 			projectsStore.state.currentProjectKey = 'my-project';

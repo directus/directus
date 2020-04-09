@@ -4,12 +4,19 @@ import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
 import VIcon from '@/components/v-icon/';
 import { useProjectsStore } from '@/stores/projects/';
 import { ProjectWithKey } from '@/stores/projects/types';
-import Tooltip from '@/directives/tooltip/tooltip';
+import ClickOutside from '@/directives/click-outside';
+import VMenu from '@/components/v-menu';
+import VList, { VListItem, VListItemIcon, VListItemContent } from '@/components/v-list';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-icon', VIcon);
-localVue.directive('tooltip', Tooltip);
+localVue.component('v-list', VList);
+localVue.component('v-list-item', VListItem);
+localVue.component('v-list-item-icon', VListItemIcon);
+localVue.component('v-list-item-content', VListItemContent);
+localVue.component('v-menu', VMenu);
+localVue.directive('click-outside', ClickOutside);
 
 import PublicView from './public-view.vue';
 
@@ -48,6 +55,7 @@ const mockProject: ProjectWithKey = {
 			php_api: 'fpm-fcgi',
 		},
 	},
+	authenticated: true,
 };
 
 describe('Views / Public', () => {
@@ -98,6 +106,7 @@ describe('Views / Public', () => {
 						code: 250,
 						message: 'Test error',
 					},
+					authenticated: false,
 				},
 			];
 			store.state.currentProjectKey = 'my-project';

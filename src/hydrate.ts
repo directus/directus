@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
 import { useCollectionPresetsStore } from '@/stores/collection-presets/';
 import { useSettingsStore } from '@/stores/settings/';
+import { useProjectsStore } from '@/stores/projects/';
 
 type GenericStore = {
 	id: string;
@@ -22,6 +23,7 @@ export function useStores(
 		useRequestsStore,
 		useCollectionPresetsStore,
 		useSettingsStore,
+		useProjectsStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];

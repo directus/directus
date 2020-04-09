@@ -15,15 +15,23 @@
 			:placeholder="$t('password')"
 			full-width
 		/>
-		<v-button type="submit" :loading="loggingIn" x-large>{{ $t('sign_in') }}</v-button>
+		<v-notice danger v-if="error">
+			{{ errorFormatted }}
+		</v-notice>
+		<div class="buttons">
+			<v-button type="submit" :loading="loggingIn" large>{{ $t('sign_in') }}</v-button>
+			<router-link :to="forgotLink">{{ $t('forgot_password') }}</router-link>
+		</div>
 	</form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import router from '@/router';
 import { useProjectsStore } from '@/stores/projects';
 import { login } from '@/auth';
+import { RequestError } from '@/api';
+import { translateAPIError } from '@/lang';
 
 export default defineComponent({
 	setup() {
@@ -32,8 +40,20 @@ export default defineComponent({
 		const loggingIn = ref(false);
 		const email = ref<string>(null);
 		const password = ref<string>(null);
+		const error = ref<RequestError>(null);
 
-		return { email, password, onSubmit, loggingIn };
+		const errorFormatted = computed(() => {
+			if (error.value) {
+				return translateAPIError(error.value);
+			}
+			return null;
+		});
+
+		const forgotLink = computed(() => {
+			return `/${projectsStore.state.currentProjectKey}/reset-password`;
+		});
+
+		return { errorFormatted, error, email, password, onSubmit, loggingIn, forgotLink };
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
@@ -49,8 +69,8 @@ export default defineComponent({
 				});
 
 				router.push(`/${currentProjectKey}/collections/`);
-			} catch (error) {
-				console.warn(error);
+			} catch (err) {
+				error.value = err;
 			} finally {
 				loggingIn.value = false;
 			}
@@ -60,7 +80,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-input {
-	margin-bottom: 32px;
+.v-input,
+.v-notice {
+	margin-bottom: 20px;
+}
+
+.buttons {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 </style>

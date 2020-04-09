@@ -16,8 +16,27 @@ export const useProjectsStore = createStore({
 		currentProjectKey: null as string | null,
 	}),
 	getters: {
-		currentProject: (state): ProjectWithKey | null => {
-			return state.projects?.find(({ key }) => key === state.currentProjectKey) || null;
+		formatted: (state) => {
+			return state.projects?.map((project) => {
+				return {
+					key: project.key,
+					authenticated: project?.authenticated || false,
+					name: project?.api?.project_name || null,
+					error: project?.error || null,
+					foregroundImage: project?.api?.project_foreground?.full_url || null,
+					backgroundImage: project?.api?.project_background?.full_url || null,
+					logo: project?.api?.project_logo?.full_url || null,
+					color: project?.api?.project_color || null,
+					note: project?.api?.project_public_note || null,
+				};
+			});
+		},
+		currentProject: (state, getters) => {
+			return (
+				getters.formatted.value?.find(
+					({ key }: { key: string }) => key === state.currentProjectKey
+				) || null
+			);
 		},
 	},
 	actions: {
@@ -49,6 +68,20 @@ export const useProjectsStore = createStore({
 			return true;
 		},
 
+		// Even though the projects are fetched on first load, we have to refresh them to make sure
+		// we have the updated server information for the current project. It also gives us a chance
+		// to update the authenticated state, for smoother project switching in the private view
+		async hydrate() {
+			await this.getProjects();
+		},
+
+		// This is the only store that's supposed to load data on dehydration. By re-fetching the
+		// projects, we make sure the login views and authenticated states will be up to date. It
+		// also ensures that the potentially private server info is purged from the store.
+		async dehydrate() {
+			await this.getProjects();
+		},
+
 		async getProjects() {
 			try {
 				const projectsResponse = await api.get('/server/projects');
@@ -61,13 +94,19 @@ export const useProjectsStore = createStore({
 						projects.push({
 							key: projectKeys[index],
 							...projectInfoResponse.data.data,
+							authenticated:
+								projectInfoResponse?.data?.data?.hasOwnProperty('server') || false,
 						});
 					} catch (error) {
 						/* istanbul ignore next */
 						projects.push({
 							key: projectKeys[index],
 							status: error.response?.status,
-							error: error.response?.data?.error?.message ?? error.message,
+							error: {
+								message: error.response?.data?.error?.message ?? error.message,
+								code: error.response?.data?.error?.code || null,
+							},
+							authenticated: false,
 						});
 					}
 				}

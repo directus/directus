@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import { merge } from 'lodash';
+import { RequestError } from '@/api';
 
 import enUSBase from './en-US/index.json';
 import enUSInterfaces from './en-US/interfaces.json';
@@ -100,3 +101,20 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 }
 
 export default i18n;
+
+export function translateAPIError(error: RequestError | number) {
+	const defaultMsg = i18n.t('unexpected_error');
+
+	let code = error;
+
+	if (typeof error !== 'number') {
+		code = error?.response?.data?.error?.code;
+	}
+
+	if (!error) return defaultMsg;
+	if (!code === undefined) return defaultMsg;
+	const key = `errors.${code}`;
+	const exists = i18n.te(key);
+	if (exists === false) return defaultMsg;
+	return i18n.t(key);
+}

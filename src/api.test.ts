@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
-import { onRequest, onResponse, onError, getRootPath, Error } from './api';
+import { onRequest, onResponse, onError, getRootPath, RequestError } from './api';
 import * as auth from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
 
-const defaultError: Error = {
+const defaultError: RequestError = {
 	config: {},
 	isAxiosError: false,
 	toJSON: () => ({}),

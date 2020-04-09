@@ -8,6 +8,8 @@ export const useUserStore = createStore({
 	id: 'userStore',
 	state: () => ({
 		currentUser: null as User | null,
+		loading: false,
+		error: null,
 	}),
 	getters: {
 		fullName(state) {
@@ -20,13 +22,21 @@ export const useUserStore = createStore({
 			const projectsStore = useProjectsStore();
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 
-			const { data } = await api.get(`/${currentProjectKey}/users/me`, {
-				params: {
-					fields: '*,avatar.data',
-				},
-			});
+			this.state.loading = true;
 
-			this.state.currentUser = data.data;
+			try {
+				const { data } = await api.get(`/${currentProjectKey}/users/me`, {
+					params: {
+						fields: '*,avatar.data',
+					},
+				});
+
+				this.state.currentUser = data.data;
+			} catch (error) {
+				this.state.error = error;
+			} finally {
+				this.state.loading = false;
+			}
 		},
 		async dehydrate() {
 			this.reset();

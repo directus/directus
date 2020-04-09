@@ -126,6 +126,28 @@
 
 	"help_and_docs": "Help & Docs",
 
+	"errors": {
+		"11": "Can't Reach Database",
+		"100": "Incorrect Email/Password",
+		"101": "Logged-out from Inactivity",
+		"102": "Logged-out from Inactivity",
+		"103": "User Suspended",
+		"105": "Reset link expired",
+		"106": "Incorrect Email/Password",
+		"107": "User Not Found",
+		"111": "Enter One-Time Password",
+		"112": "Wrong One-Time Password",
+		"114": "Incorrect Email/Password",
+		"115": "SSO is not allowed when 2FA is enabled",
+		"503": "Email couldn't be sent. Please verify the API's configuration",
+		"-1": "Couldn't Reach API"
+	},
+
+	"unexpected_error": "An unexpected error occured",
+
+	"password_reset_sent": "We've sent you a secure link to reset your password",
+	"password_reset_successful": "Password successfully reset",
+
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -319,20 +341,6 @@
   "environment": "Environment",
   "equal_to": "Equal to",
   "error_unknown": "Unknown error. Try again later.",
-  "errors": {
-    "11": "Can Not Reach Database",
-    "100": "Incorrect Email/Password",
-    "101": "Logged-out from Inactivity",
-    "102": "Logged-out from Inactivity",
-    "103": "User Suspended",
-    "106": "Incorrect Email/Password",
-    "107": "User Not Found",
-    "111": "Enter One-Time Password",
-    "112": "Wrong One-Time Password",
-    "114": "Incorrect Email/Password",
-    "115": "SSO is not allowed when 2FA is enabled",
-    "-1": "Couldn't Reach API"
-  },
   "esc_cancel": "Escape will cancel and close the window.",
   "event_count": "No Events | One Event | {count} Events",
   "existing": "Existing",
@@ -499,8 +507,6 @@
   "otp": "One-Time Password",
   "password": "Password",
   "password_reset_sending": "Sending email...",
-  "password_reset_sent": "If a valid user with this email address exists in Directus, we've sent you a secure link to reset your password.",
-  "password_reset_successful": "Password successfully reset.",
   "permission_states": {
     "always": "Always",
     "create": "Create",

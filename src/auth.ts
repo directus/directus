@@ -67,12 +67,12 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 	// You can't logout of a project if you're not in a project
 	if (currentProjectKey === null) return;
 
-	await dehydrate();
-
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
 		await api.post(`/${currentProjectKey}/auth/logout`);
 	}
+
+	await dehydrate();
 
 	if (options.navigate === true) {
 		const location: RawLocation = {

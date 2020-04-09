@@ -15,7 +15,6 @@ import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { useProjectsStore } from '@/stores/projects';
-import { ProjectWithKey } from './stores/projects/types';
 
 export default defineComponent({
 	setup() {
@@ -26,18 +25,9 @@ export default defineComponent({
 		const { hydrating } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
-			if (
-				projectsStore.currentProject.value &&
-				projectsStore.currentProject.value.hasOwnProperty('api')
-			) {
-				const project = projectsStore.currentProject.value as ProjectWithKey;
-
-				return {
-					'--brand': project?.api?.project_color || 'var(--primary)',
-				};
-			}
-
-			return null;
+			return {
+				'--brand': projectsStore.currentProject.value?.color || 'var(--primary)',
+			};
 		});
 
 		watch(
