@@ -68,7 +68,7 @@
     "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
     "babel-preset-vue": "^2.0.2",
-    "css-loader": "^3.5.1",
+    "css-loader": "^3.5.2",
     "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^6.2.2",
