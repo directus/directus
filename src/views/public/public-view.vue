@@ -139,14 +139,6 @@ export default defineComponent({
 	.notice {
 		color: #b0bec5;
 	}
-
-	& ::v-deep {
-		.type-title,
-		.type-text,
-		.type-label {
-			color: #263238;
-		}
-	}
 }
 
 .scale-enter-active,

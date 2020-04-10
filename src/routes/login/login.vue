@@ -29,7 +29,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 
 		const errorFormatted = computed(() => {
-			if (projectsStore.currentProject.value.error) {
+			if (projectsStore.currentProject.value?.error) {
 				return translateAPIError(projectsStore.currentProject.value.error.code);
 			}
 

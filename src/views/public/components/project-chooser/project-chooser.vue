@@ -1,5 +1,5 @@
 <template>
-	<v-menu show-arrow placement="bottom" close-on-content-click>
+	<v-menu v-if="project" show-arrow placement="bottom" close-on-content-click>
 		<template #activator="{ toggle }">
 			<div class="project-chooser" @click="toggle">
 				<div class="public-view-logo" v-if="project && project.logo">
@@ -26,6 +26,8 @@
 			</v-list-item>
 		</v-list>
 	</v-menu>
+
+	<div class="spacer" v-else />
 </template>
 
 <script lang="ts">

@@ -147,6 +147,7 @@
 
 	"password_reset_sent": "We've sent you a secure link to reset your password",
 	"password_reset_successful": "Password successfully reset",
+	"create_project": "Create Project",
 
 
   "about_directus": "About Directus",

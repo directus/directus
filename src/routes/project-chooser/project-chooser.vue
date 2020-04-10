@@ -1,10 +1,32 @@
 <template>
 	<public-view>
-		<h1 class="type-title">{{ $t('choose_project') }}</h1>
+		<router-link
+			class="project"
+			v-for="project in projects"
+			:to="project.link"
+			:key="project.key"
+		>
+			<div
+				class="logo"
+				v-if="project && project.logo"
+				:style="{ backgroundColor: project.color }"
+			>
+				<img :src="project.logo" :alt="project.name || project.key" />
+			</div>
+			<img v-else class="default-logo" src="@/assets/logo-dark.svg" alt="Directus" />
+			<div class="name type-title">
+				{{ project.name || project.key }}
+			</div>
+		</router-link>
 
-		<v-button v-for="project in projects" :to="project.link" full-width :key="project.key">
-			{{ (project.api && project.api.project_name) || project.key }}
-		</v-button>
+		<v-divider />
+
+		<router-link to="/install" class="project new">
+			<div class="logo">
+				<v-icon name="add" />
+			</div>
+			<div class="name type-title">{{ $t('create_project') }}</div>
+		</router-link>
 	</public-view>
 </template>
 
@@ -18,7 +40,7 @@ export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 
-		const projects = projectsStore.state.projects?.map((project) => ({
+		const projects = projectsStore.formatted.value?.map((project) => ({
 			...project,
 			link: `/${project.key}/login`,
 		}));
@@ -35,5 +57,49 @@ export default defineComponent({
 
 h1 {
 	margin-bottom: 44px;
+}
+
+.project {
+	display: flex;
+	align-items: center;
+	height: 64px;
+	margin-bottom: 12px;
+}
+
+.logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: var(--border-radius);
+}
+
+.default-logo {
+	width: 64px;
+}
+
+.name {
+	margin-left: 12px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.v-divider {
+	margin: 20px 0;
+}
+
+.project.new {
+	.logo {
+		background-color: var(--background-normal);
+	}
+
+	.v-icon {
+		color: var(--foreground-subdued);
+	}
+}
+
+.project:hover .name {
+	color: var(--foreground);
 }
 </style>
