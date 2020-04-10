@@ -28,7 +28,7 @@
     "lodash": "^4.17.15",
     "marked": "^0.8.2",
     "micromustache": "^7.1.0",
-    "nanoid": "^3.1.0",
+    "nanoid": "^3.1.2",
     "pinia": "0.0.5",
     "portal-vue": "^2.1.7",
     "resize-observer": "^1.0.0",
