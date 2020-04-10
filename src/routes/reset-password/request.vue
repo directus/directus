@@ -14,7 +14,7 @@
 		</v-notice>
 		<div class="buttons">
 			<v-button type="submit" :loading="sending" large>{{ $t('reset') }}</v-button>
-			<router-link :to="signInLink">{{ $t('sign_in') }}</router-link>
+			<router-link :to="signInLink" class="sign-in">{{ $t('sign_in') }}</router-link>
 		</div>
 	</form>
 </template>
@@ -86,5 +86,13 @@ export default defineComponent({
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
+}
+
+.sign-in {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+	&:hover {
+		color: var(--foreground-normal);
+	}
 }
 </style>

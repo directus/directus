@@ -1,5 +1,5 @@
 <template>
-	<v-menu v-if="project" show-arrow placement="bottom" close-on-content-click>
+	<v-menu v-if="project" show-arrow placement="bottom-start" close-on-content-click>
 		<template #activator="{ toggle }">
 			<div class="project-chooser" @click="toggle">
 				<div class="public-view-logo" v-if="project && project.logo">
@@ -53,6 +53,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-menu {
+	--v-menu-min-width: 300px;
+}
+
 .project-chooser {
 	display: flex;
 	align-items: center;

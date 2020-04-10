@@ -4,9 +4,7 @@
 		<template v-else>
 			<p v-html="$t('continue_as', { name })" />
 			<div class="actions">
-				<router-link :to="signOutLink">
-					{{ $t('sign_out') }}
-				</router-link>
+				<router-link :to="signOutLink" class="sign-out">{{ $t('sign_out') }}</router-link>
 				<v-button large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
 			</div>
 		</template>
@@ -82,6 +80,13 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+	}
+	.sign-out {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+		&:hover {
+			color: var(--foreground-normal);
+		}
 	}
 }
 </style>

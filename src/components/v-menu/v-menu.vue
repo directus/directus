@@ -148,6 +148,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-menu {
+	--v-menu-min-width: 100px;
+
 	display: contents;
 }
 
@@ -168,6 +170,7 @@ export default defineComponent({
 	position: absolute;
 	left: -999px;
 	z-index: 5;
+	min-width: var(--v-menu-min-width);
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -176,15 +179,18 @@ export default defineComponent({
 	}
 
 	.arrow,
-	.arrow::before {
+	.arrow::before,
+	.arrow::after {
 		position: absolute;
-		z-index: -1;
+		z-index: 1;
 		width: 8px;
 		height: 8px;
+		border-radius: 2px;
 	}
 
 	.arrow {
-		&::before {
+		&::before,
+		&::after {
 			background: var(--border-normal);
 			transform: rotate(45deg) scale(0);
 			transition: transform var(--fast) var(--transition-out);
@@ -192,26 +198,47 @@ export default defineComponent({
 			content: '';
 		}
 
-		&.active::before {
+		&.active::before,
+		&.active::after {
 			transform: rotate(45deg) scale(1);
 			transition: transform var(--medium) var(--transition-in);
+		}
+
+		&::after {
+			background: var(--background-subdued);
 		}
 	}
 
 	&[data-placement^='top'] .arrow {
 		bottom: -4px;
+
+		&::after {
+			bottom: 3px;
+		}
 	}
 
 	&[data-placement^='bottom'] .arrow {
 		top: -4px;
+
+		&::after {
+			top: 3px;
+		}
 	}
 
 	&[data-placement^='right'] .arrow {
 		left: -4px;
+
+		&::after {
+			left: 3px;
+		}
 	}
 
 	&[data-placement^='left'] .arrow {
 		right: -4px;
+
+		&::after {
+			right: 3px;
+		}
 	}
 
 	.v-menu-content {

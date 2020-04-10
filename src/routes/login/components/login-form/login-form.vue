@@ -20,7 +20,9 @@
 		</v-notice>
 		<div class="buttons">
 			<v-button type="submit" :loading="loggingIn" large>{{ $t('sign_in') }}</v-button>
-			<router-link :to="forgotLink">{{ $t('forgot_password') }}</router-link>
+			<router-link :to="forgotLink" class="forgot-password">
+				{{ $t('forgot_password') }}
+			</router-link>
 		</div>
 	</form>
 </template>
@@ -89,5 +91,13 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.forgot-password {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+	&:hover {
+		color: var(--foreground-normal);
+	}
 }
 </style>

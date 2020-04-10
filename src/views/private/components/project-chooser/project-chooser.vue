@@ -88,6 +88,7 @@ export default defineComponent({
 		padding: 20px;
 		padding-top: 0;
 		background-color: var(--background-normal-alt);
+		box-shadow: 0px 4px 12px 0px rgba(38, 50, 56, 0.1);
 	}
 
 	.v-divider {
