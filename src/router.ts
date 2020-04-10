@@ -1,6 +1,7 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
+import InstallRoute from '@/routes/install';
 import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
 import ProjectChooserRoute from '@/routes/project-chooser';
@@ -29,7 +30,7 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		name: 'install',
 		path: '/install',
-		component: LoginRoute,
+		component: InstallRoute,
 		meta: {
 			public: true,
 		},

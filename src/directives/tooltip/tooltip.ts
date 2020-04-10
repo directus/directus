@@ -20,7 +20,7 @@ export function onEnterTooltip(element: HTMLElement, binding: DirectiveBinding) 
 			animateIn(tooltip);
 			updateTooltip(element, binding, tooltip);
 		} else {
-			tooltipTimer = setTimeout(() => {
+			tooltipTimer = window.setTimeout(() => {
 				animateIn(tooltip);
 				updateTooltip(element, binding, tooltip);
 			}, 600);

@@ -1,8 +1,8 @@
 <template>
 	<div class="public-view">
-		<div class="container">
+		<div class="container" :class="{ wide }">
 			<project-chooser />
-			<div class="content" :class="{ wide }">
+			<div class="content">
 				<slot />
 			</div>
 			<div class="notice">
@@ -93,9 +93,18 @@ export default defineComponent({
 		overflow-y: auto;
 		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
+		transition: max-width var(--medium) var(--transition);
+
+		.content {
+			width: 340px;
+		}
 
 		&.wide {
 			max-width: 872px;
+
+			.content {
+				width: 712px;
+			}
 		}
 
 		@include breakpoint(small) {

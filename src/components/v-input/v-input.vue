@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -60,6 +61,14 @@ export default defineComponent({
 			type: [String, Number],
 			default: null,
 		},
+		slug: {
+			type: Boolean,
+			default: false,
+		},
+		slugSeparator: {
+			type: String,
+			default: '-',
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const _listeners = computed(() => ({
@@ -70,7 +79,13 @@ export default defineComponent({
 		return { _listeners };
 
 		function emitValue(event: InputEvent) {
-			emit('input', (event.target as HTMLInputElement).value);
+			let value = (event.target as HTMLInputElement).value;
+
+			if (props.slug === true) {
+				value = slugify(value, { separator: props.slugSeparator });
+			}
+
+			emit('input', value);
 		}
 	},
 });
@@ -89,6 +104,7 @@ export default defineComponent({
 
 	.input {
 		display: flex;
+		flex-grow: 1;
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
@@ -122,7 +138,6 @@ export default defineComponent({
 
 		input {
 			flex-grow: 1;
-			width: 20px; // auto grows
 			height: 100%;
 			background-color: transparent;
 			border: none;

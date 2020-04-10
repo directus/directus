@@ -63,6 +63,7 @@ export default defineComponent({
 
 .fade-enter,
 .fade-leave-to {
+	position: absolute;
 	opacity: 0;
 }
 </style>

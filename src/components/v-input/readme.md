@@ -13,14 +13,16 @@ The HTML `<input>` element supports a huge amount of attributes and events. In o
 You can add any custom (text) prefix/suffix to the value in the input using the `prefix` and `suffix` slots.
 
 ## Props
-| Prop         | Description                                    | Default |
-|--------------|------------------------------------------------|---------|
-| `autofocus`  | Autofocusses the input on render               | `false` |
-| `disabled`   | Set the disabled state for the input           | `false` |
-| `monospace`  | Render the entered value in the monospace font | `false` |
-| `full-width` | Render the input with 100% width               | `false` |
-| `prefix`     | Prefix the users value with a value            | --      |
-| `suffix`     | Show a value at the end of the input           | --      |
+| Prop             | Description                                    | Default |
+|------------------|------------------------------------------------|---------|
+| `autofocus`      | Autofocusses the input on render               | `false` |
+| `disabled`       | Set the disabled state for the input           | `false` |
+| `monospace`      | Render the entered value in the monospace font | `false` |
+| `full-width`     | Render the input with 100% width               | `false` |
+| `prefix`         | Prefix the users value with a value            | --      |
+| `suffix`         | Show a value at the end of the input           | --      |
+| `slug`           | Force the value to be URL safe                 | `false` |
+| `slug-separator` | What character to use as separator in slugs    | `-`     |
 
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any of the standard HTML attributes like `min`, `length`, or `pattern`.
 

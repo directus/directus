@@ -1,10 +1,11 @@
-import { withKnobs } from '@storybook/addon-knobs';
+import { withKnobs, text } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VInput from './v-input.vue';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import VMenu from '@/components/v-menu';
+import RawValue from '../../../.storybook/raw-value.vue';
 
 Vue.component('v-input', VInput);
 Vue.directive('focus', {});
@@ -18,21 +19,20 @@ export default {
 	},
 };
 
-export const basic = () => ({
-	data() {
-		return {
-			value: '',
-		};
-	},
-	template: `
-<div>
-<v-input v-model="value" placeholder="Enter content..." />
-<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">
-value: {{ value }}
-</pre>
-</div>
-`,
-});
+export const basic = () =>
+	defineComponent({
+		components: { RawValue },
+		setup() {
+			const value = ref(null);
+			return { value };
+		},
+		template: `
+			<div>
+				<v-input v-model="value" placeholder="Enter content..." />
+				<raw-value>{{ value }}</raw-value>
+			</div>
+		`,
+	});
 
 export const monospace = () => ({
 	data() {
@@ -52,6 +52,26 @@ export const disabled = () => `<v-input value="I'm disabled" disabled />`;
 export const fullWidth = () => `
 <v-input placeholder="Enter content..." full-width />
 `;
+
+export const forceSlug = () =>
+	defineComponent({
+		components: { RawValue },
+		props: {
+			separator: {
+				default: text('Slug Separator', '-'),
+			},
+		},
+		setup() {
+			const value = ref(null);
+			return { value };
+		},
+		template: `
+			<div>
+				<v-input slug :slug-separator="separator" v-model="value" placeholder="Enter url friendly title..." />
+				<raw-value>{{ value }}</raw-value>
+			</div>
+		`,
+	});
 
 export const prefixSuffix = () => `
 <div>

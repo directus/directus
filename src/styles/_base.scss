@@ -56,6 +56,11 @@ textarea,
 	user-select: text;
 }
 
+:invalid {
+	outline: 0;
+	box-shadow: none;
+}
+
 button {
 	padding: 0;
 	background: transparent;
