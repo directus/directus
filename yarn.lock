@@ -1830,10 +1830,10 @@
     ts-dedent "^1.1.0"
     webpack "^4.33.0"
 
-"@stylelint/postcss-css-in-js@^0.37.0":
-  version "0.37.0"
-  resolved "https://registry.yarnpkg.com/@stylelint/postcss-css-in-js/-/postcss-css-in-js-0.37.0.tgz#199df63fe8d876d74656c8dec3b17e8474ca866e"
-  integrity sha512-9svhg0rpUOo4xkvnllUzM0ZQF/Iwxhi6Bf1rzOA06fDa+fjnBUb2mvEV1c9nJb14g1XD/HMSmvklaVyCo96x6A==
+"@stylelint/postcss-css-in-js@^0.37.1":
+  version "0.37.1"
+  resolved "https://registry.yarnpkg.com/@stylelint/postcss-css-in-js/-/postcss-css-in-js-0.37.1.tgz#41e5e7660f73d88227610e18c6ebb262d56ac125"
+  integrity sha512-UMf2Rni3JGKi3ZwYRGMYJ5ipOA5ENJSKMtYA/pE1ZLURwdh7B5+z2r73RmWvub+N0UuH1Lo+TGfCgYwPvqpXNw==
   dependencies:
     "@babel/core" ">=7.9.0"
 
@@ -13879,14 +13879,14 @@ stylelint-scss@^3.16.1:
     postcss-selector-parser "^6.0.2"
     postcss-value-parser "^4.0.2"
 
-stylelint@^13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-13.3.1.tgz#815917e88d7528b24e6d0e6a9b3afb76b50efc26"
-  integrity sha512-jeeGwU7y/0l2YTL042U2U0W04J9JIO6bRpTM4S8npSzaO5GzBz4VFlVlMucFzZXkSylxppEx9R6p+DiDLJcrWw==
+stylelint@^13.3.2:
+  version "13.3.2"
+  resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-13.3.2.tgz#fbcb69a2452bc35de3eedd95b443449f92ab4107"
+  integrity sha512-kpO3/Gz2ZY40EWUwFYYkgpzhf8ZDUyKpcui5+pS0XKJBj/EMYmZpOJoL8IFAz2yApYeg91NVy5yAjE39hDzWvQ==
   dependencies:
-    "@stylelint/postcss-css-in-js" "^0.37.0"
+    "@stylelint/postcss-css-in-js" "^0.37.1"
     "@stylelint/postcss-markdown" "^0.36.1"
-    autoprefixer "^9.7.5"
+    autoprefixer "^9.7.6"
     balanced-match "^1.0.0"
     chalk "^4.0.0"
     cosmiconfig "^6.0.0"
