@@ -16,6 +16,7 @@
 				:fixed="fixedHeader"
 				:show-manual-sort="showManualSort"
 				:must-sort="mustSort"
+				:has-item-append-slot="hasItemAppendSlot"
 				@toggle-select-all="onToggleSelectAll"
 			>
 				<template v-for="header in _headers" #[`header.${header.value}`]>
@@ -57,6 +58,10 @@
 				>
 					<template v-for="header in _headers" #[`item.${header.value}`]>
 						<slot :item="item" :name="`item.${header.value}`" />
+					</template>
+
+					<template v-if="hasItemAppendSlot" #item-append>
+						<slot name="item-append" :item="item" />
 					</template>
 				</table-row>
 			</draggable>
@@ -150,7 +155,7 @@ export default defineComponent({
 			default: 48,
 		},
 	},
-	setup(props, { emit, listeners }) {
+	setup(props, { emit, listeners, slots }) {
 		const _headers = computed({
 			get: () => {
 				return props.headers
@@ -203,10 +208,14 @@ export default defineComponent({
 			},
 		});
 
+		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+
 		const loadingColSpan = computed<string>(() => {
 			let length = _headers.value.length + 1; // +1 account for spacer
-			if (props.showSelect) length = length + 1;
-			if (props.showManualSort) length = length + 1;
+			if (props.showSelect) length++;
+			if (props.showManualSort) length++;
+			if (hasItemAppendSlot.value) length++;
+
 			return `1 / span ${length}`;
 		});
 
@@ -248,6 +257,9 @@ export default defineComponent({
 			if (props.showManualSort) gridTemplateColumns = 'auto ' + gridTemplateColumns;
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';
+
+			if (hasItemAppendSlot.value) gridTemplateColumns += ' auto';
+
 			return gridTemplateColumns;
 		});
 
@@ -264,6 +276,7 @@ export default defineComponent({
 			hasRowClick,
 			loadingColSpan,
 			columnStyle,
+			hasItemAppendSlot,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {

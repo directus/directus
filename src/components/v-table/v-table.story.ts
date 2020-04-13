@@ -1060,3 +1060,52 @@ export const rowHeight = () => ({
 	</div>
 	`,
 });
+
+export const itemAppendSlot = () => ({
+	data() {
+		return {
+			headers: [
+				{
+					text: 'Name',
+					value: 'name',
+				},
+				{
+					text: 'Phone',
+					value: 'tel',
+				},
+			],
+			items: [
+				{
+					name: 'Amsterdam',
+					tel: '(020) 333-0987',
+				},
+				{
+					name: 'Beverly Hills',
+					tel: '(123) 333-0987',
+				},
+				{
+					name: 'New Haven',
+					tel: '(203) 687-9900',
+				},
+				{
+					name: 'Hong Kong',
+					tel: '(430) 709-4011',
+				},
+				{
+					name: 'Ahmedabad',
+					tel: '(330) 777-3240',
+				},
+			],
+		};
+	},
+	template: `
+	<v-table
+		:headers="headers"
+		:items="items"
+	>
+		<template #item-append="{ item }">
+			<v-button small>{{ item.name }}</v-button>
+		</template>
+	</v-table>
+	`,
+});

@@ -37,6 +37,7 @@
 			</th>
 
 			<th class="spacer cell" scope="col" />
+			<th v-if="hasItemAppendSlot" class="spacer cell" scope="col" />
 		</tr>
 	</thead>
 </template>
@@ -82,6 +83,10 @@ export default defineComponent({
 			default: false,
 		},
 		mustSort: {
+			type: Boolean,
+			default: false,
+		},
+		hasItemAppendSlot: {
 			type: Boolean,
 			default: false,
 		},

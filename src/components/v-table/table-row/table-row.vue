@@ -25,6 +25,9 @@
 		</td>
 
 		<td class="spacer cell" />
+		<td v-if="$scopedSlots['item-append']" class="append cell">
+			<slot name="item-append" />
+		</td>
 	</tr>
 </template>
 
@@ -138,6 +141,11 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	.append {
+		display: flex;
+		align-items: center;
 	}
 }
 </style>
