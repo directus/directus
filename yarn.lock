@@ -12965,10 +12965,10 @@ semver@^6.0.0, semver@^6.1.0, semver@^6.1.2, semver@^6.2.0, semver@^6.3.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
 
-semver@^7.1.1, semver@^7.2.2:
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.2.2.tgz#d01432d74ed3010a20ffaf909d63a691520521cd"
-  integrity sha512-Zo84u6o2PebMSK3zjJ6Zp5wi8VnQZnEaCP13Ul/lt1ANsLACxnJxq4EEm1PY94/por1Hm9+7xpIswdS5AkieMA==
+semver@^7.1.1, semver@^7.2.3:
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.2.3.tgz#3641217233c6382173c76bf2c7ecd1e1c16b0d8a"
+  integrity sha512-utbW9Z7ZxVvwiIWkdOMLOR9G/NFXh2aRucghkVrEMJWuC++r3lCkBC3LwqBinyHzGMAJxY5tn6VakZGHObq5ig==
 
 send@0.17.1:
   version "0.17.1"
