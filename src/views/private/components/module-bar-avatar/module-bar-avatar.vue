@@ -44,7 +44,7 @@ export default defineComponent({
 			if (userStore.state.currentUser.avatar === null) return null;
 
 			const thumbnail = userStore.state.currentUser.avatar.data.thumbnails.find((thumb) => {
-				return thumb.key === 'directus-small-crop';
+				return thumb.key === 'directus-medium-crop';
 			});
 
 			return thumbnail?.url || null;

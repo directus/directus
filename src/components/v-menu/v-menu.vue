@@ -6,7 +6,7 @@
 			disabled: isActive === false || closeOnClick === false,
 		}"
 	>
-		<div ref="activator" class="v-menu-activator">
+		<div ref="activator" class="v-menu-activator" :class="{ attached }">
 			<slot name="activator" v-bind="{ toggle: toggle, active: isActive }" />
 		</div>
 
@@ -155,15 +155,6 @@ export default defineComponent({
 
 .v-menu-activator {
 	display: contents;
-	&::before {
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: 2px;
-		height: 2px;
-		background: var(--border-normal);
-		content: '';
-	}
 }
 
 .v-menu-popper {

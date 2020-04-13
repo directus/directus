@@ -2,7 +2,10 @@
 	<collections-not-found v-if="error && error.code === 404" />
 	<private-view v-else :title="$t('editing', { collection: collectionInfo.name })">
 		<template #title-outer:prepend>
-			<v-button rounded icon secondary exact :to="breadcrumb[1].to">
+			<v-button v-if="collectionInfo.single" rounded icon secondary disabled>
+				<v-icon :name="collectionInfo.icon" />
+			</v-button>
+			<v-button v-else rounded icon secondary exact :to="breadcrumb[1].to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -22,7 +25,7 @@
 						@click="on"
 						v-if="collectionInfo.single === false"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete_forever" />
 					</v-button>
 				</template>
 
@@ -34,6 +37,38 @@
 							{{ $t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+							{{ $t('delete') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-dialog v-if="softDeleteStatus" v-model="confirmSoftDelete">
+				<template #activator="{ on }">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-if="collectionInfo.single === false"
+					>
+						<v-icon name="delete" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button @click="confirmSoftDelete = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button
+							@click="deleteAndQuit(true)"
+							class="action-delete"
+							:loading="softDeleting"
+						>
 							{{ $t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -118,7 +153,7 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { collection, primaryKey } = toRefs(props);
 
-		const { info: collectionInfo } = useCollection(collection);
+		const { info: collectionInfo, softDeleteStatus } = useCollection(collection);
 		const { breadcrumb } = useBreadcrumb();
 
 		const {
@@ -131,6 +166,7 @@ export default defineComponent({
 			save,
 			remove,
 			deleting,
+			softDeleting,
 			saveAsCopy,
 			isBatch,
 		} = useItem(collection, primaryKey);
@@ -138,6 +174,7 @@ export default defineComponent({
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
+		const confirmSoftDelete = ref(false);
 
 		return {
 			item,
@@ -152,11 +189,14 @@ export default defineComponent({
 			saveAndQuit,
 			deleteAndQuit,
 			confirmDelete,
+			confirmSoftDelete,
 			deleting,
+			softDeleting,
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
+			softDeleteStatus,
 		};
 
 		function useBreadcrumb() {
@@ -195,8 +235,8 @@ export default defineComponent({
 			);
 		}
 
-		async function deleteAndQuit() {
-			await remove();
+		async function deleteAndQuit(soft = false) {
+			await remove(soft);
 			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
 		}
 	},

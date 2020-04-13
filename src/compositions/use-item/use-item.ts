@@ -7,13 +7,14 @@ import useCollection from '@/compositions/use-collection';
 import { AxiosResponse } from 'axios';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number>) {
-	const { primaryKeyField } = useCollection(collection);
+	const { primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
 
 	const item = ref(null);
 	const error = ref(null);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
+	const softDeleting = ref(false);
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(
@@ -40,6 +41,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		isNew,
 		remove,
 		deleting,
+		softDeleting,
 		saveAsCopy,
 		isBatch,
 	};
@@ -97,7 +99,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err) {
 			if (isNew.value) {
 				notify({
-					title: i18n.t('item_create_failed'),
+					title: i18n.tc('item_create_failed', isBatch.value ? 2 : 1),
 					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
 						primaryKey: isBatch.value
@@ -108,7 +110,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				});
 			} else {
 				notify({
-					title: i18n.t('item_update_failed'),
+					title: i18n.tc('item_update_failed', isBatch.value ? 2 : 1),
 					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
 						primaryKey: isBatch.value
@@ -172,11 +174,25 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 	}
 
-	async function remove() {
-		deleting.value = true;
+	async function remove(soft = false) {
+		if (soft) {
+			softDeleting.value = true;
+		} else {
+			deleting.value = true;
+		}
 
 		try {
-			await api.delete(`${endpoint.value}/${primaryKey.value}`);
+			if (soft) {
+				if (statusField.value === undefined || softDeleteStatus.value === null) {
+					throw new Error('[useItem] You cant soft-delete without a status field');
+				}
+
+				await api.patch(`${endpoint.value}/${primaryKey.value}`, {
+					[statusField.value.field]: softDeleteStatus.value,
+				});
+			} else {
+				await api.delete(`${endpoint.value}/${primaryKey.value}`);
+			}
 
 			item.value = null;
 
@@ -204,7 +220,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			throw err;
 		} finally {
-			deleting.value = false;
+			if (soft) {
+				softDeleting.value = false;
+			} else {
+				deleting.value = false;
+			}
 		}
 	}
 

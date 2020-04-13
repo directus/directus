@@ -50,6 +50,10 @@ describe('Views / Private / Module Bar Avatar', () => {
 							key: 'directus-small-crop',
 							url: 'test1',
 						},
+						{
+							key: 'directus-medium-crop',
+							url: 'test2',
+						},
 					],
 				},
 			},
@@ -63,7 +67,7 @@ describe('Views / Private / Module Bar Avatar', () => {
 			},
 		});
 
-		expect((component.vm as any).avatarURL).toBe('test1');
+		expect((component.vm as any).avatarURL).toBe('test2');
 	});
 
 	it('Returns null if avatar is null', () => {
