@@ -112,3 +112,27 @@ export const htmlLabel = () => ({
 		</v-checkbox>
 	`,
 });
+
+export const slots = () => ({
+	methods: {
+		onChange: action('change'),
+	},
+	data() {
+		return {
+			checked: false,
+		};
+	},
+	template: `
+	<div>
+		<v-checkbox v-model="checked" @change="onChange" label="Checkbox">
+			<template #prepend>
+				<v-sheet style="--v-sheet-min-height: 0; --v-sheet-background-color: var(--primary-alt);">Prepend</v-sheet>
+			</template>
+
+			<template #append>
+				<v-sheet style="--v-sheet-min-height: 0; --v-sheet-background-color: var(--secondary-alt);">Append</v-sheet>
+			</template>
+		</v-checkbox>
+	</div>
+	`,
+});

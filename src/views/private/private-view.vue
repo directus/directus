@@ -244,7 +244,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		--content-padding: 32px;
+		--content-padding: 32px 32px 160px 32px;
 	}
 }
 </style>

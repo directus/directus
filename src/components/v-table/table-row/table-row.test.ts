@@ -38,7 +38,7 @@ describe('Table / Row', () => {
 	});
 
 	it('Renders right amount of cells per row', async () => {
-		expect(component.find('.table-row').findAll('td').length).toBe(2);
+		expect(component.find('.table-row').findAll('td').length).toBe(3);
 	});
 
 	it('Renders the provided element in the nested scoped slot', async () => {

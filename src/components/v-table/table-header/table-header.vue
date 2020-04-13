@@ -14,7 +14,7 @@
 			</th>
 
 			<th
-				v-for="(header, index) in headers"
+				v-for="header in headers"
 				:key="header.value"
 				:class="getClassesForHeader(header)"
 				class="cell"
@@ -30,11 +30,13 @@
 				</div>
 				<span
 					class="resize-handle"
-					v-if="showResize && index !== headers.length - 1"
+					v-if="showResize"
 					@click.stop
 					@mousedown="onResizeHandleMouseDown(header, $event)"
 				/>
 			</th>
+
+			<th class="spacer cell" scope="col" />
 		</tr>
 	</thead>
 </template>
@@ -314,7 +316,7 @@ export default defineComponent({
 		}
 	}
 
-	th:hover .resize-handle {
+	&:hover .resize-handle {
 		opacity: 1;
 	}
 }

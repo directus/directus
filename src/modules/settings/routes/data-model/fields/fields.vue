@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="collectionInfo.name">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="account_tree" />
 			</v-button>
 		</template>
@@ -64,5 +64,10 @@ export default defineComponent({
 .fields {
 	max-width: 800px;
 	padding: var(--content-padding);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-alt);
 }
 </style>

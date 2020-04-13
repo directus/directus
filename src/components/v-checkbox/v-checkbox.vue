@@ -8,10 +8,12 @@
 		:disabled="disabled"
 		:class="{ checked: isChecked }"
 	>
-		<v-icon :name="icon" />
+		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
+		<v-icon class="checkbox" :name="icon" />
 		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
+		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
 	</button>
 </template>
 
@@ -105,7 +107,7 @@ export default defineComponent({
 		@include no-wrap;
 	}
 
-	& .v-icon {
+	& .checkbox {
 		--v-icon-color: var(--foreground-subdued);
 	}
 
@@ -116,21 +118,27 @@ export default defineComponent({
 			color: var(--foreground-subdued);
 		}
 
-		.v-icon {
+		.checkbox {
 			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 
 	&:not(:disabled):hover {
-		.v-icon {
+		.checkbox {
 			--v-icon-color: var(--foreground-subdued);
 		}
 	}
 
 	&:not(:disabled).checked {
-		.v-icon {
+		.checkbox {
 			--v-icon-color: var(--v-checkbox-color);
 		}
+	}
+
+	.prepend,
+	.append {
+		display: contents;
+		font-size: 1rem;
 	}
 }
 </style>

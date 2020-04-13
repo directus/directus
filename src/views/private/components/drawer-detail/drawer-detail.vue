@@ -13,6 +13,7 @@
 				<div class="content">
 					<slot />
 				</div>
+				<v-divider />
 			</div>
 		</transition-expand>
 	</div>
@@ -87,5 +88,11 @@ export default defineComponent({
 	.content {
 		padding: 20px;
 	}
+}
+
+.v-divider {
+	--v-divider-color: var(--border-normal);
+
+	margin: 0 20px;
 }
 </style>

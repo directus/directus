@@ -128,4 +128,12 @@ export default defineComponent({
 .monospace {
 	font-family: var(--family-monospace);
 }
+
+.v-input {
+	cursor: pointer;
+
+	::v-deep input {
+		cursor: pointer;
+	}
+}
 </style>

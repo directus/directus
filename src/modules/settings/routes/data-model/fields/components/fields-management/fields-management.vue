@@ -25,7 +25,7 @@
 			large
 			@click="openFieldSetup()"
 		>
-			<v-icon name="add" left />
+			<v-icon name="add" />
 			{{ $t('add_field') }}
 		</v-button>
 
@@ -243,7 +243,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: var(--content-padding) 0;
+	margin: 32px 0;
 }
 
 .add-field {

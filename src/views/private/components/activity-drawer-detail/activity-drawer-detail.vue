@@ -5,6 +5,7 @@
 				:placeholder="$t('leave_comment')"
 				v-model="newCommentContent"
 				expand-on-focus
+				full-width
 			>
 				<template #append>
 					<v-button
@@ -25,19 +26,21 @@
 					<v-avatar small>
 						<v-icon name="person_outline" />
 					</v-avatar>
-					<div class="name">
-						<template v-if="act.action_by && act.action_by">
-							{{ act.action_by.first_name }} {{ act.action_by.last_name }}
-						</template>
-						<template v-else-if="act.action.by && action.action_by">
-							{{ $t('private_user') }}
-						</template>
-						<template v-else>
-							{{ $t('external') }}
-						</template>
-					</div>
-					<div class="date" v-tooltip.start="new Date(act.action_on)">
-						{{ act.date_relative }}
+					<div class="header-content">
+						<div class="name">
+							<template v-if="act.action_by && act.action_by">
+								{{ act.action_by.first_name }} {{ act.action_by.last_name }}
+							</template>
+							<template v-else-if="act.action.by && action.action_by">
+								{{ $t('private_user') }}
+							</template>
+							<template v-else>
+								{{ $t('external') }}
+							</template>
+						</div>
+						<div class="date" v-tooltip.start="new Date(act.action_on)">
+							{{ act.date_relative }}
+						</div>
 					</div>
 				</div>
 
@@ -152,7 +155,10 @@ export default defineComponent({
 							...record,
 							date_relative: await localizedFormatDistance(
 								new Date(record.action_on),
-								new Date()
+								new Date(),
+								{
+									addSuffix: true,
+								}
 							),
 						});
 					}
@@ -235,6 +241,11 @@ export default defineComponent({
 		.v-icon {
 			--v-icon-color: var(--foreground-subdued);
 		}
+	}
+
+	.name,
+	.date {
+		line-height: 1.25;
 	}
 
 	.name {

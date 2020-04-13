@@ -26,12 +26,9 @@ export const basic = () =>
 			vertical: {
 				default: boolean('Vertical', false),
 			},
-			inset: {
-				default: boolean('Inset', false),
-			},
 		},
 		template: `
-			<v-divider :vertical="vertical" :inset="inset" />
+			<v-divider :vertical="vertical" />
 		`,
 	});
 
@@ -42,12 +39,9 @@ export const withText = () =>
 			vertical: {
 				default: boolean('Vertical', false),
 			},
-			inset: {
-				default: boolean('Inset', false),
-			},
 		},
 		template: `
-			<v-divider :vertical="vertical" :inset="inset">
+			<v-divider :vertical="vertical">
 				This is a divider.
 			</v-divider>
 		`,
@@ -64,11 +58,7 @@ export const inList = () =>
 			VListItemTitle,
 			VIcon,
 		},
-		props: {
-			inset: {
-				default: boolean('Inset', false),
-			},
-		},
+		props: {},
 		template: `
 			<v-sheet style="max-width: 200px">
 				<v-list>
@@ -79,7 +69,7 @@ export const inList = () =>
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-divider :inset="inset" style="margin-top: 8px; margin-bottom: 8px;" />
+					<v-divider style="margin-top: 8px; margin-bottom: 8px;" />
 
 					<v-list-item v-for="n in 1" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
@@ -88,7 +78,7 @@ export const inList = () =>
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-divider :inset="inset" style="margin-top: 8px; margin-bottom: 8px;" />
+					<v-divider style="margin-top: 8px; margin-bottom: 8px;" />
 
 					<v-list-item v-for="n in 3" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />

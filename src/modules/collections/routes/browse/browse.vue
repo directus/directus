@@ -2,13 +2,9 @@
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 	<private-view v-else :title="currentCollection.name">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button rounded icon secondary :to="collectionsLink">
 				<v-icon :name="currentCollection.icon" />
 			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #drawer><portal-target name="drawer" /></template>
@@ -131,23 +127,22 @@ export default defineComponent({
 
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
-		const { addNewLink, batchLink } = useLinks();
+		const { addNewLink, batchLink, collectionsLink } = useLinks();
 		const { viewOptions, viewQuery } = useCollectionPreset(collection);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
 
 		return {
 			currentCollection,
 			addNewLink,
 			batchLink,
 			selection,
-			breadcrumb,
 			confirmDelete,
 			batchDelete,
 			deleting,
 			layout,
 			viewOptions,
 			viewQuery,
+			collectionsLink,
 		};
 
 		function useSelection() {
@@ -207,22 +202,13 @@ export default defineComponent({
 				return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
 			});
 
-			return { addNewLink, batchLink };
-		}
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
+			const collectionsLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
 
-				return [
-					{
-						name: i18n.tc('collection', 2),
-						to: `/${currentProjectKey}/collections`,
-					},
-				];
+				return `/${currentProjectKey}/collections`;
 			});
 
-			return { breadcrumb };
+			return { addNewLink, batchLink, collectionsLink };
 		}
 	},
 });

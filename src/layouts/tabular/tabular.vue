@@ -2,14 +2,19 @@
 	<div class="layout-tabular">
 		<portal to="drawer">
 			<drawer-detail icon="table_chart" :title="$t('layouts.tabular.fields')">
-				<draggable v-model="activeFields">
+				<draggable v-model="activeFields" handle=".drag-handle">
 					<v-checkbox
 						v-for="field in activeFields"
 						v-model="fields"
 						:key="field.field"
 						:value="field.field"
 						:label="field.name"
-					/>
+					>
+						<template #append>
+							<div class="spacer" />
+							<v-icon @click.stop name="drag_handle" class="drag-handle" />
+						</template>
+					</v-checkbox>
 				</draggable>
 
 				<v-checkbox
@@ -416,5 +421,23 @@ export default defineComponent({
 
 .v-info {
 	margin: 20vh 0;
+}
+
+.v-checkbox {
+	width: 100%;
+
+	.spacer {
+		flex-grow: 1;
+	}
+}
+
+.drag-handle {
+	--v-icon-color: var(--foreground-subdued);
+
+	cursor: ns-resize;
+
+	&:hover {
+		--v-icon-color: var(--foreground-normal);
+	}
 }
 </style>

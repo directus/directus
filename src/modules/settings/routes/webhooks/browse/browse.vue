@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="$t('webhooks')">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="send" />
 			</v-button>
 		</template>
@@ -174,5 +174,10 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-alt);
 }
 </style>

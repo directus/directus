@@ -153,10 +153,18 @@ export default defineComponent({
 	setup(props, { emit, listeners }) {
 		const _headers = computed({
 			get: () => {
-				return props.headers.map((header: HeaderRaw) => ({
-					...HeaderDefaults,
-					...header,
-				}));
+				return props.headers
+					.map((header: HeaderRaw) => ({
+						...HeaderDefaults,
+						...header,
+					}))
+					.map((header) => {
+						if (header.width && header.width < 24) {
+							header.width = 24;
+						}
+
+						return header;
+					});
 			},
 			set: (newHeaders: Header[]) => {
 				emit(
@@ -196,7 +204,7 @@ export default defineComponent({
 		});
 
 		const loadingColSpan = computed<string>(() => {
-			let length = _headers.value.length;
+			let length = _headers.value.length + 1; // +1 account for spacer
 			if (props.showSelect) length = length + 1;
 			if (props.showManualSort) length = length + 1;
 			return `1 / span ${length}`;
@@ -220,7 +228,7 @@ export default defineComponent({
 		});
 
 		const allItemsSelected = computed<boolean>(() => {
-			return props.selection.length === props.items.length;
+			return props.loading === false && props.selection.length === props.items.length;
 		});
 
 		const someItemsSelected = computed<boolean>(() => {
@@ -231,17 +239,15 @@ export default defineComponent({
 
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value
-				.map((header, index, array) => {
-					if (index !== array.length - 1) {
-						return header.width ? `${header.width}px` : 'min-content';
-					} else {
-						return `minmax(min-content, 1fr)`;
-					}
+				.map((header) => {
+					return header.width ? `${header.width}px` : 'min-content';
 				})
 				.reduce((acc, val) => (acc += ' ' + val), '');
 
 			if (props.showSelect) gridTemplateColumns = 'auto ' + gridTemplateColumns;
 			if (props.showManualSort) gridTemplateColumns = 'auto ' + gridTemplateColumns;
+
+			gridTemplateColumns = gridTemplateColumns + ' 1fr';
 			return gridTemplateColumns;
 		});
 
@@ -316,6 +322,7 @@ export default defineComponent({
 		display: grid;
 		grid-template-columns: var(--grid-columns);
 		min-width: 100%;
+		border-collapse: collapse;
 		border-spacing: 0;
 
 		::v-deep {

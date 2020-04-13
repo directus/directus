@@ -12,7 +12,6 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 | Prop       | Description                                         | Default |
 |------------|-----------------------------------------------------|---------|
 | `vertical` | Render the divider vertically                       | `false` |
-| `inset`    | Insets the divider to align with the (list) content | `false` |
 
 ## Events
 n/a

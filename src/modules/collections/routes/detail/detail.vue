@@ -1,17 +1,20 @@
 <template>
 	<collections-not-found v-if="error && error.code === 404" />
-	<private-view v-else :title="$t('editing', { collection: collectionInfo.name })">
+	<private-view
+		v-else
+		:title="
+			$t(collectionInfo.single ? 'editing_single' : 'editing', {
+				collection: collectionInfo.name,
+			})
+		"
+	>
 		<template #title-outer:prepend>
 			<v-button v-if="collectionInfo.single" rounded icon secondary disabled>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
-			<v-button v-else rounded icon secondary exact :to="breadcrumb[1].to">
+			<v-button v-else rounded icon secondary exact :to="backLink">
 				<v-icon name="arrow_back" />
 			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
@@ -110,7 +113,7 @@
 
 		<template #drawer>
 			<activity-drawer-detail
-				v-if="isNew === false"
+				v-if="isBatch === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 			/>
@@ -122,7 +125,6 @@
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import CollectionsNavigation from '../../components/navigation/';
-import { i18n } from '@/lang';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
@@ -154,7 +156,6 @@ export default defineComponent({
 		const { collection, primaryKey } = toRefs(props);
 
 		const { info: collectionInfo, softDeleteStatus } = useCollection(collection);
-		const { breadcrumb } = useBreadcrumb();
 
 		const {
 			isNew,
@@ -176,12 +177,16 @@ export default defineComponent({
 		const confirmDelete = ref(false);
 		const confirmSoftDelete = ref(false);
 
+		const backLink = computed(
+			() => `/${currentProjectKey.value}/collections/${collection.value}/`
+		);
+
 		return {
 			item,
 			loading,
+			backLink,
 			error,
 			isNew,
-			breadcrumb,
 			edits,
 			hasEdits,
 			saving,
@@ -198,21 +203,6 @@ export default defineComponent({
 			isBatch,
 			softDeleteStatus,
 		};
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: i18n.tc('collection', 2),
-					to: `/${currentProjectKey.value}/collections/`,
-				},
-				{
-					name: collectionInfo.value?.name,
-					to: `/${currentProjectKey.value}/collections/${props.collection}/`,
-				},
-			]);
-
-			return { breadcrumb };
-		}
 
 		async function saveAndQuit() {
 			await save();

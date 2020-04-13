@@ -1,5 +1,5 @@
 <template>
-	<div class="v-divider" :class="{ vertical, inset }">
+	<div class="v-divider" :class="{ vertical }">
 		<span v-if="!vertical && $slots.default"><slot /></span>
 		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 	</div>
@@ -10,10 +10,6 @@ import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
-		inset: {
-			type: Boolean,
-			default: false,
-		},
 		vertical: {
 			type: Boolean,
 			default: false,
@@ -48,11 +44,6 @@ export default defineComponent({
 		font-size: 16px;
 	}
 
-	&.inset:not(.vertical) {
-		max-width: calc(100% - 16px);
-		margin-left: 8px;
-	}
-
 	&.vertical {
 		display: inline-flex;
 		align-self: stretch;
@@ -62,14 +53,6 @@ export default defineComponent({
 			max-width: 0px;
 			height: inherit;
 			border-width: 0 2px 0 0;
-		}
-
-		&.inset {
-			hr {
-				min-height: 0;
-				max-height: calc(100% - 16px);
-				margin-top: 8px;
-			}
 		}
 	}
 }

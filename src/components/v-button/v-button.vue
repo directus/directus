@@ -239,6 +239,7 @@ export default defineComponent({
 
 			min-width: 60px;
 			padding: 0 12px;
+			border-radius: 4px;
 		}
 
 		&.small {

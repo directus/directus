@@ -95,9 +95,11 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 | `indeterminate` | Show the indeterminate state                                             | `false` |
 
 ## Slots
-| Slot    | Description                                                                                    |
-|---------|------------------------------------------------------------------------------------------------|
-| `label` | Allows custom markup and HTML to be rendered inside the label. Will override the `label` prop. |
+| Slot      | Description                                                                                    |
+|-----------|------------------------------------------------------------------------------------------------|
+| `label`   | Allows custom markup and HTML to be rendered inside the label. Will override the `label` prop. |
+| `prepend` | Rendered right before the checkbox                                                             |
+| `append`  | Rendered right after the label                                                                 |
 
 ## Events
 | Event                  | Description                | Data                       |

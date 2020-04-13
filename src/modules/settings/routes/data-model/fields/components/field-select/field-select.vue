@@ -1,9 +1,9 @@
 <template>
 	<v-menu attached :class="hidden ? 'full' : field.width" close-on-content-click>
-		<template #activator="{ toggle }">
+		<template #activator="{ toggle, active }">
 			<v-input
 				class="field"
-				:class="{ hidden }"
+				:class="{ hidden, active }"
 				readonly
 				@click="toggle"
 				:value="field.name"
@@ -234,7 +234,9 @@ export default defineComponent({
 
 .v-icon {
 	--v-icon-color: var(--foreground-subdued);
+}
 
-	pointer-events: none;
+.drag-handle {
+	cursor: grab !important;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="$t('settings_global')">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />
 			</v-button>
 		</template>
@@ -61,5 +61,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .settings {
 	padding: var(--content-padding);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-alt);
 }
 </style>

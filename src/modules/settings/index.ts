@@ -9,6 +9,7 @@ export default defineModule(({ i18n }) => ({
 	id: 'settings',
 	name: i18n.t('settings'),
 	icon: 'settings',
+	color: 'var(--warning)',
 	routes: [
 		{
 			path: '/',

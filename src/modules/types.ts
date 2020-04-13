@@ -9,6 +9,7 @@ export type ModuleConfig = {
 	name: string | VueI18n.TranslateResult;
 	routes?: RouteConfig[];
 	link?: string;
+	color?: string;
 };
 
 export type ModuleContext = { i18n: VueI18n };

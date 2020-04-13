@@ -19,10 +19,12 @@
 			:class="getClassesForCell(header)"
 			v-for="header in headers"
 			:key="header.value"
-			:style="{ height: height + 'px', lineHeight: height + 'px' }"
+			:style="{ height: height + 'px', lineHeight: height - 2 + 'px' }"
 		>
 			<slot :name="`item.${header.value}`" :item="item">{{ item[header.value] }}</slot>
 		</td>
+
+		<td class="spacer cell" />
 	</tr>
 </template>
 

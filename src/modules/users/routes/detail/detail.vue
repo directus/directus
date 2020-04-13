@@ -72,7 +72,7 @@
 
 		<template #drawer>
 			<activity-drawer-detail
-				v-if="isNew === false"
+				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
 			/>

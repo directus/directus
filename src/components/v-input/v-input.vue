@@ -1,5 +1,9 @@
 <template>
-	<div class="v-input" :class="{ 'full-width': fullWidth }">
+	<div
+		class="v-input"
+		@click="$emit('click', $event)"
+		:class="{ 'full-width': fullWidth, 'has-click': hasClick }"
+	>
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="value" :disabled="disabled" />
 		</div>
@@ -76,7 +80,11 @@ export default defineComponent({
 			input: emitValue,
 		}));
 
-		return { _listeners };
+		const hasClick = computed(() => {
+			return listeners.click !== undefined;
+		});
+
+		return { _listeners, hasClick };
 
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
@@ -136,24 +144,6 @@ export default defineComponent({
 			border-color: var(--border-normal);
 		}
 
-		input {
-			flex-grow: 1;
-			height: 100%;
-			background-color: transparent;
-			border: none;
-			appearance: none;
-
-			&::placeholder {
-				color: var(--foreground-subdued);
-			}
-		}
-
-		&.monospace {
-			input {
-				font-family: var(--family-monospace);
-			}
-		}
-
 		.prefix,
 		.suffix {
 			color: var(--foreground-subdued);
@@ -161,6 +151,38 @@ export default defineComponent({
 
 		.append {
 			margin-left: 8px;
+		}
+	}
+
+	input {
+		flex-grow: 1;
+		width: 80%; // allows flex to shrink to allow for slots
+		height: 100%;
+		background-color: transparent;
+		border: none;
+		appearance: none;
+
+		&::placeholder {
+			color: var(--foreground-subdued);
+		}
+	}
+
+	&.has-click {
+		cursor: pointer;
+		input {
+			pointer-events: none;
+		}
+	}
+
+	&.active .input {
+		color: var(--foreground-normal);
+		background-color: var(--background-page);
+		border-color: var(--primary);
+	}
+
+	.input.monospace {
+		input {
+			font-family: var(--family-monospace);
 		}
 	}
 

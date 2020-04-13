@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="$t('editing', { collection: $t('webhooks') })">
 		<template #title-outer:prepend>
-			<v-button rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -193,5 +193,10 @@ export default defineComponent({
 
 .v-form {
 	padding: var(--content-padding);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-alt);
 }
 </style>

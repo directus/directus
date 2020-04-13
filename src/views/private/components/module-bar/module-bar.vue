@@ -10,6 +10,13 @@
 				:to="module.to"
 				:href="module.href"
 				tile
+				:style="
+					module.color
+						? {
+								'--v-button-background-color-activated': module.color,
+						  }
+						: null
+				"
 			>
 				<v-icon :name="module.icon" />
 			</v-button>

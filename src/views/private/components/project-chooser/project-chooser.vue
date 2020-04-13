@@ -1,8 +1,9 @@
 <template>
-	<div class="project-chooser">
+	<div class="project-chooser" :class="{ active }">
 		<button class="toggle" :disabled="projects.length === 1" @click="active = !active">
 			<latency-indicator />
-			{{ currentProject.name }}
+			<span class="name">{{ currentProject.name }}</span>
+			<v-icon class="icon" name="expand_more" />
 		</button>
 		<transition-expand>
 			<div v-if="active" class="options-wrapper">
@@ -85,6 +86,24 @@ export default defineComponent({
 		.latency-indicator {
 			margin-right: 12px;
 		}
+
+		.name {
+			flex-grow: 1;
+		}
+
+		.icon {
+			color: var(--foreground-subdued);
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
+		}
+
+		&:hover .icon {
+			opacity: 1;
+		}
+	}
+
+	&.active .toggle .icon {
+		opacity: 1;
 	}
 
 	.options-wrapper {
