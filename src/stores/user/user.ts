@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
+import { useLatencyStore } from '@/stores/latency';
 
 import { User } from './types';
 
@@ -43,10 +44,20 @@ export const useUserStore = createStore({
 		},
 		async trackPage(page: string) {
 			const projectsStore = useProjectsStore();
+			const latencyStore = useLatencyStore();
 			const currentProjectKey = projectsStore.state.currentProjectKey;
+
+			const start = Date.now();
 
 			await api.patch(`/${currentProjectKey}/users/me/tracking/page`, {
 				last_page: page,
+			});
+
+			const end = Date.now();
+
+			latencyStore.state.latency.push({
+				timestamp: new Date(),
+				latency: end - start,
 			});
 
 			if (this.state.currentUser) {

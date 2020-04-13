@@ -12,13 +12,27 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import CustomIconBox from './custom-icons/box.vue';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
-const customIcons: string[] = ['box'];
+import CustomIconBox from './custom-icons/box.vue';
+import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
+import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
+import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
+
+const customIcons: string[] = [
+	'box',
+	'signal_wifi_1_bar',
+	'signal_wifi_2_bar',
+	'signal_wifi_3_bar',
+];
 
 export default defineComponent({
-	components: { CustomIconBox },
+	components: {
+		CustomIconBox,
+		CustomIconSignalWifi1Bar,
+		CustomIconSignalWifi2Bar,
+		CustomIconSignalWifi3Bar,
+	},
 	props: {
 		name: {
 			type: String,
@@ -50,7 +64,8 @@ export default defineComponent({
 		});
 
 		const customIconName = computed<string | null>(() => {
-			if (customIcons.includes(props.name)) return `custom-icon-${props.name}`;
+			if (customIcons.includes(props.name))
+				return `custom-icon-${props.name}`.replace(/_/g, '-');
 			return null;
 		});
 

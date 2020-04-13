@@ -1,6 +1,7 @@
 <template>
 	<div class="project-chooser">
 		<button class="toggle" :disabled="projects.length === 1" @click="active = !active">
+			<latency-indicator />
 			{{ currentProject.name }}
 		</button>
 		<transition-expand>
@@ -30,8 +31,10 @@
 import { defineComponent, toRefs, ref } from '@vue/composition-api';
 import { useProjectsStore } from '@/stores/projects';
 import router from '@/router';
+import LatencyIndicator from '../latency-indicator';
 
 export default defineComponent({
+	components: { LatencyIndicator },
 	setup() {
 		const projectsStore = useProjectsStore();
 		const { projects, currentProjectKey } = toRefs(projectsStore.state);
@@ -72,10 +75,16 @@ export default defineComponent({
 	background-color: var(--background-normal-alt);
 
 	.toggle {
+		display: flex;
+		align-items: center;
 		width: 100%;
 		height: 64px;
 		padding: 0 20px;
 		text-align: left;
+
+		.latency-indicator {
+			margin-right: 12px;
+		}
 	}
 
 	.options-wrapper {
