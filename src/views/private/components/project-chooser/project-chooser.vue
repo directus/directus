@@ -38,13 +38,13 @@ export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
 		const projectsStore = useProjectsStore();
-		const { projects, currentProjectKey } = toRefs(projectsStore.state);
+		const { currentProjectKey } = toRefs(projectsStore.state);
 		const active = ref(false);
 
 		const currentProject = projectsStore.currentProject;
 
 		return {
-			projects,
+			projects: projectsStore.formatted,
 			currentProjectKey,
 			navigateToProject,
 			projectsStore,
