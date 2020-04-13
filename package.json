@@ -32,7 +32,7 @@
     "pinia": "0.0.5",
     "portal-vue": "^2.1.7",
     "resize-observer": "^1.0.0",
-    "semver": "^7.2.1",
+    "semver": "^7.2.2",
     "stylelint-config-prettier": "^8.0.1",
     "vue": "^2.6.11",
     "vue-i18n": "^8.16.0",
