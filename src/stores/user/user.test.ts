@@ -40,7 +40,7 @@ describe('Stores / User', () => {
 
 			expect(api.get).toHaveBeenCalledWith('/my-project/users/me', {
 				params: {
-					fields: '*,avatar.data',
+					fields: '*,avatar.data,role.*',
 				},
 			});
 		});

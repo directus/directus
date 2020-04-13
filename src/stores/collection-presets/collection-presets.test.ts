@@ -30,7 +30,7 @@ describe('Compositions / Collection Presets', () => {
 			);
 
 			const userStore = useUserStore(req);
-			(userStore.state.currentUser as any) = { id: 15, role: 25 };
+			(userStore.state.currentUser as any) = { id: 15, role: { id: 25 } };
 			const projectsStore = useProjectsStore(req);
 			projectsStore.state.currentProjectKey = 'my-project';
 			const collectionPresetsStore = useCollectionPresetsStore(req);

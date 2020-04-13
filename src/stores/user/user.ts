@@ -17,6 +17,9 @@ export const useUserStore = createStore({
 			if (state.currentUser === null) return null;
 			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
 		},
+		isAdmin(state) {
+			return state.currentUser?.role.id === 1;
+		},
 	},
 	actions: {
 		async hydrate() {
@@ -28,7 +31,7 @@ export const useUserStore = createStore({
 			try {
 				const { data } = await api.get(`/${currentProjectKey}/users/me`, {
 					params: {
-						fields: '*,avatar.data',
+						fields: '*,avatar.data,role.*',
 					},
 				});
 

@@ -28,7 +28,7 @@ export const useCollectionPresetsStore = createStore({
 				// All role saved bookmarks and presets
 				api.get(`/${currentProjectKey}/collection_presets`, {
 					params: {
-						'filter[role][eq]': role,
+						'filter[role][eq]': role.id,
 						'filter[user][null]': 1,
 					},
 				}),
@@ -99,7 +99,7 @@ export const useCollectionPresetsStore = createStore({
 
 			const availablePresets = this.state.collectionPresets.filter((preset) => {
 				const userMatches = preset.user === userID || preset.user === null;
-				const roleMatches = preset.role === userRole || preset.role === null;
+				const roleMatches = preset.role === userRole.id || preset.role === null;
 				const collectionMatches = preset.collection === collection;
 
 				// Filter out all bookmarks
@@ -117,7 +117,7 @@ export const useCollectionPresetsStore = createStore({
 			const userPreset = availablePresets.find((preset) => preset.user === userID);
 			if (userPreset) return userPreset;
 
-			const rolePreset = availablePresets.find((preset) => preset.role === userRole);
+			const rolePreset = availablePresets.find((preset) => preset.role === userRole.id);
 			if (rolePreset) return rolePreset;
 
 			// If the other two already came up empty, we can assume there's only one preset. That

@@ -7,6 +7,7 @@ import { useCollectionPresetsStore } from '@/stores/collection-presets/';
 import { useSettingsStore } from '@/stores/settings/';
 import { useProjectsStore } from '@/stores/projects/';
 import { useLatencyStore } from '@/stores/latency';
+import { usePermissionsStore } from '@/stores/permissions';
 
 type GenericStore = {
 	id: string;
@@ -26,6 +27,7 @@ export function useStores(
 		useSettingsStore,
 		useProjectsStore,
 		useLatencyStore,
+		usePermissionsStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];
@@ -41,6 +43,11 @@ export async function hydrate(stores = useStores()) {
 	appStore.state.hydrating = true;
 
 	try {
+		/**
+		 * @NOTE
+		 * This will fetch the store data sequential. While this does prevent rate limiteres from
+		 * kicking in, we could optimize it by running (some of) the requests in parallel
+		 */
 		for (const store of stores) {
 			await store.hydrate?.();
 		}

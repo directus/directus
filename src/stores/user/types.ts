@@ -24,7 +24,16 @@ export type User = {
 	external_id: string;
 	'2fa_secret': string;
 	theme: 'auto' | 'dark' | 'light';
-	role: number;
+	role: {
+		id: number;
+		name: string;
+		description: string;
+		collection_listing: null;
+		module_listing: null;
+		enforce_2fa: null | boolean;
+		external_id: null | string;
+		ip_whitelist: string[];
+	};
 	password_reset_token: string | null;
 	timezone: string;
 	locale: string;
