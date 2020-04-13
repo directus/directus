@@ -1,4 +1,5 @@
 import { defineModule } from '@/modules/define';
+
 import UsersBrowse from './routes/browse/';
 import UsersDetail from './routes/detail/';
 
@@ -8,14 +9,31 @@ export default defineModule(({ i18n }) => ({
 	icon: 'people',
 	routes: [
 		{
-			name: 'users-browse',
 			path: '/',
+			redirect: '/all',
+		},
+		{
+			name: 'users-browse-all',
+			path: '/all',
+			component: UsersBrowse,
+		},
+		{
+			name: 'users-detail-add-new',
+			path: '/+',
+			component: UsersDetail,
+			props: {
+				primaryKey: '+',
+			},
+		},
+		{
+			name: 'users-browse-role',
+			path: '/:role',
 			component: UsersBrowse,
 			props: true,
 		},
 		{
 			name: 'users-detail',
-			path: '/:primaryKey',
+			path: '/:role/:primaryKey',
 			component: UsersDetail,
 			props: true,
 		},

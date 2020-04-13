@@ -52,11 +52,10 @@ export default defineComponent({
 
 		const userProfileLink = computed<string>(() => {
 			const project = projectsStore.state.currentProjectKey;
-			// This is rendered in the private view, which is only accessible as a logged in user
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const id = userStore.state.currentUser!.id;
+			const id = userStore.state.currentUser?.id;
+			const role = userStore.state.currentUser?.role?.id;
 
-			return `/${project}/users/${id}`;
+			return `/${project}/users/${role}/${id}`;
 		});
 
 		const signOutLink = computed<string>(() => {

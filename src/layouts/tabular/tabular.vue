@@ -101,6 +101,7 @@ import Draggable from 'vuedraggable';
 import useCollection from '@/compositions/use-collection';
 import useItems from '@/compositions/use-items';
 import { render } from 'micromustache';
+import { Filter } from '@/stores/collection-presets/types';
 
 type ViewOptions = {
 	widths?: {
@@ -134,6 +135,10 @@ export default defineComponent({
 			type: Object as PropType<ViewQuery>,
 			default: null,
 		},
+		filters: {
+			type: Array as PropType<Filter[]>,
+			default: () => [],
+		},
 		selectMode: {
 			type: Boolean,
 			default: false,
@@ -152,6 +157,7 @@ export default defineComponent({
 		const _selection = useSync(props, 'selection', emit);
 		const _viewOptions = useSync(props, 'viewOptions', emit);
 		const _viewQuery = useSync(props, 'viewQuery', emit);
+		const _filters = useSync(props, 'filters', emit);
 
 		const { collection } = toRefs(props);
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
@@ -167,6 +173,7 @@ export default defineComponent({
 			limit,
 			page,
 			fields,
+			filters: _filters,
 		});
 
 		const {
@@ -369,6 +376,7 @@ export default defineComponent({
 							project: currentProjectKey.value,
 							collection: collection.value,
 							primaryKey,
+							item,
 						})
 					);
 				}

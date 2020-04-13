@@ -1,3 +1,5 @@
+import { Role } from '@/stores/roles/types';
+
 export type Avatar = {
 	data: {
 		thumbnails: Thumbnail[];
@@ -24,16 +26,7 @@ export type User = {
 	external_id: string;
 	'2fa_secret': string;
 	theme: 'auto' | 'dark' | 'light';
-	role: {
-		id: number;
-		name: string;
-		description: string;
-		collection_listing: null;
-		module_listing: null;
-		enforce_2fa: null | boolean;
-		external_id: null | string;
-		ip_whitelist: string[];
-	};
+	role: Role;
 	password_reset_token: string | null;
 	timezone: string;
 	locale: string;

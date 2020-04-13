@@ -2,6 +2,8 @@ import useCollectionPresetStore from '@/stores/collection-presets';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
 
+import { Filter } from './types';
+
 export function useCollectionPreset(collection: Ref<string>) {
 	const collectionPresetsStore = useCollectionPresetStore();
 
@@ -48,5 +50,18 @@ export function useCollectionPreset(collection: Ref<string>) {
 		},
 	});
 
-	return { viewOptions, viewQuery };
+	const filters = computed<Filter[]>({
+		get() {
+			return localPreset.value.filters || [];
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				filters: val,
+			};
+			savePreset(localPreset.value);
+		},
+	});
+
+	return { viewOptions, viewQuery, filters };
 }

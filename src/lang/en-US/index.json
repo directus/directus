@@ -177,6 +177,8 @@
 	"create_new_project_copy": "Make sure you have your database information handy, then enter your API's Super-Admin password to continue.",
 	"super_admin_token": "Super-Admin Token",
 
+	"all_users": "All Users",
+
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",

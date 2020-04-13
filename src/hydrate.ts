@@ -8,6 +8,7 @@ import { useSettingsStore } from '@/stores/settings/';
 import { useProjectsStore } from '@/stores/projects/';
 import { useLatencyStore } from '@/stores/latency';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRolesStore } from '@/stores/roles';
 
 type GenericStore = {
 	id: string;
@@ -28,6 +29,7 @@ export function useStores(
 		useProjectsStore,
 		useLatencyStore,
 		usePermissionsStore,
+		useRolesStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];
@@ -45,12 +47,15 @@ export async function hydrate(stores = useStores()) {
 	try {
 		/**
 		 * @NOTE
-		 * This will fetch the store data sequential. While this does prevent rate limiteres from
-		 * kicking in, we could optimize it by running (some of) the requests in parallel
+		 * Multiple stores rely on the userStore to be set, so they can fetch user specific data. The
+		 * following makes sure that the user store is always fetched first, before we hydrate anything
+		 * else.
 		 */
-		for (const store of stores) {
-			await store.hydrate?.();
-		}
+		await useUserStore().hydrate();
+
+		await Promise.all(
+			stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.())
+		);
 	} catch (error) {
 		appStore.state.error = error;
 	} finally {

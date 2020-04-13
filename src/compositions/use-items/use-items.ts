@@ -4,19 +4,22 @@ import useProjectsStore from '@/stores/projects';
 import useCollection from '@/compositions/use-collection';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
+import { Filter } from '@/stores/collection-presets/types';
+import filtersToQuery from '@/utils/filters-to-query';
 
 type Options = {
 	limit: Ref<number>;
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
 	page: Ref<number>;
+	filters: Ref<readonly Filter[]>;
 };
 
 export function useItems(collection: Ref<string>, options: Options) {
 	const projectsStore = useProjectsStore();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { limit, fields, sort, page } = options;
+	const { limit, fields, sort, page, filters } = options;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const items = ref<any>([]);
@@ -61,7 +64,32 @@ export function useItems(collection: Ref<string>, options: Options) {
 			return;
 		}
 
+		/**
+		 * @NOTE
+		 * Ignore sorting through the API when the full set of items is already loaded. This requires
+		 * layouts to support client side sorting when the itemcount is less than the total items.
+		 */
 		if (limit.value > (itemCount.value || 0)) return;
+
+		await Vue.nextTick();
+		if (loading.value === false) {
+			getItems();
+		}
+	});
+
+	watch([filters], async (after, before) => {
+		if (!before || isEqual(after, before)) {
+			return;
+		}
+
+		/**
+		 * @NOTE
+		 *
+		 * When the filters change, we have to re-calculate the total amount of items too, as the
+		 * total amount of available items is based on the filter query.
+		 */
+		itemCount.value = null;
+
 		await Vue.nextTick();
 		if (loading.value === false) {
 			getItems();
@@ -76,12 +104,22 @@ export function useItems(collection: Ref<string>, options: Options) {
 
 		const fieldsToFetch = [...fields.value];
 
+		// Make sure the primary key is always fetched
 		if (
 			fields.value !== ['*'] &&
 			primaryKeyField.value &&
 			fieldsToFetch.includes(primaryKeyField.value.field) === false
 		) {
 			fieldsToFetch.push(primaryKeyField.value.field);
+		}
+
+		// Make sure all fields that are used to filter are fetched
+		if (fields.value !== ['*']) {
+			filters.value.forEach((filter) => {
+				if (fieldsToFetch.includes(filter.field) === false) {
+					fieldsToFetch.push(filter.field);
+				}
+			});
 		}
 
 		try {
@@ -95,6 +133,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 					fields: fieldsToFetch,
 					sort: sort.value,
 					page: page.value,
+					...filtersToQuery(filters.value),
 				},
 			});
 

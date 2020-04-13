@@ -15,7 +15,7 @@ export const basic = () =>
 	defineComponent({
 		props: {
 			type: {
-				default: select('Type', ['input', 'input-tall'], 'input'),
+				default: select('Type', ['input', 'input-tall', 'list-item-icon'], 'input'),
 			},
 		},
 		template: `

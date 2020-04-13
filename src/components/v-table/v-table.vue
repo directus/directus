@@ -374,7 +374,7 @@ export default defineComponent({
 			&.sticky th {
 				position: sticky;
 				top: 48px;
-				z-index: +1;
+				z-index: 2;
 			}
 		}
 

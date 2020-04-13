@@ -56,7 +56,9 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/users/{{primaryKey}}'"
+			:detail-route="'/{{project}}/users/{{item.role}}/{{primaryKey}}'"
+			:filters="_filters"
+			@update:filters="filters = $event"
 		/>
 	</private-view>
 </template>
@@ -78,17 +80,49 @@ type Item = {
 export default defineComponent({
 	name: 'users-browse',
 	components: { UsersNavigation },
-	props: {},
-	setup() {
+	props: {
+		role: {
+			type: String,
+			default: null,
+		},
+	},
+	setup(props) {
 		const layout = ref<LayoutComponent>(null);
 		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);
 
-		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_users'));
+		const { viewOptions, viewQuery, filters } = useCollectionPreset(ref('directus_users'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
+
+		const _filters = computed(() => {
+			if (props.role !== null) {
+				return [
+					{
+						locked: 1,
+						field: 'role',
+						operator: 'eq',
+						value: props.role,
+					},
+					...filters.value,
+				];
+			}
+
+			return [
+				// This filter is basically a no-op. Every user has a role. However, by filtering on
+				// this field, we can ensure that the field data is fetched, which is needed to build
+				// out the navigation links
+				{
+					locked: 1,
+					field: 'role',
+					operator: 'nnull',
+					value: 1,
+				},
+				...filters.value,
+			];
+		});
 
 		return {
 			addNewLink,
@@ -101,6 +135,7 @@ export default defineComponent({
 			layout,
 			viewOptions,
 			viewQuery,
+			_filters,
 		};
 
 		function useBatchDelete() {

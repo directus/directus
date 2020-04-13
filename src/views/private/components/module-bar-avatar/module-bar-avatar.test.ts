@@ -127,6 +127,7 @@ describe('Views / Private / Module Bar Avatar', () => {
 		userStore.state.currentUser = {
 			id: 1,
 			avatar: null,
+			role: { id: 15 },
 		} as any;
 
 		const component = shallowMount(ModuleBarAvatar, {
@@ -137,7 +138,7 @@ describe('Views / Private / Module Bar Avatar', () => {
 			},
 		});
 
-		expect((component.vm as any).userProfileLink).toBe('/my-project/users/1');
+		expect((component.vm as any).userProfileLink).toBe('/my-project/users/15/1');
 		expect((component.vm as any).signOutLink).toBe('/my-project/logout');
 	});
 });
