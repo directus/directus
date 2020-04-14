@@ -6,7 +6,7 @@
 
 <style lang="scss" scoped>
 .v-list-item-content {
-	--v-list-item-content-padding: 12px 0;
+	--v-list-item-content-padding: 9px 0;
 
 	display: flex;
 	flex-basis: 0;

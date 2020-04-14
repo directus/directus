@@ -382,6 +382,7 @@ export default defineComponent({
 
 			.v-progress-linear {
 				--v-progress-linear-height: 2px;
+				--v-progress-linear-color: var(--border-normal-alt);
 
 				position: relative;
 				top: -2px;

@@ -2,7 +2,7 @@
 	<private-view :title="collectionInfo.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="account_tree" />
+				<v-icon name="list_alt" />
 			</v-button>
 		</template>
 

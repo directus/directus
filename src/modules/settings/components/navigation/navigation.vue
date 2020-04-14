@@ -26,7 +26,7 @@ export default defineComponent({
 				to: `/${currentProjectKey.value}/settings/global`,
 			},
 			{
-				icon: 'account_tree',
+				icon: 'list_alt',
 				name: i18n.t('settings_data_model'),
 				to: `/${currentProjectKey.value}/settings/data-model`,
 			},
