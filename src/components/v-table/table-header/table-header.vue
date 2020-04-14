@@ -233,7 +233,7 @@ export default defineComponent({
 		border-bottom: 2px solid var(--border-subdued);
 
 		&.select,
-		&.sort {
+		&.manual {
 			display: flex;
 			align-items: center;
 		}

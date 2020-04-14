@@ -3,6 +3,10 @@
 		class="table-row"
 		:class="{ subdued, clickable: hasClickListener }"
 		@click="$emit('click', $event)"
+		:style="{
+			'--table-row-height': height + 2 + 'px',
+			'--table-row-line-height': height + 'px',
+		}"
 	>
 		<td v-if="showManualSort" class="manual cell">
 			<v-icon
@@ -19,7 +23,6 @@
 			:class="getClassesForCell(header)"
 			v-for="header in headers"
 			:key="header.value"
-			:style="{ height: height + 'px', lineHeight: height - 2 + 'px' }"
 		>
 			<slot :name="`item.${header.value}`" :item="item">{{ item[header.value] }}</slot>
 		</td>
@@ -100,21 +103,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 .table-row {
 	.cell {
+		height: var(--table-row-height);
 		padding: 0 0 0 12px;
 		overflow: hidden;
+		line-height: var(--table-row-line-height);
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--background-page);
 		border-bottom: 2px solid var(--border-subdued);
 
-		&.select,
-		&.sort {
-			display: flex;
-			align-items: center;
-		}
-
 		&:last-child {
 			padding: 0 12px 0 12px;
+		}
+
+		&.select {
+			display: flex;
+			align-items: center;
 		}
 	}
 

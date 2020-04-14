@@ -11,6 +11,8 @@ import { defineComponent } from '@vue/composition-api';
 
 Vue.component('v-table', VTable);
 
+import RawValue from '../../../.storybook/raw-value.vue';
+
 export default {
 	title: 'Components / Table',
 	component: VTable,
@@ -844,6 +846,7 @@ export const serverSort = () => ({
 });
 
 export const dragNDrop = () => ({
+	components: { RawValue },
 	data() {
 		return {
 			headers: [
@@ -910,13 +913,10 @@ export const dragNDrop = () => ({
 			:headers.sync="headers"
 			:items.sync="items"
 			:sort.sync="sort"
-			@drop="onDrop"
 			item-key="id"
 			show-manual-sort
 		/>
-				<pre style="max-width: max-content; margin-top: 20px; background-color: #eee; font-family: monospace; padding: 0.5rem; border-radius: 8px;">
-items: {{ items }}
-		</pre>
+		<raw-value label="items">{{ items }}</raw-value>
 	</div>
 	`,
 });

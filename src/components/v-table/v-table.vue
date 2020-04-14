@@ -249,12 +249,12 @@ export default defineComponent({
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value
 				.map((header) => {
-					return header.width ? `${header.width}px` : 'min-content';
+					return header.width ? `${header.width}px` : '160px';
 				})
 				.reduce((acc, val) => (acc += ' ' + val), '');
 
-			if (props.showSelect) gridTemplateColumns = 'auto ' + gridTemplateColumns;
-			if (props.showManualSort) gridTemplateColumns = 'auto ' + gridTemplateColumns;
+			if (props.showSelect) gridTemplateColumns = '36px ' + gridTemplateColumns;
+			if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
@@ -332,17 +332,18 @@ export default defineComponent({
 	overflow-y: auto;
 
 	table {
-		display: grid;
-		grid-template-columns: var(--grid-columns);
 		min-width: 100%;
 		border-collapse: collapse;
 		border-spacing: 0;
 
+		tbody {
+			display: contents;
+		}
+
 		::v-deep {
-			tbody,
-			thead,
 			tr {
-				display: contents;
+				display: grid;
+				grid-template-columns: var(--grid-columns);
 			}
 
 			td,
