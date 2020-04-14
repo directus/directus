@@ -3,6 +3,8 @@ import VueCompositionAPI from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
 import { useStores, hydrate, dehydrate } from './hydrate';
 
+jest.mock('@/api');
+
 describe('Stores / App', () => {
 	beforeAll(() => {
 		Vue.use(VueCompositionAPI);

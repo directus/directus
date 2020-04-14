@@ -15,7 +15,7 @@ import { i18n } from '@/lang';
  */
 
 export const useSettingsStore = createStore({
-	id: 'settings',
+	id: 'settingsStore',
 	state: () => ({
 		settings: [] as Setting[],
 	}),

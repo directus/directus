@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/stores/settings/';
 import { useProjectsStore } from '@/stores/projects/';
 import { useLatencyStore } from '@/stores/latency';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useRolesStore } from '@/stores/roles';
+import { useRelationsStore } from '@/stores/relations';
 
 type GenericStore = {
 	id: string;
@@ -29,7 +29,7 @@ export function useStores(
 		useProjectsStore,
 		useLatencyStore,
 		usePermissionsStore,
-		useRolesStore,
+		useRelationsStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];
