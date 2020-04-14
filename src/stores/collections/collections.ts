@@ -6,6 +6,7 @@ import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
+import notify from '@/utils/notify';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
@@ -57,6 +58,46 @@ export const useCollectionsStore = createStore({
 		},
 		async dehydrate() {
 			this.reset();
+		},
+		async updateCollection(collection: string, updates: Partial<Collection>) {
+			const { currentProjectKey } = useProjectsStore().state;
+
+			try {
+				await api.patch(`${currentProjectKey}/collections/${collection}`, updates);
+				await this.hydrate();
+				notify({
+					type: 'success',
+					title: i18n.t('update_collection_success'),
+					text: collection,
+				});
+			} catch (error) {
+				notify({
+					type: 'error',
+					title: i18n.t('update_collection_failed'),
+					text: collection,
+				});
+				throw error;
+			}
+		},
+		async deleteCollection(collection: string) {
+			const { currentProjectKey } = useProjectsStore().state;
+
+			try {
+				await api.delete(`${currentProjectKey}/collections/${collection}`);
+				await this.hydrate();
+				notify({
+					type: 'success',
+					title: i18n.t('delete_collection_success'),
+					text: collection,
+				});
+			} catch (error) {
+				notify({
+					type: 'error',
+					title: i18n.t('delete_collection_failed'),
+					text: collection,
+				});
+				throw error;
+			}
 		},
 		getCollection(collectionKey: string) {
 			return (

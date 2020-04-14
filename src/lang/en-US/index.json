@@ -179,6 +179,21 @@
 
 	"all_users": "All Users",
 
+	"delete_collection": "Delete Collection",
+	"unmanage_collection": "Unmanage Collection",
+
+	"update_collection_success": "Updated Collection",
+	"update_collection_failed": "Couldn't Update Collection",
+	"delete_collection_success": "Deleted Collection",
+	"delete_collection_failed": "Couldn't Delete Collection",
+
+	"delete_collection_are_you_sure": "Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is permanent.",
+
+	"collections_shown": "Collections Shown",
+	"visible_collections": "Visible Collections",
+	"hidden_collections": "Hidden Collections",
+	"unmanaged_collections": "Unmanaged Collections",
+	"system_collections": "System Collections",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -326,7 +341,6 @@
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_bookmark": "Delete Bookmark",
   "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",
-  "delete_collection_are_you_sure": "Are you sure you want to delete this collection? This action can not be undone.",
   "delete_confirmation": "Delete Confirmation",
   "delete_field_are_you_sure": "Are you sure you want to delete the field \"{field}\"? This action can not be undone.",
   "delete_role_are_you_sure": "Are you sure to delete the role \"{name}\"? This action cannot be undone.",

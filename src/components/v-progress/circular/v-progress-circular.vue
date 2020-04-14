@@ -67,8 +67,10 @@ export default defineComponent({
 	}
 
 	&.small {
-		--v-progress-circular-size: 16px;
+		--v-progress-circular-size: 20px;
 		--v-progress-circular-line-size: 3px;
+
+		margin: 2px;
 	}
 
 	&.large {

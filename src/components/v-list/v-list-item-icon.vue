@@ -46,6 +46,7 @@ export default defineComponent({
 					}
 				}
 			}
+
 			&.dense {
 				#{$this} {
 					margin-top: 4px;
@@ -59,6 +60,10 @@ export default defineComponent({
 						}
 					}
 				}
+			}
+
+			&.dense:not(.nav) #{$this} {
+				color: var(--foreground-subdued);
 			}
 		}
 	}

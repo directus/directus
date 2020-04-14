@@ -137,10 +137,11 @@ export default defineComponent({
 | `select`         | Emitted when selected items change             | `any[]`                         |
 
 ## Slots
-| Slot             | Description                      |
-|------------------|----------------------------------|
-| `header.[value]` | Override individual header cells |
-| `item.[value]`   | Override individual row cells    |
+| Slot             | Description                                        |
+|------------------|----------------------------------------------------|
+| `header.[value]` | Override individual header cells                   |
+| `item.[value]`   | Override individual row cells                      |
+| `item-append`    | Append content at the end of each row in the table |
 
 ## CSS Variables
 | Variable           | Default |

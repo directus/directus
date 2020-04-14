@@ -16,28 +16,59 @@
 			<settings-navigation />
 		</template>
 
-		<v-table
-			:headers.sync="tableHeaders"
-			:items="items"
-			@click:row="openCollection"
-			show-resize
-		>
-			<template #item.icon="{ item }">
-				<v-icon class="icon" :class="{ hidden: item.hidden }" :name="item.icon" />
-			</template>
+		<template #drawer>
+			<collections-filter v-model="activeTypes" />
+		</template>
 
-			<template #item.collection="{ item }">
-				<span class="collection" :class="{ hidden: item.hidden }">
-					{{ item.name }}
-				</span>
-			</template>
+		<div class="padding-box">
+			<v-table
+				:headers.sync="tableHeaders"
+				:items="items"
+				@click:row="openCollection"
+				show-resize
+				fixed-header
+				item-key="collection"
+			>
+				<template #item.icon="{ item }">
+					<v-icon
+						class="icon"
+						:class="{
+							hidden: item.hidden,
+							system: item.collection.startsWith('directus_'),
+							unmanaged:
+								item.managed === false &&
+								item.collection.startsWith('directus_') === false,
+						}"
+						:name="item.icon"
+					/>
+				</template>
 
-			<template #item.note="{ item }">
-				<span class="note" :class="{ hidden: item.hidden }">
-					{{ item.note }}
-				</span>
-			</template>
-		</v-table>
+				<template #item.collection="{ item }">
+					<span
+						class="collection"
+						:class="{
+							hidden: item.hidden,
+							system: item.collection.startsWith('directus_'),
+							unmanaged:
+								item.managed === false &&
+								item.collection.startsWith('directus_') === false,
+						}"
+					>
+						{{ item.name }}
+					</span>
+				</template>
+
+				<template #item.note="{ item }">
+					<span class="note" :class="{ hidden: item.hidden }">
+						{{ item.note }}
+					</span>
+				</template>
+
+				<template #item-append="{ item }">
+					<collection-options :collection="item" />
+				</template>
+			</v-table>
+		</div>
 
 		<new-collection v-model="addNewActive" />
 	</private-view>
@@ -53,11 +84,16 @@ import useCollectionsStore from '@/stores/collections';
 import { Collection } from '@/stores/collections/types';
 import useProjectsStore from '@/stores/projects';
 import router from '@/router';
+import { sortBy } from 'lodash';
+import CollectionOptions from './components/collection-options';
+import CollectionsFilter from './components/collections-filter';
 
 export default defineComponent({
-	components: { SettingsNavigation, NewCollection },
+	components: { SettingsNavigation, NewCollection, CollectionOptions, CollectionsFilter },
 	setup() {
 		const addNewActive = ref(false);
+		const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
+
 		const collectionsStore = useCollectionsStore();
 
 		const tableHeaders = ref<HeaderRaw[]>([
@@ -67,26 +103,103 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.tc('collection', 0),
+				text: i18n.t('name'),
 				value: 'collection',
 			},
 			{
-				text: i18n.t('note'),
+				text: i18n.t('description'),
 				value: 'note',
 			},
 		]);
 
-		const items = computed(() => {
-			return collectionsStore.state.collections.filter(
-				({ collection }) => collection.startsWith('directus_') === false
-			);
-		});
-
-		return { addNewActive, tableHeaders, items, openCollection };
-
 		function openCollection({ collection }: Collection) {
 			const { currentProjectKey } = useProjectsStore().state;
 			router.push(`/${currentProjectKey}/settings/data-model/${collection}`);
+		}
+
+		const { items } = useItems();
+
+		return {
+			addNewActive,
+			tableHeaders,
+			items,
+			openCollection,
+			activeTypes,
+		};
+
+		function useItems() {
+			const visible = computed(() => {
+				return sortBy(
+					collectionsStore.state.collections.filter(
+						(collection) =>
+							collection.collection.startsWith('directus_') === false &&
+							collection.managed === true &&
+							collection.hidden === false
+					),
+					'collection'
+				);
+			});
+
+			const hidden = computed(() => {
+				return sortBy(
+					collectionsStore.state.collections
+						.filter(
+							(collection) =>
+								collection.collection.startsWith('directus_') === false &&
+								collection.managed === true &&
+								collection.hidden === true
+						)
+						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
+					'collection'
+				);
+			});
+
+			const system = computed(() => {
+				return sortBy(
+					collectionsStore.state.collections
+						.filter(
+							(collection) => collection.collection.startsWith('directus_') === true
+						)
+						.map((collection) => ({ ...collection, icon: 'settings' })),
+					'collection'
+				);
+			});
+
+			const unmanaged = computed(() => {
+				return sortBy(
+					collectionsStore.state.collections
+						.filter(
+							(collection) => collection.collection.startsWith('directus_') === false
+						)
+						.filter((collection) => collection.managed === false)
+						.map((collection) => ({ ...collection, icon: 'block' })),
+					'collection'
+				);
+			});
+
+			const items = computed(() => {
+				const items = [];
+
+				if (activeTypes.value.includes('visible')) {
+					items.push(visible.value);
+				}
+
+				if (activeTypes.value.includes('hidden')) {
+					items.push(hidden.value);
+				}
+
+				if (activeTypes.value.includes('unmanaged')) {
+					items.push(unmanaged.value);
+				}
+
+				if (activeTypes.value.includes('system')) {
+					items.push(system.value);
+				}
+
+				return items.flat();
+			});
+
+			return { items };
 		}
 	},
 });
@@ -101,8 +214,22 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
-.v-table {
+.system {
+	color: var(--primary);
+}
+
+.unmanaged {
+	color: var(--warning);
+}
+
+.padding-box {
 	padding: var(--content-padding);
+}
+
+.v-table {
+	--v-table-sticky-offset-top: 64px;
+
+	display: contents;
 }
 
 .header-icon {
