@@ -7,6 +7,7 @@
 		</template>
 
 		<template #drawer>
+			<layout-drawer-detail v-model="viewType" />
 			<filter-drawer-detail v-model="filters" collection="directus_files" />
 			<portal-target name="drawer" />
 		</template>
@@ -52,9 +53,10 @@
 			<files-navigation />
 		</template>
 
-		<layout-tabular
+		<component
 			class="layout"
 			ref="layout"
+			:is="`layout-${viewType}`"
 			collection="directus_files"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
@@ -74,6 +76,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,7 +85,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent>(null);
@@ -90,23 +93,26 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewOptions, viewQuery, filters } = useCollectionPreset(ref('directus_files'));
+		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(
+			ref('directus_files')
+		);
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
 
 		return {
 			addNewLink,
+			batchDelete,
 			batchLink,
-			selection,
 			breadcrumb,
 			confirmDelete,
-			batchDelete,
 			deleting,
+			filters,
 			layout,
+			selection,
 			viewOptions,
 			viewQuery,
-			filters,
+			viewType,
 		};
 
 		function useBatchDelete() {

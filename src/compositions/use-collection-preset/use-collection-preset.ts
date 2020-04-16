@@ -50,6 +50,19 @@ export function useCollectionPreset(collection: Ref<string>) {
 		},
 	});
 
+	const viewType = computed({
+		get() {
+			return localPreset.value.view_type || 'tabular';
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				view_type: val,
+			};
+			savePreset(localPreset.value);
+		},
+	});
+
 	const filters = computed<Filter[]>({
 		get() {
 			return localPreset.value.filters || [];
@@ -63,5 +76,5 @@ export function useCollectionPreset(collection: Ref<string>) {
 		},
 	});
 
-	return { viewOptions, viewQuery, filters };
+	return { viewType, viewOptions, viewQuery, filters };
 }

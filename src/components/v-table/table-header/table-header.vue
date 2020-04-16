@@ -289,7 +289,7 @@ export default defineComponent({
 		padding-right: 0;
 	}
 
-	.fixed th {
+	.fixed {
 		position: sticky;
 		top: var(--v-table-sticky-offset-top);
 		z-index: 2;

@@ -222,6 +222,7 @@
 	"upload_file_indeterminate": "Uploading File | Uploading files {done}/{total}",
 	"upload_file_success": "File Uploaded | {count} Files Uploaded",
 	"upload_file_failed": "Couldn't Upload File | Couldn't Upload Files",
+	"view_type": "View As...",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -677,7 +678,6 @@
   "values": "Values",
   "version": "Version",
   "version_and_updates": "Version and Updates",
-  "view_type": "View As...",
   "visible_all_users": "Visible for all users",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

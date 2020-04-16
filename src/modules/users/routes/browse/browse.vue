@@ -7,6 +7,7 @@
 		</template>
 
 		<template #drawer>
+			<layout-drawer-detail v-model="viewType" />
 			<filter-drawer-detail v-model="filters" collection="directus_users" />
 			<portal-target name="drawer" />
 		</template>
@@ -52,9 +53,10 @@
 			<users-navigation />
 		</template>
 
-		<layout-tabular
+		<component
 			class="layout"
 			ref="layout"
+			:is="`layout-${viewType}`"
 			collection="directus_users"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
@@ -75,6 +77,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,7 +86,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-browse',
-	components: { UsersNavigation, FilterDrawerDetail },
+	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail },
 	props: {
 		role: {
 			type: String,
@@ -96,7 +99,9 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewOptions, viewQuery, filters } = useCollectionPreset(ref('directus_users'));
+		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(
+			ref('directus_users')
+		);
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
@@ -129,18 +134,19 @@ export default defineComponent({
 		});
 
 		return {
+			_filters,
 			addNewLink,
+			batchDelete,
 			batchLink,
-			selection,
 			breadcrumb,
 			confirmDelete,
-			batchDelete,
 			deleting,
+			filters,
 			layout,
+			selection,
 			viewOptions,
 			viewQuery,
-			_filters,
-			filters,
+			viewType,
 		};
 
 		function useBatchDelete() {

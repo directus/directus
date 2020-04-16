@@ -341,6 +341,10 @@ export default defineComponent({
 		}
 
 		::v-deep {
+			thead {
+				display: contents;
+			}
+
 			tr {
 				display: grid;
 				grid-template-columns: var(--grid-columns);

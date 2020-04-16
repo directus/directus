@@ -8,6 +8,7 @@
 		</template>
 
 		<template #drawer>
+			<layout-drawer-detail v-model="viewType" />
 			<filter-drawer-detail v-model="filters" :collection="collection" />
 			<portal-target name="drawer" />
 		</template>
@@ -53,9 +54,10 @@
 			<collections-navigation />
 		</template>
 
-		<layout-tabular
+		<component
 			class="layout"
 			ref="layout"
+			:is="`layout-${viewType}`"
 			:collection="collection"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
@@ -78,6 +80,7 @@ import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -115,7 +118,12 @@ export default defineComponent({
 	beforeRouteEnter: redirectIfNeeded,
 	beforeRouteUpdate: redirectIfNeeded,
 	name: 'collections-browse',
-	components: { CollectionsNavigation, CollectionsNotFound, FilterDrawerDetail },
+	components: {
+		CollectionsNavigation,
+		CollectionsNotFound,
+		FilterDrawerDetail,
+		LayoutDrawerDetail,
+	},
 	props: {
 		collection: {
 			type: String,
@@ -132,22 +140,23 @@ export default defineComponent({
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink } = useLinks();
-		const { viewOptions, viewQuery, filters } = useCollectionPreset(collection);
+		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(collection);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		return {
-			currentCollection,
 			addNewLink,
-			batchLink,
-			selection,
-			confirmDelete,
 			batchDelete,
+			batchLink,
+			collectionsLink,
+			confirmDelete,
+			currentCollection,
 			deleting,
+			filters,
 			layout,
+			selection,
 			viewOptions,
 			viewQuery,
-			collectionsLink,
-			filters,
+			viewType,
 		};
 
 		function useSelection() {
