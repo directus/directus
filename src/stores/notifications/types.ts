@@ -7,6 +7,9 @@ export interface NotificationRaw {
 	text?: string | VueI18n.TranslateResult;
 	type?: 'info' | 'success' | 'warning' | 'error';
 	icon?: string | null;
+	closeable?: boolean;
+	progress?: number;
+	loading?: boolean;
 }
 
 export interface Notification extends NotificationRaw {

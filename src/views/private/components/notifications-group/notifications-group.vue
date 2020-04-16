@@ -1,12 +1,13 @@
 <template>
 	<transition-group class="notifications-group" name="slide-fade" tag="div">
+		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
 			:key="notification.id"
 			v-bind="notification"
 			:tail="index === queue.length - 1"
 			dense
-			:show-close="notification.persist === true"
+			:show-close="notification.persist === true && notification.closeable !== false"
 		/>
 	</transition-group>
 </template>
@@ -39,7 +40,8 @@ export default defineComponent({
 	width: 280px;
 	direction: rtl;
 
-	> * {
+	> *,
+	::v-deep > * {
 		direction: ltr;
 	}
 

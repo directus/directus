@@ -218,6 +218,11 @@
 		"has": "Contains some of these keys"
 	},
 
+	"drop_to_upload": "Drop to Upload",
+	"upload_file_indeterminate": "Uploading File | Uploading files {done}/{total}",
+	"upload_file_success": "File Uploaded | {count} Files Uploaded",
+	"upload_file_failed": "Couldn't Upload File | Couldn't Upload Files",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",

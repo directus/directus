@@ -1,5 +1,12 @@
 <template>
-	<div class="private-view" :class="theme">
+	<div
+		class="private-view"
+		:class="{ theme, 'drop-effect': showDropEffect }"
+		@dragenter.prevent="onDragEnter"
+		@dragover.prevent
+		@dragleave.prevent="onDragLeave"
+		@drop.prevent="onDrop"
+	>
 		<aside
 			role="navigation"
 			aria-label="Module Navigation"
@@ -74,6 +81,10 @@ import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import useUserStore from '@/stores/user';
+import NotificationItem from './components/notification-item';
+import useNotificationsStore from '@/stores/notifications';
+import uploadFiles from '@/utils/upload-files';
+import i18n from '@/lang';
 
 export default defineComponent({
 	components: {
@@ -84,6 +95,7 @@ export default defineComponent({
 		DrawerButton,
 		NotificationsGroup,
 		NotificationsPreview,
+		NotificationItem,
 	},
 	props: {
 		title: {
@@ -97,6 +109,7 @@ export default defineComponent({
 		const contentEl = ref<Element>();
 		const navigationsInline = ref(false);
 		const userStore = useUserStore();
+		const notificationsStore = useNotificationsStore();
 
 		const theme = computed(() => {
 			return userStore.state.currentUser?.theme || 'auto';
@@ -111,13 +124,96 @@ export default defineComponent({
 		provide('drawer-open', drawerOpen);
 		provide('main-element', contentEl);
 
+		const { onDragEnter, onDragLeave, onDrop, showDropEffect } = useFileUpload();
+
 		return {
 			navOpen,
 			drawerOpen,
 			contentEl,
 			navigationsInline,
 			theme,
+			onDragEnter,
+			onDragLeave,
+			showDropEffect,
+			onDrop,
 		};
+
+		function useFileUpload() {
+			const showDropEffect = ref(false);
+
+			let dragNotificationID: string;
+			let fileUploadNotificationID: string;
+
+			return { onDragEnter, onDragLeave, onDrop, showDropEffect };
+
+			function onDragEnter(event: DragEvent) {
+				if (
+					event.dataTransfer?.types.indexOf('Files') !== -1 &&
+					showDropEffect.value === false
+				) {
+					showDropEffect.value = true;
+
+					dragNotificationID = notificationsStore.add({
+						title: i18n.t('drop_to_upload'),
+						icon: 'cloud_upload',
+						type: 'info',
+						persist: true,
+						closeable: false,
+					});
+				}
+			}
+
+			function onDragLeave() {
+				showDropEffect.value = false;
+
+				if (dragNotificationID) {
+					notificationsStore.remove(dragNotificationID);
+				}
+			}
+
+			async function onDrop(event: DragEvent) {
+				showDropEffect.value = false;
+
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+				if (dragNotificationID) {
+					notificationsStore.remove(dragNotificationID);
+				}
+
+				const files = [...event.dataTransfer.files];
+
+				fileUploadNotificationID = notificationsStore.add({
+					title: i18n.tc('upload_file_indeterminate', files.length, {
+						done: 0,
+						total: files.length,
+					}),
+					type: 'info',
+					persist: true,
+					closeable: false,
+					loading: true,
+				});
+
+				await uploadFiles(files, (progress) => {
+					const percentageDone =
+						progress.reduce((val, cur) => (val += cur)) / progress.length;
+
+					const total = files.length;
+					const done = progress.filter((p) => p === 100).length;
+
+					notificationsStore.update(fileUploadNotificationID, {
+						title: i18n.tc('upload_file_indeterminate', files.length, {
+							done,
+							total,
+						}),
+						loading: false,
+						progress: percentageDone,
+					});
+				});
+
+				notificationsStore.remove(fileUploadNotificationID);
+			}
+		}
 	},
 });
 </script>
@@ -241,6 +337,17 @@ export default defineComponent({
 				transform: none;
 			}
 		}
+	}
+
+	&.drop-effect::after {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 500;
+		width: calc(100% - 8px);
+		height: calc(100% - 8px);
+		border: 4px solid var(--primary);
+		content: '';
 	}
 
 	@include breakpoint(small) {

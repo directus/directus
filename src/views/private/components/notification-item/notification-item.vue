@@ -1,7 +1,9 @@
 <template>
 	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
-		<div class="icon" v-if="icon">
-			<v-icon :name="icon" />
+		<div class="icon" v-if="loading || progress || icon">
+			<v-progress-circular indeterminate small v-if="loading" />
+			<v-progress-circular small v-else-if="progress" :value="progress" />
+			<v-icon v-else :name="icon" />
 		</div>
 
 		<div class="content">
@@ -51,6 +53,14 @@ export default defineComponent({
 		showClose: {
 			type: Boolean,
 			default: false,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
+		progress: {
+			type: Number,
+			default: undefined,
 		},
 	},
 	setup(props) {
@@ -184,5 +194,10 @@ export default defineComponent({
 			color: var(--danger-alt);
 		}
 	}
+}
+
+.v-progress-circular {
+	--v-progress-circular-color: var(--foreground-inverted);
+	--v-progress-circular-background-color: transparent;
 }
 </style>

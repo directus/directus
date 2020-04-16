@@ -39,6 +39,20 @@ export const useNotificationsStore = createStore({
 			this.state.queue = this.state.queue.filter((n) => n.id !== id);
 			this.state.previous = [...this.state.previous, toBeRemoved];
 		},
+		update(id: string, updates: Partial<Notification>) {
+			this.state.queue = this.state.queue.map(updateIfNeeded);
+			this.state.previous = this.state.queue.map(updateIfNeeded);
+
+			function updateIfNeeded(notification: Notification) {
+				if (notification.id === id) {
+					return {
+						...notification,
+						...updates,
+					};
+				}
+				return notification;
+			}
+		}
 	},
 	getters: {
 		lastFour(state) {
