@@ -1,4 +1,4 @@
-import VueI18n from 'vue-i18n';
+import { TranslateResult } from 'vue-i18n';
 
 type Translation = {
 	locale: string;
@@ -37,5 +37,5 @@ export interface FieldRaw {
 }
 
 export interface Field extends FieldRaw {
-	name: string | VueI18n.TranslateResult;
+	name: string | TranslateResult;
 }

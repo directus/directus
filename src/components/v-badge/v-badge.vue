@@ -1,6 +1,6 @@
 <template>
 	<div class="v-badge" :class="{ dot, bordered }">
-		<span class="badge" :class="{ dot, bordered, left, bottom }">
+		<span v-if="!disabled" class="badge" :class="{ dot, bordered, left, bottom }">
 			<v-icon v-if="icon" :name="icon" :color="color" x-small />
 			<span v-else>{{ value }}</span>
 		</span>
@@ -35,6 +35,10 @@ export default defineComponent({
 			default: null,
 		},
 		bordered: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
 			type: Boolean,
 			default: false,
 		},

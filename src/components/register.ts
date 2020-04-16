@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
 import VAvatar from './v-avatar/';
+import VBadge from './v-badge/';
 import VButton from './v-button/';
 import VBreadcrumb from './v-breadcrumb';
 import VCard, { VCardActions, VCardTitle, VCardSubtitle, VCardText } from './v-card';
@@ -42,6 +43,7 @@ import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
 import VTextarea from './v-textarea';
 
 Vue.component('v-avatar', VAvatar);
+Vue.component('v-badge', VBadge);
 Vue.component('v-button', VButton);
 Vue.component('v-breadcrumb', VBreadcrumb);
 Vue.component('v-card', VCard);

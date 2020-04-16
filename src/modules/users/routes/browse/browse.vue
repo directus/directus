@@ -6,7 +6,10 @@
 			</v-button>
 		</template>
 
-		<template #drawer><portal-target name="drawer" /></template>
+		<template #drawer>
+			<filter-drawer-detail v-model="filters" collection="directus_users" />
+			<portal-target name="drawer" />
+		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
@@ -71,6 +74,7 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/compositions/use-collection-preset';
+import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,7 +83,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-browse',
-	components: { UsersNavigation },
+	components: { UsersNavigation, FilterDrawerDetail },
 	props: {
 		role: {
 			type: String,
@@ -136,6 +140,7 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			_filters,
+			filters,
 		};
 
 		function useBatchDelete() {

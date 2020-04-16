@@ -7,6 +7,8 @@ import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 import notify from '@/utils/notify';
+import useRelationsStore from '@/stores/relations';
+import { Relation } from '@/stores/relations/types';
 
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
@@ -250,6 +252,37 @@ export const useFieldsStore = createStore({
 			);
 
 			return primaryKeyField;
+		},
+		getFieldsForCollection(collection: string) {
+			return this.state.fields.filter((field) => field.collection === collection);
+		},
+		getField(collection: string, fieldKey: string) {
+			if (fieldKey.includes('.')) {
+				return this.getRelationalField(collection, fieldKey);
+			} else {
+				return this.state.fields.find(
+					(field) => field.collection === collection && field.field === fieldKey
+				);
+			}
+		},
+		/**
+		 * Retrieve field info for a (deeply) nested field
+		 * Recursively searches through the relationhips to find the field info that matches the
+		 * dot notation.
+		 */
+		getRelationalField(collection: string, fields: string) {
+			const relationshipStore = useRelationsStore();
+			const parts = fields.split('.');
+			const relationshipForField = relationshipStore
+				.getRelationsForField(collection, parts[0])
+				?.find((relation: Relation) => relation.field_many === parts[0]);
+
+			if (relationshipForField === undefined) return false;
+
+			const relatedCollection = relationshipForField.collection_one;
+			parts.shift();
+			const relatedField = parts.join('.');
+			return this.getField(relatedCollection, relatedField);
 		},
 	},
 });

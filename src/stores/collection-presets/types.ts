@@ -21,6 +21,7 @@ export type FilterOperator =
 	| 'has';
 
 export type Filter = {
+	key: string;
 	field: string;
 	operator: FilterOperator;
 	value: string;

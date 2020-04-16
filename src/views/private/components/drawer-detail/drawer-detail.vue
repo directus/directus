@@ -2,7 +2,9 @@
 	<div class="drawer-detail">
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
-				<v-icon :name="icon" />
+				<v-badge dot :disabled="!dot">
+					<v-icon :name="icon" />
+				</v-badge>
 			</div>
 			<div class="title" v-show="drawerOpen">
 				{{ title }}
@@ -13,9 +15,9 @@
 				<div class="content">
 					<slot />
 				</div>
-				<v-divider />
 			</div>
 		</transition-expand>
+		<v-divider v-if="active" />
 	</div>
 </template>
 
@@ -32,6 +34,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			required: true,
+		},
+		dot: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -93,6 +99,6 @@ export default defineComponent({
 .v-divider {
 	--v-divider-color: var(--border-normal);
 
-	margin: 0 20px;
+	flex-grow: 0;
 }
 </style>

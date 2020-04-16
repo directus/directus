@@ -48,7 +48,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		getItems();
 	});
 
-	watch([page, limit, fields], async (after, before) => {
+	watch([page, fields], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -77,7 +77,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 	});
 
-	watch([filters], async (after, before) => {
+	watch([filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -85,8 +85,8 @@ export function useItems(collection: Ref<string>, options: Options) {
 		/**
 		 * @NOTE
 		 *
-		 * When the filters change, we have to re-calculate the total amount of items too, as the
-		 * total amount of available items is based on the filter query.
+		 * When the filters or items per page change, we have to re-calculate the total amount of
+		 * items too, as the total amount of available items and pages is based on the two.
 		 */
 		itemCount.value = null;
 
@@ -170,6 +170,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 				limit: 0,
 				fields: primaryKeyField.value.field,
 				meta: 'filter_count',
+				...filtersToQuery(filters.value),
 			},
 		});
 

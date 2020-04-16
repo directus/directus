@@ -156,7 +156,7 @@ export default defineComponent({
 
 	input {
 		flex-grow: 1;
-		width: 80%; // allows flex to shrink to allow for slots
+		width: 100px; // allows flex to shrink to allow for slots
 		height: 100%;
 		background-color: transparent;
 		border: none;

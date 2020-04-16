@@ -1,6 +1,7 @@
 import { computed, Ref } from '@vue/composition-api';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
+import { Field } from '@/stores/fields/types';
 
 export function useCollection(collection: Ref<string>) {
 	const collectionsStore = useCollectionsStore();
@@ -12,8 +13,8 @@ export function useCollection(collection: Ref<string>) {
 		);
 	});
 
-	const fields = computed(() => {
-		return fieldsStore.state.fields.filter((field) => field.collection === collection.value);
+	const fields = computed<Field[]>(() => {
+		return fieldsStore.getFieldsForCollection(collection.value);
 	});
 
 	const primaryKeyField = computed(() => {

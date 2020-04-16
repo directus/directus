@@ -2,6 +2,7 @@ import { createStore } from 'pinia';
 import { Relation } from './types';
 import useProjectsStore from '@/stores/projects';
 import api from '@/api';
+import useFieldsStore from '@/stores/fields';
 
 export const useRelationsStore = createStore({
 	id: 'relationsStore',
@@ -20,12 +21,34 @@ export const useRelationsStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
-		getRelationForField(collection: string, field: string) {
+		getRelationsForCollection(collection: string) {
 			return this.state.relations.filter((relation) => {
 				return (
-					(relation.collection_many === collection && relation.field_many === field) ||
-					(relation.collection_one === collection && relation.field_one === field)
+					relation.collection_many === collection ||
+					relation.collection_one === collection
 				);
+			});
+		},
+		getRelationsForField(collection: string, field: string) {
+			const fieldsStore = useFieldsStore();
+			const fieldInfo = fieldsStore.getField(collection, field);
+
+			if (!fieldInfo) return [];
+
+			if (fieldInfo.type === 'file') {
+				return [
+					{
+						collection_many: collection,
+						field_many: field,
+						collection_one: 'directus_files',
+						field_one: null,
+						junction_field: null,
+					},
+				] as Relation[];
+			}
+
+			return this.getRelationsForCollection(collection).filter((relation: Relation) => {
+				return relation.field_many === field || relation.field_one === field;
 			});
 		},
 	},

@@ -7,7 +7,10 @@
 			</v-button>
 		</template>
 
-		<template #drawer><portal-target name="drawer" /></template>
+		<template #drawer>
+			<filter-drawer-detail v-model="filters" :collection="collection" />
+			<portal-target name="drawer" />
+		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
@@ -57,6 +60,7 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
+			:filters.sync="filters"
 		/>
 	</private-view>
 </template>
@@ -68,12 +72,12 @@ import CollectionsNavigation from '../../components/navigation/';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
 import useProjectsStore from '@/stores/projects';
-import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
 import useCollectionPreset from '@/compositions/use-collection-preset';
+import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -111,7 +115,7 @@ export default defineComponent({
 	beforeRouteEnter: redirectIfNeeded,
 	beforeRouteUpdate: redirectIfNeeded,
 	name: 'collections-browse',
-	components: { CollectionsNavigation, CollectionsNotFound },
+	components: { CollectionsNavigation, CollectionsNotFound, FilterDrawerDetail },
 	props: {
 		collection: {
 			type: String,
@@ -128,7 +132,7 @@ export default defineComponent({
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink } = useLinks();
-		const { viewOptions, viewQuery } = useCollectionPreset(collection);
+		const { viewOptions, viewQuery, filters } = useCollectionPreset(collection);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		return {
@@ -143,6 +147,7 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			collectionsLink,
+			filters,
 		};
 
 		function useSelection() {

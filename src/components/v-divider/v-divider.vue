@@ -20,7 +20,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	--v-divider-color: var(--border-subdued);
+	--v-divider-color: var(--border-normal);
 	--v-divider-label-color: var(--foreground-subdued);
 
 	display: flex;
