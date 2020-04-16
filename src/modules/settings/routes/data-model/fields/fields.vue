@@ -15,7 +15,10 @@
 		</template>
 
 		<div class="fields">
-			<h2 class="title type-label">{{ $t('fields_and_layout') }}</h2>
+			<h2 class="title type-label">
+				{{ $t('fields_and_layout') }}
+				<span class="instant-save">{{ $t('fields_are_saved_instantly') }}</span>
+			</h2>
 			<fields-management :collection="collection" />
 		</div>
 	</private-view>
@@ -59,6 +62,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .title {
 	margin-bottom: 12px;
+
+	.instant-save {
+		color: var(--warning);
+	}
 }
 
 .fields {

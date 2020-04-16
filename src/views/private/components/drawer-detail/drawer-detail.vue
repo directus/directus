@@ -17,7 +17,6 @@
 				</div>
 			</div>
 		</transition-expand>
-		<v-divider v-if="active" />
 	</div>
 </template>
 
@@ -58,14 +57,14 @@ export default defineComponent({
 		width: 100%;
 		height: 64px;
 		color: var(--foreground-normal);
-		transition: background-color var(--fast) var(--transition);
+		background-color: var(--background-normal-alt);
 
 		&:not(.open):hover {
-			background-color: var(--background-normal-alt);
+			// Show arrow
 		}
 
 		&.open {
-			background-color: var(--background-normal-alt);
+			// Invert arrow
 		}
 	}
 
@@ -94,11 +93,5 @@ export default defineComponent({
 	.content {
 		padding: 20px;
 	}
-}
-
-.v-divider {
-	--v-divider-color: var(--border-normal);
-
-	flex-grow: 0;
 }
 </style>

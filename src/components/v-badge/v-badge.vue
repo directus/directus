@@ -63,10 +63,10 @@ export default defineComponent({
 	}
 
 	&.dot {
-		--v-badge-size: 12px;
+		--v-badge-size: 8px;
 
 		&.bordered {
-			--v-badge-size: 16px;
+			--v-badge-size: 12px;
 		}
 	}
 

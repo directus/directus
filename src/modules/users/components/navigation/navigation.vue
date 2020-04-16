@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<v-list-item to="/my-project/users/all">
+		<v-list-item :to="`/${project}/users/all`">
 			<v-list-item-icon><v-icon name="people" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
 		</v-list-item>

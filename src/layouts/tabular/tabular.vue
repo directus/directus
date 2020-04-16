@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-tabular">
 		<portal to="drawer">
-			<drawer-detail icon="table_chart" :title="$t('layouts.tabular.fields')">
+			<drawer-detail icon="menu_open" :title="$t('layouts.tabular.fields')">
 				<draggable v-model="activeFields" handle=".drag-handle">
 					<v-checkbox
 						v-for="field in activeFields"
@@ -28,7 +28,7 @@
 				/>
 			</drawer-detail>
 
-			<drawer-detail icon="line_weight" :title="$t('layouts.tabular.spacing')">
+			<drawer-detail icon="format_line_spacing" :title="$t('layouts.tabular.spacing')">
 				<v-select
 					full-width
 					v-model="tableSpacing"

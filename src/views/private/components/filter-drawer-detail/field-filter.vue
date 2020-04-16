@@ -1,7 +1,7 @@
 <template>
 	<div class="field-filter">
 		<div class="header">
-			<div class="name" v-tooltip="filter.field.split('.').join('\n')">
+			<div class="name" v-tooltip="filter.field.split('.').join(' → ')">
 				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
@@ -101,53 +101,61 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		margin-bottom: 4px;
+	}
 
-		.name,
-		.operator {
+	.name,
+	.operator {
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
+	.name {
+		position: relative;
+		margin-right: 8px;
+		overflow: visible;
+		text-overflow: ellipsis;
+
+		.relational-indicator {
+			position: absolute;
+			top: -1px;
+			left: -10px;
+			color: var(--foreground-subdued);
+		}
+	}
+
+	.operator {
+		display: flex;
+		align-items: center;
+		color: var(--primary);
+		cursor: pointer;
+
+		span {
+			flex-grow: 1;
 			overflow: hidden;
 			white-space: nowrap;
-		}
-
-		.name {
-			position: relative;
-			margin-right: 8px;
-			overflow: visible;
 			text-overflow: ellipsis;
-
-			.relational-indicator {
-				position: absolute;
-				left: -12px;
-				color: var(--primary);
-			}
 		}
+	}
 
-		.operator {
-			display: flex;
-			align-items: center;
-			color: var(--primary);
-			cursor: pointer;
+	.spacer {
+		flex-grow: 1;
+	}
 
-			span {
-				flex-grow: 1;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
+	.remove {
+		--v-icon-color: var(--foreground-subdued);
+
+		flex-grow: 0;
+		flex-shrink: 0;
+		opacity: 0;
+
+		&:hover {
+			--v-icon-color: var(--danger);
 		}
+	}
 
-		.spacer {
-			flex-grow: 1;
-		}
-
-		.remove {
-			--v-icon-color: var(--foreground-subdued);
-
-			flex-grow: 0;
-			flex-shrink: 0;
-
-			&:hover {
-				--v-icon-color: var(--danger);
-			}
+	&:hover {
+		.header .remove {
+			opacity: 1;
 		}
 	}
 }

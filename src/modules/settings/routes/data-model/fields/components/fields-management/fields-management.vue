@@ -253,8 +253,23 @@ export default defineComponent({
 .visible,
 .hidden {
 	display: grid;
-	grid-gap: 20px 32px;
+	grid-gap: 12px 12px;
 	grid-template-columns: 1fr 1fr;
+}
+
+.visible {
+	position: relative;
+	padding: 36px 12px 12px 12px;
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+
+	&::before {
+		position: absolute;
+		top: 8px;
+		left: 12px;
+		color: var(--foreground-subdued);
+		content: 'Main Form';
+	}
 }
 
 .list-move {

@@ -7,7 +7,7 @@
 	"hide_field_on_detail": "Hide Field on Detail",
 	"show_field_on_detail": "Show Field on Detail",
 	"delete_field": "Delete Field",
-	"fields_and_layout": "Fields and Layout",
+	"fields_and_layout": "Fields & Layout",
 	"field_create_success": "Field '{field}' created",
 	"field_update_success": "Field '{field}' updated",
 	"field_delete_success": "Field '{field}' deleted",
@@ -429,7 +429,7 @@
   "field_width_full": "Full Width",
   "field_width_fill": "Fill the Page",
   "field_width_note": "The width of this field within the form layout. Half-widths wrap based on other fields and their sort order.",
-  "fields_are_saved_instantly": "Changes to fields are saved instantly",
+  "fields_are_saved_instantly": "Saves Automatically",
   "fieldtypes": {
     "alias": "Fields that do not save data or do not have corresponding database columns",
     "array": "Standard array format in API response",

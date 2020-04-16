@@ -174,6 +174,6 @@ export default defineComponent({
 }
 
 .field-filter {
-	margin-bottom: 12px;
+	margin-bottom: 20px;
 }
 </style>

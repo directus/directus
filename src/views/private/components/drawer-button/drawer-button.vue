@@ -47,11 +47,7 @@ export default defineComponent({
 	width: 100%;
 	height: 64px;
 	color: var(--foreground-normal);
-	transition: background-color var(--fast) var(--transition);
-
-	&:hover {
-		background-color: var(--background-normal-alt);
-	}
+	background-color: var(--background-normal-alt);
 
 	.icon {
 		display: flex;
