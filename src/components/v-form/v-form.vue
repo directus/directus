@@ -70,7 +70,8 @@
 				}"
 			>
 				<v-skeleton-loader v-if="loading" />
-				<interface-text-input
+				<component
+					:is="`interface-${field.interface}`"
 					v-bind="field.options"
 					:disabled="
 						field.readonly ||
@@ -98,6 +99,7 @@ import { useElementSize } from '@/compositions/use-element-size';
 import { isEmpty } from '@/utils/is-empty';
 import { clone } from 'lodash';
 import { FormField } from './types';
+import interfaces from '@/interfaces';
 
 type FieldValues = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,6 +196,21 @@ export default defineComponent({
 				formFields = formFields.map((field) => {
 					if (!field.width) {
 						field.width = 'full';
+					}
+
+					return field;
+				});
+
+				// Make sure all used interfaces actually exist, default to text-input if not
+				formFields = formFields.map((field) => {
+					const interfaceExists =
+						interfaces.find((int) => int.id === field.interface) !== undefined;
+
+					if (interfaceExists === false) {
+						return {
+							...field,
+							interface: 'text-input',
+						};
 					}
 
 					return field;
