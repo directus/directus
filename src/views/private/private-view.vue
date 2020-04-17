@@ -1,12 +1,5 @@
 <template>
-	<div
-		class="private-view"
-		:class="{ theme, 'drop-effect': showDropEffect }"
-		@dragenter.prevent="onDragEnter"
-		@dragover.prevent
-		@dragleave.prevent="onDragLeave"
-		@drop.prevent="onDrop"
-	>
+	<div class="private-view" :class="{ theme, 'drop-effect': showDropEffect }">
 		<aside
 			role="navigation"
 			aria-label="Module Navigation"
@@ -85,6 +78,7 @@ import NotificationItem from './components/notification-item';
 import useNotificationsStore from '@/stores/notifications';
 import uploadFiles from '@/utils/upload-files';
 import i18n from '@/lang';
+import useEventListener from '@/compositions/use-event-listener';
 
 export default defineComponent({
 	components: {
@@ -124,7 +118,12 @@ export default defineComponent({
 		provide('drawer-open', drawerOpen);
 		provide('main-element', contentEl);
 
-		const { onDragEnter, onDragLeave, onDrop, showDropEffect } = useFileUpload();
+		const { onDragEnter, onDragLeave, onDragOver, onDrop, showDropEffect } = useFileUpload();
+
+		useEventListener(window, 'dragenter', onDragEnter);
+		useEventListener(window, 'dragover', onDragOver);
+		useEventListener(window, 'dragleave', onDragLeave);
+		useEventListener(window, 'drop', onDrop);
 
 		return {
 			navOpen,
@@ -144,9 +143,10 @@ export default defineComponent({
 			let dragNotificationID: string;
 			let fileUploadNotificationID: string;
 
-			return { onDragEnter, onDragLeave, onDrop, showDropEffect };
+			return { onDragEnter, onDragOver, onDragLeave, onDrop, showDropEffect };
 
 			function onDragEnter(event: DragEvent) {
+				event.preventDefault();
 				if (
 					event.dataTransfer?.types.indexOf('Files') !== -1 &&
 					showDropEffect.value === false
@@ -163,7 +163,12 @@ export default defineComponent({
 				}
 			}
 
-			function onDragLeave() {
+			function onDragOver(event: DragEvent) {
+				event.preventDefault();
+			}
+
+			function onDragLeave(event: DragEvent) {
+				event.preventDefault();
 				showDropEffect.value = false;
 
 				if (dragNotificationID) {
@@ -172,6 +177,7 @@ export default defineComponent({
 			}
 
 			async function onDrop(event: DragEvent) {
+				event.preventDefault();
 				showDropEffect.value = false;
 
 				if (!event.dataTransfer) return;
