@@ -32,6 +32,7 @@ Renders a dropdown input.
 | `placeholder` | What placeholder to show when no items are selected |         |
 | `full-width`  | Render the select at full width                     |         |
 | `monospace`   | Render the value and options monospaced             |         |
+| `disabled`    | Disable the select                                  |         |
 
 
 ## Events

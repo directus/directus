@@ -6,6 +6,7 @@ import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/stores/collection-presets/types';
 import filtersToQuery from '@/utils/filters-to-query';
+import { orderBy } from 'lodash';
 
 type Options = {
 	limit: Ref<number>;
@@ -64,12 +65,13 @@ export function useItems(collection: Ref<string>, options: Options) {
 			return;
 		}
 
-		/**
-		 * @NOTE
-		 * Ignore sorting through the API when the full set of items is already loaded. This requires
-		 * layouts to support client side sorting when the itemcount is less than the total items.
-		 */
-		if (limit.value > (itemCount.value || 0)) return;
+		// When all items are on page, we only sort locally
+		const hasAllItems = limit.value > (itemCount.value || 0);
+
+		if (hasAllItems) {
+			sortItems(after);
+			return;
+		}
 
 		await Vue.nextTick();
 		if (loading.value === false) {
@@ -102,7 +104,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		const { currentProjectKey } = projectsStore.state;
 		loading.value = true;
 
-		const fieldsToFetch = [...fields.value];
+		let fieldsToFetch = [...fields.value];
 
 		// Make sure the primary key is always fetched
 		if (
@@ -122,6 +124,16 @@ export function useItems(collection: Ref<string>, options: Options) {
 			});
 		}
 
+		// Make sure we always fetch the image data for the directus_files collection when opening
+		// the file library
+		if (collection.value === 'directus_files' && fieldsToFetch.includes('data') === false) {
+			fieldsToFetch.push('data');
+		}
+
+		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field
+		// on directus_files
+		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
+
 		try {
 			const endpoint = collection.value.startsWith('directus_')
 				? `/${currentProjectKey}/${collection.value.substring(9)}`
@@ -137,7 +149,27 @@ export function useItems(collection: Ref<string>, options: Options) {
 				},
 			});
 
-			items.value = response.data.data;
+			let fetchedItems = response.data.data;
+
+			/**
+			 * @NOTE
+			 *
+			 * This is used in conjunction with the fake field in /src/stores/fields/fields.ts to be
+			 * able to render out the directus_files collection (file library) using regular layouts
+			 *
+			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
+			 * only collection that doesn't have this (obviously). This fake $file field is used to
+			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
+			 */
+			if (collection.value === 'directus_files') {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				fetchedItems = fetchedItems.map((file: any) => ({
+					...file,
+					$file: file,
+				}));
+			}
+
+			items.value = fetchedItems;
 
 			if (itemCount.value === null) {
 				itemCount.value = response.data.data.length;
@@ -180,5 +212,11 @@ export function useItems(collection: Ref<string>, options: Options) {
 	function reset() {
 		items.value = [];
 		itemCount.value = null;
+	}
+
+	function sortItems(sortBy: string) {
+		const field = sortBy.startsWith('-') ? sortBy.substring(1) : sortBy;
+		const descending = sortBy.startsWith('-');
+		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
 	}
 }

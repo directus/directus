@@ -98,3 +98,7 @@ Vue.component('drawer-detail', DrawerDetail);
 import TransitionExpand from './transition/expand';
 
 Vue.component('transition-expand', TransitionExpand);
+
+import RenderTemplate from '@/views/private/components/render-template';
+
+Vue.component('render-template', RenderTemplate);

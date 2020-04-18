@@ -10,6 +10,36 @@ import notify from '@/utils/notify';
 import useRelationsStore from '@/stores/relations';
 import { Relation } from '@/stores/relations/types';
 
+const fakeFilesField: Field = {
+	id: -1,
+	collection: 'directus_files',
+	field: '$file',
+	name: i18n.t('file'),
+	datatype: null,
+	type: 'file',
+	unique: false,
+	primary_key: false,
+	default_value: null,
+	auto_increment: false,
+	note: null,
+	signed: false,
+	sort: 0,
+	interface: null,
+	options: null,
+	display: 'file',
+	display_options: null,
+	hidden_detail: true,
+	hidden_browse: false,
+	locked: true,
+	required: false,
+	translation: null,
+	readonly: true,
+	width: 'full',
+	validation: null,
+	group: null,
+	length: null,
+};
+
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
 	state: () => ({
@@ -38,7 +68,17 @@ export const useFieldsStore = createStore({
 			const settingsResponse = await api.get(`/${currentProjectKey}/settings/fields`);
 			fields.push(...settingsResponse.data.data);
 
-			this.state.fields = fields.map(this.addTranslationsForField);
+			/**
+			 * @NOTE
+			 *
+			 * directus_fields is another special case. For it to play nice with layouts, we need to
+			 * treat the actual image as a separate available field, instead of part of the regular
+			 * item (normally all file related info is nested within a separate column). This allows
+			 * layouts to render out files as it if were a "normal" collection, where the actual file
+			 * is a fake m2o to itself.
+			 */
+
+			this.state.fields = [...fields.map(this.addTranslationsForField), fakeFilesField];
 		},
 		async dehydrate() {
 			this.reset();

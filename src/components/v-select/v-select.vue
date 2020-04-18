@@ -1,5 +1,10 @@
 <template>
-	<v-menu class="v-select" attached :close-on-content-click="multiple === false">
+	<v-menu
+		:disabled="disabled"
+		class="v-select"
+		attached
+		:close-on-content-click="multiple === false"
+	>
 		<template #activator="{ toggle }">
 			<v-input
 				:full-width="fullWidth"
@@ -8,12 +13,13 @@
 				:value="displayValue"
 				@click="toggle"
 				:placeholder="placeholder"
+				:disabled="disabled"
 			>
 				<template #append><v-icon name="expand_more" /></template>
 			</v-input>
 		</template>
 
-		<v-list>
+		<v-list dense>
 			<v-list-item
 				v-for="item in _items"
 				:key="item.value"
@@ -23,9 +29,7 @@
 				@click="multiple ? null : $emit('input', item.value)"
 			>
 				<v-list-item-content>
-					<v-list-item-title v-if="multiple === false">
-						<span :class="{ monospace }">{{ item.text }}</span>
-					</v-list-item-title>
+					<span v-if="multiple === false" :class="{ monospace }">{{ item.text }}</span>
 					<v-checkbox
 						v-else
 						:inputValue="value || []"
@@ -41,6 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
+import i18n from '@/lang';
 
 type Item = {
 	text: string;
@@ -85,10 +90,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		allowNull: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
-		const _items = computed(() =>
-			props.items.map((item) => {
+		const _items = computed(() => {
+			const items = props.items.map((item) => {
 				if (typeof item === 'string') {
 					return {
 						text: item,
@@ -100,8 +113,17 @@ export default defineComponent({
 					text: item[props.itemText],
 					value: item[props.itemValue],
 				};
-			})
-		);
+			});
+
+			if (props.allowNull) {
+				items.unshift({
+					text: i18n.t('none'),
+					value: null,
+				});
+			}
+
+			return items;
+		});
 
 		const displayValue = computed(() => {
 			if (Array.isArray(props.value)) {

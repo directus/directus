@@ -73,6 +73,7 @@
 			:headers.sync="tableHeaders"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
+			:item-key="primaryKeyField.field"
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
 		>
@@ -116,7 +117,7 @@ type ViewOptions = {
 	spacing?: 'comfortable' | 'cozy' | 'compact';
 };
 
-export type ViewQuery = {
+type ViewQuery = {
 	fields?: string[];
 	sort?: string;
 };
@@ -211,6 +212,7 @@ export default defineComponent({
 			limit,
 			activeFields,
 			tableSpacing,
+			primaryKeyField,
 		};
 
 		function toPage(newPage: number) {

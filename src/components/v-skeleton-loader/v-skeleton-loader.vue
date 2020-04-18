@@ -17,7 +17,6 @@ export default defineComponent({
 		type: {
 			type: String,
 			default: 'input',
-			validator: (type: string) => ['input', 'input-tall', 'list-item-icon'].includes(type),
 		},
 	},
 });
@@ -76,6 +75,14 @@ export default defineComponent({
 
 .input-tall {
 	height: var(--input-height-tall);
+}
+
+.text {
+	flex-grow: 1;
+	height: 12px;
+	border-radius: 6px;
+
+	@include loader;
 }
 
 .list-item-icon {

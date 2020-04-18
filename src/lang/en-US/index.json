@@ -223,6 +223,12 @@
 	"upload_file_success": "File Uploaded | {count} Files Uploaded",
 	"upload_file_failed": "Couldn't Upload File | Couldn't Upload Files",
 	"view_type": "View As...",
+	"setup": "Setup",
+
+	"none": "None",
+
+	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
+	"per_page": "Per Page",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -544,7 +550,6 @@
   "no_related_entries": "Has no related entries",
   "no_results": "No Results",
   "no_results_body": "The current filters do not match any collection items",
-  "none": "None",
   "not_authenticated": "Not Authenticated",
   "not_between": "Not between",
   "not_contains": "Doesn't contain",

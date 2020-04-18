@@ -3,7 +3,7 @@ import { Component } from 'vue';
 import { Field } from '@/stores/fields/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type DisplayHandlerFunction = (value: any) => string | null;
+export type DisplayHandlerFunction = (value: any, options: any) => string | null;
 
 export type DisplayConfig = {
 	id: string;

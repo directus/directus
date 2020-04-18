@@ -133,6 +133,20 @@ export default defineComponent({
 			];
 		});
 
+		if (viewType.value === null) {
+			viewType.value = 'cards';
+		}
+
+		if (viewOptions.value === null) {
+			if ((viewType.value = 'cards')) {
+				viewOptions.value = {
+					icon: 'person',
+					title: '{{first_name}} {{last_name}}',
+					subtitle: '{{ title }}',
+				};
+			}
+		}
+
 		return {
 			_filters,
 			addNewLink,

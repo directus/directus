@@ -1,3 +1,5 @@
 import TabularLayout from './tabular/';
-export const layouts = [TabularLayout];
+import CardsLayout from './cards/';
+
+export const layouts = [TabularLayout, CardsLayout];
 export default layouts;

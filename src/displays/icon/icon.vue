@@ -1,5 +1,5 @@
 <template functional>
-	<v-icon :name="props.iconName" />
+	<v-icon small :name="props.iconName" />
 </template>
 
 <script lang="ts">

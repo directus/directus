@@ -6,7 +6,7 @@ const defaultCollectionPreset: Omit<CollectionPreset, 'collection'> = {
 	user: null,
 	search_query: null,
 	filters: null,
-	view_type: 'tabular',
+	view_type: null,
 	view_query: null,
 	view_options: null,
 };

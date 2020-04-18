@@ -16,13 +16,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		let currentLayout = layouts.find((layout) => layout.id === props.value);
+		const currentLayout = computed(() => {
+			const layout = layouts.find((layout) => layout.id === props.value);
 
-		// If for whatever reason the current layout doesn't exist, force reset it to tabular
-		if (currentLayout === undefined) {
-			currentLayout = layouts.find((layout) => layout.id === 'tabular');
-			emit('input', 'tabular');
-		}
+			if (layout === undefined) {
+				return layouts.find((layout) => layout.id === 'tabular');
+			}
+
+			return layout;
+		});
 
 		const viewType = computed({
 			get() {

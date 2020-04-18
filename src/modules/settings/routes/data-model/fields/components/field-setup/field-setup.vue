@@ -313,7 +313,7 @@ export default defineComponent({
 				get() {
 					return edits.value.interface || props.existingField?.interface;
 				},
-				set(newInterface: string) {
+				set(newInterface: string | null) {
 					edits.value = {
 						...edits.value,
 						interface: newInterface,
@@ -342,7 +342,7 @@ export default defineComponent({
 				get() {
 					return edits.value.display || props.existingField?.display;
 				},
-				set(newDisplay: string) {
+				set(newDisplay: string | null) {
 					edits.value = {
 						...edits.value,
 						display: newDisplay,

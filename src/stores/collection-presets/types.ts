@@ -35,7 +35,7 @@ export type CollectionPreset = {
 	collection: string;
 	search_query: null;
 	filters: Filter[] | null;
-	view_type: string;
+	view_type: string | null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	view_query: { [view_type: string]: any } | null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
