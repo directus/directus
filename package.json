@@ -35,7 +35,7 @@
     "semver": "^7.3.2",
     "stylelint-config-prettier": "^8.0.1",
     "vue": "^2.6.11",
-    "vue-i18n": "^8.17.2",
+    "vue-i18n": "^8.17.3",
     "vue-router": "^3.1.5",
     "vuedraggable": "^2.23.2"
   },
