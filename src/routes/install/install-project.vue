@@ -9,7 +9,7 @@
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('project_key') }}</div>
-					<v-input slug monospace full-width v-model="_value.project" />
+					<v-input slug full-width v-model="_value.project" class="key" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('admin_email') }}</div>
@@ -88,3 +88,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-input.key {
+	--v-input-font-family: var(--family-monospace);
+}
+</style>

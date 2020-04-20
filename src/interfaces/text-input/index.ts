@@ -8,16 +8,41 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceTextInput,
 	options: [
 		{
-			field: 'monospace',
-			name: 'Monospace',
-			width: 'half',
-			interface: 'switch',
-		},
-		{
 			field: 'placeholder',
 			name: 'Placeholder',
 			width: 'half',
 			interface: 'text-input',
+		},
+		{
+			field: 'iconLeft',
+			name: 'Icon Left',
+			width: 'half',
+			interface: 'icon',
+		},
+		{
+			field: 'iconRight',
+			name: 'Icon Right',
+			width: 'half',
+			interface: 'icon',
+		},
+		{
+			field: 'trim',
+			name: 'Trim',
+			width: 'half',
+			interface: 'switch',
+		},
+		{
+			field: 'font',
+			name: 'Font',
+			width: 'half',
+			interface: 'select-one-dropdown',
+			options: {
+				items: [
+					{ itemText: 'Sans', itemValue: 'sans-serif' },
+					{ itemText: 'Mono', itemValue: 'monospace' },
+					{ itemText: 'Serif', itemValue: 'serif' },
+				],
+			},
 		},
 	],
 }));

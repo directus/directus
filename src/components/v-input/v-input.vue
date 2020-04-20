@@ -1,3 +1,4 @@
+f
 <template>
 	<div
 		class="v-input"
@@ -7,7 +8,7 @@
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="value" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled, monospace }">
+		<div class="input" :class="{ disabled }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="value" :disabled="disabled" />
 			</div>
@@ -53,10 +54,6 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		monospace: {
-			type: Boolean,
-			default: false,
-		},
 		fullWidth: {
 			type: Boolean,
 			default: false,
@@ -72,6 +69,10 @@ export default defineComponent({
 		slugSeparator: {
 			type: String,
 			default: '-',
+		},
+		trim: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit, listeners }) {
@@ -91,6 +92,8 @@ export default defineComponent({
 
 			if (props.slug === true) {
 				value = slugify(value, { separator: props.slugSeparator });
+			} else if (props.trim === true) {
+				value = value.trim();
 			}
 
 			emit('input', value);
@@ -101,6 +104,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-input {
+	--v-input-font-family: var(--family-sans-serif);
+
 	display: flex;
 	align-items: center;
 	width: max-content;
@@ -117,6 +122,7 @@ export default defineComponent({
 		height: 100%;
 		padding: var(--input-padding);
 		color: var(--foreground-normal);
+		font-family: var(--v-input-font-family);
 		background-color: var(--background-page);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
@@ -158,6 +164,7 @@ export default defineComponent({
 		flex-grow: 1;
 		width: 100px; // allows flex to shrink to allow for slots
 		height: 100%;
+		font-family: var(--v-input-font-family);
 		background-color: transparent;
 		border: none;
 		appearance: none;
@@ -167,34 +174,32 @@ export default defineComponent({
 		}
 	}
 
-	&.has-click {
-		cursor: pointer;
-		input {
-			pointer-events: none;
-		}
-	}
-
-	&.active .input {
-		color: var(--foreground-normal);
-		background-color: var(--background-page);
-		border-color: var(--primary);
-	}
-
-	.input.monospace {
-		input {
-			font-family: var(--family-monospace);
-		}
-	}
-
-	.append-outer {
-		margin-left: 8px;
-	}
-
 	&.full-width {
 		width: 100%;
 
 		.input {
 			width: 100%;
+		}
+	}
+
+	&.has-click {
+		cursor: pointer;
+		input {
+			pointer-events: none;
+			.prefix,
+			.suffix {
+				color: var(--foreground-subdued);
+			}
+		}
+
+		&.active .input {
+			color: var(--foreground-normal);
+			background-color: var(--background-page);
+			border-color: var(--primary);
+		}
+
+		.append-outer {
+			margin-left: 8px;
 		}
 	}
 }

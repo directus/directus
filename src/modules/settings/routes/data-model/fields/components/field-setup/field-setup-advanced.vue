@@ -119,7 +119,7 @@ export default defineComponent({
 					interface: 'text-input',
 					width: 'half',
 					options: {
-						monospace: true,
+						font: 'monospace',
 					},
 				},
 				{

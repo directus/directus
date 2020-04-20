@@ -43,7 +43,7 @@ export const collection = () =>
 					hidden_browse: false,
 					required: false,
 					options: {
-						monospace: true,
+						font: 'monospace',
 					},
 					locked: false,
 					translation: null,

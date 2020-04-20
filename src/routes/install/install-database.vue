@@ -21,7 +21,7 @@
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_name') }}</div>
-					<v-input monospace full-width v-model="_value.db_name" />
+					<v-input full-width v-model="_value.db_name" class="db" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_type') }}</div>
@@ -85,3 +85,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-input.db {
+	--v-input-font-family: var(--family-monospace);
+}
+</style>

@@ -8,7 +8,6 @@
 		<template #activator="{ toggle }">
 			<v-input
 				:full-width="fullWidth"
-				:monospace="monospace"
 				readonly
 				:value="displayValue"
 				@click="toggle"
@@ -29,7 +28,7 @@
 				@click="multiple ? null : $emit('input', item.value)"
 			>
 				<v-list-item-content>
-					<span v-if="multiple === false" :class="{ monospace }">{{ item.text }}</span>
+					<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
 					<v-checkbox
 						v-else
 						:inputValue="value || []"
@@ -83,10 +82,6 @@ export default defineComponent({
 			default: null,
 		},
 		fullWidth: {
-			type: Boolean,
-			default: false,
-		},
-		monospace: {
 			type: Boolean,
 			default: false,
 		},
@@ -147,15 +142,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.monospace {
-	font-family: var(--family-monospace);
-}
+.v-select {
+	--v-select-font-family: var(--family-sans-serif);
 
-.v-input {
-	cursor: pointer;
+	font-family: var(--v-select-font-family);
 
-	::v-deep input {
+	.item-text {
+		font-family: var(--v-select-font-family);
+	}
+
+	.v-input {
+		--v-input-font-family: var(--v-select-font-family);
+
 		cursor: pointer;
+
+		::v-deep input {
+			cursor: pointer;
+		}
 	}
 }
 </style>

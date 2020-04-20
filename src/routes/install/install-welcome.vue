@@ -14,8 +14,8 @@
 				@input="setToken"
 				:value="token"
 				:placeholder="$t('super_admin_token')"
-				monospace
 				full-width
+				class="token"
 			>
 				<template #append>
 					<v-progress-circular indeterminate v-if="verifying" />
@@ -93,5 +93,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-input {
 	margin-top: 32px;
+}
+
+.v-input.token {
+	--v-input-font-family: var(--family-monospace);
 }
 </style>

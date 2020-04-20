@@ -33,12 +33,12 @@
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
 				<div class="type-label">{{ $t('name') }}</div>
-				<v-input full-width monospace v-model="collectionName" />
+				<v-input full-width class="monospace" v-model="collectionName" />
 				<v-divider />
 				<div class="grid">
 					<div>
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input full-width monospace v-model="primaryKeyFieldName" />
+						<v-input full-width class="monospace" v-model="primaryKeyFieldName" />
 					</div>
 					<div>
 						<div class="type-label">{{ $t('type') }}</div>
@@ -68,7 +68,7 @@
 				<div class="grid system">
 					<div class="field" v-for="field in systemFields" :key="field.id">
 						<div class="type-label">{{ $t(field.label) }}</div>
-						<v-input v-model="field.name" monospace>
+						<v-input v-model="field.name" class="monospace">
 							<template #prepend>
 								<v-checkbox v-model="field.enabled" />
 							</template>
@@ -421,5 +421,9 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
+}
+
+.v-input.monospace {
+	--v-input-font-family: var(--family-monospace);
 }
 </style>

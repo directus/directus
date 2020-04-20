@@ -54,12 +54,11 @@ describe('Input', () => {
 	it('Sets the correct classes based on props', async () => {
 		component.setProps({
 			disabled: true,
-			monospace: true,
 		});
 
 		await component.vm.$nextTick();
 
-		expect(component.find('.input').classes()).toEqual(['input', 'disabled', 'monospace']);
+		expect(component.find('.input').classes()).toEqual(['input', 'disabled']);
 	});
 
 	it('Emits just the value for the input event', async () => {
