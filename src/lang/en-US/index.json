@@ -247,6 +247,9 @@
 
 	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
 	"per_page": "Per Page",
+	"all_files": "All Files",
+	"add_new_folder": "Add New Folder",
+	"folder_name": "Folder Name...",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",

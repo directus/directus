@@ -44,13 +44,15 @@
 				<v-icon name="edit" />
 			</v-button>
 
+			<add-folder :parent="currentFolder" />
+
 			<v-button rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
 		<template #navigation>
-			<files-navigation />
+			<files-navigation v-model="currentFolder" />
 		</template>
 
 		<component
@@ -61,7 +63,8 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:filters.sync="filters"
+			:filters="filtersWithFolder"
+			@update:filters="filters = $event"
 			:detail-route="'/{{project}}/files/{{primaryKey}}'"
 		/>
 	</private-view>
@@ -77,6 +80,7 @@ import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import AddFolder from '../../components/add-folder';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,7 +89,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent>(null);
@@ -100,6 +104,21 @@ export default defineComponent({
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
 
+		const currentFolder = ref(null);
+
+		const filtersWithFolder = computed(() => {
+			if (currentFolder.value !== null) {
+				return [
+					...filters.value,
+					{
+						field: 'folder',
+						operator: 'eq',
+						value: currentFolder.value,
+					},
+				];
+			}
+		});
+
 		return {
 			addNewLink,
 			batchDelete,
@@ -113,6 +132,8 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			viewType,
+			currentFolder,
+			filtersWithFolder,
 		};
 
 		function useBatchDelete() {

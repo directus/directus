@@ -139,8 +139,9 @@ export default defineComponent({
 .v-button {
 	--v-button-width: auto;
 	--v-button-height: 44px;
-	--v-button-color: var(--white);
-	--v-button-color-activated: var(--white);
+	--v-button-color: var(--foreground-inverted);
+	--v-button-color-hover: var(--foreground-inverted);
+	--v-button-color-activated: var(--foreground-inverted);
 	--v-button-color-disabled: var(--foreground-subdued);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
@@ -189,6 +190,7 @@ export default defineComponent({
 		transition-property: background-color border;
 
 		&:hover {
+			color: var(--v-button-color-hover);
 			background-color: var(--v-button-background-color-hover);
 			border-color: var(--v-button-background-color-hover);
 		}

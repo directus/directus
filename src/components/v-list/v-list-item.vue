@@ -12,6 +12,7 @@
 			'two-line': lines === 2,
 			'one-line': lines === 1,
 			disabled,
+			dashed,
 		}"
 		v-on="disabled === false && $listeners"
 	>
@@ -42,6 +43,10 @@ export default defineComponent({
 			default: false,
 		},
 		active: {
+			type: Boolean,
+			default: false,
+		},
+		dashed: {
 			type: Boolean,
 			default: false,
 		},
@@ -101,6 +106,20 @@ export default defineComponent({
 	color: var(--v-list-item-color);
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius);
+
+	&.dashed {
+		&::after {
+			// Borders normally render outside the element, this is a way of showing it as inner
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: calc(100% - 4px);
+			height: calc(100% - 4px);
+			border: 2px dashed var(--border-normal);
+			content: '';
+			pointer-events: none;
+		}
+	}
 
 	&.link {
 		cursor: pointer;

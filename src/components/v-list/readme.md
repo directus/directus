@@ -271,9 +271,11 @@ Provides the ability to make a collapsable (sub)group of list items, within a li
 
 ## Props
 
-| Prop       | Description                                          | Default |
-| ---------- | ---------------------------------------------------- | ------- |
-| `multiple` | Allow multiple subgroups to be open at the same time | `true`  |
+| Prop       | Description                                                                     | Default |
+|------------|---------------------------------------------------------------------------------|---------|
+| `multiple` | Allow multiple subgroups to be open at the same time                            | `true`  |
+| `to`       | Where to link to. This will only make the chevron toggle the group active state |         |
+| `active`   | Render the activitor item in the active state                                   | `false` |
 
 ## Events
 

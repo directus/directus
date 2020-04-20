@@ -96,7 +96,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(medium) {
-		.action-buttons {
+		.action-buttons ::v-deep {
 			> * {
 				display: inherit !important;
 			}

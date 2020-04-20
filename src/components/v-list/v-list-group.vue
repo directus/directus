@@ -1,15 +1,15 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item class="activator" @click="toggle">
+		<v-list-item :active="active" class="activator" :to="to" @click="onClick">
 			<slot name="activator" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active }">
-				<v-icon name="chevron_left" />
+			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
+				<v-icon name="chevron_left" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
 		<transition-expand>
-			<div class="items" v-show="active">
+			<div class="items" v-show="groupActive">
 				<slot />
 			</div>
 		</transition-expand>
@@ -26,16 +26,33 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		to: {
+			type: String,
+			default: null,
+		},
+		active: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props) {
-		const { active, toggle } = useGroupable();
+	setup(props, { listeners, emit }) {
+		const { active: groupActive, toggle } = useGroupable();
+
 		useGroupableParent(
 			{},
 			{
 				multiple: toRefs(props).multiple,
 			}
 		);
-		return { active, toggle };
+
+		return { groupActive, toggle, onClick };
+
+		function onClick(event: MouseEvent) {
+			if (props.to) return null;
+			if (listeners.click) return emit('click', event);
+
+			toggle();
+		}
 	},
 });
 </script>
