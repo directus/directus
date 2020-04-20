@@ -1,8 +1,12 @@
-import { withKnobs, color } from '@storybook/addon-knobs';
+import { withKnobs, text } from '@storybook/addon-knobs';
+import Vue from 'vue';
+import InterfaceDivider from './divider.vue';
+
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import { defineComponent } from '@vue/composition-api';
-import VDivider from '@/components/v-divider';
+
+Vue.component('interface-divider', InterfaceDivider);
 
 export default {
 	title: 'Interfaces / Divider',
@@ -12,17 +16,24 @@ export default {
 	},
 };
 
-export const basic = () =>
+export const input = () =>
 	defineComponent({
-		components: {
-			VDivider,
-		},
 		props: {
 			color: {
-				default: color('Color', '#d6dfe2'),
+				default: text('Color', '', 'Options'),
+			},
+			icon: {
+				default: text('Icon', '', 'Options'),
+			},
+			title: {
+				default: text('Title', '', 'Options'),
 			},
 		},
 		template: `
-			<interface-divider :color="color" />
+		<div>
+			<interface-divider
+				v-bind="{ color, icon, title }"
+			/>
+		</div>
 		`,
 	});

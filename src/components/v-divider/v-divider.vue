@@ -1,7 +1,10 @@
 <template>
-	<div class="v-divider" :class="{ vertical }">
-		<span v-if="!vertical && $slots.default"><slot /></span>
+	<div class="v-divider" :class="{ vertical, inlineTitle }">
 		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
+		<span v-if="$slots.icon || $slots.default" class="wrapper">
+			<slot name="icon" class="icon" />
+			<span v-if="!vertical && $slots.default" class="title"><slot /></span>
+		</span>
 	</div>
 </template>
 
@@ -14,6 +17,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		inlineTitle: {
+			type: Boolean,
+			default: true,
+		},
 	},
 });
 </script>
@@ -23,36 +30,57 @@ export default defineComponent({
 	--v-divider-color: var(--border-normal);
 	--v-divider-label-color: var(--foreground-subdued);
 
-	display: flex;
 	flex-basis: 0px;
 	flex-grow: 1;
 	flex-shrink: 1;
+	flex-wrap: wrap;
 	align-items: center;
 	overflow: visible;
 
 	hr {
 		flex-grow: 1;
+		order: 1;
 		max-width: 100%;
+		margin-bottom: 8px;
 		border: solid;
 		border-color: var(--v-divider-color);
 		border-width: 2px 0 0 0;
 	}
 
-	span {
+	span.wrapper {
 		margin-right: 16px;
 		color: var(--v-divider-label-color);
-		font-size: 16px;
+		font-weight: normal;
+		font-size: 24px;
+	}
+
+	&.inlineTitle {
+		display: flex;
+
+		span.wrapper {
+			order: 0;
+		}
+
+		hr {
+			margin: 0;
+		}
 	}
 
 	&.vertical {
 		display: inline-flex;
+		flex-direction: column;
 		align-self: stretch;
+		height: 100%;
 
 		hr {
 			width: 0px;
 			max-width: 0px;
-			height: inherit;
 			border-width: 0 2px 0 0;
+		}
+
+		span.wrapper {
+			order: 0;
+			margin: 0 0 8px;
 		}
 	}
 }

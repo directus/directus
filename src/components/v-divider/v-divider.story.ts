@@ -39,10 +39,32 @@ export const withText = () =>
 			vertical: {
 				default: boolean('Vertical', false),
 			},
+			inlineTitle: {
+				default: boolean('Inline Title', true),
+			},
 		},
 		template: `
-			<v-divider :vertical="vertical">
+			<v-divider v-bind="{ vertical, inlineTitle }">
 				This is a divider.
+			</v-divider>
+		`,
+	});
+
+export const withColorIcon = () =>
+	defineComponent({
+		components: { VDivider, VIcon },
+		props: {
+			vertical: {
+				default: boolean('Vertical', false),
+			},
+			inlineTitle: {
+				default: boolean('Inline Title', true),
+			},
+		},
+		template: `
+			<v-divider v-bind="{ vertical, inlineTitle }" :style="{'--v-divider-color': 'var(--secondary-125)', '--v-divider-label-color':  'var(--secondary-125)'}">
+			<template #icon><v-icon name="box"></template>
+			This is a divider.
 			</v-divider>
 		`,
 	});
