@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached :class="hidden ? 'full' : field.width" close-on-content-click>
+	<v-menu attached :class="hidden ? 'half' : field.width" close-on-content-click>
 		<template #activator="{ toggle, active }">
 			<v-input
 				class="field"
