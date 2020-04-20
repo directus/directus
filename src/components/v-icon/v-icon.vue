@@ -4,6 +4,7 @@
 		:class="[sizeClass, { 'has-click': hasClick, left, right }]"
 		:role="hasClick ? 'button' : null"
 		@click="emitClick"
+		:tabindex="hasClick ? 0 : null"
 	>
 		<component v-if="customIconName" :is="customIconName" />
 		<i v-else :class="{ outline }">{{ name }}</i>

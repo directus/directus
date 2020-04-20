@@ -9,13 +9,13 @@
 The colors can be changed via the css variables `--v-slider-color`, `--v-slider-fill-color` and `--v-slider-thumb-color`.
 
 ```html
-<v-slider/>
+<v-slider />
 <style>
-.v-slider {
-    --v-slider-color: var(--red-400);
-	--v-slider-fill-color: var(--red-700);
-	--v-slider-thumb-color: var(--orange-500);
-}
+	.v-slider {
+		--v-slider-color: var(--red-400);
+		--v-slider-fill-color: var(--red-700);
+		--v-slider-thumb-color: var(--orange-500);
+	}
 </style>
 ```
 
@@ -51,31 +51,35 @@ You can add any custom content before and after the slider (inline). This can be
 ```
 
 ## Props
-| Prop               | Description                                                  | Default                     |
-|--------------------|--------------------------------------------------------------|-----------------------------|
-| `max`              | Maximum allowed value                                        | `100`                       |
-| `min`              | Minimum allowed value                                        | `0`                         |
-| `show-thumb-label` | Show the thumb label on drag of the thumb                    | `false`                     |
-| `show-ticks`       | Show tick for each step                                      | `false`                     |
-| `step`             | In what step the value can be entered                        | `1`                         |
-| `value`            | Current value of slider. Can be used with `v-model`          | `50`                        |
+
+| Prop               | Description                                         | Default |
+| ------------------ | --------------------------------------------------- | ------- |
+| `max`              | Maximum allowed value                               | `100`   |
+| `min`              | Minimum allowed value                               | `0`     |
+| `show-thumb-label` | Show the thumb label on drag of the thumb           | `false` |
+| `show-ticks`       | Show tick for each step                             | `false` |
+| `step`             | In what step the value can be entered               | `1`     |
+| `value`            | Current value of slider. Can be used with `v-model` | `50`    |
 
 ## Events
-| Event           | Description                                 | Value    |
-|-----------------|---------------------------------------------|----------|
-| `change`        | Fires only when the user releases the thumb | `number` |
-| `input`         | Fires continuously                          | `number` |
+
+| Event    | Description                                 | Value    |
+| -------- | ------------------------------------------- | -------- |
+| `change` | Fires only when the user releases the thumb | `number` |
+| `input`  | Fires continuously                          | `number` |
 
 ## Slots
+
 | Slot          | Description                        | Props               |
-|---------------|------------------------------------|---------------------|
+| ------------- | ---------------------------------- | ------------------- |
 | `append`      | Inserted after the slider track    | --                  |
 | `prepend`     | Inserted before the slider track   | --                  |
 | `thumb-label` | Custom content for the thumb label | `{ value: number }` |
 
 ## CSS Variables
+
 | Variable                 | Default                          |
-|--------------------------|----------------------------------|
+| ------------------------ | -------------------------------- |
 | `--v-slider-color`       | `var(--slider-track-color)`      |
 | `--v-slider-fill-color`  | `var(--slider-track-fill-color)` |
 | `--v-slider-thumb-color` | `var(--slider-thumb-color)`      |

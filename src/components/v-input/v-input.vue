@@ -1,4 +1,3 @@
-f
 <template>
 	<div
 		class="v-input"
@@ -17,10 +16,29 @@ f
 				v-bind="$attrs"
 				v-focus="autofocus"
 				v-on="_listeners"
+				:type="type"
+				:min="min"
+				:max="max"
+				:step="step"
 				:disabled="disabled"
 				:value="value"
+				ref="input"
 			/>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
+			<span v-if="(type === 'number')">
+				<v-icon
+					:class="{ disabled: value === null || value === max }"
+					name="keyboard_arrow_up"
+					class="step-up"
+					@click="stepUp"
+				/>
+				<v-icon
+					:class="{ disabled: value === null || value === min }"
+					name="keyboard_arrow_down"
+					class="step-down"
+					@click="stepDown"
+				/>
+			</span>
 			<div v-if="$slots.append" class="append">
 				<slot name="append" :value="value" :disabled="disabled" />
 			</div>
@@ -32,7 +50,7 @@ f
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
@@ -70,12 +88,31 @@ export default defineComponent({
 			type: String,
 			default: '-',
 		},
+		type: {
+			type: String,
+			default: 'text',
+		},
 		trim: {
 			type: Boolean,
 			default: true,
 		},
+		// For number inputs only
+		max: {
+			type: Number,
+			default: null,
+		},
+		min: {
+			type: Number,
+			default: null,
+		},
+		step: {
+			type: Number,
+			default: 1,
+		},
 	},
 	setup(props, { emit, listeners }) {
+		const input = ref<HTMLInputElement>(null);
+
 		const _listeners = computed(() => ({
 			...listeners,
 			input: emitValue,
@@ -85,7 +122,7 @@ export default defineComponent({
 			return listeners.click !== undefined;
 		});
 
-		return { _listeners, hasClick };
+		return { _listeners, hasClick, stepUp, stepDown, input };
 
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
@@ -98,12 +135,31 @@ export default defineComponent({
 
 			emit('input', value);
 		}
+
+		function stepUp() {
+			if (!input.value) return;
+
+			if (props.value !== null && props.value < props.max) {
+				input.value.stepUp();
+				emit('input', +input.value.value);
+			}
+		}
+
+		function stepDown() {
+			if (!input.value) return;
+
+			if (props.value !== null && props.value > props.min) {
+				input.value.stepDown();
+				emit('input', +input.value.value);
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .v-input {
+	--arrow-color: var(--border-normal);
 	--v-input-font-family: var(--family-sans-serif);
 
 	display: flex;
@@ -132,19 +188,50 @@ export default defineComponent({
 			margin-right: 8px;
 		}
 
+		.step-up {
+			margin-bottom: -8px;
+		}
+
+		.step-down {
+			margin-top: -8px;
+		}
+
+		.step-up,
+		.step-down {
+			--v-icon-color: var(--arrow-color);
+
+			display: block;
+
+			&:active:not(.disabled) {
+				transform: scale(0.9);
+			}
+
+			&.disabled {
+				--arrow-color: var(--border-normal);
+
+				cursor: auto;
+			}
+		}
+
 		&:hover {
+			--arrow-color: var(--border-normal-alt);
+
 			color: var(--foreground-normal);
 			background-color: var(--background-page);
 			border-color: var(--border-normal-alt);
 		}
 
 		&:focus-within {
+			--arrow-color: var(--primary);
+
 			color: var(--foreground-normal);
 			background-color: var(--background-page);
 			border-color: var(--primary);
 		}
 
 		&.disabled {
+			--arrow-color: var(--border-normal);
+
 			color: var(--foreground-subdued);
 			background-color: var(--background-subdued);
 			border-color: var(--border-normal);
@@ -171,6 +258,17 @@ export default defineComponent({
 
 		&::placeholder {
 			color: var(--foreground-subdued);
+		}
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			margin: 0;
+			-webkit-appearance: none;
+		}
+
+		/* Firefox */
+		&[type='number'] {
+			-moz-appearance: textfield;
 		}
 	}
 
