@@ -72,6 +72,7 @@ export default defineComponent({
 	padding: var(--v-list-padding);
 	overflow: auto;
 	color: var(--v-list-color);
+	line-height: 22px;
 	border-radius: var(--border-radius);
 
 	&.nav {

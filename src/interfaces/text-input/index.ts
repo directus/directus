@@ -4,7 +4,7 @@ import { defineInterface } from '@/interfaces/define';
 export default defineInterface(({ i18n }) => ({
 	id: 'text-input',
 	name: i18n.t('interfaces.text-input.text-input'),
-	icon: 'box',
+	icon: 'text_fields',
 	component: InterfaceTextInput,
 	options: [
 		{

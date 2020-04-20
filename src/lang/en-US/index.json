@@ -210,6 +210,8 @@
 	"sans_serif": "Sans Serif",
 	"serif": "Serif",
 	"monospace": "Monospace",
+	"divider": "Divider",
+	"color": "Color",
 
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",

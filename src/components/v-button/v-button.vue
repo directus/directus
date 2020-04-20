@@ -143,9 +143,12 @@ export default defineComponent({
 	--v-button-color-activated: var(--white);
 	--v-button-color-disabled: var(--foreground-subdued);
 	--v-button-background-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-125);
 	--v-button-background-color-activated: var(--primary);
 	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
+	--v-button-font-weight: 500;
+	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
 
 	display: inline-flex;
@@ -174,8 +177,9 @@ export default defineComponent({
 		height: var(--v-button-height);
 		padding: 0 19px;
 		color: var(--v-button-color);
-		font-weight: 500;
+		font-weight: var(--v-button-font-weight);
 		font-size: var(--v-button-font-size);
+		line-height: var(--v-button-line-height);
 		text-decoration: none;
 		background-color: var(--v-button-background-color);
 		border: var(--border-width) solid var(--v-button-background-color);
@@ -183,6 +187,11 @@ export default defineComponent({
 		cursor: pointer;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;
+
+		&:hover {
+			background-color: var(--v-button-background-color-hover);
+			border-color: var(--v-button-background-color-hover);
+		}
 
 		&.align-left {
 			justify-content: flex-start;
@@ -224,6 +233,11 @@ export default defineComponent({
 
 			background-color: transparent;
 
+			&:hover {
+				color: var(--v-button-background-color-hover);
+				border-color: var(--v-button-background-color-hover);
+			}
+
 			&.secondary {
 				--v-button-color: var(--foreground-subdued);
 			}
@@ -236,6 +250,7 @@ export default defineComponent({
 		&.x-small {
 			--v-button-height: 28px;
 			--v-button-font-size: 12px;
+			--v-button-font-weight: 600;
 
 			min-width: 60px;
 			padding: 0 12px;
@@ -306,6 +321,9 @@ export default defineComponent({
 		&.activated {
 			--v-button-color: var(--v-button-color-activated) !important;
 			--v-button-background-color: var(--v-button-background-color-activated) !important;
+			--v-button-background-color-hover: var(
+				--v-button-background-color-activated
+			) !important;
 		}
 
 		&.tile {

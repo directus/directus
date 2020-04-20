@@ -4,6 +4,8 @@
 			collection.managed === false && collection.collection.startsWith('directus_') === false
 		"
 		x-small
+		outlined
+		class="manage"
 		@click="toggleManaged(true)"
 		:loading="savingManaged"
 	>
@@ -117,6 +119,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-button.delete {
 	--v-button-background-color: var(--danger);
+}
+
+.v-button.manage {
+	--v-button-background-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-125);
 }
 
 .ctx-toggle {
