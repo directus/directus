@@ -8,15 +8,15 @@
 			'has-content': hasContent,
 		}"
 	>
+		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<textarea
 			v-bind="$attrs"
 			v-focus="autofocus"
 			v-on="_listeners"
-			:class="{ monospace }"
+			:placeholder="placeholder"
 			:disabled="disabled"
 			:value="value"
 		/>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
 	</div>
 </template>
@@ -34,10 +34,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		monospace: {
-			type: Boolean,
-			default: false,
-		},
 		fullWidth: {
 			type: Boolean,
 			default: false,
@@ -49,6 +45,14 @@ export default defineComponent({
 		expandOnFocus: {
 			type: Boolean,
 			default: false,
+		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
+		trim: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit, listeners }) {
@@ -62,7 +66,11 @@ export default defineComponent({
 		return { _listeners, hasContent };
 
 		function emitValue(event: InputEvent) {
-			emit('input', (event.target as HTMLInputElement).value);
+			let value = (event.target as HTMLInputElement).value;
+			if (props.trim === true) {
+				value = value.trim();
+			}
+			emit('input', value);
 		}
 	},
 });
@@ -73,6 +81,7 @@ export default defineComponent({
 	--v-textarea-min-height: none;
 	--v-textarea-max-height: var(--input-height-tall);
 	--v-textarea-height: var(--input-height-tall);
+	--v-textarea-font-family: var(--family-sans-serif);
 
 	position: relative;
 	display: flex;
@@ -141,16 +150,13 @@ export default defineComponent({
 		height: var(--input-height);
 		padding: var(--input-padding);
 		color: var(--foreground-normal);
+		font-family: var(--v-textarea-font-family);
 		background-color: transparent;
 		border: 0;
 		resize: none;
 
 		&::placeholder {
 			color: var(--foreground-subdued);
-		}
-
-		&.monospace {
-			font-family: var(--family-monospace);
 		}
 	}
 }

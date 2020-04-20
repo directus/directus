@@ -17,7 +17,6 @@ describe('Textarea', () => {
 	it('Sets the correct classes based on props', async () => {
 		component.setProps({
 			disabled: true,
-			monospace: true,
 		});
 
 		await component.vm.$nextTick();

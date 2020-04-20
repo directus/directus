@@ -1,15 +1,16 @@
 <template>
 	<v-textarea
-		v-model="value"
-		:placeholder="placeholder"
-		:monospace="monospace"
-		:rows="rows"
+		v-bind="{ placeholder, trim }"
+		:value="value"
+		:disabled="disabled"
+		:class="font"
+		@input="$listeners.input"
 		full-width
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -25,10 +26,30 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		monospace: {
+		trim: {
 			type: Boolean,
-			default: false,
+			default: true,
+		},
+		font: {
+			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
+			default: 'sans-serif',
 		},
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-textarea {
+	&.monospace {
+		--v-input-font-family: var(--family-monospace);
+	}
+
+	&.serif {
+		--v-input-font-family: var(--family-serif);
+	}
+
+	&.sans-serif {
+		--v-input-font-family: var(--family-sans-serif);
+	}
+}
+</style>

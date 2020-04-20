@@ -8,27 +8,29 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceTextarea,
 	options: [
 		{
-			field: 'monospace',
-			name: 'Monospace',
-			width: 'half',
-			interface: 'switch',
-		},
-		{
 			field: 'placeholder',
 			name: 'Placeholder',
 			width: 'half',
 			interface: 'text-input',
 		},
 		{
-			field: 'rows',
-			name: 'Rows',
+			field: 'trim',
+			name: 'Trim',
 			width: 'half',
-			interface: 'numeric',
+			interface: 'switch',
+		},
+		{
+			field: 'font',
+			name: 'Font',
+			width: 'half',
+			interface: 'dropdown',
 			options: {
-				min: 5,
-				max: 100,
+				items: [
+					{ itemText: 'Sans', itemValue: 'sans-serif' },
+					{ itemText: 'Mono', itemValue: 'monospace' },
+					{ itemText: 'Serif', itemValue: 'serif' },
+				],
 			},
-			default: 8,
 		},
 	],
 }));
