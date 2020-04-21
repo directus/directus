@@ -61,7 +61,7 @@
 			</drawer-detail>
 		</portal>
 
-		<cards-header :fields="fieldsInCollection" :selection.sync="_selection" :sort.sync="sort" />
+		<cards-header :fields="availableFields" :selection.sync="_selection" :sort.sync="sort" />
 
 		<div class="grid">
 			<template v-if="loading">
@@ -186,7 +186,7 @@ export default defineComponent({
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
-			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
+			fieldsInCollection.value.filter((field) => field.hidden_browse === false)
 		);
 
 		const fileFields = computed(() => {

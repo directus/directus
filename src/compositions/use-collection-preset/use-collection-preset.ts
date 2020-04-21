@@ -7,10 +7,14 @@ import { Filter } from './types';
 export function useCollectionPreset(collection: Ref<string>) {
 	const collectionPresetsStore = useCollectionPresetStore();
 
-	const savePreset = debounce(collectionPresetsStore.savePreset, 450);
 	const localPreset = ref({
 		...collectionPresetsStore.getPresetForCollection(collection.value),
 	});
+
+	const savePreset = debounce(async (preset) => {
+		await collectionPresetsStore.savePreset(preset);
+		localPreset.value = collectionPresetsStore.getPresetForCollection(collection.value);
+	}, 450);
 
 	watch(collection, () => {
 		localPreset.value = {

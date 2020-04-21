@@ -63,7 +63,7 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:filters="filtersWithFolder"
+			:filters="filtersWithFolderAndType"
 			@update:filters="filters = $event"
 			:detail-route="'/{{project}}/files/{{primaryKey}}'"
 		/>
@@ -106,7 +106,7 @@ export default defineComponent({
 
 		const currentFolder = ref(null);
 
-		const filtersWithFolder = computed(() => {
+		const filtersWithFolderAndType = computed(() => {
 			if (currentFolder.value !== null) {
 				return [
 					...filters.value,
@@ -115,9 +115,39 @@ export default defineComponent({
 						operator: 'eq',
 						value: currentFolder.value,
 					},
+					{
+						locked: 1,
+						field: 'type',
+						operator: 'nnull',
+						value: 1,
+					},
 				];
 			}
+
+			return [
+				...filters.value,
+				{
+					locked: 1,
+					field: 'type',
+					operator: 'nnull',
+					value: 1,
+				},
+			];
 		});
+
+		if (viewType.value === null) {
+			viewType.value = 'cards';
+		}
+
+		if (viewOptions.value === null) {
+			if (viewType.value === 'cards') {
+				viewOptions.value = {
+					icon: 'insert_drive_file',
+					title: '{{title}}',
+					subtitle: '{{type}} • {{filesize}}',
+				};
+			}
+		}
 
 		return {
 			addNewLink,
@@ -133,7 +163,7 @@ export default defineComponent({
 			viewQuery,
 			viewType,
 			currentFolder,
-			filtersWithFolder,
+			filtersWithFolderAndType,
 		};
 
 		function useBatchDelete() {

@@ -16,7 +16,7 @@
 
 				<v-list dense>
 					<v-list-item
-						v-for="field in fields"
+						v-for="field in fieldsWithoutFake"
 						:key="field.field"
 						:active="field.field === sortKey"
 						@click="_sort = field.field"
@@ -69,7 +69,19 @@ export default defineComponent({
 			return props.fields.find((field) => field.field === sortKey.value);
 		});
 
-		return { descending, toggleDescending, sortField, _sort, _selection, sortKey };
+		const fieldsWithoutFake = computed(() =>
+			props.fields.filter((field) => field.field.startsWith('$') === false)
+		);
+
+		return {
+			descending,
+			toggleDescending,
+			sortField,
+			_sort,
+			_selection,
+			sortKey,
+			fieldsWithoutFake,
+		};
 
 		function toggleDescending() {
 			if (descending.value === true) {

@@ -138,7 +138,7 @@ export default defineComponent({
 		}
 
 		if (viewOptions.value === null) {
-			if ((viewType.value = 'cards')) {
+			if (viewType.value === 'cards') {
 				viewOptions.value = {
 					icon: 'person',
 					title: '{{first_name}} {{last_name}}',
