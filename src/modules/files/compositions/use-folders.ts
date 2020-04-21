@@ -58,18 +58,20 @@ export default function useFolders() {
 
 export function nestFolders(rawFolders: FolderRaw[]) {
 	return rawFolders
-		.map((folderRaw) => {
-			const folder: FolderRaw & Folder = { ...folderRaw };
-
-			const children = rawFolders.filter(
-				(childFolder) => childFolder.parent_folder === folderRaw.id
-			);
-
-			if (children.length > 0) {
-				folder.children = children;
-			}
-
-			return folder;
-		})
+		.map((rawFolder) => nestChildren(rawFolder, rawFolders))
 		.filter((folder) => folder.parent_folder === null);
+}
+
+export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {
+	const folder: FolderRaw & Folder = { ...rawFolder };
+
+	const children = rawFolders
+		.filter((childFolder) => childFolder.parent_folder === rawFolder.id)
+		.map((childRawFolder) => nestChildren(childRawFolder, rawFolders));
+
+	if (children.length > 0) {
+		folder.children = children;
+	}
+
+	return folder;
 }

@@ -1,13 +1,13 @@
 <template>
 	<v-list-item
 		v-if="folder.children === undefined"
-		@click="$emit('click', folder.id)"
+		@click="clickHandler(folder.id)"
 		:active="currentFolder === folder.id"
 	>
 		<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 		<v-list-item-content>{{ folder.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else @click="$emit('click', folder.id)" :active="currentFolder === folder.id">
+	<v-list-group v-else @click="clickHandler(folder.id)" :active="currentFolder === folder.id">
 		<template #activator="{ active }">
 			<v-list-item-icon>
 				<v-icon :name="active ? 'folder_open' : 'folder'" />
@@ -19,7 +19,7 @@
 			:key="childFolder.id"
 			:folder="childFolder"
 			:current-folder="currentFolder"
-			@click="$emit('click', childFolder.id)"
+			:click-handler="clickHandler"
 		/>
 	</v-list-group>
 </template>
@@ -38,6 +38,10 @@ export default defineComponent({
 		currentFolder: {
 			type: Number,
 			default: null,
+		},
+		clickHandler: {
+			type: Function,
+			default: () => undefined,
 		},
 	},
 });

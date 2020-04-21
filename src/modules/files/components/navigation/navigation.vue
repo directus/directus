@@ -13,13 +13,16 @@
 			</v-list-item>
 		</template>
 
-		<navigation-folder
-			@click="$emit('filter', $event)"
-			v-for="folder in folders"
-			:key="folder.id"
-			:folder="folder"
-			:current-folder="currentFolder"
-		/>
+		<div class="folders">
+			<navigation-folder
+				@click="$emit('filter', $event)"
+				v-for="folder in folders"
+				:key="folder.id"
+				:folder="folder"
+				:current-folder="currentFolder"
+				:click-handler="(id) => $emit('filter', id)"
+			/>
+		</div>
 	</v-list>
 </template>
 
@@ -51,5 +54,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 ::v-deep .v-skeleton-loader {
 	--v-skeleton-loader-background-color: var(--background-normal-alt);
+}
+
+.folders {
+	width: 100%;
+	overflow-x: hidden;
+
+	::v-deep .v-list-item-content {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 }
 </style>

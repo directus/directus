@@ -1,7 +1,7 @@
 <template>
 	<div class="v-list-group">
 		<v-list-item :active="active" class="activator" :to="to" @click="onClick">
-			<slot name="activator" />
+			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
 				<v-icon name="chevron_left" @click.stop.prevent="toggle" />
