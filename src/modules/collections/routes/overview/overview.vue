@@ -1,7 +1,9 @@
 <template>
 	<private-view class="collections-overview" :title="$tc('collection', 2)">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary><v-icon name="box" /></v-button>
+			<v-button class="header-icon" rounded disabled icon secondary>
+				<v-icon name="box" />
+			</v-button>
 		</template>
 
 		<template #navigation>
@@ -63,6 +65,10 @@ export default defineComponent({
 	::v-deep i {
 		vertical-align: unset;
 	}
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--foreground-normal);
 }
 
 .v-table {

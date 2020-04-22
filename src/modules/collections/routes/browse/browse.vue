@@ -2,7 +2,7 @@
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 	<private-view v-else :title="currentCollection.name">
 		<template #title-outer:prepend>
-			<v-button rounded icon secondary :to="collectionsLink">
+			<v-button class="header-icon" rounded icon secondary :to="collectionsLink">
 				<v-icon :name="currentCollection.icon" />
 			</v-button>
 		</template>
@@ -230,13 +230,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-150);
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
+}
+
+.header-icon.secondary {
+	--v-button-background-color: var(--background-normal);
+	--v-button-background-color-activated: var(--background-normal);
+	--v-button-background-color-hover: var(--background-normal-alt);
 }
 
 .layout {

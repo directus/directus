@@ -1,58 +1,49 @@
 <template>
 	<div class="v-pagination">
+		<v-button v-if="value !== 1" :disabled="disabled" secondary icon small @click="toPrev">
+			<v-icon name="chevron_left" />
+		</v-button>
+
 		<v-button
-			class="double"
-			v-if="showFirstLast"
-			:disabled="disabled || value === 1"
-			secondary
-			outlined
-			icon
-			small
+			v-if="showFirstLast && value > Math.ceil(totalVisible / 2)"
 			@click="toPage(1)"
+			secondary
+			small
+			:disabled="disabled"
 		>
-			<v-icon name="chevron_left" />
-			<v-icon name="chevron_left" />
+			1
 		</v-button>
 
-		<v-button :disabled="disabled || value === 1" secondary outlined icon small @click="toPrev">
-			<v-icon name="chevron_left" />
-		</v-button>
+		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1" class="gap">...</span>
 
 		<v-button
-			icon
-			small
 			v-for="page in visiblePages"
 			:key="page"
 			:class="{ active: value === page }"
 			@click="toPage(page)"
 			secondary
+			small
 			:disabled="disabled"
 		>
 			{{ page }}
 		</v-button>
 
-		<v-button
-			:disabled="disabled || value === length"
-			secondary
-			outlined
-			icon
-			small
-			@click="toNext"
-		>
-			<v-icon name="chevron_right" />
-		</v-button>
+		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2)" class="gap">
+			...
+		</span>
 
 		<v-button
-			v-if="showFirstLast"
-			:disabled="disabled || value === length"
-			class="double"
-			secondary
-			outlined
-			icon
-			small
+			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2)"
+			:class="{ active: value === length }"
 			@click="toPage(length)"
+			secondary
+			small
+			:disabled="disabled"
 		>
-			<v-icon name="chevron_right" />
+			{{ length }}
+		</v-button>
+
+		<v-button v-if="value !== length" :disabled="disabled" secondary icon small @click="toNext">
 			<v-icon name="chevron_right" />
 		</v-button>
 	</div>
@@ -136,41 +127,38 @@ export default defineComponent({
 .v-pagination {
 	--v-pagination-active-color: var(--primary);
 
+	.gap {
+		margin: 0 4px;
+		color: var(--foreground-subdued);
+	}
+
 	.v-button {
+		--v-button-background-color-hover: var(--background-subdued);
+		--v-button-background-color: var(--background-subdued);
+		--v-button-color: var(--foreground-subdued);
+
+		margin: 0 2px;
 		vertical-align: middle;
 
-		&:not(:first-child):not(:last-child) {
-			margin: 0 2px;
-		}
-
-		&.double {
-			position: relative;
-
-			& ::v-deep {
-				.content {
-					display: grid;
-					grid-template-rows: 1fr;
-					grid-template-columns: 1fr;
-				}
-
-				.v-icon {
-					grid-row: 1;
-					grid-column: 1;
-
-					&:first-child {
-						left: -4px;
-					}
-
-					&:last-child {
-						right: -4px;
-					}
-				}
+		& ::v-deep {
+			.small {
+				--v-button-min-width: 32px;
 			}
 		}
 
+		&:first-child {
+			margin-left: 0;
+		}
+
+		&:last-child {
+			margin-right: 0;
+		}
+
 		&.active {
-			--v-button-background-color: var(--v-pagination-active-color);
-			--v-button-color: var(--foreground-inverted);
+			--v-button-background-color-hover: var(--primary-25);
+			--v-button-color-hover: var(--primary);
+			--v-button-background-color: var(--primary-25);
+			--v-button-color: var(--primary);
 		}
 	}
 }

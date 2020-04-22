@@ -9,10 +9,17 @@
 		"
 	>
 		<template #title-outer:prepend>
-			<v-button v-if="collectionInfo.single" rounded icon secondary disabled>
+			<v-button
+				v-if="collectionInfo.single"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				disabled
+			>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
-			<v-button v-else rounded icon secondary exact :to="backLink">
+			<v-button v-else class="header-icon" rounded icon secondary exact :to="backLink">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -235,8 +242,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
+}
+
+.header-icon.secondary {
+	--v-button-background-color: var(--background-normal);
+	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-activated: var(--foreground-normal);
 }
 
 .v-form {

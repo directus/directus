@@ -79,6 +79,7 @@ export default defineComponent({
 	::v-deep .v-card {
 		--v-card-min-width: 540px;
 		--v-card-padding: 20px;
+		--v-card-background-color: var(--background-page);
 	}
 
 	::v-deep .v-sheet {

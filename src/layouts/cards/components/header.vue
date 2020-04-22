@@ -7,6 +7,7 @@
 			</div>
 		</div>
 		<div class="end">
+			<v-slider class="size-selector" v-model="_size" :min="100" :max="200" :step="1" />
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
 					<div class="sort-selector" @click="toggle">
@@ -46,6 +47,10 @@ export default defineComponent({
 			type: Array as PropType<Field[]>,
 			required: true,
 		},
+		size: {
+			type: Number,
+			required: true,
+		},
 		sort: {
 			type: String,
 			required: true,
@@ -57,6 +62,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const _size = useSync(props, 'size', emit);
 		const _sort = useSync(props, 'sort', emit);
 		const _selection = useSync(props, 'selection', emit);
 		const descending = computed(() => props.sort.startsWith('-'));
@@ -77,6 +83,7 @@ export default defineComponent({
 			descending,
 			toggleDescending,
 			sortField,
+			_size,
 			_sort,
 			_selection,
 			sortKey,
@@ -116,6 +123,10 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	color: var(--foreground-subdued);
+
+	.size-selector {
+		margin-right: 16px;
+	}
 
 	.sort-selector {
 		margin-right: 8px;

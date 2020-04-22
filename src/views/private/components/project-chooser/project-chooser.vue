@@ -93,8 +93,10 @@ export default defineComponent({
 
 		.icon {
 			color: var(--foreground-subdued);
+			transform: rotate(0deg);
 			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+			transition: opacity var(--fast) var(--transition),
+				transform var(--medium) var(--transition);
 		}
 
 		&:hover .icon {
@@ -103,6 +105,7 @@ export default defineComponent({
 	}
 
 	&.active .toggle .icon {
+		transform: rotate(180deg);
 		opacity: 1;
 	}
 
@@ -116,7 +119,7 @@ export default defineComponent({
 		padding: 20px;
 		padding-top: 0;
 		background-color: var(--background-normal-alt);
-		box-shadow: 0px 4px 12px 0px rgba(38, 50, 56, 0.1);
+		box-shadow: 0px 8px 12px 0px rgba(38, 50, 56, 0.25);
 	}
 
 	.v-divider {

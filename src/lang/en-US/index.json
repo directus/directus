@@ -240,7 +240,7 @@
 	"upload_file_indeterminate": "Uploading File | Uploading files {done}/{total}",
 	"upload_file_success": "File Uploaded | {count} Files Uploaded",
 	"upload_file_failed": "Couldn't Upload File | Couldn't Upload Files",
-	"view_type": "View As...",
+	"layout_type": "Layout Type",
 	"setup": "Setup",
 
 	"none": "None",

@@ -163,13 +163,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-150);
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .layout {
@@ -178,6 +182,6 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-alt);
+	--v-button-background-color-disabled: var(--warning-25);
 }
 </style>

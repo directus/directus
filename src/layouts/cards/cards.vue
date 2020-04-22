@@ -1,17 +1,6 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size + 'px' }">
 		<portal to="drawer">
-			<drawer-detail icon="crop_square" :title="$t('layouts.cards.size')">
-				<v-slider v-model="size" :min="100" :max="200" :step="1" />
-			</drawer-detail>
-			<drawer-detail icon="format_list_numbered" :title="$t('per_page')">
-				<v-select
-					full-width
-					@input="limit = +$event"
-					:value="`${limit}`"
-					:items="['10', '25', '50', '100', '250']"
-				/>
-			</drawer-detail>
 			<drawer-detail icon="settings" :title="$t('setup')">
 				<div class="setting">
 					<div class="label type-text">{{ $t('layouts.cards.image_source') }}</div>
@@ -61,7 +50,12 @@
 			</drawer-detail>
 		</portal>
 
-		<cards-header :fields="availableFields" :selection.sync="_selection" :sort.sync="sort" />
+		<cards-header
+			:fields="availableFields"
+			:size.sync="size"
+			:selection.sync="_selection"
+			:sort.sync="sort"
+		/>
 
 		<div class="grid">
 			<template v-if="loading">
@@ -89,14 +83,26 @@
 			</card>
 		</div>
 
-		<div class="pagination" v-if="totalPages > 1">
-			<v-pagination
-				:length="totalPages"
-				:total-visible="5"
-				show-first-last
-				:value="page"
-				@input="toPage"
-			/>
+		<div class="footer">
+			<div class="pagination">
+				<v-pagination
+					v-if="totalPages > 1"
+					:length="totalPages"
+					:total-visible="7"
+					show-first-last
+					:value="page"
+					@input="toPage"
+				/>
+			</div>
+
+			<div class="per-page">
+				<span>{{ $t('layouts.tabular.per_page') }}</span>
+				<v-select
+					@input="limit = +$event"
+					:value="`${limit}`"
+					:items="['10', '25', '50', '100', '250']"
+				/>
+			</div>
 		</div>
 
 		<v-info
@@ -343,8 +349,10 @@ export default defineComponent({
 
 .grid {
 	display: grid;
-	grid-gap: calc(0.1666666667 * var(--size)) 24px;
-	grid-template-columns: repeat(auto-fit, var(--size));
+	grid-gap: 32px 24px;
+	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
+	justify-content: stretch;
+	justify-items: stretch;
 }
 
 .v-info {
@@ -359,11 +367,27 @@ export default defineComponent({
 	margin-bottom: 12px;
 }
 
-.pagination {
-	position: sticky;
-	left: 0;
-	width: 100%;
-	padding: 32px;
-	text-align: center;
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 40px;
+
+	.pagination {
+		display: inline-block;
+	}
+
+	.per-page {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 240px;
+		color: var(--foreground-subdued);
+
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
+	}
 }
 </style>

@@ -4,7 +4,7 @@
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
-				<v-icon name="chevron_left" @click.stop.prevent="toggle" />
+				<v-icon name="chevron_right" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
@@ -64,7 +64,7 @@ export default defineComponent({
 		transition: transform var(--medium) var(--transition);
 
 		&.active {
-			transform: rotate(-90deg);
+			transform: rotate(90deg);
 		}
 	}
 

@@ -2,7 +2,15 @@
 	<v-hover class="module-bar-avatar" v-slot="{ hover }">
 		<v-dialog v-model="signOutActive">
 			<template #activator="{ on }">
-				<v-button @click="on" tile icon x-large :class="{ show: hover }" class="sign-out">
+				<v-button
+					@click="on"
+					tile
+					icon
+					x-large
+					:class="{ show: hover }"
+					class="sign-out"
+					v-tooltip.right="$t('sign_out')"
+				>
 					<v-icon name="logout" />
 				</v-button>
 			</template>
@@ -19,7 +27,7 @@
 		</v-dialog>
 
 		<router-link :to="userProfileLink">
-			<v-avatar tile x-large>
+			<v-avatar tile x-large v-tooltip.right="userFullName">
 				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" />
 				<v-icon v-else name="account_circle" />
 			</v-avatar>
@@ -80,6 +88,9 @@ export default defineComponent({
 }
 
 .sign-out {
+	--v-button-background-color: var(--module-background-alt);
+	--v-button-background-color-hover: var(--warning);
+
 	position: absolute;
 	top: 0;
 	left: 0;

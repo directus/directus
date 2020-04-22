@@ -48,15 +48,6 @@
 					]"
 				/>
 			</drawer-detail>
-
-			<drawer-detail icon="format_list_numbered" :title="$t('layouts.tabular.per_page')">
-				<v-select
-					full-width
-					@input="limit = +$event"
-					:value="`${limit}`"
-					:items="['10', '25', '50', '100', '250']"
-				/>
-			</drawer-detail>
 		</portal>
 
 		<v-table
@@ -78,14 +69,26 @@
 			@update:sort="onSortChange"
 		>
 			<template #footer>
-				<div class="pagination" v-if="totalPages > 1">
-					<v-pagination
-						:length="totalPages"
-						:total-visible="5"
-						show-first-last
-						:value="page"
-						@input="toPage"
-					/>
+				<div class="footer">
+					<div class="pagination">
+						<v-pagination
+							v-if="totalPages > 1"
+							:length="totalPages"
+							:total-visible="7"
+							show-first-last
+							:value="page"
+							@input="toPage"
+						/>
+					</div>
+
+					<div class="per-page">
+						<span>{{ $t('per_page') }}</span>
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['10', '25', '50', '100', '250']"
+						/>
+					</div>
 				</div>
 			</template>
 		</v-table>
@@ -413,12 +416,28 @@ export default defineComponent({
 	display: contents;
 }
 
-.pagination {
-	position: sticky;
-	left: 0;
-	width: 100%;
-	padding: 32px;
-	text-align: center;
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 32px 0;
+
+	.pagination {
+		display: inline-block;
+	}
+
+	.per-page {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 240px;
+		color: var(--foreground-subdued);
+
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
+	}
 }
 
 .v-info {

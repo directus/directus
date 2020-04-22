@@ -234,6 +234,6 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-alt);
+	--v-button-background-color-disabled: var(--warning-25);
 }
 </style>

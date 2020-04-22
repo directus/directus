@@ -6,5 +6,6 @@
 .v-card-text {
 	padding: var(--v-card-padding);
 	padding-top: 0;
+	padding-bottom: 12px;
 }
 </style>

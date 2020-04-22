@@ -2,7 +2,7 @@
 	<div class="card" :class="{ loading }" @click="handleClick">
 		<div class="header" :class="{ selected: value.includes(item) }">
 			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
-				<v-icon :name="selectionIcon" @click.stop="toggleSelection" />
+				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
 			</div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
@@ -151,94 +151,119 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.card {
-	cursor: pointer;
+.loading {
+	.header {
+		margin-bottom: 8px;
+	}
 }
 
-.header {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: var(--size);
-	height: var(--size);
-	overflow: hidden;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+.card {
+	cursor: pointer;
 
-	&.selected {
-		background-color: var(--background-normal-alt);
-	}
-
-	.image {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.header {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		width: 100%;
-		height: 100%;
-		object-fit: contain;
-	}
+		overflow: hidden;
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
 
-	.svg {
-		width: 50%;
-		height: 50%;
-		object-fit: contain;
-	}
-
-	.type {
-		color: var(--foreground-subdued);
-		text-transform: uppercase;
-	}
-
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-	}
-
-	::v-deep .v-skeleton-loader {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
-
-	.selection-indicator {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 1;
-		width: 100%;
-		height: 30%;
-		opacity: 0;
-		transition: opacity var(--fast) var(--transition);
-
-		&:hover,
-		&.select-mode {
-			opacity: 1;
+		&::after {
+			display: block;
+			padding-bottom: 100%;
+			content: '';
 		}
 
-		.v-icon {
-			--v-icon-color: var(--white);
-
-			margin: 5%;
-		}
-
-		&::before {
+		.image {
 			position: absolute;
 			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-image: linear-gradient(-180deg, #263238 10%, rgba(38, 50, 56, 0));
-			opacity: 0.3;
-			content: '';
+			object-fit: contain;
+		}
+
+		.svg {
+			width: 50%;
+			height: 50%;
+			object-fit: contain;
+		}
+
+		.type {
+			color: var(--foreground-subdued);
+			text-transform: uppercase;
+		}
+
+		.v-icon {
+			--v-icon-color: var(--foreground-subdued);
+		}
+
+		::v-deep .v-skeleton-loader {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.selection-indicator {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			width: 100%;
+			height: 48px;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
+
+			&.select-mode {
+				opacity: 1;
+			}
+
+			.selector {
+				--v-icon-color: var(--white);
+
+				margin: 8px;
+				opacity: 0.5;
+				transition: opacity var(--fast) var(--transition);
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			&::before {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-image: linear-gradient(
+					-180deg,
+					rgba(38, 50, 56, 0.2) 10%,
+					rgba(38, 50, 56, 0)
+				);
+				content: '';
+			}
+		}
+
+		&.selected {
+			.selection-indicator {
+				.selector {
+					opacity: 1;
+				}
+			}
 		}
 	}
-}
 
-.loading {
-	.header {
-		margin-bottom: 8px;
+	&:hover {
+		.header {
+			.selection-indicator {
+				opacity: 1;
+			}
+		}
 	}
 }
 

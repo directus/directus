@@ -8,7 +8,7 @@
 		@click="emitValue"
 	>
 		<v-icon :name="icon" />
-		<span class="label type-label">
+		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
 	</button>

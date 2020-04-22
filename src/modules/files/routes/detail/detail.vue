@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="$t('editing', { collection: $t('files') })">
 		<template #title-outer:prepend>
-			<v-button rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -187,8 +187,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
+}
+
+.header-icon.secondary {
+	--v-button-background-color: var(--background-normal);
 }
 
 .v-form {

@@ -9,7 +9,7 @@
 	padding: var(--v-card-padding);
 
 	& ::v-deep > .v-button + .v-button {
-		margin-left: 8px;
+		margin-left: 12px;
 	}
 }
 </style>
