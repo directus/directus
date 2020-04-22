@@ -4,7 +4,7 @@ import readme from './readme.md';
 import { defineComponent } from '@vue/composition-api';
 
 export default {
-	title: 'Displays / Status (Dot)',
+	title: 'Displays / Status (Badge)',
 	decorators: [withPadding, withKnobs],
 	parameters: {
 		notes: readme,
@@ -43,7 +43,7 @@ export const basic = () =>
 			},
 		},
 		template: `
-			<display-status-dot
+			<display-status-badge
 				:value="value"
 				:interface-options="{
 					status_mapping: statusMapping,

@@ -273,6 +273,7 @@
 	"select_statuses": "Select Statuses",
 
 	"status_dot": "Status (Dot)",
+	"status_badge": "Status (Badge)",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",

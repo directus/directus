@@ -1,14 +1,16 @@
 <template>
 	<span v-if="!value" />
-	<v-icon name="help_outline" small v-else-if="!status" />
+	<v-icon name="help_outline" v-else-if="!status" />
 	<div
 		v-else
-		class="dot"
-		v-tooltip="status.name"
+		class="badge"
 		:style="{
 			backgroundColor: status.background_color,
+			color: status.text_color,
 		}"
-	/>
+	>
+		{{ status.name }}
+	</div>
 </template>
 
 <script lang="ts">
@@ -38,10 +40,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.dot {
+.badge {
 	display: inline-block;
-	width: 12px;
-	height: 12px;
-	border-radius: 6px;
+	padding: 8px;
+	color: var(--foreground-inverted);
+	line-height: 1;
+	border-radius: var(--border-radius);
 }
 </style>
