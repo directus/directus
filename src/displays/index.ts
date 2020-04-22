@@ -3,6 +3,7 @@ import DisplayFormatTitle from './format-title/';
 import DisplayStatusDot from './status-dot/';
 import DisplayStatusBadge from './status-badge/';
 import DisplayTags from './tags/';
+import DisplayFormattedText from './formatted-text';
 
 export const displays = [
 	DisplayIcon,
@@ -10,5 +11,6 @@ export const displays = [
 	DisplayStatusDot,
 	DisplayStatusBadge,
 	DisplayTags,
+	DisplayFormattedText,
 ];
 export default displays;

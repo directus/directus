@@ -275,6 +275,10 @@
 	"status_dot": "Status (Dot)",
 	"status_badge": "Status (Badge)",
 	"tags": "Tags",
+	"formatted_text": "Formatted Text",
+
+	"bold": "Bold",
+	"subdued": "Subdued",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
