@@ -68,6 +68,17 @@
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
 		>
+			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
+				<span :key="header.value" v-if="!header.display">{{ item[header.value] }}</span>
+				<render-display
+					v-else
+					:key="header.value"
+					:options="header.display_options"
+					:value="header.value"
+					:display="header.display"
+				/>
+			</template>
+
 			<template #footer>
 				<div class="footer">
 					<div class="pagination">
@@ -320,6 +331,8 @@ export default defineComponent({
 							localWidths.value[field.field] ||
 							_viewOptions.value?.widths?.[field.field] ||
 							null,
+						display: field.display,
+						display_options: field.display_options,
 					}));
 				},
 				set(val) {
@@ -369,6 +382,7 @@ export default defineComponent({
 				onRowClick,
 				onSortChange,
 				activeFields,
+				getFieldDisplay,
 			};
 
 			function onRowClick(item: Item) {
@@ -397,6 +411,18 @@ export default defineComponent({
 				if (newSort.desc === true) sortString = '-' + sortString;
 
 				sort.value = sortString;
+			}
+
+			function getFieldDisplay(fieldKey: string) {
+				const field = availableFields.value.find((field) => field.field === fieldKey);
+
+				if (field === undefined) return null;
+				if (!field.display) return null;
+
+				return {
+					display: field.display,
+					options: field.display_options,
+				};
 			}
 		}
 	},

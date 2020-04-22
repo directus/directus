@@ -99,6 +99,8 @@ import TransitionExpand from './transition/expand';
 
 Vue.component('transition-expand', TransitionExpand);
 
+import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
 
+Vue.component('render-display', RenderDisplay);
 Vue.component('render-template', RenderTemplate);
