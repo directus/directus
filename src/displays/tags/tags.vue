@@ -23,4 +23,8 @@ export default defineComponent({
 .display-tags {
 	display: inline-block;
 }
+
+.v-chip + .v-chip {
+	margin-left: 4px;
+}
 </style>
