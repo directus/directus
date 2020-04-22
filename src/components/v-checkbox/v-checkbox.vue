@@ -6,7 +6,7 @@
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked }"
+		:class="{ checked: isChecked, indeterminate }"
 	>
 		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" />
@@ -57,14 +57,14 @@ export default defineComponent({
 		});
 
 		const icon = computed<string>(() => {
-			if (props.indeterminate) return 'indeterminate_check_box';
+			if (props.indeterminate === true) return 'indeterminate_check_box';
 			return isChecked.value ? 'check_box' : 'check_box_outline_blank';
 		});
 
 		return { isChecked, toggleInput, icon };
 
 		function toggleInput(): void {
-			if (props.indeterminate) {
+			if (props.indeterminate === true) {
 				emit('update:indeterminate', false);
 			}
 
@@ -129,7 +129,7 @@ export default defineComponent({
 		}
 	}
 
-	&:not(:disabled).checked {
+	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color);
 		}

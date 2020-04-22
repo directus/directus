@@ -31,7 +31,7 @@
 					<slot />
 				</main>
 			</div>
-			<footer class="footer" v-if="$slots.footer">
+			<footer class="footer" v-if="$slots.footer || $scopedSlots.footer">
 				<slot name="footer" v-bind="{ close: () => $emit('toggle', false) }" />
 			</footer>
 		</article>

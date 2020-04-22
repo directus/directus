@@ -23,6 +23,10 @@ export function useCollection(collection: Ref<string>) {
 		);
 	});
 
+	const ownerField = computed(() => {
+		return fields.value?.find((field) => field.type === 'owner');
+	});
+
 	const statusField = computed(() => {
 		return fields.value?.find((field) => field.type === 'status');
 	});
@@ -50,5 +54,5 @@ export function useCollection(collection: Ref<string>) {
 		);
 	});
 
-	return { info, fields, primaryKeyField, statusField, softDeleteStatus };
+	return { info, fields, primaryKeyField, ownerField, statusField, softDeleteStatus };
 }

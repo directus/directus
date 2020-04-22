@@ -62,13 +62,22 @@
 			<settings-navigation />
 		</template>
 
-		<v-form
-			collection="directus_roles"
-			:loading="loading"
-			:initial-values="item"
-			:batch-mode="isBatch"
-			v-model="edits"
-		/>
+		<div class="roles">
+			<div class="permissions">
+				<h2 class="title type-label">
+					{{ $t('permissions') }}
+					<span class="instant-save">{{ $t('saves_automatically') }}</span>
+				</h2>
+				<permissions-management :role="+primaryKey" />
+			</div>
+			<v-form
+				collection="directus_roles"
+				:loading="loading"
+				:initial-values="item"
+				:batch-mode="isBatch"
+				v-model="edits"
+			/>
+		</div>
 
 		<template #drawer>
 			<activity-drawer-detail
@@ -89,6 +98,7 @@ import router from '@/router';
 import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
 import useItem from '@/compositions/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import PermissionsManagement from './components/permissions-management';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +107,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-detail',
-	components: { SettingsNavigation, ActivityDrawerDetail, SaveOptions },
+	components: { SettingsNavigation, ActivityDrawerDetail, SaveOptions, PermissionsManagement },
 	props: {
 		primaryKey: {
 			type: String,
@@ -191,12 +201,25 @@ export default defineComponent({
 	--v-button-background-color-hover: var(--danger-dark);
 }
 
-.v-form {
+.roles {
 	padding: var(--content-padding);
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--warning);
 	--v-button-background-color-disabled: var(--warning-alt);
+}
+
+.title {
+	margin-bottom: 12px;
+
+	.instant-save {
+		margin-left: 4px;
+		color: var(--warning);
+	}
+}
+
+.permissions {
+	margin-bottom: 48px;
 }
 </style>

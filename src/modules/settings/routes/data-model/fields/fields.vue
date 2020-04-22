@@ -57,7 +57,7 @@
 			<div class="fields">
 				<h2 class="title type-label">
 					{{ $t('fields_and_layout') }}
-					<span class="instant-save">{{ $t('fields_are_saved_instantly') }}</span>
+					<span class="instant-save">{{ $t('saves_automatically') }}</span>
 				</h2>
 				<fields-management :collection="collection" />
 			</div>
