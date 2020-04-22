@@ -107,10 +107,6 @@ export default defineComponent({
 		cursor: pointer;
 	}
 
-	&.label {
-		border-radius: var(--border-radius);
-	}
-
 	&.outlined {
 		background-color: transparent;
 	}
@@ -144,6 +140,10 @@ export default defineComponent({
 		padding: 0 20px;
 		font-size: 18px;
 		border-radius: 24px;
+	}
+
+	&.label {
+		border-radius: var(--border-radius);
 	}
 
 	.chip-content {

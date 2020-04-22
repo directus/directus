@@ -1,5 +1,6 @@
 <template>
-	<span v-if="!displayInfo">{{ value }}</span>
+	<span v-if="value === null || value === undefined">--</span>
+	<span v-else-if="!displayInfo">{{ value }}</span>
 	<span v-else-if="typeof displayInfo.handler === 'function'">
 		{{ display.handler(value, options) }}
 	</span>

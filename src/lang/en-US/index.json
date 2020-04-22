@@ -274,6 +274,7 @@
 
 	"status_dot": "Status (Dot)",
 	"status_badge": "Status (Badge)",
+	"tags": "Tags",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
