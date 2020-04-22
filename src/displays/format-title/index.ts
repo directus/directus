@@ -7,4 +7,5 @@ export default defineDisplay({
 	icon: 'text_format',
 	handler: handler,
 	options: null,
+	types: ['string'],
 });

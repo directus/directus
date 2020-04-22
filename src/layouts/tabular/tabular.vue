@@ -69,13 +69,17 @@
 			@update:sort="onSortChange"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<span :key="header.value" v-if="!header.display">{{ item[header.value] }}</span>
+				<span :key="header.value" v-if="!header.field.display">
+					{{ item[header.value] }}
+				</span>
 				<render-display
 					v-else
 					:key="header.value"
-					:options="header.display_options"
-					:value="header.value"
-					:display="header.display"
+					:value="item[header.value]"
+					:display="header.field.display"
+					:options="header.field.displayOptions"
+					:interface="header.field.interface"
+					:interface-options="header.field.interfaceOptions"
 				/>
 			</template>
 
@@ -331,8 +335,12 @@ export default defineComponent({
 							localWidths.value[field.field] ||
 							_viewOptions.value?.widths?.[field.field] ||
 							null,
-						display: field.display,
-						display_options: field.display_options,
+						field: {
+							display: field.display,
+							displayOptions: field.display_options,
+							interface: field.interface,
+							interfaceOptions: field.options,
+						},
 					}));
 				},
 				set(val) {

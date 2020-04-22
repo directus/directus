@@ -12,6 +12,7 @@ export type DisplayConfig = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	handler: DisplayHandlerFunction | Component;
 	options: null | Partial<Field>[] | Component;
+	types: string[];
 };
 
 export type DisplayContext = { i18n: VueI18n };

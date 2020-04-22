@@ -272,6 +272,8 @@
 
 	"select_statuses": "Select Statuses",
 
+	"status_dot": "Status (Dot)",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",

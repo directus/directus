@@ -14,4 +14,5 @@ export default defineDisplay(({ i18n }) => ({
 			width: 'half',
 		},
 	],
+	types: ['string'],
 }));
