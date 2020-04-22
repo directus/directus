@@ -8,6 +8,7 @@ export type InterfaceConfig = {
 	name: string | VueI18n.TranslateResult;
 	component: Component;
 	options: Partial<Field>[] | Component;
+	hideLabel?: boolean;
 };
 
 export type InterfaceContext = { i18n: VueI18n };

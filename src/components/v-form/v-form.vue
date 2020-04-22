@@ -2,6 +2,7 @@
 	<div class="v-form" ref="el" :class="gridClass">
 		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
 			<v-menu
+				v-if="field.hideLabel !== true"
 				placement="bottom-start"
 				show-arrow
 				close-on-content-click
@@ -177,6 +178,12 @@ export default defineComponent({
 			const formFields = computed(() => {
 				let formFields = [...fields.value];
 
+				/**
+				 * @NOTE
+				 *
+				 * This can be optimized by combining a bunch of these maps and filters
+				 */
+
 				// Filter out the fields that are marked hidden on detail
 				formFields = formFields.filter((field) => {
 					const hiddenDetail = field.hidden_detail;
@@ -203,14 +210,20 @@ export default defineComponent({
 
 				// Make sure all used interfaces actually exist, default to text-input if not
 				formFields = formFields.map((field) => {
-					const interfaceExists =
-						interfaces.find((int) => int.id === field.interface) !== undefined;
+					const interfaceUsed = interfaces.find((int) => int.id === field.interface);
+					const interfaceExists = interfaceUsed !== undefined;
 
 					if (interfaceExists === false) {
-						return {
-							...field,
-							interface: 'text-input',
-						};
+						/**
+						 * @NOTE
+						 * Can be optimized by making the default smarter based on type used for the
+						 * field
+						 */
+						field.interface = 'text-input';
+					}
+
+					if (interfaceUsed?.hideLabel === true) {
+						(field as FormField).hideLabel = true;
 					}
 
 					return field;

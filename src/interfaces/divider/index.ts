@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('divider'),
 	icon: 'remove',
 	component: InterfaceDivider,
+	hideLabel: true,
 	options: [
 		{
 			field: 'color',
