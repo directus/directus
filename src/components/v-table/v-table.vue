@@ -345,7 +345,8 @@ export default defineComponent({
 				display: contents;
 			}
 
-			tr {
+			tr,
+			.loading-indicator {
 				display: grid;
 				grid-template-columns: var(--grid-columns);
 			}
