@@ -337,6 +337,7 @@
 	"tinymce_options_override": "TinyMCE Options Override",
 
 	"dropdown": "Dropdown",
+	"dropdown_multiselect": "Dropdown (Multiselect)",
 	"allow_other": "Allow Other",
 	"allow_none": "Allow None",
 	"choices": "Choices",
