@@ -16,15 +16,7 @@
 			/>
 		</draggable>
 
-		<v-button
-			class="add-field"
-			align="left"
-			dashed
-			outlined
-			full-width
-			large
-			@click="openFieldSetup()"
-		>
+		<v-button class="add-field" align="left" dashed outlined large @click="openFieldSetup()">
 			<v-icon name="add" />
 			{{ $t('add_field') }}
 		</v-button>

@@ -33,17 +33,16 @@
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
 				<div class="type-label">{{ $t('name') }}</div>
-				<v-input full-width class="monospace" v-model="collectionName" />
+				<v-input class="monospace" v-model="collectionName" />
 				<v-divider />
 				<div class="grid">
 					<div>
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input full-width class="monospace" v-model="primaryKeyFieldName" />
+						<v-input class="monospace" v-model="primaryKeyFieldName" />
 					</div>
 					<div>
 						<div class="type-label">{{ $t('type') }}</div>
 						<v-select
-							full-width
 							:items="[
 								{
 									text: $t('auto_increment_integer'),

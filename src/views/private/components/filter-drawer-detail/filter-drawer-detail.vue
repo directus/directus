@@ -13,7 +13,7 @@
 
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
-				<v-input @click="toggle" :class="{ active }" readonly value="Add filter" full-width>
+				<v-input @click="toggle" :class="{ active }" readonly value="Add filter">
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>

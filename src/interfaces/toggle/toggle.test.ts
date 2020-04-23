@@ -13,6 +13,9 @@ describe('Interfaces / Toggle', () => {
 	it('Renders a v-checkbox', () => {
 		const component = shallowMount(InterfaceToggle, {
 			localVue,
+			listeners: {
+				input: () => undefined,
+			},
 		});
 
 		expect(component.find(VCheckbox).exists()).toBe(true);

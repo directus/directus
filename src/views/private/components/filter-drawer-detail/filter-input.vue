@@ -1,12 +1,12 @@
 <template>
 	<div class="filter-input">
 		<template v-if="['between', 'nbetween'].includes(operator)">
-			<v-input :type="type" :value="csvValue[0]" @input="setCSV(0, $event)" full-width>
+			<v-input :type="type" :value="csvValue[0]" @input="setCSV(0, $event)">
 				<template #append>
 					<v-icon name="vertical_align_top" />
 				</template>
 			</v-input>
-			<v-input :type="type" :value="csvValue[1]" @input="setCSV(1, $event)" full-width>
+			<v-input :type="type" :value="csvValue[1]" @input="setCSV(1, $event)">
 				<template #append>
 					<v-icon name="vertical_align_bottom" />
 				</template>
@@ -19,20 +19,19 @@
 				:value="val"
 				:type="type"
 				@input="setCSV(index, $event)"
-				full-width
 			>
 				<template #append>
 					<v-icon v-if="csvValue.length > 1" name="close" @click="removeCSV(val)" />
 				</template>
 			</v-input>
-			<v-button outlined dashed full-width @click="addCSV">
+			<v-button outlined dashed @click="addCSV">
 				<v-icon name="add" />
 				{{ $t('add_new') }}
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
 			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" />
-			<v-input v-else v-model="_value" :type="type" full-width />
+			<v-input v-else v-model="_value" :type="type" />
 		</template>
 	</div>
 </template>

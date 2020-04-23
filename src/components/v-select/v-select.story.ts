@@ -1,8 +1,9 @@
 import readme from './readme.md';
 import { defineComponent, ref } from '@vue/composition-api';
 import withPadding from '../../../.storybook/decorators/with-padding';
-import { withKnobs, array, text } from '@storybook/addon-knobs';
+import { withKnobs, array, text, boolean } from '@storybook/addon-knobs';
 import RawValue from '../../../.storybook/raw-value.vue';
+import i18n from '@/lang';
 
 import VSelect from './v-select.vue';
 
@@ -16,6 +17,7 @@ export default {
 
 export const basic = () =>
 	defineComponent({
+		i18n,
 		components: { VSelect, RawValue },
 		props: {
 			items: {
@@ -24,14 +26,26 @@ export const basic = () =>
 			placeholder: {
 				default: text('Placeholder', 'Enter value...'),
 			},
+			showDeselect: {
+				default: boolean('Show Deselect', false),
+			},
+			allowOther: {
+				default: boolean('Allow Other', false),
+			},
 		},
 		setup() {
 			const value = ref(null);
 			return { value };
 		},
 		template: `
-			<div>
-				<v-select :placeholder="placeholder" v-model="value" :items="items" />
+			<div style="max-width: 300px;">
+				<v-select
+					:show-deselect="showDeselect"
+					:allow-other="allowOther"
+					:placeholder="placeholder"
+					v-model="value"
+					:items="items"
+				/>
 				<raw-value>{{ value }}</raw-value>
 			</div>
 		`,
@@ -39,6 +53,7 @@ export const basic = () =>
 
 export const multiple = () =>
 	defineComponent({
+		i18n,
 		components: { VSelect, RawValue },
 		props: {
 			items: {
@@ -47,14 +62,27 @@ export const multiple = () =>
 			placeholder: {
 				default: text('Placeholder', 'Enter value...'),
 			},
+			showDeselect: {
+				default: boolean('Show Deselect', false),
+			},
+			allowOther: {
+				default: boolean('Allow Other', false),
+			},
 		},
 		setup() {
 			const value = ref(null);
 			return { value };
 		},
 		template: `
-			<div>
-				<v-select :placeholder="placeholder" v-model="value" :items="items" multiple />
+			<div style="max-width: 300px;">
+				<v-select
+					:show-deselect="showDeselect"
+					:allow-other="allowOther"
+					:placeholder="placeholder"
+					v-model="value"
+					:items="items"
+					multiple
+				/>
 				<raw-value>{{ value }}</raw-value>
 			</div>
 		`,

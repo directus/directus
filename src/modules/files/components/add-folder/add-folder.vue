@@ -9,7 +9,7 @@
 		<v-card>
 			<v-card-title>{{ $t('add_new_folder') }}</v-card-title>
 			<v-card-text>
-				<v-input :placeholder="$t('folder_name')" v-model="newFolderName" full-width />
+				<v-input :placeholder="$t('folder_name')" v-model="newFolderName" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>

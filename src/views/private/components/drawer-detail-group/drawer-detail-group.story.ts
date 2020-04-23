@@ -35,7 +35,7 @@ export const basic = () =>
 			<drawer-detail icon="forum" title="Comments">
 				These sections can hold any markup:
 
-				<v-input full-width placeholder="I'm an input" />
+				<v-input placeholder="I'm an input" />
 			</drawer-detail>
 		</drawer-detail-group>`,
 	});

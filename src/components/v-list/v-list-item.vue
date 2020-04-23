@@ -132,11 +132,15 @@ export default defineComponent({
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
-		&:not(.disabled):active,
-		&.active {
+		&:not(.disabled):active {
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
+	}
+
+	&.active {
+		color: var(--v-list-item-color-active);
+		background-color: var(--v-list-item-background-color-active);
 	}
 
 	&.disabled {

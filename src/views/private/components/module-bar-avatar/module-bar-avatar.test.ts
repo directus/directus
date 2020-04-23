@@ -13,6 +13,8 @@ import VDialog from '@/components/v-dialog';
 import VOverlay from '@/components/v-dialog';
 import VCard, { VCardTitle, VCardActions } from '@/components/v-card';
 
+import Tooltip from '@/directives/tooltip';
+
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.use(VueRouter);
@@ -25,6 +27,8 @@ localVue.component('v-card', VCard);
 localVue.component('v-card-title', VCardTitle);
 localVue.component('v-card-actions', VCardActions);
 localVue.component('v-overlay', VOverlay);
+
+localVue.directive('tooltip', Tooltip);
 
 describe('Views / Private / Module Bar Avatar', () => {
 	let req: any = {};

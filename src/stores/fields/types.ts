@@ -16,7 +16,7 @@ export interface FieldRaw {
 	primary_key: boolean;
 	auto_increment: boolean;
 	default_value: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-	note: string | null;
+	note: string | TranslateResult | null;
 	signed: boolean;
 	type: string;
 	sort: null | number;

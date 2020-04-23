@@ -6,7 +6,6 @@
 			type="email"
 			v-model="email"
 			:placeholder="$t('email')"
-			full-width
 		/>
 		<v-notice success v-if="done">{{ $t('password_reset_sent') }}</v-notice>
 		<v-notice danger v-if="error">

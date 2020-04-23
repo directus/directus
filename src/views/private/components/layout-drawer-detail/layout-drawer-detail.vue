@@ -1,6 +1,6 @@
 <template>
 	<drawer-detail :icon="currentLayout.icon" :title="$t('layout_type')">
-		<v-select :items="layouts" item-text="name" item-value="id" v-model="viewType" full-width />
+		<v-select :items="layouts" item-text="name" item-value="id" v-model="viewType" />
 	</drawer-detail>
 </template>
 

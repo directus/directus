@@ -6,7 +6,6 @@
 					<div class="label type-text">{{ $t('layouts.cards.image_source') }}</div>
 					<v-select
 						v-model="imageSource"
-						full-width
 						allow-null
 						item-value="field"
 						item-text="name"
@@ -19,7 +18,6 @@
 					<v-select
 						v-model="imageFit"
 						:disabled="imageSource === null"
-						full-width
 						:items="[
 							{
 								text: $t('layouts.cards.crop'),
@@ -35,17 +33,17 @@
 
 				<div class="setting">
 					<div class="label type-text">{{ $t('layouts.cards.title') }}</div>
-					<v-input full-width v-model="title" />
+					<v-input v-model="title" />
 				</div>
 
 				<div class="setting">
 					<div class="label type-text">{{ $t('layouts.cards.subtitle') }}</div>
-					<v-input full-width v-model="subtitle" />
+					<v-input v-model="subtitle" />
 				</div>
 
 				<div class="setting">
 					<div class="label type-text">{{ $t('layouts.cards.fallback_icon') }}</div>
-					<v-input full-width v-model="icon" />
+					<v-input v-model="icon" />
 				</div>
 			</drawer-detail>
 		</portal>

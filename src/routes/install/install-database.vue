@@ -5,27 +5,27 @@
 			<div class="pane-form">
 				<div class="field">
 					<div class="type-label label">{{ $t('host') }}</div>
-					<v-input full-width v-model="_value.db_host" />
+					<v-input v-model="_value.db_host" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('port') }}</div>
-					<v-input type="number" full-width v-model="_value.db_port" />
+					<v-input type="number" v-model="_value.db_port" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_user') }}</div>
-					<v-input full-width v-model="_value.db_user" />
+					<v-input v-model="_value.db_user" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_password') }}</div>
-					<v-input type="password" full-width v-model="_value.db_password" />
+					<v-input type="password" v-model="_value.db_password" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_name') }}</div>
-					<v-input full-width v-model="_value.db_name" class="db" />
+					<v-input v-model="_value.db_name" class="db" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('db_type') }}</div>
-					<v-input full-width value="MySQL" disabled />
+					<v-input value="MySQL" disabled />
 				</div>
 			</div>
 		</div>

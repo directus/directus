@@ -7,7 +7,6 @@
 				readonly
 				@click="toggle"
 				:value="field.name"
-				full-width
 			>
 				<template #prepend>
 					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
@@ -41,15 +40,10 @@
 					<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 					<v-card-text>
 						<span class="label">{{ $tc('collection', 0) }}</span>
-						<v-select
-							class="monospace"
-							:items="collections"
-							v-model="duplicateTo"
-							full-width
-						/>
+						<v-select class="monospace" :items="collections" v-model="duplicateTo" />
 
 						<span class="label">{{ $tc('field', 0) }}</span>
-						<v-input class="monospace" v-model="duplicateName" full-width />
+						<v-input class="monospace" v-model="duplicateName" />
 					</v-card-text>
 					<v-card-actions>
 						<v-button secondary @click="duplicateActive = false">

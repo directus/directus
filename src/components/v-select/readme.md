@@ -22,16 +22,17 @@ Renders a dropdown input.
 
 ## Props
 
-| Prop          | Description                                         | Default |
-| ------------- | --------------------------------------------------- | ------- |
-| `items`\*     | Items to render in the select                       |         |
-| `itemText`    | What item value to use for the display text         | `text`  |
-| `itemValue`   | What item value to use for the item value           | `value` |
-| `value`       | Currently selected item(s)                          |         |
-| `multiple`    | Allow multiple items to be selected                 | `false` |
-| `placeholder` | What placeholder to show when no items are selected |         |
-| `full-width`  | Render the select at full width                     |         |
-| `disabled`    | Disable the select                                  |         |
+| Prop            | Description                                         | Default |
+|-----------------|-----------------------------------------------------|---------|
+| `items`\*       | Items to render in the select                       |         |
+| `itemText`      | What item value to use for the display text         | `text`  |
+| `itemValue`     | What item value to use for the item value           | `value` |
+| `value`         | Currently selected item(s)                          |         |
+| `multiple`      | Allow multiple items to be selected                 | `false` |
+| `placeholder`   | What placeholder to show when no items are selected |         |
+| `full-width`    | Render the select at full width                     |         |
+| `disabled`      | Disable the select                                  |         |
+| `show-deselect` | Show the deselect option when a value has been set  |         |
 
 
 ## Events

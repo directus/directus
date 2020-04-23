@@ -5,7 +5,6 @@
 				:placeholder="$t('leave_comment')"
 				v-model="newCommentContent"
 				expand-on-focus
-				full-width
 			>
 				<template #append>
 					<v-button

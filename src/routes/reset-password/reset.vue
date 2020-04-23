@@ -1,12 +1,11 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input :value="email" disabled full-width />
+		<v-input :value="email" disabled />
 		<v-input
 			:placeholder="$t('password')"
 			autofocus
 			autocomplete="username"
 			type="password"
-			full-width
 			v-model="password"
 			:disabled="done"
 		/>

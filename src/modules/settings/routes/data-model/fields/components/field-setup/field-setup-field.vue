@@ -7,7 +7,6 @@
 			:disabled="isNew === false"
 			id="name"
 			v-model="_field"
-			full-width
 			:placeholder="$t('enter_field_name')"
 		/>
 

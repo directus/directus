@@ -6,14 +6,12 @@
 			type="email"
 			v-model="email"
 			:placeholder="$t('email')"
-			full-width
 		/>
 		<v-input
 			type="password"
 			autocomplete="current-password"
 			v-model="password"
 			:placeholder="$t('password')"
-			full-width
 		/>
 		<v-notice danger v-if="error">
 			{{ errorFormatted }}

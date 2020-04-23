@@ -5,19 +5,19 @@
 			<div class="pane-form">
 				<div class="field">
 					<div class="type-label label">{{ $t('project_name') }}</div>
-					<v-input full-width v-model="_value.project_name" />
+					<v-input v-model="_value.project_name" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('project_key') }}</div>
-					<v-input slug full-width v-model="_value.project" class="key" />
+					<v-input slug v-model="_value.project" class="key" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('admin_email') }}</div>
-					<v-input full-width type="email" v-model="_value.user_email" />
+					<v-input type="email" v-model="_value.user_email" />
 				</div>
 				<div class="field">
 					<div class="type-label label">{{ $t('admin_password') }}</div>
-					<v-input full-width type="password" v-model="_value.user_password" />
+					<v-input type="password" v-model="_value.user_password" />
 				</div>
 			</div>
 		</div>

@@ -30,7 +30,6 @@
 
 			<drawer-detail icon="format_line_spacing" :title="$t('layouts.tabular.spacing')">
 				<v-select
-					full-width
 					v-model="tableSpacing"
 					:items="[
 						{

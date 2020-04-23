@@ -36,7 +36,7 @@ export default defineComponent({
 		},
 		fullWidth: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		value: {
 			type: String,

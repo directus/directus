@@ -58,7 +58,7 @@ export const monospace = () => ({
 export const disabled = () => `<v-input value="I'm disabled" disabled />`;
 
 export const fullWidth = () => `
-<v-input placeholder="Enter content..." full-width />
+<v-input placeholder="Enter content..." />
 `;
 
 export const forceSlug = () =>

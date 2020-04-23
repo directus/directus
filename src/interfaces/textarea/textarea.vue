@@ -5,7 +5,6 @@
 		:disabled="disabled"
 		:class="font"
 		@input="$listeners.input"
-		full-width
 	/>
 </template>
 

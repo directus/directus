@@ -8,7 +8,6 @@
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"
-		full-width
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend>

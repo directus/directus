@@ -117,6 +117,7 @@
 	"comments": "Comments",
 
 	"item_count": "No Items | One Item | {count} Items",
+	"all_items": "All Items",
 
 	"users": "Users",
 	"files": "Files",
@@ -335,6 +336,17 @@
 	"custom_formats": "Custom Formats",
 	"tinymce_options_override": "TinyMCE Options Override",
 
+	"dropdown": "Dropdown",
+	"allow_other": "Allow Other",
+	"allow_none": "Allow None",
+	"choices": "Choices",
+	"use_double_colon_for_key": "Use double colon for dedicated keys, eg: `value_saved::Option Displayed`",
+	"choices_option_configured_incorrectly": "Choices option configured incorrectly",
+	"deselect": "Deselect",
+	"deselect_all": "Deselect All",
+
+	"other": "Other...",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",
@@ -485,7 +497,6 @@
   "delete_role_are_you_sure": "Are you sure to delete the role \"{name}\"? This action cannot be undone.",
   "desc": "desc",
   "description": "Description",
-  "deselect": "Deselect",
   "dialog_beginning": "Beginning of dialog window.",
   "discard_changes": "Discard Changes",
   "display_name": "Display Name",
@@ -673,7 +684,6 @@
   "operator": "Operator",
   "optional": "Optional",
   "options": "Options",
-  "other": "Other",
   "otp": "One-Time Password",
   "password": "Password",
   "password_reset_sending": "Sending email...",

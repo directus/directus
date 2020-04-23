@@ -14,7 +14,6 @@
 				@input="setToken"
 				:value="token"
 				:placeholder="$t('super_admin_token')"
-				full-width
 				class="token"
 			>
 				<template #append>
