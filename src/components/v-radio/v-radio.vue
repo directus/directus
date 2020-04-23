@@ -4,7 +4,7 @@
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked }"
+		:class="{ checked: isChecked, block }"
 		@click="emitValue"
 	>
 		<v-icon :name="icon" />
@@ -39,6 +39,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		iconOn: {
+			type: String,
+			default: 'radio_button_checked',
+		},
+		iconOff: {
+			type: String,
+			default: 'radio_button_unchecked',
+		},
+		block: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
@@ -46,7 +58,7 @@ export default defineComponent({
 		});
 
 		const icon = computed<string>(() => {
-			return isChecked.value ? 'radio_button_checked' : 'radio_button_unchecked';
+			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
 		return { isChecked, emitValue, icon };
@@ -95,6 +107,28 @@ export default defineComponent({
 		}
 	}
 
+	&.block {
+		position: relative;
+		width: 100%;
+		height: var(--input-height);
+		padding: 10px; // 14 - 4 (border)
+		background-color: var(--page-background);
+		border: 2px solid var(--background-subdued);
+		border-radius: var(--border-radius);
+
+		&::before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: -1;
+			width: 100%;
+			height: 100%;
+			background-color: var(--background-subdued);
+			border-radius: var(--border-radius);
+			content: '';
+		}
+	}
+
 	&:not(:disabled):hover {
 		.v-icon {
 			--v-icon-color: var(--foreground-subdued);
@@ -104,6 +138,19 @@ export default defineComponent({
 	&:not(:disabled).checked {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color);
+		}
+
+		&.block {
+			border-color: var(--v-radio-color);
+
+			.label {
+				color: var(--v-radio-color);
+			}
+
+			&::before {
+				background-color: var(--v-radio-color);
+				opacity: 0.1;
+			}
 		}
 	}
 }
