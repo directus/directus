@@ -280,6 +280,11 @@
 	"bold": "Bold",
 	"subdued": "Subdued",
 
+	"toggle": "Toggle",
+	"icon_on": "Icon (On)",
+	"icon_off": "Icon (Off)",
+	"label": "Label",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",

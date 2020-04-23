@@ -1,9 +1,10 @@
-import { withKnobs, color } from '@storybook/addon-knobs';
+import { withKnobs, color, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 import VCheckbox from '../v-checkbox';
 import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
+import { defineComponent, ref } from '@vue/composition-api';
 
 Vue.component('v-checkbox', VCheckbox);
 
@@ -87,9 +88,9 @@ export const colors = () => ({
 	},
 	template: `
 	<div>
-		<v-checkbox v-model="options" value="red" @change="onChange" :style="{'--v-checkbox-color': 'var(--red)'}" label="Red" />
-		<v-checkbox v-model="options" value="blue" @change="onChange" :style="{'--v-checkbox-color': 'var(--blue)'}" label="Blue" />
-		<v-checkbox v-model="options" value="yellow" @change="onChange" :style="{'--v-checkbox-color': 'var(--amber)'}" label="Yellow" />
+		<v-checkbox v-model="options" value="red" @change="onChange" :style="{'--v-checkbox-color': 'var(--danger)'}" label="Danger" />
+		<v-checkbox v-model="options" value="blue" @change="onChange" :style="{'--v-checkbox-color': 'var(--primary)'}" label="Primary" />
+		<v-checkbox v-model="options" value="yellow" @change="onChange" :style="{'--v-checkbox-color': 'var(--secondary)'}" label="Secondary" />
 		<v-checkbox v-model="options" value="custom" @change="onChange" :style="{'--v-checkbox-color': customColor}" label="Custom..." />
 	</div>
 	`,
@@ -136,3 +137,53 @@ export const slots = () => ({
 	</div>
 	`,
 });
+
+export const customIcons = () =>
+	defineComponent({
+		props: {
+			iconOn: {
+				default: text('Icon (On)', 'check'),
+			},
+			iconOff: {
+				default: text('Icon (Off)', 'close'),
+			},
+			iconIndeterminate: {
+				default: text('Icon (Indeterminate)', 'more_horiz'),
+			},
+		},
+		setup() {
+			const checked = ref(false);
+			const indeterminate = ref(false);
+			return { checked, indeterminate };
+		},
+		template: `
+			<div>
+				<v-checkbox
+					v-model="checked"
+					:indeterminate.sync="indeterminate"
+					:icon-on="iconOn"
+					:icon-off="iconOff"
+					:icon-indeterminate="iconIndeterminate"
+					label="Checkbox"
+				/>
+				<v-checkbox style="margin-top: 32px;" v-model="indeterminate" label="Indeterminate" />
+			</div>
+		`,
+	});
+
+export const blockStyle = () =>
+	defineComponent({
+		setup() {
+			const checked = ref(false);
+			const indeterminate = ref(false);
+			return { checked, indeterminate };
+		},
+		template: `
+			<v-checkbox
+				style="max-width: 300px;"
+				v-model="checked"
+				label="Checkbox"
+				block
+			/>
+		`,
+	});

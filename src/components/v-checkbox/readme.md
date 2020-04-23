@@ -86,13 +86,17 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 ```
 
 ## Props
-| Prop            | Description                                                              | Default |
-|-----------------|--------------------------------------------------------------------------|---------|
-| `value`         | Value for checkbox. Similar to value attr on checkbox type input in HTML | `--`    |
-| `inputValue`    | Value that's used with `v-model`. Either boolean or array of values      | `false` |
-| `label`         | Label for the checkbox                                                   | `--`    |
-| `disabled`      | Disable the checkbox                                                     | `false` |
-| `indeterminate` | Show the indeterminate state                                             | `false` |
+| Prop                 | Description                                                              | Default                   |
+|----------------------|--------------------------------------------------------------------------|---------------------------|
+| `value`              | Value for checkbox. Similar to value attr on checkbox type input in HTML | `--`                      |
+| `inputValue`         | Value that's used with `v-model`. Either boolean or array of values      | `false`                   |
+| `label`              | Label for the checkbox                                                   | `--`                      |
+| `disabled`           | Disable the checkbox                                                     | `false`                   |
+| `indeterminate`      | Show the indeterminate state                                             | `false`                   |
+| `icon-on`            | What icon to use for the on state                                        | `check_box`               |
+| `icon-off`           | What icon to use for the off state                                       | `check_box_outline_blank` |
+| `icon-indeterminate` | What icon to use for the indeterminate state                             | `indeterminate_check_box` |
+| `block`              | Show as styled block. Matches input size                                 | `block`                   |
 
 ## Slots
 | Slot      | Description                                                                                    |

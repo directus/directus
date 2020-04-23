@@ -6,7 +6,7 @@
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked, indeterminate }"
+		:class="{ checked: isChecked, indeterminate, block }"
 	>
 		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" />
@@ -46,6 +46,22 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		iconOn: {
+			type: String,
+			default: 'check_box',
+		},
+		iconOff: {
+			type: String,
+			default: 'check_box_outline_blank',
+		},
+		iconIndeterminate: {
+			type: String,
+			default: 'indeterminate_check_box',
+		},
+		block: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
@@ -57,8 +73,8 @@ export default defineComponent({
 		});
 
 		const icon = computed<string>(() => {
-			if (props.indeterminate === true) return 'indeterminate_check_box';
-			return isChecked.value ? 'check_box' : 'check_box_outline_blank';
+			if (props.indeterminate === true) return props.iconIndeterminate;
+			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
 		return { isChecked, toggleInput, icon };
@@ -90,8 +106,9 @@ export default defineComponent({
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
-	--v-checkbox-color: var(--foreground-normal);
+	--v-checkbox-color: var(--primary);
 
+	position: relative;
 	display: flex;
 	align-items: center;
 	font-size: 0;
@@ -129,9 +146,44 @@ export default defineComponent({
 		}
 	}
 
+	&.block {
+		position: relative;
+		width: 100%;
+		height: var(--input-height);
+		padding: 10px; // 14 - 4 (border)
+		background-color: var(--page-background);
+		border: 2px solid var(--background-subdued);
+		border-radius: var(--border-radius);
+
+		&::before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: -1;
+			width: 100%;
+			height: 100%;
+			background-color: var(--background-subdued);
+			border-radius: var(--border-radius);
+			content: '';
+		}
+	}
+
 	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color);
+		}
+
+		&.block {
+			border-color: var(--v-checkbox-color);
+
+			.label {
+				color: var(--v-checkbox-color);
+			}
+
+			&::before {
+				background-color: var(--v-checkbox-color);
+				opacity: 0.1;
+			}
 		}
 	}
 

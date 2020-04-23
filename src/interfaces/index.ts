@@ -3,6 +3,7 @@ import InterfaceTextarea from './textarea/';
 import InterfaceDivider from './divider/';
 import InterfaceNumeric from './numeric/';
 import InterfaceSlider from './slider/';
+import InterfaceToggle from './toggle/';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -10,6 +11,7 @@ export const interfaces = [
 	InterfaceNumeric,
 	InterfaceSlider,
 	InterfaceDivider,
+	InterfaceToggle,
 ];
 
 export default interfaces;
