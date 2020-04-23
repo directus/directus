@@ -5,4 +5,5 @@ export type FormField = Partial<Field> & {
 	field: string;
 	name: string | TranslateResult;
 	hideLabel?: boolean;
+	hideLoader?: boolean;
 };

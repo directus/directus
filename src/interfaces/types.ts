@@ -9,6 +9,7 @@ export type InterfaceConfig = {
 	component: Component;
 	options: Partial<Field>[] | Component;
 	hideLabel?: boolean;
+	hideLoader?: boolean;
 };
 
 export type InterfaceContext = { i18n: VueI18n };

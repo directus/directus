@@ -4,6 +4,7 @@ import InterfaceDivider from './divider/';
 import InterfaceNumeric from './numeric/';
 import InterfaceSlider from './slider/';
 import InterfaceToggle from './toggle/';
+import InterfaceWYSIWYG from './wysiwyg/';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -12,6 +13,7 @@ export const interfaces = [
 	InterfaceSlider,
 	InterfaceDivider,
 	InterfaceToggle,
+	InterfaceWYSIWYG,
 ];
 
 export default interfaces;

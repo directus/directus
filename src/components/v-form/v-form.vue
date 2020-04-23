@@ -70,7 +70,7 @@
 					subdued: batchMode && batchActiveFields.includes(field.field) === false,
 				}"
 			>
-				<v-skeleton-loader v-if="loading" />
+				<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 				<component
 					:is="`interface-${field.interface}`"
 					v-bind="field.options"
@@ -226,6 +226,10 @@ export default defineComponent({
 						(field as FormField).hideLabel = true;
 					}
 
+					if (interfaceUsed?.hideLoader === true) {
+						(field as FormField).hideLoader = true;
+					}
+
 					return field;
 				});
 
@@ -349,6 +353,7 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
+		z-index: 2;
 		width: 100%;
 		height: 100%;
 	}

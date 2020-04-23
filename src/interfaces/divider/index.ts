@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'remove',
 	component: InterfaceDivider,
 	hideLabel: true,
+	hideLoader: true,
 	options: [
 		{
 			field: 'color',

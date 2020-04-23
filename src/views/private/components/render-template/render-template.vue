@@ -6,6 +6,8 @@
 				:is="`display-${part.component}`"
 				:key="index"
 				:value="part.value"
+				:interface="part.interface"
+				:interface-options="part.interfaceOptions"
 				v-bind="part.options"
 			/>
 			<template v-else>{{ part }}</template>
@@ -74,6 +76,8 @@ export default defineComponent({
 					component: field.display,
 					options: field.display_options,
 					value: value,
+					interface: field.interface,
+					interfaceOptions: field.options,
 				};
 			})
 		);

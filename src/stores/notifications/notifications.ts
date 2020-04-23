@@ -52,7 +52,7 @@ export const useNotificationsStore = createStore({
 				}
 				return notification;
 			}
-		}
+		},
 	},
 	getters: {
 		lastFour(state) {
