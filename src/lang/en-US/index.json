@@ -122,6 +122,8 @@
 	"radio_buttons": "Radio Buttons",
 	"checkboxes": "Checkboxes",
 
+	"choose_status": "Choose Status...",
+
 	"users": "Users",
 	"files": "Files",
 	"activity": "Activity",
@@ -350,6 +352,9 @@
 	"deselect_all": "Deselect All",
 
 	"other": "Other...",
+
+	"statuses_not_configured": "Status mapping option configured incorrectly",
+	"status_mapping": "Status Mapping",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
