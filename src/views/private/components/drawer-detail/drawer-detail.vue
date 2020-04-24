@@ -35,7 +35,7 @@ export default defineComponent({
 			required: true,
 		},
 		badge: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 	},

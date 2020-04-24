@@ -8,22 +8,15 @@
 
 		<template #drawer>
 			<layout-drawer-detail v-model="viewType" />
-			<filter-drawer-detail v-model="filters" collection="directus_users" />
 			<portal-target name="drawer" />
 		</template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						v-if="selection.length > 0"
-						@click="on"
-					>
+					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>

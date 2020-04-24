@@ -6,7 +6,7 @@
 			<v-icon class="icon" name="expand_more" />
 		</button>
 		<transition-expand>
-			<div v-if="active" class="options-wrapper">
+			<div v-if="active" class="options-wrapper" v-click-outside="() => (active = false)">
 				<div class="options">
 					<v-divider />
 

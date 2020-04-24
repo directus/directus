@@ -5,7 +5,7 @@
 				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
-			<v-menu show-arrow>
+			<v-menu show-arrow :disabled="disabled" close-on-content-click>
 				<template #activator="{ toggle }">
 					<div class="operator" @click="toggle">
 						<span>{{ $t(`operators.${activeOperator}`) }}</span>
@@ -28,7 +28,12 @@
 			<v-icon class="remove" name="close" @click="$emit('remove')" />
 		</div>
 		<div class="field">
-			<filter-input v-model="value" :type="parsedField.type" :operator="activeOperator" />
+			<filter-input
+				v-model="value"
+				:type="parsedField.type"
+				:operator="activeOperator"
+				:disabled="disabled"
+			/>
 		</div>
 	</div>
 </template>
@@ -50,6 +55,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {

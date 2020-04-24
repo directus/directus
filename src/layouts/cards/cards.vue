@@ -1,6 +1,8 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size + 'px' }">
 		<portal to="drawer">
+			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
+
 			<drawer-detail icon="settings" :title="$t('setup')">
 				<div class="setting">
 					<div class="label type-text">{{ $t('layouts.cards.image_source') }}</div>
@@ -235,6 +237,7 @@ export default defineComponent({
 			imageFit,
 			sort,
 			fieldsInCollection,
+			_filters,
 		};
 
 		function toPage(newPage: number) {

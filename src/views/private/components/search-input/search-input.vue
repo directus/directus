@@ -7,7 +7,7 @@
 	>
 		<v-icon name="search" />
 		<input ref="input" :value="value" @input="emitValue" />
-		<v-icon class="empty" name="close" @click="$emit('input', null)" />
+		<v-icon v-show="value" class="empty" name="close" @click="$emit('input', null)" />
 	</div>
 </template>
 
@@ -53,8 +53,10 @@ export default defineComponent({
 	align-items: center;
 	width: 44px;
 	height: 44px;
+	overflow: hidden;
 	border: 2px solid var(--border-normal);
 	border-radius: calc(44px / 2);
+	cursor: pointer;
 	transition: width var(--slow) var(--transition);
 
 	&:hover {

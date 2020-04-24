@@ -1,6 +1,8 @@
 <template>
 	<div class="layout-tabular">
 		<portal to="drawer">
+			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
+
 			<drawer-detail icon="menu_open" :title="$t('layouts.tabular.fields')">
 				<draggable v-model="activeFields" handle=".drag-handle">
 					<v-checkbox
@@ -235,6 +237,7 @@ export default defineComponent({
 			activeFields,
 			tableSpacing,
 			primaryKeyField,
+			_filters,
 		};
 
 		function toPage(newPage: number) {

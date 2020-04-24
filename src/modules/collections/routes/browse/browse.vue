@@ -9,22 +9,15 @@
 
 		<template #drawer>
 			<layout-drawer-detail v-model="viewType" />
-			<filter-drawer-detail v-model="filters" :collection="collection" />
 			<portal-target name="drawer" />
 		</template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						v-if="selection.length > 0"
-						@click="on"
-					>
+					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -82,7 +75,6 @@ import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/compositions/use-collection';
 import useCollectionPreset from '@/compositions/use-collection-preset';
-import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -125,7 +117,6 @@ export default defineComponent({
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
-		FilterDrawerDetail,
 		LayoutDrawerDetail,
 		SearchInput,
 	},

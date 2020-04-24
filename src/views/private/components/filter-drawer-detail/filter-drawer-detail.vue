@@ -9,15 +9,22 @@
 			:key="filter.key"
 			:filter="filter"
 			:collection="collection"
+			:disabled="loading"
 			@update="updateFilter(filter.key, $event)"
 			@remove="removeFilter(filter.key)"
 		/>
 
 		<v-divider v-if="filters.length" />
 
-		<v-menu attached close-on-content-click>
+		<v-menu attached close-on-content-click :disabled="loading">
 			<template #activator="{ toggle, active }">
-				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')">
+				<v-input
+					@click="toggle"
+					:class="{ active }"
+					readonly
+					:value="$t('add_filter')"
+					:disabled="loading"
+				>
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>
@@ -58,6 +65,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -129,7 +140,7 @@ export default defineComponent({
 
 		const syncWithProp = debounce(() => {
 			emit('input', localFilters.value);
-		}, 500);
+		}, 850);
 
 		const filters = computed<Filter[]>({
 			get() {

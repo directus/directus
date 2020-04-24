@@ -1,12 +1,22 @@
 <template>
 	<div class="filter-input">
 		<template v-if="['between', 'nbetween'].includes(operator)">
-			<v-input :type="type" :value="csvValue[0]" @input="setCSV(0, $event)">
+			<v-input
+				:type="type"
+				:value="csvValue[0]"
+				@input="setCSV(0, $event)"
+				:disabled="disabled"
+			>
 				<template #append>
 					<v-icon name="vertical_align_top" />
 				</template>
 			</v-input>
-			<v-input :type="type" :value="csvValue[1]" @input="setCSV(1, $event)">
+			<v-input
+				:type="type"
+				:value="csvValue[1]"
+				@input="setCSV(1, $event)"
+				:disabled="disabled"
+			>
 				<template #append>
 					<v-icon name="vertical_align_bottom" />
 				</template>
@@ -19,19 +29,20 @@
 				:value="val"
 				:type="type"
 				@input="setCSV(index, $event)"
+				:disabled="disabled"
 			>
 				<template #append>
 					<v-icon v-if="csvValue.length > 1" name="close" @click="removeCSV(val)" />
 				</template>
 			</v-input>
-			<v-button outlined dashed @click="addCSV">
+			<v-button outlined dashed @click="addCSV" :disabled="disabled">
 				<v-icon name="add" />
 				{{ $t('add_new') }}
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" />
-			<v-input v-else v-model="_value" :type="type" />
+			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
+			<v-input :disabled="disabled" v-else v-model="_value" :type="type" />
 		</template>
 	</div>
 </template>
@@ -53,6 +64,10 @@ export default defineComponent({
 		operator: {
 			type: String as PropType<FilterOperator>,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
