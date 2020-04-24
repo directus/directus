@@ -130,6 +130,8 @@
 	"webhooks": "Webhooks",
 	"roles": "User Roles",
 
+	"add_filter": "Add Filter",
+
 	"help_and_docs": "Help & Docs",
 
 	"errors": {

@@ -13,7 +13,7 @@
 
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
-				<v-input @click="toggle" :class="{ active }" readonly value="Add filter">
+				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')">
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>
@@ -145,7 +145,7 @@ export default defineComponent({
 				{
 					key: nanoid(),
 					field: fieldKey,
-					operator: 'eq',
+					operator: 'contains',
 					value: '',
 				},
 			]);
