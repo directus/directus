@@ -1,5 +1,11 @@
 <template>
-	<div class="module-bar-logo">
+	<component
+		:is="url ? 'a' : 'div'"
+		:href="url"
+		target="_blank"
+		ref="noopener noreferer"
+		class="module-bar-logo"
+	>
 		<img class="custom-logo" v-if="customLogoPath" :src="customLogoPath" alt="Project Logo" />
 		<div
 			v-else
@@ -7,7 +13,7 @@
 			:class="{ running: isRunning }"
 			@animationiteration="stopRunningIfQueueIsEmpty"
 		/>
-	</div>
+	</component>
 </template>
 
 <script lang="ts">
@@ -15,11 +21,13 @@ import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { ProjectWithKey } from '@/stores/projects/types';
 import { useProjectsStore } from '@/stores/projects/';
 import { useRequestsStore } from '@/stores/requests/';
+import { useSettingsStore } from '@/stores/settings/';
 
 export default defineComponent({
 	setup() {
 		const projectsStore = useProjectsStore();
 		const requestsStore = useRequestsStore();
+		const settingsStore = useSettingsStore();
 
 		const customLogoPath = computed<string | null>(() => {
 			if (projectsStore.currentProject.value === null) return null;
@@ -41,7 +49,14 @@ export default defineComponent({
 			}
 		);
 
-		return { customLogoPath, isRunning, stopRunningIfQueueIsEmpty };
+		const url = computed(() => settingsStore.formatted.value.project_url);
+
+		return {
+			customLogoPath,
+			isRunning,
+			stopRunningIfQueueIsEmpty,
+			url,
+		};
 
 		function stopRunningIfQueueIsEmpty() {
 			if (queueHasItems.value === false) isRunning.value = false;
