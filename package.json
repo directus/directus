@@ -86,7 +86,7 @@
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
     "regenerator-runtime": "^0.13.5",
-    "sass": "^1.26.3",
+    "sass": "^1.26.5",
     "sass-loader": "^8.0.0",
     "storybook-addon-themes": "^5.4.1",
     "stylelint": "^13.3.3",
