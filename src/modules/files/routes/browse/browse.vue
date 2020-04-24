@@ -13,6 +13,8 @@
 		</template>
 
 		<template #actions>
+			<search-input v-model="searchQuery" />
+
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
 					<v-button
@@ -64,6 +66,7 @@
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
 			:filters="filtersWithFolderAndType"
+			:search-query="searchQuery"
 			@update:filters="filters = $event"
 			:detail-route="'/{{project}}/files/{{primaryKey}}'"
 		/>
@@ -81,6 +84,7 @@ import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import AddFolder from '../../components/add-folder';
+import SearchInput from '@/views/private/components/search-input';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +93,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent>(null);
@@ -97,7 +101,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(
+		const { viewType, viewOptions, viewQuery, filters, searchQuery } = useCollectionPreset(
 			ref('directus_files')
 		);
 		const { addNewLink, batchLink } = useLinks();
@@ -164,6 +168,7 @@ export default defineComponent({
 			viewType,
 			currentFolder,
 			filtersWithFolderAndType,
+			searchQuery,
 		};
 
 		function useBatchDelete() {

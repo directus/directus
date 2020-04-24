@@ -14,6 +14,8 @@
 		</template>
 
 		<template #actions>
+			<search-input v-model="searchQuery" />
+
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
 					<v-button
@@ -63,6 +65,7 @@
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
 			:filters.sync="filters"
+			:search-query.sync="searchQuery"
 		/>
 	</private-view>
 </template>
@@ -81,6 +84,7 @@ import useCollection from '@/compositions/use-collection';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import SearchInput from '@/views/private/components/search-input';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -123,6 +127,7 @@ export default defineComponent({
 		CollectionsNotFound,
 		FilterDrawerDetail,
 		LayoutDrawerDetail,
+		SearchInput,
 	},
 	props: {
 		collection: {
@@ -140,7 +145,9 @@ export default defineComponent({
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink } = useLinks();
-		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(collection);
+		const { viewType, viewOptions, viewQuery, filters, searchQuery } = useCollectionPreset(
+			collection
+		);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		return {
@@ -157,6 +164,7 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			viewType,
+			searchQuery,
 		};
 
 		function useSelection() {

@@ -14,13 +14,14 @@ type Options = {
 	sort: Ref<string>;
 	page: Ref<number>;
 	filters: Ref<readonly Filter[]>;
+	searchQuery: Ref<string>;
 };
 
 export function useItems(collection: Ref<string>, options: Options) {
 	const projectsStore = useProjectsStore();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { limit, fields, sort, page, filters } = options;
+	const { limit, fields, sort, page, filters, searchQuery } = options;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const items = ref<any>([]);
@@ -79,7 +80,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 	});
 
-	watch([filters, limit], async (after, before) => {
+	watch([filters, limit, searchQuery], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -145,6 +146,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 					fields: fieldsToFetch,
 					sort: sort.value,
 					page: page.value,
+					q: searchQuery.value,
 					...filtersToQuery(filters.value),
 				},
 			});

@@ -82,5 +82,18 @@ export function useCollectionPreset(collection: Ref<string>) {
 		},
 	});
 
-	return { viewType, viewOptions, viewQuery, filters };
+	const searchQuery = computed<Filter[]>({
+		get() {
+			return localPreset.value.search_query || null;
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				search_query: val,
+			};
+			savePreset(localPreset.value);
+		},
+	});
+
+	return { viewType, viewOptions, viewQuery, filters, searchQuery };
 }

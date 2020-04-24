@@ -13,6 +13,8 @@
 		</template>
 
 		<template #actions>
+			<search-input v-model="searchQuery" />
+
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
 					<v-button
@@ -63,6 +65,7 @@
 			:view-query.sync="viewQuery"
 			:detail-route="'/{{project}}/users/{{item.role}}/{{primaryKey}}'"
 			:filters="_filters"
+			:search-query="searchQuery"
 			@update:filters="filters = $event"
 		/>
 	</private-view>
@@ -78,6 +81,7 @@ import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/compositions/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import SearchInput from '@/views/private/components/search-input';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,7 +90,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-browse',
-	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail },
+	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
 	props: {
 		role: {
 			type: String,
@@ -99,7 +103,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewType, viewOptions, viewQuery, filters } = useCollectionPreset(
+		const { viewType, viewOptions, viewQuery, filters, searchQuery } = useCollectionPreset(
 			ref('directus_users')
 		);
 		const { addNewLink, batchLink } = useLinks();
@@ -161,6 +165,7 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			viewType,
+			searchQuery,
 		};
 
 		function useBatchDelete() {

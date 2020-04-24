@@ -176,6 +176,10 @@ export default defineComponent({
 			type: Object as PropType<File>,
 			default: null,
 		},
+		searchQuery: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const mainElement = inject('main-element', ref<Element>(null));
@@ -186,7 +190,7 @@ export default defineComponent({
 		const _viewQuery = useSync(props, 'viewQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, searchQuery } = toRefs(props);
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
@@ -206,6 +210,7 @@ export default defineComponent({
 			page,
 			fields: fields,
 			filters: _filters,
+			searchQuery,
 		});
 
 		return {

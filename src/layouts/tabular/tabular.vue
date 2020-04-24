@@ -162,6 +162,10 @@ export default defineComponent({
 			type: Array as PropType<Filter[]>,
 			default: () => [],
 		},
+		searchQuery: {
+			type: String,
+			default: null,
+		},
 		selectMode: {
 			type: Boolean,
 			default: false,
@@ -182,7 +186,7 @@ export default defineComponent({
 		const _viewQuery = useSync(props, 'viewQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 
-		const { collection } = toRefs(props);
+		const { collection, searchQuery } = toRefs(props);
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
@@ -197,6 +201,7 @@ export default defineComponent({
 			page,
 			fields,
 			filters: _filters,
+			searchQuery,
 		});
 
 		const {
