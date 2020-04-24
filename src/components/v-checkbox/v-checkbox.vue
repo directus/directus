@@ -1,5 +1,6 @@
 <template>
-	<button
+	<component
+		:is="customValue ? 'div' : 'button'"
 		class="v-checkbox"
 		@click="toggleInput"
 		type="button"
@@ -9,16 +10,18 @@
 		:class="{ checked: isChecked, indeterminate, block }"
 	>
 		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" />
+		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" />
 		<span class="label type-text">
-			<slot name="label">{{ label }}</slot>
+			<slot name="label" v-if="customValue === false">{{ label }}</slot>
+			<input @click.stop class="custom-input" v-else v-model="_value" />
 		</span>
 		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
-	</button>
+	</component>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import useSync from '../../compositions/use-sync';
 
 export default defineComponent({
 	model: {
@@ -62,8 +65,14 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		customValue: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
+		const _value = useSync(props, 'value', emit);
+
 		const isChecked = computed<boolean>(() => {
 			if (props.inputValue instanceof Array) {
 				return props.inputValue.includes(props.value);
@@ -77,7 +86,7 @@ export default defineComponent({
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
-		return { isChecked, toggleInput, icon };
+		return { isChecked, toggleInput, icon, _value };
 
 		function toggleInput(): void {
 			if (props.indeterminate === true) {
@@ -102,12 +111,16 @@ export default defineComponent({
 });
 </script>
 
+<style>
+:root {
+	--v-checkbox-color: var(--primary);
+}
+</style>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
-	--v-checkbox-color: var(--primary);
-
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -120,6 +133,14 @@ export default defineComponent({
 
 	.label:not(:empty) {
 		margin-left: 8px;
+
+		input {
+			width: 100%;
+			background-color: transparent;
+			border: none;
+			border-bottom: 2px solid var(--border-normal);
+			border-radius: 0;
+		}
 
 		@include no-wrap;
 	}
@@ -183,6 +204,10 @@ export default defineComponent({
 				background-color: var(--v-checkbox-color);
 				opacity: 0.1;
 			}
+		}
+
+		input {
+			border-color: var(--v-checkbox-color);
 		}
 	}
 
