@@ -1,13 +1,14 @@
 <template>
 	<div
 		class="search-input"
-		:class="{ active }"
-		v-click-outside="closeIfNoContent"
+		:class="{ active, 'has-content': !!value }"
+		v-click-outside="disable"
 		@click="active = true"
 	>
 		<v-icon name="search" />
 		<input ref="input" :value="value" @input="emitValue" />
-		<v-icon v-show="value" class="empty" name="close" @click="$emit('input', null)" />
+		<span class="value" v-if="value && !active">{{ value }}</span>
+		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
 
@@ -38,10 +39,15 @@ export default defineComponent({
 			850
 		);
 
-		return { active, closeIfNoContent, input, emitValue };
+		return { active, disable, input, emitValue, emptyAndClose };
 
-		function closeIfNoContent() {
-			if (props.value === null || props.value.length === 0) active.value = false;
+		function disable() {
+			active.value = false;
+		}
+
+		function emptyAndClose() {
+			emit('input', null);
+			active.value = false;
 		}
 	},
 });
@@ -67,6 +73,10 @@ export default defineComponent({
 	&:focus-within {
 		border-color: var(--primary);
 	}
+
+	&.has-content {
+		width: 140px;
+	}
 }
 
 input {
@@ -78,6 +88,12 @@ input {
 	padding: 0;
 	border: none;
 	border-radius: 0;
+}
+
+.value {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .v-icon {
