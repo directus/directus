@@ -2,7 +2,7 @@
 	<div class="drawer-detail">
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
-				<v-badge dot :disabled="!dot">
+				<v-badge :value="badge" :disabled="!badge">
 					<v-icon :name="icon" />
 				</v-badge>
 			</div>
@@ -34,9 +34,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		dot: {
-			type: Boolean,
-			default: false,
+		badge: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {

@@ -21,6 +21,7 @@ the private `drawer-detail-group` component in `private-view`.
 |----------|-------------------------------------------|------------|
 | `icon`*  | Icon to be displayed in the toggle header | `settings` |
 | `title`* | Name of the section                       | --         |
+| `badge`  | Show badge on icon with passed value      | `null`     |
 
 ## Slots
 | Slot      | Description |

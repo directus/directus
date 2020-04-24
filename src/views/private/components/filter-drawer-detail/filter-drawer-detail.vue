@@ -1,5 +1,9 @@
 <template>
-	<drawer-detail :dot="filters.length > 0" icon="filter_list" :title="$t('advanced_filter')">
+	<drawer-detail
+		:badge="filters.length > 0 ? filters.length : null"
+		icon="filter_list"
+		:title="$t('advanced_filter')"
+	>
 		<field-filter
 			v-for="filter in filters"
 			:key="filter.key"
