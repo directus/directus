@@ -99,9 +99,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { nanoid } from 'nanoid';
+import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
 import i18n from '@/lang';
+import {
+	useCustomSelection,
+	useCustomSelectionMultiple,
+} from '@/compositions/use-custom-selection';
 
 type Item = {
 	text: string;
@@ -158,8 +161,17 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { _items } = useItems();
 		const { displayValue } = useDisplayValue();
-		const { otherValue, usesOtherValue } = useCustomValue();
-		const { otherValues, addOtherValue, setOtherValue } = useMultipleCustomValues();
+		const { value } = toRefs(props);
+		const { otherValue, usesOtherValue } = useCustomSelection(
+			value as Ref<string>,
+			_items,
+			emit
+		);
+		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
+			value as Ref<string[]>,
+			_items,
+			emit
+		);
 
 		return {
 			_items,
@@ -221,107 +233,6 @@ export default defineComponent({
 
 			function getTextForValue(value: string | number) {
 				return _items.value.find((item) => item.value === value)?.['text'];
-			}
-		}
-
-		function useCustomValue() {
-			const localOtherValue = ref('');
-
-			const otherValue = computed({
-				get() {
-					return localOtherValue.value;
-				},
-				set(newValue: string | null) {
-					if (newValue === null) {
-						localOtherValue.value = '';
-						emit('input', null);
-					} else {
-						localOtherValue.value = newValue;
-						emit('input', newValue);
-					}
-				},
-			});
-
-			const usesOtherValue = computed(() => {
-				// Check if set value is one of the existing keys
-				const values = _items.value.map((item) => item.value);
-				return (
-					props.value !== null &&
-					props.value.length > 0 &&
-					values.includes(props.value) === false
-				);
-			});
-
-			return { otherValue, usesOtherValue };
-		}
-
-		function useMultipleCustomValues() {
-			type OtherValue = {
-				key: string;
-				value: string;
-			};
-
-			const otherValues = ref<OtherValue[]>([]);
-
-			watch(
-				() => props.value,
-				(newValue) => {
-					if (newValue === null) return;
-					if (Array.isArray(newValue) === false) return;
-
-					(newValue as string[]).forEach((value) => {
-						const values = _items.value.map((item) => item.value);
-						const existsInValues = values.includes(value) === true;
-
-						if (existsInValues === false) {
-							const other = otherValues.value.map((o) => o.value);
-							const existsInOtherValues = other.includes(value) === true;
-
-							if (existsInOtherValues === false) {
-								addOtherValue(value);
-							}
-						}
-					});
-				}
-			);
-
-			return { otherValues, addOtherValue, setOtherValue };
-
-			function addOtherValue(value = '') {
-				otherValues.value = [
-					...otherValues.value,
-					{
-						key: nanoid(),
-						value: value,
-					},
-				];
-			}
-
-			function setOtherValue(key: string, newValue: string | null) {
-				const previousValue = otherValues.value.find((o) => o.key === key);
-
-				const valueWithoutPrevious = ((props.value || []) as string[]).filter(
-					(val) => val !== previousValue?.value
-				);
-
-				if (newValue === null) {
-					otherValues.value = otherValues.value.filter((o) => o.key !== key);
-
-					if (valueWithoutPrevious.length === 0) {
-						emit('input', null);
-					} else {
-						emit('input', valueWithoutPrevious);
-					}
-				} else {
-					otherValues.value = otherValues.value.map((otherValue) => {
-						if (otherValue.key === key) otherValue.value = newValue;
-						return otherValue;
-					});
-
-					const newEmitValue = [...valueWithoutPrevious, newValue];
-
-					emit('input', newEmitValue);
-				}
 			}
 		}
 	},

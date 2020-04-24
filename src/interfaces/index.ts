@@ -7,6 +7,7 @@ import InterfaceToggle from './toggle/';
 import InterfaceWYSIWYG from './wysiwyg/';
 import InterfaceDropdown from './dropdown/';
 import InterfaceDropdownMultiselect from './dropdown-multiselect/';
+import InterfaceRadioButtons from './radio-buttons';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -18,6 +19,7 @@ export const interfaces = [
 	InterfaceWYSIWYG,
 	InterfaceDropdown,
 	InterfaceDropdownMultiselect,
+	InterfaceRadioButtons,
 ];
 
 export default interfaces;

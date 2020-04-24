@@ -119,6 +119,8 @@
 	"item_count": "No Items | One Item | {count} Items",
 	"all_items": "All Items",
 
+	"radio_buttons": "Radio Buttons",
+
 	"users": "Users",
 	"files": "Files",
 	"activity": "Activity",

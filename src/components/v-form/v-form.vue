@@ -83,6 +83,7 @@
 							? field.default_value
 							: values[field.field]
 					"
+					:width="field.width"
 					@input="setValue(field, $event)"
 				/>
 			</div>

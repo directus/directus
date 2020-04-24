@@ -70,12 +70,16 @@ export default defineComponent({
 });
 </script>
 
+<style>
+:root {
+	--v-radio-color: var(--primary);
+}
+</style>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
 
 .v-radio {
-	--v-radio-color: var(--primary);
-
 	display: flex;
 	align-items: center;
 	font-size: 0;
@@ -112,7 +116,6 @@ export default defineComponent({
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--page-background);
 		border: 2px solid var(--background-subdued);
 		border-radius: var(--border-radius);
 

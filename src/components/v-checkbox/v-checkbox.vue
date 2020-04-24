@@ -151,7 +151,6 @@ export default defineComponent({
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--page-background);
 		border: 2px solid var(--background-subdued);
 		border-radius: var(--border-radius);
 

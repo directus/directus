@@ -1,7 +1,7 @@
 <template>
 	<span
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': hasClick, left, right }]"
+		:class="[sizeClass, { 'has-click': !disabled && hasClick, left, right }]"
 		:role="hasClick ? 'button' : null"
 		@click="emitClick"
 		:tabindex="hasClick ? 0 : null"
@@ -55,6 +55,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 		...sizeProps,
 	},
 
@@ -80,17 +84,22 @@ export default defineComponent({
 		};
 
 		function emitClick(event: MouseEvent) {
+			if (props.disabled) return;
 			emit('click', event);
 		}
 	},
 });
 </script>
 
-<style lang="scss" scoped>
-.v-icon {
+<style>
+:root {
 	--v-icon-color: currentColor;
 	--v-icon-size: 24px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-icon {
 	position: relative;
 	display: inline-block;
 	width: var(--v-icon-size);
