@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'status-badge',
 	name: i18n.t('status_badge'),
 	types: ['status'],
-	icon: 'box',
+	icon: 'flag',
 	handler: DisplayStatusBadge,
 	options: null,
 }));

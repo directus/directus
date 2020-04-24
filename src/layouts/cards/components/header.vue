@@ -7,10 +7,18 @@
 			</div>
 		</div>
 		<div class="end">
-			<v-slider class="size-selector" v-model="_size" :min="100" :max="200" :step="1" />
+			<!-- <v-slider class="size-selector" v-model="_size" :min="100" :max="200" :step="1" /> -->
+
+			<v-icon
+				class="size-selector"
+				:name="`grid_${7 - size}`"
+				v-tooltip.top="$t('card_size')"
+				@click="toggleSize"
+			/>
+
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div class="sort-selector" @click="toggle">
+					<div class="sort-selector" v-tooltip.top="$t('sort_field')" @click="toggle">
 						{{ sortField && sortField.name }}
 					</div>
 				</template>
@@ -30,6 +38,7 @@
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
+				v-tooltip.top="$t('sort_direction')"
 				@click="toggleDescending"
 			/>
 		</div>
@@ -80,6 +89,7 @@ export default defineComponent({
 		);
 
 		return {
+			toggleSize,
 			descending,
 			toggleDescending,
 			sortField,
@@ -89,6 +99,14 @@ export default defineComponent({
 			sortKey,
 			fieldsWithoutFake,
 		};
+
+		function toggleSize() {
+			if (props.size >= 2 && props.size < 5) {
+				_size.value++;
+			} else {
+				_size.value = 2;
+			}
+		}
 
 		function toggleDescending() {
 			if (descending.value === true) {

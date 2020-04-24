@@ -1,5 +1,5 @@
 <template>
-	<div class="layout-cards" :style="{ '--size': size + 'px' }">
+	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
 		<portal to="drawer">
 			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
 
@@ -95,12 +95,12 @@
 				/>
 			</div>
 
-			<div class="per-page">
-				<span>{{ $t('layouts.tabular.per_page') }}</span>
+			<div v-if="loading === false && items.length >= 25" class="per-page">
+				<span>{{ $t('per_page') }}</span>
 				<v-select
 					@input="limit = +$event"
 					:value="`${limit}`"
-					:items="['10', '25', '50', '100', '250']"
+					:items="['25', '50', '100', '250']"
 				/>
 			</div>
 		</div>

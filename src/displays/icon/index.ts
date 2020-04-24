@@ -4,7 +4,7 @@ import DisplayIcon from './icon.vue';
 export default defineDisplay(({ i18n }) => ({
 	id: 'icon',
 	name: i18n.t('displays.icon.icon'),
-	icon: 'box',
+	icon: 'thumb_up',
 	handler: DisplayIcon,
 	options: [
 		{

@@ -42,6 +42,7 @@ export default defineComponent({
 	display: inline-block;
 	width: 12px;
 	height: 12px;
+	margin: 0 4px;
 	border-radius: 6px;
 }
 </style>

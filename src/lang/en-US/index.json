@@ -134,6 +134,10 @@
 
 	"help_and_docs": "Help & Docs",
 
+	"card_size": "Card Size",
+	"sort_field": "Sort Field",
+	"sort_direction": "Sort Direction",
+
 	"errors": {
 		"3": "Only super admins have access to this",
 		"4": "Super Admin Token not provided",

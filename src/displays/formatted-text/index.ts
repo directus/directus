@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'formatted-text',
 	name: i18n.t('formatted_text'),
 	types: ['string'],
-	icon: 'box',
+	icon: 'text_format',
 	handler: DisplayFormattedText,
 	options: [
 		{

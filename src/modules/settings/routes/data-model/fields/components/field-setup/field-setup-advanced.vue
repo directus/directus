@@ -120,6 +120,7 @@ export default defineComponent({
 					width: 'half',
 					options: {
 						font: 'monospace',
+						placeholder: 'eg: /^[A-Z]+$/',
 					},
 				},
 				{

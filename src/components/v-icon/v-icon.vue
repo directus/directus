@@ -16,12 +16,24 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useSizeClass, { sizeProps } from '@/compositions/size-class';
 
 import CustomIconBox from './custom-icons/box.vue';
+import CustomIconGrid1 from './custom-icons/grid_1.vue';
+import CustomIconGrid2 from './custom-icons/grid_2.vue';
+import CustomIconGrid3 from './custom-icons/grid_3.vue';
+import CustomIconGrid4 from './custom-icons/grid_4.vue';
+import CustomIconGrid5 from './custom-icons/grid_5.vue';
+import CustomIconGrid6 from './custom-icons/grid_6.vue';
 import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 
 const customIcons: string[] = [
 	'box',
+	'grid_1',
+	'grid_2',
+	'grid_3',
+	'grid_4',
+	'grid_5',
+	'grid_6',
 	'signal_wifi_1_bar',
 	'signal_wifi_2_bar',
 	'signal_wifi_3_bar',
@@ -30,6 +42,12 @@ const customIcons: string[] = [
 export default defineComponent({
 	components: {
 		CustomIconBox,
+		CustomIconGrid1,
+		CustomIconGrid2,
+		CustomIconGrid3,
+		CustomIconGrid4,
+		CustomIconGrid5,
+		CustomIconGrid6,
 		CustomIconSignalWifi1Bar,
 		CustomIconSignalWifi2Bar,
 		CustomIconSignalWifi3Bar,

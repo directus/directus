@@ -2,7 +2,7 @@
 	<div class="drawer-detail">
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
-				<v-badge :value="badge" :disabled="!badge">
+				<v-badge bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" />
 				</v-badge>
 			</div>
@@ -49,6 +49,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer-detail {
+	--v-badge-offset-x: 2px;
+	--v-badge-offset-y: 4px;
+	--v-badge-border-color: var(--background-normal-alt);
+
 	display: contents;
 
 	.toggle {

@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'status-dot',
 	name: i18n.t('status_dot'),
 	types: ['status'],
-	icon: 'box',
+	icon: 'flag',
 	handler: DisplayStatusDot,
 	options: null,
 }));
