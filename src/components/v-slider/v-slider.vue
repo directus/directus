@@ -86,12 +86,16 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-slider {
+<style>
+body {
 	--v-slider-color: var(--border-normal);
 	--v-slider-thumb-color: var(--foreground-normal);
 	--v-slider-fill-color: var(--foreground-normal);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-slider {
 	display: flex;
 	align-items: center;
 

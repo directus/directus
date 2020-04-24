@@ -240,7 +240,7 @@ export default defineComponent({
 </script>
 
 <style>
-:root {
+body {
 	--v-select-font-family: var(--family-sans-serif);
 }
 </style>

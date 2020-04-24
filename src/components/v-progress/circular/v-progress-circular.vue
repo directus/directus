@@ -45,15 +45,19 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-progress-circular {
+<style>
+body {
 	--v-progress-circular-color: var(--foreground-normal);
 	--v-progress-circular-background-color: var(--border-normal);
 	--v-progress-circular-transition: 400ms;
 	--v-progress-circular-speed: 2s;
 	--v-progress-circular-size: 28px;
 	--v-progress-circular-line-size: 3px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-progress-circular {
 	position: relative;
 	display: flex;
 	align-items: center;

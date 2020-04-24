@@ -41,13 +41,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-breadcrumb {
+<style>
+body {
 	--v-breadcrumb-color: var(--foreground-subdued);
 	--v-breadcrumb-color-hover: var(--foreground-normal);
 	--v-breadcrumb-color-disabled: var(--foreground-subdued);
 	--v-breadcrumb-divider-color: var(--foreground-subdued);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-breadcrumb {
 	display: flex;
 	align-items: center;
 

@@ -4,10 +4,14 @@
 	</div>
 </template>
 
+<style>
+body {
+	--v-list-item-content-padding: 9px 0;
+}
+</style>
+
 <style lang="scss" scoped>
 .v-list-item-content {
-	--v-list-item-content-padding: 9px 0;
-
 	display: flex;
 	flex-basis: 0;
 	flex-grow: 1;

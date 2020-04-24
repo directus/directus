@@ -71,7 +71,7 @@ export default defineComponent({
 </script>
 
 <style>
-:root {
+body {
 	--v-radio-color: var(--primary);
 }
 </style>

@@ -25,11 +25,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-divider {
+<style>
+body {
 	--v-divider-color: var(--border-normal);
 	--v-divider-label-color: var(--foreground-subdued);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-divider {
 	flex-basis: 0px;
 	flex-grow: 1;
 	flex-shrink: 1;

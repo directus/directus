@@ -70,10 +70,14 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--v-switch-color: var(--foreground-normal);
+}
+</style>
+
 <style lang="scss" scoped>
 .v-switch {
-	--v-switch-color: var(--foreground-normal);
-
 	display: flex;
 	align-items: center;
 	font-size: 0;

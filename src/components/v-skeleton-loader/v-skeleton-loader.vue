@@ -22,11 +22,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-skeleton-loader {
+<style>
+body {
 	--v-skeleton-loader-color: var(--background-page);
 	--v-skeleton-loader-background-color: var(--background-subdued);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-skeleton-loader {
 	position: relative;
 	overflow: hidden;
 	cursor: progress;

@@ -41,13 +41,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-tab.horizontal {
+<style>
+body {
 	--v-tab-color: var(--foreground-normal);
 	--v-tab-background-color: var(--background-page);
 	--v-tab-color-active: var(--foreground-normal);
 	--v-tab-background-color-active: var(--background-page);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-tab.horizontal {
 	color: var(--v-tab-color);
 	font-weight: 500;
 	font-size: 12px;

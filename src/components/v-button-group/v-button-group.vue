@@ -52,10 +52,15 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style>
+body {
+	--v-button-group-background-color-active: var(--primary-alt);
+}
+</style>
+
 <style lang="scss" scoped>
 .v-button-group {
-	--v-button-group-background-color-active: var(--primary-alt);
-
 	.v-item-group {
 		::v-deep .v-button {
 			--border-radius: 0px;

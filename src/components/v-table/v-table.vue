@@ -322,11 +322,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-table {
+<style>
+body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-table {
 	position: relative;
 	height: var(--v-table-height);
 	overflow-y: auto;

@@ -57,13 +57,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-progress-linear {
+<style>
+body {
 	--v-progress-linear-height: 4px;
 	--v-progress-linear-color: var(--foreground-normal);
 	--v-progress-linear-background-color: var(--border-normal);
 	--v-progress-linear-transition: 400ms;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-progress-linear {
 	position: relative;
 	display: flex;
 	align-items: center;

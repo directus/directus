@@ -146,10 +146,14 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--v-menu-min-width: 100px;
+}
+</style>
+
 <style lang="scss" scoped>
 .v-menu {
-	--v-menu-min-width: 100px;
-
 	display: contents;
 }
 

@@ -112,7 +112,7 @@ export default defineComponent({
 </script>
 
 <style>
-:root {
+body {
 	--v-checkbox-color: var(--primary);
 }
 </style>

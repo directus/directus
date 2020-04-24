@@ -110,7 +110,7 @@ export default defineComponent({
 </script>
 
 <style>
-:root {
+body {
 	--v-icon-color: currentColor;
 	--v-icon-size: 24px;
 }

@@ -15,8 +15,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-sheet {
+<style>
+body {
 	--v-sheet-background-color: var(--background-subdued);
 	--v-sheet-height: auto;
 	--v-sheet-min-height: var(--input-height);
@@ -25,7 +25,11 @@ export default defineComponent({
 	--v-sheet-min-width: none;
 	--v-sheet-max-width: none;
 	--v-sheet-padding: 8px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-sheet {
 	width: var(--v-sheet-width);
 	min-width: var(--v-sheet-min-width);
 	max-width: var(--v-sheet-max-width);

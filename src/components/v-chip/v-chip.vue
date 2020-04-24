@@ -83,13 +83,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-chip {
+<style>
+body {
 	--v-chip-color: var(--foreground-normal);
 	--v-chip-background-color: var(--border-normal);
 	--v-chip-color-hover: var(--foreground-normal);
 	--v-chip-background-color-hover: var(--border-normal);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-chip {
 	display: inline-flex;
 	align-items: center;
 	height: 32px;

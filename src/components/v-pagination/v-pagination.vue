@@ -123,10 +123,14 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--v-pagination-active-color: var(--primary);
+}
+</style>
+
 <style lang="scss" scoped>
 .v-pagination {
-	--v-pagination-active-color: var(--primary);
-
 	.gap {
 		margin: 0 4px;
 		color: var(--foreground-subdued);

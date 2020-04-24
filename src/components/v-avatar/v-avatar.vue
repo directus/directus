@@ -27,11 +27,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-avatar {
+<style>
+body {
 	--v-avatar-color: var(--primary);
 	--v-avatar-size: 48px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-avatar {
 	position: relative;
 	display: flex;
 	align-items: center;

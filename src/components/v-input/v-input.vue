@@ -157,10 +157,15 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--v-input-font-family: var(--family-sans-serif);
+}
+</style>
+
 <style lang="scss" scoped>
 .v-input {
 	--arrow-color: var(--border-normal);
-	--v-input-font-family: var(--family-sans-serif);
 	--v-icon-color: var(--foreground-subdued);
 
 	display: flex;

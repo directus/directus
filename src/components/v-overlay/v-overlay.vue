@@ -31,11 +31,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-overlay {
+<style>
+body {
 	--v-overlay-color: rgba(38, 50, 56, 0.9);
 	--v-overlay-z-index: 500;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;

@@ -59,10 +59,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-list-item {
-	$this: &;
-
+<style>
+body {
 	--v-list-item-one-line-min-height: 40px;
 	--v-list-item-two-line-min-height: 52px;
 	--v-list-item-three-line-min-height: 64px;
@@ -89,6 +87,12 @@ export default defineComponent({
 		--v-list-background-color-active,
 		var(--background-normal-alt)
 	);
+}
+</style>
+
+<style lang="scss" scoped>
+.v-list-item {
+	$this: &;
 
 	position: relative;
 	display: flex;

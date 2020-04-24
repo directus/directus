@@ -50,8 +50,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-list {
+<style>
+body {
 	--v-list-padding: 4px 0;
 	--v-list-max-height: none;
 	--v-list-max-width: none;
@@ -62,7 +62,11 @@ export default defineComponent({
 	--v-list-color-active: var(--foreground-normal);
 	--v-list-background-color-hover: var(--background-normal-alt);
 	--v-list-background-color-active: var(--background-normal-alt);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-list {
 	position: static;
 	display: block;
 	min-width: var(--v-list-min-width);

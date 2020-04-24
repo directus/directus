@@ -61,12 +61,16 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-notice {
+<style>
+body {
 	--v-notice-color: var(--primary);
 	--v-notice-background-color: var(--primary-alt);
 	--v-notice-icon-color: var(--primary);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-notice {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;

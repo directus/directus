@@ -135,8 +135,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-button {
+<style>
+body {
 	--v-button-width: auto;
 	--v-button-height: 44px;
 	--v-button-color: var(--foreground-inverted);
@@ -151,7 +151,11 @@ export default defineComponent({
 	--v-button-font-weight: 500;
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-button {
 	display: inline-flex;
 	align-items: center;
 

@@ -306,13 +306,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-form {
+<style>
+body {
 	--v-form-column-width: 300px;
 	--v-form-row-max-height: calc(var(--v-form-column-width) * 2);
 	--v-form-horizontal-gap: 32px;
 	--v-form-vertical-gap: 48px;
+}
+</style>
 
+<style lang="scss" scoped>
+.v-form {
 	&.grid {
 		display: grid;
 		grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];

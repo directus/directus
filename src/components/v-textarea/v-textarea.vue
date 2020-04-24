@@ -76,13 +76,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-textarea {
+<style>
+body {
 	--v-textarea-min-height: none;
 	--v-textarea-max-height: var(--input-height-tall);
 	--v-textarea-height: var(--input-height-tall);
 	--v-textarea-font-family: var(--family-sans-serif);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-textarea {
 	position: relative;
 	display: flex;
 	flex-direction: column;

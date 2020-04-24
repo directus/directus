@@ -24,8 +24,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-card {
+<style>
+body {
 	--v-card-min-width: none;
 	--v-card-max-width: 400px;
 	--v-card-height: auto;
@@ -33,7 +33,11 @@ export default defineComponent({
 	--v-card-max-height: min-content;
 	--v-card-padding: 16px;
 	--v-card-background-color: var(--background-subdued);
+}
+</style>
 
+<style lang="scss" scoped>
+.v-card {
 	min-width: var(--v-card-min-width);
 	max-width: var(--v-card-max-width);
 	height: var(--v-card-height);
