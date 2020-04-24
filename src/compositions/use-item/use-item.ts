@@ -96,6 +96,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			setItemValueToResponse(response);
 			edits.value = {};
+			return response.data.data;
 		} catch (err) {
 			if (isNew.value) {
 				notify({

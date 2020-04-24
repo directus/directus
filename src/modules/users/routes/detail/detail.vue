@@ -164,7 +164,14 @@ export default defineComponent({
 		}
 
 		async function saveAndStay() {
-			await save();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const savedItem: Record<string, any> = await save();
+
+			if (props.primaryKey === '+') {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const newPrimaryKey = savedItem.id;
+				router.replace(`/${currentProjectKey.value}/collections/users/${newPrimaryKey}`);
+			}
 		}
 
 		async function saveAndAddNew() {

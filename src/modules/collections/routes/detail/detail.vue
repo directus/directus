@@ -162,7 +162,9 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { collection, primaryKey } = toRefs(props);
 
-		const { info: collectionInfo, softDeleteStatus } = useCollection(collection);
+		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(
+			collection
+		);
 
 		const {
 			isNew,
@@ -217,7 +219,16 @@ export default defineComponent({
 		}
 
 		async function saveAndStay() {
-			await save();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const savedItem: Record<string, any> = await save();
+
+			if (props.primaryKey === '+') {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const newPrimaryKey = savedItem[primaryKeyField.value!.field];
+				router.replace(
+					`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`
+				);
+			}
 		}
 
 		async function saveAndAddNew() {
