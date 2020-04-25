@@ -117,7 +117,13 @@
 	"comments": "Comments",
 
 	"item_count": "No Items | One Item | {count} Items",
+	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",
 	"all_items": "All Items",
+
+	"no_collections": "No Collections",
+	"create_collection": "Create Collection",
+	"no_collections_copy_admin": "It looks like you don’t have any Collections yet. Fortunately, it’s very easy to create one — click the button below to get started.",
+	"no_collections_copy": "It looks like you don’t have any Collections yet. Please contact your system administrator to have them create your data-model.",
 
 	"radio_buttons": "Radio Buttons",
 	"checkboxes": "Checkboxes",
@@ -136,7 +142,6 @@
 
 	"card_size": "Card Size",
 	"sort_field": "Sort Field",
-	"sort_direction": "Sort Direction",
 
 	"errors": {
 		"3": "Only super admins have access to this",
@@ -257,11 +262,17 @@
 
 	"none": "None",
 
+	"add_new_item": "Add New Item",
+
 	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
 	"per_page": "Per Page",
 	"all_files": "All Files",
 	"add_new_folder": "Add New Folder",
 	"folder_name": "Folder Name...",
+
+	"no_results": "No Results",
+	"no_results_copy": "Adjust or clear search filters to see results.",
+	"clear_filters": "Clear Filters",
 
 	"saves_automatically": "Saves Automatically",
 
@@ -464,7 +475,6 @@
   "contains": "Contains",
   "continue": "Continue",
   "continue_as": "<b>{name}</b> is already authenticated for this project. If you recognize this account, please press continue.",
-  "create_collection": "Create Collection",
   "create_field": "Create Field",
   "create_role": "Create Role",
   "creating_item": "Creating Item",
@@ -669,8 +679,6 @@
   "new_field": "New Field",
   "new_file": "New File",
   "new_item": "New Item",
-  "no_collections": "No Collections Setup",
-  "no_collections_body": "It seems like there aren't any collections setup yet",
   "no_fields": "No Fields Setup",
   "no_fields_body": "It seems like this collection doesn't have any fields setup yet",
   "no_files": "No Files",
@@ -678,8 +686,6 @@
   "no_interface_error": "Field {field} doesn't have an interface setup",
   "no_items_selected": "No items selected",
   "no_related_entries": "Has no related entries",
-  "no_results": "No Results",
-  "no_results_body": "The current filters do not match any collection items",
   "not_authenticated": "Not Authenticated",
   "not_between": "Not between",
   "not_contains": "Doesn't contain",

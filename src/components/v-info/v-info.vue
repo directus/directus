@@ -73,7 +73,7 @@ export default defineComponent({
 }
 
 .content {
-	max-width: 340px;
+	max-width: 360px;
 	color: var(--foreground-subdued);
 
 	&:not(:last-child) {

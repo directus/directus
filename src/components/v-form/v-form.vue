@@ -88,7 +88,7 @@
 				/>
 			</div>
 
-			<small class="note" v-if="field.note">{{ field.note }}</small>
+			<small class="note" v-if="field.note" v-html="marked(field.note)" />
 		</div>
 	</div>
 </template>
@@ -102,6 +102,7 @@ import { isEmpty } from '@/utils/is-empty';
 import { clone } from 'lodash';
 import { FormField } from './types';
 import interfaces from '@/interfaces';
+import marked from 'marked';
 
 type FieldValues = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -159,6 +160,7 @@ export default defineComponent({
 			batchActiveFields,
 			toggleBatchField,
 			unsetValue,
+			marked,
 		};
 
 		function useForm() {

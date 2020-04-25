@@ -10,20 +10,39 @@
 			<collections-navigation />
 		</template>
 
-		<v-table :headers="tableHeaders" :items="navItems" @click:row="navigateToCollection">
+		<v-table
+			v-if="navItems.length > 0"
+			:headers="tableHeaders"
+			:items="navItems"
+			@click:row="navigateToCollection"
+		>
 			<template #item.icon="{ item }">
 				<v-icon class="icon" :name="item.icon" />
 			</template>
 		</v-table>
+
+		<v-info icon="box" :title="$t('no_collections')">
+			<template v-if="isAdmin">
+				{{ $t('no_collections_copy_admin') }}
+			</template>
+			<template #append v-if="isAdmin">
+				<v-button :to="dataModelLink">{{ $t('create_collection') }}</v-button>
+			</template>
+			<template v-else>
+				{{ $t('no_collections_copy') }}
+			</template>
+		</v-info>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import CollectionsNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../../compositions/use-navigation';
 import router from '@/router';
+import useUserStore from '@/stores/user';
+import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	name: 'collections-overview',
@@ -32,6 +51,9 @@ export default defineComponent({
 	},
 	props: {},
 	setup() {
+		const userStore = useUserStore();
+		const projectsStore = useProjectsStore();
+
 		const tableHeaders = [
 			{
 				text: '',
@@ -49,8 +71,17 @@ export default defineComponent({
 				value: 'note',
 			},
 		];
+
 		const { navItems } = useNavigation();
-		return { tableHeaders, navItems, navigateToCollection };
+
+		const isAdmin = computed(() => userStore.state.currentUser?.role.id === 1);
+
+		const dataModelLink = computed(() => {
+			return `/${projectsStore.state.currentProjectKey}/settings/data-model`;
+		});
+
+		return { tableHeaders, navItems, navigateToCollection, isAdmin, dataModelLink };
+
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);
 		}
@@ -74,5 +105,9 @@ export default defineComponent({
 .v-table {
 	padding: var(--content-padding);
 	padding-top: 0;
+}
+
+.v-info {
+	margin: 20vh 0;
 }
 </style>

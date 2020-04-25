@@ -14,7 +14,7 @@ type Options = {
 	sort: Ref<string>;
 	page: Ref<number>;
 	filters: Ref<readonly Filter[]>;
-	searchQuery: Ref<string>;
+	searchQuery: Ref<string | null>;
 };
 
 export function useItems(collection: Ref<string>, options: Options) {
@@ -180,7 +180,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 					// Requesting the page filter count in the actual request every time slows
 					// the request down by like 600ms-1s. This makes sure we only fetch the count
 					// once if needed.
-					getTotalCount();
+					getItemCount();
 				}
 			}
 		} catch (err) {
@@ -190,7 +190,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 	}
 
-	async function getTotalCount() {
+	async function getItemCount() {
 		if (!primaryKeyField.value) return;
 
 		const { currentProjectKey } = projectsStore.state;

@@ -141,6 +141,10 @@ export default defineComponent({
 		);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
+		if (viewType.value === null) {
+			viewType.value = 'tabular';
+		}
+
 		return {
 			addNewLink,
 			batchDelete,

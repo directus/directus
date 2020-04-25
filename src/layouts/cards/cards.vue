@@ -50,66 +50,82 @@
 			</drawer-detail>
 		</portal>
 
-		<cards-header
-			:fields="availableFields"
-			:size.sync="size"
-			:selection.sync="_selection"
-			:sort.sync="sort"
-		/>
+		<template v-if="loading || itemCount > 0">
+			<cards-header
+				:fields="availableFields"
+				:size.sync="size"
+				:selection.sync="_selection"
+				:sort.sync="sort"
+			/>
 
-		<div class="grid">
-			<template v-if="loading">
-				<card v-for="n in limit" :key="`loader-${n}`" loading />
+			<div class="grid">
+				<template v-if="loading">
+					<card v-for="n in limit" :key="`loader-${n}`" loading />
+				</template>
+
+				<card
+					v-else
+					v-for="item in items"
+					:key="item[primaryKeyField.field]"
+					:crop="imageFit === 'crop'"
+					:icon="icon"
+					:file="imageSource ? item[imageSource] : null"
+					:item="item"
+					:select-mode="selectMode || _selection.length > 0"
+					:to="getLinkForItem(item)"
+					v-model="_selection"
+				>
+					<template #title v-if="title">
+						<render-template :collection="collection" :item="item" :template="title" />
+					</template>
+					<template #subtitle v-if="subtitle">
+						<render-template
+							:collection="collection"
+							:item="item"
+							:template="subtitle"
+						/>
+					</template>
+				</card>
+			</div>
+
+			<div class="footer">
+				<div class="pagination">
+					<v-pagination
+						v-if="totalPages > 1"
+						:length="totalPages"
+						:total-visible="7"
+						show-first-last
+						:value="page"
+						@input="toPage"
+					/>
+				</div>
+
+				<div v-if="loading === false && items.length >= 25" class="per-page">
+					<span>{{ $t('per_page') }}</span>
+					<v-select
+						@input="limit = +$event"
+						:value="`${limit}`"
+						:items="['25', '50', '100', '250']"
+					/>
+				</div>
+			</div>
+		</template>
+
+		<v-info v-else-if="itemCount === 0" :title="$t('no_results')" icon="search">
+			{{ $t('no_results_copy') }}
+
+			<template #append>
+				<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 			</template>
+		</v-info>
 
-			<card
-				v-else
-				v-for="item in items"
-				:key="item[primaryKeyField.field]"
-				:crop="imageFit === 'crop'"
-				:icon="icon"
-				:file="imageSource ? item[imageSource] : null"
-				:item="item"
-				:select-mode="selectMode || _selection.length > 0"
-				:to="getLinkForItem(item)"
-				v-model="_selection"
-			>
-				<template #title v-if="title">
-					<render-template :collection="collection" :item="item" :template="title" />
-				</template>
-				<template #subtitle v-if="subtitle">
-					<render-template :collection="collection" :item="item" :template="subtitle" />
-				</template>
-			</card>
-		</div>
+		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon">
+			{{ $t('no_items_copy') }}
 
-		<div class="footer">
-			<div class="pagination">
-				<v-pagination
-					v-if="totalPages > 1"
-					:length="totalPages"
-					:total-visible="7"
-					show-first-last
-					:value="page"
-					@input="toPage"
-				/>
-			</div>
-
-			<div v-if="loading === false && items.length >= 25" class="per-page">
-				<span>{{ $t('per_page') }}</span>
-				<v-select
-					@input="limit = +$event"
-					:value="`${limit}`"
-					:items="['25', '50', '100', '250']"
-				/>
-			</div>
-		</div>
-
-		<v-info
-			v-if="loading === false && items.length === 0"
-			:title="$tc('item_count', 0)"
-			icon="box"
-		/>
+			<template #append>
+				<v-button :to="newLink">{{ $t('add_new_item') }}</v-button>
+			</template>
+		</v-info>
 	</div>
 </template>
 
@@ -179,7 +195,7 @@ export default defineComponent({
 			default: null,
 		},
 		searchQuery: {
-			type: String,
+			type: String as PropType<string | null>,
 			default: null,
 		},
 	},
@@ -191,9 +207,10 @@ export default defineComponent({
 		const _viewOptions = useSync(props, 'viewOptions', emit);
 		const _viewQuery = useSync(props, 'viewQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
+		const _searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
-		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
 			fieldsInCollection.value.filter((field) => field.hidden_browse === false)
@@ -213,6 +230,15 @@ export default defineComponent({
 			fields: fields,
 			filters: _filters,
 			searchQuery,
+		});
+
+		const newLink = computed(() => {
+			return render(props.detailRoute, {
+				project: projectsStore.state.currentProjectKey,
+				collection: collection.value,
+				primaryKey: '+',
+				item: null,
+			});
 		});
 
 		return {
@@ -238,6 +264,9 @@ export default defineComponent({
 			sort,
 			fieldsInCollection,
 			_filters,
+			newLink,
+			info,
+			clearFilters,
 		};
 
 		function toPage(newPage: number) {
@@ -246,6 +275,11 @@ export default defineComponent({
 				top: 0,
 				behavior: 'smooth',
 			});
+		}
+
+		function clearFilters() {
+			_filters.value = [];
+			_searchQuery.value = null;
 		}
 
 		function useViewOptions() {

@@ -109,7 +109,21 @@
 			</template>
 		</v-table>
 
-		<v-info v-else :title="$tc('item_count', 0)" icon="box" />
+		<v-info v-else-if="itemCount === 0" :title="$t('no_results')" icon="search">
+			{{ $t('no_results_copy') }}
+
+			<template #append>
+				<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
+		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon">
+			{{ $t('no_items_copy') }}
+
+			<template #append>
+				<v-button :to="newLink">{{ $t('add_new_item') }}</v-button>
+			</template>
+		</v-info>
 	</div>
 </template>
 
@@ -165,7 +179,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		searchQuery: {
-			type: String,
+			type: String as PropType<string | null>,
 			default: null,
 		},
 		selectMode: {
@@ -187,9 +201,10 @@ export default defineComponent({
 		const _viewOptions = useSync(props, 'viewOptions', emit);
 		const _viewQuery = useSync(props, 'viewQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
+		const _searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
-		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
 			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
@@ -216,6 +231,15 @@ export default defineComponent({
 			tableSpacing,
 		} = useTable();
 
+		const newLink = computed(() => {
+			return render(props.detailRoute, {
+				project: currentProjectKey.value,
+				collection: collection.value,
+				primaryKey: '+',
+				item: null,
+			});
+		});
+
 		return {
 			_selection,
 			table,
@@ -238,7 +262,15 @@ export default defineComponent({
 			tableSpacing,
 			primaryKeyField,
 			_filters,
+			info,
+			newLink,
+			clearFilters,
 		};
+
+		function clearFilters() {
+			_filters.value = [];
+			_searchQuery.value = null;
+		}
 
 		function toPage(newPage: number) {
 			page.value = newPage;
