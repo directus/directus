@@ -50,6 +50,12 @@
 			</drawer-detail>
 		</portal>
 
+		<portal to="actions:prepend">
+			<transition name="fade">
+				<span class="item-count" v-if="totalCount">{{ showingCount }}</span>
+			</transition>
+		</portal>
+
 		<template v-if="loading || itemCount > 0">
 			<cards-header
 				:fields="availableFields"
@@ -140,6 +146,7 @@ import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { render } from 'micromustache';
 import useProjectsStore from '@/stores/projects';
 import CardsHeader from './components/header.vue';
+import i18n from '@/lang';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Item = Record<string, any>;
@@ -223,7 +230,7 @@ export default defineComponent({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useViewOptions();
 		const { sort, limit, page, fields } = useViewQuery();
 
-		const { items, loading, error, totalPages, itemCount } = useItems(collection, {
+		const { items, loading, error, totalPages, itemCount, totalCount } = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -238,6 +245,14 @@ export default defineComponent({
 				collection: collection.value,
 				primaryKey: '+',
 				item: null,
+			});
+		});
+
+		const showingCount = computed(() => {
+			return i18n.t('showing_start_end_of_count_items', {
+				start: i18n.n((+page.value - 1) * limit.value + 1),
+				end: i18n.n(Math.min(page.value * limit.value, totalCount.value || 0)),
+				count: i18n.n(totalCount.value || 0),
 			});
 		});
 
@@ -267,6 +282,8 @@ export default defineComponent({
 			newLink,
 			info,
 			clearFilters,
+			totalCount,
+			showingCount,
 		};
 
 		function toPage(newPage: number) {
@@ -429,5 +446,21 @@ export default defineComponent({
 			margin-right: 4px;
 		}
 	}
+}
+
+.item-count {
+	position: relative;
+	margin-right: 8px;
+	color: var(--foreground-subdued);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

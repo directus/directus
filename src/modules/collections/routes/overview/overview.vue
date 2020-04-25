@@ -21,7 +21,7 @@
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="$t('no_collections')">
+		<v-info icon="box" :title="$t('no_collections')" v-else>
 			<template v-if="isAdmin">
 				{{ $t('no_collections_copy_admin') }}
 			</template>

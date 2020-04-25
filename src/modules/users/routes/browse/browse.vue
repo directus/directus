@@ -11,6 +11,10 @@
 			<portal-target name="drawer" />
 		</template>
 
+		<template #actions:prepend>
+			<portal-target name="actions:prepend" />
+		</template>
+
 		<template #actions>
 			<search-input v-model="searchQuery" />
 

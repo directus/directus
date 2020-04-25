@@ -51,6 +51,14 @@
 			</drawer-detail>
 		</portal>
 
+		<portal to="actions:prepend">
+			<transition name="fade">
+				<span class="item-count" v-if="totalCount">
+					{{ showingCount }}
+				</span>
+			</transition>
+		</portal>
+
 		<v-table
 			v-model="_selection"
 			v-if="loading || itemCount > 0"
@@ -141,6 +149,7 @@ import useCollection from '@/compositions/use-collection';
 import useItems from '@/compositions/use-items';
 import { render } from 'micromustache';
 import { Filter } from '@/stores/collection-presets/types';
+import i18n from '@/lang';
 
 type ViewOptions = {
 	widths?: {
@@ -212,7 +221,7 @@ export default defineComponent({
 
 		const { sort, limit, page, fields } = useItemOptions();
 
-		const { items, loading, error, totalPages, itemCount } = useItems(collection, {
+		const { items, loading, error, totalPages, itemCount, totalCount } = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -237,6 +246,14 @@ export default defineComponent({
 				collection: collection.value,
 				primaryKey: '+',
 				item: null,
+			});
+		});
+
+		const showingCount = computed(() => {
+			return i18n.t('showing_start_end_of_count_items', {
+				start: i18n.n((+page.value - 1) * limit.value + 1),
+				end: i18n.n(Math.min(page.value * limit.value, totalCount.value || 0)),
+				count: i18n.n(totalCount.value || 0),
 			});
 		});
 
@@ -265,6 +282,8 @@ export default defineComponent({
 			info,
 			newLink,
 			clearFilters,
+			totalCount,
+			showingCount,
 		};
 
 		function clearFilters() {
@@ -533,5 +552,21 @@ export default defineComponent({
 	&:hover {
 		--v-icon-color: var(--foreground-normal);
 	}
+}
+
+.item-count {
+	position: relative;
+	margin-right: 8px;
+	color: var(--foreground-subdued);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

@@ -29,6 +29,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 	const error = ref(null);
 
 	const itemCount = ref<number>(null);
+	const totalCount = ref<number>(null);
 
 	const totalPages = computed(() => {
 		if (itemCount.value === null) return 1;
@@ -99,7 +100,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 	});
 
-	return { itemCount, items, totalPages, loading, error };
+	return { itemCount, totalCount, items, totalPages, loading, error };
 
 	async function getItems() {
 		const { currentProjectKey } = projectsStore.state;
@@ -203,16 +204,18 @@ export function useItems(collection: Ref<string>, options: Options) {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
-				meta: 'filter_count',
+				meta: 'filter_count,total_count',
 				...filtersToQuery(filters.value),
 			},
 		});
 
+		totalCount.value = response.data.meta.total_count;
 		itemCount.value = response.data.meta.filter_count;
 	}
 
 	function reset() {
 		items.value = [];
+		totalCount.value = null;
 		itemCount.value = null;
 	}
 

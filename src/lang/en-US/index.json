@@ -204,6 +204,8 @@
 	"delete_collection_success": "Deleted Collection",
 	"delete_collection_failed": "Couldn't Delete Collection",
 
+	"showing_start_end_of_count_items": "Showing {start}-{end} of {count} items",
+
 	"delete_collection_are_you_sure": "Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is permanent.",
 
 	"collections_shown": "Collections Shown",
