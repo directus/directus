@@ -8734,10 +8734,10 @@ jest-snapshot@^24.9.0:
     pretty-format "^24.9.0"
     semver "^6.2.0"
 
-jest-sonar@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/jest-sonar/-/jest-sonar-0.2.6.tgz#7dfc2ca23d038424fd7ef4520746ecf4f548e50e"
-  integrity sha512-VH4QBu0BxJOXYbW1mNcthppRdFRmGITN/P64k2fcy2bjOXnTp5WI7oNRM1yd0FWs4Yqwr9hL5ltX8yLey6Vepg==
+jest-sonar@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/jest-sonar/-/jest-sonar-0.2.7.tgz#376df243921b7dd17b73e90a60bc13284554a46a"
+  integrity sha512-0YHIf11A4haz4jGTnJfRcmzlEbPbR6IrpZsnxqejrJcP4C2/LBn0FoQrFt+cigBioMOZtR1oROgvHeqI/XmIKA==
   dependencies:
     entities "2.0.0"
     strip-ansi "5.2.0"
