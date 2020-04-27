@@ -68,13 +68,13 @@
 			show-resize
 			must-sort
 			:sort="tableSort"
-			:items.sync="items"
+			:items="items"
 			:loading="loading"
 			:headers.sync="tableHeaders"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
-			:show-manual-sort="sortField !== null"
+			:show-manual-sort="_filters.length === 0 && sortField !== null"
 			:manual-sort-key="sortField && sortField.field"
 			@click:row="onRowClick"
 			@update:sort="onSortChange"

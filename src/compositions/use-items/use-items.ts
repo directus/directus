@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import { Filter } from '@/stores/collection-presets/types';
 import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
+import moveInArray from '@/utils/move-in-array';
 
 type Options = {
 	limit: Ref<number>;
@@ -237,9 +238,8 @@ export function useItems(collection: Ref<string>, options: Options) {
 	};
 
 	async function changeManualSort({ item, oldIndex, newIndex }: ManualSortData) {
-		const sf = sortField.value?.field;
 		const pk = primaryKeyField.value?.field;
-		if (!pk || !sf) return;
+		if (!pk) return;
 
 		const move = newIndex > oldIndex ? 'down' : 'up';
 		const selectionRange =
@@ -247,7 +247,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const updates = items.value.slice(...selectionRange).map((toBeUpdatedItem: any) => {
-			const sortValue = toBeUpdatedItem[sf] || getPositionForItem(toBeUpdatedItem);
+			const sortValue = getPositionForItem(toBeUpdatedItem);
 
 			return {
 				[pk]: toBeUpdatedItem[pk],
@@ -255,11 +255,15 @@ export function useItems(collection: Ref<string>, options: Options) {
 			};
 		});
 
-		const sortOfItemOnNewIndex = items.value[newIndex][sf] || newIndex;
+		const sortOfItemOnNewIndex = newIndex + 1 + limit.value * (page.value - 1);
+
 		updates.push({
 			[pk]: item[pk],
 			sort: sortOfItemOnNewIndex,
 		});
+
+		// Reflect changes in local items array
+		items.value = moveInArray(items.value, oldIndex, newIndex);
 
 		// Save updates to items
 		await api.patch(endpoint.value, updates);
@@ -275,6 +279,6 @@ export function useItems(collection: Ref<string>, options: Options) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const index = items.value.findIndex((existingItem: any) => existingItem[pk] === item[pk]);
 
-		return index + limit.value * (page.value - 1);
+		return index + 1 + limit.value * (page.value - 1);
 	}
 }
