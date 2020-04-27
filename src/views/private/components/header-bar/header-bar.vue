@@ -109,6 +109,8 @@ export default defineComponent({
 		margin-left: 12px;
 
 		.title {
+			position: relative;
+			top: -2px;
 			display: flex;
 			align-items: center;
 		}

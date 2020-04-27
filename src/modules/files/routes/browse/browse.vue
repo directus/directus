@@ -115,9 +115,10 @@ export default defineComponent({
 						field: 'folder',
 						operator: 'eq',
 						value: currentFolder.value,
+						locked: true,
 					},
 					{
-						locked: 1,
+						locked: true,
 						field: 'type',
 						operator: 'nnull',
 						value: 1,
@@ -128,7 +129,7 @@ export default defineComponent({
 			return [
 				...filters.value,
 				{
-					locked: 1,
+					locked: true,
 					field: 'type',
 					operator: 'nnull',
 					value: 1,

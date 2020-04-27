@@ -3,7 +3,7 @@
 	<v-icon name="help_outline" v-else-if="!status" />
 	<div
 		v-else
-		class="badge"
+		class="badge type-text"
 		:style="{
 			backgroundColor: status.background_color,
 			color: status.text_color,
@@ -45,6 +45,7 @@ export default defineComponent({
 	padding: 8px;
 	color: var(--foreground-inverted);
 	line-height: 1;
+	vertical-align: middle;
 	border-radius: var(--border-radius);
 }
 </style>

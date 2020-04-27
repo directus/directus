@@ -62,13 +62,24 @@
 			<files-navigation />
 		</template>
 
-		<v-form
-			:loading="loading"
-			:initial-values="item"
-			collection="directus_files"
-			:batch-mode="isBatch"
-			v-model="edits"
-		/>
+		<div class="file-detail">
+			<file-preview
+				v-if="isBatch === false && item && item.data"
+				:src="item.data.full_url"
+				:mime="item.type"
+				:width="item.width"
+				:height="item.height"
+				:title="item.title"
+			/>
+
+			<v-form
+				:loading="loading"
+				:initial-values="item"
+				collection="directus_files"
+				:batch-mode="isBatch"
+				v-model="edits"
+			/>
+		</div>
 
 		<template #drawer>
 			<activity-drawer-detail
@@ -89,6 +100,7 @@ import router from '@/router';
 import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
 import useItem from '@/compositions/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import FilePreview from './components/file-preview.vue';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +109,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'files-detail',
-	components: { FilesNavigation, ActivityDrawerDetail, SaveOptions },
+	components: { FilesNavigation, ActivityDrawerDetail, SaveOptions, FilePreview },
 	props: {
 		primaryKey: {
 			type: String,
@@ -204,7 +216,7 @@ export default defineComponent({
 	--v-button-background-color: var(--background-normal);
 }
 
-.v-form {
+.file-detail {
 	padding: var(--content-padding);
 }
 </style>

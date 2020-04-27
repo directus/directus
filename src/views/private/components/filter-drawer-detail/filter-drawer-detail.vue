@@ -144,7 +144,9 @@ export default defineComponent({
 
 		const filters = computed<Filter[]>({
 			get() {
-				return localFilters.value;
+				return localFilters.value.filter((filter) => {
+					return filter.locked !== true;
+				});
 			},
 			set(newFilters) {
 				localFilters.value = newFilters;

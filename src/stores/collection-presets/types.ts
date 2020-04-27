@@ -25,6 +25,7 @@ export type Filter = {
 	field: string;
 	operator: FilterOperator;
 	value: string;
+	locked?: boolean;
 };
 
 export type CollectionPreset = {

@@ -111,7 +111,7 @@ export default defineComponent({
 			if (props.role !== null) {
 				return [
 					{
-						locked: 1,
+						locked: true,
 						field: 'role',
 						operator: 'eq',
 						value: props.role,
@@ -125,7 +125,7 @@ export default defineComponent({
 				// this field, we can ensure that the field data is fetched, which is needed to build
 				// out the navigation links
 				{
-					locked: 1,
+					locked: true,
 					field: 'role',
 					operator: 'nnull',
 					value: 1,
