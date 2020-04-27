@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import { version } from '../package.json';
 import './plugins';
 
 import i18n from './lang/';
@@ -23,3 +24,14 @@ new Vue({
 	router,
 	i18n,
 }).$mount('#app');
+
+console.log(
+	`%c
+
+        /▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+✨🐰✨ <  Directus v${version}
+        \\▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+
+`,
+	'color:Blue'
+);
