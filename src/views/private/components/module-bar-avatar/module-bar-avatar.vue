@@ -28,7 +28,7 @@
 
 		<router-link :to="userProfileLink">
 			<v-avatar tile x-large v-tooltip.right="userFullName">
-				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" />
+				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
 				<v-icon v-else name="account_circle" />
 			</v-avatar>
 		</router-link>
@@ -84,6 +84,14 @@ export default defineComponent({
 
 	.v-avatar {
 		--v-avatar-color: var(--module-background-alt);
+		.avatar-image {
+			opacity: 0.75;
+			transition: opacity var(--fast) var(--transition);
+
+			&:hover {
+				opacity: 1;
+			}
+		}
 	}
 }
 

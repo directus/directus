@@ -1,6 +1,7 @@
 <template>
 	<v-divider
 		:inline-title="false"
+		:class="{ margin: icon || title }"
 		:style="{
 			'--v-divider-color': color,
 			'--v-divider-label-color': color,
@@ -31,3 +32,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.margin {
+	margin-top: 48px;
+}
+</style>

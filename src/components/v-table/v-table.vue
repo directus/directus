@@ -409,8 +409,10 @@ body {
 				--v-progress-linear-height: 2px;
 				--v-progress-linear-color: var(--border-normal-alt);
 
-				position: relative;
+				position: absolute;
 				top: -2px;
+				left: 0;
+				width: 100%;
 			}
 
 			th {

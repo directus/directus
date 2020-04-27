@@ -5,7 +5,7 @@ import UsersDetail from './routes/detail/';
 
 export default defineModule(({ i18n }) => ({
 	id: 'users',
-	name: i18n.tc('user', 2),
+	name: i18n.tc('user_directory'),
 	icon: 'people',
 	routes: [
 		{

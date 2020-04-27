@@ -249,7 +249,7 @@ export default defineComponent({
 		});
 
 		const showingCount = computed(() => {
-			return i18n.t('showing_start_end_of_count_items', {
+			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
 				end: i18n.n(Math.min(page.value * limit.value, totalCount.value || 0)),
 				count: i18n.n(totalCount.value || 0),

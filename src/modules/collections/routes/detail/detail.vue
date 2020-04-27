@@ -30,18 +30,28 @@
 			>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
-			<v-button v-else class="header-icon" rounded icon secondary exact :to="backLink">
+			<v-button
+				v-else
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				exact
+				v-tooltip.bottom="$t('back')"
+				:to="backLink"
+			>
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-if="!isNew" v-model="confirmDelete">
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
 						class="action-delete"
+						v-tooltip.bottom="$t('delete_forever')"
 						:disabled="item === null"
 						@click="on"
 						v-if="collectionInfo.single === false"
@@ -64,12 +74,13 @@
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-if="softDeleteStatus" v-model="confirmSoftDelete">
+			<v-dialog v-if="softDeleteStatus && !isNew" v-model="confirmSoftDelete">
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
 						class="action-delete"
+						v-tooltip.bottom="$t('delete')"
 						:disabled="item === null"
 						@click="on"
 						v-if="collectionInfo.single === false"
@@ -101,6 +112,7 @@
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
+				v-tooltip.bottom="$t('save')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />

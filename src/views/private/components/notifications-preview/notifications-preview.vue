@@ -20,6 +20,7 @@
 		<drawer-button
 			:active="active"
 			@click="$emit('toggle', !active)"
+			v-tooltip.left="$t('notifications')"
 			class="toggle"
 			icon="notifications"
 		>

@@ -7,7 +7,6 @@
 	>
 		<v-icon name="search" />
 		<input ref="input" :value="value" @input="emitValue" />
-		<span class="value" v-if="value && !active">{{ value }}</span>
 		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
@@ -65,6 +64,16 @@ export default defineComponent({
 	cursor: pointer;
 	transition: width var(--slow) var(--transition);
 
+	.empty {
+		--v-icon-color: var(--foreground-subdued);
+
+		display: none;
+
+		&:hover {
+			--v-icon-color: var(--danger);
+		}
+	}
+
 	&:hover {
 		border-color: var(--border-normal-alt);
 	}
@@ -74,13 +83,24 @@ export default defineComponent({
 		border-color: var(--primary);
 	}
 
+	&.active {
+		width: 300px;
+
+		.empty {
+			display: block;
+		}
+	}
+
 	&.has-content {
 		width: 140px;
+
+		.empty {
+			display: block;
+		}
 	}
 }
 
 input {
-	display: none;
 	flex-grow: 1;
 	width: 0px;
 	height: 100%;
@@ -99,24 +119,5 @@ input {
 .v-icon {
 	margin: 0 8px;
 	cursor: pointer;
-}
-
-.empty {
-	--v-icon-color: var(--foreground-subdued);
-
-	display: none;
-
-	&:hover {
-		--v-icon-color: var(--danger);
-	}
-}
-
-.search-input.active {
-	width: 300px;
-
-	input,
-	.empty {
-		display: block;
-	}
 }
 </style>

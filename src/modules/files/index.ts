@@ -4,7 +4,7 @@ import FilesDetail from './routes/detail/';
 
 export default defineModule(({ i18n }) => ({
 	id: 'files',
-	name: i18n.t('files'),
+	name: i18n.t('file_library'),
 	icon: 'folder',
 	routes: [
 		{

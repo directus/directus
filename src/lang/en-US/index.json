@@ -138,6 +138,7 @@
 
 	"add_filter": "Add Filter",
 
+	"user_directory": "User Directory",
 	"help_and_docs": "Help & Docs",
 
 	"card_size": "Card Size",
@@ -207,7 +208,7 @@
 	"delete_collection_success": "Deleted Collection",
 	"delete_collection_failed": "Couldn't Delete Collection",
 
-	"showing_start_end_of_count_items": "Showing {start}-{end} of {count} items",
+	"start_end_of_count_items": "{start}-{end} of {count} items",
 
 	"delete_collection_are_you_sure": "Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is permanent.",
 
@@ -522,6 +523,7 @@
   "db_updated": "Database successfully updated",
   "default": "Default",
   "delete": "Delete",
+  "delete_forever": "Delete Forever",
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_bookmark": "Delete Bookmark",
   "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",
@@ -564,6 +566,7 @@
   "extension_error": "There was a problem loading the {ext} extension.",
   "extensions_missing": "No Extensions Found",
   "extensions_missing_copy": "Make sure you have the system extensions installed.",
+  "extra_spacing": "Extra Spacing",
   "fetching_data": "Fetching Data",
   "field": "Field | Fields",
   "field_already_exists": "Field Already Exists: {field}",
