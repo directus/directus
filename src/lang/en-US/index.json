@@ -146,6 +146,10 @@
 
 	"toggle_manual_sorting": "Toggle Manual Sorting",
 
+	"bookmark_doesnt_exist": "Bookmark Doesn't Exist",
+	"bookmark_doesnt_exist_copy": "The bookmark you're trying to open couldn't be found.",
+	"bookmark_doesnt_exist_cta": "Return to collection",
+
 	"errors": {
 		"3": "Only super admins have access to this",
 		"4": "Super Admin Token not provided",
@@ -802,7 +806,6 @@
   "update_confirm": "Are you sure you want to update {count} items?",
   "update_field": "Update Field",
   "upload_exceeds_max_size": "{filename} can't be uploaded. Your server is not configured to handle uploads of this size.",
-  "user_directory": "User Directory",
   "user_edit_warning": "{first_name} {last_name} is editing this item too. Please coordinate with them so you don't lose your changes.",
   "validation": "Validation",
   "value": "Value",

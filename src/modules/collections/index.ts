@@ -18,7 +18,10 @@ export default defineModule(({ i18n }) => ({
 			name: 'collections-browse',
 			path: '/:collection',
 			component: CollectionsBrowse,
-			props: true,
+			props: (route) => ({
+				collection: route.params.collection,
+				bookmark: route.query.bookmark,
+			}),
 		},
 		{
 			name: 'collections-detail',

@@ -127,6 +127,10 @@ export const useCollectionPresetsStore = createStore({
 			return collectionPreset;
 		},
 
+		getBookmark(bookmarkID: number) {
+			return this.state.collectionPresets.find((preset) => preset.id === bookmarkID) || null;
+		},
+
 		/**
 		 * Saves the given preset. If it's the default preset, it saves it as a new preset. If the
 		 * preset already exists, but doesn't have a user associated, it will create a preset for

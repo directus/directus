@@ -53,7 +53,23 @@
 			<collections-navigation />
 		</template>
 
+		<v-info
+			type="warning"
+			v-if="bookmark && bookmarkExists === false"
+			:title="$t('bookmark_doesnt_exist')"
+			icon="bookmark"
+		>
+			{{ $t('bookmark_doesnt_exist_copy') }}
+
+			<template #append>
+				<v-button :to="currentCollectionLink">
+					{{ $t('bookmark_doesnt_exist_cta') }}
+				</v-button>
+			</template>
+		</v-info>
+
 		<component
+			v-else
 			class="layout"
 			ref="layout"
 			:is="`layout-${viewType}`"
@@ -129,20 +145,31 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		bookmark: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
 		const layout = ref<LayoutComponent>(null);
 
 		const { collection } = toRefs(props);
+		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
 		const projectsStore = useProjectsStore();
 
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
-		const { addNewLink, batchLink, collectionsLink } = useLinks();
-		const { viewType, viewOptions, viewQuery, filters, searchQuery } = useCollectionPreset(
-			collection
-		);
+		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
+		const {
+			viewType,
+			viewOptions,
+			viewQuery,
+			filters,
+			searchQuery,
+			savePreset,
+			bookmarkExists,
+		} = useCollectionPreset(collection, bookmarkID);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		if (viewType.value === null) {
@@ -164,6 +191,9 @@ export default defineComponent({
 			viewQuery,
 			viewType,
 			searchQuery,
+			savePreset,
+			bookmarkExists,
+			currentCollectionLink,
 		};
 
 		function useSelection() {
@@ -229,7 +259,13 @@ export default defineComponent({
 				return `/${currentProjectKey}/collections`;
 			});
 
-			return { addNewLink, batchLink, collectionsLink };
+			const currentCollectionLink = computed<string>(() => {
+				const currentProjectKey = projectsStore.state.currentProjectKey;
+
+				return `/${currentProjectKey}/collections/${props.collection}`;
+			});
+
+			return { addNewLink, batchLink, collectionsLink, currentCollectionLink };
 		}
 	},
 });
@@ -258,5 +294,9 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
+}
+
+.v-info {
+	margin: 20vh 0;
 }
 </style>

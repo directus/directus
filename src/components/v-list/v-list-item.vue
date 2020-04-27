@@ -3,6 +3,7 @@
 		:is="component"
 		active-class="active"
 		class="v-list-item"
+		exact
 		:to="to"
 		:class="{
 			active,
