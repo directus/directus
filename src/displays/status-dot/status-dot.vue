@@ -43,6 +43,7 @@ export default defineComponent({
 	width: 12px;
 	height: 12px;
 	margin: 0 4px;
+	vertical-align: middle;
 	border-radius: 6px;
 }
 </style>

@@ -200,7 +200,7 @@ export default defineComponent({
 			--v-icon-color: var(--foreground-subdued);
 		}
 
-		::v-deep .v-skeleton-loader {
+		.v-skeleton-loader {
 			position: absolute;
 			top: 0;
 			left: 0;

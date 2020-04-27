@@ -13,6 +13,7 @@ export interface CollectionRaw {
 	managed: boolean;
 	icon: string | null;
 	translation: Translation[] | null;
+	display_template: string | null;
 }
 
 export interface Collection extends CollectionRaw {

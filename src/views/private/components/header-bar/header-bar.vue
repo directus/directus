@@ -11,9 +11,11 @@
 		<div class="title-container">
 			<slot name="headline" />
 			<div class="title">
-				<slot name="title:prepend" />
-				<h1 class="type-title">{{ title }}</h1>
-				<slot name="title:append" />
+				<slot name="title">
+					<slot name="title:prepend" />
+					<h1 class="type-title">{{ title }}</h1>
+					<slot name="title:append" />
+				</slot>
 			</div>
 		</div>
 
@@ -38,7 +40,7 @@ export default defineComponent({
 	props: {
 		title: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	setup() {

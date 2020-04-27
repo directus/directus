@@ -147,6 +147,7 @@
 		"3": "Only super admins have access to this",
 		"4": "Super Admin Token not provided",
 		"11": "Can't Reach Database",
+		"12": "Field has invalid regular expression",
 		"100": "Incorrect Email/Password",
 		"101": "Logged-out from Inactivity",
 		"102": "Logged-out from Inactivity",
@@ -375,6 +376,9 @@
 	"statuses_not_configured": "Status mapping option configured incorrectly",
 	"status_mapping": "Status Mapping",
 
+	"adding_in": "Adding New Item in {collection}",
+	"editing_in": "Editing Item in {collection}",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",
@@ -535,7 +539,6 @@
   "drop_files": "Can't Drop Files | Drop file here... | Drop files here...",
   "duplicate": "Duplicate",
   "duplicating_field": "Duplicating Field",
-  "editing": "Editing Item: {collection}",
   "editing_item": "Editing Item",
   "editing_items": "Batch Editing {count} Items",
   "editing_my_profile": "Editing My Profile",

@@ -1,7 +1,7 @@
-<template functional>
+<template>
 	<transition name="fade">
-		<div class="v-skeleton-loader" :class="props.type">
-			<template v-if="props.type === 'list-item-icon'">
+		<div :class="type" class="v-skeleton-loader">
+			<template v-if="type === 'list-item-icon'">
 				<div class="icon" />
 				<div class="text" />
 			</template>

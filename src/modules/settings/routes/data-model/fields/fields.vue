@@ -82,6 +82,7 @@ import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import useItem from '@/compositions/use-item';
 import router from '@/router';
+import useCollectionsStore from '@/stores/collections';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -96,6 +97,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { info: collectionInfo, fields } = useCollection(collection);
 		const { currentProjectKey } = toRefs(projectsStore.state);
+		const collectionsStore = useCollectionsStore();
 
 		const breadcrumb = computed(() => {
 			return [
@@ -152,6 +154,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
+			await collectionsStore.hydrate();
 			router.push(`/${currentProjectKey.value}/settings/data-model`);
 		}
 	},

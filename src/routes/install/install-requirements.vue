@@ -146,7 +146,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-notice,
-::v-deep .v-skeleton-loader {
+.v-skeleton-loader {
 	margin-bottom: 12px;
 }
 </style>

@@ -356,7 +356,7 @@ body {
 .interface {
 	position: relative;
 
-	::v-deep .v-skeleton-loader {
+	.v-skeleton-loader {
 		position: absolute;
 		top: 0;
 		left: 0;

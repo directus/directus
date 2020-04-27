@@ -3,11 +3,22 @@
 	<private-view
 		v-else
 		:title="
-			$t(collectionInfo.single ? 'editing_single' : 'editing', {
-				collection: collectionInfo.name,
-			})
+			isNew
+				? $t('adding_in', { collection: collectionInfo.name })
+				: $t('editing_in', { collection: collectionInfo.name })
 		"
 	>
+		<template #title v-if="isNew === false && collectionInfo.display_template">
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
+			<h1 class="type-title" v-else>
+				<render-template
+					:collection="collectionInfo.collection"
+					:item="templateValues"
+					:template="collectionInfo.display_template"
+				/>
+			</h1>
+		</template>
+
 		<template #title-outer:prepend>
 			<v-button
 				v-if="collectionInfo.single"
@@ -190,6 +201,13 @@ export default defineComponent({
 			() => `/${currentProjectKey.value}/collections/${collection.value}/`
 		);
 
+		const templateValues = computed(() => {
+			return {
+				...(item.value || {}),
+				...edits.value,
+			};
+		});
+
 		return {
 			item,
 			loading,
@@ -211,6 +229,7 @@ export default defineComponent({
 			saveAsCopyAndNavigate,
 			isBatch,
 			softDeleteStatus,
+			templateValues,
 		};
 
 		async function saveAndQuit() {
@@ -267,5 +286,9 @@ export default defineComponent({
 
 .v-form {
 	padding: var(--content-padding);
+}
+
+.title-loader {
+	width: 260px;
 }
 </style>

@@ -52,7 +52,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-skeleton-loader {
+.v-skeleton-loader {
 	--v-skeleton-loader-background-color: var(--background-normal-alt);
 }
 

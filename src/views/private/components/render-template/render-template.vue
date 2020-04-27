@@ -1,11 +1,12 @@
 <template>
 	<div class="render-template">
 		<template v-for="(part, index) in parts">
+			<span :key="index" v-if="part === null || part.value === null" class="subdued">--</span>
 			<component
-				v-if="part !== null && typeof part === 'object'"
+				v-else-if="typeof part === 'object'"
 				:is="`display-${part.component}`"
 				:key="index"
-				:value="part.value"
+				:value="part.value === null ? '--' : part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				v-bind="part.options"
@@ -90,5 +91,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .render-template {
 	display: contents;
+}
+
+.subdued {
+	color: var(--foreground-subdued);
 }
 </style>

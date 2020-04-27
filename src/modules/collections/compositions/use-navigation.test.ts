@@ -25,6 +25,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				managed: true,
 				single: false,
 				translation: null,
+				display_template: null,
 			},
 		];
 
@@ -60,6 +61,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				managed: true,
 				single: false,
 				translation: null,
+				display_template: null,
 			},
 			{
 				collection: 'test2',
@@ -70,6 +72,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				managed: true,
 				single: false,
 				translation: null,
+				display_template: null,
 			},
 			{
 				collection: 'test3',
@@ -80,6 +83,7 @@ describe('Modules / Collections / Compositions / useNavigation', () => {
 				managed: true,
 				single: false,
 				translation: null,
+				display_template: null,
 			},
 		];
 
