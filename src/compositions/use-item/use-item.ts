@@ -184,7 +184,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 		try {
 			if (soft) {
-				if (statusField.value === undefined || softDeleteStatus.value === null) {
+				if (!statusField.value || softDeleteStatus.value === null) {
 					throw new Error('[useItem] You cant soft-delete without a status field');
 				}
 

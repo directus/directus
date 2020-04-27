@@ -215,46 +215,6 @@ describe('Table / Header', () => {
 		);
 	});
 
-	it('Toggles between manual and non-manual sort', async () => {
-		component.setProps({
-			showManualSort: true,
-			sort: {
-				by: null,
-				desc: false,
-			},
-		});
-
-		await component.vm.$nextTick();
-
-		component.find('.manual.cell').trigger('click');
-
-		expect(component.emitted('update:sort')?.[0]).toEqual([
-			{
-				by: '$manual',
-				desc: false,
-			},
-		]);
-
-		component.setProps({
-			showManualSort: true,
-			sort: {
-				by: '$manual',
-				desc: false,
-			},
-		});
-
-		await component.vm.$nextTick();
-
-		component.find('.manual.cell').trigger('click');
-
-		expect(component.emitted('update:sort')?.[1]).toEqual([
-			{
-				by: null,
-				desc: false,
-			},
-		]);
-	});
-
 	it('Sets the dragging state correctly based on mouse interaction', async () => {
 		component.setProps({
 			showResize: true,

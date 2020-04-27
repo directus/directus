@@ -132,17 +132,13 @@ export default defineComponent({
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--background-normal-alt);
+		--v-icon-color: var(--foreground-subdued);
 
-		&:hover {
-			.sorted-manually {
-				--v-icon-color: var(--foreground-normal);
+		&.sorted-manually {
+			--v-icon-color: var(--foreground-normal);
 
-				&:hover {
-					--v-icon-color: var(--foreground-subdued);
-
-					cursor: ns-resize;
-				}
+			&:hover {
+				cursor: ns-resize;
 			}
 		}
 	}

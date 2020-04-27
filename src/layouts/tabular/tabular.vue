@@ -68,14 +68,17 @@
 			show-resize
 			must-sort
 			:sort="tableSort"
-			:items="items"
+			:items.sync="items"
 			:loading="loading"
 			:headers.sync="tableHeaders"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField && sortField.field"
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
+			@manual-sort="changeManualSort"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<span :key="header.value" v-if="!header.field.display">
@@ -213,7 +216,9 @@ export default defineComponent({
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
-		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(
+			collection
+		);
 
 		const availableFields = computed(() =>
 			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
@@ -221,7 +226,15 @@ export default defineComponent({
 
 		const { sort, limit, page, fields } = useItemOptions();
 
-		const { items, loading, error, totalPages, itemCount, totalCount } = useItems(collection, {
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+		} = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -284,6 +297,8 @@ export default defineComponent({
 			clearFilters,
 			totalCount,
 			showingCount,
+			sortField,
+			changeManualSort,
 		};
 
 		function clearFilters() {

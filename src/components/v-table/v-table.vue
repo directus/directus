@@ -17,6 +17,7 @@
 				:show-manual-sort="showManualSort"
 				:must-sort="mustSort"
 				:has-item-append-slot="hasItemAppendSlot"
+				:manual-sort-key="manualSortKey"
 				@toggle-select-all="onToggleSelectAll"
 			>
 				<template v-for="header in _headers" #[`header.${header.value}`]>
@@ -38,8 +39,8 @@
 				v-model="_items"
 				tag="tbody"
 				handle=".drag-handle"
-				:disabled="_sort.by !== '$manual'"
-				@end="onEndDrag"
+				:disabled="_sort.by !== manualSortKey"
+				@change="onSortChange"
 			>
 				<table-row
 					v-for="item in _items"
@@ -50,7 +51,7 @@
 					:show-manual-sort="showManualSort"
 					:is-selected="getSelectedState(item)"
 					:subdued="loading"
-					:sorted-manually="_sort.by === '$manual'"
+					:sorted-manually="_sort.by === manualSortKey"
 					:has-click-listener="hasRowClick"
 					:height="rowHeight"
 					@click="hasRowClick ? $emit('click:row', item) : null"
@@ -129,6 +130,10 @@ export default defineComponent({
 		showManualSort: {
 			type: Boolean,
 			default: false,
+		},
+		manualSortKey: {
+			type: String,
+			default: null,
 		},
 		selection: {
 			type: Array as PropType<Item[]>,
@@ -221,7 +226,7 @@ export default defineComponent({
 
 		const _items = computed({
 			get: () => {
-				if (props.serverSort === true || _sort.value.by === '$manual') {
+				if (props.serverSort === true || _sort.value.by === props.manualSortKey) {
 					return props.items;
 				}
 
@@ -272,7 +277,7 @@ export default defineComponent({
 			onItemSelected,
 			onToggleSelectAll,
 			someItemsSelected,
-			onEndDrag,
+			onSortChange,
 			hasRowClick,
 			loadingColSpan,
 			columnStyle,
@@ -310,13 +315,23 @@ export default defineComponent({
 			}
 		}
 
-		interface VueDraggableDropEvent extends CustomEvent {
-			oldIndex: number;
-			newIndex: number;
+		interface VueDraggableChangeEvent extends CustomEvent {
+			moved?: {
+				oldIndex: number;
+				newIndex: number;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				element: Record<string, any>;
+			};
 		}
 
-		function onEndDrag(event: VueDraggableDropEvent) {
-			emit('drop', { oldIndex: event.oldIndex, newIndex: event.newIndex });
+		function onSortChange(event: VueDraggableChangeEvent) {
+			if (event.moved) {
+				emit('manual-sort', {
+					item: event.moved.element,
+					oldIndex: event.moved.oldIndex,
+					newIndex: event.moved.newIndex,
+				});
+			}
 		}
 	},
 });

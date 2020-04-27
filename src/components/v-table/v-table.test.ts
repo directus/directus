@@ -726,15 +726,4 @@ describe('Table', () => {
 			],
 		]);
 	});
-
-	it('Passes on indexes from VueDraggable drop event', async () => {
-		(component.vm as any).onEndDrag({
-			oldIndex: 0,
-			newIndex: 5,
-		});
-
-		await component.vm.$nextTick();
-
-		expect(component.emitted('drop')?.[0]).toEqual([{ oldIndex: 0, newIndex: 5 }]);
-	});
 });

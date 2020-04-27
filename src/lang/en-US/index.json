@@ -143,6 +143,8 @@
 	"card_size": "Card Size",
 	"sort_field": "Sort Field",
 
+	"toggle_manual_sorting": "Toggle Manual Sorting",
+
 	"errors": {
 		"3": "Only super admins have access to this",
 		"4": "Super Admin Token not provided",
@@ -549,7 +551,6 @@
   "embed_placeholder": "YouTube, Vimeo, or other link",
   "empty_collection": "Empty Collection",
   "empty_collection_body": "There are no items in this collection yet",
-  "enable_manual_sorting": "Enable Manual Sorting",
   "enter_collection_name": "Enter collection name...",
   "enter_otp": "Please enter the one-time-password (OTP) from your authenticator app.",
   "enter_role_name": "Enter role name...",

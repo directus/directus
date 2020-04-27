@@ -1,8 +1,14 @@
 <template>
 	<thead class="table-header" :class="{ dragging }">
 		<tr :class="{ fixed }">
-			<th v-if="showManualSort" class="manual cell" @click="toggleManualSort" scope="col">
-				<v-icon name="sort" class="drag-handle" small />
+			<th
+				v-if="showManualSort"
+				class="manual cell"
+				:class="{ 'sorted-manually': sort.by === manualSortKey }"
+				@click="toggleManualSort"
+				scope="col"
+			>
+				<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small />
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
@@ -89,6 +95,10 @@ export default defineComponent({
 		hasItemAppendSlot: {
 			type: Boolean,
 			default: false,
+		},
+		manualSortKey: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -205,14 +215,14 @@ export default defineComponent({
 		}
 
 		function toggleManualSort() {
-			if (props.sort.by === '$manual') {
+			if (props.sort.by === props.manualSortKey) {
 				emit('update:sort', {
 					by: null,
 					desc: false,
 				});
 			} else {
 				emit('update:sort', {
-					by: '$manual',
+					by: props.manualSortKey,
 					desc: false,
 				});
 			}
@@ -293,6 +303,20 @@ export default defineComponent({
 		position: sticky;
 		top: var(--v-table-sticky-offset-top);
 		z-index: 2;
+	}
+
+	.manual {
+		color: var(--foreground-subdued);
+		cursor: pointer;
+
+		.v-icon {
+			position: relative;
+			left: 2px;
+		}
+
+		&.sorted-manually {
+			color: var(--foreground-normal);
+		}
 	}
 
 	.resize-handle {

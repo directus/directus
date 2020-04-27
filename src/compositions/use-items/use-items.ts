@@ -19,9 +19,16 @@ type Options = {
 
 export function useItems(collection: Ref<string>, options: Options) {
 	const projectsStore = useProjectsStore();
-	const { primaryKeyField } = useCollection(collection);
+	const { primaryKeyField, sortField } = useCollection(collection);
 
 	const { limit, fields, sort, page, filters, searchQuery } = options;
+
+	const endpoint = computed(() => {
+		const { currentProjectKey } = projectsStore.state;
+		return collection.value.startsWith('directus_')
+			? `/${currentProjectKey}/${collection.value.substring(9)}`
+			: `/${currentProjectKey}/items/${collection.value}`;
+	});
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const items = ref<any>([]);
@@ -100,10 +107,9 @@ export function useItems(collection: Ref<string>, options: Options) {
 		}
 	});
 
-	return { itemCount, totalCount, items, totalPages, loading, error };
+	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort };
 
 	async function getItems() {
-		const { currentProjectKey } = projectsStore.state;
 		loading.value = true;
 
 		let fieldsToFetch = [...fields.value];
@@ -126,6 +132,14 @@ export function useItems(collection: Ref<string>, options: Options) {
 			});
 		}
 
+		// Make sure that the field we're sorting on is fetched
+		if (fields.value !== ['*'] && sortField.value && sort.value) {
+			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
+			if (fieldsToFetch.includes(sortFieldKey) === false) {
+				fieldsToFetch.push(sortFieldKey);
+			}
+		}
+
 		// Make sure we always fetch the image data for the directus_files collection when opening
 		// the file library
 		if (collection.value === 'directus_files' && fieldsToFetch.includes('data') === false) {
@@ -137,11 +151,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			const endpoint = collection.value.startsWith('directus_')
-				? `/${currentProjectKey}/${collection.value.substring(9)}`
-				: `/${currentProjectKey}/items/${collection.value}`;
-
-			const response = await api.get(endpoint, {
+			const response = await api.get(endpoint.value, {
 				params: {
 					limit: limit.value,
 					fields: fieldsToFetch,
@@ -194,13 +204,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 	async function getItemCount() {
 		if (!primaryKeyField.value) return;
 
-		const { currentProjectKey } = projectsStore.state;
-
-		const endpoint = collection.value.startsWith('directus_')
-			? `/${currentProjectKey}/${collection.value.substring(9)}`
-			: `/${currentProjectKey}/items/${collection.value}`;
-
-		const response = await api.get(endpoint, {
+		const response = await api.get(endpoint.value, {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
@@ -223,5 +227,54 @@ export function useItems(collection: Ref<string>, options: Options) {
 		const field = sortBy.startsWith('-') ? sortBy.substring(1) : sortBy;
 		const descending = sortBy.startsWith('-');
 		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
+	}
+
+	type ManualSortData = {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		item: Record<string, any>;
+		oldIndex: number;
+		newIndex: number;
+	};
+
+	async function changeManualSort({ item, oldIndex, newIndex }: ManualSortData) {
+		const sf = sortField.value?.field;
+		const pk = primaryKeyField.value?.field;
+		if (!pk || !sf) return;
+
+		const move = newIndex > oldIndex ? 'down' : 'up';
+		const selectionRange =
+			move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const updates = items.value.slice(...selectionRange).map((toBeUpdatedItem: any) => {
+			const sortValue = toBeUpdatedItem[sf] || getPositionForItem(toBeUpdatedItem);
+
+			return {
+				[pk]: toBeUpdatedItem[pk],
+				sort: move === 'down' ? sortValue - 1 : sortValue + 1,
+			};
+		});
+
+		const sortOfItemOnNewIndex = items.value[newIndex][sf] || newIndex;
+		updates.push({
+			[pk]: item[pk],
+			sort: sortOfItemOnNewIndex,
+		});
+
+		// Save updates to items
+		await api.patch(endpoint.value, updates);
+	}
+
+	// Used as default value for the sort position. This is the index of the given item in the array
+	// of items, offset by the page count and current page
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	function getPositionForItem(item: any) {
+		const pk = primaryKeyField.value?.field;
+		if (!pk) return;
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const index = items.value.findIndex((existingItem: any) => existingItem[pk] === item[pk]);
+
+		return index + limit.value * (page.value - 1);
 	}
 }
