@@ -79,7 +79,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "html-loader": "^1.1.0",
     "jest-sonar": "^0.2.7",
-    "lint-staged": "^10.1.7",
+    "lint-staged": "^10.2.0",
     "mockdate": "^2.0.5",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
