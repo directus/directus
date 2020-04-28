@@ -2,10 +2,10 @@ blank_issues_enabled: false
 contact_links:
   - name: Report App Bug
     url: https://github.com/directus/app/issues/new?labels=bug&template=bug_report.md
-    about: Ask questions and discuss with other community members
+    about: Report a bug in the Application and track its resolution
   - name: Report API Bug
     url: https://github.com/directus/api/issues/new?labels=bug&template=bug_report.md
-    about: Ask questions and discuss with other community members
+    about: Report a bug in the API and track its resolution
   - name: Request Feature
     url: https://github.com/directus/directus/discussions/new
     about: Request a feature to be added to the platform
