@@ -7,5 +7,5 @@ contact_links:
     url: https://github.com/directus/directus/discussions/new
     about: Ask questions and discuss with other community members
   - name: Report Security Vulnerability
-    url: support@directus.io?subject=Directus+Security+Vulnerability
+    url: support@directus.io
     about: Please report security vulnerabilities here
