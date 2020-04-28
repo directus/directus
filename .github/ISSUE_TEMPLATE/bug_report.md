@@ -1,44 +1,22 @@
 ---
-name: Bug Report
+name: Report Bug
 about: Report a bug and track its resolution
+title: ''
+labels: 'bug'
+assignees: ''
 
 ---
 
 <!--
-For security issues, please email support@directus.io directly
 
-1. Do not delete this template or the issue will be closed
-2. Ensure you're using the latest version of Directus
-3. Post to the correct repo:
-    Global:  https://github.com/directus/directus (YOU ARE HERE)
-    App:     https://github.com/directus/app
-    API:     https://github.com/directus/api
-    Docs:    https://github.com/directus/docs
+Hello, and thank you for taking the time to notify the community of this issue. Please be as detailed as possible so that we can resolve the problem efficiently, including...
+
+• Version of Directus
+• Server, OS & Database Details
+• Error Messages
+• Steps to Reproduce
+• Relevant Info, Screenshots, Schema & Logs
+
+🐰
+
 -->
-
-# Bug Report
-
-## Steps to Reproduce
-
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '...'
-4. See error
-
-## Expected Behavior
-
-## Actual Behavior
-
-## Other Context & Screenshots
-
-<!-- Any other relevant information, screenshots, or schema files to help explain your problem -->
-
-## Technical Details
-
-- Device: [eg: Desktop, iPhone6, etc]
-- OS: [eg: MacOS 10.13.6, Windows 10.1803]
-- Web Server: [eg: Apache 2.4.37]
-- PHP Version: [eg: 7.2.0]
-- Database: [eg: MySQL 8.0.12]
-- Directus Release Version: [eg: v8.0.0-rc.1]
-- Install Method: [eg: cloned `master` branch]
