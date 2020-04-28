@@ -1,18 +1,19 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug Report
+about: Report a bug and track its resolution
 
 ---
 
 <!--
-For security issues, please email support@directus.io directly.
+For security issues, please email support@directus.io directly
 
 1. Do not delete this template or the issue will be closed
 2. Ensure you're using the latest version of Directus
 3. Post to the correct repo:
-    App:  https://github.com/directus/app/issues
-    API:  https://github.com/directus/api/issues (YOU ARE HERE)
-    Docs: https://github.com/directus/docs/issues
+    Global:  https://github.com/directus/directus (YOU ARE HERE)
+    App:     https://github.com/directus/app
+    API:     https://github.com/directus/api
+    Docs:    https://github.com/directus/docs
 -->
 
 # Bug Report
@@ -40,6 +41,4 @@ For security issues, please email support@directus.io directly.
 - PHP Version: [eg: 7.2.0]
 - Database: [eg: MySQL 8.0.12]
 - Directus Release Version: [eg: v8.0.0-rc.1]
-  - App Version: [eg: 7.11.0] (include if Directus Release Version <=`190927A`)
-  - API Version: [eg: 2.6.0] (include if Directus Release Version <=`190927A`)
 - Install Method: [eg: cloned `master` branch]
