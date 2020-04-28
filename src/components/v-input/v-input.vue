@@ -92,10 +92,6 @@ export default defineComponent({
 			type: String,
 			default: 'text',
 		},
-		trim: {
-			type: Boolean,
-			default: true,
-		},
 		// For number inputs only
 		max: {
 			type: Number,
@@ -129,8 +125,6 @@ export default defineComponent({
 
 			if (props.slug === true) {
 				value = slugify(value, { separator: props.slugSeparator });
-			} else if (props.trim === true) {
-				value = value.trim();
 			}
 
 			emit('input', value);
