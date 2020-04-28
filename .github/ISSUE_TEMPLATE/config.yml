@@ -1,9 +1,9 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report App Bug
+  - name: Report Bug (App)
     url: https://github.com/directus/app/issues/new?labels=bug&template=bug_report.md
     about: Report a bug in the Application and track its resolution
-  - name: Report API Bug
+  - name: Report Bug (API)
     url: https://github.com/directus/api/issues/new?labels=bug&template=bug_report.md
     about: Report a bug in the API and track its resolution
   - name: Request Feature
