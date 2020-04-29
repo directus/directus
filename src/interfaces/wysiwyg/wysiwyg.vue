@@ -25,8 +25,6 @@ import 'tinymce/plugins/directionality/plugin';
 
 import Editor from '@tinymce/tinymce-vue';
 
-import { debounce } from 'lodash';
-
 import getEditorStyles from './get-editor-styles';
 
 type CustomFormat = {

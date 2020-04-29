@@ -65,12 +65,22 @@
 		<div class="file-detail">
 			<file-preview
 				v-if="isBatch === false && item && item.data"
-				:src="item.data.full_url"
+				:src="`${item.data.full_url}?cache-buster=${cacheBuster}`"
 				:mime="item.type"
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
 			/>
+
+			<image-editor
+				v-if="item && item.type.startsWith('image')"
+				:id="item.id"
+				@refresh="changeCacheBuster"
+			>
+				<template #activator="{ on }">
+					<v-button @click="on">Edit</v-button>
+				</template>
+			</image-editor>
 
 			<v-form
 				:loading="loading"
@@ -101,6 +111,8 @@ import ActivityDrawerDetail from '@/views/private/components/activity-drawer-det
 import useItem from '@/compositions/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from './components/file-preview.vue';
+import ImageEditor from '@/views/private/components/image-editor';
+import { nanoid } from 'nanoid';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,7 +121,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'files-detail',
-	components: { FilesNavigation, ActivityDrawerDetail, SaveOptions, FilePreview },
+	components: { FilesNavigation, ActivityDrawerDetail, SaveOptions, FilePreview, ImageEditor },
 	props: {
 		primaryKey: {
 			type: String,
@@ -140,6 +152,8 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
+		const cacheBuster = ref(nanoid());
+
 		return {
 			item,
 			loading,
@@ -157,7 +171,13 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
+			changeCacheBuster,
+			cacheBuster,
 		};
+
+		function changeCacheBuster() {
+			cacheBuster.value = nanoid();
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [

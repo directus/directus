@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', $event)" :persistent="persistent">
+	<v-dialog v-model="_active" :persistent="persistent">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
@@ -12,7 +12,7 @@
 				<div class="spacer" />
 				<v-icon name="" />
 			</header>
-			<div class="content">
+			<div class="content" :class="{ 'no-padding': noPadding }">
 				<v-overlay
 					v-if="$slots.sidebar"
 					absolute
@@ -32,14 +32,14 @@
 				</main>
 			</div>
 			<footer class="footer" v-if="$slots.footer || $scopedSlots.footer">
-				<slot name="footer" v-bind="{ close: () => $emit('toggle', false) }" />
+				<slot name="footer" v-bind="{ close: () => (_active = false) }" />
 			</footer>
 		</article>
 	</v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 
 export default defineComponent({
 	model: {
@@ -57,17 +57,33 @@ export default defineComponent({
 		},
 		active: {
 			type: Boolean,
-			default: true,
+			default: undefined,
 		},
 		persistent: {
 			type: Boolean,
 			default: false,
 		},
+		noPadding: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup() {
+	setup(props, { emit }) {
 		const sidebarActive = ref(false);
 
-		return { sidebarActive };
+		const localActive = ref(false);
+
+		const _active = computed({
+			get() {
+				return props.active === undefined ? localActive.value : props.active;
+			},
+			set(newActive: boolean) {
+				localActive.value = newActive;
+				emit('toggle', newActive);
+			},
+		});
+
+		return { sidebarActive, _active };
 	},
 });
 </script>
@@ -164,6 +180,10 @@ export default defineComponent({
 			@include breakpoint(medium) {
 				padding: 32px;
 			}
+		}
+
+		&.no-padding .main {
+			padding: 0px;
 		}
 	}
 

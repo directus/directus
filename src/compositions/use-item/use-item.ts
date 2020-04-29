@@ -44,6 +44,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		softDeleting,
 		saveAsCopy,
 		isBatch,
+		getItem,
 	};
 
 	async function getItem() {

@@ -205,6 +205,14 @@
 
 	"back": "Back",
 
+	"editing_image": "Editing Image...",
+	"square": "Square",
+	"free": "Free",
+	"flip_horizontal": "Flip Horizontal",
+	"flip_vertical": "Flip Vertical",
+	"aspect_ratio": "Aspect Ratio",
+	"rotate": "Rotate",
+
 	"project_info": "Project Information",
 
 	"database_connection": "Database Connection",

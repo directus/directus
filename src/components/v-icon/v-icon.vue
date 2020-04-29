@@ -25,6 +25,8 @@ import CustomIconGrid6 from './custom-icons/grid_6.vue';
 import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
+import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
+import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 
 const customIcons: string[] = [
 	'box',
@@ -37,6 +39,8 @@ const customIcons: string[] = [
 	'signal_wifi_1_bar',
 	'signal_wifi_2_bar',
 	'signal_wifi_3_bar',
+	'flip_horizontal',
+	'flip_vertical',
 ];
 
 export default defineComponent({
@@ -51,6 +55,8 @@ export default defineComponent({
 		CustomIconSignalWifi1Bar,
 		CustomIconSignalWifi2Bar,
 		CustomIconSignalWifi3Bar,
+		CustomIconFlipHorizontal,
+		CustomIconFlipVertical,
 	},
 	props: {
 		name: {
