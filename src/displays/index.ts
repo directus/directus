@@ -4,6 +4,7 @@ import DisplayStatusDot from './status-dot/';
 import DisplayStatusBadge from './status-badge/';
 import DisplayTags from './tags/';
 import DisplayFormattedText from './formatted-text';
+import DisplayImage from './image';
 
 export const displays = [
 	DisplayIcon,
@@ -12,5 +13,6 @@ export const displays = [
 	DisplayStatusBadge,
 	DisplayTags,
 	DisplayFormattedText,
+	DisplayImage,
 ];
 export default displays;

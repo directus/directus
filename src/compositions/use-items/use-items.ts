@@ -9,7 +9,7 @@ import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
 
-type Options = {
+type Query = {
 	limit: Ref<number>;
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
@@ -18,11 +18,11 @@ type Options = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, options: Options) {
+export function useItems(collection: Ref<string>, query: Query) {
 	const projectsStore = useProjectsStore();
 	const { primaryKeyField, sortField } = useCollection(collection);
 
-	const { limit, fields, sort, page, filters, searchQuery } = options;
+	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
 		const { currentProjectKey } = projectsStore.state;
@@ -52,7 +52,7 @@ export function useItems(collection: Ref<string>, options: Options) {
 			return;
 		}
 
-		// Waiting for the tick here makes sure the options have been adjusted for the new
+		// Waiting for the tick here makes sure the query have been adjusted for the new
 		// collection
 		await Vue.nextTick();
 		reset();

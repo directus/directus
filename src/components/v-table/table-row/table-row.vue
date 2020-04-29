@@ -5,7 +5,7 @@
 		@click="$emit('click', $event)"
 		:style="{
 			'--table-row-height': height + 2 + 'px',
-			'--table-row-line-height': height + 'px',
+			'--table-row-line-height': 1,
 		}"
 	>
 		<td v-if="showManualSort" class="manual cell">
@@ -102,9 +102,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .table-row {
+	height: var(--table-row-height);
+
 	.cell {
-		height: var(--table-row-height);
-		padding: 0 0 0 12px;
+		display: flex;
+		align-items: center;
+		padding: 8px 0;
+		padding-left: 12px;
 		overflow: hidden;
 		line-height: var(--table-row-line-height);
 		white-space: nowrap;

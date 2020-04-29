@@ -147,6 +147,7 @@ import { render } from 'micromustache';
 import useProjectsStore from '@/stores/projects';
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Item = Record<string, any>;
@@ -345,21 +346,26 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.data`);
 				}
 
-				if (title.value) {
-					fields.push(...getFieldsFromTemplate(title.value));
-				}
-
-				if (subtitle.value) {
-					fields.push(...getFieldsFromTemplate(subtitle.value));
-				}
-
 				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
 
 				if (fields.includes(sortField) === false) {
 					fields.push(sortField);
 				}
 
-				return fields;
+				const titleSubtitleFields: string[] = [];
+
+				if (title.value) {
+					titleSubtitleFields.push(...getFieldsFromTemplate(title.value));
+				}
+
+				if (subtitle.value) {
+					titleSubtitleFields.push(...getFieldsFromTemplate(subtitle.value));
+				}
+
+				return [
+					...fields,
+					...adjustFieldsForDisplays(titleSubtitleFields, props.collection),
+				];
 			});
 
 			return { sort, limit, page, fields };

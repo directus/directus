@@ -13,6 +13,7 @@ export type DisplayConfig = {
 	handler: DisplayHandlerFunction | Component;
 	options: null | Partial<Field>[] | Component;
 	types: string[];
+	fields?: string[];
 };
 
 export type DisplayContext = { i18n: VueI18n };

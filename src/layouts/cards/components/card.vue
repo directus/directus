@@ -270,6 +270,7 @@ export default defineComponent({
 .title,
 .subtitle {
 	width: 100%;
+	height: 20px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;

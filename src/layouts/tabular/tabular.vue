@@ -153,6 +153,7 @@ import useItems from '@/compositions/use-items';
 import { render } from 'micromustache';
 import { Filter } from '@/stores/collection-presets/types';
 import i18n from '@/lang';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 type ViewOptions = {
 	widths?: {
@@ -224,7 +225,7 @@ export default defineComponent({
 			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
 		);
 
-		const { sort, limit, page, fields } = useItemOptions();
+		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
 		const { items, loading, error, totalPages, itemCount, changeManualSort } = useItems(
 			collection,
@@ -232,7 +233,7 @@ export default defineComponent({
 				sort,
 				limit,
 				page,
-				fields,
+				fields: fieldsWithRelational,
 				filters: _filters,
 				searchQuery,
 			}
@@ -348,10 +349,11 @@ export default defineComponent({
 						}
 					}
 
-					return (
+					const fields =
 						_viewQuery.value?.fields ||
-						availableFields.value.slice(0, 4).map(({ field }) => field)
-					);
+						availableFields.value.slice(0, 4).map(({ field }) => field);
+
+					return fields;
 				},
 				set(newFields: string[]) {
 					_viewQuery.value = {
@@ -361,7 +363,11 @@ export default defineComponent({
 				},
 			});
 
-			return { sort, limit, page, fields };
+			const fieldsWithRelational = computed(() =>
+				adjustFieldsForDisplays(fields.value, props.collection)
+			);
+
+			return { sort, limit, page, fields, fieldsWithRelational };
 		}
 
 		function useTable() {
