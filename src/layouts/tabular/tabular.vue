@@ -53,7 +53,7 @@
 
 		<portal to="actions:prepend">
 			<transition name="fade">
-				<span class="item-count" v-if="totalCount">
+				<span class="item-count" v-if="itemCount">
 					{{ showingCount }}
 				</span>
 			</transition>
@@ -226,22 +226,17 @@ export default defineComponent({
 
 		const { sort, limit, page, fields } = useItemOptions();
 
-		const {
-			items,
-			loading,
-			error,
-			totalPages,
-			itemCount,
-			totalCount,
-			changeManualSort,
-		} = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields,
-			filters: _filters,
-			searchQuery,
-		});
+		const { items, loading, error, totalPages, itemCount, changeManualSort } = useItems(
+			collection,
+			{
+				sort,
+				limit,
+				page,
+				fields,
+				filters: _filters,
+				searchQuery,
+			}
+		);
 
 		const {
 			tableSort,
@@ -265,8 +260,8 @@ export default defineComponent({
 		const showingCount = computed(() => {
 			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
-				end: i18n.n(Math.min(page.value * limit.value, totalCount.value || 0)),
-				count: i18n.n(totalCount.value || 0),
+				end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
+				count: i18n.n(itemCount.value || 0),
 			});
 		});
 
@@ -295,7 +290,6 @@ export default defineComponent({
 			info,
 			newLink,
 			clearFilters,
-			totalCount,
 			showingCount,
 			sortField,
 			changeManualSort,
