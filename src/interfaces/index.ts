@@ -10,6 +10,7 @@ import InterfaceDropdownMultiselect from './dropdown-multiselect/';
 import InterfaceRadioButtons from './radio-buttons';
 import InterfaceCheckboxes from './checkboxes';
 import InterfaceStatus from './status';
+import InterfaceDateTime from './datetime';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -24,6 +25,7 @@ export const interfaces = [
 	InterfaceRadioButtons,
 	InterfaceCheckboxes,
 	InterfaceStatus,
+	InterfaceDateTime,
 ];
 
 export default interfaces;

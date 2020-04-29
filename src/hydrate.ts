@@ -9,6 +9,7 @@ import { useProjectsStore } from '@/stores/projects/';
 import { useLatencyStore } from '@/stores/latency';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
+import { setLanguage, Language } from '@/lang';
 
 type GenericStore = {
 	id: string;
@@ -38,6 +39,7 @@ export function useStores(
 /* istanbul ignore next: useStores has a test already */
 export async function hydrate(stores = useStores()) {
 	const appStore = useAppStore();
+	const userStore = useUserStore();
 
 	if (appStore.state.hydrated) return;
 	if (appStore.state.hydrating) return;
@@ -51,7 +53,9 @@ export async function hydrate(stores = useStores()) {
 		 * following makes sure that the user store is always fetched first, before we hydrate anything
 		 * else.
 		 */
-		await useUserStore().hydrate();
+		await userStore.hydrate();
+
+		setLanguage((userStore.state.currentUser?.locale as Language) || 'en-US');
 
 		await Promise.all(
 			stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.())

@@ -84,6 +84,7 @@
 							: values[field.field]
 					"
 					:width="field.width"
+					:type="field.type"
 					@input="setValue(field, $event)"
 				/>
 			</div>

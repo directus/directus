@@ -92,6 +92,30 @@
 
 	"submit": "Submit",
 
+	"datetime": "DateTime",
+	"date-fns_date": "PPP",
+	"date-fns_time": "K:mm a",
+	"month": "Month",
+	"date": "Date",
+	"year": "Year",
+
+	"months": {
+		"january": "January",
+		"february": "February",
+		"march": "March",
+		"april": "April",
+		"may": "May",
+		"june": "June",
+		"july": "July",
+		"august": "August",
+		"september": "September",
+		"october": "October",
+		"november": "November",
+		"december": "December"
+	},
+
+	"set_to_now": "Set to Now",
+
 	"name": "Name",
 	"primary_key_field": "Primary Key Field",
 	"type": "Type",
@@ -670,20 +694,6 @@
   "max_size": "Max Size: {size}",
   "mixed": "Mixed",
   "more_options": "More options",
-  "months": {
-    "january": "January",
-    "february": "February",
-    "march": "March",
-    "april": "April",
-    "may": "May",
-    "june": "June",
-    "july": "July",
-    "august": "August",
-    "september": "September",
-    "october": "October",
-    "november": "November",
-    "december": "December"
-  },
   "my_activity": "My Activity",
   "my_profile": "My Profile: {name}",
   "name_bookmark": "What would you like to name this bookmark?",

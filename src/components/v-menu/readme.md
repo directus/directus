@@ -57,8 +57,6 @@ export default {
 
 ## Props
 
-Strap in
-
 ### Positioning
 
 | Prop        | Description                                                                  | Default     |
@@ -70,22 +68,22 @@ Strap in
 | `bottom`    | Aligns the menu to the bottom of the activator, going down (if possible)     | `false`     |
 | `left`      | Aligns the menu to the left of the activator, expanding left (if possible)   | `false`     |
 | `right`     | Aligns the menu to the right of the activator, expanding right (if possible) | `false`     |
-| `offsetX`   | Positions the menu along the X-Axis so as not to cover any of the activator  | `false`     |
-| `offsetY`   | Positions the menu along the Y-Axis so as not to cover any of the activator  | `false`     |
-| `positionX` | "left" css value of menu. Only works with `absolute` or `fixed`              | `undefined` |
-| `positionY` | "top" css value of menu. Only works with `absolute` or `fixed`               | `undefined` |
-| `disabled`  | Prevent the menu from being opened by clicking on the activator              | `false`     |
+| `offset-x`   | Positions the menu along the X-Axis so as not to cover any of the activator  | `false`     |
+| `offset-y`   | Positions the menu along the Y-Axis so as not to cover any of the activator  | `false`     |
+| `position-x` | "left" css value of menu. Only works with `absolute` or `fixed`              | `undefined` |
+| `position-y` | "top" css value of menu. Only works with `absolute` or `fixed`               | `undefined` |
 
 ### Behavior
 
-| Prop                  | Description                                               | Default |
-| --------------------- | --------------------------------------------------------- | ------- |
-| `closeOnClick`        | Closes the menu when user clicks somewhere else           | `true`  |
-| `closeOnContentClick` | Closes the menu when user clicks on a menu item           | `false` |
-| `openOnClick`         | Open the menu when activator is clicked                   | `true`  |
-| `openOnHover`         | Open the menu when activator is hovered over              | `false` |
-| `openDelay`           | Delay in milliseconds after hover enter for menu to open  | `0`     |
-| `closeDelay`          | Delay in milliseconds after hover leave for menu to close | `0`     |
+| Prop                  | Description                                                 | Default |
+|-----------------------|-------------------------------------------------------------|---------|
+| `closeOnClick`        | Closes the menu when user clicks somewhere else             | `true`  |
+| `closeOnContentClick` | Closes the menu when user clicks on a menu item             | `false` |
+| `openOnClick`         | Open the menu when activator is clicked                     | `true`  |
+| `openOnHover`         | Open the menu when activator is hovered over                | `false` |
+| `openDelay`           | Delay in milliseconds after hover enter for menu to open    | `0`     |
+| `closeDelay`          | Delay in milliseconds after hover leave for menu to close   | `0`     |
+| `overflow-scroll`     | Overflow the content in the menu when it reaches max height | `true`  |
 
 ### Control
 

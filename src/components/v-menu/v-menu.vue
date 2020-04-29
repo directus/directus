@@ -23,7 +23,11 @@
 				:style="arrowStyles"
 				data-popper-arrow
 			/>
-			<div :class="{ active: isActive }" class="v-menu-content" @click="onContentClick">
+			<div
+				:class="{ active: isActive, 'overflow-scroll': overflowScroll }"
+				class="v-menu-content"
+				@click="onContentClick"
+			>
 				<slot />
 			</div>
 		</div>
@@ -64,6 +68,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		overflowScroll: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {
@@ -239,8 +247,6 @@ body {
 	.v-menu-content {
 		max-height: 50vh;
 		padding: 0 4px;
-		overflow-x: hidden;
-		overflow-y: auto;
 		background-color: var(--background-subdued);
 		border: 2px solid var(--border-normal);
 		border-radius: var(--border-radius);
@@ -249,7 +255,12 @@ body {
 		transition-timing-function: var(--transition-out);
 		transition-duration: var(--fast);
 		transition-property: opacity, transform;
-		contain: content;
+
+		&.overflow-scroll {
+			contain: content;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
 
 		.v-list {
 			--v-list-background-color: transparent;

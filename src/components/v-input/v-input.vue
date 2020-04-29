@@ -7,7 +7,7 @@
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="value" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled }">
+		<div class="input" :class="{ disabled, active }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="value" :disabled="disabled" />
 			</div>
@@ -104,6 +104,10 @@ export default defineComponent({
 		step: {
 			type: Number,
 			default: 1,
+		},
+		active: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit, listeners }) {
@@ -221,7 +225,8 @@ body {
 			border-color: var(--border-normal-alt);
 		}
 
-		&:focus-within {
+		&:focus-within,
+		&.active {
 			--arrow-color: var(--primary);
 
 			color: var(--foreground-normal);
@@ -249,7 +254,7 @@ body {
 
 	input {
 		flex-grow: 1;
-		width: 100px; // allows flex to shrink to allow for slots
+		width: 20px; // allows flex to grow/shrink to allow for slots
 		height: 100%;
 		font-family: var(--v-input-font-family);
 		background-color: transparent;
@@ -288,12 +293,6 @@ body {
 			.suffix {
 				color: var(--foreground-subdued);
 			}
-		}
-
-		&.active .input {
-			color: var(--foreground-normal);
-			background-color: var(--background-page);
-			border-color: var(--primary);
 		}
 
 		.append-outer {

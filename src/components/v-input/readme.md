@@ -23,6 +23,7 @@ You can add any custom (text) prefix/suffix to the value in the input using the 
 | `suffix`         | Show a value at the end of the input        | --      |
 | `slug`           | Force the value to be URL safe              | `false` |
 | `slug-separator` | What character to use as separator in slugs | `-`     |
+| `active`         | Force the focus state                       | `false` |
 
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any of the standard HTML attributes like `min`, `length`, or `pattern`.
 

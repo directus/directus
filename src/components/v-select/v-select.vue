@@ -1,6 +1,11 @@
 <template>
-	<v-menu :disabled="disabled" class="v-select" attached>
-		<template #activator="{ toggle }">
+	<v-menu
+		:disabled="disabled"
+		class="v-select"
+		attached
+		:close-on-content-click="closeOnContentClick"
+	>
+		<template #activator="{ toggle, active }">
 			<v-input
 				:full-width="fullWidth"
 				readonly
@@ -8,6 +13,7 @@
 				@click="toggle"
 				:placeholder="placeholder"
 				:disabled="disabled"
+				:active="active"
 			>
 				<template #prepend><slot name="prepend" /></template>
 				<template #append><v-icon name="expand_more" /></template>
@@ -48,7 +54,11 @@
 				</v-list-item-content>
 			</v-list-item>
 
-			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue">
+			<v-list-item
+				v-if="allowOther && multiple === false"
+				:active="usesOtherValue"
+				@click.stop
+			>
 				<v-list-item-content>
 					<input
 						class="other-input"
@@ -64,6 +74,7 @@
 					v-for="otherValue in otherValues"
 					:key="otherValue.key"
 					:active="(value || []).includes(otherValue.value)"
+					@click.stop
 				>
 					<v-list-item-icon>
 						<v-checkbox
@@ -156,6 +167,10 @@ export default defineComponent({
 		allowOther: {
 			type: Boolean,
 			default: false,
+		},
+		closeOnContentClick: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {

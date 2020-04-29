@@ -48,6 +48,8 @@
   "collection_names_cannot_be_changed": "Collectie namen kunnen niet gewijzigd worden.",
   "collection_removed": "Collectie verwijderd",
   "collection_updated": "Collectie Geüpdatet",
+	"date-fns_date": "PPP",
+	"date-fns_time": "HH:mm",
   "collections_and_fields": "Collecties & Velden",
   "collections": {
     "directus_activity": "Activiteit",
