@@ -143,11 +143,16 @@ export default defineComponent({
 			let dragNotificationID: string;
 			let fileUploadNotificationID: string;
 
+			let dragCounter = 0;
+
 			return { onDragEnter, onDragOver, onDragLeave, onDrop, showDropEffect };
 
 			function onDragEnter(event: DragEvent) {
 				event.preventDefault();
+				dragCounter++;
+
 				if (
+					dragCounter === 1 &&
 					event.dataTransfer?.types.indexOf('Files') !== -1 &&
 					showDropEffect.value === false
 				) {
@@ -169,16 +174,22 @@ export default defineComponent({
 
 			function onDragLeave(event: DragEvent) {
 				event.preventDefault();
-				showDropEffect.value = false;
+				dragCounter--;
 
-				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
+				if (dragCounter === 0) {
+					showDropEffect.value = false;
+
+					if (dragNotificationID) {
+						notificationsStore.remove(dragNotificationID);
+					}
 				}
 			}
 
 			async function onDrop(event: DragEvent) {
 				event.preventDefault();
 				showDropEffect.value = false;
+
+				dragCounter = 0;
 
 				if (!event.dataTransfer) return;
 				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
