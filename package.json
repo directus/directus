@@ -19,7 +19,7 @@
     "@directus/format-title": "^3.1.2",
     "@popperjs/core": "^2.4.0",
     "@sindresorhus/slugify": "^0.11.0",
-    "@tinymce/tinymce-vue": "^3.2.0",
+    "@tinymce/tinymce-vue": "^3.2.1",
     "@types/debug": "^4.1.5",
     "@types/lodash": "^4.14.150",
     "@vue/composition-api": "^0.5.0",

@@ -1861,10 +1861,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tinymce/tinymce-vue@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-vue/-/tinymce-vue-3.2.0.tgz#abadab7fd6e143688e756df779fc3b81e586427a"
-  integrity sha512-7mrexFcL23TdsHL35EHrhUN1HhRW5DbHeraai+idOqARhUhbATDxp4RBBUBGfuCjsEPnkNdu9+CcJl9xETSH/g==
+"@tinymce/tinymce-vue@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-vue/-/tinymce-vue-3.2.1.tgz#1e9f78bd018e04f09effe6e761ef91518841c222"
+  integrity sha512-CgfwXtw9MLdIqPkr0ZXorXiiykVObxwkOvNupaA/zFXfMQQtGRlQHjAeW+lTK0Po3Nok3UVkmfsbxTYeylqmTQ==
 
 "@types/babel__core@^7.1.0":
   version "7.1.6"
