@@ -108,7 +108,7 @@ import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
 import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
-import useItem from '@/compositions/use-item';
+import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from './components/file-preview.vue';
 import ImageEditor from '@/views/private/components/image-editor';

@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import useFolders from '../../compositions/use-folders';
+import useFolders from '../../composables/use-folders';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 

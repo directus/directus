@@ -47,7 +47,7 @@ import { defineComponent, computed, ref, toRefs } from '@vue/composition-api';
 import useCollectionsStore from '@/stores/collections';
 import { orderBy } from 'lodash';
 import PermissionsRow from '../permissions-row';
-import usePermissions from '../../compositions/use-permissions';
+import usePermissions from '../../composables/use-permissions';
 import PermissionsHeader from '../permissions-header';
 
 export default defineComponent({

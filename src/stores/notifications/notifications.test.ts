@@ -1,9 +1,9 @@
 import { useNotificationsStore } from './notifications';
-import mountComposition from '../../../.jest/mount-composition';
+import mountComposable from '../../../.jest/mount-composable';
 
 describe('Stores / Notifications', () => {
 	it('Returns the id of the created notification', () => {
-		mountComposition(() => {
+		mountComposable(() => {
 			const store = useNotificationsStore({});
 			const id = store.add({ title: 'test' });
 			expect(id).not.toBe(undefined);
@@ -11,7 +11,7 @@ describe('Stores / Notifications', () => {
 	});
 
 	it('Returns the id of the created notification', () => {
-		mountComposition(() => {
+		mountComposable(() => {
 			const store = useNotificationsStore({});
 			const id = store.add({ title: 'test' });
 			jest.spyOn(Date, 'now').mockImplementation(() => 15);
@@ -20,7 +20,7 @@ describe('Stores / Notifications', () => {
 	});
 
 	it('Removes a notification by ID', () => {
-		mountComposition(() => {
+		mountComposable(() => {
 			const store = useNotificationsStore({});
 			store.state.queue = [
 				{

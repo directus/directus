@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
-import { useGroupableParent, useGroupable } from '@/compositions/groupable';
+import { useGroupableParent, useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {

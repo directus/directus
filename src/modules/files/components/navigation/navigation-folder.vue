@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Folder } from '../../compositions/use-folders';
+import { Folder } from '../../composables/use-folders';
 
 export default defineComponent({
 	name: 'navigation-folder',

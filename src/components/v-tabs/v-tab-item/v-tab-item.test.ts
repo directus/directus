@@ -5,7 +5,7 @@ import VTabItem from './v-tab-item.vue';
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 
-jest.mock('@/compositions/groupable', () => ({
+jest.mock('@/composables/groupable', () => ({
 	useGroupable: () => ({
 		active: { value: null },
 		toggle: jest.fn(),

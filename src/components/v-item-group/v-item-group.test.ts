@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import VItemGroup from './v-item-group.vue';
-import * as composition from '@/compositions/groupable/groupable';
+import * as composition from '@/composables/groupable/groupable';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

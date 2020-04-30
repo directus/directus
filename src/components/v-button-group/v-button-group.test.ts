@@ -7,7 +7,7 @@ const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-item-group', VItemGroup);
 
-jest.mock('@/compositions/groupable');
+jest.mock('@/composables/groupable');
 
 describe('Components / Button Group', () => {
 	it('Renders', () => {

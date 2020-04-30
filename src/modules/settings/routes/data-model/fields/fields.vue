@@ -76,11 +76,11 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
-import useCollection from '@/compositions/use-collection/';
+import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management';
 import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
-import useItem from '@/compositions/use-item';
+import useItem from '@/composables/use-item';
 import router from '@/router';
 import useCollectionsStore from '@/stores/collections';
 

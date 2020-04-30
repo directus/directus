@@ -39,7 +39,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import CollectionsNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
-import useNavigation, { NavItem } from '../../compositions/use-navigation';
+import useNavigation, { NavItem } from '../../composables/use-navigation';
 import router from '@/router';
 import useUserStore from '@/stores/user';
 import useProjectsStore from '@/stores/projects';

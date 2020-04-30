@@ -1,7 +1,7 @@
 import CollectionsNavigation from './navigation.vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import * as useNavigation from '../../compositions/use-navigation';
+import * as useNavigation from '../../composables/use-navigation';
 import VList, {
 	VListItem,
 	VListItemContent,

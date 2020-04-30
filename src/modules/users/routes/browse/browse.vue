@@ -75,7 +75,7 @@ import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/compositions/use-collection-preset';
+import useCollectionPreset from '@/composables/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';

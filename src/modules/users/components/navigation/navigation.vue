@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
-import useNavigation from '../../compositions/use-navigation';
+import useNavigation from '../../composables/use-navigation';
 
 export default defineComponent({
 	setup() {

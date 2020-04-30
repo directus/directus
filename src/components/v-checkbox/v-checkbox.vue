@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '../../compositions/use-sync';
+import useSync from '../../composables/use-sync';
 
 export default defineComponent({
 	model: {

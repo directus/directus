@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import i18n from '@/lang';
-import { Permission } from '../../compositions/use-permissions';
+import { Permission } from '../../composables/use-permissions';
 
 export default defineComponent({
 	props: {

@@ -190,11 +190,11 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, ref, computed, PropType } from '@vue/composition-api';
-import useCollection from '@/compositions/use-collection';
+import useCollection from '@/composables/use-collection';
 import PermissionsToggle from '../permissions-toggle';
 import PermissionsFields from '../permissions-fields';
 import PermissionsStatuses from '../permissions-statuses';
-import { Permission } from '../../compositions/use-permissions';
+import { Permission } from '../../composables/use-permissions';
 
 function getDefaultPermission(collection: string, role: number, status?: string) {
 	const defaultPermission: Permission = {

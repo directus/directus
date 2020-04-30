@@ -23,7 +23,7 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import ActivityNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
-import useItem from '@/compositions/use-item';
+import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
 type Values = {

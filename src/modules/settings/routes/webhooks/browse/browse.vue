@@ -68,7 +68,7 @@ import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/compositions/use-collection-preset';
+import useCollectionPreset from '@/composables/use-collection-preset';
 
 type Item = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

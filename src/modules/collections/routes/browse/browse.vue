@@ -93,8 +93,8 @@ import useProjectsStore from '@/stores/projects';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
-import useCollection from '@/compositions/use-collection';
-import useCollectionPreset from '@/compositions/use-collection-preset';
+import useCollection from '@/composables/use-collection';
+import useCollectionPreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 

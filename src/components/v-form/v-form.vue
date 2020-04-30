@@ -98,7 +98,7 @@
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@/stores/fields/types';
-import { useElementSize } from '@/compositions/use-element-size';
+import { useElementSize } from '@/composables/use-element-size';
 import { isEmpty } from '@/utils/is-empty';
 import { clone } from 'lodash';
 import { FormField } from './types';

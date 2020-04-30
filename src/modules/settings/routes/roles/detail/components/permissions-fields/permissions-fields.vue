@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, computed, watch, PropType } from '@vue/composition-api';
-import useCollection from '@/compositions/use-collection';
-import { Permission } from '../../compositions/use-permissions';
+import useCollection from '@/composables/use-collection';
+import { Permission } from '../../composables/use-permissions';
 import { intersection } from 'lodash';
 
 export default defineComponent({

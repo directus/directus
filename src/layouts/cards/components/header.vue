@@ -48,7 +48,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
-import useSync from '@/compositions/use-sync';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	props: {

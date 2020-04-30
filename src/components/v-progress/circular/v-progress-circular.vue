@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSizeClass, { sizeProps } from '@/compositions/size-class';
+import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
 	props: {

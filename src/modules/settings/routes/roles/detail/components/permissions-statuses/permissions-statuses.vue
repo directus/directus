@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
-import { Permission } from '../../compositions/use-permissions';
+import { Permission } from '../../composables/use-permissions';
 import { intersection } from 'lodash';
 
 export default defineComponent({

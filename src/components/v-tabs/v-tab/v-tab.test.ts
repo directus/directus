@@ -9,7 +9,7 @@ const mockUseGroupableContent = {
 	toggle: jest.fn(),
 };
 
-jest.mock('@/compositions/groupable', () => ({
+jest.mock('@/composables/groupable', () => ({
 	useGroupable: () => mockUseGroupableContent,
 }));
 

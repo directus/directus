@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI, { ref } from '@vue/composition-api';
 import DrawerDetail from './drawer-detail.vue';
-import * as GroupableComposition from '@/compositions/groupable/groupable';
+import * as GroupableComposable from '@/composables/groupable/groupable';
 import VIcon from '@/components/v-icon';
 import VDivider from '@/components/v-divider';
 import TransitionExpand from '@/components/transition/expand';
@@ -16,7 +16,7 @@ localVue.component('v-badge', VBadge);
 
 describe('Drawer Detail', () => {
 	it('Uses the useGroupable composition', () => {
-		jest.spyOn(GroupableComposition, 'useGroupable');
+		jest.spyOn(GroupableComposable, 'useGroupable');
 
 		mount(DrawerDetail, {
 			localVue,
@@ -33,11 +33,11 @@ describe('Drawer Detail', () => {
 				},
 			},
 		});
-		expect(GroupableComposition.useGroupable).toHaveBeenCalled();
+		expect(GroupableComposable.useGroupable).toHaveBeenCalled();
 	});
 
 	it('Passes the title prop as selection value', () => {
-		jest.spyOn(GroupableComposition, 'useGroupable');
+		jest.spyOn(GroupableComposable, 'useGroupable');
 
 		mount(DrawerDetail, {
 			localVue,
@@ -54,6 +54,6 @@ describe('Drawer Detail', () => {
 				},
 			},
 		});
-		expect(GroupableComposition.useGroupable).toHaveBeenCalledWith('Users', 'drawer-detail');
+		expect(GroupableComposable.useGroupable).toHaveBeenCalledWith('Users', 'drawer-detail');
 	});
 });

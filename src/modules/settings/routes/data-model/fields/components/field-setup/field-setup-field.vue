@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import useSync from '@/compositions/use-sync/';
+import useSync from '@/composables/use-sync/';
 import { FieldType } from './types';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { i18n } from '@/lang';

@@ -138,9 +138,9 @@
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
 import { Filter } from '@/stores/collection-presets/types';
-import useSync from '@/compositions/use-sync/';
-import useCollection from '@/compositions/use-collection/';
-import useItems from '@/compositions/use-items';
+import useSync from '@/composables/use-sync/';
+import useCollection from '@/composables/use-collection/';
+import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { render } from 'micromustache';

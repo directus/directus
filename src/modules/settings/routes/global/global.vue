@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation/';
-import useCollection from '@/compositions/use-collection';
+import useCollection from '@/composables/use-collection';
 import useSettingsStore from '@/stores/settings';
 
 export default defineComponent({

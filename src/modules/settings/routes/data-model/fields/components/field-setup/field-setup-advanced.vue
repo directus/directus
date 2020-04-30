@@ -10,7 +10,7 @@
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
 import { FormField } from '@/components/v-form/types';
-import { useSync } from '@/compositions/use-sync';
+import { useSync } from '@/composables/use-sync';
 import { i18n } from '@/lang';
 
 export default defineComponent({

@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useNavigation from '../../compositions/use-navigation';
+import useNavigation from '../../composables/use-navigation';
 import useCollectionPresetsStore from '@/stores/collection-presets';
 import useProjectsStore from '@/stores/projects';
 

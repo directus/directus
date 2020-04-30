@@ -78,7 +78,7 @@ import NotificationItem from './components/notification-item';
 import useNotificationsStore from '@/stores/notifications';
 import uploadFiles from '@/utils/upload-files';
 import i18n from '@/lang';
-import useEventListener from '@/compositions/use-event-listener';
+import useEventListener from '@/composables/use-event-listener';
 
 export default defineComponent({
 	components: {

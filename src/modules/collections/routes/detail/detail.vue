@@ -157,9 +157,9 @@ import useProjectsStore from '@/stores/projects';
 import CollectionsNavigation from '../../components/navigation/';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
-import useCollection from '@/compositions/use-collection';
+import useCollection from '@/composables/use-collection';
 import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
-import useItem from '@/compositions/use-item';
+import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
 type Values = {

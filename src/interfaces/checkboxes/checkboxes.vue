@@ -58,7 +58,7 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
 import parseChoices from '@/utils/parse-choices';
-import { useCustomSelectionMultiple } from '@/compositions/use-custom-selection';
+import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 export default defineComponent({
 	props: {

@@ -112,10 +112,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
 import i18n from '@/lang';
-import {
-	useCustomSelection,
-	useCustomSelectionMultiple,
-} from '@/compositions/use-custom-selection';
+import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 type Item = {
 	text: string;

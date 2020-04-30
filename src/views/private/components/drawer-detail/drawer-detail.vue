@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, inject } from '@vue/composition-api';
-import { useGroupable } from '@/compositions/groupable';
+import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {

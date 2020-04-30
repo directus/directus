@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs } from '@vue/composition-api';
-import useCollection from '@/compositions/use-collection/';
+import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';

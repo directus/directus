@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import useFolders from '../../compositions/use-folders';
+import useFolders from '../../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 
 export default defineComponent({

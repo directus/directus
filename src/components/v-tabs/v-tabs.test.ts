@@ -6,7 +6,7 @@ const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
 localVue.component('v-item-group', VTabs);
 
-jest.mock('@/compositions/groupable', () => ({
+jest.mock('@/composables/groupable', () => ({
 	useGroupableParent: () => {
 		return {
 			items: {

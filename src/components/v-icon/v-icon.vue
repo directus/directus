@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSizeClass, { sizeProps } from '@/compositions/size-class';
+import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';

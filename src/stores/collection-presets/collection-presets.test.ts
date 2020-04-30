@@ -8,7 +8,7 @@ import api from '@/api';
 
 jest.mock('@/api');
 
-describe('Compositions / Collection Presets', () => {
+describe('Composables / Collection Presets', () => {
 	let req: any;
 
 	beforeAll(() => {
