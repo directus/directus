@@ -110,7 +110,7 @@ import router from '@/router';
 import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import FilePreview from './components/file-preview.vue';
+import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 
@@ -238,5 +238,10 @@ export default defineComponent({
 
 .file-detail {
 	padding: var(--content-padding);
+}
+
+.file-preview {
+	width: 632px;
+	margin-bottom: 32px;
 }
 </style>

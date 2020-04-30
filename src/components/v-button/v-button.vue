@@ -5,6 +5,7 @@
 			:is="component"
 			:active-class="to ? 'activated' : null"
 			:exact="exact"
+			:download="download"
 			class="button"
 			:class="[
 				sizeClass,
@@ -110,6 +111,10 @@ export default defineComponent({
 			type: String,
 			default: 'center',
 			validator: (val: string) => ['left', 'center', 'right'].includes(val),
+		},
+		download: {
+			type: String,
+			default: null,
 		},
 		...sizeProps,
 	},

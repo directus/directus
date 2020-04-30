@@ -11,6 +11,7 @@ import InterfaceRadioButtons from './radio-buttons';
 import InterfaceCheckboxes from './checkboxes';
 import InterfaceStatus from './status';
 import InterfaceDateTime from './datetime';
+import InterfaceImage from './image';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -26,6 +27,7 @@ export const interfaces = [
 	InterfaceCheckboxes,
 	InterfaceStatus,
 	InterfaceDateTime,
+	InterfaceImage,
 ];
 
 export default interfaces;

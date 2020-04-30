@@ -1,5 +1,5 @@
 <template>
-	<div class="private-view" :class="{ theme, 'drop-effect': showDropEffect }">
+	<div class="private-view" :class="{ theme, dragging }">
 		<aside
 			role="navigation"
 			aria-label="Module Navigation"
@@ -61,6 +61,13 @@
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
 		<notifications-group v-if="navigationsInline === false" />
+
+		<template v-if="showDropEffect">
+			<div class="drop-border top" />
+			<div class="drop-border right" />
+			<div class="drop-border bottom" />
+			<div class="drop-border left" />
+		</template>
 	</div>
 </template>
 
@@ -118,7 +125,14 @@ export default defineComponent({
 		provide('drawer-open', drawerOpen);
 		provide('main-element', contentEl);
 
-		const { onDragEnter, onDragLeave, onDragOver, onDrop, showDropEffect } = useFileUpload();
+		const {
+			onDragEnter,
+			onDragLeave,
+			onDrop,
+			onDragOver,
+			showDropEffect,
+			dragging,
+		} = useFileUpload();
 
 		useEventListener(window, 'dragenter', onDragEnter);
 		useEventListener(window, 'dragover', onDragOver);
@@ -135,6 +149,7 @@ export default defineComponent({
 			onDragLeave,
 			showDropEffect,
 			onDrop,
+			dragging,
 		};
 
 		function useFileUpload() {
@@ -143,28 +158,52 @@ export default defineComponent({
 			let dragNotificationID: string;
 			let fileUploadNotificationID: string;
 
-			let dragCounter = 0;
+			const dragCounter = ref(0);
 
-			return { onDragEnter, onDragOver, onDragLeave, onDrop, showDropEffect };
+			const dragging = computed(() => dragCounter.value > 0);
+
+			return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
+
+			function enableDropEffect() {
+				showDropEffect.value = true;
+
+				dragNotificationID = notificationsStore.add({
+					title: i18n.t('drop_to_upload'),
+					icon: 'cloud_upload',
+					type: 'info',
+					persist: true,
+					closeable: false,
+				});
+			}
+
+			function disableDropEffect() {
+				showDropEffect.value = false;
+
+				if (dragNotificationID) {
+					notificationsStore.remove(dragNotificationID);
+				}
+			}
 
 			function onDragEnter(event: DragEvent) {
 				event.preventDefault();
-				dragCounter++;
+				dragCounter.value++;
+
+				const isDropzone =
+					event.target &&
+					(event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
 
 				if (
-					dragCounter === 1 &&
+					dragCounter.value === 1 &&
 					event.dataTransfer?.types.indexOf('Files') !== -1 &&
-					showDropEffect.value === false
+					showDropEffect.value === false &&
+					isDropzone === false
 				) {
-					showDropEffect.value = true;
+					enableDropEffect();
+				}
 
-					dragNotificationID = notificationsStore.add({
-						title: i18n.t('drop_to_upload'),
-						icon: 'cloud_upload',
-						type: 'info',
-						persist: true,
-						closeable: false,
-					});
+				if (isDropzone) {
+					disableDropEffect();
+					dragCounter.value = 0;
 				}
 			}
 
@@ -174,14 +213,18 @@ export default defineComponent({
 
 			function onDragLeave(event: DragEvent) {
 				event.preventDefault();
-				dragCounter--;
+				dragCounter.value--;
 
-				if (dragCounter === 0) {
-					showDropEffect.value = false;
+				if (dragCounter.value === 0) {
+					disableDropEffect();
+				}
 
-					if (dragNotificationID) {
-						notificationsStore.remove(dragNotificationID);
-					}
+				if (
+					event.target &&
+					(event.target as HTMLElement).getAttribute?.('data-dropzone') === ''
+				) {
+					enableDropEffect();
+					dragCounter.value = 1;
 				}
 			}
 
@@ -189,7 +232,7 @@ export default defineComponent({
 				event.preventDefault();
 				showDropEffect.value = false;
 
-				dragCounter = 0;
+				dragCounter.value = 0;
 
 				if (!event.dataTransfer) return;
 				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
@@ -356,19 +399,56 @@ export default defineComponent({
 		}
 	}
 
-	&.drop-effect::after {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 500;
-		width: calc(100% - 8px);
-		height: calc(100% - 8px);
-		border: 4px solid var(--primary);
-		content: '';
-	}
-
 	@include breakpoint(small) {
 		--content-padding: 32px 32px 132px 32px;
+	}
+}
+
+.dragging {
+	::v-deep * {
+		pointer-events: none;
+	}
+
+	::v-deep [data-dropzone] {
+		pointer-events: all;
+	}
+}
+
+.drop-border {
+	position: fixed;
+	z-index: 500;
+	background-color: var(--primary);
+
+	&.top,
+	&.bottom {
+		width: 100%;
+		height: 4px;
+	}
+
+	&.left,
+	&.right {
+		width: 4px;
+		height: 100%;
+	}
+
+	&.top {
+		top: 0;
+		left: 0;
+	}
+
+	&.right {
+		top: 0;
+		right: 0;
+	}
+
+	&.bottom {
+		bottom: 0;
+		left: 0;
+	}
+
+	&.left {
+		top: 0;
+		left: 0;
 	}
 }
 </style>

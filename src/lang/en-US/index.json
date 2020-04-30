@@ -296,9 +296,15 @@
 	},
 
 	"drop_to_upload": "Drop to Upload",
-	"upload_file_indeterminate": "Uploading File | Uploading files {done}/{total}",
-	"upload_file_success": "File Uploaded | {count} Files Uploaded",
-	"upload_file_failed": "Couldn't Upload File | Couldn't Upload Files",
+	"upload_file_indeterminate": "Uploading File...",
+	"upload_file_success": "File Uploaded",
+	"upload_file_failed": "Couldn't Upload File",
+	"upload_files_indeterminate": "Uploading files {done}/{total}",
+	"upload_files_success": "{count} Files Uploaded",
+	"upload_files_failed": "Couldn't Upload Files",
+	"upload_pending": "Upload Pending",
+	"drag_file_here": "Drag & Drop a File Here",
+	"click_to_browse": "Click to Browse",
 	"layout_type": "Layout Type",
 	"setup": "Setup",
 

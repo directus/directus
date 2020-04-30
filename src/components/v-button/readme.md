@@ -65,6 +65,7 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 | `align`    | Align content in button. One of `left | center | right`                   | `'center'` |
 | `dashed`   | Render the border dashed. Meant to be used with `outlined`.               | `false`    |
 | `tile`     | Render without border radius                                              | `false`    |
+| `download` | Add the `download` attribute (used in combo with `href`)                  | `null`     |
 
 ## Slots
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="file-preview" v-if="type">
-		<div v-if="type === 'image'" :class="{ svg: isSVG }">
+		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }">
 			<img :src="src" :width="width" :height="height" :alt="title" />
 		</div>
 
@@ -64,8 +64,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .file-preview {
-	width: 632px;
-	margin-bottom: 32px;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.image {
+	width: 100%;
+	height: 100%;
 }
 
 .svg {
@@ -78,6 +84,8 @@ img,
 video,
 audio {
 	width: 100%;
-	height: auto;
+	height: 100%;
+	max-height: 100%;
+	object-fit: contain;
 }
 </style>

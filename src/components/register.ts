@@ -41,6 +41,7 @@ import VSwitch from './v-switch/';
 import VTable from './v-table/';
 import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
 import VTextarea from './v-textarea';
+import VUpload from './v-upload';
 
 Vue.component('v-avatar', VAvatar);
 Vue.component('v-badge', VBadge);
@@ -90,6 +91,7 @@ Vue.component('v-tab', VTab);
 Vue.component('v-tabs-items', VTabsItems);
 Vue.component('v-tab-item', VTabItem);
 Vue.component('v-textarea', VTextarea);
+Vue.component('v-upload', VUpload);
 
 import DrawerDetail from '@/views/private/components/drawer-detail/';
 

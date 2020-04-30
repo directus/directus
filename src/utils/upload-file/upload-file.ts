@@ -14,18 +14,22 @@ export default async function uploadFile(
 	formData.append('file', file);
 
 	try {
-		await api.post(`/${currentProjectKey}/files`, formData, { onUploadProgress });
+		const response = await api.post(`/${currentProjectKey}/files`, formData, {
+			onUploadProgress,
+		});
 
 		if (showNotifications) {
 			notify({
-				title: i18n.tc('upload_file_success', 0),
+				title: i18n.t('upload_file_success'),
 				type: 'success',
 			});
 		}
+
+		return response;
 	} catch (error) {
 		if (showNotifications) {
 			notify({
-				title: i18n.tc('upload_file_failed', 0),
+				title: i18n.t('upload_file_failed'),
 			});
 		}
 	}

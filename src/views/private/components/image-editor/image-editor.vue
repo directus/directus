@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="active" class="modal" :title="$t('editing_image')" persistent no-padding>
+	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -104,16 +104,34 @@ type Image = {
 };
 
 export default defineComponent({
+	model: {
+		prop: 'active',
+		event: 'toggle',
+	},
 	props: {
 		id: {
 			type: Number,
 			required: true,
 		},
+		active: {
+			type: Boolean,
+			default: undefined,
+		},
 	},
 	setup(props, { emit }) {
 		const projectsStore = useProjectsStore();
 
-		const active = ref(false);
+		const localActive = ref(false);
+
+		const _active = computed({
+			get() {
+				return props.active === undefined ? localActive.value : props.active;
+			},
+			set(newActive: boolean) {
+				localActive.value = newActive;
+				emit('toggle', newActive);
+			},
+		});
 
 		const {
 			loading,
@@ -135,7 +153,7 @@ export default defineComponent({
 			aspectRatioIcon,
 		} = useCropper();
 
-		watch(active, (isActive) => {
+		watch(_active, (isActive) => {
 			if (isActive === true) {
 				fetchImage();
 			} else {
@@ -154,7 +172,7 @@ export default defineComponent({
 		});
 
 		return {
-			active,
+			_active,
 			loading,
 			error,
 			imageData,
@@ -227,7 +245,7 @@ export default defineComponent({
 						try {
 							await api.post(`/${currentProjectKey}/files/${props.id}`, formData);
 							emit('refresh');
-							active.value = false;
+							_active.value = false;
 						} catch (err) {
 							console.error(err);
 						} finally {

@@ -24,12 +24,12 @@ export default async function uploadFiles(
 			)
 		);
 		notify({
-			title: i18n.tc('upload_file_success', files.length, { count: files.length }),
+			title: i18n.t('upload_files_success', { count: files.length }),
 			type: 'success',
 		});
 	} catch (error) {
 		notify({
-			title: i18n.tc('upload_file_failed', files.length, { count: files.length }),
+			title: i18n.t('upload_files_failed', { count: files.length }),
 			type: 'error',
 		});
 	}
