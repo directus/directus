@@ -1,5 +1,11 @@
 <template>
-	<img v-if="src" :src="src" role="presentation" :alt="value && value.title" />
+	<img
+		v-if="src"
+		:src="src"
+		role="presentation"
+		:alt="value && value.title"
+		:class="{ circle }"
+	/>
 	<span v-else>--</span>
 </template>
 
@@ -22,6 +28,10 @@ export default defineComponent({
 			type: Object as PropType<Image>,
 			default: null,
 		},
+		circle: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const src = computed(() => {
@@ -43,6 +53,10 @@ img {
 	width: auto;
 	height: 100%;
 	vertical-align: -30%;
-	border-radius: 4px;
+	border-radius: var(--border-radius);
+
+	&.circle {
+		border-radius: 100%;
+	}
 }
 </style>

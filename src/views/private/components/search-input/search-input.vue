@@ -94,6 +94,11 @@ export default defineComponent({
 	&.has-content {
 		width: 140px;
 
+		&:focus,
+		&:focus-within {
+			width: 300px;
+		}
+
 		.empty {
 			display: block;
 		}

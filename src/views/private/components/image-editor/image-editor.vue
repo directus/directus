@@ -28,7 +28,6 @@
 
 			<div class="toolbar">
 				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top="$t('rotate')" />
-				<div class="spacer" />
 				<v-icon
 					name="flip_horizontal"
 					@click="flip('horizontal')"
@@ -39,7 +38,6 @@
 					@click="flip('vertical')"
 					v-tooltip.top="$t('flip_vertical')"
 				/>
-				<div class="spacer" />
 				<v-menu
 					placement="top"
 					show-arrow
@@ -373,11 +371,8 @@ export default defineComponent({
 	background-color: rgba(0 0 0 / 75%);
 	backdrop-filter: blur(10px);
 
-	.spacer {
-		width: 12px;
-	}
-
 	> * {
+		display: inline-block;
 		margin: 0 8px;
 	}
 }

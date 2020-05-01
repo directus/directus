@@ -7,6 +7,14 @@ export default defineDisplay(({ i18n }) => ({
 	types: ['file'],
 	icon: 'insert_photo',
 	handler: DisplayImage,
-	options: null,
+	options: [
+		{
+			field: 'circle',
+			name: i18n.t('circle'),
+			width: 'half',
+			interface: 'toggle',
+			default_value: false,
+		},
+	],
 	fields: ['data', 'type', 'title'],
 }));

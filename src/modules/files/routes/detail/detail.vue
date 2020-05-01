@@ -239,9 +239,4 @@ export default defineComponent({
 .file-detail {
 	padding: var(--content-padding);
 }
-
-.file-preview {
-	width: 632px;
-	margin-bottom: 32px;
-}
 </style>

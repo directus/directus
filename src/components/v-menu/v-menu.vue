@@ -276,62 +276,62 @@ body {
 		}
 	}
 
-	&[data-placement='top'] .v-menu-content {
+	&[data-placement='top'] > .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: bottom center;
 	}
 
-	&[data-placement='top-start'] .v-menu-content {
+	&[data-placement='top-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom left;
 	}
 
-	&[data-placement='top-end'] .v-menu-content {
+	&[data-placement='top-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom right;
 	}
 
-	&[data-placement='right'] .v-menu-content {
+	&[data-placement='right'] > .v-menu-content {
 		transform: scaleX(0.8);
 		transform-origin: center left;
 	}
 
-	&[data-placement='right-start'] .v-menu-content {
+	&[data-placement='right-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: top left;
 	}
 
-	&[data-placement='right-end'] .v-menu-content {
+	&[data-placement='right-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom left;
 	}
 
-	&[data-placement='bottom'] .v-menu-content {
+	&[data-placement='bottom'] > .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top center;
 	}
 
-	&[data-placement='bottom-start'] .v-menu-content {
+	&[data-placement='bottom-start'] > .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top left;
 	}
 
-	&[data-placement='bottom-end'] .v-menu-content {
+	&[data-placement='bottom-end'] > .v-menu-content {
 		transform: scaleY(0.8);
 		transform-origin: top right;
 	}
 
-	&[data-placement='left'] .v-menu-content {
+	&[data-placement='left'] > .v-menu-content {
 		transform: scaleX(0.8);
 		transform-origin: center right;
 	}
 
-	&[data-placement='left-start'] .v-menu-content {
+	&[data-placement='left-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: top right;
 	}
 
-	&[data-placement='left-end'] .v-menu-content {
+	&[data-placement='left-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 		transform-origin: bottom right;
 	}
@@ -345,7 +345,7 @@ body {
 
 	&.attached {
 		&[data-placement^='top'] {
-			.v-menu-content {
+			> .v-menu-content {
 				border-bottom: none;
 				border-bottom-right-radius: 0;
 				border-bottom-left-radius: 0;
@@ -353,7 +353,7 @@ body {
 		}
 
 		&[data-placement^='bottom'] {
-			.v-menu-content {
+			> .v-menu-content {
 				border-top: none;
 				border-top-left-radius: 0;
 				border-top-right-radius: 0;

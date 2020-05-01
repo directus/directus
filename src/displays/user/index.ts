@@ -17,8 +17,16 @@ export default defineDisplay(({ i18n }) => ({
 				choices: `
 				avatar :: Avatar
 				name :: Name
+				both :: Both
 				`,
 			},
+		},
+		{
+			field: 'circle',
+			name: i18n.t('circle'),
+			width: 'half',
+			interface: 'toggle',
+			default_value: false,
 		},
 	],
 	fields: ['id', 'avatar.data', 'first_name', 'last_name'],

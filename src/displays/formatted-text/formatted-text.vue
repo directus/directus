@@ -52,6 +52,7 @@ export default defineComponent({
 .display-formatted-text {
 	display: inline-block;
 	overflow: hidden;
+	line-height: 22px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 

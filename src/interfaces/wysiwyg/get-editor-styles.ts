@@ -86,7 +86,7 @@ code {
 	padding: 2px 4px;
 	font-family: ${cssVar('--family-monospace')}, monospace;
 	background-color: #eceff1;
-	border-radius: 3px;
+	border-radius: 4px;
 	overflow-wrap: break-word;
 }
 pre {
@@ -95,7 +95,7 @@ pre {
 	padding: 20px;
 	font-family: ${cssVar('--family-monospace')}, monospace;
 	background-color: #eceff1;
-	border-radius: 3px;
+	border-radius: 4px;
 	overflow: auto;
 }
 blockquote {
@@ -110,8 +110,8 @@ blockquote {
 video,
 	iframe,
 	img {
-	max-width: 100 %;
-	border-radius: 3px;
+	max-width: 100%;
+	border-radius: 4px;
 	height: auto;
 }
 hr {

@@ -5,6 +5,9 @@
 		},
 		"format-title": {
 			"format-title": "Format Title"
+		},
+		"rating": {
+			"rating": "Rating"
 		}
 	}
 }

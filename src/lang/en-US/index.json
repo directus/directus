@@ -271,6 +271,7 @@
 	"monospace": "Monospace",
 	"divider": "Divider",
 	"color": "Color",
+	"circle": "Circle",
 
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",
@@ -349,6 +350,7 @@
 	"status_badge": "Status (Badge)",
 	"tags": "Tags",
 	"formatted_text": "Formatted Text",
+	"format_text": "Format Text",
 
 	"bold": "Bold",
 	"subdued": "Subdued",

@@ -10,17 +10,17 @@
 				:placeholder="$t('enter_a_value')"
 			>
 				<template #append>
-					<v-icon name="today" :class="{ active }" />
+					<v-icon name="todate" :class="{ active }" />
 				</template>
 			</v-input>
 		</template>
 
-		<div class="date" v-if="type === 'datetime' || type === 'date'">
+		<div class="date-selects" v-if="type === 'datetime' || type === 'date'">
 			<div class="month">
 				<v-select :placeholder="$t('month')" :items="months" v-model="localValue.month" />
 			</div>
-			<div class="day">
-				<v-select :placeholder="$t('date')" :items="days" v-model="localValue.day" />
+			<div class="date">
+				<v-select :placeholder="$t('date')" :items="dates" v-model="localValue.date" />
 			</div>
 			<div class="year">
 				<v-select
@@ -34,15 +34,22 @@
 
 		<v-divider v-if="type === 'datetime'" />
 
-		<div class="time" v-if="type === 'datetime' || type === 'time'">
+		<div
+			class="time-selects"
+			v-if="type === 'datetime' || type === 'time'"
+			:class="{ seconds: includeSeconds }"
+		>
 			<div class="hour">
 				<v-select :items="hours" v-model="localValue.hours" />
 			</div>
 			<div class="minutes">
 				<v-select :items="minutesSeconds" v-model="localValue.minutes" />
 			</div>
-			<div class="seconds">
+			<div v-if="includeSeconds" class="seconds">
 				<v-select :items="minutesSeconds" v-model="localValue.seconds" />
+			</div>
+			<div class="period">
+				<v-select :items="['am', 'pm']" v-model="localValue.period" />
 			</div>
 		</div>
 
@@ -61,11 +68,12 @@ import format from 'date-fns/format';
 
 type LocalValue = {
 	month: null | number;
-	day: null | number;
+	date: null | number;
 	year: null | number;
 	hours: null | number;
 	minutes: null | number;
 	seconds: null | number;
+	period: 'am' | 'pm';
 };
 
 export default defineComponent({
@@ -82,6 +90,10 @@ export default defineComponent({
 			type: String as PropType<'datetime' | 'time' | 'date'>,
 			required: true,
 			validator: (val: string) => ['datetime', 'date', 'time'].includes(val),
+		},
+		includeSeconds: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -110,11 +122,12 @@ export default defineComponent({
 
 		const localValue = reactive({
 			month: null,
-			day: null,
+			date: null,
 			year: null,
 			hours: 9,
 			minutes: 0,
 			seconds: 0,
+			period: 'am',
 		} as LocalValue);
 
 		syncLocalValue();
@@ -136,14 +149,23 @@ export default defineComponent({
 					newValue.year !== null &&
 					String(newValue.year).length === 4 &&
 					newValue.month !== null &&
-					newValue.day !== null &&
+					newValue.date !== null &&
 					newValue.hours !== null &&
 					newValue.minutes !== null &&
 					newValue.seconds !== null
 				) {
-					const { year, month, day, hours, minutes, seconds } = newValue;
-					const date = new Date(year, month, day, hours, minutes, seconds);
-					emit('input', format(date, formatString.value));
+					const { year, month, date, hours, minutes, seconds, period } = newValue;
+
+					const asDate = new Date(
+						year,
+						month,
+						date,
+						period === 'am' ? hours : hours + 12,
+						minutes,
+						seconds
+					);
+
+					emit('input', format(asDate, formatString.value));
 				}
 			},
 			{
@@ -151,24 +173,25 @@ export default defineComponent({
 			}
 		);
 
-		const { months, days, years, hours, minutesSeconds } = useOptions();
+		const { months, dates, years, hours, minutesSeconds } = useOptions();
 
 		return {
 			displayValue,
 			months,
-			days,
+			dates,
 			years,
 			hours,
 			minutesSeconds,
 			setToNow,
 			localValue,
+			onAMPMInput,
 		};
 
 		function setToNow() {
 			const date = new Date();
 
 			localValue.month = date.getMonth();
-			localValue.day = date.getDate();
+			localValue.date = date.getDate();
 			localValue.year = date.getFullYear();
 			localValue.hours = date.getHours();
 			localValue.minutes = date.getMinutes();
@@ -178,9 +201,9 @@ export default defineComponent({
 		function syncLocalValue() {
 			if (!valueAsDate.value) return;
 			localValue.month = valueAsDate.value.getMonth();
-			localValue.day = valueAsDate.value.getDate();
+			localValue.date = valueAsDate.value.getDate();
 			localValue.year = valueAsDate.value?.getFullYear();
-			localValue.hours = valueAsDate.value?.getHours();
+			localValue.hours = valueAsDate.value?.getHours() % 12;
 			localValue.minutes = valueAsDate.value?.getMinutes();
 			localValue.seconds = valueAsDate.value?.getSeconds();
 		}
@@ -193,6 +216,16 @@ export default defineComponent({
 			if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
 			displayValue.value = await formatLocalized(valueAsDate.value as Date, format);
+		}
+
+		function onAMPMInput(newValue: 'PM' | 'AM') {
+			if (!localValue.hours) return;
+
+			if (newValue === 'AM') {
+				localValue.hours = localValue.hours - 12;
+			} else {
+				localValue.hours = localValue.hours + 12;
+			}
 		}
 
 		function useOptions() {
@@ -216,14 +249,14 @@ export default defineComponent({
 				}))
 			);
 
-			const days = computed(() => {
-				const days = [];
+			const dates = computed(() => {
+				const dates = [];
 
 				for (let i = 1; i <= 31; i++) {
-					days.push(`${i}`);
+					dates.push(`${i}`);
 				}
 
-				return days;
+				return dates;
 			});
 
 			const years = computed(() => {
@@ -241,7 +274,7 @@ export default defineComponent({
 			const hours = computed(() => {
 				const hours = [];
 
-				for (let i = 0; i <= 24; i++) {
+				for (let i = 1; i <= 12; i++) {
 					let hour = String(i);
 					if (hour.length === 1) hour = '0' + hour;
 					hours.push({
@@ -256,7 +289,7 @@ export default defineComponent({
 			const minutesSeconds = computed(() => {
 				const values = [];
 
-				for (let i = 0; i <= 60; i++) {
+				for (let i = 0; i < 60; i++) {
 					let val = String(i);
 					if (val.length === 1) val = '0' + val;
 					values.push({
@@ -268,27 +301,31 @@ export default defineComponent({
 				return values;
 			});
 
-			return { days, years, months, hours, minutesSeconds };
+			return { dates, years, months, hours, minutesSeconds };
 		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.date,
-.time {
+.date-selects,
+.time-selects {
 	display: grid;
 	grid-gap: 8px;
 	width: 100%;
 	padding: 16px 8px;
 }
 
-.date {
+.date-selects {
 	grid-template-columns: repeat(2, 1fr);
 }
 
-.time {
+.time-selects {
 	grid-template-columns: repeat(3, 1fr);
+
+	&.seconds {
+		grid-template-columns: repeat(4, 1fr);
+	}
 }
 
 .month {

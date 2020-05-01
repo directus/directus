@@ -43,7 +43,7 @@ export default defineComponent({
 		},
 		label: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		disabled: {
 			type: Boolean,
@@ -85,10 +85,11 @@ export default defineComponent({
 
 <style>
 body {
-	--v-chip-color: var(--foreground-normal);
-	--v-chip-background-color: var(--border-normal);
-	--v-chip-color-hover: var(--foreground-normal);
-	--v-chip-background-color-hover: var(--border-normal);
+	--v-chip-color: var(--white);
+	--v-chip-background-color: var(--primary);
+	--v-chip-color-hover: var(--white);
+	--v-chip-background-color-hover: var(--primary-125);
+	--v-chip-close-color: var(--danger);
 }
 </style>
 
@@ -97,9 +98,10 @@ body {
 	display: inline-flex;
 	align-items: center;
 	height: 32px;
-	padding: 0 12px;
+	padding: 0 8px;
 	color: var(--v-chip-color);
 	font-weight: var(--weight-normal);
+	line-height: 22px;
 	background-color: var(--v-chip-background-color);
 	border: var(--border-width) solid var(--v-chip-background-color);
 	border-radius: 16px;
@@ -116,8 +118,14 @@ body {
 	}
 
 	&.disabled {
-		color: var(--chip-primary-text-color-disabled);
-		background-color: var(--chip-primary-background-color-disabled);
+		color: var(--v-chip-color);
+		background-color: var(--v-chip-background-color);
+		border-color: var(--v-chip-background-color);
+		&:hover {
+			color: var(--v-chip-color);
+			background-color: var(--v-chip-background-color);
+			border-color: var(--v-chip-background-color);
+		}
 	}
 
 	&.x-small {
@@ -127,7 +135,7 @@ body {
 	}
 
 	&.small {
-		height: 24px;
+		height: 26px;
 		font-size: 14px;
 		border-radius: 12px;
 	}
@@ -163,7 +171,7 @@ body {
 			width: 14px;
 			height: 14px;
 			margin-left: 4px;
-			background-color: var(--chip-primary-close-color);
+			background-color: var(--v-chip-close-color);
 			border-radius: 10px;
 
 			.close {
@@ -171,15 +179,15 @@ body {
 			}
 
 			&.disabled {
-				background-color: var(--chip-primary-close-color-disabled);
+				background-color: var(--v-chip-primary-close-color-disabled);
 
 				&:hover {
-					background-color: var(--chip-primary-close-color-disabled);
+					background-color: var(--v-chip-primary-close-color-disabled);
 				}
 			}
 
 			&:hover {
-				background-color: var(--chip-primary-close-color-hover);
+				background-color: var(--v-chip-primary-close-color-hover);
 			}
 		}
 	}

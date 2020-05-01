@@ -7,5 +7,13 @@ export default defineDisplay(({ i18n }) => ({
 	types: ['array'],
 	icon: 'label',
 	handler: DisplayTags,
-	options: null,
+	options: [
+		{
+			field: 'format',
+			name: i18n.t('format_text'),
+			width: 'half',
+			interface: 'toggle',
+			default_value: true,
+		},
+	],
 }));

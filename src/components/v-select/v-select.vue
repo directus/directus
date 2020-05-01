@@ -16,7 +16,7 @@
 				:active="active"
 			>
 				<template #prepend><slot name="prepend" /></template>
-				<template #append><v-icon name="expand_more" /></template>
+				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
 			</v-input>
 		</template>
 
@@ -266,6 +266,15 @@ body {
 	--v-input-font-family: var(--v-select-font-family);
 
 	cursor: pointer;
+
+	.v-icon {
+		transition: transform var(--medium) var(--transition-out);
+
+		&.active {
+			transform: scaleY(-1);
+			transition-timing-function: var(--transition-in);
+		}
+	}
 
 	::v-deep input {
 		cursor: pointer;

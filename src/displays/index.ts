@@ -6,6 +6,7 @@ import DisplayTags from './tags/';
 import DisplayFormattedText from './formatted-text';
 import DisplayImage from './image';
 import DisplayUser from './user';
+import DisplayRating from './rating';
 
 export const displays = [
 	DisplayIcon,
@@ -16,5 +17,6 @@ export const displays = [
 	DisplayFormattedText,
 	DisplayImage,
 	DisplayUser,
+	DisplayRating,
 ];
 export default displays;

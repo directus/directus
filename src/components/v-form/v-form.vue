@@ -12,7 +12,7 @@
 					(batchMode && batchActiveFields.includes(field.field) === false)
 				"
 			>
-				<template #activator="{ toggle }">
+				<template #activator="{ toggle, active }">
 					<div class="label type-label">
 						<v-checkbox
 							v-if="batchMode"
@@ -23,7 +23,7 @@
 						<span @click="toggle">
 							{{ field.name }}
 							<v-icon class="required" sup name="star" v-if="field.required" />
-							<v-icon class="ctx-arrow" name="arrow_drop_down" />
+							<v-icon class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 						</span>
 					</div>
 				</template>
@@ -311,10 +311,11 @@ export default defineComponent({
 
 <style>
 body {
-	--v-form-column-width: 300px;
+	--v-form-column-width: var(--form-column-width);
+	--v-form-column-max-width: var(--form-column-max-width);
 	--v-form-row-max-height: calc(var(--v-form-column-width) * 2);
-	--v-form-horizontal-gap: 32px;
-	--v-form-vertical-gap: 48px;
+	--v-form-horizontal-gap: var(--form-horizontal-gap);
+	--v-form-vertical-gap: var(--form-vertical-gap);
 }
 </style>
 
@@ -327,9 +328,9 @@ body {
 
 		&.with-fill {
 			grid-template-columns:
-				[start] minmax(0, var(--v-form-column-width)) [half] minmax(
+				[start] minmax(0, var(--v-form-column-max-width)) [half] minmax(
 					0,
-					var(--v-form-column-width)
+					var(--v-form-column-max-width)
 				)
 				[full] 1fr [fill];
 		}
@@ -372,6 +373,7 @@ body {
 }
 
 .label {
+	position: relative;
 	display: flex;
 	width: max-content;
 	margin-bottom: 8px;
@@ -384,16 +386,20 @@ body {
 	.required {
 		--v-icon-color: var(--primary);
 
-		margin-left: -2px;
+		margin-left: -3px;
 	}
 
 	.ctx-arrow {
-		position: relative;
-		top: -1px;
-		left: -5px;
+		position: absolute;
+		top: -3px;
+		right: -20px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
+
+		&.active {
+			opacity: 1;
+		}
 	}
 
 	&:hover {

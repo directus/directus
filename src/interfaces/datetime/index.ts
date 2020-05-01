@@ -6,5 +6,13 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('datetime'),
 	icon: 'today',
 	component: InterfaceDateTime,
-	options: [],
+	options: [
+		{
+			field: 'includeSeconds',
+			name: i18n.t('include_seconds'),
+			width: 'half',
+			interface: 'toggle',
+			default_value: false,
+		},
+	],
 }));

@@ -3,7 +3,7 @@
 		{{ $t('statuses_not_configured') }}
 	</v-notice>
 	<v-menu v-else attached :disabled="disabled">
-		<template #activator="{ toggle }">
+		<template #activator="{ toggle, active }">
 			<v-input
 				readonly
 				@click="toggle"
@@ -17,6 +17,7 @@
 						:style="current ? { backgroundColor: current.background_color } : null"
 					/>
 				</template>
+				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
 			</v-input>
 		</template>
 
@@ -82,9 +83,27 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-input {
+	.v-icon {
+		transition: transform var(--medium) var(--transition-out);
+
+		&.active {
+			transform: scaleY(-1);
+			transition-timing-function: var(--transition-in);
+		}
+	}
+}
+
 .status-dot {
-	width: 12px;
-	height: 12px;
-	border-radius: 6px;
+	width: 14px;
+	height: 14px;
+	border: 2px solid var(--background-page);
+	border-radius: 7px;
+}
+
+.v-list {
+	.status-dot {
+		border: 2px solid var(--background-subdued);
+	}
 }
 </style>

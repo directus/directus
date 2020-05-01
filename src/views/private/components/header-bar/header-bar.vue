@@ -110,7 +110,6 @@ export default defineComponent({
 
 		.title {
 			position: relative;
-			top: -2px;
 			display: flex;
 			align-items: center;
 		}

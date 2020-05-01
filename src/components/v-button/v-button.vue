@@ -311,6 +311,7 @@ body {
 
 		.content {
 			position: relative;
+			line-height: normal;
 
 			&.invisible {
 				opacity: 0;

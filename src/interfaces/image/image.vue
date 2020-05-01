@@ -208,8 +208,10 @@ img {
 }
 
 .actions {
+	--v-button-color: var(--foreground-subdued);
 	--v-button-background-color: var(--white);
-	--v-button-color: var(--primary);
+	--v-button-color-hover: var(--foreground-normal);
+	--v-button-background-color-hover: var(--white);
 
 	position: absolute;
 	top: 30%;
@@ -228,7 +230,7 @@ img {
 
 		@for $i from 0 through 4 {
 			&:nth-of-type(#{$i + 1}) {
-				transition-delay: $i * 75ms;
+				transition-delay: $i * 25ms;
 			}
 		}
 	}

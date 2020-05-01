@@ -66,7 +66,9 @@ export default defineComponent({
 .file-preview {
 	position: relative;
 	width: 100%;
+	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
 	height: 100%;
+	margin-bottom: var(--form-vertical-gap);
 }
 
 .image {
@@ -87,5 +89,6 @@ audio {
 	height: 100%;
 	max-height: 100%;
 	object-fit: contain;
+	border-radius: var(--border-radius);
 }
 </style>
