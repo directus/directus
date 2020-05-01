@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div class="v-list-item-content">
 		<slot></slot>
 	</div>

@@ -28,7 +28,7 @@
 				class="v-menu-content"
 				@click="onContentClick"
 			>
-				<slot />
+				<slot :active="isActive" />
 			</div>
 		</div>
 	</div>
@@ -139,9 +139,9 @@ export default defineComponent({
 				isActive.value = false;
 			}
 
-			function toggle() {
+			function toggle(newActive = !isActive.value) {
 				if (props.disabled === true) return;
-				isActive.value = !isActive.value;
+				isActive.value = newActive;
 			}
 		}
 
@@ -335,10 +335,20 @@ body {
 	}
 
 	&.attached {
-		.v-menu-content {
-			border-top: none;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+		&[data-placement^='top'] {
+			.v-menu-content {
+				border-bottom: none;
+				border-bottom-right-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+		}
+
+		&[data-placement^='bottom'] {
+			.v-menu-content {
+				border-top: none;
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
 		}
 	}
 }

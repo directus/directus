@@ -295,6 +295,8 @@
 		"has": "Contains some of these keys"
 	},
 
+	"search_for_icon": "Search for icon...",
+
 	"drop_to_upload": "Drop to Upload",
 	"upload_file_indeterminate": "Uploading File...",
 	"upload_file_success": "File Uploaded",

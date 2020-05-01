@@ -12,6 +12,7 @@ import InterfaceCheckboxes from './checkboxes';
 import InterfaceStatus from './status';
 import InterfaceDateTime from './datetime';
 import InterfaceImage from './image';
+import InterfaceIcon from './icon';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -28,6 +29,7 @@ export const interfaces = [
 	InterfaceStatus,
 	InterfaceDateTime,
 	InterfaceImage,
+	InterfaceIcon,
 ];
 
 export default interfaces;
