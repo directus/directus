@@ -97,7 +97,7 @@
     "stylelint-scss": "^3.17.1",
     "typescript": "^3.7.4",
     "vue-cli-plugin-storybook": "^1.2.2",
-    "vue-loader": "^15.9.1",
+    "vue-loader": "^15.9.2",
     "vue-template-compiler": "^2.6.10",
     "vuepress": "^1.4.1",
     "webpack": "^4.43.0",
