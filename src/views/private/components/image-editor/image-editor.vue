@@ -4,6 +4,10 @@
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
+		<template #header:append>
+			<span class="warning">{{ $t('changes_are_immediate_and_permanent') }}</span>
+		</template>
+
 		<div class="loader" v-if="loading">
 			<v-progress-circular indeterminate />
 		</div>
@@ -335,13 +339,16 @@ export default defineComponent({
 }
 
 .editor-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
 	background-color: var(--background-subdued);
 
-	&,
 	.editor {
+		flex-grow: 1;
 		width: 100%;
-		height: 100%;
-		overflow: hidden;
 	}
 
 	img {
@@ -359,21 +366,21 @@ export default defineComponent({
 }
 
 .toolbar {
-	position: absolute;
-	bottom: 0;
-	left: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
 	height: 60px;
 	color: var(--white);
-	background-color: rgba(0 0 0 / 75%);
-	backdrop-filter: blur(10px);
+	background-color: #263238;
 
 	> * {
 		display: inline-block;
 		margin: 0 8px;
 	}
+}
+
+.warning {
+	color: var(--warning);
 }
 </style>

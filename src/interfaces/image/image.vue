@@ -1,6 +1,6 @@
 <template>
 	<v-skeleton-loader v-if="loading" type="input-tall" />
-	<div class="image-preview" v-else-if="image">
+	<div class="image-preview" v-else-if="image" :class="{ isSVG: image.type.includes('svg') }">
 		<img :src="src" alt="" role="presentation" />
 		<div class="shadow" />
 		<div class="actions">
@@ -80,6 +80,10 @@ export default defineComponent({
 		const src = computed(() => {
 			if (!image.value) return null;
 
+			if (image.value.type.includes('svg')) {
+				return image.value.data.full_url;
+			}
+
 			const url = image.value.data.thumbnails.find(
 				(thumb) => thumb.key === 'directus-large-crop'
 			)?.url;
@@ -107,7 +111,7 @@ export default defineComponent({
 					fetchImage();
 				}
 
-				if (newID === null) {
+				if (oldID && newID === null) {
 					deselect();
 				}
 			}
@@ -190,6 +194,15 @@ img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+.isSVG {
+	padding: 32px;
+	background-color: var(--background-subdued);
+
+	img {
+		object-fit: contain;
+	}
 }
 
 .shadow {

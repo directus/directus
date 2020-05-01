@@ -1,6 +1,6 @@
 <template>
 	<div class="file-preview" v-if="type">
-		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }">
+		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" />
 		</div>
 

@@ -10,7 +10,7 @@
 				<h2 class="title">{{ title }}</h2>
 				<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
 				<div class="spacer" />
-				<v-icon name="" />
+				<slot name="header:append" />
 			</header>
 			<div class="content" :class="{ 'no-padding': noPadding }">
 				<v-overlay

@@ -6,7 +6,7 @@
 			:key="notification.id"
 			v-bind="notification"
 			:tail="index === queue.length - 1"
-			dense
+			:dense="dense"
 			:show-close="notification.persist === true && notification.closeable !== false"
 		/>
 	</transition-group>
@@ -19,6 +19,12 @@ import NotificationItem from '../notification-item';
 
 export default defineComponent({
 	components: { NotificationItem },
+	props: {
+		dense: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	setup() {
 		const notificationsStore = useNotificationsStore();
 		const queue = toRefs(notificationsStore.state).queue;

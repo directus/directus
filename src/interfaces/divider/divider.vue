@@ -8,7 +8,7 @@
 		}"
 	>
 		<template v-if="icon" #icon><v-icon :name="icon" /></template>
-		{{ title }}
+		<template v-if="title" #default>{{ title }}</template>
 	</v-divider>
 </template>
 

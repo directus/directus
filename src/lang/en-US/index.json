@@ -296,6 +296,8 @@
 		"has": "Contains some of these keys"
 	},
 
+	"loading": "Loading...",
+
 	"search_for_icon": "Search for icon...",
 
 	"drop_to_upload": "Drop to Upload",
@@ -427,6 +429,9 @@
 
 	"adding_in": "Adding New Item in {collection}",
 	"editing_in": "Editing Item in {collection}",
+
+	"editing_file": "Editing File: {title}",
+	"changes_are_immediate_and_permanent": "Changes are immediate and permanent",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -699,7 +704,6 @@
   "less_than": "Less than",
   "less_than_equal": "Less than or equal to",
   "limited": "Limited",
-  "loading": "Loading...",
   "load_more": "Load more",
   "loading_more": "Loading More Items",
   "login": "Log in",

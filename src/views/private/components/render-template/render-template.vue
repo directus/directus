@@ -1,12 +1,12 @@
 <template>
 	<div class="render-template">
 		<template v-for="(part, index) in parts">
-			<span :key="index" v-if="part === null || part.value === null" class="subdued">--</span>
+			<value-null :key="index" v-if="part === null || part.value === null" />
 			<component
 				v-else-if="typeof part === 'object'"
 				:is="`display-${part.component}`"
 				:key="index"
-				:value="part.value === null ? '--' : part.value"
+				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				v-bind="part.options"
@@ -22,8 +22,10 @@ import useFieldsStore from '@/stores/fields';
 import { get } from 'lodash';
 import { Field } from '@/stores/fields/types';
 import displays from '@/displays';
+import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
+	components: { ValueNull },
 	props: {
 		collection: {
 			type: String,

@@ -13,7 +13,7 @@
 				"
 			>
 				<template #activator="{ toggle, active }">
-					<div class="label type-label">
+					<div class="label type-label" :class="{ readonly: field.readonly }">
 						<v-checkbox
 							v-if="batchMode"
 							@change="toggleBatchField(field)"
@@ -23,7 +23,12 @@
 						<span @click="toggle">
 							{{ field.name }}
 							<v-icon class="required" sup name="star" v-if="field.required" />
-							<v-icon class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+							<v-icon
+								v-if="!field.readonly"
+								class="ctx-arrow"
+								:class="{ active }"
+								name="arrow_drop_down"
+							/>
 						</span>
 					</div>
 				</template>
@@ -104,6 +109,7 @@ import { clone } from 'lodash';
 import { FormField } from './types';
 import interfaces from '@/interfaces';
 import marked from 'marked';
+import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 
 type FieldValues = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -212,18 +218,12 @@ export default defineComponent({
 					return field;
 				});
 
-				// Make sure all used interfaces actually exist, default to text-input if not
 				formFields = formFields.map((field) => {
 					const interfaceUsed = interfaces.find((int) => int.id === field.interface);
 					const interfaceExists = interfaceUsed !== undefined;
 
 					if (interfaceExists === false) {
-						/**
-						 * @NOTE
-						 * Can be optimized by making the default smarter based on type used for the
-						 * field
-						 */
-						field.interface = 'text-input';
+						field.interface = getDefaultInterfaceForType(field.type);
 					}
 
 					if (interfaceUsed?.hideLabel === true) {
@@ -378,6 +378,10 @@ body {
 	width: max-content;
 	margin-bottom: 8px;
 	cursor: pointer;
+
+	&.readonly {
+		cursor: not-allowed;
+	}
 
 	.v-checkbox {
 		margin-right: 4px;

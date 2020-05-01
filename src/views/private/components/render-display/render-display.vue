@@ -1,5 +1,5 @@
 <template>
-	<span v-if="value === null || value === undefined">--</span>
+	<value-null v-if="value === null || value === undefined" />
 	<span v-else-if="!displayInfo">{{ value }}</span>
 	<span v-else-if="typeof displayInfo.handler === 'function'">
 		{{ display.handler(value, options) }}
@@ -17,8 +17,10 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import displays from '@/displays';
+import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
+	components: { ValueNull },
 	props: {
 		display: {
 			type: String,

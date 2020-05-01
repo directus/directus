@@ -87,9 +87,12 @@ export default defineComponent({
 			default: null,
 		},
 		type: {
-			type: String as PropType<'datetime' | 'time' | 'date'>,
+			type: String as PropType<
+				'datetime' | 'time' | 'date' | 'datetime_created' | 'datetime_updated'
+			>,
 			required: true,
-			validator: (val: string) => ['datetime', 'date', 'time'].includes(val),
+			validator: (val: string) =>
+				['datetime', 'date', 'time', 'datetime_created', 'datetime_updated'].includes(val),
 		},
 		includeSeconds: {
 			type: Boolean,

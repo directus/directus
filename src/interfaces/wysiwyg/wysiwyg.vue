@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';

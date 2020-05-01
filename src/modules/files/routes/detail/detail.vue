@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('editing', { collection: $t('files') })">
+	<private-view :title="loading ? $t('loading') : $t('editing_file', { title: item.title })">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -39,6 +39,16 @@
 			</v-dialog>
 
 			<v-button
+				v-if="item && item.type.includes('image')"
+				rounded
+				icon
+				@click="editActive = true"
+				class="edit"
+			>
+				<v-icon name="tune" />
+			</v-button>
+
+			<v-button
 				rounded
 				icon
 				:loading="saving"
@@ -70,17 +80,17 @@
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
+				@click="previewActive = true"
 			/>
+
+			<file-lightbox :id="item.id" v-model="previewActive" />
 
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
 				@refresh="changeCacheBuster"
-			>
-				<template #activator="{ on }">
-					<v-button @click="on">Edit</v-button>
-				</template>
-			</image-editor>
+				v-model="editActive"
+			/>
 
 			<v-form
 				:loading="loading"
@@ -113,6 +123,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
+import FileLightbox from '@/views/private/components/file-lightbox';
 
 type Values = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,7 +132,14 @@ type Values = {
 
 export default defineComponent({
 	name: 'files-detail',
-	components: { FilesNavigation, ActivityDrawerDetail, SaveOptions, FilePreview, ImageEditor },
+	components: {
+		FilesNavigation,
+		ActivityDrawerDetail,
+		SaveOptions,
+		FilePreview,
+		ImageEditor,
+		FileLightbox,
+	},
 	props: {
 		primaryKey: {
 			type: String,
@@ -154,6 +172,10 @@ export default defineComponent({
 
 		const cacheBuster = ref(nanoid());
 
+		const editActive = ref(false);
+
+		const previewActive = ref(false);
+
 		return {
 			item,
 			loading,
@@ -173,6 +195,8 @@ export default defineComponent({
 			isBatch,
 			changeCacheBuster,
 			cacheBuster,
+			editActive,
+			previewActive,
 		};
 
 		function changeCacheBuster() {
@@ -234,6 +258,13 @@ export default defineComponent({
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
+}
+
+.edit {
+	--v-button-background-color: var(--primary-25);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-50);
+	--v-button-color-hover: var(--primary);
 }
 
 .file-detail {

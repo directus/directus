@@ -78,7 +78,7 @@ body {
 		position: absolute;
 		top: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-y));
 		right: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-x));
-		z-index: 10;
+		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
