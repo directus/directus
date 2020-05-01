@@ -1,11 +1,11 @@
 <template>
 	<v-menu attached :disabled="disabled" close-on-content-click>
-		<template #activator="{ toggle, active }">
+		<template #activator="{ toggle, active, activate }">
 			<v-input
 				:disabled="disabled"
 				:placeholder="value || $t('search_for_icon')"
 				v-model="searchQuery"
-				@focus="toggle(true)"
+				@focus="activate"
 			>
 				<template #prepend>
 					<v-icon :name="value" :class="{ active: value }" />

@@ -7,7 +7,15 @@
 		}"
 	>
 		<div ref="activator" class="v-menu-activator" :class="{ attached }">
-			<slot name="activator" v-bind="{ toggle: toggle, active: isActive }" />
+			<slot
+				name="activator"
+				v-bind="{
+					toggle: toggle,
+					active: isActive,
+					activate: activate,
+					deactivate: deactivate,
+				}"
+			/>
 		</div>
 
 		<div
@@ -92,7 +100,7 @@ export default defineComponent({
 			}))
 		);
 
-		const { isActive, deactivate, toggle } = useActiveState();
+		const { isActive, activate, deactivate, toggle } = useActiveState();
 
 		return {
 			activator,
@@ -105,6 +113,7 @@ export default defineComponent({
 			styles,
 			arrowStyles,
 			popperPlacement,
+			activate,
 		};
 
 		function useActiveState() {
@@ -124,8 +133,8 @@ export default defineComponent({
 						stop();
 					}
 
-					emit('input', newActive);
 					localIsActive.value = newActive;
+					emit('input', newActive);
 				},
 			});
 
@@ -139,9 +148,9 @@ export default defineComponent({
 				isActive.value = false;
 			}
 
-			function toggle(newActive = !isActive.value) {
+			function toggle() {
 				if (props.disabled === true) return;
-				isActive.value = newActive;
+				isActive.value = !isActive.value;
 			}
 		}
 
