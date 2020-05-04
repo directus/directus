@@ -77,8 +77,9 @@
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
 					:item="item"
-					:select-mode="selectMode || _selection.length > 0"
+					:select-mode="selectMode || (_selection && _selection.length > 0)"
 					:to="getLinkForItem(item)"
+					:readonly="readonly"
 					v-model="_selection"
 				>
 					<template #title v-if="title">
@@ -205,6 +206,10 @@ export default defineComponent({
 		searchQuery: {
 			type: String as PropType<string | null>,
 			default: null,
+		},
+		readonly: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {

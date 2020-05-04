@@ -165,9 +165,9 @@ body {
 	align-items: center;
 
 	&.secondary {
-		--v-button-color: var(--foreground-color);
-		--v-button-color-hover: var(--foreground-color);
-		--v-button-color-activated: var(--foreground-color);
+		--v-button-color: var(--foreground-normal);
+		--v-button-color-hover: var(--foreground-normal);
+		--v-button-color-activated: var(--foreground-normal);
 		--v-button-background-color: var(--background-normal-alt);
 		--v-button-background-color-hover: var(--background-normal-alt);
 		--v-button-background-color-activated: var(--background-normal-alt);

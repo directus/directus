@@ -3,6 +3,7 @@ import SettingsGlobal from './routes/global';
 import { SettingsCollections, SettingsFields } from './routes/data-model/';
 import { SettingsRolesBrowse, SettingsRolesDetail } from './routes/roles';
 import { SettingsWebhooksBrowse, SettingsWebhooksDetail } from './routes/webhooks';
+import { SettingsPresetsBrowse, SettingsPresetsDetail } from './routes/presets';
 import SettingsNotFound from './routes/not-found';
 
 export default defineModule(({ i18n }) => ({
@@ -40,6 +41,17 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-roles-detail',
 			path: '/roles/:primaryKey',
 			component: SettingsRolesDetail,
+			props: true,
+		},
+		{
+			name: 'settings-presets-browse',
+			path: '/presets',
+			component: SettingsPresetsBrowse,
+		},
+		{
+			name: 'settings-presets-detail',
+			path: '/presets/:id',
+			component: SettingsPresetsDetail,
 			props: true,
 		},
 		{

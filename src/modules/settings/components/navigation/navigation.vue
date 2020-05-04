@@ -40,6 +40,11 @@ export default defineComponent({
 				name: i18n.t('settings_webhooks'),
 				to: `/${currentProjectKey.value}/settings/webhooks`,
 			},
+			{
+				icon: 'bookmark',
+				name: i18n.t('settings_presets'),
+				to: `/${currentProjectKey.value}/settings/presets`,
+			},
 		];
 
 		return { navItems };

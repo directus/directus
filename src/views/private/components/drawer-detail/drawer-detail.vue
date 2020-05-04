@@ -47,6 +47,12 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--drawer-detail-icon-color: var(--foreground-normal);
+}
+</style>
+
 <style lang="scss" scoped>
 .drawer-detail {
 	--v-badge-offset-x: 2px;
@@ -62,17 +68,11 @@ export default defineComponent({
 		height: 64px;
 		color: var(--foreground-normal);
 		background-color: var(--background-normal-alt);
-
-		&:not(.open):hover {
-			// Show arrow
-		}
-
-		&.open {
-			// Invert arrow
-		}
 	}
 
 	.icon {
+		--v-icon-color: var(--drawer-detail-icon-color);
+
 		display: flex;
 		align-items: center;
 		justify-content: center;

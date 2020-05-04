@@ -7,6 +7,19 @@
 			</v-button>
 		</template>
 
+		<template #title-outer:append>
+			<add-bookmark
+				class="add-bookmark"
+				v-model="addBookmarkActive"
+				@save="createBookmark"
+				:saving="creatingBookmark"
+			>
+				<template #activator="{ on }">
+					<v-icon class="toggle" name="bookmark_outline" @click="on" />
+				</template>
+			</add-bookmark>
+		</template>
+
 		<template #drawer>
 			<layout-drawer-detail v-model="viewType" />
 			<portal-target name="drawer" />
@@ -97,6 +110,7 @@ import useCollection from '@/composables/use-collection';
 import useCollectionPreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
+import AddBookmark from '@/views/private/components/add-bookmark';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -139,6 +153,7 @@ export default defineComponent({
 		CollectionsNotFound,
 		LayoutDrawerDetail,
 		SearchInput,
+		AddBookmark,
 	},
 	props: {
 		collection: {
@@ -169,8 +184,11 @@ export default defineComponent({
 			searchQuery,
 			savePreset,
 			bookmarkExists,
+			saveCurrentAsBookmark,
 		} = useCollectionPreset(collection, bookmarkID);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+
+		const { addBookmarkActive, creatingBookmark, createBookmark } = useBookmarks();
 
 		if (viewType.value === null) {
 			viewType.value = 'tabular';
@@ -194,6 +212,9 @@ export default defineComponent({
 			savePreset,
 			bookmarkExists,
 			currentCollectionLink,
+			addBookmarkActive,
+			creatingBookmark,
+			createBookmark,
 		};
 
 		function useSelection() {
@@ -267,6 +288,27 @@ export default defineComponent({
 
 			return { addNewLink, batchLink, collectionsLink, currentCollectionLink };
 		}
+
+		function useBookmarks() {
+			const addBookmarkActive = ref(false);
+			const creatingBookmark = ref(false);
+
+			return { addBookmarkActive, creatingBookmark, createBookmark };
+
+			async function createBookmark(name: string) {
+				creatingBookmark.value = true;
+
+				try {
+					await saveCurrentAsBookmark({ title: name });
+
+					addBookmarkActive.value = false;
+				} catch (error) {
+					console.log(error);
+				} finally {
+					creatingBookmark.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -298,5 +340,9 @@ export default defineComponent({
 
 .v-info {
 	margin: 20vh 0;
+}
+
+.add-bookmark .toggle {
+	margin-left: 8px;
 }
 </style>

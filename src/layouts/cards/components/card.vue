@@ -1,5 +1,5 @@
 <template>
-	<div class="card" :class="{ loading }" @click="handleClick">
+	<div class="card" :class="{ loading, readonly }" @click="handleClick">
 		<div class="header" :class="{ selected: value.includes(item) }">
 			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
 				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
@@ -87,6 +87,10 @@ export default defineComponent({
 		to: {
 			type: String,
 			default: '',
+		},
+		readonly: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -265,6 +269,10 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+.readonly {
+	pointer-events: none;
 }
 
 .title,

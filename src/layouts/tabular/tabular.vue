@@ -64,7 +64,7 @@
 			v-if="loading || itemCount > 0"
 			ref="table"
 			fixed-header
-			:show-select="selection !== undefined"
+			:show-select="readonly ? false : selection !== undefined"
 			show-resize
 			must-sort
 			:sort="tableSort"
@@ -74,9 +74,9 @@
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
-			:show-manual-sort="_filters.length === 0 && sortField !== null"
+			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
 			:manual-sort-key="sortField && sortField.field"
-			@click:row="onRowClick"
+			@click:row="readonly ? null : onRowClick"
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
@@ -202,6 +202,10 @@ export default defineComponent({
 		detailRoute: {
 			type: String,
 			default: `/{{project}}/collections/{{collection}}/{{primaryKey}}`,
+		},
+		readonly: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {

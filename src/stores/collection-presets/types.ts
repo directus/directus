@@ -34,8 +34,8 @@ export type CollectionPreset = {
 	user: number | null;
 	role: number | null;
 	collection: string;
-	search_query: null;
-	filters: Filter[] | null;
+	search_query: string | null;
+	filters: readonly Filter[] | null;
 	view_type: string | null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	view_query: { [view_type: string]: any } | null;

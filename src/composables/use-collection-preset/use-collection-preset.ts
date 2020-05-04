@@ -1,14 +1,16 @@
 import useCollectionPresetStore from '@/stores/collection-presets';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
+import useUserStore from '@/stores/user';
 
-import { Filter, CollectionPreset } from './types';
+import { Filter, CollectionPreset } from '@/stores/collection-presets/types';
 
 export function useCollectionPreset(
 	collection: Ref<string>,
 	bookmark: Ref<number | null> = ref(null)
 ) {
 	const collectionPresetsStore = useCollectionPresetStore();
+	const userStore = useUserStore();
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
@@ -17,10 +19,12 @@ export function useCollectionPreset(
 			(preset) => preset.id === bookmark.value
 		);
 	});
+
 	const localPreset = ref<CollectionPreset>({});
 	initLocalPreset();
 
-	const savePreset = async () => await collectionPresetsStore.savePreset(localPreset.value);
+	const savePreset = async (preset?: Partial<CollectionPreset>) =>
+		await collectionPresetsStore.savePreset(preset ? preset : localPreset.value);
 
 	const autoSave = debounce(async () => {
 		if (!bookmark || bookmark.value === null) {
@@ -86,11 +90,11 @@ export function useCollectionPreset(
 		},
 	});
 
-	const filters = computed<Filter[]>({
+	const filters = computed({
 		get() {
 			return localPreset.value.filters || [];
 		},
-		set(val) {
+		set(val: readonly Filter[]) {
 			localPreset.value = {
 				...localPreset.value,
 				filters: val,
@@ -114,7 +118,21 @@ export function useCollectionPreset(
 		},
 	});
 
-	return { bookmarkExists, viewType, viewOptions, viewQuery, filters, searchQuery, savePreset };
+	const title = computed(() => {
+		return localPreset.value?.title;
+	});
+
+	return {
+		bookmarkExists,
+		viewType,
+		viewOptions,
+		viewQuery,
+		filters,
+		searchQuery,
+		savePreset,
+		saveCurrentAsBookmark,
+		title,
+	};
 
 	function initLocalPreset() {
 		if (bookmark.value === null) {
@@ -128,5 +146,28 @@ export function useCollectionPreset(
 				...collectionPresetsStore.getBookmark(+bookmark.value),
 			};
 		}
+	}
+
+	/**
+	 * Saves the current state of localPreset as a bookmark. The parameter allows you to override
+	 * any of the values of the collection preset on save.
+	 *
+	 * This will set the user of the bookmark to the current user, and is therefore only meant to be
+	 * used to create bookmarks for yourself.
+	 *
+	 * @param overrides Individual overrides for the collection preset
+	 */
+	async function saveCurrentAsBookmark(overrides: Partial<CollectionPreset>) {
+		const data = {
+			...localPreset.value,
+			...overrides,
+		};
+
+		if (data.id) delete data.id;
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		data.user = userStore.state.currentUser!.id;
+
+		await savePreset(data);
 	}
 }

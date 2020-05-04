@@ -194,6 +194,14 @@
 		"-1": "Couldn't Reach API"
 	},
 
+	"bookmarks": {
+		"name": "Bookmark name...",
+		"create": "Create Bookmark",
+		"personal": "Personal (Current User Only)",
+		"global": "Global (Every User)",
+		"role": "For role {role}"
+	},
+
 	"unexpected_error": "An unexpected error occured",
 
 	"password_reset_sent": "We've sent you a secure link to reset your password",
@@ -332,6 +340,13 @@
 	"show_system_collections": "Show System Collections",
 	"hide_system_collections": "Hide System Collections",
 
+	"role": "Role",
+	"user": "User",
+
+	"no_presets": "No Presets",
+	"no_presets_copy": "No presets or bookmarks have been saved yet.",
+	"no_presets_cta": "Add Preset",
+
 	"always": "Always",
 	"create": "Create",
 	"full": "All",
@@ -339,7 +354,7 @@
 	"on_create": "On Creation",
 	"on_update": "On Update",
 	"read": "Read",
-	"role": "Role Only",
+	"role_only": "Role Only",
 	"update": "Update",
 
 	"select_fields": "Select Fields",
@@ -430,8 +445,23 @@
 	"adding_in": "Adding New Item in {collection}",
 	"editing_in": "Editing Item in {collection}",
 
+	"settings_data_model": "Data Model",
+	"settings_collections_fields": "Collections & Fields",
+	"settings_extensions": "Extensions",
+	"settings_global": "Global Settings",
+	"settings_permissions": "Roles & Permissions",
+	"settings_project": "Project Settings",
+	"settings_saved": "Settings Saved",
+	"settings_webhooks": "Webhooks",
+	"settings_presets": "Presets & Bookmarks",
+
+	"scope": "Scope",
+	"layout": "Layout",
 	"editing_file": "Editing File: {title}",
 	"changes_are_immediate_and_permanent": "Changes are immediate and permanent",
+
+	"editing_preset": "Editing Preset",
+	"layout_preview": "Layout Preview",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
@@ -454,10 +484,6 @@
   "batch_edit": "Batch Editing Items: {collection}",
   "batch_edit_field": "Batch Edit Field",
   "between": "Between",
-  "bookmark_global": "Global: Save for all users",
-  "bookmark_personal": "Personal: Save for me",
-  "bookmark_role": "Role: Save for '{role}'",
-  "bookmarks": "Bookmarks",
   "both": "Both",
   "cancel": "Cancel",
   "cant_disable_primary": "You can't disable primary key on an existing field. Remove this field instead.",
@@ -467,7 +493,8 @@
   "choose_project": "Choose Project",
   "clear": "Clear",
   "click_to_toggle_all_none": "Click to toggle entire column on/off",
-  "collection": "Collection | Collections",
+  "collection": "Collection",
+  "collections": "Collections",
   "collection_count": "No Collections | One Collection | {count} Collections",
   "collection_contains_items": "{collection} contains {count} items",
   "collection_invalid_name": "Invalid collection name",
@@ -718,7 +745,6 @@
   "more_options": "More options",
   "my_activity": "My Activity",
   "my_profile": "My Profile: {name}",
-  "name_bookmark": "What would you like to name this bookmark?",
   "navigate_changes": "Are you sure you want to leave this page? The changes you made will be lost if you navigate away from this page.",
   "new": "New",
   "new_field": "New Field",
@@ -802,14 +828,6 @@
   "server_trouble": "Server Trouble",
   "server_trouble_copy": "Try again later or contact your system administrator help.",
   "settings": "Settings",
-  "settings_data_model": "Data Model",
-  "settings_collections_fields": "Collections & Fields",
-  "settings_extensions": "Extensions",
-  "settings_global": "Global Settings",
-  "settings_permissions": "Roles & Permissions",
-  "settings_project": "Project Settings",
-  "settings_saved": "Settings Saved",
-  "settings_webhooks": "Webhooks",
   "setup_2fa": "Setup 2FA",
   "show_directus_collections": "Show Directus System Collections",
   "sign_in": "Sign In",

@@ -21,7 +21,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	setup(props) {
+	setup() {
 		return { formatTitle };
 	},
 });
