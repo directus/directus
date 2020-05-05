@@ -30,7 +30,7 @@
     "lodash": "^4.17.15",
     "marked": "^1.0.0",
     "micromustache": "^7.1.0",
-    "nanoid": "^3.1.4",
+    "nanoid": "^3.1.5",
     "pinia": "0.0.5",
     "portal-vue": "^2.1.7",
     "resize-observer": "^1.0.0",

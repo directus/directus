@@ -10083,10 +10083,10 @@ nan@^2.12.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
 
-nanoid@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.4.tgz#0c39d96aaf6317b580efb6c59903b95ada1b2ac9"
-  integrity sha512-ycTkPSwmUmEdtvPPuszyOCm+Fzw+/AngWkaJ52oZ6l4Mdhh/yNNrWflAzrXbSn3v1mL+GBl6qegU6w6ml5JSWw==
+nanoid@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.5.tgz#56da1bb76b619391fc61625e8b4e4bff309b9942"
+  integrity sha512-77yYm8wPy8igTpUQv9fA0VzEb5Ohxt5naC3zTK1oAb+u1MiyITtx0jpYrYRFfgJlefwJy2SkCaojZvxSYq6toA==
 
 nanomatch@^1.2.9:
   version "1.2.13"
