@@ -4,7 +4,6 @@ import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
 
 declare global {
 	interface Window {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		ResizeObserver: any;
 	}
 }

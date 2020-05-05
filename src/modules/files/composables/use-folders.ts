@@ -16,7 +16,7 @@ export type Folder = {
 
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let error: Ref<any> | null = null;
 
 export default function useFolders() {

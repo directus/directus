@@ -140,6 +140,8 @@
 
 	"comments": "Comments",
 
+	"select_item": "Select Item",
+
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",
 	"all_items": "All Items",
@@ -151,6 +153,9 @@
 
 	"radio_buttons": "Radio Buttons",
 	"checkboxes": "Checkboxes",
+
+	"relationship_not_setup": "The relationship hasn't been configured correctly.",
+	"display_template_not_setup": "The display template hasn't been configured correctly.",
 
 	"choose_status": "Choose Status...",
 
@@ -173,6 +178,9 @@
 	"bookmark_doesnt_exist": "Bookmark Doesn't Exist",
 	"bookmark_doesnt_exist_copy": "The bookmark you're trying to open couldn't be found.",
 	"bookmark_doesnt_exist_cta": "Return to collection",
+
+	"select_an_item": "Select an item...",
+	"edit": "Edit",
 
 	"errors": {
 		"3": "Only super admins have access to this",
@@ -324,6 +332,9 @@
 	"none": "None",
 
 	"add_new_item": "Add New Item",
+
+	"many-to-one": "Many to One",
+	"display_template": "Display Template",
 
 	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
 	"per_page": "Per Page",
@@ -796,7 +807,6 @@
   "related_entries": "Has related entries",
   "relational": "Relational",
   "relationship": "Relationship",
-  "relationship_not_setup": "The relationship hasn't been configured correctly.",
   "remove": "Remove",
   "remove_related": "Remove Related Item",
   "report_issue": "Report Issue",

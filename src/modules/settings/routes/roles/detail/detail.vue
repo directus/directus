@@ -101,7 +101,6 @@ import SaveOptions from '@/views/private/components/save-options';
 import PermissionsManagement from './components/permissions-management';
 
 type Values = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 

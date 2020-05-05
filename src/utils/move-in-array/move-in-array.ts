@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function moveInArray(array: readonly any[], fromIndex: number, toIndex: number) {
 	const item = array[fromIndex];
 	const length = array.length;

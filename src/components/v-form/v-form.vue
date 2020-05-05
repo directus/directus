@@ -90,6 +90,8 @@
 					"
 					:width="field.width"
 					:type="field.type"
+					:collection="field.collection"
+					:field="field.field"
 					@input="setValue(field, $event)"
 				/>
 			</div>
@@ -112,7 +114,6 @@ import marked from 'marked';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 
 type FieldValues = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 
@@ -273,7 +274,6 @@ export default defineComponent({
 			return { formFields, gridClass };
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function setValue(field: Field, value: any) {
 			const edits = props.edits ? clone(props.edits) : {};
 			edits[field.field] = value;

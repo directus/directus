@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed } from '@vue/composition-api';
+import { defineComponent, ref, PropType, computed, watch } from '@vue/composition-api';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 
@@ -118,6 +118,7 @@ export default defineComponent({
 
 		function useActiveState() {
 			const localIsActive = ref(false);
+
 			const isActive = computed<boolean>({
 				get() {
 					if (props.value !== undefined) {
@@ -127,15 +128,17 @@ export default defineComponent({
 					return localIsActive.value;
 				},
 				async set(newActive) {
-					if (newActive === true) {
-						await start();
-					} else {
-						stop();
-					}
-
 					localIsActive.value = newActive;
 					emit('input', newActive);
 				},
+			});
+
+			watch(isActive, async (newActive) => {
+				if (newActive !== null && newActive === true) {
+					await start();
+				} else {
+					stop();
+				}
 			});
 
 			return { isActive, activate, deactivate, toggle };

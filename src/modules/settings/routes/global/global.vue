@@ -36,7 +36,6 @@ export default defineComponent({
 
 		const initialValues = settingsStore.formatted;
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const edits = ref<{ [key: string]: any }>(null);
 
 		const noEdits = computed<boolean>(

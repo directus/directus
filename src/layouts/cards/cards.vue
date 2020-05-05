@@ -150,7 +150,6 @@ import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Item = Record<string, any>;
 
 type ViewOptions = {
@@ -317,7 +316,6 @@ export default defineComponent({
 
 			return { size, icon, imageSource, title, subtitle, imageFit };
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			function createViewOption<T>(key: keyof ViewOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
@@ -375,7 +373,6 @@ export default defineComponent({
 
 			return { sort, limit, page, fields };
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			function createViewQueryOption<T>(key: keyof ViewQuery, defaultValue: any) {
 				return computed<T>({
 					get() {
@@ -392,7 +389,6 @@ export default defineComponent({
 			}
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function getLinkForItem(item: Record<string, any>) {
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 

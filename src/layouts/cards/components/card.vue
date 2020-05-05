@@ -40,7 +40,6 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
 
 type File = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[key: string]: any;
 	type: string;
 	data: {
@@ -71,12 +70,10 @@ export default defineComponent({
 			default: false,
 		},
 		item: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 		value: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Array as PropType<Record<string, any>[]>,
 			default: () => [],
 		},

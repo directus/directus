@@ -120,7 +120,6 @@ export default defineComponent({
 
 		const isNew = computed(() => props.existingField === null);
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const edits = ref<Partial<Field>>({});
 
 		watch(
@@ -302,7 +301,6 @@ export default defineComponent({
 				() => localType.value && ['relational', 'file', 'files'].includes(localType.value)
 			);
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const relationships: any[] = [];
 
 			return { needsRelationalSetup, relationships };
@@ -325,7 +323,7 @@ export default defineComponent({
 				get() {
 					return edits.value.options || props.existingField?.options;
 				},
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				set(newOptions: { [key: string]: any } | null) {
 					edits.value = {
 						...edits.value,
@@ -354,7 +352,7 @@ export default defineComponent({
 				get() {
 					return edits.value.display_options || props.existingField?.display_options;
 				},
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				set(newOptions: { [key: string]: any } | null) {
 					edits.value = {
 						...edits.value,

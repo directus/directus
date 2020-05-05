@@ -84,7 +84,6 @@ import AddFolder from '../../components/add-folder';
 import SearchInput from '@/views/private/components/search-input';
 
 type Item = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 

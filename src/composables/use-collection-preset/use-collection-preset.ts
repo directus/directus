@@ -35,7 +35,6 @@ export function useCollectionPreset(
 	watch(collection, initLocalPreset);
 	watch(bookmark, initLocalPreset);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const viewOptions = computed<Record<string, any>>({
 		get() {
 			if (!localPreset.value.view_type) return null;
@@ -56,7 +55,6 @@ export function useCollectionPreset(
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const viewQuery = computed<Record<string, any>>({
 		get() {
 			if (!localPreset.value.view_type) return null;

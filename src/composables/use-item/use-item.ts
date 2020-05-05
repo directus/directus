@@ -132,7 +132,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	async function saveAsCopy() {
 		saving.value = true;
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const newItem: { [field: string]: any } = {
 			...(item.value || {}),
 			...edits.value,
@@ -249,7 +248,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} else {
 			const valuesThatAreEqual = { ...response.data.data[0] };
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			response.data.data.forEach((existingItem: any) => {
 				for (const [key, value] of Object.entries(existingItem)) {
 					if (valuesThatAreEqual[key] !== value) {

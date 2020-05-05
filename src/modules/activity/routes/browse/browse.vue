@@ -32,7 +32,6 @@ import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
 
 type Item = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 

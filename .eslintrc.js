@@ -16,6 +16,7 @@ module.exports = {
 		'@typescript-eslint/camelcase': 0,
 		'@typescript-eslint/no-use-before-define': 0,
 		'@typescript-eslint/ban-ts-ignore': 0,
+		'@typescript-eslint/no-explicit-any': 0,
 		'comma-dangle': [
 			'error',
 			{
@@ -37,7 +38,6 @@ module.exports = {
 				jest: true,
 			},
 			rules: {
-				'@typescript-eslint/no-explicit-any': 0,
 				'@typescript-eslint/no-empty-function': 0,
 				'@typescript-eslint/no-non-null-assertion': 0,
 			},

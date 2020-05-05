@@ -162,7 +162,6 @@ export default defineComponent({
 						});
 					}
 
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					activity.value = records;
 				} catch (error) {
 					error.value = error;

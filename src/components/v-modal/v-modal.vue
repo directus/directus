@@ -70,7 +70,6 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const sidebarActive = ref(false);
-
 		const localActive = ref(false);
 
 		const _active = computed({

@@ -119,7 +119,6 @@ type Item = {
 	value: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 

@@ -101,9 +101,9 @@ type FormattedPreset = {
 	collection: string;
 	layout: string | null;
 	name: string | null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	view_query: Record<string, any> | null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	view_options: Record<string, any> | null;
 	filters: readonly Filter[] | null;
 };
@@ -228,7 +228,6 @@ export default defineComponent({
 		}
 
 		function useValues() {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const edits = ref<any>({});
 
 			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
@@ -363,7 +362,6 @@ export default defineComponent({
 						},
 					});
 
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					users.value = response.data.data.map((user: any) => ({
 						name: user.first_name + ' ' + user.last_name,
 						id: user.id,

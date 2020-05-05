@@ -31,7 +31,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 			: `/${currentProjectKey}/items/${collection.value}`;
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const items = ref<any>([]);
 	const loading = ref(false);
 	const error = ref(null);
@@ -176,7 +175,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
 			 */
 			if (collection.value === 'directus_files') {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				fetchedItems = fetchedItems.map((file: any) => ({
 					...file,
 					$file: file,
@@ -231,7 +229,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 	}
 
 	type ManualSortData = {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		item: Record<string, any>;
 		oldIndex: number;
 		newIndex: number;
@@ -245,7 +242,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 		const selectionRange =
 			move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const updates = items.value.slice(...selectionRange).map((toBeUpdatedItem: any) => {
 			const sortValue = getPositionForItem(toBeUpdatedItem);
 
@@ -271,12 +267,11 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 	// Used as default value for the sort position. This is the index of the given item in the array
 	// of items, offset by the page count and current page
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	function getPositionForItem(item: any) {
 		const pk = primaryKeyField.value?.field;
 		if (!pk) return;
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const index = items.value.findIndex((existingItem: any) => existingItem[pk] === item[pk]);
 
 		return index + 1 + limit.value * (page.value - 1);

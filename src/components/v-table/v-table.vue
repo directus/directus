@@ -136,7 +136,7 @@ export default defineComponent({
 			default: null,
 		},
 		selection: {
-			type: Array as PropType<Item[]>,
+			type: Array as PropType<any>,
 			default: () => [],
 		},
 		fixedHeader: {
@@ -158,6 +158,10 @@ export default defineComponent({
 		rowHeight: {
 			type: Number,
 			default: 48,
+		},
+		selectionUseKeys: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit, listeners, slots }) {
@@ -287,23 +291,31 @@ export default defineComponent({
 		function onItemSelected(event: ItemSelectEvent) {
 			emit('item-selected', event);
 
-			const selection: Item[] = clone(props.selection);
+			let selection = clone(props.selection) as any[];
 
 			if (event.value === true) {
-				selection.push(event.item);
+				if (props.selectionUseKeys) {
+					selection.push(event.item[props.itemKey]);
+				} else {
+					selection.push(event.item);
+				}
 			} else {
-				const itemIndex: number = selection.findIndex(
-					(item: Item) => item[props.itemKey] === event.item[props.itemKey]
-				);
+				selection = selection.filter((item) => {
+					if (props.selectionUseKeys) {
+						return item !== event.item[props.itemKey];
+					}
 
-				selection.splice(itemIndex, 1);
+					return item[props.itemKey] !== event.item[props.itemKey];
+				});
 			}
 
 			emit('select', selection);
 		}
 
 		function getSelectedState(item: Item) {
-			const selectedKeys = props.selection.map((item: Item) => item[props.itemKey]);
+			const selectedKeys = props.selectionUseKeys
+				? props.selection
+				: props.selection.map((item: any) => item[props.itemKey]);
 			return selectedKeys.includes(item[props.itemKey]);
 		}
 
@@ -319,7 +331,7 @@ export default defineComponent({
 			moved?: {
 				oldIndex: number;
 				newIndex: number;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				element: Record<string, any>;
 			};
 		}

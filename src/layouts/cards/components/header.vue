@@ -65,7 +65,6 @@ export default defineComponent({
 			required: true,
 		},
 		selection: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Array as PropType<Record<string, any>>,
 			default: () => [],
 		},

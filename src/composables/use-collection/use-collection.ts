@@ -18,9 +18,11 @@ export function useCollection(collection: Ref<string>) {
 	});
 
 	const primaryKeyField = computed(() => {
+		// Every collection has a primary key; rules of the land
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return fields.value?.find(
 			(field) => field.collection === collection.value && field.primary_key === true
-		);
+		)!;
 	});
 
 	const ownerField = computed(() => {

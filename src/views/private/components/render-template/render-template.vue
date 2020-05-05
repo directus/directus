@@ -32,7 +32,6 @@ export default defineComponent({
 			required: true,
 		},
 		item: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Object as PropType<Record<string, any>>,
 			required: true,
 		},

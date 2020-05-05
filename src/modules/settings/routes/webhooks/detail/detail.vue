@@ -91,7 +91,6 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
 type Values = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 

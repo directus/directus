@@ -1,7 +1,6 @@
 import { Ref, ref, computed, watch } from '@vue/composition-api';
 import { nanoid } from 'nanoid';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EmitFunction = (event: string, ...args: any[]) => void;
 
 type Items = Readonly<

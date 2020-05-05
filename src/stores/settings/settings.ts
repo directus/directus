@@ -35,7 +35,7 @@ export const useSettingsStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 		async updateSettings(updates: { [key: string]: any }) {
 			const projectsStore = useProjectsStore();
 			const currentProjectKey = projectsStore.state.currentProjectKey;
@@ -79,7 +79,6 @@ export const useSettingsStore = createStore({
 
 				this.state.settings = this.state.settings.map((setting) => {
 					const updated = response.data.data.find(
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						(update: any) => update.id === setting.id
 					);
 

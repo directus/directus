@@ -76,7 +76,8 @@
 			:item-key="primaryKeyField.field"
 			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
 			:manual-sort-key="sortField && sortField.field"
-			@click:row="readonly ? null : onRowClick"
+			selection-use-keys
+			@click:row="onRowClick"
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
@@ -471,11 +472,13 @@ export default defineComponent({
 			};
 
 			function onRowClick(item: Item) {
+				if (props.readonly === true) return;
+
 				if (props.selectMode || _selection.value?.length > 0) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					(table.value as any).onItemSelected({
 						item,
-						value: _selection.value?.includes(item) === false,
+						value:
+							_selection.value?.includes(item[primaryKeyField.value.field]) === false,
 					});
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

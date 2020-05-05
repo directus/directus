@@ -29,7 +29,6 @@ export default defineComponent({
 			default: null,
 		},
 		options: {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			type: Object as PropType<any>,
 			default: null,
 		},

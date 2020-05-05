@@ -81,7 +81,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const editorElement = ref<any>(null);
 
 		const _value = computed({

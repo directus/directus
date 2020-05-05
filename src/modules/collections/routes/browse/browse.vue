@@ -21,7 +21,7 @@
 		</template>
 
 		<template #drawer>
-			<layout-drawer-detail v-model="viewType" />
+			<layout-drawer-detail @input="viewType = $event" :value="viewType || 'tabular'" />
 			<portal-target name="drawer" />
 		</template>
 
@@ -85,7 +85,7 @@
 			v-else
 			class="layout"
 			ref="layout"
-			:is="`layout-${viewType}`"
+			:is="`layout-${viewType || 'tabular'}`"
 			:collection="collection"
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
@@ -140,7 +140,6 @@ const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 };
 
 type Item = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 
@@ -189,10 +188,6 @@ export default defineComponent({
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		const { addBookmarkActive, creatingBookmark, createBookmark } = useBookmarks();
-
-		if (viewType.value === null) {
-			viewType.value = 'tabular';
-		}
 
 		return {
 			addNewLink,
@@ -267,10 +262,7 @@ export default defineComponent({
 
 			const batchLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
-				const batchPrimaryKeys = selection.value
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					.map((item) => item[primaryKeyField.value!.field])
-					.join();
+				const batchPrimaryKeys = selection.value.join();
 				return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
 			});
 

@@ -13,9 +13,9 @@ export type CollectionPreset = {
 	search_query: string | null;
 	title: string | null;
 	user: number | null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	view_options: Record<string, any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	view_query: Record<string, any>;
 	view_type: string | null;
 };

@@ -163,7 +163,6 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
 type Values = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[field: string]: any;
 };
 
@@ -250,7 +249,6 @@ export default defineComponent({
 		}
 
 		async function saveAndStay() {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const savedItem: Record<string, any> = await save();
 
 			if (props.primaryKey === '+') {

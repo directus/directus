@@ -12,18 +12,20 @@
 				<slot name="prepend" :value="value" :disabled="disabled" />
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
-			<input
-				v-bind="$attrs"
-				v-focus="autofocus"
-				v-on="_listeners"
-				:type="type"
-				:min="min"
-				:max="max"
-				:step="step"
-				:disabled="disabled"
-				:value="value"
-				ref="input"
-			/>
+			<slot name="input">
+				<input
+					v-bind="$attrs"
+					v-focus="autofocus"
+					v-on="_listeners"
+					:type="type"
+					:min="min"
+					:max="max"
+					:step="step"
+					:disabled="disabled"
+					:value="value"
+					ref="input"
+				/>
+			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="(type === 'number')">
 				<v-icon

@@ -50,7 +50,6 @@ export function usePopper(
 	}
 
 	function getModifiers(callback: () => void = () => undefined) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const modifiers: Partial<Modifier<string, any>>[] = [
 			popperOffsets,
 			{

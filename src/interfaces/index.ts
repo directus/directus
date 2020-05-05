@@ -13,6 +13,7 @@ import InterfaceStatus from './status';
 import InterfaceDateTime from './datetime';
 import InterfaceImage from './image';
 import InterfaceIcon from './icon';
+import InterfaceManyToOne from './many-to-one';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -30,6 +31,7 @@ export const interfaces = [
 	InterfaceDateTime,
 	InterfaceImage,
 	InterfaceIcon,
+	InterfaceManyToOne,
 ];
 
 export default interfaces;

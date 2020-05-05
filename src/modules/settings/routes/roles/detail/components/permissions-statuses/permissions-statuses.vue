@@ -72,7 +72,6 @@ export default defineComponent({
 		const allowedStatuses = ref<string[]>([]);
 		const indeterminate = ref<string[]>([]);
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const statusKeys = computed(() => props.statuses.map((status: any) => status.value));
 
 		const allAllowed = computed(() => {
