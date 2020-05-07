@@ -18,7 +18,7 @@
 					<template #input v-if="currentItem">
 						<div class="preview">
 							<render-template
-								:collection="collection"
+								:collection="relatedCollection.collection"
 								:item="currentItem"
 								:template="displayTemplate"
 							/>
@@ -31,7 +31,7 @@
 								name="open_in_new"
 								class="edit"
 								v-tooltip="$t('edit')"
-								@click.stop="startEditing"
+								@click.stop="editModalActive = true"
 							/>
 							<v-icon
 								name="close"
@@ -45,7 +45,7 @@
 								class="add"
 								name="add"
 								v-tooltip="$t('add_new_item')"
-								@click.stop="startEditing"
+								@click.stop="editModalActive = true"
 							/>
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
@@ -65,8 +65,8 @@
 				<template v-else>
 					<v-list-item
 						v-for="item in items"
-						:key="item[primaryKeyField.field]"
-						:active="value === item[primaryKeyField.field]"
+						:key="item[relatedPrimaryKeyField.field]"
+						:active="value === item[relatedPrimaryKeyField.field]"
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
@@ -81,49 +81,33 @@
 			</v-list>
 		</v-menu>
 
-		<v-modal
-			v-model="editModalActive"
-			:title="$t('editing_in', { collection: relatedCollection.name })"
-			persistent
-		>
-			<v-form
-				:loading="editLoading"
-				:initial-values="existingItem"
-				:collection="relatedCollection.collection"
-				v-model="edits"
-			/>
+		<modal-detail
+			:active.sync="editModalActive"
+			:collection="relatedCollection.collection"
+			:primary-key="currentPrimaryKey"
+			:edits="edits"
+			@input="stageEdits"
+		/>
 
-			<template #footer>
-				<v-button @click="cancelEditing" secondary>{{ $t('cancel') }}</v-button>
-				<v-button @click="stopEditing">{{ $t('save') }}</v-button>
-			</template>
-		</v-modal>
-
-		<v-modal v-model="selectModalActive" :title="$t('select_item')" no-padding>
-			<layout-tabular
-				class="layout"
-				:collection="relatedCollection.collection"
-				:selection="selection"
-				@update:selection="onSelect"
-				select-mode
-			/>
-
-			<template #footer>
-				<v-button @click="cancelSelecting" secondary>{{ $t('cancel') }}</v-button>
-				<v-button @click="stopSelecting">{{ $t('save') }}</v-button>
-			</template>
-		</v-modal>
+		<modal-browse
+			:active.sync="selectModalActive"
+			:collection="relatedCollection.collection"
+			:selection="selection"
+			@input="stageSelection"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs, watch, PropType, Ref } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/relations';
 import useCollection from '@/composables/use-collection';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 import useCollectionsStore from '@/stores/collections';
+import ModalDetail from '@/views/private/components/modal-detail';
+import ModalBrowse from '@/views/private/components/modal-browse';
 
 /**
  * @NOTE
@@ -134,6 +118,7 @@ import useCollectionsStore from '@/stores/collections';
  */
 
 export default defineComponent({
+	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
 			type: [Number, String, Object],
@@ -163,61 +148,45 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { relation, relatedCollection } = useRelation();
+		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { usesMenu, menuActive } = useMenu();
-		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo } = useCollection(collection);
+		const { selection, stageSelection, selectModalActive } = useSelection();
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
-		const { setCurrent, currentItem, loading: loadingCurrent } = useCurrent();
-		const {
-			edits,
-			editModalActive,
-			startEditing,
-			stopEditing,
-			loading: editLoading,
-			error: editError,
-			existingItem,
-			cancelEditing,
-		} = useEdit();
 
 		const {
-			startSelecting,
-			stopSelecting,
-			cancelSelecting,
-			active: selectModalActive,
-			selection,
-			onSelect,
-		} = useSelectionModal();
+			setCurrent,
+			currentItem,
+			loading: loadingCurrent,
+			currentPrimaryKey,
+		} = useCurrent();
+
+		const { edits, stageEdits } = useEdits();
+
+		const editModalActive = ref(false);
 
 		return {
-			cancelEditing,
-			cancelSelecting,
 			collectionInfo,
 			currentItem,
 			displayTemplate,
-			editError,
-			editLoading,
-			editModalActive,
-			edits,
-			existingItem,
 			items,
 			itemsLoading,
 			loadingCurrent,
 			menuActive,
 			onPreviewClick,
-			primaryKeyField,
 			relatedCollection,
 			relation,
 			selection,
 			selectModalActive,
 			setCurrent,
-			startEditing,
-			startSelecting,
-			stopEditing,
-			stopSelecting,
 			totalCount,
-			onSelect,
+			stageSelection,
 			useMenu,
+			currentPrimaryKey,
+			edits,
+			stageEdits,
+			editModalActive,
 		};
 
 		function useCurrent() {
@@ -233,7 +202,7 @@ export default defineComponent({
 					if (
 						newValue !== null &&
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						newValue !== currentItem.value?.[primaryKeyField.value!.field] &&
+						newValue !== currentItem.value?.[relatedPrimaryKeyField.value!.field] &&
 						(typeof newValue === 'string' || typeof newValue === 'number')
 					) {
 						fetchCurrent();
@@ -248,11 +217,29 @@ export default defineComponent({
 				}
 			);
 
-			return { setCurrent, currentItem, loading };
+			const currentPrimaryKey = computed<string | number>(() => {
+				if (!currentItem.value) return '+';
+				if (!props.value) return '+';
+
+				if (typeof props.value === 'number' || typeof props.value === 'string') {
+					return props.value;
+				}
+
+				if (
+					typeof props.value === 'object' &&
+					props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)
+				) {
+					return props.value[relatedPrimaryKeyField.value.field];
+				}
+
+				return '+';
+			});
+
+			return { setCurrent, currentItem, loading, currentPrimaryKey };
 
 			function setCurrent(item: Record<string, any>) {
 				currentItem.value = item;
-				emit('input', item[primaryKeyField.value.field]);
+				emit('input', item[relatedPrimaryKeyField.value.field]);
 			}
 
 			async function fetchCurrent() {
@@ -261,8 +248,8 @@ export default defineComponent({
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(primaryKeyField.value.field) === false) {
-					fields.push(primaryKeyField.value.field);
+				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
+					fields.push(relatedPrimaryKeyField.value.field);
 				}
 
 				try {
@@ -306,8 +293,8 @@ export default defineComponent({
 
 				const fields = requiredFields.value || [];
 
-				if (fields.includes(primaryKeyField.value.field) === false) {
-					fields.push(primaryKeyField.value.field);
+				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
+					fields.push(relatedPrimaryKeyField.value.field);
 				}
 
 				try {
@@ -345,97 +332,6 @@ export default defineComponent({
 			}
 		}
 
-		function useEdit() {
-			const loading = ref(false);
-			const error = ref(null);
-			const existingItem = ref<any>(null);
-
-			const edits = ref<any>(null);
-			const editModalActive = ref(false);
-
-			return {
-				edits,
-				editModalActive,
-				startEditing,
-				stopEditing,
-				loading,
-				error,
-				existingItem,
-				cancelEditing,
-			};
-
-			async function startEditing() {
-				editModalActive.value = true;
-				loading.value = true;
-
-				// If the current value is an object, it's the previously created changes to the item
-				if (props.value && typeof props.value === 'object') {
-					edits.value = props.value;
-				}
-				// if not, it's the primary key of the existing item (fresh load). It's important for
-				// us to stage the existing ID back up in the object of edits, otherwise the API will
-				// treat the edits as a creation of a new item instead of editing the values of an
-				// existing one
-				else if (
-					props.value &&
-					(typeof props.value === 'number' || typeof props.value === 'string')
-				) {
-					edits.value = {
-						[primaryKeyField.value.field]: props.value,
-					};
-				}
-
-				// If the current item has a primary key, it means that it's an existing item we're
-				// about to edit. In that case, we want to fetch the whole existing item, so we can
-				// render the full form inline
-				if (currentItem.value?.hasOwnProperty(primaryKeyField.value.field)) {
-					loading.value = true;
-
-					const { currentProjectKey } = projectsStore.state;
-
-					try {
-						const response = await api.get(
-							`/${currentProjectKey}/items/${relatedCollection.value.collection}/${
-								currentItem.value[primaryKeyField.value.field]
-							}`
-						);
-						existingItem.value = response.data.data;
-					} catch (err) {
-						error.value = err;
-					} finally {
-						loading.value = false;
-					}
-				}
-				// When the current item doesn't have a primary key, it means it's new. In that case
-				// we don't have to bother fetching anything, as all the edits are already stored
-				// in current item
-				else {
-					loading.value = false;
-				}
-			}
-
-			function cancelEditing() {
-				editModalActive.value = false;
-				error.value = null;
-				loading.value = false;
-				existingItem.value = null;
-				edits.value = null;
-			}
-
-			function stopEditing() {
-				emit('input', edits.value);
-
-				// Merging the previously fetched existing current item makes sure we don't remove
-				// any fields in the preview that wasn't edited, but still used in the preview
-				currentItem.value = {
-					...currentItem.value,
-					...edits.value,
-				};
-
-				cancelEditing();
-			}
-		}
-
 		function useRelation() {
 			const relation = computed(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
@@ -446,7 +342,12 @@ export default defineComponent({
 				return collectionsStore.getCollection(relation.value.collection_one);
 			});
 
-			return { relation, relatedCollection };
+			const { collection } = toRefs(relatedCollection.value);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(
+				collection as Ref<string>
+			);
+
+			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
 
 		function useMenu() {
@@ -482,52 +383,78 @@ export default defineComponent({
 					menuActive.value = newActive;
 					if (newActive === true) fetchItems();
 				} else {
-					startSelecting();
+					selectModalActive.value = true;
 				}
 			}
 		}
 
-		function useSelectionModal() {
-			const active = ref(false);
-			const selection = ref<any[]>([]);
+		function useSelection() {
+			const selectModalActive = ref(false);
 
-			return { active, selection, onSelect, startSelecting, stopSelecting, cancelSelecting };
+			const selection = computed<(number | string)[]>(() => {
+				if (!props.value) return [];
 
-			function onSelect(newSelection: any[]) {
-				if (newSelection.length > 0) {
-					selection.value = [newSelection[newSelection.length - 1]];
-				} else {
-					selection.value = [];
+				if (
+					typeof props.value === 'object' &&
+					props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)
+				) {
+					return [props.value[relatedPrimaryKeyField.value.field]];
 				}
-			}
 
-			function startSelecting() {
-				active.value = true;
-
-				if (props.value) {
-					if (
-						typeof props.value === 'object' &&
-						props.value.hasOwnProperty(primaryKeyField.value.field)
-					) {
-						selection.value = [props.value[primaryKeyField.value.field]];
-					} else if (typeof props.value === 'string' || typeof props.value === 'number') {
-						selection.value = [props.value];
-					}
+				if (typeof props.value === 'string' || typeof props.value === 'number') {
+					return [props.value];
 				}
-			}
 
-			function stopSelecting() {
-				if (!selection.value[0]) {
+				return [];
+			});
+
+			return { selection, stageSelection, selectModalActive };
+
+			function stageSelection(newSelection: (number | string)[]) {
+				if (newSelection.length === 0) {
 					emit('input', null);
 				} else {
-					emit('input', selection.value[0]);
+					emit('input', newSelection[0]);
 				}
-				cancelSelecting();
 			}
+		}
 
-			function cancelSelecting() {
-				active.value = false;
-				selection.value = [];
+		function useEdits() {
+			const edits = computed(() => {
+				// If the current value isn't a primitive, it means we've already staged some changes
+				// This ensures we continue on those changes instead of starting over
+				if (props.value && typeof props.value === 'object') {
+					return props.value;
+				}
+
+				return {};
+			});
+
+			return { edits, stageEdits };
+
+			function stageEdits(newEdits: Record<string, any>) {
+				// Make sure we stage the primary key if it exists. This is needed to have the API
+				// update the existing item instead of create a new one
+				if (currentPrimaryKey.value && currentPrimaryKey.value !== '+') {
+					emit('input', {
+						[relatedPrimaryKeyField.value.field]: currentPrimaryKey.value,
+						...newEdits,
+					});
+				} else {
+					if (
+						newEdits.hasOwnProperty(relatedPrimaryKeyField.value.field) &&
+						newEdits[relatedPrimaryKeyField.value.field] === '+'
+					) {
+						delete newEdits[relatedPrimaryKeyField.value.field];
+					}
+
+					emit('input', newEdits);
+				}
+
+				currentItem.value = {
+					...currentItem.value,
+					...newEdits,
+				};
 			}
 		}
 	},
@@ -571,9 +498,5 @@ export default defineComponent({
 
 .deselect:hover {
 	--v-icon-color: var(--danger);
-}
-
-.layout {
-	--layout-offset-top: 0px;
 }
 </style>

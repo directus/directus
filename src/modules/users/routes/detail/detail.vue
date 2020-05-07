@@ -67,6 +67,7 @@
 			:initial-values="item"
 			collection="directus_users"
 			:batch-mode="isBatch"
+			:primary-key="primaryKey"
 			v-model="edits"
 		/>
 

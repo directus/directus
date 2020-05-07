@@ -10,6 +10,7 @@
 					Array.isArray(selectedInterface.options)
 				"
 				:fields="selectedInterface.options"
+				primary-key="+"
 				v-model="_options"
 			/>
 		</transition-expand>

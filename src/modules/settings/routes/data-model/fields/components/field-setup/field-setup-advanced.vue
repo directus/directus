@@ -2,7 +2,7 @@
 	<v-tab-item value="advanced">
 		<h2 class="title" v-if="isNew">{{ $t('advanced_options_title') }}</h2>
 
-		<v-form :initial-values="existingField" v-model="_edits" :fields="fields" />
+		<v-form :initial-values="existingField" v-model="_edits" :fields="fields" primary-key="+" />
 	</v-tab-item>
 </template>
 

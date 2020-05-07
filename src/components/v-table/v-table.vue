@@ -1,5 +1,5 @@
 <template>
-	<div class="v-table" :class="{ loading }">
+	<div class="v-table" :class="{ loading, inline }">
 		<table
 			:summary="_headers.map((header) => header.text).join(', ')"
 			:style="{
@@ -160,6 +160,10 @@ export default defineComponent({
 			default: 48,
 		},
 		selectionUseKeys: {
+			type: Boolean,
+			default: false,
+		},
+		inline: {
 			type: Boolean,
 			default: false,
 		},
@@ -382,6 +386,10 @@ body {
 				grid-template-columns: var(--grid-columns);
 			}
 
+			.loading-indicator {
+				position: relative;
+			}
+
 			td,
 			th {
 				color: var(--foreground-normal);
@@ -447,5 +455,10 @@ body {
 			}
 		}
 	}
+}
+
+.inline {
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
 }
 </style>

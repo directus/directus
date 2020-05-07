@@ -8,6 +8,7 @@ export type HeaderRaw = {
 	align?: Alignment;
 	sortable?: boolean;
 	width?: number | null;
+	[key: string]: any;
 };
 
 export type Header = Required<HeaderRaw>;

@@ -67,6 +67,7 @@
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
+				:primary-key="collection"
 				v-model="edits"
 			/>
 		</div>

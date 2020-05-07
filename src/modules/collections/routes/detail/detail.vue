@@ -138,6 +138,7 @@
 			:initial-values="item"
 			:collection="collection"
 			:batch-mode="isBatch"
+			:primary-key="primaryKey"
 			v-model="edits"
 		/>
 

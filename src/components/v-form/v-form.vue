@@ -92,6 +92,7 @@
 					:type="field.type"
 					:collection="field.collection"
 					:field="field.field"
+					:primary-key="primaryKey"
 					@input="setValue(field, $event)"
 				/>
 			</div>
@@ -145,6 +146,10 @@ export default defineComponent({
 		batchMode: {
 			type: Boolean,
 			default: false,
+		},
+		primaryKey: {
+			type: [String, Number],
+			required: true,
 		},
 	},
 	setup(props, { emit }) {

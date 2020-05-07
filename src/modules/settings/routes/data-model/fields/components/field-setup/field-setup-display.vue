@@ -10,6 +10,7 @@
 					Array.isArray(selectedDisplay.options)
 				"
 				:fields="selectedDisplay.options"
+				primary-key="+"
 				v-model="_options"
 			/>
 		</transition-expand>

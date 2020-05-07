@@ -17,7 +17,12 @@
 		</template>
 
 		<div class="settings">
-			<v-form :initial-values="initialValues" v-model="edits" :fields="fields" />
+			<v-form
+				:initial-values="initialValues"
+				v-model="edits"
+				:fields="fields"
+				:primary-key="1"
+			/>
 		</div>
 	</private-view>
 </template>

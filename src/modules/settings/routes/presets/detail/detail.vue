@@ -54,6 +54,7 @@
 				:fields="fields"
 				:loading="loading"
 				:initial-values="initialValues"
+				:primary-key="id"
 				v-model="edits"
 			/>
 

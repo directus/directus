@@ -65,7 +65,11 @@ export const useFieldsStore = createStore({
 			 * between settings and regular collections.
 			 */
 
-			const settingsResponse = await api.get(`/${currentProjectKey}/settings/fields`);
+			const settingsResponse = await api.get(`/${currentProjectKey}/settings/fields`, {
+				params: {
+					limit: -1,
+				},
+			});
 			fields.push(...settingsResponse.data.data);
 
 			/**

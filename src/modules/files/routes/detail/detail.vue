@@ -97,6 +97,7 @@
 				:initial-values="item"
 				collection="directus_files"
 				:batch-mode="isBatch"
+				:primary-key="primaryKey"
 				v-model="edits"
 			/>
 		</div>

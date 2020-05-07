@@ -14,7 +14,12 @@
 			<activity-navigation />
 		</template>
 
-		<v-form collection="directus_activity" :loading="loading" :initial-values="item" />
+		<v-form
+			collection="directus_activity"
+			:loading="loading"
+			:initial-values="item"
+			:primary-key="primaryKey"
+		/>
 	</private-view>
 </template>
 
