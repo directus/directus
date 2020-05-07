@@ -4,4 +4,5 @@
 
 | Option     | Description | Default |
 | ---------- | ----------- | ------- |
-| `readonly` | Readonly    | `false` |
+| `disabled` | Disabled    | `false` |
+| `width`    | Width       | `half`  |

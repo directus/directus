@@ -29,13 +29,13 @@
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="(type === 'number')">
 				<v-icon
-					:class="{ disabled: value === null || value === max }"
+					:class="{ disabled: value >= max }"
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
 				/>
 				<v-icon
-					:class="{ disabled: value === null || value === min }"
+					:class="{ disabled: value <= min }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
@@ -139,18 +139,18 @@ export default defineComponent({
 		function stepUp() {
 			if (!input.value) return;
 
-			if (props.value !== null && props.value < props.max) {
+			if (props.value < props.max) {
 				input.value.stepUp();
-				emit('input', +input.value.value);
+				emit('input', input.value.value ?? props.min ?? 0);
 			}
 		}
 
 		function stepDown() {
 			if (!input.value) return;
 
-			if (props.value !== null && props.value > props.min) {
+			if (props.value > props.min) {
 				input.value.stepDown();
-				emit('input', +input.value.value);
+				emit('input', input.value.value);
 			}
 		}
 	},

@@ -6,12 +6,5 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('interfaces.icon.icon'),
 	icon: 'insert_emoticon',
 	component: InterfaceIcon,
-	options: [
-		{
-			field: 'iconColor',
-			name: 'Icon Color',
-			width: 'half',
-			interface: 'color',
-		},
-	],
+	options: [],
 }));
