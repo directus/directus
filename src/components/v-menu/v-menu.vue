@@ -31,13 +31,16 @@
 				:style="arrowStyles"
 				data-popper-arrow
 			/>
-			<div
-				:class="{ active: isActive, 'overflow-scroll': overflowScroll }"
-				class="v-menu-content"
-				@click="onContentClick"
-			>
-				<slot :active="isActive" />
-			</div>
+			<transition-expand :to="popperPlacement">
+				<div
+					v-if="isActive"
+					class="v-menu-content"
+					:class="{ 'overflow-scroll': overflowScroll }"
+					@click="onContentClick"
+				>
+					<slot :active="isActive" />
+				</div>
+			</transition-expand>
 		</div>
 	</div>
 </template>
@@ -263,7 +266,6 @@ body {
 		border: 2px solid var(--border-normal);
 		border-radius: var(--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
-		opacity: 0;
 		transition-timing-function: var(--transition-out);
 		transition-duration: var(--fast);
 		transition-property: opacity, transform;
@@ -277,73 +279,6 @@ body {
 		.v-list {
 			--v-list-background-color: transparent;
 		}
-	}
-
-	&[data-placement='top'] > .v-menu-content {
-		transform: scaleY(0.8);
-		transform-origin: bottom center;
-	}
-
-	&[data-placement='top-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: bottom left;
-	}
-
-	&[data-placement='top-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: bottom right;
-	}
-
-	&[data-placement='right'] > .v-menu-content {
-		transform: scaleX(0.8);
-		transform-origin: center left;
-	}
-
-	&[data-placement='right-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: top left;
-	}
-
-	&[data-placement='right-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: bottom left;
-	}
-
-	&[data-placement='bottom'] > .v-menu-content {
-		transform: scaleY(0.8);
-		transform-origin: top center;
-	}
-
-	&[data-placement='bottom-start'] > .v-menu-content {
-		transform: scaleY(0.8);
-		transform-origin: top left;
-	}
-
-	&[data-placement='bottom-end'] > .v-menu-content {
-		transform: scaleY(0.8);
-		transform-origin: top right;
-	}
-
-	&[data-placement='left'] > .v-menu-content {
-		transform: scaleX(0.8);
-		transform-origin: center right;
-	}
-
-	&[data-placement='left-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: top right;
-	}
-
-	&[data-placement='left-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-		transform-origin: bottom right;
-	}
-
-	.v-menu-content.active {
-		transform: scaleY(1) scaleX(1);
-		opacity: 1;
-		transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
-		transition-duration: var(--fast);
 	}
 
 	&.attached {
