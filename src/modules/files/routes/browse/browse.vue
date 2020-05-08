@@ -7,7 +7,7 @@
 		</template>
 
 		<template #drawer>
-			<layout-drawer-detail v-model="viewType" />
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
 			<portal-target name="drawer" />
 		</template>
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
+	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
 		<portal to="drawer">
 			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
 
@@ -64,7 +64,7 @@
 				:sort.sync="sort"
 			/>
 
-			<div class="grid">
+			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<template v-if="loading">
 					<card v-for="n in limit" :key="`loader-${n}`" loading />
 				</template>
@@ -150,6 +150,7 @@ import useProjectsStore from '@/stores/projects';
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import useElementSize from '@/composables/use-element-size';
 
 type Item = Record<string, any>;
 
@@ -213,6 +214,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const layoutElement = ref<HTMLElement>(null);
 		const mainElement = inject('main-element', ref<Element>(null));
 		const projectsStore = useProjectsStore();
 
@@ -262,6 +264,14 @@ export default defineComponent({
 			});
 		});
 
+		const { width } = useElementSize(layoutElement);
+
+		const isSingleRow = computed(() => {
+			const cardsWidth =
+				items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
+			return cardsWidth <= width.value;
+		});
+
 		return {
 			_selection,
 			items,
@@ -289,6 +299,9 @@ export default defineComponent({
 			info,
 			clearFilters,
 			showingCount,
+			isSingleRow,
+			width,
+			layoutElement,
 		};
 
 		function toPage(newPage: number) {
@@ -305,7 +318,7 @@ export default defineComponent({
 		}
 
 		function useViewOptions() {
-			const size = createViewOption('size', 120);
+			const size = createViewOption<number>('size', 2);
 			const icon = createViewOption('icon', 'box');
 			const title = createViewOption<string>('title', null);
 			const subtitle = createViewOption<string>('subtitle', null);
@@ -413,10 +426,12 @@ export default defineComponent({
 
 .grid {
 	display: grid;
-	grid-gap: 32px 24px;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
-	justify-content: stretch;
-	justify-items: stretch;
+	gap: 32px 24px;
+
+	&.single-row {
+		grid-template-columns: repeat(auto-fit, var(--size));
+	}
 }
 
 .v-info {
