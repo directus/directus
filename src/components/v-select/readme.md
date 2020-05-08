@@ -34,6 +34,7 @@ Renders a dropdown input.
 | `disabled`               | Disable the select                                  |         |
 | `show-deselect`          | Show the deselect option when a value has been set  |         |
 | `close-on-content-click` | Close the select when selecting a value             | `true`  |
+| `inline`                 | Render the select inline in text                    | `false` |
 
 
 ## Events

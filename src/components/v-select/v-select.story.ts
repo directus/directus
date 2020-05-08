@@ -32,6 +32,9 @@ export const basic = () =>
 			allowOther: {
 				default: boolean('Allow Other', false),
 			},
+			inline: {
+				default: boolean('Inline', false),
+			},
 		},
 		setup() {
 			const value = ref(null);
@@ -45,8 +48,10 @@ export const basic = () =>
 					:placeholder="placeholder"
 					v-model="value"
 					:items="items"
+					:inline="inline"
 				/>
 				<raw-value>{{ value }}</raw-value>
+				<portal-target name="popper-outlet" />
 			</div>
 		`,
 	});
@@ -84,6 +89,7 @@ export const multiple = () =>
 					multiple
 				/>
 				<raw-value>{{ value }}</raw-value>
+				<portal-target name="popper-outlet" />
 			</div>
 		`,
 	});

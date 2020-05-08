@@ -122,20 +122,23 @@ export const withMenu = () =>
 	defineComponent({
 		components: { VMenu },
 		template: `
-			<v-menu placement="bottom-start" close-on-content-click attached>
-				<template #activator="{ toggle, active }">
-					<v-input placeholder="Enter value...">
-						<template #append><v-icon @click="toggle" name="public" :style="{
-							'--v-icon-color': active ? 'var(--blue)' : 'currentColor'
-						}" /></template>
-					</v-input>
-				</template>
+			<div>
+				<v-menu placement="bottom-start" close-on-content-click attached>
+					<template #activator="{ toggle, active }">
+						<v-input placeholder="Enter value...">
+							<template #append><v-icon @click="toggle" name="public" :style="{
+								'--v-icon-color': active ? 'var(--blue)' : 'currentColor'
+							}" /></template>
+						</v-input>
+					</template>
 
-				<v-list>
-					<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
-						Item {{i}}
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<v-list>
+						<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
+							Item {{i}}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+				<portal-target name="popper-outlet" />
+			</div>
 		`,
 	});

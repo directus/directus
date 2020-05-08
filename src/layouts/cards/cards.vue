@@ -113,6 +113,7 @@
 						@input="limit = +$event"
 						:value="`${limit}`"
 						:items="['25', '50', '100', '250']"
+						inline
 					/>
 				</div>
 			</div>

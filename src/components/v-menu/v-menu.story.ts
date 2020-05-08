@@ -28,22 +28,25 @@ export const basic = () =>
 			},
 		},
 		template: `
-			<v-menu
-				:close-on-click="closeOnClick"
-				:close-on-content-click="closeOnContentClick"
-				show-arrow
-				placement="right-start"
-			>
-				<template #activator="{ toggle }">
-					<v-button @click="toggle">Click me</v-button>
-				</template>
+			<div>
+				<v-menu
+					:close-on-click="closeOnClick"
+					:close-on-content-click="closeOnContentClick"
+					show-arrow
+					placement="right-start"
+				>
+					<template #activator="{ toggle }">
+						<v-button @click="toggle">Click me</v-button>
+					</template>
 
-				<v-list>
-					<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
-						Item {{i}}
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<v-list>
+						<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
+							Item {{i}}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+				<portal-target name="popper-outlet" />
+			</div>
         `,
 	});
 
@@ -67,8 +70,9 @@ export const withVModel = () =>
 						<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
                             Item {{i}}
                         </v-list-item>
-                    </v-list>
+					</v-list>
 				</v-menu>
+				<portal-target name="popper-outlet" />
             </div>
         `,
 	});
@@ -120,7 +124,7 @@ export const positioning = () =>
                         </v-list-item>
                     </v-list>
 				</v-menu>
-				<portal-target name="menu-outlet" />
+				<portal-target name="popper-outlet" />
             </div>
 		`,
 	});
@@ -182,7 +186,7 @@ export const withEdgeOffset = () =>
 						</v-list>
 					</v-menu>
 				</div>
-				<portal-target name="menu-outlet" />
+				<portal-target name="popper-outlet" />
             </div>
         `,
 	});
@@ -199,26 +203,29 @@ export const attached = () =>
 			},
 		},
 		template: `
-			<v-menu
-				:close-on-click="closeOnClick"
-				:close-on-content-click="closeOnContentClick"
-				attached
-			>
-				<template #activator="{ toggle, active }">
-					<v-input placeholder="This is an input...">
-						<template #append>
-							<v-icon @click="toggle" name="public" :style="{
-								'--v-icon-color': active ? 'var(--blue)' : 'currentColor'
-							}" />
-						</template>
-					</v-input>
-				</template>
+			<div>
+				<v-menu
+					:close-on-click="closeOnClick"
+					:close-on-content-click="closeOnContentClick"
+					attached
+				>
+					<template #activator="{ toggle, active }">
+						<v-input placeholder="This is an input...">
+							<template #append>
+								<v-icon @click="toggle" name="public" :style="{
+									'--v-icon-color': active ? 'var(--blue)' : 'currentColor'
+								}" />
+							</template>
+						</v-input>
+					</template>
 
-				<v-list>
-					<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
-						Item {{i}}
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<v-list>
+						<v-list-item v-for="i in [1, 2, 3]" :key="i" @click="() => {}">
+							Item {{i}}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+				<portal-target name="popper-outlet" />
+			</div>
         `,
 	});

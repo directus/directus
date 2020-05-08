@@ -2,11 +2,22 @@
 	<v-menu
 		:disabled="disabled"
 		class="v-select"
-		attached
+		:attached="inline === false"
+		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 	>
 		<template #activator="{ toggle, active }">
+			<div
+				v-if="inline"
+				class="inline-display"
+				:class="{ placeholder: !displayValue }"
+				@click="toggle"
+			>
+				{{ displayValue || placeholder }}
+				<v-icon name="expand_more" :class="{ active }" />
+			</div>
 			<v-input
+				v-else
 				:full-width="fullWidth"
 				readonly
 				:value="displayValue"
@@ -100,7 +111,7 @@
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item @click="addOtherValue()">
+				<v-list-item @click.stop="addOtherValue()">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
 				</v-list-item>
@@ -167,6 +178,10 @@ export default defineComponent({
 		closeOnContentClick: {
 			type: Boolean,
 			default: true,
+		},
+		inline: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -287,5 +302,19 @@ body {
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
+}
+
+.inline-display {
+	width: max-content;
+	padding-right: 18px;
+	cursor: pointer;
+
+	.v-icon {
+		position: absolute;
+	}
+
+	&.placeholder {
+		color: var(--foreground-subdued);
+	}
 }
 </style>
