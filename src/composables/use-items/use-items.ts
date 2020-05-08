@@ -208,6 +208,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 				limit: 0,
 				fields: primaryKeyField.value.field,
 				meta: 'filter_count,total_count',
+				q: searchQuery.value,
 				...filtersToQuery(filters.value),
 			},
 		});

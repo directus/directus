@@ -99,7 +99,6 @@
 			v-else
 			class="layout"
 			ref="layout"
-			:key="$route.fullPath"
 			:is="`layout-${viewType || 'tabular'}`"
 			:collection="collection"
 			:selection.sync="selection"

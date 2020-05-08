@@ -39,8 +39,9 @@ export function useCollectionPreset(
 		}
 	}, 450);
 
-	watch(collection, initLocalPreset);
-	watch(bookmark, initLocalPreset);
+	watch([collection, bookmark], () => {
+		initLocalPreset();
+	});
 
 	const viewOptions = computed<Record<string, any>>({
 		get() {
