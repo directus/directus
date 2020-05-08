@@ -147,6 +147,7 @@ describe('Composables / Collection Presets', () => {
 			expect(preset).toEqual({
 				...defaultCollectionPreset,
 				collection: 'articles',
+				user: 5,
 			});
 		});
 
@@ -167,6 +168,7 @@ describe('Composables / Collection Presets', () => {
 			expect(preset).toEqual({
 				...defaultCollectionPreset,
 				collection: 'articles',
+				user: 5,
 			});
 		});
 

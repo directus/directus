@@ -213,9 +213,11 @@ export default defineComponent({
 			editBookmark,
 		} = useBookmarks();
 
-		if (viewType.value === null) {
-			viewType.value = 'tabular';
-		}
+		watch(collection, () => {
+			if (viewType.value === null) {
+				viewType.value = 'tabular';
+			}
+		});
 
 		return {
 			addNewLink,

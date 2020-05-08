@@ -99,6 +99,7 @@ export const useCollectionPresetsStore = createStore({
 			const defaultPreset = {
 				...defaultCollectionPreset,
 				collection: collection,
+				user: userID,
 			};
 
 			const availablePresets = this.state.collectionPresets.filter((preset) => {
