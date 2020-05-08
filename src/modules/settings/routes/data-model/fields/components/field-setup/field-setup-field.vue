@@ -1,46 +1,48 @@
 <template>
-	<v-tab-item value="field">
-		<h2 class="title" v-if="isNew">{{ $t('field_setup_title') }}</h2>
+	<div>
+		<h2 class="type-title" v-if="isNew">{{ $t('field_setup_title') }}</h2>
 
-		<label for="name" class="label">{{ $t('name') }}</label>
+		<div class="type-label">{{ $t('name') }}</div>
 		<v-input
+			class="field"
+			:value="value.field"
+			@input="emitValue('field', $event)"
+			db-safe
 			:disabled="isNew === false"
-			id="name"
-			v-model="_field"
-			:placeholder="$t('enter_field_name')"
 		/>
 
-		<v-fancy-select :disabled="isNew === false" :items="items" v-model="_type" />
-	</v-tab-item>
+		<v-fancy-select
+			:disabled="isNew === false"
+			:items="items"
+			:value="localType"
+			@input="$emit('update:localType', $event)"
+		/>
+	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync/';
-import { FieldType } from './types';
+import { Field } from '@/stores/fields/types';
+import { LocalType } from './types';
+import i18n from '@/lang';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {
-		field: {
-			type: String,
-			default: null,
+		value: {
+			type: Object as PropType<Field>,
+			required: true,
 		},
-		type: {
-			type: String as PropType<FieldType>,
+		localType: {
+			type: String as PropType<LocalType>,
 			default: null,
-			validator: (val: string) => ['standard', 'relational', 'file', 'files'].includes(val),
 		},
 		isNew: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {
-		const _field = useSync(props, 'field', emit);
-		const _type = useSync(props, 'type', emit);
-
 		const items = computed<FancySelectItem[]>(() => [
 			{
 				text: i18n.t('standard_field'),
@@ -64,13 +66,22 @@ export default defineComponent({
 			},
 		]);
 
-		return { _field, _type, items };
+		return { emitValue, items };
+
+		function emitValue(key: string, value: any) {
+			emit('input', {
+				...props.value,
+				[key]: value,
+			});
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.v-input {
+.field {
+	--v-input-font-family: var(--family-monospace);
+
 	margin-bottom: 48px;
 }
 </style>

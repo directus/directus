@@ -111,6 +111,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		dbSafe: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const input = ref<HTMLInputElement>(null);
@@ -131,6 +135,13 @@ export default defineComponent({
 
 			if (props.slug === true) {
 				value = slugify(value, { separator: props.slugSeparator });
+			}
+
+			if (props.dbSafe === true) {
+				value = value.toLowerCase();
+				value = value.replace(/\s/g, '_');
+				// Replace é -> e etc
+				value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 			}
 
 			emit('input', value);

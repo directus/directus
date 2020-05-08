@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached :disabled="disabled" :overflow-scroll="false">
+	<v-menu attached :disabled="disabled">
 		<template #activator="{ toggle, active }">
 			<v-input
 				:active="active"

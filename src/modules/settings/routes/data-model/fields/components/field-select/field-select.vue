@@ -1,105 +1,108 @@
 <template>
-	<v-menu attached :class="hidden ? 'half' : field.width" close-on-content-click>
-		<template #activator="{ toggle, active }">
-			<v-input
-				class="field"
-				:class="{ hidden, active }"
-				readonly
-				@click="toggle"
-				:value="field.name"
-			>
-				<template #prepend>
-					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-				</template>
+	<div :class="hidden ? 'half' : field.width">
+		<v-menu attached close-on-content-click>
+			<template #activator="{ toggle, active }">
+				<v-input
+					class="field"
+					:class="{ hidden, active }"
+					readonly
+					@click="toggle"
+					:value="field.name"
+				>
+					<template #prepend>
+						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+					</template>
 
-				<template #append>
-					<v-icon name="expand_more" />
-				</template>
-			</v-input>
-		</template>
+					<template #append>
+						<v-icon name="expand_more" />
+					</template>
+				</v-input>
+			</template>
 
-		<v-list dense>
-			<v-list-item @click="$emit('edit')">
-				<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-				<v-list-item-content>
-					{{ $t('edit_field') }}
-				</v-list-item-content>
-			</v-list-item>
+			<v-list dense>
+				<v-list-item @click="$emit('edit')">
+					<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+					<v-list-item-content>
+						{{ $t('edit_field') }}
+					</v-list-item-content>
+				</v-list-item>
 
-			<v-dialog v-model="duplicateActive">
-				<template #activator="{ on }">
-					<v-list-item @click="on">
-						<v-list-item-icon>
-							<v-icon name="control_point_duplicate" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
-					</v-list-item>
-				</template>
+				<v-dialog v-model="duplicateActive">
+					<template #activator="{ on }">
+						<v-list-item @click="on">
+							<v-list-item-icon>
+								<v-icon name="control_point_duplicate" />
+							</v-list-item-icon>
+							<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+						</v-list-item>
+					</template>
 
-				<v-card>
-					<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
-					<v-card-text>
-						<span class="label">{{ $tc('collection', 0) }}</span>
-						<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+					<v-card>
+						<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
+						<v-card-text>
+							<span class="label">{{ $tc('collection', 0) }}</span>
+							<v-select
+								class="monospace"
+								:items="collections"
+								v-model="duplicateTo"
+							/>
 
-						<span class="label">{{ $tc('field', 0) }}</span>
-						<v-input class="monospace" v-model="duplicateName" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button secondary @click="duplicateActive = false">
-							{{ $t('cancel') }}
-						</v-button>
-						<v-button @click="saveDuplicate" :loading="duplicating">
-							{{ $t('duplicate') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-			<v-divider />
-			<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
-				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
-			</v-list-item>
-			<v-list-item @click="setWidth('full')" :disabled="hidden || field.width === 'full'">
-				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
-			</v-list-item>
-			<v-list-item @click="setWidth('fill')" :disabled="hidden || field.width === 'fill'">
-				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
-			</v-list-item>
-			<v-divider />
-			<v-list-item @click="$emit('toggle-visibility', field)">
-				<template v-if="field.hidden_detail === false">
-					<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
-				</template>
-				<template v-else>
-					<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
-				</template>
-			</v-list-item>
+							<span class="label">{{ $tc('field', 0) }}</span>
+							<v-input class="monospace" v-model="duplicateName" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button secondary @click="duplicateActive = false">
+								{{ $t('cancel') }}
+							</v-button>
+							<v-button @click="saveDuplicate" :loading="duplicating">
+								{{ $t('duplicate') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+				<v-divider />
+				<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
+					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+				</v-list-item>
+				<v-list-item @click="setWidth('full')" :disabled="hidden || field.width === 'full'">
+					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+				</v-list-item>
+				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.width === 'fill'">
+					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+				</v-list-item>
+				<v-divider />
+				<v-list-item @click="$emit('toggle-visibility', field)">
+					<template v-if="field.hidden_detail === false">
+						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
+						<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
+					</template>
+					<template v-else>
+						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
+						<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
+					</template>
+				</v-list-item>
 
-			<v-dialog v-model="deleteActive">
-				<template #activator="{ on }">
-					<v-list-item @click="on">
-						<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ $t('delete_field') }}
-						</v-list-item-content>
-					</v-list-item>
-				</template>
-
-				<v-card>
-					<v-card-title>Are you sure you want to delete this field?</v-card-title>
-					<v-card-actions>
-						<v-button @click="deleteActive = false" secondary>Cancel</v-button>
-						<v-button :loading="deleting" @click="deleteField">Delete</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</v-list>
-	</v-menu>
+				<v-list-item @click="deleteActive = true">
+					<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
+					<v-list-item-content>
+						{{ $t('delete_field') }}
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+		<v-dialog v-model="deleteActive">
+			<v-card>
+				<v-card-title>Are you sure you want to delete this field?</v-card-title>
+				<v-card-actions>
+					<v-button @click="deleteActive = false" secondary>Cancel</v-button>
+					<v-button :loading="deleting" @click="deleteField">Delete</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
 </template>
 
 <script lang="ts">

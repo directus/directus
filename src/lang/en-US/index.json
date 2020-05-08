@@ -89,8 +89,14 @@
 	"item_delete_success": "Item Deleted | Items Deleted",
 	"item_delete_failed": "Couldn't Delete Item | Couldn't Delete Items",
 	"item_in": "Item {primaryKey} in {collection} | Items {primaryKey} in {collection}",
+	"this_collection": "This Collection",
+	"related_collection": "Related Collection",
 
 	"submit": "Submit",
+
+	"add_field_related": "Add Field to Related Collection",
+	"create_corresponding_field": "Create Corresponding Field",
+	"corresponding_field_name": "Corresponding Field Name",
 
 	"datetime": "DateTime",
 	"date-fns_date": "PPP",
@@ -113,6 +119,10 @@
 		"november": "November",
 		"december": "December"
 	},
+
+	"many_to_many": "Many to Many (M2M)",
+	"one_to_many": "One to Many (O2M)",
+	"many_to_one": "Many to One (M2O)",
 
 	"set_to_now": "Set to Now",
 
@@ -277,7 +287,7 @@
 	"max": "Max",
 	"minimum_value": "Minimum Value",
 	"maximum_value": "Maximum Value",
-	"placeholder": "Placerholder",
+	"placeholder": "Placeholder",
 	"step_interval": "Step Interval",
 	"icon_left": "Icon (Left)",
 	"icon_right": "Icon (Right)",
@@ -805,7 +815,6 @@
   "project_not_configured": "Project Not Configured",
   "readable_fields_copy": "Select the fields that the user can view",
   "regex": "RegEx",
-  "related_collection": "Related Collection",
   "related_entries": "Has related entries",
   "relational": "Relational",
   "relationship": "Relationship",
@@ -859,7 +868,6 @@
   "translated_field_name": "Translated field name...",
   "not_translated_in_language": "Not Translated in {language}",
   "this_item_is_not_available": "This item is not available.",
-  "this_collection": "This Collection",
   "to": "To",
   "turn_all_on": "Turn all on",
   "turn_all_off": "Turn all off",

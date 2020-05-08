@@ -1,11 +1,5 @@
 <template>
-	<div
-		class="v-menu"
-		v-click-outside="{
-			handler: deactivate,
-			disabled: isActive === false || closeOnClick === false,
-		}"
-	>
+	<div class="v-menu">
 		<div ref="activator" class="v-menu-activator" :class="{ attached }">
 			<slot
 				name="activator"
@@ -18,30 +12,33 @@
 			/>
 		</div>
 
-		<div
-			ref="popper"
-			class="v-menu-popper"
-			:class="{ active: isActive, attached }"
-			:data-placement="popperPlacement"
-			:style="styles"
-		>
-			<div
-				class="arrow"
-				:class="{ active: showArrow && isActive }"
-				:style="arrowStyles"
-				data-popper-arrow
-			/>
-			<transition-expand :to="popperPlacement">
+		<portal to="popper-outlet">
+			<transition name="bounce">
 				<div
+					class="v-menu-popper"
+					:id="id"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
 					v-if="isActive"
-					class="v-menu-content"
-					:class="{ 'overflow-scroll': overflowScroll }"
-					@click="onContentClick"
+					v-click-outside="{
+						handler: deactivate,
+						disabled: isActive === false || closeOnClick === false,
+						events: ['click'],
+					}"
 				>
-					<slot :active="isActive" />
+					<div
+						class="arrow"
+						:class="{ active: showArrow && isActive }"
+						:style="arrowStyles"
+						data-popper-arrow
+					/>
+					<div class="v-menu-content" @click.stop="onContentClick">
+						<slot :active="isActive" />
+					</div>
 				</div>
-			</transition-expand>
-		</div>
+			</transition>
+		</portal>
 	</div>
 </template>
 
@@ -49,6 +46,20 @@
 import { defineComponent, ref, PropType, computed, watch } from '@vue/composition-api';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
+import { nanoid } from 'nanoid';
+import Vue from 'vue';
+
+/**
+ * @NOTE
+ *
+ * The framerate takes a little hit when opening menus, as we're rendering the content of it while
+ * we're opening it. We could potentially optimize this by rendering the menu content ahead of time,
+ * so all the processing power is freed up for the popper calculations and transition logic.
+ *
+ * However, we _can not_ render all menu content at all times, as that greatly decreases perf in the
+ * app. I'm thinking we might be able to pre-render the menu content on hover of the activator, so
+ * the actual act of opening the menu is quicker.
+ */
 
 export default defineComponent({
 	props: {
@@ -80,17 +91,23 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		overflowScroll: {
-			type: Boolean,
-			default: true,
-		},
 	},
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement>(null);
-		const popper = ref<HTMLElement>(null);
 
 		const reference = computed<HTMLElement | null>(() => {
 			return (activator.value as HTMLElement)?.childNodes[0] as HTMLElement;
+		});
+
+		const id = computed(() => nanoid());
+		const popper = ref<HTMLElement>(null);
+
+		const { isActive, activate, deactivate, toggle } = useActiveState();
+
+		watch(isActive, () => {
+			Vue.nextTick(() => {
+				popper.value = document.getElementById(id.value);
+			});
 		});
 
 		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
@@ -103,12 +120,11 @@ export default defineComponent({
 			}))
 		);
 
-		const { isActive, activate, deactivate, toggle } = useActiveState();
-
 		return {
+			id,
 			activator,
-			reference,
 			popper,
+			reference,
 			isActive,
 			toggle,
 			deactivate,
@@ -136,10 +152,10 @@ export default defineComponent({
 				},
 			});
 
-			watch(isActive, async (newActive) => {
-				if (newActive !== null && newActive === true) {
+			watch(popper, async () => {
+				if (popper.value !== null) {
 					await start();
-				} else {
+				} else if (stop) {
 					stop();
 				}
 			});
@@ -185,9 +201,9 @@ body {
 }
 
 .v-menu-popper {
-	position: absolute;
+	position: fixed;
 	left: -999px;
-	z-index: 5;
+	z-index: 500;
 	min-width: var(--v-menu-min-width);
 	transform: translateY(2px);
 	pointer-events: none;
@@ -195,107 +211,272 @@ body {
 	&.active {
 		pointer-events: all;
 	}
+}
 
-	.arrow,
-	.arrow::before,
-	.arrow::after {
-		position: absolute;
-		z-index: 1;
-		width: 8px;
-		height: 8px;
-		border-radius: 2px;
+.arrow,
+.arrow::before,
+.arrow::after {
+	position: absolute;
+	z-index: 1;
+	width: 8px;
+	height: 8px;
+	border-radius: 2px;
+}
+
+.arrow {
+	&::before,
+	&::after {
+		background: var(--border-normal);
+		transform: rotate(45deg) scale(0);
+		transition: transform var(--fast) var(--transition-out);
+		transition-delay: 0;
+		content: '';
 	}
 
-	.arrow {
-		&::before,
-		&::after {
-			background: var(--border-normal);
-			transform: rotate(45deg) scale(0);
-			transition: transform var(--fast) var(--transition-out);
-			transition-delay: 0;
-			content: '';
-		}
+	&.active::before,
+	&.active::after {
+		transform: rotate(45deg) scale(1);
+		transition: transform var(--medium) var(--transition-in);
+	}
 
-		&.active::before,
-		&.active::after {
-			transform: rotate(45deg) scale(1);
-			transition: transform var(--medium) var(--transition-in);
-		}
+	&::after {
+		background: var(--background-subdued);
+	}
+}
 
-		&::after {
-			background: var(--background-subdued);
+[data-placement^='top'] .arrow {
+	bottom: -4px;
+
+	&::after {
+		bottom: 3px;
+	}
+}
+
+[data-placement^='bottom'] .arrow {
+	top: -4px;
+
+	&::after {
+		top: 3px;
+	}
+}
+
+[data-placement^='right'] .arrow {
+	left: -4px;
+
+	&::after {
+		left: 3px;
+	}
+}
+
+[data-placement^='left'] .arrow {
+	right: -4px;
+
+	&::after {
+		right: 3px;
+	}
+}
+
+.v-menu-content {
+	max-height: 30vh;
+	padding: 0 4px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	transition-timing-function: var(--transition-out);
+	transition-duration: var(--fast);
+	transition-property: opacity, transform;
+	contain: content;
+
+	.v-list {
+		--v-list-background-color: transparent;
+	}
+}
+
+[data-placement='top'] > .v-menu-content {
+	transform-origin: bottom center;
+}
+
+[data-placement='top-start'] > .v-menu-content {
+	transform-origin: bottom left;
+}
+
+[data-placement='top-end'] > .v-menu-content {
+	transform-origin: bottom right;
+}
+
+[data-placement='right'] > .v-menu-content {
+	transform-origin: center left;
+}
+
+[data-placement='right-start'] > .v-menu-content {
+	transform-origin: top left;
+}
+
+[data-placement='right-end'] > .v-menu-content {
+	transform-origin: bottom left;
+}
+
+[data-placement='bottom'] > .v-menu-content {
+	transform-origin: top center;
+}
+
+[data-placement='bottom-start'] > .v-menu-content {
+	transform-origin: top left;
+}
+
+[data-placement='bottom-end'] > .v-menu-content {
+	transform-origin: top right;
+}
+
+[data-placement='left'] > .v-menu-content {
+	transform-origin: center right;
+}
+
+[data-placement='left-start'] > .v-menu-content {
+	transform-origin: top right;
+}
+
+[data-placement='left-end'] > .v-menu-content {
+	transform-origin: bottom right;
+}
+
+.bounce-enter-active,
+.bounce-leave-active {
+	transition: opacity var(--fast) var(--transition);
+
+	& > .v-menu-content {
+		transition: transform var(--fast) cubic-bezier(0, 0, 0.2, 1.5);
+	}
+}
+
+.bounce-enter,
+.bounce-leave-to {
+	opacity: 0;
+
+	&[data-placement='top'] > .v-menu-content {
+		transform: scaleY(0.8);
+	}
+
+	&[data-placement='top-start'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+
+	&[data-placement='top-end'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+
+	&[data-placement='right'] > .v-menu-content {
+		transform: scaleX(0.8);
+	}
+
+	&[data-placement='right-start'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+
+	&[data-placement='right-end'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+
+	&[data-placement='bottom'] > .v-menu-content {
+		transform: scaleY(0.8);
+	}
+
+	&[data-placement='bottom-start'] > .v-menu-content {
+		transform: scaleY(0.8);
+	}
+
+	&[data-placement='bottom-end'] > .v-menu-content {
+		transform: scaleY(0.8);
+	}
+
+	&[data-placement='left'] > .v-menu-content {
+		transform: scaleX(0.8);
+	}
+
+	&[data-placement='left-start'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+
+	&[data-placement='left-end'] > .v-menu-content {
+		transform: scaleY(0.8) scaleX(0.8);
+	}
+}
+
+// .bounce-enter,
+// .bounce-leave-to {
+// 	& [data-placement='top'] > .v-menu-content {
+// 		transform: scaleY(0.8);
+// 	}
+
+// 	& [data-placement='top-start'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+
+// 	& [data-placement='top-end'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+
+// 	& [data-placement='right'] > .v-menu-content {
+// 		transform: scaleX(0.8);
+// 	}
+
+// 	& [data-placement='right-start'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+
+// 	& [data-placement='right-end'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+
+// 	& [data-placement='bottom'] > .v-menu-content {
+// 		transform: scaleY(0.8);
+// 	}
+
+// 	& [data-placement='bottom-start'] > .v-menu-content {
+// 		transform: scaleY(0.8);
+// 	}
+
+// 	& [data-placement='bottom-end'] > .v-menu-content {
+// 		transform: scaleY(0.8);
+// 	}
+
+// 	& [data-placement='left'] > .v-menu-content {
+// 		transform: scaleX(0.8);
+// 	}
+
+// 	& [data-placement='left-start'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+
+// 	& [data-placement='left-end'] > .v-menu-content {
+// 		transform: scaleY(0.8) scaleX(0.8);
+// 	}
+// }
+
+// .bounce-enter-active > .v-menu-content,
+// .bounce-leave-active > .v-menu-content {
+// 	transform: scaleY(1) scaleX(1);
+// 	transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
+// 	transition-duration: var(--fast);
+// }
+
+.attached {
+	&[data-placement^='top'] {
+		> .v-menu-content {
+			border-bottom: none;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
 		}
 	}
 
-	&[data-placement^='top'] .arrow {
-		bottom: -4px;
-
-		&::after {
-			bottom: 3px;
-		}
-	}
-
-	&[data-placement^='bottom'] .arrow {
-		top: -4px;
-
-		&::after {
-			top: 3px;
-		}
-	}
-
-	&[data-placement^='right'] .arrow {
-		left: -4px;
-
-		&::after {
-			left: 3px;
-		}
-	}
-
-	&[data-placement^='left'] .arrow {
-		right: -4px;
-
-		&::after {
-			right: 3px;
-		}
-	}
-
-	.v-menu-content {
-		max-height: 50vh;
-		padding: 0 4px;
-		background-color: var(--background-subdued);
-		border: 2px solid var(--border-normal);
-		border-radius: var(--border-radius);
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
-		transition-timing-function: var(--transition-out);
-		transition-duration: var(--fast);
-		transition-property: opacity, transform;
-
-		&.overflow-scroll {
-			contain: content;
-			overflow-x: hidden;
-			overflow-y: auto;
-		}
-
-		.v-list {
-			--v-list-background-color: transparent;
-		}
-	}
-
-	&.attached {
-		&[data-placement^='top'] {
-			> .v-menu-content {
-				border-bottom: none;
-				border-bottom-right-radius: 0;
-				border-bottom-left-radius: 0;
-			}
-		}
-
-		&[data-placement^='bottom'] {
-			> .v-menu-content {
-				border-top: none;
-				border-top-left-radius: 0;
-				border-top-right-radius: 0;
-			}
+	&[data-placement^='bottom'] {
+		> .v-menu-content {
+			border-top: none;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
 		}
 	}
 }

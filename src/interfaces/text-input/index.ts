@@ -29,7 +29,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'trim',
 			name: 'Trim',
 			width: 'half',
-			interface: 'switch',
+			interface: 'toggle',
 		},
 		{
 			field: 'font',

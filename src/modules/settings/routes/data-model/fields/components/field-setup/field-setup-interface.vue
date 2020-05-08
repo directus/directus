@@ -1,47 +1,45 @@
 <template>
-	<v-tab-item value="interface">
-		<h2 class="title" v-if="isNew">{{ $t('interface_setup_title') }}</h2>
-		<v-fancy-select :items="items" v-model="_interface" />
-		<transition-expand>
-			<v-form
-				v-if="
-					selectedInterface &&
-					selectedInterface.options &&
-					Array.isArray(selectedInterface.options)
-				"
-				:fields="selectedInterface.options"
-				primary-key="+"
-				v-model="_options"
-			/>
-		</transition-expand>
-	</v-tab-item>
+	<div>
+		<h2 class="type-title" v-if="isNew">{{ $t('relationship_setup_title') }}</h2>
+
+		<v-fancy-select
+			:items="items"
+			:value="value.interface"
+			@input="emitValue('interface', $event)"
+		/>
+
+		<v-form
+			v-if="
+				selectedInterface &&
+				selectedInterface.options &&
+				Array.isArray(selectedInterface.options)
+			"
+			:fields="selectedInterface.options"
+			primary-key="+"
+			:edits="value.options"
+			@input="emitValue('options', $event)"
+		/>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync/';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 import interfaces from '@/interfaces/';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { Field } from '@/stores/fields/types';
 
 export default defineComponent({
 	props: {
-		interface: {
-			type: String,
-			default: null,
-		},
-		options: {
-			type: Object as PropType<any>,
-			default: null,
-		},
 		isNew: {
 			type: Boolean,
 			default: false,
 		},
+		value: {
+			type: Object as PropType<Field>,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
-		const _interface = useSync(props, 'interface', emit);
-		const _options = useSync(props, 'options', emit);
-
 		const items = computed<FancySelectItem[]>(() => {
 			return interfaces.map((inter) => ({
 				text: inter.name,
@@ -51,10 +49,17 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.find((inter) => inter.id === _interface.value) || null;
+			return interfaces.find((inter) => inter.id === props.value.interface) || null;
 		});
 
-		return { _interface, _options, items, selectedInterface };
+		return { emitValue, items, selectedInterface };
+
+		function emitValue(key: string, value: any) {
+			emit('input', {
+				...props.value,
+				[key]: value,
+			});
+		}
 	},
 });
 </script>

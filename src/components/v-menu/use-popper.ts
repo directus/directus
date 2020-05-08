@@ -41,7 +41,9 @@ export function usePopper(
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
 				placement: options.value.attached ? 'bottom-start' : options.value.placement,
 				modifiers: getModifiers(resolve),
+				strategy: 'fixed',
 			});
+			popperInstance.value.forceUpdate();
 		});
 	}
 
@@ -58,7 +60,12 @@ export function usePopper(
 					offset: options.value.attached ? [0, 0] : [0, 8],
 				},
 			},
-			preventOverflow,
+			{
+				...preventOverflow,
+				options: {
+					padding: 8,
+				},
+			},
 			computeStyles,
 			flip,
 			eventListeners,

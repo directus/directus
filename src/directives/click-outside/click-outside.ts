@@ -114,6 +114,7 @@ export function onEvent({
 	handler: Handler;
 	middleware: Middleware;
 }) {
+	event.stopPropagation();
 	const path = event.composedPath();
 	const isClickOutside = path
 		? path.indexOf(el) < 0

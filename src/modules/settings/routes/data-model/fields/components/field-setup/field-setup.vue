@@ -1,93 +1,77 @@
 <template>
-	<v-modal :active="active" :title="modalTitle" persistent>
-		<v-dialog :active="saveError !== null" @toggle="saveError = null">
-			<v-card class="selectable">
-				<v-card-title>
-					{{ saveError && saveError.message }}
-				</v-card-title>
-
-				<v-card-text>
-					{{ saveError && saveError.response.data.error.message }}
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button @click="saveError = null">{{ $t('dismiss') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
+	<v-modal :active="active" title="Field" persistent>
 		<template #sidebar>
-			<v-tabs vertical v-model="currentTab">
-				<v-tab
-					v-for="tab in tabs"
-					:key="tab.value"
-					:disabled="tab.disabled"
-					:value="tab.value"
-				>
-					{{ tab.text }}
-				</v-tab>
-			</v-tabs>
+			<setup-tabs
+				:current-tab.sync="currentTab"
+				:tabs="tabs"
+				:field="field"
+				:local-type="localType"
+				:is-new="existingField === null"
+			/>
 		</template>
 
-		<v-tabs-items v-model="currentTab" class="content">
-			<field-setup-field :is-new="isNew" :field.sync="field" :type.sync="localType" />
-			<field-setup-relationship v-if="needsRelationalSetup" :is-new="isNew" />
+		<div class="content">
+			<field-setup-field
+				v-if="currentTab[0] === 'field'"
+				v-model="field"
+				:local-type.sync="localType"
+				:is-new="existingField === null"
+			/>
+			<field-setup-relationship
+				v-if="currentTab[0] === 'relationship'"
+				v-model="field"
+				:local-type.sync="localType"
+				:is-new="existingField === null"
+			/>
 			<field-setup-interface
-				:is-new="isNew"
-				:interface.sync="interfaceKey"
-				:options.sync="interfaceOptions"
+				v-if="currentTab[0] === 'interface'"
+				v-model="field"
+				:local-type.sync="localType"
+				:is-new="existingField === null"
 			/>
 			<field-setup-display
-				:is-new="isNew"
-				:display.sync="displayKey"
-				:options.sync="displayOptions"
+				v-if="currentTab[0] === 'display'"
+				v-model="field"
+				:local-type.sync="localType"
+				:is-new="existingField === null"
 			/>
 			<field-setup-advanced
-				:is-new="isNew"
-				:existing-field="existingField"
-				:edits.sync="edits"
+				v-if="currentTab[0] === 'advanced'"
+				v-model="field"
+				:local-type.sync="localType"
+				:is-new="existingField === null"
 			/>
-		</v-tabs-items>
+		</div>
 
 		<template #footer>
-			<v-button secondary outlined @click="$emit('toggle', false)">
-				{{ $t('cancel') }}
-			</v-button>
-			<div class="spacer" />
-			<v-button secondary @click="previous" :disabled="previousDisabled">
-				{{ $t('previous') }}
-			</v-button>
-			<v-button
-				@click="next"
-				:disabled="nextDisabled"
-				v-if="currentTab[0] !== tabs.length - 1"
-			>
-				{{ $t('next') }}
-			</v-button>
-			<v-button
-				@click="save"
-				:disabled="saveDisabled"
-				v-if="currentTab[0] === tabs.length - 1"
-				:loading="saving"
-			>
-				{{ $t('finish_setup') }}
-			</v-button>
+			<setup-actions
+				:current-tab.sync="currentTab"
+				:tabs="tabs"
+				:field="field"
+				:local-type="localType"
+				:is-new="existingField === null"
+				:saving="saving"
+				@cancel="$emit('toggle', false)"
+				@save="save"
+			/>
 		</template>
 	</v-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, PropType, watch, ref, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
+import i18n from '@/lang';
 import FieldSetupField from './field-setup-field.vue';
 import FieldSetupRelationship from './field-setup-relationship.vue';
 import FieldSetupInterface from './field-setup-interface.vue';
 import FieldSetupDisplay from './field-setup-display.vue';
 import FieldSetupAdvanced from './field-setup-advanced.vue';
-import { i18n } from '@/lang';
-import { TranslateResult } from 'vue-i18n';
-import { isEmpty } from '@/utils/is-empty';
-import { useFieldsStore } from '@/stores/fields/';
+import SetupTabs from './setup-tabs.vue';
+import SetupActions from './setup-actions.vue';
+import useFieldsStore from '@/stores/fields/';
+
+import { LocalType } from './types';
 
 export default defineComponent({
 	components: {
@@ -96,6 +80,8 @@ export default defineComponent({
 		FieldSetupInterface,
 		FieldSetupDisplay,
 		FieldSetupAdvanced,
+		SetupTabs,
+		SetupActions,
 	},
 	model: {
 		prop: 'active',
@@ -118,166 +104,51 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 
-		const isNew = computed(() => props.existingField === null);
+		const { field, localType } = usefield();
+		const { tabs, currentTab } = useTabs();
+		const { save, saving } = useSave();
 
-		const edits = ref<Partial<Field>>({});
+		return { field, tabs, currentTab, localType, save, saving };
 
-		watch(
-			() => props.active,
-			() => (edits.value = {})
-		);
+		function usefield() {
+			const defaults = {
+				id: null,
+				collection: props.collection,
+				field: null,
+				datatype: null,
+				unique: false,
+				primary_key: false,
+				auto_increment: false,
+				default_value: null,
+				note: null,
+				signed: false,
+				type: null,
+				sort: null,
+				interface: null,
+				options: null,
+				display: null,
+				display_options: null,
+				hidden_detail: false,
+				hidden_browse: false,
+				required: false,
+				locked: false,
+				translation: null,
+				readonly: false,
+				width: 'full',
+				validation: null,
+				group: null,
+				length: null,
+			};
 
-		const modalTitle = computed<TranslateResult>(() => {
-			if (isNew.value === true) {
-				return i18n.t('creating_field');
-			}
-
-			return i18n.t('editing_field', { field: props.existingField.name });
-		});
-
-		const { field, localType } = useFieldSetup();
-		const { needsRelationalSetup, relationships } = useRelationshipSetup();
-		const { interfaceKey, interfaceOptions } = useInterfaceSetup();
-		const { displayKey, displayOptions } = useDisplaySetup();
-
-		const { tabs, currentTab, previousDisabled, nextDisabled, previous, next } = useTabs();
-		const { save, saveDisabled, saveError, saving } = useSave();
-
-		return {
-			currentTab,
-			displayKey,
-			displayOptions,
-			edits,
-			field,
-			interfaceKey,
-			interfaceOptions,
-			isNew,
-			localType,
-			modalTitle,
-			needsRelationalSetup,
-			next,
-			nextDisabled,
-			previous,
-			previousDisabled,
-			relationships,
-			save,
-			saveDisabled,
-			saveError,
-			saving,
-			tabs,
-		};
-
-		function useTabs() {
-			const fieldIncomplete = computed<boolean>(() => {
-				return isEmpty(field.value) || isEmpty(localType.value);
-			});
-
-			const relationshipIncomplete = computed<boolean>(() => {
-				return false;
-			});
-
-			const interfaceIncomplete = computed<boolean>(() => {
-				/** @NOTE this is where we can check for required fields */
-				return isEmpty(interfaceKey.value);
-			});
-
-			const displayIncomplete = computed<boolean>(() => {
-				/** @NOTE this is where we can check for required fields */
-				return isEmpty(displayKey.value);
-			});
-
-			const tabs = computed(() => {
-				const tabs = [
-					{
-						text: i18n.t('field_setup'),
-						value: 'field',
-					},
-					{
-						text: i18n.t('interface_setup'),
-						disabled: isNew.value && fieldIncomplete.value,
-						value: 'interface',
-					},
-					{
-						text: i18n.t('display_setup'),
-						disabled: isNew.value && interfaceIncomplete.value,
-						value: 'display',
-					},
-					{
-						text: i18n.t('advanced_options'),
-						disabled: isNew.value && displayIncomplete.value,
-						value: 'advanced',
-					},
-				];
-
-				if (needsRelationalSetup.value === true) {
-					tabs.splice(1, 0, {
-						text: i18n.t('relationship_setup'),
-						disabled: isNew.value && fieldIncomplete.value,
-						value: 'relationship',
-					});
-
-					tabs[2].disabled = isNew.value && relationshipIncomplete.value;
-					tabs[3].disabled = isNew.value && interfaceIncomplete.value;
-					tabs[4].disabled = isNew.value && displayIncomplete.value;
-				}
-
-				return tabs;
-			});
-
-			const currentTab = ref(['field']);
-
-			const currentTabIndex = computed(() =>
-				tabs.value.findIndex((tab) => tab.value === currentTab.value[0])
-			);
-
-			watch(
-				() => props.active,
-				() => (currentTab.value = ['field'])
-			);
-
-			const previousDisabled = computed(() => {
-				return currentTabIndex.value === 0;
-			});
-
-			const nextDisabled = computed(() => {
-				const nextTabIndex = currentTabIndex.value + 1;
-				const nextTabIsDisabled = tabs.value[nextTabIndex]?.disabled === true;
-
-				return nextTabIsDisabled;
-			});
-
-			return { tabs, currentTab, previous, next, nextDisabled, previousDisabled };
-
-			function previous() {
-				const previousTabValue = tabs.value[currentTabIndex.value - 1].value;
-				currentTab.value = [previousTabValue];
-			}
-
-			function next() {
-				const nextTabValue = tabs.value[currentTabIndex.value + 1].value;
-				currentTab.value = [nextTabValue];
-			}
-		}
-
-		function useFieldSetup() {
-			const field = computed({
-				get() {
-					return edits.value.field || props.existingField?.field;
-				},
-				set(newField: string) {
-					edits.value = {
-						...edits.value,
-						field: newField,
-					};
-				},
-			});
-
-			const localType = ref<string>(null);
+			const field = ref<any>({ ...defaults });
+			const localType = ref<LocalType>(null);
 
 			watch(
 				() => props.existingField,
 				(existingField: Field) => {
 					if (existingField) {
+						field.value = existingField;
+
 						if (existingField.type === 'file') {
 							localType.value = 'file';
 						} else if (existingField.type === 'files') {
@@ -288,6 +159,7 @@ export default defineComponent({
 							localType.value = 'standard';
 						}
 					} else {
+						field.value = { ...defaults };
 						localType.value = null;
 					}
 				}
@@ -296,105 +168,66 @@ export default defineComponent({
 			return { field, localType };
 		}
 
-		function useRelationshipSetup() {
-			const needsRelationalSetup = computed(
-				() => localType.value && ['relational', 'file', 'files'].includes(localType.value)
-			);
+		function useTabs() {
+			const currentTab = ref(['field']);
+			const tabs = computed(() => {
+				const tabs = [
+					{
+						text: i18n.t('field_setup'),
+						value: 'field',
+					},
+					{
+						text: i18n.t('interface_setup'),
+						value: 'interface',
+					},
+					{
+						text: i18n.t('display_setup'),
+						value: 'display',
+					},
+					{
+						text: i18n.t('advanced_options'),
+						value: 'advanced',
+					},
+				];
 
-			const relationships: any[] = [];
+				if (localType.value === 'relational') {
+					tabs.splice(1, 0, {
+						text: i18n.t('relationship_setup'),
+						value: 'relationship',
+					});
+				}
 
-			return { needsRelationalSetup, relationships };
-		}
-
-		function useInterfaceSetup() {
-			const interfaceKey = computed({
-				get() {
-					return edits.value.interface || props.existingField?.interface;
-				},
-				set(newInterface: string | null) {
-					edits.value = {
-						...edits.value,
-						interface: newInterface,
-					};
-				},
+				return tabs;
 			});
 
-			const interfaceOptions = computed({
-				get() {
-					return edits.value.options || props.existingField?.options;
-				},
-
-				set(newOptions: { [key: string]: any } | null) {
-					edits.value = {
-						...edits.value,
-						options: newOptions,
-					};
-				},
-			});
-
-			return { interfaceKey, interfaceOptions };
-		}
-
-		function useDisplaySetup() {
-			const displayKey = computed({
-				get() {
-					return edits.value.display || props.existingField?.display;
-				},
-				set(newDisplay: string | null) {
-					edits.value = {
-						...edits.value,
-						display: newDisplay,
-					};
-				},
-			});
-
-			const displayOptions = computed({
-				get() {
-					return edits.value.display_options || props.existingField?.display_options;
-				},
-
-				set(newOptions: { [key: string]: any } | null) {
-					edits.value = {
-						...edits.value,
-						display_options: newOptions,
-					};
-				},
-			});
-
-			return { displayKey, displayOptions };
+			return { currentTab, tabs };
 		}
 
 		function useSave() {
-			const saveDisabled = computed(() => {
-				return edits.value === null || Object.keys(edits.value).length === 0;
-			});
-
 			const saving = ref(false);
 			const saveError = ref(null);
 
-			return { save, saving, saveDisabled, saveError };
+			return { save, saving, saveError };
 
 			async function save() {
 				saving.value = true;
 
 				try {
-					if (isNew.value === true) {
-						await fieldsStore.createField(props.collection, edits.value);
+					if (field.value.id === null) {
+						await fieldsStore.createField(props.collection, field.value);
 					} else {
 						await fieldsStore.updateField(
 							props.existingField.collection,
 							props.existingField.field,
-							edits.value
+							field.value
 						);
 					}
-
 					emit('toggle', false);
 				} catch (error) {
-					console.log(error);
 					saveError.value = error;
+				} finally {
+					saving.value = false;
 				}
-
-				saving.value = false;
 			}
 		}
 	},
@@ -408,22 +241,12 @@ export default defineComponent({
 
 .content {
 	::v-deep {
-		.title {
+		.type-title {
 			margin-bottom: 48px;
-			font-weight: normal;
-			font-size: 24px;
-			font-style: normal;
-			line-height: 29px;
-			letter-spacing: -0.8px;
 		}
 
-		.label {
+		.type-label {
 			margin-bottom: 8px;
-			font-weight: 600;
-			font-size: 16px;
-			font-style: normal;
-			line-height: 19px;
-			letter-spacing: -0.32px;
 		}
 	}
 }

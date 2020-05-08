@@ -100,14 +100,16 @@ export default defineComponent({
 			{
 				text: '',
 				value: 'icon',
+				width: 42,
 				sortable: false,
 			},
 			{
 				text: i18n.t('name'),
-				value: 'collection',
+				value: 'name',
+				width: 300,
 			},
 			{
-				text: i18n.t('description'),
+				text: i18n.t('note'),
 				value: 'note',
 			},
 		]);
