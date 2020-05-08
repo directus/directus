@@ -18,7 +18,9 @@ export const basic = () =>
 			},
 		},
 		setup(props) {
-			const value = computed<string | null>(() => handler(props.val, null));
+			const value = computed<string | null>(() =>
+				handler(props.val, null, { type: 'string' })
+			);
 			return { value };
 		},
 		template: `

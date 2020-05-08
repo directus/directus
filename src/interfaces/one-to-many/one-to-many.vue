@@ -19,6 +19,7 @@
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
+					:type="header.field.type"
 				/>
 			</template>
 
@@ -334,6 +335,7 @@ export default defineComponent({
 									displayOptions: field.display_options,
 									interface: field.interface,
 									interfaceOptions: field.options,
+									type: field.type,
 								},
 							};
 

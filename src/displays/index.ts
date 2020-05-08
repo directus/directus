@@ -7,6 +7,7 @@ import DisplayFormattedText from './formatted-text';
 import DisplayImage from './image';
 import DisplayUser from './user';
 import DisplayRating from './rating';
+import DisplayDateTime from './datetime';
 
 export const displays = [
 	DisplayIcon,
@@ -18,5 +19,6 @@ export const displays = [
 	DisplayImage,
 	DisplayUser,
 	DisplayRating,
+	DisplayDateTime,
 ];
 export default displays;

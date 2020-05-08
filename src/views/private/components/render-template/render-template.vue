@@ -9,6 +9,7 @@
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
+				:type="part.type"
 				v-bind="part.options"
 			/>
 			<template v-else>{{ part }}</template>
@@ -80,6 +81,7 @@ export default defineComponent({
 					value: value,
 					interface: field.interface,
 					interfaceOptions: field.options,
+					type: field.type,
 				};
 			})
 		);

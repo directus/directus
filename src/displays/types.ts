@@ -2,7 +2,15 @@ import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
 import { Field } from '@/stores/fields/types';
 
-export type DisplayHandlerFunction = (value: any, options: any) => string | null;
+export type DisplayHandlerFunctionContext = {
+	type: string;
+};
+
+export type DisplayHandlerFunction = (
+	value: any,
+	options: any,
+	context: DisplayHandlerFunctionContext
+) => string | null;
 
 export type DisplayConfig = {
 	id: string;

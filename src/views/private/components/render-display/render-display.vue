@@ -2,7 +2,7 @@
 	<value-null v-if="value === null || value === undefined" />
 	<span v-else-if="displayInfo === null">{{ value }}</span>
 	<span v-else-if="typeof displayInfo.handler === 'function'">
-		{{ display.handler(value, options) }}
+		{{ display.handler(value, options, { type }) }}
 	</span>
 	<component
 		v-else
@@ -11,6 +11,7 @@
 		:interface="$props.interface"
 		:interface-options="interfaceOptions"
 		:value="value"
+		:type="type"
 	/>
 </template>
 
@@ -41,6 +42,10 @@ export default defineComponent({
 		value: {
 			type: [String, Number, Object, Array],
 			default: null,
+		},
+		type: {
+			type: String,
+			required: true,
 		},
 	},
 	setup(props) {
