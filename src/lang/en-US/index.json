@@ -214,6 +214,10 @@
 		"-1": "Couldn't Reach API"
 	},
 
+	"hash": "Hash",
+	"masked": "Masked",
+	"value_hashed": "Value Securely Hashed",
+
 	"bookmarks": {
 		"name": "Bookmark name...",
 		"create": "Create Bookmark",

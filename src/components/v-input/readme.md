@@ -50,6 +50,7 @@ Note: all other listeners are bound to the input HTMLElement, allowing you to ha
 
 ## CSS Variables
 
-| Variable                | Default                    |
-| ----------------------- | -------------------------- |
-| `--v-input-font-family` | `var(--family-sans-serif)` |
+| Variable                      | Default                     |
+|-------------------------------|-----------------------------|
+| `--v-input-font-family`       | `var(--family-sans-serif)`  |
+| `--v-input-placeholder-color` | `var(--foreground-subdued)` |

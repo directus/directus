@@ -171,6 +171,7 @@ export default defineComponent({
 <style>
 body {
 	--v-input-font-family: var(--family-sans-serif);
+	--v-input-placeholder-color: var(--foreground-subdued);
 }
 </style>
 
@@ -275,7 +276,7 @@ body {
 		appearance: none;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--v-input-placeholder-color);
 		}
 
 		&::-webkit-outer-spin-button,

@@ -15,6 +15,7 @@ import InterfaceImage from './image';
 import InterfaceIcon from './icon';
 import InterfaceManyToOne from './many-to-one';
 import InterfaceOneToMany from './one-to-many';
+import InterfaceHash from './hash';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -34,6 +35,7 @@ export const interfaces = [
 	InterfaceIcon,
 	InterfaceManyToOne,
 	InterfaceOneToMany,
+	InterfaceHash,
 ];
 
 export default interfaces;
