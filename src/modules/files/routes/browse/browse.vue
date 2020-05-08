@@ -140,14 +140,12 @@ export default defineComponent({
 			viewType.value = 'cards';
 		}
 
-		if (viewOptions.value === null) {
-			if (viewType.value === 'cards') {
-				viewOptions.value = {
-					icon: 'insert_drive_file',
-					title: '{{title}}',
-					subtitle: '{{type}} • {{filesize}}',
-				};
-			}
+		if (viewOptions.value === null && viewType.value === 'cards') {
+			viewOptions.value = {
+				icon: 'insert_drive_file',
+				title: '{{title}}',
+				subtitle: '{{type}} • {{filesize}}',
+			};
 		}
 
 		return {

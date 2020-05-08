@@ -67,6 +67,7 @@ A wrapper for list items that formats children nicely. Can be used on its own or
 | `to`       | Render as vue router-link with to link                               | `null`  |
 | `disabled` | Disable the list item                                                | `false` |
 | `active`   | Enable the list item's active state                                  | `false` |
+| `exact`    | Set the `exact` prop on router-link. Used with `to`                  | `false` |
 
 ## Events
 

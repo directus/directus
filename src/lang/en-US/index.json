@@ -219,7 +219,8 @@
 		"create": "Create Bookmark",
 		"personal": "Personal (Current User Only)",
 		"global": "Global (Every User)",
-		"role": "For role {role}"
+		"role": "For role {role}",
+		"edit": "Edit Bookmark"
 	},
 
 	"unexpected_error": "An unexpected error occured",

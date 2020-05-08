@@ -23,8 +23,15 @@ export function useCollectionPreset(
 	const localPreset = ref<CollectionPreset>({});
 	initLocalPreset();
 
-	const savePreset = async (preset?: Partial<CollectionPreset>) =>
-		await collectionPresetsStore.savePreset(preset ? preset : localPreset.value);
+	const savePreset = async (preset?: Partial<CollectionPreset>) => {
+		const updatedValues = await collectionPresetsStore.savePreset(
+			preset ? preset : localPreset.value
+		);
+
+		localPreset.value.id = updatedValues.id;
+
+		return updatedValues;
+	};
 
 	const autoSave = debounce(async () => {
 		if (!bookmark || bookmark.value === null) {
@@ -116,8 +123,19 @@ export function useCollectionPreset(
 		},
 	});
 
-	const title = computed(() => {
-		return localPreset.value?.title;
+	const title = computed<string | null>({
+		get() {
+			return localPreset.value?.title || null;
+		},
+		set(newTitle: string | null) {
+			localPreset.value = {
+				...localPreset.value,
+				title: newTitle,
+			};
+
+			// This'll save immediately
+			savePreset();
+		},
 	});
 
 	return {
@@ -166,6 +184,6 @@ export function useCollectionPreset(
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		data.user = userStore.state.currentUser!.id;
 
-		await savePreset(data);
+		return await savePreset(data);
 	}
 }

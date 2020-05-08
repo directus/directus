@@ -15,7 +15,7 @@ import { defineComponent } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		dot: {

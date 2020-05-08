@@ -1,6 +1,6 @@
 <template>
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="currentCollection.name">
+	<private-view v-else :title="bookmark ? bookmarkName : currentCollection.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary :to="collectionsLink">
 				<v-icon :name="currentCollection.icon" />
@@ -8,20 +8,34 @@
 		</template>
 
 		<template #title-outer:append>
-			<add-bookmark
-				class="add-bookmark"
-				v-model="addBookmarkActive"
+			<bookmark-add
+				v-if="!bookmark"
+				class="bookmark-add"
+				v-model="bookmarkDialogActive"
 				@save="createBookmark"
 				:saving="creatingBookmark"
 			>
 				<template #activator="{ on }">
 					<v-icon class="toggle" name="bookmark_outline" @click="on" />
 				</template>
-			</add-bookmark>
+			</bookmark-add>
+
+			<bookmark-edit
+				v-else
+				class="bookmark-edit"
+				v-model="bookmarkDialogActive"
+				:saving="editingBookmark"
+				:name="bookmarkName"
+				@save="editBookmark"
+			>
+				<template #activator="{ on }">
+					<v-icon class="toggle" name="bookmark" @click="on" />
+				</template>
+			</bookmark-edit>
 		</template>
 
 		<template #drawer>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType || 'tabular'" />
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
 			<portal-target name="drawer" />
 		</template>
 
@@ -63,7 +77,7 @@
 		</template>
 
 		<template #navigation>
-			<collections-navigation />
+			<collections-navigation exact />
 		</template>
 
 		<v-info
@@ -85,6 +99,7 @@
 			v-else
 			class="layout"
 			ref="layout"
+			:key="$route.fullPath"
 			:is="`layout-${viewType || 'tabular'}`"
 			:collection="collection"
 			:selection.sync="selection"
@@ -110,7 +125,9 @@ import useCollection from '@/composables/use-collection';
 import useCollectionPreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
-import AddBookmark from '@/views/private/components/add-bookmark';
+import BookmarkAdd from '@/views/private/components/bookmark-add';
+import BookmarkEdit from '@/views/private/components/bookmark-edit';
+import router from '@/router';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -152,7 +169,8 @@ export default defineComponent({
 		CollectionsNotFound,
 		LayoutDrawerDetail,
 		SearchInput,
-		AddBookmark,
+		BookmarkAdd,
+		BookmarkEdit,
 	},
 	props: {
 		collection: {
@@ -184,10 +202,21 @@ export default defineComponent({
 			savePreset,
 			bookmarkExists,
 			saveCurrentAsBookmark,
+			title: bookmarkName,
 		} = useCollectionPreset(collection, bookmarkID);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
-		const { addBookmarkActive, creatingBookmark, createBookmark } = useBookmarks();
+		const {
+			bookmarkDialogActive,
+			creatingBookmark,
+			createBookmark,
+			editingBookmark,
+			editBookmark,
+		} = useBookmarks();
+
+		if (viewType.value === null) {
+			viewType.value = 'tabular';
+		}
 
 		return {
 			addNewLink,
@@ -207,9 +236,12 @@ export default defineComponent({
 			savePreset,
 			bookmarkExists,
 			currentCollectionLink,
-			addBookmarkActive,
+			bookmarkDialogActive,
 			creatingBookmark,
 			createBookmark,
+			bookmarkName,
+			editingBookmark,
+			editBookmark,
 		};
 
 		function useSelection() {
@@ -282,23 +314,40 @@ export default defineComponent({
 		}
 
 		function useBookmarks() {
-			const addBookmarkActive = ref(false);
+			const bookmarkDialogActive = ref(false);
 			const creatingBookmark = ref(false);
+			const editingBookmark = ref(false);
 
-			return { addBookmarkActive, creatingBookmark, createBookmark };
+			return {
+				bookmarkDialogActive,
+				creatingBookmark,
+				createBookmark,
+				editingBookmark,
+				editBookmark,
+			};
 
 			async function createBookmark(name: string) {
+				const { currentProjectKey } = projectsStore.state;
+
 				creatingBookmark.value = true;
 
 				try {
-					await saveCurrentAsBookmark({ title: name });
+					const newBookmark = await saveCurrentAsBookmark({ title: name });
+					router.push(
+						`/${currentProjectKey}/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`
+					);
 
-					addBookmarkActive.value = false;
+					bookmarkDialogActive.value = false;
 				} catch (error) {
 					console.log(error);
 				} finally {
 					creatingBookmark.value = false;
 				}
+			}
+
+			async function editBookmark(name: string) {
+				bookmarkName.value = name;
+				bookmarkDialogActive.value = false;
 			}
 		}
 	},
@@ -334,7 +383,8 @@ export default defineComponent({
 	margin: 20vh 0;
 }
 
-.add-bookmark .toggle {
+.bookmark-add .toggle,
+.bookmark-edit .toggle {
 	margin-left: 8px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<v-list-item v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
+		<v-list-item :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
 			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 			<v-list-item-content>{{ navItem.name }}</v-list-item-content>
 		</v-list-item>
@@ -8,7 +8,7 @@
 		<template v-if="bookmarks.length > 0">
 			<v-divider />
 
-			<v-list-item v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to">
+			<v-list-item exact v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to">
 				<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
 				<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
 			</v-list-item>
@@ -23,7 +23,12 @@ import useCollectionPresetsStore from '@/stores/collection-presets';
 import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
-	props: {},
+	props: {
+		exact: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	setup() {
 		const collectionPresetsStore = useCollectionPresetsStore();
 		const projectsStore = useProjectsStore();

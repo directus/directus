@@ -3,6 +3,7 @@
 		:is="component"
 		active-class="active"
 		class="v-list-item"
+		:exact="exact"
 		:to="to"
 		:class="{
 			active,
@@ -47,6 +48,10 @@ export default defineComponent({
 			default: false,
 		},
 		dashed: {
+			type: Boolean,
+			default: false,
+		},
+		exact: {
 			type: Boolean,
 			default: false,
 		},

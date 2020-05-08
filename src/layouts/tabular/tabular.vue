@@ -142,7 +142,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, PropType, ref, computed, inject, toRefs } from '@vue/composition-api';
+import {
+	defineComponent,
+	PropType,
+	ref,
+	computed,
+	inject,
+	toRefs,
+	Ref,
+} from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@/stores/fields/types';
@@ -183,11 +191,11 @@ export default defineComponent({
 		},
 		viewOptions: {
 			type: Object as PropType<ViewOptions>,
-			default: null,
+			default: () => ({}),
 		},
 		viewQuery: {
 			type: Object as PropType<ViewQuery>,
-			default: null,
+			default: () => ({}),
 		},
 		filters: {
 			type: Array as PropType<Filter[]>,
@@ -217,8 +225,8 @@ export default defineComponent({
 		const mainElement = inject('main-element', ref<Element>(null));
 
 		const _selection = useSync(props, 'selection', emit);
-		const _viewOptions = useSync(props, 'viewOptions', emit);
-		const _viewQuery = useSync(props, 'viewQuery', emit);
+		const _viewOptions: Ref<any> = useSync(props, 'viewOptions', emit);
+		const _viewQuery: Ref<any> = useSync(props, 'viewQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 

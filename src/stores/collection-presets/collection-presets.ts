@@ -52,6 +52,8 @@ export const useCollectionPresetsStore = createStore({
 			const response = await api.post(`/${currentProjectKey}/collection_presets`, newPreset);
 
 			this.state.collectionPresets.push(response.data.data);
+
+			return response.data.data;
 		},
 		async update(id: number, updates: Partial<CollectionPreset>) {
 			const { currentProjectKey } = useProjectsStore().state;
@@ -69,6 +71,8 @@ export const useCollectionPresetsStore = createStore({
 
 				return preset;
 			});
+
+			return response.data.data;
 		},
 		async delete(id: number) {
 			const { currentProjectKey } = useProjectsStore().state;
@@ -145,7 +149,7 @@ export const useCollectionPresetsStore = createStore({
 			preset = { ...preset };
 
 			if (preset.id === undefined || preset.id === null) {
-				return this.create({
+				return await this.create({
 					...preset,
 					user: userID,
 				});
@@ -154,14 +158,14 @@ export const useCollectionPresetsStore = createStore({
 			if (preset.user !== userID) {
 				if (preset.hasOwnProperty('id')) delete preset.id;
 
-				return this.create({
+				return await this.create({
 					...preset,
 					user: userID,
 				});
 			} else {
 				const id = preset.id;
 				delete preset.id;
-				return this.update(id, preset);
+				return await this.update(id, preset);
 			}
 		},
 	},

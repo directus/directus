@@ -325,7 +325,14 @@ export default defineComponent({
 
 		function onToggleSelectAll(value: boolean) {
 			if (value === true) {
-				emit('select', clone(props.items));
+				if (props.selectionUseKeys) {
+					emit(
+						'select',
+						clone(props.items).map((item) => item[props.itemKey])
+					);
+				} else {
+					emit('select', clone(props.items));
+				}
 			} else {
 				emit('select', []);
 			}
