@@ -12,6 +12,8 @@
 		:interface-options="interfaceOptions"
 		:value="value"
 		:type="type"
+		:collection="collection"
+		:field="field"
 	/>
 </template>
 
@@ -44,6 +46,14 @@ export default defineComponent({
 			default: null,
 		},
 		type: {
+			type: String,
+			required: true,
+		},
+		collection: {
+			type: String,
+			required: true,
+		},
+		field: {
 			type: String,
 			required: true,
 		},

@@ -47,6 +47,18 @@ export const useRelationsStore = createStore({
 				] as Relation[];
 			}
 
+			if (['user', 'user_created', 'user_updated', 'owner'].includes(fieldInfo.type)) {
+				return [
+					{
+						collection_many: collection,
+						field_many: field,
+						collection_one: 'directus_users',
+						field_one: null,
+						junction_field: null,
+					},
+				] as Relation[];
+			}
+
 			return this.getRelationsForCollection(collection).filter((relation: Relation) => {
 				return relation.field_many === field || relation.field_one === field;
 			});

@@ -12,6 +12,15 @@ export type DisplayHandlerFunction = (
 	context: DisplayHandlerFunctionContext
 ) => string | null;
 
+export type DisplayFieldsFunction = (
+	options: any,
+	context: {
+		collection: string;
+		field: string;
+		type: string;
+	}
+) => string[];
+
 export type DisplayConfig = {
 	id: string;
 	icon: string;
@@ -20,7 +29,7 @@ export type DisplayConfig = {
 	handler: DisplayHandlerFunction | Component;
 	options: null | Partial<Field>[] | Component;
 	types: string[];
-	fields?: string[];
+	fields?: string[] | DisplayFieldsFunction;
 };
 
 export type DisplayContext = { i18n: VueI18n };

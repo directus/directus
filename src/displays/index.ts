@@ -8,6 +8,7 @@ import DisplayImage from './image';
 import DisplayUser from './user';
 import DisplayRating from './rating';
 import DisplayDateTime from './datetime';
+import DisplayTemplate from './template';
 
 export const displays = [
 	DisplayIcon,
@@ -20,5 +21,6 @@ export const displays = [
 	DisplayUser,
 	DisplayRating,
 	DisplayDateTime,
+	DisplayTemplate,
 ];
 export default displays;

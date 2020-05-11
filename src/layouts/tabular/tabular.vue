@@ -94,6 +94,8 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
+					:collection="collection"
+					:field="header.field.field"
 				/>
 			</template>
 
@@ -429,6 +431,7 @@ export default defineComponent({
 							interface: field.interface,
 							interfaceOptions: field.options,
 							type: field.type,
+							field: field.field,
 						},
 					}));
 				},

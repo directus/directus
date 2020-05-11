@@ -12,7 +12,7 @@
 				:type="part.type"
 				v-bind="part.options"
 			/>
-			<template v-else>{{ part }}</template>
+			<span v-else :key="index" class="raw">{{ part }}</span>
 		</template>
 	</div>
 </template>
@@ -47,43 +47,47 @@ export default defineComponent({
 		const regex = /({{.*?}})/g;
 
 		const parts = computed(() =>
-			props.template.split(regex).map((part) => {
-				if (part.startsWith('{{') === false) return part;
+			props.template
+				.split(regex)
+				.map((part) => {
+					if (part.startsWith('{{') === false) return part;
 
-				const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-				const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+					const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+					const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 
-				// Instead of crashing when the field doesn't exist, we'll render a couple question
-				// marks to indicate it's absence
-				if (!field) return '???';
+					// Instead of crashing when the field doesn't exist, we'll render a couple question
+					// marks to indicate it's absence
+					if (!field) return '???';
 
-				// Try getting the value from the item, return some question marks if it doesn't exist
-				const value = get(props.item, fieldKey);
-				if (value === undefined) return '???';
+					// Try getting the value from the item, return some question marks if it doesn't exist
+					const value = get(props.item, fieldKey);
+					if (value === undefined) return '???';
 
-				// If no display is configured, we can render the raw value
-				if (field.display === null) return value;
+					// If no display is configured, we can render the raw value
+					if (field.display === null) return value;
 
-				const displayInfo = displays.find((display) => display.id === field.display);
+					const displayInfo = displays.find((display) => display.id === field.display);
 
-				// If used display doesn't exist in the current project, return raw value
-				if (!displayInfo) return value;
+					// If used display doesn't exist in the current project, return raw value
+					if (!displayInfo) return value;
 
-				// If the display handler is a function, we parse the value and return the result
-				if (typeof displayInfo.handler === 'function') {
-					const handler = displayInfo.handler as Function;
-					return handler(value, field.display_options);
-				}
+					// If the display handler is a function, we parse the value and return the result
+					if (typeof displayInfo.handler === 'function') {
+						const handler = displayInfo.handler as Function;
+						return handler(value, field.display_options);
+					}
 
-				return {
-					component: field.display,
-					options: field.display_options,
-					value: value,
-					interface: field.interface,
-					interfaceOptions: field.options,
-					type: field.type,
-				};
-			})
+					return {
+						component: field.display,
+						options: field.display_options,
+						value: value,
+						interface: field.interface,
+						interfaceOptions: field.options,
+						type: field.type,
+					};
+				})
+				.map((p) => (typeof p === 'string' ? p.trim() : p))
+				.filter((p) => p)
 		);
 
 		return { parts };
@@ -98,5 +102,9 @@ export default defineComponent({
 
 .subdued {
 	color: var(--foreground-subdued);
+}
+
+.raw:not(:last-child) {
+	margin-right: 4px;
 }
 </style>
