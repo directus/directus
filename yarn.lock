@@ -1025,10 +1025,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@directus/format-title@^3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@directus/format-title/-/format-title-3.1.2.tgz#6389c577cd9b1e987e53a31c22956f0da28c0dbc"
-  integrity sha512-d9ZfhAHh/T0mRElP1MfmAyW6wbhFC8HSIer1KGbaIk0u2hxhT1ZwpTroxd7KrG986QP4Q2pcFfekffixBVIw/Q==
+"@directus/format-title@^3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@directus/format-title/-/format-title-3.1.3.tgz#0cd62d2559d7b8c8178308f346404a1041ff89ab"
+  integrity sha512-0Xg1Dz3HkP8PWh87bxM2mrTZ3/EIKFyrnnCLDKrrbg+1X0qmVZWi1cMXuxEA2zo6FWHz9MhKuYldXj4JVNSMsg==
 
 "@emotion/cache@^10.0.27", "@emotion/cache@^10.0.9":
   version "10.0.29"
