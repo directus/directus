@@ -122,6 +122,7 @@ export default defineComponent({
 		const _listeners = computed(() => ({
 			...listeners,
 			input: emitValue,
+			keydown: processValue,
 		}));
 
 		const hasClick = computed(() => {
@@ -130,11 +131,48 @@ export default defineComponent({
 
 		return { _listeners, hasClick, stepUp, stepDown, input };
 
+		function processValue(event: KeyboardEvent) {
+			const key = event.key.toLowerCase();
+			const systemKeys = ['meta', 'shift', 'alt', 'backspace'];
+			const value = (event.target as HTMLInputElement).value;
+
+			if (props.slug === true) {
+				const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
+
+				const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key);
+
+				if (isAllowed === false) {
+					event.preventDefault();
+				}
+
+				if (key === ' ' && value.endsWith(props.slugSeparator)) {
+					event.preventDefault();
+				}
+			}
+
+			if (props.slug === true) {
+				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
+
+				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key);
+
+				if (isAllowed === false) {
+					event.preventDefault();
+				}
+
+				// Prevent leading number
+				if (value.length === 0 && '0123456789'.split('').includes(key)) {
+					event.preventDefault();
+				}
+			}
+		}
+
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
+				const endsWithSpace = value.endsWith(' ');
 				value = slugify(value, { separator: props.slugSeparator });
+				if (endsWithSpace) value += props.slugSeparator;
 			}
 
 			if (props.dbSafe === true) {
