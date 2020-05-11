@@ -111,10 +111,12 @@ export default defineComponent({
 
 				loading.value = true;
 
+				const endpoint = props.collection.startsWith('directus_')
+					? `/${currentProjectKey}/${props.collection.substring(9)}/${props.primaryKey}`
+					: `/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`;
+
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`
-					);
+					const response = await api.get(endpoint);
 
 					item.value = response.data.data;
 				} catch (err) {

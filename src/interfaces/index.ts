@@ -17,6 +17,7 @@ import InterfaceManyToOne from './many-to-one';
 import InterfaceOneToMany from './one-to-many';
 import InterfaceHash from './hash';
 import InterfaceSlug from './slug';
+import InterfaceUser from './user';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -38,6 +39,7 @@ export const interfaces = [
 	InterfaceOneToMany,
 	InterfaceHash,
 	InterfaceSlug,
+	InterfaceUser,
 ];
 
 export default interfaces;
