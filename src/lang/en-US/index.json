@@ -177,6 +177,15 @@
 	"webhooks": "Webhooks",
 	"roles": "User Roles",
 
+	"field_width": "Field Width",
+	"field_width_half": "Half Width (Wraps)",
+	"field_width_left": "Half Width (Left Only)",
+	"field_width_right": "Half Width (Right Only)",
+	"field_width_full": "Full Width",
+	"field_width_fill": "Fill the Page",
+
+	"add_a_new_item": "Add a new item...",
+
 	"add_filter": "Add Filter",
 
 	"user_directory": "User Directory",
@@ -305,6 +314,8 @@
 	"divider": "Divider",
 	"color": "Color",
 	"circle": "Circle",
+
+	"empty_item": "Empty Item",
 
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",
@@ -684,12 +695,6 @@
   "field_setup_options": "All set! Just review these interface options...",
   "field_type": "Field Type",
   "field_updated": "Field Updated",
-  "field_width": "Field Width",
-  "field_width_half": "Half Width (Wraps)",
-  "field_width_left": "Half Width (Left Only)",
-  "field_width_right": "Half Width (Right Only)",
-  "field_width_full": "Full Width",
-  "field_width_fill": "Fill the Page",
   "field_width_note": "The width of this field within the form layout. Half-widths wrap based on other fields and their sort order.",
   "fields_are_saved_instantly": "Saves Automatically",
   "fieldtypes": {

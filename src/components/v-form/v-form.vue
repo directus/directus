@@ -1,104 +1,20 @@
 <template>
 	<div class="v-form" ref="el" :class="gridClass">
-		<div v-for="field in formFields" class="field" :key="field.field" :class="field.width">
-			<v-menu
-				v-if="field.hideLabel !== true"
-				placement="bottom-start"
-				show-arrow
-				close-on-content-click
-				:disabled="
-					loading ||
-					field.readonly === true ||
-					(batchMode && batchActiveFields.includes(field.field) === false)
-				"
-			>
-				<template #activator="{ toggle, active }">
-					<div class="label type-label" :class="{ readonly: field.readonly }">
-						<v-checkbox
-							v-if="batchMode"
-							@change="toggleBatchField(field)"
-							:input-value="batchActiveFields"
-							:value="field.field"
-						/>
-						<span @click="toggle">
-							{{ field.name }}
-							<v-icon class="required" sup name="star" v-if="field.required" />
-							<v-icon
-								v-if="!field.readonly"
-								class="ctx-arrow"
-								:class="{ active }"
-								name="arrow_drop_down"
-							/>
-						</span>
-					</div>
-				</template>
-
-				<v-list dense>
-					<v-list-item
-						@click="setValue(field, null)"
-						:disabled="values[field.field] === null"
-					>
-						<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
-					</v-list-item>
-					<v-list-item
-						@click="unsetValue(field)"
-						:disabled="
-							field.default_value === undefined ||
-							values[field.field] === field.default_value
-						"
-					>
-						<v-list-item-icon>
-							<v-icon name="settings_backup_restore" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('reset_to_default') }}</v-list-item-content>
-					</v-list-item>
-					<v-list-item
-						v-if="initialValues"
-						@click="unsetValue(field)"
-						:disabled="
-							initialValues[field.field] === undefined ||
-							values[field.field] === initialValues[field.field]
-						"
-					>
-						<v-list-item-icon>
-							<v-icon name="undo" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-
-			<div
-				class="interface"
-				:class="{
-					subdued: batchMode && batchActiveFields.includes(field.field) === false,
-				}"
-			>
-				<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
-				<component
-					:is="`interface-${field.interface}`"
-					v-bind="field.options"
-					:disabled="
-						field.readonly ||
-						(batchMode && batchActiveFields.includes(field.field) === false)
-					"
-					:value="
-						values[field.field] === undefined
-							? field.default_value
-							: values[field.field]
-					"
-					:width="field.width"
-					:type="field.type"
-					:collection="field.collection"
-					:field="field.field"
-					:primary-key="primaryKey"
-					@input="setValue(field, $event)"
-				/>
-			</div>
-
-			<small class="note" v-if="field.note" v-html="marked(field.note)" />
-		</div>
+		<form-field
+			v-for="field in formFields"
+			:field="field"
+			:key="field.field"
+			:value="(edits || {})[field.field]"
+			:initial-value="(initialValues || {})[field.field]"
+			:disabled="disabled"
+			:batch-mode="batchMode"
+			:batch-active="batchActiveFields.includes(field.field)"
+			:primary-key="primaryKey"
+			:loading="loading"
+			@input="setValue(field, $event)"
+			@unset="unsetValue(field)"
+			@toggle-batch="toggleBatchField(field)"
+		/>
 	</div>
 </template>
 
@@ -109,16 +25,18 @@ import { Field } from '@/stores/fields/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { isEmpty } from '@/utils/is-empty';
 import { clone } from 'lodash';
-import { FormField } from './types';
+import { FormField as TFormField } from './types';
 import interfaces from '@/interfaces';
 import marked from 'marked';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
+import FormField from './form-field.vue';
 
 type FieldValues = {
 	[field: string]: any;
 };
 
 export default defineComponent({
+	components: { FormField },
 	model: {
 		prop: 'edits',
 	},
@@ -128,7 +46,7 @@ export default defineComponent({
 			default: undefined,
 		},
 		fields: {
-			type: Array as PropType<FormField[]>,
+			type: Array as PropType<TFormField[]>,
 			default: undefined,
 		},
 		initialValues: {
@@ -150,6 +68,10 @@ export default defineComponent({
 		primaryKey: {
 			type: [String, Number],
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -233,11 +155,11 @@ export default defineComponent({
 					}
 
 					if (interfaceUsed?.hideLabel === true) {
-						(field as FormField).hideLabel = true;
+						(field as TFormField).hideLabel = true;
 					}
 
 					if (interfaceUsed?.hideLoader === true) {
-						(field as FormField).hideLoader = true;
+						(field as TFormField).hideLoader = true;
 					}
 
 					return field;
@@ -276,7 +198,16 @@ export default defineComponent({
 				return null;
 			});
 
-			return { formFields, gridClass };
+			return { formFields, gridClass, isDisabled };
+
+			function isDisabled(field: Field) {
+				return (
+					props.loading ||
+					props.disabled === true ||
+					field.readonly === true ||
+					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
+				);
+			}
 		}
 
 		function setValue(field: Field, value: any) {
@@ -358,70 +289,5 @@ body {
 	& > .fill {
 		grid-column: start / fill;
 	}
-}
-
-.interface {
-	position: relative;
-
-	.v-skeleton-loader {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 2;
-		width: 100%;
-		height: 100%;
-	}
-
-	&.subdued {
-		opacity: 0.5;
-	}
-}
-
-.label {
-	position: relative;
-	display: flex;
-	width: max-content;
-	margin-bottom: 8px;
-	cursor: pointer;
-
-	&.readonly {
-		cursor: not-allowed;
-	}
-
-	.v-checkbox {
-		margin-right: 4px;
-	}
-
-	.required {
-		--v-icon-color: var(--primary);
-
-		margin-left: -3px;
-	}
-
-	.ctx-arrow {
-		position: absolute;
-		top: -3px;
-		right: -20px;
-		color: var(--foreground-subdued);
-		opacity: 0;
-		transition: opacity var(--fast) var(--transition);
-
-		&.active {
-			opacity: 1;
-		}
-	}
-
-	&:hover {
-		.ctx-arrow {
-			opacity: 1;
-		}
-	}
-}
-
-.note {
-	display: block;
-	margin-top: 4px;
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 </style>

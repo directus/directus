@@ -1,3 +1,5 @@
+@import './mixins/type-styles.scss';
+
 :root {
 	--family-monospace: 'Fira Code', monospace;
 	--family-serif: 'Merriweather', serif;
@@ -5,31 +7,13 @@
 }
 
 .type-title {
-	color: var(--foreground-normal);
-	font-weight: normal;
-	font-size: 24px;
-	font-family: var(--family-sans-serif);
-	font-style: normal;
-	line-height: 29px;
-	letter-spacing: -0.8px;
+	@include type-title;
 }
 
 .type-label {
-	color: var(--foreground-normal);
-	font-weight: 600;
-	font-size: 16px;
-	font-family: var(--family-sans-serif);
-	font-style: normal;
-	line-height: 19px;
-	letter-spacing: -0.32px;
+	@include type-label;
 }
 
 .type-text {
-	color: var(--foreground-normal);
-	font-weight: 500;
-	font-size: 14px;
-	font-family: var(--family-sans-serif);
-	font-style: normal;
-	line-height: 22px;
-	letter-spacing: -0.15px;
+	@include type-text;
 }

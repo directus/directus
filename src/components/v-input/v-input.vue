@@ -33,12 +33,14 @@
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
+					:disabled="disabled"
 				/>
 				<v-icon
 					:class="{ disabled: value <= min }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
+					:disabled="disabled"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -187,6 +189,7 @@ export default defineComponent({
 
 		function stepUp() {
 			if (!input.value) return;
+			if (props.disabled === true) return;
 
 			if (props.value < props.max) {
 				input.value.stepUp();
@@ -196,6 +199,7 @@ export default defineComponent({
 
 		function stepDown() {
 			if (!input.value) return;
+			if (props.disabled === true) return;
 
 			if (props.value > props.min) {
 				input.value.stepDown();

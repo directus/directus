@@ -18,6 +18,7 @@ import InterfaceOneToMany from './one-to-many';
 import InterfaceHash from './hash';
 import InterfaceSlug from './slug';
 import InterfaceUser from './user';
+import InterfaceRepeater from './repeater';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -40,6 +41,7 @@ export const interfaces = [
 	InterfaceHash,
 	InterfaceSlug,
 	InterfaceUser,
+	InterfaceRepeater,
 ];
 
 export default interfaces;
