@@ -303,7 +303,7 @@ export default defineComponent({
 					cropperInstance.value.destroy();
 				}
 
-				cropperInstance.value = new Cropper(imageElement.value);
+				cropperInstance.value = new Cropper(imageElement.value, { autoCrop: false });
 			}
 
 			function flip(type: 'horizontal' | 'vertical') {
@@ -339,8 +339,6 @@ export default defineComponent({
 }
 
 .editor-container {
-	display: flex;
-	flex-direction: column;
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
@@ -349,6 +347,7 @@ export default defineComponent({
 	.editor {
 		flex-grow: 1;
 		width: 100%;
+		height: calc(100% - 60px);
 	}
 
 	img {
