@@ -58,7 +58,7 @@
     "@types/jest": "^25.2.1",
     "@types/marked": "^0.7.4",
     "@types/semver": "^7.1.0",
-    "@typescript-eslint/eslint-plugin": "^2.32.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@typescript-eslint/typescript-estree": "^2.33.0",
     "@vue/cli-plugin-babel": "^4.3.1",
