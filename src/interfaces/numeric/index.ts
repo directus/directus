@@ -15,19 +15,19 @@ export default defineInterface(({ i18n }) => ({
 			interface: 'text-input',
 		},
 		{
-			field: 'minValue',
+			field: 'min',
 			name: i18n.t('minimum_value'),
 			width: 'half',
 			interface: 'numeric',
 		},
 		{
-			field: 'maxValue',
+			field: 'max',
 			name: i18n.t('maximum_value'),
 			width: 'half',
 			interface: 'numeric',
 		},
 		{
-			field: 'stepInterval',
+			field: 'step',
 			name: i18n.t('step_interval'),
 			width: 'half',
 			interface: 'numeric',

@@ -27,16 +27,16 @@
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
-			<span v-if="(type === 'number')">
+			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
-					:class="{ disabled: value >= max }"
+					:class="{ disabled: max !== null && parseInt(value, 10) >= max }"
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
 					:disabled="disabled"
 				/>
 				<v-icon
-					:class="{ disabled: value <= min }"
+					:class="{ disabled: min !== null && parseInt(value, 10) <= min }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
@@ -97,6 +97,10 @@ export default defineComponent({
 			default: 'text',
 		},
 		// For number inputs only
+		hideArrows: {
+			type: Boolean,
+			default: false,
+		},
 		max: {
 			type: Number,
 			default: null,
@@ -190,20 +194,26 @@ export default defineComponent({
 		function stepUp() {
 			if (!input.value) return;
 			if (props.disabled === true) return;
+			if (props.max !== null && props.value >= props.max) return;
 
-			if (props.value < props.max) {
-				input.value.stepUp();
-				emit('input', input.value.value ?? props.min ?? 0);
+			input.value.stepUp();
+
+			if (input.value.value) {
+				return emit('input', input.value.value);
 			}
 		}
 
 		function stepDown() {
 			if (!input.value) return;
 			if (props.disabled === true) return;
+			if (props.min !== null && props.value <= props.min) return;
 
-			if (props.value > props.min) {
-				input.value.stepDown();
-				emit('input', input.value.value);
+			input.value.stepDown();
+
+			if (input.value.value) {
+				return emit('input', input.value.value);
+			} else {
+				return emit('input', props.min || 0);
 			}
 		}
 	},

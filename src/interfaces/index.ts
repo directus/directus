@@ -15,6 +15,7 @@ import InterfaceImage from './image';
 import InterfaceIcon from './icon';
 import InterfaceManyToOne from './many-to-one';
 import InterfaceOneToMany from './one-to-many';
+import InterfaceColor from './color';
 import InterfaceHash from './hash';
 import InterfaceSlug from './slug';
 import InterfaceUser from './user';
@@ -38,6 +39,7 @@ export const interfaces = [
 	InterfaceIcon,
 	InterfaceManyToOne,
 	InterfaceOneToMany,
+	InterfaceColor,
 	InterfaceHash,
 	InterfaceSlug,
 	InterfaceUser,

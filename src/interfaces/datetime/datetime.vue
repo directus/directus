@@ -10,7 +10,7 @@
 				:placeholder="$t('enter_a_value')"
 			>
 				<template #append>
-					<v-icon name="todate" :class="{ active }" />
+					<v-icon name="today" :class="{ active }" />
 				</template>
 			</v-input>
 		</template>

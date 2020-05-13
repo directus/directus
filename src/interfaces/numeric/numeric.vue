@@ -5,9 +5,9 @@
 		:value="value"
 		:placeholder="placeholder"
 		:disabled="disabled"
-		:min="minValue"
-		:max="maxValue"
-		:step="stepInterval"
+		:min="min"
+		:max="max"
+		:step="step"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend>
@@ -32,11 +32,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		minValue: {
+		min: {
 			type: Number,
 			default: null,
 		},
-		maxValue: {
+		max: {
 			type: Number,
 			default: null,
 		},
@@ -48,7 +48,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		stepInterval: {
+		step: {
 			type: Number,
 			default: 1,
 		},

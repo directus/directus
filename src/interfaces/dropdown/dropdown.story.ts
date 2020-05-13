@@ -56,6 +56,7 @@ trim :: Option D
 					:choices="choices"
 					:icon="icon"
 				/>
+				<portal-target name="outlet" />
 				<raw-value>{{ value }}</raw-value>
 			</div>
 		`,

@@ -23,6 +23,7 @@
 					v-if="isActive"
 					v-click-outside="{
 						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
 						disabled: isActive === false || closeOnClick === false,
 						events: ['click'],
 					}"
@@ -129,6 +130,7 @@ export default defineComponent({
 			toggle,
 			deactivate,
 			onContentClick,
+			onClickOutsideMiddleware,
 			styles,
 			arrowStyles,
 			popperPlacement,
@@ -174,6 +176,10 @@ export default defineComponent({
 				if (props.disabled === true) return;
 				isActive.value = !isActive.value;
 			}
+		}
+
+		function onClickOutsideMiddleware(e: Event) {
+			return !activator.value?.contains(e.target as Node);
 		}
 
 		function onContentClick() {

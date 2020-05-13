@@ -36,6 +36,7 @@ export const basic = () =>
 		template: `
 		<div style="width: 300px">
 			<interface-icon v-model="value" :disabled="disabled" />
+			<portal-target name="outlet" />
 			<raw-value>{{value}}</raw-value>
 		</div>
 		`,
