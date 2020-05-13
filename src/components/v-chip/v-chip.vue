@@ -90,6 +90,8 @@ body {
 	--v-chip-color-hover: var(--white);
 	--v-chip-background-color-hover: var(--primary-125);
 	--v-chip-close-color: var(--danger);
+	--v-chip-close-color-disabled: var(--primary);
+	--v-chip-close-color-hover: var(--primary-125);
 }
 </style>
 
@@ -179,15 +181,15 @@ body {
 			}
 
 			&.disabled {
-				background-color: var(--v-chip-primary-close-color-disabled);
+				background-color: var(--v-chip-close-color-disabled);
 
 				&:hover {
-					background-color: var(--v-chip-primary-close-color-disabled);
+					background-color: var(--v-chip-close-color-disabled);
 				}
 			}
 
 			&:hover {
-				background-color: var(--v-chip-primary-close-color-hover);
+				background-color: var(--v-chip-close-color-hover);
 			}
 		}
 	}

@@ -19,6 +19,7 @@ import InterfaceColor from './color';
 import InterfaceHash from './hash';
 import InterfaceSlug from './slug';
 import InterfaceUser from './user';
+import InterfaceTags from './tags';
 import InterfaceRepeater from './repeater';
 
 export const interfaces = [
@@ -43,6 +44,7 @@ export const interfaces = [
 	InterfaceHash,
 	InterfaceSlug,
 	InterfaceUser,
+	InterfaceTags,
 	InterfaceRepeater,
 ];
 

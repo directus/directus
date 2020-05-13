@@ -411,6 +411,7 @@
 
 	"always": "Always",
 	"create": "Create",
+	"add_tags": "Add tags...",
 	"full": "All",
 	"mine": "Mine Only",
 	"on_create": "On Creation",

@@ -170,6 +170,7 @@ export default defineComponent({
 					event.preventDefault();
 				}
 			}
+			emit('keydown', event);
 		}
 
 		function emitValue(event: InputEvent) {
