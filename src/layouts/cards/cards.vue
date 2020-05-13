@@ -472,8 +472,9 @@ export default defineComponent({
 
 .item-count {
 	position: relative;
-	margin-right: 8px;
+	margin: 0 8px;
 	color: var(--foreground-subdued);
+	white-space: nowrap;
 }
 
 .fade-enter-active,

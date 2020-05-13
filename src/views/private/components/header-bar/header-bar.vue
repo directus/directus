@@ -8,7 +8,7 @@
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container">
+		<div class="title-container" :class="{ full: !$scopedSlots['title-outer:append'] }">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
@@ -106,6 +106,26 @@ export default defineComponent({
 	.title-container {
 		position: relative;
 		margin-left: 12px;
+		overflow: hidden;
+
+		&.full {
+			margin-right: 20px;
+			padding-right: 20px;
+
+			&::after {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				width: 20px;
+				background: linear-gradient(
+					90deg,
+					rgba(var(--background-page-rgb), 0) 0%,
+					rgba(var(--background-page-rgb), 1) 100%
+				);
+				content: '';
+			}
+		}
 
 		.headline {
 			position: absolute;
@@ -119,10 +139,11 @@ export default defineComponent({
 			position: relative;
 			display: flex;
 			align-items: center;
-		}
 
-		h1 {
-			flex-grow: 1;
+			h1 {
+				flex-grow: 1;
+				white-space: nowrap;
+			}
 		}
 	}
 

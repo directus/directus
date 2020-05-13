@@ -203,6 +203,8 @@
 	"add_a_new_item": "Add a new item...",
 
 	"add_filter": "Add Filter",
+	"upper_limit": "Upper limit...",
+	"lower_limit": "Lower limit...",
 
 	"user_directory": "User Directory",
 	"help_and_docs": "Help & Docs",

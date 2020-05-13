@@ -311,6 +311,8 @@ body {
 
 		.content {
 			position: relative;
+			display: flex;
+			align-items: center;
 			line-height: normal;
 
 			&.invisible {

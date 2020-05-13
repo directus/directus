@@ -6,6 +6,7 @@
 				:value="csvValue[0]"
 				@input="setCSV(0, $event)"
 				:disabled="disabled"
+				:placeholder="$t('upper_limit')"
 			>
 				<template #append>
 					<v-icon name="vertical_align_top" />
@@ -16,6 +17,7 @@
 				:value="csvValue[1]"
 				@input="setCSV(1, $event)"
 				:disabled="disabled"
+				:placeholder="$t('lower_limit')"
 			>
 				<template #append>
 					<v-icon name="vertical_align_bottom" />
@@ -30,19 +32,26 @@
 				:type="type"
 				@input="setCSV(index, $event)"
 				:disabled="disabled"
+				:placeholder="$t('enter_a_value')"
 			>
 				<template #append>
 					<v-icon v-if="csvValue.length > 1" name="close" @click="removeCSV(val)" />
 				</template>
 			</v-input>
-			<v-button outlined dashed @click="addCSV" :disabled="disabled">
+			<v-button outlined full-width dashed @click="addCSV" :disabled="disabled">
 				<v-icon name="add" />
 				{{ $t('add_new') }}
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
 			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
-			<v-input :disabled="disabled" v-else v-model="_value" :type="type" />
+			<v-input
+				:disabled="disabled"
+				v-else
+				v-model="_value"
+				:type="type"
+				:placeholder="$t('enter_a_value')"
+			/>
 		</template>
 	</div>
 </template>

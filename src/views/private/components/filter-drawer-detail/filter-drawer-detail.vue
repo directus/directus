@@ -187,10 +187,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 18px 0;
+	margin: 16px 0;
 }
 
 .field-filter {
-	margin-bottom: 20px;
+	margin-bottom: 16px;
 }
 </style>
