@@ -7,18 +7,24 @@
 		</div>
 		<div class="pane-content">
 			<v-progress-linear v-if="loading" indeterminate />
-			<v-notice danger v-else-if="error">
-				{{ errorFormatted }}
-			</v-notice>
-			<template v-else>{{ $t('creating_project_success_copy') }}</template>
 
-			<template v-if="first">
-				<v-notice warning>
-					{{ $t('creating_project_success_super_admin_password') }}
+			<template v-else>
+				<v-notice danger v-if="error">
+					{{ errorFormatted }}
 				</v-notice>
-				<v-input readonly :value="token" />
+
+				<template v-else>{{ $t('creating_project_success_copy') }}</template>
+
+				<template v-if="first">
+					<v-notice warning>
+						{{ $t('creating_project_success_super_admin_password') }}
+					</v-notice>
+
+					<v-input readonly :value="_token" />
+				</template>
 			</template>
 		</div>
+
 		<div class="pane-buttons" v-if="!loading">
 			<v-button v-if="error" secondary @click="$emit('prev')">{{ $t('back') }}</v-button>
 			<v-button v-else @click="$emit('next')">{{ $t('sign_in') }}</v-button>
@@ -56,12 +62,16 @@ export default defineComponent({
 		},
 		token: {
 			type: String,
-			default: () => nanoid(),
+			default: null,
 		},
 	},
 	setup(props) {
 		const loading = ref(true);
 		const error = ref<RequestError>(null);
+
+		const _token = computed(() => {
+			return props.token || nanoid();
+		});
 
 		const errorFormatted = computed(() => {
 			return error.value && translateAPIError(error.value);
@@ -69,14 +79,14 @@ export default defineComponent({
 
 		createProject();
 
-		return { loading, error, errorFormatted };
+		return { loading, error, errorFormatted, _token };
 
 		async function createProject() {
 			try {
 				await api.post('/server/projects', {
 					...props.database,
 					...props.project,
-					super_admin_token: props.token,
+					super_admin_token: _token.value,
 				});
 			} catch (err) {
 				error.value = err;
@@ -87,3 +97,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-notice {
+	margin: 24px 0;
+}
+</style>

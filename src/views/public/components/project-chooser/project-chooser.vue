@@ -1,5 +1,11 @@
 <template>
-	<v-menu v-if="project" show-arrow placement="bottom-start" close-on-content-click>
+	<v-menu
+		v-if="project"
+		show-arrow
+		placement="bottom-start"
+		close-on-content-click
+		:disabled="projects.length <= 1"
+	>
 		<template #activator="{ toggle }">
 			<div class="project-chooser" @click="toggle">
 				<div class="public-view-logo" v-if="project && project.logo">
@@ -7,7 +13,7 @@
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
 				<h1 class="title type-title">{{ project && (project.name || project.key) }}</h1>
-				<v-icon name="expand_more" />
+				<v-icon name="expand_more" v-if="projects.length > 1" />
 			</div>
 		</template>
 

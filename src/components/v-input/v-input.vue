@@ -135,7 +135,7 @@ export default defineComponent({
 
 		function processValue(event: KeyboardEvent) {
 			const key = event.key.toLowerCase();
-			const systemKeys = ['meta', 'shift', 'alt', 'backspace'];
+			const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'tab'];
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.slug === true) {
