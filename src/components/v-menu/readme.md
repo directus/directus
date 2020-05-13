@@ -2,6 +2,29 @@
 
 Renders a dropdown menu. Can be attached to an activator element or free floating.
 
+**NOTE**
+
+Due to the fact that a menu is rendered through a portal, dialogs don't work great when rendered from
+within a menu. If you ever find yourself doing this:
+
+```html
+<v-menu>
+	<v-list>
+		<v-dialog>
+			<template #activator="{ on }">
+				<v-list-item @click="on">
+```
+
+You're better off doing
+
+```html
+<v-dialog v-model="dialogActive">
+
+<v-menu>
+	<v-list>
+		<v-list-item @click="dialogActive = true">
+```
+
 ## Usage
 
 Can be used with an activator in the corresponding slot:

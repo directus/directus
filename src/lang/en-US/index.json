@@ -375,6 +375,8 @@
 	"layout_type": "{layout} Layout",
 	"layout_options": "Layout Options",
 	"setup": "Setup",
+	"collection_setup": "Collection Setup",
+	"optional_system_fields": "Optional System Fields",
 
 	"none": "None",
 

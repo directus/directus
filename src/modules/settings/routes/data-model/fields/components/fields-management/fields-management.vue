@@ -1,12 +1,16 @@
 <template>
 	<div class="fields-management">
 		<draggable
-			class="visible"
+			class="field-grid"
 			:value="sortedVisibleFields"
 			handle=".drag-handle"
 			group="fields"
 			@change="($event) => handleChange($event, 'visible')"
 		>
+			<template #header>
+				<div class="group-name">Visible Fields</div>
+			</template>
+
 			<field-select
 				v-for="field in sortedVisibleFields"
 				:key="field.field"
@@ -14,38 +18,42 @@
 				@toggle-visibility="toggleVisibility($event, 'visible')"
 				@edit="openFieldSetup(field)"
 			/>
+
+			<template #footer>
+				<v-button class="add-field" align="left" dashed outlined @click="openFieldSetup()">
+					<v-icon small name="add" />
+
+					{{ $t('add_field') }}
+				</v-button>
+			</template>
 		</draggable>
 
-		<v-button
-			full-width
-			class="add-field"
-			align="left"
-			dashed
-			outlined
-			large
-			@click="openFieldSetup()"
-		>
-			<v-icon name="add" />
-			{{ $t('add_field') }}
-		</v-button>
-
-		<v-divider>{{ $t('hidden_detail') }}</v-divider>
-
 		<draggable
-			class="hidden"
+			class="field-grid hidden"
 			:value="sortedHiddenFields"
 			handle=".drag-handle"
 			group="fields"
 			@change="($event) => handleChange($event, 'hidden')"
 		>
+			<template #header>
+				<div class="group-name">Hidden Fields</div>
+			</template>
+
 			<field-select
 				v-for="field in sortedHiddenFields"
 				:key="field.field"
 				:field="field"
-				hidden
 				@toggle-visibility="toggleVisibility($event, 'hidden')"
 				@edit="openFieldSetup(field)"
 			/>
+
+			<template #footer>
+				<v-button class="add-field" align="left" dashed outlined @click="openFieldSetup()">
+					<v-icon small name="add" />
+
+					{{ $t('add_field') }}
+				</v-button>
+			</template>
 		</draggable>
 
 		<field-setup
@@ -246,30 +254,39 @@ export default defineComponent({
 	margin: 32px 0;
 }
 
-.add-field {
-	margin-top: 24px;
-}
-
-.visible,
-.hidden {
-	display: grid;
-	grid-gap: 12px 12px;
-	grid-template-columns: 1fr 1fr;
-}
-
-.visible {
+.field-grid {
 	position: relative;
-	padding: 36px 12px 12px 12px;
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: 1fr 1fr;
+	margin-bottom: 24px;
+	padding: 32px 12px 72px 12px;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 
-	&::before {
+	.group-name {
 		position: absolute;
-		top: 8px;
+		top: 6px;
 		left: 12px;
+		margin-bottom: 8px;
 		color: var(--foreground-subdued);
-		content: 'Main Form';
 	}
+
+	.add-field {
+		--v-button-width: 100%;
+		--v-button-font-size: 14px;
+		--v-button-background-color: var(--foreground-subdued);
+		--v-button-background-color-hover: var(--primary);
+
+		position: absolute;
+		bottom: 12px;
+		left: 12px;
+		width: calc(100% - 24px);
+	}
+}
+
+.visible {
+	margin-bottom: 24px;
 }
 
 .list-move {

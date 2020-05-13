@@ -21,7 +21,21 @@
 		</template>
 
 		<div class="padding-box">
+			<v-info
+				type="warning"
+				icon="box"
+				:title="$t('no_collections')"
+				v-if="items.length === 0"
+			>
+				{{ $t('no_collections_copy_admin') }}
+
+				<template #append>
+					<v-button @click="addNewActive = true">{{ $t('create_collection') }}</v-button>
+				</template>
+			</v-info>
+
 			<v-table
+				v-else
 				:headers.sync="tableHeaders"
 				:items="items"
 				@click:row="openCollection"
@@ -226,12 +240,17 @@ export default defineComponent({
 
 .padding-box {
 	padding: var(--content-padding);
+	padding-top: 0;
 }
 
 .v-table {
 	--v-table-sticky-offset-top: 64px;
 
 	display: contents;
+}
+
+.v-info {
+	margin: 20vh 0;
 }
 
 .header-icon {

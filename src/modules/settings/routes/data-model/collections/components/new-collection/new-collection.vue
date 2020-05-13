@@ -24,8 +24,8 @@
 
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
-				<v-tab value="collection">Collection Setup</v-tab>
-				<v-tab value="system">Optional System Fields</v-tab>
+				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
+				<v-tab value="system">{{ $t('optional_system_fields') }}</v-tab>
 			</v-tabs>
 		</template>
 
@@ -33,12 +33,12 @@
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
 				<div class="type-label">{{ $t('name') }}</div>
-				<v-input class="monospace" v-model="collectionName" />
+				<v-input class="monospace" v-model="collectionName" db-safe />
 				<v-divider />
 				<div class="grid">
 					<div>
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input class="monospace" v-model="primaryKeyFieldName" />
+						<v-input class="monospace" v-model="primaryKeyFieldName" db-safe />
 					</div>
 					<div>
 						<div class="type-label">{{ $t('type') }}</div>
@@ -241,7 +241,7 @@ export default defineComponent({
 				return {
 					...field,
 					interface: 'text-input',
-					type: 'string',
+					type: 'uuid',
 					datatype: 'VARCHAR',
 					length: 36,
 					auto_increment: false,

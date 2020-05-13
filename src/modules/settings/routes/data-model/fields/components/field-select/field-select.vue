@@ -27,39 +27,12 @@
 					</v-list-item-content>
 				</v-list-item>
 
-				<v-dialog v-model="duplicateActive">
-					<template #activator="{ on }">
-						<v-list-item @click="on">
-							<v-list-item-icon>
-								<v-icon name="control_point_duplicate" />
-							</v-list-item-icon>
-							<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
-						</v-list-item>
-					</template>
-
-					<v-card>
-						<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
-						<v-card-text>
-							<span class="label">{{ $tc('collection', 0) }}</span>
-							<v-select
-								class="monospace"
-								:items="collections"
-								v-model="duplicateTo"
-							/>
-
-							<span class="label">{{ $tc('field', 0) }}</span>
-							<v-input class="monospace" v-model="duplicateName" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button secondary @click="duplicateActive = false">
-								{{ $t('cancel') }}
-							</v-button>
-							<v-button @click="saveDuplicate" :loading="duplicating">
-								{{ $t('duplicate') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+				<v-list-item @click="duplicateActive = true">
+					<v-list-item-icon>
+						<v-icon name="control_point_duplicate" />
+					</v-list-item-icon>
+					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+				</v-list-item>
 				<v-divider />
 				<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
@@ -93,6 +66,28 @@
 				</v-list-item>
 			</v-list>
 		</v-menu>
+
+		<v-dialog v-model="duplicateActive">
+			<v-card class="duplicate">
+				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
+				<v-card-text>
+					<span class="type-label">{{ $tc('collection', 0) }}</span>
+					<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+
+					<span class="type-label">{{ $tc('field', 0) }}</span>
+					<v-input class="monospace" v-model="duplicateName" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="duplicateActive = false">
+						{{ $t('cancel') }}
+					</v-button>
+					<v-button @click="saveDuplicate" :loading="duplicating">
+						{{ $t('duplicate') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<v-dialog v-model="deleteActive">
 			<v-card>
 				<v-card-title>Are you sure you want to delete this field?</v-card-title>
@@ -238,11 +233,25 @@ export default defineComponent({
 	--v-input-font-family: var(--family-monospace);
 }
 
+.v-select.monospace {
+	--v-select-font-family: var(--family-monospace);
+}
+
 .v-icon {
 	--v-icon-color: var(--foreground-subdued);
 }
 
 .drag-handle {
 	cursor: grab !important;
+}
+
+.duplicate {
+	.text-label {
+		margin-bottom: 4px;
+	}
+
+	.v-select {
+		margin-bottom: 32px;
+	}
 }
 </style>

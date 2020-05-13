@@ -129,7 +129,11 @@
 			</template>
 		</v-table>
 
-		<v-info v-else-if="itemCount === 0" :title="$t('no_results')" icon="search">
+		<v-info
+			v-else-if="itemCount === 0 && _filters.length > 0"
+			:title="$t('no_results')"
+			icon="search"
+		>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
