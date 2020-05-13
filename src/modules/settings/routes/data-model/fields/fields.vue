@@ -6,10 +6,6 @@
 			</v-button>
 		</template>
 
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
-
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
@@ -80,7 +76,6 @@ import SettingsNavigation from '../../../components/navigation/';
 import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management';
 import useProjectsStore from '@/stores/projects';
-import { i18n } from '@/lang';
 import useItem from '@/composables/use-item';
 import router from '@/router';
 import useCollectionsStore from '@/stores/collections';
@@ -99,15 +94,6 @@ export default defineComponent({
 		const { info: collectionInfo, fields } = useCollection(collection);
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const collectionsStore = useCollectionsStore();
-
-		const breadcrumb = computed(() => {
-			return [
-				{
-					name: i18n.t('settings_data_model'),
-					to: `/${projectsStore.state.currentProjectKey}/settings/data-model`,
-				},
-			];
-		});
 
 		const {
 			isNew,
@@ -130,7 +116,6 @@ export default defineComponent({
 		return {
 			collectionInfo,
 			fields,
-			breadcrumb,
 			confirmDelete,
 			isNew,
 			edits,

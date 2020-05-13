@@ -37,7 +37,7 @@ export const basic = () =>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>
 				</v-dialog>
-				<portal-target name="dialog-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});
@@ -66,7 +66,7 @@ export const activatorSlot = () =>
 						<v-button @click="active = false">Yes</v-button>
 					</v-sheet>
 				</v-dialog>
-				<portal-target name="dialog-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});

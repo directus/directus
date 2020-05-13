@@ -138,7 +138,7 @@ export const withMenu = () =>
 						</v-list-item>
 					</v-list>
 				</v-menu>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});

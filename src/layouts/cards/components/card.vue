@@ -274,12 +274,26 @@ export default defineComponent({
 
 .title,
 .subtitle {
+	position: relative;
 	width: 100%;
 	height: 20px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	&::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 12px;
+		background: linear-gradient(
+			90deg,
+			rgba(var(--background-page-rgb), 0) 0%,
+			rgba(var(--background-page-rgb), 1) 100%
+		);
+		content: '';
+	}
 }
 
 .title {

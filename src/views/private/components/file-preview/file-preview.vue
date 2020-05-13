@@ -2,6 +2,7 @@
 	<div class="file-preview" v-if="type">
 		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" />
+			<v-icon name="fullscreen" />
 		</div>
 
 		<video v-else-if="type === 'video'" controls :src="src" />
@@ -71,17 +72,6 @@ export default defineComponent({
 	margin-bottom: var(--form-vertical-gap);
 }
 
-.image {
-	width: 100%;
-	height: 100%;
-}
-
-.svg {
-	padding: 64px;
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
-}
-
 img,
 video,
 audio {
@@ -89,6 +79,40 @@ audio {
 	height: 100%;
 	max-height: 100%;
 	object-fit: contain;
+	border-radius: var(--border-radius);
+}
+
+.image {
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+
+	img {
+		z-index: 1;
+		display: block;
+	}
+
+	.v-icon {
+		position: absolute;
+		right: 12px;
+		bottom: 12px;
+		z-index: 2;
+		color: white;
+		text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	&:hover {
+		.v-icon {
+			opacity: 1;
+		}
+	}
+}
+
+.svg {
+	padding: 64px;
+	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 }
 </style>

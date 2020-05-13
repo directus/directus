@@ -6,7 +6,7 @@ import CollectionsItemNotFound from './routes/not-found';
 
 export default defineModule(({ i18n }) => ({
 	id: 'collections',
-	name: i18n.tc('collection', 2),
+	name: i18n.t('collections'),
 	icon: 'box',
 	routes: [
 		{

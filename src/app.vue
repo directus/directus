@@ -6,8 +6,8 @@
 			</div>
 		</transition>
 		<router-view v-if="!hydrating" />
-		<portal-target name="dialog-outlet" multiple />
-		<portal-target name="popper-outlet" multiple />
+
+		<portal-target name="outlet" multiple />
 	</div>
 </template>
 

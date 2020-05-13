@@ -33,7 +33,7 @@ export const basic = () =>
 						<v-button @click="close">Close modal</v-button>
 					</template>
 				</v-modal>
-				<portal-target name="dialog-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});
@@ -78,7 +78,7 @@ export const withNav = () =>
 						<v-button @click="close">Close modal</v-button>
 					</template>
 				</v-modal>
-				<portal-target name="dialog-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});

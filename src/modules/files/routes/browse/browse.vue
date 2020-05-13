@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('files')">
+	<private-view :title="$t('file_library')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="folder" />

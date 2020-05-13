@@ -72,11 +72,13 @@
 	"settings_update_success": "Settings updated",
 	"settings_update_failed": "Updating settings failed",
 
-	"activity_delta_created": "Created this item",
-	"activity_delta_created_externally": "Created externally",
-	"activity_delta_updated": "Updated this item",
-	"activity_delta_deleted": "Deleted this item",
+	"revision_delta_created": "Created",
+	"revision_delta_created_externally": "Created Externally",
+	"revision_delta_updated": "Updated {count} Fields",
+	"revision_delta_soft_deleted": "Soft Deleted",
+	"revision_delta_deleted": "Deleted",
 	"private_user": "Private User",
+	"revision_unknown": "Created Outside System",
 
 	"leave_comment": "Leave a comment...",
 	"post_comment_success": "Comment posted",
@@ -99,8 +101,17 @@
 	"corresponding_field_name": "Corresponding Field Name",
 
 	"datetime": "DateTime",
+	"today": "Today",
+	"yesterday": "Yesterday",
+
+	"delete_comment": "Delete Comment",
+
+	"date-fns_datetime": "PPP h:mma",
 	"date-fns_date": "PPP",
-	"date-fns_time": "K:mm a",
+	"date-fns_date_short": "MMM d, u",
+	"date-fns_date_short_no_year": "MMM d",
+	"date-fns_time": "h:mma",
+
 	"month": "Month",
 	"date": "Date",
 	"year": "Year",
@@ -125,6 +136,10 @@
 	"many_to_one": "Many to One (M2O)",
 
 	"set_to_now": "Set to Now",
+
+	"zoom": "Zoom",
+	"download": "Download",
+	"open": "Open",
 
 	"name": "Name",
 	"primary_key_field": "Primary Key Field",
@@ -151,6 +166,8 @@
 	"add_existing": "Add Existing",
 
 	"comments": "Comments",
+	"no_comments": "No Comments Yet",
+	"click_to_expand": "Click to Expand",
 
 	"select_item": "Select Item",
 
@@ -166,8 +183,8 @@
 	"radio_buttons": "Radio Buttons",
 	"checkboxes": "Checkboxes",
 
-	"relationship_not_setup": "The relationship hasn't been configured correctly.",
-	"display_template_not_setup": "The display template hasn't been configured correctly.",
+	"relationship_not_setup": "The relationship hasn't been configured correctly",
+	"display_template_not_setup": "The display template is misconfigured",
 
 	"choose_status": "Choose Status...",
 
@@ -835,7 +852,7 @@
   "reset": "Reset",
   "reset_password": "Reset Password",
   "reset_preferences": "Reset all listing preferences",
-
+  "revisions": "Revisions",
   "revert": "Revert",
   "revert_copy": "Do you want to revert this item to how it was on {date}?",
   "role_count": "No Roles | One Role | {count} Roles",

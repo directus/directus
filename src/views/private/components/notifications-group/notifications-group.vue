@@ -43,7 +43,7 @@ export default defineComponent({
 	right: 8px;
 	left: 8px;
 	z-index: 50;
-	width: 280px;
+	width: 260px;
 	direction: rtl;
 
 	> *,

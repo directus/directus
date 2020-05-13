@@ -7,6 +7,10 @@
 			</v-button>
 		</template>
 
+		<template v-if="bookmark" #headline>
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #title-outer:append>
 			<bookmark-add
 				v-if="!bookmark"
@@ -192,6 +196,7 @@ export default defineComponent({
 		const { selection } = useSelection();
 		const { info: currentCollection, primaryKeyField } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
+		const { breadcrumb } = useBreadcrumb();
 		const {
 			viewType,
 			viewOptions,
@@ -243,12 +248,24 @@ export default defineComponent({
 			bookmarkName,
 			editingBookmark,
 			editBookmark,
+			breadcrumb,
 		};
+
+		function useBreadcrumb() {
+			const breadcrumb = computed(() => [
+				{
+					name: props.collection,
+					to: `/${projectsStore.state.currentProjectKey}/collections/${props.collection}`,
+				},
+			]);
+
+			return { breadcrumb };
+		}
 
 		function useSelection() {
 			const selection = ref<Item[]>([]);
 
-			// Whenever the collection changes we're working on, we have to clear the selection
+			// Whenever the collection we're working on changes, we have to clear the selection
 			watch(
 				() => props.collection,
 				() => (selection.value = [])
@@ -387,5 +404,18 @@ export default defineComponent({
 .bookmark-add .toggle,
 .bookmark-edit .toggle {
 	margin-left: 8px;
+	transition: color var(--fast) var(--transition);
+}
+
+.bookmark-add {
+	color: var(--foreground-subdued);
+
+	&:hover {
+		color: var(--foreground-normal);
+	}
+}
+
+.bookmark-edit {
+	color: var(--primary);
 }
 </style>

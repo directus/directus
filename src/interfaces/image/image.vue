@@ -4,16 +4,25 @@
 		<img :src="src" alt="" role="presentation" />
 		<div class="shadow" />
 		<div class="actions">
-			<v-button icon rounded @click="editorActive = true">
-				<v-icon name="crop_rotate" />
-			</v-button>
-			<v-button icon rounded @click="lightboxActive = true">
+			<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
 				<v-icon name="zoom_in" />
 			</v-button>
-			<v-button icon rounded :href="image.data.full_url" :download="image.filename_download">
+			<v-button
+				icon
+				rounded
+				:href="image.data.full_url"
+				:download="image.filename_download"
+				v-tooltip="$t('download')"
+			>
 				<v-icon name="file_download" />
 			</v-button>
-			<v-button icon rounded @click="deselect">
+			<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('open')">
+				<v-icon name="launch" />
+			</v-button>
+			<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
+				<v-icon name="crop_rotate" />
+			</v-button>
+			<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
 				<v-icon name="close" />
 			</v-button>
 		</div>
@@ -216,7 +225,7 @@ img {
 	line-height: 1;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.75) 100%);
+	background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.25) 100%);
 	transition: height var(--fast) var(--transition);
 }
 
@@ -271,13 +280,14 @@ img {
 	height: 17px;
 	max-height: 0;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: rgba(255, 255, 255, 0.75);
 	transition: max-height var(--fast) var(--transition);
 }
 
 .image-preview:hover {
 	.shadow {
 		height: 100%;
+		background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
 	}
 
 	.actions .v-button {

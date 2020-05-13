@@ -16,7 +16,7 @@
 			@click="_active = false"
 		/>
 
-		<v-button class="close" @click="_active = false" icon rounded secondary>
+		<v-button class="close" @click="_active = false" icon rounded>
 			<v-icon name="close" />
 		</v-button>
 	</v-dialog>
@@ -117,6 +117,11 @@ export default defineComponent({
 }
 
 .close {
+	--v-button-background-color: var(--white);
+	--v-button-color: var(--foreground-subdued);
+	--v-button-background-color-hover: var(--white);
+	--v-button-color-hover: var(--foreground-normal);
+
 	position: absolute;
 	top: 32px;
 	right: 32px;

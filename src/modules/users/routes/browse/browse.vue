@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('users')">
+	<private-view :title="$t('user_directory')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="people" />

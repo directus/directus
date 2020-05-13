@@ -51,7 +51,7 @@ export const basic = () =>
 					:inline="inline"
 				/>
 				<raw-value>{{ value }}</raw-value>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});
@@ -89,7 +89,7 @@ export const multiple = () =>
 					multiple
 				/>
 				<raw-value>{{ value }}</raw-value>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
 			</div>
 		`,
 	});

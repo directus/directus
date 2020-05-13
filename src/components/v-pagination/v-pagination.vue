@@ -137,9 +137,9 @@ body {
 	}
 
 	.v-button {
-		--v-button-background-color-hover: var(--background-subdued);
+		--v-button-background-color-hover: var(--background-normal);
 		--v-button-background-color: var(--background-subdued);
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--foreground-normal);
 
 		margin: 0 2px;
 		vertical-align: middle;
@@ -159,10 +159,10 @@ body {
 		}
 
 		&.active {
-			--v-button-background-color-hover: var(--primary-25);
-			--v-button-color-hover: var(--primary);
-			--v-button-background-color: var(--primary-25);
-			--v-button-color: var(--primary);
+			--v-button-background-color-hover: var(--foreground-normal);
+			--v-button-color-hover: var(--foreground-inverted);
+			--v-button-background-color: var(--foreground-normal);
+			--v-button-color: var(--foreground-inverted);
 		}
 	}
 }

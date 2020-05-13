@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('editing', { collection: $t('users') })">
+	<private-view :title="loading ? $t('loading') : item.first_name + ' ' + item.last_name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -72,7 +72,7 @@
 		/>
 
 		<template #drawer>
-			<activity-drawer-detail
+			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
@@ -87,7 +87,7 @@ import useProjectsStore from '@/stores/projects';
 import UsersNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
-import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
@@ -97,7 +97,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'users-detail',
-	components: { UsersNavigation, ActivityDrawerDetail, SaveOptions },
+	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {
 			type: String,
@@ -150,7 +150,7 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('users'),
+					name: i18n.t('user_directory'),
 					to: `/${currentProjectKey.value}/users/`,
 				},
 			]);

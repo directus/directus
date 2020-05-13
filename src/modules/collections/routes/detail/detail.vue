@@ -44,6 +44,10 @@
 			</v-button>
 		</template>
 
+		<template #headline>
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #actions>
 			<v-dialog v-if="!isNew" v-model="confirmDelete">
 				<template #activator="{ on }">
@@ -143,7 +147,12 @@
 		/>
 
 		<template #drawer>
-			<activity-drawer-detail
+			<revisions-drawer-detail
+				v-if="isBatch === false && isNew === false"
+				:collection="collection"
+				:primary-key="primaryKey"
+			/>
+			<comments-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
@@ -159,7 +168,8 @@ import CollectionsNavigation from '../../components/navigation/';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/composables/use-collection';
-import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
@@ -169,7 +179,13 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
-	components: { CollectionsNavigation, CollectionsNotFound, ActivityDrawerDetail, SaveOptions },
+	components: {
+		CollectionsNavigation,
+		CollectionsNotFound,
+		RevisionsDrawerDetail,
+		CommentsDrawerDetail,
+		SaveOptions,
+	},
 	props: {
 		collection: {
 			type: String,
@@ -184,6 +200,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { collection, primaryKey } = toRefs(props);
+		const { breadcrumb } = useBreadcrumb();
 
 		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(
 			collection
@@ -242,7 +259,19 @@ export default defineComponent({
 			isBatch,
 			softDeleteStatus,
 			templateValues,
+			breadcrumb,
 		};
+
+		function useBreadcrumb() {
+			const breadcrumb = computed(() => [
+				{
+					name: collectionInfo.value?.name,
+					to: `/${currentProjectKey.value}/collections/${props.collection}`,
+				},
+			]);
+
+			return { breadcrumb };
+		}
 
 		async function saveAndQuit() {
 			await save();

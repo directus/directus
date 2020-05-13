@@ -112,6 +112,7 @@ body {
 		.prepend {
 			opacity: 0;
 			transition: opacity var(--medium) var(--transition);
+			pointer-events: none;
 		}
 
 		&:focus,
@@ -122,12 +123,13 @@ body {
 			.append,
 			.prepend {
 				opacity: 1;
+				pointer-events: auto;
 			}
 		}
 	}
 
 	&:hover {
-		border-color: var(--border-normal);
+		border-color: var(--border-normal-alt);
 	}
 
 	&:focus,
@@ -142,7 +144,6 @@ body {
 	&.disabled {
 		color: var(--foreground-subdued);
 		background-color: var(--background-subdued);
-		border-color: var(--border-subdued);
 		cursor: not-allowed;
 	}
 

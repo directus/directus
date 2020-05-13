@@ -1,13 +1,15 @@
 <template>
 	<private-view :title="$t('editing', { collection: $t('webhooks') })">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="breadcrumb[0].to">
+			<v-button
+				class="header-icon"
+				rounded
+				icon
+				exact
+				:to="`/${currentProjectKey}/settings/webhooks/`"
+			>
 				<v-icon name="arrow_back" />
 			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
@@ -72,7 +74,7 @@
 		/>
 
 		<template #drawer>
-			<activity-drawer-detail
+			<revisions-drawer-detail
 				v-if="isNew === false"
 				collection="directus_webhooks"
 				:primary-key="primaryKey"
@@ -85,9 +87,8 @@
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import SettingsNavigation from '../../../components/navigation/';
-import { i18n } from '@/lang';
 import router from '@/router';
-import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
@@ -97,7 +98,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'webhooks-detail',
-	components: { SettingsNavigation, ActivityDrawerDetail, SaveOptions },
+	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {
 			type: String,
@@ -108,7 +109,6 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
-		const { breadcrumb } = useBreadcrumb();
 
 		const {
 			isNew,
@@ -133,7 +133,6 @@ export default defineComponent({
 			loading,
 			error,
 			isNew,
-			breadcrumb,
 			edits,
 			hasEdits,
 			saving,
@@ -145,18 +144,8 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
+			currentProjectKey,
 		};
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: i18n.t('webhooks'),
-					to: `/${currentProjectKey.value}/settings/webhooks/`,
-				},
-			]);
-
-			return { breadcrumb };
-		}
 
 		async function saveAndQuit() {
 			await save();

@@ -302,7 +302,7 @@ export default defineComponent({
 	.fixed {
 		position: sticky;
 		top: var(--v-table-sticky-offset-top);
-		z-index: 2;
+		z-index: 3;
 	}
 
 	.manual {

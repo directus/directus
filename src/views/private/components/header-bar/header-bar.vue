@@ -1,5 +1,5 @@
 <template>
-	<header class="header-bar" ref="headerEl" :class="{ shadow: showShadow }">
+	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('toggle:nav')">
 			<v-icon name="menu" />
 		</v-button>
@@ -9,7 +9,9 @@
 		</div>
 
 		<div class="title-container">
-			<slot name="headline" />
+			<div class="headline">
+				<slot name="headline" />
+			</div>
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
@@ -46,11 +48,11 @@ export default defineComponent({
 	setup() {
 		const headerEl = ref<Element>();
 
-		const showShadow = ref(false);
+		const collapsed = ref(false);
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				showShadow.value = e.intersectionRatio < 1;
+				collapsed.value = e.intersectionRatio < 1;
 			},
 			{ threshold: [1] }
 		);
@@ -63,7 +65,7 @@ export default defineComponent({
 			observer.disconnect();
 		});
 
-		return { headerEl, showShadow };
+		return { headerEl, collapsed };
 	},
 });
 </script>
@@ -87,10 +89,6 @@ export default defineComponent({
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition);
 
-	&.shadow {
-		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
-	}
-
 	.nav-toggle {
 		@include breakpoint(medium) {
 			display: none;
@@ -106,7 +104,16 @@ export default defineComponent({
 	}
 
 	.title-container {
+		position: relative;
 		margin-left: 12px;
+
+		.headline {
+			position: absolute;
+			top: -20px;
+			left: 0;
+			opacity: 1;
+			transition: opacity var(--fast) var(--transition);
+		}
 
 		.title {
 			position: relative;
@@ -116,6 +123,17 @@ export default defineComponent({
 
 		h1 {
 			flex-grow: 1;
+		}
+	}
+
+	&.collapsed {
+		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
+
+		.title-container {
+			.headline {
+				opacity: 0;
+				pointer-events: none;
+			}
 		}
 	}
 

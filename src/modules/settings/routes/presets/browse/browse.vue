@@ -7,15 +7,9 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						@click="on"
-						:disabled="selection.length === 0"
-					>
+					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>

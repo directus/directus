@@ -45,7 +45,7 @@ export const basic = () =>
 						</v-list-item>
 					</v-list>
 				</v-menu>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
 			</div>
         `,
 	});
@@ -72,7 +72,7 @@ export const withVModel = () =>
                         </v-list-item>
 					</v-list>
 				</v-menu>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
             </div>
         `,
 	});
@@ -124,7 +124,7 @@ export const positioning = () =>
                         </v-list-item>
                     </v-list>
 				</v-menu>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
             </div>
 		`,
 	});
@@ -186,7 +186,7 @@ export const withEdgeOffset = () =>
 						</v-list>
 					</v-menu>
 				</div>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
             </div>
         `,
 	});
@@ -225,7 +225,7 @@ export const attached = () =>
 						</v-list-item>
 					</v-list>
 				</v-menu>
-				<portal-target name="popper-outlet" />
+				<portal-target name="outlet" />
 			</div>
         `,
 	});

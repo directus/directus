@@ -12,7 +12,7 @@
 			/>
 		</div>
 
-		<portal to="popper-outlet">
+		<portal to="outlet">
 			<transition name="bounce">
 				<div
 					class="v-menu-popper"

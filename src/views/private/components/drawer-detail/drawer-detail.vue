@@ -95,7 +95,7 @@ body {
 	}
 
 	.content {
-		padding: 20px;
+		padding: 16px;
 	}
 }
 </style>

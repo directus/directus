@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_file', { title: item.title })">
+	<private-view :title="loading ? $t('loading') : item.title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -103,7 +103,7 @@
 		</div>
 
 		<template #drawer>
-			<activity-drawer-detail
+			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
 				:primary-key="primaryKey"
@@ -118,7 +118,7 @@ import useProjectsStore from '@/stores/projects';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
-import ActivityDrawerDetail from '@/views/private/components/activity-drawer-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
@@ -134,7 +134,7 @@ export default defineComponent({
 	name: 'files-detail',
 	components: {
 		FilesNavigation,
-		ActivityDrawerDetail,
+		RevisionsDrawerDetail,
 		SaveOptions,
 		FilePreview,
 		ImageEditor,
@@ -206,7 +206,7 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('files'),
+					name: i18n.t('file_library'),
 					to: `/${currentProjectKey.value}/files/`,
 				},
 			]);

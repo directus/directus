@@ -467,6 +467,10 @@ export default defineComponent({
 			width: auto;
 			margin-right: 4px;
 		}
+
+		.v-select {
+			color: var(--foreground-normal);
+		}
 	}
 }
 

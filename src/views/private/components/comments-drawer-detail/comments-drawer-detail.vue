@@ -1,0 +1,175 @@
+<template>
+	<drawer-detail :title="$t('comments')" icon="chat_bubble_outline">
+		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
+
+		<v-progress-linear indeterminate v-if="loading" />
+
+		<div v-else-if="!activity || activity.length === 0" class="empty">
+			<div class="content">{{ $t('no_comments') }}</div>
+		</div>
+
+		<template v-else v-for="group in activity">
+			<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+
+			<template v-for="item in group.activity">
+				<comment-item :refresh="refresh" :activity="item" :key="item.id" />
+			</template>
+		</template>
+	</drawer-detail>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from '@vue/composition-api';
+import useProjectsStore from '@/stores/projects';
+import api from '@/api';
+import { Activity, ActivityByDate } from './types';
+import CommentInput from './comment-input.vue';
+import { groupBy } from 'lodash';
+import i18n from '@/lang';
+import formatLocalized from '@/utils/localized-format';
+import { isToday, isYesterday, isThisYear } from 'date-fns';
+import { TranslateResult } from 'vue-i18n';
+import CommentItem from './comment-item.vue';
+import { orderBy } from 'lodash';
+
+export default defineComponent({
+	components: { CommentInput, CommentItem },
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		primaryKey: {
+			type: [String, Number],
+			required: true,
+		},
+	},
+	setup(props) {
+		const projectsStore = useProjectsStore();
+
+		const { activity, loading, error, refresh } = useActivity(
+			props.collection,
+			props.primaryKey
+		);
+
+		return {
+			activity,
+			loading,
+			error,
+			refresh,
+		};
+
+		function useActivity(collection: string, primaryKey: string | number) {
+			const activity = ref<ActivityByDate[]>(null);
+			const error = ref(null);
+			const loading = ref(false);
+
+			getActivity();
+
+			return { activity, error, loading, refresh };
+
+			async function getActivity() {
+				error.value = null;
+				loading.value = true;
+
+				try {
+					const response = await api.get(
+						`/${projectsStore.state.currentProjectKey}/activity`,
+						{
+							params: {
+								'filter[collection][eq]': collection,
+								'filter[item][eq]': primaryKey,
+								'filter[action][in]': 'comment',
+								'filter[comment_deleted_on][null]': 1,
+								sort: '-id', // directus_activity has auto increment and is therefore in chronological order
+								fields: [
+									'id',
+									'action',
+									'action_on',
+									'action_by.id',
+									'action_by.first_name',
+									'action_by.last_name',
+									'action_by.avatar.data',
+									'comment',
+									'edited_on',
+								],
+							},
+						}
+					);
+
+					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
+						// activity's action_on date is in iso-8601
+						const date = new Date(new Date(activity.action_on).toDateString());
+						return date;
+					});
+
+					const activityGrouped: ActivityByDate[] = [];
+
+					for (const [key, value] of Object.entries(activityByDate)) {
+						const date = new Date(key);
+						const today = isToday(date);
+						const yesterday = isYesterday(date);
+						const thisYear = isThisYear(date);
+
+						let dateFormatted: TranslateResult;
+
+						if (today) dateFormatted = i18n.t('today');
+						else if (yesterday) dateFormatted = i18n.t('yesterday');
+						else if (thisYear)
+							dateFormatted = await formatLocalized(
+								date,
+								String(i18n.t('date-fns_date_short_no_year'))
+							);
+						else
+							dateFormatted = await formatLocalized(
+								date,
+								String(i18n.t('date-fns_date_short'))
+							);
+
+						activityGrouped.push({
+							date: date,
+							dateFormatted: String(dateFormatted),
+							activity: value,
+						});
+					}
+
+					activity.value = orderBy(activityGrouped, ['date'], ['desc']);
+				} catch (error) {
+					error.value = error;
+				} finally {
+					loading.value = false;
+				}
+			}
+
+			async function refresh() {
+				await getActivity();
+			}
+		}
+	},
+});
+</script>
+
+<style lang="scss" scoped>
+.v-progress-linear {
+	margin: 24px 0;
+}
+
+.v-divider {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background-color: var(--background-normal);
+	box-shadow: 0 0 4px 2px var(--background-normal);
+}
+
+.empty {
+	margin-top: 16px;
+	margin-bottom: 16px;
+	color: var(--foreground-subdued);
+	font-style: italic;
+}
+</style>

@@ -2,7 +2,7 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => $emit('toggle', true) }" />
 
-		<portal to="dialog-outlet">
+		<portal to="outlet">
 			<transition name="dialog">
 				<div v-if="active" class="container" :class="[className]">
 					<v-overlay active absolute @click="emitToggle" />

@@ -1,7 +1,7 @@
 <template>
-	<private-view :title="$t('activity')">
+	<private-view :title="$t('activity_log')">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon name="notifications" />
 			</v-button>
 		</template>
@@ -80,6 +80,12 @@ export default defineComponent({
 .action-batch {
 	--v-button-background-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-150);
+}
+
+.header-icon.secondary {
+	--v-button-background-color: var(--background-normal);
+	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-activated: var(--foreground-normal);
 }
 
 .layout {

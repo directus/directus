@@ -1,7 +1,7 @@
 <template>
-	<private-view :title="$t('editing', { collection: $t('activity') })">
+	<private-view title="Updated: Item Display Template">
 		<template #title-outer:prepend>
-			<v-button rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -62,7 +62,7 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('activity'),
+					name: i18n.t('activity_log'),
 					to: `/${currentProjectKey.value}/activity/`,
 				},
 			]);
@@ -77,6 +77,12 @@ export default defineComponent({
 .action-delete {
 	--v-button-background-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-dark);
+}
+
+.header-icon.secondary {
+	--v-button-background-color: var(--background-normal);
+	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-activated: var(--foreground-normal);
 }
 
 .v-form {
