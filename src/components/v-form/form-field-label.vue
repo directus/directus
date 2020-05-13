@@ -24,6 +24,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		batchActive: {
+			type: Boolean,
+			default: false,
+		},
 		field: {
 			type: Object as PropType<Field>,
 			required: true,

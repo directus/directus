@@ -110,7 +110,7 @@
     "*.{js,ts}": [
       "vue-cli-service lint"
     ],
-    "*.{scss}": [
+    "*.{css,scss}": [
       "stylelint --fix"
     ],
     "*.vue": [

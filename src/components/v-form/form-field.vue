@@ -13,6 +13,9 @@
 					:toggle="toggle"
 					:active="active"
 					:disabled="isDisabled"
+					:batch-mode="batchMode"
+					:batch-active="batchActive"
+					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
 

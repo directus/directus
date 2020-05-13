@@ -2,7 +2,7 @@
 	<value-null v-if="value === null || value === undefined" />
 	<span v-else-if="displayInfo === null">{{ value }}</span>
 	<span v-else-if="typeof displayInfo.handler === 'function'">
-		{{ display.handler(value, options, { type }) }}
+		{{ displayInfo.handler(value, options, { type }) }}
 	</span>
 	<component
 		v-else

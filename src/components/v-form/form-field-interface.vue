@@ -2,7 +2,7 @@
 	<div
 		class="interface"
 		:class="{
-			subdued: batchMode && batchActive,
+			subdued: batchMode && batchActive === false,
 		}"
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
