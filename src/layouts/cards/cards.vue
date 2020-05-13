@@ -1,22 +1,32 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
-		<portal to="drawer">
-			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<portal to="layout-options">
+			<div class="layout-option">
+				<div class="option-label">{{ $t('layouts.cards.image_source') }}</div>
+				<v-select
+					v-model="imageSource"
+					allow-null
+					item-value="field"
+					item-text="name"
+					:items="fileFields"
+				/>
+			</div>
 
-			<drawer-detail icon="settings" :title="$t('setup')">
-				<div class="setting">
-					<div class="label type-text">{{ $t('layouts.cards.image_source') }}</div>
-					<v-select
-						v-model="imageSource"
-						allow-null
-						item-value="field"
-						item-text="name"
-						:items="fileFields"
-					/>
-				</div>
+			<div class="layout-option">
+				<div class="option-label">{{ $t('layouts.cards.title') }}</div>
+				<v-input v-model="title" />
+			</div>
 
-				<div class="setting">
-					<div class="label type-text">{{ $t('layouts.cards.image_fit') }}</div>
+			<div class="layout-option">
+				<div class="option-label">{{ $t('layouts.cards.subtitle') }}</div>
+				<v-input v-model="subtitle" />
+			</div>
+
+			<v-detail>
+				<template #title>{{ $t('layout_setup') }}</template>
+
+				<div class="layout-option">
+					<div class="option-label">{{ $t('layouts.cards.image_fit') }}</div>
 					<v-select
 						v-model="imageFit"
 						:disabled="imageSource === null"
@@ -33,21 +43,15 @@
 					/>
 				</div>
 
-				<div class="setting">
-					<div class="label type-text">{{ $t('layouts.cards.title') }}</div>
-					<v-input v-model="title" />
-				</div>
-
-				<div class="setting">
-					<div class="label type-text">{{ $t('layouts.cards.subtitle') }}</div>
-					<v-input v-model="subtitle" />
-				</div>
-
-				<div class="setting">
-					<div class="label type-text">{{ $t('layouts.cards.fallback_icon') }}</div>
+				<div class="layout-option">
+					<div class="option-label">{{ $t('layouts.cards.fallback_icon') }}</div>
 					<v-input v-model="icon" />
 				</div>
-			</drawer-detail>
+			</v-detail>
+		</portal>
+
+		<portal to="drawer">
+			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -436,14 +440,6 @@ export default defineComponent({
 
 .v-info {
 	margin: 20vh 0;
-}
-
-.label {
-	margin-bottom: 4px;
-}
-
-.setting {
-	margin-bottom: 12px;
 }
 
 .footer {

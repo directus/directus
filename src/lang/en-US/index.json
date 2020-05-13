@@ -108,10 +108,9 @@
 
 	"date-fns_datetime": "PPP h:mma",
 	"date-fns_date": "PPP",
+	"date-fns_time": "h:mma",
 	"date-fns_date_short": "MMM d, u",
 	"date-fns_date_short_no_year": "MMM d",
-	"date-fns_time": "h:mma",
-
 	"month": "Month",
 	"date": "Date",
 	"year": "Year",
@@ -371,7 +370,8 @@
 	"upload_pending": "Upload Pending",
 	"drag_file_here": "Drag & Drop a File Here",
 	"click_to_browse": "Click to Browse",
-	"layout_type": "Layout Type",
+	"layout_type": "{layout} Layout",
+	"layout_options": "Layout Options",
 	"setup": "Setup",
 
 	"none": "None",
@@ -518,6 +518,7 @@
 
 	"editing_preset": "Editing Preset",
 	"layout_preview": "Layout Preview",
+	"layout_setup": "Layout Setup",
 
   "about_directus": "About Directus",
   "activity_log": "Activity Log",

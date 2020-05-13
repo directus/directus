@@ -73,6 +73,9 @@ body {
 
 		span.wrapper {
 			order: 0;
+			margin-right: 8px;
+			font-weight: 600;
+			font-size: 14px;
 		}
 
 		hr {

@@ -1,9 +1,29 @@
 <template>
 	<div class="layout-tabular">
-		<portal to="drawer">
-			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<portal to="layout-options">
+			<div class="layout-option">
+				<div class="option-label">{{ $t('layouts.tabular.spacing') }}</div>
+				<v-select
+					v-model="tableSpacing"
+					:items="[
+						{
+							text: $t('layouts.tabular.compact'),
+							value: 'compact',
+						},
+						{
+							text: $t('layouts.tabular.cozy'),
+							value: 'cozy',
+						},
+						{
+							text: $t('layouts.tabular.comfortable'),
+							value: 'comfortable',
+						},
+					]"
+				/>
+			</div>
 
-			<drawer-detail icon="menu_open" :title="$t('layouts.tabular.fields')">
+			<div class="layout-option">
+				<div class="option-label">{{ $t('layouts.tabular.fields') }}</div>
 				<draggable v-model="activeFields" handle=".drag-handle">
 					<v-checkbox
 						v-for="field in activeFields"
@@ -28,27 +48,11 @@
 					:value="field.field"
 					:label="field.name"
 				/>
-			</drawer-detail>
+			</div>
+		</portal>
 
-			<drawer-detail icon="format_line_spacing" :title="$t('layouts.tabular.spacing')">
-				<v-select
-					v-model="tableSpacing"
-					:items="[
-						{
-							text: $t('layouts.tabular.compact'),
-							value: 'compact',
-						},
-						{
-							text: $t('layouts.tabular.cozy'),
-							value: 'cozy',
-						},
-						{
-							text: $t('layouts.tabular.comfortable'),
-							value: 'comfortable',
-						},
-					]"
-				/>
-			</drawer-detail>
+		<portal to="drawer">
+			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
 		</portal>
 
 		<portal to="actions:prepend">
