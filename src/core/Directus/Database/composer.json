@@ -1,0 +1,30 @@
+{
+  "name": "directus/database",
+  "description": "Directus Database Component",
+  "keywords": [
+    "directus",
+    "database"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1",
+    "zendframework/zend-db": "dev-directus",
+    "directus/collection": "2.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Database\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/zend-db"
+    }
+  ]
+}

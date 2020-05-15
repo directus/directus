@@ -1,0 +1,66 @@
+{
+  "name": "directus/api",
+  "license": "GPL-3.0-only",
+  "description": "Directus API wrapper for custom SQL databases",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/directus/zend-db"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "slim/slim": "^3.12.2",
+    "monolog/monolog": "^1.23.0",
+    "zendframework/zend-db": "dev-directus",
+    "league/flysystem": "^1.0",
+    "swiftmailer/swiftmailer": "^5.4",
+    "league/oauth2-google": "^2.0",
+    "league/oauth2-github": "^2.0",
+    "league/oauth2-facebook": "^2.0",
+    "league/oauth1-client": "^1.7",
+    "intervention/image": "^2.4",
+    "directus/oauth2-okta": "dev-master",
+    "directus/proxy-detection": "^0.5.1",
+    "cache/cache": "dev-master",
+    "akrabat/ip-address-middleware": "^1.0",
+    "firebase/php-jwt": "^5.0",
+    "symfony/validator": "^3.3",
+    "slim/twig-view": "^2.3",
+    "robmorgan/phinx": "^0.9.2",
+    "ramsey/uuid": "^3.7",
+    "directus/rate-limit": "dev-master",
+    "cocur/slugify": "^3.2",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-fileinfo": "*",
+    "ext-pdo": "*",
+    "ext-exif": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-gd": "*",
+    "webonyx/graphql-php": "^0.13.0",
+    "char0n/ffmpeg-php": "^3.0.0",
+    "pragmarx/google2fa": "^5.0",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "suggest": {
+    "paragonie/random_compat": "Generates cryptographically more secure pseudo-random bytes",
+    "league/flysystem-aws-s3-v3": "Enables the usage of Amazon S3 adapter for storage",
+    "league/flysystem-azure-blob-storage": "Enables the usage of Azure Blob adapter for storage",
+    "aliyuncs/aliyun-oss-flysystem": "Enables the usage of Aliyun OSS adapter for storage"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\": "src/core/Directus/",
+      "Directus\\Authentication\\Sso\\Provider\\": "public/extensions/core/auth",
+      "Directus\\Api\\Routes\\": "src/endpoints/",
+      "Directus\\Custom\\Embed\\Provider\\": "public/extensions/custom/embeds/",
+      "Directus\\Custom\\Hooks\\": "public/extensions/custom/hooks/",
+      "Directus\\Custom\\Hasher\\": "public/extensions/custom/hashers/"
+    },
+    "files": [
+      "src/helpers/all.php"
+    ]
+  }
+}

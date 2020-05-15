@@ -1,0 +1,22 @@
+{
+  "name": "directus/collection",
+  "description": "Directus Collection Library",
+  "keywords": [
+    "directus",
+    "collection"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Collection\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

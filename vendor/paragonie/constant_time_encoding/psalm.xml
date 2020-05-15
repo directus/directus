@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<psalm
+    useDocblockTypes="true"
+    totallyTyped="true"
+>
+    <projectFiles>
+        <directory name="src" />
+    </projectFiles>
+</psalm>

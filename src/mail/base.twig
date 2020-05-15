@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Directus Email Service</title>
+	<meta name="viewport" content="width=device-width">
+	<meta name="format-detection" content="telephone=no">
+	<style type="text/css">
+		a {
+			border: none;
+			text-decoration: none;
+			color: #2196f3;
+			outline: none !important;
+			color: #2196f3 !important;
+		}
+		a:hover {
+			color: #2196f3 !important;
+		}
+		p {
+			margin: 20px 0 20px 0;
+		}
+	</style>
+</head>
+<body style="margin: 0; padding: 20px; background-color: #eceff1; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; -ms-text-size-adjust: none; font-weight: 400; font-size: 14px; color: #546e7a; font-family: 'Roboto', Helvetica, Helvetica, Arial, sans-serif; letter-spacing: 0;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td style="padding: 0;">
+			<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 0 solid #263238; border-collapse: collapse;">
+				<tr>
+					<td align="center" bgcolor="#263238" style="padding: 30px 0 30px 0; border-radius: 4px 4px 0 0;">
+						<img src="https://directus.io/assets/directus-white.png" alt="Directus" width="130" style="display: block;" />
+					</td>
+				</tr>
+				<tr>
+					<td bgcolor="#ffffff" style="padding: 60px 30px 60px 30px; border-radius: 0 0 4px 4px;">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tr>
+								<td style="color: #546e7a; font-family: Helvetica, Arial, sans-serif; padding: 0; line-height: 1.5; font-size: 16px;">
+									{% block content %}{{ body|raw }}{% endblock %}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td bgcolor="#eceff1" style="padding: 20px 30px 0 32px;">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tr>
+								<td style="color:#b0bec5; font-family:Helvetica, Arial, sans-serif; font-size:12px;" width="75%">
+									{% block footer %}
+									{% include 'footer.twig' %}
+									{% endblock %}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{
+    "name": "symfony/validator",
+    "type": "library",
+    "description": "Symfony Validator Component",
+    "keywords": [],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": "^5.5.9|>=7.0.8",
+        "symfony/polyfill-ctype": "~1.8",
+        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/translation": "~2.8|~3.0|~4.0"
+    },
+    "require-dev": {
+        "symfony/http-foundation": "~2.8|~3.0|~4.0",
+        "symfony/http-kernel": "^3.3.5|~4.0",
+        "symfony/var-dumper": "~3.3|~4.0",
+        "symfony/intl": "^2.8.18|^3.2.5|~4.0",
+        "symfony/yaml": "~3.4|~4.0",
+        "symfony/config": "~2.8|~3.0|~4.0",
+        "symfony/dependency-injection": "~3.3|~4.0",
+        "symfony/expression-language": "~2.8|~3.0|~4.0",
+        "symfony/cache": "~3.1|~4.0",
+        "symfony/property-access": "~2.8|~3.0|~4.0",
+        "doctrine/annotations": "~1.7",
+        "doctrine/cache": "~1.0",
+        "egulias/email-validator": "^2.1.10"
+    },
+    "conflict": {
+        "doctrine/lexer": "<1.0.2",
+        "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0",
+        "symfony/dependency-injection": "<3.3",
+        "symfony/http-kernel": "<3.3.5",
+        "symfony/yaml": "<3.4"
+    },
+    "suggest": {
+        "psr/cache-implementation": "For using the metadata cache.",
+        "doctrine/annotations": "For using the annotation mapping. You will also need doctrine/cache.",
+        "doctrine/cache": "For using the default cached annotation reader and metadata cache.",
+        "symfony/http-foundation": "",
+        "symfony/intl": "",
+        "symfony/yaml": "",
+        "symfony/config": "",
+        "egulias/email-validator": "Strict (RFC compliant) email validation",
+        "symfony/property-access": "For accessing properties within comparison constraints",
+        "symfony/expression-language": "For using the Expression validator"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Validator\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.4-dev"
+        }
+    }
+}

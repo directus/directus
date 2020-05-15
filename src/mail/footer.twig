@@ -1,0 +1,9 @@
+<p style="margin-top:10px;margin-bottom:10px;">
+	This email was sent by Directus – <a href="{{ settings.project_url }}">{{settings.project_name }}</a>
+</p>
+{% if settings.app_url %}
+<p style="margin-top:10px;margin-bottom:10px;">
+	<a href="{{ settings.app_url }}">Log in</a>
+	to manage your email preferences
+</p>
+{% endif %}

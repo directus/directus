@@ -1,0 +1,12 @@
+/.ci/ export-ignore
+/.coveralls.yml export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.php_cs export-ignore
+/.travis.yml export-ignore
+/composer.lock export-ignore
+/docs/ export-ignore
+/mkdocs.yml export-ignore
+/phpunit.xml.dist export-ignore
+/test/ export-ignore
+/Vagrantfile export-ignore

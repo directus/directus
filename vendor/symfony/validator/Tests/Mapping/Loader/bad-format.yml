@@ -1,0 +1,9 @@
+namespaces:
+	custom: Symfony\Component\Validator\Tests\Fixtures\
+
+Symfony\Component\Validator\Tests\Fixtures\Entity:
+	constraints:
+		# Custom constraint
+		- Symfony\Component\Validator\Tests\Fixtures\ConstraintA: ~
+		# Custom constraint with namespaces prefix
+		- "custom:ConstraintB": ~

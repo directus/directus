@@ -1,0 +1,6 @@
+parameters:
+    autoload_directories:
+        - %currentWorkingDirectory%/src
+
+    ignoreErrors:
+        - '#Parameter \$result of method Cache\\Prefixed\\Tests\\PrefixedSimpleCacheTest::getCacheStub\(\) has invalid typehint type Cache\\Prefixed\\Tests\\type#'

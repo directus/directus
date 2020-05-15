@@ -1,0 +1,55 @@
+{
+    "name": "cache/adapter-common",
+    "description": "Common classes for PSR-6 adapters",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "cache",
+        "psr-6",
+        "tag"
+    ],
+    "homepage": "http://www.php-cache.com/en/latest/",
+    "authors": [
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com",
+            "homepage": "https://github.com/aequasi"
+        },
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/nyholm"
+        }
+    ],
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "psr/cache": "^1.0",
+        "psr/simple-cache": "^1.0",
+        "psr/log": "^1.0",
+        "cache/tag-interop": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.21",
+        "cache/integration-tests": "^0.16"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cache\\Adapter\\Common\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cache\\Adapter\\Common\\Tests\\": "Tests/"
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

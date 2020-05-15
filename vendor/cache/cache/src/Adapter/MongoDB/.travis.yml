@@ -1,0 +1,36 @@
+language: php
+sudo: false
+
+matrix:
+    include:
+      - php: 7.0
+
+services:
+    - mongodb
+
+addons:
+  apt:
+    sources:
+      - mongodb-3.2-precise
+    packages:
+      - mongodb-org-server
+
+cache:
+    directories:
+      - "$HOME/.composer/cache"
+
+before_install:
+    - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
+    - bash <(curl -s https://raw.githubusercontent.com/php-cache/cache/master/build/php/7.0/MongoDB.sh)
+
+install:
+    - composer update --prefer-dist --prefer-stable
+
+script:
+    - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - pip install --user codecov && codecov
+
+notifications:
+    email: false

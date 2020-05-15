@@ -1,0 +1,26 @@
+sudo: false
+
+language: php
+
+php:
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
+
+
+before_install:
+  - composer self-update
+
+install:
+  - travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
+  - composer info -i
+
+script:
+  - vendor/bin/phpcs
+  - vendor/bin/phpunit

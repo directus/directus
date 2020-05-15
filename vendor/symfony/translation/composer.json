@@ -1,0 +1,60 @@
+{
+    "name": "symfony/translation",
+    "type": "library",
+    "description": "Symfony Translation Component",
+    "keywords": [],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/translation-contracts": "^1.1.6|^2"
+    },
+    "require-dev": {
+        "symfony/config": "^3.4|^4.0|^5.0",
+        "symfony/console": "^3.4|^4.0|^5.0",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+        "symfony/http-kernel": "^4.4",
+        "symfony/intl": "^3.4|^4.0|^5.0",
+        "symfony/service-contracts": "^1.1.2|^2",
+        "symfony/yaml": "^3.4|^4.0|^5.0",
+        "symfony/finder": "~2.8|~3.0|~4.0|^5.0",
+        "psr/log": "~1.0"
+    },
+    "conflict": {
+        "symfony/config": "<3.4",
+        "symfony/dependency-injection": "<3.4",
+        "symfony/http-kernel": "<4.4",
+        "symfony/yaml": "<3.4"
+    },
+    "provide": {
+        "symfony/translation-implementation": "1.0"
+    },
+    "suggest": {
+        "symfony/config": "",
+        "symfony/yaml": "",
+        "psr/log-implementation": "To use logging capability in translator"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Translation\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.4-dev"
+        }
+    }
+}

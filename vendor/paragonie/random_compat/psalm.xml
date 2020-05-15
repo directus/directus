@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<psalm
+    autoloader="psalm-autoload.php"
+    stopOnFirstError="false"
+    useDocblockTypes="true"
+>
+    <projectFiles>
+        <directory name="lib" />
+    </projectFiles>
+    <issueHandlers>
+        <RedundantConditionGivenDocblockType errorLevel="info" />
+        <UnresolvableInclude errorLevel="info" />
+        <DuplicateClass errorLevel="info" />
+        <InvalidOperand errorLevel="info" />
+        <UndefinedConstant errorLevel="info" />
+        <MissingReturnType errorLevel="info" />
+        <InvalidReturnType errorLevel="info" />
+    </issueHandlers>
+</psalm>

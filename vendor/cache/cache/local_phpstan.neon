@@ -1,0 +1,14 @@
+includes:
+    - phpstan.neon
+
+parameters:
+    ignoreErrors:
+        # External Instances and functions
+        - '#Memcache#'
+        # Regex for all found redis classes
+        - '#Redis#'
+        # Regex for all found mongodb classes
+        - '#MongoDB#'
+        - '#Function igbinary_serialize not found#'
+        - '#Function apc_#'
+        - '#Function apcu_#'

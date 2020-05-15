@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+$basePath = realpath(__DIR__ . '/../');
+// Composer Autoloader
+$loader = require $basePath . '/vendor/autoload.php';
+
+$cli = new \Directus\Console\Cli($basePath);
+try {
+    $cli->run();
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    exit(1);
+}
+
+?>

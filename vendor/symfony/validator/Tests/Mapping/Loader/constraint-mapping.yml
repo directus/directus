@@ -1,0 +1,62 @@
+namespaces:
+  custom: Symfony\Component\Validator\Tests\Fixtures\
+
+Symfony\Component\Validator\Tests\Fixtures\Entity:
+  group_sequence:
+    - Foo
+    - Entity
+
+  constraints:
+    # Custom constraint
+    - Symfony\Component\Validator\Tests\Fixtures\ConstraintA: ~
+    # Custom constraint with namespaces prefix
+    - "custom:ConstraintB": ~
+    # Callbacks
+    - Callback: validateMe
+    - Callback: validateMeStatic
+    - Callback: [Symfony\Component\Validator\Tests\Fixtures\CallbackClass, callback]
+
+  properties:
+    firstName:
+      # Constraint without value
+      - NotNull: ~
+      # Constraint with single value
+      - Range:
+          min: 3
+      # Constraint with multiple values
+      - Choice: [A, B]
+      # Constraint with child constraints
+      - All:
+          - NotNull: ~
+          - Range:
+              min: 3
+      # Option with child constraints
+      - All:
+          constraints:
+            - NotNull: ~
+            - Range:
+                min: 3
+      # Value with child constraints
+      - Collection:
+          fields:
+            foo:
+              - NotNull: ~
+              - Range:
+                  min: 3
+            bar:
+              - Range:
+                  min: 5
+      # Constraint with options
+      - Choice: { choices: [A, B], message: Must be one of %choices% }
+    dummy:
+
+  getters:
+    lastName:
+      - NotNull: ~
+    valid:
+      - "IsTrue": ~
+    permissions:
+      - "IsTrue": ~
+
+Symfony\Component\Validator\Tests\Fixtures\GroupSequenceProviderEntity:
+  group_sequence_provider: true

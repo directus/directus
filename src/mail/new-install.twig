@@ -1,0 +1,25 @@
+{% extends "base.twig" %}
+{% block content %}
+<p>Your new Instance of Directus is ready to go! You can access it using the following credentials:</p>
+
+<p>{{ project.url }}</p>
+
+<h3>Main Configuration</h3>
+<p>
+    <b>Project Name:</b> {{ project.name }}<br>
+    <b>Admin Email:</b> {{ user.email }}<br>
+    <b>Admin Password:</b> <span style="font-family: 'Lucida Console', Monaco, monospace;">{{ user.password }}</span><br>
+    <b>Installed Version:</b> {{ project.version }}<br>
+    <b>API Key:</b> <span style="font-family: 'Lucida Console', Monaco, monospace;">{{ user.token }}</span>
+</p>
+
+<h3>Database Configuration</h3>
+<p>
+    <b>Host Name:</b> {{ database.host }}<br>
+    <b>Username:</b> {{ database.user }}<br>
+    <b>Password:</b> <span style="font-family: 'Lucida Console', Monaco, monospace;">{{ database.password }}</span><br>
+    <b>Database Name:</b> {{ database.name }}
+</p>
+
+<p>Love,<br>Directus</p>
+{% endblock %}

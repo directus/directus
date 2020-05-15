@@ -1,0 +1,25 @@
+language: php
+sudo: false
+
+matrix:
+    include:
+      - php: 7.0
+
+services:
+    - redis
+
+cache:
+    directories:
+      - "$HOME/.composer/cache"
+
+install:
+    - composer update --prefer-dist --prefer-stable
+
+script:
+    - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - pip install --user codecov && codecov
+
+notifications:
+    email: false

@@ -1,0 +1,20 @@
+{
+  "name": "directus/container",
+  "description": "Directus Container Library",
+  "keywords": [
+    "directus",
+    "container",
+    "collection"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0",
+    "directus/collection": "^1.0",
+    "pimple/pimple": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Container\\": ""
+    }
+  }
+}

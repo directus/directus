@@ -1,0 +1,35 @@
+filter:
+    excluded_paths: [tests/*]
+checks:
+    php:
+        code_rating: true
+        remove_extra_empty_lines: true
+        remove_php_closing_tag: true
+        remove_trailing_whitespace: true
+        fix_use_statements:
+            remove_unused: true
+            preserve_multiple: false
+            preserve_blanklines: true
+            order_alphabetically: true
+        fix_php_opening_tag: true
+        fix_linefeed: true
+        fix_line_ending: true
+        fix_identation_4spaces: true
+        fix_doc_comments: true
+tools:
+    external_code_coverage:
+        timeout: 600
+        runs: 4
+    php_analyzer: true
+    php_code_coverage: false
+    php_code_sniffer:
+        config:
+            standard: PSR2
+        filter:
+            paths: ['src']
+    php_loc:
+        enabled: true
+        excluded_dirs: [vendor, tests]
+    php_cpd:
+        enabled: true
+        excluded_dirs: [vendor, tests]

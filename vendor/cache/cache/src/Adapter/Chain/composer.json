@@ -1,0 +1,56 @@
+{
+    "name": "cache/chain-adapter",
+    "description": "A PSR-6 cache implementation using chain. This implementation supports tags",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "cache",
+        "psr-6",
+        "chain",
+        "tag"
+    ],
+    "homepage": "http://www.php-cache.com/en/latest/",
+    "authors": [
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com",
+            "homepage": "https://github.com/aequasi"
+        },
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/nyholm"
+        }
+    ],
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "psr/cache": "^1.0",
+        "psr/log": "^1.0",
+        "cache/adapter-common": "^1.0",
+        "cache/tag-interop": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.21",
+        "cache/filesystem-adapter": "^1.0",
+        "cache/array-adapter": "^1.0",
+        "cache/integration-tests": "^0.16"
+    },
+    "provide": {
+        "psr/cache-implementation": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cache\\Adapter\\Chain\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

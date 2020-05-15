@@ -1,0 +1,64 @@
+* 3.3.0 (2020-03-03)
+
+ * Drop PHP extension
+ * Bump min PHP version to 7.2.5
+
+* 3.2.3 (2018-01-21)
+
+ * prefixed all function calls with \ for extra speed
+
+* 3.2.2 (2017-07-23)
+
+ * reverted extending a protected closure throws an exception (deprecated it instead)
+
+* 3.2.1 (2017-07-17)
+
+ * fixed PHP error
+
+* 3.2.0 (2017-07-17)
+
+ * added a PSR-11 service locator
+ * added a PSR-11 wrapper
+ * added ServiceIterator
+ * fixed extending a protected closure (now throws InvalidServiceIdentifierException)
+
+* 3.1.0 (2017-07-03)
+
+ * deprecated the C extension
+ * added support for PSR-11 exceptions
+
+* 3.0.2 (2015-09-11)
+
+ * refactored the C extension
+ * minor non-significant changes
+
+* 3.0.1 (2015-07-30)
+
+ * simplified some code
+ * fixed a segfault in the C extension
+
+* 3.0.0 (2014-07-24)
+
+ * removed the Pimple class alias (use Pimple\Container instead)
+
+* 2.1.1 (2014-07-24)
+
+ * fixed compiler warnings for the C extension
+ * fixed code when dealing with circular references
+
+* 2.1.0 (2014-06-24)
+
+ * moved the Pimple to Pimple\Container (with a BC layer -- Pimple is now a
+   deprecated alias which will be removed in Pimple 3.0)
+ * added Pimple\ServiceProviderInterface (and Pimple::register())
+
+* 2.0.0 (2014-02-10)
+
+ * changed extend to automatically re-assign the extended service and keep it as shared or factory
+   (to keep BC, extend still returns the extended service)
+ * changed services to be shared by default (use factory() for factory
+   services)
+
+* 1.0.0
+
+ * initial version

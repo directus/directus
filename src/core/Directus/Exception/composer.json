@@ -1,0 +1,22 @@
+{
+  "name": "directus/exception",
+  "description": "Directus Exceptions",
+  "keywords": [
+    "directus",
+    "exception"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Exception\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+    "name": "guzzlehttp/psr7",
+    "type": "library",
+    "description": "PSR-7 message implementation that also provides common utility methods",
+    "keywords": ["request", "response", "message", "stream", "http", "uri", "url", "psr-7"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Dowling",
+            "email": "mtdowling@gmail.com",
+            "homepage": "https://github.com/mtdowling"
+        },
+        {
+            "name": "Tobias Schultze",
+            "homepage": "https://github.com/Tobion"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "psr/http-message": "~1.0",
+        "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8",
+        "ext-zlib": "*"
+    },
+    "provide": {
+        "psr/http-message-implementation": "1.0"
+    },
+    "suggest": {
+        "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+    },
+    "autoload": {
+        "psr-4": {
+            "GuzzleHttp\\Psr7\\": "src/"
+        },
+        "files": ["src/functions_include.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GuzzleHttp\\Tests\\Psr7\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.6-dev"
+        }
+    }
+}

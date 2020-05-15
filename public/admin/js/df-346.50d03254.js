@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-346"],{b8f2:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=n;var p={lastWeek:"'గత' eeee p",yesterday:"'నిన్న' p",today:"'ఈ రోజు' p",tomorrow:"'రేపు' p",nextWeek:"'తదుపరి' eeee p",other:"P"};function n(e,t,o,n){return p[e]}e.exports=t.default}}]);
+//# sourceMappingURL=df-346.50d03254.js.map

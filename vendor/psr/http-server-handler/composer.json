@@ -1,0 +1,36 @@
+{
+    "name": "psr/http-server-handler",
+    "description": "Common interface for HTTP server-side request handler",
+    "keywords": [
+        "psr",
+        "psr-7",
+        "psr-15",
+        "http-interop",
+        "http",
+        "server",
+        "handler",
+        "request",
+        "response"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PHP-FIG",
+            "homepage": "http://www.php-fig.org/"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "psr/http-message": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Psr\\Http\\Server\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "directus/hook",
+  "description": "Directus Hook Library",
+  "keywords": [
+    "directus",
+    "hook",
+    "event"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Hook\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

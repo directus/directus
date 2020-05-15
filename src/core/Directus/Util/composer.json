@@ -1,0 +1,23 @@
+{
+  "name": "directus/utils",
+  "description": "Directus Utils",
+  "keywords": [
+    "directus",
+    "utils",
+    "helpers"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Util\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

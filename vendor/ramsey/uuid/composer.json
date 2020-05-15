@@ -1,0 +1,92 @@
+{
+    "name": "ramsey/uuid",
+    "type": "library",
+    "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+    "keywords": ["uuid", "identifier", "guid"],
+    "homepage": "https://github.com/ramsey/uuid",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Ramsey",
+            "email": "ben@benramsey.com",
+            "homepage": "https://benramsey.com"
+        },
+        {
+            "name": "Marijn Huizendveld",
+            "email": "marijn.huizendveld@gmail.com"
+        },
+        {
+            "name": "Thibaud Fabre",
+            "email": "thibaud@aztech.io"
+        }
+    ],
+    "require": {
+        "php": "^5.4 | ^7 | ^8",
+        "ext-json": "*",
+        "paragonie/random_compat": "^1 | ^2 | 9.99.99",
+        "symfony/polyfill-ctype": "^1.8"
+    },
+    "require-dev": {
+        "codeception/aspect-mock": "^1 | ^2",
+        "doctrine/annotations": "^1.2",
+        "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
+        "jakub-onderka/php-parallel-lint": "^1",
+        "mockery/mockery": "^0.9.11 | ^1",
+        "moontoast/math": "^1.1",
+        "paragonie/random-lib": "^2",
+        "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
+        "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "suggest": {
+        "ext-ctype": "Provides support for PHP Ctype functions",
+        "ext-libsodium": "Provides the PECL libsodium extension for use with the SodiumRandomGenerator",
+        "ext-openssl": "Provides the OpenSSL extension for use with the OpenSslGenerator",
+        "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
+        "moontoast/math": "Provides support for converting UUID to 128-bit integer (in string form).",
+        "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
+        "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type.",
+        "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.x-dev"
+        }
+    },
+    "replace": {
+        "rhumsaa/uuid": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ramsey\\Uuid\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ramsey\\Uuid\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "parallel-lint src tests",
+        "phpcs": "phpcs src tests --standard=psr2 -sp --colors",
+        "phpunit": "phpunit --verbose --colors=always",
+        "phpunit-coverage": "phpunit --verbose --colors=always --coverage-html build/coverage",
+        "test": [
+            "@lint",
+            "@phpcs",
+            "@phpunit"
+        ]
+    },
+    "support": {
+        "issues": "https://github.com/ramsey/uuid/issues",
+        "rss": "https://github.com/ramsey/uuid/releases.atom",
+        "source": "https://github.com/ramsey/uuid",
+        "wiki": "https://github.com/ramsey/uuid/wiki"
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "name": "symfony/translation-contracts",
+    "type": "library",
+    "description": "Generic abstractions related to translation",
+    "keywords": ["abstractions", "contracts", "decoupling", "interfaces", "interoperability", "standards"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5"
+    },
+    "suggest": {
+        "symfony/translation-implementation": ""
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Contracts\\Translation\\": "" }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    }
+}

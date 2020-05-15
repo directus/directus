@@ -1,0 +1,47 @@
+{
+    "name": "cocur/slugify",
+    "type": "library",
+    "description": "Converts a string into a slug.",
+    "keywords": ["slug", "slugify"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Florian Eckerstorfer",
+            "email": "florian@eckerstorfer.co",
+            "homepage": "https://florian.ec"
+        },
+        {
+            "name": "Ivo Bathke",
+            "email": "ivo.bathke@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "laravel/framework": "~5.1",
+        "latte/latte": "~2.2",
+        "league/container": "^2.2.0",
+        "mikey179/vfsStream": "~1.6",
+        "mockery/mockery": "~0.9",
+        "nette/di": "~2.2",
+        "phpunit/phpunit": "~4.8.36|~5.2",
+        "pimple/pimple": "~1.1",
+        "plumphp/plum": "~0.1",
+        "silex/silex": "~1.3",
+        "symfony/config": "~2.4|~3.0|~4.0",
+        "symfony/dependency-injection": "~2.4|~3.0|~4.0",
+        "symfony/http-kernel": "~2.4|~3.0|~4.0",
+        "twig/twig": "~1.26|~2.0",
+        "zendframework/zend-modulemanager": "~2.2",
+        "zendframework/zend-servicemanager": "~2.2",
+        "zendframework/zend-view": "~2.2"
+    },
+    "autoload": {
+        "psr-4": {"Cocur\\Slugify\\": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Cocur\\Slugify\\Tests\\": "tests"}
+    }
+}

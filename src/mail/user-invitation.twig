@@ -1,0 +1,10 @@
+{% extends "base.twig" %}
+{% block content %}
+
+<p>You have been invited to {{settings.project_name }}. Please click the link below to join:</p>
+
+{% set invitation_url = settings.project_url|trim('/') ~ '/' ~ api.project ~ '/users/invite/' ~ token %}
+<p><a href="{{ invitation_url }}">{{ invitation_url }}</a></p>
+
+<p>Love,<br>Directus</p>
+{% endblock %}

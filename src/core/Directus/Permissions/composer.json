@@ -1,0 +1,24 @@
+{
+  "name": "directus/permissions",
+  "description": "Directus Permissions (ACL) Library",
+  "keywords": [
+    "directus",
+    "permissions",
+    "acl"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1",
+    "directus/exception": "2.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Permissions\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+    "name": "doctrine/cache",
+    "type": "library",
+    "description": "PHP Doctrine Cache library is a popular cache implementation that supports many different drivers such as redis, memcache, apc, mongodb and others.",
+    "keywords": [
+        "php",
+        "cache",
+        "caching",
+        "abstraction",
+        "redis",
+        "memcached",
+        "couchdb",
+        "xcache",
+        "apcu"
+    ],
+    "homepage": "https://www.doctrine-project.org/projects/cache.html",
+    "license": "MIT",
+    "authors": [
+        {"name": "Guilherme Blanco", "email": "guilhermeblanco@gmail.com"},
+        {"name": "Roman Borschel", "email": "roman@code-factory.org"},
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"},
+        {"name": "Jonathan Wage", "email": "jonwage@gmail.com"},
+        {"name": "Johannes Schmitt", "email": "schmittjoh@gmail.com"}
+    ],
+    "require": {
+        "php": "~7.1"
+    },
+    "require-dev": {
+        "alcaeus/mongo-php-adapter": "^1.1",
+        "mongodb/mongodb": "^1.1",
+        "phpunit/phpunit": "^7.0",
+        "predis/predis":   "~1.0",
+        "doctrine/coding-standard": "^6.0"
+    },
+    "suggest": {
+        "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
+    },
+    "conflict": {
+        "doctrine/common": ">2.2,<2.4"
+    },
+    "autoload": {
+        "psr-4": { "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Doctrine\\Tests\\": "tests/Doctrine/Tests" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.9.x-dev"
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "name": "symfony/polyfill-php56",
+    "type": "library",
+    "description": "Symfony polyfill backporting some PHP 5.6+ features to lower PHP versions",
+    "keywords": ["polyfill", "shim", "compatibility", "portable"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/polyfill-util": "~1.0"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Polyfill\\Php56\\": "" },
+        "files": [ "bootstrap.php" ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.17-dev"
+        }
+    }
+}

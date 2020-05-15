@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-148"],{f1d9:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=n;var p={lastWeek:"'પાછલા' eeee p",yesterday:"'ગઈકાલે' p",today:"'આજે' p",tomorrow:"'આવતીકાલે' p",nextWeek:"eeee p",other:"P"};function n(e,t,o,n){return p[e]}e.exports=t.default}}]);
+//# sourceMappingURL=df-148-legacy.c48f90b0.js.map

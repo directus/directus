@@ -1,0 +1,24 @@
+{
+  "name": "directus/config",
+  "description": "Directus Config Library",
+  "keywords": [
+    "directus",
+    "config"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1",
+    "directus/collection": "2.x-dev",
+    "directus/utils": "2.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Config\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+    "name": "directus/rate-limit",
+    "description": "Standalone component that facilitates rate-limiting functionality. Also provides a middleware designed for API and/or other application endpoints.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "rate limit",
+        "middleware"
+    ],
+    "authors": [
+        {
+            "name": "Nikola Poša",
+            "email": "posa.nikola@gmail.com",
+            "homepage": "http://www.nikolaposa.in.rs"
+        },
+        {
+            "name": "Welling Guzmán",
+            "email": "hola@wellingguzman.com",
+            "homepage": "http://wellingguzman.com"
+        }
+    ],
+    "require": {
+        "php": "^5.6 | ^7.0",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7 | ^5.0",
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "zendframework/zend-diactoros": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "RateLimit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RateLimit\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "cs-fix": "php-cs-fixer fix --config=.php_cs"
+    }
+}

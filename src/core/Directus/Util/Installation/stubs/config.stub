@@ -1,0 +1,101 @@
+<?php
+
+return [
+    'database' => [
+        'type' => '{{db_type}}',
+        'host' => '{{db_host}}',
+        'port' => {{db_port}},
+        'name' => '{{db_name}}',
+        'username' => '{{db_user}}',
+        'password' => '{{db_password}}',
+        'engine' => 'InnoDB',
+        'charset' => 'utf8mb4',
+        // Remove 'host' above when using sockets
+        'socket' => '{{db_socket}}',
+    ],
+
+    'cors' => [
+        'enabled' => {{cors.enabled}},
+        'origin' => {{cors.origin}},
+        'methods' => {{cors.methods}},
+        'headers' => {{cors.headers}},
+        'exposed_headers' => {{cors.exposed_headers}},
+        'max_age' => {{cors.max_age}},
+        'credentials' => {{cors.credentials}},
+    ],
+
+    'rate_limit' => [
+        'enabled' => {{rate_limit.enabled}},
+        'limit' => {{rate_limit.limit}},
+        'interval' => {{rate_limit.interval}},
+        {{optional(rate_limit.adapter)}},
+        {{optional(rate_limit.host)}},
+        {{optional(rate_limit.port)}},
+        {{optional(rate_limit.timeout)}},
+    ],
+
+    'storage' => [
+        'adapter' => '{{storage.adapter}}',
+        'root' => '{{storage.root}}',
+        'root_url' => '{{storage.root_url}}',
+        'thumb_root' => '{{storage.thumb_root}}',
+        {{optional(storage.key)}},
+        {{optional(storage.secret)}},
+        {{optional(storage.region)}},
+        {{optional(storage.version)}},
+        {{optional(storage.bucket)}},
+        {{optional(storage.options)}},
+        {{optional(storage.endpoint)}},
+        {{optional(storage.proxy_downloads)}},
+    ],
+
+    'mail' => [
+        'default' => [
+            'transport' => '{{mail.transport}}',
+            {{optional(mail.sendmail)}},
+            {{optional(mail.host)}},
+            {{optional(mail.port)}},
+            {{optional(mail.username)}},
+            {{optional(mail.password)}},
+            {{optional(mail.encryption)}},
+            'from' => '{{mail_from}}'
+        ],
+    ],
+
+    'cache' => [
+        'enabled' => {{cache.enabled}},
+        'response_ttl' => {{cache.response_ttl}},
+        'pool' => [
+            {{optional(cache.adapter)}},
+            {{optional(cache.path)}},
+            {{optional(cache.host)}},
+            {{optional(cache.port)}},
+        ],
+    ],
+
+    'auth' => [
+        'secret_key' => '{{auth.secret}}',
+        'public_key' => '{{auth.public}}',
+        'ttl' => {{auth.ttl}},
+        'social_providers' => [
+            {{optional(auth.social_providers.okta)}},
+            {{optional(auth.social_providers.github)}},
+            {{optional(auth.social_providers.facebook)}},
+            {{optional(auth.social_providers.google)}},
+            {{optional(auth.social_providers.twitter)}},
+        ],
+    ],
+
+    'hooks' => [
+        'actions' => [],
+        'filters' => [],
+    ],
+
+    'tableBlacklist' => [],
+
+    'env' => 'production',
+
+    'logger' => [
+        'path' => '{{logs_path}}',
+    ],
+];

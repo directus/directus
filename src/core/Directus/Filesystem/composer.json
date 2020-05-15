@@ -1,0 +1,23 @@
+{
+  "name": "directus/filesystem",
+  "description": "Directus Filesystem Library",
+  "keywords": [
+    "directus",
+    "filesystem"
+  ],
+  "license": "GPL-3.0-only",
+  "require": {
+    "php": "^7.1",
+    "league/flysystem": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Filesystem\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
+    }
+  }
+}

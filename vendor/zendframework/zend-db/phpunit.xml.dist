@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="zend-db Test Suite">
+            <directory>./test</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>./src/Sql/Ddl/Column/Float.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <listeners>
+        <listener class="ZendTest\Db\IntegrationTestListener" file="./test/IntegrationTestListener.php" />
+    </listeners>
+
+    <php>
+        <!-- Note: the following is a FULL list of ALL POSSIBLE constants
+             currently in use in ZF2 for ALL COMPONENTS; you should choose the
+             constants appropriate to the component you are migrating. -->
+
+        <!-- Integration Test Variables -->
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL" value="false" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME" value="192.168.20.20" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_USERNAME" value="root" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_PASSWORD" value="Password123" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_DATABASE" value="zenddb_test" />
+
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV" value="false" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_HOSTNAME" value="192.168.20.20" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_USERNAME" value="sa" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_PASSWORD" value="Password123" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_DATABASE" value="zenddb_test" />
+
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_OCI8" value="false" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_OCI8_HOSTNAME" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_OCI8_USERNAME" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_OCI8_PASSWORD" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_OCI8_DATABASE" value="" />
+
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_IBMDB2" value="false" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_IBMDB2_HOSTNAME" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_IBMDB2_USERNAME" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_IBMDB2_PASSWORD" value="" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_IBMDB2_DATABASE" value="" />
+
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL" value="false" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME" value="192.168.20.20" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_USERNAME" value="postgres" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_PASSWORD" value="postgres" />
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_DATABASE" value="zenddb_test" />
+
+        <env name="TESTS_ZEND_DB_ADAPTER_DRIVER_SQLITE_MEMORY" value="true" />
+    </php>
+</phpunit>

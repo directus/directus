@@ -1,0 +1,30 @@
+{
+    "name": "symfony/polyfill-util",
+    "type": "library",
+    "description": "Symfony utilities for portability of PHP codes",
+    "keywords": ["polyfill", "shim", "compat", "compatibility"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Polyfill\\Util\\": "" }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.17-dev"
+        }
+    }
+}

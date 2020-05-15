@@ -1,0 +1,109 @@
+language: php
+sudo: required
+dist: trusty
+env:
+  global:
+    - COVERAGE=false
+
+branches:
+  except:
+    - /^analysis-.*$/
+    - /^patch-.*$/
+
+matrix:
+    fast_finish: true
+    include:
+      - php: 5.6
+        env: deps="low"
+      - php: 7.1
+        env: deps="high"
+      - php: 7.0
+        env: COVERAGE=true
+      - php: 7.1
+      - php: 7.2
+      - php: 5.6
+
+services:
+    - redis
+    - memcached
+    - mongodb
+
+addons:
+  apt:
+    sources:
+      - mongodb-3.2-trusty
+    packages:
+      - parallel
+      - mongodb-org-server
+
+cache:
+    directories:
+      - "$HOME/.composer/cache"
+
+before_install:
+    - if [[ $COVERAGE == false ]]; then phpenv config-rm xdebug.ini || true; fi
+    - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
+    - ./build/php/all.sh
+    - ./build/RedisClusterSetup.sh
+    - sleep 5 # To make sure all services installed and running
+    - |
+      # General configuration
+      stty cols 120
+      PHP=$TRAVIS_PHP_VERSION
+      [ -d ~/.composer ] || mkdir ~/.composer
+      export PHPUNIT=$(readlink -f ./phpunit)
+      export PHPUNIT_X="$PHPUNIT --exclude-group benchmark"
+      export PHPUNIT_COVERAGE="$PHPUNIT_X --coverage-clover=coverage.xml"
+      export COMPOSER_UP='composer update --no-progress --no-suggest --ansi --prefer-dist'
+
+      # tfold is a helper to create folded reports
+      tfold () {
+          title=$1
+          fold=$(echo $title | sed -r 's/[^-_A-Za-z\d]+/./g')
+          shift
+          echo -e "travis_fold:start:$fold\\n\\e[1;34m$title\\e[0m"
+          bash -xc "$*" 2>&1 &&
+              echo "########################################" &&
+              echo "########################################" &&
+              echo -e "\\e[32mOK\\e[0m $title\\n\\ntravis_fold:end:$fold" ||
+              ( echo -e "\\e[41mKO\\e[0m $title\\n" && exit 1 )
+      }
+      export -f tfold
+
+      COMPONENTS=$(find src -mindepth 2 -type f -name phpunit.xml.dist -printf '%h\n')
+
+      # php.ini configuration
+      INI=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+      echo memory_limit = -1 >> $INI
+
+install:
+  - if [[ ! $skip ]]; then $COMPOSER_UP; fi
+  - |
+    run_tests () {
+        set -e
+        if [[ $skip ]]; then
+            echo -e "\\n\\e[1;34mIntermediate PHP version $PHP is skipped for pull requests.\\e[0m"
+        elif [[ $deps = high ]]; then
+            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP && $PHPUNIT_X$LEGACY'"
+        elif [[ $deps = low ]]; then
+            sleep 3
+            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP --prefer-lowest --prefer-stable && $PHPUNIT_X'"
+        elif [[ $COVERAGE == true ]]; then
+            $PHPUNIT_COVERAGE
+        else
+            echo "$COMPONENTS" | parallel --gnu "tfold {} $PHPUNIT_X {}"
+            tfold tty-group $PHPUNIT --group tty
+        fi
+    }
+
+script:
+    - (run_tests)
+
+after_success:
+    - if [[ $COVERAGE  == true ]]; then pip install --user codecov && codecov ; fi
+
+notifications:
+    email: false
+    webhooks:
+        urls:
+            - https://webhooks.gitter.im/e/7b0035a70de31fa976df
