@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" :title="$t('editing_in', { collection })" persistent>
+	<v-modal v-model="_active" :title="title" persistent form-width>
 		<v-form
 			:loading="loading"
 			:initial-values="item"
@@ -16,9 +16,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
+import useCollection from '@/composables/use-collection';
+import i18n from '@/lang';
 
 export default defineComponent({
 	model: {
@@ -49,7 +51,19 @@ export default defineComponent({
 		const { _edits, loading, error, item } = useItem();
 		const { save, cancel } = useActions();
 
-		return { _active, _edits, loading, error, item, save, cancel };
+		const { collection } = toRefs(props);
+
+		const { info: collectionInfo } = useCollection(collection);
+
+		const title = computed(() => {
+			if (props.primaryKey === '+') {
+				return i18n.t('adding_in', { collection: collectionInfo.value?.name });
+			}
+
+			return i18n.t('editing_in', { collection: collectionInfo.value?.name });
+		});
+
+		return { _active, _edits, loading, error, item, save, cancel, title };
 
 		function useActiveState() {
 			const localActive = ref(false);

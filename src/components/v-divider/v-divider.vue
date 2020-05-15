@@ -56,7 +56,13 @@ body {
 	}
 
 	span.wrapper {
+		display: flex;
 		margin-right: 16px;
+		color: var(--v-divider-label-color);
+
+		.v-icon {
+			margin-right: 4px;
+		}
 	}
 
 	.type-text {

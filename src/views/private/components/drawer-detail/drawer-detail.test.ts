@@ -6,6 +6,7 @@ import VIcon from '@/components/v-icon';
 import VDivider from '@/components/v-divider';
 import TransitionExpand from '@/components/transition/expand';
 import VBadge from '@/components/v-badge/';
+import useAppStore from '@/stores/app';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
@@ -18,6 +19,9 @@ describe('Drawer Detail', () => {
 	it('Uses the useGroupable composition', () => {
 		jest.spyOn(GroupableComposable, 'useGroupable');
 
+		const appStore = useAppStore({});
+		appStore.state.drawerOpen = false;
+
 		mount(DrawerDetail, {
 			localVue,
 			propsData: {
@@ -25,7 +29,6 @@ describe('Drawer Detail', () => {
 				title: 'Users',
 			},
 			provide: {
-				'drawer-open': ref(false),
 				'item-group': {
 					register: () => {},
 					unregister: () => {},
@@ -39,6 +42,9 @@ describe('Drawer Detail', () => {
 	it('Passes the title prop as selection value', () => {
 		jest.spyOn(GroupableComposable, 'useGroupable');
 
+		const appStore = useAppStore({});
+		appStore.state.drawerOpen = false;
+
 		mount(DrawerDetail, {
 			localVue,
 			propsData: {
@@ -46,7 +52,6 @@ describe('Drawer Detail', () => {
 				title: 'Users',
 			},
 			provide: {
-				'drawer-open': ref(false),
 				'item-group': {
 					register: () => {},
 					unregister: () => {},

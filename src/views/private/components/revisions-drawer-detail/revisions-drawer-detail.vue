@@ -107,6 +107,7 @@ export default defineComponent({
 			postComment,
 			saving,
 			getFormattedTime,
+			refresh,
 		};
 
 		function getFormattedTime(datetime: string) {

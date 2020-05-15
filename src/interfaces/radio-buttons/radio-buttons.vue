@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!items" warning>
+	<v-notice v-if="!choices" warning>
 		{{ $t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
@@ -12,7 +12,7 @@
 	>
 		<v-radio
 			block
-			v-for="item in items"
+			v-for="item in choices"
 			:key="item.value"
 			:value="item.value"
 			:label="item.text"
@@ -43,9 +43,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
-import parseChoices from '@/utils/parse-choices';
+import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
 import { useCustomSelection } from '@/composables/use-custom-selection';
+
+type Option = {
+	text: string;
+	value: string | number | boolean;
+};
 
 export default defineComponent({
 	props: {
@@ -58,7 +62,7 @@ export default defineComponent({
 			default: null,
 		},
 		choices: {
-			type: String,
+			type: Array as PropType<Option[]>,
 			default: null,
 		},
 		allowOther: {
@@ -83,18 +87,12 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value } = toRefs(props);
-
-		const items = computed(() => {
-			if (props.choices === null || props.choices.length === 0) return null;
-
-			return parseChoices(props.choices);
-		});
+		const { choices, value } = toRefs(props);
 
 		const gridClass = computed(() => {
-			if (items.value === null) return null;
+			if (choices.value === null) return null;
 
-			const widestOptionLength = items.value.reduce((acc, val) => {
+			const widestOptionLength = choices.value.reduce((acc, val) => {
 				if (val.text.length > acc.length) acc = val.text;
 				return acc;
 			}, '').length;
@@ -110,7 +108,7 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValue, usesOtherValue } = useCustomSelection(value, items, emit);
+		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, emit);
 
 		const customIcon = computed(() => {
 			if (!otherValue.value) return 'add';
@@ -118,7 +116,7 @@ export default defineComponent({
 			return props.iconOff;
 		});
 
-		return { items, gridClass, otherValue, usesOtherValue, customIcon };
+		return { gridClass, otherValue, usesOtherValue, customIcon };
 	},
 });
 </script>

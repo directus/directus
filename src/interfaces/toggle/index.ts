@@ -26,6 +26,7 @@ export default defineInterface(({ i18n }) => ({
 			name: i18n.t('label'),
 			width: 'half',
 			interface: 'text-input',
+			default_value: i18n.t('active'),
 		},
 		{
 			field: 'color',

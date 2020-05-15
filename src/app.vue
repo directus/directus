@@ -16,6 +16,7 @@ import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { useProjectsStore } from '@/stores/projects';
+import useWindowSize from '@/composables/use-window-size';
 
 export default defineComponent({
 	setup() {
@@ -23,12 +24,25 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const projectsStore = useProjectsStore();
 
-		const { hydrating } = toRefs(appStore.state);
+		const { hydrating, drawerOpen } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
 			return {
 				'--brand': projectsStore.currentProject.value?.color || 'var(--primary)',
 			};
+		});
+
+		const { width } = useWindowSize();
+
+		watch(width, (newWidth, oldWidth) => {
+			if (newWidth === null || newWidth === 0) return;
+			if (newWidth === oldWidth) return;
+
+			if (newWidth >= 1424) {
+				if (drawerOpen.value === false) drawerOpen.value = true;
+			} else {
+				if (drawerOpen.value === true) drawerOpen.value = false;
+			}
 		});
 
 		watch(

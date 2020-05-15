@@ -128,23 +128,22 @@ body {
 		}
 	}
 
-	&:hover {
+	&.full-width {
+		width: 100%;
+	}
+
+	&:hover:not(.disabled) {
 		border-color: var(--border-normal-alt);
 	}
 
-	&:focus,
-	&:focus-within {
+	&:focus:not(.disabled),
+	&:focus-within:not(.disabled) {
 		border-color: var(--primary);
-	}
-
-	&.full-width {
-		width: 100%;
 	}
 
 	&.disabled {
 		color: var(--foreground-subdued);
 		background-color: var(--background-subdued);
-		cursor: not-allowed;
 	}
 
 	textarea {

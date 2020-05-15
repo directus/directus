@@ -10,6 +10,7 @@
 			show-resize
 			inline
 			@click:row="editItem"
+			:disabled="disabled"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
@@ -20,10 +21,12 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
+					:collection="relatedCollection.collection"
+					:field="header.field.field"
 				/>
 			</template>
 
-			<template #item-append="{ item }">
+			<template #item-append="{ item }" v-if="!disabled">
 				<v-icon
 					name="close"
 					v-tooltip="$t('deselect')"
@@ -33,7 +36,7 @@
 			</template>
 		</v-table>
 
-		<div class="actions">
+		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('add_new') }}</v-button>
 			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
@@ -41,6 +44,7 @@
 		</div>
 
 		<modal-detail
+			v-if="!disabled"
 			:active="currentlyEditing !== null"
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -50,6 +54,7 @@
 		/>
 
 		<modal-browse
+			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="[]"
@@ -95,6 +100,10 @@ export default defineComponent({
 		fields: {
 			type: String,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -336,6 +345,7 @@ export default defineComponent({
 									interface: field.interface,
 									interfaceOptions: field.options,
 									type: field.type,
+									field: field.field,
 								},
 							};
 
@@ -471,51 +481,71 @@ export default defineComponent({
 
 			const itemPrimaryKey = item[pkField];
 
-			if (itemPrimaryKey) {
-				if (props.value && Array.isArray(props.value)) {
-					const itemHasEdits =
-						props.value.find((stagedItem) => stagedItem[pkField] === itemPrimaryKey) !==
-						undefined;
-
-					if (itemHasEdits) {
-						emit(
-							'input',
-							props.value.map((stagedValue) => {
-								if (stagedValue[pkField] === itemPrimaryKey) {
-									return {
-										[pkField]: itemPrimaryKey,
-										[relation.value.field_many]: null,
-									};
-								}
-
-								return stagedValue;
-							})
-						);
-					} else {
-						emit('input', [
-							...props.value,
-							{
-								[pkField]: itemPrimaryKey,
-								[relation.value.field_many]: null,
-							},
-						]);
-					}
-				} else {
-					emit('input', [
-						{
-							[pkField]: itemPrimaryKey,
-							[relation.value.field_many]: null,
-						},
-					]);
-				}
-			} else {
-				// If the edited item doesn't have a primary key, it's new. In that case, filtering
-				// it out of props.value should be enough to remove it
-				emit(
+			// If the edited item doesn't have a primary key, it's new. In that case, filtering
+			// it out of props.value should be enough to remove it
+			if (itemPrimaryKey === undefined) {
+				return emit(
 					'input',
 					props.value.filter((stagedValue) => stagedValue !== item)
 				);
 			}
+
+			// If there's no staged value, it's safe to assume this item was already selected before
+			// and has to be deselected
+			if (props.value === null) {
+				return emit('input', [
+					{
+						[pkField]: itemPrimaryKey,
+						[relation.value.field_many]: null,
+					},
+				]);
+			}
+
+			// If the item is selected in the current edits, it will only have staged the primary
+			// key so the API is able to properly set it on first creation. In that case, we have
+			// to filter out the primary key
+			const itemWasNewlySelect = !!props.value.find(
+				(stagedItem) => stagedItem === itemPrimaryKey
+			);
+
+			if (itemWasNewlySelect) {
+				currentItems.value = currentItems.value.filter(
+					(itemPreview) => itemPreview[pkField] !== itemPrimaryKey
+				);
+
+				return emit(
+					'input',
+					props.value.filter((stagedValue) => stagedValue !== itemPrimaryKey)
+				);
+			}
+
+			const itemHasEdits =
+				props.value.find((stagedItem: any) => stagedItem[pkField] === itemPrimaryKey) !==
+				undefined;
+
+			if (itemHasEdits) {
+				return emit(
+					'input',
+					props.value.map((stagedValue: any) => {
+						if (stagedValue[pkField] === itemPrimaryKey) {
+							return {
+								[pkField]: itemPrimaryKey,
+								[relation.value.field_many]: null,
+							};
+						}
+
+						return stagedValue;
+					})
+				);
+			}
+
+			return emit('input', [
+				...props.value,
+				{
+					[pkField]: itemPrimaryKey,
+					[relation.value.field_many]: null,
+				},
+			]);
 		}
 	},
 });

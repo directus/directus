@@ -8,6 +8,7 @@
 				@focus="activate"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
+				maxlength="7"
 			>
 				<template #prepend>
 					<v-input
@@ -45,31 +46,31 @@
 					:value="rgb.r"
 					@input="rgb = { ...rgb, r: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="255"
 					:step="1"
+					maxlength="3"
 				/>
 				<v-input
 					:value="rgb.g"
 					@input="rgb = { ...rgb, g: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="255"
 					:step="1"
+					maxlength="3"
 				/>
 				<v-input
 					:value="rgb.b"
 					@input="rgb = { ...rgb, b: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="255"
 					:step="1"
+					maxlength="3"
 				/>
 			</template>
 			<template v-if="colorType === 'HSL'">
@@ -77,31 +78,31 @@
 					:value="hsl.h"
 					@input="hsl = { ...hsl, h: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="360"
 					:step="1"
+					maxlength="3"
 				/>
 				<v-input
 					:value="hsl.s"
 					@input="hsl = { ...hsl, s: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="100"
 					:step="1"
+					maxlength="3"
 				/>
 				<v-input
 					:value="hsl.l"
 					@input="hsl = { ...hsl, l: $event }"
 					class="color-data-input"
-					type="number"
-					hideArrows
+					pattern="\d*"
 					:min="0"
 					:max="100"
 					:step="1"
+					maxlength="3"
 				/>
 			</template>
 		</div>
@@ -135,7 +136,7 @@ export default defineComponent({
 		},
 		presets: {
 			type: Array as PropType<string[]>,
-			default: [
+			default: () => [
 				'#EB5757',
 				'#F2994A',
 				'#F2C94C',
@@ -164,7 +165,7 @@ export default defineComponent({
 			() => hexValue.value != null && color.isHex(hexValue.value as string)
 		);
 
-		const { rgb, hsl, hexValue } = useColor(props.value);
+		const { rgb, hsl, hexValue } = useColor();
 
 		return {
 			colorTypes,
@@ -177,15 +178,31 @@ export default defineComponent({
 			isValidColor,
 		};
 
-		function useColor(hex: string) {
-			const hexValue = ref<string | null>(hex);
+		function useColor() {
+			const hexValue = ref<string | null>(props.value);
 
 			watch(hexValue, (newHex) => {
+				if (newHex === props.value) return;
+
 				if (!newHex) emit('input', null);
 				else if (newHex.length === 0) emit('input', null);
 				else if (newHex.length === 7) emit('input', newHex);
-				else emit('input', null);
 			});
+
+			watch(
+				() => props.value,
+				(newValue) => {
+					if (newValue === hexValue.value) return;
+
+					if (newValue !== null && color.isHex(newValue)) {
+						hexValue.value = props.value;
+					}
+
+					if (newValue === null) {
+						hexValue.value = null;
+					}
+				}
+			);
 
 			const hsl = computed<HSL<string | null>>({
 				get() {

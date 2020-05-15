@@ -1,6 +1,6 @@
 <template>
 	<v-item-group class="repeater">
-		<draggable :value="value" handle=".drag-handle" @input="onSort">
+		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
 			<repeater-row
 				v-for="(row, index) in value"
 				:key="index"
@@ -25,6 +25,7 @@ import RepeaterRow from './repeater-row.vue';
 import { Field } from '@/stores/fields/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';
+import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
 	components: { RepeaterRow, Draggable },
@@ -63,7 +64,7 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew };
+		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage };
 
 		function updateValues(index: number, updatedValues: any) {
 			emit(

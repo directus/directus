@@ -21,7 +21,7 @@
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="$t('no_collections')" v-else>
+		<v-info icon="box" :title="$t('no_collections')" v-else center>
 			<template v-if="isAdmin">
 				{{ $t('no_collections_copy_admin') }}
 			</template>
@@ -105,9 +105,5 @@ export default defineComponent({
 .v-table {
 	padding: var(--content-padding);
 	padding-top: 0;
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 </style>

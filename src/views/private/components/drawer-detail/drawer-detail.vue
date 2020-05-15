@@ -3,7 +3,7 @@
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
 				<v-badge bordered :value="badge" :disabled="!badge">
-					<v-icon :name="icon" />
+					<v-icon :name="icon" outline />
 				</v-badge>
 			</div>
 			<div class="title" v-show="drawerOpen">
@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject } from '@vue/composition-api';
+import { defineComponent, toRefs } from '@vue/composition-api';
+import useAppStore from '@/stores/app';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -41,7 +42,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { active, toggle } = useGroupable(props.title, 'drawer-detail');
-		const drawerOpen = inject('drawer-open', ref(false));
+		const appStore = useAppStore();
+		const { drawerOpen } = toRefs(appStore.state);
 		return { active, toggle, drawerOpen };
 	},
 });

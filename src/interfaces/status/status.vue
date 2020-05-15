@@ -14,7 +14,11 @@
 				<template #prepend>
 					<div
 						class="status-dot"
-						:style="current ? { backgroundColor: current.background_color } : null"
+						:style="
+							current
+								? { backgroundColor: current.background_color }
+								: { backgroundColor: 'var(--border-normal)' }
+						"
 					/>
 				</template>
 				<template #append><v-icon name="expand_more" :class="{ active }" /></template>

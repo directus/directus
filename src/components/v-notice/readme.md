@@ -11,6 +11,7 @@
 | `warning` | Shows the warning notice                                           | `false` |
 | `danger`  | Shows the danger notice                                            | `false` |
 | `icon`    | Custom icon name, or false if you want to hide the icon completely | `null`  |
+| `center`  | Render notice content centered                                     | `false` |
 
 ## Slots
 | Slot      | Description | Data |
@@ -21,8 +22,8 @@
 n/a
 
 ## CSS Variables
-| Variable                      | Default                    |
-|-------------------------------|----------------------------|
-| `--v-notice-color`            | `var(--foreground-normal);` |
-| `--v-notice-background-color` | `var(--primary-alt);`     |
-| `--v-notice-icon-color`       | `var(--primary);`           |
+| Variable                      | Default                     |
+|-------------------------------|-----------------------------|
+| `--v-notice-color`            | `var(--foreground-subdued)` |
+| `--v-notice-background-color` | `var(--background-subdued)` |
+| `--v-notice-icon-color`       | `var(--foreground-subdued)` |

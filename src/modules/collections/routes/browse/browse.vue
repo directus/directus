@@ -89,6 +89,7 @@
 			v-if="bookmark && bookmarkExists === false"
 			:title="$t('bookmark_doesnt_exist')"
 			icon="bookmark"
+			center
 		>
 			{{ $t('bookmark_doesnt_exist_copy') }}
 
@@ -194,7 +195,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 
 		const { selection } = useSelection();
-		const { info: currentCollection, primaryKeyField } = useCollection(collection);
+		const { info: currentCollection } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
 		const {
@@ -254,7 +255,7 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: props.collection,
+					name: currentCollection.value?.name,
 					to: `/${projectsStore.state.currentProjectKey}/collections/${props.collection}`,
 				},
 			]);
@@ -287,20 +288,22 @@ export default defineComponent({
 
 				confirmDelete.value = false;
 
-				const batchPrimaryKeys = selection.value
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					.map((item) => item[primaryKeyField.value!.field])
-					.join();
+				const batchPrimaryKeys = selection.value;
 
-				await api.delete(
-					`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`
-				);
+				try {
+					await api.delete(
+						`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`
+					);
 
-				await layout.value?.refresh();
+					await layout.value?.refresh?.();
 
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
+					selection.value = [];
+					confirmDelete.value = false;
+				} catch (err) {
+					console.error(err);
+				} finally {
+					deleting.value = false;
+				}
 			}
 		}
 
@@ -395,10 +398,6 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 
 .bookmark-add .toggle,

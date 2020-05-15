@@ -1,10 +1,12 @@
 <template>
 	<v-modal v-model="_active" :title="$t('select_item')" no-padding>
-		<layout-tabular
-			class="layout"
+		<component
+			:is="`layout-${layout}`"
 			:collection="collection"
 			:selection="_selection"
 			:filters="filters"
+			:view-query.sync="query"
+			:view-options.sync="options"
 			@update:selection="onSelect"
 			select-mode
 		/>
@@ -17,8 +19,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
+import {
+	defineComponent,
+	PropType,
+	ref,
+	computed,
+	toRefs,
+	onUnmounted,
+} from '@vue/composition-api';
 import { Filter } from '@/stores/collection-presets/types';
+import useCollectionPreset from '@/composables/use-collection-preset';
 
 export default defineComponent({
 	props: {
@@ -48,7 +58,17 @@ export default defineComponent({
 		const { _active } = useActiveState();
 		const { _selection, onSelect } = useSelection();
 
-		return { save, cancel, _active, _selection, onSelect };
+		const { collection } = toRefs(props);
+
+		const { viewType, viewOptions, viewQuery } = useCollectionPreset(collection);
+
+		// This is a local copy of the viewtype. This means that we can sync it the layout without
+		// having use-collection-preset auto-save the values
+		const layout = ref(viewType.value || 'tabular');
+		const options = ref(viewOptions.value);
+		const query = ref(viewQuery.value);
+
+		return { save, cancel, _active, _selection, onSelect, layout, options, query };
 
 		function useActiveState() {
 			const localActive = ref(false);
@@ -68,6 +88,10 @@ export default defineComponent({
 
 		function useSelection() {
 			const localSelection = ref<(string | number)[]>(null);
+
+			onUnmounted(() => {
+				localSelection.value = null;
+			});
 
 			const _selection = computed({
 				get() {

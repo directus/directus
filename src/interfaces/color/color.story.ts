@@ -1,16 +1,12 @@
 import withPadding from '../../../.storybook/decorators/with-padding';
 import { defineComponent, ref } from '@vue/composition-api';
 import { withKnobs, array, boolean } from '@storybook/addon-knobs';
-import readme from './readme.md';
 import i18n from '@/lang';
 import RawValue from '../../../.storybook/raw-value.vue';
 
 export default {
 	title: 'Interfaces / Color',
 	decorators: [withPadding, withKnobs],
-	parameters: {
-		notes: readme,
-	},
 };
 
 export const basic = () =>

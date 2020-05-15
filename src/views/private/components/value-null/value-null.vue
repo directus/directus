@@ -4,6 +4,6 @@
 
 <style lang="scss" scoped>
 .null {
-	color: var(--foreground-subdued);
+	color: var(--border-normal); // Don't confuse NULL with subdued value
 }
 </style>

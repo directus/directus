@@ -6,15 +6,32 @@
 		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
+		:maxlength="length"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
+		<template #append>
+			<span
+				v-if="percentageRemaining <= 20"
+				class="remaining"
+				:class="{
+					warning: percentageRemaining < 10,
+					danger: percentageRemaining < 5,
+				}"
+			>
+				{{ charsRemaining }}
+			</span>
+			<v-icon
+				:class="{ hide: percentageRemaining !== false && percentageRemaining <= 20 }"
+				v-if="iconRight"
+				:name="iconRight"
+			/>
+		</template>
 	</v-input>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -50,6 +67,25 @@ export default defineComponent({
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
 			default: 'sans-serif',
 		},
+		length: {
+			type: [Number, String],
+			default: null,
+		},
+	},
+	setup(props) {
+		const charsRemaining = computed(() => {
+			if (!props.length) return null;
+			if (!props.value) return null;
+			return +props.length - props.value.length;
+		});
+
+		const percentageRemaining = computed(() => {
+			if (!props.length) return false;
+			if (!props.value) return false;
+			return 100 - (props.value.length / +props.length) * 100;
+		});
+
+		return { charsRemaining, percentageRemaining };
 	},
 });
 </script>
@@ -67,5 +103,31 @@ export default defineComponent({
 	&.sans-serif {
 		--v-input-font-family: var(--family-sans-serif);
 	}
+}
+
+.remaining {
+	display: none;
+	width: 24px;
+	color: var(--foreground-subdued);
+	font-weight: 600;
+	text-align: right;
+	vertical-align: middle;
+	font-feature-settings: 'tnum';
+}
+
+.v-input:focus-within .remaining {
+	display: block;
+}
+
+.v-input:focus-within .hide {
+	display: none;
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
 }
 </style>

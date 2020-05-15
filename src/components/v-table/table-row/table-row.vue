@@ -113,7 +113,7 @@ export default defineComponent({
 		line-height: var(--table-row-line-height);
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		background-color: var(--background-page);
+		background-color: var(--v-table-background-color);
 		border-bottom: 2px solid var(--border-subdued);
 
 		&:last-child {

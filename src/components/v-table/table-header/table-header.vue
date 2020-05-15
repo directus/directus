@@ -239,7 +239,7 @@ export default defineComponent({
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--background-page);
+		background-color: var(--v-table-background-color);
 		border-bottom: 2px solid var(--border-subdued);
 
 		&.select,

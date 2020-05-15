@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -23,7 +24,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: null,
+			default: i18n.t('active'),
 		},
 		iconOn: {
 			type: String,

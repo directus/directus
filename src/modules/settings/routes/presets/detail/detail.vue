@@ -466,7 +466,7 @@ export default defineComponent({
 					field: 'divider',
 					name: i18n.t('divider'),
 					interface: 'divider',
-					width: 'full',
+					width: 'fill',
 					options: {
 						title: i18n.t('layout_preview'),
 					},

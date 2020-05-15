@@ -1,45 +1,52 @@
 <template>
-	<v-skeleton-loader v-if="loading" type="input-tall" />
-	<div class="image-preview" v-else-if="image" :class="{ isSVG: image.type.includes('svg') }">
-		<img :src="src" alt="" role="presentation" />
-		<div class="shadow" />
-		<div class="actions">
-			<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
-				<v-icon name="zoom_in" />
-			</v-button>
-			<v-button
-				icon
-				rounded
-				:href="image.data.full_url"
-				:download="image.filename_download"
-				v-tooltip="$t('download')"
-			>
-				<v-icon name="file_download" />
-			</v-button>
-			<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('open')">
-				<v-icon name="launch" />
-			</v-button>
-			<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
-				<v-icon name="crop_rotate" />
-			</v-button>
-			<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
-				<v-icon name="close" />
-			</v-button>
-		</div>
-		<div class="info">
-			<div class="title">{{ image.title }}</div>
-			<div class="meta">{{ meta }}</div>
-		</div>
+	<div class="image">
+		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<image-editor
-			v-if="image && image.type.startsWith('image')"
-			:id="image.id"
-			@refresh="changeCacheBuster"
-			v-model="editorActive"
-		/>
-		<file-lightbox v-model="lightboxActive" :id="image.id" />
+		<v-notice class="disabled-placeholder" v-else-if="disabled && !image" center icon="block">
+			{{ $t('disabled') }}
+		</v-notice>
+
+		<div class="image-preview" v-else-if="image" :class="{ isSVG: image.type.includes('svg') }">
+			<img :src="src" alt="" role="presentation" />
+
+			<div class="shadow" />
+
+			<div class="actions" v-if="!disabled">
+				<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
+					<v-icon name="zoom_in" />
+				</v-button>
+				<v-button
+					icon
+					rounded
+					:href="image.data.full_url"
+					:download="image.filename_download"
+					v-tooltip="$t('download')"
+				>
+					<v-icon name="file_download" />
+				</v-button>
+				<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
+					<v-icon name="crop_rotate" />
+				</v-button>
+				<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
+					<v-icon name="close" />
+				</v-button>
+			</div>
+
+			<div class="info">
+				<div class="title">{{ image.title }}</div>
+				<div class="meta">{{ meta }}</div>
+			</div>
+
+			<image-editor
+				v-if="image && image.type.startsWith('image')"
+				:id="image.id"
+				@refresh="changeCacheBuster"
+				v-model="editorActive"
+			/>
+			<file-lightbox v-model="lightboxActive" :id="image.id" />
+		</div>
+		<v-upload v-else @upload="setImage" />
 	</div>
-	<v-upload v-else @upload="setImage" />
 </template>
 
 <script lang="ts">
@@ -73,6 +80,10 @@ export default defineComponent({
 		value: {
 			type: Number,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -195,6 +206,7 @@ export default defineComponent({
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
+	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 }
 
@@ -298,5 +310,9 @@ img {
 	.meta {
 		max-height: 17px;
 	}
+}
+
+.disabled-placeholder {
+	height: var(--input-height-tall);
 }
 </style>

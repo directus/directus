@@ -40,6 +40,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .dot {
 	display: inline-block;
+	flex-shrink: 0;
 	width: 12px;
 	height: 12px;
 	margin: 0 4px;

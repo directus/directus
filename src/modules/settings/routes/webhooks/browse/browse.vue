@@ -84,10 +84,28 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_webhooks'));
+		const { viewType, viewOptions, viewQuery } = useCollectionPreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
+
+		if (viewType.value === null) {
+			viewType.value = 'tabular';
+		}
+
+		if (viewOptions.value === null && viewType.value === 'tabular') {
+			viewOptions.value = {
+				widths: {
+					status: 50,
+				},
+			};
+		}
+
+		if (viewQuery.value === null && viewType.value === 'tabular') {
+			viewQuery.value = {
+				fields: ['status', 'http_action', 'url'],
+			};
+		}
 
 		return {
 			addNewLink,

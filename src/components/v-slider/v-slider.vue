@@ -214,8 +214,9 @@ body {
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: max-content;
 			padding: 4px 8px;
-			color: var(--foreground-normal);
-			background-color: var(--background-normal);
+			color: var(--foreground-inverted);
+			font-weight: 600;
+			background-color: var(--primary);
 			border-radius: var(--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
@@ -227,8 +228,8 @@ body {
 				left: calc(50%);
 				width: 10px;
 				height: 10px;
-				background-color: var(--background-normal);
-				border-radius: var(--border-radius);
+				background-color: var(--primary);
+				border-radius: 2px;
 				transform: translateX(-50%) rotate(45deg);
 				content: '';
 			}

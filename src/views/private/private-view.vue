@@ -54,13 +54,13 @@
 
 			<div class="spacer" />
 
-			<notifications-preview v-model="navigationsInline" />
+			<notifications-preview :drawer-open="drawerOpen" />
 		</aside>
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
-		<notifications-group v-if="navigationsInline === false" :dense="drawerOpen === false" />
+		<notifications-group v-if="drawerOpen === false" :dense="drawerOpen === false" />
 
 		<template v-if="showDropEffect">
 			<div class="drop-border top" />
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, provide, toRefs, computed } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -86,6 +86,7 @@ import useNotificationsStore from '@/stores/notifications';
 import uploadFiles from '@/utils/upload-files';
 import i18n from '@/lang';
 import useEventListener from '@/composables/use-event-listener';
+import useAppStore from '@/stores/app';
 
 export default defineComponent({
 	components: {
@@ -106,23 +107,17 @@ export default defineComponent({
 	},
 	setup() {
 		const navOpen = ref(false);
-		const drawerOpen = ref(false);
 		const contentEl = ref<Element>();
-		const navigationsInline = ref(false);
 		const userStore = useUserStore();
 		const notificationsStore = useNotificationsStore();
+		const appStore = useAppStore();
+
+		const { drawerOpen } = toRefs(appStore.state);
 
 		const theme = computed(() => {
 			return userStore.state.currentUser?.theme || 'auto';
 		});
 
-		watch(drawerOpen, (open: boolean) => {
-			if (open === false) {
-				navigationsInline.value = false;
-			}
-		});
-
-		provide('drawer-open', drawerOpen);
 		provide('main-element', contentEl);
 
 		const {
@@ -141,15 +136,14 @@ export default defineComponent({
 
 		return {
 			navOpen,
-			drawerOpen,
 			contentEl,
-			navigationsInline,
 			theme,
 			onDragEnter,
 			onDragLeave,
 			showDropEffect,
 			onDrop,
 			dragging,
+			drawerOpen,
 		};
 
 		function useFileUpload() {

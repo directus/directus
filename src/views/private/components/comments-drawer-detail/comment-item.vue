@@ -4,14 +4,25 @@
 
 		<v-textarea v-if="editing" v-model="edits">
 			<template #append>
-				<v-button :loading="savingEdits" class="post-comment" @click="saveEdits" x-small>
-					{{ $t('save') }}
-				</v-button>
+				<div class="buttons">
+					<v-button class="cancel" @click="cancelEditing" secondary x-small>
+						{{ $t('cancel') }}
+					</v-button>
+
+					<v-button
+						:loading="savingEdits"
+						class="post-comment"
+						@click="saveEdits"
+						x-small
+					>
+						{{ $t('save') }}
+					</v-button>
+				</div>
 			</template>
 		</v-textarea>
 
 		<div v-else class="content">
-			<span v-html="htmlContent" />
+			<span v-html="htmlContent" class="selectable" />
 
 			<!-- @TODO: Dynamically add element below if the comment overflows -->
 			<!-- <div v-if="activity.id == 204" class="expand-text">
@@ -48,9 +59,9 @@ export default defineComponent({
 			props.activity.comment ? marked(props.activity.comment) : null
 		);
 
-		const { edits, editing, savingEdits, saveEdits } = useEdits();
+		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
-		return { htmlContent, edits, editing, savingEdits, saveEdits };
+		return { htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);
@@ -62,7 +73,7 @@ export default defineComponent({
 				() => (edits.value = props.activity.comment)
 			);
 
-			return { edits, editing, savingEdits, saveEdits };
+			return { edits, editing, savingEdits, saveEdits, cancelEditing };
 
 			async function saveEdits() {
 				const { currentProjectKey } = projectsStore.state;
@@ -79,6 +90,11 @@ export default defineComponent({
 					savingEdits.value = false;
 					editing.value = false;
 				}
+			}
+
+			function cancelEditing() {
+				edits.value = props.activity.comment;
+				editing.value = false;
 			}
 		}
 	},
@@ -196,9 +212,13 @@ export default defineComponent({
 	}
 }
 
-.post-comment {
+.buttons {
 	position: absolute;
 	right: 8px;
 	bottom: 8px;
+}
+
+.cancel {
+	margin-right: 4px;
 }
 </style>

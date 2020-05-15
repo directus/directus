@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="value === null || value === undefined" />
-	<span v-else-if="displayInfo === null">{{ value }}</span>
-	<span v-else-if="typeof displayInfo.handler === 'function'">
+	<span v-else-if="displayInfo === null" class="no-wrap">{{ value }}</span>
+	<span v-else-if="typeof displayInfo.handler === 'function'" class="no-wrap">
 		{{ displayInfo.handler(value, options, { type }) }}
 	</span>
 	<component
@@ -66,3 +66,12 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+@import '@/styles/mixins/no-wrap.scss';
+
+.no-wrap {
+	line-height: 22px;
+	@include no-wrap;
+}
+</style>

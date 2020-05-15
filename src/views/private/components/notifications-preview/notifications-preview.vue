@@ -3,7 +3,11 @@
 		<transition-expand tag="div">
 			<div v-if="active" class="inline">
 				<div class="padding-box">
-					<router-link class="link" :to="activityLink">
+					<router-link
+						class="link"
+						:to="activityLink"
+						:class="{ 'has-items': lastFour.length > 0 }"
+					>
 						{{ $t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
@@ -19,7 +23,7 @@
 
 		<drawer-button
 			:active="active"
-			@click="$emit('toggle', !active)"
+			@click="active = !active"
 			v-tooltip.left="$t('notifications')"
 			class="toggle"
 			icon="notifications"
@@ -30,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import DrawerButton from '../drawer-button';
 import NotificationItem from '../notification-item';
 import useNotificationsStore from '@/stores/notifications';
@@ -38,22 +42,28 @@ import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	components: { DrawerButton, NotificationItem },
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
-		active: {
+		drawerOpen: {
 			type: Boolean,
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
 		const notificationsStore = useNotificationsStore();
 		const projectsStore = useProjectsStore();
 		const activityLink = computed(() => `/${projectsStore.state.currentProjectKey}/activity`);
+		const active = ref(false);
 
-		return { lastFour: notificationsStore.lastFour, activityLink };
+		watch(
+			() => props.drawerOpen,
+			(open: boolean) => {
+				if (open === false) {
+					active.value = false;
+				}
+			}
+		);
+
+		return { lastFour: notificationsStore.lastFour, activityLink, active };
 	},
 });
 </script>
@@ -71,6 +81,10 @@ export default defineComponent({
 
 	&:hover {
 		color: var(--foreground-normal);
+	}
+
+	&.has-items {
+		margin-bottom: 12px;
 	}
 }
 

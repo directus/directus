@@ -55,6 +55,14 @@ textarea,
 [contenteditable],
 .selectable {
 	user-select: text;
+
+	/* stylelint-disable no-descending-specificity */
+
+	* {
+		user-select: text;
+	}
+
+	/* stylelint-enable no-descending-specificity */
 }
 
 :invalid {

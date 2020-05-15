@@ -76,6 +76,12 @@
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
+				ref="revisionsDrawerDetail"
+			/>
+			<comments-drawer-detail
+				v-if="isBatch === false && isNew === false"
+				collection="directus_users"
+				:primary-key="primaryKey"
 			/>
 		</template>
 	</private-view>
@@ -88,6 +94,7 @@ import UsersNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 
@@ -97,7 +104,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'users-detail',
-	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions },
+	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsDrawerDetail },
 	props: {
 		primaryKey: {
 			type: String,
@@ -109,6 +116,8 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
+
+		const revisionsDrawerDetail = ref<Vue>(null);
 
 		const {
 			isNew,
@@ -145,6 +154,7 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
+			revisionsDrawerDetail,
 		};
 
 		function useBreadcrumb() {
@@ -165,6 +175,8 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
+
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

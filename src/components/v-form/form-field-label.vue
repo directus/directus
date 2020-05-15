@@ -61,7 +61,9 @@ export default defineComponent({
 	}
 
 	.v-checkbox {
+		height: 18px; // Don't push down label with normal icon height (24px)
 		margin-right: 4px;
+		transform: translateY(-2px);
 	}
 
 	.required {

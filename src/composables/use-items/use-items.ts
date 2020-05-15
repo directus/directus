@@ -107,7 +107,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
-	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort };
+	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
 		loading.value = true;

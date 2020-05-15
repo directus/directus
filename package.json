@@ -33,6 +33,7 @@
     "nanoid": "^3.1.7",
     "pinia": "0.0.5",
     "portal-vue": "^2.1.7",
+    "pretty-bytes": "^5.3.0",
     "resize-observer": "^1.0.0",
     "semver": "^7.3.2",
     "stylelint-config-prettier": "^8.0.1",

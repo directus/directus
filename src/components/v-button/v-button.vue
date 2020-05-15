@@ -153,7 +153,7 @@ body {
 	--v-button-background-color-activated: var(--primary);
 	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
-	--v-button-font-weight: 500;
+	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
 }
@@ -168,7 +168,7 @@ body {
 		--v-button-color: var(--foreground-normal);
 		--v-button-color-hover: var(--foreground-normal);
 		--v-button-color-activated: var(--foreground-normal);
-		--v-button-background-color: var(--background-normal-alt);
+		--v-button-background-color: var(--border-subdued); // I'm so sorry! 🥺
 		--v-button-background-color-hover: var(--background-normal-alt);
 		--v-button-background-color-activated: var(--background-normal-alt);
 	}

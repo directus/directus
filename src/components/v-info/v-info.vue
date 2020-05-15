@@ -1,5 +1,5 @@
 <template>
-	<div class="v-info" :class="type">
+	<div class="v-info" :class="[type, { center }]">
 		<div class="icon">
 			<v-icon large :name="icon" />
 		</div>
@@ -25,6 +25,10 @@ export default defineComponent({
 		type: {
 			type: String as PropType<'info' | 'success' | 'warning' | 'danger'>,
 			default: 'info',
+		},
+		center: {
+			type: Boolean,
+			default: false,
 		},
 	},
 });
@@ -79,5 +83,12 @@ export default defineComponent({
 	&:not(:last-child) {
 		margin-bottom: 32px;
 	}
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 </style>

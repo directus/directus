@@ -6,7 +6,9 @@
 		}"
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
+
 		<component
+			v-if="interfaceExists"
 			:is="`interface-${field.interface}`"
 			v-bind="field.options"
 			:disabled="disabled"
@@ -16,14 +18,20 @@
 			:collection="field.collection"
 			:field="field.field"
 			:primary-key="primaryKey"
+			:length="field.length"
 			@input="$emit('input', $event)"
 		/>
+
+		<v-notice v-else warning>
+			{{ $t('interface_not_found', { interface: field.interface }) }}
+		</v-notice>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
+import interfaces from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -55,6 +63,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+	},
+	setup(props) {
+		const interfaceExists = computed(() => {
+			return !!interfaces.find((inter) => inter.id === props.field.interface);
+		});
+
+		return { interfaceExists };
 	},
 });
 </script>

@@ -35,6 +35,7 @@
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
+			:primary-key="primaryKey"
 			@input="$emit('input', $event)"
 		/>
 

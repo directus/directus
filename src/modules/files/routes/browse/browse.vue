@@ -179,7 +179,7 @@ export default defineComponent({
 
 				confirmDelete.value = false;
 
-				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
+				const batchPrimaryKeys = selection.value;
 
 				await api.delete(`/${currentProjectKey}/files/${batchPrimaryKeys}`);
 
@@ -199,7 +199,7 @@ export default defineComponent({
 
 			const batchLink = computed<string>(() => {
 				const currentProjectKey = projectsStore.state.currentProjectKey;
-				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
+				const batchPrimaryKeys = selection.value;
 				return `/${currentProjectKey}/files/${batchPrimaryKeys}`;
 			});
 

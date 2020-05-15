@@ -1,14 +1,10 @@
 <template>
 	<collections-not-found v-if="error && error.code === 404" />
-	<private-view
-		v-else
-		:title="
-			isNew
-				? $t('adding_in', { collection: collectionInfo.name })
-				: $t('editing_in', { collection: collectionInfo.name })
-		"
-	>
-		<template #title v-if="isNew === false && collectionInfo.display_template">
+	<private-view v-else :title="title">
+		<template
+			#title
+			v-if="isNew === false && isBatch === false && collectionInfo.display_template"
+		>
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
 			<h1 class="type-title" v-else>
 				<render-template
@@ -151,6 +147,7 @@
 				v-if="isBatch === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
+				ref="revisionsDrawerDetail"
 			/>
 			<comments-drawer-detail
 				v-if="isBatch === false && isNew === false"
@@ -172,6 +169,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import i18n from '@/lang';
 
 type Values = {
 	[field: string]: any;
@@ -201,6 +199,8 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
+
+		const revisionsDrawerDetail = ref<Vue>(null);
 
 		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(
 			collection
@@ -237,6 +237,17 @@ export default defineComponent({
 			};
 		});
 
+		const title = computed(() => {
+			if (isBatch.value) {
+				const itemCount = props.primaryKey.split(',').length;
+				return i18n.t('editing_in_batch', { count: itemCount });
+			}
+
+			return isNew.value
+				? i18n.t('adding_in', { collection: collectionInfo.value?.name })
+				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
+		});
+
 		return {
 			item,
 			loading,
@@ -260,6 +271,8 @@ export default defineComponent({
 			softDeleteStatus,
 			templateValues,
 			breadcrumb,
+			title,
+			revisionsDrawerDetail,
 		};
 
 		function useBreadcrumb() {
@@ -280,6 +293,8 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
+
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

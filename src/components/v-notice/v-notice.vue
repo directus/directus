@@ -1,5 +1,5 @@
 <template>
-	<div class="v-notice" :class="className">
+	<div class="v-notice" :class="[className, { center }]">
 		<v-icon v-if="icon !== false" :name="iconName" left />
 		<slot />
 	</div>
@@ -10,6 +10,10 @@ import { defineComponent, computed } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
+		info: {
+			type: Boolean,
+			default: false,
+		},
 		success: {
 			type: Boolean,
 			default: false,
@@ -26,6 +30,10 @@ export default defineComponent({
 			type: [String, Boolean],
 			default: null,
 		},
+		center: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const iconName = computed(() => {
@@ -33,7 +41,9 @@ export default defineComponent({
 				return props.icon;
 			}
 
-			if (props.success) {
+			if (props.info) {
+				return 'info';
+			} else if (props.success) {
 				return 'check_circle';
 			} else if (props.warning) {
 				return 'warning';
@@ -45,7 +55,9 @@ export default defineComponent({
 		});
 
 		const className = computed<string | null>(() => {
-			if (props.success) {
+			if (props.info) {
+				return 'info';
+			} else if (props.success) {
 				return 'success';
 			} else if (props.warning) {
 				return 'warning';
@@ -63,9 +75,9 @@ export default defineComponent({
 
 <style>
 body {
-	--v-notice-color: var(--primary);
-	--v-notice-background-color: var(--primary-alt);
-	--v-notice-icon-color: var(--primary);
+	--v-notice-color: var(--foreground-subdued);
+	--v-notice-background-color: var(--background-subdued);
+	--v-notice-icon-color: var(--foreground-subdued);
 }
 </style>
 
@@ -85,6 +97,12 @@ body {
 		--v-icon-color: var(--v-notice-icon-color);
 	}
 
+	&.info {
+		--v-notice-icon-color: var(--primary);
+		--v-notice-background-color: var(--primary-alt);
+		--v-notice-color: var(--primary);
+	}
+
 	&.success {
 		--v-notice-icon-color: var(--success);
 		--v-notice-background-color: var(--success-alt);
@@ -101,6 +119,12 @@ body {
 		--v-notice-icon-color: var(--danger);
 		--v-notice-background-color: var(--danger-alt);
 		--v-notice-color: var(--danger);
+	}
+
+	&.center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 }
 </style>

@@ -24,7 +24,7 @@
 
 			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable v-model="activeFields" handle=".drag-handle">
+				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
 					<v-checkbox
 						v-for="field in activeFields"
 						v-model="fields"
@@ -86,11 +86,7 @@
 			@manual-sort="changeManualSort"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<span :key="header.value" v-if="!header.field.display">
-					{{ item[header.value] }}
-				</span>
 				<render-display
-					v-else
 					:key="header.value"
 					:value="item[header.value]"
 					:display="header.field.display"
@@ -130,9 +126,10 @@
 		</v-table>
 
 		<v-info
-			v-else-if="itemCount === 0 && _filters.length > 0"
+			v-else-if="itemCount === 0 && activeFilterCount > 0"
 			:title="$t('no_results')"
 			icon="search"
+			center
 		>
 			{{ $t('no_results_copy') }}
 
@@ -141,7 +138,7 @@
 			</template>
 		</v-info>
 
-		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon">
+		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon" center>
 			{{ $t('no_items_copy') }}
 
 			<template #append>
@@ -175,6 +172,7 @@ import { render } from 'micromustache';
 import { Filter } from '@/stores/collection-presets/types';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import hideDragImage from '@/utils/hide-drag-image';
 
 type ViewOptions = {
 	widths?: {
@@ -252,17 +250,22 @@ export default defineComponent({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
-		const { items, loading, error, totalPages, itemCount, changeManualSort } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields: fieldsWithRelational,
-				filters: _filters,
-				searchQuery,
-			}
-		);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			changeManualSort,
+			getItems,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields: fieldsWithRelational,
+			filters: _filters,
+			searchQuery,
+		});
 
 		const {
 			tableSort,
@@ -289,6 +292,10 @@ export default defineComponent({
 				end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
 				count: i18n.n(itemCount.value || 0),
 			});
+		});
+
+		const activeFilterCount = computed(() => {
+			return _filters.value.filter((filter) => !filter.locked);
 		});
 
 		return {
@@ -319,7 +326,14 @@ export default defineComponent({
 			showingCount,
 			sortField,
 			changeManualSort,
+			hideDragImage,
+			activeFilterCount,
+			refresh,
 		};
+
+		function refresh() {
+			getItems();
+		}
 
 		function clearFilters() {
 			_filters.value = [];
@@ -578,10 +592,6 @@ export default defineComponent({
 			color: var(--foreground-normal);
 		}
 	}
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 
 .v-checkbox {

@@ -7,6 +7,7 @@ import { ProjectWithKey } from '@/stores/projects/types';
 import ClickOutside from '@/directives/click-outside';
 import VMenu from '@/components/v-menu';
 import VList, { VListItem, VListItemIcon, VListItemContent } from '@/components/v-list';
+import PortalVue from 'portal-vue';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
@@ -17,6 +18,7 @@ localVue.component('v-list-item-icon', VListItemIcon);
 localVue.component('v-list-item-content', VListItemContent);
 localVue.component('v-menu', VMenu);
 localVue.directive('click-outside', ClickOutside);
+localVue.use(PortalVue);
 
 import PublicView from './public-view.vue';
 

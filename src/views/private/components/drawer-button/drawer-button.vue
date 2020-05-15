@@ -6,7 +6,7 @@
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon" />
+			<v-icon :name="icon" outline />
 		</div>
 		<div class="title" v-if="drawerOpen">
 			<slot />
@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from '@vue/composition-api';
+import { defineComponent, toRefs } from '@vue/composition-api';
+import useAppStore from '@/stores/app';
 
 export default defineComponent({
 	props: {
@@ -33,7 +34,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const drawerOpen = inject('drawer-open', ref(false));
+		const appStore = useAppStore();
+		const { drawerOpen } = toRefs(appStore.state);
 
 		return { drawerOpen };
 	},

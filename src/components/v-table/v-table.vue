@@ -1,5 +1,5 @@
 <template>
-	<div class="v-table" :class="{ loading, inline }">
+	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table
 			:summary="_headers.map((header) => header.text).join(', ')"
 			:style="{
@@ -25,13 +25,18 @@
 				</template>
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
-				<th scope="colgroup" :style="{ gridColumn: loadingColSpan }">
+				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
 					<v-progress-linear indeterminate v-if="loading" />
 				</th>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
-					<td :style="{ gridColumn: loadingColSpan }">{{ loadingText }}</td>
+					<td :style="{ gridColumn: fullColSpan }">{{ loadingText }}</td>
+				</tr>
+			</tbody>
+			<tbody v-if="!loading && items.length === 0">
+				<tr class="no-items-text">
+					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText }}</td>
 				</tr>
 			</tbody>
 			<draggable
@@ -39,20 +44,21 @@
 				v-model="_items"
 				tag="tbody"
 				handle=".drag-handle"
-				:disabled="_sort.by !== manualSortKey"
+				:disabled="disabled || _sort.by !== manualSortKey"
 				@change="onSortChange"
+				:set-data="hideDragImage"
 			>
 				<table-row
 					v-for="item in _items"
 					:key="item[itemKey]"
 					:headers="_headers"
 					:item="item"
-					:show-select="showSelect"
-					:show-manual-sort="showManualSort"
+					:show-select="!disabled && showSelect"
+					:show-manual-sort="!disabled && showManualSort"
 					:is-selected="getSelectedState(item)"
 					:subdued="loading"
 					:sorted-manually="_sort.by === manualSortKey"
-					:has-click-listener="hasRowClick"
+					:has-click-listener="!disabled && hasRowClick"
 					:height="rowHeight"
 					@click="hasRowClick ? $emit('click:row', item) : null"
 					@item-selected="onItemSelected"
@@ -79,6 +85,7 @@ import TableRow from './table-row/';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import draggable from 'vuedraggable';
+import hideDragImage from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -151,6 +158,10 @@ export default defineComponent({
 			type: String,
 			default: i18n.t('loading'),
 		},
+		noItemsText: {
+			type: String,
+			default: i18n.t('no_items'),
+		},
 		serverSort: {
 			type: Boolean,
 			default: false,
@@ -164,6 +175,10 @@ export default defineComponent({
 			default: false,
 		},
 		inline: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
 			type: Boolean,
 			default: false,
 		},
@@ -223,7 +238,7 @@ export default defineComponent({
 
 		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
 
-		const loadingColSpan = computed<string>(() => {
+		const fullColSpan = computed<string>(() => {
 			let length = _headers.value.length + 1; // +1 account for spacer
 			if (props.showSelect) length++;
 			if (props.showManualSort) length++;
@@ -287,12 +302,15 @@ export default defineComponent({
 			someItemsSelected,
 			onSortChange,
 			hasRowClick,
-			loadingColSpan,
+			fullColSpan,
 			columnStyle,
 			hasItemAppendSlot,
+			hideDragImage,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {
+			if (props.disabled) return;
+
 			emit('item-selected', event);
 
 			let selection = clone(props.selection) as any[];
@@ -324,6 +342,8 @@ export default defineComponent({
 		}
 
 		function onToggleSelectAll(value: boolean) {
+			if (props.disabled) return;
+
 			if (value === true) {
 				if (props.selectionUseKeys) {
 					emit(
@@ -348,6 +368,8 @@ export default defineComponent({
 		}
 
 		function onSortChange(event: VueDraggableChangeEvent) {
+			if (props.disabled) return;
+
 			if (event.moved) {
 				emit('manual-sort', {
 					item: event.moved.element,
@@ -364,6 +386,8 @@ export default defineComponent({
 body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
+	--v-table-color: var(--foreground-normal);
+	--v-table-background-color: var(--background-page);
 }
 </style>
 
@@ -399,7 +423,7 @@ body {
 
 			td,
 			th {
-				color: var(--foreground-normal);
+				color: var(--v-table-color);
 
 				&.align-left {
 					text-align: left;
@@ -452,20 +476,30 @@ body {
 				z-index: 2;
 			}
 		}
+	}
 
-		.loading-text {
-			text-align: center;
+	.loading-text,
+	.no-items-text {
+		text-align: center;
 
-			td {
-				padding: 16px;
-				color: var(--foreground-subdued);
-			}
+		td {
+			padding: 16px;
+			color: var(--foreground-subdued);
+		}
+	}
+
+	&.inline {
+		border: 2px solid var(--border-normal);
+		border-radius: var(--border-radius);
+
+		table ::v-deep .table-row:last-of-type .cell {
+			border-bottom: none;
 		}
 	}
 }
 
-.inline {
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+.disabled {
+	--v-table-color: var(--foreground-subdued);
+	--v-table-background-color: var(--background-subdued);
 }
 </style>

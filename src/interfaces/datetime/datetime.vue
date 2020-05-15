@@ -65,6 +65,7 @@ import formatLocalized from '@/utils/localized-format';
 import { i18n } from '@/lang';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 
 type LocalValue = {
 	month: null | number;
@@ -115,9 +116,17 @@ export default defineComponent({
 			return time;
 		});
 
-		const valueAsDate = computed(() =>
-			props.value ? parse(props.value, formatString.value, new Date()) : null
-		);
+		const valueAsDate = computed(() => {
+			if (props.value === null) return null;
+
+			// The API can return dates as MySQL style (yyyy-mm-dd hh:mm:ss) or ISO 8601.
+			// If the value contains a T, it's safe to assume it's a ISO 8601
+			if (props.value.includes('T')) {
+				return parseISO(props.value);
+			}
+
+			return parse(props.value, formatString.value, new Date());
+		});
 
 		const displayValue = ref<string>(null);
 

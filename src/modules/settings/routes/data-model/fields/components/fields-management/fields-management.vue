@@ -6,6 +6,7 @@
 			handle=".drag-handle"
 			group="fields"
 			@change="($event) => handleChange($event, 'visible')"
+			:set-data="hideDragImage"
 		>
 			<template #header>
 				<div class="group-name">Visible Fields</div>
@@ -33,6 +34,7 @@
 			:value="sortedHiddenFields"
 			handle=".drag-handle"
 			group="fields"
+			:set-data="hideDragImage"
 			@change="($event) => handleChange($event, 'hidden')"
 		>
 			<template #header>
@@ -74,6 +76,7 @@ import useFieldsStore from '@/stores/fields/';
 import FieldSelect from '../field-select/';
 import FieldSetup from '../field-setup/';
 import { sortBy } from 'lodash';
+import hideDragImage from '@/utils/hide-drag-image';
 
 type DraggableEvent = {
 	moved?: {
@@ -125,6 +128,7 @@ export default defineComponent({
 			editingField,
 			openFieldSetup,
 			closeFieldSetup,
+			hideDragImage,
 		};
 
 		function handleChange(event: DraggableEvent, location: 'visible' | 'hidden') {

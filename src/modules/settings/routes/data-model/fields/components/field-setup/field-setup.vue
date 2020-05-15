@@ -216,6 +216,10 @@ export default defineComponent({
 					if (field.value.id === null) {
 						await fieldsStore.createField(props.collection, field.value);
 					} else {
+						if (field.value.hasOwnProperty('name')) {
+							delete field.value.name;
+						}
+
 						await fieldsStore.updateField(
 							props.existingField.collection,
 							props.existingField.field,

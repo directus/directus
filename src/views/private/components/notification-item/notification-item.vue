@@ -85,7 +85,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	width: 100%;
 	min-height: 64px;
-	margin-bottom: 4px;
+	margin-top: 4px;
 	padding: 12px;
 	color: var(--white);
 	border-radius: var(--border-radius);

@@ -12,7 +12,7 @@
 				:type="part.type"
 				v-bind="part.options"
 			/>
-			<span v-else :key="index" class="raw">{{ part }}</span>
+			<span :key="index" v-else>{{ part + ' ' }}</span>
 		</template>
 	</div>
 </template>
@@ -96,15 +96,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/no-wrap';
+
 .render-template {
-	display: contents;
+	display: flex;
+	align-items: center;
+	max-width: 100%;
+	height: 100%;
+
+	& > * {
+		margin-right: 6px;
+
+		@include no-wrap;
+	}
 }
 
 .subdued {
 	color: var(--foreground-subdued);
-}
-
-.raw:not(:last-child) {
-	margin-right: 4px;
 }
 </style>

@@ -3,16 +3,21 @@
 		<template #activator="{ toggle, active, activate }">
 			<v-input
 				:disabled="disabled"
-				:placeholder="value || $t('search_for_icon')"
+				:placeholder="value ? formatTitle(value) : $t('search_for_icon')"
 				v-model="searchQuery"
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-icon :name="value" :class="{ active: value }" />
+					<v-icon @click="activate" :name="value" :class="{ active: value }" />
 				</template>
 
 				<template #append>
-					<v-icon name="expand_more" class="open-indicator" :class="{ open: active }" />
+					<v-icon
+						@click="activate"
+						name="expand_more"
+						class="open-indicator"
+						:class="{ open: active }"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -40,6 +45,7 @@
 <script lang="ts">
 import icons from './icons.json';
 import { defineComponent, ref, computed } from '@vue/composition-api';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -80,6 +86,7 @@ export default defineComponent({
 			setIcon,
 			searchQuery,
 			filteredIcons,
+			formatTitle,
 		};
 
 		function setIcon(icon: string) {
@@ -111,14 +118,10 @@ export default defineComponent({
 .icons {
 	display: grid;
 	grid-gap: 8px;
-	grid-template-columns: repeat(8, 1fr);
+	grid-template-columns: repeat(auto-fit, 24px);
 	justify-content: center;
 	padding: 20px 0;
 	color: var(--foreground-subdued);
-}
-
-.full .icons {
-	grid-template-columns: repeat(18, 1fr);
 }
 
 .open-indicator {

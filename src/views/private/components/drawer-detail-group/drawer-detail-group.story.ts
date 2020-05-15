@@ -3,9 +3,10 @@ import markdown from './readme.md';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import withAltColors from '../../../../../.storybook/decorators/with-alt-colors';
 
-import { defineComponent, provide } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import DrawerDetailGroup from './drawer-detail-group.vue';
 import DrawerDetail from '../drawer-detail';
+import useAppStore from '@/stores/app';
 
 export default {
 	title: 'Views / Private / Components / Drawer Detail Group',
@@ -19,7 +20,8 @@ export const basic = () =>
 	defineComponent({
 		components: { DrawerDetailGroup, DrawerDetail },
 		setup() {
-			provide('drawer-open', true);
+			const appStore = useAppStore({});
+			appStore.state.drawerOpen = false;
 		},
 		template: `
 		<drawer-detail-group>

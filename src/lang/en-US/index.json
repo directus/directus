@@ -130,9 +130,22 @@
 		"december": "December"
 	},
 
+	"drag_mode": "Drag Mode",
+	"cancel_crop": "Cancel Crop",
+
 	"many_to_many": "Many to Many (M2M)",
 	"one_to_many": "One to Many (O2M)",
 	"many_to_one": "Many to One (M2O)",
+	"original": "Original",
+
+	"file_details": "File Details",
+	"dimensions": "Dimensions",
+	"size": "Size",
+	"created": "Created",
+	"modified": "Modified",
+	"checksum": "Checksum",
+	"owner": "Owner",
+	"folder": "Folder",
 
 	"set_to_now": "Set to Now",
 
@@ -170,6 +183,12 @@
 
 	"select_item": "Select Item",
 
+	"no_items": "No items",
+
+	"disabled": "Disabled",
+
+	"interface_not_found": "Interface \"{interface}\" not found",
+
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",
 	"all_items": "All Items",
@@ -185,7 +204,9 @@
 	"relationship_not_setup": "The relationship hasn't been configured correctly",
 	"display_template_not_setup": "The display template is misconfigured",
 
-	"choose_status": "Choose Status...",
+	"active": "Active",
+
+	"choose_status": "Choose a status...",
 
 	"users": "Users",
 	"files": "Files",
@@ -265,7 +286,7 @@
 
 	"back": "Back",
 
-	"editing_image": "Editing Image...",
+	"editing_image": "Editing Image",
 	"square": "Square",
 	"free": "Free",
 	"flip_horizontal": "Flip Horizontal",
@@ -507,6 +528,9 @@
 
 	"adding_in": "Adding New Item in {collection}",
 	"editing_in": "Editing Item in {collection}",
+	"editing_in_batch": "Batch Editing {count} Items",
+
+	"no_options_available": "No options available",
 
 	"settings_data_model": "Data Model",
 	"settings_collections_fields": "Collections & Fields",
@@ -709,6 +733,7 @@
   "extensions_missing": "No Extensions Found",
   "extensions_missing_copy": "Make sure you have the system extensions installed.",
   "extra_spacing": "Extra Spacing",
+  "fallback_icon": "Fallback Icon",
   "fetching_data": "Fetching Data",
   "field": "Field | Fields",
   "field_already_exists": "Field Already Exists: {field}",

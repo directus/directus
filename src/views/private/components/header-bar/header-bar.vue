@@ -105,31 +105,21 @@ export default defineComponent({
 
 	.title-container {
 		position: relative;
+		display: flex;
+		align-items: center;
+		max-width: 70%;
+		height: 100%;
 		margin-left: 12px;
 		overflow: hidden;
 
 		&.full {
 			margin-right: 20px;
 			padding-right: 20px;
-
-			&::after {
-				position: absolute;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				width: 20px;
-				background: linear-gradient(
-					90deg,
-					rgba(var(--background-page-rgb), 0) 0%,
-					rgba(var(--background-page-rgb), 1) 100%
-				);
-				content: '';
-			}
 		}
 
 		.headline {
 			position: absolute;
-			top: -20px;
+			top: 0;
 			left: 0;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
@@ -139,9 +129,12 @@ export default defineComponent({
 			position: relative;
 			display: flex;
 			align-items: center;
+			overflow: hidden;
 
-			h1 {
+			.type-title {
 				flex-grow: 1;
+				width: 100%;
+				overflow: hidden;
 				white-space: nowrap;
 			}
 		}

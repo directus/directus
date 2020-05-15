@@ -44,8 +44,8 @@
 				</div>
 
 				<div class="layout-option">
-					<div class="option-label">{{ $t('layouts.cards.fallback_icon') }}</div>
-					<v-input v-model="icon" />
+					<div class="option-label">{{ $t('fallback_icon') }}</div>
+					<interface-icon v-model="icon" />
 				</div>
 			</v-detail>
 		</portal>
@@ -70,12 +70,13 @@
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<template v-if="loading">
-					<card v-for="n in limit" :key="`loader-${n}`" loading />
+					<card v-for="n in limit" :key="`loader-${n}`" item-key="loading" loading />
 				</template>
 
 				<card
 					v-else
 					v-for="item in items"
+					:item-key="primaryKeyField.field"
 					:key="item[primaryKeyField.field]"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
@@ -123,7 +124,12 @@
 			</div>
 		</template>
 
-		<v-info v-else-if="itemCount === 0" :title="$t('no_results')" icon="search">
+		<v-info
+			v-else-if="itemCount === 0 && activeFilterCount > 0"
+			:title="$t('no_results')"
+			icon="search"
+			center
+		>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
@@ -131,7 +137,7 @@
 			</template>
 		</v-info>
 
-		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon">
+		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon" center>
 			{{ $t('no_items_copy') }}
 
 			<template #append>
@@ -242,7 +248,7 @@ export default defineComponent({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useViewOptions();
 		const { sort, limit, page, fields } = useViewQuery();
 
-		const { items, loading, error, totalPages, itemCount } = useItems(collection, {
+		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -276,6 +282,10 @@ export default defineComponent({
 			return cardsWidth <= width.value;
 		});
 
+		const activeFilterCount = computed(() => {
+			return _filters.value.filter((filter) => !filter.locked);
+		});
+
 		return {
 			_selection,
 			items,
@@ -306,7 +316,13 @@ export default defineComponent({
 			isSingleRow,
 			width,
 			layoutElement,
+			activeFilterCount,
+			refresh,
 		};
+
+		function refresh() {
+			getItems();
+		}
 
 		function toPage(newPage: number) {
 			page.value = newPage;
@@ -436,10 +452,6 @@ export default defineComponent({
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
 	}
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 
 .footer {

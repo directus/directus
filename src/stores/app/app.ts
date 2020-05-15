@@ -3,6 +3,7 @@ import { createStore } from 'pinia';
 export const useAppStore = createStore({
 	id: 'appStore',
 	state: () => ({
+		drawerOpen: false,
 		hydrated: false,
 		hydrating: false,
 		error: null,

@@ -4,7 +4,7 @@
 			<slot name="activator" v-bind="{ on }" />
 		</template>
 
-		<article class="v-modal">
+		<article class="v-modal" :class="{ 'form-width': formWidth }">
 			<header class="header">
 				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
 				<h2 class="title">{{ title }}</h2>
@@ -27,7 +27,7 @@
 				>
 					<slot name="sidebar" />
 				</nav>
-				<main class="main">
+				<main ref="mainEl" class="main">
 					<slot />
 				</main>
 			</div>
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, provide } from '@vue/composition-api';
 
 export default defineComponent({
 	model: {
@@ -67,10 +67,20 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		formWidth: {
+			// If the modal is used to just render a form, it needs to be a little smaller to
+			// allow the form to be rendered in it's correct full size
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const sidebarActive = ref(false);
 		const localActive = ref(false);
+
+		const mainEl = ref<Element>();
+
+		provide('main-element', mainEl);
 
 		const _active = computed({
 			get() {
@@ -82,10 +92,16 @@ export default defineComponent({
 			},
 		});
 
-		return { sidebarActive, _active };
+		return { sidebarActive, _active, mainEl };
 	},
 });
 </script>
+
+<style>
+body {
+	--v-modal-max-width: 916px;
+}
+</style>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
@@ -94,7 +110,7 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	width: calc(100% - 16px);
-	max-width: 916px;
+	max-width: var(--v-modal-max-width);
 	height: calc(100% - 16px);
 	max-height: 760px;
 	background-color: var(--background-page);
@@ -208,5 +224,9 @@ export default defineComponent({
 		width: calc(100% - 64px);
 		height: calc(100% - 64px);
 	}
+}
+
+.form-width {
+	--v-modal-max-width: 856px;
 }
 </style>

@@ -2,7 +2,7 @@
 	<div class="file-preview" v-if="type">
 		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" />
-			<v-icon name="fullscreen" />
+			<v-icon v-if="inModal === false" name="fullscreen" />
 		</div>
 
 		<video v-else-if="type === 'video'" controls :src="src" />
@@ -35,6 +35,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			required: true,
+		},
+		inModal: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -98,7 +102,7 @@ audio {
 		bottom: 12px;
 		z-index: 2;
 		color: white;
-		text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+		text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}

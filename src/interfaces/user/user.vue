@@ -1,13 +1,14 @@
 <template>
 	<div class="user">
-		<v-menu v-model="menuActive" attached close-on-content-click>
+		<v-menu v-model="menuActive" attached close-on-content-click :disabled="disabled">
 			<template #activator="{ active }">
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input
 					:active="active"
-					@click="onPreviewClick"
 					v-else
 					:placeholder="$t('select_an_item')"
+					:disabled="disabled"
+					@click="onPreviewClick"
 				>
 					<template #input v-if="currentUser">
 						<div class="preview">
@@ -19,7 +20,7 @@
 						</div>
 					</template>
 
-					<template #append>
+					<template #append v-if="!disabled">
 						<template v-if="currentUser">
 							<v-icon
 								name="open_in_new"
@@ -81,6 +82,7 @@
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			@input="stageEdits"
+			v-if="!disabled"
 		/>
 
 		<modal-browse
@@ -88,6 +90,7 @@
 			collection="directus_users"
 			:selection="selection"
 			@input="stageSelection"
+			v-if="!disabled"
 		/>
 	</div>
 </template>
@@ -114,6 +117,10 @@ export default defineComponent({
 		selectMode: {
 			type: String as PropType<'auto' | 'dropdown' | 'modal'>,
 			default: 'auto',
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -306,6 +313,8 @@ export default defineComponent({
 			return { onPreviewClick, displayTemplate, requiredFields };
 
 			function onPreviewClick() {
+				if (props.disabled) return;
+
 				if (usesMenu.value === true) {
 					const newActive = !menuActive.value;
 					menuActive.value = newActive;

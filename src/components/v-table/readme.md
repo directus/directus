@@ -123,10 +123,12 @@ export default defineComponent({
 | `selection`        | What items are selected. Can be used with `v-model` as well                                    | `[]`         |
 | `fixed-header`     | Make the header fixed                                                                          | `false`      |
 | `loading`          | Show progress indicator                                                                        | `false`      |
-| `loadingText`      | What text to show when table is loading with no items                                          | `Loading...` |
+| `loading-text`     | What text to show when table is loading with no items                                          | `Loading...` |
+| `no-items-text`    | What text to show when table doesn't contain any rows                                          | `No items`   |
 | `server-sort`      | Handle sorting on the parent level.                                                            | `false`      |
 | `row-height`       | Height of the individual rows in px                                                            | `48`         |
 | `must-sort`        | Requires the sort to be on a particular column                                                 | `false`      |
+| `disabled`        | Disable edits to items in the form (drag/select)                                                | `false`      |
 
 ## Events
 | Event            | Description                                    | Value                           |

@@ -43,6 +43,7 @@
 
 		<div class="presets-browse">
 			<v-info
+				center
 				type="warning"
 				v-if="presets.length === 0"
 				:title="$t('no_presets')"
@@ -313,9 +314,5 @@ export default defineComponent({
 
 .default {
 	color: var(--foreground-subdued);
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 </style>

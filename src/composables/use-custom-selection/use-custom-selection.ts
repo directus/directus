@@ -7,7 +7,7 @@ type Items = Readonly<
 	Ref<
 		| readonly {
 				text: string;
-				value: string;
+				value: string | boolean | number;
 		  }[]
 		| null
 	>

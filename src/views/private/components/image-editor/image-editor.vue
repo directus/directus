@@ -31,25 +31,40 @@
 			</div>
 
 			<div class="toolbar">
-				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top="$t('rotate')" />
+				<div
+					v-tooltip.bottom.inverted="$t('drag_mode')"
+					class="drag-mode toolbar-button"
+					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
+				>
+					<v-icon name="pan_tool" :class="{ active: dragMode === 'move' }" />
+					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
+				</div>
+
+				<v-icon
+					name="rotate_90_degrees_ccw"
+					@click="rotate"
+					v-tooltip.bottom.inverted="$t('rotate')"
+				/>
+
 				<v-icon
 					name="flip_horizontal"
 					@click="flip('horizontal')"
-					v-tooltip.top="$t('flip_horizontal')"
+					v-tooltip.bottom.inverted="$t('flip_horizontal')"
 				/>
+
 				<v-icon
 					name="flip_vertical"
 					@click="flip('vertical')"
-					v-tooltip.top="$t('flip_vertical')"
+					v-tooltip.bottom.inverted="$t('flip_vertical')"
 				/>
-				<v-menu
-					placement="top"
-					show-arrow
-					close-on-content-click
-					v-tooltip.top="$t('aspect_ratio')"
-				>
+
+				<v-menu placement="top" show-arrow close-on-content-click>
 					<template #activator="{ toggle }">
-						<v-icon :name="aspectRatioIcon" @click="toggle" />
+						<v-icon
+							:name="aspectRatioIcon"
+							@click="toggle"
+							v-tooltip.bottom.inverted="$t('aspect_ratio')"
+						/>
 					</template>
 
 					<v-list dense>
@@ -77,12 +92,41 @@
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
 							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
 						</v-list-item>
+						<v-list-item
+							v-if="imageData"
+							@click="aspectRatio = imageData.width / imageData.height"
+							:active="aspectRatio === imageData.width / imageData.height"
+						>
+							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
+							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
+						</v-list-item>
 					</v-list>
 				</v-menu>
+
+				<div class="spacer" />
+
+				<button class="toolbar-button cancel" v-show="cropping" @click="cropping = false">
+					{{ $t('cancel_crop') }}
+				</button>
 			</div>
 		</div>
 
 		<template #footer="{ close }">
+			<div class="dimensions" v-if="imageData">
+				<v-icon name="info_outline" />
+				{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
+				<template
+					v-if="
+					(imageData.width !== newDimensions.width ||
+						imageData.height !== newDimensions.height)
+				"
+				>
+					->
+					{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
+				</template>
+			</div>
+
+			<div class="spacer" />
 			<v-button @click="close" secondary>{{ $t('cancel') }}</v-button>
 			<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
 		</template>
@@ -90,11 +134,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, reactive } from '@vue/composition-api';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
+import throttle from 'lodash/throttle';
 
 type Image = {
 	type: string;
@@ -103,6 +148,8 @@ type Image = {
 	};
 	filesize: number;
 	filename_download: string;
+	width: number;
+	height: number;
 };
 
 export default defineComponent({
@@ -153,6 +200,9 @@ export default defineComponent({
 			rotate,
 			aspectRatio,
 			aspectRatioIcon,
+			newDimensions,
+			dragMode,
+			cropping,
 		} = useCropper();
 
 		watch(_active, (isActive) => {
@@ -187,6 +237,9 @@ export default defineComponent({
 			aspectRatioIcon,
 			saving,
 			imageURL,
+			newDimensions,
+			dragMode,
+			cropping,
 		};
 
 		function useImage() {
@@ -215,7 +268,14 @@ export default defineComponent({
 					loading.value = true;
 					const response = await api.get(`/${currentProjectKey}/files/${props.id}`, {
 						params: {
-							fields: ['data', 'type', 'filesize', 'filename_download'],
+							fields: [
+								'data',
+								'type',
+								'filesize',
+								'filename_download',
+								'width',
+								'height',
+							],
 						},
 					});
 
@@ -266,6 +326,18 @@ export default defineComponent({
 
 			const localAspectRatio = ref(NaN);
 
+			const newDimensions = reactive({
+				width: null as null | number,
+				height: null as null | number,
+			});
+
+			watch(imageData, () => {
+				if (!imageData.value) return;
+				localAspectRatio.value = imageData.value.width / imageData.value.height;
+				newDimensions.width = imageData.value.width;
+				newDimensions.height = imageData.value.height;
+			});
+
 			const aspectRatio = computed<number>({
 				get() {
 					return localAspectRatio.value;
@@ -277,6 +349,8 @@ export default defineComponent({
 			});
 
 			const aspectRatioIcon = computed(() => {
+				if (!imageData.value) return 'crop_original';
+
 				switch (aspectRatio.value) {
 					case 16 / 9:
 						return 'crop_16_9';
@@ -288,13 +362,51 @@ export default defineComponent({
 						return 'crop_7_5';
 					case 1 / 1:
 						return 'crop_square';
+					case imageData.value.width / imageData.value.height:
+						return 'crop_original';
 					case NaN:
 					default:
 						return 'crop_free';
 				}
 			});
 
-			return { cropperInstance, initCropper, flip, rotate, aspectRatio, aspectRatioIcon };
+			const localDragMode = ref<'move' | 'crop'>('move');
+
+			const dragMode = computed({
+				get() {
+					return localDragMode.value;
+				},
+				set(newMode: 'move' | 'crop') {
+					cropperInstance.value?.setDragMode(newMode);
+					localDragMode.value = newMode;
+				},
+			});
+
+			const localCropping = ref(false);
+			const cropping = computed({
+				get() {
+					return localCropping.value;
+				},
+				set(newCropping: boolean) {
+					if (newCropping === false) {
+						cropperInstance.value?.clear();
+					}
+
+					localCropping.value = newCropping;
+				},
+			});
+
+			return {
+				cropperInstance,
+				initCropper,
+				flip,
+				rotate,
+				aspectRatio,
+				aspectRatioIcon,
+				newDimensions,
+				dragMode,
+				cropping,
+			};
 
 			function initCropper() {
 				if (imageElement.value === null) return;
@@ -303,7 +415,35 @@ export default defineComponent({
 					cropperInstance.value.destroy();
 				}
 
-				cropperInstance.value = new Cropper(imageElement.value, { autoCrop: false });
+				if (!imageData.value) return;
+
+				cropperInstance.value = new Cropper(imageElement.value, {
+					autoCrop: false,
+					aspectRatio: imageData.value.width / imageData.value.height,
+					toggleDragModeOnDblclick: false,
+					dragMode: 'move',
+					crop: throttle((event) => {
+						if (!imageData.value) return;
+
+						if (
+							cropping.value === false &&
+							(event.detail.width || event.detail.height)
+						) {
+							cropping.value = true;
+						}
+
+						const newWidth = event.detail.width || imageData.value.width;
+						const newHeight = event.detail.height || imageData.value.height;
+
+						if (event.detail.rotate === 0 || event.detail.rotate === -180) {
+							newDimensions.width = Math.round(newWidth);
+							newDimensions.height = Math.round(newHeight);
+						} else {
+							newDimensions.height = Math.round(newWidth);
+							newDimensions.width = Math.round(newHeight);
+						}
+					}, 50),
+				});
 			}
 
 			function flip(type: 'horizontal' | 'vertical') {
@@ -367,19 +507,63 @@ export default defineComponent({
 .toolbar {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	width: 100%;
 	height: 60px;
+	padding: 0 24px;
 	color: var(--white);
 	background-color: #263238;
 
-	> * {
+	.v-icon {
 		display: inline-block;
-		margin: 0 8px;
+		margin-right: 16px;
 	}
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.dimensions {
+	color: var(--foreground-subdued);
+	font-feature-settings: 'tnum';
 }
 
 .warning {
 	color: var(--warning);
+}
+
+.toolbar-button {
+	padding: 8px;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+	transition: background-color var(--fast) var(--transition);
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.15);
+	}
+}
+
+.drag-mode {
+	margin-right: 16px;
+	margin-left: -8px;
+
+	.v-icon {
+		margin-right: 0;
+		opacity: 0.5;
+
+		&.active {
+			opacity: 1;
+		}
+	}
+
+	.v-icon:first-child {
+		margin-right: 8px;
+	}
+}
+
+.cancel {
+	padding-right: 16px;
+	padding-left: 16px;
 }
 </style>

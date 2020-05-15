@@ -26,6 +26,7 @@
 				icon="box"
 				:title="$t('no_collections')"
 				v-if="items.length === 0"
+				center
 			>
 				{{ $t('no_collections_copy_admin') }}
 
@@ -57,7 +58,7 @@
 					/>
 				</template>
 
-				<template #item.collection="{ item }">
+				<template #item.name="{ item }">
 					<span
 						class="collection"
 						:class="{
@@ -247,10 +248,6 @@ export default defineComponent({
 	--v-table-sticky-offset-top: 64px;
 
 	display: contents;
-}
-
-.v-info {
-	margin: 20vh 0;
 }
 
 .header-icon {

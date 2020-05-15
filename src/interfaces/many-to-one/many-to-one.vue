@@ -6,7 +6,7 @@
 		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>
-		<v-menu v-model="menuActive" attached close-on-content-click>
+		<v-menu v-model="menuActive" attached close-on-content-click :disabled="disabled">
 			<template #activator="{ active }">
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input
@@ -14,6 +14,7 @@
 					@click="onPreviewClick"
 					v-else
 					:placeholder="$t('select_an_item')"
+					:disabled="disabled"
 				>
 					<template #input v-if="currentItem">
 						<div class="preview">
@@ -25,7 +26,7 @@
 						</div>
 					</template>
 
-					<template #append>
+					<template #append v-if="!disabled">
 						<template v-if="currentItem">
 							<v-icon
 								name="open_in_new"
@@ -82,6 +83,7 @@
 		</v-menu>
 
 		<modal-detail
+			v-if="!disabled"
 			:active.sync="editModalActive"
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
@@ -90,6 +92,7 @@
 		/>
 
 		<modal-browse
+			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
@@ -139,6 +142,10 @@ export default defineComponent({
 		selectMode: {
 			type: String as PropType<'auto' | 'dropdown' | 'modal'>,
 			default: 'auto',
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -253,14 +260,17 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${relatedCollection.value.collection}/${props.value}`,
-						{
-							params: {
-								fields: fields,
-							},
-						}
-					);
+					const endpoint = relatedCollection.value.collection.startsWith('directus_')
+						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(
+								9
+						  )}/${props.value}`
+						: `/${currentProjectKey}/items/${relatedCollection.value.collection}/${props.value}`;
+
+					const response = await api.get(endpoint, {
+						params: {
+							fields: fields,
+						},
+					});
 
 					currentItem.value = response.data.data;
 				} catch (err) {
@@ -298,15 +308,16 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${relatedCollection.value.collection}`,
-						{
-							params: {
-								fields: fields,
-								limit: -1,
-							},
-						}
-					);
+					const endpoint = relatedCollection.value.collection.startsWith('directus_')
+						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}`
+						: `/${currentProjectKey}/items/${relatedCollection.value.collection}`;
+
+					const response = await api.get(endpoint, {
+						params: {
+							fields: fields,
+							limit: -1,
+						},
+					});
 
 					items.value = response.data.data;
 				} catch (err) {
@@ -318,15 +329,17 @@ export default defineComponent({
 
 			async function fetchTotalCount() {
 				const { currentProjectKey } = projectsStore.state;
-				const response = await api.get(
-					`/${currentProjectKey}/items/${relatedCollection.value.collection}`,
-					{
-						params: {
-							limit: 0,
-							meta: 'total_count',
-						},
-					}
-				);
+
+				const endpoint = relatedCollection.value.collection.startsWith('directus_')
+					? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}`
+					: `/${currentProjectKey}/items/${relatedCollection.value.collection}`;
+
+				const response = await api.get(endpoint, {
+					params: {
+						limit: 0,
+						meta: 'total_count',
+					},
+				});
 
 				totalCount.value = response.data.meta.total_count;
 			}
@@ -378,6 +391,8 @@ export default defineComponent({
 			return { onPreviewClick, displayTemplate, requiredFields };
 
 			function onPreviewClick() {
+				if (props.disabled) return;
+
 				if (usesMenu.value === true) {
 					const newActive = !menuActive.value;
 					menuActive.value = newActive;

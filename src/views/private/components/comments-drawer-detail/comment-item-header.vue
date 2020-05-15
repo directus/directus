@@ -14,7 +14,7 @@
 				{{ activity.action_by.first_name }} {{ activity.action_by.last_name }}
 			</template>
 
-			<template v-else-if="activity.action_by && action.action_by">
+			<template v-else>
 				{{ $t('private_user') }}
 			</template>
 		</div>

@@ -13,6 +13,7 @@
 			:width="file.width"
 			:height="file.height"
 			:title="file.title"
+			in-modal
 			@click="_active = false"
 		/>
 

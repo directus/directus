@@ -1,5 +1,5 @@
 import readme from './readme.md';
-import { defineComponent, ref, provide } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import NotificationsPreview from './notifications-preview.vue';
 import NotificationItem from '../notification-item/';
 import DrawerButton from '../drawer-button/';
@@ -8,6 +8,7 @@ import { NotificationRaw } from '@/stores/notifications/types';
 import { i18n } from '@/lang';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import VueRouter from 'vue-router';
+import useAppStore from '@/stores/app';
 
 export default {
 	title: 'Views / Private / Components / Notifications Preview',
@@ -52,7 +53,8 @@ export const basic = () =>
 			const notificationsStore = useNotificationsStore({});
 			const active = ref(false);
 
-			provide('drawer-open', ref(true));
+			const appStore = useAppStore({});
+			appStore.state.drawerOpen = true;
 
 			return { add, active };
 

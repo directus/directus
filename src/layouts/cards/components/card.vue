@@ -1,6 +1,6 @@
 <template>
 	<div class="card" :class="{ loading, readonly }" @click="handleClick">
-		<div class="header" :class="{ selected: value.includes(item) }">
+		<div class="header" :class="{ selected: item && value.includes(item[itemKey]) }">
 			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
 				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
 			</div>
@@ -74,7 +74,7 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Array as PropType<Record<string, any>[]>,
+			type: Array as PropType<(string | number)[]>,
 			default: () => [],
 		},
 		selectMode: {
@@ -88,6 +88,10 @@ export default defineComponent({
 		readonly: {
 			type: Boolean,
 			default: false,
+		},
+		itemKey: {
+			type: String,
+			required: true,
 		},
 	},
 	setup(props, { emit }) {
@@ -123,20 +127,26 @@ export default defineComponent({
 			return props.file.data.full_url;
 		});
 
-		const selectionIcon = computed(() =>
-			props.value.includes(props.item) ? 'check_circle' : 'radio_button_unchecked'
-		);
+		const selectionIcon = computed(() => {
+			if (!props.item) return 'radio_button_unchecked';
+
+			return props.value.includes(props.item[props.itemKey])
+				? 'check_circle'
+				: 'radio_button_unchecked';
+		});
 
 		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick };
 
 		function toggleSelection() {
-			if (props.value.includes(props.item)) {
+			if (!props.item) return null;
+
+			if (props.value.includes(props.item[props.itemKey])) {
 				emit(
 					'input',
-					props.value.filter((item) => item !== props.item)
+					props.value.filter((key) => key !== props.item[props.itemKey])
 				);
 			} else {
-				emit('input', [...props.value, props.item]);
+				emit('input', [...props.value, props.item[props.itemKey]]);
 			}
 		}
 
@@ -234,20 +244,6 @@ export default defineComponent({
 					opacity: 1;
 				}
 			}
-
-			&::before {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background-image: linear-gradient(
-					-180deg,
-					rgba(38, 50, 56, 0.2) 10%,
-					rgba(38, 50, 56, 0)
-				);
-				content: '';
-			}
 		}
 
 		&.selected {
@@ -275,24 +271,17 @@ export default defineComponent({
 .title,
 .subtitle {
 	position: relative;
+	display: flex;
+	align-items: center;
 	width: 100%;
 	height: 20px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	&::after {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: 12px;
-		background: linear-gradient(
-			90deg,
-			rgba(var(--background-page-rgb), 0) 0%,
-			rgba(var(--background-page-rgb), 1) 100%
-		);
-		content: '';
+
+	> .render-template ::v-deep > *:not(:last-child) {
+		margin-right: 4px;
 	}
 }
 

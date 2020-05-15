@@ -32,22 +32,4 @@ describe('Views / Private', () => {
 
 		expect(component.find('.navigation').classes()).toEqual(['navigation', 'is-open']);
 	});
-
-	it('Adds the is-open class to the drawer', async () => {
-		const component = shallowMount(PrivateView, {
-			localVue,
-			i18n,
-			propsData: {
-				title: 'Title',
-			},
-		});
-
-		expect(component.find('.drawer').classes()).toEqual(['drawer', 'alt-colors']);
-
-		(component.vm as any).drawerOpen = true;
-
-		await component.vm.$nextTick();
-
-		expect(component.find('.drawer').classes()).toEqual(['drawer', 'alt-colors', 'is-open']);
-	});
 });

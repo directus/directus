@@ -17,6 +17,10 @@
 			:edits="value.options"
 			@input="emitValue('options', $event)"
 		/>
+
+		<v-notice v-else>
+			{{ $t('no_options_available') }}
+		</v-notice>
 	</div>
 </template>
 

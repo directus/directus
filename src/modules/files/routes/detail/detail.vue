@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="loading ? $t('loading') : item.title">
+	<private-view :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -83,7 +83,7 @@
 				@click="previewActive = true"
 			/>
 
-			<file-lightbox :id="item.id" v-model="previewActive" />
+			<file-lightbox v-if="item" :id="item.id" v-model="previewActive" />
 
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
@@ -93,9 +93,9 @@
 			/>
 
 			<v-form
+				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
-				collection="directus_files"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				v-model="edits"
@@ -103,7 +103,14 @@
 		</div>
 
 		<template #drawer>
+			<file-info-drawer-detail v-if="isNew === false" v-bind="item" />
 			<revisions-drawer-detail
+				v-if="isBatch === false && isNew === false"
+				collection="directus_files"
+				:primary-key="primaryKey"
+				ref="revisionsDrawerDetail"
+			/>
+			<comments-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
 				:primary-key="primaryKey"
@@ -119,12 +126,16 @@ import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
+import useFieldsStore from '@/stores/fields';
+import { Field } from '@/stores/fields/types';
+import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
 
 type Values = {
 	[field: string]: any;
@@ -135,10 +146,12 @@ export default defineComponent({
 	components: {
 		FilesNavigation,
 		RevisionsDrawerDetail,
+		CommentsDrawerDetail,
 		SaveOptions,
 		FilePreview,
 		ImageEditor,
 		FileLightbox,
+		FileInfoDrawerDetail,
 	},
 	props: {
 		primaryKey: {
@@ -151,6 +164,9 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
+		const fieldsStore = useFieldsStore();
+
+		const revisionsDrawerDetail = ref<Vue>(null);
 
 		const {
 			isNew,
@@ -167,14 +183,19 @@ export default defineComponent({
 		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
-
 		const confirmDelete = ref(false);
-
 		const cacheBuster = ref(nanoid());
-
 		const editActive = ref(false);
-
 		const previewActive = ref(false);
+
+		// These are the fields that will be prevented from showing up in the form
+		const fieldsBlacklist: string[] = ['type', 'width', 'height', 'filesize', 'checksum'];
+
+		const formFields = computed(() => {
+			return fieldsStore
+				.getFieldsForCollection('directus_files')
+				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
+		});
 
 		return {
 			item,
@@ -197,6 +218,8 @@ export default defineComponent({
 			cacheBuster,
 			editActive,
 			previewActive,
+			revisionsDrawerDetail,
+			formFields,
 		};
 
 		function changeCacheBuster() {
@@ -221,6 +244,8 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
+
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

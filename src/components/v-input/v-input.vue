@@ -2,7 +2,7 @@
 	<div
 		class="v-input"
 		@click="$emit('click', $event)"
-		:class="{ 'full-width': fullWidth, 'has-click': hasClick }"
+		:class="{ 'full-width': fullWidth, 'has-click': hasClick, disabled: disabled }"
 	>
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="value" :disabled="disabled" />
@@ -273,6 +273,10 @@ body {
 
 			display: block;
 
+			&:hover:not(.disabled) {
+				--arrow-color: var(--primary);
+			}
+
 			&:active:not(.disabled) {
 				transform: scale(0.9);
 			}
@@ -294,7 +298,7 @@ body {
 
 		&:focus-within,
 		&.active {
-			--arrow-color: var(--primary);
+			--arrow-color: var(--border-normal-alt);
 
 			color: var(--foreground-normal);
 			background-color: var(--background-page);
@@ -354,6 +358,11 @@ body {
 
 	&.has-click {
 		cursor: pointer;
+
+		&.disabled {
+			cursor: auto;
+		}
+
 		input {
 			pointer-events: none;
 			.prefix,

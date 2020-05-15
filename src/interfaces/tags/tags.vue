@@ -9,7 +9,7 @@
 			<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
 		</v-input>
-		<div class="tags">
+		<div class="tags" v-if="presetVals.length > 0 || customVals.length > 0">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
 				<v-chip
 					v-for="preset in presetVals"
@@ -24,7 +24,7 @@
 				</v-chip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon name="chevron_right" />
+				<v-icon v-if="presetVals.length > 0" name="chevron_right" />
 				<v-chip
 					v-for="val in customVals"
 					:key="val"
@@ -32,7 +32,6 @@
 					class="tag"
 					small
 					label
-					close
 					@click="removeTag(val)"
 				>
 					{{ val }}
@@ -77,7 +76,7 @@ export default defineComponent({
 		},
 		presets: {
 			type: Array as PropType<string[]>,
-			default: [],
+			default: null,
 		},
 		allowCustom: {
 			type: Boolean,
@@ -86,10 +85,11 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const presetVals = computed<string[]>(() => {
-			return processArray(props.presets ?? []);
+			if (props.presets !== null) return processArray(props.presets);
+			return [];
 		});
 
-		const selectedValsLocal = ref<string[]>(processArray(props.value ?? []));
+		const selectedValsLocal = ref<string[]>(processArray(props.value || []));
 
 		watch(
 			() => props.value,
@@ -97,14 +97,18 @@ export default defineComponent({
 				if (Array.isArray(newVal)) {
 					selectedValsLocal.value = processArray(newVal);
 				}
+
+				if (newVal === null) selectedValsLocal.value = [];
 			}
 		);
 
 		const selectedVals = computed<string[]>(() => {
 			let vals = processArray(selectedValsLocal.value);
+
 			if (!props.allowCustom) {
 				vals = vals.filter((val) => presetVals.value.includes(val));
 			}
+
 			return vals;
 		});
 
@@ -118,7 +122,9 @@ export default defineComponent({
 			if (props.alphabetize) {
 				array = array.concat().sort();
 			}
+
 			array = [...new Set(array)];
+
 			return array;
 		}
 
