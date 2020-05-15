@@ -13,5 +13,5 @@ contact_links:
     url: https://github.com/directus/directus/discussions/new
     about: Ask questions and discuss with other community members
   - name: Report Security Vulnerability
-    url: https://github.com/directus/directus/security/advisories
+    url: https://github.com/directus/directus/security/policy
     about: Privately report security vulnerabilities
