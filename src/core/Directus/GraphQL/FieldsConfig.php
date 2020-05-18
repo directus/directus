@@ -167,6 +167,7 @@ class FieldsConfig
                     $filters[$v['field'] . '_nbetween'] = Types::string();
                     break;
                 case 'status':
+                case 'slug':
                     $filters[$v['field'] . '_eq'] = Types::string();
                     $filters[$v['field'] . '_neq'] = Types::string();
                     $filters[$v['field'] . '_in'] = Types::string();
