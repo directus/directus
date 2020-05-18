@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report Bug (App)
+    url: https://github.com/directus/app/issues/new?labels=bug&template=bug_report.md
+    about: Report a bug in the Application and track its resolution
+  - name: Report Bug (API)
+    url: https://github.com/directus/api/issues/new?labels=bug&template=bug_report.md
+    about: Report a bug in the API and track its resolution
+  - name: Request Feature
+    url: https://github.com/directus/directus/discussions/new
+    about: Request a feature to be added to the platform
+  - name: Ask a Question
+    url: https://github.com/directus/directus/discussions/new
+    about: Ask questions and discuss with other community members
+  - name: Report Security Vulnerability
+    url: https://github.com/directus/directus/security/policy
+    about: Privately report security vulnerabilities
