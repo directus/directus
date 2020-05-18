@@ -13,6 +13,7 @@ import InterfaceStatus from './status';
 import InterfaceDateTime from './datetime';
 import InterfaceImage from './image';
 import InterfaceIcon from './icon';
+import InterfaceNotice from './notice';
 import InterfaceManyToOne from './many-to-one';
 import InterfaceOneToMany from './one-to-many';
 import InterfaceColor from './color';
@@ -38,6 +39,7 @@ export const interfaces = [
 	InterfaceDateTime,
 	InterfaceImage,
 	InterfaceIcon,
+	InterfaceNotice,
 	InterfaceManyToOne,
 	InterfaceOneToMany,
 	InterfaceColor,

@@ -1,30 +1,18 @@
 <template>
-	<div class="v-notice" :class="[className, { center }]">
+	<div class="v-notice" :class="[color, { center }]">
 		<v-icon v-if="icon !== false" :name="iconName" left />
 		<slot />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
-		info: {
-			type: Boolean,
-			default: false,
-		},
-		success: {
-			type: Boolean,
-			default: false,
-		},
-		warning: {
-			type: Boolean,
-			default: false,
-		},
-		danger: {
-			type: Boolean,
-			default: false,
+		color: {
+			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
+			default: 'normal',
 		},
 		icon: {
 			type: [String, Boolean],
@@ -41,34 +29,20 @@ export default defineComponent({
 				return props.icon;
 			}
 
-			if (props.info) {
+			if (props.color == 'info') {
 				return 'info';
-			} else if (props.success) {
+			} else if (props.color == 'success') {
 				return 'check_circle';
-			} else if (props.warning) {
+			} else if (props.color == 'warning') {
 				return 'warning';
-			} else if (props.danger) {
+			} else if (props.color == 'danger') {
 				return 'error';
 			} else {
 				return 'info';
 			}
 		});
 
-		const className = computed<string | null>(() => {
-			if (props.info) {
-				return 'info';
-			} else if (props.success) {
-				return 'success';
-			} else if (props.warning) {
-				return 'warning';
-			} else if (props.danger) {
-				return 'danger';
-			} else {
-				return null;
-			}
-		});
-
-		return { iconName, className };
+		return { iconName };
 	},
 });
 </script>
@@ -125,6 +99,12 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	::v-deep {
+		a {
+			text-decoration: underline;
+		}
 	}
 }
 </style>

@@ -7,9 +7,7 @@
 ## Props
 | Prop      | Description                                                        | Default |
 |-----------|--------------------------------------------------------------------|---------|
-| `success` | Shows the success notice                                           | `false` |
-| `warning` | Shows the warning notice                                           | `false` |
-| `danger`  | Shows the danger notice                                            | `false` |
+| `color`   | One of `info`, `success`, `warning`, `danger`                       | `info`  |
 | `icon`    | Custom icon name, or false if you want to hide the icon completely | `null`  |
 | `center`  | Render notice content centered                                     | `false` |
 
