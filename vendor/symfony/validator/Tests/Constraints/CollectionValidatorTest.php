@@ -143,6 +143,29 @@ abstract class CollectionValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
+    public function testExtraFieldsDisallowedWithOptionalValues()
+    {
+        $constraint = new Optional();
+
+        $data = $this->prepareTestData([
+            'baz' => 6,
+        ]);
+
+        $this->validator->validate($data, new Collection([
+            'fields' => [
+                'foo' => $constraint,
+            ],
+            'extraFieldsMessage' => 'myMessage',
+        ]));
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ field }}', '"baz"')
+            ->atPath('property.path[baz]')
+            ->setInvalidValue(6)
+            ->setCode(Collection::NO_SUCH_FIELD_ERROR)
+            ->assertRaised();
+    }
+
     // bug fix
     public function testNullNotConsideredExtraField()
     {

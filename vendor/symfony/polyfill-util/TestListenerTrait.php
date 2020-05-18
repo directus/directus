@@ -31,6 +31,10 @@ class TestListenerTrait
             if (!$tests = $suite->tests()) {
                 continue;
             }
+            $testedClass = new \ReflectionClass($testClass);
+            if (preg_match('{^ \* @requires PHP (.*)}mi', $testedClass->getDocComment(), $m) && version_compare($m[1], \PHP_VERSION, '>')) {
+                continue;
+            }
             if (!preg_match('/^(.+)\\\\Tests(\\\\.*)Test$/', $testClass, $m)) {
                 $mainSuite->addTest(TestListener::warning('Unknown naming convention for '.$testClass));
                 continue;
@@ -61,7 +65,7 @@ class TestListenerTrait
             $bootstrap->rewind();
 
             foreach (new \RegexIterator($bootstrap, '/return p\\\\'.$testedClass->getShortName().'::/') as $defLine) {
-                if (!preg_match('/^\s*function (?P<name>[^\(]++)(?P<signature>\(.*\)) \{ (?<return>return p\\\\'.$testedClass->getShortName().'::[^\(]++)(?P<args>\([^\)]*+\)); \}$/', $defLine, $f)) {
+                if (!preg_match('/^\s*function (?P<name>[^\(]++)(?P<signature>\(.*\)(?: ?: [^ ]++)?) \{ (?<return>return p\\\\'.$testedClass->getShortName().'::[^\(]++)(?P<args>\([^\)]*+\)); \}$/', $defLine, $f)) {
                     $warnings[] = TestListener::warning('Invalid line in bootstrap.php: '.trim($defLine));
                     continue;
                 }

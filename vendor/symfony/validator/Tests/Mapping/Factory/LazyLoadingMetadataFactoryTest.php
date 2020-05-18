@@ -14,11 +14,14 @@ namespace Symfony\Component\Validator\Tests\Mapping\Factory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\Cache\Psr6Cache;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
+use Symfony\Component\Validator\Tests\Fixtures\PropertyGetter;
+use Symfony\Component\Validator\Tests\Fixtures\PropertyGetterInterface;
 
 class LazyLoadingMetadataFactoryTest extends TestCase
 {
@@ -70,7 +73,6 @@ class LazyLoadingMetadataFactoryTest extends TestCase
             new ConstraintA(['groups' => [
                 'Default',
                 'EntityParentInterface',
-                'EntityInterfaceB',
                 'Entity',
             ]]),
         ];
@@ -186,6 +188,15 @@ class LazyLoadingMetadataFactoryTest extends TestCase
         $this->assertContains('EntityStaticCar', $groups);
         $this->assertContains('EntityStaticVehicle', $groups);
     }
+
+    public function testMultipathInterfaceConstraint()
+    {
+        $factory = new LazyLoadingMetadataFactory(new PropertyGetterInterfaceConstraintLoader());
+        $metadata = $factory->getMetadataFor(PropertyGetter::class);
+        $constraints = $metadata->getPropertyMetadata('property');
+
+        $this->assertCount(1, $constraints);
+    }
 }
 
 class TestLoader implements LoaderInterface
@@ -193,5 +204,17 @@ class TestLoader implements LoaderInterface
     public function loadClassMetadata(ClassMetadata $metadata)
     {
         $metadata->addConstraint(new ConstraintA());
+    }
+}
+
+class PropertyGetterInterfaceConstraintLoader implements LoaderInterface
+{
+    public function loadClassMetadata(ClassMetadata $metadata)
+    {
+        if (PropertyGetterInterface::class === $metadata->getClassName()) {
+            $metadata->addGetterConstraint('property', new NotBlank());
+        }
+
+        return true;
     }
 }

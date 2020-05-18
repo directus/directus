@@ -229,6 +229,19 @@ class CreateSettingsTable extends AbstractMigration
             ],
             [
                 'collection' => 'directus_settings',
+                'field' => 'auth_token_ttl',
+                'type' => 'integer',
+                'note' => 'Minutes the API authorization token will last',
+                'interface' => 'numeric',
+                'options' => json_encode([
+                    'iconRight' => 'timer'
+                ]),
+                'sort' => 25,
+                'locked' => 1,
+                'width' => 'half'
+            ],
+            [
+                'collection' => 'directus_settings',
                 'field' => 'files_divider',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_ALIAS,
                 'interface' => 'divider',
@@ -437,6 +450,10 @@ class CreateSettingsTable extends AbstractMigration
             [
                 'key' => 'login_attempts_allowed',
                 'value' => '25'
+            ],
+            [
+                'key' => 'auth_token_ttl',
+                'value' => '20'
             ],
             [
                 'key' => 'trusted_proxies',

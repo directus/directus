@@ -372,8 +372,16 @@
            </trans-unit>
            <trans-unit id="96">
                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
-               <target>Số lượng các phần tử trong bộ sưu tập này nên là bội số của {{compared_value}}.</target>
+               <target>Số lượng các phần tử trong bộ sưu tập này nên là bội số của {{ compared_value }}.</target>
            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Giá trị này nên thỏa mãn ít nhất một trong những ràng buộc sau:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Mỗi phần tử trong bộ sưu tập này nên thỏa mãn những ràng buộc của nó.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

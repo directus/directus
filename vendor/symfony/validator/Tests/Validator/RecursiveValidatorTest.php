@@ -14,14 +14,19 @@ namespace Symfony\Component\Validator\Tests\Validator;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\GroupSequence;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Context\ExecutionContextFactory;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\Tests\Constraints\Fixtures\ChildA;
 use Symfony\Component\Validator\Tests\Constraints\Fixtures\ChildB;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
+use Symfony\Component\Validator\Tests\Fixtures\EntityWithGroupedConstraintOnMethods;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class RecursiveValidatorTest extends AbstractTest
@@ -115,6 +120,25 @@ class RecursiveValidatorTest extends AbstractTest
         $this->assertCount(2, $violations);
         $this->assertInstanceOf(Length::class, $violations->get(0)->getConstraint());
         $this->assertInstanceOf(NotBlank::class, $violations->get(1)->getConstraint());
+    }
+
+    public function testGroupedMethodConstraintValidateInSequence()
+    {
+        $metadata = new ClassMetadata(EntityWithGroupedConstraintOnMethods::class);
+        $metadata->addPropertyConstraint('bar', new NotNull(['groups' => 'Foo']));
+        $metadata->addGetterMethodConstraint('validInFoo', 'isValidInFoo', new IsTrue(['groups' => 'Foo']));
+        $metadata->addGetterMethodConstraint('bar', 'getBar', new NotNull(['groups' => 'Bar']));
+
+        $this->metadataFactory->addMetadata($metadata);
+
+        $entity = new EntityWithGroupedConstraintOnMethods();
+        $groups = new GroupSequence(['EntityWithGroupedConstraintOnMethods', 'Foo', 'Bar']);
+
+        $violations = $this->validator->validate($entity, null, $groups);
+
+        $this->assertCount(2, $violations);
+        $this->assertInstanceOf(NotNull::class, $violations->get(0)->getConstraint());
+        $this->assertInstanceOf(IsTrue::class, $violations->get(1)->getConstraint());
     }
 
     public function testAllConstraintValidateAllGroupsForNestedConstraints()

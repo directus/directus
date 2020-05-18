@@ -100,4 +100,16 @@ class CollectionTest extends TestCase
 
         $this->assertEquals($collection1, $collection2);
     }
+
+    public function testConstraintHasDefaultGroupWithOptionalValues()
+    {
+        $constraint = new Collection([
+            'foo' => new Required(),
+            'bar' => new Optional(),
+        ]);
+
+        $this->assertEquals(['Default'], $constraint->groups);
+        $this->assertEquals(['Default'], $constraint->fields['foo']->groups);
+        $this->assertEquals(['Default'], $constraint->fields['bar']->groups);
+    }
 }

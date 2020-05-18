@@ -190,7 +190,16 @@ class FieldsConfig
                     $filters[$v['field'] . '_in'] = Types::string();
                     $filters[$v['field'] . '_nin'] = Types::string();
                     break;
-
+                case 'm2o':
+                    $filters[$v['field'] . '_eq'] = Types::int();
+                    $filters[$v['field'] . '_neq'] = Types::int();
+                    $filters[$v['field'] . '_in'] = Types::string();
+                    $filters[$v['field'] . '_nin'] = Types::string();
+                    $filters[$v['field'] . '_contains'] = Types::string();
+                    $filters[$v['field'] . '_ncontains'] = Types::string();
+                    $filters[$v['field'] . '_rlike'] = Types::string();
+                    $filters[$v['field'] . '_nrlike'] = Types::string();
+                    break;
                 default:
                     $filters[$v['field'] . '_all'] = Types::string();
                     $filters[$v['field'] . '_has'] = Types::string();

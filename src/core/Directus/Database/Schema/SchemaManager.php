@@ -80,9 +80,11 @@ class SchemaManager
      * @var array
      */
     protected $noLengthDataTypes = [        
+        'TEXT',
         'TINYTEXT',
         'MEDIUMTEXT',
         'LONGTEXT',
+        'BLOB',
         'TINYBLOB',
         'MEDIUMBLOB',
         'LONGBLOB'

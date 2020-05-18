@@ -131,9 +131,9 @@ class Ftp extends AbstractFtpAdapter
     public function connect()
     {
         if ($this->ssl) {
-            $this->connection = ftp_ssl_connect($this->getHost(), $this->getPort(), $this->getTimeout());
+            $this->connection = @ftp_ssl_connect($this->getHost(), $this->getPort(), $this->getTimeout());
         } else {
-            $this->connection = ftp_connect($this->getHost(), $this->getPort(), $this->getTimeout());
+            $this->connection = @ftp_connect($this->getHost(), $this->getPort(), $this->getTimeout());
         }
 
         if ( ! $this->connection) {
@@ -230,7 +230,7 @@ class Ftp extends AbstractFtpAdapter
     public function disconnect()
     {
         if (is_resource($this->connection)) {
-            ftp_close($this->connection);
+            @ftp_close($this->connection);
         }
 
         $this->connection = null;

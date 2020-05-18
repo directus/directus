@@ -122,9 +122,18 @@ class XmlUtils
      */
     public static function loadFile($file, $schemaOrCallable = null)
     {
+        if (!is_file($file)) {
+            throw new \InvalidArgumentException(sprintf('Resource "%s" is not a file.', $file));
+        }
+
+        if (!is_readable($file)) {
+            throw new \InvalidArgumentException(sprintf('File "%s" is not readable.', $file));
+        }
+
         $content = @file_get_contents($file);
+
         if ('' === trim($content)) {
-            throw new \InvalidArgumentException(sprintf('File %s does not contain valid XML, it is empty.', $file));
+            throw new \InvalidArgumentException(sprintf('File "%s" does not contain valid XML, it is empty.', $file));
         }
 
         try {

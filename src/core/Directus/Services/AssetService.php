@@ -68,7 +68,18 @@ class AssetService extends AbstractService
         $this->thumbnailParams = [];
     }
 
-    public function getAsset($fileHashId, array $params = [])
+    /**
+     * Returns content (string or stream) and metadata for an asset
+     *
+     * @param string $fileHashId
+     * @param array $params
+     * @param bool $asStream
+     * @return array
+     * @throws ItemNotFoundException
+     * @throws UnprocessableEntityException
+     * @throws \League\Flysystem\FileNotFoundException
+     */
+    public function getAsset($fileHashId, array $params = [], $asStream = false)
     {
         $tableGateway = $this->createTableGateway($this->collection);
 
@@ -87,12 +98,33 @@ class AssetService extends AbstractService
 
         $file = $result->current()->toArray();
 
-        // Get original image
-        if (count($params) == 0) {
+        // Get thumbnail
+        if (
+            isset($params['key']) ||
+            isset($params['w']) ||
+            isset($params['h']) ||
+            isset($params['f']) ||
+            isset($params['q'])
+        ) {
+            $this->fileName = $file['filename_disk'];
+            $this->fileNameDownload = $file['filename_download'];
+
+            try {
+                return $this->getThumbnail($params, $asStream);
+            } catch (Exception $e) {
+                throw new UnprocessableEntityException(sprintf($e->getMessage()));
+            }
+        }
+        // Get original file
+        else {
             $lastModified = $this->filesystem->getAdapter()->getTimestamp($file['filename_disk']);
             $lastModified = new DateTimeUtils(date('c', $lastModified));
 
-            $img = $this->filesystem->read($file['filename_disk']);
+            if ($asStream === false) {
+                $img = $this->filesystem->read($file['filename_disk']);
+            } else {
+                $img = $this->filesystem->readStream($file['filename_disk']);
+            }
             $result = [];
             $result['last_modified'] = $lastModified->toRFC2616Format();
             $result['mimeType'] = $file['type'];
@@ -101,19 +133,18 @@ class AssetService extends AbstractService
             $result['filename_download'] = $file['filename_download'];
 
             return $result;
-        } else {
-
-            $this->fileName = $file['filename_disk'];
-            $this->fileNameDownload = $file['filename_download'];
-            try {
-                return $this->getThumbnail($params);
-            } catch (Exception $e) {
-                throw new UnprocessableEntityException(sprintf($e->getMessage()));
-            }
         }
     }
 
-    public function getThumbnail($params)
+    /**
+     * Resizes an image and returns content (string or stream) and metadata
+     *
+     * @param array $params
+     * @param bool $asStream
+     * @return mixed
+     * @throws Exception
+     */
+    public function getThumbnail($params, $asStream = false)
     {
         $this->thumbnailParams = $params;
 
@@ -127,16 +158,16 @@ class AssetService extends AbstractService
             ',f' . $this->thumbnailParams['fit'] . ',q' . $this->thumbnailParams['quality'];
 
         try {
-            $image = $this->getExistingThumbnail();
+            $image = $this->getExistingThumbnail($asStream);
 
             if (!$image) {
                 switch ($this->thumbnailParams['fit']) {
                     case 'contain':
-                        $image = $this->contain();
+                        $image = $this->contain($asStream);
                         break;
                     case 'crop':
                     default:
-                        $image = $this->crop();
+                        $image = $this->crop($asStream);
                 }
             }
 
@@ -305,14 +336,20 @@ class AssetService extends AbstractService
     /**
      * Return thumbnail as data
      *
+     * @param boolean $asStream
      * @throws Exception
      * @return string|null
      */
-    public function getExistingThumbnail()
+    public function getExistingThumbnail($asStream = false)
     {
         try {
-            if ($this->filesystemThumb->exists($this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'])) {
-                $img = $this->filesystemThumb->read($this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName']);
+            $location = $this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'];
+            if ($this->filesystemThumb->exists($location)) {
+                if ($asStream === false) {
+                    $img = $this->filesystemThumb->read($location);
+                } else {
+                    $img = $this->filesystemThumb->readStream($location);
+                }
             }
             return isset($img) && $img ? $img : null;
         } catch (Exception $e) {
@@ -341,9 +378,10 @@ class AssetService extends AbstractService
      * https://css-tricks.com/almanac/properties/o/object-fit/
      *
      * @throws Exception
-     * @return string
+     * @param boolean $asStream
+     * @return string|resource
      */
-    public function contain()
+    public function contain($asStream = false)
     {
         try {
             $img = $this->load();
@@ -351,9 +389,13 @@ class AssetService extends AbstractService
                 $constraint->aspectRatio();
             });
             $encodedImg = (string) $img->encode($this->thumbnailParams['format'], ($this->thumbnailParams['quality'] ? $this->thumbnailParams['quality'] : null));
-            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'], $encodedImg);
+            $location = $this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'];
+            $this->filesystemThumb->write($location, $encodedImg);
 
-            return $encodedImg;
+            if ($asStream === false) {
+                return $encodedImg;
+            }
+            return $this->filesystemThumb->readStream($location);
         } catch (Exception $e) {
             throw $e;
         }
@@ -365,18 +407,23 @@ class AssetService extends AbstractService
      * https://css-tricks.com/almanac/properties/o/object-fit/
      *
      * @throws Exception
+     * @param boolean $asStream
      * @return string
      */
-    public function crop()
+    public function crop($asStream = false)
     {
         try {
             $img = $this->load();
             $img->fit($this->thumbnailParams['width'], $this->thumbnailParams['height'], function ($constraint) {
             });
             $encodedImg = (string) $img->encode($this->thumbnailParams['format'], ($this->thumbnailParams['quality'] ? $this->thumbnailParams['quality'] : null));
-            $this->filesystemThumb->write($this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'], $encodedImg);
+            $location = $this->thumbnailDir . '/' . $this->thumbnailParams['thumbnailFileName'];
+            $this->filesystemThumb->write($location, $encodedImg);
 
-            return $encodedImg;
+            if ($asStream === false) {
+                return $encodedImg;
+            }
+            return $this->filesystemThumb->readStream($location);
         } catch (Exception $e) {
             throw $e;
         }

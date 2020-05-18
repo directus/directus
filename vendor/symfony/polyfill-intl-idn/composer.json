@@ -1,0 +1,36 @@
+{
+    "name": "symfony/polyfill-intl-idn",
+    "type": "library",
+    "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
+    "keywords": ["polyfill", "shim", "compatibility", "portable", "intl", "idn"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Laurent Bassin",
+            "email": "laurent@bassin.info"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/polyfill-mbstring": "^1.3",
+        "symfony/polyfill-php72": "^1.10"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Polyfill\\Intl\\Idn\\": "" },
+        "files": [ "bootstrap.php" ]
+    },
+    "suggest": {
+        "ext-intl": "For best performance"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.17-dev"
+        }
+    }
+}

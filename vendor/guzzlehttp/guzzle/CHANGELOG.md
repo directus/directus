@@ -1,5 +1,10 @@
 # Change Log
 
+## 6.5.3 - 2020-04-18
+
+* Use Symfony intl-idn polyfill [#2550](https://github.com/guzzle/guzzle/pull/2550)
+* Remove use of internal functions [#2548](https://github.com/guzzle/guzzle/pull/2548)
+
 ## 6.5.2 - 2019-12-23
 
 * idn_to_ascii() fix for old PHP versions [#2489](https://github.com/guzzle/guzzle/pull/2489)

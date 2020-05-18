@@ -952,6 +952,7 @@ class InstallerUtils
         $corsEnabled = ArrayUtils::get($data, 'cors_enabled', true);
         $authSecret = ArrayUtils::get($data, 'auth_secret', StringUtils::randomString(32, false));
         $authPublic = ArrayUtils::get($data, 'auth_public', generate_uuid4());
+        $ttl = ArrayUtils::get($data, 'ttl', 20);
 
         return ArrayUtils::defaults([
             'project' => '_',
@@ -1004,6 +1005,7 @@ class InstallerUtils
             'auth' => [
                 'secret' => $authSecret,
                 'public' => $authPublic,
+                'ttl' => $ttl
             ]
         ], $data);
     }

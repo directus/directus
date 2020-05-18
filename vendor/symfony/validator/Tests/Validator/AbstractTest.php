@@ -701,4 +701,25 @@ abstract class AbstractTest extends AbstractValidatorTest
 
         $this->assertCount(2, $violations);
     }
+
+    public function testNestedObjectIsValidatedInMultipleGroupsIfGroupInValidConstraintIsValidated()
+    {
+        $entity = new Entity();
+        $entity->firstName = null;
+
+        $reference = new Reference();
+        $reference->value = null;
+
+        $entity->childA = $reference;
+
+        $this->metadata->addPropertyConstraint('firstName', new NotBlank());
+        $this->metadata->addPropertyConstraint('childA', new Valid(['groups' => ['group1', 'group2']]));
+
+        $this->referenceMetadata->addPropertyConstraint('value', new NotBlank(['groups' => 'group1']));
+        $this->referenceMetadata->addPropertyConstraint('value', new NotNull(['groups' => 'group2']));
+
+        $violations = $this->validator->validate($entity, null, ['Default', 'group1', 'group2']);
+
+        $this->assertCount(3, $violations);
+    }
 }

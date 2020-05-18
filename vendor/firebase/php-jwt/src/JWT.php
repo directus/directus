@@ -73,13 +73,13 @@ class JWT
      */
     public static function decode($jwt, $key, array $allowed_algs = array())
     {
-        $timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
+        $timestamp = \is_null(static::$timestamp) ? \time() : static::$timestamp;
 
         if (empty($key)) {
             throw new InvalidArgumentException('Key may not be empty');
         }
-        $tks = explode('.', $jwt);
-        if (count($tks) != 3) {
+        $tks = \explode('.', $jwt);
+        if (\count($tks) != 3) {
             throw new UnexpectedValueException('Wrong number of segments');
         }
         list($headb64, $bodyb64, $cryptob64) = $tks;
@@ -98,7 +98,7 @@ class JWT
         if (empty(static::$supported_algs[$header->alg])) {
             throw new UnexpectedValueException('Algorithm not supported');
         }
-        if (!in_array($header->alg, $allowed_algs)) {
+        if (!\in_array($header->alg, $allowed_algs)) {
             throw new UnexpectedValueException('Algorithm not allowed');
         }
         if ($header->alg === 'ES256') {
@@ -106,7 +106,7 @@ class JWT
             $sig = self::signatureToDER($sig);
         }
 
-        if (is_array($key) || $key instanceof \ArrayAccess) {
+        if (\is_array($key) || $key instanceof \ArrayAccess) {
             if (isset($header->kid)) {
                 if (!isset($key[$header->kid])) {
                     throw new UnexpectedValueException('"kid" invalid, unable to lookup correct key');
@@ -126,7 +126,7 @@ class JWT
         // token can actually be used. If it's not yet that time, abort.
         if (isset($payload->nbf) && $payload->nbf > ($timestamp + static::$leeway)) {
             throw new BeforeValidException(
-                'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
+                'Cannot handle token prior to ' . \date(DateTime::ISO8601, $payload->nbf)
             );
         }
 
@@ -135,7 +135,7 @@ class JWT
         // correctly used the nbf claim).
         if (isset($payload->iat) && $payload->iat > ($timestamp + static::$leeway)) {
             throw new BeforeValidException(
-                'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
+                'Cannot handle token prior to ' . \date(DateTime::ISO8601, $payload->iat)
             );
         }
 
@@ -169,18 +169,18 @@ class JWT
         if ($keyId !== null) {
             $header['kid'] = $keyId;
         }
-        if (isset($head) && is_array($head)) {
-            $header = array_merge($head, $header);
+        if (isset($head) && \is_array($head)) {
+            $header = \array_merge($head, $header);
         }
         $segments = array();
         $segments[] = static::urlsafeB64Encode(static::jsonEncode($header));
         $segments[] = static::urlsafeB64Encode(static::jsonEncode($payload));
-        $signing_input = implode('.', $segments);
+        $signing_input = \implode('.', $segments);
 
         $signature = static::sign($signing_input, $key, $alg);
         $segments[] = static::urlsafeB64Encode($signature);
 
-        return implode('.', $segments);
+        return \implode('.', $segments);
     }
 
     /**
@@ -203,10 +203,10 @@ class JWT
         list($function, $algorithm) = static::$supported_algs[$alg];
         switch ($function) {
             case 'hash_hmac':
-                return hash_hmac($algorithm, $msg, $key, true);
+                return \hash_hmac($algorithm, $msg, $key, true);
             case 'openssl':
                 $signature = '';
-                $success = openssl_sign($msg, $signature, $key, $algorithm);
+                $success = \openssl_sign($msg, $signature, $key, $algorithm);
                 if (!$success) {
                     throw new DomainException("OpenSSL unable to sign data");
                 } else {
@@ -240,7 +240,7 @@ class JWT
         list($function, $algorithm) = static::$supported_algs[$alg];
         switch ($function) {
             case 'openssl':
-                $success = openssl_verify($msg, $signature, $key, $algorithm);
+                $success = \openssl_verify($msg, $signature, $key, $algorithm);
                 if ($success === 1) {
                     return true;
                 } elseif ($success === 0) {
@@ -248,19 +248,19 @@ class JWT
                 }
                 // returns 1 on success, 0 on failure, -1 on error.
                 throw new DomainException(
-                    'OpenSSL error: ' . openssl_error_string()
+                    'OpenSSL error: ' . \openssl_error_string()
                 );
             case 'hash_hmac':
             default:
-                $hash = hash_hmac($algorithm, $msg, $key, true);
-                if (function_exists('hash_equals')) {
-                    return hash_equals($signature, $hash);
+                $hash = \hash_hmac($algorithm, $msg, $key, true);
+                if (\function_exists('hash_equals')) {
+                    return \hash_equals($signature, $hash);
                 }
-                $len = min(static::safeStrlen($signature), static::safeStrlen($hash));
+                $len = \min(static::safeStrlen($signature), static::safeStrlen($hash));
 
                 $status = 0;
                 for ($i = 0; $i < $len; $i++) {
-                    $status |= (ord($signature[$i]) ^ ord($hash[$i]));
+                    $status |= (\ord($signature[$i]) ^ \ord($hash[$i]));
                 }
                 $status |= (static::safeStrlen($signature) ^ static::safeStrlen($hash));
 
@@ -279,23 +279,23 @@ class JWT
      */
     public static function jsonDecode($input)
     {
-        if (version_compare(PHP_VERSION, '5.4.0', '>=') && !(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
+        if (\version_compare(PHP_VERSION, '5.4.0', '>=') && !(\defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
             /** In PHP >=5.4.0, json_decode() accepts an options parameter, that allows you
              * to specify that large ints (like Steam Transaction IDs) should be treated as
              * strings, rather than the PHP default behaviour of converting them to floats.
              */
-            $obj = json_decode($input, false, 512, JSON_BIGINT_AS_STRING);
+            $obj = \json_decode($input, false, 512, JSON_BIGINT_AS_STRING);
         } else {
             /** Not all servers will support that, however, so for older versions we must
              * manually detect large ints in the JSON string and quote them (thus converting
              *them to strings) before decoding, hence the preg_replace() call.
              */
-            $max_int_length = strlen((string) PHP_INT_MAX) - 1;
-            $json_without_bigints = preg_replace('/:\s*(-?\d{'.$max_int_length.',})/', ': "$1"', $input);
-            $obj = json_decode($json_without_bigints);
+            $max_int_length = \strlen((string) PHP_INT_MAX) - 1;
+            $json_without_bigints = \preg_replace('/:\s*(-?\d{'.$max_int_length.',})/', ': "$1"', $input);
+            $obj = \json_decode($json_without_bigints);
         }
 
-        if ($errno = json_last_error()) {
+        if ($errno = \json_last_error()) {
             static::handleJsonError($errno);
         } elseif ($obj === null && $input !== 'null') {
             throw new DomainException('Null result with non-null input');
@@ -314,8 +314,8 @@ class JWT
      */
     public static function jsonEncode($input)
     {
-        $json = json_encode($input);
-        if ($errno = json_last_error()) {
+        $json = \json_encode($input);
+        if ($errno = \json_last_error()) {
             static::handleJsonError($errno);
         } elseif ($json === 'null' && $input !== null) {
             throw new DomainException('Null result with non-null input');
@@ -332,12 +332,12 @@ class JWT
      */
     public static function urlsafeB64Decode($input)
     {
-        $remainder = strlen($input) % 4;
+        $remainder = \strlen($input) % 4;
         if ($remainder) {
             $padlen = 4 - $remainder;
-            $input .= str_repeat('=', $padlen);
+            $input .= \str_repeat('=', $padlen);
         }
-        return base64_decode(strtr($input, '-_', '+/'));
+        return \base64_decode(\strtr($input, '-_', '+/'));
     }
 
     /**
@@ -349,7 +349,7 @@ class JWT
      */
     public static function urlsafeB64Encode($input)
     {
-        return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
+        return \str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
     }
 
     /**
@@ -384,10 +384,10 @@ class JWT
      */
     private static function safeStrlen($str)
     {
-        if (function_exists('mb_strlen')) {
-            return mb_strlen($str, '8bit');
+        if (\function_exists('mb_strlen')) {
+            return \mb_strlen($str, '8bit');
         }
-        return strlen($str);
+        return \strlen($str);
     }
 
     /**
@@ -399,18 +399,18 @@ class JWT
     private static function signatureToDER($sig)
     {
         // Separate the signature into r-value and s-value
-        list($r, $s) = str_split($sig, (int) (strlen($sig) / 2));
+        list($r, $s) = \str_split($sig, (int) (\strlen($sig) / 2));
 
         // Trim leading zeros
-        $r = ltrim($r, "\x00");
-        $s = ltrim($s, "\x00");
+        $r = \ltrim($r, "\x00");
+        $s = \ltrim($s, "\x00");
 
         // Convert r-value and s-value from unsigned big-endian integers to
         // signed two's complement
-        if (ord($r[0]) > 0x7f) {
+        if (\ord($r[0]) > 0x7f) {
             $r = "\x00" . $r;
         }
-        if (ord($s[0]) > 0x7f) {
+        if (\ord($s[0]) > 0x7f) {
             $s = "\x00" . $s;
         }
 
@@ -436,10 +436,10 @@ class JWT
         }
 
         // Type
-        $der = chr($tag_header | $type);
+        $der = \chr($tag_header | $type);
 
         // Length
-        $der .= chr(strlen($value));
+        $der .= \chr(\strlen($value));
 
         return $der . $value;
     }
@@ -448,7 +448,7 @@ class JWT
      * Encodes signature from a DER object.
      *
      * @param   string  $der binary signature in DER format
-     * @param   int     $keySize the nubmer of bits in the key
+     * @param   int     $keySize the number of bits in the key
      * @return  string  the signature
      */
     private static function signatureFromDER($der, $keySize)
@@ -460,12 +460,12 @@ class JWT
 
         // Convert r-value and s-value from signed two's compliment to unsigned
         // big-endian integers
-        $r = ltrim($r, "\x00");
-        $s = ltrim($s, "\x00");
+        $r = \ltrim($r, "\x00");
+        $s = \ltrim($s, "\x00");
 
         // Pad out r and s so that they are $keySize bits long
-        $r = str_pad($r, $keySize / 8, "\x00", STR_PAD_LEFT);
-        $s = str_pad($s, $keySize / 8, "\x00", STR_PAD_LEFT);
+        $r = \str_pad($r, $keySize / 8, "\x00", STR_PAD_LEFT);
+        $s = \str_pad($s, $keySize / 8, "\x00", STR_PAD_LEFT);
 
         return $r . $s;
     }
@@ -481,29 +481,27 @@ class JWT
     private static function readDER($der, $offset = 0)
     {
         $pos = $offset;
-        $size = strlen($der);
-        $constructed = (ord($der[$pos]) >> 5) & 0x01;
-        $type = ord($der[$pos++]) & 0x1f;
+        $size = \strlen($der);
+        $constructed = (\ord($der[$pos]) >> 5) & 0x01;
+        $type = \ord($der[$pos++]) & 0x1f;
 
         // Length
-        $len = ord($der[$pos++]);
+        $len = \ord($der[$pos++]);
         if ($len & 0x80) {
             $n = $len & 0x1f;
             $len = 0;
             while ($n-- && $pos < $size) {
-                $len = ($len << 8) | ord($der[$pos++]);
+                $len = ($len << 8) | \ord($der[$pos++]);
             }
         }
 
         // Value
         if ($type == self::ASN1_BIT_STRING) {
             $pos++; // Skip the first contents octet (padding indicator)
-            $data = substr($der, $pos, $len - 1);
-            if (!$ignore_bit_strings) {
-                $pos += $len - 1;
-            }
+            $data = \substr($der, $pos, $len - 1);
+            $pos += $len - 1;
         } elseif (!$constructed) {
-            $data = substr($der, $pos, $len);
+            $data = \substr($der, $pos, $len);
             $pos += $len;
         } else {
             $data = null;

@@ -5,6 +5,7 @@ namespace Directus\Filesystem;
 use OSS\OssClient;
 use OSS\Core\OssException;
 use Aws\S3\S3Client;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use Directus\Application\Application;
 use function Directus\array_get;
 use function Directus\array_pick;
@@ -12,6 +13,7 @@ use Aliyun\Flysystem\AliyunOss\Plugins\PutFile;
 use Aliyun\Flysystem\AliyunOss\AliyunOssAdapter;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\AwsS3v3\AwsS3Adapter as S3Adapter;
+use League\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter as AzureAdapter;
 use League\Flysystem\Filesystem as Flysystem;
 
 class FilesystemFactory
@@ -26,6 +28,9 @@ class FilesystemFactory
                 break;
             case 's3':
                 return self::createS3Adapter($config, $rootKey);
+                break;
+            case 'azure':
+                return self::createAzureAdapter($config, $rootKey);
                 break;
             case 'local':
             default:
@@ -46,6 +51,17 @@ class FilesystemFactory
         $root = $root ?: '/';
 
         return new Flysystem(new LocalAdapter($root));
+    }
+
+    public static function createAzureAdapter(Array $config, $rootKey = 'root')
+    {
+        if (!array_key_exists('azure_connection_string', $config)) {
+            throw new \InvalidArgumentException('Filesystem: Azure adapter missing connection string');
+        } else if (!array_key_exists('azure_container', $config)) {
+            throw new \InvalidArgumentException('Filesystem: Azure adapter missing container name');
+        }
+        $client = BlobRestProxy::createBlobService($config['azure_connection_string']);
+        return new Flysystem(new AzureAdapter($client, $config['azure_container']));
     }
 
     public static function createS3Adapter(Array $config, $rootKey = 'root')
@@ -73,7 +89,7 @@ class FilesystemFactory
 
         return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey), $options));
     }
-    
+
     public static function createAliyunOSSAdapter(Array $config, $rootKey = 'root')
     {
        try {
@@ -83,13 +99,13 @@ class FilesystemFactory
             $app->getContainer()->get('logger')->error($e->getMessage());
             throw new \InvalidArgumentException("creating OssClient instance: FAILED");
         }
-        
+
         $adapter = new AliyunOssAdapter($ossClient, $config['OSS_BUCKET']);
         $adapter->setPathPrefix(array_get($config, $rootKey));
 
         $flysystem = new Flysystem($adapter);
         $flysystem->addPlugin(new PutFile());
-        
+
         return $flysystem;
     }
 }

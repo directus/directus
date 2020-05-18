@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="51">
                 <source>No temporary folder was configured in php.ini.</source>
-                <target>Nie skonfigurowano folderu tymczasowego w php.ini, lub skonfigurowany folder nie istnieje.</target>
+                <target>Nie skonfigurowano folderu tymczasowego w php.ini lub skonfigurowany folder nie istnieje.</target>
             </trans-unit>
             <trans-unit id="52">
                 <source>Cannot write temporary file to disk.</source>
@@ -369,6 +369,18 @@
             <trans-unit id="95">
                 <source>This value is not a valid hostname.</source>
                 <target>Ta wartość nie jest prawidłową nazwą hosta.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Liczba elementów w tym zbiorze powinna być wielokrotnością {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Ta wartość powinna spełniać co najmniej jedną z następujących reguł:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Każdy element w tym zbiorze powinien spełniać własny zestaw reguł.</target>
             </trans-unit>
         </body>
     </file>

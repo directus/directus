@@ -235,6 +235,13 @@ class CreateFieldsTable extends AbstractMigration
                 'interface' => 'many-to-one',
                 'locked' => 1
             ],
+            [
+                'collection' => 'directus_fields',
+                'field' => 'auth_token_ttl',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_INTEGER,
+                'interface' => 'numeric',
+                'locked' => 1
+            ]
         ];
 
         foreach ($data as $value) {

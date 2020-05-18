@@ -67,7 +67,7 @@ class Schema
                 new Value('endpoint?', Types::STRING, 's3-endpoint'),
                 new Group('options', [
                     new Value('ACL', Types::STRING, 'public-read'),
-                    new Value('Cache-Control', Types::STRING, 'max-age=604800'),
+                    new Value('CacheControl', Types::STRING, 'max-age=604800'),
                 ]),
 
                 // OSS
@@ -75,6 +75,10 @@ class Schema
                 new Value('OSS_ACCESS_KEY?', Types::STRING, 'oss-access-secret'),
                 new Value('OSS_BUCKET?', Types::STRING, 'oss-bucket'),
                 new Value('OSS_ENDPOINT?', Types::STRING, 'oss-endpoint'),
+
+                // Azure
+                new Value('azure_connection_string', Types::STRING, 'azure-connection-string'),
+                new Value('azure_container', Types::STRING, 'azure-container'),
 
                 // TODO: Missing keys?
             ]),
@@ -122,6 +126,7 @@ class Schema
             new Group('auth', [
                 new Value('secret_key', Types::STRING, '<type-a-secret-authentication-key-string>'),
                 new Value('public_key', Types::STRING, '<type-a-public-authentication-key-string>'),
+                new Value('ttl', Types::INTEGER, 20),
                 new Group('social_providers', [
                     new Group('okta?', [
                         new Value('client_id', Types::STRING, ''),

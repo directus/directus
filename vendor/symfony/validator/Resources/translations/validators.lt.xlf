@@ -366,6 +366,22 @@
                 <source>This value should be between {{ min }} and {{ max }}.</source>
                 <target>Ši reikšmė turi būti tarp {{ min }} ir {{ max }}.</target>
             </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Ši reikšmė nėra tinkamas svetainės adresas.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Šio sąrašo elementų skaičius turėtų būti skaičiaus {{ compared_value }} kartotinis.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Ši reikšmė turėtų atitikti bent vieną iš šių nurodymų:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Kiekvienas šio sąrašo elementas turi atitikti savo nurodymų rinkinį.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

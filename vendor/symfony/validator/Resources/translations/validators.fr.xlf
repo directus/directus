@@ -374,6 +374,14 @@
                 <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
                 <target>Le nombre d'éléments de cette collection doit être un multiple de {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Cette valeur doit satisfaire à au moins une des contraintes suivantes :</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Chaque élément de cette collection doit satisfaire à son propre jeu de contraintes.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
