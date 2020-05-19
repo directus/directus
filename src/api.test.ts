@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
-import { onRequest, onResponse, onError, getRootPath, RequestError } from './api';
+import { onRequest, onResponse, onError, RequestError } from './api';
 import * as auth from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
 
@@ -27,18 +27,6 @@ describe('API', () => {
 		jest.spyOn(auth, 'checkAuth');
 		Vue.use(VueCompositionAPI);
 		window = Object.create(window);
-	});
-
-	it('Calculates the correct API root URL based on window', () => {
-		Object.defineProperty(window, 'location', {
-			value: {
-				pathname: '/api/nested/admin',
-			},
-			writable: true,
-		});
-
-		const result = getRootPath();
-		expect(result).toBe('/api/nested/');
 	});
 
 	it('Calls startRequest on the store on any request', () => {

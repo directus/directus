@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { useRequestsStore } from '@/stores/requests';
 import { LogoutReason, logout, checkAuth } from '@/auth';
+import getRootPath from '@/utils/get-root-path';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -64,13 +65,5 @@ export const onError = async (error: RequestError) => {
 
 api.interceptors.request.use(onRequest);
 api.interceptors.response.use(onResponse, onError);
-
-export function getRootPath(): string {
-	const path = window.location.pathname;
-	const parts = path.split('/');
-	const adminIndex = parts.indexOf('admin');
-	const rootPath = parts.slice(0, adminIndex).join('/') + '/';
-	return rootPath;
-}
 
 export default api;

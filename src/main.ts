@@ -1,3 +1,5 @@
+__webpack_public_path__ = (window as any).$directusAssetBasePath || '/admin/';
+
 import Vue from 'vue';
 
 import { version } from '../package.json';

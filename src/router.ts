@@ -11,6 +11,8 @@ import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 
+import getRootPath from '@/utils/get-root-path';
+
 export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
 	const projectsStore = useProjectsStore();
 	projectsStore.state.currentProjectKey = null;
@@ -43,6 +45,9 @@ export const defaultRoutes: RouteConfig[] = [
 		name: 'login',
 		path: '/:project/login',
 		component: LoginRoute,
+		props: (route) => ({
+			ssoErrorCode: route.query.error,
+		}),
 		meta: {
 			public: true,
 		},
@@ -83,13 +88,18 @@ export const defaultRoutes: RouteConfig[] = [
 ];
 
 const router = new VueRouter({
-	mode: 'hash',
+	mode: 'history',
+	base: getRootPath() + 'admin/',
 	routes: defaultRoutes,
 });
 
 export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfig[]): void {
 	const newRoutes = routeFilter([...defaultRoutes]);
-	const newRouter = new VueRouter({ routes: newRoutes });
+	const newRouter = new VueRouter({
+		mode: 'history',
+		base: getRootPath() + 'admin/',
+		routes: newRoutes,
+	});
 
 	// @ts-ignore - Matcher is not officially part of the public API (https://github.com/vuejs/vue-router/issues/2844#issuecomment-509529927)
 	router.matcher = newRouter.matcher;

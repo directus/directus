@@ -6,7 +6,7 @@
   "author": "Rijk van Zanten <rijk@rngr.org>",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --modern",
+    "build": "vue-cli-service build",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "lint:styles": "stylelint \"**/*.{vue,scss}\"",
@@ -104,6 +104,7 @@
     "vue-template-compiler": "^2.6.10",
     "vuepress": "^1.5.0",
     "webpack": "^4.43.0",
+    "webpack-assets-manifest": "^3.1.1",
     "webpack-merge": "^4.2.2"
   },
   "gitHooks": {
