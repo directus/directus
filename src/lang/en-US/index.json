@@ -4,6 +4,8 @@
 	"half_width": "Half Width",
 	"full_width": "Full Width",
 	"fill_width": "Fill Width",
+	"extension_only": "Extension Only",
+	"only_show_the_file_extension": "Only show the file extension",
 	"hide_field_on_detail": "Hide Field on Detail",
 	"show_field_on_detail": "Show Field on Detail",
 	"delete_field": "Delete Field",

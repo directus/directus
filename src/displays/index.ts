@@ -10,6 +10,7 @@ import DisplayRating from './rating';
 import DisplayDateTime from './datetime';
 import DisplayTemplate from './template';
 import DisplayFilesize from './filesize';
+import DisplayMimeType from './mime-type';
 
 export const displays = [
 	DisplayIcon,
@@ -24,5 +25,6 @@ export const displays = [
 	DisplayDateTime,
 	DisplayTemplate,
 	DisplayFilesize,
+	DisplayMimeType,
 ];
 export default displays;
