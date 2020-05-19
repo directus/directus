@@ -7,6 +7,12 @@
         "abstraction", "s3", "ftp", "sftp", "remote", "webdav",
         "file systems", "cloud", "cloud files", "rackspace", "copy.com"
     ],
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://offset.earth/frankdejonge"
+        }
+    ],
     "license": "MIT",
     "authors": [
         {

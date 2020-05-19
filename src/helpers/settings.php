@@ -214,7 +214,7 @@ if (!function_exists('get_file_data')) {
         }
 
         if ($data) {
-            $data = array_pick($data, ['full_url', 'url']);
+            $data = array_pick($data, ['full_url', 'url', 'asset_url']);
         }
 
         return $data;

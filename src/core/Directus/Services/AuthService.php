@@ -153,7 +153,7 @@ class AuthService extends AbstractService
         $type = $service->getConfig()->get('custom') === true ? 'custom' : 'core';
         $iconPath = sprintf('/extensions/%s/auth/%s/icon.svg', $type, $name);
         if (file_exists($basePath . '/public' . $iconPath)) {
-            $iconUrl = \Directus\get_url($iconPath);
+            $iconUrl = $iconPath;
         }
 
         return [

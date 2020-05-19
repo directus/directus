@@ -22,7 +22,7 @@ namespace Symfony\Component\Yaml;
 class Escaper
 {
     // Characters that would cause a dumped string to require double quoting.
-    const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
+    const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\x7f|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
 
     // Mapping arrays for escaping a double quoted string. The backslash is
     // first to ensure proper escaping because str_replace operates iteratively
@@ -33,6 +33,7 @@ class Escaper
                                      "\x08",  "\x09",  "\x0a",  "\x0b",  "\x0c",  "\x0d",  "\x0e",  "\x0f",
                                      "\x10",  "\x11",  "\x12",  "\x13",  "\x14",  "\x15",  "\x16",  "\x17",
                                      "\x18",  "\x19",  "\x1a",  "\x1b",  "\x1c",  "\x1d",  "\x1e",  "\x1f",
+                                     "\x7f",
                                      "\xc2\x85", "\xc2\xa0", "\xe2\x80\xa8", "\xe2\x80\xa9",
                                ];
     private static $escaped = ['\\\\', '\\"', '\\\\', '\\"',
@@ -40,6 +41,7 @@ class Escaper
                                      '\\b',   '\\t',   '\\n',   '\\v',   '\\f',   '\\r',   '\\x0e', '\\x0f',
                                      '\\x10', '\\x11', '\\x12', '\\x13', '\\x14', '\\x15', '\\x16', '\\x17',
                                      '\\x18', '\\x19', '\\x1a', '\\e',   '\\x1c', '\\x1d', '\\x1e', '\\x1f',
+                                     '\\x7f',
                                      '\\N', '\\_', '\\L', '\\P',
                               ];
 

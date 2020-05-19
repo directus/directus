@@ -61,7 +61,7 @@ class TreeBuilder implements NodeParentInterface
     public function getRootNode(): NodeDefinition
     {
         if (null === $this->root) {
-            throw new \RuntimeException(sprintf('Calling %s() before creating the root node is not supported, migrate to the new constructor signature instead.', __METHOD__));
+            throw new \RuntimeException(sprintf('Calling "%s()" before creating the root node is not supported, migrate to the new constructor signature instead.', __METHOD__));
         }
 
         return $this->root;

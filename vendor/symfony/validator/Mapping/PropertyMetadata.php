@@ -37,7 +37,7 @@ class PropertyMetadata extends MemberMetadata
     public function __construct($class, $name)
     {
         if (!property_exists($class, $name)) {
-            throw new ValidatorException(sprintf('Property "%s" does not exist in class "%s"', $name, $class));
+            throw new ValidatorException(sprintf('Property "%s" does not exist in class "%s".', $name, $class));
         }
 
         parent::__construct($class, $name, $name);

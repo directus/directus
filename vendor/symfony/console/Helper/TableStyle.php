@@ -58,7 +58,7 @@ class TableStyle
     public function setPaddingChar($paddingChar)
     {
         if (!$paddingChar) {
-            throw new LogicException('The padding char must not be empty');
+            throw new LogicException('The padding char must not be empty.');
         }
 
         $this->paddingChar = $paddingChar;

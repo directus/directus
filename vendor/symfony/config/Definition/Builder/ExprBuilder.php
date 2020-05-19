@@ -200,7 +200,7 @@ class ExprBuilder
      */
     public function thenUnset()
     {
-        $this->thenPart = function ($v) { throw new UnsetKeyException('Unsetting key'); };
+        $this->thenPart = function ($v) { throw new UnsetKeyException('Unsetting key.'); };
 
         return $this;
     }

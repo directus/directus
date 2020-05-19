@@ -366,6 +366,22 @@
                 <source>This value should be between {{ min }} and {{ max }}.</source>
                 <target>Значення має бути між {{ min }} та {{ max }}.</target>
             </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Значення не є дійсним іменем хоста.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Кількість елементів у цій колекції повинна бути кратною {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Значення повинно задовольняти хоча б одному з наступних обмежень:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Кожен елемент цієї колекції повинен задовольняти власному набору обмежень.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

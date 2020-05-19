@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Mapping\MemberMetadata;
 use Symfony\Component\Validator\Mapping\MetadataInterface;
 use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 use Symfony\Component\Validator\Util\PropertyPath;
+use Symfony\Component\Validator\Validator\LazyProperty;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilder;
 
@@ -187,7 +188,7 @@ class ExecutionContext implements ExecutionContextInterface
             $parameters,
             $this->root,
             $this->propertyPath,
-            $this->value,
+            $this->getValue(),
             null,
             null,
             $this->constraint
@@ -206,7 +207,7 @@ class ExecutionContext implements ExecutionContextInterface
             $parameters,
             $this->root,
             $this->propertyPath,
-            $this->value,
+            $this->getValue(),
             $this->translator,
             $this->translationDomain
         );
@@ -241,6 +242,10 @@ class ExecutionContext implements ExecutionContextInterface
      */
     public function getValue()
     {
+        if ($this->value instanceof LazyProperty) {
+            return $this->value->getPropertyValue();
+        }
+
         return $this->value;
     }
 

@@ -959,10 +959,6 @@ class BaseTableGateway extends TableGateway
      */
     public function convertDates(array $records, Collection $tableSchema, $tableName = null)
     {
-        if (!$this->schemaManager->isSystemCollection($this->table)) {
-            return $records;
-        }
-
         // ==========================================================================
         // hotfix: records sometimes are no set as an array of rows.
         // NOTE: this code is duplicate @see: AbstractSchema::parseRecordValuesByType
@@ -975,7 +971,7 @@ class BaseTableGateway extends TableGateway
 
         foreach ($records as $index => $row) {
             foreach ($tableSchema->getFields(array_keys($row)) as $column) {
-                if (!DataTypes::isDateTimeType($column->getType()) || !isset($row[$column->getName()])) {
+                if (!DataTypes::isSystemDateTimeType($column->getType()) || !isset($row[$column->getName()])) {
                     continue;
                 }
 

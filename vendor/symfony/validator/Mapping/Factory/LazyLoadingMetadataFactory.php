@@ -79,7 +79,7 @@ class LazyLoadingMetadataFactory implements MetadataFactoryInterface
     public function getMetadataFor($value)
     {
         if (!\is_object($value) && !\is_string($value)) {
-            throw new NoSuchMetadataException(sprintf('Cannot create metadata for non-objects. Got: %s', \gettype($value)));
+            throw new NoSuchMetadataException(sprintf('Cannot create metadata for non-objects. Got: "%s".', \gettype($value)));
         }
 
         $class = ltrim(\is_object($value) ? \get_class($value) : $value, '\\');
@@ -117,34 +117,25 @@ class LazyLoadingMetadataFactory implements MetadataFactoryInterface
 
     private function mergeConstraints(ClassMetadata $metadata)
     {
+        if ($metadata->getReflectionClass()->isInterface()) {
+            return;
+        }
+
         // Include constraints from the parent class
         if ($parent = $metadata->getReflectionClass()->getParentClass()) {
             $metadata->mergeConstraints($this->getMetadataFor($parent->name));
         }
 
-        $interfaces = $metadata->getReflectionClass()->getInterfaces();
-
-        $interfaces = array_filter($interfaces, function ($interface) use ($parent, $interfaces) {
-            $interfaceName = $interface->getName();
-
-            if ($parent && $parent->implementsInterface($interfaceName)) {
-                return false;
-            }
-
-            foreach ($interfaces as $i) {
-                if ($i !== $interface && $i->implementsInterface($interfaceName)) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-
         // Include constraints from all directly implemented interfaces
-        foreach ($interfaces as $interface) {
+        foreach ($metadata->getReflectionClass()->getInterfaces() as $interface) {
             if ('Symfony\Component\Validator\GroupSequenceProviderInterface' === $interface->name) {
                 continue;
             }
+
+            if ($parent && \in_array($interface->getName(), $parent->getInterfaceNames(), true)) {
+                continue;
+            }
+
             $metadata->mergeConstraints($this->getMetadataFor($interface->name));
         }
     }

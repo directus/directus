@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="51">
                 <source>No temporary folder was configured in php.ini.</source>
-                <target>Ninguna carpeta temporal fue configurada en php.ini.</target>
+                <target>Ninguna carpeta temporal fue configurada en php.ini o la carpeta configurada no existe.</target>
             </trans-unit>
             <trans-unit id="52">
                 <source>Cannot write temporary file to disk.</source>
@@ -364,7 +364,23 @@
             </trans-unit>
             <trans-unit id="94">
                 <source>This value should be between {{ min }} and {{ max }}.</source>
-                <target>Este valor debe estar entre {{ min }} y {{ max }}.</target>
+                <target>Este valor debería estar entre {{ min }} y {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Este valor no es un nombre de host válido.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>El número de elementos en esta colección debería ser múltiplo de {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Este valor debería satisfacer al menos una de las siguientes restricciones:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Cada elemento de esta colección debería satisfacer su propio conjunto de restricciones.</target>
             </trans-unit>
         </body>
     </file>

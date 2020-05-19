@@ -559,7 +559,7 @@ class Command
     public function setAliases($aliases)
     {
         if (!\is_array($aliases) && !$aliases instanceof \Traversable) {
-            throw new InvalidArgumentException('$aliases must be an array or an instance of \Traversable');
+            throw new InvalidArgumentException('$aliases must be an array or an instance of \Traversable.');
         }
 
         foreach ($aliases as $alias) {

@@ -180,7 +180,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     public function addCatalogue(MessageCatalogueInterface $catalogue)
     {
         if ($catalogue->getLocale() !== $this->locale) {
-            throw new LogicException(sprintf('Cannot add a catalogue for locale "%s" as the current locale for this catalogue is "%s"', $catalogue->getLocale(), $this->locale));
+            throw new LogicException(sprintf('Cannot add a catalogue for locale "%s" as the current locale for this catalogue is "%s".', $catalogue->getLocale(), $this->locale));
         }
 
         foreach ($catalogue->all() as $domain => $messages) {

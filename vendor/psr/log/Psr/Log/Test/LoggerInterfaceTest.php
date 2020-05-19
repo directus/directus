@@ -136,11 +136,3 @@ abstract class LoggerInterfaceTest extends TestCase
         $this->assertEquals($expected, $this->getLogs());
     }
 }
-
-class DummyTest
-{
-    public function __toString()
-    {
-        return 'DummyTest';
-    }
-}

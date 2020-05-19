@@ -80,7 +80,7 @@ class Ip extends Constraint
         parent::__construct($options);
 
         if (!\in_array($this->version, self::$versions)) {
-            throw new ConstraintDefinitionException(sprintf('The option "version" must be one of "%s"', implode('", "', self::$versions)));
+            throw new ConstraintDefinitionException(sprintf('The option "version" must be one of "%s".', implode('", "', self::$versions)));
         }
     }
 }

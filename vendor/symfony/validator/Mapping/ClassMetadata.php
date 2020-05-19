@@ -401,7 +401,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
     public function setGroupSequence($groupSequence)
     {
         if ($this->isGroupSequenceProvider()) {
-            throw new GroupDefinitionException('Defining a static group sequence is not allowed with a group sequence provider');
+            throw new GroupDefinitionException('Defining a static group sequence is not allowed with a group sequence provider.');
         }
 
         if (\is_array($groupSequence)) {
@@ -409,11 +409,11 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
         }
 
         if (\in_array(Constraint::DEFAULT_GROUP, $groupSequence->groups, true)) {
-            throw new GroupDefinitionException(sprintf('The group "%s" is not allowed in group sequences', Constraint::DEFAULT_GROUP));
+            throw new GroupDefinitionException(sprintf('The group "%s" is not allowed in group sequences.', Constraint::DEFAULT_GROUP));
         }
 
         if (!\in_array($this->getDefaultGroup(), $groupSequence->groups, true)) {
-            throw new GroupDefinitionException(sprintf('The group "%s" is missing in the group sequence', $this->getDefaultGroup()));
+            throw new GroupDefinitionException(sprintf('The group "%s" is missing in the group sequence.', $this->getDefaultGroup()));
         }
 
         $this->groupSequence = $groupSequence;
@@ -461,11 +461,11 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
     public function setGroupSequenceProvider($active)
     {
         if ($this->hasGroupSequence()) {
-            throw new GroupDefinitionException('Defining a group sequence provider is not allowed with a static group sequence');
+            throw new GroupDefinitionException('Defining a group sequence provider is not allowed with a static group sequence.');
         }
 
         if (!$this->getReflectionClass()->implementsInterface('Symfony\Component\Validator\GroupSequenceProviderInterface')) {
-            throw new GroupDefinitionException(sprintf('Class "%s" must implement GroupSequenceProviderInterface', $this->name));
+            throw new GroupDefinitionException(sprintf('Class "%s" must implement GroupSequenceProviderInterface.', $this->name));
         }
 
         $this->groupSequenceProvider = $active;

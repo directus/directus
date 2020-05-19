@@ -76,6 +76,7 @@ return [
     'auth' => [
         'secret_key' => '{{auth.secret}}',
         'public_key' => '{{auth.public}}',
+        'ttl' => {{auth.ttl}},
         'social_providers' => [
             {{optional(auth.social_providers.okta)}},
             {{optional(auth.social_providers.github)}},

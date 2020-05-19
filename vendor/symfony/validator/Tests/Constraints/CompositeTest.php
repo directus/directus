@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\Valid;
 
 class ConcreteComposite extends Composite
 {
-    public $constraints;
+    public $constraints = [];
 
     protected function getCompositeOption()
     {
@@ -37,6 +37,30 @@ class ConcreteComposite extends Composite
  */
 class CompositeTest extends TestCase
 {
+    public function testConstraintHasDefaultGroup()
+    {
+        $constraint = new ConcreteComposite([
+            new NotNull(),
+            new NotBlank(),
+        ]);
+
+        $this->assertEquals(['Default'], $constraint->groups);
+        $this->assertEquals(['Default'], $constraint->constraints[0]->groups);
+        $this->assertEquals(['Default'], $constraint->constraints[1]->groups);
+    }
+
+    public function testNestedCompositeConstraintHasDefaultGroup()
+    {
+        $constraint = new ConcreteComposite([
+            new ConcreteComposite(),
+            new ConcreteComposite(),
+        ]);
+
+        $this->assertEquals(['Default'], $constraint->groups);
+        $this->assertEquals(['Default'], $constraint->constraints[0]->groups);
+        $this->assertEquals(['Default'], $constraint->constraints[1]->groups);
+    }
+
     public function testMergeNestedGroupsIfNoExplicitParentGroup()
     {
         $constraint = new ConcreteComposite([

@@ -23,6 +23,7 @@
     "require": {
         "php": ">=5.5",
         "ext-json": "*",
+        "symfony/polyfill-intl-idn": "^1.11",
         "guzzlehttp/promises": "^1.0",
         "guzzlehttp/psr7": "^1.6.1"
     },
@@ -32,8 +33,7 @@
         "psr/log": "^1.1"
     },
     "suggest": {
-        "psr/log": "Required for using the Log middleware",
-        "ext-intl": "Required for Internationalized Domain Name (IDN) support"
+        "psr/log": "Required for using the Log middleware"
     },
     "config": {
         "sort-packages": true

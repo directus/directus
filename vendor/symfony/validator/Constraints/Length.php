@@ -55,7 +55,7 @@ class Length extends Constraint
         parent::__construct($options);
 
         if (null === $this->min && null === $this->max) {
-            throw new MissingOptionsException(sprintf('Either option "min" or "max" must be given for constraint %s', __CLASS__), ['min', 'max']);
+            throw new MissingOptionsException(sprintf('Either option "min" or "max" must be given for constraint "%s".', __CLASS__), ['min', 'max']);
         }
     }
 }

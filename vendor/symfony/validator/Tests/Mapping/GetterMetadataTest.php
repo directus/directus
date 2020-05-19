@@ -64,7 +64,7 @@ class GetterMetadataTest extends TestCase
     public function testUndefinedMethodNameThrowsException()
     {
         $this->expectException('Symfony\Component\Validator\Exception\ValidatorException');
-        $this->expectExceptionMessage('The hasLastName() method does not exist in class Symfony\Component\Validator\Tests\Fixtures\Entity.');
+        $this->expectExceptionMessage('The "hasLastName()" method does not exist in class "Symfony\Component\Validator\Tests\Fixtures\Entity".');
         new GetterMetadata(self::CLASSNAME, 'lastName', 'hasLastName');
     }
 }

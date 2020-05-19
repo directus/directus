@@ -370,6 +370,18 @@
                 <source>This value is not a valid hostname.</source>
                 <target>Значение не является корректным именем хоста.</target>
             </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Количество элементов в этой коллекции должно быть кратным {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Значение должно удовлетворять как минимум одному из следующих ограничений:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Каждый элемент этой коллекции должен удовлетворять своему собственному набору ограничений.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

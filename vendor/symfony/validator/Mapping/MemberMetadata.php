@@ -72,7 +72,7 @@ abstract class MemberMetadata extends GenericMetadata implements PropertyMetadat
     public function addConstraint(Constraint $constraint)
     {
         if (!\in_array(Constraint::PROPERTY_CONSTRAINT, (array) $constraint->getTargets())) {
-            throw new ConstraintDefinitionException(sprintf('The constraint %s cannot be put on properties or getters', \get_class($constraint)));
+            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on properties or getters.', \get_class($constraint)));
         }
 
         parent::addConstraint($constraint);

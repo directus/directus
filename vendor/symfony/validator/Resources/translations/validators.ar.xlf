@@ -366,6 +366,22 @@
                 <source>This value should be between {{ min }} and {{ max }}.</source>
                 <target>يجب أن تكون هذه القيمة بين {{ min }} و {{ max }}.</target>
             </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>هذه القيمة ليست اسم مضيف صالح.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>يجب أن يكون عدد العناصر في هذه المجموعة مضاعف {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>يجب أن تستوفي هذه القيمة واحدة من القيود التالية:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>يجب أن يفي كل عنصر من عناصر هذه المجموعة بمجموعة القيود الخاصة به.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

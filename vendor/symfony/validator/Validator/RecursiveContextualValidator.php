@@ -14,6 +14,7 @@ namespace Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Composite;
 use Symfony\Component\Validator\Constraints\GroupSequence;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -26,6 +27,7 @@ use Symfony\Component\Validator\Mapping\CascadingStrategy;
 use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\Mapping\GenericMetadata;
+use Symfony\Component\Validator\Mapping\GetterMetadata;
 use Symfony\Component\Validator\Mapping\MetadataInterface;
 use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 use Symfony\Component\Validator\Mapping\TraversalStrategy;
@@ -534,7 +536,13 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
                     throw new UnsupportedMetadataException(sprintf('The property metadata instances should implement "Symfony\Component\Validator\Mapping\PropertyMetadataInterface", got: "%s".', \is_object($propertyMetadata) ? \get_class($propertyMetadata) : \gettype($propertyMetadata)));
                 }
 
-                $propertyValue = $propertyMetadata->getPropertyValue($object);
+                if ($propertyMetadata instanceof GetterMetadata) {
+                    $propertyValue = new LazyProperty(static function () use ($propertyMetadata, $object) {
+                        return $propertyMetadata->getPropertyValue($object);
+                    });
+                } else {
+                    $propertyValue = $propertyMetadata->getPropertyValue($object);
+                }
 
                 $this->validateGenericNode(
                     $propertyValue,
@@ -782,8 +790,9 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
             // that constraints belong to multiple validated groups
             if (null !== $cacheKey) {
                 $constraintHash = spl_object_hash($constraint);
-
-                if ($constraint instanceof Composite) {
+                // instanceof Valid: In case of using a Valid constraint with many groups
+                // it makes a reference object get validated by each group
+                if ($constraint instanceof Composite || $constraint instanceof Valid) {
                     $constraintHash .= $group;
                 }
 
@@ -798,6 +807,11 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
 
             $validator = $this->validatorFactory->getInstance($constraint);
             $validator->initialize($context);
+
+            if ($value instanceof LazyProperty) {
+                $value = $value->getPropertyValue();
+            }
+
             $validator->validate($value, $constraint);
         }
     }
