@@ -1,5 +1,5 @@
 <template>
-	<v-notice :icon="icon" :color="color">
+	<v-notice :icon="icon" :type="color">
 		<div v-html="marked(text)" />
 	</v-notice>
 </template>
@@ -23,7 +23,7 @@ export default defineComponent({
 			default: 'No text configured...',
 		},
 	},
-	setup(props) {
+	setup() {
 		return { marked };
 	},
 });

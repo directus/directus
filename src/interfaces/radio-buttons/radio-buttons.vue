@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!choices" warning>
+	<v-notice v-if="!choices" type="warning">
 		{{ $t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div

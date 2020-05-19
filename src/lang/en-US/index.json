@@ -525,6 +525,8 @@
 
 	"other": "Other...",
 
+	"adding_user": "Adding User",
+
 	"statuses_not_configured": "Status mapping option configured incorrectly",
 	"status_mapping": "Status Mapping",
 

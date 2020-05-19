@@ -9,14 +9,14 @@
 			<v-progress-linear v-if="loading" indeterminate />
 
 			<template v-else>
-				<v-notice danger v-if="error">
+				<v-notice type="danger" v-if="error">
 					{{ errorFormatted }}
 				</v-notice>
 
 				<template v-else>{{ $t('creating_project_success_copy') }}</template>
 
 				<template v-if="first">
-					<v-notice warning>
+					<v-notice type="warning">
 						{{ $t('creating_project_success_super_admin_password') }}
 					</v-notice>
 

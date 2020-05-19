@@ -9,8 +9,8 @@
 			v-model="password"
 			:disabled="done"
 		/>
-		<v-notice success v-if="done">{{ $t('password_reset_successful') }}</v-notice>
-		<v-notice danger v-if="error">
+		<v-notice type="success" v-if="done">{{ $t('password_reset_successful') }}</v-notice>
+		<v-notice type="danger" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
 		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ $t('reset') }}</v-button>

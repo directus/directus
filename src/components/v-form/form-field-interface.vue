@@ -22,7 +22,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<v-notice v-else warning>
+		<v-notice v-else type="warning">
 			{{ $t('interface_not_found', { interface: field.interface }) }}
 		</v-notice>
 	</div>

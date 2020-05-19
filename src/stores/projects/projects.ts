@@ -28,6 +28,7 @@ export const useProjectsStore = createStore({
 					logo: project?.api?.project_logo?.full_url || null,
 					color: project?.api?.project_color || null,
 					note: project?.api?.project_public_note || null,
+					sso: project?.api?.sso || [],
 				};
 			});
 		},

@@ -65,6 +65,7 @@ export const withCustomLogo = () =>
 						telemetry: true,
 						default_locale: 'en-US',
 						project_public_note: null,
+						sso: [],
 					},
 					server: {
 						max_upload_size: 104857600,

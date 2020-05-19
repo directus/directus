@@ -1,4 +1,4 @@
-import { withKnobs, text, boolean } from '@storybook/addon-knobs';
+import { withKnobs, text, select } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VNotice from './v-notice.vue';
 import VIcon from '../v-icon/';
@@ -22,17 +22,11 @@ export const withText = () => ({
 		text: {
 			default: text('Text', 'This is a notice'),
 		},
-		success: {
-			default: boolean('Success', false),
-		},
-		warning: {
-			default: boolean('Warning', false),
-		},
-		danger: {
-			default: boolean('Danger', false),
+		type: {
+			default: select('Type', ['info', 'success', 'warning', 'danger'], 'info'),
 		},
 	},
-	template: `<v-notice :success="success" :warning="warning" :danger="danger">{{text}}</v-notice>`,
+	template: `<v-notice :type="type">{{text}}</v-notice>`,
 });
 
 export const withCustomColors = () => ({

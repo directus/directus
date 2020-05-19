@@ -103,14 +103,6 @@ export default defineComponent({
 		const id = computed(() => nanoid());
 		const popper = ref<HTMLElement>(null);
 
-		const { isActive, activate, deactivate, toggle } = useActiveState();
-
-		watch(isActive, () => {
-			Vue.nextTick(() => {
-				popper.value = document.getElementById(id.value);
-			});
-		});
-
 		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
 			reference,
 			popper,
@@ -120,6 +112,14 @@ export default defineComponent({
 				arrow: props.showArrow,
 			}))
 		);
+
+		const { isActive, activate, deactivate, toggle } = useActiveState();
+
+		watch(isActive, () => {
+			Vue.nextTick(() => {
+				popper.value = document.getElementById(id.value);
+			});
+		});
 
 		return {
 			id,
@@ -157,7 +157,7 @@ export default defineComponent({
 			watch(popper, async () => {
 				if (popper.value !== null) {
 					await start();
-				} else if (stop) {
+				} else {
 					stop();
 				}
 			});

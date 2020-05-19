@@ -49,6 +49,7 @@ const mockProject: ProjectWithKey = {
 		default_locale: 'en-US',
 		project_public_note:
 			'**Welcome to the Directus Public Demo!**\n\nYou can sign in with `admin@example.com` and `password`. Occasionally users break things, but don’t worry… the whole server resets each hour.',
+		sso: [],
 	},
 	server: {
 		max_upload_size: 104857600,

@@ -13,7 +13,7 @@
 			v-model="password"
 			:placeholder="$t('password')"
 		/>
-		<v-notice danger v-if="error">
+		<v-notice type="warning" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
@@ -22,6 +22,26 @@
 				{{ $t('forgot_password') }}
 			</router-link>
 		</div>
+
+		<template v-if="ssoProviders">
+			<v-divider class="sso-divider" />
+
+			<v-button
+				secondary
+				class="sso-button"
+				rounded
+				icon
+				v-for="provider in ssoProviders"
+				:key="provider.name"
+				:href="provider.link"
+			>
+				<img :src="provider.icon" :alt="provider.name" />
+			</v-button>
+
+			<v-notice class="sso-notice" type="danger" v-if="ssoError">
+				{{ translateAPIError(ssoError) }}
+			</v-notice>
+		</template>
 	</form>
 </template>
 
@@ -32,8 +52,15 @@ import { useProjectsStore } from '@/stores/projects';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
+import getRootPath from '@/utils/get-root-path';
 
 export default defineComponent({
+	props: {
+		ssoError: {
+			type: String,
+			default: null,
+		},
+	},
 	setup() {
 		const projectsStore = useProjectsStore();
 
@@ -53,7 +80,30 @@ export default defineComponent({
 			return `/${projectsStore.state.currentProjectKey}/reset-password`;
 		});
 
-		return { errorFormatted, error, email, password, onSubmit, loggingIn, forgotLink };
+		const ssoProviders = computed(() => {
+			const redirectURL =
+				getRootPath() + `admin/${projectsStore.state.currentProjectKey}/login`;
+			return projectsStore.currentProject.value.sso.map(
+				(provider: { icon: string; name: string }) => {
+					return {
+						...provider,
+						link: `/${projectsStore.state.currentProjectKey}/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
+					};
+				}
+			);
+		});
+
+		return {
+			ssoProviders,
+			errorFormatted,
+			error,
+			email,
+			password,
+			onSubmit,
+			loggingIn,
+			forgotLink,
+			translateAPIError,
+		};
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
@@ -97,5 +147,20 @@ export default defineComponent({
 	&:hover {
 		color: var(--foreground-normal);
 	}
+}
+
+.sso-divider {
+	margin: 24px 0;
+}
+
+.sso-button {
+	img {
+		width: 24px;
+		height: auto;
+	}
+}
+
+.sso-notice {
+	margin-top: 24px;
 }
 </style>

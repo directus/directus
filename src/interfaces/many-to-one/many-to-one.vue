@@ -1,8 +1,8 @@
 <template>
-	<v-notice warning v-if="!relation">
+	<v-notice type="warning" v-if="!relation">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<v-notice warning v-else-if="!displayTemplate">
+	<v-notice type="warning" v-else-if="!displayTemplate">
 		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>

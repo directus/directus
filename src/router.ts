@@ -46,7 +46,7 @@ export const defaultRoutes: RouteConfig[] = [
 		path: '/:project/login',
 		component: LoginRoute,
 		props: (route) => ({
-			ssoErrorCode: route.query.error,
+			ssoErrorCode: route.query.error ? route.query.code : null,
 		}),
 		meta: {
 			public: true,

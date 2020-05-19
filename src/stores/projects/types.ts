@@ -27,6 +27,10 @@ export interface Project {
 		default_locale: string;
 		telemetry: boolean;
 		project_name: string;
+		sso: {
+			name: string;
+			icon: string;
+		}[];
 	};
 	server?: {
 		max_upload_size: number;

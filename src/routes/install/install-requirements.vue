@@ -9,8 +9,7 @@
 				v-else
 				v-for="requirement in requirements"
 				:key="requirement.key"
-				:success="requirement.success"
-				:warning="requirement.success === false"
+				:type="requirement.success ? 'success' : 'warning'"
 			>
 				{{ requirement.value }}
 			</v-notice>

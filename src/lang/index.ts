@@ -107,13 +107,14 @@ export function translateAPIError(error: RequestError | number) {
 
 	let code = error;
 
-	if (typeof error !== 'number') {
+	if (typeof error === 'object') {
 		code = error?.response?.data?.error?.code;
 	}
 
 	if (!error) return defaultMsg;
 	if (!code === undefined) return defaultMsg;
 	const key = `errors.${code}`;
+
 	const exists = i18n.te(key);
 	if (exists === false) return defaultMsg;
 	return i18n.t(key);

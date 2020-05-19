@@ -3,10 +3,10 @@
 		<h1 class="type-title">{{ $t('sign_in') }}</h1>
 
 		<continue-as v-if="currentProject.authenticated" />
-		<v-notice danger v-else-if="currentProject && currentProject.error">
+		<v-notice type="danger" v-else-if="currentProject && currentProject.error">
 			{{ errorFormatted }}
 		</v-notice>
-		<login-form v-else />
+		<login-form v-else :sso-error="ssoErrorCode" />
 
 		<template #notice>
 			<v-icon name="lock_outlined" left />
@@ -24,6 +24,12 @@ import useProjectsStore from '../../stores/projects';
 import { translateAPIError } from '@/lang';
 
 export default defineComponent({
+	props: {
+		ssoErrorCode: {
+			type: String,
+			default: null,
+		},
+	},
 	components: { LoginForm, ContinueAs },
 	setup() {
 		const projectsStore = useProjectsStore();

@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="loading ? $t('loading') : item.first_name + ' ' + item.last_name">
+	<private-view :title="title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -137,7 +137,19 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
+		const title = computed(() => {
+			if (loading.value === true) return i18n.t('loading');
+
+			if (isNew.value === false && item.value !== null) {
+				const user = item.value as any;
+				return `${user.first_name} ${user.last_name}`;
+			}
+
+			return i18n.t('adding_user');
+		});
+
 		return {
+			title,
 			item,
 			loading,
 			error,

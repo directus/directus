@@ -7,8 +7,8 @@
 			v-model="email"
 			:placeholder="$t('email')"
 		/>
-		<v-notice success v-if="done">{{ $t('password_reset_sent') }}</v-notice>
-		<v-notice danger v-if="error">
+		<v-notice type="success" v-if="done">{{ $t('password_reset_sent') }}</v-notice>
+		<v-notice type="danger" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">

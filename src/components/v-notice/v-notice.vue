@@ -1,5 +1,5 @@
 <template>
-	<div class="v-notice" :class="[color, { center }]">
+	<div class="v-notice" :class="[type, { center }]">
 		<v-icon v-if="icon !== false" :name="iconName" left />
 		<slot />
 	</div>
@@ -10,7 +10,7 @@ import { defineComponent, computed, PropType } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
-		color: {
+		type: {
 			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
 			default: 'normal',
 		},
@@ -29,13 +29,13 @@ export default defineComponent({
 				return props.icon;
 			}
 
-			if (props.color == 'info') {
+			if (props.type == 'info') {
 				return 'info';
-			} else if (props.color == 'success') {
+			} else if (props.type == 'success') {
 				return 'check_circle';
-			} else if (props.color == 'warning') {
+			} else if (props.type == 'warning') {
 				return 'warning';
-			} else if (props.color == 'danger') {
+			} else if (props.type == 'danger') {
 				return 'error';
 			} else {
 				return 'info';
