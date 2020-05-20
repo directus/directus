@@ -1,22 +1,24 @@
 <template>
 	<span class="user" :class="display">
-		<img
-			v-if="(display === 'avatar' || display === 'both') && src"
-			:src="src"
-			role="presentation"
-			:alt="value && `${value.first_name} ${value.last_name}`"
-			:class="{ circle }"
-		/>
-		<img
-			v-else-if="(display === 'avatar' || display === 'both') && src === null"
-			src="../../assets/avatar-placeholder.svg"
-			role="presentation"
-			:alt="value && `${value.first_name} ${value.last_name}`"
-			:class="{ circle }"
-		/>
-		<span v-if="display === 'name' || display === 'both'">
-			{{ value.first_name }} {{ value.last_name }}
-		</span>
+		<user-popover v-if="value" :user="value.id">
+			<img
+				v-if="(display === 'avatar' || display === 'both') && src"
+				:src="src"
+				role="presentation"
+				:alt="value && `${value.first_name} ${value.last_name}`"
+				:class="{ circle }"
+			/>
+			<img
+				v-else-if="(display === 'avatar' || display === 'both') && src === null"
+				src="../../assets/avatar-placeholder.svg"
+				role="presentation"
+				:alt="value && `${value.first_name} ${value.last_name}`"
+				:class="{ circle }"
+			/>
+			<span v-if="display === 'name' || display === 'both'">
+				{{ value.first_name }} {{ value.last_name }}
+			</span>
+		</user-popover>
 	</span>
 </template>
 

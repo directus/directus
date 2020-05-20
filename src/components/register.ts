@@ -95,18 +95,18 @@ Vue.component('v-tab-item', VTabItem);
 Vue.component('v-textarea', VTextarea);
 Vue.component('v-upload', VUpload);
 
-import DrawerDetail from '@/views/private/components/drawer-detail/';
-
-Vue.component('drawer-detail', DrawerDetail);
-
 import TransitionExpand from './transition/expand';
 
 Vue.component('transition-expand', TransitionExpand);
 
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
+import DrawerDetail from '@/views/private/components/drawer-detail/';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import UserPopover from '@/views/private/components/user-popover';
 
 Vue.component('render-display', RenderDisplay);
 Vue.component('render-template', RenderTemplate);
 Vue.component('filter-drawer-detail', FilterDrawerDetail);
+Vue.component('drawer-detail', DrawerDetail);
+Vue.component('user-popover', UserPopover);

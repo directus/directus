@@ -1,6 +1,12 @@
 <template>
-	<div class="v-menu">
-		<div ref="activator" class="v-menu-activator" :class="{ attached }">
+	<div class="v-menu" @click="onClick">
+		<div
+			ref="activator"
+			class="v-menu-activator"
+			:class="{ attached }"
+			@pointerenter="onPointerEnter"
+			@pointerleave="onPointerLeave"
+		>
 			<slot
 				name="activator"
 				v-bind="{
@@ -92,6 +98,15 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		trigger: {
+			type: String,
+			default: null,
+			validator: (val: string) => ['hover', 'click'].includes(val),
+		},
+		delay: {
+			type: Number,
+			default: 0,
+		},
 	},
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement>(null);
@@ -121,6 +136,10 @@ export default defineComponent({
 			});
 		});
 
+		const { onClick, onPointerEnter, onPointerLeave } = useEvents();
+
+		const hoveringOnPopperContent = ref(false);
+
 		return {
 			id,
 			activator,
@@ -135,6 +154,10 @@ export default defineComponent({
 			arrowStyles,
 			popperPlacement,
 			activate,
+			onClick,
+			onPointerLeave,
+			onPointerEnter,
+			hoveringOnPopperContent,
 		};
 
 		function useActiveState() {
@@ -185,6 +208,36 @@ export default defineComponent({
 		function onContentClick() {
 			if (props.closeOnContentClick === true) {
 				deactivate();
+			}
+		}
+
+		function useEvents() {
+			let timeout: ReturnType<typeof setTimeout> | null = null;
+
+			return { onClick, onPointerLeave, onPointerEnter };
+
+			function onClick() {
+				if (props.trigger !== 'click') return;
+
+				toggle();
+			}
+
+			function onPointerEnter() {
+				if (props.trigger !== 'hover') return;
+				if (timeout) return;
+				timeout = setTimeout(() => {
+					activate();
+				}, props.delay);
+			}
+
+			function onPointerLeave() {
+				if (hoveringOnPopperContent.value === true) return;
+
+				if (props.trigger !== 'hover') return;
+				if (timeout === null) return;
+				clearTimeout(timeout);
+				deactivate();
+				timeout = null;
 			}
 		}
 	},
@@ -410,64 +463,6 @@ body {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 }
-
-// .bounce-enter,
-// .bounce-leave-to {
-// 	& [data-placement='top'] > .v-menu-content {
-// 		transform: scaleY(0.8);
-// 	}
-
-// 	& [data-placement='top-start'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-
-// 	& [data-placement='top-end'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-
-// 	& [data-placement='right'] > .v-menu-content {
-// 		transform: scaleX(0.8);
-// 	}
-
-// 	& [data-placement='right-start'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-
-// 	& [data-placement='right-end'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-
-// 	& [data-placement='bottom'] > .v-menu-content {
-// 		transform: scaleY(0.8);
-// 	}
-
-// 	& [data-placement='bottom-start'] > .v-menu-content {
-// 		transform: scaleY(0.8);
-// 	}
-
-// 	& [data-placement='bottom-end'] > .v-menu-content {
-// 		transform: scaleY(0.8);
-// 	}
-
-// 	& [data-placement='left'] > .v-menu-content {
-// 		transform: scaleX(0.8);
-// 	}
-
-// 	& [data-placement='left-start'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-
-// 	& [data-placement='left-end'] > .v-menu-content {
-// 		transform: scaleY(0.8) scaleX(0.8);
-// 	}
-// }
-
-// .bounce-enter-active > .v-menu-content,
-// .bounce-leave-active > .v-menu-content {
-// 	transform: scaleY(1) scaleX(1);
-// 	transition-timing-function: cubic-bezier(0, 0, 0.2, 1.5);
-// 	transition-duration: var(--fast);
-// }
 
 .attached {
 	&[data-placement^='top'] {

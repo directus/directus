@@ -27,7 +27,7 @@
 		</v-dialog>
 
 		<router-link :to="userProfileLink">
-			<v-avatar tile x-large v-tooltip.right="userFullName">
+			<v-avatar tile large v-tooltip.right="userFullName">
 				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
 				<v-icon v-else name="account_circle" />
 			</v-avatar>

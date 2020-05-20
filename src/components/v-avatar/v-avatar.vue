@@ -64,11 +64,11 @@ body {
 	}
 
 	&.large {
-		--v-avatar-size: 56px;
+		--v-avatar-size: 64px;
 	}
 
 	&.x-large {
-		--v-avatar-size: 64px;
+		--v-avatar-size: 80px;
 	}
 
 	::v-deep {

@@ -10,13 +10,20 @@
 		</v-avatar>
 
 		<div class="name">
-			<template v-if="activity.action_by && activity.action_by">
-				{{ activity.action_by.first_name }} {{ activity.action_by.last_name }}
-			</template>
+			<user-popover
+				v-if="activity.action_by && activity.action_by.id"
+				:user="activity.action_by.id"
+			>
+				<span>
+					<template v-if="activity.action_by && activity.action_by">
+						{{ activity.action_by.first_name }} {{ activity.action_by.last_name }}
+					</template>
 
-			<template v-else>
-				{{ $t('private_user') }}
-			</template>
+					<template v-else>
+						{{ $t('private_user') }}
+					</template>
+				</span>
+			</user-popover>
 		</div>
 
 		<div class="header-right">

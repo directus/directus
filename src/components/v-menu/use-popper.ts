@@ -33,6 +33,10 @@ export function usePopper(
 		});
 	});
 
+	const observer = new MutationObserver(() => {
+		popperInstance.value?.forceUpdate();
+	});
+
 	return { popperInstance, placement, start, stop, styles, arrowStyles };
 
 	function start() {
@@ -44,11 +48,19 @@ export function usePopper(
 				strategy: 'fixed',
 			});
 			popperInstance.value.forceUpdate();
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			observer.observe(popper.value!, {
+				attributes: true,
+				childList: true,
+				characterData: true,
+				subtree: true,
+			});
 		});
 	}
 
 	function stop() {
 		popperInstance.value?.destroy();
+		observer.disconnect();
 	}
 
 	function getModifiers(callback: () => void = () => undefined) {
