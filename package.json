@@ -41,7 +41,7 @@
     "tinymce": "^5.2.2",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.7",
-    "vue-router": "^3.1.5",
+    "vue-router": "^3.2.0",
     "vuedraggable": "^2.23.2"
   },
   "devDependencies": {
