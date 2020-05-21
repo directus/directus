@@ -17,6 +17,7 @@ import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { useProjectsStore } from '@/stores/projects';
 import useWindowSize from '@/composables/use-window-size';
+import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
@@ -31,6 +32,8 @@ export default defineComponent({
 				'--brand': projectsStore.currentProject.value?.color || 'var(--primary)',
 			};
 		});
+
+		watch(() => projectsStore.currentProject.value?.color, setFavicon);
 
 		const { width } = useWindowSize();
 
