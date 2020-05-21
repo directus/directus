@@ -13,14 +13,17 @@ export interface Project {
 		project_color: string;
 		project_logo: {
 			full_url: string;
+			asset_url: string;
 			url: string;
 		} | null;
 		project_foreground: {
 			full_url: string;
+			asset_url: string;
 			url: string;
 		} | null;
 		project_background: {
 			full_url: string;
+			asset_url: string;
 			url: string;
 		} | null;
 		project_public_note: string | null;

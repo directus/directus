@@ -58,6 +58,8 @@ export const withCustomLogo = () =>
 								'https://demo.directus.io/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 							url:
 								'/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
+							asset_url:
+								'/uploads/thumper/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 						},
 						project_color: '#4CAF50',
 						project_foreground: null,

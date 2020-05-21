@@ -15,6 +15,8 @@
 			disabled,
 			dashed,
 		}"
+		:href="href"
+		:download="download"
 		v-on="disabled === false && $listeners"
 	>
 		<slot></slot>
@@ -39,6 +41,10 @@ export default defineComponent({
 			type: [String, Object] as PropType<string | Location>,
 			default: null,
 		},
+		href: {
+			type: String,
+			default: null,
+		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -55,10 +61,22 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		download: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { listeners }) {
-		const component = computed<string>(() => (props.to ? 'router-link' : 'li'));
-		const isClickable = computed(() => Boolean(props.to || listeners.click !== undefined));
+		const component = computed<string>(() => {
+			if (props.to) return 'router-link';
+			if (props.href) return 'a';
+			return 'li';
+		});
+
+		const isClickable = computed(() =>
+			Boolean(props.to || props.href || listeners.click !== undefined)
+		);
+
 		return { component, isClickable };
 	},
 });
