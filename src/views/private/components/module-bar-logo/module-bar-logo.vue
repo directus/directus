@@ -6,11 +6,14 @@
 		ref="noopener noreferer"
 		class="module-bar-logo"
 	>
-		<img class="custom-logo" v-if="customLogoPath" :src="customLogoPath" alt="Project Logo" />
+		<template v-if="customLogoPath">
+			<v-progress-circular indeterminate v-if="showLoader" />
+			<img v-else class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+		</template>
 		<div
 			v-else
 			class="logo"
-			:class="{ running: isRunning }"
+			:class="{ running: showLoader }"
 			@animationiteration="stopRunningIfQueueIsEmpty"
 		/>
 	</component>
@@ -18,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import { ProjectWithKey } from '@/stores/projects/types';
 import { useProjectsStore } from '@/stores/projects/';
 import { useRequestsStore } from '@/stores/requests/';
 import { useSettingsStore } from '@/stores/settings/';
@@ -31,21 +33,18 @@ export default defineComponent({
 
 		const customLogoPath = computed<string | null>(() => {
 			if (projectsStore.currentProject.value === null) return null;
-			if (projectsStore.currentProject.value.error !== undefined) {
-				return null;
-			}
-			const currentProject = projectsStore.currentProject.value as ProjectWithKey;
-			return currentProject.api?.project_logo?.full_url || null;
+			return projectsStore.currentProject.value.logo || null;
 		});
 
-		const isRunning = ref(false);
+		const showLoader = ref(false);
 
 		const queueHasItems = requestsStore.queueHasItems;
 
 		watch(
 			() => queueHasItems.value,
 			(hasItems) => {
-				if (hasItems) isRunning.value = true;
+				if (hasItems) showLoader.value = true;
+				else if (customLogoPath.value !== null) showLoader.value = false;
 			}
 		);
 
@@ -53,13 +52,13 @@ export default defineComponent({
 
 		return {
 			customLogoPath,
-			isRunning,
+			showLoader,
 			stopRunningIfQueueIsEmpty,
 			url,
 		};
 
 		function stopRunningIfQueueIsEmpty() {
-			if (queueHasItems.value === false) isRunning.value = false;
+			if (queueHasItems.value === false) showLoader.value = false;
 		}
 	},
 });
@@ -67,7 +66,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .module-bar-logo {
+	--v-progress-circular-color: var(--white);
+	--v-progress-circular-background-color: transparent;
+
 	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 64px;
 	height: 64px;
 	padding: 12px;
