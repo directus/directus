@@ -10074,10 +10074,10 @@ mkdirp@^0.5:
   dependencies:
     minimist "^1.2.5"
 
-mockdate@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/mockdate/-/mockdate-2.0.5.tgz#70c6abf9ed4b2dae65c81dfc170dd1a5cec53620"
-  integrity sha512-ST0PnThzWKcgSLyc+ugLVql45PvESt3Ul/wrdV/OPc/6Pr8dbLAIJsN1cIp41FLzbN+srVTNIRn+5Cju0nyV6A==
+mockdate@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/mockdate/-/mockdate-3.0.2.tgz#a5a7bb5820da617747af424d7a4dcb22c6c03d79"
+  integrity sha512-ldfYSUW1ocqSHGTK6rrODUiqAFPGAg0xaHqYJ5tvj1hQyFsjuHpuWgWFTZWwDVlzougN/s2/mhDr8r5nY5xDpA==
 
 moment@^2.18.1:
   version "2.24.0"
