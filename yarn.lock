@@ -14327,10 +14327,10 @@ tinycolor2@^1.4.1:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
-tinymce@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.2.2.tgz#1ac77cce1565b54932b4e612d2fd9c07b687f238"
-  integrity sha512-G1KZOxHIrokeP/rhJuvwctmeAuHDAeH8AI1ubnVcdMZtmC6mUh3SfESqFJrFWoiF143OUMC61GkVhi920pIP0A==
+tinymce@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.3.0.tgz#5e239cadd37bde049d53bf13c3aa2185e1486b7f"
+  integrity sha512-uqEvypPRWnFT93PcoIJ4e56Azjbk3/O6W3A68+fifGRHbWkLNqcP2EMPEBdTdzYRXu9iOHnTgqMScYwLK3nYUA==
 
 tmp@^0.0.33:
   version "0.0.33"
