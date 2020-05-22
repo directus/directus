@@ -1,4 +1,4 @@
-# Directus v9 (alpha 1)
+# Directus v9 (Alpha)
 
 Thanks for trying out the alpha of Directus v9!
 
