@@ -1,12 +1,24 @@
 <template>
 	<div class="project-chooser" :class="{ active }">
-		<button class="toggle" :disabled="projects.length === 1" @click="active = !active">
+		<button
+			ref="activator"
+			class="toggle"
+			:disabled="projects.length === 1"
+			@click="active = !active"
+		>
 			<latency-indicator />
 			<span class="name">{{ currentProject.name }}</span>
 			<v-icon class="icon" name="expand_more" />
 		</button>
 		<transition-expand>
-			<div v-if="active" class="options-wrapper" v-click-outside="() => (active = false)">
+			<div
+				v-if="active"
+				class="options-wrapper"
+				v-click-outside="{
+					handler: () => (active = false),
+					middleware: onClickOutsideMiddleware,
+				}"
+			>
 				<div class="options">
 					<v-divider />
 
@@ -40,6 +52,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const active = ref(false);
+		const activator = ref<Element>(null);
 
 		const currentProject = projectsStore.currentProject;
 
@@ -50,7 +63,13 @@ export default defineComponent({
 			projectsStore,
 			currentProject,
 			active,
+			onClickOutsideMiddleware,
+			activator,
 		};
+
+		function onClickOutsideMiddleware(event: Event) {
+			return !activator.value?.contains(event.target as Node);
+		}
 
 		function navigateToProject(key: string) {
 			router
