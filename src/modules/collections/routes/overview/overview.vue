@@ -32,6 +32,21 @@
 				{{ $t('no_collections_copy') }}
 			</template>
 		</v-info>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -43,6 +58,7 @@ import useNavigation, { NavItem } from '../../composables/use-navigation';
 import router from '@/router';
 import useUserStore from '@/stores/user';
 import useProjectsStore from '@/stores/projects';
+import marked from 'marked';
 
 export default defineComponent({
 	name: 'collections-overview',
@@ -80,7 +96,14 @@ export default defineComponent({
 			return `/${projectsStore.state.currentProjectKey}/settings/data-model`;
 		});
 
-		return { tableHeaders, navItems, navigateToCollection, isAdmin, dataModelLink };
+		return {
+			tableHeaders,
+			navItems,
+			navigateToCollection,
+			isAdmin,
+			dataModelLink,
+			marked,
+		};
 
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);

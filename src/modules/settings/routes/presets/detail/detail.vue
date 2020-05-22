@@ -43,12 +43,6 @@
 			</v-button>
 		</template>
 
-		<template #drawer>
-			<div class="layout-drawer">
-				<portal-target name="drawer" />
-			</div>
-		</template>
-
 		<div class="preset-detail">
 			<v-form
 				:fields="fields"
@@ -71,6 +65,24 @@
 				/>
 			</div>
 		</div>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_settings_presets_detail'))"
+				/>
+			</drawer-detail>
+			<div class="layout-drawer">
+				<portal-target name="drawer" />
+			</div>
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -85,6 +97,7 @@ import useCollectionsStore from '@/stores/collections';
 import layouts from '@/layouts';
 import router from '@/router';
 import useCollectionPresetsStore from '@/stores/collection-presets';
+import marked from 'marked';
 
 type User = {
 	id: number;
@@ -154,6 +167,7 @@ export default defineComponent({
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
+			marked,
 		};
 
 		function useSave() {

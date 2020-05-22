@@ -64,7 +64,7 @@
 	"clear_value": "Clear value",
 	"reset_to_default": "Reset to default",
 	"undo_changes": "Undo changes",
-	"collapse_sidebar": "Collapse Sidebar",
+	"page_info": "Page Information",
 	"notifications": "Notifications",
 	"show_all_activity": "Show All Activity",
 	"page_not_found": "Page Not Found",
@@ -209,6 +209,7 @@
 	"no_items": "No items",
 
 	"disabled": "Disabled",
+	"information": "Information",
 
 	"interface_not_found": "Interface \"{interface}\" not found",
 
@@ -221,6 +222,7 @@
 	"no_collections_copy_admin": "It looks like you don’t have any Collections yet. Fortunately, it’s very easy to create one — click the button below to get started.",
 	"no_collections_copy": "It looks like you don’t have any Collections yet. Please contact your system administrator to have them create your data-model.",
 
+	"text_input": "Text Input",
 	"radio_buttons": "Radio Buttons",
 	"checkboxes": "Checkboxes",
 
@@ -576,6 +578,23 @@
 	"layout_preview": "Layout Preview",
 	"layout_setup": "Layout Setup",
 
+	"page_help_collections_overview": "Provides a listing of all collections you have access to.",
+	"page_help_collections_browse": "**Item Browse Page** — Customize the layout, filters, and sorting to tailor your view of items within this {collection} collection.<br><br>You can also save bookmarks of these different configurations to quickly switch between them.<br><br><a href='https://docs.directus.io/guides/user-guide.html#items' target='_blank'>Learn More</a>",
+	"page_help_collections_detail": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_activity_detail": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_activity_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_files_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_global": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_datamodel_collections": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_datamodel_fields": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_roles_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_roles_detail": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_presets_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_presets_detail": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_webhooks_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_webhooks_detail": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_users_browse": "For more information this page please refer to the <br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+
   "about_directus": "About Directus",
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",
@@ -747,7 +766,7 @@
   "enter_collection_name": "Enter collection name...",
   "enter_otp": "Please enter the one-time-password (OTP) from your authenticator app.",
   "enter_role_name": "Enter role name...",
-  "enter_value": "Enter Value",
+  "enter_value": "Enter value...",
   "environment": "Environment",
   "equal_to": "Equal to",
   "error_unknown": "Unknown error. Try again later.",
@@ -809,6 +828,7 @@
   "hidden_browse": "Hidden on Browse",
   "hidden_detail": "Hidden on Detail",
   "icon": "Icon",
+  "image": "Image",
   "in_list": "One of these",
   "info": "Info",
   "initial_schema": "Choose an Initial Schema",
@@ -948,6 +968,7 @@
   "sort_direction": "Sort Direction",
   "spacing": "Spacing",
   "statuses": "Statuses",
+  "template": "Template",
   "text": "Text",
   "translation": "Translation",
   "translated_field_name": "Translated field name...",

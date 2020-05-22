@@ -133,6 +133,8 @@ body {
 
 	.label:not(:empty) {
 		margin-left: 8px;
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
 
 		input {
 			width: 100%;
@@ -147,6 +149,8 @@ body {
 
 	& .checkbox {
 		--v-icon-color: var(--foreground-subdued);
+
+		transition: color var(--fast) var(--transition);
 	}
 
 	&:disabled {
@@ -163,7 +167,10 @@ body {
 
 	&:not(:disabled):hover {
 		.checkbox {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--foreground-normal);
+		}
+		.label {
+			color: var(--foreground-normal);
 		}
 	}
 

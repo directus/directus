@@ -34,5 +34,11 @@ export default defineInterface(({ i18n }) => ({
 			width: 'half',
 			interface: 'icon',
 		},
+		{
+			field: 'placeholder',
+			name: i18n.t('placeholder'),
+			width: 'half',
+			interface: 'text-input',
+		},
 	],
 }));

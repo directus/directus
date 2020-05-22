@@ -20,6 +20,18 @@
 			:initial-values="item"
 			:primary-key="primaryKey"
 		/>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div class="format-markdown" v-html="marked($t('page_help_activity_detail'))" />
+			</drawer-detail>
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -30,6 +42,7 @@ import ActivityNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import marked from 'marked';
 
 type Values = {
 	[field: string]: any;
@@ -57,6 +70,7 @@ export default defineComponent({
 			loading,
 			error,
 			breadcrumb,
+			marked,
 		};
 
 		function useBreadcrumb() {

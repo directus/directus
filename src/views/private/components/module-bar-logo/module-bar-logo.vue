@@ -67,7 +67,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .module-bar-logo {
 	--v-progress-circular-color: var(--white);
-	--v-progress-circular-background-color: transparent;
+	--v-progress-circular-background-color: rgba(255, 255, 255, 0.25);
 
 	position: relative;
 	display: flex;

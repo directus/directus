@@ -40,14 +40,6 @@
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>
-			<drawer-button
-				class="drawer-toggle"
-				@click.stop="drawerOpen = !drawerOpen"
-				:icon="drawerOpen ? 'chevron_right' : 'chevron_left'"
-			>
-				{{ $t('collapse_sidebar') }}
-			</drawer-button>
-
 			<drawer-detail-group :drawer-open="drawerOpen">
 				<slot name="drawer" />
 			</drawer-detail-group>

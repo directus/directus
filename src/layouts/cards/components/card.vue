@@ -279,10 +279,6 @@ export default defineComponent({
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-
-	> .render-template ::v-deep > *:not(:last-child) {
-		margin-right: 4px;
-	}
 }
 
 .title {

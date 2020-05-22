@@ -3,7 +3,7 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'text-input',
-	name: i18n.t('interfaces.text-input.text-input'),
+	name: i18n.t('text_input'),
 	icon: 'text_fields',
 	component: InterfaceTextInput,
 	options: [
@@ -26,21 +26,16 @@ export default defineInterface(({ i18n }) => ({
 			interface: 'icon',
 		},
 		{
-			field: 'trim',
-			name: 'Trim',
-			width: 'half',
-			interface: 'toggle',
-		},
-		{
 			field: 'font',
 			name: 'Font',
 			width: 'half',
-			interface: 'select-one-dropdown',
+			interface: 'dropdown',
+			default: 'sans-serif',
 			options: {
-				items: [
-					{ itemText: 'Sans', itemValue: 'sans-serif' },
-					{ itemText: 'Mono', itemValue: 'monospace' },
-					{ itemText: 'Serif', itemValue: 'serif' },
+				choices: [
+					{ text: 'Sans Serif', value: 'sans-serif' },
+					{ text: 'Monospace', value: 'monospace' },
+					{ text: 'Serif', value: 'serif' },
 				],
 			},
 		},

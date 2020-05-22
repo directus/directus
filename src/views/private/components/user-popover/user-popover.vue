@@ -121,16 +121,27 @@ export default defineComponent({
 
 .user-box {
 	display: flex;
+	min-width: 300px;
 	height: 80px;
-	margin: 10px 6px;
+	margin: 8px 4px;
 
 	.v-avatar {
 		margin-right: 16px;
 	}
 
 	.status-role {
+		text-transform: capitalize;
+		&.invited {
+			color: var(--primary);
+		}
 		&.active {
 			color: var(--success);
+		}
+		&.suspended {
+			color: var(--warning);
+		}
+		&.deleted {
+			color: var(--danger);
 		}
 	}
 
@@ -153,7 +164,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	height: 80px;
-	margin: 10px 6px;
+	margin: 8px 4px;
 
 	.avatar {
 		width: 80px;

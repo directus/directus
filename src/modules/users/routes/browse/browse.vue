@@ -6,11 +6,6 @@
 			</v-button>
 		</template>
 
-		<template #drawer>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
-			<portal-target name="drawer" />
-		</template>
-
 		<template #actions:prepend>
 			<portal-target name="actions:prepend" />
 		</template>
@@ -65,6 +60,20 @@
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
 		/>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div class="format-markdown" v-html="marked($t('page_help_users_browse'))" />
+			</drawer-detail>
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<portal-target name="drawer" />
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -79,6 +88,7 @@ import useCollectionPreset from '@/composables/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
+import marked from 'marked';
 
 type Item = {
 	[field: string]: any;
@@ -162,6 +172,7 @@ export default defineComponent({
 			viewQuery,
 			viewType,
 			searchQuery,
+			marked,
 		};
 
 		function useBatchDelete() {

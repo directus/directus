@@ -38,11 +38,6 @@
 			</bookmark-edit>
 		</template>
 
-		<template #drawer>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
-			<portal-target name="drawer" />
-		</template>
-
 		<template #actions:prepend>
 			<portal-target name="actions:prepend" />
 		</template>
@@ -112,6 +107,26 @@
 			:filters.sync="filters"
 			:search-query.sync="searchQuery"
 		/>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				Page Info Here...
+			</drawer-detail>
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<portal-target name="drawer" />
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="
+						marked(
+							$t('page_help_collections_browse', {
+								collection: currentCollection.name,
+							})
+						)
+					"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -132,6 +147,7 @@ import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
+import marked from 'marked';
 
 const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 	const collectionsStore = useCollectionsStore();
@@ -250,6 +266,7 @@ export default defineComponent({
 			editingBookmark,
 			editBookmark,
 			breadcrumb,
+			marked,
 		};
 
 		function useBreadcrumb() {

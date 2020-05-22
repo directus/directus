@@ -1,5 +1,5 @@
 <template>
-	<drawer-detail icon="info_outline" :title="$t('file_details')">
+	<drawer-detail icon="info_outline" :title="$t('file_details')" close>
 		<dl>
 			<div v-if="type">
 				<dt>{{ $t('type') }}</dt>
@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
-import prettyBytes from 'pretty-bytes';
+import bytes from 'bytes';
 import i18n from '@/lang';
 import localizedFormat from '@/utils/localized-format';
 
@@ -68,7 +68,7 @@ export default defineComponent({
 		const size = computed(() => {
 			if (!props.filesize) return null;
 
-			return prettyBytes(props.filesize, { locale: i18n.locale.split('-')[0] });
+			return bytes(props.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
 		});
 
 		const creationDate = ref<string>(null);

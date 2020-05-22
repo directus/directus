@@ -26,10 +26,10 @@ export default defineDisplay(({ i18n }) => ({
 			width: 'half',
 			interface: 'dropdown',
 			options: {
-				items: [
-					{ itemText: i18n.t('sans_serif'), itemValue: 'sans-serif' },
-					{ itemText: i18n.t('serif'), itemValue: 'serif' },
-					{ itemText: i18n.t('monospace'), itemValue: 'monospace' },
+				choices: [
+					{ text: i18n.t('sans_serif'), value: 'sans-serif' },
+					{ text: i18n.t('serif'), value: 'serif' },
+					{ text: i18n.t('monospace'), value: 'monospace' },
 				],
 			},
 		},

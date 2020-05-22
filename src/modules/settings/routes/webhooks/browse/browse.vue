@@ -6,8 +6,6 @@
 			</v-button>
 		</template>
 
-		<template #drawer><portal-target name="drawer" /></template>
-
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
@@ -58,6 +56,22 @@
 			:view-query.sync="viewQuery"
 			:detail-route="'/{{project}}/settings/webhooks/{{primaryKey}}'"
 		/>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_settings_webhooks_browse'))"
+				/>
+			</drawer-detail>
+			<portal-target name="drawer" />
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -69,6 +83,7 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
+import marked from 'marked';
 
 type Item = {
 	[field: string]: any;
@@ -118,6 +133,7 @@ export default defineComponent({
 			layout,
 			viewOptions,
 			viewQuery,
+			marked,
 		};
 
 		function useBatchDelete() {

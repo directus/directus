@@ -12,7 +12,7 @@
 				:type="part.type"
 				v-bind="part.options"
 			/>
-			<span :key="index" v-else>{{ part + ' ' }}</span>
+			<span :key="index" v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
@@ -86,7 +86,7 @@ export default defineComponent({
 						type: field.type,
 					};
 				})
-				.map((p) => (typeof p === 'string' ? p.trim() : p))
+				.map((p) => p)
 				.filter((p) => p)
 		);
 
@@ -99,16 +99,31 @@ export default defineComponent({
 @import '@/styles/mixins/no-wrap';
 
 .render-template {
-	display: flex;
-	align-items: center;
+	position: relative;
 	max-width: 100%;
 	height: 100%;
+	padding-right: 8px;
 
 	& > * {
-		margin-right: 6px;
-
-		@include no-wrap;
+		vertical-align: middle;
 	}
+
+	&::after {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 8px;
+		background: linear-gradient(
+			90deg,
+			rgba(var(--background-page-rgb), 0) 0%,
+			rgba(var(--background-page-rgb), 1) 100%
+		);
+		content: '';
+		pointer-events: none;
+	}
+
+	@include no-wrap;
 }
 
 .subdued {

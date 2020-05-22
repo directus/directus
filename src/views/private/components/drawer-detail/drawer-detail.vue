@@ -1,5 +1,5 @@
 <template>
-	<div class="drawer-detail">
+	<div class="drawer-detail" :class="{ open: drawerOpen }">
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
 				<v-badge bordered :value="badge" :disabled="!badge">
@@ -8,6 +8,9 @@
 			</div>
 			<div class="title" v-show="drawerOpen">
 				{{ title }}
+			</div>
+			<div v-if="close" class="close" @click.stop="drawerOpen = !drawerOpen">
+				<v-icon name="close" />
 			</div>
 		</button>
 		<transition-expand class="scroll-container">
@@ -38,6 +41,10 @@ export default defineComponent({
 		badge: {
 			type: [String, Number],
 			default: null,
+		},
+		close: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -70,16 +77,42 @@ body {
 		height: 64px;
 		color: var(--foreground-normal);
 		background-color: var(--background-normal-alt);
+
+		.icon {
+			--v-icon-color: var(--drawer-detail-icon-color);
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 64px;
+			height: 100%;
+		}
+
+		.close {
+			position: absolute;
+			top: 0;
+			right: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 64px;
+			height: 64px;
+			color: var(--foreground-subdued);
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+			pointer-events: none;
+
+			&:hover {
+				color: var(--foreground-normal);
+			}
+		}
 	}
 
-	.icon {
-		--v-icon-color: var(--drawer-detail-icon-color);
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 64px;
-		height: 100%;
+	&.open {
+		.toggle .close {
+			opacity: 1;
+			pointer-events: auto;
+		}
 	}
 
 	.title {
@@ -98,6 +131,13 @@ body {
 
 	.content {
 		padding: 16px;
+		::v-deep {
+			.format-markdown {
+				a {
+					color: var(--primary);
+				}
+			}
+		}
 	}
 }
 </style>

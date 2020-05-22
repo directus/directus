@@ -83,11 +83,23 @@
 		</div>
 
 		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_settings_roles_detail'))"
+				/>
+			</drawer-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false"
 				collection="directus_roles"
 				:primary-key="primaryKey"
 			/>
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -101,6 +113,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import PermissionsManagement from './components/permissions-management';
+import marked from 'marked';
 import useUserStore from '@/stores/user';
 
 type Values = {
@@ -158,6 +171,7 @@ export default defineComponent({
 			saveAsCopyAndNavigate,
 			isBatch,
 			currentProjectKey,
+			marked,
 		};
 
 		/**

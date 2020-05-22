@@ -18,7 +18,7 @@ export default defineDisplay(({ i18n }) => ({
 	options: [
 		{
 			field: 'template',
-			name: i18n.t('template'),
+			name: i18n.t('display_template'),
 			interface: 'text-input',
 			width: 'full',
 		},

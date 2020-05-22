@@ -3,7 +3,6 @@
 		:value="value"
 		:placeholder="placeholder"
 		:disabled="disabled"
-		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
 		:maxlength="length"

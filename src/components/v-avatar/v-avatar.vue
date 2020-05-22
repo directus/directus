@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-avatar-color: var(--primary);
+	--v-avatar-color: var(--background-normal);
 	--v-avatar-size: 48px;
 }
 </style>
@@ -43,7 +43,7 @@ body {
 	width: var(--v-avatar-size);
 	height: var(--v-avatar-size);
 	overflow: hidden;
-	color: var(--white);
+	color: var(--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);

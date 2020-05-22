@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
+import i18n from '@/lang';
 
 type Option = {
 	text: string;
@@ -50,7 +51,7 @@ export default defineComponent({
 		},
 		placeholder: {
 			type: String,
-			default: null,
+			default: i18n.t('select_an_item'),
 		},
 		allowOther: {
 			type: Boolean,

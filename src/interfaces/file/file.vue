@@ -13,7 +13,13 @@
 						:value="file && file.title"
 					>
 						<template #prepend>
-							<div class="preview" :class="{ 'has-file': file }">
+							<div
+								class="preview"
+								:class="{
+									'has-file': file,
+									'is-svg': file && file.type.includes('svg'),
+								}"
+							>
 								<img
 									v-if="imageThumbnail"
 									:src="imageThumbnail"
@@ -127,6 +133,7 @@ type FileInfo = {
 	title: string;
 	type: string;
 	data: {
+		asset_url: string;
 		thumbnails?: {
 			key: string;
 			url: string;
@@ -160,6 +167,7 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (file.value === null) return null;
+			if (file.value.type.includes('svg')) return file.value.data.asset_url;
 			if (file.value.type.includes('image') === false) return null;
 			return file.value.data.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')
 				?.url;
@@ -291,8 +299,23 @@ export default defineComponent({
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
 	&.has-file {
 		background-color: var(--primary-alt);
+	}
+
+	&.is-svg {
+		padding: 4px;
+		background-color: var(--background-normal);
+
+		img {
+			object-fit: contain;
+		}
 	}
 }
 

@@ -6,8 +6,6 @@
 			</v-button>
 		</template>
 
-		<template #drawer><portal-target name="drawer" /></template>
-
 		<template #navigation>
 			<activity-navigation />
 		</template>
@@ -20,6 +18,19 @@
 			:view-query.sync="viewQuery"
 			:detail-route="'/{{project}}/activity/{{primaryKey}}'"
 		/>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div class="format-markdown" v-html="marked($t('page_help_activity_browse'))" />
+			</drawer-detail>
+			<portal-target name="drawer" />
+			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
+				<div
+					class="format-markdown"
+					v-html="marked($t('page_help_collections_overview'))"
+				/>
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -30,6 +41,7 @@ import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
+import marked from 'marked';
 
 type Item = {
 	[field: string]: any;
@@ -51,6 +63,7 @@ export default defineComponent({
 			layout,
 			viewOptions,
 			viewQuery,
+			marked,
 		};
 
 		function useBreadcrumb() {
