@@ -29,12 +29,9 @@ export async function login(credentials: LoginCredentials) {
 	const projectsStore = useProjectsStore();
 	const { currentProjectKey } = projectsStore.state;
 
-	const { email, password } = credentials;
-
 	await api.post(`/${currentProjectKey}/auth/authenticate`, {
+		...credentials,
 		mode: 'cookie',
-		email: email,
-		password: password,
 	});
 
 	await hydrate();

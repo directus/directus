@@ -13,6 +13,11 @@
 			v-model="password"
 			:placeholder="$t('password')"
 		/>
+
+		<transition-expand>
+			<v-input type="text" :placeholder="$t('otp')" v-if="requiresTFA" v-model="otp" />
+		</transition-expand>
+
 		<v-notice type="warning" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
@@ -46,13 +51,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import router from '@/router';
 import { useProjectsStore } from '@/stores/projects';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import getRootPath from '@/utils/get-root-path';
+
+type Credentials = {
+	email: string;
+	password: string;
+	otp?: string;
+};
 
 export default defineComponent({
 	props: {
@@ -68,6 +79,12 @@ export default defineComponent({
 		const email = ref<string>(null);
 		const password = ref<string>(null);
 		const error = ref<RequestError>(null);
+		const otp = ref<string>(null);
+		const requiresTFA = ref(false);
+
+		watch(email, () => {
+			if (requiresTFA.value === true) requiresTFA.value = false;
+		});
 
 		const errorFormatted = computed(() => {
 			if (error.value) {
@@ -103,6 +120,8 @@ export default defineComponent({
 			loggingIn,
 			forgotLink,
 			translateAPIError,
+			otp,
+			requiresTFA,
 		};
 
 		async function onSubmit() {
@@ -113,14 +132,24 @@ export default defineComponent({
 			try {
 				loggingIn.value = true;
 
-				await login({
+				const credentials: Credentials = {
 					email: email.value,
 					password: password.value,
-				});
+				};
+
+				if (otp.value) {
+					credentials.otp = otp.value;
+				}
+
+				await login(credentials);
 
 				router.push(`/${currentProjectKey}/collections/`);
 			} catch (err) {
-				error.value = err;
+				if (err.response?.data?.error?.code === 111) {
+					requiresTFA.value = true;
+				} else {
+					error.value = err;
+				}
 			} finally {
 				loggingIn.value = false;
 			}
