@@ -8,7 +8,12 @@
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-icon @click="activate" :name="value" :class="{ active: value }" />
+					<v-icon
+						v-if="value"
+						@click="activate"
+						:name="value"
+						:class="{ active: value }"
+					/>
 				</template>
 
 				<template #append>

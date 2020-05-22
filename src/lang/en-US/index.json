@@ -105,6 +105,9 @@
 
 	"submit": "Submit",
 
+	"system": "System",
+	"include_system_collections": "Include System Collections",
+
 	"add_field_related": "Add Field to Related Collection",
 	"create_corresponding_field": "Create Corresponding Field",
 	"corresponding_field_name": "Corresponding Field Name",

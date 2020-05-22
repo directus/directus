@@ -2,8 +2,21 @@ export type Role = {
 	id: number;
 	name: string;
 	description: string;
-	collection_listing: null;
-	module_listing: null;
+	collection_listing:
+		| null
+		| {
+				group_name: string;
+				collections: {
+					collection: string;
+				}[];
+		  }[];
+	module_listing:
+		| null
+		| {
+				link: string;
+				name: string;
+				icon: string;
+		  }[];
 	enforce_2fa: null | boolean;
 	external_id: null | string;
 	ip_whitelist: string[];

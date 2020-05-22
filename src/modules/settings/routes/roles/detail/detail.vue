@@ -74,6 +74,7 @@
 			</div>
 			<v-form
 				collection="directus_roles"
+				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
@@ -100,6 +101,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import PermissionsManagement from './components/permissions-management';
+import useUserStore from '@/stores/user';
 
 type Values = {
 	[field: string]: any;
@@ -116,6 +118,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const projectsStore = useProjectsStore();
+		const userStore = useUserStore();
+
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 
@@ -156,17 +160,27 @@ export default defineComponent({
 			currentProjectKey,
 		};
 
+		/**
+		 * @NOTE
+		 * The userStore contains the information about the role of the current user. We want to
+		 * update the userstore to make sure the role information is accurate with the latest changes
+		 * in case we're changing the current user's role
+		 */
+
 		async function saveAndQuit() {
 			await save();
+			await userStore.hydrate();
 			router.push(`/${currentProjectKey.value}/settings/roles`);
 		}
 
 		async function saveAndStay() {
 			await save();
+			await userStore.hydrate();
 		}
 
 		async function saveAndAddNew() {
 			await save();
+			await userStore.hydrate();
 			router.push(`/${currentProjectKey.value}/settings/roles/+`);
 		}
 

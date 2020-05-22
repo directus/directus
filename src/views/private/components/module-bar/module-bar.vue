@@ -27,11 +27,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from '@vue/composition-api';
+import { defineComponent, Ref, computed } from '@vue/composition-api';
 import { useProjectsStore } from '@/stores/projects';
 import { modules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
+import useUserStore from '@/stores/user';
 
 export default defineComponent({
 	components: {
@@ -40,25 +41,51 @@ export default defineComponent({
 	},
 	setup() {
 		const projectsStore = useProjectsStore();
+		const userStore = useUserStore();
+
 		const { currentProjectKey } = projectsStore.state;
 
-		const _modules = modules
-			.map((module) => ({
-				...module,
-				href: module.link || null,
-				to: module.link === undefined ? `/${currentProjectKey}/${module.id}/` : null,
-			}))
-			.filter((module) => {
-				if (module.hidden !== undefined) {
-					if (
-						(module.hidden as boolean) === true ||
-						(module.hidden as Ref<boolean>).value === true
-					) {
-						return false;
+		const _modules = computed(() => {
+			const customModuleListing = userStore.state.currentUser?.role.module_listing;
+
+			if (
+				customModuleListing &&
+				Array.isArray(customModuleListing) &&
+				customModuleListing.length > 0
+			) {
+				return customModuleListing.map((custom) => {
+					if (custom.link.startsWith('http') || custom.link.startsWith('//')) {
+						return {
+							...custom,
+							href: custom.link,
+						};
+					} else {
+						return {
+							...custom,
+							to: custom.link,
+						};
 					}
-				}
-				return true;
-			});
+				});
+			}
+
+			return modules
+				.map((module) => ({
+					...module,
+					href: module.link || null,
+					to: module.link === undefined ? `/${currentProjectKey}/${module.id}/` : null,
+				}))
+				.filter((module) => {
+					if (module.hidden !== undefined) {
+						if (
+							(module.hidden as boolean) === true ||
+							(module.hidden as Ref<boolean>).value === true
+						) {
+							return false;
+						}
+					}
+					return true;
+				});
+		});
 
 		return { _modules };
 	},

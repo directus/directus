@@ -23,6 +23,7 @@ import InterfaceUser from './user';
 import InterfaceTags from './tags';
 import InterfaceRepeater from './repeater';
 import InterfaceFile from './file';
+import InterfaceCollections from './collections';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -50,6 +51,7 @@ export const interfaces = [
 	InterfaceTags,
 	InterfaceRepeater,
 	InterfaceFile,
+	InterfaceCollections,
 ];
 
 export default interfaces;

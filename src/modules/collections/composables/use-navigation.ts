@@ -3,6 +3,7 @@ import { useProjectsStore } from '@/stores/projects/';
 import { useCollectionsStore } from '@/stores/collections/';
 import { Collection } from '@/stores/collections/types';
 import VueI18n from 'vue-i18n';
+import useUserStore from '@/stores/user';
 
 export type NavItem = {
 	collection: string;
@@ -11,9 +12,44 @@ export type NavItem = {
 	icon: string;
 };
 
+export type NavItemGroup = {
+	name: string;
+	items: NavItem[];
+};
+
 export default function useNavigation() {
 	const collectionsStore = useCollectionsStore();
 	const projectsStore = useProjectsStore();
+	const userStore = useUserStore();
+
+	const customNavItems = computed<NavItemGroup[] | null>(() => {
+		if (!userStore.state.currentUser) return null;
+		if (!userStore.state.currentUser.role.collection_listing) return null;
+
+		return userStore.state.currentUser?.role.collection_listing.map((groupRaw) => {
+			const group: NavItemGroup = {
+				name: groupRaw.group_name,
+				items: groupRaw.collections
+					.map(({ collection }) => {
+						const collectionInfo = collectionsStore.getCollection(collection);
+
+						if (!collectionInfo) return null;
+
+						const navItem: NavItem = {
+							collection: collection,
+							name: collectionInfo.name,
+							icon: collectionInfo.icon,
+							to: `/${projectsStore.state.currentProjectKey}/collections/${collection}`,
+						};
+
+						return navItem;
+					})
+					.filter((c) => c) as NavItem[],
+			};
+
+			return group;
+		});
+	});
 
 	const navItems = computed<NavItem[]>(() => {
 		return collectionsStore.visibleCollections.value
@@ -32,5 +68,5 @@ export default function useNavigation() {
 			});
 	});
 
-	return { navItems: navItems };
+	return { customNavItems, navItems };
 }
