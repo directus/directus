@@ -1,0 +1,163 @@
+<template>
+	<div class="revision-item" @click="$emit('click')" :class="{ last }">
+		<div class="header">
+			<span class="dot" :class="revision.activity.action" />
+			{{ headerMessage }}
+		</div>
+		<div class="content">
+			<span class="time">{{ time }}</span>
+			–
+			<user-popover :user="revision.activity.action_by.id">
+				<span>{{ user }}</span>
+			</user-popover>
+		</div>
+	</div>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { Revision } from './types';
+import i18n from '@/lang';
+import { format } from 'date-fns';
+
+export default defineComponent({
+	props: {
+		revision: {
+			type: Object as PropType<Revision>,
+			required: true,
+		},
+		last: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	setup(props) {
+		const revisionCount = computed(() => {
+			return Object.keys(props.revision.delta).length;
+		});
+
+		const headerMessage = computed(() => {
+			switch (props.revision.activity.action.toLowerCase()) {
+				case 'create':
+					return i18n.t('revision_delta_created');
+				case 'update':
+					return i18n.t('revision_delta_updated', { count: revisionCount.value });
+				case 'soft-delete':
+					return i18n.t('revision_delta_soft_deleted');
+				case 'delete':
+					return i18n.t('revision_delta_deleted');
+				case 'revert':
+					return i18n.t('revision_delta_reverted');
+			}
+		});
+
+		const time = computed(() => {
+			return format(
+				new Date(props.revision.activity.action_on),
+				String(i18n.t('date-fns_time'))
+			);
+		});
+
+		const user = computed(() => {
+			if (
+				props.revision.activity.action_by !== null &&
+				typeof props.revision.activity.action_by === 'object'
+			) {
+				const { first_name, last_name } = props.revision.activity.action_by as {
+					first_name: string;
+					last_name: string;
+				};
+				return `${first_name} ${last_name}`;
+			}
+
+			return i18n.t('private_user');
+		});
+
+		return { headerMessage, time, user };
+	},
+});
+</script>
+
+<style lang="scss" scoped>
+.revision-item {
+	position: relative;
+	margin-bottom: 16px;
+	margin-left: 20px;
+
+	&:not(.last)::after {
+		position: absolute;
+		top: 12px;
+		left: -17px;
+		z-index: 1;
+		width: 2px;
+		height: calc(100% + 12px);
+		background-color: var(--background-normal-alt);
+		content: '';
+	}
+
+	&::before {
+		position: absolute;
+		top: -4px;
+		left: -32px;
+		z-index: 1;
+		width: calc(100% + 32px);
+		height: calc(100% + 8px);
+		background-color: var(--background-normal-alt);
+		border-radius: var(--border-radius);
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+		content: '';
+		pointer-events: none;
+	}
+
+	&:hover {
+		cursor: pointer;
+	}
+
+	&:hover::before {
+		opacity: 1;
+	}
+}
+
+.header {
+	position: relative;
+	z-index: 2;
+	font-weight: 600;
+}
+
+.dot {
+	position: absolute;
+	top: 6px;
+	left: -22px;
+	z-index: 2;
+	width: 12px;
+	height: 12px;
+	background-color: var(--warning);
+	border: 2px solid var(--background-normal);
+	border-radius: 8px;
+
+	&.create {
+		background-color: var(--success);
+	}
+
+	&.update {
+		background-color: var(--primary);
+	}
+
+	&.delete {
+		background-color: var(--danger);
+	}
+}
+
+.content {
+	position: relative;
+	z-index: 2;
+	color: var(--foreground-subdued);
+	line-height: 16px;
+
+	.time {
+		text-transform: lowercase;
+		font-feature-settings: 'tnum';
+	}
+}
+</style>

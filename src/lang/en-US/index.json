@@ -1,5 +1,6 @@
 {
 	"edit_field": "Edit Field",
+	"item_revision": "Item Revision",
 	"duplicate_field": "Duplicate Field",
 	"half_width": "Half Width",
 	"full_width": "Full Width",
@@ -68,6 +69,8 @@
 	"show_all_activity": "Show All Activity",
 	"page_not_found": "Page Not Found",
 	"page_not_found_body": "The page you are looking for doesn't seem to exist.",
+	"confirm_revert": "Confirm Revert",
+	"confirm_revert_body": "This will revert the item to the selected state.",
 
 	"setting_update_success": "Setting {setting} updated",
 	"setting_update_failed": "Updating setting {setting} failed",
@@ -79,8 +82,12 @@
 	"revision_delta_updated": "Updated {count} Fields",
 	"revision_delta_soft_deleted": "Soft Deleted",
 	"revision_delta_deleted": "Deleted",
+	"revision_delta_reverted": "Reverted",
+	"revision_delta_by": "{date} by {user}",
 	"private_user": "Private User",
 	"revision_unknown": "Created Outside System",
+	"revision_preview": "Revision Preview",
+	"updates_made": "Updates Made",
 
 	"leave_comment": "Leave a comment...",
 	"post_comment_success": "Comment posted",

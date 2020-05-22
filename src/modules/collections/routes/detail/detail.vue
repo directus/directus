@@ -148,6 +148,7 @@
 				:collection="collection"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
+				@revert="refresh"
 			/>
 			<comments-drawer-detail
 				v-if="isBatch === false && isNew === false"
@@ -219,6 +220,7 @@ export default defineComponent({
 			softDeleting,
 			saveAsCopy,
 			isBatch,
+			refresh,
 		} = useItem(collection, primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
@@ -273,6 +275,7 @@ export default defineComponent({
 			breadcrumb,
 			title,
 			revisionsDrawerDetail,
+			refresh,
 		};
 
 		function useBreadcrumb() {

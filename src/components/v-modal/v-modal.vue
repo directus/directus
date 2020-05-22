@@ -8,7 +8,9 @@
 			<header class="header">
 				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
 				<h2 class="title">{{ title }}</h2>
-				<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+				<slot name="subtitle">
+					<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+				</slot>
 				<div class="spacer" />
 				<slot name="header:append" />
 			</header>

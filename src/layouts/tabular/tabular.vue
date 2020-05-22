@@ -295,7 +295,11 @@ export default defineComponent({
 		});
 
 		const activeFilterCount = computed(() => {
-			return _filters.value.filter((filter) => !filter.locked);
+			let count = _filters.value.filter((filter) => !filter.locked).length;
+
+			if (searchQuery.value && searchQuery.value.length > 0) count++;
+
+			return count;
 		});
 
 		return {
