@@ -127,9 +127,15 @@ if (!function_exists('append_storage_information')) {
             $rows = [$rows];
         }
 
+        $assetURLNaming = get_directus_setting('asset_url_naming');
+        $projectName = get_api_project_from_request();
+        $basepath = get_base_path();
+
         foreach ($rows as &$row) {
             $data = [];
             $ext = pathinfo($row['filename_disk'], PATHINFO_EXTENSION);
+
+            $fileAlias = $assetURLNaming == "private_hash" ? $row['private_hash'] : $row['filename_download'];
 
             if ($proxyDownloads) {
                 $data['url'] = get_proxy_path($row['filename_disk']);
@@ -137,6 +143,8 @@ if (!function_exists('append_storage_information')) {
             } else {
                 if (isset($row['private_hash'])) {
                     $data['url'] = $data['full_url'] = $fileRootUrl . '/' . $row['filename_disk'];
+                    $data['asset_url'] = $basepath . $projectName . '/assets/' . $fileAlias;
+
                     // Add Full url
                     if (!$hasFileRootUrlHost) {
                         $data['full_url'] = get_url($data['url']);

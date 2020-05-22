@@ -43,7 +43,9 @@ return array(
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\OAuth2\\Client\\' => array($vendorDir . '/league/oauth2-client/src', $vendorDir . '/league/oauth2-facebook/src', $vendorDir . '/league/oauth2-github/src', $vendorDir . '/league/oauth2-google/src'),
     'League\\OAuth1\\' => array($vendorDir . '/league/oauth1-client/src'),
+    'League\\Flysystem\\AwsS3v3\\' => array($vendorDir . '/league/flysystem-aws-s3-v3/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
+    'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),
     'Intervention\\Image\\' => array($vendorDir . '/intervention/image/src/Intervention/Image'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
@@ -62,4 +64,5 @@ return array(
     'Char0n\\FFMpegPHP\\Tests\\' => array($vendorDir . '/char0n/ffmpeg-php/tests'),
     'Char0n\\FFMpegPHP\\' => array($vendorDir . '/char0n/ffmpeg-php/src'),
     'Cache\\' => array($vendorDir . '/cache/cache/src'),
+    'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
 );

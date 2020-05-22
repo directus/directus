@@ -2,6 +2,8 @@
 
 namespace Directus\Authentication;
 
+use Directus\Application\Application;
+
 use Directus\Authentication\Exception\ExpiredTokenException;
 use Directus\Authentication\Exception\InvalidOTPException;
 use Directus\Authentication\Exception\InvalidTokenException;
@@ -80,7 +82,7 @@ class Provider
             throw new Exception('auth: secret key is required and it must be a string');
         }
 
-        $ttl = get_directus_setting('auth_token_ttl', ArrayUtils::get($options, 'ttl', 20));
+        $ttl = get_directus_setting('auth_token_ttl', ArrayUtils::get($options, 'auth.ttl', 20));
         if (!is_numeric($ttl)) {
             throw new Exception('ttl must be a number');
         }
@@ -163,6 +165,8 @@ class Provider
      */
     public function findUserWithCredentials($email, $password, $otp = null)
     {
+        $hookEmitter = Application::getInstance()->getContainer()->get('hook_emitter');
+	    
         try {
             $user = $this->findUserWithEmail($email);
         } catch (UserWithEmailNotFoundException $e) {
@@ -171,7 +175,8 @@ class Provider
 
         // Verify that the user has an id (exists), it returns empty user object otherwise
         if (!password_verify($password, $user->get('password'))) {
-
+			
+			$hookEmitter->run('auth.fail', [$user, 'app']);
             $this->recordActivityAndCheckLoginAttempt($user);
             throw new InvalidUserCredentialsException();
         }
@@ -191,6 +196,8 @@ class Provider
         }
 
         $this->user = $user;
+        
+        $hookEmitter->run('auth.success', [$user, 'app']);
 
         return $user;
     }

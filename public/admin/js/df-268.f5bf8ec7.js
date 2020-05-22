@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-268"],{b0b0:function(e,o,t){"use strict";Object.defineProperty(o,"__esModule",{value:!0}),o.default=a;var n={lastWeek:"'afgelopen' eeee 'om' p",yesterday:"'gisteren om' p",today:"'vandaag om' p",tomorrow:"'morgen om' p",nextWeek:"eeee 'om' p",other:"P"};function a(e,o,t,a){return n[e]}e.exports=o.default}}]);
-//# sourceMappingURL=df-268.f5bf8ec7.js.map

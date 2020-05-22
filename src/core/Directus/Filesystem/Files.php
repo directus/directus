@@ -2,13 +2,12 @@
 
 namespace Directus\Filesystem;
 
-use Char0n\FFMpegPHP\Movie;
 use Directus\Application\Application;
+use Slim\Http\UploadedFile;
 use function Directus\filename_put_ext;
 use function Directus\generate_uuid4;
 use function Directus\is_a_url;
 use Directus\Util\ArrayUtils;
-use Directus\Util\DateTimeUtils;
 use Directus\Util\Formatting;
 use Directus\Util\MimeTypeUtils;
 
@@ -78,6 +77,7 @@ class Files
             $this->emitter->run('file.delete:after', [$file]);
         }
     }
+
     public function deleteThumb($file)
     {
         $ignoreableFiles = ['.DS_Store', '..', '.'];
@@ -89,38 +89,6 @@ class Files
                 $this->filesystem->getAdapter()->delete($fileName);
             }
         }
-    }
-
-    /**
-     * Copy $_FILES data into directus media
-     *
-     * @param array $file $_FILES data
-     *
-     * @return array directus file info data
-     */
-    public function upload(array $file)
-    {
-        $filePath = $file['tmp_name'];
-        $fileName = $file['name'];
-
-        $fileData = array_merge($this->defaults, $this->processUpload($filePath, $fileName));
-
-        return [
-            'type' => $fileData['type'],
-            'name' => $fileData['name'],
-            'title' => $fileData['title'],
-            'tags' => $fileData['tags'],
-            'description' => $fileData['caption'],
-            'location' => $fileData['location'],
-            'charset' => $fileData['charset'],
-            'size' => $fileData['size'],
-            'width' => $fileData['width'],
-            'height' => $fileData['height'],
-            //    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
-            //    see: https://en.wikipedia.org/wiki/ISO_8601
-            'date_uploaded' => $fileData['date_uploaded'], // . ' UTC',
-            'storage' => $fileData['storage']
-        ];
     }
 
     /**
@@ -278,7 +246,7 @@ class Files
     /**
      * Copy base64 data into Directus Media
      *
-     * @param string $fileData - base64 data or directus_files object
+     * @param string|UploadedFile $fileData - base64 data or directus_files object
      * @param string $fileName - name of the file
      * @param bool $replace
      *
@@ -303,31 +271,39 @@ class Files
             $checksum = md5($fileData);
             $size = strlen($fileData);
         }
-        // @TODO: merge with upload()
+
         $fileName = $this->getFileName($fileName, $replace !== true);
         $filePath = $this->getConfig('root') . '/' . $fileName;
-        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+
         $event = $replace ? 'file.update' : 'file.save';
         $this->emitter->run($event, ['name' => $fileName, 'size' => $size]);
 
         // On name change, the file would be overwritten with the empty file data.
         // This prevents you can't update a file to a zero-byte file.
         if (!empty($fileData)) {
+            // This is where the actual bytes of the file are actually written to storage,
+            // which may be the local filesystem or remote.
             $this->write($fileName, $fileData, $replace);
         }
 
         $this->emitter->run($event . ':after', ['name' => $fileName, 'size' => $size]);
 
         #open local tmp file since s3 bucket is private
-        if (isset($fileData->file)) {
-            $handle = fopen($fileData->file, 'rb');
-            $tmp = tempnam(sys_get_temp_dir(), $fileName);
-            file_put_contents($tmp, $handle);
+        // Changed to use the existing temporary uploaded file on disk. As far as I can tell,
+        // this method is only ever called from FilesServices::create and ::update (via
+        // FilesServices::getSaveData) and $fileData will only ever be an object with a
+        // "file" property if it's an UploadedFile, so "file" is always already the path to
+        // a temporary file on disk.
+        $tmp = null;
+        if (is_object($fileData) && isset($fileData->file)) {
+            // Keep track of the local temporary uploaded file so we can extract extra
+            // metadata from it later, if possible.
+            $tmp = $fileData->file;
         }
 
         unset($fileData);
 
-        $fileData = $this->getFileInfo($fileName);
+        $fileData = $this->getFileInfo($fileName, false, $tmp);
         $fileData['title'] = Formatting::fileNameToFileTitle($title);
         $fileData['filename_disk'] = basename($filePath);
         $fileData['storage'] = $this->config['adapter'];
@@ -335,7 +311,9 @@ class Files
         $fileData = array_merge($this->defaults, $fileData);
 
         # Updates for file meta data tags
-        if (strpos($fileData['type'], 'video') !== false) {
+        // Only try to extract extra metadata if we know we have a local copy on the filesystem.
+        // @TODO This should probably be moved to the appropriate getFileInfo methods
+        if (isset($tmp) && strpos($fileData['type'], 'video') !== false) {
             #use ffprobe on local file, can't stream data to it or reference
             $output = shell_exec("ffprobe {$tmp} -show_entries format=duration:stream=height,width -v quiet -of json");
             #echo($output);
@@ -346,7 +324,7 @@ class Files
                 $duration = $media->format->duration;   #seconds
             }
 
-        } elseif (strpos($fileData['type'], 'audio') !== false) {
+        } elseif (isset($tmp) && strpos($fileData['type'], 'audio') !== false) {
             $output = shell_exec("ffprobe {$tmp} -show_entries format=duration -v quiet -of json");
             $media = json_decode($output);
 
@@ -357,7 +335,6 @@ class Files
         if (isset($handle)) {
             fclose($handle);
         }
-        unset($tmpData);
 
         $response = [
             // The MIME type will be based on its extension, rather than its extension
@@ -370,6 +347,7 @@ class Files
             'filesize' => $fileData['size'],
             'width' => isset($width) ? $width : $fileData['width'],
             'height' => isset($height) ? $height : $fileData['height'],
+            'metadata' => isset($file['metadata']) ? $file['metadata'] : null,
             'storage' => $fileData['storage'],
             'checksum' => $checksum,
             'duration' => isset($duration) ? $duration : 0
@@ -411,13 +389,19 @@ class Files
      *
      * @param string $path - file path
      * @param bool $outside - if the $path is outside of the adapter root path.
+     * @param string|null $localCopy - path to local copy of the file, if available
      *
      * @throws \RuntimeException
      *
      * @return array file information
      */
-    public function getFileInfo($path, $outside = false)
+    public function getFileInfo($path, $outside = false, $localCopy = null)
     {
+        if (!is_null($localCopy)) {
+            // If there is a local copy, we can collect all the metadata we need without
+            // loading the data into memory.
+            return $this->getFileInfoFromLocalCopy($path, $localCopy);
+        }
         if ($outside === true) {
             $buffer = file_get_contents($path);
             $fileData = $this->getFileInfoFromData($buffer);
@@ -428,9 +412,46 @@ class Files
         return $fileData;
     }
 
+    /**
+     * Collect metadata about a file for which there exists a local copy on disk
+     *
+     * @param string $path
+     * @param string $localCopy
+     * @return array
+     */
+    public function getFileInfoFromLocalCopy($path, $localCopy)
+    {
+        $mime = MimeTypeUtils::getFromFilename($path);
+
+        $typeTokens = explode('/', $mime);
+
+        $size = filesize($localCopy);
+        $info = [
+            'type' => $mime,
+            'format' => $typeTokens[1],
+            'size' => $size,
+            'width' => null,
+            'height' => null
+        ];
+
+        if ($typeTokens[0] == 'image') {
+            $meta = [];
+            $imageInfo = getimagesize($localCopy, $meta);
+            $this->collectImageInfo($imageInfo, $meta, $info);
+        }
+
+        return $info;
+    }
+
+    /**
+     * Collect metadata about a file in storage
+     *
+     * @param string $path
+     * @return array
+     * @throws \League\Flysystem\FileNotFoundException
+     */
     public function getFileInfoFromPath($path)
     {
-
         $mime = $this->filesystem->getAdapter()->getMimetype($path);
 
         $typeTokens = explode('/', $mime);
@@ -452,6 +473,12 @@ class Files
         return $info;
     }
 
+    /**
+     * Extract metadata from file contents
+     *
+     * @param string $data
+     * @return array
+     */
     public function getFileInfoFromData($data)
     {
         if (!class_exists('\finfo')) {
@@ -478,43 +505,57 @@ class Files
             $meta = [];
             // @TODO: use this as fallback for finfo?
             $imageInfo = getimagesizefromstring($data, $meta);
-
-            $info['width'] = $imageInfo[0];
-            $info['height'] = $imageInfo[1];
-
-            if (isset($meta['APP13'])) {
-                $iptc = iptcparse($meta['APP13']);
-
-                if (isset($iptc['2#120'])) {
-                    $info['caption'] = $iptc['2#120'][0];
-                }
-
-                if (isset($iptc['2#005']) && $iptc['2#005'][0] != '') {
-                    $info['title'] = $iptc['2#005'][0];
-                }
-
-                if (isset($iptc['2#025'])) {
-                    $info['tags'] = implode(',', $iptc['2#025']);
-                }
-
-                $location = [];
-                if (isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
-                    $location[] = $iptc['2#090'][0];
-                }
-
-                if (isset($iptc['2#095'][0]) && $iptc['2#095'][0] != '') {
-                    $location[] = $iptc['2#095'][0];
-                }
-
-                if (isset($iptc['2#101']) && $iptc['2#101'][0] != '') {
-                    $location[] = $iptc['2#101'][0];
-                }
-
-                $info['location'] = implode(', ', $location);
-            }
+            $this->collectImageInfo($imageInfo, $meta, $info);
         }
 
-        unset($data);
+        return $info;
+    }
+
+    /**
+     * Combine info from getimagesize[fromstring] with existing info array
+     *
+     * @param array|false $imageInfo As returned by getimagesize[fromstring]
+     * @param array $meta As provided via the second argument to getimagesize[fromstring]
+     * @param array $info Passed by reference
+     */
+    protected function collectImageInfo($imageInfo, $meta, &$info)
+    {
+        if (is_array($imageInfo)) {
+            $info['width'] = $imageInfo[0];
+            $info['height'] = $imageInfo[1];
+        }
+
+        if (is_array($meta) && isset($meta['APP13'])) {
+            $iptc = iptcparse($meta['APP13']);
+
+            if (isset($iptc['2#120'])) {
+                $info['description'] = $iptc['2#120'][0];
+            }
+
+            if (isset($iptc['2#005']) && $iptc['2#005'][0] != '') {
+                $info['title'] = $iptc['2#005'][0];
+            }
+
+            if (isset($iptc['2#025'])) {
+                $info['tags'] = implode(',', $iptc['2#025']);
+            }
+
+            $location = [];
+
+            if (isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
+                $location[] = $iptc['2#090'][0];
+            }
+
+            if (isset($iptc['2#095'][0]) && $iptc['2#095'][0] != '') {
+                $location[] = $iptc['2#095'][0];
+            }
+
+            if (isset($iptc['2#101']) && $iptc['2#101'][0] != '') {
+                $location[] = $iptc['2#101'][0];
+            }
+
+            $info['location'] = implode(', ', $location);
+        }
 
         return $info;
     }
@@ -585,38 +626,6 @@ class Files
         } catch (\Exception $e) {
             throw $e;
         }
-    }
-
-    /**
-     * Creates a new file for Directus Media
-     *
-     * @param string $filePath
-     * @param string $targetName
-     *
-     * @return array file info
-     */
-    private function processUpload($filePath, $targetName)
-    {
-        // set true as $filePath it's outside adapter path
-        // $filePath is on a temporary php directory
-        $fileData = $this->getFileInfo($filePath, true);
-        $mediaPath = $this->filesystem->getPath();
-
-        $fileData['title'] = Formatting::fileNameToFileTitle($targetName);
-
-        $targetName = $this->getFileName($targetName);
-        $finalPath = rtrim($mediaPath, '/') . '/' . $targetName;
-        $data = file_get_contents($filePath);
-
-        $this->emitter->run('file.save', ['name' => $targetName, 'size' => strlen($data)]);
-        $this->write($targetName, $data);
-        $this->emitter->run('file.save:after', ['name' => $targetName, 'size' => strlen($data)]);
-
-        $fileData['name'] = basename($finalPath);
-        $fileData['date_uploaded'] = DateTimeUtils::nowInUTC()->toString();
-        $fileData['storage'] = $this->config['adapter'];
-
-        return $fileData;
     }
 
     /**
@@ -733,27 +742,9 @@ class Files
     }
 
     /**
-     * Get string between two string
-     *
-     * @param string $string
-     * @param string $start
-     * @param string $end
-     *
-     * @return string
-     */
-    private function get_string_between($string, $start, $end)
-    {
-        $string = ' ' . $string;
-        $ini = strpos($string, $start);
-        if ($ini == 0) return '';
-        $ini += strlen($start);
-        $len = strpos($string, $end, $ini) - $ini;
-        return substr($string, $ini, $len);
-    }
-    /**
      * Get a file size and type info from base64 data , URL ,multipart form data
      *
-     * @param string $data
+     * @param string|UploadedFile $data
      *
      * @return array file size and type
      */

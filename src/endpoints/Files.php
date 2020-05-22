@@ -10,7 +10,6 @@ use Directus\Database\Schema\SchemaManager;
 use Directus\Exception\BatchUploadNotAllowedException;
 use Directus\Exception\Exception;
 use Directus\Filesystem\Exception\FailedUploadException;
-use function Directus\regex_numeric_ids;
 use Directus\Services\FilesServices;
 use Directus\Services\RevisionsService;
 use Directus\Util\ArrayUtils;
@@ -75,6 +74,13 @@ class Files extends Route
             $payload,
             $request->getQueryParams()
         );
+
+        // You can move place this define statement in other files if you're investigating
+        // memory usage and trying to nail down where it's coming from (you'll be able to
+        // see the memory usage at the point of the define() in the X-Memory-Usage response
+        // header).
+        //define('X_MEM_USAGE', memory_get_peak_usage(true));
+        //$response = $response->withHeader('X-Memory-Usage', X_MEM_USAGE);
 
         return $this->responseWithData($request, $response, $responseData);
     }

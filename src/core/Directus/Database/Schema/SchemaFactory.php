@@ -139,18 +139,21 @@ class SchemaFactory
         // Throws an exception when trying to make the field required and there are items with no value for that field in collection
         foreach ($toChangeColumnsData as $column) {
             if($column['required']) {
-                $select = new Select();
-                $select->columns([
-                    'count' => new Expression('COUNT(*)')
-                ]);
-                $select->from($name);
-                $select->where->isNull($column['field']);
-                $statement = $sql->prepareStatementForSqlObject($select);
-                $result = $statement->execute();
-                $entries = $result->current();
-              
-                if($entries['count'] > 0) {
-                    throw new FieldRequiredException();
+
+                //...for alias columns we don't need to check the items, since it't not real column and we are not facing the limitation because of "NOT NULL" constraint.
+                if(!DataTypes::isAliasType(ArrayUtils::get($column, 'type'))) {
+                    $select = new Select();
+                    $select->columns([
+                        'count' => new Expression('COUNT(*)')
+                    ]);
+                    $select->from($name);
+                    $select->where->isNull($column['field']);
+                    $statement = $sql->prepareStatementForSqlObject($select);
+                    $result = $statement->execute();
+                    $entries = $result->current();
+                    if($entries['count'] > 0) {
+                        throw new FieldRequiredException();
+                    }
                 }
             }
         }

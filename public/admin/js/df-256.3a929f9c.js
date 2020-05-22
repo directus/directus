@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-256"],{b8bf:function(e,t,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=o;var l={lastWeek:"eeee 'li għadda' 'fil-'p",yesterday:"'Il-bieraħ fil-'p",today:"'Illum fil-'p",tomorrow:"'Għada fil-'p",nextWeek:"eeee 'fil-'p",other:"P"};function o(e,t,a,o){return l[e]}e.exports=t.default}}]);
-//# sourceMappingURL=df-256.3a929f9c.js.map

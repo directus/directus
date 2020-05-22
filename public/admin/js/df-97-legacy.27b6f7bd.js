@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-97"],{f1f6:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=r;var a={lastWeek:"'last' eeee 'at' p",yesterday:"'yesterday at' p",today:"'today at' p",tomorrow:"'tomorrow at' p",nextWeek:"eeee 'at' p",other:"P"};function r(e,t,o,r){return a[e]}e.exports=t.default}}]);
-//# sourceMappingURL=df-97-legacy.27b6f7bd.js.map

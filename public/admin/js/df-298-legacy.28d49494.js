@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-298"],{"688b":function(e,t,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=r;var o={lastWeek:"eeee 'trecută la' p",yesterday:"'ieri la' p",today:"'astăzi la' p",tomorrow:"'mâine la' p",nextWeek:"eeee 'viitoare la' p",other:"P"};function r(e,t,a,r){return o[e]}e.exports=t.default}}]);
-//# sourceMappingURL=df-298-legacy.28d49494.js.map

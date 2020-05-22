@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-382"],{feab:function(e,o,t){"use strict";Object.defineProperty(o,"__esModule",{value:!0}),o.default=a;var n={lastWeek:"eeee 'tuần trước vào lúc' p",yesterday:"'hôm qua vào lúc' p",today:"'hôm nay vào lúc' p",tomorrow:"'ngày mai vào lúc' p",nextWeek:"eeee 'tới vào lúc' p",other:"P"};function a(e,o,t,a){return n[e]}e.exports=o.default}}]);
-//# sourceMappingURL=df-382-legacy.e7931b85.js.map

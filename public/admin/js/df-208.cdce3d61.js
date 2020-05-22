@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-208"],{"374b":function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=r;var n={lastWeek:"'წინა' eeee LT'-ზე'",yesterday:"'გუშინ' LT'-ზე'",today:"'დღეს' LT'-ზე'",tomorrow:"'ხვალ' LT'-ზე'",nextWeek:"'შემდეგი' eeee LT'-ზე'",other:"L"};function r(e,t,o,r){return n[e]}e.exports=t.default}}]);
-//# sourceMappingURL=df-208.cdce3d61.js.map

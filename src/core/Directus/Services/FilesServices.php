@@ -6,6 +6,7 @@ use Directus\Application\Container;
 use Directus\Database\Schema\SchemaManager;
 use Directus\Exception\BadRequestException;
 use Directus\Exception\BatchUploadNotAllowedException;
+use Zend\Db\Sql\Select;
 use function Directus\is_a_url;
 use function Directus\validate_file;
 use function Directus\get_directus_setting;
@@ -13,7 +14,6 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Validator\Exception\InvalidRequestException;
 use function Directus\get_random_string;
-use Directus\Application\Application;
 
 class FilesServices extends AbstractService
 {
@@ -165,7 +165,7 @@ class FilesServices extends AbstractService
 
             try {
                 $this->container->get('filesystem')->getAdapter()->rename($oldFilePath, $newFilePath);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new InvalidRequestException($e);
             }
         }

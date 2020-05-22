@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-250"],{"51d0":function(e,a,p){"use strict";Object.defineProperty(a,"__esModule",{value:!0}),a.default=d;var t={lastWeek:"eeee 'lepas pada jam' p",yesterday:"'Semalam pada jam' p",today:"'Hari ini pada jam' p",tomorrow:"'Esok pada jam' p",nextWeek:"eeee 'pada jam' p",other:"P"};function d(e,a,p,d){return t[e]}e.exports=a.default}}]);
-//# sourceMappingURL=df-250.7ef5d93a.js.map
