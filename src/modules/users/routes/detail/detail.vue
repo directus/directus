@@ -62,14 +62,40 @@
 			<users-navigation />
 		</template>
 
-		<v-form
-			:loading="loading"
-			:initial-values="item"
-			collection="directus_users"
-			:batch-mode="isBatch"
-			:primary-key="primaryKey"
-			v-model="edits"
-		/>
+		<div class="user-detail">
+			<div class="user-box">
+				<div class="avatar">
+					<v-skeleton-loader v-if="loading || previewLoading" />
+					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.first_name" />
+					<v-icon v-else name="person" x-large />
+				</div>
+				<div class="user-box-content">
+					<template v-if="loading">
+						<v-skeleton-loader type="text" />
+						<v-skeleton-loader type="text" />
+						<v-skeleton-loader type="text" />
+					</template>
+					<template v-else>
+						<div class="name type-title">
+							{{ item.first_name }} {{ item.last_name }}
+						</div>
+						<div class="status-role" :class="item.status">
+							{{ item.status }} {{ roleName }}
+						</div>
+						<div class="email">{{ item.email }}</div>
+					</template>
+				</div>
+			</div>
+
+			<v-form
+				:loading="loading"
+				:initial-values="item"
+				collection="directus_users"
+				:batch-mode="isBatch"
+				:primary-key="primaryKey"
+				v-model="edits"
+			/>
+		</div>
 
 		<template #drawer>
 			<revisions-drawer-detail
@@ -88,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import UsersNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
@@ -97,6 +123,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import api from '@/api';
 
 type Values = {
 	[field: string]: any;
@@ -148,6 +175,8 @@ export default defineComponent({
 			return i18n.t('adding_user');
 		});
 
+		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
+
 		return {
 			title,
 			item,
@@ -167,6 +196,9 @@ export default defineComponent({
 			saveAsCopyAndNavigate,
 			isBatch,
 			revisionsDrawerDetail,
+			previewLoading,
+			avatarSrc,
+			roleName,
 		};
 
 		function useBreadcrumb() {
@@ -211,6 +243,43 @@ export default defineComponent({
 			await remove();
 			router.push(`/${currentProjectKey.value}/users`);
 		}
+
+		function useUserPreview() {
+			const loading = ref(false);
+			const error = ref(null);
+			const avatarSrc = ref<string>(null);
+			const roleName = ref<string>(null);
+
+			watch(() => props.primaryKey, getUserPreviewData);
+
+			return { loading, error, avatarSrc, roleName };
+
+			async function getUserPreviewData() {
+				if (props.primaryKey === '+') return;
+
+				loading.value = true;
+
+				try {
+					const response = await api.get(
+						`/${currentProjectKey.value}/users/${props.primaryKey}`,
+						{
+							params: {
+								fields: ['role.name', 'avatar.data'],
+							},
+						}
+					);
+
+					avatarSrc.value = response.data.data.avatar?.data?.thumbnails?.find(
+						(thumb: any) => thumb.key === 'directus-medium-crop'
+					)?.url;
+					roleName.value = response.data.data.role.name;
+				} catch (err) {
+					error.value = err;
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -227,7 +296,59 @@ export default defineComponent({
 	--v-button-background-color: var(--background-normal);
 }
 
-.v-form {
+.user-detail {
 	padding: var(--content-padding);
+}
+
+.user-box {
+	--v-skeleton-loader-background-color: var(--background-normal);
+
+	display: flex;
+	align-items: center;
+	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
+	height: 172px;
+	margin-bottom: var(--form-vertical-gap);
+	padding: 12px;
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+
+	.avatar {
+		--v-icon-color: var(--foreground-subdued);
+
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: 144px;
+		height: 144px;
+		margin-right: 22px;
+		overflow: hidden;
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+
+		.v-skeleton-loader {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	.user-box-content {
+		flex-grow: 1;
+
+		.v-skeleton-loader {
+			width: 175px;
+		}
+
+		.v-skeleton-loader:not(:last-child) {
+			margin-bottom: 16px;
+		}
+
+		.status-role {
+			&.active {
+				color: var(--success);
+			}
+		}
+	}
 }
 </style>
