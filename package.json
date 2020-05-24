@@ -51,7 +51,7 @@
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-centered": "^5.3.19",
     "@storybook/addon-knobs": "^5.3.18",
-    "@storybook/addon-links": "^5.3.18",
+    "@storybook/addon-links": "^5.3.19",
     "@storybook/addon-notes": "^5.3.18",
     "@storybook/addon-viewport": "^5.3.19",
     "@storybook/addons": "^5.3.19",
