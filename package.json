@@ -54,7 +54,7 @@
     "@storybook/addon-links": "^5.3.18",
     "@storybook/addon-notes": "^5.3.18",
     "@storybook/addon-viewport": "^5.3.18",
-    "@storybook/addons": "^5.3.18",
+    "@storybook/addons": "^5.3.19",
     "@storybook/core": "^5.3.18",
     "@storybook/vue": "^5.3.18",
     "@types/base-64": "^0.1.3",
