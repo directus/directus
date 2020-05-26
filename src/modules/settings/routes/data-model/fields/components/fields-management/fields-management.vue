@@ -21,8 +21,15 @@
 			/>
 
 			<template #footer>
-				<v-button class="add-field" align="left" dashed outlined @click="openFieldSetup()">
-					<v-icon small name="add" />
+				<v-button
+					class="add-field"
+					align="left"
+					dashed
+					outlined
+					large
+					@click="openFieldSetup"
+				>
+					<v-icon name="add" />
 
 					{{ $t('add_field') }}
 				</v-button>
@@ -50,8 +57,15 @@
 			/>
 
 			<template #footer>
-				<v-button class="add-field" align="left" dashed outlined @click="openFieldSetup()">
-					<v-icon small name="add" />
+				<v-button
+					class="add-field"
+					align="left"
+					dashed
+					outlined
+					large
+					@click="openFieldSetup"
+				>
+					<v-icon name="add" />
 
 					{{ $t('add_field') }}
 				</v-button>
@@ -264,7 +278,7 @@ export default defineComponent({
 	grid-gap: 12px;
 	grid-template-columns: 1fr 1fr;
 	margin-bottom: 24px;
-	padding: 32px 12px 72px 12px;
+	padding: 32px 12px 76px 12px;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 
@@ -286,6 +300,10 @@ export default defineComponent({
 		bottom: 12px;
 		left: 12px;
 		width: calc(100% - 24px);
+
+		.v-icon {
+			margin-right: 8px;
+		}
 	}
 }
 

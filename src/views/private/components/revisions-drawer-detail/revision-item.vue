@@ -7,7 +7,7 @@
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover :user="revision.activity.action_by.id">
+			<user-popover class="user" :user="revision.activity.action_by.id">
 				<span>{{ user }}</span>
 			</user-popover>
 		</div>
@@ -48,6 +48,8 @@ export default defineComponent({
 					return i18n.t('revision_delta_deleted');
 				case 'revert':
 					return i18n.t('revision_delta_reverted');
+				default:
+					return i18n.t('revision_delta_other');
 			}
 		});
 
@@ -84,6 +86,36 @@ export default defineComponent({
 	margin-bottom: 16px;
 	margin-left: 20px;
 
+	.header {
+		position: relative;
+		z-index: 2;
+		font-weight: 600;
+
+		.dot {
+			position: absolute;
+			top: 6px;
+			left: -22px;
+			z-index: 2;
+			width: 12px;
+			height: 12px;
+			background-color: var(--warning);
+			border: 2px solid var(--background-normal);
+			border-radius: 8px;
+
+			&.create {
+				background-color: var(--success);
+			}
+
+			&.update {
+				background-color: var(--primary);
+			}
+
+			&.delete {
+				background-color: var(--danger);
+			}
+		}
+	}
+
 	&:not(.last)::after {
 		position: absolute;
 		top: 12px;
@@ -98,10 +130,10 @@ export default defineComponent({
 	&::before {
 		position: absolute;
 		top: -4px;
-		left: -32px;
+		left: -24px;
 		z-index: 1;
-		width: calc(100% + 32px);
-		height: calc(100% + 8px);
+		width: calc(100% + 28px);
+		height: calc(100% + 10px);
 		background-color: var(--background-normal-alt);
 		border-radius: var(--border-radius);
 		opacity: 0;
@@ -112,40 +144,15 @@ export default defineComponent({
 
 	&:hover {
 		cursor: pointer;
-	}
+		.header {
+			.dot {
+				border-color: var(--background-normal-alt);
+			}
+		}
 
-	&:hover::before {
-		opacity: 1;
-	}
-}
-
-.header {
-	position: relative;
-	z-index: 2;
-	font-weight: 600;
-}
-
-.dot {
-	position: absolute;
-	top: 6px;
-	left: -22px;
-	z-index: 2;
-	width: 12px;
-	height: 12px;
-	background-color: var(--warning);
-	border: 2px solid var(--background-normal);
-	border-radius: 8px;
-
-	&.create {
-		background-color: var(--success);
-	}
-
-	&.update {
-		background-color: var(--primary);
-	}
-
-	&.delete {
-		background-color: var(--danger);
+		&::before {
+			opacity: 1;
+		}
 	}
 }
 
@@ -158,6 +165,12 @@ export default defineComponent({
 	.time {
 		text-transform: lowercase;
 		font-feature-settings: 'tnum';
+	}
+
+	.user {
+		&:hover {
+			color: var(--foreground-normal);
+		}
 	}
 }
 </style>

@@ -23,7 +23,7 @@
 			<div class="data">
 				<div class="name type-title">{{ data.first_name }} {{ data.last_name }}</div>
 				<div class="status-role" :class="data.status">
-					{{ data.status }} {{ data.role.name }}
+					{{ $t(data.status) }} {{ data.role.name }}
 				</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
@@ -130,7 +130,6 @@ export default defineComponent({
 	}
 
 	.status-role {
-		text-transform: capitalize;
 		&.invited {
 			color: var(--primary);
 		}

@@ -204,6 +204,10 @@ body {
 			--v-icon-color: var(--v-checkbox-color);
 		}
 
+		.label {
+			color: var(--foreground-normal);
+		}
+
 		&.block {
 			border-color: var(--v-checkbox-color);
 

@@ -1,5 +1,9 @@
 <template>
-	<drawer-detail :title="$t('revisions')" icon="change_history">
+	<drawer-detail
+		:title="$t('revisions')"
+		icon="change_history"
+		:badge="!loading && revisions ? revisions.length : null"
+	>
 		<v-progress-linear indeterminate v-if="loading" />
 
 		<template v-else v-for="group in revisionsByDate">
@@ -198,6 +202,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.drawer-detail {
+	--v-badge-background-color: var(--foreground-normal);
+}
+
 .v-progress-linear {
 	margin: 24px 0;
 }
@@ -212,6 +220,10 @@ export default defineComponent({
 	padding-bottom: 8px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
+
+	&:first-of-type {
+		margin-top: 0;
+	}
 }
 
 .empty {

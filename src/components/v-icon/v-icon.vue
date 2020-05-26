@@ -16,6 +16,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 import CustomIconBox from './custom-icons/box.vue';
+import CustomIconCommitNode from './custom-icons/commit_node.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
 import CustomIconGrid2 from './custom-icons/grid_2.vue';
 import CustomIconGrid3 from './custom-icons/grid_3.vue';
@@ -30,6 +31,7 @@ import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 
 const customIcons: string[] = [
 	'box',
+	'commit_node',
 	'grid_1',
 	'grid_2',
 	'grid_3',
@@ -46,6 +48,7 @@ const customIcons: string[] = [
 export default defineComponent({
 	components: {
 		CustomIconBox,
+		CustomIconCommitNode,
 		CustomIconGrid1,
 		CustomIconGrid2,
 		CustomIconGrid3,

@@ -85,10 +85,10 @@ body {
 		width: max-content;
 		min-width: var(--v-badge-size);
 		height: var(--v-badge-size);
-		padding: 0 4px;
+		padding: 0 5px;
 		color: var(--v-badge-color);
 		font-weight: 600;
-		font-size: 10px;
+		font-size: 11px;
 		background-color: var(--v-badge-background-color);
 		border-radius: calc(var(--v-badge-size) / 2);
 

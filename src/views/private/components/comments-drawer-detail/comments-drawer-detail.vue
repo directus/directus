@@ -1,5 +1,9 @@
 <template>
-	<drawer-detail :title="$t('comments')" icon="chat_bubble_outline">
+	<drawer-detail
+		:title="$t('comments')"
+		icon="chat_bubble_outline"
+		:badge="activity.length > 0 ? activity.length : null"
+	>
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
 		<v-progress-linear indeterminate v-if="loading" />
@@ -150,6 +154,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.drawer-detail {
+	--v-badge-background-color: var(--foreground-normal);
+}
+
 .v-progress-linear {
 	margin: 24px 0;
 }
@@ -168,7 +176,8 @@ export default defineComponent({
 
 .empty {
 	margin-top: 16px;
-	margin-bottom: 16px;
+	margin-bottom: 8px;
+	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
 }

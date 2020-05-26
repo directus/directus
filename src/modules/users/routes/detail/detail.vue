@@ -80,7 +80,7 @@
 							{{ item.first_name }} {{ item.last_name }}
 						</div>
 						<div class="status-role" :class="item.status">
-							{{ item.status }} {{ roleName }}
+							{{ $t(item.status) }} {{ roleName }}
 						</div>
 						<div class="email">{{ item.email }}</div>
 					</template>
@@ -362,9 +362,13 @@ export default defineComponent({
 		}
 
 		.status-role {
+			color: var(--foreground-subdued);
 			&.active {
 				color: var(--success);
 			}
+		}
+		.email {
+			color: var(--foreground-subdued);
 		}
 	}
 }

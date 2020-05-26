@@ -7,13 +7,14 @@
 			</span>
 		</template>
 
-		<v-list dense>
+		<v-list class="menu" dense>
 			<v-list-item
 				v-for="option in options"
 				:key="option.value"
 				@click="_current = option.value"
 				:active="_current === option.value"
 			>
+				<v-icon name="commit_node" />
 				<v-list-item-content>{{ option.text }}</v-list-item-content>
 			</v-list-item>
 		</v-list>
@@ -102,6 +103,18 @@ export default defineComponent({
 
 	&:hover {
 		color: var(--foreground-normal);
+	}
+}
+
+.menu {
+	.v-icon {
+		margin-right: 4px;
+		margin-left: -4px;
+		color: var(--foreground-subdued);
+	}
+
+	.v-list-item-content {
+		margin-right: 20px;
 	}
 }
 </style>

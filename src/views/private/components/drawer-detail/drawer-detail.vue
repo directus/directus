@@ -97,21 +97,31 @@ body {
 			justify-content: center;
 			width: 64px;
 			height: 64px;
-			color: var(--foreground-subdued);
+			color: var(--foreground-normal);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 			pointer-events: none;
 
 			&:hover {
-				color: var(--foreground-normal);
+				color: var(--primary);
+			}
+		}
+
+		&.open,
+		&:hover {
+			color: var(--primary);
+			.icon {
+				--v-icon-color: var(--primary);
 			}
 		}
 	}
 
 	&.open {
-		.toggle .close {
-			opacity: 1;
-			pointer-events: auto;
+		.toggle {
+			.close {
+				opacity: 1;
+				pointer-events: auto;
+			}
 		}
 	}
 

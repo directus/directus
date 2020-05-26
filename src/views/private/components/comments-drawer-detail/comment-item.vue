@@ -109,6 +109,10 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 
+	&:last-of-type {
+		margin-bottom: 8px;
+	}
+
 	.content {
 		max-height: 300px;
 		overflow-y: hidden;
