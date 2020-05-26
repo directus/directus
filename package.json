@@ -34,7 +34,7 @@
     "micromustache": "^7.1.0",
     "mime-types": "^2.1.27",
     "nanoid": "^3.1.9",
-    "pinia": "0.0.5",
+    "pinia": "0.0.6",
     "portal-vue": "^2.1.7",
     "resize-observer": "^1.0.0",
     "semver": "^7.3.2",
