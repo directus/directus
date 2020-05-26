@@ -339,10 +339,10 @@
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/plugin-syntax-optional-catch-binding" "^7.8.0"
 
-"@babel/plugin-proposal-optional-chaining@^7.9.0":
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.9.0.tgz#31db16b154c39d6b8a645292472b98394c292a58"
-  integrity sha512-NDn5tu3tcv4W30jNhmc2hyD5c56G6cXx4TesJubhxrJeCvuuMpttxr0OnNCqbZGhFjLrg+NIhxxC+BK5F6yS3w==
+"@babel/plugin-proposal-optional-chaining@^7.10.0", "@babel/plugin-proposal-optional-chaining@^7.9.0":
+  version "7.10.0"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.10.0.tgz#f9bdcd5cbf2e3037674903a45e56ed0cbaea1550"
+  integrity sha512-bn+9XT8Y6FJCO37ewj4E1gIirR35nDm+mGcqQV4dM3LKSVp3QTAU3f65Z0ld4y6jdfAlv2VKzCh4mezhRnl+6Q==
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/plugin-syntax-optional-chaining" "^7.8.0"
