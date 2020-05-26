@@ -122,9 +122,12 @@ export default defineComponent({
 				if (!currentRevision.value) return;
 
 				try {
-					await api.patch(
-						`/${currentProjectKey}/items/${currentRevision.value.collection}/${currentRevision.value.item}/revert/${currentRevision.value.id}`
-					);
+					const endpoint = currentRevision.value.collection.startsWith('directus_')
+						? `/${currentProjectKey}/${currentRevision.value.collection.substring(9)}/${
+								currentRevision.value.item
+						  }/revert/${currentRevision.value.id}`
+						: `/${currentProjectKey}/items/${currentRevision.value.collection}/${currentRevision.value.item}/revert/${currentRevision.value.id}`;
+					await api.patch(endpoint);
 					confirmRevert.value = false;
 					_active.value = false;
 					emit('revert');
