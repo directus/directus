@@ -185,8 +185,8 @@ export default defineComponent({
 		display: contents;
 	}
 
-	.tag + .tag {
-		margin-left: 8px;
+	.tag {
+		margin: 4px;
 	}
 
 	.presets {
