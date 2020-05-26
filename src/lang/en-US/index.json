@@ -72,6 +72,9 @@
 	"confirm_revert": "Confirm Revert",
 	"confirm_revert_body": "This will revert the item to the selected state.",
 
+	"code": "Code",
+	"loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}",
+
 	"setting_update_success": "Setting {setting} updated",
 	"setting_update_failed": "Updating setting {setting} failed",
 	"settings_update_success": "Settings updated",

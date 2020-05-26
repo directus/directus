@@ -22,6 +22,7 @@ import InterfaceSlug from './slug';
 import InterfaceUser from './user';
 import InterfaceTags from './tags';
 import InterfaceRepeater from './repeater';
+import InterfaceCode from './code';
 import InterfaceFile from './file';
 import InterfaceCollections from './collections';
 
@@ -50,6 +51,7 @@ export const interfaces = [
 	InterfaceUser,
 	InterfaceTags,
 	InterfaceRepeater,
+	InterfaceCode,
 	InterfaceFile,
 	InterfaceCollections,
 ];
