@@ -102,6 +102,19 @@
 			/>
 		</div>
 
+		<v-dialog v-model="confirmLeave">
+			<v-card>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<template #drawer>
 			<file-info-drawer-detail v-if="isNew === false" v-bind="item" />
 			<revisions-drawer-detail
@@ -150,6 +163,18 @@ type Values = {
 
 export default defineComponent({
 	name: 'files-detail',
+	beforeRouteLeave(to, from, next) {
+		const self = this as any;
+		const hasEdits = Object.keys(self.edits).length > 0;
+
+		if (hasEdits) {
+			self.confirmLeave = true;
+			self.leaveTo = to.fullPath;
+			return next(false);
+		}
+
+		return next();
+	},
 	components: {
 		FilesNavigation,
 		RevisionsDrawerDetail,
@@ -204,6 +229,9 @@ export default defineComponent({
 				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
 		});
 
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string>(null);
+
 		return {
 			item,
 			loading,
@@ -228,6 +256,9 @@ export default defineComponent({
 			revisionsDrawerDetail,
 			formFields,
 			marked,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function changeCacheBuster() {
@@ -275,6 +306,12 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			await remove();
 			router.push(`/${currentProjectKey.value}/files`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			router.push(leaveTo.value);
 		}
 	},
 });

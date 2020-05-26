@@ -142,6 +142,19 @@
 			v-model="edits"
 		/>
 
+		<v-dialog v-model="confirmLeave">
+			<v-card>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="format-markdown" v-html="marked($t('page_help_collections_detail'))" />
@@ -188,6 +201,18 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
+	beforeRouteLeave(to, from, next) {
+		const self = this as any;
+		const hasEdits = Object.keys(self.edits).length > 0;
+
+		if (hasEdits) {
+			self.confirmLeave = true;
+			self.leaveTo = to.fullPath;
+			return next(false);
+		}
+
+		return next();
+	},
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
@@ -238,6 +263,9 @@ export default defineComponent({
 		const confirmDelete = ref(false);
 		const confirmSoftDelete = ref(false);
 
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string>(null);
+
 		const backLink = computed(
 			() => `/${currentProjectKey.value}/collections/${collection.value}/`
 		);
@@ -287,6 +315,9 @@ export default defineComponent({
 			revisionsDrawerDetail,
 			marked,
 			refresh,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function useBreadcrumb() {
@@ -334,6 +365,12 @@ export default defineComponent({
 		async function deleteAndQuit(soft = false) {
 			await remove(soft);
 			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			router.push(leaveTo.value);
 		}
 	},
 });

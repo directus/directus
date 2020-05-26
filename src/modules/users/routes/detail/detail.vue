@@ -97,6 +97,19 @@
 			/>
 		</div>
 
+		<v-dialog v-model="confirmLeave">
+			<v-card>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				[TK]
@@ -141,6 +154,18 @@ type Values = {
 
 export default defineComponent({
 	name: 'users-detail',
+	beforeRouteLeave(to, from, next) {
+		const self = this as any;
+		const hasEdits = Object.keys(self.edits).length > 0;
+
+		if (hasEdits) {
+			self.confirmLeave = true;
+			self.leaveTo = to.fullPath;
+			return next(false);
+		}
+
+		return next();
+	},
 	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsDrawerDetail },
 	props: {
 		primaryKey: {
@@ -187,6 +212,9 @@ export default defineComponent({
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string>(null);
+
 		return {
 			title,
 			item,
@@ -210,6 +238,9 @@ export default defineComponent({
 			previewLoading,
 			avatarSrc,
 			roleName,
+			confirmLeave,
+			leaveTo,
+			discardAndLeave,
 		};
 
 		function useBreadcrumb() {
@@ -290,6 +321,12 @@ export default defineComponent({
 					loading.value = false;
 				}
 			}
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			edits.value = {};
+			router.push(leaveTo.value);
 		}
 	},
 });

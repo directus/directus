@@ -2,7 +2,7 @@
 	<drawer-detail
 		:title="$t('comments')"
 		icon="chat_bubble_outline"
-		:badge="activity.length > 0 ? activity.length : null"
+		:badge="activity && activity.length > 0 ? activity.length : null"
 	>
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
