@@ -27,7 +27,7 @@
 					dashed
 					outlined
 					large
-					@click="openFieldSetup"
+					@click="openFieldSetup()"
 				>
 					<v-icon name="add" />
 
@@ -63,7 +63,7 @@
 					dashed
 					outlined
 					large
-					@click="openFieldSetup"
+					@click="openFieldSetup()"
 				>
 					<v-icon name="add" />
 

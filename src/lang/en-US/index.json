@@ -106,6 +106,9 @@
 	"this_collection": "This Collection",
 	"related_collection": "Related Collection",
 
+	"choose_a_collection": "Choose a Collection...",
+	"choose_a_field": "Choose a Field...",
+
 	"submit": "Submit",
 
 	"system": "System",

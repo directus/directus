@@ -7,7 +7,13 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :items="items" />
+				<v-select
+					v-if="isNew"
+					:placeholder="$t('choose_a_collection')"
+					:items="items"
+					v-model="collectionOne"
+				/>
+				<v-input disabled v-else :value="existingRelation.collection_many" />
 			</div>
 			<v-input disabled :value="field.field" />
 			<v-input disabled value="id" />
@@ -19,11 +25,11 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
-				<v-checkbox block :label="$t('add_field_related')" />
+				<v-checkbox block :disabled="isNew === false" :label="$t('add_field_related')" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
-				<v-input />
+				<v-input :disabled="isNew === false" />
 			</div>
 			<v-icon name="arrow_forward" />
 		</div>
@@ -35,6 +41,8 @@ import { defineComponent, computed, PropType } from '@vue/composition-api';
 import useCollectionsStore from '@/stores/collections';
 import orderBy from 'lodash/orderBy';
 import { Field } from '@/stores/fields/types';
+import { Relation } from '@/stores/relations/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	props: {
@@ -46,8 +54,21 @@ export default defineComponent({
 			type: Object as PropType<Field>,
 			required: true,
 		},
+		existingRelations: {
+			type: Array as PropType<Relation[]>,
+			required: true,
+		},
+		newRelations: {
+			type: Array as PropType<Partial<Relation>[]>,
+			required: true,
+		},
+		isNew: {
+			type: Boolean,
+			required: true,
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
+		const _newRelations = useSync(props, 'newRelations', emit);
 		const collectionsStore = useCollectionsStore();
 
 		const availableCollections = computed(() => {
@@ -70,7 +91,31 @@ export default defineComponent({
 			}))
 		);
 
-		return { availableCollections, items };
+		const existingRelation = computed(() => {
+			return props.existingRelations.find((relation) => {
+				return (
+					relation.field_many === props.field.field &&
+					relation.collection_many === props.field.collection
+				);
+			});
+		});
+
+		const collectionOne = computed({
+			get() {
+				return _newRelations.value[0]?.collection_one || null;
+			},
+			set(newCollectionOne: string | null) {
+				_newRelations.value = [
+					{
+						field_many: props.field.field,
+						collection_many: props.field.collection,
+						collection_one: newCollectionOne || undefined,
+					},
+				];
+			},
+		});
+
+		return { availableCollections, items, existingRelation, collectionOne };
 	},
 });
 </script>

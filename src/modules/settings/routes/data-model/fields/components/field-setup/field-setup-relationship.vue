@@ -1,37 +1,54 @@
 <template>
 	<div>
 		<h2 class="type-title" v-if="isNew">{{ $t('relationship_setup_title') }}</h2>
-		<v-fancy-select :items="items" :value="value.type" @input="emitValue('type', $event)" />
+		<v-fancy-select
+			:items="items"
+			:value="value.type && value.type.toLowerCase()"
+			@input="emitValue('type', $event)"
+			:disabled="isNew === false"
+		/>
 
 		<many-to-one
-			v-if="value.type === 'm2o'"
+			v-if="value.type && value.type.toLowerCase() === 'm2o'"
 			:collection="value.collection"
 			:field="value"
 			@update:field="emit('input', $event)"
+			:existing-relations="existingRelations"
+			:new-relations.sync="_newRelations"
+			:is-new="isNew"
 		/>
 		<one-to-many
-			v-else-if="value.type === 'o2m'"
+			v-else-if="value.type && value.type.toLowerCase() === 'o2m'"
 			:collection="value.collection"
 			:field="value"
 			@update:field="emit('input', $event)"
+			:existing-relations="existingRelations"
+			:new-relations.sync="_newRelations"
+			:is-new="isNew"
 		/>
 		<many-to-many
-			v-else-if="value.type === 'm2m'"
+			v-else-if="value.type && value.type.toLowerCase() === 'm2m'"
 			:collection="value.collection"
 			:field="value"
 			@update:field="emit('input', $event)"
+			:existing-relations="existingRelations"
+			:new-relations.sync="_newRelations"
+			:is-new="isNew"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, watch } from '@vue/composition-api';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Field } from '@/stores/fields/types';
 import i18n from '@/lang';
 import ManyToOne from './field-setup-relationship-m2o.vue';
 import OneToMany from './field-setup-relationship-o2m.vue';
 import ManyToMany from './field-setup-relationship-m2m.vue';
+import useRelationsStore from '@/stores/relations';
+import { Relation } from '@/stores/relations/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	components: {
@@ -48,8 +65,22 @@ export default defineComponent({
 			type: Object as PropType<Field>,
 			required: true,
 		},
+		newRelations: {
+			type: Array as PropType<Partial<Relation>[]>,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
+		const relationsStore = useRelationsStore();
+		const _newRelations = useSync(props, 'newRelations', emit);
+
+		watch(
+			() => props.value.type,
+			() => {
+				_newRelations.value = [];
+			}
+		);
+
 		const items = computed<FancySelectItem[]>(() => {
 			return [
 				{
@@ -70,7 +101,12 @@ export default defineComponent({
 			];
 		});
 
-		return { emitValue, items };
+		const existingRelations = computed(() => {
+			if (props.isNew) return [];
+			return relationsStore.getRelationsForField(props.value.collection, props.value.field);
+		});
+
+		return { emitValue, items, existingRelations, _newRelations };
 
 		function emitValue(key: string, value: any) {
 			emit('input', {

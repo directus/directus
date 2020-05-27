@@ -22,6 +22,7 @@
 				v-model="field"
 				:local-type.sync="localType"
 				:is-new="existingField === null"
+				:new-relations.sync="newRelations"
 			/>
 			<field-setup-interface
 				v-if="currentTab[0] === 'interface'"
@@ -70,6 +71,9 @@ import FieldSetupAdvanced from './field-setup-advanced.vue';
 import SetupTabs from './setup-tabs.vue';
 import SetupActions from './setup-actions.vue';
 import useFieldsStore from '@/stores/fields/';
+import { Relation } from '@/stores/relations/types';
+import api from '@/api';
+import useProjectsStore from '@/stores/projects';
 
 import { LocalType } from './types';
 
@@ -103,12 +107,15 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
+		const projectsStore = useProjectsStore();
 
 		const { field, localType } = usefield();
 		const { tabs, currentTab } = useTabs();
 		const { save, saving } = useSave();
 
-		return { field, tabs, currentTab, localType, save, saving };
+		const newRelations = ref<Partial<Relation>[]>([]);
+
+		return { field, tabs, currentTab, localType, save, saving, newRelations };
 
 		function usefield() {
 			const defaults = {
@@ -144,16 +151,28 @@ export default defineComponent({
 			const localType = ref<LocalType>(null);
 
 			watch(
+				() => props.active,
+				() => {
+					if (!props.existingField) {
+						field.value = { ...defaults };
+						localType.value = null;
+					}
+				}
+			);
+
+			watch(
 				() => props.existingField,
 				(existingField: Field) => {
 					if (existingField) {
 						field.value = existingField;
 
-						if (existingField.type === 'file') {
+						const type = existingField.type.toLowerCase();
+
+						if (type === 'file') {
 							localType.value = 'file';
-						} else if (existingField.type === 'files') {
+						} else if (type === 'files') {
 							localType.value = 'files';
-						} else if (['o2m', 'm2o'].includes(existingField.type)) {
+						} else if (['o2m', 'm2o', 'm2m'].includes(type)) {
 							localType.value = 'relational';
 						} else {
 							localType.value = 'standard';
@@ -170,6 +189,14 @@ export default defineComponent({
 
 		function useTabs() {
 			const currentTab = ref(['field']);
+
+			watch(
+				() => props.active,
+				() => {
+					currentTab.value = ['field'];
+				}
+			);
+
 			const tabs = computed(() => {
 				const tabs = [
 					{
@@ -215,6 +242,10 @@ export default defineComponent({
 				try {
 					if (field.value.id === null) {
 						await fieldsStore.createField(props.collection, field.value);
+
+						for (const relation of newRelations.value) {
+							await createRelation(relation);
+						}
 					} else {
 						if (field.value.hasOwnProperty('name')) {
 							delete field.value.name;
@@ -232,6 +263,11 @@ export default defineComponent({
 				} finally {
 					saving.value = false;
 				}
+			}
+
+			async function createRelation(relation: Partial<Relation>) {
+				const { currentProjectKey } = projectsStore.state;
+				await api.post(`/${currentProjectKey}/relations`, relation);
 			}
 		}
 	},
