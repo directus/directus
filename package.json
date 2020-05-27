@@ -69,7 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "@typescript-eslint/typescript-estree": "^3.0.1",
-    "@vue/cli-plugin-babel": "^4.3.1",
+    "@vue/cli-plugin-babel": "^4.4.1",
     "@vue/cli-plugin-eslint": "^4.4.1",
     "@vue/cli-plugin-router": "^4.4.1",
     "@vue/cli-plugin-typescript": "^4.4.1",
