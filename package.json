@@ -72,7 +72,7 @@
     "@vue/cli-plugin-babel": "^4.3.1",
     "@vue/cli-plugin-eslint": "^4.4.1",
     "@vue/cli-plugin-router": "^4.4.1",
-    "@vue/cli-plugin-typescript": "^4.3.1",
+    "@vue/cli-plugin-typescript": "^4.4.1",
     "@vue/cli-plugin-unit-jest": "^4.3.1",
     "@vue/cli-plugin-vuex": "^4.4.1",
     "@vue/cli-service": "^4.3.1",

@@ -1967,7 +1967,7 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@types/webpack-env@^1.15.0", "@types/webpack-env@^1.15.1":
+"@types/webpack-env@^1.15.0", "@types/webpack-env@^1.15.2":
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.15.2.tgz#927997342bb9f4a5185a86e6579a0a18afc33b0a"
   integrity sha512-67ZgZpAlhIICIdfQrB5fnDvaKFcDxpKibxznfYRVAT4mQE41Dido/3Ty+E3xGBmTogc5+0Qb8tWhna+5B8z1iQ==
@@ -2189,13 +2189,13 @@
   dependencies:
     "@vue/cli-shared-utils" "^4.4.1"
 
-"@vue/cli-plugin-typescript@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-typescript/-/cli-plugin-typescript-4.3.1.tgz#dd403b78680376b8682f90de3db851ae5ecc71e8"
-  integrity sha512-Uos7MTqG0btNMMhZdgLTPx24fqiiHhqz0Bow2rTeNa0piDeSjiQdyq0vgVKqJOLUu8zkvmG2jKUr15QQ0+yobQ==
+"@vue/cli-plugin-typescript@^4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-typescript/-/cli-plugin-typescript-4.4.1.tgz#00f2e0af3a50e00074cb01dea53ebb75bb50f392"
+  integrity sha512-WfgaT5N/eUlGXWsucl8vPskB3QYZFw77P1e/0TEwekVsz8yyT5/MEnZaQSH9emufcAagjpWHHL3fNQdIVg70eQ==
   dependencies:
-    "@types/webpack-env" "^1.15.1"
-    "@vue/cli-shared-utils" "^4.3.1"
+    "@types/webpack-env" "^1.15.2"
+    "@vue/cli-shared-utils" "^4.4.1"
     cache-loader "^4.1.0"
     fork-ts-checker-webpack-plugin "^3.1.1"
     globby "^9.2.0"
