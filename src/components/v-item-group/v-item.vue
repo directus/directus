@@ -14,9 +14,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		scope: {
+			type: String,
+			default: 'item-group',
+		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.value);
+		const { active, toggle } = useGroupable(props.value, props.scope);
 		return { active, toggle };
 	},
 });
