@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<template v-if="customNavItems">
+		<template v-if="customNavItems && customNavItems.length > 0">
 			<div :key="group.name" v-for="(group, index) in customNavItems">
 				<div class="group-name">{{ group.name }}</div>
 				<v-list-item
