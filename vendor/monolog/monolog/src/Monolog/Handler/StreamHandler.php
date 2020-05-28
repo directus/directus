@@ -12,6 +12,7 @@
 namespace Monolog\Handler;
 
 use Monolog\Logger;
+use Monolog\Utils;
 
 /**
  * Stores to any stream resource
@@ -45,7 +46,7 @@ class StreamHandler extends AbstractProcessingHandler
         if (is_resource($stream)) {
             $this->stream = $stream;
         } elseif (is_string($stream)) {
-            $this->url = $stream;
+            $this->url = Utils::canonicalizePath($stream);
         } else {
             throw new \InvalidArgumentException('A stream must either be a resource or a string.');
         }

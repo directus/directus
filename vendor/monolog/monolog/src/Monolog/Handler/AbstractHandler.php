@@ -33,8 +33,8 @@ abstract class AbstractHandler implements HandlerInterface, ResettableInterface
     protected $processors = array();
 
     /**
-     * @param int  $level  The minimum logging level at which this handler will be triggered
-     * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
+     * @param int|string $level  The minimum logging level at which this handler will be triggered
+     * @param bool       $bubble Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct($level = Logger::DEBUG, $bubble = true)
     {

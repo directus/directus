@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.2.5"
+        "php": ">=7.2.5"
     },
     "suggest": {
         "symfony/translation-implementation": ""
@@ -27,7 +27,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "2.1-dev"
         }
     }
 }

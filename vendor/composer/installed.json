@@ -457,21 +457,21 @@
     },
     {
         "name": "doctrine/cache",
-        "version": "1.10.0",
-        "version_normalized": "1.10.0.0",
+        "version": "1.10.1",
+        "version_normalized": "1.10.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/cache.git",
-            "reference": "382e7f4db9a12dc6c19431743a2b096041bcdd62"
+            "reference": "35a4a70cd94e09e2259dfae7488afc6b474ecbd3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/cache/zipball/382e7f4db9a12dc6c19431743a2b096041bcdd62",
-            "reference": "382e7f4db9a12dc6c19431743a2b096041bcdd62",
+            "url": "https://api.github.com/repos/doctrine/cache/zipball/35a4a70cd94e09e2259dfae7488afc6b474ecbd3",
+            "reference": "35a4a70cd94e09e2259dfae7488afc6b474ecbd3",
             "shasum": ""
         },
         "require": {
-            "php": "~7.1"
+            "php": "~7.1 || ^8.0"
         },
         "conflict": {
             "doctrine/common": ">2.2,<2.4"
@@ -486,7 +486,7 @@
         "suggest": {
             "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
         },
-        "time": "2019-11-29T15:36:20+00:00",
+        "time": "2020-05-27T16:24:54+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -593,17 +593,17 @@
     },
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.5.3",
-        "version_normalized": "6.5.3.0",
+        "version": "6.5.4",
+        "version_normalized": "6.5.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e"
+            "reference": "a4a1b6930528a8f7ee03518e6442ec7a44155d9d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/aab4ebd862aa7d04f01a4b51849d657db56d882e",
-            "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/a4a1b6930528a8f7ee03518e6442ec7a44155d9d",
+            "reference": "a4a1b6930528a8f7ee03518e6442ec7a44155d9d",
             "shasum": ""
         },
         "require": {
@@ -611,7 +611,7 @@
             "guzzlehttp/promises": "^1.0",
             "guzzlehttp/psr7": "^1.6.1",
             "php": ">=5.5",
-            "symfony/polyfill-intl-idn": "^1.11"
+            "symfony/polyfill-intl-idn": "1.17.0"
         },
         "require-dev": {
             "ext-curl": "*",
@@ -621,7 +621,7 @@
         "suggest": {
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2020-04-18T10:38:46+00:00",
+        "time": "2020-05-25T19:35:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1243,17 +1243,17 @@
     },
     {
         "name": "monolog/monolog",
-        "version": "1.25.3",
-        "version_normalized": "1.25.3.0",
+        "version": "1.25.4",
+        "version_normalized": "1.25.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Seldaek/monolog.git",
-            "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1"
+            "reference": "3022efff205e2448b560c833c6fbbf91c3139168"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fa82921994db851a8becaf3787a9e73c5976b6f1",
-            "reference": "fa82921994db851a8becaf3787a9e73c5976b6f1",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/3022efff205e2448b560c833c6fbbf91c3139168",
+            "reference": "3022efff205e2448b560c833c6fbbf91c3139168",
             "shasum": ""
         },
         "require": {
@@ -1267,11 +1267,10 @@
             "aws/aws-sdk-php": "^2.4.9 || ^3.0",
             "doctrine/couchdb": "~1.0@dev",
             "graylog2/gelf-php": "~1.0",
-            "jakub-onderka/php-parallel-lint": "0.9",
             "php-amqplib/php-amqplib": "~2.4",
             "php-console/php-console": "^3.1.3",
+            "php-parallel-lint/php-parallel-lint": "^1.0",
             "phpunit/phpunit": "~4.5",
-            "phpunit/phpunit-mock-objects": "2.3.0",
             "ruflin/elastica": ">=0.90 <3.0",
             "sentry/sentry": "^0.13",
             "swiftmailer/swiftmailer": "^5.3|^6.0"
@@ -1289,7 +1288,7 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2019-12-20T14:15:16+00:00",
+        "time": "2020-05-22T07:31:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2950,31 +2949,31 @@
     },
     {
         "name": "symfony/service-contracts",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
+        "version": "v2.1.2",
+        "version_normalized": "2.1.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/service-contracts.git",
-            "reference": "144c5e51266b281231e947b51223ba14acf1a749"
+            "reference": "66a8f0957a3ca54e4f724e49028ab19d75a8918b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/144c5e51266b281231e947b51223ba14acf1a749",
-            "reference": "144c5e51266b281231e947b51223ba14acf1a749",
+            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/66a8f0957a3ca54e4f724e49028ab19d75a8918b",
+            "reference": "66a8f0957a3ca54e4f724e49028ab19d75a8918b",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": ">=7.2.5",
             "psr/container": "^1.0"
         },
         "suggest": {
             "symfony/service-implementation": ""
         },
-        "time": "2019-11-18T17:27:11+00:00",
+        "time": "2020-05-20T17:43:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.0-dev"
+                "dev-master": "2.1-dev"
             }
         },
         "installation-source": "dist",
@@ -3088,30 +3087,30 @@
     },
     {
         "name": "symfony/translation-contracts",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
+        "version": "v2.1.2",
+        "version_normalized": "2.1.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation-contracts.git",
-            "reference": "8cc682ac458d75557203b2f2f14b0b92e1c744ed"
+            "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/8cc682ac458d75557203b2f2f14b0b92e1c744ed",
-            "reference": "8cc682ac458d75557203b2f2f14b0b92e1c744ed",
+            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/e5ca07c8f817f865f618aa072c2fe8e0e637340e",
+            "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5"
+            "php": ">=7.2.5"
         },
         "suggest": {
             "symfony/translation-implementation": ""
         },
-        "time": "2019-11-18T17:27:11+00:00",
+        "time": "2020-05-20T17:43:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.0-dev"
+                "dev-master": "2.1-dev"
             }
         },
         "installation-source": "dist",

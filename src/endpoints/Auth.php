@@ -175,7 +175,10 @@ class Auth extends Route
             ]
         );
 
-        return  $response->withAddedHeader('Set-Cookie', $cookie->toHeaders());
+        $cookieAsString = $cookie->toHeaders()[0];
+        $cookieAsString .= '; SameSite=None; Secure';
+
+        return  $response->withAddedHeader('Set-Cookie', $cookieAsString);
     }
 
     /**

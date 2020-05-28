@@ -99,7 +99,10 @@ class ResponseCacheMiddleware extends AbstractMiddleware
                             ]
                         );
 
-                        $response =  $response->withAddedHeader('Set-Cookie', $cookie->toHeaders());
+                        $cookieAsString = $cookie->toHeaders()[0];
+                        $cookieAsString .= '; SameSite=None; Secure';
+
+                        $response =  $response->withAddedHeader('Set-Cookie', $cookieAsString);
                         break;
                     default:
                         $userSession = $userSessionService->find(['token' => $authorizationTokenObject['token']]);
@@ -122,7 +125,10 @@ class ResponseCacheMiddleware extends AbstractMiddleware
                 ]
             );
 
-            $response =  $response->withAddedHeader('Set-Cookie', $cookie->toHeaders());
+            $cookieAsString = $cookie->toHeaders()[0];
+            $cookieAsString .= '; SameSite=None; Secure';
+
+            $response =  $response->withAddedHeader('Set-Cookie', $cookieAsString);
         }
 
         $config = $container->get('config');
