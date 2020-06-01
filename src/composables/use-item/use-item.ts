@@ -17,9 +17,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const softDeleting = ref(false);
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
-	const isBatch = computed(
-		() => typeof primaryKey.value === 'string' && primaryKey.value.includes(',')
-	);
+	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 
 	const endpoint = computed(() => {
 		const currentProjectKey = useProjectsStore().state.currentProjectKey;
@@ -149,9 +147,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.t('item_create_success'),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: isBatch.value
-						? (primaryKey.value as string).split(',').join(', ')
-						: primaryKey.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'success',
 			});
@@ -162,9 +158,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.t('item_create_failed'),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: isBatch.value
-						? (primaryKey.value as string).split(',').join(', ')
-						: primaryKey.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'error',
 			});
@@ -201,9 +195,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: isBatch.value
-						? (primaryKey.value as string).split(',').join(', ')
-						: primaryKey.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'success',
 			});
@@ -212,9 +204,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
-					primaryKey: isBatch.value
-						? (primaryKey.value as string).split(',').join(', ')
-						: primaryKey.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'error',
 			});

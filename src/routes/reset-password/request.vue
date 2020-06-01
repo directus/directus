@@ -1,12 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input
-			autofocus
-			autocomplete="username"
-			type="email"
-			v-model="email"
-			:placeholder="$t('email')"
-		/>
+		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="$t('email')" />
 		<v-notice type="success" v-if="done">{{ $t('password_reset_sent') }}</v-notice>
 		<v-notice type="danger" v-if="error">
 			{{ errorFormatted }}

@@ -57,9 +57,7 @@ export const useSettingsStore = createStore({
 			});
 
 			this.state.settings = this.state.settings.map((existingSetting) => {
-				const updated = settingsToBeSaved.find(
-					(update) => update.id === existingSetting.id
-				);
+				const updated = settingsToBeSaved.find((update) => update.id === existingSetting.id);
 
 				if (updated !== undefined) {
 					return {
@@ -72,15 +70,10 @@ export const useSettingsStore = createStore({
 			});
 
 			try {
-				const response = await api.patch(
-					`/${currentProjectKey}/settings`,
-					settingsToBeSaved
-				);
+				const response = await api.patch(`/${currentProjectKey}/settings`, settingsToBeSaved);
 
 				this.state.settings = this.state.settings.map((setting) => {
-					const updated = response.data.data.find(
-						(update: any) => update.id === setting.id
-					);
+					const updated = response.data.data.find((update: any) => update.id === setting.id);
 
 					if (updated !== undefined) {
 						return {

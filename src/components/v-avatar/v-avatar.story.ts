@@ -1,11 +1,4 @@
-import {
-	withKnobs,
-	text,
-	boolean,
-	number,
-	color,
-	optionsKnob as options,
-} from '@storybook/addon-knobs';
+import { withKnobs, text, boolean, number, color, optionsKnob as options } from '@storybook/addon-knobs';
 import Vue from 'vue';
 import VAvatar from './v-avatar.vue';
 import VIcon from '../v-icon/';

@@ -37,11 +37,7 @@ export function onLeaveTooltip() {
 	};
 }
 
-export function updateTooltip(
-	element: HTMLElement,
-	binding: DirectiveBinding,
-	tooltip: HTMLElement
-) {
+export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement) {
 	const offset = 10;
 	const arrowAlign = 20;
 

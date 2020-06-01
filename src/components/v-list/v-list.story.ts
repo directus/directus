@@ -215,36 +215,16 @@ export const withSubtitle = () =>
 				default: boolean('Dense', false, 'List Item 3'),
 			},
 			lines0: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'List Item 0'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'List Item 0'),
 			},
 			lines1: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'List Item 1'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'List Item 1'),
 			},
 			lines2: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'List Item 2'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'List Item 2'),
 			},
 			lines3: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'List Item 3'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'List Item 3'),
 			},
 			nav: {
 				default: boolean('Nav', false, 'Full List'),
@@ -253,12 +233,7 @@ export const withSubtitle = () =>
 				default: text('Subtitle 3', '', 'Full List'),
 			},
 			lines: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'Full List'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'Full List'),
 			},
 		},
 		setup() {
@@ -272,8 +247,7 @@ export const withSubtitle = () =>
 					},
 					2: {
 						title: 'List Item 2',
-						subtitle:
-							"This is yet another example of a list subtitle. It's of medium length.",
+						subtitle: "This is yet another example of a list subtitle. It's of medium length.",
 					},
 				},
 			};
@@ -311,12 +285,7 @@ export const withIconsToo = () =>
 				default: boolean('Subtitle', false, 'Full List'),
 			},
 			lines: {
-				default: select(
-					'Lines',
-					{ One: 1, Two: 2, Three: 3, Off: null },
-					null,
-					'Full List'
-				),
+				default: select('Lines', { One: 1, Two: 2, Three: 3, Off: null }, null, 'Full List'),
 			},
 			leftIconCenter: {
 				default: boolean('Left Icon Centered', false, 'Full List'),
@@ -349,8 +318,7 @@ export const withIconsToo = () =>
 					},
 					2: {
 						title: 'List Item 2',
-						subtitle:
-							"This is yet another example of a list subtitle. It's of medium length.",
+						subtitle: "This is yet another example of a list subtitle. It's of medium length.",
 						checked: false,
 					},
 					3: {

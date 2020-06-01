@@ -20,11 +20,7 @@
 									'is-svg': file && file.type.includes('svg'),
 								}"
 							>
-								<img
-									v-if="imageThumbnail"
-									:src="imageThumbnail"
-									:alt="file.title"
-								/>
+								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
 								<span class="extension" v-else-if="fileExtension">
 									{{ fileExtension }}
 								</span>
@@ -32,12 +28,7 @@
 							</div>
 						</template>
 						<template #append>
-							<v-icon
-								class="deselect"
-								name="close"
-								v-if="file"
-								@click.stop="$emit('input', null)"
-							/>
+							<v-icon class="deselect" name="close" v-if="file" @click.stop="$emit('input', null)" />
 							<v-icon v-else name="attach_file" />
 						</template>
 					</v-input>
@@ -95,11 +86,7 @@
 			@input="setSelection"
 		/>
 
-		<v-dialog
-			:active="activeDialog === 'url'"
-			@toggle="activeDialog = null"
-			:persistent="urlLoading"
-		>
+		<v-dialog :active="activeDialog === 'url'" @toggle="activeDialog = null" :persistent="urlLoading">
 			<v-card>
 				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 				<v-card-text>
@@ -109,11 +96,7 @@
 					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
 						{{ $t('cancel') }}
 					</v-button>
-					<v-button
-						:loading="urlLoading"
-						@click="importFromURL"
-						:disabled="isValidURL === false"
-					>
+					<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
 						{{ $t('import') }}
 					</v-button>
 				</v-card-actions>
@@ -169,17 +152,10 @@ export default defineComponent({
 			if (file.value === null) return null;
 			if (file.value.type.includes('svg')) return file.value.data.asset_url;
 			if (file.value.type.includes('image') === false) return null;
-			return file.value.data.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')
-				?.url;
+			return file.value.data.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url;
 		});
 
-		const {
-			url,
-			isValidURL,
-			loading: urlLoading,
-			error: urlError,
-			importFromURL,
-		} = useURLImport();
+		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
 
 		return {
 			activeDialog,

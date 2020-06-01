@@ -13,9 +13,7 @@ interface HTMLExpandElement extends HTMLElement {
 
 export default function (expandedParentClass = '', xAxis = false) {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
-	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as
-		| 'offsetHeight'
-		| 'offsetWidth';
+	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
 	return {
 		beforeEnter(el: HTMLExpandElement) {

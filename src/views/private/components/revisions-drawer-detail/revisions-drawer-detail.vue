@@ -138,16 +138,11 @@ export default defineComponent({
 						}
 					);
 
-					const revisionsGroupedByDate = groupBy(
-						response.data.data,
-						(revision: Revision) => {
-							// revision's action_on date is in iso-8601
-							const date = new Date(
-								new Date(revision.activity.action_on).toDateString()
-							);
-							return date;
-						}
-					);
+					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
+						// revision's action_on date is in iso-8601
+						const date = new Date(new Date(revision.activity.action_on).toDateString());
+						return date;
+					});
 
 					const revisionsGrouped: RevisionsByDate[] = [];
 
@@ -162,15 +157,8 @@ export default defineComponent({
 						if (today) dateFormatted = i18n.t('today');
 						else if (yesterday) dateFormatted = i18n.t('yesterday');
 						else if (thisYear)
-							dateFormatted = await formatLocalized(
-								date,
-								String(i18n.t('date-fns_date_short_no_year'))
-							);
-						else
-							dateFormatted = await formatLocalized(
-								date,
-								String(i18n.t('date-fns_date_short'))
-							);
+							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
+						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
 
 						revisionsGrouped.push({
 							date: date,

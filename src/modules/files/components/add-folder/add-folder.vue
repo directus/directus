@@ -13,11 +13,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
-				<v-button
-					:disabled="!newFolderName || newFolderName.length === 0"
-					@click="addFolder"
-					:loading="saving"
-				>
+				<v-button :disabled="!newFolderName || newFolderName.length === 0" @click="addFolder" :loading="saving">
 					{{ $t('save') }}
 				</v-button>
 			</v-card-actions>

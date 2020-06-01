@@ -41,9 +41,7 @@ export const usePermissionsStore = createStore({
 
 			if (userStore.isAdmin.value) return defaultAdminPermission;
 
-			const permissions = this.state.permissions.filter(
-				(permission) => permission.collection === collection
-			);
+			const permissions = this.state.permissions.filter((permission) => permission.collection === collection);
 
 			return permissions ? permissions : defaultPermission;
 		},

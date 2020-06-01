@@ -25,18 +25,10 @@ describe('Input', () => {
 			},
 		});
 
-		expect(component.find('.v-input > .prepend-outer > div ').html()).toBe(
-			'<div>prepend-outer</div>'
-		);
-		expect(component.find('.v-input > .append-outer > div ').html()).toBe(
-			'<div>append-outer</div>'
-		);
-		expect(component.find('.v-input > .input > .prepend > div ').html()).toBe(
-			'<div>prepend</div>'
-		);
-		expect(component.find('.v-input > .input > .append > div ').html()).toBe(
-			'<div>append</div>'
-		);
+		expect(component.find('.v-input > .prepend-outer > div ').html()).toBe('<div>prepend-outer</div>');
+		expect(component.find('.v-input > .append-outer > div ').html()).toBe('<div>append-outer</div>');
+		expect(component.find('.v-input > .input > .prepend > div ').html()).toBe('<div>prepend</div>');
+		expect(component.find('.v-input > .input > .append > div ').html()).toBe('<div>append</div>');
 	});
 
 	it('Renders prefix / suffix', async () => {

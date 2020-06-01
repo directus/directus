@@ -15,9 +15,7 @@
 				:alt="value && `${value.first_name} ${value.last_name}`"
 				:class="{ circle }"
 			/>
-			<span v-if="display === 'name' || display === 'both'">
-				{{ value.first_name }} {{ value.last_name }}
-			</span>
+			<span v-if="display === 'name' || display === 'both'">{{ value.first_name }} {{ value.last_name }}</span>
 		</user-popover>
 	</span>
 </template>
@@ -58,9 +56,7 @@ export default defineComponent({
 		const src = computed(() => {
 			if (props.value === null) return null;
 			return (
-				props.value?.avatar?.data?.thumbnails?.find(
-					(thumb) => thumb.key === 'directus-small-crop'
-				)?.url || null
+				props.value?.avatar?.data?.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url || null
 			);
 		});
 

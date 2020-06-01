@@ -51,10 +51,7 @@ export default defineComponent({
 	setup(props) {
 		const projectsStore = useProjectsStore();
 
-		const { activity, loading, error, refresh } = useActivity(
-			props.collection,
-			props.primaryKey
-		);
+		const { activity, loading, error, refresh } = useActivity(props.collection, props.primaryKey);
 
 		return {
 			activity,
@@ -77,29 +74,26 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(
-						`/${projectsStore.state.currentProjectKey}/activity`,
-						{
-							params: {
-								'filter[collection][eq]': collection,
-								'filter[item][eq]': primaryKey,
-								'filter[action][in]': 'comment',
-								'filter[comment_deleted_on][null]': 1,
-								sort: '-id', // directus_activity has auto increment and is therefore in chronological order
-								fields: [
-									'id',
-									'action',
-									'action_on',
-									'action_by.id',
-									'action_by.first_name',
-									'action_by.last_name',
-									'action_by.avatar.data',
-									'comment',
-									'edited_on',
-								],
-							},
-						}
-					);
+					const response = await api.get(`/${projectsStore.state.currentProjectKey}/activity`, {
+						params: {
+							'filter[collection][eq]': collection,
+							'filter[item][eq]': primaryKey,
+							'filter[action][in]': 'comment',
+							'filter[comment_deleted_on][null]': 1,
+							sort: '-id', // directus_activity has auto increment and is therefore in chronological order
+							fields: [
+								'id',
+								'action',
+								'action_on',
+								'action_by.id',
+								'action_by.first_name',
+								'action_by.last_name',
+								'action_by.avatar.data',
+								'comment',
+								'edited_on',
+							],
+						},
+					});
 
 					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
 						// activity's action_on date is in iso-8601
@@ -120,15 +114,8 @@ export default defineComponent({
 						if (today) dateFormatted = i18n.t('today');
 						else if (yesterday) dateFormatted = i18n.t('yesterday');
 						else if (thisYear)
-							dateFormatted = await formatLocalized(
-								date,
-								String(i18n.t('date-fns_date_short_no_year'))
-							);
-						else
-							dateFormatted = await formatLocalized(
-								date,
-								String(i18n.t('date-fns_date_short'))
-							);
+							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
+						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
 
 						activityGrouped.push({
 							date: date,

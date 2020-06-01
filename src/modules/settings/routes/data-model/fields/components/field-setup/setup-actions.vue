@@ -54,17 +54,12 @@ export default defineComponent({
 		const _currentTab = useSync(props, 'currentTab', emit);
 
 		const { field, localType } = toRefs(props);
-		const {
-			fieldComplete,
-			relationComplete,
-			interfaceComplete,
-			displayComplete,
-			advancedComplete,
-		} = useValidation(field, localType);
-
-		const currentTabIndex = computed(() =>
-			props.tabs.findIndex((tab) => tab.value === props.currentTab[0])
+		const { fieldComplete, relationComplete, interfaceComplete, displayComplete, advancedComplete } = useValidation(
+			field,
+			localType
 		);
+
+		const currentTabIndex = computed(() => props.tabs.findIndex((tab) => tab.value === props.currentTab[0]));
 
 		const previousDisabled = computed(() => {
 			return currentTabIndex.value === 0;

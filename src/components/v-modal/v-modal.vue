@@ -15,12 +15,7 @@
 				<slot name="header:append" />
 			</header>
 			<div class="content" :class="{ 'no-padding': noPadding }">
-				<v-overlay
-					v-if="$slots.sidebar"
-					absolute
-					:active="sidebarActive"
-					@click="sidebarActive = false"
-				/>
+				<v-overlay v-if="$slots.sidebar" absolute :active="sidebarActive" @click="sidebarActive = false" />
 				<nav
 					v-if="$slots.sidebar"
 					class="sidebar"

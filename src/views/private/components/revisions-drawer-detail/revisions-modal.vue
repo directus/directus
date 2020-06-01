@@ -13,10 +13,7 @@
 			</template>
 
 			<div class="content">
-				<revisions-modal-preview
-					v-if="currentTab[0] === 'preview'"
-					:revision="currentRevision"
-				/>
+				<revisions-modal-preview v-if="currentTab[0] === 'preview'" :revision="currentRevision" />
 				<revisions-modal-updates
 					v-if="currentTab[0] === 'updates'"
 					:revision="currentRevision"

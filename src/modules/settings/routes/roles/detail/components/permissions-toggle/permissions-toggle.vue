@@ -1,11 +1,5 @@
 <template>
-	<v-menu
-		show-arrow
-		placement="left-start"
-		class="permissions-toggle"
-		close-on-content-click
-		:disabled="saving"
-	>
+	<v-menu show-arrow placement="left-start" class="permissions-toggle" close-on-content-click :disabled="saving">
 		<template #activator="{ toggle }">
 			<span>
 				<v-progress-circular class="spinner" indeterminate small v-if="saving" />

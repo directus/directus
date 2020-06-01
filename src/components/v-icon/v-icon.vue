@@ -96,8 +96,7 @@ export default defineComponent({
 		});
 
 		const customIconName = computed<string | null>(() => {
-			if (customIcons.includes(props.name))
-				return `custom-icon-${props.name}`.replace(/_/g, '-');
+			if (customIcons.includes(props.name)) return `custom-icon-${props.name}`.replace(/_/g, '-');
 			return null;
 		});
 

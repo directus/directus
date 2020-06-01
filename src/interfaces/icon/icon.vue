@@ -8,21 +8,11 @@
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-icon
-						v-if="value"
-						@click="activate"
-						:name="value"
-						:class="{ active: value }"
-					/>
+					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />
 				</template>
 
 				<template #append>
-					<v-icon
-						@click="activate"
-						name="expand_more"
-						class="open-indicator"
-						:class="{ open: active }"
-					/>
+					<v-icon @click="activate" name="expand_more" class="open-indicator" :class="{ open: active }" />
 				</template>
 			</v-input>
 		</template>
@@ -74,9 +64,7 @@ export default defineComponent({
 			return icons.map((group) => {
 				if (searchQuery.value.length === 0) return group;
 
-				const icons = group.icons.filter((icon) =>
-					icon.includes(searchQuery.value.toLowerCase())
-				);
+				const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
 
 				return {
 					...group,

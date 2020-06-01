@@ -3,13 +3,7 @@
 		<portal to="layout-options">
 			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.cards.image_source') }}</div>
-				<v-select
-					v-model="imageSource"
-					allow-null
-					item-value="field"
-					item-text="name"
-					:items="fileFields"
-				/>
+				<v-select v-model="imageSource" allow-null item-value="field" item-text="name" :items="fileFields" />
 			</div>
 
 			<div class="layout-option">
@@ -61,12 +55,7 @@
 		</portal>
 
 		<template v-if="loading || itemCount > 0">
-			<cards-header
-				:fields="availableFields"
-				:size.sync="size"
-				:selection.sync="_selection"
-				:sort.sync="sort"
-			/>
+			<cards-header :fields="availableFields" :size.sync="size" :selection.sync="_selection" :sort.sync="sort" />
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<template v-if="loading">
@@ -91,11 +80,7 @@
 						<render-template :collection="collection" :item="item" :template="title" />
 					</template>
 					<template #subtitle v-if="subtitle">
-						<render-template
-							:collection="collection"
-							:item="item"
-							:template="subtitle"
-						/>
+						<render-template :collection="collection" :item="item" :template="subtitle" />
 					</template>
 				</card>
 			</div>
@@ -114,22 +99,12 @@
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
-					<v-select
-						@input="limit = +$event"
-						:value="`${limit}`"
-						:items="['25', '50', '100', '250']"
-						inline
-					/>
+					<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
 				</div>
 			</div>
 		</template>
 
-		<v-info
-			v-else-if="itemCount === 0 && activeFilterCount > 0"
-			:title="$t('no_results')"
-			icon="search"
-			center
-		>
+		<v-info v-else-if="itemCount === 0 && activeFilterCount > 0" :title="$t('no_results')" icon="search" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
@@ -277,8 +252,7 @@ export default defineComponent({
 		const { width } = useElementSize(layoutElement);
 
 		const isSingleRow = computed(() => {
-			const cardsWidth =
-				items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
+			const cardsWidth = items.value.length * (size.value * 40) + (items.value.length - 1) * 24;
 			return cardsWidth <= width.value;
 		});
 
@@ -342,10 +316,7 @@ export default defineComponent({
 			const icon = createViewOption('icon', 'box');
 			const title = createViewOption<string>('title', null);
 			const subtitle = createViewOption<string>('subtitle', null);
-			const imageSource = createViewOption<string>(
-				'imageSource',
-				fileFields.value[0]?.field ?? null
-			);
+			const imageSource = createViewOption<string>('imageSource', fileFields.value[0]?.field ?? null);
 			const imageFit = createViewOption<string>('imageFit', 'crop');
 
 			return { size, icon, imageSource, title, subtitle, imageFit };
@@ -353,9 +324,7 @@ export default defineComponent({
 			function createViewOption<T>(key: keyof ViewOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
-						return _viewOptions.value?.[key] !== undefined
-							? _viewOptions.value?.[key]
-							: defaultValue;
+						return _viewOptions.value?.[key] !== undefined ? _viewOptions.value?.[key] : defaultValue;
 					},
 					set(newValue: T) {
 						_viewOptions.value = {
@@ -399,10 +368,7 @@ export default defineComponent({
 					titleSubtitleFields.push(...getFieldsFromTemplate(subtitle.value));
 				}
 
-				return [
-					...fields,
-					...adjustFieldsForDisplays(titleSubtitleFields, props.collection),
-				];
+				return [...fields, ...adjustFieldsForDisplays(titleSubtitleFields, props.collection)];
 			});
 
 			return { sort, limit, page, fields };

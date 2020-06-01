@@ -93,10 +93,7 @@ export default defineComponent({
 
 		const existingRelation = computed(() => {
 			return props.existingRelations.find((relation) => {
-				return (
-					relation.field_many === props.field.field &&
-					relation.collection_many === props.field.collection
-				);
+				return relation.field_many === props.field.field && relation.collection_many === props.field.collection;
 			});
 		});
 

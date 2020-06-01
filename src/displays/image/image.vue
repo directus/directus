@@ -1,11 +1,5 @@
 <template>
-	<img
-		v-if="src"
-		:src="src"
-		role="presentation"
-		:alt="value && value.title"
-		:class="{ circle }"
-	/>
+	<img v-if="src" :src="src" role="presentation" :alt="value && value.title" :class="{ circle }" />
 	<span v-else>--</span>
 </template>
 
@@ -36,10 +30,7 @@ export default defineComponent({
 	setup(props) {
 		const src = computed(() => {
 			if (props.value === null) return null;
-			return (
-				props.value?.data?.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')
-					?.url || null
-			);
+			return props.value?.data?.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url || null;
 		});
 
 		return { src };

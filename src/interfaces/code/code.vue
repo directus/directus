@@ -2,11 +2,7 @@
 	<div class="interface-code codemirror-custom-styles">
 		<textarea ref="codemirrorEl" :value="stringValue" />
 
-		<v-button
-			v-if="template"
-			v-tooltip="$t('interfaces.code.fill_template')"
-			@click="fillTemplate"
-		>
+		<v-button v-if="template" v-tooltip="$t('interfaces.code.fill_template')" @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 
@@ -24,14 +20,7 @@
 <script lang="ts">
 import CodeMirror from 'codemirror';
 
-import {
-	defineComponent,
-	computed,
-	ref,
-	onMounted,
-	onUnmounted,
-	watch,
-} from '@vue/composition-api';
+import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';

@@ -1,16 +1,7 @@
 <template>
 	<public-view>
-		<router-link
-			class="project"
-			v-for="project in projects"
-			:to="project.link"
-			:key="project.key"
-		>
-			<div
-				class="logo"
-				v-if="project && project.logo"
-				:style="{ backgroundColor: project.color }"
-			>
+		<router-link class="project" v-for="project in projects" :to="project.link" :key="project.key">
+			<div class="logo" v-if="project && project.logo" :style="{ backgroundColor: project.color }">
 				<img :src="project.logo" :alt="project.name || project.key" />
 			</div>
 			<img v-else class="default-logo" src="@/assets/logo-dark.svg" alt="Directus" />

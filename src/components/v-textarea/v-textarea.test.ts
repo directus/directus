@@ -21,11 +21,7 @@ describe('Textarea', () => {
 
 		await component.vm.$nextTick();
 
-		expect(component.find('.v-textarea').classes()).toEqual([
-			'v-textarea',
-			'disabled',
-			'full-width',
-		]);
+		expect(component.find('.v-textarea').classes()).toEqual(['v-textarea', 'disabled', 'full-width']);
 	});
 
 	it('Emits just the value for the input event', async () => {

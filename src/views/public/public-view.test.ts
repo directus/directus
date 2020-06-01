@@ -30,21 +30,18 @@ const mockProject: ProjectWithKey = {
 		database: 'mysql',
 		project_name: 'Thumper',
 		project_logo: {
-			full_url:
-				'http://localhost:8080/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
+			full_url: 'http://localhost:8080/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 			url: '/uploads/my-project/originals/19acff06-4969-5c75-9cd5-dc3f27506de2.svg',
 			asset_url: '/uploads/my-project/assets/abc',
 		},
 		project_color: '#4CAF50',
 		project_foreground: {
-			full_url:
-				'http://localhost:8080/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg',
+			full_url: 'http://localhost:8080/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg',
 			url: '/uploads/my-project/originals/f28c49b0-2b4f-571e-bf62-593107cbf2ec.svg',
 			asset_url: '/uploads/my-project/assets/abc',
 		},
 		project_background: {
-			full_url:
-				'http://localhost:8080/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg',
+			full_url: 'http://localhost:8080/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg',
 			url: '/uploads/my-project/originals/03a06753-6794-4b9a-803b-3e1cd15e0742.jpg',
 			asset_url: '/uploads/my-project/assets/abc',
 		},

@@ -12,11 +12,7 @@
 			#default="{ active, toggle }"
 		>
 			<div class="header" @click="toggle">
-				<render-template
-					:template="template"
-					:collection="languagesCollection"
-					:item="item"
-				/>
+				<render-template :template="template" :collection="languagesCollection" :item="item" />
 			</div>
 			<transition-expand>
 				<div v-if="active">
@@ -27,9 +23,7 @@
 							:collection="relatedCollection.collection"
 							:primary-key="existing[index][relatedPrimaryKeyField.field] || '+'"
 							:edits="edits[index]"
-							@input="
-								emitValue($event, existing[index][relatedPrimaryKeyField.field])
-							"
+							@input="emitValue($event, existing[index][relatedPrimaryKeyField.field])"
 						/>
 					</div>
 				</div>
@@ -124,9 +118,7 @@ export default defineComponent({
 
 			const { collection } = toRefs(relatedCollection.value);
 
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(
-				collection as Ref<string>
-			);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(collection as Ref<string>);
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
@@ -155,15 +147,12 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${props.languagesCollection}`,
-						{
-							params: {
-								fields: fields,
-								limit: -1,
-							},
-						}
-					);
+					const response = await api.get(`/${currentProjectKey}/items/${props.languagesCollection}`, {
+						params: {
+							fields: fields,
+							limit: -1,
+						},
+					});
 
 					languages.value = response.data.data;
 				} catch (err) {
@@ -220,9 +209,7 @@ export default defineComponent({
 				return languages.value.map((language: any) => {
 					const existing =
 						items.value.find(
-							(item) =>
-								item[props.languageField] ===
-								language[languagesPrimaryKeyField.value.field]
+							(item) => item[props.languageField] === language[languagesPrimaryKeyField.value.field]
 						) || {};
 
 					return existing;
@@ -235,9 +222,7 @@ export default defineComponent({
 				return languages.value.map((language: any) => {
 					const edits =
 						(props.value || []).find(
-							(edit) =>
-								edit[props.languageField] ===
-								language[languagesPrimaryKeyField.value.field]
+							(edit) => edit[props.languageField] === language[languagesPrimaryKeyField.value.field]
 						) || {};
 
 					edits[props.languageField] = language[languagesPrimaryKeyField.value.field];
@@ -258,11 +243,7 @@ export default defineComponent({
 					};
 				}
 
-				if (
-					currentEdits.some(
-						(edit) => edit[props.languageField] === newEdit[props.languageField]
-					)
-				) {
+				if (currentEdits.some((edit) => edit[props.languageField] === newEdit[props.languageField])) {
 					emit(
 						'input',
 						currentEdits.map((edit) => {

@@ -59,9 +59,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayInfo = computed(
-			() => displays.find((display) => display.id === props.display) || null
-		);
+		const displayInfo = computed(() => displays.find((display) => display.id === props.display) || null);
 		return { displayInfo };
 	},
 });

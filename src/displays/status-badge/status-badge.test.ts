@@ -56,9 +56,7 @@ describe('Displays / Status Badge', () => {
 		});
 
 		expect(component.exists()).toBe(true);
-		expect(component.attributes('style')).toBe(
-			'background-color: rgb(171, 202, 188); color: rgb(150, 100, 125);'
-		);
+		expect(component.attributes('style')).toBe('background-color: rgb(171, 202, 188); color: rgb(150, 100, 125);');
 	});
 
 	it('Sets status to null if interface options are missing', () => {

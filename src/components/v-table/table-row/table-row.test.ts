@@ -65,9 +65,7 @@ describe('Table / Row', () => {
 			},
 		});
 
-		expect(component.find('.table-row td:nth-child(2) > *').html()).toEqual(
-			'<p>Test 1 Col 2</p>'
-		);
+		expect(component.find('.table-row td:nth-child(2) > *').html()).toEqual('<p>Test 1 Col 2</p>');
 	});
 
 	it('Adds the align class', async () => {

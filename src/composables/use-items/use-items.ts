@@ -240,8 +240,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		if (!pk) return;
 
 		const move = newIndex > oldIndex ? 'down' : 'up';
-		const selectionRange =
-			move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
+		const selectionRange = move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
 
 		const updates = items.value.slice(...selectionRange).map((toBeUpdatedItem: any) => {
 			const sortValue = getPositionForItem(toBeUpdatedItem);

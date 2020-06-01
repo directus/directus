@@ -9,13 +9,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						v-if="selection.length > 0"
-						@click="on"
-					>
+					<v-button rounded icon class="action-delete" v-if="selection.length > 0" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -59,17 +53,11 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_roles_browse'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_roles_browse'))" />
 			</drawer-detail>
 			<portal-target name="drawer" />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

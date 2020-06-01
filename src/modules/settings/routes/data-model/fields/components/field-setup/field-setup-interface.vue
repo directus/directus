@@ -2,18 +2,10 @@
 	<div>
 		<h2 class="type-title" v-if="isNew">{{ $t('relationship_setup_title') }}</h2>
 
-		<v-fancy-select
-			:items="items"
-			:value="value.interface"
-			@input="emitValue('interface', $event)"
-		/>
+		<v-fancy-select :items="items" :value="value.interface" @input="emitValue('interface', $event)" />
 
 		<v-form
-			v-if="
-				selectedInterface &&
-				selectedInterface.options &&
-				Array.isArray(selectedInterface.options)
-			"
+			v-if="selectedInterface && selectedInterface.options && Array.isArray(selectedInterface.options)"
 			:fields="selectedInterface.options"
 			primary-key="+"
 			:edits="value.options"

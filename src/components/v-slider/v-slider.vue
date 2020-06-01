@@ -4,15 +4,7 @@
 			<slot name="prepend" :value="value" />
 		</div>
 		<div class="slider">
-			<input
-				type="range"
-				:value="value"
-				:max="max"
-				:min="min"
-				:step="step"
-				@change="onChange"
-				@input="onInput"
-			/>
+			<input type="range" :value="value" :max="max" :min="min" :step="step" @change="onChange" @input="onInput" />
 			<div class="fill" />
 			<div v-if="showTicks" class="ticks">
 				<span class="tick" v-for="i in (max - min) / step + 1" :key="i" />

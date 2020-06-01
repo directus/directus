@@ -23,22 +23,13 @@
 				<v-select :placeholder="$t('date')" :items="dates" v-model="localValue.date" />
 			</div>
 			<div class="year">
-				<v-select
-					:placeholder="$t('year')"
-					:items="years"
-					v-model="localValue.year"
-					allow-other
-				/>
+				<v-select :placeholder="$t('year')" :items="years" v-model="localValue.year" allow-other />
 			</div>
 		</div>
 
 		<v-divider v-if="type === 'datetime'" />
 
-		<div
-			class="time-selects"
-			v-if="type === 'datetime' || type === 'time'"
-			:class="{ seconds: includeSeconds }"
-		>
+		<div class="time-selects" v-if="type === 'datetime' || type === 'time'" :class="{ seconds: includeSeconds }">
 			<div class="hour">
 				<v-select :items="hours" v-model="localValue.hours" />
 			</div>
@@ -88,9 +79,7 @@ export default defineComponent({
 			default: null,
 		},
 		type: {
-			type: String as PropType<
-				'datetime' | 'time' | 'date' | 'datetime_created' | 'datetime_updated'
-			>,
+			type: String as PropType<'datetime' | 'time' | 'date' | 'datetime_created' | 'datetime_updated'>,
 			required: true,
 			validator: (val: string) =>
 				['datetime', 'date', 'time', 'datetime_created', 'datetime_updated'].includes(val),
@@ -168,14 +157,7 @@ export default defineComponent({
 				) {
 					const { year, month, date, hours, minutes, seconds, period } = newValue;
 
-					const asDate = new Date(
-						year,
-						month,
-						date,
-						period === 'am' ? hours : hours + 12,
-						minutes,
-						seconds
-					);
+					const asDate = new Date(year, month, date, period === 'am' ? hours : hours + 12, minutes, seconds);
 
 					emit('input', format(asDate, formatString.value));
 				}

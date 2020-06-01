@@ -1,11 +1,6 @@
 <template>
 	<div class="project-chooser" :class="{ active }">
-		<button
-			ref="activator"
-			class="toggle"
-			:disabled="projects.length === 1"
-			@click="active = !active"
-		>
+		<button ref="activator" class="toggle" :disabled="projects.length === 1" @click="active = !active">
 			<latency-indicator />
 			<span class="name">{{ currentProject.name }}</span>
 			<v-icon class="icon" name="expand_more" />
@@ -114,8 +109,7 @@ export default defineComponent({
 			color: var(--foreground-subdued);
 			transform: rotate(0deg);
 			opacity: 0;
-			transition: opacity var(--fast) var(--transition),
-				transform var(--medium) var(--transition);
+			transition: opacity var(--fast) var(--transition), transform var(--medium) var(--transition);
 		}
 
 		&:hover .icon {

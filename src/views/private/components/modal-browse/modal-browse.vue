@@ -19,14 +19,7 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	PropType,
-	ref,
-	computed,
-	toRefs,
-	onUnmounted,
-} from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
 import { Filter } from '@/stores/collection-presets/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
 

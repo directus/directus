@@ -2,13 +2,7 @@
 	<div :class="hidden ? 'half' : field.width">
 		<v-menu attached close-on-content-click>
 			<template #activator="{ toggle, active }">
-				<v-input
-					class="field"
-					:class="{ hidden, active }"
-					readonly
-					@click="toggle"
-					:value="field.name"
-				>
+				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle" :value="field.name">
 					<template #prepend>
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 					</template>
@@ -123,14 +117,7 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const {
-			duplicateActive,
-			duplicateName,
-			collections,
-			duplicateTo,
-			saveDuplicate,
-			duplicating,
-		} = useDuplicate();
+		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		return {
 			editActive,

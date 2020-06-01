@@ -8,9 +8,7 @@ export function useCollection(collection: Ref<string>) {
 	const fieldsStore = useFieldsStore();
 
 	const info = computed(() => {
-		return collectionsStore.state.collections.find(
-			({ collection: key }) => key === collection.value
-		);
+		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);
 	});
 
 	const fields = computed<Field[]>(() => {
@@ -20,9 +18,7 @@ export function useCollection(collection: Ref<string>) {
 	const primaryKeyField = computed(() => {
 		// Every collection has a primary key; rules of the land
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return fields.value?.find(
-			(field) => field.collection === collection.value && field.primary_key === true
-		)!;
+		return fields.value?.find((field) => field.collection === collection.value && field.primary_key === true)!;
 	});
 
 	const ownerField = computed(() => {
@@ -54,9 +50,7 @@ export function useCollection(collection: Ref<string>) {
 
 		const statuses = Object.values(statusField.value?.options?.status_mapping || {});
 		return (
-			(statuses.find((status) => (status as Status).soft_delete === true) as
-				| Status
-				| undefined)?.value || null
+			(statuses.find((status) => (status as Status).soft_delete === true) as Status | undefined)?.value || null
 		);
 	});
 

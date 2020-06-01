@@ -21,9 +21,7 @@ describe('Stores / Projects', () => {
 
 		it('Retrieves project information for given project key', async () => {
 			const projectsStore = useProjectsStore({});
-			const spy = jest
-				.spyOn(api, 'get')
-				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			const spy = jest.spyOn(api, 'get').mockImplementation(() => Promise.resolve({ data: { data: {} } }));
 			await projectsStore.setCurrentProject('my-project');
 			expect(spy).toHaveBeenCalledWith('/my-project/');
 			expect(projectsStore.state.currentProjectKey).toBe('my-project');
@@ -31,9 +29,7 @@ describe('Stores / Projects', () => {
 
 		it('Adds the returned project info the the state ', async () => {
 			const projectsStore = useProjectsStore({});
-			const spy = jest
-				.spyOn(api, 'get')
-				.mockImplementation(() => Promise.resolve({ data: { data: {} } }));
+			const spy = jest.spyOn(api, 'get').mockImplementation(() => Promise.resolve({ data: { data: {} } }));
 			await projectsStore.setCurrentProject('my-project');
 			expect(spy).toHaveBeenCalledWith('/my-project/');
 			expect(projectsStore.state.projects?.[0]).toEqual({ key: 'my-project' });
@@ -41,9 +37,7 @@ describe('Stores / Projects', () => {
 
 		it('Returns true if the project exists', async () => {
 			const projectsStore = useProjectsStore({});
-			jest.spyOn(api, 'get').mockImplementation(() =>
-				Promise.resolve({ data: { data: {} } })
-			);
+			jest.spyOn(api, 'get').mockImplementation(() => Promise.resolve({ data: { data: {} } }));
 			const result = await projectsStore.setCurrentProject('my-project');
 			expect(result).toBe(true);
 		});

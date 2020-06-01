@@ -1,14 +1,7 @@
 import { createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import VButton from '../../components/v-button';
-import Tooltip, {
-	getTooltip,
-	animateIn,
-	animateOut,
-	onLeaveTooltip,
-	updateTooltip,
-	onEnterTooltip,
-} from './tooltip';
+import Tooltip, { getTooltip, animateIn, animateOut, onLeaveTooltip, updateTooltip, onEnterTooltip } from './tooltip';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);
@@ -157,9 +150,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('right');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(10px, calc(0px - 50%));'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(10px, calc(0px - 50%));');
 			});
 
 			test('right start', () => {
@@ -172,9 +163,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('start right');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(10px, calc(20px - 100%));'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(10px, calc(20px - 100%));');
 			});
 
 			test('right end', () => {
@@ -187,9 +176,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('end right');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(10px, calc(-20px - 0%));'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(10px, calc(-20px - 0%));');
 			});
 
 			test('bottom', () => {
@@ -202,9 +189,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('bottom');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(calc(0px - 50%), 10px);'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(calc(0px - 50%), 10px);');
 			});
 
 			test('bottom start', () => {
@@ -217,9 +202,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('start bottom');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(calc(20px - 100%), 10px);'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(calc(20px - 100%), 10px);');
 			});
 
 			test('bottom end', () => {
@@ -232,9 +215,7 @@ describe('Tooltip', () => {
 					inverted: false,
 				});
 				expect(tooltip.className).toBe('end bottom');
-				expect(tooltip.getAttribute('style')).toBe(
-					'transform: translate(calc(-20px - 0%), 10px);'
-				);
+				expect(tooltip.getAttribute('style')).toBe('transform: translate(calc(-20px - 0%), 10px);');
 			});
 
 			test('left', () => {

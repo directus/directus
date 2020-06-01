@@ -1,11 +1,6 @@
 <template>
 	<v-tabs vertical v-model="_currentTab">
-		<v-tab
-			v-for="tab in tabs"
-			:key="tab.value"
-			:value="tab.value"
-			:disabled="tabEnabled(tab) === false"
-		>
+		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tabEnabled(tab) === false">
 			{{ tab.text }}
 		</v-tab>
 	</v-tabs>
@@ -45,12 +40,7 @@ export default defineComponent({
 		const _currentTab = useSync(props, 'currentTab', emit);
 
 		const { field, localType } = toRefs(props);
-		const {
-			fieldComplete,
-			relationComplete,
-			interfaceComplete,
-			displayComplete,
-		} = useValidation(field, localType);
+		const { fieldComplete, relationComplete, interfaceComplete, displayComplete } = useValidation(field, localType);
 
 		const hasRelationshipTab = computed(() => {
 			const relationshipTab = props.tabs.find((tab) => tab.value === 'relationship');
@@ -69,9 +59,7 @@ export default defineComponent({
 				case 'relationship':
 					return fieldComplete.value === true;
 				case 'interface':
-					return hasRelationshipTab.value
-						? relationComplete.value === true
-						: fieldComplete.value === true;
+					return hasRelationshipTab.value ? relationComplete.value === true : fieldComplete.value === true;
 				case 'display':
 					return interfaceComplete.value === true;
 				case 'advanced':

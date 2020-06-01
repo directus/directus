@@ -67,13 +67,7 @@ export default defineComponent({
 		});
 
 		const nextEnabled = computed<boolean>(() => {
-			const requiredKeys: (keyof DatabaseInfo)[] = [
-				'db_host',
-				'db_name',
-				'db_port',
-				'db_user',
-				'db_password',
-			];
+			const requiredKeys: (keyof DatabaseInfo)[] = ['db_host', 'db_name', 'db_port', 'db_user', 'db_password'];
 
 			return !!requiredKeys.every(
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

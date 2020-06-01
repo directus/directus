@@ -20,8 +20,7 @@ export default function setFavicon(color = '#2f80ed') {
 
 	const string = 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
 
-	const link: HTMLLinkElement =
-		document.querySelector("link[rel*='icon']") || document.createElement('link');
+	const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
 	link.type = 'image/x-icon';
 	link.rel = 'icon';
 	link.href = string;

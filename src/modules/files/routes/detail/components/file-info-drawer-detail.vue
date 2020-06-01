@@ -73,11 +73,9 @@ export default defineComponent({
 
 		const creationDate = ref<string>(null);
 
-		localizedFormat(new Date(props.uploaded_on), String(i18n.t('date-fns_datetime'))).then(
-			(result) => {
-				creationDate.value = result;
-			}
-		);
+		localizedFormat(new Date(props.uploaded_on), String(i18n.t('date-fns_datetime'))).then((result) => {
+			creationDate.value = result;
+		});
 
 		return { readableMimeType, size, creationDate };
 	},

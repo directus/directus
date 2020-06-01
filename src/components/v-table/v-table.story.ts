@@ -820,9 +820,7 @@ export const serverSort = () => ({
 			(this as any).loading = true;
 
 			setTimeout(() => {
-				(this as any).items = [...(this as any).items].sort((a, b) =>
-					a[sort.by!] > b[sort.by!] ? 1 : -1
-				);
+				(this as any).items = [...(this as any).items].sort((a, b) => (a[sort.by!] > b[sort.by!] ? 1 : -1));
 
 				if (sort.desc === true) {
 					(this as any).items.reverse();

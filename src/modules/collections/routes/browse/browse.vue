@@ -308,9 +308,7 @@ export default defineComponent({
 				const batchPrimaryKeys = selection.value;
 
 				try {
-					await api.delete(
-						`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`
-					);
+					await api.delete(`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`);
 
 					await layout.value?.refresh?.();
 

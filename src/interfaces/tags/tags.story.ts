@@ -32,11 +32,7 @@ export const basic = () =>
 				default: boolean('Allow Custom Values', true, 'Options'),
 			},
 			placeholder: {
-				default: text(
-					'Placeholder',
-					'Click tags below, or add a new one here...',
-					'Options'
-				),
+				default: text('Placeholder', 'Click tags below, or add a new one here...', 'Options'),
 			},
 			lowercase: {
 				default: boolean('Lowercase', false, 'Options'),
@@ -98,11 +94,7 @@ export const withPresets = () =>
 				default: boolean('Allow Custom Values', true, 'Options'),
 			},
 			placeholder: {
-				default: text(
-					'Placeholder',
-					'Click tags below, or add a new one here...',
-					'Options'
-				),
+				default: text('Placeholder', 'Click tags below, or add a new one here...', 'Options'),
 			},
 			lowercase: {
 				default: boolean('Lowercase', false, 'Options'),

@@ -11,21 +11,14 @@
 				maxlength="7"
 			>
 				<template #prepend>
-					<v-input
-						type="color"
-						class="html-color-select"
-						v-model="hexValue"
-						ref="htmlColorInput"
-					/>
+					<v-input type="color" class="html-color-select" v-model="hexValue" ref="htmlColorInput" />
 					<v-button
 						@click="activateColorPicker"
 						class="swatch"
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hexValue : 'transparent',
-							border: isValidColor
-								? 'none'
-								: 'var(--border-width) solid var(--border-normal)',
+							border: isValidColor ? 'none' : 'var(--border-width) solid var(--border-normal)',
 						}"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
@@ -161,9 +154,7 @@ export default defineComponent({
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
 
-		const isValidColor = computed<boolean>(
-			() => hexValue.value != null && color.isHex(hexValue.value as string)
-		);
+		const isValidColor = computed<boolean>(() => hexValue.value != null && color.isHex(hexValue.value as string));
 
 		const { rgb, hsl, hexValue } = useColor();
 
@@ -307,8 +298,7 @@ export default defineComponent({
 		}
 
 		/* stylelint-disable indentation */
-		&:not(:last-child)::v-deep
-			.input:not(.active):not(:focus-within):not(:hover):not(:active):not(:focus) {
+		&:not(:last-child)::v-deep .input:not(.active):not(:focus-within):not(:hover):not(:active):not(:focus) {
 			border-right-color: transparent;
 		}
 

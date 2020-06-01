@@ -31,9 +31,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const previousRevision = computed(() => {
-			const currentIndex = props.revisions.findIndex(
-				(revision) => revision.id === props.revision.id
-			);
+			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.revision.id);
 
 			// This is assuming props.revisions is in chronological order from newest to oldest
 			return props.revisions[currentIndex + 1];

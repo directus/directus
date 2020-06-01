@@ -18,13 +18,7 @@
 
 		<v-menu attached close-on-content-click :disabled="loading">
 			<template #activator="{ toggle, active }">
-				<v-input
-					@click="toggle"
-					:class="{ active }"
-					readonly
-					:value="$t('add_filter')"
-					:disabled="loading"
-				>
+				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')" :disabled="loading">
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>
@@ -78,10 +72,7 @@ export default defineComponent({
 		const fieldTree = computed<FieldTree[]>(() => {
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
-				.filter(
-					(field: Field) =>
-						field.hidden_browse === false && field.type.toLowerCase() !== 'alias'
-				)
+				.filter((field: Field) => field.hidden_browse === false && field.type.toLowerCase() !== 'alias')
 				.map((field: Field) => parseField(field, []));
 
 			function parseField(field: Field, parents: Field[]) {
@@ -94,10 +85,7 @@ export default defineComponent({
 					return fieldInfo;
 				}
 
-				const relations = relationsStore.getRelationsForField(
-					field.collection,
-					field.field
-				);
+				const relations = relationsStore.getRelationsForField(field.collection, field.field);
 
 				if (relations.length > 0) {
 					const relatedFields = relations
@@ -113,8 +101,7 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.hidden_browse === false &&
-										field.type.toLowerCase() !== 'alias'
+										field.hidden_browse === false && field.type.toLowerCase() !== 'alias'
 								);
 						})
 						.flat()

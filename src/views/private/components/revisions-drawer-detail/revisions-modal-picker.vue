@@ -79,15 +79,9 @@ export default defineComponent({
 		return { _current, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(
-				new Date(revision!.activity.action_on),
-				String(i18n.t('date-fns_date'))
-			);
+			const date = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_date')));
 
-			const time = await localizedFormat(
-				new Date(revision!.activity.action_on),
-				String(i18n.t('date-fns_time'))
-			);
+			const time = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_time')));
 
 			return `${date} (${time})`;
 		}

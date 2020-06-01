@@ -48,11 +48,7 @@ export default defineComponent({
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_listing;
 
-			if (
-				customModuleListing &&
-				Array.isArray(customModuleListing) &&
-				customModuleListing.length > 0
-			) {
+			if (customModuleListing && Array.isArray(customModuleListing) && customModuleListing.length > 0) {
 				return customModuleListing.map((custom) => {
 					if (custom.link.startsWith('http') || custom.link.startsWith('//')) {
 						return {
@@ -76,10 +72,7 @@ export default defineComponent({
 				}))
 				.filter((module) => {
 					if (module.hidden !== undefined) {
-						if (
-							(module.hidden as boolean) === true ||
-							(module.hidden as Ref<boolean>).value === true
-						) {
+						if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
 							return false;
 						}
 					}

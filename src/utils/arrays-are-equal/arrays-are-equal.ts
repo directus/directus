@@ -1,7 +1,4 @@
-export default function arraysAreEqual(
-	a1: readonly (string | number)[],
-	a2: readonly (string | number)[]
-) {
+export default function arraysAreEqual(a1: readonly (string | number)[], a2: readonly (string | number)[]) {
 	const superSet: {
 		[key: string]: number;
 	} = {};

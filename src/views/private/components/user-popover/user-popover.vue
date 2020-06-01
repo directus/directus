@@ -22,9 +22,7 @@
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ data.first_name }} {{ data.last_name }}</div>
-				<div class="status-role" :class="data.status">
-					{{ $t(data.status) }} {{ data.role.name }}
-				</div>
+				<div class="status-role" :class="data.status">{{ $t(data.status) }} {{ data.role.name }}</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
@@ -64,9 +62,8 @@ export default defineComponent({
 		const avatarSrc = computed(() => {
 			if (data.value === null) return null;
 
-			return data.value.avatar?.data?.thumbnails?.find(
-				(thumbnail) => thumbnail.key === 'directus-medium-crop'
-			)?.url;
+			return data.value.avatar?.data?.thumbnails?.find((thumbnail) => thumbnail.key === 'directus-medium-crop')
+				?.url;
 		});
 
 		const active = ref(false);
@@ -93,14 +90,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/${currentProjectKey}/users/${props.user}`, {
 					params: {
-						fields: [
-							'first_name',
-							'last_name',
-							'avatar.data',
-							'role.name',
-							'status',
-							'email',
-						],
+						fields: ['first_name', 'last_name', 'avatar.data', 'role.name', 'status', 'email'],
 					},
 				});
 				data.value = response.data.data;

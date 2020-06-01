@@ -1,11 +1,6 @@
 <template>
 	<div class="private-view" :class="{ theme, dragging }">
-		<aside
-			role="navigation"
-			aria-label="Module Navigation"
-			class="navigation"
-			:class="{ 'is-open': navOpen }"
-		>
+		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<project-chooser />
@@ -16,15 +11,8 @@
 			</div>
 		</aside>
 		<div class="content" ref="contentEl">
-			<header-bar
-				:title="title"
-				@toggle:drawer="drawerOpen = !drawerOpen"
-				@toggle:nav="navOpen = !navOpen"
-			>
-				<template
-					v-for="(_, scopedSlotName) in $scopedSlots"
-					v-slot:[scopedSlotName]="slotData"
-				>
+			<header-bar :title="title" @toggle:drawer="drawerOpen = !drawerOpen" @toggle:nav="navOpen = !navOpen">
+				<template v-for="(_, scopedSlotName) in $scopedSlots" v-slot:[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -112,14 +100,7 @@ export default defineComponent({
 
 		provide('main-element', contentEl);
 
-		const {
-			onDragEnter,
-			onDragLeave,
-			onDrop,
-			onDragOver,
-			showDropEffect,
-			dragging,
-		} = useFileUpload();
+		const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
 		useEventListener(window, 'dragenter', onDragEnter);
 		useEventListener(window, 'dragover', onDragOver);
@@ -174,9 +155,7 @@ export default defineComponent({
 				event.preventDefault();
 				dragCounter.value++;
 
-				const isDropzone =
-					event.target &&
-					(event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
+				const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
 
 				if (
 					dragCounter.value === 1 &&
@@ -205,10 +184,7 @@ export default defineComponent({
 					disableDropEffect();
 				}
 
-				if (
-					event.target &&
-					(event.target as HTMLElement).getAttribute?.('data-dropzone') === ''
-				) {
+				if (event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '') {
 					enableDropEffect();
 					dragCounter.value = 1;
 				}
@@ -241,8 +217,7 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, (progress) => {
-					const percentageDone =
-						progress.reduce((val, cur) => (val += cur)) / progress.length;
+					const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
 					const total = files.length;
 					const done = progress.filter((p) => p === 100).length;

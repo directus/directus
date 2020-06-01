@@ -6,11 +6,7 @@
 			{{ $t('disabled') }}
 		</v-notice>
 
-		<div
-			class="image-preview"
-			v-else-if="image"
-			:class="{ 'is-svg': image.type.includes('svg') }"
-		>
+		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type.includes('svg') }">
 			<img :src="src" alt="" role="presentation" />
 
 			<div class="shadow" />
@@ -108,9 +104,7 @@ export default defineComponent({
 				return image.value.data.full_url;
 			}
 
-			const url = image.value.data.thumbnails.find(
-				(thumb) => thumb.key === 'directus-large-crop'
-			)?.url;
+			const url = image.value.data.thumbnails.find((thumb) => thumb.key === 'directus-large-crop')?.url;
 
 			if (url) {
 				return `${url}&cache-buster=${cacheBuster.value}`;
@@ -162,16 +156,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/${currentProjectKey}/files/${props.value}`, {
 					params: {
-						fields: [
-							'id',
-							'data',
-							'title',
-							'width',
-							'height',
-							'filesize',
-							'type',
-							'filename_download',
-						],
+						fields: ['id', 'data', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
 					},
 				});
 

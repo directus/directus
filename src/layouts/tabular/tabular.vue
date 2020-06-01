@@ -40,9 +40,7 @@
 				</draggable>
 
 				<v-checkbox
-					v-for="field in availableFields.filter(
-						(field) => fields.includes(field.field) === false
-					)"
+					v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
 					v-model="fields"
 					:key="field.field"
 					:value="field.field"
@@ -125,12 +123,7 @@
 			</template>
 		</v-table>
 
-		<v-info
-			v-else-if="itemCount === 0 && activeFilterCount > 0"
-			:title="$t('no_results')"
-			icon="search"
-			center
-		>
+		<v-info v-else-if="itemCount === 0 && activeFilterCount > 0" :title="$t('no_results')" icon="search" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
@@ -150,15 +143,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {
-	defineComponent,
-	PropType,
-	ref,
-	computed,
-	inject,
-	toRefs,
-	Ref,
-} from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, inject, toRefs, Ref } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@/stores/fields/types';
@@ -240,9 +225,7 @@ export default defineComponent({
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
-		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(
-			collection
-		);
+		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const availableFields = computed(() =>
 			fieldsInCollection.value.filter(({ hidden_browse }) => hidden_browse === false)
@@ -250,15 +233,7 @@ export default defineComponent({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
-		const {
-			items,
-			loading,
-			error,
-			totalPages,
-			itemCount,
-			changeManualSort,
-			getItems,
-		} = useItems(collection, {
+		const { items, loading, error, totalPages, itemCount, changeManualSort, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -393,8 +368,7 @@ export default defineComponent({
 					}
 
 					const fields =
-						_viewQuery.value?.fields ||
-						availableFields.value.slice(0, 4).map(({ field }) => field);
+						_viewQuery.value?.fields || availableFields.value.slice(0, 4).map(({ field }) => field);
 
 					return fields;
 				},
@@ -406,9 +380,7 @@ export default defineComponent({
 				},
 			});
 
-			const fieldsWithRelational = computed(() =>
-				adjustFieldsForDisplays(fields.value, props.collection)
-			);
+			const fieldsWithRelational = computed(() => adjustFieldsForDisplays(fields.value, props.collection));
 
 			return { sort, limit, page, fields, fieldsWithRelational };
 		}
@@ -447,10 +419,7 @@ export default defineComponent({
 					return activeFields.value.map((field) => ({
 						text: field.name,
 						value: field.field,
-						width:
-							localWidths.value[field.field] ||
-							_viewOptions.value?.widths?.[field.field] ||
-							null,
+						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
 						field: {
 							display: field.display,
 							displayOptions: field.display_options,
@@ -517,8 +486,7 @@ export default defineComponent({
 				if (props.selectMode || _selection.value?.length > 0) {
 					(table.value as any).onItemSelected({
 						item,
-						value:
-							_selection.value?.includes(item[primaryKeyField.value.field]) === false,
+						value: _selection.value?.includes(item[primaryKeyField.value.field]) === false,
 					});
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -63,10 +63,7 @@
 			/>
 			<div class="spacer" v-else>--</div>
 
-			<v-icon
-				@click="detailsOpen = !detailsOpen"
-				:name="detailsOpen ? 'expand_less' : 'expand_more'"
-			/>
+			<v-icon @click="detailsOpen = !detailsOpen" :name="detailsOpen ? 'expand_less' : 'expand_more'" />
 		</div>
 
 		<div class="details" v-if="detailsOpen">
@@ -270,13 +267,9 @@ export default defineComponent({
 
 			if (statusField.value && statuses.value) {
 				const statusPermissions = statuses.value.map((status) => {
-					const existing = props.savedPermissions.find(
-						(permission) => permission.status === status.value
-					);
+					const existing = props.savedPermissions.find((permission) => permission.status === status.value);
 
-					return (
-						existing || getDefaultPermission(props.collection, props.role, status.value)
-					);
+					return existing || getDefaultPermission(props.collection, props.role, status.value);
 				});
 
 				return [...statusPermissions, createPermission];
@@ -316,9 +309,7 @@ export default defineComponent({
 			if (statusField.value) {
 				let value = permissions.value[0][type];
 
-				for (const permission of permissions.value.filter(
-					({ status }) => status !== '$create'
-				)) {
+				for (const permission of permissions.value.filter(({ status }) => status !== '$create')) {
 					if (value !== permission[type]) {
 						value = 'indeterminate';
 						break;
@@ -327,9 +318,7 @@ export default defineComponent({
 
 				return value;
 			} else {
-				const permission = permissions.value.find(
-					(permission) => permission.status === null
-				);
+				const permission = permissions.value.find((permission) => permission.status === null);
 
 				return permission?.[type];
 			}

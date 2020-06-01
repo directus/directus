@@ -15,9 +15,7 @@
 					:value="field.field"
 					:key="field.field"
 					:indeterminate="readIndeterminate.includes(field.field)"
-					@update:indeterminate="
-						readIndeterminate = readIndeterminate.filter((f) => f !== field.field)
-					"
+					@update:indeterminate="readIndeterminate = readIndeterminate.filter((f) => f !== field.field)"
 					:label="field.name"
 				/>
 			</div>
@@ -109,9 +107,7 @@ export default defineComponent({
 			if (newVal !== true) return;
 
 			if (props.combined === true) {
-				readableFields.value = invertBlacklist(
-					intersection(...(props.readBlacklist as string[][]))
-				);
+				readableFields.value = invertBlacklist(intersection(...(props.readBlacklist as string[][])));
 
 				readIndeterminate.value = [...new Set(props.readBlacklist.flat())].filter((k) =>
 					readableFields.value.includes(k)
@@ -121,9 +117,7 @@ export default defineComponent({
 			}
 
 			if (props.combined === true) {
-				writableFields.value = invertBlacklist(
-					intersection(...(props.writeBlacklist as string[][]))
-				);
+				writableFields.value = invertBlacklist(intersection(...(props.writeBlacklist as string[][])));
 
 				writeIndeterminate.value = [...new Set(props.writeBlacklist.flat())].filter((k) =>
 					writableFields.value.includes(k)
@@ -154,12 +148,8 @@ export default defineComponent({
 				collection: props.collection,
 				status: props.status,
 				role: props.role,
-				read_field_blacklist: fieldKeys.value.filter(
-					(key) => readableFields.value.includes(key) === false
-				),
-				write_field_blacklist: fieldKeys.value.filter(
-					(key) => writableFields.value.includes(key) === false
-				),
+				read_field_blacklist: fieldKeys.value.filter((key) => readableFields.value.includes(key) === false),
+				write_field_blacklist: fieldKeys.value.filter((key) => writableFields.value.includes(key) === false),
 			};
 
 			if (props.permissionId) {

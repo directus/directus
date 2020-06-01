@@ -1,10 +1,5 @@
 <template>
-	<v-textarea
-		class="new-comment"
-		:placeholder="$t('leave_comment')"
-		v-model="newCommentContent"
-		expand-on-focus
-	>
+	<v-textarea class="new-comment" :placeholder="$t('leave_comment')" v-model="newCommentContent" expand-on-focus>
 		<template #append>
 			<v-icon name="alternate_email" class="add-mention" />
 			<v-icon name="insert_emoticon" class="add-emoji" />

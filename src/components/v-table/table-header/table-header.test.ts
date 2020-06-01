@@ -205,14 +205,11 @@ describe('Table / Header', () => {
 				},
 			},
 			scopedSlots: {
-				'header.col2':
-					'<template slot-scope="{header}"><p>{{ header.text }}</p></template>',
+				'header.col2': '<template slot-scope="{header}"><p>{{ header.text }}</p></template>',
 			},
 		});
 
-		expect(component.find('.table-header th:nth-child(2) .content > span > *').html()).toEqual(
-			'<p>Column 2</p>'
-		);
+		expect(component.find('.table-header th:nth-child(2) .content > span > *').html()).toEqual('<p>Column 2</p>');
 	});
 
 	it('Sets the dragging state correctly based on mouse interaction', async () => {

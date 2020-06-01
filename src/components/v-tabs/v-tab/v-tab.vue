@@ -1,11 +1,5 @@
 <template>
-	<v-list-item
-		v-if="vertical"
-		class="v-tab vertical"
-		:active="active"
-		:disabled="disabled"
-		@click="onClick"
-	>
+	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" @click="onClick">
 		<slot v-bind="{ active, toggle }" />
 	</v-list-item>
 	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">

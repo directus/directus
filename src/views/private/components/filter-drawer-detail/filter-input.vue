@@ -45,13 +45,7 @@
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
 			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
-			<v-input
-				:disabled="disabled"
-				v-else
-				v-model="_value"
-				:type="type"
-				:placeholder="$t('enter_a_value')"
-			/>
+			<v-input :disabled="disabled" v-else v-model="_value" :type="type" :placeholder="$t('enter_a_value')" />
 		</template>
 	</div>
 </template>

@@ -7,12 +7,7 @@
 		:close-on-content-click="closeOnContentClick"
 	>
 		<template #activator="{ toggle, active }">
-			<div
-				v-if="inline"
-				class="inline-display"
-				:class="{ placeholder: !displayValue }"
-				@click="toggle"
-			>
+			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue }" @click="toggle">
 				{{ displayValue || placeholder }}
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
@@ -65,11 +60,7 @@
 				</v-list-item-content>
 			</v-list-item>
 
-			<v-list-item
-				v-if="allowOther && multiple === false"
-				:active="usesOtherValue"
-				@click.stop
-			>
+			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
 				<v-list-item-content>
 					<input
 						class="other-input"
@@ -101,9 +92,7 @@
 							:placeholder="$t('other')"
 							v-focus
 							@input="setOtherValue(otherValue.key, $event.target.value)"
-							@blur="
-								otherValue.value.length === 0 && setOtherValue(otherValue.key, null)
-							"
+							@blur="otherValue.value.length === 0 && setOtherValue(otherValue.key, null)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
@@ -188,11 +177,7 @@ export default defineComponent({
 		const { _items } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { value } = toRefs(props);
-		const { otherValue, usesOtherValue } = useCustomSelection(
-			value as Ref<string>,
-			_items,
-			emit
-		);
+		const { otherValue, usesOtherValue } = useCustomSelection(value as Ref<string>, _items, emit);
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 			value as Ref<string[]>,
 			_items,

@@ -9,21 +9,12 @@
 		}"
 	>
 		<td v-if="showManualSort" class="manual cell">
-			<v-icon
-				name="drag_handle"
-				class="drag-handle"
-				:class="{ 'sorted-manually': sortedManually }"
-			/>
+			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 		<td v-if="showSelect" class="select cell" @click.stop>
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
 		</td>
-		<td
-			class="cell"
-			:class="getClassesForCell(header)"
-			v-for="header in headers"
-			:key="header.value"
-		>
+		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
 			<slot :name="`item.${header.value}`" :item="item">{{ item[header.value] }}</slot>
 		</td>
 

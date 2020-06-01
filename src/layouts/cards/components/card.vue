@@ -16,13 +16,7 @@
 						alt=""
 						role="presentation"
 					/>
-					<img
-						class="svg"
-						v-else-if="svgSource"
-						:src="svgSource"
-						alt=""
-						role="presentation"
-					/>
+					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" />
 					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
@@ -130,9 +124,7 @@ export default defineComponent({
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
-			return props.value.includes(props.item[props.itemKey])
-				? 'check_circle'
-				: 'radio_button_unchecked';
+			return props.value.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
 		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick };

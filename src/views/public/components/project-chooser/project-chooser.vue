@@ -1,11 +1,5 @@
 <template>
-	<v-menu
-		v-if="project"
-		show-arrow
-		placement="bottom-start"
-		close-on-content-click
-		:disabled="projects.length <= 1"
-	>
+	<v-menu v-if="project" show-arrow placement="bottom-start" close-on-content-click :disabled="projects.length <= 1">
 		<template #activator="{ toggle }">
 			<div class="project-chooser" @click="toggle">
 				<div class="public-view-logo" v-if="project && project.logo">

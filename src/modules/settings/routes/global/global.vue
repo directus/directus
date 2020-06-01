@@ -17,12 +17,7 @@
 		</template>
 
 		<div class="settings">
-			<v-form
-				:initial-values="initialValues"
-				v-model="edits"
-				:fields="fields"
-				:primary-key="1"
-			/>
+			<v-form :initial-values="initialValues" v-model="edits" :fields="fields" :primary-key="1" />
 		</div>
 
 		<template #drawer>
@@ -53,9 +48,7 @@ export default defineComponent({
 
 		const edits = ref<{ [key: string]: any }>(null);
 
-		const noEdits = computed<boolean>(
-			() => edits.value === null || Object.keys(edits.value).length === 0
-		);
+		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
 
 		const saving = ref(false);
 

@@ -116,9 +116,7 @@ export function onEvent({
 }) {
 	event.stopPropagation();
 	const path = event.composedPath();
-	const isClickOutside = path
-		? path.indexOf(el) < 0
-		: el.contains(event.target as Element) === false;
+	const isClickOutside = path ? path.indexOf(el) < 0 : el.contains(event.target as Element) === false;
 
 	if (isClickOutside === false) return;
 

@@ -3,12 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import { i18n } from '@/lang';
 
-import VList, {
-	VListItem,
-	VListItemIcon,
-	VListItemContent,
-	VListItemHint,
-} from '@/components/v-list/';
+import VList, { VListItem, VListItemIcon, VListItemContent, VListItemHint } from '@/components/v-list/';
 import VIcon from '@/components/v-icon';
 import VMenu from '@/components/v-menu';
 

@@ -3,11 +3,7 @@
 		<transition-expand tag="div">
 			<div v-if="active" class="inline">
 				<div class="padding-box">
-					<router-link
-						class="link"
-						:to="activityLink"
-						:class="{ 'has-items': lastFour.length > 0 }"
-					>
+					<router-link class="link" :to="activityLink" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ $t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">

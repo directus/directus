@@ -123,10 +123,7 @@ export const useFieldsStore = createStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.post(
-					`/${currentProjectKey}/fields/${collectionKey}`,
-					newField
-				);
+				const response = await api.post(`/${currentProjectKey}/fields/${collectionKey}`, newField);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
@@ -151,11 +148,7 @@ export const useFieldsStore = createStore({
 				throw error;
 			}
 		},
-		async updateField(
-			collectionKey: string,
-			fieldKey: string,
-			updates: Record<string, Partial<Field>>
-		) {
+		async updateField(collectionKey: string, fieldKey: string, updates: Record<string, Partial<Field>>) {
 			const projectsStore = useProjectsStore();
 			const currentProjectKey = projectsStore.state.currentProjectKey;
 
@@ -176,10 +169,7 @@ export const useFieldsStore = createStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.patch(
-					`/${currentProjectKey}/fields/${collectionKey}/${fieldKey}`,
-					updates
-				);
+				const response = await api.patch(`/${currentProjectKey}/fields/${collectionKey}/${fieldKey}`, updates);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {
@@ -212,9 +202,7 @@ export const useFieldsStore = createStore({
 			// Update locally first, so the changes are visible immediately
 			this.state.fields = this.state.fields.map((field) => {
 				if (field.collection === collectionKey) {
-					const updatesForThisField = updates.find(
-						(update) => update.field === field.field
-					);
+					const updatesForThisField = updates.find((update) => update.field === field.field);
 
 					if (updatesForThisField) {
 						return {
@@ -230,10 +218,7 @@ export const useFieldsStore = createStore({
 			try {
 				// Save to API, and update local state again to make sure everything is in sync with the
 				// API
-				const response = await api.patch(
-					`/${currentProjectKey}/fields/${collectionKey}`,
-					updates
-				);
+				const response = await api.patch(`/${currentProjectKey}/fields/${collectionKey}`, updates);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey) {
@@ -304,9 +289,7 @@ export const useFieldsStore = createStore({
 			if (fieldKey.includes('.')) {
 				return this.getRelationalField(collection, fieldKey);
 			} else {
-				return this.state.fields.find(
-					(field) => field.collection === collection && field.field === fieldKey
-				);
+				return this.state.fields.find((field) => field.collection === collection && field.field === fieldKey);
 			}
 		},
 		/**

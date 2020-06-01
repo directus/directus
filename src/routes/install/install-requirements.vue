@@ -88,9 +88,7 @@ export default defineComponent({
 					value: extensions.every((e) => e.enabled)
 						? i18n.t('php_extensions')
 						: i18n.t('missing_value', {
-								value: extensions
-									.filter((e) => e.enabled === false)
-									.map((e) => e.key),
+								value: extensions.filter((e) => e.enabled === false).map((e) => e.key),
 						  }),
 				},
 				{
@@ -127,9 +125,7 @@ export default defineComponent({
 						: null,
 				});
 
-				const ghResponse = await api.get(
-					'https://api.github.com/repos/directus/directus/tags'
-				);
+				const ghResponse = await api.get('https://api.github.com/repos/directus/directus/tags');
 
 				serverInfo.value = infoResponse.data.data;
 				lastTag.value = ghResponse.data[0].name;

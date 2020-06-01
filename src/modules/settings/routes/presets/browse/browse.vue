@@ -21,11 +21,7 @@
 						<v-button @click="confirmDelete = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
-						<v-button
-							@click="deleteSelection"
-							class="action-delete"
-							:loading="deleting"
-						>
+						<v-button @click="deleteSelection" class="action-delete" :loading="deleting">
 							{{ $t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -42,13 +38,7 @@
 		</template>
 
 		<div class="presets-browse">
-			<v-info
-				center
-				type="warning"
-				v-if="presets.length === 0"
-				:title="$t('no_presets')"
-				icon="bookmark"
-			>
+			<v-info center type="warning" v-if="presets.length === 0" :title="$t('no_presets')" icon="bookmark">
 				{{ $t('no_presets_copy') }}
 
 				<template #append>
@@ -88,16 +78,10 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_presets_browse'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

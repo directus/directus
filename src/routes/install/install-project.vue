@@ -71,12 +71,7 @@ export default defineComponent({
 		);
 
 		const nextEnabled = computed<boolean>(() => {
-			const requiredKeys: (keyof ProjectInfo)[] = [
-				'project_name',
-				'project',
-				'user_email',
-				'user_password',
-			];
+			const requiredKeys: (keyof ProjectInfo)[] = ['project_name', 'project', 'user_email', 'user_password'];
 
 			return !!requiredKeys.every(
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -16,18 +16,9 @@
 			error
 		</v-notice>
 
-		<div
-			v-show="imageData && imageData.data.full_url && !loading && !error"
-			class="editor-container"
-		>
+		<div v-show="imageData && imageData.data.full_url && !loading && !error" class="editor-container">
 			<div class="editor">
-				<img
-					ref="imageElement"
-					:src="imageURL"
-					role="presentation"
-					alt=""
-					@load="onImageLoad"
-				/>
+				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
@@ -40,11 +31,7 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon
-					name="rotate_90_degrees_ccw"
-					@click="rotate"
-					v-tooltip.bottom.inverted="$t('rotate')"
-				/>
+				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.bottom.inverted="$t('rotate')" />
 
 				<v-icon
 					name="flip_horizontal"
@@ -182,16 +169,7 @@ export default defineComponent({
 			},
 		});
 
-		const {
-			loading,
-			error,
-			imageData,
-			imageElement,
-			save,
-			saving,
-			fetchImage,
-			onImageLoad,
-		} = useImage();
+		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
 
 		const {
 			cropperInstance,
@@ -268,14 +246,7 @@ export default defineComponent({
 					loading.value = true;
 					const response = await api.get(`/${currentProjectKey}/files/${props.id}`, {
 						params: {
-							fields: [
-								'data',
-								'type',
-								'filesize',
-								'filename_download',
-								'width',
-								'height',
-							],
+							fields: ['data', 'type', 'filesize', 'filename_download', 'width', 'height'],
 						},
 					});
 
@@ -425,10 +396,7 @@ export default defineComponent({
 					crop: throttle((event) => {
 						if (!imageData.value) return;
 
-						if (
-							cropping.value === false &&
-							(event.detail.width || event.detail.height)
-						) {
+						if (cropping.value === false && (event.detail.width || event.detail.height)) {
 							cropping.value = true;
 						}
 

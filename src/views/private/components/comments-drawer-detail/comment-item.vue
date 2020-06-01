@@ -9,12 +9,7 @@
 						{{ $t('cancel') }}
 					</v-button>
 
-					<v-button
-						:loading="savingEdits"
-						class="post-comment"
-						@click="saveEdits"
-						x-small
-					>
+					<v-button :loading="savingEdits" class="post-comment" @click="saveEdits" x-small>
 						{{ $t('save') }}
 					</v-button>
 				</div>
@@ -55,9 +50,7 @@ export default defineComponent({
 	setup(props) {
 		const projectsStore = useProjectsStore();
 
-		const htmlContent = computed(() =>
-			props.activity.comment ? marked(props.activity.comment) : null
-		);
+		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
@@ -190,8 +183,7 @@ export default defineComponent({
 					font-size: 12px;
 					background-color: var(--background-normal);
 					border-radius: 12px;
-					transition: color var(--fast) var(--transition),
-						background-color var(--fast) var(--transition);
+					transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 				}
 
 				&:hover span {

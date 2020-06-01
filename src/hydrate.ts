@@ -57,9 +57,7 @@ export async function hydrate(stores = useStores()) {
 
 		setLanguage((userStore.state.currentUser?.locale as Language) || 'en-US');
 
-		await Promise.all(
-			stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.())
-		);
+		await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
 	} catch (error) {
 		appStore.state.error = error;
 	} finally {

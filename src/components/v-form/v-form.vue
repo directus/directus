@@ -101,9 +101,7 @@ export default defineComponent({
 		function useForm() {
 			const fields = computed(() => {
 				if (props.collection) {
-					return fieldsStore.state.fields.filter(
-						(field) => field.collection === props.collection
-					);
+					return fieldsStore.state.fields.filter((field) => field.collection === props.collection);
 				}
 
 				if (props.fields) {
@@ -231,9 +229,7 @@ export default defineComponent({
 
 			function toggleBatchField(field: Field) {
 				if (batchActiveFields.value.includes(field.field)) {
-					batchActiveFields.value = batchActiveFields.value.filter(
-						(fieldKey) => fieldKey !== field.field
-					);
+					batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
 					unsetValue(field);
 				} else {
@@ -264,10 +260,7 @@ body {
 
 		&.with-fill {
 			grid-template-columns:
-				[start] minmax(0, var(--v-form-column-max-width)) [half] minmax(
-					0,
-					var(--v-form-column-max-width)
-				)
+				[start] minmax(0, var(--v-form-column-max-width)) [half] minmax(0, var(--v-form-column-max-width))
 				[full] 1fr [fill];
 		}
 	}

@@ -1,8 +1,6 @@
 <template>
 	<v-button
-		v-if="
-			collection.managed === false && collection.collection.startsWith('directus_') === false
-		"
+		v-if="collection.managed === false && collection.collection.startsWith('directus_') === false"
 		x-small
 		outlined
 		class="manage"

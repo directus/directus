@@ -1,10 +1,5 @@
 <template>
-	<v-form
-		disabled
-		:collection="revision.collection"
-		:primary-key="revision.item"
-		:initial-values="revision.data"
-	/>
+	<v-form disabled :collection="revision.collection" :primary-key="revision.item" :initial-values="revision.data" />
 </template>
 
 <script lang="ts">

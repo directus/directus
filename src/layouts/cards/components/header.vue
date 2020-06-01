@@ -75,17 +75,13 @@ export default defineComponent({
 		const _selection = useSync(props, 'selection', emit);
 		const descending = computed(() => props.sort.startsWith('-'));
 
-		const sortKey = computed(() =>
-			props.sort.startsWith('-') ? props.sort.substring(1) : props.sort
-		);
+		const sortKey = computed(() => (props.sort.startsWith('-') ? props.sort.substring(1) : props.sort));
 
 		const sortField = computed(() => {
 			return props.fields.find((field) => field.field === sortKey.value);
 		});
 
-		const fieldsWithoutFake = computed(() =>
-			props.fields.filter((field) => field.field.startsWith('$') === false)
-		);
+		const fieldsWithoutFake = computed(() => props.fields.filter((field) => field.field.startsWith('$') === false));
 
 		return {
 			toggleSize,

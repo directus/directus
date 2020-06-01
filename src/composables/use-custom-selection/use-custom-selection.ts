@@ -46,11 +46,7 @@ export function useCustomSelection(currentValue: Ref<string>, items: Items, emit
 	return { otherValue, usesOtherValue };
 }
 
-export function useCustomSelectionMultiple(
-	currentValues: Ref<string[]>,
-	items: Items,
-	emit: EmitFunction
-) {
+export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: Items, emit: EmitFunction) {
 	type OtherValue = {
 		key: string;
 		value: string;

@@ -13,18 +13,10 @@
 			<v-select :items="collectionItems" v-model="relatedCollection" />
 		</div>
 		<v-input disabled :value="field.field" />
-		<v-select
-			:disabled="!junctionCollection"
-			:items="junctionFields"
-			v-model="junctionFieldCurrent"
-		/>
+		<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="junctionFieldCurrent" />
 		<div class="spacer" />
 		<div class="spacer" />
-		<v-select
-			:disabled="!junctionCollection"
-			:items="junctionFields"
-			v-model="junctionFieldRelated"
-		/>
+		<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="junctionFieldRelated" />
 		<v-input disabled value="id" />
 		<v-icon name="arrow_forward" />
 		<v-icon name="arrow_backward" />
@@ -124,12 +116,10 @@ export default defineComponent({
 		const junctionFields = computed(() => {
 			if (!junctionCollection.value) return [];
 
-			return fieldsStore
-				.getFieldsForCollection(junctionCollection.value)
-				.map((field: Field) => ({
-					text: field.name,
-					value: field.field,
-				}));
+			return fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => ({
+				text: field.name,
+				value: field.field,
+			}));
 		});
 
 		const relatedCollection = computed({

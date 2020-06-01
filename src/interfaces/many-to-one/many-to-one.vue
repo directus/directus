@@ -71,11 +71,7 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template
-								:collection="collection"
-								:template="displayTemplate"
-								:item="item"
-							/>
+							<render-template :collection="collection" :template="displayTemplate" :item="item" />
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -162,12 +158,7 @@ export default defineComponent({
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
 
-		const {
-			setCurrent,
-			currentItem,
-			loading: loadingCurrent,
-			currentPrimaryKey,
-		} = useCurrent();
+		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
 		const { edits, stageEdits } = useEdits();
 
@@ -232,10 +223,7 @@ export default defineComponent({
 					return props.value;
 				}
 
-				if (
-					typeof props.value === 'object' &&
-					props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)
-				) {
+				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
 					return props.value[relatedPrimaryKeyField.value.field];
 				}
 
@@ -261,9 +249,7 @@ export default defineComponent({
 
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(
-								9
-						  )}/${props.value}`
+						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}/${props.value}`
 						: `/${currentProjectKey}/items/${relatedCollection.value.collection}/${props.value}`;
 
 					const response = await api.get(endpoint, {
@@ -356,9 +342,7 @@ export default defineComponent({
 			});
 
 			const { collection } = toRefs(relatedCollection.value);
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(
-				collection as Ref<string>
-			);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(collection as Ref<string>);
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
@@ -409,10 +393,7 @@ export default defineComponent({
 			const selection = computed<(number | string)[]>(() => {
 				if (!props.value) return [];
 
-				if (
-					typeof props.value === 'object' &&
-					props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)
-				) {
+				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
 					return [props.value[relatedPrimaryKeyField.value.field]];
 				}
 

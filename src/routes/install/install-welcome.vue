@@ -10,12 +10,7 @@
 		<h1 class="pane-title type-title">{{ $t('create_new_project') }}</h1>
 		<div class="pane-content">
 			{{ $t('create_new_project_copy') }}
-			<v-input
-				@input="setToken"
-				:value="token"
-				:placeholder="$t('super_admin_token')"
-				class="token"
-			>
+			<v-input @input="setToken" :value="token" :placeholder="$t('super_admin_token')" class="token">
 				<template #append>
 					<v-progress-circular indeterminate v-if="verifying" />
 					<v-icon

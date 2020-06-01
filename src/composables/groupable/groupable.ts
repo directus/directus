@@ -115,11 +115,7 @@ export function useGroupableParent(
 		items.value = [...items.value, item];
 
 		// If you're required to select a value, make sure a value is selected on first render
-		if (
-			selection.value.length === 0 &&
-			options?.mandatory?.value === true &&
-			items.value.length === 1
-		) {
+		if (selection.value.length === 0 && options?.mandatory?.value === true && items.value.length === 1) {
 			selection.value = [getValueForItem(item)];
 		}
 	}
@@ -167,11 +163,7 @@ export function useGroupableParent(
 		}
 
 		// Don't add it if when we're already at the maximum number of selections
-		if (
-			options?.max?.value &&
-			options.max.value !== -1 &&
-			selection.value.length >= options.max.value
-		) {
+		if (options?.max?.value && options.max.value !== -1 && selection.value.length >= options.max.value) {
 			// Even though we don't alter selection, we should flush the internal active state of
 			// the children to make sure we don't have any invalid internal active states
 			updateChildren();

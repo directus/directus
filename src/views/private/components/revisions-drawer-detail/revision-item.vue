@@ -54,17 +54,11 @@ export default defineComponent({
 		});
 
 		const time = computed(() => {
-			return format(
-				new Date(props.revision.activity.action_on),
-				String(i18n.t('date-fns_time'))
-			);
+			return format(new Date(props.revision.activity.action_on), String(i18n.t('date-fns_time')));
 		});
 
 		const user = computed(() => {
-			if (
-				props.revision.activity.action_by !== null &&
-				typeof props.revision.activity.action_by === 'object'
-			) {
+			if (props.revision.activity.action_by !== null && typeof props.revision.activity.action_by === 'object') {
 				const { first_name, last_name } = props.revision.activity.action_by as {
 					first_name: string;
 					last_name: string;

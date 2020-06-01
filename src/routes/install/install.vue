@@ -5,28 +5,13 @@
 				<install-welcome :first="first" @next="nextPane" v-model="token" />
 			</v-tab-item>
 			<v-tab-item value="requirements">
-				<install-requirements
-					:token="token"
-					:first="first"
-					@prev="prevPane"
-					@next="nextPane"
-				/>
+				<install-requirements :token="token" :first="first" @prev="prevPane" @next="nextPane" />
 			</v-tab-item>
 			<v-tab-item value="project">
-				<install-project
-					:first="first"
-					v-model="projectInfo"
-					@prev="prevPane"
-					@next="nextPane"
-				/>
+				<install-project :first="first" v-model="projectInfo" @prev="prevPane" @next="nextPane" />
 			</v-tab-item>
 			<v-tab-item value="database">
-				<install-database
-					v-model="databaseInfo"
-					:first="first"
-					@prev="prevPane"
-					@next="nextPane"
-				/>
+				<install-database v-model="databaseInfo" :first="first" @prev="prevPane" @next="nextPane" />
 			</v-tab-item>
 			<v-tab-item value="final">
 				<install-final

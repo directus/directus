@@ -3,12 +3,7 @@
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<div :key="group.name" v-for="(group, index) in customNavItems">
 				<div class="group-name">{{ group.name }}</div>
-				<v-list-item
-					:exact="exact"
-					v-for="navItem in group.items"
-					:key="navItem.to"
-					:to="navItem.to"
-				>
+				<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 					<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 					<v-list-item-content>{{ navItem.name }}</v-list-item-content>
 				</v-list-item>
@@ -16,13 +11,7 @@
 			</div>
 		</template>
 
-		<v-list-item
-			v-else
-			:exact="exact"
-			v-for="navItem in navItems"
-			:key="navItem.to"
-			:to="navItem.to"
-		>
+		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
 			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 			<v-list-item-content>{{ navItem.name }}</v-list-item-content>
 		</v-list-item>
@@ -61,9 +50,7 @@ export default defineComponent({
 
 			return collectionPresetsStore.state.collectionPresets
 				.filter((preset) => {
-					return (
-						preset.title !== null && preset.collection.startsWith('directus_') === false
-					);
+					return preset.title !== null && preset.collection.startsWith('directus_') === false;
 				})
 				.map((preset) => {
 					return {

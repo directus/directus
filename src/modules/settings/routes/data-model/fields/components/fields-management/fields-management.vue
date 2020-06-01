@@ -21,14 +21,7 @@
 			/>
 
 			<template #footer>
-				<v-button
-					class="add-field"
-					align="left"
-					dashed
-					outlined
-					large
-					@click="openFieldSetup()"
-				>
+				<v-button class="add-field" align="left" dashed outlined large @click="openFieldSetup()">
 					<v-icon name="add" />
 
 					{{ $t('add_field') }}
@@ -57,14 +50,7 @@
 			/>
 
 			<template #footer>
-				<v-button
-					class="add-field"
-					align="left"
-					dashed
-					outlined
-					large
-					@click="openFieldSetup()"
-				>
+				<v-button class="add-field" align="left" dashed outlined large @click="openFieldSetup()">
 					<v-icon name="add" />
 
 					{{ $t('add_field') }}
@@ -156,8 +142,7 @@ export default defineComponent({
 		}
 
 		function toggleVisibility(field: Field, location: 'visible' | 'hidden') {
-			const fields =
-				location === 'hidden' ? sortedVisibleFields.value : sortedHiddenFields.value;
+			const fields = location === 'hidden' ? sortedVisibleFields.value : sortedHiddenFields.value;
 
 			handleChange(
 				{ added: { element: field, newIndex: fields.length } },
@@ -165,21 +150,16 @@ export default defineComponent({
 			);
 		}
 
-		function addToGroup(
-			event: Required<DraggableEvent>['added'],
-			location: 'visible' | 'hidden'
-		) {
+		function addToGroup(event: Required<DraggableEvent>['added'], location: 'visible' | 'hidden') {
 			/** @NOTE Adding to one group also means removing from the other */
 
 			const { element, newIndex } = event;
 
-			const fieldsInGroup =
-				location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
+			const fieldsInGroup = location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
 
 			const updates: Partial<Field>[] = fieldsInGroup.slice(newIndex).map((field) => {
 				const sortValue =
-					field.sort ||
-					fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
+					field.sort || fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,
@@ -209,25 +189,19 @@ export default defineComponent({
 			fieldsStore.updateFields(element.collection, updates);
 		}
 
-		function sortInGroup(
-			event: Required<DraggableEvent>['moved'],
-			location: 'visible' | 'hidden'
-		) {
+		function sortInGroup(event: Required<DraggableEvent>['moved'], location: 'visible' | 'hidden') {
 			const { element, newIndex, oldIndex } = event;
 			const move = newIndex > oldIndex ? 'down' : 'up';
 
-			const selectionRange =
-				move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
+			const selectionRange = move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
 
-			const fields =
-				location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
+			const fields = location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
 
 			const updates: Partial<Field>[] = fields.slice(...selectionRange).map((field) => {
 				// If field.sort isn't set yet, base it on the index of the array. That way, the
 				// new sort value will match what's visible on the screen
 				const sortValue =
-					field.sort ||
-					fields.findIndex((existingField) => existingField.field === field.field);
+					field.sort || fields.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,

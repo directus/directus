@@ -8,14 +8,7 @@
 			<slot />
 		</div>
 
-		<v-button
-			class="drawer-toggle"
-			icon
-			rounded
-			secondary
-			outlined
-			@click="$emit('toggle:drawer')"
-		>
+		<v-button class="drawer-toggle" icon rounded secondary outlined @click="$emit('toggle:drawer')">
 			<v-icon name="info" />
 		</v-button>
 	</div>

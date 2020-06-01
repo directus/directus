@@ -30,10 +30,7 @@ export default defineDisplay(({ i18n }) => ({
 
 		if (!relatedCollection) return [];
 
-		const fields = adjustFieldsForDisplays(
-			getFieldsFromTemplate(options.template),
-			relatedCollection
-		);
+		const fields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection);
 
 		if (fields.includes(primaryKeyField.value.field) === false) {
 			fields.push(primaryKeyField.value.field);

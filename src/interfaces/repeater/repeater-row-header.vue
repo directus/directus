@@ -3,12 +3,7 @@
 		<v-icon v-if="disabled === false" name="drag_handle" class="drag-handle" />
 		{{ displayValue ? displayValue : placeholder }}
 		<span class="spacer" />
-		<v-icon
-			v-if="disabled === false"
-			name="close"
-			class="delete"
-			@click.stop.prevent="$emit('delete')"
-		/>
+		<v-icon v-if="disabled === false" name="close" class="delete" @click.stop.prevent="$emit('delete')" />
 	</div>
 </template>
 
@@ -45,9 +40,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayValue = computed(() =>
-			props.value ? render(props.template, props.value) : null
-		);
+		const displayValue = computed(() => (props.value ? render(props.template, props.value) : null));
 
 		return { displayValue };
 	},

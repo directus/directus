@@ -9,13 +9,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						:disabled="item === null"
-						@click="on"
-					>
+					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -34,13 +28,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
+			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -70,16 +58,10 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_datamodel_fields'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_fields'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -111,19 +93,10 @@ export default defineComponent({
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const collectionsStore = useCollectionsStore();
 
-		const {
-			isNew,
-			edits,
-			item,
-			saving,
-			loading,
-			error,
-			save,
-			remove,
-			deleting,
-			saveAsCopy,
-			isBatch,
-		} = useItem(ref('directus_collections'), collection);
+		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
+			ref('directus_collections'),
+			collection
+		);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 

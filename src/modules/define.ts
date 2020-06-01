@@ -1,9 +1,7 @@
 import { i18n } from '@/lang/';
 import { ModuleDefineParam, ModuleContext, ModuleConfig } from './types';
 
-export function defineModule(
-	config: ModuleDefineParam | ((context: ModuleContext) => ModuleConfig)
-): ModuleConfig {
+export function defineModule(config: ModuleDefineParam | ((context: ModuleContext) => ModuleConfig)): ModuleConfig {
 	let options: ModuleConfig;
 
 	if (typeof config === 'function') {

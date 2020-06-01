@@ -1,18 +1,7 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input
-			autofocus
-			autocomplete="username"
-			type="email"
-			v-model="email"
-			:placeholder="$t('email')"
-		/>
-		<v-input
-			type="password"
-			autocomplete="current-password"
-			v-model="password"
-			:placeholder="$t('password')"
-		/>
+		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="$t('email')" />
+		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="$t('password')" />
 
 		<transition-expand>
 			<v-input type="text" :placeholder="$t('otp')" v-if="requiresTFA" v-model="otp" />
@@ -98,16 +87,13 @@ export default defineComponent({
 		});
 
 		const ssoProviders = computed(() => {
-			const redirectURL =
-				getRootPath() + `admin/${projectsStore.state.currentProjectKey}/login`;
-			return projectsStore.currentProject.value.sso.map(
-				(provider: { icon: string; name: string }) => {
-					return {
-						...provider,
-						link: `/${projectsStore.state.currentProjectKey}/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
-					};
-				}
-			);
+			const redirectURL = getRootPath() + `admin/${projectsStore.state.currentProjectKey}/login`;
+			return projectsStore.currentProject.value.sso.map((provider: { icon: string; name: string }) => {
+				return {
+					...provider,
+					link: `/${projectsStore.state.currentProjectKey}/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
+				};
+			});
 		});
 
 		return {

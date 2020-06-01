@@ -2,10 +2,7 @@ import useFieldsStore from '@/stores/fields';
 import displays from '@/displays';
 import { Field } from '@/stores/fields/types';
 
-export default function adjustFieldsForDisplays(
-	fields: readonly string[],
-	parentCollection: string
-) {
+export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string) {
 	const fieldsStore = useFieldsStore();
 
 	const adjustedFields: string[] = fields
@@ -20,9 +17,7 @@ export default function adjustFieldsForDisplays(
 			if (!display?.fields) return fieldKey;
 
 			if (Array.isArray(display.fields)) {
-				return display.fields.map(
-					(relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`
-				);
+				return display.fields.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
 			}
 
 			if (typeof display.fields === 'function') {

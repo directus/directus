@@ -23,10 +23,7 @@ export const useRelationsStore = createStore({
 		},
 		getRelationsForCollection(collection: string) {
 			return this.state.relations.filter((relation) => {
-				return (
-					relation.collection_many === collection ||
-					relation.collection_one === collection
-				);
+				return relation.collection_many === collection || relation.collection_one === collection;
 			});
 		},
 		getRelationsForField(collection: string, field: string) {

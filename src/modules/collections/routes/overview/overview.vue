@@ -10,12 +10,7 @@
 			<collections-navigation />
 		</template>
 
-		<v-table
-			v-if="navItems.length > 0"
-			:headers="tableHeaders"
-			:items="navItems"
-			@click:row="navigateToCollection"
-		>
+		<v-table v-if="navItems.length > 0" :headers="tableHeaders" :items="navItems" @click:row="navigateToCollection">
 			<template #item.icon="{ item }">
 				<v-icon class="icon" :name="item.icon" />
 			</template>
@@ -35,16 +30,10 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

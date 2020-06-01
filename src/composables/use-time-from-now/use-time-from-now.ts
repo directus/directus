@@ -13,11 +13,7 @@ export async function useTimeFromNow(date: Date | number, autoUpdate = 60000) {
 	if (autoUpdate !== 0) {
 		onMounted(() => {
 			interval = window.setInterval(async () => {
-				formattedDate.value = await localizedFormatDistance(
-					date,
-					new Date(),
-					formatOptions
-				);
+				formattedDate.value = await localizedFormatDistance(date, new Date(), formatOptions);
 			}, autoUpdate);
 		});
 

@@ -2,16 +2,10 @@
 	<div>
 		<h2 class="type-title" v-if="isNew">{{ $t('display_setup_title') }}</h2>
 
-		<v-fancy-select
-			:items="items"
-			:value="value.display"
-			@input="emitValue('display', $event)"
-		/>
+		<v-fancy-select :items="items" :value="value.display" @input="emitValue('display', $event)" />
 
 		<v-form
-			v-if="
-				selectedDisplay && selectedDisplay.options && Array.isArray(selectedDisplay.options)
-			"
+			v-if="selectedDisplay && selectedDisplay.options && Array.isArray(selectedDisplay.options)"
 			:fields="selectedDisplay.options"
 			primary-key="+"
 			:edits="value.options"

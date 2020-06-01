@@ -8,17 +8,9 @@
 		</template>
 
 		<v-list dense>
-			<v-list-item
-				v-for="item in value"
-				:key="item[primaryKeyField]"
-				:to="getLinkForItem(item)"
-			>
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
 				<v-list-item-content>
-					<render-template
-						:template="template"
-						:item="item"
-						:collection="relatedCollection"
-					/>
+					<render-template :template="template" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>

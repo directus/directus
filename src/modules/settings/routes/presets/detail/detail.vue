@@ -13,13 +13,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						:disabled="preset === null || id === '+'"
-						@click="on"
-					>
+					<v-button rounded icon class="action-delete" :disabled="preset === null || id === '+'" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -68,19 +62,13 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_presets_detail'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_detail'))" />
 			</drawer-detail>
 			<div class="layout-drawer">
 				<portal-target name="drawer" />
 			</div>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -146,9 +134,7 @@ export default defineComponent({
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
-		const loading = computed(
-			() => usersLoading.value || presetLoading.value || rolesLoading.value
-		);
+		const loading = computed(() => usersLoading.value || presetLoading.value || rolesLoading.value);
 
 		return {
 			backLink,
@@ -202,10 +188,7 @@ export default defineComponent({
 					if (isNew.value === true) {
 						await api.post(`/${currentProjectKey}/collection_presets`, editsParsed);
 					} else {
-						await api.patch(
-							`/${currentProjectKey}/collection_presets/${props.id}`,
-							editsParsed
-						);
+						await api.patch(`/${currentProjectKey}/collection_presets/${props.id}`, editsParsed);
 					}
 
 					await collectionPresetsStore.hydrate();
@@ -334,9 +317,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/collection_presets/${props.id}`
-					);
+					const response = await api.get(`/${currentProjectKey}/collection_presets/${props.id}`);
 
 					preset.value = response.data.data;
 				} catch (err) {
@@ -442,8 +423,7 @@ export default defineComponent({
 					interface: 'dropdown',
 					options: {
 						choices: collectionsStore.state.collections.reduce(
-							(string, collection) =>
-								(string += `${collection.collection} :: ${collection.name}\n`),
+							(string, collection) => (string += `${collection.collection} :: ${collection.name}\n`),
 							''
 						),
 					},
@@ -463,10 +443,7 @@ export default defineComponent({
 					name: i18n.t('layout'),
 					interface: 'dropdown',
 					options: {
-						choices: layouts.reduce(
-							(string, layout) => (string += `${layout.id}::${layout.name}\n`),
-							''
-						),
+						choices: layouts.reduce((string, layout) => (string += `${layout.id}::${layout.name}\n`), ''),
 					},
 					width: 'half',
 				},

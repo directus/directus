@@ -3,12 +3,7 @@ import readme from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { defineComponent } from '@vue/composition-api';
-import VList, {
-	VListItem,
-	VListItemContent,
-	VListItemTitle,
-	VListItemIcon,
-} from '@/components/v-list';
+import VList, { VListItem, VListItemContent, VListItemTitle, VListItemIcon } from '@/components/v-list';
 import VIcon from '@/components/v-icon/';
 
 export default {

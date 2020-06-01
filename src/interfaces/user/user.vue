@@ -65,11 +65,7 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template
-								collection="directus_users"
-								:template="displayTemplate"
-								:item="item"
-							/>
+							<render-template collection="directus_users" :template="displayTemplate" :item="item" />
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -132,12 +128,7 @@ export default defineComponent({
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: usersLoading, fetchUsers, users } = useUsers();
 
-		const {
-			setCurrent,
-			currentUser,
-			loading: loadingCurrent,
-			currentPrimaryKey,
-		} = useCurrent();
+		const { setCurrent, currentUser, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
 		const { edits, stageEdits } = useEdits();
 
@@ -174,11 +165,7 @@ export default defineComponent({
 				(newValue) => {
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
-					if (
-						newValue !== null &&
-						newValue !== currentUser.value?.id &&
-						typeof newValue === 'number'
-					) {
+					if (newValue !== null && newValue !== currentUser.value?.id && typeof newValue === 'number') {
 						fetchCurrent();
 					}
 

@@ -33,11 +33,7 @@ export const useProjectsStore = createStore({
 			});
 		},
 		currentProject: (state, getters) => {
-			return (
-				getters.formatted.value?.find(
-					({ key }: { key: string }) => key === state.currentProjectKey
-				) || null
-			);
+			return getters.formatted.value?.find(({ key }: { key: string }) => key === state.currentProjectKey) || null;
 		},
 	},
 	actions: {
@@ -95,8 +91,7 @@ export const useProjectsStore = createStore({
 						projects.push({
 							key: projectKeys[index],
 							...projectInfoResponse.data.data,
-							authenticated:
-								projectInfoResponse?.data?.data?.hasOwnProperty('server') || false,
+							authenticated: projectInfoResponse?.data?.data?.hasOwnProperty('server') || false,
 						});
 					} catch (error) {
 						/* istanbul ignore next */

@@ -13,9 +13,7 @@
 				:value="status.value"
 				:key="status.value"
 				:indeterminate="indeterminate.includes(status.value)"
-				@update:indeterminate="
-					indeterminate = indeterminate.filter((s) => s !== status.value)
-				"
+				@update:indeterminate="indeterminate = indeterminate.filter((s) => s !== status.value)"
 				:label="status.name"
 			/>
 		</div>
@@ -88,9 +86,7 @@ export default defineComponent({
 			if (newVal !== true) return;
 
 			if (props.combined === true) {
-				allowedStatuses.value = invertBlacklist(
-					intersection(...(props.statusBlacklist as string[][]))
-				);
+				allowedStatuses.value = invertBlacklist(intersection(...(props.statusBlacklist as string[][])));
 
 				allowedStatuses.value = [...new Set(props.statusBlacklist.flat())].filter((k) =>
 					allowedStatuses.value.includes(k)
@@ -118,9 +114,7 @@ export default defineComponent({
 				collection: props.collection,
 				status: props.status,
 				role: props.role,
-				status_blacklist: statusKeys.value.filter(
-					(key) => allowedStatuses.value.includes(key) === false
-				),
+				status_blacklist: statusKeys.value.filter((key) => allowedStatuses.value.includes(key) === false),
 			};
 
 			if (props.permissionId) {

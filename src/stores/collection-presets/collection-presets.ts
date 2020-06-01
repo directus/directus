@@ -58,10 +58,7 @@ export const useCollectionPresetsStore = createStore({
 		async update(id: number, updates: Partial<CollectionPreset>) {
 			const { currentProjectKey } = useProjectsStore().state;
 
-			const response = await api.patch(
-				`/${currentProjectKey}/collection_presets/${id}`,
-				updates
-			);
+			const response = await api.patch(`/${currentProjectKey}/collection_presets/${id}`, updates);
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				const updatedPreset = response.data.data;

@@ -10,10 +10,7 @@
 		</v-avatar>
 
 		<div class="name">
-			<user-popover
-				v-if="activity.action_by && activity.action_by.id"
-				:user="activity.action_by.id"
-			>
+			<user-popover v-if="activity.action_by && activity.action_by.id" :user="activity.action_by.id">
 				<span>
 					<template v-if="activity.action_by && activity.action_by">
 						{{ activity.action_by.first_name }} {{ activity.action_by.last_name }}
@@ -31,11 +28,7 @@
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
 					<div class="time">
-						<span
-							class="dot"
-							v-if="activity.edited_on !== null"
-							v-tooltip="editedOnFormatted"
-						/>
+						<span class="dot" v-if="activity.edited_on !== null" v-tooltip="editedOnFormatted" />
 						{{ formattedTime }}
 					</div>
 				</template>
@@ -121,9 +114,8 @@ export default defineComponent({
 			if (!props.activity.action_by?.avatar) return null;
 
 			return (
-				props.activity.action_by.avatar.data.thumbnails.find(
-					(thumb) => thumb.key === 'directus-small-crop'
-				)?.url || null
+				props.activity.action_by.avatar.data.thumbnails.find((thumb) => thumb.key === 'directus-small-crop')
+					?.url || null
 			);
 		});
 

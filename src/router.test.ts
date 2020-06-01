@@ -1,13 +1,7 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import { Route } from 'vue-router';
-import {
-	onBeforeEach,
-	onAfterEach,
-	onBeforeEnterProjectChooser,
-	replaceRoutes,
-	defaultRoutes,
-} from './router';
+import { onBeforeEach, onAfterEach, onBeforeEnterProjectChooser, replaceRoutes, defaultRoutes } from './router';
 import api from '@/api';
 import * as auth from '@/auth';
 import { useProjectsStore } from '@/stores/projects';

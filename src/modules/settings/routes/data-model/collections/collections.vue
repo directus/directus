@@ -17,13 +17,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info
-				type="warning"
-				icon="box"
-				:title="$t('no_collections')"
-				v-if="items.length === 0"
-				center
-			>
+			<v-info type="warning" icon="box" :title="$t('no_collections')" v-if="items.length === 0" center>
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -46,9 +40,7 @@
 						:class="{
 							hidden: item.hidden,
 							system: item.collection.startsWith('directus_'),
-							unmanaged:
-								item.managed === false &&
-								item.collection.startsWith('directus_') === false,
+							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
 						}"
 						:name="item.icon"
 					/>
@@ -60,9 +52,7 @@
 						:class="{
 							hidden: item.hidden,
 							system: item.collection.startsWith('directus_'),
-							unmanaged:
-								item.managed === false &&
-								item.collection.startsWith('directus_') === false,
+							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
 						}"
 					>
 						{{ item.name }}
@@ -85,17 +75,11 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_datamodel_collections'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_collections'))" />
 			</drawer-detail>
 			<collections-filter v-model="activeTypes" />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -188,9 +172,7 @@ export default defineComponent({
 			const system = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections
-						.filter(
-							(collection) => collection.collection.startsWith('directus_') === true
-						)
+						.filter((collection) => collection.collection.startsWith('directus_') === true)
 						.map((collection) => ({ ...collection, icon: 'settings' })),
 					'collection'
 				);
@@ -199,9 +181,7 @@ export default defineComponent({
 			const unmanaged = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections
-						.filter(
-							(collection) => collection.collection.startsWith('directus_') === false
-						)
+						.filter((collection) => collection.collection.startsWith('directus_') === false)
 						.filter((collection) => collection.managed === false)
 						.map((collection) => ({ ...collection, icon: 'block' })),
 					'collection'

@@ -1,10 +1,7 @@
 <template>
 	<collections-not-found v-if="error && error.code === 404" />
 	<private-view v-else :title="title">
-		<template
-			#title
-			v-if="isNew === false && isBatch === false && collectionInfo.display_template"
-		>
+		<template #title v-if="isNew === false && isBatch === false && collectionInfo.display_template">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
 			<h1 class="type-title" v-else>
 				<render-template
@@ -16,14 +13,7 @@
 		</template>
 
 		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.single"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
+			<v-button v-if="collectionInfo.single" class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
 			<v-button
@@ -96,11 +86,7 @@
 						<v-button @click="confirmSoftDelete = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
-						<v-button
-							@click="deleteAndQuit(true)"
-							class="action-delete"
-							:loading="softDeleting"
-						>
+						<v-button @click="deleteAndQuit(true)" class="action-delete" :loading="softDeleting">
 							{{ $t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -172,10 +158,7 @@
 				:primary-key="primaryKey"
 			/>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_collections_overview'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -238,9 +221,7 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue>(null);
 
-		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(
-			collection
-		);
+		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(collection);
 
 		const {
 			isNew,
@@ -266,9 +247,7 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string>(null);
 
-		const backLink = computed(
-			() => `/${currentProjectKey.value}/collections/${collection.value}/`
-		);
+		const backLink = computed(() => `/${currentProjectKey.value}/collections/${collection.value}/`);
 
 		const templateValues = computed(() => {
 			return {
@@ -344,9 +323,7 @@ export default defineComponent({
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-				router.replace(
-					`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`
-				);
+				router.replace(`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`);
 			}
 		}
 
@@ -357,9 +334,7 @@ export default defineComponent({
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(
-				`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`
-			);
+			router.push(`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit(soft = false) {

@@ -1,13 +1,7 @@
 <template>
 	<div class="form">
 		<v-divider />
-		<v-form
-			:disabled="disabled"
-			:fields="fields"
-			:edits="value"
-			primary-key="+"
-			@input="$emit('input', $event)"
-		/>
+		<v-form :disabled="disabled" :fields="fields" :edits="value" primary-key="+" @input="$emit('input', $event)" />
 	</div>
 </template>
 

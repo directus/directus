@@ -5,13 +5,6 @@ import ActivityModule from './activity/';
 import DocsModule from './docs/';
 import SettingsModule from './settings/';
 
-export const modules = [
-	ActivityModule,
-	CollectionsModule,
-	UsersModule,
-	FilesModule,
-	DocsModule,
-	SettingsModule,
-];
+export const modules = [ActivityModule, CollectionsModule, UsersModule, FilesModule, DocsModule, SettingsModule];
 
 export default modules;

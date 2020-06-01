@@ -88,9 +88,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 			const dateTimeFormats = await import(`@/lang/${lang}/date-format.json`);
 			i18n.setDateTimeFormat(lang, dateTimeFormats);
 		} catch {
-			console.log(
-				`[setCurrentLanguage] ❌ Couldn't fetch date time formats for language "${lang}"`
-			);
+			console.log(`[setCurrentLanguage] ❌ Couldn't fetch date time formats for language "${lang}"`);
 		}
 	}
 

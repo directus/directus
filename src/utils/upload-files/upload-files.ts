@@ -2,10 +2,7 @@ import uploadFile from '@/utils/upload-file';
 import notify from '@/utils/notify';
 import i18n from '@/lang';
 
-export default async function uploadFiles(
-	files: File[],
-	onProgressChange?: (percentages: number[]) => void
-) {
+export default async function uploadFiles(files: File[], onProgressChange?: (percentages: number[]) => void) {
 	const progressHandler = onProgressChange || (() => undefined);
 
 	const progressForFiles = files.map(() => 0);

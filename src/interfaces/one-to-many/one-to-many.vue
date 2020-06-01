@@ -27,12 +27,7 @@
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deselect(item)"
-				/>
+				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deselect(item)" />
 			</template>
 		</v-table>
 
@@ -151,9 +146,7 @@ export default defineComponent({
 
 			const { collection } = toRefs(relatedCollection.value);
 
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(
-				collection as Ref<string>
-			);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(collection as Ref<string>);
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
@@ -248,9 +241,7 @@ export default defineComponent({
 
 				const updatedItems = items.value
 					.map((item: any) => {
-						const changeForThisItem = changes.find(
-							(change) => change[pkField] === item[pkField]
-						);
+						const changeForThisItem = changes.find((change) => change[pkField] === item[pkField]);
 
 						if (changeForThisItem) {
 							return {
@@ -274,9 +265,7 @@ export default defineComponent({
 				const selectedPrimaryKeys = changes
 					.filter((change) => typeof change === 'string' || typeof change === 'number')
 					.filter((primaryKey) => {
-						const isAlsoUpdate = updatedItems.some(
-							(update) => update[pkField] === primaryKey
-						);
+						const isAlsoUpdate = updatedItems.some((update) => update[pkField] === primaryKey);
 
 						return isAlsoUpdate === false;
 					});
@@ -291,9 +280,9 @@ export default defineComponent({
 					}
 
 					const response = await api.get(
-						`/${currentProjectKey}/items/${
-							relatedCollection.value.collection
-						}/${selectedPrimaryKeys.join(',')}`,
+						`/${currentProjectKey}/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(
+							','
+						)}`,
 						{
 							params: {
 								fields: fields,
@@ -326,10 +315,7 @@ export default defineComponent({
 					tableHeaders.value = props.fields
 						.split(',')
 						.map((fieldKey) => {
-							const field = fieldsStore.getField(
-								relatedCollection.value.collection,
-								fieldKey
-							);
+							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
 
 							if (!field) return null;
 
@@ -388,10 +374,7 @@ export default defineComponent({
 
 				// Make sure the edits have the primary key included, otherwise the api will create
 				// the item as a new one instead of update the existing
-				if (
-					primaryKey &&
-					editsAtStart.value.hasOwnProperty(relatedPrimaryKeyField.value.field) === false
-				) {
+				if (primaryKey && editsAtStart.value.hasOwnProperty(relatedPrimaryKeyField.value.field) === false) {
 					editsAtStart.value = {
 						...editsAtStart.value,
 						[relatedPrimaryKeyField.value.field]: primaryKey,
@@ -408,11 +391,7 @@ export default defineComponent({
 
 				if (props.value && Array.isArray(props.value)) {
 					const newValue = props.value.map((existingChange) => {
-						if (
-							existingChange[pkField] &&
-							edits[pkField] &&
-							existingChange[pkField] === edits[pkField]
-						) {
+						if (existingChange[pkField] && edits[pkField] && existingChange[pkField] === edits[pkField]) {
 							return edits;
 						}
 
@@ -504,9 +483,7 @@ export default defineComponent({
 			// If the item is selected in the current edits, it will only have staged the primary
 			// key so the API is able to properly set it on first creation. In that case, we have
 			// to filter out the primary key
-			const itemWasNewlySelect = !!props.value.find(
-				(stagedItem) => stagedItem === itemPrimaryKey
-			);
+			const itemWasNewlySelect = !!props.value.find((stagedItem) => stagedItem === itemPrimaryKey);
 
 			if (itemWasNewlySelect) {
 				currentItems.value = currentItems.value.filter(
@@ -520,8 +497,7 @@ export default defineComponent({
 			}
 
 			const itemHasEdits =
-				props.value.find((stagedItem: any) => stagedItem[pkField] === itemPrimaryKey) !==
-				undefined;
+				props.value.find((stagedItem: any) => stagedItem[pkField] === itemPrimaryKey) !== undefined;
 
 			if (itemHasEdits) {
 				return emit(

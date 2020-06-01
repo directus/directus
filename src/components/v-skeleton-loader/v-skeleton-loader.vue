@@ -46,12 +46,7 @@ body {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			var(--v-skeleton-loader-color),
-			transparent
-		);
+		background: linear-gradient(90deg, transparent, var(--v-skeleton-loader-color), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;

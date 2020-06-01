@@ -100,11 +100,7 @@ export const useCollectionsStore = createStore({
 			}
 		},
 		getCollection(collectionKey: string) {
-			return (
-				this.state.collections.find(
-					(collection) => collection.collection === collectionKey
-				) || null
-			);
+			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},
 });

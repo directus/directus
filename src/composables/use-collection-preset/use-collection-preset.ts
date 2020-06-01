@@ -5,28 +5,21 @@ import useUserStore from '@/stores/user';
 
 import { Filter, CollectionPreset } from '@/stores/collection-presets/types';
 
-export function useCollectionPreset(
-	collection: Ref<string>,
-	bookmark: Ref<number | null> = ref(null)
-) {
+export function useCollectionPreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
 	const collectionPresetsStore = useCollectionPresetStore();
 	const userStore = useUserStore();
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
 
-		return !!collectionPresetsStore.state.collectionPresets.find(
-			(preset) => preset.id === bookmark.value
-		);
+		return !!collectionPresetsStore.state.collectionPresets.find((preset) => preset.id === bookmark.value);
 	});
 
 	const localPreset = ref<CollectionPreset>({});
 	initLocalPreset();
 
 	const savePreset = async (preset?: Partial<CollectionPreset>) => {
-		const updatedValues = await collectionPresetsStore.savePreset(
-			preset ? preset : localPreset.value
-		);
+		const updatedValues = await collectionPresetsStore.savePreset(preset ? preset : localPreset.value);
 
 		localPreset.value.id = updatedValues.id;
 

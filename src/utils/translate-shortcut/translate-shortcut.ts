@@ -1,8 +1,7 @@
 import capitalizeFirst from '@/utils/capitalize-first';
 
 export default function translateShortcut(keys: string[]) {
-	const isMac =
-		navigator.platform.toLowerCase().startsWith('mac') || navigator.platform.startsWith('iP');
+	const isMac = navigator.platform.toLowerCase().startsWith('mac') || navigator.platform.startsWith('iP');
 
 	if (isMac) {
 		return keys
