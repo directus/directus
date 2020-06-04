@@ -158,7 +158,7 @@
 				:primary-key="primaryKey"
 			/>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
+				<div class="format-markdown" v-html="marked($t('page_help_collections_detail'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

@@ -96,7 +96,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				[TK]
+				<div class="format-markdown" v-html="marked($t('page_help_users_detail'))" />
 			</drawer-detail>
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
@@ -110,7 +110,7 @@
 				:primary-key="primaryKey"
 			/>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
+				<div class="format-markdown" v-html="marked($t('page_help_users_detail'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

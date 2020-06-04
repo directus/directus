@@ -61,7 +61,8 @@ body {
 		color: var(--v-divider-label-color);
 
 		.v-icon {
-			margin-right: 4px;
+			margin-right: 8px;
+			transform: translateY(-1px);
 		}
 	}
 

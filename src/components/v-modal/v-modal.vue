@@ -25,6 +25,10 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
+					<div v-if="heading" class="heading">
+						<div class="type-title">{{ heading }}</div>
+						<div class="subheading">{{ subheading }}</div>
+					</div>
 					<slot />
 				</main>
 			</div>
@@ -69,6 +73,14 @@ export default defineComponent({
 			// allow the form to be rendered in it's correct full size
 			type: Boolean,
 			default: false,
+		},
+		heading: {
+			type: String,
+			required: null,
+		},
+		subheading: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -188,6 +200,15 @@ body {
 			flex-grow: 1;
 			padding: 8px 16px;
 			overflow: auto;
+
+			.heading {
+				margin-bottom: 48px;
+
+				.subheading {
+					margin-top: 4px;
+					color: var(--foreground-subdued);
+				}
+			}
 
 			@include breakpoint(medium) {
 				padding: 32px;

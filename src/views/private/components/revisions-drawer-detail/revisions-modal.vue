@@ -1,6 +1,11 @@
 <template>
 	<div>
-		<v-modal v-model="_active" :title="$t('item_revision')">
+		<v-modal
+			v-model="_active"
+			:title="$t('item_revision')"
+			heading="Dynamic Based on Pane"
+			subheading="Dynamic Based on Pane"
+		>
 			<template #subtitle>
 				<revisions-modal-picker :revisions="revisions" :current.sync="_current" />
 			</template>

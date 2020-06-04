@@ -179,14 +179,15 @@ export default defineComponent({
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 14px 0px;
+	padding: 4px 0px 0px;
 
 	span.tag-container {
 		display: contents;
 	}
 
 	.tag {
-		margin: 4px;
+		margin-top: 8px;
+		margin-right: 8px;
 	}
 
 	.presets {
