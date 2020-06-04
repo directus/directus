@@ -86,6 +86,7 @@ import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
+import useShortcut from '@/composables/use-shortcut';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -289,6 +290,10 @@ export default defineComponent({
 			if (hasItemAppendSlot.value) gridTemplateColumns += ' auto';
 
 			return gridTemplateColumns;
+		});
+
+		useShortcut('mod+a', () => {
+			onToggleSelectAll(!allItemsSelected.value);
 		});
 
 		return {

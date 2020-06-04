@@ -177,6 +177,7 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import i18n from '@/lang';
 import marked from 'marked';
+import useShortcut from '@/composables/use-shortcut';
 
 type Values = {
 	[field: string]: any;
@@ -266,6 +267,9 @@ export default defineComponent({
 				? i18n.t('adding_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
 		});
+
+		useShortcut('mod+s', saveAndStay);
+		useShortcut('mod+shift+s', saveAndAddNew);
 
 		return {
 			item,
