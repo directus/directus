@@ -81,6 +81,8 @@
 	"settings_update_success": "Settings updated",
 	"settings_update_failed": "Updating settings failed",
 
+	"title": "Title",
+
 	"revision_delta_created": "Created",
 	"revision_delta_created_externally": "Created Externally",
 	"revision_delta_updated": "Updated {count} Fields",

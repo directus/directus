@@ -71,7 +71,11 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template :collection="collection" :template="displayTemplate" :item="item" />
+							<render-template
+								:collection="relatedCollection.collection"
+								:template="displayTemplate"
+								:item="item"
+							/>
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -185,6 +189,7 @@ export default defineComponent({
 			edits,
 			stageEdits,
 			editModalActive,
+			relatedPrimaryKeyField,
 		};
 
 		function useCurrent() {

@@ -14,6 +14,7 @@ export default function adjustFieldsForDisplays(fields: readonly string[], paren
 
 			const display = displays.find((d) => d.id === field.display);
 
+			if (!display) return fieldKey;
 			if (!display?.fields) return fieldKey;
 
 			if (Array.isArray(display.fields)) {
@@ -23,8 +24,8 @@ export default function adjustFieldsForDisplays(fields: readonly string[], paren
 			if (typeof display.fields === 'function') {
 				return display
 					.fields(field.display_options, {
-						collection: parentCollection,
-						field: fieldKey,
+						collection: field.collection,
+						field: field.field,
 						type: field.type,
 					})
 					.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);

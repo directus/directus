@@ -1,13 +1,15 @@
 <template>
 	<img v-if="src" :src="src" role="presentation" :alt="value && value.title" :class="{ circle }" />
-	<span v-else>--</span>
+	<value-null v-else />
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
+import ValueNull from '@/views/private/components/value-null';
 
 type Image = {
 	type: string;
+	title: string;
 	data: {
 		thumbnails: {
 			key: string;
@@ -17,6 +19,7 @@ type Image = {
 };
 
 export default defineComponent({
+	components: { ValueNull },
 	props: {
 		value: {
 			type: Object as PropType<Image>,

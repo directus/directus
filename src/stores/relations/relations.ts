@@ -56,9 +56,29 @@ export const useRelationsStore = createStore({
 				] as Relation[];
 			}
 
-			return this.getRelationsForCollection(collection).filter((relation: Relation) => {
+			const relations = this.getRelationsForCollection(collection).filter((relation: Relation) => {
 				return relation.field_many === field || relation.field_one === field;
 			});
+
+			if (relations.length > 0) {
+				const isM2M = relations[0].junction_field !== null;
+
+				// If the relation matching the field has a junction field, it's a m2m. In that case,
+				// we also want to return the secondary relationship (from the jt to the related)
+				// so any ui elements (interfaces) can utilize the full relationship
+				if (isM2M) {
+					const secondaryRelation = this.state.relations.find((relation) => {
+						return (
+							relation.collection_many === relations[0].collection_many &&
+							relation.field_many === relations[0].junction_field
+						);
+					});
+
+					if (secondaryRelation) relations.push(secondaryRelation);
+				}
+			}
+
+			return relations;
 		},
 	},
 });

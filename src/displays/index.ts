@@ -11,6 +11,7 @@ import DisplayDateTime from './datetime';
 import DisplayTemplate from './template';
 import DisplayFilesize from './filesize';
 import DisplayMimeType from './mime-type';
+import DisplayFile from './file';
 
 export const displays = [
 	DisplayIcon,
@@ -26,5 +27,6 @@ export const displays = [
 	DisplayTemplate,
 	DisplayFilesize,
 	DisplayMimeType,
+	DisplayFile,
 ];
 export default displays;

@@ -296,7 +296,6 @@ export default defineComponent({
 }
 
 .extension {
-	color: var(--foreground-subdued);
 	color: var(--primary);
 	font-weight: 600;
 	font-size: 11px;

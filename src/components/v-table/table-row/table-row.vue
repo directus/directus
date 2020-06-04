@@ -15,7 +15,7 @@
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
 		</td>
 		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="item">{{ item[header.value] }}</slot>
+			<slot :name="`item.${header.value}`" :item="item">{{ get(item, header.value) }}</slot>
 		</td>
 
 		<td class="spacer cell" />
@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
+import { get } from 'lodash';
 import { Header } from '../types';
 
 export default defineComponent({
@@ -69,7 +70,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		return { getClassesForCell, toggleSelect };
+		return { getClassesForCell, toggleSelect, get };
 
 		function getClassesForCell(header: Header) {
 			const classes: string[] = [];

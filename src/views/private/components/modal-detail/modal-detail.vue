@@ -8,6 +8,18 @@
 			v-model="_edits"
 		/>
 
+		<template v-if="junctionField">
+			<v-divider large>{{ junctionFieldInfo.name }}</v-divider>
+			<v-form
+				:loading="loading"
+				:initial-values="item && item[junctionField]"
+				:collection="junctionRelatedCollection"
+				:primary-key="relatedPrimaryKey"
+				:edits="_edits[junctionField]"
+				@input="setJunctionEdits"
+			/>
+		</template>
+
 		<template #footer>
 			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
 			<v-button @click="save">{{ $t('save') }}</v-button>
@@ -20,7 +32,10 @@ import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/co
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 import useCollection from '@/composables/use-collection';
+import useFieldsStore from '@/stores/fields';
 import i18n from '@/lang';
+import useRelationsStore from '@/stores/relations';
+import { Relation } from '@/stores/relations/types';
 
 export default defineComponent({
 	model: {
@@ -43,11 +58,25 @@ export default defineComponent({
 			type: Object as PropType<Record<string, any>>,
 			default: undefined,
 		},
+		junctionField: {
+			type: String,
+			default: null,
+		},
+		// There's an interesting case where the main form can be a newly created item ('+'), while
+		// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
+		// related data anyway.
+		relatedPrimaryKey: {
+			type: [String, Number],
+			default: '+',
+		},
 	},
 	setup(props, { emit }) {
 		const projectsStore = useProjectsStore();
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const { _active } = useActiveState();
+		const { junctionFieldInfo, junctionRelatedCollection, setJunctionEdits } = useJunction();
 		const { _edits, loading, error, item } = useItem();
 		const { save, cancel } = useActions();
 
@@ -63,7 +92,19 @@ export default defineComponent({
 			return i18n.t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
-		return { _active, _edits, loading, error, item, save, cancel, title };
+		return {
+			_active,
+			_edits,
+			loading,
+			error,
+			item,
+			save,
+			cancel,
+			title,
+			junctionFieldInfo,
+			junctionRelatedCollection,
+			setJunctionEdits,
+		};
 
 		function useActiveState() {
 			const localActive = ref(false);
@@ -109,6 +150,7 @@ export default defineComponent({
 				(isActive) => {
 					if (isActive === true) {
 						if (props.primaryKey !== '+') fetchItem();
+						if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
 					} else {
 						loading.value = false;
 						error.value = null;
@@ -129,8 +171,14 @@ export default defineComponent({
 					? `/${currentProjectKey}/${props.collection.substring(9)}/${props.primaryKey}`
 					: `/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`;
 
+				let fields = '*';
+
+				if (props.junctionField) {
+					fields = `*,${props.junctionField}.*`;
+				}
+
 				try {
-					const response = await api.get(endpoint);
+					const response = await api.get(endpoint, { params: { fields } });
 
 					item.value = response.data.data;
 				} catch (err) {
@@ -138,6 +186,64 @@ export default defineComponent({
 				} finally {
 					loading.value = false;
 				}
+			}
+
+			async function fetchRelatedItem() {
+				const { currentProjectKey } = projectsStore.state;
+
+				loading.value = true;
+
+				const collection = junctionRelatedCollection.value;
+
+				const endpoint = collection.startsWith('directus_')
+					? `/${currentProjectKey}/${collection.substring(9)}/${props.relatedPrimaryKey}`
+					: `/${currentProjectKey}/items/${collection}/${props.relatedPrimaryKey}`;
+
+				try {
+					const response = await api.get(endpoint);
+
+					item.value = {
+						...(item.value || {}),
+						[junctionFieldInfo.value.field]: response.data.data,
+					};
+				} catch (err) {
+					error.value = err;
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
+
+		function useJunction() {
+			const junctionFieldInfo = computed(() => {
+				if (!props.junctionField) return null;
+
+				return fieldsStore.getField(props.collection, props.junctionField);
+			});
+
+			const junctionRelatedCollection = computed(() => {
+				if (!props.junctionField) return null;
+
+				// If this is a m2m (likely), there will be 2 relations associated with this field
+				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
+				return (
+					relations.find((relation: Relation) => {
+						return (
+							relation.collection_many === props.collection && relation.field_many === props.junctionField
+						);
+					})?.collection_one || null
+				);
+			});
+
+			return { junctionFieldInfo, junctionRelatedCollection, setJunctionEdits };
+
+			function setJunctionEdits(edits: any) {
+				if (!props.junctionField) return;
+
+				_edits.value = {
+					..._edits.value,
+					[props.junctionField]: edits,
+				};
 			}
 		}
 
@@ -158,3 +264,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 52px 0;
+}
+</style>

@@ -239,7 +239,7 @@ export default defineComponent({
 
 				const pkField = relatedPrimaryKeyField.value.field;
 
-				const updatedItems = items.value
+				const itemsWithChangesApplied = items.value
 					.map((item: any) => {
 						const changeForThisItem = changes.find((change) => change[pkField] === item[pkField]);
 
@@ -265,7 +265,7 @@ export default defineComponent({
 				const selectedPrimaryKeys = changes
 					.filter((change) => typeof change === 'string' || typeof change === 'number')
 					.filter((primaryKey) => {
-						const isAlsoUpdate = updatedItems.some((update) => update[pkField] === primaryKey);
+						const isAlsoUpdate = itemsWithChangesApplied.some((update) => update[pkField] === primaryKey);
 
 						return isAlsoUpdate === false;
 					});
@@ -297,7 +297,7 @@ export default defineComponent({
 					}
 				}
 
-				items.value = [...updatedItems, ...newlyAddedItems, ...selectedItems];
+				items.value = [...itemsWithChangesApplied, ...newlyAddedItems, ...selectedItems];
 				loading.value = false;
 			}
 		}
