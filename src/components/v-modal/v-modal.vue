@@ -76,7 +76,7 @@ export default defineComponent({
 		},
 		heading: {
 			type: String,
-			required: null,
+			default: false,
 		},
 		subheading: {
 			type: String,
