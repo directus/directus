@@ -108,6 +108,8 @@ input {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	color: var(--foreground-normal);
+	background-color: var(--background-page);
 	border: none;
 	border-radius: 0;
 }
