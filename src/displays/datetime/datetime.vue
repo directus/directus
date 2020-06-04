@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, PropType } from '@vue/composition-api';
 import formatLocalized from '@/utils/localized-format';
 import i18n from '@/lang';
 import parse from 'date-fns/parse';
@@ -16,8 +16,9 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String,
+			type: String as PropType<'datetime' | 'time' | 'date'>,
 			required: true,
+			validator: (val: string) => ['datetime', 'date', 'time'].includes(val),
 		},
 	},
 	setup(props) {

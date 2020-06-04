@@ -3,14 +3,14 @@
 		<v-icon small name="star" />
 		{{ value }}
 	</span>
-	<span v-else class="rating detailed" v-tooltip.bottom="value">
+	<div v-else class="rating detailed" v-tooltip.bottom.start="value">
 		<div class="active" :style="ratingPercentage">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
 		</div>
 		<div class="inactive">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
 		</div>
-	</span>
+	</div>
 </template>
 
 <script lang="ts">
@@ -29,10 +29,6 @@ export default defineComponent({
 		interfaceOptions: {
 			type: Object as PropType<InterfaceOptions>,
 			default: null,
-		},
-		total: {
-			type: Number,
-			default: 5,
 		},
 	},
 	setup(props) {
@@ -69,9 +65,11 @@ export default defineComponent({
 
 	&.detailed {
 		position: relative;
+		width: min-content;
 		.active {
 			position: relative;
 			z-index: 2;
+			display: flex;
 			width: 0%;
 			overflow: hidden;
 			color: #ffc107;
@@ -81,6 +79,7 @@ export default defineComponent({
 			top: 0;
 			left: 0;
 			z-index: 1;
+			display: flex;
 			color: var(--background-normal);
 		}
 	}
