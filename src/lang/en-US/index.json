@@ -1,7 +1,7 @@
 {
 	"edit_field": "Edit Field",
 	"item_revision": "Item Revision",
-		"item_revision_updates_made": "Here are the differences in the raw field values...",
+	"item_revision_updates_made": "Here are the differences in the raw field values...",
 	"duplicate_field": "Duplicate Field",
 	"half_width": "Half Width",
 	"full_width": "Full Width",
@@ -72,6 +72,9 @@
 	"page_not_found_body": "The page you are looking for doesn't seem to exist.",
 	"confirm_revert": "Confirm Revert",
 	"confirm_revert_body": "This will revert the item to the selected state.",
+
+	"editing_role": "Editing {role} Role",
+	"editing_webhook": "Editing Webhook",
 
 	"code": "Code",
 	"loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}",

@@ -1,11 +1,10 @@
 <template>
-	<private-view :title="$t('editing', { collection: $t('roles') })">
+	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/roles/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
-
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
