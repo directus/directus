@@ -68,10 +68,7 @@
 				<portal-target name="drawer" />
 			</div>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_presets_detail'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_detail'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -403,21 +400,28 @@ export default defineComponent({
 		}
 
 		function useForm() {
-			const scopeChoices = computed<string>(() => {
-				if (usersLoading.value || rolesLoading.value) return '';
+			const scopeChoices = computed(() => {
+				if (usersLoading.value || rolesLoading.value) return [];
 
-				let options = `all :: ${i18n.t('all')}\n`;
+				const options = [
+					{
+						text: i18n.t('all'),
+						value: 'all',
+					},
+				];
 
 				roles.value?.forEach((role) => {
-					options += `role_${role.id} :: ${i18n.t('role')}: ${role.name}\n`;
+					options.push({ text: i18n.t('role') + ' ' + role.name, value: `role_${role.id}` });
 				});
 
 				users.value?.forEach((user) => {
-					options += `user_${user.id} :: ${i18n.t('user')}: ${user.name}\n`;
+					options.push({ text: i18n.t('user') + ' ' + user.name, value: `user_${user.id}` });
 				});
 
 				return options;
 			});
+
+			const systemCollectionWhiteList = ['directus_users', 'directus_files'];
 
 			const fields = computed(() => [
 				{
@@ -425,10 +429,17 @@ export default defineComponent({
 					name: i18n.t('collection'),
 					interface: 'dropdown',
 					options: {
-						choices: collectionsStore.state.collections.reduce(
-							(string, collection) => (string += `${collection.collection} :: ${collection.name}\n`),
-							''
-						),
+						choices: collectionsStore.state.collections
+							.map((collection) => ({
+								text: collection.name,
+								value: collection.collection,
+							}))
+							.filter((option) => {
+								if (option.value.startsWith('directus_'))
+									return systemCollectionWhiteList.includes(option.value);
+
+								return true;
+							}),
 					},
 					width: 'half',
 				},
@@ -446,7 +457,10 @@ export default defineComponent({
 					name: i18n.t('layout'),
 					interface: 'dropdown',
 					options: {
-						choices: layouts.reduce((string, layout) => (string += `${layout.id}::${layout.name}\n`), ''),
+						choices: layouts.map((layout) => ({
+							text: layout.name,
+							value: layout.id,
+						})),
 					},
 					width: 'half',
 				},
