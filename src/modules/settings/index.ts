@@ -1,5 +1,5 @@
 import { defineModule } from '@/modules/define';
-import SettingsGlobal from './routes/global';
+import SettingsProject from './routes/project';
 import { SettingsCollections, SettingsFields } from './routes/data-model/';
 import { SettingsRolesBrowse, SettingsRolesDetail } from './routes/roles';
 import { SettingsWebhooksBrowse, SettingsWebhooksDetail } from './routes/webhooks';
@@ -14,12 +14,12 @@ export default defineModule(({ i18n }) => ({
 	routes: [
 		{
 			path: '/',
-			redirect: '/global',
+			redirect: '/project',
 		},
 		{
-			name: 'settings-global',
-			path: '/global',
-			component: SettingsGlobal,
+			name: 'settings-project',
+			path: '/project',
+			component: SettingsProject,
 		},
 		{
 			name: 'settings-collections',

@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('settings_global')">
+	<private-view :title="$t('settings_project')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />
@@ -22,10 +22,10 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_global'))" />
+				<div class="format-markdown" v-html="marked($t('page_help_settings_project'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_global'))" />
+				<div class="format-markdown" v-html="marked($t('page_help_settings_project'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

@@ -22,8 +22,8 @@ export default defineComponent({
 		const navItems = [
 			{
 				icon: 'public',
-				name: i18n.t('settings_global'),
-				to: `/${currentProjectKey.value}/settings/global`,
+				name: i18n.t('settings_project'),
+				to: `/${currentProjectKey.value}/settings/project`,
 			},
 			{
 				icon: 'list_alt',
