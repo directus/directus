@@ -422,6 +422,7 @@
 	"search_for_icon": "Search for icon...",
 
 	"drop_to_upload": "Drop to Upload",
+	"upload_file": "Upload File",
 	"upload_file_indeterminate": "Uploading File...",
 	"upload_file_success": "File Uploaded",
 	"upload_file_failed": "Couldn't Upload File",

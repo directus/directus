@@ -2,7 +2,7 @@
 	<v-notice type="warning" v-if="!relations || relations.length !== 2">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<div v-else>
+	<div v-else class="files">
 		<v-table
 			inline
 			:items="previewItems"
@@ -11,19 +11,14 @@
 			:item-key="junctionCollectionPrimaryKeyField.field"
 			:disabled="disabled"
 			@click:row="editExisting"
-			show-resize
 		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
+			<template #item.$thumbnail="{ item }">
 				<render-display
-					:key="header.value"
-					:value="get(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.display_options"
-					:interface="header.field.interface"
-					:interface-options="header.field.options"
-					:type="header.field.type"
-					:collection="header.field.collection"
-					:field="header.field.field"
+					:value="get(item, [relationCurrentToJunction.junction_field])"
+					display="file"
+					:collection="junctionCollection"
+					:field="relationCurrentToJunction.junction_field"
+					type="file"
 				/>
 			</template>
 
@@ -33,7 +28,7 @@
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="addNew">{{ $t('add_new') }}</v-button>
+			<v-button class="new" @click="showUpload = true">{{ $t('upload_file') }}</v-button>
 			<v-button class="existing" @click="showBrowseModal = true">
 				{{ $t('add_existing') }}
 			</v-button>
@@ -60,40 +55,31 @@
 			@input="stageSelection"
 			multiple
 		/>
+
+		<v-dialog v-model="showUpload">
+			<v-card>
+				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-text><v-upload @upload="onUpload" /></v-card-text>
+				<v-card-actions>
+					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, toRefs } from '@vue/composition-api';
-import useFieldsStore from '@/stores/fields';
+import { defineComponent, ref, computed, toRefs } from '@vue/composition-api';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ModalBrowse from '@/views/private/components/modal-browse';
 import ModalDetail from '@/views/private/components/modal-detail';
 import { get } from 'lodash';
+import i18n from '@/lang';
 
-import useRelation from './use-relation';
-import useSelection from './use-selection';
-import usePreview from './use-preview';
-import useEdit from './use-edit';
-
-/**
- * Hi there!
- *
- * The many to many is super complex. Please take proper care when jumping in here and making changes,
- * you might break more than you'd imagine.
- *
- * If you have any questions, please feel free to reach out to Rijk <rijkvanzanten@me.com>
- *
- * NOTE: Some of the logic here is based on the fact that you can only have 1 copy of a related item
- * associated in the m2m at a time. Without this requirement, there isn't a way to know which item
- * you're editing at a time. It would also be near impossible to keep track of the changes made to the
- * related item. Seeing we stage the made edits nested so the api is able to update it, we would have
- * to apply the same edits nested to all the junction rows or something like that, pretty tricky stuff
- *
- * Another NOTE: There's one other tricky case to be aware of: selecting an existing related item. In that case,
- * the junction row doesn't exist yet, but the related item does. Be aware that you can't rely on the
- * primary key of the junction row in some cases.
- */
+import useRelation from '@/interfaces/many-to-many/use-relation';
+import useSelection from '@/interfaces/many-to-many/use-selection';
+import usePreview from '@/interfaces/many-to-many/use-preview';
+import useEdit from '@/interfaces/many-to-many/use-edit';
 
 export default defineComponent({
 	components: { ModalBrowse, ModalDetail },
@@ -118,15 +104,9 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
 	},
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
-
-		const { collection, field, value, primaryKey, fields } = toRefs(props);
+		const { collection, field, value, primaryKey } = toRefs(props);
 
 		const {
 			relations,
@@ -138,7 +118,32 @@ export default defineComponent({
 			relatedCollection,
 		} = useRelation({ collection, field });
 
-		const { tableHeaders } = useTable();
+		const fields = computed(() => {
+			if (!relationCurrentToJunction.value) return [];
+			if (!relationCurrentToJunction.value.junction_field) return [];
+
+			const jf = relationCurrentToJunction.value.junction_field;
+
+			return ['id', 'data', 'type', 'title'].map((key) => `${jf}.${key}`);
+		});
+
+		const tableHeaders = ref<TableHeader[]>([
+			{
+				text: '',
+				value: '$thumbnail',
+				align: 'left',
+				sortable: false,
+				width: 50,
+			},
+			{
+				text: i18n.t('title'),
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				value: relationCurrentToJunction.value!.junction_field + '.title',
+				align: 'left',
+				sortable: true,
+				width: 250,
+			},
+		]);
 
 		const { loading, previewItems, error } = usePreview({
 			value,
@@ -155,7 +160,6 @@ export default defineComponent({
 		const {
 			showDetailModal,
 			cancelEdit,
-			addNew,
 			stageEdits,
 			editsAtStart,
 			junctionRowPrimaryKey,
@@ -179,6 +183,8 @@ export default defineComponent({
 			},
 		});
 
+		const { showUpload, onUpload } = useUpload();
+
 		return {
 			relations,
 			relationCurrentToJunction,
@@ -191,7 +197,7 @@ export default defineComponent({
 			error,
 			showDetailModal,
 			cancelEdit,
-			addNew,
+			showUpload,
 			stageEdits,
 			editsAtStart,
 			junctionRowPrimaryKey,
@@ -204,40 +210,8 @@ export default defineComponent({
 			initialValues,
 			get,
 			deselect,
+			onUpload,
 		};
-
-		/**
-		 * Manages the state of the table. This includes the table headers, and the event handlers for
-		 * the table events
-		 */
-		function useTable() {
-			// Using a ref for the table headers here means that the table itself can update the
-			// values if it needs to. This allows the user to manually resize the columns for example
-			const tableHeaders = ref<TableHeader[]>([]);
-
-			watch(() => props.fields, setHeaders);
-
-			return { tableHeaders };
-
-			function setHeaders() {
-				if (!props.fields) return;
-
-				tableHeaders.value = props.fields.map(
-					(fieldKey): TableHeader => {
-						const fieldInfo = fieldsStore.getField(junctionCollection.value, fieldKey);
-
-						return {
-							text: fieldInfo.name,
-							value: fieldKey,
-							align: 'left',
-							sortable: true,
-							width: null,
-							field: fieldInfo,
-						};
-					}
-				);
-			}
-		}
 
 		/**
 		 * Deselect an item. This either means undoing any changes made (new item), or adding $delete: true
@@ -271,6 +245,27 @@ export default defineComponent({
 					return stagedValue !== junctionRow && stagedValue !== junctionRow['$stagedEdits'];
 				})
 			);
+		}
+
+		function useUpload() {
+			const showUpload = ref(false);
+
+			return { showUpload, onUpload };
+
+			function onUpload(file: { id: number; [key: string]: any }) {
+				if (!relationCurrentToJunction.value) return;
+				if (!relationCurrentToJunction.value.junction_field) return;
+
+				const fileAsJunctionRow = {
+					[relationCurrentToJunction.value.junction_field]: {
+						id: file.id,
+					},
+				};
+
+				emit('input', [...(props.value || []), fileAsJunctionRow]);
+
+				showUpload.value = false;
+			}
 		}
 	},
 });

@@ -27,6 +27,7 @@ import InterfaceFile from './file';
 import InterfaceCollections from './collections';
 import InterfaceTranslations from './translations';
 import InterfaceManyToMany from './many-to-many';
+import InterfaceFiles from './files';
 
 export const interfaces = [
 	InterfaceTextInput,
@@ -58,6 +59,7 @@ export const interfaces = [
 	InterfaceCollections,
 	InterfaceTranslations,
 	InterfaceManyToMany,
+	InterfaceFiles,
 ];
 
 export default interfaces;
