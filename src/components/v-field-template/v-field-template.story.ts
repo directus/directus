@@ -31,13 +31,13 @@ export const basic = () =>
 			const relationsStore = useRelationsStore(req);
 
 			// eslint-disable-next-line
-			fieldsStore.state = fields;
+			fieldsStore.state = fields as any;
 
 			// eslint-disable-next-line
-			collectionsStore.state = collections;
+			collectionsStore.state = collections as any;
 
 			// eslint-disable-next-line
-			relationsStore.state = relations;
+			relationsStore.state = relations as any;
 
 			const value = ref<string>('{{first_name}} ({{ last_name }})');
 			return { value };
