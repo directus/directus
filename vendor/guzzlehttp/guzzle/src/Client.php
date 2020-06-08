@@ -2,7 +2,7 @@
 namespace GuzzleHttp;
 
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Exception\InvalidArgumentException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\RequestInterface;
@@ -47,9 +47,8 @@ class Client implements ClientInterface
      *   wire. The function is called with a Psr7\Http\Message\RequestInterface
      *   and array of transfer options, and must return a
      *   GuzzleHttp\Promise\PromiseInterface that is fulfilled with a
-     *   Psr7\Http\Message\ResponseInterface on success. "handler" is a
-     *   constructor only option that cannot be overridden in per/request
-     *   options. If no handler is provided, a default handler will be created
+     *   Psr7\Http\Message\ResponseInterface on success.
+     *   If no handler is provided, a default handler will be created
      *   that enables all of the request options below by attaching all of the
      *   default middleware to the handler.
      * - base_uri: (string|UriInterface) Base URI of the client that is merged
@@ -489,7 +488,7 @@ class Client implements ClientInterface
     /**
      * Throw Exception with pre-set message.
      * @return void
-     * @throws InvalidArgumentException Invalid body.
+     * @throws \InvalidArgumentException Invalid body.
      */
     private function invalidBody()
     {

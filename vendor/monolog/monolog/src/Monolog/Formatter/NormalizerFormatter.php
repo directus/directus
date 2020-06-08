@@ -142,8 +142,12 @@ class NormalizerFormatter implements FormatterInterface
                 $data['faultactor'] = $e->faultactor;
             }
 
-            if (isset($e->detail) && (is_string($e->detail) || is_object($e->detail) || is_array($e->detail))) {
-                $data['detail'] = is_string($e->detail) ? $e->detail : reset($e->detail);
+            if (isset($e->detail)) {
+                if  (is_string($e->detail)) {
+                    $data['detail'] = $e->detail;
+                } elseif (is_object($e->detail) || is_array($e->detail)) {
+                    $data['detail'] = $this->toJson($e->detail, true);
+                }
             }
         }
 

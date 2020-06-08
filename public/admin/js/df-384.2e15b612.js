@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-384"],{cb87:function(e,a,t){"use strict";Object.defineProperty(a,"__esModule",{value:!0}),a.default=o;var d={lastWeek:"'oldingi' eeee p 'da'",yesterday:"'kecha' p 'da'",today:"'bugun' p 'da'",tomorrow:"'ertaga' p 'da'",nextWeek:"eeee p 'da'",other:"P"};function o(e,a,t,o){return d[e]}e.exports=a.default}}]);
+//# sourceMappingURL=df-384.2e15b612.js.map

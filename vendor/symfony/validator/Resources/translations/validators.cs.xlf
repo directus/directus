@@ -334,6 +334,54 @@
                 <source>This value should be valid JSON.</source>
                 <target>Tato hodnota musí být validní JSON.</target>
             </trans-unit>
+            <trans-unit id="87">
+                <source>This collection should contain only unique elements.</source>
+                <target>Tato kolekce musí obsahovat pouze unikátní prvky.</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>This value should be positive.</source>
+                <target>Tato hodnota musí být kladná.</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>This value should be either positive or zero.</source>
+                <target>Tato hodnota musí být buď kladná nebo nula.</target>
+            </trans-unit>
+            <trans-unit id="90">
+                <source>This value should be negative.</source>
+                <target>Tato hodnota musí být záporná.</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>This value should be either negative or zero.</source>
+                <target>Tato hodnota musí být buď záporná nebo nula.</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>This value is not a valid timezone.</source>
+                <target>Tato časová zóna neexistuje.</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>Zadané heslo bylo součástí úniku dat, takže ho není možné použít. Použijte prosím jiné heslo.</target>
+            </trans-unit>
+            <trans-unit id="94">
+                <source>This value should be between {{ min }} and {{ max }}.</source>
+                <target>Hodnota musí být mezi {{ min }} a {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="95">
+                <source>This value is not a valid hostname.</source>
+                <target>Tato hodnota není platný hostname.</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>The number of elements in this collection should be a multiple of {{ compared_value }}.</source>
+                <target>Počet prvků v této kolekci musí být násobek {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>This value should satisfy at least one of the following constraints:</source>
+                <target>Tato hodnota musí splňovat alespoň jedno z následujících omezení:</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>Each element of this collection should satisfy its own set of constraints.</source>
+                <target>Každý prvek v této kolekci musí splňovat svá vlastní omezení.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

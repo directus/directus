@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-186"],{7403:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=n;var p={lastWeek:"'նախորդ' eeee p'֊ին'",yesterday:"'երեկ' p'֊ին'",today:"'այսօր' p'֊ին'",tomorrow:"'վաղը' p'֊ին'",nextWeek:"'հաջորդ' eeee p'֊ին'",other:"P"};function n(e,t,o,n){return p[e]}e.exports=t.default}}]);
+//# sourceMappingURL=df-186.f8ad93b5.js.map

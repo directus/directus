@@ -40,6 +40,13 @@ class EmailValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
+    public function testObjectEmptyStringIsValid()
+    {
+        $this->validator->validate(new EmptyEmailObject(), new Email());
+
+        $this->assertNoViolation();
+    }
+
     public function testExpectsStringCompatibleType()
     {
         $this->expectException('Symfony\Component\Validator\Exception\UnexpectedTypeException');
@@ -254,5 +261,13 @@ class EmailValidatorTest extends ConstraintValidatorTestCase
             ['checkMX', Email::MX_CHECK_FAILED_ERROR],
             ['checkHost', Email::HOST_CHECK_FAILED_ERROR],
         ];
+    }
+}
+
+class EmptyEmailObject
+{
+    public function __toString()
+    {
+        return '';
     }
 }

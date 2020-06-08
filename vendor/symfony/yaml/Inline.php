@@ -636,15 +636,21 @@ class Inline
 
                 switch (true) {
                     case ctype_digit($scalar):
-                        $raw = $scalar;
+                        if ('0' === $scalar[0]) {
+                            return octdec(preg_replace('/[^0-7]/', '', $scalar));
+                        }
+
                         $cast = (int) $scalar;
 
-                        return '0' == $scalar[0] ? octdec($scalar) : (((string) $raw == (string) $cast) ? $cast : $raw);
+                        return ($scalar === (string) $cast) ? $cast : $scalar;
                     case '-' === $scalar[0] && ctype_digit(substr($scalar, 1)):
-                        $raw = $scalar;
+                        if ('0' === $scalar[1]) {
+                            return -octdec(preg_replace('/[^0-7]/', '', substr($scalar, 1)));
+                        }
+
                         $cast = (int) $scalar;
 
-                        return '0' == $scalar[1] ? -octdec(substr($scalar, 1)) : (($raw === (string) $cast) ? $cast : $raw);
+                        return ($scalar === (string) $cast) ? $cast : $scalar;
                     case is_numeric($scalar):
                     case Parser::preg_match(self::getHexRegex(), $scalar):
                         $scalar = str_replace('_', '', $scalar);

@@ -19,6 +19,8 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Optional;
+use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Context\ExecutionContextFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -156,5 +158,19 @@ class RecursiveValidatorTest extends AbstractTest
         $this->assertCount(2, $violations);
         $this->assertInstanceOf(NotBlank::class, $violations->get(0)->getConstraint());
         $this->assertInstanceOf(Length::class, $violations->get(1)->getConstraint());
+    }
+
+    public function testRequiredConstraintIsIgnored()
+    {
+        $violations = $this->validator->validate([], new Required());
+
+        $this->assertCount(0, $violations);
+    }
+
+    public function testOptionalConstraintIsIgnored()
+    {
+        $violations = $this->validator->validate([], new Optional());
+
+        $this->assertCount(0, $violations);
     }
 }

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["df-372"],{"4ec6":function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=n;var p={lastWeek:"'ئ‍ۆتكەن' eeee 'دە' p",yesterday:"'تۈنۈگۈن دە' p",today:"'بۈگۈن دە' p",tomorrow:"'ئەتە دە' p",nextWeek:"eeee 'دە' p",other:"P"};function n(e,t,o,n){return p[e]}e.exports=t.default}}]);
+//# sourceMappingURL=df-372.6569d2a7.js.map

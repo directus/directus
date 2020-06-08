@@ -1,3 +1,9 @@
+### 1.25.4 (2020-05-22)
+
+  * Fixed GitProcessor type error when there is no git repo present
+  * Fixed normalization of SoapFault objects containing deeply nested objects as "detail"
+  * Fixed support for relative paths in RotatingFileHandler
+
 ### 1.25.3 (2019-12-20)
 
   * Fixed formatting of resources in JsonFormatter

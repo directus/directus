@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Validator;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Composite;
+use Symfony\Component\Validator\Constraints\Existence;
 use Symfony\Component\Validator\Constraints\GroupSequence;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
@@ -677,6 +678,10 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
         // See validateClassNode()
         $cascadedGroups = null !== $cascadedGroups && \count($cascadedGroups) > 0 ? $cascadedGroups : $groups;
 
+        if ($value instanceof LazyProperty) {
+            $value = $value->getPropertyValue();
+        }
+
         if (\is_array($value)) {
             // Arrays are always traversed, independent of the specified
             // traversal strategy
@@ -786,6 +791,10 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
         $context->setGroup($group);
 
         foreach ($metadata->findConstraints($group) as $constraint) {
+            if ($constraint instanceof Existence) {
+                continue;
+            }
+
             // Prevent duplicate validation of constraints, in the case
             // that constraints belong to multiple validated groups
             if (null !== $cacheKey) {

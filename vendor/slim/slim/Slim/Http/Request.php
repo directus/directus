@@ -143,12 +143,11 @@ class Request extends Message implements ServerRequestInterface
 
         $request = new static($method, $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
 
-        if (in_array($method, ['POST', 'PATCH']) &&
+        if ($method === 'POST' &&
             in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
         ) {
-            parse_str(file_get_contents('php://input'), $_PATCH);
-            $data = $method === 'POST' ? $_POST : $_PATCH;
-            $request = $request->withParsedBody($data);
+            // parsed body must be $_POST
+            $request = $request->withParsedBody($_POST);
         }
         return $request;
     }

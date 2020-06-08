@@ -16,9 +16,10 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
+        "php": ">=7.1.3",
         "symfony/polyfill-mbstring": "~1.0",
         "symfony/polyfill-php73": "^1.8",
+        "symfony/polyfill-php80": "^1.15",
         "symfony/service-contracts": "^1.1|^2"
     },
     "require-dev": {
