@@ -73,7 +73,7 @@ export default defineComponent({
 
 		const loading = ref(false);
 		const error = ref(null);
-		const file = ref<File>(null);
+		const file = ref<File | null>(null);
 		const cacheBuster = ref(nanoid());
 
 		watch(

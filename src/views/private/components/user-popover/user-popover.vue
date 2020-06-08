@@ -57,7 +57,7 @@ export default defineComponent({
 
 		const loading = ref(false);
 		const error = ref(null);
-		const data = ref<User>(null);
+		const data = ref<User | null>(null);
 
 		const avatarSrc = computed(() => {
 			if (data.value === null) return null;

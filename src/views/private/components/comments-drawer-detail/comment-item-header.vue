@@ -80,7 +80,7 @@ export default defineComponent({
 			required: true,
 		},
 		refresh: {
-			type: Function,
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 	},

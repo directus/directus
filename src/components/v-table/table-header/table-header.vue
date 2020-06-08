@@ -105,7 +105,7 @@ export default defineComponent({
 		const dragging = ref<boolean>(false);
 		const dragStartX = ref<number>(0);
 		const dragStartWidth = ref<number>(0);
-		const dragHeader = ref<Header>(null);
+		const dragHeader = ref<Header | null>(null);
 
 		useEventListener(window, 'mousemove', throttle(onMouseMove, 40));
 		useEventListener(window, 'mouseup', onMouseUp);

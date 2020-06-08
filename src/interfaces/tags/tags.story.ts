@@ -111,7 +111,7 @@ export const withPresets = () =>
 		},
 		setup() {
 			const onInput = action('input');
-			const value = ref<string[]>(null);
+			const value = ref<string[] | null>(null);
 			return { onInput, value };
 		},
 		template: `

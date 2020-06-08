@@ -48,7 +48,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const verifying = ref(false);
-		const tokenCorrect = ref<boolean>(null);
+		const tokenCorrect = ref<boolean | null>(null);
 
 		const nextDisabled = computed(() => {
 			return (

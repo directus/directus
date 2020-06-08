@@ -177,7 +177,7 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
 
-		const revisionsDrawerDetail = ref<Vue>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
 			ref('directus_files'),
@@ -200,7 +200,7 @@ export default defineComponent({
 		});
 
 		const confirmLeave = ref(false);
-		const leaveTo = ref<string>(null);
+		const leaveTo = ref<string | null>(null);
 
 		return {
 			item,

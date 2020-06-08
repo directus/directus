@@ -61,7 +61,7 @@ export default defineComponent({
 		};
 
 		function useActivity(collection: string, primaryKey: string | number) {
-			const activity = ref<ActivityByDate[]>(null);
+			const activity = ref<ActivityByDate[] | null>(null);
 			const error = ref(null);
 			const loading = ref(false);
 

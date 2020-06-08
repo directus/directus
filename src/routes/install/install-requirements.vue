@@ -49,8 +49,8 @@ export default defineComponent({
 	setup(props) {
 		const loading = ref(false);
 		const error = ref(null);
-		const serverInfo = ref<ServerInfo>(null);
-		const lastTag = ref<string>(null);
+		const serverInfo = ref<ServerInfo | null>(null);
+		const lastTag = ref<string | null>(null);
 
 		const requirements = computed(() => {
 			if (serverInfo.value === null) return null;

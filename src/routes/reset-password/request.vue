@@ -26,7 +26,7 @@ export default defineComponent({
 		const email = ref(null);
 
 		const sending = ref(false);
-		const error = ref<RequestError>(null);
+		const error = ref<RequestError | null>(null);
 		const done = ref(false);
 
 		const errorFormatted = computed(() => {

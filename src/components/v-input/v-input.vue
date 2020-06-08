@@ -123,7 +123,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit, listeners }) {
-		const input = ref<HTMLInputElement>(null);
+		const input = ref<HTMLInputElement | null>(null);
 
 		const _listeners = computed(() => ({
 			...listeners,

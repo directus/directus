@@ -47,7 +47,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const _current = useSync(props, 'current', emit);
 
-		const options = ref<Option[]>(null);
+		const options = ref<Option[] | null>(null);
 
 		watch(
 			() => props.revisions,

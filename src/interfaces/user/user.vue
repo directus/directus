@@ -156,7 +156,7 @@ export default defineComponent({
 		};
 
 		function useCurrent() {
-			const currentUser = ref<Record<string, any>>(null);
+			const currentUser = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
 			const error = ref(null);
 
@@ -227,9 +227,9 @@ export default defineComponent({
 		}
 
 		function useUsers() {
-			const totalCount = ref<number>(null);
+			const totalCount = ref<number | null>(null);
 
-			const users = ref<Record<string, any>[]>(null);
+			const users = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
 			const error = ref(null);
 

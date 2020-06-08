@@ -28,8 +28,8 @@ export default defineComponent({
 
 		const loading = ref(false);
 		const error = ref(null);
-		const name = ref<string>(null);
-		const lastPage = ref<string>(null);
+		const name = ref<string | null>(null);
+		const lastPage = ref<string | null>(null);
 
 		watch(() => projectsStore.state.currentProjectKey, fetchUser);
 

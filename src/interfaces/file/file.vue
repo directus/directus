@@ -138,7 +138,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const projectsStore = useProjectsStore();
-		const activeDialog = ref<'upload' | 'choose' | 'url'>(null);
+		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, error, file, fetchFile } = useFile();
 
 		watch(() => props.value, fetchFile);
@@ -176,7 +176,7 @@ export default defineComponent({
 		function useFile() {
 			const loading = ref(false);
 			const error = ref(null);
-			const file = ref<FileInfo>(null);
+			const file = ref<FileInfo | null>(null);
 
 			return { loading, error, file, fetchFile };
 

@@ -124,7 +124,7 @@ export default defineComponent({
 		}
 
 		function useLanguages() {
-			const languages = ref<Record<string, any>>(null);
+			const languages = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
 			const error = ref(null);
 

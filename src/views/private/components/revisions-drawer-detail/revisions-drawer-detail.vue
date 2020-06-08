@@ -79,7 +79,7 @@ export default defineComponent({
 		});
 
 		const modalActive = ref(false);
-		const modalCurrentRevision = ref<number>(null);
+		const modalCurrentRevision = ref<number | null>(null);
 
 		return {
 			revisions,
@@ -100,8 +100,8 @@ export default defineComponent({
 		}
 
 		function useRevisions(collection: string, primaryKey: number | string) {
-			const revisions = ref<Revision[]>(null);
-			const revisionsByDate = ref<RevisionsByDate[]>(null);
+			const revisions = ref<Revision[] | null>(null);
+			const revisionsByDate = ref<RevisionsByDate[] | null>(null);
 			const error = ref(null);
 			const loading = ref(false);
 

@@ -80,7 +80,7 @@ export default defineComponent({
 		}
 
 		function useSelection() {
-			const localSelection = ref<(string | number)[]>(null);
+			const localSelection = ref<(string | number)[] | null>(null);
 
 			onUnmounted(() => {
 				localSelection.value = null;

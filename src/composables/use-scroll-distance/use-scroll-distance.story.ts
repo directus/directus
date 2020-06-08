@@ -11,7 +11,7 @@ export default {
 export const basic = () =>
 	defineComponent({
 		setup() {
-			const el = ref<Vue>(null);
+			const el = ref<HTMLElement | null>(null);
 			const { top, left } = useScrollDistance(el);
 			return { top, left, el };
 		},

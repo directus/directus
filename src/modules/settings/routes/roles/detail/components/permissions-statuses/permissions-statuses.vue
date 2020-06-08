@@ -57,7 +57,7 @@ export default defineComponent({
 			required: true,
 		},
 		savePermission: {
-			type: Function,
+			type: Function as PropType<(value: Partial<Permission>) => void>,
 			required: true,
 		},
 		combined: {

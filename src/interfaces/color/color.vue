@@ -144,7 +144,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const htmlColorInput = ref<Vue>(null);
+		const htmlColorInput = ref<Vue | null>(null);
 		type ColorType = 'RGB' | 'HSL';
 
 		const colorTypes = ['RGB', 'HSL'] as ColorType[];

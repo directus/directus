@@ -306,7 +306,7 @@ export default defineComponent({
 		function usePreset() {
 			const loading = ref(false);
 			const error = ref(null);
-			const preset = ref<CollectionPreset>(null);
+			const preset = ref<CollectionPreset | null>(null);
 
 			fetchPreset();
 
@@ -341,7 +341,7 @@ export default defineComponent({
 		function useUsers() {
 			const loading = ref(false);
 			const error = ref(null);
-			const users = ref<User[]>(null);
+			const users = ref<User[] | null>(null);
 
 			fetchUsers();
 
@@ -373,7 +373,7 @@ export default defineComponent({
 		function useRoles() {
 			const loading = ref(false);
 			const error = ref(null);
-			const roles = ref<Role[]>(null);
+			const roles = ref<Role[] | null>(null);
 
 			fetchRoles();
 

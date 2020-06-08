@@ -38,7 +38,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const isHashed = ref(false);
-		const localValue = ref<string>(null);
+		const localValue = ref<string | null>(null);
 
 		const _placeholder = computed(() => {
 			return isHashed.value ? i18n.t('value_hashed') : props.placeholder;

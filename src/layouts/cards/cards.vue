@@ -199,8 +199,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const layoutElement = ref<HTMLElement>(null);
-		const mainElement = inject('main-element', ref<Element>(null));
+		const layoutElement = ref<HTMLElement | null>(null);
+		const mainElement = inject('main-element', ref<Element | null>(null));
 		const projectsStore = useProjectsStore();
 
 		const _selection = useSync(props, 'selection', emit);

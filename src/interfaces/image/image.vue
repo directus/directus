@@ -90,7 +90,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 
 		const loading = ref(false);
-		const image = ref<Image>(null);
+		const image = ref<Image | null>(null);
 		const error = ref(null);
 		const lightboxActive = ref(false);
 		const editorActive = ref(false);

@@ -32,7 +32,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const className = ref<string>(null);
+		const className = ref<string | null>(null);
 
 		return { emitToggle, className, nudge };
 

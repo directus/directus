@@ -57,10 +57,7 @@
 			</drawer-detail>
 			<portal-target name="drawer" />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_webhooks_browse'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_webhooks_browse'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -85,7 +82,7 @@ export default defineComponent({
 	components: { SettingsNavigation },
 	props: {},
 	setup() {
-		const layout = ref<LayoutComponent>(null);
+		const layout = ref<LayoutComponent | null>(null);
 		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);

@@ -223,10 +223,10 @@ export default defineComponent({
 		function useImage() {
 			const loading = ref(false);
 			const error = ref(null);
-			const imageData = ref<Image>(null);
+			const imageData = ref<Image | null>(null);
 			const saving = ref(false);
 
-			const imageElement = ref<HTMLImageElement>(null);
+			const imageElement = ref<HTMLImageElement | null>(null);
 
 			return {
 				loading,
@@ -293,7 +293,7 @@ export default defineComponent({
 		}
 
 		function useCropper() {
-			const cropperInstance = ref<Cropper>(null);
+			const cropperInstance = ref<Cropper | null>(null);
 
 			const localAspectRatio = ref(NaN);
 

@@ -15,7 +15,7 @@ export function useCollectionPreset(collection: Ref<string>, bookmark: Ref<numbe
 		return !!collectionPresetsStore.state.collectionPresets.find((preset) => preset.id === bookmark.value);
 	});
 
-	const localPreset = ref<CollectionPreset>({});
+	const localPreset = ref<Partial<CollectionPreset>>({});
 	initLocalPreset();
 
 	const savePreset = async (preset?: Partial<CollectionPreset>) => {

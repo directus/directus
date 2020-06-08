@@ -143,7 +143,7 @@ export default defineComponent({
 
 			const loading = ref(false);
 			const error = ref(null);
-			const item = ref<Record<string, any>>(null);
+			const item = ref<Record<string, any> | null>(null);
 
 			watch(
 				() => props.active,

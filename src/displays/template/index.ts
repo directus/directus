@@ -26,7 +26,7 @@ export default defineDisplay(({ i18n }) => ({
 	types: ['string'],
 	fields: (options: Options, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
-		const { primaryKeyField } = useCollection(ref(relatedCollection));
+		const { primaryKeyField } = useCollection(ref(relatedCollection as string));
 
 		if (!relatedCollection) return [];
 

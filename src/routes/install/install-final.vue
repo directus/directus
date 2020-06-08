@@ -67,7 +67,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const loading = ref(true);
-		const error = ref<RequestError>(null);
+		const error = ref<RequestError | null>(null);
 
 		const _token = computed(() => {
 			return props.token || nanoid();

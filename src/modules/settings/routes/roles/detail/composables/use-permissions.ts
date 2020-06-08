@@ -20,7 +20,7 @@ export type Permission = {
 export default function usePermissions(role: Ref<number>) {
 	const loading = ref(false);
 	const error = ref(null);
-	const permissions = ref<Permission[]>(null);
+	const permissions = ref<Permission[] | null>(null);
 
 	const projectsStore = useProjectsStore();
 

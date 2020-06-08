@@ -47,7 +47,7 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const active = ref(false);
-		const activator = ref<Element>(null);
+		const activator = ref<Element | null>(null);
 
 		const currentProject = projectsStore.currentProject;
 

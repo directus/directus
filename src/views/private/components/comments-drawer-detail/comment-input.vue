@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from '@vue/composition-api';
 import useProjectsStore from '@/stores/projects';
 import notify from '@/utils/notify';
 import api from '@/api';
@@ -26,7 +26,7 @@ import i18n from '@/lang';
 export default defineComponent({
 	props: {
 		refresh: {
-			type: Function,
+			type: Function as PropType<() => void>,
 			required: true,
 		},
 		collection: {

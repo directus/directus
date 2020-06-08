@@ -220,7 +220,7 @@ export default defineComponent({
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(collection);
 
@@ -246,7 +246,7 @@ export default defineComponent({
 		const confirmSoftDelete = ref(false);
 
 		const confirmLeave = ref(false);
-		const leaveTo = ref<string>(null);
+		const leaveTo = ref<string | null>(null);
 
 		const backLink = computed(() => `/${currentProjectKey.value}/collections/${collection.value}/`);
 

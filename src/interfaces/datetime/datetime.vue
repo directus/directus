@@ -117,7 +117,7 @@ export default defineComponent({
 			return parse(props.value, formatString.value, new Date());
 		});
 
-		const displayValue = ref<string>(null);
+		const displayValue = ref<string | null>(null);
 
 		syncDisplayValue();
 

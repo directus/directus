@@ -347,7 +347,7 @@ export default defineComponent({
 		function useEdits() {
 			// Primary key of the item we're currently editing. If null, the edit modal should be
 			// closed
-			const currentlyEditing = ref<string | number>(null);
+			const currentlyEditing = ref<string | number | null>(null);
 
 			// This keeps track of the starting values so we can match with it
 			const editsAtStart = ref({});

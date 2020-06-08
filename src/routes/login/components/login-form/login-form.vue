@@ -65,10 +65,10 @@ export default defineComponent({
 		const projectsStore = useProjectsStore();
 
 		const loggingIn = ref(false);
-		const email = ref<string>(null);
-		const password = ref<string>(null);
-		const error = ref<RequestError>(null);
-		const otp = ref<string>(null);
+		const email = ref<string | null>(null);
+		const password = ref<string | null>(null);
+		const error = ref<RequestError | null>(null);
+		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
 
 		watch(email, () => {

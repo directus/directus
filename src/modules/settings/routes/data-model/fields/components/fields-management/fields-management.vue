@@ -220,7 +220,7 @@ export default defineComponent({
 
 		function useFieldSetup() {
 			const fieldSetupActive = ref(false);
-			const editingField = ref<Field>(null);
+			const editingField = ref<Field | null>(null);
 
 			return { fieldSetupActive, editingField, openFieldSetup, closeFieldSetup };
 

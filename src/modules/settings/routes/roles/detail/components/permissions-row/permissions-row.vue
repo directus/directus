@@ -235,7 +235,7 @@ export default defineComponent({
 			required: true,
 		},
 		saveAll: {
-			type: Function,
+			type: Function as PropType<(create: Partial<Permission>[], update: Partial<Permission>[]) => void>,
 			required: true,
 		},
 	},

@@ -81,10 +81,7 @@
 				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_presets_browse'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -163,7 +160,7 @@ export default defineComponent({
 
 		function usePresets() {
 			const loading = ref(false);
-			const presetsRaw = ref<PresetRaw[]>(null);
+			const presetsRaw = ref<PresetRaw[] | null>(null);
 			const error = ref(null);
 
 			const presets = computed<Preset[]>(() => {

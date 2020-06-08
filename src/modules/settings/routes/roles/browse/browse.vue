@@ -82,7 +82,7 @@ export default defineComponent({
 	components: { SettingsNavigation },
 	props: {},
 	setup() {
-		const layout = ref<LayoutComponent>(null);
+		const layout = ref<LayoutComponent | null>(null);
 		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);

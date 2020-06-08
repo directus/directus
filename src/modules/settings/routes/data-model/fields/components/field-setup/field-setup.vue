@@ -148,7 +148,7 @@ export default defineComponent({
 			};
 
 			const field = ref<any>({ ...defaults });
-			const localType = ref<LocalType>(null);
+			const localType = ref<LocalType | null>(null);
 
 			watch(
 				() => props.active,

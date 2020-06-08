@@ -99,7 +99,7 @@ export default defineComponent({
 	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput },
 	props: {},
 	setup() {
-		const layout = ref<LayoutComponent>(null);
+		const layout = ref<LayoutComponent | null>(null);
 		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);

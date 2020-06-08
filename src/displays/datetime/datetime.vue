@@ -22,7 +22,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayValue = ref<string>(null);
+		const displayValue = ref<string | null>(null);
 
 		watch(
 			() => props.value,

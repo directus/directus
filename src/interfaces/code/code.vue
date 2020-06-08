@@ -62,8 +62,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const codemirrorEl = ref<HTMLTextAreaElement>(null);
-		const codemirror = ref<CodeMirror.EditorFromTextArea>(null);
+		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
+		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {

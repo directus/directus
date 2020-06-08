@@ -12,7 +12,7 @@ describe('Composables / useScrollDistance', () => {
 	it('Returns the correct scroll position', () => {
 		const TestComponent = defineComponent({
 			setup() {
-				const el = ref<Element>(null);
+				const el = ref<Element | null>(null);
 
 				const { top, left } = useScrollDistance(el);
 
@@ -62,8 +62,8 @@ describe('Composables / useScrollDistance', () => {
 		const TestComponent = defineComponent({
 			components: { VSheet },
 			setup() {
-				const el = ref<Vue>(null);
-				const { target } = useScrollDistance(el);
+				const el = ref<Vue | null>(null);
+				const { target } = useScrollDistance(el as any);
 
 				onMounted(() => {
 					expect(target.value instanceof HTMLElement).toBe(true);

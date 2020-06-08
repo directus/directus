@@ -160,7 +160,7 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
 			ref('directus_users'),
@@ -185,7 +185,7 @@ export default defineComponent({
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
 		const confirmLeave = ref(false);
-		const leaveTo = ref<string>(null);
+		const leaveTo = ref<string | null>(null);
 
 		return {
 			title,
@@ -261,8 +261,8 @@ export default defineComponent({
 		function useUserPreview() {
 			const loading = ref(false);
 			const error = ref(null);
-			const avatarSrc = ref<string>(null);
-			const roleName = ref<string>(null);
+			const avatarSrc = ref<string | null>(null);
+			const roleName = ref<string | null>(null);
 
 			watch(() => props.primaryKey, getUserPreviewData);
 

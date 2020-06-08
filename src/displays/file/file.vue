@@ -38,7 +38,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const previewEl = ref<Element>(null);
+		const previewEl = ref<Element | null>(null);
 
 		const fileExtension = computed(() => {
 			if (!props.value) return null;

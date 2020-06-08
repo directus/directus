@@ -215,8 +215,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { currentProjectKey } = toRefs(useProjectsStore().state);
 
-		const table = ref<Vue>(null);
-		const mainElement = inject('main-element', ref<Element>(null));
+		const table = ref<Vue | null>(null);
+		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
 		const _viewOptions: Ref<any> = useSync(props, 'viewOptions', emit);

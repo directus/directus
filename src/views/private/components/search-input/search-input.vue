@@ -23,7 +23,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const input = ref<HTMLInputElement>(null);
+		const input = ref<HTMLInputElement | null>(null);
 
 		const active = ref(props.value !== null);
 

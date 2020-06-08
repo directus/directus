@@ -46,7 +46,7 @@ export default defineComponent({
 
 		const initialValues = settingsStore.formatted;
 
-		const edits = ref<{ [key: string]: any }>(null);
+		const edits = ref<{ [key: string]: any } | null>(null);
 
 		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
 

@@ -193,7 +193,7 @@ export default defineComponent({
 		};
 
 		function useCurrent() {
-			const currentItem = ref<Record<string, any>>(null);
+			const currentItem = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
 			const error = ref(null);
 
@@ -273,9 +273,9 @@ export default defineComponent({
 		}
 
 		function useItems() {
-			const totalCount = ref<number>(null);
+			const totalCount = ref<number | null>(null);
 
-			const items = ref<Record<string, any>[]>(null);
+			const items = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
 			const error = ref(null);
 

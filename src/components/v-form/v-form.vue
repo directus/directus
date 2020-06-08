@@ -75,7 +75,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const el = ref<Element>(null);
+		const el = ref<Element | null>(null);
 		const fieldsStore = useFieldsStore();
 
 		const values = computed(() => {

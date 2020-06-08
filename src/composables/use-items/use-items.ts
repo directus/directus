@@ -35,8 +35,8 @@ export function useItems(collection: Ref<string>, query: Query) {
 	const loading = ref(false);
 	const error = ref(null);
 
-	const itemCount = ref<number>(null);
-	const totalCount = ref<number>(null);
+	const itemCount = ref<number | null>(null);
+	const totalCount = ref<number | null>(null);
 
 	const totalPages = computed(() => {
 		if (itemCount.value === null) return 1;

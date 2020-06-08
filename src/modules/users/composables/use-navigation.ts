@@ -8,7 +8,7 @@ let loading: Ref<boolean> | null = null;
 
 export default function useNavigation() {
 	if (roles === null) {
-		roles = ref<Role[]>(null);
+		roles = ref<Role[] | null>(null);
 	}
 
 	if (loading === null) {

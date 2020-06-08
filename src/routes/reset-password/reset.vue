@@ -39,7 +39,7 @@ export default defineComponent({
 		const password = ref(null);
 
 		const resetting = ref(false);
-		const error = ref<RequestError>(null);
+		const error = ref<RequestError | null>(null);
 		const done = ref(false);
 
 		const errorFormatted = computed(() => {

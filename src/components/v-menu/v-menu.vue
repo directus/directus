@@ -109,14 +109,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const activator = ref<HTMLElement>(null);
+		const activator = ref<HTMLElement | null>(null);
 
 		const reference = computed<HTMLElement | null>(() => {
 			return (activator.value as HTMLElement)?.childNodes[0] as HTMLElement;
 		});
 
 		const id = computed(() => nanoid());
-		const popper = ref<HTMLElement>(null);
+		const popper = ref<HTMLElement | null>(null);
 
 		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
 			reference,

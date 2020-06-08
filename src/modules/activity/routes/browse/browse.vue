@@ -49,7 +49,7 @@ export default defineComponent({
 	components: { ActivityNavigation },
 	props: {},
 	setup() {
-		const layout = ref<LayoutComponent>(null);
+		const layout = ref<LayoutComponent | null>(null);
 		const projectsStore = useProjectsStore();
 
 		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_activity'));

@@ -71,7 +71,7 @@ export default defineComponent({
 			return bytes(props.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
 		});
 
-		const creationDate = ref<string>(null);
+		const creationDate = ref<string | null>(null);
 
 		localizedFormat(new Date(props.uploaded_on), String(i18n.t('date-fns_datetime'))).then((result) => {
 			creationDate.value = result;

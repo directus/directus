@@ -50,7 +50,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
-		const contentEl = ref<HTMLElement>(null);
+		const contentEl = ref<HTMLElement | null>(null);
 
 		const menuActive = ref(false);
 

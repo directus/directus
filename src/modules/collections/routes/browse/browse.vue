@@ -203,7 +203,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const layout = ref<LayoutComponent>(null);
+		const layout = ref<LayoutComponent | null>(null);
 
 		const { collection } = toRefs(props);
 		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));

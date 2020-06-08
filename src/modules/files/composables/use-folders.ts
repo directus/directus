@@ -23,7 +23,7 @@ export default function useFolders() {
 	const projectsStore = useProjectsStore();
 
 	if (loading === null) loading = ref(false);
-	if (folders === null) folders = ref<Folder[]>(null);
+	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
 
 	if (folders.value === null && loading.value === false) {
