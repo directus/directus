@@ -5,10 +5,9 @@
 				<v-icon name="close" @click="_selection = []" />
 				{{ $tc('n_items_selected', _selection.length) }}
 			</div>
+			<button class="select-all" v-else @click="$emit('select-all')">{{ $t('select_all') }}</button>
 		</div>
 		<div class="end">
-			<!-- <v-slider class="size-selector" v-model="_size" :min="100" :max="200" :step="1" /> -->
-
 			<v-icon
 				class="size-selector"
 				:name="`grid_${7 - size}`"

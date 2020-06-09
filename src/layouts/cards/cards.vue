@@ -55,7 +55,13 @@
 		</portal>
 
 		<template v-if="loading || itemCount > 0">
-			<cards-header :fields="availableFields" :size.sync="size" :selection.sync="_selection" :sort.sync="sort" />
+			<cards-header
+				@select-all="selectAll"
+				:fields="availableFields"
+				:size.sync="size"
+				:selection.sync="_selection"
+				:sort.sync="sort"
+			/>
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<template v-if="loading">
@@ -136,6 +142,7 @@ import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import useElementSize from '@/composables/use-element-size';
+import { clone } from 'lodash';
 
 type Item = Record<string, any>;
 
@@ -292,6 +299,7 @@ export default defineComponent({
 			layoutElement,
 			activeFilterCount,
 			refresh,
+			selectAll,
 		};
 
 		function refresh() {
@@ -399,6 +407,14 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				primaryKey: item[primaryKeyField.value!.field],
 			});
+		}
+
+		function selectAll() {
+			if (!primaryKeyField.value) return;
+			emit(
+				'update:selection',
+				clone(items.value).map((item: any) => item[primaryKeyField.value.field])
+			);
 		}
 	},
 });

@@ -143,6 +143,8 @@
 	"date": "Date",
 	"year": "Year",
 
+	"select_all": "Select All",
+
 	"months": {
 		"january": "January",
 		"february": "February",
