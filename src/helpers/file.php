@@ -453,7 +453,7 @@ if (!function_exists('validate_file_size')) {
             throw new InvalidRequestException($message);
         }
 
-        if ($value > $maxSize) {
+        if ($value > $maxSize && $maxSize != 0) {
             $message = 'The file is too large. Allowed maximum size is ' . $size . '.';
             throw new InvalidRequestException($message);
         }
