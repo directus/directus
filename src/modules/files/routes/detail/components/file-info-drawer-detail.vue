@@ -153,6 +153,7 @@ export default defineComponent({
 			return { folder };
 
 			async function fetchFolder() {
+				if (!props.file.folder) return;
 				loading.value = true;
 				const { currentProjectKey } = projectsStore.state;
 
