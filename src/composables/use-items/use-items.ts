@@ -46,17 +46,21 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 	getItems();
 
-	watch(collection, async (after, before) => {
-		if (!before || isEqual(after, before)) {
-			return;
-		}
+	watch(
+		collection,
+		async (after, before) => {
+			if (!before || isEqual(after, before)) {
+				return;
+			}
 
-		// Waiting for the tick here makes sure the query have been adjusted for the new
-		// collection
-		await Vue.nextTick();
-		reset();
-		getItems();
-	});
+			// Waiting for the tick here makes sure the query have been adjusted for the new
+			// collection
+			await Vue.nextTick();
+			reset();
+			getItems();
+		},
+		{ immediate: true }
+	);
 
 	watch([page, fields], async (after, before) => {
 		if (!before || isEqual(after, before)) {

@@ -130,11 +130,15 @@ export default defineComponent({
 
 		const { isActive, activate, deactivate, toggle } = useActiveState();
 
-		watch(isActive, () => {
-			Vue.nextTick(() => {
-				popper.value = document.getElementById(id.value);
-			});
-		});
+		watch(
+			isActive,
+			() => {
+				Vue.nextTick(() => {
+					popper.value = document.getElementById(id.value);
+				});
+			},
+			{ immediate: true }
+		);
 
 		const { onClick, onPointerEnter, onPointerLeave } = useEvents();
 
@@ -177,13 +181,17 @@ export default defineComponent({
 				},
 			});
 
-			watch(popper, async () => {
-				if (popper.value !== null) {
-					await start();
-				} else {
-					stop();
-				}
-			});
+			watch(
+				popper,
+				async () => {
+					if (popper.value !== null) {
+						await start();
+					} else {
+						stop();
+					}
+				},
+				{ immediate: true }
+			);
 
 			return { isActive, activate, deactivate, toggle };
 

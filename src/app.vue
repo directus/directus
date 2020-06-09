@@ -37,16 +37,20 @@ export default defineComponent({
 
 		const { width } = useWindowSize();
 
-		watch(width, (newWidth, oldWidth) => {
-			if (newWidth === null || newWidth === 0) return;
-			if (newWidth === oldWidth) return;
+		watch(
+			width,
+			(newWidth, oldWidth) => {
+				if (newWidth === null || newWidth === 0) return;
+				if (newWidth === oldWidth) return;
 
-			if (newWidth >= 1424) {
-				if (drawerOpen.value === false) drawerOpen.value = true;
-			} else {
-				if (drawerOpen.value === true) drawerOpen.value = false;
-			}
-		});
+				if (newWidth >= 1424) {
+					if (drawerOpen.value === false) drawerOpen.value = true;
+				} else {
+					if (drawerOpen.value === true) drawerOpen.value = false;
+				}
+			},
+			{ immediate: true }
+		);
 
 		watch(
 			() => userStore.state.currentUser,

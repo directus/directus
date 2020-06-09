@@ -26,7 +26,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			: `/${currentProjectKey}/items/${collection.value}`;
 	});
 
-	watch([collection, primaryKey], refresh);
+	watch([collection, primaryKey], refresh, { immediate: true });
 
 	return {
 		edits,

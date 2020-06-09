@@ -26,12 +26,16 @@ export function usePopper(
 		stop();
 	});
 
-	watch(options, () => {
-		popperInstance.value?.setOptions({
-			placement: options.value.attached ? 'bottom-start' : options.value.placement,
-			modifiers: getModifiers(),
-		});
-	});
+	watch(
+		options,
+		() => {
+			popperInstance.value?.setOptions({
+				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				modifiers: getModifiers(),
+			});
+		},
+		{ immediate: true }
+	);
 
 	const observer = new MutationObserver(() => {
 		popperInstance.value?.forceUpdate();

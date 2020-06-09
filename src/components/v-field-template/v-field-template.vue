@@ -57,7 +57,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { tree } = useFieldTree(collection);
 
-		watch(() => props.value, setContent);
+		watch(() => props.value, setContent, { immediate: true });
 		onMounted(setContent);
 
 		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive };
