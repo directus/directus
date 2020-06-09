@@ -361,7 +361,8 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		--content-padding: 32px 32px 132px 32px;
+		--content-padding: 32px;
+		--content-padding-bottom: 132px;
 	}
 }
 
