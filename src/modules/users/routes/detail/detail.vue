@@ -288,7 +288,7 @@ export default defineComponent({
 			const avatarSrc = ref<string | null>(null);
 			const roleName = ref<string | null>(null);
 
-			watch(() => props.primaryKey, getUserPreviewData);
+			watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
 
 			return { loading, error, avatarSrc, roleName };
 
