@@ -82,7 +82,8 @@ export default defineComponent({
 				if (newID && newID !== oldID) {
 					fetchFile();
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		return { _active, cacheBuster, loading, error, file };
