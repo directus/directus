@@ -64,6 +64,7 @@
 		<v-table
 			v-model="_selection"
 			v-if="loading || itemCount > 0"
+			class="table"
 			ref="table"
 			fixed-header
 			:show-select="readonly ? false : selection !== undefined"
@@ -527,9 +528,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout-tabular {
-	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: 0;
+	padding-left: var(--content-padding);
+
+	::v-deep tr {
+		margin-right: var(--content-padding);
+	}
 }
 
 .v-table {
