@@ -63,7 +63,7 @@
 						<v-skeleton-loader type="text" />
 						<v-skeleton-loader type="text" />
 					</template>
-					<template v-else>
+					<template v-else-if="isNew === false">
 						<div class="name type-title">{{ item.first_name }} {{ item.last_name }}</div>
 						<div class="status-role" :class="item.status">{{ $t(item.status) }} {{ roleName }}</div>
 						<div class="email">{{ item.email }}</div>
@@ -72,9 +72,9 @@
 			</div>
 
 			<v-form
+				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
-				collection="directus_users"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				v-model="edits"
@@ -95,9 +95,7 @@
 		</v-dialog>
 
 		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_users_detail'))" />
-			</drawer-detail>
+			<user-info-drawer-detail :is-new="isNew" :user="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
@@ -128,6 +126,10 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
 import api from '@/api';
+import useFieldsStore from '@/stores/fields';
+import useFormFields from '@/composables/use-form-fields';
+import { Field } from '@/stores/fields/types';
+import UserInfoDrawerDetail from './components/user-info-drawer-detail.vue';
 
 type Values = {
 	[field: string]: any;
@@ -147,7 +149,7 @@ export default defineComponent({
 
 		return next();
 	},
-	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsDrawerDetail },
+	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsDrawerDetail, UserInfoDrawerDetail },
 	props: {
 		primaryKey: {
 			type: String,
@@ -156,6 +158,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const projectsStore = useProjectsStore();
+		const fieldsStore = useFieldsStore();
 		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -187,6 +190,26 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
+		// These fields will be shown in the sidebar instead
+		const fieldsBlacklist = [
+			'id',
+			'external_id',
+			'last_page',
+			'last_access_on',
+			'created_on',
+			'created_by',
+			'modified_by',
+			'modified_on',
+		];
+
+		const fieldsFiltered = computed(() => {
+			return fieldsStore
+				.getFieldsForCollection('directus_users')
+				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
+		});
+
+		const { formFields } = useFormFields(fieldsFiltered);
+
 		return {
 			title,
 			item,
@@ -213,6 +236,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			formFields,
 		};
 
 		function useBreadcrumb() {
