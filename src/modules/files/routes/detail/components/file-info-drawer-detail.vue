@@ -1,17 +1,22 @@
 <template>
 	<drawer-detail icon="info_outline" :title="$t('file_details')" close>
 		<dl>
-			<div v-if="type">
+			<div v-if="file.type">
 				<dt>{{ $t('type') }}</dt>
-				<dd>{{ readableMimeType(type) || type }}</dd>
+				<dd>{{ readableMimeType(file.type) || file.type }}</dd>
 			</div>
 
-			<div v-if="width && height">
+			<div v-if="file.width && file.height">
 				<dt>{{ $t('dimensions') }}</dt>
-				<dd>{{ $n(width) }} × {{ $n(height) }}</dd>
+				<dd>{{ $n(file.width) }} × {{ $n(file.height) }}</dd>
 			</div>
 
-			<div v-if="filesize">
+			<div v-if="file.duration">
+				<dt>{{ $t('duration') }}</dt>
+				<dd>{{ $n(file.duration) }}</dd>
+			</div>
+
+			<div v-if="file.filesize">
 				<dt>{{ $t('size') }}</dt>
 				<dd>{{ size }}</dd>
 			</div>
@@ -21,63 +26,154 @@
 				<dd>{{ creationDate }}</dd>
 			</div>
 
-			<div v-if="checksum" class="checksum">
+			<div v-if="file.checksum" class="checksum">
 				<dt>{{ $t('checksum') }}</dt>
-				<dd>{{ checksum }}</dd>
+				<dd>{{ file.checksum }}</dd>
+			</div>
+
+			<div v-if="user">
+				<dt>{{ $t('user') }}</dt>
+				<dd>
+					<router-link :to="user.link">{{ user.name }}</router-link>
+				</dd>
+			</div>
+
+			<div v-if="folder">
+				<dt>{{ $t('folder') }}</dt>
+				<dd>{{ folder.name }}</dd>
 			</div>
 		</dl>
 	</drawer-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
 import i18n from '@/lang';
 import localizedFormat from '@/utils/localized-format';
+import useProjectsStore from '@/stores/projects';
+import api from '@/api';
 
 export default defineComponent({
 	inheritAttrs: false,
 	props: {
-		type: {
-			type: String,
-			default: null,
+		file: {
+			type: Object,
+			default: () => ({}),
 		},
-		width: {
-			type: Number,
-			default: null,
-		},
-		height: {
-			type: Number,
-			default: null,
-		},
-		filesize: {
-			type: Number,
-			default: null,
-		},
-		uploaded_on: {
-			type: String,
-			default: null,
-		},
-		checksum: {
-			type: String,
-			default: null,
+		isNew: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
+		const projectsStore = useProjectsStore();
+
 		const size = computed(() => {
-			if (!props.filesize) return null;
+			if (props.isNew) return null;
+			if (!props.file) return null;
+			if (!props.file.filesize) return null;
 
-			return bytes(props.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
+			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
 		});
 
-		const creationDate = ref<string | null>(null);
+		const { creationDate } = useCreationDate();
+		const { user } = useUser();
+		const { folder } = useFolder();
 
-		localizedFormat(new Date(props.uploaded_on), String(i18n.t('date-fns_datetime'))).then((result) => {
-			creationDate.value = result;
-		});
+		return { readableMimeType, size, creationDate, user, folder };
 
-		return { readableMimeType, size, creationDate };
+		function useCreationDate() {
+			const creationDate = ref<string | null>(null);
+
+			watch(
+				() => props.file,
+				async () => {
+					creationDate.value = await localizedFormat(
+						new Date(props.file.uploaded_on),
+						String(i18n.t('date-fns_date_short'))
+					);
+				},
+				{ immediate: true }
+			);
+
+			return { creationDate };
+		}
+
+		function useUser() {
+			type User = {
+				id: number;
+				name: string;
+				link: string;
+			};
+
+			const loading = ref(false);
+			const user = ref<User | null>(null);
+
+			watch(() => props.file, fetchUser, { immediate: true });
+
+			return { user };
+
+			async function fetchUser() {
+				loading.value = true;
+				const { currentProjectKey } = projectsStore.state;
+
+				try {
+					const response = await api.get(`/${currentProjectKey}/users/${props.file.uploaded_by}`, {
+						params: {
+							fields: ['id', 'first_name', 'last_name', 'role'],
+						},
+					});
+
+					const { id, first_name, last_name, role } = response.data.data;
+
+					user.value = {
+						id: props.file.uploaded_by,
+						name: first_name + ' ' + last_name,
+						link: `/${currentProjectKey}/users/${role}/${id}`,
+					};
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
+
+		function useFolder() {
+			type Folder = {
+				id: number;
+				name: string;
+			};
+
+			const loading = ref(false);
+			const folder = ref<Folder | null>(null);
+
+			watch(() => props.file, fetchFolder, { immediate: true });
+
+			return { folder };
+
+			async function fetchFolder() {
+				loading.value = true;
+				const { currentProjectKey } = projectsStore.state;
+
+				try {
+					const response = await api.get(`/${currentProjectKey}/folders/${props.file.folder}`, {
+						params: {
+							fields: ['id', 'name'],
+						},
+					});
+
+					const { name } = response.data.data;
+
+					folder.value = {
+						id: props.file.folder,
+						name: name,
+					};
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -104,6 +200,10 @@ dd {
 	color: var(--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+dd a {
+	color: var(--primary-key);
 }
 
 .checksum {

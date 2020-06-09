@@ -98,7 +98,7 @@
 		</v-dialog>
 
 		<template #drawer>
-			<file-info-drawer-detail v-if="isNew === false" v-bind="item" />
+			<file-info-drawer-detail v-if="isNew === false" :file="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -192,7 +192,16 @@ export default defineComponent({
 		const previewActive = ref(false);
 
 		// These are the fields that will be prevented from showing up in the form
-		const fieldsBlacklist: string[] = ['type', 'width', 'height', 'filesize', 'checksum'];
+		const fieldsBlacklist: string[] = [
+			'type',
+			'width',
+			'height',
+			'filesize',
+			'checksum',
+			'uploaded_by',
+			'uploaded_on',
+			'duration',
+		];
 
 		const fieldsFiltered = computed(() => {
 			return fieldsStore
