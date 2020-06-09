@@ -135,6 +135,7 @@ import useFieldsStore from '@/stores/fields';
 import { Field } from '@/stores/fields/types';
 import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
 import marked from 'marked';
+import useFormFields from '@/composables/use-form-fields';
 
 type Values = {
 	[field: string]: any;
@@ -193,11 +194,13 @@ export default defineComponent({
 		// These are the fields that will be prevented from showing up in the form
 		const fieldsBlacklist: string[] = ['type', 'width', 'height', 'filesize', 'checksum'];
 
-		const formFields = computed(() => {
+		const fieldsFiltered = computed(() => {
 			return fieldsStore
 				.getFieldsForCollection('directus_files')
 				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
 		});
+
+		const { formFields } = useFormFields(fieldsFiltered);
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
