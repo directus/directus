@@ -98,7 +98,7 @@
 		</v-dialog>
 
 		<template #drawer>
-			<file-info-drawer-detail v-if="isNew === false" :file="item" />
+			<file-info-drawer-detail :file="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
