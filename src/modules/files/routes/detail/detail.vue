@@ -32,6 +32,31 @@
 				</v-card>
 			</v-dialog>
 
+			<v-dialog v-model="moveToDialogActive" v-if="isNew === false">
+				<template #activator="{ on }">
+					<v-button rounded icon :disabled="item === null" @click="on" class="folder">
+						<v-icon name="folder" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+
+					<v-card-text>
+						<folder-picker v-model="selectedFolder" />
+					</v-card-text>
+
+					<v-card-actions>
+						<v-button @click="moveToDialogActive = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="moveToFolder" :loading="moving">
+							{{ $t('move') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
 			<v-button v-if="item && item.type.includes('image')" rounded icon @click="editActive = true" class="edit">
 				<v-icon name="tune" />
 			</v-button>
@@ -136,6 +161,8 @@ import { Field } from '@/stores/fields/types';
 import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
 import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
+import FolderPicker from '../../components/folder-picker';
+import api from '@/api';
 
 type Values = {
 	[field: string]: any;
@@ -164,6 +191,7 @@ export default defineComponent({
 		ImageEditor,
 		FileLightbox,
 		FileInfoDrawerDetail,
+		FolderPicker,
 	},
 	props: {
 		primaryKey: {
@@ -180,10 +208,20 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
-			ref('directus_files'),
-			primaryKey
-		);
+		const {
+			isNew,
+			edits,
+			item,
+			saving,
+			loading,
+			error,
+			save,
+			remove,
+			deleting,
+			saveAsCopy,
+			isBatch,
+			refresh,
+		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
@@ -214,6 +252,8 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
+		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
 		return {
 			item,
 			loading,
@@ -241,6 +281,10 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			moveToDialogActive,
+			moveToFolder,
+			moving,
+			selectedFolder,
 		};
 
 		function changeCacheBuster() {
@@ -295,6 +339,31 @@ export default defineComponent({
 			edits.value = {};
 			router.push(leaveTo.value);
 		}
+
+		function useMovetoFolder() {
+			const moveToDialogActive = ref(false);
+			const moving = ref(false);
+			const selectedFolder = ref<number | null>();
+
+			return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+			async function moveToFolder() {
+				moving.value = true;
+				const { currentProjectKey } = projectsStore.state;
+
+				try {
+					await api.patch(`/${currentProjectKey}/files/${props.primaryKey}`, {
+						folder: selectedFolder.value,
+					});
+					await refresh();
+				} catch (err) {
+					console.error(err);
+				} finally {
+					moveToDialogActive.value = false;
+					moving.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -311,7 +380,8 @@ export default defineComponent({
 	--v-button-background-color: var(--background-normal);
 }
 
-.edit {
+.edit,
+.folder {
 	--v-button-background-color: var(--primary-25);
 	--v-button-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-50);

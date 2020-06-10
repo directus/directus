@@ -1,6 +1,6 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" @click.stop="onClick">
+		<v-list-item :active="active" class="activator" :to="to" @click="onClick">
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
@@ -51,6 +51,7 @@ export default defineComponent({
 			if (props.to) return null;
 			if (listeners.click) return emit('click', event);
 
+			event.stopPropagation();
 			toggle();
 		}
 	},

@@ -13,6 +13,33 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
+			<add-folder :parent="currentFolder" />
+
+			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0">
+				<template #activator="{ on }">
+					<v-button rounded icon @click="on" class="folder">
+						<v-icon name="folder" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+
+					<v-card-text>
+						<folder-picker v-model="selectedFolder" />
+					</v-card-text>
+
+					<v-card-actions>
+						<v-button @click="moveToDialogActive = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="moveToFolder" :loading="moving">
+							{{ $t('move') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
@@ -37,8 +64,6 @@
 			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink">
 				<v-icon name="edit" />
 			</v-button>
-
-			<add-folder :parent="currentFolder" />
 
 			<v-button rounded icon :to="addNewLink">
 				<v-icon name="add" />
@@ -89,6 +114,7 @@ import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail'
 import AddFolder from '../../components/add-folder';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
+import FolderPicker from '../../components/folder-picker';
 
 type Item = {
 	[field: string]: any;
@@ -96,7 +122,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
@@ -153,6 +179,8 @@ export default defineComponent({
 			};
 		}
 
+		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
 		return {
 			addNewLink,
 			batchDelete,
@@ -170,6 +198,10 @@ export default defineComponent({
 			filtersWithFolderAndType,
 			searchQuery,
 			marked,
+			moveToDialogActive,
+			moveToFolder,
+			moving,
+			selectedFolder,
 		};
 
 		function useBatchDelete() {
@@ -226,6 +258,32 @@ export default defineComponent({
 
 			return { breadcrumb };
 		}
+
+		function useMovetoFolder() {
+			const moveToDialogActive = ref(false);
+			const moving = ref(false);
+			const selectedFolder = ref<number | null>();
+
+			return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+			async function moveToFolder() {
+				moving.value = true;
+				const { currentProjectKey } = projectsStore.state;
+
+				try {
+					await api.patch(`/${currentProjectKey}/files/${selection.value}`, {
+						folder: selectedFolder.value,
+					});
+
+					await layout.value?.refresh();
+				} catch (err) {
+					console.error(err);
+				} finally {
+					moveToDialogActive.value = false;
+					moving.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -243,6 +301,13 @@ export default defineComponent({
 	--v-button-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-50);
 	--v-button-color-hover: var(--warning);
+}
+
+.folder {
+	--v-button-background-color: var(--primary-25);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-50);
+	--v-button-color-hover: var(--primary);
 }
 
 .header-icon {

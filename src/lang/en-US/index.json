@@ -121,6 +121,10 @@
 
 	"submit": "Submit",
 
+	"move_to_folder": "Move to Folder",
+	"select_folder": "Select Folder",
+	"move": "Move",
+
 	"system": "System",
 	"include_system_collections": "Include System Collections",
 

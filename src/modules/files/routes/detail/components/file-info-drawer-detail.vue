@@ -90,6 +90,8 @@ export default defineComponent({
 			watch(
 				() => props.file,
 				async () => {
+					if (!props.file) return null;
+
 					creationDate.value = await localizedFormat(
 						new Date(props.file.uploaded_on),
 						String(i18n.t('date-fns_date_short'))
@@ -116,6 +118,8 @@ export default defineComponent({
 			return { user };
 
 			async function fetchUser() {
+				if (!props.file) return null;
+
 				loading.value = true;
 				const { currentProjectKey } = projectsStore.state;
 
@@ -153,6 +157,7 @@ export default defineComponent({
 			return { folder };
 
 			async function fetchFolder() {
+				if (!props.file) return null;
 				if (!props.file.folder) return;
 				loading.value = true;
 				const { currentProjectKey } = projectsStore.state;
