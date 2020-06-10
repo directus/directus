@@ -528,26 +528,36 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout-tabular {
-	padding-bottom: var(--content-padding-bottom);
-	padding-left: var(--content-padding);
-
-	::v-deep tr {
-		margin-right: var(--content-padding);
-	}
+	display: contents;
+	margin: var(--content-padding);
+	margin-bottom: var(--content-padding-bottom);
 }
 
 .v-table {
 	--v-table-sticky-offset-top: var(--layout-offset-top);
 
 	display: contents;
+
+	::v-deep > table {
+		width: calc(100% - 2 * var(--content-padding));
+		margin: var(--content-padding);
+
+		tr {
+			margin-right: 32px;
+		}
+	}
 }
 
 .footer {
+	position: sticky;
+	left: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: calc(100% - var(--content-padding)); // offset for right margin of table
+	width: 100%;
 	padding: 32px 0;
+	padding: 0 var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 
 	.pagination {
 		display: inline-block;
