@@ -29,6 +29,7 @@ export const useProjectsStore = createStore({
 					color: project?.api?.project_color || null,
 					note: project?.api?.project_public_note || null,
 					sso: project?.api?.sso || [],
+					server: project?.server,
 				};
 			});
 		},

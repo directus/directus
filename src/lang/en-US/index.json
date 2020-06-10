@@ -84,6 +84,10 @@
 	"settings_update_success": "Settings updated",
 	"settings_update_failed": "Updating settings failed",
 
+	"php_api": "PHP API",
+	"php_version": "PHP Version",
+	"max_upload_size": "Max Upload Size",
+
 	"title": "Title",
 
 	"revision_delta_created": "Created",

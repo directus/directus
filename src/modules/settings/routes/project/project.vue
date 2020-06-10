@@ -21,9 +21,7 @@
 		</div>
 
 		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_project'))" />
-			</drawer-detail>
+			<project-info-drawer-detail />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_settings_project'))" />
 			</drawer-detail>
@@ -37,9 +35,10 @@ import SettingsNavigation from '../../components/navigation/';
 import useCollection from '@/composables/use-collection';
 import useSettingsStore from '@/stores/settings';
 import marked from 'marked';
+import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';
 
 export default defineComponent({
-	components: { SettingsNavigation },
+	components: { SettingsNavigation, ProjectInfoDrawerDetail },
 	setup() {
 		const settingsStore = useSettingsStore();
 		const { fields } = useCollection(ref('directus_settings'));

@@ -55,32 +55,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-dl > div {
-	display: flex;
-	margin-bottom: 12px;
-}
-
-dt,
-dd {
-	display: inline-block;
-}
-
-dt {
-	margin-right: 8px;
-	font-weight: 600;
-}
-
-dd {
-	flex-grow: 1;
-	overflow: hidden;
-	color: var(--foreground-subdued);
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-dd a {
-	color: var(--primary);
-}
-</style>
