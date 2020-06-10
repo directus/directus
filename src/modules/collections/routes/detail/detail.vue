@@ -371,6 +371,7 @@ export default defineComponent({
 
 .v-form {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .title-loader {

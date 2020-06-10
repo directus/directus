@@ -68,6 +68,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .settings {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .header-icon {

@@ -183,6 +183,7 @@ export default defineComponent({
 
 .roles {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .header-icon {

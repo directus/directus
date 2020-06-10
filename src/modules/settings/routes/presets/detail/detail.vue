@@ -504,6 +504,7 @@ export default defineComponent({
 
 .preset-detail {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .layout {

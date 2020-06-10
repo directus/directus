@@ -339,6 +339,7 @@ export default defineComponent({
 
 .user-detail {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .user-box {

@@ -390,5 +390,6 @@ export default defineComponent({
 
 .file-detail {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>
