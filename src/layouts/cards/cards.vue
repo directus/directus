@@ -347,8 +347,7 @@ export default defineComponent({
 		function useViewQuery() {
 			const page = ref(1);
 
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const sort = createViewQueryOption<string>('sort', primaryKeyField.value!.field);
+			const sort = createViewQueryOption<string>('sort', availableFields.value[0].field);
 			const limit = createViewQueryOption<number>('limit', 25);
 
 			const fields = computed<string[]>(() => {
