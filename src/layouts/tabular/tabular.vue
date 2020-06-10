@@ -539,11 +539,12 @@ export default defineComponent({
 	display: contents;
 
 	::v-deep > table {
-		width: calc(100% - 2 * var(--content-padding));
-		margin: var(--content-padding);
+		min-width: calc(100% - var(--content-padding));
+		margin-bottom: var(--content-padding);
+		margin-left: var(--content-padding);
 
 		tr {
-			margin-right: 32px;
+			margin-right: var(--content-padding);
 		}
 	}
 }
