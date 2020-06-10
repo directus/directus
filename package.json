@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@directus/format-title": "^3.2.0",
-    "@popperjs/core": "^2.4.0",
+    "@popperjs/core": "^2.4.2",
     "@sindresorhus/slugify": "^1.0.0",
     "@tinymce/tinymce-vue": "^3.2.1",
     "@types/codemirror": "^0.0.95",
