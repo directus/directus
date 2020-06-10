@@ -528,6 +528,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout-tabular {
+	padding-bottom: var(--content-padding-bottom);
 	padding-left: var(--content-padding);
 
 	::v-deep tr {
@@ -545,6 +546,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	width: calc(100% - var(--content-padding)); // offset for right margin of table
 	padding: 32px 0;
 
 	.pagination {
