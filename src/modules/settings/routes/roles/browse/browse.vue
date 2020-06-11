@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('roles')">
+	<private-view :title="$t('settings_permissions')">
 		<template #headline>{{ $t('settings') }}</template>
 
 		<template #title-outer:prepend>

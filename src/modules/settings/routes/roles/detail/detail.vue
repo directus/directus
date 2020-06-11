@@ -47,7 +47,7 @@
 		</template>
 
 		<div class="roles">
-			<div class="permissions" v-if="[1, 2].includes(+primaryKey) === false">
+			<div class="permissions" v-if="primaryKey != 1">
 				<h2 class="title type-label">
 					{{ $t('permissions') }}
 					<span class="instant-save">{{ $t('saves_automatically') }}</span>
