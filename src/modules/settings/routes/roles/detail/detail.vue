@@ -7,7 +7,7 @@
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
 						<v-icon name="delete" />
