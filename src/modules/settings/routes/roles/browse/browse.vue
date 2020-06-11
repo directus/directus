@@ -50,6 +50,10 @@
 				<template #item.count="{ item }">
 					<value-null v-if="item.id === 2" />
 				</template>
+
+				<template #item.description="{ item }">
+					<span class="description">{{ item.description }}</span>
+				</template>
 			</v-table>
 		</div>
 	</private-view>
@@ -174,5 +178,9 @@ export default defineComponent({
 	--v-icon-color: var(--primary);
 
 	color: var(--primary);
+}
+
+.description {
+	color: var(--foreground-subdued);
 }
 </style>
