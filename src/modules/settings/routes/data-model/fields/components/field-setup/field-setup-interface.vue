@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="type-title" v-if="isNew">{{ $t('relationship_setup_title') }}</h2>
+		<h2 class="type-title" v-if="isNew">{{ $t('interface_setup_title') }}</h2>
 
 		<v-fancy-select :items="items" :value="value.interface" @input="emitValue('interface', $event)" />
 
