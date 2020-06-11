@@ -108,7 +108,7 @@ export default defineComponent({
 
 		if (viewQuery.value === null && viewType.value === 'tabular') {
 			viewQuery.value = {
-				fields: ['status', 'http_action', 'url'],
+				fields: ['status', 'name', 'directus_action', 'collection'],
 			};
 		}
 
