@@ -9,31 +9,6 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
-				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" v-if="selection.length > 0" @click="on">
-						<v-icon name="delete" />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
-
-					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
-						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink">
-				<v-icon name="edit" />
-			</v-button>
-
 			<v-button rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
@@ -43,25 +18,40 @@
 			<settings-navigation />
 		</template>
 
-		<layout-tabular
-			class="layout"
-			ref="layout"
-			collection="directus_roles"
-			:selection.sync="selection"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/settings/roles/{{primaryKey}}'"
-		/>
-
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_roles_browse'))" />
+				<span class="subdued">{{ $t('no_additional_info') }}</span>
 			</drawer-detail>
-			<portal-target name="drawer" />
+
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
 			</drawer-detail>
 		</template>
+
+		<div class="roles">
+			<v-table
+				:items="roles"
+				:headers="tableHeaders"
+				fixed-header
+				item-key="id"
+				:loading="loading"
+				@click:row="navigateToRole"
+			>
+				<template #item.icon="{ item }">
+					<v-icon class="icon" :name="item.icon" :class="{ system: [1, 2].includes(item.id) }" />
+				</template>
+
+				<template #item.name="{ item }">
+					<span class="name" :class="{ system: [1, 2].includes(item.id) }">
+						{{ item.name }}
+					</span>
+				</template>
+
+				<template #item.count="{ item }">
+					<value-null v-if="item.id === 2" />
+				</template>
+			</v-table>
+		</div>
 	</private-view>
 </template>
 
@@ -71,141 +61,118 @@ import SettingsNavigation from '../../../components/navigation/';
 import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/composables/use-collection-preset';
 import marked from 'marked';
+import { Header as TableHeader } from '@/components/v-table/types';
+import ValueNull from '@/views/private/components/value-null';
+import router from '@/router';
 
-type Item = {
-	[field: string]: any;
+type Role = {
+	id: number;
+	name: string;
+	description: string;
+	count: number;
 };
 
 export default defineComponent({
 	name: 'roles-browse',
-	components: { SettingsNavigation },
+	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
-		const layout = ref<LayoutComponent | null>(null);
 		const projectsStore = useProjectsStore();
+		const roles = ref<Role[]>([]);
+		const loading = ref(false);
+		const error = ref<any>(null);
 
-		const selection = ref<Item[]>([]);
+		const tableHeaders: TableHeader[] = [
+			{
+				text: '',
+				value: 'icon',
+				sortable: false,
+				width: 50,
+				align: 'left',
+			},
+			{
+				text: i18n.t('name'),
+				value: 'name',
+				sortable: false,
+				width: 140,
+				align: 'left',
+			},
+			{
+				text: i18n.t('users'),
+				value: 'count',
+				sortable: false,
+				width: 140,
+				align: 'left',
+			},
+			{
+				text: i18n.t('description'),
+				value: 'description',
+				sortable: false,
+				width: 470,
+				align: 'left',
+			},
+		];
 
-		const { viewType, viewOptions, viewQuery } = useCollectionPreset(ref('directus_roles'));
-		const { addNewLink, batchLink } = useLinks();
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
+		fetchRoles();
 
-		if (viewType.value === null) {
-			viewType.value = 'tabular';
-		}
+		const addNewLink = computed(() => {
+			const { currentProjectKey } = projectsStore.state;
 
-		if (viewOptions.value === null && viewType.value === 'tabular') {
-			viewOptions.value = {
-				widths: {
-					name: 160,
-					users: 160,
-				},
-			};
-		}
+			return `/${currentProjectKey}/settings/roles/+`;
+		});
 
-		if (viewQuery.value === null && viewType.value === 'tabular') {
-			viewQuery.value = {
-				fields: ['name', 'users', 'description'],
-			};
-		}
+		return { marked, loading, roles, error, tableHeaders, addNewLink, navigateToRole };
 
-		return {
-			addNewLink,
-			batchLink,
-			selection,
-			breadcrumb,
-			confirmDelete,
-			batchDelete,
-			deleting,
-			layout,
-			viewOptions,
-			viewQuery,
-			marked,
-		};
+		async function fetchRoles() {
+			const { currentProjectKey } = projectsStore.state;
+			loading.value = true;
 
-		function useBatchDelete() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
+			try {
+				const response = await api.get(`/${currentProjectKey}/roles`, {
+					params: { limit: -1, fields: 'id,name,description,icon,users.id' },
+				});
 
-			return { confirmDelete, deleting, batchDelete };
-
-			async function batchDelete() {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
-				deleting.value = true;
-
-				confirmDelete.value = false;
-
-				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
-
-				await api.delete(`/${currentProjectKey}/settings/roles/${batchPrimaryKeys}`);
-
-				await layout.value?.refresh();
-
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
+				roles.value = response.data.data.map((role: any) => {
+					return {
+						...role,
+						count: role.users.length,
+					};
+				});
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
 			}
 		}
 
-		function useLinks() {
-			const addNewLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/settings/roles/+`;
-			});
-
-			const batchLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
-				return `/${currentProjectKey}/settings/roles/${batchPrimaryKeys}`;
-			});
-
-			return { addNewLink, batchLink };
-		}
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
-				return [
-					{
-						name: i18n.tc('collection', 2),
-						to: `/${currentProjectKey}/collections`,
-					},
-				];
-			});
-
-			return { breadcrumb };
+		function navigateToRole(item: Role) {
+			const { currentProjectKey } = projectsStore.state;
+			router.push(`/${currentProjectKey}/settings/roles/${item.id}`);
 		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-25);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
-	--v-button-color-hover: var(--warning);
-}
-
-.layout {
-	--layout-offset-top: 64px;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--warning);
 	--v-button-background-color-disabled: var(--warning-25);
+}
+
+.subdued {
+	color: var(--foreground-subdued);
+	font-style: italic;
+}
+
+.roles {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
+}
+
+.system {
+	--v-icon-color: var(--primary);
+
+	color: var(--primary);
 }
 </style>
