@@ -2,7 +2,10 @@
 	<div>
 		<h2 class="type-title" v-if="isNew">{{ $t('field_setup_title') }}</h2>
 
-		<div class="type-label">{{ $t('name') }}</div>
+		<div class="type-label">
+			{{ $t('name') }}
+			<v-icon class="required" sup name="star" />
+		</div>
 		<v-input
 			class="field"
 			:value="value.field"
@@ -83,5 +86,9 @@ export default defineComponent({
 	--v-input-font-family: var(--family-monospace);
 
 	margin-bottom: 48px;
+}
+
+.required {
+	color: var(--primary);
 }
 </style>
