@@ -76,7 +76,7 @@ export default defineComponent({
 		},
 		initialValue: {
 			type: [String, Number, Object, Array, Boolean],
-			default: null,
+			default: undefined,
 		},
 		primaryKey: {
 			type: [String, Number],
@@ -97,7 +97,8 @@ export default defineComponent({
 
 		const _value = computed(() => {
 			if (props.value !== undefined) return props.value;
-			return props.initialValue;
+			if (props.initialValue !== undefined) return props.initialValue;
+			return props.field.default_value;
 		});
 
 		return { isDisabled, marked, _value };
