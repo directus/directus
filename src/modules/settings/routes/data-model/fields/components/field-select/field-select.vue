@@ -2,9 +2,16 @@
 	<div :class="hidden ? 'half' : field.width">
 		<v-menu attached close-on-content-click>
 			<template #activator="{ toggle, active }">
-				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle" :value="field.name">
+				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
 					<template #prepend>
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+					</template>
+
+					<template #input>
+						<div class="name">
+							{{ field.name }}
+							<span class="interface">{{ interfaceName }}</span>
+						</div>
 					</template>
 
 					<template #append>
@@ -99,6 +106,7 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
 import useCollectionsStore from '@/stores/collections/';
+import interfaces from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -119,7 +127,12 @@ export default defineComponent({
 		const { deleteActive, deleting, deleteField } = useDeleteField();
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
+		const interfaceName = computed(() => {
+			return interfaces.find((inter) => inter.id === props.field.interface)?.name;
+		});
+
 		return {
+			interfaceName,
 			editActive,
 			setWidth,
 			deleteActive,
@@ -239,6 +252,17 @@ export default defineComponent({
 
 	.v-select {
 		margin-bottom: 32px;
+	}
+}
+
+.field {
+	.name {
+		flex-grow: 1;
+
+		.interface {
+			margin-left: 4px;
+			color: var(--foreground-subdued);
+		}
 	}
 }
 </style>
