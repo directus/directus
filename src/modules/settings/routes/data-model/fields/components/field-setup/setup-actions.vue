@@ -1,18 +1,30 @@
 <template>
 	<div class="setup-actions">
-		<v-button secondary @click="$emit('cancel')">
-			{{ $t('cancel') }}
-		</v-button>
-		<div class="spacer" />
-		<v-button @click="previous" secondary :disabled="previousDisabled">
-			{{ $t('previous') }}
-		</v-button>
-		<v-button v-if="currentTabIndex < tabs.length - 1" @click="next" :disabled="nextDisabled">
-			{{ $t('next') }}
-		</v-button>
-		<v-button v-else :disabled="saveDisabled" @click="$emit('save')" :loading="saving">
-			{{ $t('save') }}
-		</v-button>
+		<template v-if="isNew">
+			<v-button secondary @click="$emit('cancel')">
+				{{ $t('cancel') }}
+			</v-button>
+			<div class="spacer" />
+			<v-button @click="previous" secondary :disabled="previousDisabled">
+				{{ $t('previous') }}
+			</v-button>
+			<v-button v-if="currentTabIndex < tabs.length - 1" @click="next" :disabled="nextDisabled">
+				{{ $t('next') }}
+			</v-button>
+			<v-button v-else :disabled="saveDisabled" @click="$emit('save')" :loading="saving">
+				{{ $t('save') }}
+			</v-button>
+		</template>
+
+		<template v-else>
+			<v-button secondary @click="$emit('cancel')">
+				{{ $t('cancel') }}
+			</v-button>
+			<div class="spacer" />
+			<v-button @click="$emit('save')" :loading="saving">
+				{{ $t('save') }}
+			</v-button>
+		</template>
 	</div>
 </template>
 
