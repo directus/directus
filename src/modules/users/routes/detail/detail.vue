@@ -51,7 +51,7 @@
 		</template>
 
 		<div class="user-detail">
-			<div class="user-box">
+			<div class="user-box" v-if="isNew === false">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
 					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.first_name" />

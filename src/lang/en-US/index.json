@@ -73,7 +73,7 @@
 	"confirm_revert": "Confirm Revert",
 	"confirm_revert_body": "This will revert the item to the selected state.",
 
-	"editing_role": "Editing {role} Role",
+	"editing_role": "{role} Role",
 	"editing_webhook": "Editing Webhook",
 
 	"code": "Code",
@@ -600,6 +600,7 @@
 	"editing_file": "Editing File: {title}",
 	"changes_are_immediate_and_permanent": "Changes are immediate and permanent",
 
+	"preset_name_placeholder": "Name of bookmark...",
 	"editing_preset": "Editing Preset",
 	"layout_preview": "Layout Preview",
 	"layout_setup": "Layout Setup",
@@ -616,13 +617,13 @@
 	"page_help_activity_detail": "**Activity Detail** — Shows accountability info, revision data, and the update message for this activity record.",
 	"page_help_files_browse": "**File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_files_detail": "**File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.",
-	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.",
+	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.<br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
 	"page_help_settings_datamodel_collections": "**Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.",
 	"page_help_settings_datamodel_fields": "**Data Model: Collection** — A form for managing this collection and its fields.",
 	"page_help_settings_roles_browse": "**Browse Roles** — Lists the Admin, Public and custom User Roles.",
 	"page_help_settings_roles_detail": "**Role Detail** — Manage a role's permissions and other settings.",
 	"page_help_settings_presets_browse": "**Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.",
-	"page_help_settings_presets_detail": "**Preset Detail** — A form for managing bookmarks and default collection presets.",
+	"page_help_settings_presets_detail": "**Preset Detail** — A form for managing bookmarks and default collection presets.<br><br>To create a default preset, choose a role... TK TK",
 	"page_help_settings_webhooks_browse": "**Browse Webhooks** — Lists all webhooks within the project.",
 	"page_help_settings_webhooks_detail": "**Webhook Detail** — A form for creating and managing project webhooks.",
 	"page_help_users_browse": "**User Directory** — Lists all system users within this project.",

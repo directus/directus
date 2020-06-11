@@ -35,7 +35,7 @@
 			<v-dialog v-model="moveToDialogActive" v-if="isNew === false">
 				<template #activator="{ on }">
 					<v-button rounded icon :disabled="item === null" @click="on" class="folder">
-						<v-icon name="folder" />
+						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 

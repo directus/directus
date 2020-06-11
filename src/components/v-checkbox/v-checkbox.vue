@@ -133,7 +133,6 @@ body {
 
 	.label:not(:empty) {
 		margin-left: 8px;
-		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		input {
@@ -169,9 +168,6 @@ body {
 		.checkbox {
 			--v-icon-color: var(--foreground-normal);
 		}
-		.label {
-			color: var(--foreground-normal);
-		}
 	}
 
 	&.block {
@@ -179,7 +175,7 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--background-subdued);
+		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
 
 		&::before {

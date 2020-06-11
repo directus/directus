@@ -1,11 +1,14 @@
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div class="selected" v-if="_selection.length > 0">
-				<v-icon name="close" @click="_selection = []" />
-				{{ $tc('n_items_selected', _selection.length) }}
+			<div class="selected" v-if="_selection.length > 0" @click="_selection = []">
+				<v-icon name="cancel" />
+				<span class="label">{{ $tc('n_items_selected', _selection.length) }}</span>
 			</div>
-			<button class="select-all" v-else @click="$emit('select-all')">{{ $t('select_all') }}</button>
+			<button class="select-all" v-else @click="$emit('select-all')">
+				<v-icon name="check_circle" />
+				<span class="label">{{ $t('select_all') }}</span>
+			</button>
 		</div>
 		<div class="end">
 			<v-icon
@@ -131,6 +134,27 @@ export default defineComponent({
 	box-shadow: 0 0 0 2px var(--background-page);
 }
 
+.start {
+	.label {
+		display: inline-block;
+		margin-left: 4px;
+		transform: translateY(1px);
+	}
+
+	.select-all {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.selected {
+		cursor: pointer;
+	}
+}
+
 .end {
 	display: flex;
 	align-items: center;
@@ -138,25 +162,34 @@ export default defineComponent({
 
 	.size-selector {
 		margin-right: 16px;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
 	}
 
 	.sort-selector {
 		margin-right: 8px;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+			cursor: pointer;
+		}
 	}
 
-	.sort-selector:hover {
-		color: var(--foreground-normal);
-		cursor: pointer;
-	}
+	.sort-direction {
+		transition: color var(--fast) var(--transition);
+		&.descending {
+			transform: scaleY(-1);
+		}
 
-	.sort-direction.descending {
-		transform: scaleY(-1);
-	}
+		&:hover {
+			--v-icon-color: var(--foreground-normal);
 
-	.sort-direction:hover {
-		--v-icon-color: var(--foreground-normal);
-
-		cursor: pointer;
+			cursor: pointer;
+		}
 	}
 }
 </style>

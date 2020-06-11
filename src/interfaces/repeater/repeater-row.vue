@@ -53,10 +53,18 @@ export default defineComponent({
 <style lang="scss" scoped>
 .row {
 	background-color: var(--background-subdued);
+	border: 2px solid var(--border-subdued);
 	border-radius: var(--border-radius);
 
 	& + .row {
 		margin-top: 8px;
+	}
+
+	.repeater {
+		.row {
+			background-color: var(--background-page);
+			border-color: var(--border-normal);
+		}
 	}
 }
 </style>

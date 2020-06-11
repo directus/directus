@@ -78,7 +78,7 @@ export default defineComponent({
 .revision-item {
 	position: relative;
 	margin-bottom: 16px;
-	margin-left: 20px;
+	margin-left: 16px;
 
 	.header {
 		position: relative;
@@ -88,7 +88,7 @@ export default defineComponent({
 		.dot {
 			position: absolute;
 			top: 6px;
-			left: -22px;
+			left: -18px;
 			z-index: 2;
 			width: 12px;
 			height: 12px;
@@ -113,7 +113,7 @@ export default defineComponent({
 	&:not(.last)::after {
 		position: absolute;
 		top: 12px;
-		left: -17px;
+		left: -13px;
 		z-index: 1;
 		width: 2px;
 		height: calc(100% + 12px);

@@ -31,13 +31,14 @@ export default defineComponent({
 @import '@/styles/mixins/type-styles.scss';
 
 .form {
-	--form-vertical-gap: 24px;
-	--form-horizontal-gap: 12px;
+	--v-form-vertical-gap: 24px;
+	--v-form-horizontal-gap: 24px;
 
 	padding: 12px;
 	padding-top: 0;
 
 	::v-deep .type-label {
+		font-weight: 600;
 		@include type-text;
 	}
 }

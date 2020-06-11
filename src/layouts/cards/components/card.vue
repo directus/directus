@@ -221,6 +221,16 @@ export default defineComponent({
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
+			&::before {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.2) 10%, rgba(38, 50, 56, 0));
+				content: '';
+			}
+
 			&.select-mode {
 				opacity: 1;
 			}

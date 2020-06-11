@@ -469,6 +469,9 @@ export default defineComponent({
 					name: i18n.t('name'),
 					interface: 'text-input',
 					width: 'half',
+					options: {
+						placeholder: i18n.t('preset_name_placeholder'),
+					},
 				},
 				{
 					field: 'divider',
@@ -477,6 +480,7 @@ export default defineComponent({
 					width: 'fill',
 					options: {
 						title: i18n.t('layout_preview'),
+						color: '#2F80ED',
 					},
 				},
 			]);

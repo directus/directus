@@ -20,7 +20,7 @@
 		</template>
 
 		<template v-if="loading === false && hasCreate === false">
-			<v-divider />
+			<v-divider v-if="revisionsByDate.length > 0" />
 			<div class="external">
 				{{ $t('revision_delta_created_externally') }}
 			</div>
@@ -201,7 +201,7 @@ export default defineComponent({
 .v-divider {
 	position: sticky;
 	top: 0;
-	z-index: 2;
+	z-index: 3;
 	margin-top: 8px;
 	margin-bottom: 8px;
 	padding-top: 8px;

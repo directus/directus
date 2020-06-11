@@ -18,7 +18,7 @@
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0">
 				<template #activator="{ on }">
 					<v-button rounded icon @click="on" class="folder">
-						<v-icon name="folder" />
+						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 
