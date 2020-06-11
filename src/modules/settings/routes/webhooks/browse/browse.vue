@@ -55,6 +55,7 @@
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="format-markdown" v-html="marked($t('page_help_settings_webhooks_browse'))" />
 			</drawer-detail>
+			<layout-drawer-detail />
 			<portal-target name="drawer" />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_settings_webhooks_browse'))" />
@@ -72,6 +73,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
 import marked from 'marked';
+import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
 type Item = {
 	[field: string]: any;
@@ -79,7 +81,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'webhooks-browse',
-	components: { SettingsNavigation },
+	components: { SettingsNavigation, LayoutDrawerDetail },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
