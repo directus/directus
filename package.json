@@ -20,7 +20,7 @@
     "@popperjs/core": "^2.4.2",
     "@sindresorhus/slugify": "^1.0.0",
     "@tinymce/tinymce-vue": "^3.2.1",
-    "@types/codemirror": "^0.0.95",
+    "@types/codemirror": "^0.0.96",
     "@types/debug": "^4.1.5",
     "@types/lodash": "^4.14.155",
     "@types/mousetrap": "^1.6.3",
