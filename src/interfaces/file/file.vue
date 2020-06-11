@@ -113,6 +113,7 @@ import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 
 type FileInfo = {
+	id: number;
 	title: string;
 	type: string;
 	data: {
@@ -218,6 +219,7 @@ export default defineComponent({
 		function onUpload(fileInfo: FileInfo) {
 			file.value = fileInfo;
 			activeDialog.value = null;
+			emit('input', fileInfo.id);
 		}
 
 		function useURLImport() {
