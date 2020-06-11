@@ -556,8 +556,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-	padding: 32px 0;
-	padding: 0 var(--content-padding);
+	padding: 32px var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
 	.pagination {
