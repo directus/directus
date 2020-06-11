@@ -5,10 +5,10 @@
 		</template>
 
 		<v-card>
-			<v-card-title>{{ $t('bookmarks.edit') }}</v-card-title>
+			<v-card-title>{{ $t('edit_bookmark') }}</v-card-title>
 
 			<v-card-text>
-				<v-input v-model="bookmarkName" :placeholder="$t('bookmarks.name')" />
+				<v-input v-model="bookmarkName" :placeholder="$t('bookmark_name')" />
 			</v-card-text>
 
 			<v-card-actions>

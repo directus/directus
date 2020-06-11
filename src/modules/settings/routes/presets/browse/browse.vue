@@ -83,9 +83,7 @@
 		</div>
 
 		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
-			</drawer-detail>
+			<presets-info-drawer-detail />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
 			</drawer-detail>
@@ -106,6 +104,7 @@ import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
 import marked from 'marked';
+import PresetsInfoDrawerDetail from './components/presets-info-drawer-detail.vue';
 
 type PresetRaw = {
 	id: number;
@@ -125,7 +124,7 @@ type Preset = {
 };
 
 export default defineComponent({
-	components: { SettingsNavigation, ValueNull },
+	components: { SettingsNavigation, ValueNull, PresetsInfoDrawerDetail },
 	setup() {
 		const projectsStore = useProjectsStore();
 		const collectionsStore = useCollectionsStore();
@@ -213,6 +212,7 @@ export default defineComponent({
 								'collection',
 								'view_type',
 							],
+							limit: -1,
 						},
 					});
 					presetsRaw.value = response.data.data;

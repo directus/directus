@@ -62,11 +62,13 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_detail'))" />
+				<span class="subdued">{{ $t('no_additional_info') }}</span>
 			</drawer-detail>
+
 			<div class="layout-drawer">
 				<portal-target name="drawer" />
 			</div>
+
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_detail'))" />
 			</drawer-detail>
@@ -519,5 +521,10 @@ export default defineComponent({
 
 .layout-drawer {
 	--drawer-detail-icon-color: var(--warning);
+}
+
+.subdued {
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 </style>

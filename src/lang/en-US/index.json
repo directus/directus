@@ -313,18 +313,18 @@
 		"-1": "Couldn't Reach API"
 	},
 
+	"no_additional_info": "No Additional Info",
+
 	"hash": "Hash",
 	"masked": "Masked",
 	"value_hashed": "Value Securely Hashed",
 
-	"bookmarks": {
-		"name": "Bookmark name...",
-		"create": "Create Bookmark",
-		"personal": "Personal (Current User Only)",
-		"global": "Global (Every User)",
-		"role": "For role {role}",
-		"edit": "Edit Bookmark"
-	},
+	"bookmark_name": "Bookmark name...",
+	"create_bookmark": "Create Bookmark",
+	"edit_bookmark": "Edit Bookmark",
+	"bookmarks": "Bookmarks",
+
+	"presets": "Presets",
 
 	"unexpected_error": "An unexpected error occured",
 
