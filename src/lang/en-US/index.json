@@ -74,7 +74,7 @@
 	"confirm_revert_body": "This will revert the item to the selected state.",
 
 	"editing_role": "{role} Role",
-	"editing_webhook": "Editing Webhook",
+	"adding_webhook": "Adding Webhook",
 
 	"code": "Code",
 	"loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}",
@@ -790,6 +790,7 @@
   "editing_items": "Batch Editing {count} Items",
   "editing_my_profile": "Editing My Profile",
   "editing_single": "Editing {collection}",
+  "editing_name": "Editing {name}",
   "email": "Email",
   "email_address": "Email Address",
   "embed": "Embed",

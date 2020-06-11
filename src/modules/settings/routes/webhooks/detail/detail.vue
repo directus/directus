@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('editing_webhook')">
+	<private-view :title="title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/webhooks/`">
 				<v-icon name="arrow_back" />
@@ -76,6 +76,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
+import i18n from '@/lang';
 
 type Values = {
 	[field: string]: any;
@@ -101,8 +102,13 @@ export default defineComponent({
 		);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
-
 		const confirmDelete = ref(false);
+
+		const title = computed(() => {
+			if (loading.value) return i18n.t('loading');
+			if (isNew.value) return i18n.t('adding_webhook');
+			return item.value.name;
+		});
 
 		return {
 			item,
@@ -122,6 +128,7 @@ export default defineComponent({
 			isBatch,
 			currentProjectKey,
 			marked,
+			title,
 		};
 
 		async function saveAndQuit() {

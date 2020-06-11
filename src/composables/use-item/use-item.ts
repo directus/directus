@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios';
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number>) {
 	const { primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
 
-	const item = ref(null);
+	const item = ref<any>(null);
 	const error = ref(null);
 	const loading = ref(false);
 	const saving = ref(false);
