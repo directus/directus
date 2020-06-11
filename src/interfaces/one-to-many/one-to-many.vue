@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, toRefs, Ref } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, toRefs, Ref, PropType } from '@vue/composition-api';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
 import useRelationsStore from '@/stores/relations';
@@ -93,7 +93,7 @@ export default defineComponent({
 			required: true,
 		},
 		fields: {
-			type: String,
+			type: Array as PropType<string[]>,
 			required: true,
 		},
 		disabled: {
@@ -170,6 +170,9 @@ export default defineComponent({
 					if (newKey !== null && newKey !== '+' && Array.isArray(props.value) !== true) {
 						fetchCurrent();
 					}
+				},
+				{
+					immediate: true,
 				}
 			);
 
@@ -199,7 +202,7 @@ export default defineComponent({
 				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
-				let fields = props.fields.split(',');
+				let fields = [...props.fields];
 
 				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
 					fields.push(relatedPrimaryKeyField.value.field);
@@ -210,14 +213,15 @@ export default defineComponent({
 				fields = fields.map((fieldKey) => `${props.field}.${fieldKey}`);
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`,
-						{
-							params: {
-								fields: fields,
-							},
-						}
-					);
+					const endpoint = props.collection.startsWith('directus_')
+						? `/${currentProjectKey}/${props.collection.substring(9)}/${props.primaryKey}`
+						: `/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`;
+
+					const response = await api.get(endpoint, {
+						params: {
+							fields: fields,
+						},
+					});
 
 					items.value = response.data.data[props.field];
 				} catch (err) {
@@ -273,22 +277,23 @@ export default defineComponent({
 				let selectedItems: any[] = [];
 
 				if (selectedPrimaryKeys.length > 0) {
-					const fields = props.fields.split(',');
+					const fields = [...props.fields];
 
 					if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
 						fields.push(relatedPrimaryKeyField.value.field);
 					}
 
-					const response = await api.get(
-						`/${currentProjectKey}/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(
-							','
-						)}`,
-						{
-							params: {
-								fields: fields,
-							},
-						}
-					);
+					const endpoint = props.collection.startsWith('directus_')
+						? `/${currentProjectKey}/${props.collection.substring(9)}/${selectedPrimaryKeys.join(',')}`
+						: `/${currentProjectKey}/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(
+								','
+						  )}`;
+
+					const response = await api.get(endpoint, {
+						params: {
+							fields: fields,
+						},
+					});
 
 					if (Array.isArray(response.data.data)) {
 						selectedItems = response.data.data;
@@ -313,7 +318,6 @@ export default defineComponent({
 				() => props.fields,
 				() => {
 					tableHeaders.value = props.fields
-						.split(',')
 						.map((fieldKey) => {
 							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
 
@@ -338,7 +342,8 @@ export default defineComponent({
 							return header;
 						})
 						.filter((h) => h) as Header[];
-				}
+				},
+				{ immediate: true }
 			);
 
 			return { tableHeaders };
