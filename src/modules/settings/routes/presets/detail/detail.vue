@@ -524,6 +524,8 @@ export default defineComponent({
 
 .layout-drawer {
 	--drawer-detail-icon-color: var(--warning);
+	--drawer-detail-color: var(--warning);
+	--drawer-detail-color-active: var(--warning);
 }
 
 .subdued {

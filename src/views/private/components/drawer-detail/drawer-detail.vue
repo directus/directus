@@ -59,6 +59,8 @@ export default defineComponent({
 <style>
 body {
 	--drawer-detail-icon-color: var(--foreground-normal);
+	--drawer-detail-color: var(--foreground-normal);
+	--drawer-detail-color-active: var(--primary);
 }
 </style>
 
@@ -75,7 +77,7 @@ body {
 		flex-shrink: 0;
 		width: 100%;
 		height: 64px;
-		color: var(--foreground-normal);
+		color: var(--drawer-detail-color);
 		background-color: var(--background-normal-alt);
 
 		.icon {
@@ -103,15 +105,15 @@ body {
 			pointer-events: none;
 
 			&:hover {
-				color: var(--primary);
+				color: var(--drawer-detail-color-active);
 			}
 		}
 
 		&.open,
 		&:hover {
-			color: var(--primary);
+			color: var(--drawer-detail-color-active);
 			.icon {
-				--v-icon-color: var(--primary);
+				--v-icon-color: var(--drawer-detail-color-active);
 			}
 		}
 	}
