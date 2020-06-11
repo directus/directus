@@ -60,6 +60,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-list-group {
+	margin-bottom: 4px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
 	.activator-icon {
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
