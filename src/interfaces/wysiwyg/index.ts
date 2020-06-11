@@ -31,52 +31,184 @@ export default defineInterface(({ i18n }) => ({
 				'fullscreen',
 			],
 			options: {
-				choices: {
-					aligncenter: i18n.t('wysiwyg_options.aligncenter'),
-					alignjustify: i18n.t('wysiwyg_options.alignjustify'),
-					alignleft: i18n.t('wysiwyg_options.alignleft'),
-					alignnone: i18n.t('wysiwyg_options.alignnone'),
-					alignright: i18n.t('wysiwyg_options.alignright'),
-					forecolor: i18n.t('wysiwyg_options.forecolor'),
-					backcolor: i18n.t('wysiwyg_options.backcolor'),
-					bold: i18n.t('wysiwyg_options.bold'),
-					italic: i18n.t('wysiwyg_options.italic'),
-					underline: i18n.t('wysiwyg_options.underline'),
-					strikethrough: i18n.t('wysiwyg_options.strikethrough'),
-					subscript: i18n.t('wysiwyg_options.subscript'),
-					superscript: i18n.t('wysiwyg_options.superscript'),
-					blockquote: i18n.t('wysiwyg_options.blockquote'),
-					bullist: i18n.t('wysiwyg_options.bullist'),
-					numlist: i18n.t('wysiwyg_options.numlist'),
-					hr: i18n.t('wysiwyg_options.hr'),
-					link: i18n.t('wysiwyg_options.link'),
-					unlink: i18n.t('wysiwyg_options.unlink'),
-					media: i18n.t('wysiwyg_options.media'),
-					image: i18n.t('wysiwyg_options.image'),
-					copy: i18n.t('wysiwyg_options.copy'),
-					cut: i18n.t('wysiwyg_options.cut'),
-					paste: i18n.t('wysiwyg_options.paste'),
-					h1: i18n.t('wysiwyg_options.h1'),
-					h2: i18n.t('wysiwyg_options.h2'),
-					h3: i18n.t('wysiwyg_options.h3'),
-					h4: i18n.t('wysiwyg_options.h4'),
-					h5: i18n.t('wysiwyg_options.h5'),
-					h6: i18n.t('wysiwyg_options.h6'),
-					fontselect: i18n.t('wysiwyg_options.fontselect'),
-					fontsizeselect: i18n.t('wysiwyg_options.fontsizeselect'),
-					indent: i18n.t('wysiwyg_options.indent'),
-					outdent: i18n.t('wysiwyg_options.outdent'),
-					undo: i18n.t('wysiwyg_options.undo'),
-					redo: i18n.t('wysiwyg_options.redo'),
-					remove: i18n.t('wysiwyg_options.remove'),
-					removeformat: i18n.t('wysiwyg_options.removeformat'),
-					selectall: i18n.t('wysiwyg_options.selectall'),
-					table: i18n.t('wysiwyg_options.table'),
-					visualaid: i18n.t('wysiwyg_options.visualaid'),
-					code: i18n.t('wysiwyg_options.code'),
-					fullscreen: i18n.t('wysiwyg_options.fullscreen'),
-					'ltr rtl': i18n.t('wysiwyg_options.directionality'),
-				},
+				choices: [
+					{
+						value: 'aligncenter',
+						text: i18n.t('wysiwyg_options.aligncenter'),
+					},
+					{
+						value: 'alignjustify',
+						text: i18n.t('wysiwyg_options.alignjustify'),
+					},
+					{
+						value: 'alignleft',
+						text: i18n.t('wysiwyg_options.alignleft'),
+					},
+					{
+						value: 'alignnone',
+						text: i18n.t('wysiwyg_options.alignnone'),
+					},
+					{
+						value: 'alignright',
+						text: i18n.t('wysiwyg_options.alignright'),
+					},
+					{
+						value: 'forecolor',
+						text: i18n.t('wysiwyg_options.forecolor'),
+					},
+					{
+						value: 'backcolor',
+						text: i18n.t('wysiwyg_options.backcolor'),
+					},
+					{
+						value: 'bold',
+						text: i18n.t('wysiwyg_options.bold'),
+					},
+					{
+						value: 'italic',
+						text: i18n.t('wysiwyg_options.italic'),
+					},
+					{
+						value: 'underline',
+						text: i18n.t('wysiwyg_options.underline'),
+					},
+					{
+						value: 'strikethrough',
+						text: i18n.t('wysiwyg_options.strikethrough'),
+					},
+					{
+						value: 'subscript',
+						text: i18n.t('wysiwyg_options.subscript'),
+					},
+					{
+						value: 'superscript',
+						text: i18n.t('wysiwyg_options.superscript'),
+					},
+					{
+						value: 'blockquote',
+						text: i18n.t('wysiwyg_options.blockquote'),
+					},
+					{
+						value: 'bullist',
+						text: i18n.t('wysiwyg_options.bullist'),
+					},
+					{
+						value: 'numlist',
+						text: i18n.t('wysiwyg_options.numlist'),
+					},
+					{
+						value: 'hr',
+						text: i18n.t('wysiwyg_options.hr'),
+					},
+					{
+						value: 'link',
+						text: i18n.t('wysiwyg_options.link'),
+					},
+					{
+						value: 'unlink',
+						text: i18n.t('wysiwyg_options.unlink'),
+					},
+					{
+						value: 'media',
+						text: i18n.t('wysiwyg_options.media'),
+					},
+					{
+						value: 'image',
+						text: i18n.t('wysiwyg_options.image'),
+					},
+					{
+						value: 'copy',
+						text: i18n.t('wysiwyg_options.copy'),
+					},
+					{
+						value: 'cut',
+						text: i18n.t('wysiwyg_options.cut'),
+					},
+					{
+						value: 'paste',
+						text: i18n.t('wysiwyg_options.paste'),
+					},
+					{
+						value: 'h1',
+						text: i18n.t('wysiwyg_options.h1'),
+					},
+					{
+						value: 'h2',
+						text: i18n.t('wysiwyg_options.h2'),
+					},
+					{
+						value: 'h3',
+						text: i18n.t('wysiwyg_options.h3'),
+					},
+					{
+						value: 'h4',
+						text: i18n.t('wysiwyg_options.h4'),
+					},
+					{
+						value: 'h5',
+						text: i18n.t('wysiwyg_options.h5'),
+					},
+					{
+						value: 'h6',
+						text: i18n.t('wysiwyg_options.h6'),
+					},
+					{
+						value: 'fontselect',
+						text: i18n.t('wysiwyg_options.fontselect'),
+					},
+					{
+						value: 'fontsizeselect',
+						text: i18n.t('wysiwyg_options.fontsizeselect'),
+					},
+					{
+						value: 'indent',
+						text: i18n.t('wysiwyg_options.indent'),
+					},
+					{
+						value: 'outdent',
+						text: i18n.t('wysiwyg_options.outdent'),
+					},
+					{
+						value: 'undo',
+						text: i18n.t('wysiwyg_options.undo'),
+					},
+					{
+						value: 'redo',
+						text: i18n.t('wysiwyg_options.redo'),
+					},
+					{
+						value: 'remove',
+						text: i18n.t('wysiwyg_options.remove'),
+					},
+					{
+						value: 'removeformat',
+						text: i18n.t('wysiwyg_options.removeformat'),
+					},
+					{
+						value: 'selectall',
+						text: i18n.t('wysiwyg_options.selectall'),
+					},
+					{
+						value: 'table',
+						text: i18n.t('wysiwyg_options.table'),
+					},
+					{
+						value: 'visualaid',
+						text: i18n.t('wysiwyg_options.visualaid'),
+					},
+					{
+						value: 'code',
+						text: i18n.t('wysiwyg_options.code'),
+					},
+					{
+						value: 'fullscreen',
+						text: i18n.t('wysiwyg_options.fullscreen'),
+					},
+					{
+						value: 'ltr rtl',
+						text: i18n.t('wysiwyg_options.directionality'),
+					},
+				],
 			},
 		},
 		{
@@ -84,12 +216,12 @@ export default defineInterface(({ i18n }) => ({
 			name: i18n.t('font'),
 			width: 'half',
 			interface: 'dropdown',
-			default_value: 'serif',
+			default: 'sans-serif',
 			options: {
-				items: [
-					{ itemText: i18n.t('sans_serif'), itemValue: 'sans-serif' },
-					{ itemText: i18n.t('monospace'), itemValue: 'monospace' },
-					{ itemText: i18n.t('serif'), itemValue: 'serif' },
+				choices: [
+					{ text: i18n.t('sans_serif'), value: 'sans-serif' },
+					{ text: i18n.t('monospace'), value: 'monospace' },
+					{ text: i18n.t('serif'), value: 'serif' },
 				],
 			},
 		},

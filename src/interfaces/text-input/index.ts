@@ -9,33 +9,33 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'placeholder',
-			name: 'Placeholder',
+			name: i18n.t('placeholder'),
 			width: 'half',
 			interface: 'text-input',
 		},
 		{
 			field: 'iconLeft',
-			name: 'Icon Left',
+			name: i18n.t('icon_left'),
 			width: 'half',
 			interface: 'icon',
 		},
 		{
 			field: 'iconRight',
-			name: 'Icon Right',
+			name: i18n.t('icon_right'),
 			width: 'half',
 			interface: 'icon',
 		},
 		{
 			field: 'font',
-			name: 'Font',
+			name: i18n.t('font'),
 			width: 'half',
 			interface: 'dropdown',
 			default: 'sans-serif',
 			options: {
 				choices: [
-					{ text: 'Sans Serif', value: 'sans-serif' },
-					{ text: 'Monospace', value: 'monospace' },
-					{ text: 'Serif', value: 'serif' },
+					{ text: i18n.t('sans_serif'), value: 'sans-serif' },
+					{ text: i18n.t('monospace'), value: 'monospace' },
+					{ text: i18n.t('serif'), value: 'serif' },
 				],
 			},
 		},
