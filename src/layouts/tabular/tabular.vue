@@ -339,7 +339,7 @@ export default defineComponent({
 				set(newSort: string) {
 					page.value = 1;
 					_viewQuery.value = {
-						..._viewQuery.value,
+						...(_viewQuery.value || {}),
 						sort: newSort,
 					};
 				},
@@ -352,7 +352,7 @@ export default defineComponent({
 				set(newLimit: number) {
 					page.value = 1;
 					_viewOptions.value = {
-						..._viewOptions.value,
+						...(_viewOptions.value || {}),
 						limit: newLimit,
 					};
 				},
@@ -369,13 +369,20 @@ export default defineComponent({
 					}
 
 					const fields =
-						_viewQuery.value?.fields || availableFields.value.slice(0, 4).map(({ field }) => field);
+						_viewQuery.value?.fields ||
+						availableFields.value
+							.filter((field: Field) => {
+								return field.primary_key === false && field.type !== 'sort';
+							})
+							.slice(0, 4)
+							.map(({ field }) => field);
 
 					return fields;
 				},
 				set(newFields: string[]) {
+					console.log(newFields);
 					_viewQuery.value = {
-						..._viewQuery.value,
+						...(_viewQuery.value || {}),
 						fields: newFields,
 					};
 				},
@@ -399,7 +406,7 @@ export default defineComponent({
 
 			const saveWidthsToViewOptions = debounce(() => {
 				_viewOptions.value = {
-					..._viewOptions.value,
+					...(_viewOptions.value || {}),
 					widths: localWidths.value,
 				};
 			}, 350);
@@ -452,7 +459,7 @@ export default defineComponent({
 				},
 				set(newSpacing: 'compact' | 'cozy' | 'comfortable') {
 					_viewOptions.value = {
-						..._viewOptions.value,
+						...(_viewOptions.value || {}),
 						spacing: newSpacing,
 					};
 				},
