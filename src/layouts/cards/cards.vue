@@ -8,12 +8,12 @@
 
 			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.cards.title') }}</div>
-				<v-input v-model="title" />
+				<v-field-template :collection="collection" v-model="title" />
 			</div>
 
 			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.cards.subtitle') }}</div>
-				<v-input v-model="subtitle" />
+				<v-field-template :collection="collection" v-model="subtitle" />
 			</div>
 
 			<v-detail>
