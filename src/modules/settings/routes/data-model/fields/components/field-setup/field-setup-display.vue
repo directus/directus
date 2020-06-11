@@ -4,17 +4,23 @@
 
 		<v-fancy-select :items="items" :value="value.display" @input="emitValue('display', $event)" />
 
-		<v-form
-			v-if="selectedDisplay && selectedDisplay.options && Array.isArray(selectedDisplay.options)"
-			:fields="selectedDisplay.options"
-			primary-key="+"
-			:edits="value.options"
-			@input="emitValue('options', $event)"
-		/>
+		<template v-if="selectedDisplay">
+			<v-form
+				v-if="
+					selectedDisplay.options &&
+					Array.isArray(selectedDisplay.options) &&
+					selectedDisplay.options.length > 0
+				"
+				:fields="selectedDisplay.options"
+				primary-key="+"
+				:edits="value.options"
+				@input="emitValue('options', $event)"
+			/>
 
-		<v-notice v-else>
-			{{ $t('no_options_available') }}
-		</v-notice>
+			<v-notice v-else>
+				{{ $t('no_options_available') }}
+			</v-notice>
+		</template>
 	</div>
 </template>
 
