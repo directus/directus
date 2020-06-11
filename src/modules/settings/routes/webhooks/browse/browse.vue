@@ -102,6 +102,9 @@ export default defineComponent({
 			viewOptions.value = {
 				widths: {
 					status: 50,
+					name: 120,
+					directus_action: 180,
+					collection: 220,
 				},
 			};
 		}
