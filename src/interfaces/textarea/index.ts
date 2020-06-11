@@ -3,7 +3,7 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'textarea',
-	name: i18n.t('interfaces.textarea.textarea'),
+	name: i18n.t('textarea'),
 	icon: 'text_fields',
 	component: InterfaceTextarea,
 	options: [

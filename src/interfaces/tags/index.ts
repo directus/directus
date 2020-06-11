@@ -3,7 +3,7 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'tags',
-	name: i18n.t('interfaces.tags.tags'),
+	name: i18n.t('tags'),
 	icon: 'local_offer',
 	component: InterfaceTags,
 	options: [

@@ -10,7 +10,7 @@ register things like it's name and options.
 export default defineInterface({
 	id: 'text-input',
 	register: ({ i18n }) => ({
-		name: i18n.t('interfaces.text-input.text-input'),
+		name: i18n.t('text-input'),
 		icon: 'box',
 		component: InterfaceTextInput
 	})
