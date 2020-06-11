@@ -1,5 +1,6 @@
 <template>
 	<private-view :title="collectionInfo.name">
+		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="list_alt" />
@@ -61,10 +62,7 @@
 				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_fields'))" />
 			</drawer-detail>
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div
-					class="format-markdown"
-					v-html="marked($t('page_help_settings_datamodel_fields'))"
-				/>
+				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_fields'))" />
 			</drawer-detail>
 		</template>
 	</private-view>

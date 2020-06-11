@@ -1,5 +1,6 @@
 <template>
 	<private-view :title="$t('settings_project')">
+		<template #headline>{{ $t('settings') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />

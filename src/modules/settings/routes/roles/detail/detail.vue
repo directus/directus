@@ -1,5 +1,6 @@
 <template>
 	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
+		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -46,7 +47,7 @@
 		</template>
 
 		<div class="roles">
-			<div class="permissions">
+			<div class="permissions" v-if="[1, 2].includes(+primaryKey) === false">
 				<h2 class="title type-label">
 					{{ $t('permissions') }}
 					<span class="instant-save">{{ $t('saves_automatically') }}</span>

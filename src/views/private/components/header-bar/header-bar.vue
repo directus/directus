@@ -110,7 +110,6 @@ export default defineComponent({
 		max-width: 70%;
 		height: 100%;
 		margin-left: 12px;
-		overflow: hidden;
 
 		&.full {
 			margin-right: 20px;
@@ -121,6 +120,8 @@ export default defineComponent({
 			position: absolute;
 			top: 0;
 			left: 0;
+			color: var(--foreground-subdued);
+			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
 		}

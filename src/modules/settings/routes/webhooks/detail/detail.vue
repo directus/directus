@@ -1,5 +1,7 @@
 <template>
 	<private-view :title="title">
+		<template #headline>{{ $t('settings_webhooks') }}</template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/webhooks/`">
 				<v-icon name="arrow_back" />

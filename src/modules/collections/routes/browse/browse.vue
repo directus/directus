@@ -2,13 +2,14 @@
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
 	<private-view v-else :title="bookmark ? bookmarkName : currentCollection.name">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary :to="collectionsLink">
+			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="currentCollection.icon" />
 			</v-button>
 		</template>
 
-		<template v-if="bookmark" #headline>
-			<v-breadcrumb :items="breadcrumb" />
+		<template #headline>
+			<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
+			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: collectionsLink }]" />
 		</template>
 
 		<template #title-outer:append>
@@ -431,5 +432,9 @@ export default defineComponent({
 
 .bookmark-edit {
 	color: var(--primary);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--foreground-normal);
 }
 </style>
