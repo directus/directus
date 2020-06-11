@@ -1,6 +1,6 @@
 <template>
 	<drawer-detail icon="info_outline" :title="$t('file_details')" close>
-		<dl>
+		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ $t('type') }}</dt>
 				<dd>{{ readableMimeType(file.type) || file.type }}</dd>
@@ -34,7 +34,9 @@
 			<div v-if="user">
 				<dt>{{ $t('user') }}</dt>
 				<dd>
-					<router-link :to="user.link">{{ user.name }}</router-link>
+					<user-popover :user="user.id">
+						<router-link :to="user.link">{{ user.name }}</router-link>
+					</user-popover>
 				</dd>
 			</div>
 

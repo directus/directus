@@ -1,6 +1,6 @@
 <template>
 	<drawer-detail icon="info_outline" :title="$t('information')" close>
-		<dl v-if="isNew === false">
+		<dl v-if="isNew === false && user">
 			<div v-if="user.id">
 				<dt>{{ $t('primary_key') }}</dt>
 				<dd>{{ user.id }}</dd>
