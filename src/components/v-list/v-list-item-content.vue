@@ -32,7 +32,7 @@ body {
 			flex-basis: 100%;
 			flex-grow: 1;
 			flex-shrink: 0;
-			line-height: 1;
+			line-height: 1.4;
 
 			&:not(:last-child) {
 				margin-bottom: 2px;

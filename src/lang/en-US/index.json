@@ -239,6 +239,9 @@
 	"disabled": "Disabled",
 	"information": "Information",
 
+	"report_bug": "Report Bug",
+	"request_feature": "Request Feature",
+
 	"interface_not_found": "Interface \"{interface}\" not found",
 
 	"item_count": "No Items | One Item | {count} Items",
@@ -961,7 +964,6 @@
   "remove": "Remove",
   "remove_related": "Remove Related Item",
   "report_issue": "Report Issue",
-  "request_feature": "Request Feature",
   "reset": "Reset",
   "reset_password": "Reset Password",
   "reset_preferences": "Reset all listing preferences",

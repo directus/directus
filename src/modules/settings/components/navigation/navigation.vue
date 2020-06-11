@@ -6,6 +6,15 @@
 				<v-list-item-title>{{ item.name }}</v-list-item-title>
 			</v-list-item-content>
 		</v-list-item>
+
+		<v-divider />
+
+		<v-list-item v-for="item in externalItems" :href="item.href" :key="item.href">
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-list-item-title>{{ item.name }}</v-list-item-title>
+			</v-list-item-content>
+		</v-list-item>
 	</v-list>
 </template>
 
@@ -47,7 +56,20 @@ export default defineComponent({
 			},
 		];
 
-		return { navItems };
+		const externalItems = [
+			{
+				icon: 'bug_report',
+				name: i18n.t('report_bug'),
+				href: 'https://github.com/directus/app/issues/new?template=bug_report.md',
+			},
+			{
+				icon: 'new_releases',
+				name: i18n.t('request_feature'),
+				href: 'https://github.com/directus/directus/discussions/new',
+			},
+		];
+
+		return { navItems, externalItems };
 	},
 });
 </script>
