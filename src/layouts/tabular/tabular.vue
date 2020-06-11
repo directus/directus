@@ -380,7 +380,6 @@ export default defineComponent({
 					return fields;
 				},
 				set(newFields: string[]) {
-					console.log(newFields);
 					_viewQuery.value = {
 						...(_viewQuery.value || {}),
 						fields: newFields,
@@ -547,7 +546,6 @@ export default defineComponent({
 
 	::v-deep > table {
 		min-width: calc(100% - var(--content-padding));
-		margin-bottom: var(--content-padding);
 		margin-left: var(--content-padding);
 
 		tr {
