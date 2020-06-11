@@ -4,17 +4,23 @@
 
 		<v-fancy-select :items="items" :value="value.interface" @input="emitValue('interface', $event)" />
 
-		<v-form
-			v-if="selectedInterface && selectedInterface.options && Array.isArray(selectedInterface.options)"
-			:fields="selectedInterface.options"
-			primary-key="+"
-			:edits="value.options"
-			@input="emitValue('options', $event)"
-		/>
+		<template v-if="selectedInterface">
+			<v-form
+				v-if="
+					selectedInterface.options &&
+					Array.isArray(selectedInterface.options) &&
+					selectedInterface.options.length > 0
+				"
+				:fields="selectedInterface.options"
+				primary-key="+"
+				:edits="value.options"
+				@input="emitValue('options', $event)"
+			/>
 
-		<v-notice v-else>
-			{{ $t('no_options_available') }}
-		</v-notice>
+			<v-notice v-else>
+				{{ $t('no_options_available') }}
+			</v-notice>
+		</template>
 	</div>
 </template>
 
