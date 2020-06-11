@@ -17,6 +17,7 @@
 		}"
 		:href="href"
 		:download="download"
+		:target="component === 'a' ? '_blank' : null"
 		v-on="disabled === false && $listeners"
 	>
 		<slot></slot>
