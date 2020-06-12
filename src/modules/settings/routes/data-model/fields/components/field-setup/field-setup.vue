@@ -74,8 +74,9 @@ import useFieldsStore from '@/stores/fields/';
 import { Relation } from '@/stores/relations/types';
 import api from '@/api';
 import useProjectsStore from '@/stores/projects';
-
 import { LocalType } from './types';
+import { localTypeGroups } from './index';
+import { Type } from '@/stores/fields/types';
 
 export default defineComponent({
 	components: {
@@ -109,7 +110,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const projectsStore = useProjectsStore();
 
-		const { field, localType } = usefield();
+		const { field, localType } = useField();
 		const { tabs, currentTab } = useTabs();
 		const { save, saving } = useSave();
 
@@ -117,7 +118,7 @@ export default defineComponent({
 
 		return { field, tabs, currentTab, localType, save, saving, newRelations };
 
-		function usefield() {
+		function useField() {
 			const defaults = {
 				id: null,
 				collection: props.collection,
@@ -166,16 +167,13 @@ export default defineComponent({
 					if (existingField) {
 						field.value = existingField;
 
-						const type = existingField.type.toLowerCase();
+						const type: Type = existingField.type;
 
-						if (type === 'file') {
-							localType.value = 'file';
-						} else if (type === 'files') {
-							localType.value = 'files';
-						} else if (['o2m', 'm2o', 'm2m'].includes(type)) {
-							localType.value = 'relational';
-						} else {
-							localType.value = 'standard';
+						for (const [group, types] of Object.entries(localTypeGroups)) {
+							if (types.includes(type)) {
+								localType.value = group as LocalType;
+								break;
+							}
 						}
 					} else {
 						field.value = { ...defaults };

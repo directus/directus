@@ -13,7 +13,7 @@
 			/>
 			<permissions-toggle
 				type="read"
-				:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+				:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 				:value="getCombinedPermission('read')"
 				:save-permission="saveForAllStatuses"
 				:collection="collection"
@@ -21,7 +21,7 @@
 			/>
 			<permissions-toggle
 				type="update"
-				:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+				:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 				:value="getCombinedPermission('update')"
 				:save-permission="saveForAllStatuses"
 				:collection="collection"
@@ -29,7 +29,7 @@
 			/>
 			<permissions-toggle
 				type="delete"
-				:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+				:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 				:value="getCombinedPermission('delete')"
 				:save-permission="saveForAllStatuses"
 				:collection="collection"
@@ -117,7 +117,7 @@
 					/>
 					<permissions-toggle
 						type="read"
-						:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+						:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 						:value="getPermissionValue('read', status.value)"
 						:status="status.value"
 						:save-permission="savePermission"
@@ -127,7 +127,7 @@
 					/>
 					<permissions-toggle
 						type="update"
-						:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+						:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 						:value="getPermissionValue('update', status.value)"
 						:status="status.value"
 						:save-permission="savePermission"
@@ -137,7 +137,7 @@
 					/>
 					<permissions-toggle
 						type="delete"
-						:options="ownerField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
+						:options="userCreatedField ? ['none', 'mine', 'role', 'full'] : ['none', 'full']"
 						:value="getPermissionValue('delete', status.value)"
 						:status="status.value"
 						:save-permission="savePermission"
@@ -241,7 +241,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { collection } = toRefs(props);
-		const { fields, info, statusField, ownerField } = useCollection(collection);
+		const { fields, info, statusField, userCreatedField } = useCollection(collection);
 
 		const detailsOpen = ref(false);
 
@@ -289,7 +289,7 @@ export default defineComponent({
 			statuses,
 			detailsOpen,
 			permissions,
-			ownerField,
+			userCreatedField,
 			getPermissionValue,
 			getCombinedPermission,
 			saveForAllStatuses,

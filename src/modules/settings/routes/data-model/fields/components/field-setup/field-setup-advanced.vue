@@ -10,7 +10,8 @@
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import i18n from '@/lang';
 import { FormField } from '@/components/v-form/types';
-import { Field } from '@/stores/fields/types';
+import { Field, types } from '@/stores/fields/types';
+import interfaces from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -24,6 +25,21 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const selectedInterface = computed(() => interfaces.find((inter) => inter.id === props.value.interface));
+
+		const typeChoices = computed(() => {
+			let availableTypes = types;
+
+			if (selectedInterface.value) {
+				availableTypes = selectedInterface.value.types;
+			}
+
+			return availableTypes.map((type) => ({
+				text: i18n.t(type),
+				value: type,
+			}));
+		});
+
 		const fields = computed(() => {
 			const fields: FormField[] = [
 				{
@@ -127,8 +143,11 @@ export default defineComponent({
 				{
 					field: 'type',
 					name: i18n.t('directus_type'),
-					interface: 'text-input',
+					interface: 'dropdown',
 					width: 'half',
+					options: {
+						choices: typeChoices.value,
+					},
 				},
 				{
 					field: 'datatype',

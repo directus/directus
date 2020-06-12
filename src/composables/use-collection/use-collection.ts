@@ -21,8 +21,8 @@ export function useCollection(collection: Ref<string>) {
 		return fields.value?.find((field) => field.collection === collection.value && field.primary_key === true)!;
 	});
 
-	const ownerField = computed(() => {
-		return fields.value?.find((field) => field.type === 'owner') || null;
+	const userCreatedField = computed(() => {
+		return fields.value?.find((field) => field.type === 'user_created') || null;
 	});
 
 	const statusField = computed(() => {
@@ -54,5 +54,5 @@ export function useCollection(collection: Ref<string>) {
 		);
 	});
 
-	return { info, fields, primaryKeyField, ownerField, statusField, softDeleteStatus, sortField };
+	return { info, fields, primaryKeyField, userCreatedField, statusField, softDeleteStatus, sortField };
 }

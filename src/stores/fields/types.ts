@@ -7,6 +7,69 @@ type Translation = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
+export type Type =
+	| 'alias'
+	| 'array'
+	| 'boolean'
+	| 'binary'
+	| 'datetime'
+	| 'date'
+	| 'time'
+	| 'file'
+	| 'files'
+	| 'hash'
+	| 'group'
+	| 'integer'
+	| 'decimal'
+	| 'json'
+	| 'lang'
+	| 'm2o'
+	| 'o2m'
+	| 'm2m'
+	| 'slug'
+	| 'sort'
+	| 'status'
+	| 'string'
+	| 'translation'
+	| 'uuid'
+	| 'datetime_created'
+	| 'datetime_updated'
+	| 'user_created'
+	| 'user_updated'
+	| 'user';
+
+export const types: Type[] = [
+	'alias',
+	'array',
+	'boolean',
+	'binary',
+	'datetime',
+	'date',
+	'time',
+	'file',
+	'files',
+	'hash',
+	'group',
+	'integer',
+	'decimal',
+	'json',
+	'lang',
+	'm2o',
+	'o2m',
+	'm2m',
+	'slug',
+	'sort',
+	'status',
+	'string',
+	'translation',
+	'uuid',
+	'datetime_created',
+	'datetime_updated',
+	'user_created',
+	'user_updated',
+	'user',
+];
+
 export interface FieldRaw {
 	id: number;
 	collection: string;
@@ -18,7 +81,7 @@ export interface FieldRaw {
 	default_value: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 	note: string | TranslateResult | null;
 	signed: boolean;
-	type: string;
+	type: Type;
 	sort: null | number;
 	interface: string | null;
 	options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -29,6 +29,8 @@ import { defineComponent, computed, PropType } from '@vue/composition-api';
 import displays from '@/displays/';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Field } from '@/stores/fields/types';
+import { localTypeGroups } from './index';
+import { LocalType } from './types';
 
 export default defineComponent({
 	props: {
@@ -40,14 +42,30 @@ export default defineComponent({
 			type: Object as PropType<Field>,
 			required: true,
 		},
+		localType: {
+			type: String as PropType<LocalType>,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
 		const items = computed<FancySelectItem[]>(() => {
-			return displays.map((inter) => ({
-				text: inter.name,
-				value: inter.id,
-				icon: inter.icon,
-			}));
+			return (
+				displays
+					// Filter interfaces based on the localType that was selected
+					.filter((display) => {
+						return display.types.some((type) => localTypeGroups[props.localType].includes(type));
+					})
+					// When choosing an interface, the type is preset. We can safely assume that a
+					// type has been set when you reach the display pane
+					.filter((display) => {
+						return display.types.includes(props.value.type);
+					})
+					.map((inter) => ({
+						text: inter.name,
+						value: inter.id,
+						icon: inter.icon,
+					}))
+			);
 		});
 
 		const selectedDisplay = computed(() => {

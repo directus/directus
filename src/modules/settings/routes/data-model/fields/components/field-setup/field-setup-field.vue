@@ -14,12 +14,7 @@
 			:disabled="isNew === false"
 		/>
 
-		<v-fancy-select
-			:disabled="isNew === false"
-			:items="items"
-			:value="localType"
-			@input="$emit('update:localType', $event)"
-		/>
+		<v-fancy-select :disabled="isNew === false" :items="items" :value="localType" @input="setLocalType" />
 	</div>
 </template>
 
@@ -69,12 +64,23 @@ export default defineComponent({
 			},
 		]);
 
-		return { emitValue, items };
+		return { emitValue, items, setLocalType };
 
 		function emitValue(key: string, value: any) {
 			emit('input', {
 				...props.value,
 				[key]: value,
+			});
+		}
+
+		function setLocalType(newType: string) {
+			emit('update:localType', newType);
+
+			// Reset the interface when changing the localtype. If you change localType, the previously
+			// selected interface most likely doesn't exist in the new selection anyways
+			emit('input', {
+				...props.value,
+				interface: null,
 			});
 		}
 	},

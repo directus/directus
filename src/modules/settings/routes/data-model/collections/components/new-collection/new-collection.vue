@@ -325,7 +325,7 @@ export default defineComponent({
 
 			if (systemFields[2].enabled === true) {
 				fields.push({
-					type: 'owner',
+					type: 'user_created',
 					datatype: 'INT',
 					field: systemFields[2].name,
 					interface: 'owner',

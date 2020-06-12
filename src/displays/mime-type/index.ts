@@ -4,7 +4,7 @@ import { defineDisplay } from '@/displays/define';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'mime-type',
-	name: i18n.t('mime-type'),
+	name: i18n.t('mime_type'),
 	icon: 'picture_as_pdf',
 	options: [
 		{

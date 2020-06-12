@@ -76,6 +76,9 @@
 	"confirm_revert": "Confirm Revert",
 	"confirm_revert_body": "This will revert the item to the selected state.",
 
+	"mime_type": "MIME Type",
+	"filesize": "Filesize",
+
 	"editing_role": "{role} Role",
 	"adding_webhook": "Adding Webhook",
 
