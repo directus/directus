@@ -26,6 +26,7 @@ import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';
 import 'codemirror/addon/search/matchesonscrollbar.js';
 import 'codemirror/addon/scroll/annotatescrollbar.js';
+import 'codemirror/addon/lint/lint.js';
 import 'codemirror/addon/search/search.js';
 
 import 'codemirror/addon/comment/comment.js';
@@ -41,7 +42,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: String,
+			type: [String, Object],
 			default: null,
 		},
 		altOptions: {
@@ -54,11 +55,11 @@ export default defineComponent({
 		},
 		lineNumber: {
 			type: Boolean,
-			default: null,
+			default: true,
 		},
 		language: {
 			type: String,
-			default: 'javascript',
+			default: 'json',
 		},
 	},
 	setup(props, { emit }) {
@@ -75,7 +76,11 @@ export default defineComponent({
 				await setLanguage();
 				codemirror.value.on('change', (cm) => {
 					const content = cm.getValue();
-					emit('input', content);
+					try {
+						emit('input', JSON.parse(content));
+					} catch {
+						emit('input', content);
+					}
 				});
 			}
 		});
@@ -103,8 +108,55 @@ export default defineComponent({
 
 		async function setLanguage() {
 			if (codemirror.value) {
-				await import(`codemirror/mode/${props.language}/${props.language}.js`);
-				codemirror.value.setOption('mode', props.language);
+				const lang = props.language.toLowerCase();
+				if (lang === 'json') {
+					// @ts-ignore
+					await import('codemirror/mode/javascript/javascript.js');
+					const jsonlint = (await import('jsonlint-mod')) as any;
+					codemirror.value.setOption('mode', { name: 'javascript', json: true });
+					CodeMirror.registerHelper('lint', 'json', (text: string) => {
+						const found: {}[] = [];
+						const parser = jsonlint.parser;
+						parser.parseError = (str: string, hash: any) => {
+							const loc = hash.loc;
+							found.push({
+								from: CodeMirror.Pos(loc.first_line - 1, loc.first_column),
+								to: CodeMirror.Pos(loc.last_line - 1, loc.last_column),
+								message: str,
+							});
+						};
+						if (text.length > 0) {
+							try {
+								jsonlint.parse(text);
+							} catch (e) {
+								console.error(e);
+							}
+						}
+						return found;
+					});
+				} else if (lang === 'javascript' || lang === 'htmlmixed' || lang === 'css' || lang === 'yaml') {
+					let linter = lang;
+					if (lang === 'javascript') {
+						const jshint = await import('jshint');
+						(window as any).JSHINT = jshint;
+					} else if (lang === 'htmlmixed') {
+						linter = 'html';
+						const htmlhint = await import('htmlhint');
+						(window as any).HTMLHint = htmlhint;
+					} else if (lang === 'css') {
+						const csslint = await import('csslint');
+						(window as any).CSSLint = csslint;
+					} else if (lang === 'yaml') {
+						const jsyaml = await import('js-yaml');
+						(window as any).jsyaml = jsyaml;
+					}
+					await import(`codemirror/mode/${lang}/${lang}.js`);
+					await import(`codemirror/addon/lint/${linter}-lint.js`);
+					codemirror.value.setOption('lint', CodeMirror.lint[linter]);
+				} else {
+					await import(`codemirror/mode/${lang}/${lang}.js`);
+					codemirror.value.setOption('mode', { name: lang });
+				}
 			}
 		}
 
@@ -161,6 +213,8 @@ export default defineComponent({
 			showCursorWhenSelecting: true,
 			theme: 'default',
 			extraKeys: { Ctrl: 'autocomplete' },
+			lint: true,
+			gutters: ['CodeMirror-lint-markers'],
 		};
 
 		const cmOptions = computed<Record<string, any>>(() => {
@@ -219,6 +273,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '~codemirror/addon/lint/lint.css';
+
 .interface-code {
 	position: relative;
 	width: 100%;

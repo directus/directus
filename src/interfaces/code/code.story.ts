@@ -9,7 +9,7 @@ import 'codemirror/mode/meta';
 
 const choices = {} as Record<string, string>;
 
-CodeMirror.modeInfo.forEach((e) => (choices[e.name] = e.mode));
+CodeMirror.modeInfo.forEach((e) => (e.name === 'JSON' ? (choices[e.name] = 'JSON') : (choices[e.name] = e.mode)));
 
 export default {
 	title: 'Interfaces / Code',
@@ -25,7 +25,7 @@ export const basic = () =>
 		i18n,
 		props: {
 			lineNumber: {
-				default: boolean('Line Number', false),
+				default: boolean('Line Number', true),
 			},
 			disabled: {
 				default: boolean('Disabled', false),
