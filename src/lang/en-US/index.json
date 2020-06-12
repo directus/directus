@@ -82,6 +82,10 @@
 	"editing_role": "{role} Role",
 	"adding_webhook": "Adding Webhook",
 
+	"creating_new_field": "Creating New Field",
+	"updating_field_field": "Updating Field {field}",
+	"within_collection": "Within {collection}",
+
 	"code": "Code",
 	"loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}",
 

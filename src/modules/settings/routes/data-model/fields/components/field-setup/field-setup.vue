@@ -1,12 +1,17 @@
 <template>
-	<v-modal :active="active" title="Field" persistent>
+	<v-modal
+		:active="active"
+		:title="title"
+		:subtitle="$t('within_collection', { collection: collectionInfo.name })"
+		persistent
+	>
 		<template #sidebar>
 			<setup-tabs
 				:current-tab.sync="currentTab"
 				:tabs="tabs"
 				:field="field"
 				:local-type="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 			/>
 		</template>
 
@@ -15,32 +20,32 @@
 				v-if="currentTab[0] === 'field'"
 				v-model="field"
 				:local-type.sync="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 			/>
 			<field-setup-relationship
 				v-if="currentTab[0] === 'relationship'"
 				v-model="field"
 				:local-type.sync="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 				:new-relations.sync="newRelations"
 			/>
 			<field-setup-interface
 				v-if="currentTab[0] === 'interface'"
 				v-model="field"
 				:local-type.sync="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 			/>
 			<field-setup-display
 				v-if="currentTab[0] === 'display'"
 				v-model="field"
 				:local-type.sync="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 			/>
 			<field-setup-advanced
 				v-if="currentTab[0] === 'advanced'"
 				v-model="field"
 				:local-type.sync="localType"
-				:is-new="existingField === null"
+				:is-new="isNew"
 			/>
 		</div>
 
@@ -60,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch, ref, computed } from '@vue/composition-api';
+import { defineComponent, PropType, watch, ref, computed, toRefs } from '@vue/composition-api';
 import { Field } from '@/stores/fields/types';
 import i18n from '@/lang';
 import FieldSetupField from './field-setup-field.vue';
@@ -77,6 +82,7 @@ import useProjectsStore from '@/stores/projects';
 import { LocalType } from './types';
 import { localTypeGroups } from './index';
 import { Type } from '@/stores/fields/types';
+import useCollection from '@/composables/use-collection';
 
 export default defineComponent({
 	components: {
@@ -110,13 +116,23 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const projectsStore = useProjectsStore();
 
+		const { collection } = toRefs(props);
+
+		const { info: collectionInfo } = useCollection(collection);
+
 		const { field, localType } = useField();
 		const { tabs, currentTab } = useTabs();
 		const { save, saving } = useSave();
 
 		const newRelations = ref<Partial<Relation>[]>([]);
+		const isNew = computed(() => props.existingField === null);
+		const title = computed(() =>
+			isNew.value
+				? i18n.t('creating_new_field')
+				: i18n.t('updating_field_field', { field: props.existingField.name })
+		);
 
-		return { field, tabs, currentTab, localType, save, saving, newRelations };
+		return { field, tabs, currentTab, localType, save, saving, newRelations, isNew, title, collectionInfo };
 
 		function useField() {
 			const defaults = {
