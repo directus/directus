@@ -72,7 +72,7 @@ export default defineComponent({
 
 				await getImports(cmOptions.value);
 				codemirror.value = CodeMirror.fromTextArea(codemirrorElVal, cmOptions.value);
-				codemirror.value.setValue(stringValue.value || props.template);
+				codemirror.value.setValue(stringValue.value || props.template || '');
 				await setLanguage();
 				codemirror.value.on('change', (cm) => {
 					const content = cm.getValue();
@@ -152,7 +152,7 @@ export default defineComponent({
 					}
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					await import(`codemirror/addon/lint/${linter}-lint.js`);
-					codemirror.value.setOption('lint', CodeMirror.lint[linter]);
+					codemirror.value.setOption('lint', (CodeMirror as any).lint[linter]);
 				} else {
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					codemirror.value.setOption('mode', { name: lang });
@@ -278,8 +278,8 @@ export default defineComponent({
 .interface-code {
 	position: relative;
 	width: 100%;
-	max-width: 620px;
 	font-size: 12px;
+
 	&:focus {
 		border-color: var(--primary-125);
 	}

@@ -19,17 +19,21 @@ declare module 'vuedraggable' {
 }
 
 declare module 'jsonlint-mod' {
-	export default any;
+	const x: any;
+	export default x;
 }
 
 declare module 'jshint' {
-	export default any;
+	const x: any;
+	export default x;
 }
 
 declare module 'csslint' {
-	export default any;
+	const x: any;
+	export default x;
 }
 
 declare module 'js-yaml' {
-	export default any;
+	const x: any;
+	export default x;
 }

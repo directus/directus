@@ -185,7 +185,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 
 .CodeMirror-scroll {
 	position: relative;
-	height: 100%; margin-right: -50px;
+	height: 100%;
+	min-height: var(--input-height-tall);
+	margin-right: -50px;
 
 	/* 50px is the magic margin used to hide the element's real scrollbars */
 
