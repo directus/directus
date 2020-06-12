@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('wysiwyg'),
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
+	types: ['string'],
 	options: [
 		{
 			field: 'toolbar',

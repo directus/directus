@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('radio_buttons'),
 	icon: 'radio_button_checked',
 	component: InterfaceRadioButtons,
+	types: ['string'],
 	options: [
 		{
 			field: 'choices',

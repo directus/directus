@@ -7,5 +7,5 @@ export default defineDisplay(({ i18n }) => ({
 	icon: 'star',
 	handler: DisplayRating,
 	options: null,
-	types: ['integer'],
+	types: ['integer', 'decimal'],
 }));

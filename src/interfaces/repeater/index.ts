@@ -5,7 +5,7 @@ export default defineInterface(({ i18n }) => ({
 	id: 'repeater',
 	name: i18n.t('repeater'),
 	icon: 'replay',
-	types: ['json'],
 	component: InterfaceRepeater,
+	types: ['json'],
 	options: [],
 }));

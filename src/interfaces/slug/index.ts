@@ -6,5 +6,6 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('slug'),
 	icon: 'link',
 	component: InterfaceSlug,
+	types: ['string'],
 	options: [],
 }));

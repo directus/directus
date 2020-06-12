@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('toggle'),
 	icon: 'check_box',
 	component: InterfaceToggle,
+	types: ['boolean'],
 	options: [
 		{
 			field: 'iconOff',

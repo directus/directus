@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('slider'),
 	icon: 'linear_scale',
 	component: InterfaceSlider,
+	types: ['integer', 'decimal'],
 	options: [
 		{
 			field: 'minValue',

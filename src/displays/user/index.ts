@@ -4,7 +4,7 @@ import DisplayUser from './user.vue';
 export default defineDisplay(({ i18n }) => ({
 	id: 'user',
 	name: i18n.t('user'),
-	types: ['user', 'owner', 'user_modified'],
+	types: ['user', 'user_created', 'user_updated'],
 	icon: 'person',
 	handler: DisplayUser,
 	options: [

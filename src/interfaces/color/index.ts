@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('color'),
 	icon: 'palette',
 	component: InterfaceColor,
+	types: ['string'],
 	options: [
 		{
 			field: 'presets',

@@ -7,5 +7,5 @@ export default defineDisplay(({ i18n }) => ({
 	icon: 'query_builder',
 	handler: DisplayDateTime,
 	options: [],
-	types: ['datetime', 'date', 'time'],
+	types: ['datetime', 'datetime_created', 'datetime_updated', 'date', 'time'],
 }));

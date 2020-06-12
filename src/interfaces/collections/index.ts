@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('collections'),
 	icon: 'featured_play_list',
 	component: InterfaceCollections,
+	types: ['string'],
 	options: [
 		{
 			field: 'includeSystem',

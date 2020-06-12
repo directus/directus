@@ -1,6 +1,7 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
 import { Field } from '@/stores/fields/types';
+import { Type } from '@/interfaces/types';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;
@@ -28,7 +29,7 @@ export type DisplayConfig = {
 
 	handler: DisplayHandlerFunction | Component;
 	options: null | Partial<Field>[] | Component;
-	types: string[];
+	types: Type[];
 	fields?: string[] | DisplayFieldsFunction;
 };
 

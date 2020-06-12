@@ -8,6 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceNotice,
 	hideLabel: true,
 	hideLoader: true,
+	types: ['alias'],
 	options: [
 		{
 			field: 'color',

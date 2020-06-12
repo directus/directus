@@ -1,5 +1,4 @@
 import InterfaceNumeric from './numeric.vue';
-
 import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
@@ -7,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('numeric'),
 	icon: 'dialpad',
 	component: InterfaceNumeric,
+	types: ['integer', 'decimal'],
 	options: [
 		{
 			field: 'placeholder',

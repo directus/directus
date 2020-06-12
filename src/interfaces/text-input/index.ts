@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('text_input'),
 	icon: 'text_fields',
 	component: InterfaceTextInput,
+	types: ['string'],
 	options: [
 		{
 			field: 'placeholder',

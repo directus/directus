@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('hash'),
 	icon: 'text_fields',
 	component: InterfaceHash,
+	types: ['string'],
 	options: [
 		{
 			field: 'placeholder',

@@ -5,7 +5,7 @@ export default defineInterface(({ i18n }) => ({
 	id: 'translations',
 	name: i18n.t('translations'),
 	icon: 'replay',
-	types: ['o2m'],
+	types: ['translation'],
 	component: InterfaceTranslations,
 	options: [],
 }));

@@ -8,6 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceDivider,
 	hideLabel: true,
 	hideLoader: true,
+	types: ['alias'],
 	options: [
 		{
 			field: 'color',
