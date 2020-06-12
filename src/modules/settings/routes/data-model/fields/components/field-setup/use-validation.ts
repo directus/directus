@@ -20,7 +20,7 @@ export default function useValidation(field: Ref<Field>, localType: Ref<LocalTyp
 		return notEmpty(field.value.display);
 	});
 
-	const advancedComplete = computed<boolean>(() => {
+	const schemaComplete = computed<boolean>(() => {
 		return true;
 	});
 
@@ -29,6 +29,6 @@ export default function useValidation(field: Ref<Field>, localType: Ref<LocalTyp
 		relationComplete,
 		interfaceComplete,
 		displayComplete,
-		advancedComplete,
+		schemaComplete,
 	};
 }

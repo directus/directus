@@ -62,7 +62,7 @@ export default defineComponent({
 					return hasRelationshipTab.value ? relationComplete.value === true : fieldComplete.value === true;
 				case 'display':
 					return interfaceComplete.value === true;
-				case 'advanced':
+				case 'schema':
 					return displayComplete.value === true;
 				default:
 					return true;

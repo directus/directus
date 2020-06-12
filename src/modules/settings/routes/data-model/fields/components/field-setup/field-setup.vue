@@ -41,8 +41,8 @@
 				:local-type.sync="localType"
 				:is-new="isNew"
 			/>
-			<field-setup-advanced
-				v-if="currentTab[0] === 'advanced'"
+			<field-setup-schema
+				v-if="currentTab[0] === 'schema'"
 				v-model="field"
 				:local-type.sync="localType"
 				:is-new="isNew"
@@ -72,7 +72,7 @@ import FieldSetupField from './field-setup-field.vue';
 import FieldSetupRelationship from './field-setup-relationship.vue';
 import FieldSetupInterface from './field-setup-interface.vue';
 import FieldSetupDisplay from './field-setup-display.vue';
-import FieldSetupAdvanced from './field-setup-advanced.vue';
+import FieldSetupSchema from './field-setup-schema.vue';
 import SetupTabs from './setup-tabs.vue';
 import SetupActions from './setup-actions.vue';
 import useFieldsStore from '@/stores/fields/';
@@ -90,7 +90,7 @@ export default defineComponent({
 		FieldSetupRelationship,
 		FieldSetupInterface,
 		FieldSetupDisplay,
-		FieldSetupAdvanced,
+		FieldSetupSchema,
 		SetupTabs,
 		SetupActions,
 	},
@@ -214,26 +214,26 @@ export default defineComponent({
 			const tabs = computed(() => {
 				const tabs = [
 					{
-						text: i18n.t('field_setup'),
+						text: i18n.t('field_type'),
 						value: 'field',
 					},
 					{
-						text: i18n.t('interface_setup'),
+						text: i18n.t('interface'),
 						value: 'interface',
 					},
 					{
-						text: i18n.t('display_setup'),
+						text: i18n.t('display'),
 						value: 'display',
 					},
 					{
-						text: i18n.t('advanced_options'),
-						value: 'advanced',
+						text: i18n.t('schema'),
+						value: 'schema',
 					},
 				];
 
 				if (localType.value === 'relational') {
 					tabs.splice(1, 0, {
-						text: i18n.t('relationship_setup'),
+						text: i18n.t('relationship'),
 						value: 'relationship',
 					});
 				}

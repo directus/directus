@@ -66,7 +66,7 @@ export default defineComponent({
 		const _currentTab = useSync(props, 'currentTab', emit);
 
 		const { field, localType } = toRefs(props);
-		const { fieldComplete, relationComplete, interfaceComplete, displayComplete, advancedComplete } = useValidation(
+		const { fieldComplete, relationComplete, interfaceComplete, displayComplete, schemaComplete } = useValidation(
 			field,
 			localType
 		);
@@ -95,7 +95,7 @@ export default defineComponent({
 		});
 
 		const saveDisabled = computed(() => {
-			return advancedComplete.value === false;
+			return schemaComplete.value === false;
 		});
 
 		return { previous, next, currentTabIndex, previousDisabled, nextDisabled, saveDisabled };

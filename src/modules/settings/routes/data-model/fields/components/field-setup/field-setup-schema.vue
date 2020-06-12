@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="type-title" v-if="isNew">{{ $t('advanced_options_title') }}</h2>
+		<h2 class="type-title" v-if="isNew">{{ $t('schema_options_title') }}</h2>
 
 		<v-form :edits="value" @input="$emit('input', $event)" :fields="fields" primary-key="+" />
 	</div>
