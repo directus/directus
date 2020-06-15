@@ -45,7 +45,7 @@
     "micromustache": "^7.1.0",
     "mime-types": "^2.1.27",
     "mousetrap": "^1.6.5",
-    "nanoid": "^3.1.9",
+    "nanoid": "^3.1.10",
     "pinia": "0.0.6",
     "portal-vue": "^2.1.7",
     "resize-observer": "^1.0.0",
