@@ -1,0 +1,50 @@
+{
+  "name": "api-node",
+  "version": "0.0.1",
+  "description": "The Directus API in Node.js",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/api-node.git"
+  },
+  "keywords": [
+    "directus",
+    "api",
+    "headless",
+    "database",
+    "cms",
+    "dam",
+    "crm"
+  ],
+  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/directus/api-node/issues"
+  },
+  "homepage": "https://github.com/directus/api-node#readme",
+  "devDependencies": {
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.10",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write"
+    ]
+  }
+}
