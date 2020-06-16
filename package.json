@@ -51,6 +51,8 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "get-port": "^5.1.1",
     "mssql": "^6.2.0",
     "mysql": "^2.18.1",
     "oracledb": "^4.2.0",
