@@ -1,5 +1,8 @@
-import pino from "pino";
+import app from "./app";
+import logger from "./logger";
 
-const logger = pino();
+const port = process.env.PORT || 3000;
 
-logger.info("Hello World");
+app.listen(port, () => {
+  logger.info(`Server started at port ${port}`);
+});
