@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "nodemon -q --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts | pino-pretty -c -l -i pid,hostname"
+    "dev": "nodemon -q --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts | pino-colada"
   },
   "repository": {
     "type": "git",
@@ -28,12 +28,13 @@
   },
   "homepage": "https://github.com/directus/api-node#readme",
   "devDependencies": {
+    "@types/express": "^4.17.6",
     "@types/pino": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
     "nodemon": "^2.0.4",
-    "pino-pretty": "^4.0.0",
+    "pino-colada": "^1.6.1",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
@@ -50,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "express": "^4.17.1",
     "pino": "^6.3.2"
   }
 }
