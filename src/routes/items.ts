@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import { createItem, readItems, readItem, updateItem, deleteItem } from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
+import validateQuery from '../middleware/validate-query';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
+	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await readItems(req.params.collection, res.locals.query);
 

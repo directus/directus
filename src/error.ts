@@ -3,11 +3,13 @@ import logger from './logger';
 
 export enum ErrorCode {
 	NOT_FOUND = 'NOT_FOUND',
+	FIELD_NOT_FOUND = 'FIELD_NOT_FOUND',
 	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 }
 
 enum HTTPStatus {
 	NOT_FOUND = 404,
+	FIELD_NOT_FOUND = 400,
 	INTERNAL_SERVER_ERROR = 500,
 }
 

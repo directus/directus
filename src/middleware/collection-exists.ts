@@ -8,7 +8,10 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 
 	const exists = await database.schema.hasTable(req.params.collection);
 
-	if (exists) return next();
+	if (exists) {
+		res.locals.collection = req.params.collection;
+		return next();
+	}
 
 	throw new APIError(ErrorCode.NOT_FOUND, `Collection "${req.params.collection}" doesn't exist.`);
 });

@@ -1,6 +1,5 @@
 import database from '../database';
 import { Query } from '../types/query';
-import logger from '../logger';
 
 export const createItem = async (
 	collection: string,

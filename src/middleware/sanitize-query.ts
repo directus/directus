@@ -5,6 +5,7 @@
 
 import { RequestHandler } from 'express';
 import { Query } from '../types/query';
+import logger from '../logger';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
