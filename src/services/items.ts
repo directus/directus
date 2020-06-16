@@ -1,5 +1,6 @@
 import database from '../database';
 import { Query } from '../types/query';
+import logger from '../logger';
 
 export const createItem = async (
 	collection: string,
@@ -10,7 +11,7 @@ export const createItem = async (
 };
 
 export const readItems = async (collection: string, query: Query = {}) => {
-	return await database.select('*').from(collection);
+	return await database.select(query?.fields || '*').from(collection);
 };
 
 export const readItem = async (collection: string, pk: number | string, query = {}) => {

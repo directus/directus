@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { createItem, readItems, readItem, updateItem, deleteItem } from '../services/items';
+import sanitizeQuery from '../middleware/sanitize-query';
 
 const router = express.Router();
 
@@ -14,8 +15,9 @@ router.post(
 
 router.get(
 	'/:collection',
+	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await readItems(req.params.collection);
+		const records = await readItems(req.params.collection, res.locals.query);
 
 		return res.json({
 			data: records,
