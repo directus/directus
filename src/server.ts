@@ -1,8 +1,11 @@
-import app from "./app";
-import logger from "./logger";
+import app from './app';
+import logger from './logger';
+import getPort from 'get-port';
 
-const port = process.env.PORT || 3000;
+(async () => {
+	const port = process.env.PORT || (await getPort({ port: 3000 }));
 
-app.listen(port, () => {
-  logger.info(`Server started at port ${port}`);
-});
+	app.listen(port, () => {
+		logger.info(`Server started at port ${port}`);
+	});
+})();
