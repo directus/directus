@@ -51,7 +51,12 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "mssql": "^6.2.0",
+    "mysql": "^2.18.1",
+    "oracledb": "^4.2.0",
+    "pg": "^8.2.1",
     "pino": "^6.3.2",
+    "sqlite3": "^4.2.0",
     "ts-node-dev": "^1.0.0-pre.49"
   }
 }

@@ -8,7 +8,6 @@
 ### Instructions
 1. Clone the repo
 2. Install the dependencies with `npm install`
-3. Install the database driver for the DB you'd like to use. One of: `pg`, `sqlite3`, `mysql`, `mysql2`, `oracledb`, `mssql`
 
 ## Usage
 
