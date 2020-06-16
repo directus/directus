@@ -1,12 +1,17 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import APIError, { errorHandler, ErrorCode } from './error';
+import database from './database';
 
 const app = express()
 	.get(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			throw new APIError(ErrorCode.NOT_FOUND, 'Route `/` not found');
+			const records = await database.select('*').from('articles');
+			res.json(records);
 		})
 	)
 	.use(errorHandler);
