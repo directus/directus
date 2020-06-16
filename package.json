@@ -4,9 +4,9 @@
   "description": "The Directus API in Node.js",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "NODE_ENV=production node dist/server.js",
     "build": "tsc",
-    "dev": "ts-node-dev src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada"
+    "dev": "LOG_LEVEL=trace ts-node-dev src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada"
   },
   "repository": {
     "type": "git",
