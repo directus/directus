@@ -2,8 +2,11 @@ import express, { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import * as itemsService from '../services/items';
 
-const readItems: RequestHandler = asyncHandler((req, res) => {
-	res.send('Hi there');
+const readItems: RequestHandler = asyncHandler(async (req, res) => {
+	const records = await itemsService.readAll(req.params.collection);
+	res.json({
+		data: records,
+	});
 });
 
 const createItem: RequestHandler = asyncHandler(async (req, res) => {
