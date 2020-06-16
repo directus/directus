@@ -1,0 +1,26 @@
+{
+  "name": "api-node",
+  "version": "0.0.1",
+  "description": "The Directus API in Node.js",
+  "main": "dist/server.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/api-node.git"
+  },
+  "keywords": [
+    "directus",
+    "api",
+    "headless",
+    "database",
+    "cms",
+    "dam",
+    "crm"
+  ],
+  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/directus/api-node/issues"
+  },
+  "homepage": "https://github.com/directus/api-node#readme"
+}
