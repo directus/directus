@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "The Directus API in Node.js",
   "main": "dist/server.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/directus/api-node.git"
@@ -22,5 +25,10 @@
   "bugs": {
     "url": "https://github.com/directus/api-node/issues"
   },
-  "homepage": "https://github.com/directus/api-node#readme"
+  "homepage": "https://github.com/directus/api-node#readme",
+  "devDependencies": {
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  }
 }
