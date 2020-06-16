@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "nodemon -q --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts | pino-colada"
+    "dev": "ts-node-dev src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
-    "nodemon": "^2.0.4",
     "pino-colada": "^1.6.1",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
@@ -52,6 +51,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "pino": "^6.3.2"
+    "pino": "^6.3.2",
+    "ts-node-dev": "^1.0.0-pre.49"
   }
 }
