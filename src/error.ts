@@ -1,28 +1,51 @@
 import { ErrorRequestHandler } from 'express';
+import logger from './logger';
 
 export enum ErrorCode {
 	NOT_FOUND = 'NOT_FOUND',
+	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 }
 
 enum HTTPStatus {
 	NOT_FOUND = 404,
+	INTERNAL_SERVER_ERROR = 500,
 }
 
-export const errorHandler: ErrorRequestHandler = (error: APIError, req, res, next) => {
-	res.status(error.status);
+export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, res, next) => {
+	let response: any = {};
 
-	const response: any = {
-		error: {
-			code: error.code,
-			message: error.message,
-		},
-	};
+	if (error instanceof APIError) {
+		logger.debug(error);
+
+		res.status(error.status);
+
+		response = {
+			error: {
+				code: error.code,
+				message: error.message,
+			},
+		};
+	} else {
+		logger.error(error);
+
+		res.status(500);
+
+		response = {
+			error: {
+				code: ErrorCode.INTERNAL_SERVER_ERROR,
+			},
+		};
+
+		if ((process.env.NODE_ENV = 'development')) {
+			response.error.message = error.message;
+		}
+	}
 
 	if ((process.env.NODE_ENV = 'development')) {
 		response.error.stack = error.stack;
 	}
 
-	res.json(response);
+	return res.json(response);
 };
 
 export default class APIError extends Error {
