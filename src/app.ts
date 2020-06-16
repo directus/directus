@@ -2,18 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import asyncHandler from 'express-async-handler';
-import APIError, { errorHandler, ErrorCode } from './error';
-import database from './database';
+import { errorHandler } from './error';
+import itemsRouter from './routes/items';
 
-const app = express()
-	.get(
-		'/',
-		asyncHandler(async (req, res, next) => {
-			const records = await database.select('*').from('articles');
-			res.json(records);
-		})
-	)
-	.use(errorHandler);
+const app = express().use('/items', itemsRouter).use(errorHandler);
 
 export default app;
