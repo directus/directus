@@ -4,7 +4,7 @@
  */
 
 import { RequestHandler } from 'express';
-import { Query, Sort } from '../types/query';
+import { Query, Sort, Filter, FilterOperator } from '../types/query';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
@@ -17,6 +17,10 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	if (req.query.sort) {
 		query.sort = sanitizeSort(req.query.sort);
+	}
+
+	if (req.query.filter) {
+		query.filter = sanitizeFilter(req.query.filter);
 	}
 
 	res.locals.query = query;
@@ -45,4 +49,17 @@ function sanitizeSort(rawSort: any) {
 		const column = field.startsWith('-') ? field.substring(1) : field;
 		return { column, order } as Sort;
 	});
+}
+
+function sanitizeFilter(rawFilter: any) {
+	const filters: Filter[] = [];
+
+	Object.keys(rawFilter).forEach((column) => {
+		Object.keys(rawFilter[column]).forEach((operator: FilterOperator) => {
+			const value = rawFilter[column][operator];
+			filters.push({ column, operator, value });
+		});
+	});
+
+	return filters;
 }

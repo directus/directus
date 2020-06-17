@@ -16,14 +16,60 @@ export const readItems = async (collection: string, query: Query = {}) => {
 		dbQuery.orderBy(query.sort);
 	}
 
+	if (query.filter) {
+		query.filter.forEach((filter) => {
+			if (filter.operator === 'eq') {
+				dbQuery.where({ [filter.column]: filter.value });
+			}
+
+			if (filter.operator === 'neq') {
+				dbQuery.whereNot({ [filter.column]: filter.value });
+			}
+
+			if (filter.operator === 'null') {
+				dbQuery.whereNull(filter.column);
+			}
+
+			if (filter.operator === 'nnull') {
+				dbQuery.whereNotNull(filter.column);
+			}
+		});
+	}
+
 	return await dbQuery;
 };
 
 export const readItem = async (collection: string, pk: number | string, query: Query = {}) => {
 	const dbQuery = database.select('*').from(collection).where({ id: pk });
 
+	/**
+	 * @TODO
+	 * Merge query building between items / item. It should be the same for both, with the exception
+	 * of limit / page etc
+	 */
+
 	if (query.sort) {
 		dbQuery.orderBy(query.sort);
+	}
+
+	if (query.filter) {
+		query.filter.forEach((filter) => {
+			if (filter.operator === 'eq') {
+				dbQuery.where({ [filter.column]: filter.value });
+			}
+
+			if (filter.operator === 'neq') {
+				dbQuery.whereNot({ [filter.column]: filter.value });
+			}
+
+			if (filter.operator === 'null') {
+				dbQuery.whereNull(filter.column);
+			}
+
+			if (filter.operator === 'nnull') {
+				dbQuery.whereNotNull(filter.column);
+			}
+		});
 	}
 
 	const records = await dbQuery;
