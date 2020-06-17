@@ -23,6 +23,14 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.filter = sanitizeFilter(req.query.filter);
 	}
 
+	if (req.query.limit) {
+		query.limit = sanitizeLimit(req.query.limit);
+	}
+
+	if (req.query.offset) {
+		query.offset = sanitizeOffset(req.query.offset);
+	}
+
 	res.locals.query = query;
 	return next();
 };
@@ -62,4 +70,12 @@ function sanitizeFilter(rawFilter: any) {
 	});
 
 	return filters;
+}
+
+function sanitizeLimit(rawLimit: any) {
+	return Number(rawLimit);
+}
+
+function sanitizeOffset(rawOffset: any) {
+	return Number(rawOffset);
 }
