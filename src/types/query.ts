@@ -2,6 +2,9 @@ export type Query = {
 	fields?: string[];
 	sort?: Sort[];
 	filter?: Filter[];
+	limit?: number;
+	offset?: number;
+	page?: number;
 };
 
 export type Sort = {
