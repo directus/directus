@@ -10,11 +10,24 @@ export const createItem = async (
 };
 
 export const readItems = async (collection: string, query: Query = {}) => {
-	return await database.select(query?.fields || '*').from(collection);
+	const dbQuery = database.select(query?.fields || '*').from(collection);
+
+	if (query.sort) {
+		dbQuery.orderBy(query.sort);
+	}
+
+	return await dbQuery;
 };
 
-export const readItem = async (collection: string, pk: number | string, query = {}) => {
-	const records = await database.select('*').from(collection).where({ id: pk });
+export const readItem = async (collection: string, pk: number | string, query: Query = {}) => {
+	const dbQuery = database.select('*').from(collection).where({ id: pk });
+
+	if (query.sort) {
+		dbQuery.orderBy(query.sort);
+	}
+
+	const records = await dbQuery;
+
 	return records[0];
 };
 
