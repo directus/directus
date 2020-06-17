@@ -7,7 +7,7 @@
 
 import { RequestHandler } from 'express';
 import { Query } from '../types/query';
-import { hasField } from '../services/schema';
+import { hasField, hasFields } from '../services/schema';
 import asyncHandler from 'express-async-handler';
 import APIError, { ErrorCode } from '../error';
 
@@ -23,23 +23,16 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 		query.fields.forEach((field) => fieldsToCheck.add(field));
 	}
 
-	try {
-		await Promise.all(
-			Array.from(fieldsToCheck).map(
-				(field) =>
-					new Promise(async (resolve, reject) => {
-						const exists = await hasField(res.locals.collection, field);
-						if (exists) return resolve();
-						return reject({ collection: res.locals.collection, field: field });
-					})
-			)
-		);
-	} catch ({ collection, field }) {
-		throw new APIError(
-			ErrorCode.FIELD_NOT_FOUND,
-			`Field "${field}" doesn't exist in "${collection}"`
-		);
-	}
+	const fieldsExist = await hasFields(res.locals.collection, Array.from(fieldsToCheck));
+
+	Array.from(fieldsToCheck).forEach((field, index) => {
+		const exists = fieldsExist[index];
+		if (exists === false)
+			throw new APIError(
+				ErrorCode.FIELD_NOT_FOUND,
+				`Field ${field} doesn't exist in ${res.locals.collection}.`
+			);
+	});
 
 	return next();
 });
