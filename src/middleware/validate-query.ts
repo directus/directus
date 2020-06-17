@@ -23,6 +23,10 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 		query.fields.forEach((field) => fieldsToCheck.add(field));
 	}
 
+	if (query.sort) {
+		query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
+	}
+
 	const fieldsExist = await hasFields(res.locals.collection, Array.from(fieldsToCheck));
 
 	Array.from(fieldsToCheck).forEach((field, index) => {
