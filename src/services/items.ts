@@ -36,7 +36,7 @@ export const readItems = async (collection: string, query: Query = {}) => {
 		});
 	}
 
-	if (query.limit) {
+	if (query.limit && !query.offset) {
 		dbQuery.limit(query.limit);
 	}
 
@@ -44,7 +44,17 @@ export const readItems = async (collection: string, query: Query = {}) => {
 		dbQuery.offset(query.offset);
 	}
 
-	return await dbQuery;
+	if (query.single) {
+		dbQuery.limit(1);
+	}
+
+	const records = await dbQuery;
+
+	if (query.single) {
+		return records[0];
+	}
+
+	return records;
 };
 
 export const readItem = async (collection: string, pk: number | string, query: Query = {}) => {

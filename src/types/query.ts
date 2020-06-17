@@ -5,6 +5,7 @@ export type Query = {
 	limit?: number;
 	offset?: number;
 	page?: number;
+	single?: boolean;
 };
 
 export type Sort = {

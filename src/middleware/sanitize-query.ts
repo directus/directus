@@ -31,6 +31,10 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.offset = sanitizeOffset(req.query.offset);
 	}
 
+	if (req.query.single) {
+		query.single = sanitizeSingle(req.query.single);
+	}
+
 	res.locals.query = query;
 	return next();
 };
@@ -78,4 +82,8 @@ function sanitizeLimit(rawLimit: any) {
 
 function sanitizeOffset(rawOffset: any) {
 	return Number(rawOffset);
+}
+
+function sanitizeSingle(rawSingle: any) {
+	return true;
 }
