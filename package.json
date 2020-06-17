@@ -108,7 +108,7 @@
     "sass": "^1.26.8",
     "sass-loader": "^8.0.0",
     "storybook-addon-themes": "^5.4.1",
-    "stylelint": "^13.6.0",
+    "stylelint": "^13.6.1",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
