@@ -6,7 +6,7 @@ export const createItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	return await database(collection).insert(data);
+	await database(collection).insert(data);
 };
 
 export const readItems = async (collection: string, query: Query = {}) => {

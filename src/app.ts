@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import { errorHandler } from './error';
 import itemsRouter from './routes/items';
 import activityRouter from './routes/activity';
+import collectionPresetsRouter from './routes/collection-presets';
 import notFoundHandler from './routes/not-found';
 
 const app = express()
@@ -13,6 +14,7 @@ const app = express()
 	.use(bodyParser.json())
 	.use('/items', itemsRouter)
 	.use('/activity', activityRouter)
+	.use('/collection_presets', collectionPresetsRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
