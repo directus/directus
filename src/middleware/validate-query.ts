@@ -12,7 +12,7 @@ import asyncHandler from 'express-async-handler';
 import APIError, { ErrorCode } from '../error';
 
 const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (!res.locals.collection) return next();
+	if (!req.params.collection) return next();
 	if (!res.locals.query) return next();
 
 	const query: Query = res.locals.query;
@@ -27,14 +27,14 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 		query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
 	}
 
-	const fieldsExist = await hasFields(res.locals.collection, Array.from(fieldsToCheck));
+	const fieldsExist = await hasFields(req.params.collection, Array.from(fieldsToCheck));
 
 	Array.from(fieldsToCheck).forEach((field, index) => {
 		const exists = fieldsExist[index];
 		if (exists === false)
 			throw new APIError(
 				ErrorCode.FIELD_NOT_FOUND,
-				`Field ${field} doesn't exist in ${res.locals.collection}.`
+				`Field ${field} doesn't exist in ${req.params.collection}.`
 			);
 	});
 
