@@ -10,6 +10,7 @@ import collectionPresetsRouter from './routes/collection-presets';
 import filesRouter from './routes/files';
 import foldersRouter from './routes/folders';
 import relationsRouter from './routes/relations';
+import revisionsRouter from './routes/revisions';
 import notFoundHandler from './routes/not-found';
 
 const app = express()
@@ -21,6 +22,7 @@ const app = express()
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/folders', foldersRouter)
 	.use('/relations', relationsRouter)
+	.use('/revisions', revisionsRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
