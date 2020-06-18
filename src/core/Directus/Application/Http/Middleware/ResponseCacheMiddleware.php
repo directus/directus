@@ -100,7 +100,12 @@ class ResponseCacheMiddleware extends AbstractMiddleware
                         );
 
                         $cookieAsString = $cookie->toHeaders()[0];
-                        $cookieAsString .= '; SameSite=None; Secure';
+
+                        $cookieAsString .= '; SameSite=' . $config->get('cookie.same_site');
+
+                        if ($config->get('cookie.secure')) {
+                            $cookieAsString .= '; Secure';
+                        }
 
                         $response =  $response->withAddedHeader('Set-Cookie', $cookieAsString);
                         break;
@@ -126,7 +131,12 @@ class ResponseCacheMiddleware extends AbstractMiddleware
             );
 
             $cookieAsString = $cookie->toHeaders()[0];
-            $cookieAsString .= '; SameSite=None; Secure';
+
+            $cookieAsString .= '; SameSite=' . $config->get('cookie.same_site');
+
+            if ($config->get('cookie.secure')) {
+                $cookieAsString .= '; Secure';
+            }
 
             $response =  $response->withAddedHeader('Set-Cookie', $cookieAsString);
         }

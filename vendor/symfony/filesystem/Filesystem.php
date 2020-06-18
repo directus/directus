@@ -97,7 +97,7 @@ class Filesystem
                 if (!is_dir($dir)) {
                     // The directory was not created by a concurrent process. Let's throw an exception with a developer friendly error message if we have one
                     if (self::$lastError) {
-                        throw new IOException(sprintf('Failed to create "%s": '.self::$lastError, $dir), 0, null, $dir);
+                        throw new IOException(sprintf('Failed to create "%s": ', $dir).self::$lastError, 0, null, $dir);
                     }
                     throw new IOException(sprintf('Failed to create "%s".', $dir), 0, null, $dir);
                 }
@@ -167,16 +167,16 @@ class Filesystem
             if (is_link($file)) {
                 // See https://bugs.php.net/52176
                 if (!(self::box('unlink', $file) || '\\' !== \DIRECTORY_SEPARATOR || self::box('rmdir', $file)) && file_exists($file)) {
-                    throw new IOException(sprintf('Failed to remove symlink "%s": '.self::$lastError, $file));
+                    throw new IOException(sprintf('Failed to remove symlink "%s": ', $file).self::$lastError);
                 }
             } elseif (is_dir($file)) {
                 $this->remove(new \FilesystemIterator($file, \FilesystemIterator::CURRENT_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS));
 
                 if (!self::box('rmdir', $file) && file_exists($file)) {
-                    throw new IOException(sprintf('Failed to remove directory "%s": '.self::$lastError, $file));
+                    throw new IOException(sprintf('Failed to remove directory "%s": ', $file).self::$lastError);
                 }
             } elseif (!self::box('unlink', $file) && file_exists($file)) {
-                throw new IOException(sprintf('Failed to remove file "%s": '.self::$lastError, $file));
+                throw new IOException(sprintf('Failed to remove file "%s": ', $file).self::$lastError);
             }
         }
     }
@@ -434,28 +434,19 @@ class Filesystem
             $startPath = str_replace('\\', '/', $startPath);
         }
 
-        $stripDriveLetter = function ($path) {
-            if (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
-                return substr($path, 2);
-            }
-
-            return $path;
+        $splitDriveLetter = function ($path) {
+            return (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0]))
+                ? [substr($path, 2), strtoupper($path[0])]
+                : [$path, null];
         };
 
-        $endPath = $stripDriveLetter($endPath);
-        $startPath = $stripDriveLetter($startPath);
-
-        // Split the paths into arrays
-        $startPathArr = explode('/', trim($startPath, '/'));
-        $endPathArr = explode('/', trim($endPath, '/'));
-
-        $normalizePathArray = function ($pathSegments) {
+        $splitPath = function ($path) {
             $result = [];
 
-            foreach ($pathSegments as $segment) {
+            foreach (explode('/', trim($path, '/')) as $segment) {
                 if ('..' === $segment) {
                     array_pop($result);
-                } elseif ('.' !== $segment) {
+                } elseif ('.' !== $segment && '' !== $segment) {
                     $result[] = $segment;
                 }
             }
@@ -463,8 +454,16 @@ class Filesystem
             return $result;
         };
 
-        $startPathArr = $normalizePathArray($startPathArr);
-        $endPathArr = $normalizePathArray($endPathArr);
+        list($endPath, $endDriveLetter) = $splitDriveLetter($endPath);
+        list($startPath, $startDriveLetter) = $splitDriveLetter($startPath);
+
+        $startPathArr = $splitPath($startPath);
+        $endPathArr = $splitPath($endPath);
+
+        if ($endDriveLetter && $startDriveLetter && $endDriveLetter != $startDriveLetter) {
+            // End path is on another drive, so no relative path exists
+            return $endDriveLetter.':/'.($endPathArr ? implode('/', $endPathArr).'/' : '');
+        }
 
         // Find for which directory the common path stops
         $index = 0;
@@ -584,15 +583,17 @@ class Filesystem
      *
      * @param string $prefix The prefix of the generated temporary filename
      *                       Note: Windows uses only the first three characters of prefix
+     * @param string $suffix The suffix of the generated temporary filename
      *
      * @return string The new temporary filename (with path), or throw an exception on failure
      */
-    public function tempnam(string $dir, string $prefix)
+    public function tempnam(string $dir, string $prefix/*, string $suffix = ''*/)
     {
+        $suffix = \func_num_args() > 2 ? func_get_arg(2) : '';
         list($scheme, $hierarchy) = $this->getSchemeAndHierarchy($dir);
 
         // If no scheme or scheme is "file" or "gs" (Google Cloud) create temp file in local filesystem
-        if (null === $scheme || 'file' === $scheme || 'gs' === $scheme) {
+        if ((null === $scheme || 'file' === $scheme || 'gs' === $scheme) && '' === $suffix) {
             $tmpFile = @tempnam($hierarchy, $prefix);
 
             // If tempnam failed or no scheme return the filename otherwise prepend the scheme
@@ -610,7 +611,7 @@ class Filesystem
         // Loop until we create a valid temp file or have reached 10 attempts
         for ($i = 0; $i < 10; ++$i) {
             // Create a unique filename
-            $tmpFile = $dir.'/'.$prefix.uniqid(mt_rand(), true);
+            $tmpFile = $dir.'/'.$prefix.uniqid(mt_rand(), true).$suffix;
 
             // Use fopen instead of file_exists as some streams do not support stat
             // Use mode 'x+' to atomically check existence and create to avoid a TOCTOU vulnerability

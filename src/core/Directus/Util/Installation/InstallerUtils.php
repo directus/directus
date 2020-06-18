@@ -977,6 +977,10 @@ class InstallerUtils
             'mail' => [
                 'transport' => 'sendmail',
             ],
+            'cookie' => [
+                'same_site' => 'Lax',
+                'secure' => false,
+            ],
             'cors' => [
                 'enabled' => $corsEnabled,
                 'origin' => ['*'],

@@ -53,6 +53,11 @@ class Entity extends EntityParent implements EntityInterfaceB
         $this->internal = $internal;
     }
 
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
     public function getInternal()
     {
         return $this->internal.' from getter';
@@ -140,5 +145,10 @@ class Entity extends EntityParent implements EntityInterfaceB
     public function setChildB($childB)
     {
         $this->childB = $childB;
+    }
+
+    public function getReference()
+    {
+        return $this->reference;
     }
 }

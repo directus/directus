@@ -14,6 +14,11 @@ return [
         'socket' => '{{db_socket}}',
     ],
 
+    'cookie' => [
+        'same_site' => {{cookie.same_site}},
+        'secure' => {{cookie.secure}}
+    ],
+
     'cors' => [
         'enabled' => {{cors.enabled}},
         'origin' => {{cors.origin}},

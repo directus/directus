@@ -352,7 +352,7 @@
             </trans-unit>
             <trans-unit id="91">
                 <source>This value should be either negative or zero.</source>
-                <target>Ova vrednost bi trebala biti pozitivna ili nula.</target>
+                <target>Ova vrednost bi trebala biti negativna ili nula.</target>
             </trans-unit>
             <trans-unit id="92">
                 <source>This value is not a valid timezone.</source>

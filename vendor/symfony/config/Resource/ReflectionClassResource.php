@@ -135,7 +135,11 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
             $defaults = $class->getDefaultProperties();
 
             foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED) as $p) {
-                yield $p->getDocComment().$p;
+                yield $p->getDocComment();
+                yield $p->isDefault() ? '<default>' : '';
+                yield $p->isPublic() ? 'public' : 'protected';
+                yield $p->isStatic() ? 'static' : '';
+                yield '$'.$p->name;
                 yield print_r(isset($defaults[$p->name]) && !\is_object($defaults[$p->name]) ? $defaults[$p->name] : null, true);
             }
         }

@@ -4,12 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
+class ComposerStaticInit5d33184cc768bf1989e27af2543a4690
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
@@ -41,6 +42,7 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
         'S' => 
         array (
             'Symfony\\Polyfill\\Util\\' => 22,
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
             'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Php56\\' => 23,
@@ -142,6 +144,10 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
         'Symfony\\Polyfill\\Util\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-util',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Polyfill\\Php73\\' => 
         array (
@@ -1694,6 +1700,7 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
         'Slim\\Router' => __DIR__ . '/..' . '/slim/slim/Slim/Router.php',
         'Slim\\Views\\Twig' => __DIR__ . '/..' . '/slim/twig-view/src/Twig.php',
         'Slim\\Views\\TwigExtension' => __DIR__ . '/..' . '/slim/twig-view/src/TwigExtension.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Config\\ConfigCache' => __DIR__ . '/..' . '/symfony/config/ConfigCache.php',
         'Symfony\\Component\\Config\\ConfigCacheFactory' => __DIR__ . '/..' . '/symfony/config/ConfigCacheFactory.php',
         'Symfony\\Component\\Config\\ConfigCacheFactoryInterface' => __DIR__ . '/..' . '/symfony/config/ConfigCacheFactoryInterface.php',
@@ -2128,6 +2135,7 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
         'Symfony\\Polyfill\\Php56\\Php56' => __DIR__ . '/..' . '/symfony/polyfill-php56/Php56.php',
         'Symfony\\Polyfill\\Php72\\Php72' => __DIR__ . '/..' . '/symfony/polyfill-php72/Php72.php',
         'Symfony\\Polyfill\\Php73\\Php73' => __DIR__ . '/..' . '/symfony/polyfill-php73/Php73.php',
+        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'Symfony\\Polyfill\\Util\\Binary' => __DIR__ . '/..' . '/symfony/polyfill-util/Binary.php',
         'Symfony\\Polyfill\\Util\\BinaryNoFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryNoFuncOverload.php',
         'Symfony\\Polyfill\\Util\\BinaryOnFuncOverload' => __DIR__ . '/..' . '/symfony/polyfill-util/BinaryOnFuncOverload.php',
@@ -2309,6 +2317,7 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
         'Twig\\TwigTest' => __DIR__ . '/..' . '/twig/twig/src/TwigTest.php',
         'Twig\\Util\\DeprecationCollector' => __DIR__ . '/..' . '/twig/twig/src/Util/DeprecationCollector.php',
         'Twig\\Util\\TemplateDirIterator' => __DIR__ . '/..' . '/twig/twig/src/Util/TemplateDirIterator.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'WellingGuzman\\OAuth2\\Client\\Provider\\Exception\\OktaIdentityProviderException' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/Exception/OktaIdentityProviderException.php',
         'WellingGuzman\\OAuth2\\Client\\Provider\\Okta' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/Okta.php',
         'WellingGuzman\\OAuth2\\Client\\Provider\\OktaResourceOwner' => __DIR__ . '/..' . '/directus/oauth2-okta/src/Provider/OktaResourceOwner.php',
@@ -2566,10 +2575,10 @@ class ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit33381421e6ba3d9575e3a51077c1c0fc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5d33184cc768bf1989e27af2543a4690::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5d33184cc768bf1989e27af2543a4690::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit5d33184cc768bf1989e27af2543a4690::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit5d33184cc768bf1989e27af2543a4690::$classMap;
 
         }, null, ClassLoader::class);
     }

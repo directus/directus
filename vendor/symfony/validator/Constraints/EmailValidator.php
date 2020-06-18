@@ -51,6 +51,9 @@ class EmailValidator extends ConstraintValidator
         }
 
         $value = (string) $value;
+        if ('' === $value) {
+            return;
+        }
 
         if (null === $constraint->strict) {
             $constraint->strict = $this->isStrict;

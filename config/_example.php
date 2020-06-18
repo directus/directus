@@ -40,6 +40,11 @@ return [
         'credentials' => false,     // Access-Control-Allow-Credentials
     ],
 
+    'cookie' => [                   // Controls for the auth cookie mode
+        'same_site' => 'Strict',    // Set the SameSite flag
+        'secure' => false           // Add the Secure flag
+    ],
+
     'rate_limit' => [
         'enabled' => false,         // Enable or disable all rate limiting
         'limit' => 100,             // Number of requests allowed...

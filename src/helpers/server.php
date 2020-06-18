@@ -26,6 +26,11 @@ if (!function_exists('get_max_upload_size')) {
 
         $maxUploadSize = convert_shorthand_size_to_bytes(call_user_func($function, 'upload_max_filesize'));
         $maxPostSize = convert_shorthand_size_to_bytes(call_user_func($function, 'post_max_size'));
+        
+        /* post_max_size = 0 is defined as unlimited */
+        if($maxPostSize == 0) {
+            return $maxUploadSize;
+        }
 
         return min($maxUploadSize, $maxPostSize);
     }

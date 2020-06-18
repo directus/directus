@@ -93,6 +93,10 @@ class Schema
                     new Value('encryption?', Types::STRING, ''),
                 ]),
             ]),
+            new Group('cookie', [
+                new Value('same_site', Types::STRING, 'Lax'),
+                new Value('secure', Types::BOOLEAN, false),
+            ]),
             new Group('cors', [
                 new Value('enabled', Types::BOOLEAN, true),
                 new Value('origin', Types::ARRAY, ['*']),
