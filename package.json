@@ -112,7 +112,7 @@
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
-    "stylelint-scss": "^3.17.2",
+    "stylelint-scss": "^3.18.0",
     "typescript": "^3.9.5",
     "vue-cli-plugin-storybook": "^1.2.2",
     "vue-loader": "^15.9.2",
