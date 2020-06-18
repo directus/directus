@@ -9,6 +9,7 @@ import activityRouter from './routes/activity';
 import collectionPresetsRouter from './routes/collection-presets';
 import filesRouter from './routes/files';
 import foldersRouter from './routes/folders';
+import relationsRouter from './routes/relations';
 import notFoundHandler from './routes/not-found';
 
 const app = express()
@@ -19,6 +20,7 @@ const app = express()
 	.use('/activity', activityRouter)
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/folders', foldersRouter)
+	.use('/relations', relationsRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
