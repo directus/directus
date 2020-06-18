@@ -11,6 +11,7 @@ import filesRouter from './routes/files';
 import foldersRouter from './routes/folders';
 import relationsRouter from './routes/relations';
 import revisionsRouter from './routes/revisions';
+import rolesRouter from './routes/roles';
 import notFoundHandler from './routes/not-found';
 
 const app = express()
@@ -23,6 +24,7 @@ const app = express()
 	.use('/folders', foldersRouter)
 	.use('/relations', relationsRouter)
 	.use('/revisions', revisionsRouter)
+	.use('/roles', rolesRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
