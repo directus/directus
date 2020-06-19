@@ -7,6 +7,7 @@ export enum ErrorCode {
 	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 	ENOENT = 'ENOENT',
 	EXTENSION_ILLEGAL_TYPE = 'EXTENSION_ILLEGAL_TYPE',
+	INVALID_QUERY = 'INVALID_QUERY',
 }
 
 enum HTTPStatus {
@@ -15,6 +16,7 @@ enum HTTPStatus {
 	INTERNAL_SERVER_ERROR = 500,
 	ENOENT = 501,
 	EXTENSION_ILLEGAL_TYPE = 400,
+	INVALID_QUERY = 400,
 }
 
 export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, res, next) => {
