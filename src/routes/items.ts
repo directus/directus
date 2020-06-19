@@ -4,6 +4,7 @@ import { createItem, readItems, readItem, updateItem, deleteItem } from '../serv
 import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import validateQuery from '../middleware/validate-query';
+import * as MetaService from '../services/meta';
 
 const router = express.Router();
 
@@ -22,9 +23,13 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await readItems(req.params.collection, res.locals.query);
+		const [records, meta] = await Promise.all([
+			readItems(req.params.collection, res.locals.query),
+			MetaService.getMetaForQuery(req.params.collection, res.locals.query),
+		]);
 
 		return res.json({
+			meta: meta,
 			data: records,
 		});
 	})
