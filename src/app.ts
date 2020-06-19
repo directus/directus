@@ -13,6 +13,7 @@ import relationsRouter from './routes/relations';
 import revisionsRouter from './routes/revisions';
 import rolesRouter from './routes/roles';
 import usersRouter from './routes/users';
+import extensionsRouter from './routes/extensions';
 import notFoundHandler from './routes/not-found';
 
 const app = express()
@@ -27,6 +28,7 @@ const app = express()
 	.use('/revisions', revisionsRouter)
 	.use('/roles', rolesRouter)
 	.use('/users', usersRouter)
+	.use('/extensions', extensionsRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
