@@ -5,12 +5,16 @@ export enum ErrorCode {
 	NOT_FOUND = 'NOT_FOUND',
 	FIELD_NOT_FOUND = 'FIELD_NOT_FOUND',
 	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+	ENOENT = 'ENOENT',
+	EXTENSION_ILLEGAL_TYPE = 'EXTENSION_ILLEGAL_TYPE',
 }
 
 enum HTTPStatus {
 	NOT_FOUND = 404,
 	FIELD_NOT_FOUND = 400,
 	INTERNAL_SERVER_ERROR = 500,
+	ENOENT = 501,
+	EXTENSION_ILLEGAL_TYPE = 400,
 }
 
 export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, res, next) => {
@@ -38,12 +42,12 @@ export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, 
 			},
 		};
 
-		if ((process.env.NODE_ENV = 'development')) {
+		if (process.env.NODE_ENV === 'development') {
 			response.error.message = error.message;
 		}
 	}
 
-	if ((process.env.NODE_ENV = 'development')) {
+	if (process.env.NODE_ENV === 'development') {
 		response.error.stack = error.stack;
 	}
 
