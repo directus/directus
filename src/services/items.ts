@@ -44,6 +44,10 @@ export const readItems = async (collection: string, query: Query = {}) => {
 		dbQuery.offset(query.offset);
 	}
 
+	if (query.page) {
+		dbQuery.offset(query.limit * (query.page - 1));
+	}
+
 	if (query.single) {
 		dbQuery.limit(1);
 	}

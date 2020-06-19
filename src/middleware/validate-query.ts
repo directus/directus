@@ -7,7 +7,7 @@
 
 import { RequestHandler } from 'express';
 import { Query } from '../types/query';
-import { hasField, hasFields } from '../services/schema';
+import { hasFields } from '../services/schema';
 import asyncHandler from 'express-async-handler';
 import APIError, { ErrorCode } from '../error';
 
@@ -17,6 +17,22 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const query: Query = res.locals.query;
 
+	await validateParams(req.params.collection, query);
+	await validateFields(req.params.collection, query);
+
+	return next();
+});
+
+async function validateParams(collection: string, query: Query) {
+	if (query.offset && query.page) {
+		throw new APIError(
+			ErrorCode.INVALID_QUERY,
+			`You can't have both the offset and page query parameters enabled.`
+		);
+	}
+}
+
+async function validateFields(collection: string, query: Query) {
 	const fieldsToCheck = new Set<string>();
 
 	if (query.fields) {
@@ -27,18 +43,16 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 		query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
 	}
 
-	const fieldsExist = await hasFields(req.params.collection, Array.from(fieldsToCheck));
+	const fieldsExist = await hasFields(collection, Array.from(fieldsToCheck));
 
 	Array.from(fieldsToCheck).forEach((field, index) => {
 		const exists = fieldsExist[index];
 		if (exists === false)
 			throw new APIError(
 				ErrorCode.FIELD_NOT_FOUND,
-				`Field ${field} doesn't exist in ${req.params.collection}.`
+				`Field ${field} doesn't exist in ${collection}.`
 			);
 	});
-
-	return next();
-});
+}
 
 export default validateQuery;
