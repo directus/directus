@@ -1,3 +1,5 @@
+import { Meta } from './meta';
+
 export type Query = {
 	fields?: string[];
 	sort?: Sort[];
@@ -6,6 +8,7 @@ export type Query = {
 	offset?: number;
 	page?: number;
 	single?: boolean;
+	meta?: Meta[];
 };
 
 export type Sort = {

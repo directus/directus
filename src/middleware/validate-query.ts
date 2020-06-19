@@ -17,8 +17,11 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const query: Query = res.locals.query;
 
-	await validateParams(req.params.collection, query);
-	await validateFields(req.params.collection, query);
+	await Promise.all([
+		validateParams(req.params.collection, query),
+		validateFields(req.params.collection, query),
+		validateMeta(query),
+	]);
 
 	return next();
 });
@@ -53,6 +56,12 @@ async function validateFields(collection: string, query: Query) {
 				`Field ${field} doesn't exist in ${collection}.`
 			);
 	});
+}
+
+async function validateMeta(query: Query) {
+	if (!query.meta) return;
+
+	return query.meta.every((metaField) => []);
 }
 
 export default validateQuery;

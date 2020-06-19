@@ -5,6 +5,7 @@
 
 import { RequestHandler } from 'express';
 import { Query, Sort, Filter, FilterOperator } from '../types/query';
+import { Meta } from '../types/meta';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
@@ -37,6 +38,10 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	if (req.query.single) {
 		query.single = sanitizeSingle(req.query.single);
+	}
+
+	if (req.query.meta) {
+		query.meta = sanitizeMeta(req.query.meta);
 	}
 
 	res.locals.query = query;
@@ -94,4 +99,18 @@ function sanitizePage(rawPage: any) {
 
 function sanitizeSingle(rawSingle: any) {
 	return true;
+}
+
+function sanitizeMeta(rawMeta: any) {
+	if (rawMeta === '*') {
+		return Object.values(Meta);
+	}
+
+	if (rawMeta.includes(',')) {
+		return rawMeta.split(',');
+	}
+
+	if (Array.isArray(rawMeta)) {
+		return rawMeta;
+	}
 }
