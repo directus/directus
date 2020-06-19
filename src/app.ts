@@ -18,6 +18,7 @@ import revisionsRouter from './routes/revisions';
 import rolesRouter from './routes/roles';
 import usersRouter from './routes/users';
 import settingsRouter from './routes/settings';
+import webhooksRouter from './routes/webhooks';
 
 import notFoundHandler from './routes/not-found';
 
@@ -36,6 +37,7 @@ const app = express()
 	.use('/roles', rolesRouter)
 	.use('/users', usersRouter)
 	.use('/settings', settingsRouter)
+	.use('/webhooks', webhooksRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
 
