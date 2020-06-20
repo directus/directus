@@ -15,7 +15,7 @@ return [
     ],
 
     'cookie' => [
-        'same_site' => {{cookie.same_site}},
+        'same_site' => '{{cookie.same_site}}',
         'secure' => {{cookie.secure}}
     ],
 
