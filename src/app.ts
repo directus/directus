@@ -23,14 +23,14 @@ import webhooksRouter from './routes/webhooks';
 
 import notFoundHandler from './routes/not-found';
 
-import sendMail from './mail';
+// import sendMail from './mail';
 
-sendMail({
-	to: 'rijkvanzanten@me.com',
-	subject: 'Test Email',
-	text: 'Hi there!',
-	html: '<h1>Hi there!</h1>',
-});
+// sendMail({
+// 	to: 'rijkvanzanten@me.com',
+// 	subject: 'Test Email',
+// 	text: 'Hi there!',
+// 	html: '<h1>Hi there!</h1>',
+// });
 
 const app = express()
 	.disable('x-powered-by')
