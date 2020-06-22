@@ -2252,7 +2252,7 @@
     webpack "^4.0.0"
     yorkie "^2.0.0"
 
-"@vue/cli-plugin-router@^4.4.4", "@vue/cli-plugin-router@^4.4.5":
+"@vue/cli-plugin-router@^4.4.5":
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/@vue/cli-plugin-router/-/cli-plugin-router-4.4.5.tgz#9c987161ee3986744ce6bab7a3a09b5ec86c2759"
   integrity sha512-vVTCQy4nYEDA8yqeJg8ohobDtAKCyuhkYDEzY0V9yoNzgSpRCgJtM0FDozPmaQpBHoeud17h2bf6hy6SuXUs3Q==
@@ -2275,15 +2275,15 @@
     webpack "^4.0.0"
     yorkie "^2.0.0"
 
-"@vue/cli-plugin-unit-jest@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-jest/-/cli-plugin-unit-jest-4.4.4.tgz#a22e29ec5aee34f23e44d2c0f3e7d7a3bd8c19cc"
-  integrity sha512-k549nUwraDFdB86Vbvyvfb/lKab3bl7yHNOMqYqK3Vcq1LBHxzlFvlFBS+1lj5EQl8+VgTRLFHDknRP0QZuhbg==
+"@vue/cli-plugin-unit-jest@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-jest/-/cli-plugin-unit-jest-4.4.5.tgz#9545778ebd083d055a98152471df78f2122f67b3"
+  integrity sha512-qNOjIVhGAXI8c4vs2MVZoCymfD6cA5RDO12Oh8vS1Ka6OIPzrLy6PHLadsahUe2Svp9nJTgEKDmn/hFyW1qdyg==
   dependencies:
     "@babel/core" "^7.9.6"
     "@babel/plugin-transform-modules-commonjs" "^7.9.6"
     "@types/jest" "^24.0.19"
-    "@vue/cli-shared-utils" "^4.4.4"
+    "@vue/cli-shared-utils" "^4.4.5"
     babel-core "^7.0.0-bridge.0"
     babel-jest "^24.9.0"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.2"
