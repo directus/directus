@@ -78,7 +78,7 @@
     "@types/semver": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
-    "@typescript-eslint/typescript-estree": "^3.3.0",
+    "@typescript-eslint/typescript-estree": "^3.4.0",
     "@vue/cli-plugin-babel": "^4.4.4",
     "@vue/cli-plugin-eslint": "^4.4.4",
     "@vue/cli-plugin-router": "^4.4.5",
