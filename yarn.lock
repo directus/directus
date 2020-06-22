@@ -2154,10 +2154,10 @@
     lodash.kebabcase "^4.1.1"
     svg-tags "^1.0.0"
 
-"@vue/babel-preset-app@^4.1.2", "@vue/babel-preset-app@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-4.4.4.tgz#e40929ca89ea3d547ea20cf0a15c222c9ad1ba38"
-  integrity sha512-9b74d/lz4GEc9zkF3C+vjgEXYqu9ITq1DimUT+IVRJDvhgnV+a3C+pQY4Kl4PZSOyqkTHM7jE6eG2K5DUwKpWg==
+"@vue/babel-preset-app@^4.1.2", "@vue/babel-preset-app@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-4.4.5.tgz#f769fe270702bfaf39020592d1d7ed18eaa6e2d1"
+  integrity sha512-od8qd5TXR4lJtvxfhXlI4+sOLA3sNRXU8qMhPviGBi8sprppJoa5Lm4iomdX4B+C086b9WX4HuLFC1J/k7sVmw==
   dependencies:
     "@babel/core" "^7.9.6"
     "@babel/helper-compilation-targets" "^7.9.6"
@@ -2227,14 +2227,14 @@
   resolved "https://registry.yarnpkg.com/@vue/cli-overlay/-/cli-overlay-4.4.5.tgz#feb7be0caac080927f1941612c0a8e41996190af"
   integrity sha512-4RtoBpmnAODzHpUsuAAoZ5u4YEkcQHvdRXiC4yXEmk7Kfc8WXUC+n9UsIiXKhSTA7NUnQyWTL7nXaR9gQhn3Kg==
 
-"@vue/cli-plugin-babel@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-babel/-/cli-plugin-babel-4.4.4.tgz#18904b5e38173291b37054c2f0393fb8c748f37b"
-  integrity sha512-VctlKy5oEYhI+AiPpzlorjDmuhbpoRQcKXpBdf2bXvq0+uuTQg7UXmPX0RKJejnFTKSJZvuPTihgfCWiyh9C3Q==
+"@vue/cli-plugin-babel@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-babel/-/cli-plugin-babel-4.4.5.tgz#ebdd8f982c26b57642a122f574113d254aedfa2d"
+  integrity sha512-iw1blSJToR8pPONY6PU0yCYhJAOF1AD5pinO357QF8WiCzn2RMQ2l234brs/iU+3yjtPFVKXWrQ+OJDttkpjqQ==
   dependencies:
     "@babel/core" "^7.9.6"
-    "@vue/babel-preset-app" "^4.4.4"
-    "@vue/cli-shared-utils" "^4.4.4"
+    "@vue/babel-preset-app" "^4.4.5"
+    "@vue/cli-shared-utils" "^4.4.5"
     babel-loader "^8.1.0"
     cache-loader "^4.1.0"
     thread-loader "^2.1.3"
