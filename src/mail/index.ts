@@ -2,10 +2,12 @@ import logger from '../logger';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Liquid } from 'liquidjs';
 import path from 'path';
+import fs from 'fs';
+import { promisify } from 'util';
 
-const liquidEngine = new Liquid({
-	root: path.join(__dirname, 'templates'),
-});
+const readFile = promisify(fs.readFile);
+
+const liquidEngine = new Liquid();
 
 logger.trace('[Email] Initializing email transport...');
 
@@ -24,17 +26,6 @@ if (emailTransport === 'sendmail') {
 		path: process.env.EMAIL_SENDMAIL_PATH || '/usr/sbin/sendmail',
 	});
 } else if (emailTransport.toLowerCase() === 'smtp') {
-	console.log({
-		pool: process.env.EMAIL_SMTP_POOL === 'true',
-		host: process.env.EMAIL_SMTP_HOST,
-		port: Number(process.env.EMAIL_SMTP_PORT),
-		secure: process.env.EMAIL_SMTP_SECURE === 'true',
-		auth: {
-			user: process.env.EMAIL_SMTP_USER,
-			pass: process.env.EMAIL_SMTP_PASSWORD,
-		},
-	});
-
 	transporter = nodemailer.createTransport({
 		pool: process.env.EMAIL_SMTP_POOL === 'true',
 		host: process.env.EMAIL_SMTP_HOST,
@@ -67,7 +58,8 @@ export type EmailOptions = {
 };
 
 export default async function sendMail(options: EmailOptions) {
-	const html = await liquidEngine.renderFile('base.liquid', { html: options.html });
+	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
+	const html = await liquidEngine.parseAndRender(templateString, { html: options.html });
 
 	try {
 		await transporter.sendMail({ ...options, html: html });
