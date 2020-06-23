@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import session from 'express-session';
 import asyncHandler from 'express-async-handler';
 import Joi from '@hapi/joi';
 import * as AuthService from '../services/auth';
+import grant from 'grant';
+import getGrantConfig from '../utils/get-grant-config';
 
 const router = Router();
 
@@ -23,5 +26,20 @@ router.post(
 		});
 	})
 );
+
+router.use('/sso', session({ secret: process.env.SECRET, saveUninitialized: true, resave: false }));
+
+router.use(grant.express()(getGrantConfig()));
+
+router.get('/sso/:provider/callback', (req, res) => {
+	console.log(req.session.grant);
+
+	/**
+	 * @TODO
+	 *
+	 */
+
+	res.send(req.session.grant);
+});
 
 export default router;
