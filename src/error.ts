@@ -1,4 +1,5 @@
 import { ErrorRequestHandler } from 'express';
+import { ValidationError } from '@hapi/joi';
 import logger from './logger';
 
 export enum ErrorCode {
@@ -8,6 +9,10 @@ export enum ErrorCode {
 	ENOENT = 'ENOENT',
 	EXTENSION_ILLEGAL_TYPE = 'EXTENSION_ILLEGAL_TYPE',
 	INVALID_QUERY = 'INVALID_QUERY',
+	INVALID_USER_CREDENTIALS = 'INVALID_USER_CREDENTIALS',
+	USER_NOT_FOUND = 'USER_NOT_FOUND',
+	FAILED_VALIDATION = 'FAILED_VALIDATION',
+	MALFORMED_JSON = 'MALFORMED_JSON',
 }
 
 enum HTTPStatus {
@@ -17,9 +22,18 @@ enum HTTPStatus {
 	ENOENT = 501,
 	EXTENSION_ILLEGAL_TYPE = 400,
 	INVALID_QUERY = 400,
+	INVALID_USER_CREDENTIALS = 401,
+	USER_NOT_FOUND = 401,
+	FAILED_VALIDATION = 422,
+	MALFORMED_JSON = 400,
 }
 
-export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (
+	error: APIError | ValidationError | Error,
+	req,
+	res,
+	next
+) => {
 	let response: any = {};
 
 	if (error instanceof APIError) {
@@ -30,6 +44,31 @@ export const errorHandler: ErrorRequestHandler = (error: APIError | Error, req, 
 		response = {
 			error: {
 				code: error.code,
+				message: error.message,
+			},
+		};
+	} else if (error instanceof ValidationError) {
+		logger.debug(error);
+
+		res.status(HTTPStatus.FAILED_VALIDATION);
+
+		response = {
+			error: {
+				code: ErrorCode.FAILED_VALIDATION,
+				message: error.message,
+			},
+		};
+	}
+
+	// Syntax errors are most likely thrown by Body Parser when misaligned JSON is sent to the API
+	else if (error instanceof SyntaxError && 'entity.parse.failed') {
+		logger.debug(error);
+
+		res.status(HTTPStatus.MALFORMED_JSON);
+
+		response = {
+			error: {
+				code: ErrorCode.MALFORMED_JSON,
 				message: error.message,
 			},
 		};
