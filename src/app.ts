@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 
 import { errorHandler, ErrorCode } from './error';
 
-import passport from './auth/passport';
+import extractToken from './middleware/extract-token';
+import authenticate from './middleware/authenticate';
 
 import activityRouter from './routes/activity';
 import authRouter from './routes/auth';
@@ -38,7 +39,8 @@ import notFoundHandler from './routes/not-found';
 const app = express()
 	.disable('x-powered-by')
 	.use(bodyParser.json())
-	.use(passport.initialize())
+	.use(extractToken)
+	.use(authenticate)
 	.use('/activity', activityRouter)
 	.use('/auth', authRouter)
 	.use('/collection_presets', collectionPresetsRouter)
