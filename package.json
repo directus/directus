@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
-    "build": "tsc",
+    "build": "tsc && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "LOG_LEVEL=trace ts-node-dev src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada"
   },
   "repository": {
@@ -31,6 +31,7 @@
     "@types/express": "^4.17.6",
     "@types/nodemailer": "^6.4.0",
     "@types/pino": "^6.3.0",
+    "copyfiles": "^2.3.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
