@@ -5,6 +5,7 @@
  */
 
 import DataLoader from 'dataloader';
+import { FieldInfo } from './types/field';
 import database from './database';
 
 async function getFields(keys: { collection: string; field: string }[]) {
@@ -16,7 +17,7 @@ async function getFields(keys: { collection: string; field: string }[]) {
 			keys.map((key) => [key.collection, key.field])
 		);
 
-	return keys.map((key) =>
+	return keys.map<FieldInfo>((key) =>
 		records.find((record) => record.collection === key.collection && record.field === key.field)
 	);
 }
