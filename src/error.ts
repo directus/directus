@@ -1,5 +1,6 @@
 import { ErrorRequestHandler } from 'express';
 import { ValidationError } from '@hapi/joi';
+import { TokenExpiredError } from 'jsonwebtoken';
 import logger from './logger';
 
 export enum ErrorCode {
@@ -13,6 +14,7 @@ export enum ErrorCode {
 	USER_NOT_FOUND = 'USER_NOT_FOUND',
 	FAILED_VALIDATION = 'FAILED_VALIDATION',
 	MALFORMED_JSON = 'MALFORMED_JSON',
+	TOKEN_EXPIRED = 'TOKEN_EXPIRED',
 }
 
 enum HTTPStatus {
@@ -26,6 +28,7 @@ enum HTTPStatus {
 	USER_NOT_FOUND = 401,
 	FAILED_VALIDATION = 422,
 	MALFORMED_JSON = 400,
+	TOKEN_EXPIRED = 401,
 }
 
 export const errorHandler: ErrorRequestHandler = (
@@ -56,6 +59,15 @@ export const errorHandler: ErrorRequestHandler = (
 			error: {
 				code: ErrorCode.FAILED_VALIDATION,
 				message: error.message,
+			},
+		};
+	} else if (error instanceof TokenExpiredError) {
+		logger.debug(error);
+		res.status(HTTPStatus.TOKEN_EXPIRED);
+		response = {
+			error: {
+				code: ErrorCode.TOKEN_EXPIRED,
+				message: 'The provided token is expired.',
 			},
 		};
 	}

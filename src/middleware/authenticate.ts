@@ -2,8 +2,9 @@ import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import isJWT from '../utils/is-jwt';
 import database from '../database';
+import asyncHandler from 'express-async-handler';
 
-const authenticate: RequestHandler = async (req, res, next) => {
+const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.token) return next();
 
 	if (isJWT(req.token)) {
@@ -26,6 +27,6 @@ const authenticate: RequestHandler = async (req, res, next) => {
 	 * We'll silently ignore wrong tokens. This makes sure we prevent brute-forcing static tokens
 	 */
 	return next();
-};
+});
 
 export default authenticate;
