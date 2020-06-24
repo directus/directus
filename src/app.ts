@@ -4,9 +4,13 @@ dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { errorHandler } from './error';
+import { errorHandler, ErrorCode } from './error';
+
+import extractToken from './middleware/extract-token';
+import authenticate from './middleware/authenticate';
 
 import activityRouter from './routes/activity';
+import authRouter from './routes/auth';
 import collectionPresetsRouter from './routes/collection-presets';
 import extensionsRouter from './routes/extensions';
 import filesRouter from './routes/files';
@@ -35,7 +39,10 @@ import notFoundHandler from './routes/not-found';
 const app = express()
 	.disable('x-powered-by')
 	.use(bodyParser.json())
+	.use(extractToken)
+	.use(authenticate)
 	.use('/activity', activityRouter)
+	.use('/auth', authRouter)
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/extensions', extensionsRouter)
 	.use('/files', filesRouter)
