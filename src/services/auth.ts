@@ -1,6 +1,7 @@
 import database from '../database';
 import APIError, { ErrorCode } from '../error';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export const authenticate = async (email: string, password?: string) => {
 	const user = await database
@@ -20,8 +21,7 @@ export const authenticate = async (email: string, password?: string) => {
 	 * email to leak anywhere else.. We might have to make a dedicated "copy" of this function to
 	 * signal the difference
 	 */
-	if (password !== undefined && password !== user.password) {
-		/** @TODO implement password hash checking */
+	if (password !== undefined && (await bcrypt.compare(password, user.password)) === false) {
 		throw new APIError(ErrorCode.INVALID_USER_CREDENTIALS, 'Invalid user credentials');
 	}
 
