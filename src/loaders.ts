@@ -5,7 +5,7 @@
  */
 
 import DataLoader from 'dataloader';
-import database, { schemaInspector } from './database';
+import database from './database';
 
 async function getFields(keys: { collection: string; field: string }[]) {
 	const records = await database
@@ -15,6 +15,7 @@ async function getFields(keys: { collection: string; field: string }[]) {
 			['collection', 'field'],
 			keys.map((key) => [key.collection, key.field])
 		);
+
 	return keys.map((key) =>
 		records.find((record) => record.collection === key.collection && record.field === key.field)
 	);
