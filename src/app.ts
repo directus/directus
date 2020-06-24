@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 
 import { errorHandler, ErrorCode } from './error';
 
+import initLoaders from './middleware/init-loaders';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 
@@ -39,6 +40,7 @@ import notFoundHandler from './routes/not-found';
 const app = express()
 	.disable('x-powered-by')
 	.use(bodyParser.json())
+	.use(initLoaders)
 	.use(extractToken)
 	.use(authenticate)
 	.use('/activity', activityRouter)
