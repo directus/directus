@@ -7,5 +7,7 @@ declare namespace Express {
 		token?: string;
 		user?: string;
 		role?: string;
+		collection?: string;
+		loaders?: any;
 	}
 }
