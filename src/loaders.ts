@@ -8,6 +8,15 @@ import DataLoader from 'dataloader';
 import { FieldInfo } from './types/field';
 import database from './database';
 
+async function getCollections(keys: string[]) {
+	const records = await database
+		.select('*')
+		.from('directus_collections')
+		.whereIn('collection', keys);
+
+	return keys.map((key) => records.find((collection) => collection.collection === key));
+}
+
 async function getFields(keys: { collection: string; field: string }[]) {
 	const records = await database
 		.select('*')
@@ -24,6 +33,7 @@ async function getFields(keys: { collection: string; field: string }[]) {
 
 export default function createSystemLoaders() {
 	return {
+		collections: new DataLoader(getCollections),
 		fields: new DataLoader(getFields, {
 			cacheKeyFn: (key: { collection: string; field: string }) =>
 				key.collection + '__' + key.field,

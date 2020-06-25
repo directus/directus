@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import { createItem, readItems, readItem, updateItem, deleteItem } from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateCollection from '../middleware/validate-collection';
+import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
 import processPayload from '../middleware/process-payload';
@@ -12,6 +13,7 @@ const router = express.Router();
 router.post(
 	'/:collection',
 	validateCollection,
+	validateSingleton,
 	processPayload('create'),
 	asyncHandler(async (req, res) => {
 		await createItem(req.params.collection, req.body);

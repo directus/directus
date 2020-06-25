@@ -1,4 +1,7 @@
 import knex from 'knex';
+import logger from './logger';
+
+const log = logger.child({ module: 'sql' });
 
 const database = knex({
 	client: process.env.DB_CLIENT,
@@ -10,5 +13,7 @@ const database = knex({
 		database: process.env.DB_NAME,
 	},
 });
+
+database.on('query', (data) => log.trace(data.sql));
 
 export default database;

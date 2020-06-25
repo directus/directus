@@ -15,6 +15,7 @@ export enum ErrorCode {
 	FAILED_VALIDATION = 'FAILED_VALIDATION',
 	MALFORMED_JSON = 'MALFORMED_JSON',
 	TOKEN_EXPIRED = 'TOKEN_EXPIRED',
+	TOO_MANY_ITEMS = 'TOO_MANY_ITEMS',
 }
 
 enum HTTPStatus {
@@ -29,6 +30,7 @@ enum HTTPStatus {
 	FAILED_VALIDATION = 422,
 	MALFORMED_JSON = 400,
 	TOKEN_EXPIRED = 401,
+	TOO_MANY_ITEMS = 400,
 }
 
 export const errorHandler: ErrorRequestHandler = (
