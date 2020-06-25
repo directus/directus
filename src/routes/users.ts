@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
+import Joi from '@hapi/joi';
 
 const router = express.Router();
 
@@ -11,6 +12,20 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const records = await UsersService.createUser(req.body, res.locals.query);
 		return res.json({ data: records });
+	})
+);
+
+const inviteSchema = Joi.object({
+	email: Joi.string().email().required(),
+	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
+});
+
+router.post(
+	'/invite',
+	asyncHandler(async (req, res) => {
+		await inviteSchema.validateAsync(req.body);
+		await UsersService.inviteUser(req.body.email, req.body.role);
+		res.end();
 	})
 );
 
