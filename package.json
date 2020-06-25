@@ -35,7 +35,7 @@
     "csslint": "^1.0.5",
     "date-fns": "^2.14.0",
     "diff": "^4.0.2",
-    "htmlhint": "^0.14.0",
+    "htmlhint": "^0.14.1",
     "js-yaml": "^3.14.0",
     "jshint": "^2.11.1",
     "jsonlint": "^1.6.3",

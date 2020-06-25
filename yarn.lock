@@ -7468,10 +7468,10 @@ html-webpack-plugin@^4.0.0-beta.2:
     tapable "^1.1.3"
     util.promisify "1.0.0"
 
-htmlhint@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/htmlhint/-/htmlhint-0.14.0.tgz#f121a06c5524e8204caac38ca3f59d6d3e7008e6"
-  integrity sha512-vP5tWbFQ2G8j42NxDa9Pklxzxp0GGC31/tZacnJWYYsygZj4zbrwLIT4vzsafN8/lsV77rDTn+3CaixpZGOB8w==
+htmlhint@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/htmlhint/-/htmlhint-0.14.1.tgz#46fc7f4cf139c665b238aaa5fc84e024cafdf812"
+  integrity sha512-VWKrljlwF8tEKH48YPfC30zYKhrsMqm70d7vXswivEqd3DSva8ZlIzfeCa3YWFEFRIIhiXKgKurlqEpCtYMCAA==
   dependencies:
     async "3.2.0"
     chalk "4.0.0"
