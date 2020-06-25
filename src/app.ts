@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import bodyParser from 'body-parser';
+import logger from 'express-pino-logger';
 
 import { errorHandler, ErrorCode } from './error';
 
@@ -39,6 +40,7 @@ import notFoundHandler from './routes/not-found';
 
 const app = express()
 	.disable('x-powered-by')
+	.use(logger())
 	.use(bodyParser.json())
 	.use(initLoaders)
 	.use(extractToken)
