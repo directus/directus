@@ -6,7 +6,7 @@ import validateCollection from '../middleware/validate-collection';
 import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
-import processPayload from '../middleware/process-payload';
+import * as PayloadService from '../services/payload';
 
 const router = express.Router();
 
@@ -14,9 +14,9 @@ router.post(
 	'/:collection',
 	validateCollection,
 	validateSingleton,
-	processPayload('create'),
 	asyncHandler(async (req, res) => {
-		await createItem(req.params.collection, req.body);
+		const payload = await PayloadService.processValues('create', req.collection, req.body);
+		await createItem(req.params.collection, payload);
 		res.status(200).end();
 	})
 );
@@ -55,7 +55,8 @@ router.patch(
 	'/:collection/:pk',
 	validateCollection,
 	asyncHandler(async (req, res) => {
-		await updateItem(req.params.collection, req.params.pk, req.body);
+		const payload = await PayloadService.processValues('update', req.collection, req.body);
+		await updateItem(req.params.collection, req.params.pk, payload);
 		return res.status(200).end();
 	})
 );

@@ -66,7 +66,6 @@
     "atob": "^2.1.2",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
-    "dataloader": "^2.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",

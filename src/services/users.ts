@@ -5,6 +5,7 @@ import { sendInviteMail } from '../mail';
 import database from '../database';
 import APIError, { ErrorCode } from '../error';
 import bcrypt from 'bcrypt';
+import * as PayloadService from '../services/payload';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
 	return await ItemsService.createItem('directus_users', data, query);
@@ -27,7 +28,12 @@ export const deleteUser = async (pk: string | number) => {
 };
 
 export const inviteUser = async (email: string, role: string) => {
-	await createUser({ email, role, status: 'invited' });
+	const userPayload = await PayloadService.processValues('create', 'directus_users', {
+		email,
+		role,
+		status: 'invited',
+	});
+	await createUser(userPayload);
 
 	const payload = { email };
 	const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '7d' });
