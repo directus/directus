@@ -7,7 +7,6 @@ import logger from 'express-pino-logger';
 
 import { errorHandler } from './error';
 
-import initLoaders from './middleware/init-loaders';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 
@@ -33,7 +32,6 @@ const app = express()
 	.disable('x-powered-by')
 	.use(logger())
 	.use(bodyParser.json())
-	.use(initLoaders)
 	.use(extractToken)
 	.use(authenticate)
 	.use('/activity', activityRouter)
