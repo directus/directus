@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
+import Joi from '@hapi/joi';
 
 const router = express.Router();
 
@@ -47,6 +48,34 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await UsersService.deleteUser(req.params.pk);
 		return res.status(200).end();
+	})
+);
+
+const inviteSchema = Joi.object({
+	email: Joi.string().email().required(),
+	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
+});
+
+router.post(
+	'/invite',
+	asyncHandler(async (req, res) => {
+		await inviteSchema.validateAsync(req.body);
+		await UsersService.inviteUser(req.body.email, req.body.role);
+		res.end();
+	})
+);
+
+const acceptInviteSchema = Joi.object({
+	token: Joi.string().required(),
+	password: Joi.string().required(),
+});
+
+router.post(
+	'/invite/accept',
+	asyncHandler(async (req, res) => {
+		await acceptInviteSchema.validateAsync(req.body);
+		await UsersService.acceptInvite(req.body.token, req.body.password);
+		res.end();
 	})
 );
 
