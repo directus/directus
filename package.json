@@ -38,6 +38,7 @@
     "@types/lodash": "^4.14.156",
     "@types/nodemailer": "^6.4.0",
     "@types/pino": "^6.3.0",
+    "@types/uuid": "^8.0.0",
     "copyfiles": "^2.3.0",
     "eslint": "^7.3.1",
     "eslint-plugin-prettier": "^3.1.4",
@@ -85,6 +86,7 @@
     "pg": "^8.2.1",
     "pino": "^6.3.2",
     "sqlite3": "^4.2.0",
-    "ts-node-dev": "^1.0.0-pre.49"
+    "ts-node-dev": "^1.0.0-pre.49",
+    "uuid": "^8.2.0"
   }
 }

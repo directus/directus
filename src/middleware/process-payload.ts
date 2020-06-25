@@ -7,34 +7,24 @@ import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import { FieldInfo } from '../types/field';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 type Operation = 'create' | 'update';
 
 /**
  * @TODO
  *
- * This needs a bit of extra thinking.
- * - There's a difference between update / create payload processing
- * - Some processing types need the whole payload (slug)
- * - What happens for fields that aren't in the payload but need to be set on create?
+ * Move this out of the middleware into a service
  */
 
 const processPayload = (operation: Operation) => {
 	const middleware: RequestHandler = asyncHandler(async (req, res, next) => {
-		// Get the fields that have a special operation associated with them
-		const fieldsInPayload = Object.keys(req.body);
+		const fieldsInCollection = await req.loaders.fieldsByCollection.load(req.collection);
 
-		const fieldInfoForFields = await req.loaders.fields.loadMany(
-			fieldsInPayload.map((field) => ({
-				collection: req.collection,
-				field: field,
-			}))
-		);
-
-		const specialFields = fieldInfoForFields.filter((field) => {
+		const specialFields = fieldsInCollection.filter((field) => {
 			if (field instanceof Error) return false;
 			return field.special !== null;
-		}) as FieldInfo[];
+		});
 
 		for (const field of specialFields) {
 			req.body[field.field] = await processField(req.collection, field, req.body, operation);
@@ -54,12 +44,20 @@ async function processField(
 ) {
 	switch (field.special) {
 		case 'hash':
-			return await hash(payload[field.field]);
+			return await genHash(payload[field.field]);
+		case 'uuid':
+			return await genUUID(operation);
 	}
 }
 
-async function hash(value: string | number) {
+async function genHash(value: string | number) {
 	return await bcrypt.hash(value, Number(process.env.SALT_ROUNDS));
+}
+
+async function genUUID(operation: Operation) {
+	if (operation === 'create') {
+		return uuidv4();
+	}
 }
 
 export default processPayload;

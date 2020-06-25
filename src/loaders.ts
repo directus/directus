@@ -17,26 +17,17 @@ async function getCollections(keys: string[]) {
 	return keys.map((key) => records.find((collection) => collection.collection === key));
 }
 
-async function getFields(keys: { collection: string; field: string }[]) {
-	const records = await database
-		.select('*')
-		.from('directus_fields')
-		.whereIn(
-			['collection', 'field'],
-			keys.map((key) => [key.collection, key.field])
-		);
-
-	return keys.map<FieldInfo>((key) =>
-		records.find((record) => record.collection === key.collection && record.field === key.field)
-	);
-}
-
 export default function createSystemLoaders() {
 	return {
 		collections: new DataLoader(getCollections),
-		fields: new DataLoader(getFields, {
-			cacheKeyFn: (key: { collection: string; field: string }) =>
-				key.collection + '__' + key.field,
-		}),
+		fieldsByCollection: new DataLoader<string, FieldInfo[]>((collections: string[]) =>
+			database
+				.select('*')
+				.from('directus_fields')
+				.whereIn('collection', collections)
+				.then((rows) =>
+					collections.map((collection) => rows.filter((x) => x.collection === collection))
+				)
+		),
 	};
 }

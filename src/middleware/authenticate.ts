@@ -4,6 +4,9 @@ import isJWT from '../utils/is-jwt';
 import database from '../database';
 import asyncHandler from 'express-async-handler';
 
+/**
+ * Verify the passed JWT and assign the user ID and role to `req`
+ */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.token) return next();
 
