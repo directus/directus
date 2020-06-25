@@ -2,6 +2,9 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 import jwt from 'jsonwebtoken';
 import { sendInviteMail } from '../mail';
+import database from '../database';
+import APIError, { ErrorCode } from '../error';
+import bcrypt from 'bcrypt';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
 	return await ItemsService.createItem('directus_users', data, query);
@@ -31,4 +34,27 @@ export const inviteUser = async (email: string, role: string) => {
 	const acceptURL = process.env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
 
 	await sendInviteMail(email, acceptURL);
+};
+
+export const acceptInvite = async (token: string, password: string) => {
+	const { email } = jwt.verify(token, process.env.SECRET) as Record<string, any>;
+	const user = await database
+		.select('id', 'status')
+		.from('directus_users')
+		.where({ email })
+		.first();
+
+	if (!user) {
+		throw new APIError(ErrorCode.USER_NOT_FOUND, `Email address ${email} hasn't been invited.`);
+	}
+
+	if (user.status !== 'invited') {
+		throw new APIError(ErrorCode.USER_NOT_FOUND, `Email address ${email} hasn't been invited.`);
+	}
+
+	const passwordHashed = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
+
+	await database('directus_users')
+		.update({ password: passwordHashed, status: 'active' })
+		.where({ id: user.id });
 };
