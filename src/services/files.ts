@@ -1,10 +1,20 @@
 import { Query } from '../types/query';
 import * as ItemsService from './items';
+import storage from '../storage';
+import * as PayloadService from './payload';
 
-/** @TODO This is a little more involved ofc, circling back later */
-// export const createFile = async (data: Record<string, any>, query: Query) => {
-// 	return await ItemsService.createItem('directus_files', data, query);
-// };
+export const createFile = async (
+	stream: NodeJS.ReadableStream,
+	data: Record<string, any>,
+	query?: Query
+) => {
+	const payload = await PayloadService.processValues('create', 'directus_files', data);
+
+	await ItemsService.createItem('directus_files', payload, query);
+
+	// @todo type of stream in flydrive is wrong: https://github.com/Slynova-Org/flydrive/issues/145
+	await storage.disk(data.storage).put(data.filename_disk, stream as any);
+};
 
 export const readFiles = async (query: Query) => {
 	return await ItemsService.readItems('directus_files', query);
