@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
-    "build": "rimraf dist && tsc && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+    "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "LOG_LEVEL=trace ts-node-dev src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada"
   },
   "repository": {

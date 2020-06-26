@@ -2,7 +2,7 @@
  * Custom properties on the req object in express
  */
 
-import createSystemLoaders from '../loaders';
+export {};
 
 declare global {
 	namespace Express {
@@ -11,7 +11,6 @@ declare global {
 			user?: string;
 			role?: string;
 			collection?: string;
-			loaders?: ReturnType<typeof createSystemLoaders>;
 		}
 	}
 }
