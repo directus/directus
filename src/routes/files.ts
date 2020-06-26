@@ -4,14 +4,11 @@ import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as FilesService from '../services/files';
-import storage from '../storage';
-import { Readable } from 'stream';
 import logger from '../logger';
 
 const router = express.Router();
 
-router.post(
-	'/',
+const multipartHandler = (operation: 'create' | 'update') =>
 	asyncHandler(async (req, res, next) => {
 		const busboy = new Busboy({ headers: req.headers });
 
@@ -50,7 +47,11 @@ router.post(
 			});
 
 			try {
-				await FilesService.createFile(fileStream, payload);
+				if (operation === 'create') {
+					await FilesService.createFile(payload, fileStream);
+				} else {
+					await FilesService.updateFile(req.params.pk, payload, fileStream);
+				}
 			} catch (err) {
 				busboy.emit('error', err);
 			}
@@ -65,8 +66,9 @@ router.post(
 		});
 
 		return req.pipe(busboy);
-	})
-);
+	});
+
+router.post('/', multipartHandler('create'));
 
 router.get(
 	'/',
@@ -90,9 +92,14 @@ router.get(
 
 router.patch(
 	'/:pk',
-	asyncHandler(async (req, res) => {
-		const records = await FilesService.updateFile(req.params.pk, req.body, res.locals.query);
-		return res.json({ data: records });
+	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data')) {
+			await multipartHandler('update')(req, res, next);
+		} else {
+			await FilesService.updateFile(req.params.pk, req.body);
+		}
+
+		return res.status(200).end();
 	})
 );
 

@@ -11,7 +11,6 @@ import { GoogleCloudStorage } from '@slynova/flydrive-gcs';
 
 /** @todo dynamically load storage adapters here */
 
-console.log(getStorageConfig());
 const storage = new StorageManager(getStorageConfig());
 
 registerDrivers(storage);
