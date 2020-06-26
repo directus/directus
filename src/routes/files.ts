@@ -68,18 +68,6 @@ router.post(
 	})
 );
 
-/** @TODO This needs to support multipart form-data for file uploads */
-// router.post(
-// 	'/',
-// 	asyncHandler(async (req, res) => {
-// 		const records = await FilesService.createFile(
-// 			req.body,
-// 			res.locals.query
-// 		);
-// 		return res.json({ data: records });
-// 	})
-// );
-
 router.get(
 	'/',
 	sanitizeQuery,

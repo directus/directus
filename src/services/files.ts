@@ -2,6 +2,8 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 import storage from '../storage';
 import * as PayloadService from './payload';
+import database from '../database';
+import logger from '../logger';
 
 export const createFile = async (
 	stream: NodeJS.ReadableStream,
@@ -29,5 +31,12 @@ export const updateFile = async (pk: string | number, data: Record<string, any>,
 };
 
 export const deleteFile = async (pk: string | number) => {
-	await ItemsService.deleteItem('directus_files', pk);
+	const file = await database
+		.select('storage', 'filename_disk')
+		.from('directus_files')
+		.where({ id: pk })
+		.first();
+	const { wasDeleted } = await storage.disk(file.storage).delete(file.filename_disk);
+	logger.info(`File ${file.filename_download} deleted: ${wasDeleted}`);
+	await database.delete().from('directus_files').where({ id: pk });
 };
