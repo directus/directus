@@ -8,7 +8,8 @@ import * as PayloadService from '../services/payload';
 import { InvalidPayloadException } from '../exceptions';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
-	return await ItemsService.createItem('directus_users', data, query);
+	const payload = await PayloadService.processValues('create', 'directus_users', data);
+	return await ItemsService.createItem('directus_users', payload, query);
 };
 
 export const readUsers = async (query?: Query) => {

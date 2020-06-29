@@ -42,6 +42,10 @@ const multipartHandler = (operation: 'create' | 'update') =>
 				type: mimetype,
 			};
 
+			if (req.user) {
+				payload.uploaded_by = req.user;
+			}
+
 			fileStream.on('end', () => {
 				logger.info(`File ${filename} uploaded to ${disk}.`);
 			});
