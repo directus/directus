@@ -44,7 +44,10 @@ router.get(
 		// @todo add file-not-found error
 		const readStream = storage.disk(file.storage).getStream(file.filename_disk);
 		const transformer = sharp().resize(resizeOptions);
-		readStream.pipe(transformer).pipe(res);
+
+		await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
+
+		return storage.disk(file.storage).getStream(assetFilename).pipe(res);
 	})
 );
 
