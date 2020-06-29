@@ -10,7 +10,11 @@ import APIError, { ErrorCode } from '../error';
 const validateCollection: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.collection) return next();
 
-	const collectionInfo = await req.loaders.collections.load(req.collection);
+	const collectionInfo = await database
+		.select('single')
+		.from('directus_collections')
+		.where({ collection: req.collection })
+		.first();
 
 	if (!collectionInfo) return next();
 

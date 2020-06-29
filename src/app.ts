@@ -11,6 +11,7 @@ import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 
 import activityRouter from './routes/activity';
+import assetsRouter from './routes/assets';
 import authRouter from './routes/auth';
 import collectionPresetsRouter from './routes/collection-presets';
 import extensionsRouter from './routes/extensions';
@@ -35,6 +36,7 @@ const app = express()
 	.use(extractToken)
 	.use(authenticate)
 	.use('/activity', activityRouter)
+	.use('/assets', assetsRouter)
 	.use('/auth', authRouter)
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/extensions', extensionsRouter)
