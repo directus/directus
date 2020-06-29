@@ -36,10 +36,6 @@ export default function parseIPTC(buffer: Buffer) {
 			continue;
 		}
 
-		// if (iptcBlockSize > buffer.length - (iptcBlockDataPos + iptcBlockSize)) {
-		// 	throw new Error('Invalid IPTC directory');
-		// }
-
 		let iptcBlockTypeId = IPTC_ENTRY_TYPES.get(iptcBlockType);
 		let iptcData = buffer.slice(iptcBlockDataPos, iptcBlockDataPos + iptcBlockSize).toString();
 
