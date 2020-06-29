@@ -5,7 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'express-pino-logger';
 
-import { errorHandler } from './error';
+import errorHandler from './middleware/error-handler';
 
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
