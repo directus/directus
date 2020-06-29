@@ -6,6 +6,7 @@ import validateQuery from '../middleware/validate-query';
 import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
@@ -72,10 +73,11 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		return req.pipe(busboy);
 	});
 
-router.post('/', multipartHandler('create'));
+router.post('/', useCollection('directus_files'), multipartHandler('create'));
 
 router.get(
 	'/',
+	useCollection('directus_files'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -86,6 +88,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_files'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -96,6 +99,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	useCollection('directus_files'),
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data')) {
 			await multipartHandler('update')(req, res, next);
@@ -109,6 +113,7 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	useCollection('directus_files'),
 	asyncHandler(async (req, res) => {
 		await FilesService.deleteFile(req.params.pk);
 		return res.status(200).end();

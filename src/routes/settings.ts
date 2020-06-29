@@ -3,11 +3,13 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as SettingsService from '../services/settings';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.get(
 	'/',
+	useCollection('directus_settings'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -18,6 +20,7 @@ router.get(
 
 router.patch(
 	'/',
+	useCollection('directus_settings'),
 	asyncHandler(async (req, res) => {
 		const records = await SettingsService.updateSettings(
 			req.params.pk /** @TODO Singleton */,

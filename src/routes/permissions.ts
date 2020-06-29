@@ -3,11 +3,13 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as PermissionsService from '../services/permissions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.post(
 	'/',
+	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
 		const records = await PermissionsService.createPermission(req.body, res.locals.query);
 		return res.json({ data: records });
@@ -16,6 +18,7 @@ router.post(
 
 router.get(
 	'/',
+	useCollection('directus_permissions'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -26,6 +29,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_permissions'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -36,6 +40,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
 		const records = await PermissionsService.updatePermission(
 			req.params.pk,
@@ -48,6 +53,7 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
 		await PermissionsService.deletePermission(req.params.pk);
 		return res.status(200).end();

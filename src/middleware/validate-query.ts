@@ -12,10 +12,10 @@ import asyncHandler from 'express-async-handler';
 import { InvalidQueryException } from '../exceptions';
 
 const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (!req.params.collection) return next();
-	if (!res.locals.query) return next();
+	if (!req.collection) return next();
+	if (!req.query) return next();
 
-	const query: Query = res.locals.query;
+	const query: Query = req.query;
 
 	await Promise.all([
 		validateParams(req.params.collection, query),

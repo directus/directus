@@ -3,11 +3,13 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as CollectionPresetsService from '../services/collection-presets';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.post(
 	'/',
+	useCollection('directus_collection_presets'),
 	asyncHandler(async (req, res) => {
 		const records = await CollectionPresetsService.createCollectionPreset(
 			req.body,
@@ -19,6 +21,7 @@ router.post(
 
 router.get(
 	'/',
+	useCollection('directus_collection_presets'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -29,6 +32,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_collection_presets'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -42,6 +46,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	useCollection('directus_collection_presets'),
 	asyncHandler(async (req, res) => {
 		const records = await CollectionPresetsService.updateCollectionPreset(
 			req.params.pk,
@@ -54,6 +59,7 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	useCollection('directus_collection_presets'),
 	asyncHandler(async (req, res) => {
 		await CollectionPresetsService.deleteCollectionPreset(req.params.pk);
 		return res.status(200).end();

@@ -5,11 +5,13 @@ import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
 import Joi from '@hapi/joi';
 import { InvalidPayloadException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.post(
 	'/',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const records = await UsersService.createUser(req.body, res.locals.query);
 		return res.json({ data: records });
@@ -18,6 +20,7 @@ router.post(
 
 router.get(
 	'/',
+	useCollection('directus_users'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -28,6 +31,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_users'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -38,6 +42,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const records = await UsersService.updateUser(req.params.pk, req.body, res.locals.query);
 		return res.json({ data: records });
@@ -46,6 +51,7 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		await UsersService.deleteUser(req.params.pk);
 		return res.status(200).end();
@@ -59,6 +65,7 @@ const inviteSchema = Joi.object({
 
 router.post(
 	'/invite',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
@@ -74,6 +81,7 @@ const acceptInviteSchema = Joi.object({
 
 router.post(
 	'/invite/accept',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);

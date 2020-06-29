@@ -38,5 +38,5 @@ export const authenticate = async (email: string, password?: string) => {
 		expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
 	});
 
-	return token;
+	return { token, id: user.id };
 };
