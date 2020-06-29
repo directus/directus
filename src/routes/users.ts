@@ -4,6 +4,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
 import Joi from '@hapi/joi';
+import { InvalidPayloadException } from '../exceptions';
 
 const router = express.Router();
 
@@ -59,7 +60,8 @@ const inviteSchema = Joi.object({
 router.post(
 	'/invite',
 	asyncHandler(async (req, res) => {
-		await inviteSchema.validateAsync(req.body);
+		const { error } = inviteSchema.validate(req.body);
+		if (error) throw new InvalidPayloadException(error.message);
 		await UsersService.inviteUser(req.body.email, req.body.role);
 		res.end();
 	})
@@ -73,7 +75,8 @@ const acceptInviteSchema = Joi.object({
 router.post(
 	'/invite/accept',
 	asyncHandler(async (req, res) => {
-		await acceptInviteSchema.validateAsync(req.body);
+		const { error } = acceptInviteSchema.validate(req.body);
+		if (error) throw new InvalidPayloadException(error.message);
 		await UsersService.acceptInvite(req.body.token, req.body.password);
 		res.end();
 	})
