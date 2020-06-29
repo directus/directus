@@ -8,6 +8,7 @@ import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
 import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
+import path from 'path';
 
 export const createFile = async (
 	data: Record<string, any>,
@@ -16,9 +17,11 @@ export const createFile = async (
 ) => {
 	const payload = await PayloadService.processValues('create', 'directus_files', data);
 
-	if (payload.type?.startsWith('image')) {
-		const pipeline = sharp();
+	payload.filename_disk = payload.id + path.extname(payload.filename_disk);
 
+	const pipeline = sharp();
+
+	if (payload.type?.startsWith('image')) {
 		pipeline.metadata().then((meta) => {
 			payload.width = meta.width;
 			payload.height = meta.height;
@@ -40,11 +43,9 @@ export const createFile = async (
 				payload.description = payload.description || payload.metadata.iptc.caption;
 			}
 		});
-
-		stream.pipe(pipeline);
 	}
 
-	await storage.disk(data.storage).put(data.filename_disk, stream as any);
+	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
 	return await ItemsService.createItem('directus_files', payload, query);
 };
 
