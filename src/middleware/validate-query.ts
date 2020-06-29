@@ -9,7 +9,7 @@ import { RequestHandler } from 'express';
 import { Query } from '../types/query';
 import { hasFields } from '../services/schema';
 import asyncHandler from 'express-async-handler';
-import APIError, { ErrorCode } from '../error';
+import { InvalidQueryException } from '../exceptions';
 
 const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
@@ -28,8 +28,7 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 
 async function validateParams(collection: string, query: Query) {
 	if (query.offset && query.page) {
-		throw new APIError(
-			ErrorCode.INVALID_QUERY,
+		throw new InvalidQueryException(
 			`You can't have both the offset and page query parameters enabled.`
 		);
 	}
@@ -51,10 +50,7 @@ async function validateFields(collection: string, query: Query) {
 	Array.from(fieldsToCheck).forEach((field, index) => {
 		const exists = fieldsExist[index];
 		if (exists === false)
-			throw new APIError(
-				ErrorCode.FIELD_NOT_FOUND,
-				`Field ${field} doesn't exist in ${collection}.`
-			);
+			throw new InvalidQueryException(`Field ${field} doesn't exist in ${collection}.`);
 	});
 }
 

@@ -1,6 +1,0 @@
-export type Code =
-	| 'COLLECTION_NOT_FOUND'
-	| 'FIELD_NOT_FOUND'
-	| 'ROUTE_NOT_FOUND'
-	| 'NOT_FOUND'
-	| 'INVALID_QUERY';

@@ -1,10 +1,8 @@
-import { Code } from './types';
-
 export class BaseException extends Error {
 	status: number;
-	code: Code;
+	code: string;
 
-	constructor(message: string, status: number, code: Code) {
+	constructor(message: string, status: number, code: string) {
 		super(message);
 		this.status = status;
 		this.code = code;

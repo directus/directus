@@ -5,7 +5,7 @@
 import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import database from '../database';
-import APIError, { ErrorCode } from '../error';
+import { RouteNotFoundException } from '../exceptions';
 
 const validateCollection: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
@@ -17,7 +17,7 @@ const validateCollection: RequestHandler = asyncHandler(async (req, res, next) =
 		return next();
 	}
 
-	throw new APIError(ErrorCode.NOT_FOUND, `Collection "${req.params.collection}" doesn't exist.`);
+	throw new RouteNotFoundException(req.path);
 });
 
 export default validateCollection;
