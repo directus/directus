@@ -3,9 +3,9 @@ import * as ItemsService from './items';
 import jwt from 'jsonwebtoken';
 import { sendInviteMail } from '../mail';
 import database from '../database';
-import APIError, { ErrorCode } from '../error';
 import bcrypt from 'bcrypt';
 import * as PayloadService from '../services/payload';
+import { InvalidPayloadException } from '../exceptions';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
 	return await ItemsService.createItem('directus_users', data, query);
@@ -50,12 +50,8 @@ export const acceptInvite = async (token: string, password: string) => {
 		.where({ email })
 		.first();
 
-	if (!user) {
-		throw new APIError(ErrorCode.USER_NOT_FOUND, `Email address ${email} hasn't been invited.`);
-	}
-
-	if (user.status !== 'invited') {
-		throw new APIError(ErrorCode.USER_NOT_FOUND, `Email address ${email} hasn't been invited.`);
+	if (!user || user.status !== 'invited') {
+		throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 	}
 
 	const passwordHashed = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));

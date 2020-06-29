@@ -1,7 +1,7 @@
 import database from '../database';
-import APIError, { ErrorCode } from '../error';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { InvalidCredentialsException } from '../exceptions';
 
 export const authenticate = async (email: string, password?: string) => {
 	const user = await database
@@ -11,7 +11,7 @@ export const authenticate = async (email: string, password?: string) => {
 		.first();
 
 	if (!user) {
-		throw new APIError(ErrorCode.INVALID_USER_CREDENTIALS, 'Invalid user credentials');
+		throw new InvalidCredentialsException();
 	}
 
 	/**
@@ -22,7 +22,7 @@ export const authenticate = async (email: string, password?: string) => {
 	 * signal the difference
 	 */
 	if (password !== undefined && (await bcrypt.compare(password, user.password)) === false) {
-		throw new APIError(ErrorCode.INVALID_USER_CREDENTIALS, 'Invalid user credentials');
+		throw new InvalidCredentialsException();
 	}
 
 	const payload = {

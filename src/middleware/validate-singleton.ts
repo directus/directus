@@ -5,7 +5,7 @@
 import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import database from '../database';
-import APIError, { ErrorCode } from '../error';
+import { ItemLimitException } from '../exceptions';
 
 const validateCollection: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.collection) return next();
@@ -24,8 +24,7 @@ const validateCollection: RequestHandler = asyncHandler(async (req, res, next) =
 
 	if (Number(count) === 0) return next();
 
-	throw new APIError(
-		ErrorCode.TOO_MANY_ITEMS,
+	throw new ItemLimitException(
 		`You can only create a single item in singleton "${req.collection}"`
 	);
 });

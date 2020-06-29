@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express';
-import APIError, { ErrorCode } from '../error';
+import { RouteNotFoundException } from '../exceptions';
 
 const notFound: RequestHandler = (req, res, next) => {
-	throw new APIError(ErrorCode.NOT_FOUND, `Route ${req.path} not found.`);
+	throw new RouteNotFoundException(req.path);
 };
 
 export default notFound;

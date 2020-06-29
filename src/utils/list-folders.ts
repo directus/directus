@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import APIError, { ErrorCode } from '../error';
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
