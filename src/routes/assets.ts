@@ -3,7 +3,6 @@ import asyncHandler from 'express-async-handler';
 import storage from '../storage';
 import database from '../database';
 import sharp, { ResizeOptions } from 'sharp';
-import fs from 'fs';
 
 const router = Router();
 
@@ -41,7 +40,6 @@ router.get(
 			return storage.disk(file.storage).getStream(assetFilename).pipe(res);
 		}
 
-		// @todo add file-not-found error
 		const readStream = storage.disk(file.storage).getStream(file.filename_disk);
 		const transformer = sharp().resize(resizeOptions);
 
