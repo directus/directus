@@ -4,6 +4,10 @@ import storage from '../storage';
 import * as PayloadService from './payload';
 import database from '../database';
 import logger from '../logger';
+import sharp from 'sharp';
+import { parse as parseICC } from 'icc';
+import parseEXIF from 'exif-reader';
+import parseIPTC from '../utils/parse-iptc';
 
 export const createFile = async (
 	data: Record<string, any>,
@@ -12,10 +16,36 @@ export const createFile = async (
 ) => {
 	const payload = await PayloadService.processValues('create', 'directus_files', data);
 
-	await ItemsService.createItem('directus_files', payload, query);
+	if (payload.type?.startsWith('image')) {
+		const pipeline = sharp();
 
-	// @todo type of stream in flydrive is wrong: https://github.com/Slynova-Org/flydrive/issues/145
+		pipeline.metadata().then((meta) => {
+			payload.width = meta.width;
+			payload.height = meta.height;
+			payload.filesize = meta.size;
+			payload.metadata = {};
+
+			if (meta.icc) {
+				payload.metadata.icc = parseICC(meta.icc);
+			}
+
+			if (meta.exif) {
+				payload.metadata.exif = parseEXIF(meta.exif);
+			}
+
+			if (meta.iptc) {
+				payload.metadata.iptc = parseIPTC(meta.iptc);
+
+				payload.title = payload.title || payload.metadata.iptc.headline;
+				payload.description = payload.description || payload.metadata.iptc.caption;
+			}
+		});
+
+		stream.pipe(pipeline);
+	}
+
 	await storage.disk(data.storage).put(data.filename_disk, stream as any);
+	await ItemsService.createItem('directus_files', payload, query);
 };
 
 export const readFiles = async (query: Query) => {
