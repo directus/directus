@@ -31,6 +31,7 @@ import notFoundHandler from './routes/not-found';
 
 const app = express()
 	.disable('x-powered-by')
+	.set('trust proxy', true)
 	.use(logger())
 	.use(bodyParser.json())
 	.use(extractToken)

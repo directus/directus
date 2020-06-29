@@ -3,11 +3,13 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import { readActivities, readActivity } from '../services/activity';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.get(
 	'/',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -20,6 +22,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {

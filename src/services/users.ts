@@ -3,7 +3,7 @@ import * as ItemsService from './items';
 import jwt from 'jsonwebtoken';
 import { sendInviteMail } from '../mail';
 import database from '../database';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import * as PayloadService from '../services/payload';
 import { InvalidPayloadException } from '../exceptions';
 
@@ -55,7 +55,7 @@ export const acceptInvite = async (token: string, password: string) => {
 		throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 	}
 
-	const passwordHashed = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
+	const passwordHashed = await argon2.hash(password);
 
 	await database('directus_users')
 		.update({ password: passwordHashed, status: 'active' })

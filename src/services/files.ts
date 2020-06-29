@@ -45,7 +45,7 @@ export const createFile = async (
 	}
 
 	await storage.disk(data.storage).put(data.filename_disk, stream as any);
-	await ItemsService.createItem('directus_files', payload, query);
+	return await ItemsService.createItem('directus_files', payload, query);
 };
 
 export const readFiles = async (query: Query) => {
@@ -64,11 +64,15 @@ export const updateFile = async (
 	query?: Query
 ) => {
 	const payload = await PayloadService.processValues('update', 'directus_files', data);
-	await ItemsService.updateItem('directus_files', pk, payload, query);
 
 	/**
 	 * @TODO
 	 * Handle changes in storage adapter -> going from local to S3 needs to delete from one, upload to the other
+	 */
+
+	/**
+	 * @TODO
+	 * Extract metadata here too
 	 */
 
 	if (stream) {
@@ -81,6 +85,8 @@ export const updateFile = async (
 		// @todo type of stream in flydrive is wrong: https://github.com/Slynova-Org/flydrive/issues/145
 		await storage.disk(file.storage).put(file.filename_disk, stream as any);
 	}
+
+	return await ItemsService.updateItem('directus_files', pk, payload, query);
 };
 
 export const deleteFile = async (pk: string | number) => {

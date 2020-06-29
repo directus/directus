@@ -3,11 +3,13 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as RevisionsService from '../services/revisions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
 router.get(
 	'/',
+	useCollection('directus_revisions'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -18,6 +20,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_revisions'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {

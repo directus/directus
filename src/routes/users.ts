@@ -5,29 +5,54 @@ import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
 import Joi from '@hapi/joi';
 import { InvalidPayloadException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
+import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 
 router.post(
 	'/',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
-		const records = await UsersService.createUser(req.body, res.locals.query);
-		return res.json({ data: records });
+		const item = await UsersService.createUser(req.body, res.locals.query);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.CREATE,
+			collection: req.collection,
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		return res.json({ data: item });
 	})
 );
 
 router.get(
 	'/',
+	useCollection('directus_users'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await UsersService.readUsers(res.locals.query);
-		return res.json({ data: records });
+		const item = await UsersService.readUsers(res.locals.query);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.UPDATE,
+			collection: req.collection,
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		return res.json({ data: item });
 	})
 );
 
 router.get(
 	'/:pk',
+	useCollection('directus_users'),
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
@@ -38,6 +63,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const records = await UsersService.updateUser(req.params.pk, req.body, res.locals.query);
 		return res.json({ data: records });
@@ -46,8 +72,19 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		await UsersService.deleteUser(req.params.pk);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.DELETE,
+			collection: req.collection,
+			item: req.params.pk,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
 		return res.status(200).end();
 	})
 );
@@ -59,6 +96,7 @@ const inviteSchema = Joi.object({
 
 router.post(
 	'/invite',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
@@ -74,6 +112,7 @@ const acceptInviteSchema = Joi.object({
 
 router.post(
 	'/invite/accept',
+	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);

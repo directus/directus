@@ -6,6 +6,8 @@ import * as AuthService from '../services/auth';
 import grant from 'grant';
 import getGrantConfig from '../utils/get-grant-config';
 import getEmailFromProfile from '../utils/get-email-from-profile';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import * as ActivityService from '../services/activity';
 
 const router = Router();
 
@@ -17,16 +19,21 @@ const loginSchema = Joi.object({
 router.post(
 	'/authenticate',
 	asyncHandler(async (req, res) => {
-		await loginSchema.validateAsync(req.body);
+		const { error } = loginSchema.validate(req.body);
+		if (error) throw new InvalidPayloadException(error.message);
+
 		const { email, password } = req.body;
 
-		/**
-		 * @TODO
-		 * Make sure to validate the payload. AuthService.authenticate's password is optional which
-		 * means there's a possible problem when req.body.password is undefined
-		 */
+		const { token, id } = await AuthService.authenticate(email, password);
 
-		const token = await AuthService.authenticate(email, password);
+		ActivityService.createActivity({
+			action: ActivityService.Action.AUTHENTICATE,
+			collection: 'directus_users',
+			item: id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: id,
+		});
 
 		return res.status(200).json({
 			data: { token },
@@ -34,7 +41,10 @@ router.post(
 	})
 );
 
-router.use('/sso', session({ secret: process.env.SECRET, saveUninitialized: true, resave: false }));
+router.use(
+	'/sso',
+	session({ secret: process.env.SECRET, saveUninitialized: false, resave: false })
+);
 
 router.use(grant.express()(getGrantConfig()));
 
@@ -43,7 +53,16 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const email = getEmailFromProfile(req.params.provider, req.session.grant.response.profile);
 
-		const token = await AuthService.authenticate(email);
+		const { token, id } = await AuthService.authenticate(email);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.AUTHENTICATE,
+			collection: 'directus_users',
+			item: id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: id,
+		});
 
 		return res.status(200).json({
 			data: { token },
