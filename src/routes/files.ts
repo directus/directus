@@ -7,12 +7,14 @@ import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 
 const multipartHandler = (operation: 'create' | 'update') =>
 	asyncHandler(async (req, res, next) => {
 		const busboy = new Busboy({ headers: req.headers });
+		const savedFiles: Record<string, any> = [];
 
 		/**
 		 * The order of the fields in multipart/form-data is important. We require that all fields
@@ -53,9 +55,31 @@ const multipartHandler = (operation: 'create' | 'update') =>
 
 			try {
 				if (operation === 'create') {
-					await FilesService.createFile(payload, fileStream);
+					const file = await FilesService.createFile(payload, fileStream);
+
+					ActivityService.createActivity({
+						action: ActivityService.Action.UPLOAD,
+						collection: 'directus_files',
+						item: file.id,
+						ip: req.ip,
+						user_agent: req.get('user-agent'),
+						action_by: req.user,
+					});
+
+					savedFiles.push(file);
 				} else {
-					await FilesService.updateFile(req.params.pk, payload, fileStream);
+					const file = await FilesService.updateFile(req.params.pk, payload, fileStream);
+
+					ActivityService.createActivity({
+						action: ActivityService.Action.UPDATE,
+						collection: 'directus_files',
+						item: file.id,
+						ip: req.ip,
+						user_agent: req.get('user-agent'),
+						action_by: req.user,
+					});
+
+					savedFiles.push(file);
 				}
 			} catch (err) {
 				busboy.emit('error', err);
@@ -67,7 +91,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		});
 
 		busboy.on('finish', () => {
-			res.status(200).end();
+			res.status(200).json({ data: savedFiles });
 		});
 
 		return req.pipe(busboy);
@@ -101,13 +125,24 @@ router.patch(
 	'/:pk',
 	useCollection('directus_files'),
 	asyncHandler(async (req, res, next) => {
+		let file: Record<string, any>;
+
 		if (req.is('multipart/form-data')) {
-			await multipartHandler('update')(req, res, next);
+			file = await multipartHandler('update')(req, res, next);
 		} else {
-			await FilesService.updateFile(req.params.pk, req.body);
+			file = await FilesService.updateFile(req.params.pk, req.body);
+
+			ActivityService.createActivity({
+				action: ActivityService.Action.UPDATE,
+				collection: 'directus_files',
+				item: file.id,
+				ip: req.ip,
+				user_agent: req.get('user-agent'),
+				action_by: req.user,
+			});
 		}
 
-		return res.status(200).end();
+		return res.status(200).json({ data: file });
 	})
 );
 

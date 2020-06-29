@@ -76,7 +76,8 @@ export const updateItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	return await database(collection).update(data).where({ id: pk });
+	const result = await database(collection).update(data).where({ id: pk }).returning('id');
+	return readItem(collection, result[0], query);
 };
 
 export const deleteItem = async (collection: string, pk: number | string) => {

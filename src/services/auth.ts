@@ -1,6 +1,6 @@
 import database from '../database';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { InvalidCredentialsException } from '../exceptions';
 
 export const authenticate = async (email: string, password?: string) => {
@@ -21,7 +21,7 @@ export const authenticate = async (email: string, password?: string) => {
 	 * email to leak anywhere else.. We might have to make a dedicated "copy" of this function to
 	 * signal the difference
 	 */
-	if (password !== undefined && (await bcrypt.compare(password, user.password)) === false) {
+	if (password !== undefined && (await argon2.verify(password, user.password)) === false) {
 		throw new InvalidCredentialsException();
 	}
 

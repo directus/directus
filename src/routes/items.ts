@@ -7,6 +7,7 @@ import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
 import * as PayloadService from '../services/payload';
+import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 
@@ -16,8 +17,19 @@ router.post(
 	validateSingleton,
 	asyncHandler(async (req, res) => {
 		const payload = await PayloadService.processValues('create', req.collection, req.body);
-		await createItem(req.params.collection, payload);
-		res.status(200).end();
+		const item = await createItem(req.params.collection, payload);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.CREATE,
+			collection: req.collection,
+			/** @TODO don't forget to use real primary key here */
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		res.json({ data: item });
 	})
 );
 
@@ -56,8 +68,18 @@ router.patch(
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		const payload = await PayloadService.processValues('update', req.collection, req.body);
-		await updateItem(req.params.collection, req.params.pk, payload);
-		return res.status(200).end();
+		const item = await updateItem(req.params.collection, req.params.pk, payload);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.UPDATE,
+			collection: req.collection,
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		return res.json({ data: item });
 	})
 );
 
@@ -66,6 +88,16 @@ router.delete(
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		await deleteItem(req.params.collection, req.params.pk);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.DELETE,
+			collection: req.collection,
+			item: req.params.pk,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
 		return res.status(200).end();
 	})
 );

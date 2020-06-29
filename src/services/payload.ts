@@ -6,7 +6,7 @@
  */
 
 import { FieldInfo } from '../types/field';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone } from 'lodash';
@@ -51,8 +51,10 @@ async function processField(
 	}
 }
 
-async function genHash(value: string | number) {
-	return await bcrypt.hash(value, Number(process.env.SALT_ROUNDS));
+async function genHash(value?: string | number) {
+	if (!value) return;
+
+	return await argon2.hash(String(value));
 }
 
 async function genUUID(operation: 'create' | 'update') {
