@@ -5,6 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as FilesService from '../services/files';
 import logger from '../logger';
+import { InvalidPayloadException } from '../exceptions';
 
 const router = express.Router();
 
@@ -31,8 +32,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
 			if (!disk) {
-				// @todo error
-				return busboy.emit('error', new Error('no storage provided'));
+				return busboy.emit('error', new InvalidPayloadException('No storage provided.'));
 			}
 
 			payload = {
