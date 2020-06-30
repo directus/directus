@@ -65,12 +65,12 @@ export const readItems = async <T = Record<string, any>>(
 	return records;
 };
 
-export const readItem = async (collection: string, pk: number | string, query: Query = {}) => {
-	const dbQuery = database.select('*').from(collection).where({ id: pk });
-
-	const records = await dbQuery;
-
-	return records[0];
+export const readItem = async <T = any>(
+	collection: string,
+	pk: number | string,
+	query: Query = {}
+): Promise<T> => {
+	return await database.select('*').from(collection).where({ id: pk }).first();
 };
 
 export const updateItem = async (

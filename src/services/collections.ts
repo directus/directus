@@ -27,3 +27,19 @@ export const readAll = async (query?: Query) => {
 
 	return data;
 };
+
+export const readOne = async (collection: string, query?: Query) => {
+	const [table, collectionInfo] = await Promise.all([
+		schemaInspector.table(collection),
+		ItemsService.readItem<Collection>('directus_collections', collection, query),
+	]);
+
+	return {
+		collection: table.name,
+		note: table.comment,
+		hidden: collectionInfo?.hidden || false,
+		single: collectionInfo?.single || false,
+		icon: collectionInfo?.icon || null,
+		translation: collectionInfo?.translation || null,
+	};
+};
