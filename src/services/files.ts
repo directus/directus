@@ -9,6 +9,7 @@ import { parse as parseICC } from 'icc';
 import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
+import { SYSTEM_ASSET_WHITELIST } from '../constants';
 
 export const createFile = async (
 	data: Record<string, any>,
@@ -54,7 +55,29 @@ export const readFiles = async (query: Query) => {
 };
 
 export const readFile = async (pk: string | number, query: Query) => {
-	return await ItemsService.readItem('directus_files', pk, query);
+	const file = await ItemsService.readItem('directus_files', pk, query);
+
+	const { asset_allowlist: assetAllowlist } =
+		(await database.select('asset_allowlist').from('directus_settings').first()) || {};
+
+	const assetSizes = [...SYSTEM_ASSET_WHITELIST, ...(assetAllowlist || [])];
+
+	file.links = {
+		asset_url: new URL(`/assets/${file.id}`, process.env.PUBLIC_URL),
+		/** @TODO confirm is public url is set before returning */
+		original_url: new URL(
+			file.filename_disk,
+			process.env[`STORAGE_${file.storage.toUpperCase()}_PUBLIC_URL`]
+		),
+		thumbnails: assetSizes.map((size) => {
+			return {
+				...size,
+				url: new URL(`/assets/${file.id}?key=${size.key}`, process.env.PUBLIC_URL),
+			};
+		}),
+	};
+
+	return file;
 };
 
 // @todo Add query support
