@@ -1,4 +1,6 @@
-export const SYSTEM_ASSET_WHITELIST = [
+import { Transformation } from './types/assets';
+
+export const SYSTEM_ASSET_WHITELIST: Transformation[] = [
 	{
 		key: 'directus-small-cover',
 		w: 64,
@@ -33,3 +35,5 @@ export const SYSTEM_ASSET_WHITELIST = [
 		f: 'contain',
 	},
 ];
+
+export const ASSET_GENERATION_QUERY_KEYS = ['key', 'w', 'h', 'f'];

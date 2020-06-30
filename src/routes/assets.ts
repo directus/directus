@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import storage from '../storage';
 import database from '../database';
-import sharp, { ResizeOptions } from 'sharp';
-import { SYSTEM_ASSET_WHITELIST } from '../constants';
+import { SYSTEM_ASSET_WHITELIST, ASSET_GENERATION_QUERY_KEYS } from '../constants';
 import { InvalidQueryException, ItemNotFoundException } from '../exceptions';
 import * as AssetsService from '../services/assets';
 import validate from 'uuid-validate';
+import { pick } from 'lodash';
+import { Transformation } from '../types/assets';
 
 const router = Router();
 
@@ -43,6 +43,14 @@ router.get(
 				.from('directus_settings')
 				.first()) || defaults;
 
+		const transformation = pick(req.query, ASSET_GENERATION_QUERY_KEYS);
+
+		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
+			throw new InvalidQueryException(
+				`You can't combine the "key" query parameter with any other transformation.`
+			);
+		}
+
 		const systemKeys = SYSTEM_ASSET_WHITELIST.map((size) => size.key);
 		const allKeys: string[] = [
 			...systemKeys,
@@ -51,18 +59,24 @@ router.get(
 
 		// For use in the next request handler
 		res.locals.shortcuts = [...SYSTEM_ASSET_WHITELIST, assetSettings.asset_shortcuts];
+		res.locals.transformation = transformation;
+
+		if (Object.keys(transformation).length === 0) {
+			return next();
+		}
 
 		if (assetSettings.asset_generation === 'all') {
-			if (req.query.key && allKeys.includes(req.query.key as string) === false)
-				throw new InvalidQueryException(`Key "${req.query.key}" isn't configured.`);
+			if (transformation.key && allKeys.includes(transformation.key as string) === false)
+				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
 			return next();
 		} else if (assetSettings.asset_generation === 'shortcut') {
-			if (allKeys.includes(req.query.key as string)) return next();
+			if (allKeys.includes(transformation.key as string)) return next();
 			throw new InvalidQueryException(
 				`Only configured shortcuts can be used in asset generation.`
 			);
 		} else {
-			if (req.query.key && systemKeys.includes(req.query.key as string)) return next();
+			if (transformation.key && systemKeys.includes(transformation.key as string))
+				return next();
 			throw new InvalidQueryException(
 				`Dynamic asset generation has been disabled for this project.`
 			);
@@ -71,9 +85,10 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const transformation = req.query.key
-			? res.locals.shortcuts.find((size) => size.key === req.query.key)
-			: req.query;
+		const transformation: Transformation = res.locals.transformation.key
+			? res.locals.shortcuts.find((size) => size.key === res.locals.transformation.key)
+			: res.locals.transformation;
+
 		const { stream, file } = await AssetsService.getAsset(req.params.pk, transformation);
 
 		res.setHeader('Content-Disposition', 'attachment; filename=' + file.filename_download);
