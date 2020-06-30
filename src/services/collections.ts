@@ -32,7 +32,7 @@ export const create = async (payload: any) => {
 		});
 	});
 
-	return await ItemsService.createItem('directus_collections', {
+	const collection = await ItemsService.createItem('directus_collections', {
 		collection: payload.collection,
 		hidden: payload.hidden || false,
 		single: payload.single || false,
@@ -40,6 +40,10 @@ export const create = async (payload: any) => {
 		note: payload.note || null,
 		translation: payload.translation || null,
 	});
+
+	/** @TODO insert all fields */
+
+	return collection;
 };
 
 export const readAll = async (query?: Query) => {
@@ -80,4 +84,17 @@ export const readOne = async (collection: string, query?: Query) => {
 		icon: collectionInfo?.icon || null,
 		translation: collectionInfo?.translation || null,
 	};
+};
+
+export const deleteCollection = async (collection: string) => {
+	await Promise.all([
+		database.schema.dropTable(collection),
+		ItemsService.deleteItem('directus_collections', collection),
+		database.delete().from('directus_fields').where({ collection }),
+		database
+			.delete()
+			.from('directus_relations')
+			.where({ collection_many: collection })
+			.orWhere({ collection_one: collection }),
+	]);
 };

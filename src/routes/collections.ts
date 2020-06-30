@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as CollectionsService from '../services/collections';
-import { schemaInspector } from '../database';
+import database, { schemaInspector } from '../database';
 import { InvalidPayloadException, CollectionNotFoundException } from '../exceptions';
 import Joi from '@hapi/joi';
 
@@ -55,6 +55,18 @@ router.get(
 
 		const data = await CollectionsService.readOne(req.params.collection, req.sanitizedQuery);
 		res.json({ data });
+	})
+);
+
+router.delete(
+	'/:collection',
+	asyncHandler(async (req, res) => {
+		if ((await schemaInspector.hasTable(req.params.collection)) === false) {
+			throw new CollectionNotFoundException(req.params.collection);
+		}
+
+		await CollectionsService.deleteCollection(req.params.collection);
+		res.end();
 	})
 );
 
