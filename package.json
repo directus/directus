@@ -40,6 +40,7 @@
     "@types/pino": "^6.3.0",
     "@types/sharp": "^0.25.0",
     "@types/uuid": "^8.0.0",
+    "@types/uuid-validate": "0.0.1",
     "copyfiles": "^2.3.0",
     "eslint": "^7.3.1",
     "eslint-plugin-prettier": "^3.1.4",
