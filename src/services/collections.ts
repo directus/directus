@@ -18,7 +18,10 @@ export const create = async (payload: any) => {
 			if (field.auto_increment) {
 				column = table.increments(field.field);
 			} else {
-				column = table.specificType(field.field, field.datatype);
+				const datatype = field.length
+					? `${field.datatype}(${field.length})`
+					: field.datatype;
+				column = table.specificType(field.field, datatype);
 
 				// increments() also sets primary key
 				if (field.primary_key) {
@@ -41,7 +44,7 @@ export const create = async (payload: any) => {
 		translation: payload.translation || null,
 	});
 
-	/** @TODO insert all fields */
+	/** @TODO insert all fields to directus_fields */
 
 	return collection;
 };
