@@ -1,4 +1,5 @@
 import { Transformation } from './types/assets';
+import { Collection } from './types/collection';
 
 export const SYSTEM_ASSET_WHITELIST: Transformation[] = [
 	{
