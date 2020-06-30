@@ -1,6 +1,8 @@
 import knex from 'knex';
 import logger from './logger';
 
+import SchemaInspector from '../../../knex-schema-inspector/lib/index';
+
 const log = logger.child({ module: 'sql' });
 
 const database = knex({
@@ -15,5 +17,7 @@ const database = knex({
 });
 
 database.on('query', (data) => log.trace(data.sql));
+
+export const schemaInspector = SchemaInspector(database);
 
 export default database;

@@ -10,7 +10,10 @@ export const createItem = async (
 	return readItem(collection, result[0], query);
 };
 
-export const readItems = async (collection: string, query: Query = {}) => {
+export const readItems = async <T = Record<string, any>>(
+	collection: string,
+	query: Query = {}
+): Promise<T[]> => {
 	const dbQuery = database.select(query?.fields || '*').from(collection);
 
 	if (query.sort) {

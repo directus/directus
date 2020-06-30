@@ -12,7 +12,7 @@ router.post(
 	'/',
 	useCollection('directus_webhooks'),
 	asyncHandler(async (req, res) => {
-		const item = await WebhooksService.createWebhook(req.body, req.query);
+		const item = await WebhooksService.createWebhook(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -33,7 +33,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await WebhooksService.readWebhooks(req.query);
+		const records = await WebhooksService.readWebhooks(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -44,7 +44,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await WebhooksService.readWebhook(req.params.pk, req.query);
+		const record = await WebhooksService.readWebhook(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -53,7 +53,11 @@ router.patch(
 	'/:pk',
 	useCollection('directus_webhooks'),
 	asyncHandler(async (req, res) => {
-		const item = await WebhooksService.updateWebhook(req.params.pk, req.body, req.query);
+		const item = await WebhooksService.updateWebhook(
+			req.params.pk,
+			req.body,
+			req.sanitizedQuery
+		);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.UPDATE,

@@ -44,7 +44,7 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.meta = sanitizeMeta(req.query.meta);
 	}
 
-	res.locals.query = query;
+	req.sanitizedQuery = query;
 	return next();
 };
 

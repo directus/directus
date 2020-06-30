@@ -11,6 +11,7 @@ declare global {
 			user?: string;
 			role?: string;
 			collection?: string;
+			sanitizedQuery?: Record<string, any>;
 		}
 	}
 }
