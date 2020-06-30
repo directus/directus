@@ -95,6 +95,7 @@
     "sharp": "^0.25.4",
     "sqlite3": "^4.2.0",
     "ts-node-dev": "^1.0.0-pre.49",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "uuid-validate": "0.0.3"
   }
 }
