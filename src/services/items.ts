@@ -6,7 +6,8 @@ export const createItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	const result = await database(collection).insert(data).returning('id');
+	const primaryKeyField = await schemaInspector.primary(collection);
+	const result = await database(collection).insert(data).returning(primaryKeyField);
 	return readItem(collection, result[0], query);
 };
 
