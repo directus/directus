@@ -51,7 +51,7 @@
     "resize-observer": "^1.0.0",
     "semver": "^7.3.2",
     "stylelint-config-prettier": "^8.0.2",
-    "tinymce": "^5.3.2",
+    "tinymce": "^5.4.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.18.2",
     "vue-router": "^3.3.4",
