@@ -1,4 +1,4 @@
-import database from '../database';
+import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 
 export const createItem = async (
@@ -70,7 +70,12 @@ export const readItem = async <T = any>(
 	pk: number | string,
 	query: Query = {}
 ): Promise<T> => {
-	return await database.select('*').from(collection).where({ id: pk }).first();
+	const primaryKeyField = await schemaInspector.primary(collection);
+	return await database
+		.select('*')
+		.from(collection)
+		.where({ [primaryKeyField]: pk })
+		.first();
 };
 
 export const updateItem = async (
@@ -79,10 +84,17 @@ export const updateItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	const result = await database(collection).update(data).where({ id: pk }).returning('id');
+	const primaryKeyField = await schemaInspector.primary(collection);
+	const result = await database(collection)
+		.update(data)
+		.where({ [primaryKeyField]: pk })
+		.returning('id');
 	return readItem(collection, result[0], query);
 };
 
 export const deleteItem = async (collection: string, pk: number | string) => {
-	return await database(collection).delete().where({ id: pk });
+	const primaryKeyField = await schemaInspector.primary(collection);
+	return await database(collection)
+		.delete()
+		.where({ [primaryKeyField]: pk });
 };

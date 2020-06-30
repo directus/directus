@@ -1,6 +1,6 @@
 import { schemaInspector } from '../database';
 import * as ItemsService from '../services/items';
-import { Table } from '../../../../knex-schema-inspector/lib/types/table';
+import { Table } from '../knex-schema-inspector/lib/types/table';
 import { Collection } from '../types/collection';
 import { Query } from '../types/query';
 

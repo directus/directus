@@ -84,7 +84,6 @@
     "icc": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
-    "knex-schema-inspector": "github:knex/knex-schema-inspector",
     "liquidjs": "^9.12.0",
     "lodash": "^4.17.15",
     "mssql": "^6.2.0",

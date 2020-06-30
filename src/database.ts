@@ -1,7 +1,7 @@
 import knex from 'knex';
 import logger from './logger';
 
-import SchemaInspector from '../../../knex-schema-inspector/lib/index';
+import SchemaInspector from './knex-schema-inspector/lib/index';
 
 const log = logger.child({ module: 'sql' });
 
