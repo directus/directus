@@ -1,6 +1,5 @@
 import database, { schemaInspector } from '../database';
 import * as ItemsService from '../services/items';
-import { Table } from '../knex-schema-inspector/lib/types/table';
 import { Collection } from '../types/collection';
 import { Query } from '../types/query';
 import { ColumnBuilder } from 'knex';
@@ -44,18 +43,31 @@ export const create = async (payload: any) => {
 		translation: payload.translation || null,
 	});
 
-	/** @TODO insert all fields to directus_fields */
+	/**
+	 * @TODO make this flexible and based on payload
+	 */
+	await database('directus_fields').insert(
+		payload.fields.map((field: any) => ({
+			collection: payload.collection,
+			field: field.field,
+			locked: false,
+			required: false,
+			readonly: false,
+			hidden_detail: false,
+			hidden_browse: false,
+		}))
+	);
 
 	return collection;
 };
 
 export const readAll = async (query?: Query) => {
 	const [tables, collections] = await Promise.all([
-		schemaInspector.tables(),
+		schemaInspector.tableInfo(),
 		ItemsService.readItems<Collection>('directus_collections', query),
 	]);
 
-	const data = (tables as Table[]).map((table) => {
+	const data = tables.map((table) => {
 		const collectionInfo = collections.find((collection) => {
 			return collection.collection === table.name;
 		});
@@ -75,7 +87,7 @@ export const readAll = async (query?: Query) => {
 
 export const readOne = async (collection: string, query?: Query) => {
 	const [table, collectionInfo] = await Promise.all([
-		schemaInspector.table(collection),
+		schemaInspector.tableInfo(collection),
 		ItemsService.readItem<Collection>('directus_collections', collection, query),
 	]);
 
