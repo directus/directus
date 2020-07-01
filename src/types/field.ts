@@ -1,4 +1,6 @@
-export type FieldInfo = {
+import { Column } from '../knex-schema-inspector/lib/types/column';
+
+export type System = {
 	id: number;
 	collection: string;
 	field: string;
@@ -15,4 +17,11 @@ export type FieldInfo = {
 	group: number | null;
 	note: string | null;
 	translation: null;
+};
+
+export type Field = {
+	collection: string;
+	field: string;
+	database: Column;
+	system: System | null;
 };
