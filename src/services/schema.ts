@@ -1,5 +1,7 @@
 import database from '../database';
 
+/** @TODO replace this with schema inspector */
+
 export const hasCollection = async (collection: string) => {
 	return await database.schema.hasTable(collection);
 };

@@ -1,11 +1,9 @@
 /**
- * # PayloadService
- *
  * Process a given payload for a collection to ensure the special fields (hash, uuid, date etc) are
  * handled correctly.
  */
 
-import { FieldInfo } from '../types/field';
+import { System } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
@@ -25,9 +23,10 @@ export const processValues = async (
 	payload: Record<string, any>
 ) => {
 	const processedPayload = clone(payload);
+
 	const specialFieldsInCollection = await database
 		.select('field', 'special')
-		.from('directus_fields')
+		.from<System>('directus_fields')
 		.where({ collection: collection })
 		.whereNotNull('special');
 
@@ -39,7 +38,7 @@ export const processValues = async (
 };
 
 async function processField(
-	field: FieldInfo,
+	field: Pick<System, 'field' | 'special'>,
 	payload: Record<string, any>,
 	operation: 'create' | 'update'
 ) {

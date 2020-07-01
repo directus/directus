@@ -1,4 +1,4 @@
-import database from '../database';
+import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 
 export const createItem = async (
@@ -6,11 +6,15 @@ export const createItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	const result = await database(collection).insert(data).returning('id');
+	const primaryKeyField = await schemaInspector.primary(collection);
+	const result = await database(collection).insert(data).returning(primaryKeyField);
 	return readItem(collection, result[0], query);
 };
 
-export const readItems = async (collection: string, query: Query = {}) => {
+export const readItems = async <T = Record<string, any>>(
+	collection: string,
+	query: Query = {}
+): Promise<T[]> => {
 	const dbQuery = database.select(query?.fields || '*').from(collection);
 
 	if (query.sort) {
@@ -62,12 +66,17 @@ export const readItems = async (collection: string, query: Query = {}) => {
 	return records;
 };
 
-export const readItem = async (collection: string, pk: number | string, query: Query = {}) => {
-	const dbQuery = database.select('*').from(collection).where({ id: pk });
-
-	const records = await dbQuery;
-
-	return records[0];
+export const readItem = async <T = any>(
+	collection: string,
+	pk: number | string,
+	query: Query = {}
+): Promise<T> => {
+	const primaryKeyField = await schemaInspector.primary(collection);
+	return await database
+		.select('*')
+		.from(collection)
+		.where({ [primaryKeyField]: pk })
+		.first();
 };
 
 export const updateItem = async (
@@ -76,10 +85,17 @@ export const updateItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
-	const result = await database(collection).update(data).where({ id: pk }).returning('id');
+	const primaryKeyField = await schemaInspector.primary(collection);
+	const result = await database(collection)
+		.update(data)
+		.where({ [primaryKeyField]: pk })
+		.returning('id');
 	return readItem(collection, result[0], query);
 };
 
 export const deleteItem = async (collection: string, pk: number | string) => {
-	return await database(collection).delete().where({ id: pk });
+	const primaryKeyField = await schemaInspector.primary(collection);
+	return await database(collection)
+		.delete()
+		.where({ [primaryKeyField]: pk });
 };

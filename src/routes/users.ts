@@ -37,15 +37,6 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const item = await UsersService.readUsers(res.locals.query);
 
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: item.id,
-			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
-		});
-
 		return res.json({ data: item });
 	})
 );
@@ -56,8 +47,8 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await UsersService.readUser(req.params.pk, res.locals.query);
-		return res.json({ data: record });
+		const items = await UsersService.readUser(req.params.pk, res.locals.query);
+		return res.json({ data: items });
 	})
 );
 
@@ -65,8 +56,18 @@ router.patch(
 	'/:pk',
 	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
-		const records = await UsersService.updateUser(req.params.pk, req.body, res.locals.query);
-		return res.json({ data: records });
+		const item = await UsersService.updateUser(req.params.pk, req.body, res.locals.query);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.UPDATE,
+			collection: req.collection,
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		return res.json({ data: item });
 	})
 );
 

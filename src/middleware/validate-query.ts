@@ -13,9 +13,9 @@ import { InvalidQueryException } from '../exceptions';
 
 const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.collection) return next();
-	if (!req.query) return next();
+	if (!req.sanitizedQuery) return next();
 
-	const query: Query = req.query;
+	const query: Query = req.sanitizedQuery;
 
 	await Promise.all([
 		validateParams(req.params.collection, query),

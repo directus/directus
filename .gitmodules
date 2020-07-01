@@ -1,0 +1,3 @@
+[submodule "src/knex-schema-inspector"]
+	path = src/knex-schema-inspector
+	url = git@github.com:knex/knex-schema-inspector.git

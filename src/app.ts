@@ -13,8 +13,10 @@ import authenticate from './middleware/authenticate';
 import activityRouter from './routes/activity';
 import assetsRouter from './routes/assets';
 import authRouter from './routes/auth';
+import collectionsRouter from './routes/collections';
 import collectionPresetsRouter from './routes/collection-presets';
 import extensionsRouter from './routes/extensions';
+import fieldsRouter from './routes/fields';
 import filesRouter from './routes/files';
 import foldersRouter from './routes/folders';
 import itemsRouter from './routes/items';
@@ -39,8 +41,10 @@ const app = express()
 	.use('/activity', activityRouter)
 	.use('/assets', assetsRouter)
 	.use('/auth', authRouter)
+	.use('/collections', collectionsRouter)
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/extensions', extensionsRouter)
+	.use('/fields', fieldsRouter)
 	.use('/files', filesRouter)
 	.use('/folders', foldersRouter)
 	.use('/items', itemsRouter)
