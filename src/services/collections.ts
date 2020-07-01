@@ -11,6 +11,8 @@ export const create = async (payload: any) => {
 			table.comment(payload.note);
 		}
 
+		/** @todo move this into fields service */
+
 		payload.fields?.forEach((field: any) => {
 			let column: ColumnBuilder;
 
