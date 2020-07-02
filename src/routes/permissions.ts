@@ -12,7 +12,7 @@ router.post(
 	'/',
 	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
-		const item = await PermissionsService.createPermission(req.body, res.locals.query);
+		const item = await PermissionsService.createPermission(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -33,7 +33,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const item = await PermissionsService.readPermissions(res.locals.query);
+		const item = await PermissionsService.readPermissions(req.sanitizedQuery);
 		return res.json({ data: item });
 	})
 );
@@ -44,7 +44,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await PermissionsService.readPermission(req.params.pk, res.locals.query);
+		const record = await PermissionsService.readPermission(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -56,7 +56,7 @@ router.patch(
 		const item = await PermissionsService.updatePermission(
 			req.params.pk,
 			req.body,
-			res.locals.query
+			req.sanitizedQuery
 		);
 
 		ActivityService.createActivity({

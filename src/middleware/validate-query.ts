@@ -38,13 +38,15 @@ async function validateFields(collection: string, query: Query) {
 	const fieldsToCheck = new Set<string>();
 
 	if (query.fields) {
-		query.fields.forEach((field) => fieldsToCheck.add(field));
+		/** @todo support relationships in here */
+		// query.fields.forEach((field) => fieldsToCheck.add(field));
 	}
 
 	if (query.sort) {
 		query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
 	}
 
+	/** @todo swap with more efficient schemaInspector version */
 	const fieldsExist = await hasFields(collection, Array.from(fieldsToCheck));
 
 	Array.from(fieldsToCheck).forEach((field, index) => {

@@ -19,7 +19,7 @@ export type Sort = {
 export type Filter = {
 	column: string;
 	operator: FilterOperator;
-	value: null | string | number;
+	value: null | string | number | (string | number)[];
 };
 
 export type FilterOperator = 'eq' | 'neq' | 'in' | 'nin' | 'null' | 'nnull';

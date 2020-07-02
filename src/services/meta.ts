@@ -2,7 +2,7 @@ import { Query } from '../types/query';
 import database from '../database';
 
 export const getMetaForQuery = async (collection: string, query: Query) => {
-	if (!query.meta) return;
+	if (!query || !query.meta) return;
 
 	const results = await Promise.all(
 		query.meta.map((metaVal) => {

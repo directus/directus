@@ -13,7 +13,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await readActivities(res.locals.query);
+		const records = await readActivities(req.sanitizedQuery);
 		return res.json({
 			data: records,
 		});
@@ -26,7 +26,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await readActivity(req.params.pk, res.locals.query);
+		const record = await readActivity(req.params.pk, req.sanitizedQuery);
 
 		return res.json({
 			data: record,

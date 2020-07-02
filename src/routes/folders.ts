@@ -14,7 +14,7 @@ router.post(
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
 		const payload = await PayloadService.processValues('create', req.collection, req.body);
-		const record = await FoldersService.createFolder(payload, res.locals.query);
+		const record = await FoldersService.createFolder(payload, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -35,7 +35,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FoldersService.readFolders(res.locals.query);
+		const records = await FoldersService.readFolders(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -46,7 +46,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FoldersService.readFolder(req.params.pk, res.locals.query);
+		const record = await FoldersService.readFolder(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -57,7 +57,11 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const payload = await PayloadService.processValues('create', req.collection, req.body);
 
-		const record = await FoldersService.updateFolder(req.params.pk, payload, res.locals.query);
+		const record = await FoldersService.updateFolder(
+			req.params.pk,
+			payload,
+			req.sanitizedQuery
+		);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.UPDATE,

@@ -105,7 +105,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(res.locals.query);
+		const records = await FilesService.readFiles(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -116,7 +116,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FilesService.readFile(req.params.pk, res.locals.query);
+		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );

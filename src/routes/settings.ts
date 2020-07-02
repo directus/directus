@@ -13,7 +13,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await SettingsService.readSettings(1, res.locals.query);
+		const records = await SettingsService.readSettings(1, req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -25,7 +25,7 @@ router.patch(
 		const records = await SettingsService.updateSettings(
 			req.params.pk /** @TODO Singleton */,
 			req.body,
-			res.locals.query
+			req.sanitizedQuery
 		);
 		return res.json({ data: records });
 	})

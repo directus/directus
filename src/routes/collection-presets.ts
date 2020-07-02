@@ -14,7 +14,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const record = await CollectionPresetsService.createCollectionPreset(
 			req.body,
-			res.locals.query
+			req.sanitizedQuery
 		);
 
 		ActivityService.createActivity({
@@ -36,7 +36,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await CollectionPresetsService.readCollectionPresets(res.locals.query);
+		const records = await CollectionPresetsService.readCollectionPresets(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -49,7 +49,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await CollectionPresetsService.readCollectionPreset(
 			req.params.pk,
-			res.locals.query
+			req.sanitizedQuery
 		);
 		return res.json({ data: record });
 	})
@@ -62,7 +62,7 @@ router.patch(
 		const record = await CollectionPresetsService.updateCollectionPreset(
 			req.params.pk,
 			req.body,
-			res.locals.query
+			req.sanitizedQuery
 		);
 
 		ActivityService.createActivity({
