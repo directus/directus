@@ -1,5 +1,15 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
+import { uniq } from 'lodash';
+
+export const fieldsInCollection = async (collection: string) => {
+	const [fields, columns] = await Promise.all([
+		database.select('field').from('directus_fields').where({ collection }),
+		schemaInspector.columns(collection),
+	]);
+
+	return uniq([...fields.map(({ field }) => field), ...columns.map(({ column }) => column)]);
+};
 
 export const readAll = async (collection?: string) => {
 	const fieldsQuery = database.select('*').from('directus_fields');

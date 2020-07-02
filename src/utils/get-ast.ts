@@ -6,6 +6,7 @@ import { Query } from '../types/query';
 import { Relation } from '../types/relation';
 import { AST, NestedCollectionAST, FieldAST } from '../types/ast';
 import database from '../database';
+import * as FieldsService from '../services/fields';
 
 export default async function getAST(collection: string, query: Query): Promise<AST> {
 	const ast: AST = {
@@ -40,14 +41,33 @@ export default async function getAST(collection: string, query: Query): Promise<
 
 	ast.children = await parseFields(collection, query.fields);
 
-	console.log(JSON.stringify(ast, null, 2));
-
 	return ast;
 
 	async function parseFields(parentCollection: string, fields: string[]) {
 		const children: (NestedCollectionAST | FieldAST)[] = [];
 
 		const relationalStructure: Record<string, string[]> = {};
+
+		// Swap *.* case for *,<relational-field>.*
+		for (let i = 0; i < fields.length; i++) {
+			const fieldKey = fields[i];
+
+			if (fieldKey.includes('.') === false) continue;
+
+			const parts = fieldKey.split('.');
+
+			if (parts[0] === '*') {
+				const availableFields = await FieldsService.fieldsInCollection(parentCollection);
+				fields.splice(
+					i,
+					1,
+					...availableFields
+						.filter((field) => !!getRelation(parentCollection, field))
+						.map((field) => `${field}.${parts.slice(1).join('.')}`)
+				);
+				fields.push('*');
+			}
+		}
 
 		for (const field of fields) {
 			if (field.includes('.') === false) {
