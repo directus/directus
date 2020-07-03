@@ -117,6 +117,8 @@ export default async function getAST(collection: string, query: Query): Promise<
 	function getRelatedCollection(collection: string, field: string) {
 		const relation = getRelation(collection, field);
 
+		if (!relation) return null;
+
 		if (relation.collection_many === collection && relation.field_many === field) {
 			return relation.collection_one;
 		}

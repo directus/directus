@@ -3,133 +3,6 @@ import { uniq } from 'lodash';
 import database from './index';
 import { Query } from '../types/query';
 
-// const testAST: AST = {
-// 	type: 'collection',
-// 	name: 'articles',
-// 	query: {},
-// 	children: [
-// 		{
-// 			type: 'field',
-// 			name: 'id'
-// 		},
-// 		{
-// 			type: 'field',
-// 			name: 'title',
-// 		},
-// 		{
-// 			type: 'collection',
-// 			name: 'authors',
-// 			fieldKey: 'author_id',
-// 			parentKey: 'id',
-// 			relation: {
-// 				id: 2,
-// 				collection_many: 'articles',
-// 				field_many: 'author_id',
-// 				collection_one: 'authors',
-// 				primary_one: 'id',
-// 				field_one: null
-// 			},
-// 			query: {},
-// 			children: [
-// 				{
-// 					type: 'field',
-// 					name: 'id'
-// 				},
-// 				{
-// 					type: 'field',
-// 					name: 'name'
-// 				},
-// 				{
-// 					type: 'collection',
-// 					name: 'movies',
-// 					fieldKey: 'movies',
-// 					parentKey: 'id',
-// 					relation: {
-// 						id: 3,
-// 						collection_many: 'movies',
-// 						field_many: 'author_id',
-// 						collection_one: 'authors',
-// 						primary_one: 'id',
-// 						field_one: 'movies'
-// 					},
-// 					query: {},
-// 					children: [
-// 						{
-// 							type: 'field',
-// 							name: 'id',
-// 						},
-// 						{
-// 							type: 'field',
-// 							name: 'title'
-// 						},
-// 						{
-// 							type: 'collection',
-// 							name: 'authors',
-// 							fieldKey: 'author_id',
-// 							parentKey: 'id',
-// 							relation: {
-// 								id: 4,
-// 								collection_many: 'movies',
-// 								field_many: 'author_id',
-// 								collection_one: 'authors',
-// 								primary_one: 'id',
-// 								field_one: 'movies',
-// 							},
-// 							query: {},
-// 							children: [
-// 								{
-// 									type: 'field',
-// 									name: 'id',
-// 								},
-// 								{
-// 									type: 'field',
-// 									name: 'name',
-// 								},
-// 								{
-// 									type: 'collection',
-// 									name: 'movies',
-// 									fieldKey: 'movies',
-// 									parentKey: 'id',
-// 									relation: {
-// 										id: 6,
-// 										collection_many: 'movies',
-// 										field_many: 'author_id',
-// 										collection_one: 'authors',
-// 										primary_one: 'id',
-// 										field_one: 'movies'
-// 									},
-// 									query: {
-// 										sort: [
-// 											{
-// 												column: 'title',
-// 												order: 'asc'
-// 											}
-// 										]
-// 									},
-// 									children: [
-// 										{
-// 											type: 'field',
-// 											name: 'id'
-// 										},
-// 										{
-// 											type: 'field',
-// 											name: 'title'
-// 										},
-// 										{
-// 											type: 'field',
-// 											name: 'author_id'
-// 										}
-// 									]
-// 								}
-// 							]
-// 						}
-// 					]
-// 				}
-// 			]
-// 		}
-// 	]
-// }
-
 export default async function runAST(ast: AST, query = ast.query) {
 	const toplevelFields: string[] = [];
 	const nestedCollections: NestedCollectionAST[] = [];
@@ -210,7 +83,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 					{
 						column: 'id',
 						operator: 'in',
-						value: uniq(results.map((res) => res[batch.relation.field_many])),
+						// filter removes null / undefined
+						value: uniq(results.map((res) => res[batch.relation.field_many])).filter(
+							(id) => id
+						),
 					},
 				],
 			};
@@ -222,7 +98,8 @@ export default async function runAST(ast: AST, query = ast.query) {
 					{
 						column: batch.relation.field_many,
 						operator: 'in',
-						value: uniq(results.map((res) => res[batch.parentKey])),
+						// filter removes null / undefined
+						value: uniq(results.map((res) => res[batch.parentKey])).filter((id) => id),
 					},
 				],
 			};
@@ -234,9 +111,12 @@ export default async function runAST(ast: AST, query = ast.query) {
 			if (m2o) {
 				return {
 					...record,
-					[batch.fieldKey]: nestedResults.find((nestedRecord) => {
-						return nestedRecord[batch.relation.primary_one] === record[batch.fieldKey];
-					}),
+					[batch.fieldKey]:
+						nestedResults.find((nestedRecord) => {
+							return (
+								nestedRecord[batch.relation.primary_one] === record[batch.fieldKey]
+							);
+						}) || null,
 				};
 			}
 

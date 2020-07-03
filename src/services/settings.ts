@@ -2,8 +2,12 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 
 export const readSettings = async (pk: string | number, query: Query) => {
-	/** @TODO only fetch the one item that exists, or default to default values if it doesn't */
-	return await ItemsService.readItem('directus_settings', pk, query);
+	const settings = await ItemsService.readItems('directus_settings', {
+		...query,
+		limit: 1,
+	});
+
+	return settings[0];
 };
 
 export const updateSettings = async (

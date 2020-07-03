@@ -18,8 +18,8 @@ const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 	const query: Query = req.sanitizedQuery;
 
 	await Promise.all([
-		validateParams(req.params.collection, query),
-		validateFields(req.params.collection, query),
+		validateParams(req.collection, query),
+		validateFields(req.collection, query),
 		validateMeta(query),
 	]);
 

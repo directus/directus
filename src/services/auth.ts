@@ -21,7 +21,7 @@ export const authenticate = async (email: string, password?: string) => {
 	 * email to leak anywhere else.. We might have to make a dedicated "copy" of this function to
 	 * signal the difference
 	 */
-	if (password !== undefined && (await argon2.verify(password, user.password)) === false) {
+	if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
 		throw new InvalidCredentialsException();
 	}
 

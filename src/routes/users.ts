@@ -4,7 +4,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
 import Joi from '@hapi/joi';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import * as ActivityService from '../services/activity';
 
@@ -42,6 +42,21 @@ router.get(
 );
 
 router.get(
+	'/me',
+	useCollection('directus_users'),
+	sanitizeQuery,
+	validateQuery,
+	asyncHandler(async (req, res) => {
+		if (!req.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		const item = await UsersService.readUser(req.user, req.sanitizedQuery);
+		return res.json({ data: item });
+	})
+);
+
+router.get(
 	'/:pk',
 	useCollection('directus_users'),
 	sanitizeQuery,
@@ -49,6 +64,31 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: items });
+	})
+);
+
+router.patch(
+	'/me',
+	useCollection('directus_users'),
+	sanitizeQuery,
+	validateQuery,
+	asyncHandler(async (req, res) => {
+		if (!req.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		const item = await UsersService.updateUser(req.user, req.body, req.sanitizedQuery);
+
+		ActivityService.createActivity({
+			action: ActivityService.Action.UPDATE,
+			collection: req.collection,
+			item: item.id,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+			action_by: req.user,
+		});
+
+		return res.json({ data: item });
 	})
 );
 

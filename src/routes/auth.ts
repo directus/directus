@@ -14,6 +14,7 @@ const router = Router();
 const loginSchema = Joi.object({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
+	mode: Joi.string().valid('cookie', 'json'),
 });
 
 router.post(

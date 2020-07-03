@@ -32,7 +32,7 @@ export const readItem = async <T = any>(
 	query = {
 		...query,
 		filter: [
-			...query.filter,
+			...(query.filter || []),
 			{
 				column: primaryKeyField,
 				operator: 'eq',
