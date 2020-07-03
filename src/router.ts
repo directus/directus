@@ -1,49 +1,35 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
-import { useProjectsStore } from '@/stores/projects';
 import LoginRoute from '@/routes/login';
 import InstallRoute from '@/routes/install';
 import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
-import ProjectChooserRoute from '@/routes/project-chooser';
 import { checkAuth } from '@/auth';
-import { hydrate, dehydrate } from '@/hydrate';
+import { hydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 
 import getRootPath from '@/utils/get-root-path';
 
-export const onBeforeEnterProjectChooser: NavigationGuard = (to, from, next) => {
-	const projectsStore = useProjectsStore();
-	projectsStore.state.currentProjectKey = null;
-	next();
-};
-
 export const defaultRoutes: RouteConfig[] = [
 	{
-		name: 'project-chooser',
 		path: '/',
-		component: ProjectChooserRoute,
-		meta: {
-			public: true,
-		},
-		beforeEnter: onBeforeEnterProjectChooser,
+		redirect: '/login',
 	},
 	{
 		name: 'install',
 		path: '/install',
 		component: InstallRoute,
+		/**
+		 * @todo redirect to /login if project is already installed
+		 */
 		meta: {
 			public: true,
 		},
 	},
 	{
-		path: '/:project',
-		redirect: '/:project/login',
-	},
-	{
 		name: 'login',
-		path: '/:project/login',
+		path: '/login',
 		component: LoginRoute,
 		props: (route) => ({
 			ssoErrorCode: route.query.error ? route.query.code : null,
@@ -54,7 +40,7 @@ export const defaultRoutes: RouteConfig[] = [
 	},
 	{
 		name: 'reset-password',
-		path: '/:project/reset-password',
+		path: '/reset-password',
 		component: ResetPasswordRoute,
 		meta: {
 			public: true,
@@ -62,7 +48,7 @@ export const defaultRoutes: RouteConfig[] = [
 	},
 	{
 		name: 'logout',
-		path: '/:project/logout',
+		path: '/logout',
 		component: LogoutRoute,
 		meta: {
 			public: true,
@@ -82,7 +68,7 @@ export const defaultRoutes: RouteConfig[] = [
 	 */
 	{
 		name: 'private-404',
-		path: '/:project/*',
+		path: '/*',
 		component: PrivateNotFoundRoute,
 	},
 ];
@@ -106,36 +92,36 @@ export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfi
 }
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
-	const projectsStore = useProjectsStore();
 	const appStore = useAppStore();
 
 	// Make sure the projects store is aware of all projects that exist
-	if (projectsStore.state.projects === null) {
-		await projectsStore.getProjects();
-	}
+	// if (projectsStore.state.projects === null) {
+	// 	await projectsStore.getProjects();
+	// }
 
 	// When there aren't any projects, we should redirect to the install page to force the
 	// user to setup a project.
-	if (projectsStore.state.needsInstall === true && to.path !== '/install') {
-		return next('/install');
-	}
+	/** @todo base this on another flag*/
+	// if (projectsStore.state.needsInstall === true && to.path !== '/install') {
+	// 	return next('/install');
+	// }
 
 	// Keep the projects store currentProjectKey in sync with the route
 	// If we switch projects to a public route, we don't need the store to be hyrdated
-	if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
-		// If the store is hydrated for the current project, make sure to dehydrate it
-		if (to.meta?.public !== true && appStore.state.hydrated === true) {
-			appStore.state.hydrating = true;
-			await dehydrate();
-		}
+	// if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
+	// 	// If the store is hydrated for the current project, make sure to dehydrate it
+	// 	if (to.meta?.public !== true && appStore.state.hydrated === true) {
+	// 		appStore.state.hydrating = true;
+	// 		await dehydrate();
+	// 	}
 
-		const projectExists = await projectsStore.setCurrentProject(to.params.project);
+	// 	const projectExists = await projectsStore.setCurrentProject(to.params.project);
 
-		// If the project you're trying to access doesn't exist, redirect to `/`
-		if (to.path !== '/' && projectExists === false) {
-			return next('/');
-		}
-	}
+	// 	// If the project you're trying to access doesn't exist, redirect to `/`
+	// 	if (to.path !== '/' && projectExists === false) {
+	// 		return next('/');
+	// 	}
+	// }
 
 	// The store can only be hydrated if you're an authenticated user. If the store is hydrated, we
 	// can safely assume you're logged in
@@ -147,7 +133,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 			await hydrate();
 		} else if (to.meta?.public !== true) {
 			appStore.state.hydrating = false;
-			return next(`/${to.params.project}/login`);
+			return next(`/login`);
 		}
 	}
 
@@ -170,12 +156,3 @@ router.beforeEach(onBeforeEach);
 router.afterEach(onAfterEach);
 
 export default router;
-
-/**
- * @TODO
- * We'll have to add a "resetRouter" function that will unregister all customly registered routes
- * on logout. This will make sure you don't accidentally still have the route from a custom module
- * for another given project.
- *
- * See https://github.com/vuejs/vue-router/issues/1234
- */
