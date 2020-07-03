@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('numeric'),
 	icon: 'dialpad',
 	component: InterfaceNumeric,
-	types: ['integer', 'decimal'],
+	types: ['integer', 'decimal', 'float'],
 	options: [
 		{
 			field: 'placeholder',

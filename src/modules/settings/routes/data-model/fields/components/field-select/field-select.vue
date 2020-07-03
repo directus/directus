@@ -128,7 +128,7 @@ export default defineComponent({
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.find((inter) => inter.id === props.field.interface)?.name;
+			return interfaces.find((inter) => inter.id === props.field.system.interface)?.name;
 		});
 
 		return {
@@ -194,8 +194,8 @@ export default defineComponent({
 					collection: duplicateTo.value,
 				};
 
-				delete newField.id;
-				delete newField.sort;
+				delete newField.system.id;
+				delete newField.system.sort;
 				delete newField.name;
 
 				duplicating.value = true;

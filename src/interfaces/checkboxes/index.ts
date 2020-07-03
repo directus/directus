@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('checkboxes'),
 	icon: 'radio_button_checked',
 	component: InterfaceCheckboxes,
-	types: ['array'],
+	types: ['json'],
 	options: [
 		{
 			field: 'choices',

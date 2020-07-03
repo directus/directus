@@ -190,7 +190,7 @@ export default defineComponent({
 		},
 		detailRoute: {
 			type: String,
-			default: `/{{project}}/collections/{{collection}}/{{primaryKey}}`,
+			default: `/collections/{{collection}}/{{primaryKey}}`,
 		},
 		file: {
 			type: Object as PropType<File>,
@@ -219,11 +219,11 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.hidden_browse === false)
+			fieldsInCollection.value.filter((field) => field.system.hidden_browse !== true)
 		);
 
 		const fileFields = computed(() => {
-			return [...availableFields.value.filter((field) => field.type === 'file')];
+			return [...availableFields.value.filter((field) => field.system.special === 'file')];
 		});
 
 		const { size, icon, imageSource, title, subtitle, imageFit } = useViewOptions();

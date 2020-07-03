@@ -217,17 +217,19 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeyField() {
-			const field: Partial<Field> = {
-				auto_increment: true,
+			const field: DeepPartial<Field> = {
 				field: primaryKeyFieldName.value,
-				hidden_browse: false,
-				hidden_detail: false,
-				interface: 'numeric',
-				length: 15,
-				primary_key: true,
-				type: 'integer',
-				datatype: 'INT',
-				readonly: true,
+				system: {
+					hidden_browse: false,
+					hidden_detail: false,
+					interface: 'numeric',
+					readonly: true,
+				},
+				database: {
+					has_auto_increment: true,
+					is_primary_key: true,
+					type: 'INT',
+				},
 			};
 
 			if (primaryKeyFieldType.value === 'uuid') {
@@ -256,127 +258,150 @@ export default defineComponent({
 		}
 
 		function getSystemFields() {
-			const fields: Partial<Field>[] = [];
+			const fields: DeepPartial<Field>[] = [];
 
 			if (systemFields[0].enabled === true) {
 				fields.push({
-					type: 'status',
-					datatype: 'VARCHAR',
-					length: 20,
 					field: systemFields[0].name,
-					interface: 'status',
-					default_value: 'draft',
-					width: 'full',
-					required: true,
-					options: {
-						status_mapping: {
-							published: {
-								name: 'Published',
-								value: 'published',
-								text_color: 'white',
-								background_color: 'accent',
-								browse_subdued: false,
-								browse_badge: true,
-								soft_delete: false,
-								published: true,
-								required_fields: true,
-							},
-							draft: {
-								name: 'Draft',
-								value: 'draft',
-								text_color: 'white',
-								background_color: 'blue-grey-100',
-								browse_subdued: true,
-								browse_badge: true,
-								soft_delete: false,
-								published: false,
-								required_fields: false,
-							},
-							deleted: {
-								name: 'Deleted',
-								value: 'deleted',
-								text_color: 'white',
-								background_color: 'red',
-								browse_subdued: true,
-								browse_badge: true,
-								soft_delete: true,
-								published: false,
-								required_fields: false,
+					system: {
+						width: 'full',
+						required: true,
+						options: {
+							status_mapping: {
+								published: {
+									name: 'Published',
+									value: 'published',
+									text_color: 'white',
+									background_color: 'accent',
+									browse_subdued: false,
+									browse_badge: true,
+									soft_delete: false,
+									published: true,
+									required_fields: true,
+								},
+								draft: {
+									name: 'Draft',
+									value: 'draft',
+									text_color: 'white',
+									background_color: 'blue-grey-100',
+									browse_subdued: true,
+									browse_badge: true,
+									soft_delete: false,
+									published: false,
+									required_fields: false,
+								},
+								deleted: {
+									name: 'Deleted',
+									value: 'deleted',
+									text_color: 'white',
+									background_color: 'red',
+									browse_subdued: true,
+									browse_badge: true,
+									soft_delete: true,
+									published: false,
+									required_fields: false,
+								},
 							},
 						},
+						special: 'status',
+						interface: 'status',
+					},
+					database: {
+						type: 'VARCHAR',
+						default_value: 'draft',
 					},
 				});
 			}
 
 			if (systemFields[1].enabled === true) {
 				fields.push({
-					type: 'sort',
-					datatype: 'INT',
 					field: systemFields[1].name,
-					interface: 'sort',
-					hidden_detail: true,
-					hidden_browse: true,
-					width: 'full',
+					system: {
+						interface: 'sort',
+						hidden_detail: true,
+						hidden_browse: true,
+						width: 'full',
+						special: 'sort',
+					},
+					database: {
+						type: 'INT',
+					},
 				});
 			}
 
 			if (systemFields[2].enabled === true) {
 				fields.push({
-					type: 'user_created',
-					datatype: 'INT',
 					field: systemFields[2].name,
-					interface: 'owner',
-					options: {
-						template: '{{first_name}} {{last_name}}',
-						display: 'both',
+					system: {
+						special: 'user_created',
+						interface: 'owner',
+						options: {
+							template: '{{first_name}} {{last_name}}',
+							display: 'both',
+						},
+						readonly: true,
+						hidden_detail: true,
+						hidden_browse: true,
+						width: 'full',
 					},
-					readonly: true,
-					hidden_detail: true,
-					hidden_browse: true,
-					width: 'full',
+					database: {
+						type: 'INT' /** @todo make these vendor based */,
+					},
 				});
 			}
 
 			if (systemFields[3].enabled === true) {
 				fields.push({
-					type: 'datetime_created',
-					datatype: 'DATETIME',
 					field: systemFields[3].name,
-					interface: 'datetime-created',
-					readonly: true,
-					hidden_detail: true,
-					hidden_browse: true,
-					width: 'full',
+					system: {
+						special: 'datetime_created',
+						interface: 'datetime-created',
+						readonly: true,
+						hidden_detail: true,
+						hidden_browse: true,
+						width: 'full',
+					},
+					database: {
+						type: 'DATETIME',
+					},
 				});
 			}
 
 			if (systemFields[4].enabled === true) {
 				fields.push({
-					type: 'user_updated',
-					datatype: 'INT',
 					field: systemFields[4].name,
-					interface: 'user-updated',
-					options: {
-						template: '{{first_name}} {{last_name}}',
-						display: 'both',
+					system: {
+						special: 'user_updated',
+						interface: 'user-updated',
+						options: {
+							template: '{{first_name}} {{last_name}}',
+							display: 'both',
+						},
+						readonly: true,
+						hidden_detail: true,
+						hidden_browse: true,
+						width: 'full',
 					},
-					readonly: true,
-					hidden_detail: true,
-					hidden_browse: true,
-					width: 'full',
+					database: {
+						type: 'INT',
+					},
 				});
 			}
 
 			if (systemFields[5].enabled === true) {
 				fields.push({
-					type: 'datetime_updated',
-					datatype: 'DATETIME',
 					field: systemFields[5].name,
-					interface: 'datetime-updated',
-					readonly: true,
-					hidden_detail: true,
-					hidden_browse: true,
-					width: 'full',
+					system: {
+						special: 'datetime_updated',
+						interface: 'datetime-updated',
+						readonly: true,
+						hidden_detail: true,
+						hidden_browse: true,
+						width: 'full',
+					},
+					database: {
+						type: 'DATETIME',
+					},
 				});
 			}
 

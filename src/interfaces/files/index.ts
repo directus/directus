@@ -6,6 +6,6 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('files'),
 	icon: 'note_add',
 	component: InterfaceFiles,
-	types: ['files'],
+	types: ['alias'],
 	options: [],
 }));

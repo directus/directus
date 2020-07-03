@@ -1,9 +1,9 @@
-import { LocalType } from '@/stores/fields/types';
+import { Type } from '@/stores/fields/types';
 
 /**
  * Typemap graciously provided by @gpetrov
  */
-const localTypeMap: Record<string, { type: LocalType; useTz?: boolean }> = {
+const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	// Shared
 	boolean: { type: 'boolean' },
 	tinyint: { type: 'boolean' },
@@ -47,7 +47,7 @@ const localTypeMap: Record<string, { type: LocalType; useTz?: boolean }> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'datetime', useTz: true },
+	datetimeoffset: { type: 'datetime', useTimezone: true },
 	datetime2: { type: 'datetime' },
 	smalldatetime: { type: 'datetime' },
 	nchar: { type: 'text' },
@@ -55,6 +55,8 @@ const localTypeMap: Record<string, { type: LocalType; useTz?: boolean }> = {
 	varbinary: { type: 'binary' },
 
 	// Postgres
+	json: { type: 'json' },
+	uuid: { type: 'string' },
 	int2: { type: 'integer' },
 	serial4: { type: 'integer' },
 	int4: { type: 'integer' },
@@ -67,16 +69,16 @@ const localTypeMap: Record<string, { type: LocalType; useTz?: boolean }> = {
 	_varchar: { type: 'string' },
 	bpchar: { type: 'string' },
 	timestamptz: { type: 'timestamp' },
-	'timestamp with time zone': { type: 'timestamp', useTz: true },
+	'timestamp with time zone': { type: 'timestamp', useTimezone: true },
 	'timestamp without thime zone': { type: 'timestamp' },
 	timetz: { type: 'time' },
-	'time with time zone': { type: 'time', useTz: true },
+	'time with time zone': { type: 'time', useTimezone: true },
 	'time without time zone': { type: 'time' },
 	float4: { type: 'float' },
 	float8: { type: 'float' },
 };
 
-export default function getLocalType(databaseType: string) {
+export default function getLocalType(databaseType: string): Type {
 	const type = localTypeMap[databaseType];
 
 	if (type) {

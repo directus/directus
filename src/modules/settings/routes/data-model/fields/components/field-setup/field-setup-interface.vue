@@ -71,7 +71,7 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.find((inter) => inter.id === props.value.interface) || null;
+			return interfaces.find((inter) => inter.id === props.value.system.interface) || null;
 		});
 
 		return { emitValue, items, selectedInterface, setInterface };

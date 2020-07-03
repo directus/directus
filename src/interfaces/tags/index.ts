@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('tags'),
 	icon: 'local_offer',
 	component: InterfaceTags,
-	types: ['array'],
+	types: ['json'],
 	options: [
 		{
 			field: 'placeholder',

@@ -160,7 +160,7 @@ const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(to.params.collection);
 
-		const item = await api.get(`/${to.params.project}/items/${to.params.collection}`, {
+		const item = await api.get(`/items/${to.params.collection}`, {
 			params: {
 				limit: 1,
 				fields: primaryKeyField.field,
@@ -170,7 +170,7 @@ const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
 
 		const primaryKey = item.data.data[primaryKeyField.field];
 
-		return next(`/${to.params.project}/collections/${to.params.collection}/${primaryKey}`);
+		return next(`/collections/${to.params.collection}/${primaryKey}`);
 	}
 
 	return next();

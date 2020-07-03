@@ -6,6 +6,6 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('user'),
 	icon: 'person',
 	component: InterfaceUser,
-	types: ['user', 'user_created', 'user_updated'],
+	types: ['integer', 'bigInteger', 'string', 'text'],
 	options: [],
 }));

@@ -13,11 +13,11 @@ export default function useValidation(field: Ref<Field>, localType: Ref<LocalTyp
 	});
 
 	const interfaceComplete = computed<boolean>(() => {
-		return notEmpty(field.value.interface);
+		return notEmpty(field.value.system.interface);
 	});
 
 	const displayComplete = computed<boolean>(() => {
-		return notEmpty(field.value.display);
+		return notEmpty(field.value.system.display);
 	});
 
 	const schemaComplete = computed<boolean>(() => {

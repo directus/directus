@@ -4,7 +4,7 @@ import DisplayImage from './image.vue';
 export default defineDisplay(({ i18n }) => ({
 	id: 'image',
 	name: i18n.t('image'),
-	types: ['file'],
+	types: ['string'],
 	icon: 'insert_photo',
 	handler: DisplayImage,
 	options: [

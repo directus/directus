@@ -4,7 +4,7 @@ import DisplayTags from './tags.vue';
 export default defineDisplay(({ i18n }) => ({
 	id: 'tags',
 	name: i18n.t('tags'),
-	types: ['array'],
+	types: ['json'],
 	icon: 'label',
 	handler: DisplayTags,
 	options: [

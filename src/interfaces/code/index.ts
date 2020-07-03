@@ -15,7 +15,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('code'),
 	icon: 'code',
 	component: InterfaceCode,
-	types: ['string', 'json', 'array'],
+	types: ['string', 'json', 'text'],
 	options: [
 		{
 			field: 'template',

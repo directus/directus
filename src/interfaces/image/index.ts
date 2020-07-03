@@ -6,6 +6,6 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('image'),
 	icon: 'insert_photo',
 	component: InterfaceImage,
-	types: ['file'],
+	types: ['string'],
 	options: [],
 }));

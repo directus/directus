@@ -69,7 +69,7 @@ export default defineComponent({
 		});
 
 		const selectedDisplay = computed(() => {
-			return displays.find((inter) => inter.id === props.value.display) || null;
+			return displays.find((inter) => inter.id === props.value.system.display) || null;
 		});
 
 		return { emitValue, items, selectedDisplay };

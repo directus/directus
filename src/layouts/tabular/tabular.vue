@@ -206,7 +206,7 @@ export default defineComponent({
 		},
 		detailRoute: {
 			type: String,
-			default: `/{{project}}/collections/{{collection}}/{{primaryKey}}`,
+			default: `/collections/{{collection}}/{{primaryKey}}`,
 		},
 		readonly: {
 			type: Boolean,
@@ -369,7 +369,7 @@ export default defineComponent({
 						_viewQuery.value?.fields ||
 						availableFields.value
 							.filter((field: Field) => {
-								return field.primary_key === false && field.type !== 'sort';
+								return field.database?.is_primary_key === false && field.system.special !== 'sort';
 							})
 							.slice(0, 4)
 							.map(({ field }) => field);
@@ -425,10 +425,10 @@ export default defineComponent({
 						value: field.field,
 						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.display,
-							displayOptions: field.display_options,
-							interface: field.interface,
-							interfaceOptions: field.options,
+							display: field.system.display,
+							displayOptions: field.system.display_options,
+							interface: field.system.interface,
+							interfaceOptions: field.system.options,
 							type: field.type,
 							field: field.field,
 						},
@@ -516,11 +516,11 @@ export default defineComponent({
 				const field = availableFields.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
-				if (!field.display) return null;
+				if (!field.system.display) return null;
 
 				return {
-					display: field.display,
-					options: field.display_options,
+					display: field.system.display,
+					options: field.system.display_options,
 				};
 			}
 		}

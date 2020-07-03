@@ -45,7 +45,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
-				field.system!.interface = getDefaultInterfaceForType(field.system!.type);
+				field.system!.interface = getDefaultInterfaceForType(field.type);
 			}
 
 			if (interfaceUsed?.hideLabel === true) {

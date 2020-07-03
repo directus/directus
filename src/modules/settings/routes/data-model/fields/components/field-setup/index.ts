@@ -2,7 +2,10 @@ import FieldSetup from './field-setup.vue';
 import { types, Type } from '@/stores/fields/types';
 import { LocalType } from './types';
 
-const localTypeGroups: Record<LocalType, Type[]> = {
+/**
+ * @todo fix local type groups in settings
+ */
+const localTypeGroups: Record<LocalType, string[]> = {
 	relational: ['m2o', 'o2m', 'm2m', 'translation'],
 	file: ['file'],
 	files: ['files'],

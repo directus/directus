@@ -105,15 +105,15 @@ export default defineComponent({
 
 		const sortedVisibleFields = computed(() =>
 			sortBy(
-				[...fields.value].filter(({ hidden_detail }) => hidden_detail === false),
-				(field) => field.sort || Infinity
+				[...fields.value].filter((field) => field.system.hidden_detail === false),
+				(field) => field.system.sort || Infinity
 			)
 		);
 
 		const sortedHiddenFields = computed(() =>
 			sortBy(
-				[...fields.value].filter(({ hidden_detail }) => hidden_detail === true),
-				(field) => field.sort || Infinity
+				[...fields.value].filter((field) => field.system.hidden_detail === true),
+				(field) => field.system.sort || Infinity
 			)
 		);
 
@@ -157,9 +157,10 @@ export default defineComponent({
 
 			const fieldsInGroup = location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
 
-			const updates: Partial<Field>[] = fieldsInGroup.slice(newIndex).map((field) => {
+			const updates: DeepPartial<Field>[] = fieldsInGroup.slice(newIndex).map((field) => {
 				const sortValue =
-					field.sort || fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
+					field.system.sort ||
+					fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,
@@ -169,11 +170,11 @@ export default defineComponent({
 
 			const addedToEnd = newIndex === fieldsInGroup.length;
 
-			let newSortValue = fieldsInGroup[newIndex]?.sort;
+			let newSortValue = fieldsInGroup[newIndex]?.system.sort;
 
 			if (!newSortValue && addedToEnd) {
 				const previousItem = fieldsInGroup[newIndex - 1];
-				if (previousItem && previousItem.sort) newSortValue = previousItem.sort + 1;
+				if (previousItem && previousItem.system.sort) newSortValue = previousItem.system.sort + 1;
 			}
 
 			if (!newSortValue) {
@@ -182,8 +183,10 @@ export default defineComponent({
 
 			updates.push({
 				field: element.field,
-				sort: newSortValue,
-				hidden_detail: location === 'hidden',
+				system: {
+					hidden_detail: location === 'hidden',
+					sort: newSortValue,
+				},
 			});
 
 			fieldsStore.updateFields(element.collection, updates);
@@ -197,11 +200,11 @@ export default defineComponent({
 
 			const fields = location === 'visible' ? sortedVisibleFields.value : sortedHiddenFields.value;
 
-			const updates: Partial<Field>[] = fields.slice(...selectionRange).map((field) => {
+			const updates: DeepPartial<Field>[] = fields.slice(...selectionRange).map((field) => {
 				// If field.sort isn't set yet, base it on the index of the array. That way, the
 				// new sort value will match what's visible on the screen
 				const sortValue =
-					field.sort || fields.findIndex((existingField) => existingField.field === field.field);
+					field.system.sort || fields.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,
@@ -209,10 +212,12 @@ export default defineComponent({
 				};
 			});
 
-			const sortOfItemOnNewIndex = fields[newIndex].sort || newIndex;
+			const sortOfItemOnNewIndex = fields[newIndex].system.sort || newIndex;
 			updates.push({
 				field: element.field,
-				sort: sortOfItemOnNewIndex,
+				system: {
+					sort: sortOfItemOnNewIndex,
+				},
 			});
 
 			fieldsStore.updateFields(element.collection, updates);

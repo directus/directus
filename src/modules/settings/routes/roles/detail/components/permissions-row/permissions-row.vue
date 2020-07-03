@@ -251,9 +251,9 @@ export default defineComponent({
 		};
 
 		const statuses = computed<Status[] | null>(() => {
-			if (statusField.value && statusField.value.options) {
-				return Object.keys(statusField.value.options.status_mapping).map((key: string) => ({
-					...statusField.value?.options?.status_mapping[key],
+			if (statusField.value && statusField.value.system.options) {
+				return Object.keys(statusField.value.system.options.status_mapping).map((key: string) => ({
+					...statusField.value?.system.options?.status_mapping[key],
 					value: key,
 				}));
 			}

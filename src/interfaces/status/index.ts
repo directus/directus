@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('status'),
 	icon: 'bubble_chart',
 	component: InterfaceStatus,
-	types: ['status'],
+	types: ['string'],
 	options: [
 		{
 			field: 'status_mapping',

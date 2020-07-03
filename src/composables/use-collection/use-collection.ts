@@ -19,7 +19,7 @@ export function useCollection(collection: Ref<string>) {
 		// Every collection has a primary key; rules of the land
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return fields.value?.find(
-			(field) => field.collection === collection.value && field.database.is_primary_key === true
+			(field) => field.collection === collection.value && field.database?.is_primary_key === true
 		)!;
 	});
 

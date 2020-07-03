@@ -23,7 +23,7 @@ export default defineDisplay(({ i18n }) => ({
 			width: 'full',
 		},
 	],
-	types: ['m2o', 'o2m', 'm2m'],
+	types: ['alias', 'string', 'integer', 'bigInteger', 'text'],
 	fields: (options: Options, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));

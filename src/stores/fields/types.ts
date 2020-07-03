@@ -7,10 +7,9 @@ type Translation = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export type LocalType =
+export type Type =
 	| 'alias'
 	| 'bigInteger'
-	| 'binary'
 	| 'binary'
 	| 'boolean'
 	| 'date'
@@ -18,11 +17,30 @@ export type LocalType =
 	| 'decimal'
 	| 'float'
 	| 'integer'
+	| 'json'
 	| 'string'
 	| 'text'
 	| 'time'
 	| 'timestamp'
 	| 'unknown';
+
+export const types: Type[] = [
+	'alias',
+	'bigInteger',
+	'binary',
+	'boolean',
+	'date',
+	'datetime',
+	'decimal',
+	'float',
+	'integer',
+	'json',
+	'string',
+	'text',
+	'time',
+	'timestamp',
+	'unknown',
+];
 
 export type DatabaseColumn = {
 	/** @todo import this from knex-schema-inspector when that's launched */
@@ -73,6 +91,6 @@ export interface FieldRaw {
 
 export interface Field extends FieldRaw {
 	name: string | TranslateResult;
-	type: LocalType;
+	type: Type;
 	system: SystemField;
 }

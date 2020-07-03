@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('dropdown_multiple'),
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDropdownMultiselect,
-	types: ['array'],
+	types: ['json'],
 	options: [
 		{
 			field: 'choices',
