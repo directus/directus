@@ -3,7 +3,7 @@
 		<template #headline>{{ $t('settings_webhooks') }}</template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/webhooks/`">
+			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import SettingsNavigation from '../../../components/navigation/';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
@@ -94,8 +94,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
@@ -128,14 +126,13 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			currentProjectKey,
 			marked,
 			title,
 		};
 
 		async function saveAndQuit() {
 			await save();
-			router.push(`/${currentProjectKey.value}/settings/webhooks`);
+			router.push(`/settings/webhooks`);
 		}
 
 		async function saveAndStay() {
@@ -144,17 +141,17 @@ export default defineComponent({
 
 		async function saveAndAddNew() {
 			await save();
-			router.push(`/${currentProjectKey.value}/settings/webhooks/+`);
+			router.push(`/settings/webhooks/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/settings/webhooks/${newPrimaryKey}`);
+			router.push(`/settings/webhooks/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/settings/webhooks`);
+			router.push(`/settings/webhooks`);
 		}
 	},
 });

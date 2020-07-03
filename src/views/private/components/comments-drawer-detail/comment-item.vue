@@ -32,7 +32,7 @@ import { defineComponent, PropType, ref, computed, watch } from '@vue/compositio
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import marked from 'marked';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 
 export default defineComponent({
@@ -48,8 +48,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
@@ -69,11 +67,10 @@ export default defineComponent({
 			return { edits, editing, savingEdits, saveEdits, cancelEditing };
 
 			async function saveEdits() {
-				const { currentProjectKey } = projectsStore.state;
 				savingEdits.value = true;
 
 				try {
-					await api.patch(`/${currentProjectKey}/activity/comment/${props.activity.id}`, {
+					await api.patch(`/activity/comment/${props.activity.id}`, {
 						comment: edits.value,
 					});
 					await props.refresh();

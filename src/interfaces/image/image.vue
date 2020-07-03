@@ -52,7 +52,6 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
@@ -87,8 +86,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
-
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const error = ref(null);
@@ -149,12 +146,10 @@ export default defineComponent({
 		};
 
 		async function fetchImage() {
-			const { currentProjectKey } = projectsStore.state;
-
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/files/${props.value}`, {
+				const response = await api.get(`/files/${props.value}`, {
 					params: {
 						fields: ['id', 'data', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
 					},

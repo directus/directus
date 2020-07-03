@@ -116,7 +116,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import UsersNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
@@ -157,9 +157,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
 		const fieldsStore = useFieldsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
+
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
@@ -243,7 +242,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: i18n.t('user_directory'),
-					to: `/${currentProjectKey.value}/users/`,
+					to: `/users/`,
 				},
 			]);
 
@@ -252,7 +251,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
-			router.push(`/${currentProjectKey.value}/users`);
+			router.push(`/users`);
 		}
 
 		async function saveAndStay() {
@@ -263,23 +262,23 @@ export default defineComponent({
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const newPrimaryKey = savedItem.id;
-				router.replace(`/${currentProjectKey.value}/collections/users/${newPrimaryKey}`);
+				router.replace(`/collections/users/${newPrimaryKey}`);
 			}
 		}
 
 		async function saveAndAddNew() {
 			await save();
-			router.push(`/${currentProjectKey.value}/users/+`);
+			router.push(`/users/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/users/${newPrimaryKey}`);
+			router.push(`/users/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/users`);
+			router.push(`/users`);
 		}
 
 		function useUserPreview() {
@@ -298,7 +297,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${currentProjectKey.value}/users/${props.primaryKey}`, {
+					const response = await api.get(`/users/${props.primaryKey}`, {
 						params: {
 							fields: ['role.name', 'avatar.data'],
 						},

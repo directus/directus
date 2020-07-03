@@ -13,6 +13,11 @@ declare module '*.md' {
 	export default value;
 }
 
+declare module '*.json' {
+	const value: { [key: string]: any };
+	export default value;
+}
+
 declare module 'vuedraggable' {
 	import Vue from 'vue';
 	export default Vue;

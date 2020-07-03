@@ -1,5 +1,5 @@
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
+
 import notify from '@/utils/notify';
 import i18n from '@/lang';
 
@@ -9,12 +9,11 @@ export default async function uploadFile(
 	showNotifications = true
 ) {
 	const progressHandler = onProgressChange || (() => undefined);
-	const currentProjectKey = useProjectsStore().state.currentProjectKey;
 	const formData = new FormData();
 	formData.append('file', file);
 
 	try {
-		const response = await api.post(`/${currentProjectKey}/files`, formData, {
+		const response = await api.post(`/files`, formData, {
 			onUploadProgress,
 		});
 

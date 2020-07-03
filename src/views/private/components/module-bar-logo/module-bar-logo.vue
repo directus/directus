@@ -10,19 +10,17 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects/';
 import { useRequestsStore } from '@/stores/requests/';
 import { useSettingsStore } from '@/stores/settings/';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
 
 		const customLogoPath = computed<string | null>(() => {
-			if (projectsStore.currentProject.value === null) return null;
-			return projectsStore.currentProject.value.logo || null;
+			if (settingsStore.state.settings === null) return null;
+			return settingsStore.state.settings.project_logo || null;
 		});
 
 		const showLoader = ref(false);
@@ -37,7 +35,7 @@ export default defineComponent({
 			}
 		);
 
-		const url = computed(() => settingsStore.formatted.value.project_url);
+		const url = computed(() => settingsStore.state.settings?.project_url);
 
 		return {
 			customLogoPath,

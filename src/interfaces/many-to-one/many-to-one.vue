@@ -107,7 +107,6 @@ import { useRelationsStore } from '@/stores/relations';
 import useCollection from '@/composables/use-collection';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import useCollectionsStore from '@/stores/collections';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
@@ -151,7 +150,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection } = toRefs(props);
 
-		const projectsStore = useProjectsStore();
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 
@@ -243,7 +241,6 @@ export default defineComponent({
 			}
 
 			async function fetchCurrent() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
@@ -254,8 +251,8 @@ export default defineComponent({
 
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/${currentProjectKey}/items/${relatedCollection.value.collection}/${props.value}`;
+						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
+						: `/items/${relatedCollection.value.collection}/${props.value}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -289,7 +286,6 @@ export default defineComponent({
 			async function fetchItems() {
 				if (items.value !== null) return;
 
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
@@ -300,8 +296,8 @@ export default defineComponent({
 
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}`
-						: `/${currentProjectKey}/items/${relatedCollection.value.collection}`;
+						? `/${relatedCollection.value.collection.substring(9)}`
+						: `/items/${relatedCollection.value.collection}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -319,11 +315,9 @@ export default defineComponent({
 			}
 
 			async function fetchTotalCount() {
-				const { currentProjectKey } = projectsStore.state;
-
 				const endpoint = relatedCollection.value.collection.startsWith('directus_')
-					? `/${currentProjectKey}/${relatedCollection.value.collection.substring(9)}`
-					: `/${currentProjectKey}/items/${relatedCollection.value.collection}`;
+					? `/${relatedCollection.value.collection.substring(9)}`
+					: `/items/${relatedCollection.value.collection}`;
 
 				const response = await api.get(endpoint, {
 					params: {

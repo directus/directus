@@ -59,7 +59,6 @@ import RevisionsModalPicker from './revisions-modal-picker.vue';
 import RevisionsModalPreview from './revisions-modal-preview.vue';
 import RevisionsModalUpdates from './revisions-modal-updates.vue';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	components: { RevisionsModalPicker, RevisionsModalPreview, RevisionsModalUpdates },
@@ -80,7 +79,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const _active = useSync(props, 'active', emit);
 		const _current = useSync(props, 'current', emit);
-		const projectsStore = useProjectsStore();
 
 		const currentTab = ref(['preview']);
 
@@ -113,7 +111,6 @@ export default defineComponent({
 		};
 
 		function useRevert() {
-			const { currentProjectKey } = projectsStore.state;
 			const confirmRevert = ref(false);
 			const reverting = ref(false);
 
@@ -125,10 +122,10 @@ export default defineComponent({
 
 				try {
 					const endpoint = currentRevision.value.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${currentRevision.value.collection.substring(9)}/${
-								currentRevision.value.item
-						  }/revert/${currentRevision.value.id}`
-						: `/${currentProjectKey}/items/${currentRevision.value.collection}/${currentRevision.value.item}/revert/${currentRevision.value.id}`;
+						? `/${currentRevision.value.collection.substring(9)}/${currentRevision.value.item}/revert/${
+								currentRevision.value.id
+						  }`
+						: `/items/${currentRevision.value.collection}/${currentRevision.value.item}/revert/${currentRevision.value.id}`;
 					await api.patch(endpoint);
 					confirmRevert.value = false;
 					_active.value = false;

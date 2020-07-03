@@ -1,7 +1,14 @@
 <template>
 	<div class="public-view">
 		<div class="container" :class="{ wide }">
-			<project-chooser />
+			<div class="title-box">
+				<div class="public-view-logo" v-if="settings && settings.project_logo">
+					<img :src="settings.project_logo" :alt="settings.name || 'Logo'" />
+				</div>
+				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
+				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
+			</div>
+
 			<div class="content">
 				<slot />
 			</div>
@@ -13,12 +20,12 @@
 			<transition name="scale">
 				<img
 					class="foreground"
-					v-if="project && project.foregroundImage"
-					:src="project.foregroundImage"
-					:alt="project.name"
+					v-if="settings && settings.foreground_image"
+					:src="settings.foreground_image"
+					:alt="settings.name"
 				/>
 			</transition>
-			<div class="note" v-if="project && project.note" v-html="marked(project.note)" />
+			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
 		</div>
 	</div>
 </template>
@@ -26,14 +33,10 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
-import ProjectChooser from './components/project-chooser/';
-import { useProjectsStore } from '@/stores/projects/';
+import useSettingsStore from '@/stores/settings';
 import marked from 'marked';
 
 export default defineComponent({
-	components: {
-		ProjectChooser,
-	},
 	props: {
 		wide: {
 			type: Boolean,
@@ -41,24 +44,16 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const projectsStore = useProjectsStore();
+		const settingsStore = useSettingsStore();
 
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (projectsStore.currentProject.value === null) {
-				return defaultColor;
+			if (settingsStore.state.settings?.project_background) {
+				return `url(${settingsStore.state.settings?.project_background})`;
 			}
 
-			if (projectsStore.currentProject.value.error) {
-				return defaultColor;
-			}
-
-			if (projectsStore.currentProject.value.backgroundImage) {
-				return `url(${projectsStore.currentProject.value.backgroundImage})`;
-			}
-
-			return projectsStore.currentProject.value.color || defaultColor;
+			return settingsStore.state.settings?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({
@@ -67,7 +62,7 @@ export default defineComponent({
 			backgroundPosition: 'center center',
 		}));
 
-		return { version, artStyles, marked, project: projectsStore.currentProject };
+		return { version, artStyles, marked, settings: settingsStore.state.settings };
 	},
 });
 </script>
@@ -147,6 +142,38 @@ export default defineComponent({
 
 	.notice {
 		color: #b0bec5;
+	}
+
+	.title-box {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		height: 64px;
+		cursor: pointer;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 64px;
+		height: 64px;
+		background-color: var(--brand);
+		border-radius: var(--border-radius);
+	}
+
+	.default-logo {
+		width: 64px;
+	}
+
+	.title {
+		margin-left: 12px;
+	}
+
+	.v-icon {
+		--v-icon-color: var(--foreground-subdued);
+
+		margin-left: 4px;
 	}
 }
 

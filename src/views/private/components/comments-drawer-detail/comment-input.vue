@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import notify from '@/utils/notify';
 import api from '@/api';
 import i18n from '@/lang';
@@ -39,8 +39,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const newCommentContent = ref(null);
 		const saving = ref(false);
 
@@ -50,7 +48,7 @@ export default defineComponent({
 			saving.value = true;
 
 			try {
-				await api.post(`/${projectsStore.state.currentProjectKey}/activity/comment`, {
+				await api.post(`/activity/comment`, {
 					collection: props.collection,
 					item: props.primaryKey,
 					comment: newCommentContent.value,

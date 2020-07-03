@@ -5,9 +5,8 @@ import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
 import { useCollectionPresetsStore } from '@/stores/collection-presets/';
 import { useSettingsStore } from '@/stores/settings/';
-import { useProjectsStore } from '@/stores/projects/';
+//
 import { useLatencyStore } from '@/stores/latency';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { setLanguage, Language } from '@/lang';
 
@@ -27,9 +26,7 @@ export function useStores(
 		useRequestsStore,
 		useCollectionPresetsStore,
 		useSettingsStore,
-		useProjectsStore,
 		useLatencyStore,
-		usePermissionsStore,
 		useRelationsStore,
 	]
 ) {

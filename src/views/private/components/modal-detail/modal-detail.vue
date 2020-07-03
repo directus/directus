@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
+
 import useCollection from '@/composables/use-collection';
 import useFieldsStore from '@/stores/fields';
 import i18n from '@/lang';
@@ -71,7 +71,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -163,13 +162,11 @@ export default defineComponent({
 			return { _edits, loading, error, item, fetchItem };
 
 			async function fetchItem() {
-				const { currentProjectKey } = projectsStore.state;
-
 				loading.value = true;
 
 				const endpoint = props.collection.startsWith('directus_')
-					? `/${currentProjectKey}/${props.collection.substring(9)}/${props.primaryKey}`
-					: `/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`;
+					? `/${props.collection.substring(9)}/${props.primaryKey}`
+					: `/items/${props.collection}/${props.primaryKey}`;
 
 				let fields = '*';
 
@@ -189,15 +186,13 @@ export default defineComponent({
 			}
 
 			async function fetchRelatedItem() {
-				const { currentProjectKey } = projectsStore.state;
-
 				loading.value = true;
 
 				const collection = junctionRelatedCollection.value;
 
 				const endpoint = collection.startsWith('directus_')
-					? `/${currentProjectKey}/${collection.substring(9)}/${props.relatedPrimaryKey}`
-					: `/${currentProjectKey}/items/${collection}/${props.relatedPrimaryKey}`;
+					? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
+					: `/items/${collection}/${props.relatedPrimaryKey}`;
 
 				try {
 					const response = await api.get(endpoint);

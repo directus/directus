@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 
@@ -49,8 +48,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const loading = ref(false);
 		const folders = ref<FolderRaw[]>([]);
 		const error = ref<any>(null);
@@ -88,12 +85,10 @@ export default defineComponent({
 
 		async function fetchFolders() {
 			if (folders.value.length > 0) return;
-			const { currentProjectKey } = projectsStore.state;
-
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/folders`, {
+				const response = await api.get(`/folders`, {
 					params: {
 						limit: -1,
 					},

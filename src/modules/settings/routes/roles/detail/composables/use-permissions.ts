@@ -1,6 +1,5 @@
 import { ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 
 export type Permission = {
 	id?: number;
@@ -22,8 +21,6 @@ export default function usePermissions(role: Ref<number>) {
 	const error = ref(null);
 	const permissions = ref<Permission[] | null>(null);
 
-	const projectsStore = useProjectsStore();
-
 	watch(role, (newRole, oldRole) => {
 		if (newRole !== oldRole) {
 			reset();
@@ -40,12 +37,10 @@ export default function usePermissions(role: Ref<number>) {
 	}
 
 	async function fetchPermissions() {
-		const { currentProjectKey } = projectsStore.state;
-
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/${currentProjectKey}/permissions`, {
+			const response = await api.get(`/permissions`, {
 				params: {
 					'filter[role][eq]': role.value,
 				},
@@ -60,14 +55,13 @@ export default function usePermissions(role: Ref<number>) {
 	}
 
 	async function savePermission(updates: Partial<Permission>) {
-		const { currentProjectKey } = projectsStore.state;
 		try {
 			if (updates.id !== undefined) {
-				await api.patch(`/${currentProjectKey}/permissions/${updates.id}`, {
+				await api.patch(`/permissions/${updates.id}`, {
 					...updates,
 				});
 			} else {
-				await api.post(`/${currentProjectKey}/permissions`, updates);
+				await api.post(`/permissions`, updates);
 			}
 
 			await fetchPermissions();
@@ -78,14 +72,13 @@ export default function usePermissions(role: Ref<number>) {
 	}
 
 	async function saveAll(create: Partial<Permission>[], update: Partial<Permission>[]) {
-		const { currentProjectKey } = projectsStore.state;
 		try {
 			if (create.length > 0) {
-				await api.post(`/${currentProjectKey}/permissions`, create);
+				await api.post(`/permissions`, create);
 			}
 
 			if (update.length > 0) {
-				await api.patch(`/${currentProjectKey}/permissions`, update);
+				await api.patch(`/permissions`, update);
 			}
 
 			await fetchPermissions();

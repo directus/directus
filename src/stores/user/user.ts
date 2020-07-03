@@ -1,5 +1,4 @@
 import { createStore } from 'pinia';
-import { useProjectsStore } from '@/stores/projects';
 import api from '@/api';
 import { useLatencyStore } from '@/stores/latency';
 
@@ -18,20 +17,18 @@ export const useUserStore = createStore({
 			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
 		},
 		isAdmin(state) {
+			/** @todo base this on UUID */
 			return state.currentUser?.role.id === 1;
 		},
 	},
 	actions: {
 		async hydrate() {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
 			this.state.loading = true;
 
 			try {
-				const { data } = await api.get(`/${currentProjectKey}/users/me`, {
+				const { data } = await api.get(`/users/me`, {
 					params: {
-						fields: '*,avatar.data,role.*',
+						fields: '*,avatar.*,role.*',
 					},
 				});
 
@@ -46,17 +43,15 @@ export const useUserStore = createStore({
 			this.reset();
 		},
 		async trackPage(page: string) {
-			const projectsStore = useProjectsStore();
 			const latencyStore = useLatencyStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
 
-			const start = Date.now();
+			const start = performance.now();
 
-			await api.patch(`/${currentProjectKey}/users/me/tracking/page`, {
+			await api.patch(`/users/me`, {
 				last_page: page,
 			});
 
-			const end = Date.now();
+			const end = performance.now();
 
 			latencyStore.state.latency.push({
 				timestamp: new Date(),

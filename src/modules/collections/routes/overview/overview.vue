@@ -46,7 +46,7 @@ import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../../composables/use-navigation';
 import router from '@/router';
 import useUserStore from '@/stores/user';
-import useProjectsStore from '@/stores/projects';
+
 import marked from 'marked';
 
 export default defineComponent({
@@ -57,7 +57,6 @@ export default defineComponent({
 	props: {},
 	setup() {
 		const userStore = useUserStore();
-		const projectsStore = useProjectsStore();
 
 		const tableHeaders = [
 			{
@@ -82,7 +81,7 @@ export default defineComponent({
 		const isAdmin = computed(() => userStore.state.currentUser?.role.id === 1);
 
 		const dataModelLink = computed(() => {
-			return `/${projectsStore.state.currentProjectKey}/settings/data-model`;
+			return `/settings/data-model`;
 		});
 
 		return {

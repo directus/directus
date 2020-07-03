@@ -21,38 +21,34 @@
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
 import { i18n } from '@/lang';
-import { useProjectsStore } from '@/stores/projects';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
-
 		const navItems = [
 			{
 				icon: 'public',
 				name: i18n.t('settings_project'),
-				to: `/${currentProjectKey.value}/settings/project`,
+				to: `/settings/project`,
 			},
 			{
 				icon: 'list_alt',
 				name: i18n.t('settings_data_model'),
-				to: `/${currentProjectKey.value}/settings/data-model`,
+				to: `/settings/data-model`,
 			},
 			{
 				icon: 'people',
 				name: i18n.t('settings_permissions'),
-				to: `/${currentProjectKey.value}/settings/roles`,
+				to: `/settings/roles`,
 			},
 			{
 				icon: 'bookmark',
 				name: i18n.t('settings_presets'),
-				to: `/${currentProjectKey.value}/settings/presets`,
+				to: `/settings/presets`,
 			},
 			{
 				icon: 'send',
 				name: i18n.t('settings_webhooks'),
-				to: `/${currentProjectKey.value}/settings/webhooks`,
+				to: `/settings/webhooks`,
 			},
 		];
 

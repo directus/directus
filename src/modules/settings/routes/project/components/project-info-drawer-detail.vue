@@ -19,14 +19,17 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import bytes from 'bytes';
+
+/**
+ * @TODO
+ * retrieve server info somewhere separate
+ */
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
-
-		return { project: projectsStore.currentProject, bytes };
+		return { project: {}, bytes };
 	},
 });
 </script>

@@ -96,7 +96,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import i18n from '@/lang';
@@ -128,7 +128,6 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoDrawerDetail },
 	setup() {
-		const projectsStore = useProjectsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const selection = ref<Preset[]>([]);
@@ -158,8 +157,7 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed(() => {
-				const { currentProjectKey } = projectsStore.state;
-				return `/${currentProjectKey}/settings/presets/+`;
+				return `/settings/presets/+`;
 			});
 
 			return { addNewLink };
@@ -198,12 +196,10 @@ export default defineComponent({
 			return { loading, presetsRaw, error, getPresets, presets };
 
 			async function getPresets() {
-				const { currentProjectKey } = projectsStore.state;
-
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/collection_presets`, {
+					const response = await api.get(`/collection_presets`, {
 						params: {
 							fields: [
 								'id',
@@ -262,9 +258,8 @@ export default defineComponent({
 		}
 
 		function onRowClick(item: Preset) {
-			const { currentProjectKey } = projectsStore.state;
 			if (selection.value.length === 0) {
-				router.push(`/${currentProjectKey}/settings/presets/${item.id}`);
+				router.push(`/settings/presets/${item.id}`);
 			} else {
 				if (selection.value.includes(item)) {
 					selection.value = selection.value.filter((i) => i !== item);
@@ -281,12 +276,11 @@ export default defineComponent({
 			return { confirmDelete, deleting, deleteSelection };
 
 			async function deleteSelection() {
-				const { currentProjectKey } = projectsStore.state;
 				deleting.value = true;
 
 				try {
 					const IDs = selection.value.map((item) => item.id).join(',');
-					await api.delete(`/${currentProjectKey}/collection_presets/${IDs}`);
+					await api.delete(`/collection_presets/${IDs}`);
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;

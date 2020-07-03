@@ -12,12 +12,12 @@
 		</v-notice>
 		<div class="buttons">
 			<v-button type="submit" :loading="loggingIn" large>{{ $t('sign_in') }}</v-button>
-			<router-link :to="forgotLink" class="forgot-password">
+			<router-link to="/reset-password" class="forgot-password">
 				{{ $t('forgot_password') }}
 			</router-link>
 		</div>
 
-		<template v-if="ssoProviders">
+		<!-- <template v-if="ssoProviders">
 			<v-divider class="sso-divider" />
 
 			<v-button
@@ -35,18 +35,17 @@
 			<v-notice class="sso-notice" type="danger" v-if="ssoError">
 				{{ translateAPIError(ssoError) }}
 			</v-notice>
-		</template>
+		</template> -->
 	</form>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import router from '@/router';
-import { useProjectsStore } from '@/stores/projects';
+//
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import getRootPath from '@/utils/get-root-path';
 
 type Credentials = {
 	email: string;
@@ -62,8 +61,6 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const projectsStore = useProjectsStore();
-
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
@@ -82,29 +79,25 @@ export default defineComponent({
 			return null;
 		});
 
-		const forgotLink = computed(() => {
-			return `/${projectsStore.state.currentProjectKey}/reset-password`;
-		});
-
-		const ssoProviders = computed(() => {
-			const redirectURL = getRootPath() + `admin/${projectsStore.state.currentProjectKey}/login`;
-			return projectsStore.currentProject.value.sso.map((provider: { icon: string; name: string }) => {
-				return {
-					...provider,
-					link: `/${projectsStore.state.currentProjectKey}/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
-				};
-			});
-		});
+		/** @todo fetch these from /auth/sso */
+		// const ssoProviders = computed(() => {
+		// 	const redirectURL = getRootPath() + `admin/login`;
+		// 	return projectsStore.currentProject.value.sso.map((provider: { icon: string; name: string }) => {
+		// 		return {
+		// 			...provider,
+		// 			link: `/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
+		// 		};
+		// 	});
+		// });
 
 		return {
-			ssoProviders,
+			// ssoProviders,
 			errorFormatted,
 			error,
 			email,
 			password,
 			onSubmit,
 			loggingIn,
-			forgotLink,
 			translateAPIError,
 			otp,
 			requiresTFA,
@@ -112,8 +105,6 @@ export default defineComponent({
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;
-
-			const currentProjectKey = projectsStore.state.currentProjectKey;
 
 			try {
 				loggingIn.value = true;
@@ -129,8 +120,9 @@ export default defineComponent({
 
 				await login(credentials);
 
-				router.push(`/${currentProjectKey}/collections/`);
+				router.push(`/collections/`);
 			} catch (err) {
+				/** @todo use new error code */
 				if (err.response?.data?.error?.code === 111) {
 					requiresTFA.value = true;
 				} else {

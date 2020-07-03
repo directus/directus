@@ -22,15 +22,14 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import useNavigation from '../../composables/use-navigation';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
 		const { roles, loading } = useNavigation();
 
-		return { roles, loading, project: projectsStore.state.currentProjectKey };
+		return { roles, loading };
 	},
 });
 </script>

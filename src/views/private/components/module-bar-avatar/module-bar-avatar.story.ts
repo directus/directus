@@ -1,7 +1,7 @@
 import markdown from './readme.md';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import { defineComponent } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import useUserStore from '@/stores/user';
 import ModuleBarAvatar from './module-bar-avatar.vue';
 import { i18n } from '@/lang/';
@@ -22,10 +22,8 @@ export const basic = () =>
 		components: { ModuleBarAvatar },
 		setup() {
 			const req = {};
-			const projectsStore = useProjectsStore(req);
 			const userStore = useUserStore(req);
 
-			projectsStore.state.currentProjectKey = 'my-project';
 			userStore.state.currentUser = {
 				first_name: 'Admin',
 				last_name: 'User',
@@ -46,10 +44,9 @@ export const withAvatar = () =>
 		components: { ModuleBarAvatar },
 		setup() {
 			const req = {};
-			const projectsStore = useProjectsStore(req);
+
 			const userStore = useUserStore(req);
 
-			projectsStore.state.currentProjectKey = 'my-project';
 			userStore.state.currentUser = {
 				first_name: 'Admin',
 				last_name: 'User',

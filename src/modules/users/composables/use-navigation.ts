@@ -1,5 +1,5 @@
 import { ref, Ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import { Role } from '@/stores/user/types';
 
@@ -24,10 +24,8 @@ export default function useNavigation() {
 	async function fetchRoles() {
 		if (!loading || !roles) return;
 		loading.value = true;
-		const projectsStore = useProjectsStore();
-		const currentProjectKey = projectsStore.state.currentProjectKey;
 
-		const rolesResponse = await api.get(`/${currentProjectKey}/roles`);
+		const rolesResponse = await api.get(`/roles`);
 		roles.value = rolesResponse.data.data;
 		loading.value = false;
 	}

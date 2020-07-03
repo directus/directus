@@ -38,12 +38,10 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import useUserStore from '@/stores/user/';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	setup() {
 		const userStore = useUserStore();
-		const projectsStore = useProjectsStore();
 
 		const signOutActive = ref(false);
 
@@ -59,16 +57,14 @@ export default defineComponent({
 		});
 
 		const userProfileLink = computed<string>(() => {
-			const project = projectsStore.state.currentProjectKey;
 			const id = userStore.state.currentUser?.id;
 			const role = userStore.state.currentUser?.role?.id;
 
-			return `/${project}/users/${role}/${id}`;
+			return `/users/${role}/${id}`;
 		});
 
 		const signOutLink = computed<string>(() => {
-			const project = projectsStore.state.currentProjectKey;
-			return `/${project}/logout`;
+			return `/logout`;
 		});
 
 		const userFullName = userStore.fullName;

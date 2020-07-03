@@ -7,5 +7,6 @@ export const useAppStore = createStore({
 		hydrated: false,
 		hydrating: false,
 		error: null,
+		authenticated: false,
 	}),
 });

@@ -14,15 +14,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import useProjectsStore from '../../stores/projects';
 import api from '@/api';
 import { translateAPIError } from '@/lang';
 import { RequestError } from '@/api';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
-
 		const email = ref(null);
 
 		const sending = ref(false);
@@ -36,14 +33,13 @@ export default defineComponent({
 			return null;
 		});
 
-		const signInLink = computed(() => `/${projectsStore.state.currentProjectKey}/login`);
+		const signInLink = computed(() => `/login`);
 
 		return {
 			sending,
 			error,
 			done,
 			email,
-			currentProject: projectsStore.currentProject,
 			onSubmit,
 			signInLink,
 			errorFormatted,
@@ -54,7 +50,7 @@ export default defineComponent({
 			error.value = null;
 
 			try {
-				await api.post(`/${projectsStore.state.currentProjectKey}/auth/password/request`, {
+				await api.post(`/auth/password/request`, {
 					email: email.value,
 				});
 

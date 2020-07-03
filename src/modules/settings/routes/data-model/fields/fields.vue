@@ -73,7 +73,7 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
 import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management';
-import useProjectsStore from '@/stores/projects';
+
 import useItem from '@/composables/use-item';
 import router from '@/router';
 import useCollectionsStore from '@/stores/collections';
@@ -88,10 +88,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
 		const { collection } = toRefs(props);
 		const { info: collectionInfo, fields } = useCollection(collection);
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const collectionsStore = useCollectionsStore();
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
@@ -126,13 +124,13 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/settings/data-model`);
+			router.push(`/settings/data-model`);
 		}
 
 		async function saveAndQuit() {
 			await save();
 			await collectionsStore.hydrate();
-			router.push(`/${currentProjectKey.value}/settings/data-model`);
+			router.push(`/settings/data-model`);
 		}
 	},
 });

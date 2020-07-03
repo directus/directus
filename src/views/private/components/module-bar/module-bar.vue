@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, Ref, computed } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects';
+
 import { modules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
@@ -40,10 +40,7 @@ export default defineComponent({
 		ModuleBarAvatar,
 	},
 	setup() {
-		const projectsStore = useProjectsStore();
 		const userStore = useUserStore();
-
-		const { currentProjectKey } = projectsStore.state;
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_listing;
@@ -68,7 +65,7 @@ export default defineComponent({
 				.map((module) => ({
 					...module,
 					href: module.link || null,
-					to: module.link === undefined ? `/${currentProjectKey}/${module.id}/` : null,
+					to: module.link === undefined ? `/${module.id}/` : null,
 				}))
 				.filter((module) => {
 					if (module.hidden !== undefined) {

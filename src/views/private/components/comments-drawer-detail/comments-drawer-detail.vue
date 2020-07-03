@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
@@ -49,8 +49,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const { activity, loading, error, refresh } = useActivity(props.collection, props.primaryKey);
 
 		return {
@@ -74,7 +72,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${projectsStore.state.currentProjectKey}/activity`, {
+					const response = await api.get(`/activity`, {
 						params: {
 							'filter[collection][eq]': collection,
 							'filter[item][eq]': primaryKey,

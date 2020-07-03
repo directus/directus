@@ -145,7 +145,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { defineComponent, PropType, ref, computed, inject, toRefs, Ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@/stores/fields/types';
 import router from '@/router';
@@ -214,8 +214,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { currentProjectKey } = toRefs(useProjectsStore().state);
-
 		const table = ref<Vue | null>(null);
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
@@ -255,7 +253,6 @@ export default defineComponent({
 
 		const newLink = computed(() => {
 			return render(props.detailRoute, {
-				project: currentProjectKey.value,
 				collection: collection.value,
 				primaryKey: '+',
 				item: null,
@@ -500,7 +497,6 @@ export default defineComponent({
 					const primaryKey = item[primaryKeyField.value!.field];
 					router.push(
 						render(props.detailRoute, {
-							project: currentProjectKey.value,
 							collection: collection.value,
 							primaryKey,
 							item,

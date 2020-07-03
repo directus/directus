@@ -1,7 +1,6 @@
 import { createStore } from 'pinia';
 import { FieldRaw, Field } from './types';
 import api from '@/api';
-import { useProjectsStore } from '@/stores/projects';
 import VueI18n from 'vue-i18n';
 import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
@@ -47,10 +46,7 @@ export const useFieldsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
-			const fieldsResponse = await api.get(`/${currentProjectKey}/fields`);
+			const fieldsResponse = await api.get(`/fields`);
 
 			const fields: FieldRaw[] = fieldsResponse.data.data.filter(
 				({ collection }: FieldRaw) => collection !== 'directus_settings'
@@ -59,23 +55,7 @@ export const useFieldsStore = createStore({
 			/**
 			 * @NOTE
 			 *
-			 * directus_settings is a bit of a special case. It's actual fields (key / value) are not
-			 * what we're looking for here. Instead, we want all the "fake" fields that make up the
-			 * form. This extra bit of logic is needed to make sure the app doesn't differentiate
-			 * between settings and regular collections.
-			 */
-
-			const settingsResponse = await api.get(`/${currentProjectKey}/settings/fields`, {
-				params: {
-					limit: -1,
-				},
-			});
-			fields.push(...settingsResponse.data.data);
-
-			/**
-			 * @NOTE
-			 *
-			 * directus_fields is another special case. For it to play nice with layouts, we need to
+			 * directus_files is a special case. For it to play nice with layouts, we need to
 			 * treat the actual image as a separate available field, instead of part of the regular
 			 * item (normally all file related info is nested within a separate column). This allows
 			 * layouts to render out files as it if were a "normal" collection, where the actual file
@@ -112,9 +92,6 @@ export const useFieldsStore = createStore({
 			};
 		},
 		async createField(collectionKey: string, newField: Field) {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
 			const stateClone = [...this.state.fields];
 
 			// Update locally first, so the changes are visible immediately
@@ -123,7 +100,7 @@ export const useFieldsStore = createStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.post(`/${currentProjectKey}/fields/${collectionKey}`, newField);
+				const response = await api.post(`/fields/${collectionKey}`, newField);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
@@ -149,9 +126,6 @@ export const useFieldsStore = createStore({
 			}
 		},
 		async updateField(collectionKey: string, fieldKey: string, updates: Record<string, Partial<Field>>) {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
 			const stateClone = [...this.state.fields];
 
 			// Update locally first, so the changes are visible immediately
@@ -169,7 +143,7 @@ export const useFieldsStore = createStore({
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
 			try {
-				const response = await api.patch(`/${currentProjectKey}/fields/${collectionKey}/${fieldKey}`, updates);
+				const response = await api.patch(`/fields/${collectionKey}/${fieldKey}`, updates);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {
@@ -195,8 +169,6 @@ export const useFieldsStore = createStore({
 			}
 		},
 		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
 			const stateClone = [...this.state.fields];
 
 			// Update locally first, so the changes are visible immediately
@@ -218,7 +190,7 @@ export const useFieldsStore = createStore({
 			try {
 				// Save to API, and update local state again to make sure everything is in sync with the
 				// API
-				const response = await api.patch(`/${currentProjectKey}/fields/${collectionKey}`, updates);
+				const response = await api.patch(`/fields/${collectionKey}`, updates);
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey) {
@@ -248,8 +220,6 @@ export const useFieldsStore = createStore({
 			}
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
 			const stateClone = [...this.state.fields];
 
 			this.state.fields = this.state.fields.filter((field) => {
@@ -258,7 +228,7 @@ export const useFieldsStore = createStore({
 			});
 
 			try {
-				await api.delete(`/${currentProjectKey}/fields/${collectionKey}/${fieldKey}`);
+				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
 
 				notify({
 					title: i18n.t('field_delete_success', { field: fieldKey }),

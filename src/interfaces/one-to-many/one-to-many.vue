@@ -63,7 +63,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, toRefs, Ref, PropType } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import useRelationsStore from '@/stores/relations';
 import useCollection from '@/composables/use-collection';
 import useCollectionsStore from '@/stores/collections';
@@ -102,7 +101,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -199,7 +197,6 @@ export default defineComponent({
 			 * run on first load (or when the parent form primary key changes)
 			 */
 			async function fetchCurrent() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				let fields = [...props.fields];
@@ -214,8 +211,8 @@ export default defineComponent({
 
 				try {
 					const endpoint = props.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${props.collection.substring(9)}/${props.primaryKey}`
-						: `/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`;
+						? `/${props.collection.substring(9)}/${props.primaryKey}`
+						: `/items/${props.collection}/${props.primaryKey}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -238,7 +235,6 @@ export default defineComponent({
 			 * will only have a pk in the array of changes)
 			 */
 			async function mergeWithItems(changes: any[]) {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const pkField = relatedPrimaryKeyField.value.field;
@@ -284,10 +280,8 @@ export default defineComponent({
 					}
 
 					const endpoint = props.collection.startsWith('directus_')
-						? `/${currentProjectKey}/${props.collection.substring(9)}/${selectedPrimaryKeys.join(',')}`
-						: `/${currentProjectKey}/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(
-								','
-						  )}`;
+						? `/${props.collection.substring(9)}/${selectedPrimaryKeys.join(',')}`
+						: `/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(',')}`;
 
 					const response = await api.get(endpoint, {
 						params: {

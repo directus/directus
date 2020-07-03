@@ -95,7 +95,6 @@
 import { defineComponent, computed, ref, watch, PropType } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
 
@@ -120,8 +119,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
-
 		const { usesMenu, menuActive } = useMenu();
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 		const { selection, stageSelection, selectModalActive } = useSelection();
@@ -201,7 +198,6 @@ export default defineComponent({
 			}
 
 			async function fetchCurrent() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const fields = requiredFields;
@@ -211,7 +207,7 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/users/${props.value}`, {
+					const response = await api.get(`/users/${props.value}`, {
 						params: {
 							fields: fields,
 						},
@@ -241,7 +237,6 @@ export default defineComponent({
 			async function fetchUsers() {
 				if (users.value !== null) return;
 
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const fields = requiredFields;
@@ -251,7 +246,7 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/users`, {
+					const response = await api.get(`/users`, {
 						params: {
 							fields: fields,
 							limit: -1,
@@ -267,8 +262,7 @@ export default defineComponent({
 			}
 
 			async function fetchTotalCount() {
-				const { currentProjectKey } = projectsStore.state;
-				const response = await api.get(`/${currentProjectKey}/users`, {
+				const response = await api.get(`/users`, {
 					params: {
 						limit: 0,
 						meta: 'total_count',

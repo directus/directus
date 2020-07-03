@@ -1,6 +1,5 @@
 import { createStore } from 'pinia';
 import { Relation } from './types';
-import useProjectsStore from '@/stores/projects';
 import api from '@/api';
 import useFieldsStore from '@/stores/fields';
 
@@ -11,10 +10,7 @@ export const useRelationsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
-			const response = await api.get(`/${currentProjectKey}/relations`);
+			const response = await api.get(`/relations`);
 
 			this.state.relations = response.data.data;
 		},

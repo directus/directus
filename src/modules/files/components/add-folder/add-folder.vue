@@ -25,7 +25,6 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../../composables/use-folders';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	props: {
@@ -35,7 +34,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
 		const dialogActive = ref(false);
 		const saving = ref(false);
 		const newFolderName = ref(null);
@@ -46,12 +44,10 @@ export default defineComponent({
 		return { addFolder, dialogActive, newFolderName, saving, savingError };
 
 		async function addFolder() {
-			const { currentProjectKey } = projectsStore.state;
-
 			saving.value = true;
 
 			try {
-				await api.post(`/${currentProjectKey}/folders`, {
+				await api.post(`/folders`, {
 					name: newFolderName.value,
 					parent_folder: props.parent,
 				});

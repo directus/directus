@@ -78,7 +78,7 @@ import SetupActions from './setup-actions.vue';
 import useFieldsStore from '@/stores/fields/';
 import { Relation } from '@/stores/relations/types';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
+
 import { LocalType } from './types';
 import { localTypeGroups } from './index';
 import { Type } from '@/stores/fields/types';
@@ -114,7 +114,6 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
-		const projectsStore = useProjectsStore();
 
 		const { collection } = toRefs(props);
 
@@ -280,8 +279,7 @@ export default defineComponent({
 			}
 
 			async function createRelation(relation: Partial<Relation>) {
-				const { currentProjectKey } = projectsStore.state;
-				await api.post(`/${currentProjectKey}/relations`, relation);
+				await api.post(`/relations`, relation);
 			}
 		}
 	},

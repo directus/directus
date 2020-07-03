@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import useProjectsStore from '../../stores/projects';
 import api from '@/api';
 import { translateAPIError } from '@/lang';
 import { RequestError } from '@/api';
@@ -34,8 +33,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const password = ref(null);
 
 		const resetting = ref(false);
@@ -49,7 +46,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const signInLink = computed(() => `/${projectsStore.state.currentProjectKey}/login`);
+		const signInLink = computed(() => `/login`);
 
 		const email = computed(() => jwtPayload(props.token).email);
 
@@ -58,7 +55,6 @@ export default defineComponent({
 			error,
 			done,
 			password,
-			currentProject: projectsStore.currentProject,
 			onSubmit,
 			signInLink,
 			errorFormatted,
@@ -70,7 +66,7 @@ export default defineComponent({
 			error.value = null;
 
 			try {
-				await api.post(`/${projectsStore.state.currentProjectKey}/auth/password/reset`, {
+				await api.post(`/auth/password/reset`, {
 					password: password.value,
 					token: props.token,
 				});

@@ -166,7 +166,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import CollectionsNavigation from '../../components/navigation/';
 import router from '@/router';
 import CollectionsNotFound from '../not-found/';
@@ -215,8 +215,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
@@ -248,7 +246,7 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
-		const backLink = computed(() => `/${currentProjectKey.value}/collections/${collection.value}/`);
+		const backLink = computed(() => `/collections/${collection.value}/`);
 
 		const templateValues = computed(() => {
 			return {
@@ -307,7 +305,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: collectionInfo.value?.name,
-					to: `/${currentProjectKey.value}/collections/${props.collection}`,
+					to: `/collections/${props.collection}`,
 				},
 			]);
 
@@ -316,7 +314,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
-			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
+			router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {
@@ -327,23 +325,23 @@ export default defineComponent({
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-				router.replace(`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`);
+				router.replace(`/collections/${props.collection}/${newPrimaryKey}`);
 			}
 		}
 
 		async function saveAndAddNew() {
 			await save();
-			router.push(`/${currentProjectKey.value}/collections/${props.collection}/+`);
+			router.push(`/collections/${props.collection}/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/collections/${props.collection}/${newPrimaryKey}`);
+			router.push(`/collections/${props.collection}/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit(soft = false) {
 			await remove(soft);
-			router.push(`/${currentProjectKey.value}/collections/${props.collection}`);
+			router.push(`/collections/${props.collection}`);
 		}
 
 		function discardAndLeave() {

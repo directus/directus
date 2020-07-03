@@ -137,7 +137,7 @@ import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { render } from 'micromustache';
-import useProjectsStore from '@/stores/projects';
+
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
@@ -208,7 +208,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const layoutElement = ref<HTMLElement | null>(null);
 		const mainElement = inject('main-element', ref<Element | null>(null));
-		const projectsStore = useProjectsStore();
 
 		const _selection = useSync(props, 'selection', emit);
 		const _viewOptions = useSync(props, 'viewOptions', emit);
@@ -241,7 +240,6 @@ export default defineComponent({
 
 		const newLink = computed(() => {
 			return render(props.detailRoute, {
-				project: projectsStore.state.currentProjectKey,
 				collection: collection.value,
 				primaryKey: '+',
 				item: null,
@@ -397,12 +395,9 @@ export default defineComponent({
 		}
 
 		function getLinkForItem(item: Record<string, any>) {
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
 			return render(props.detailRoute, {
 				item: item,
 				collection: props.collection,
-				project: currentProjectKey,
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				primaryKey: item[primaryKeyField.value!.field],
 			});

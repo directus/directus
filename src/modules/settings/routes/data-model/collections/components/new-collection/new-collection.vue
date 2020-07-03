@@ -106,7 +106,6 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import { Field } from '@/stores/fields/types';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
@@ -124,7 +123,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -194,11 +192,10 @@ export default defineComponent({
 		};
 
 		async function save() {
-			const { currentProjectKey } = projectsStore.state;
 			saving.value = true;
 
 			try {
-				await api.post(`/${currentProjectKey}/collections`, {
+				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
 				});

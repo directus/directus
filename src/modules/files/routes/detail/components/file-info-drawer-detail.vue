@@ -54,7 +54,6 @@ import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
 import i18n from '@/lang';
 import localizedFormat from '@/utils/localized-format';
-import useProjectsStore from '@/stores/projects';
 import api from '@/api';
 
 export default defineComponent({
@@ -70,8 +69,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const size = computed(() => {
 			if (props.isNew) return null;
 			if (!props.file) return null;
@@ -123,10 +120,9 @@ export default defineComponent({
 				if (!props.file) return null;
 
 				loading.value = true;
-				const { currentProjectKey } = projectsStore.state;
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/users/${props.file.uploaded_by}`, {
+					const response = await api.get(`/users/${props.file.uploaded_by}`, {
 						params: {
 							fields: ['id', 'first_name', 'last_name', 'role'],
 						},
@@ -137,7 +133,7 @@ export default defineComponent({
 					user.value = {
 						id: props.file.uploaded_by,
 						name: first_name + ' ' + last_name,
-						link: `/${currentProjectKey}/users/${role}/${id}`,
+						link: `/users/${role}/${id}`,
 					};
 				} finally {
 					loading.value = false;
@@ -162,10 +158,8 @@ export default defineComponent({
 				if (!props.file) return null;
 				if (!props.file.folder) return;
 				loading.value = true;
-				const { currentProjectKey } = projectsStore.state;
-
 				try {
-					const response = await api.get(`/${currentProjectKey}/folders/${props.file.folder}`, {
+					const response = await api.get(`/folders/${props.file.folder}`, {
 						params: {
 							fields: ['id', 'name'],
 						},

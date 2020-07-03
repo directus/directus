@@ -34,7 +34,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import ActivityNavigation from '../../components/navigation/';
-import useProjectsStore from '@/stores/projects';
 import { i18n } from '@/lang';
 import { LayoutComponent } from '@/layouts/types';
 import useCollectionPreset from '@/composables/use-collection-preset';
@@ -50,7 +49,6 @@ export default defineComponent({
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
-		const projectsStore = useProjectsStore();
 
 		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
@@ -65,12 +63,10 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				return [
 					{
 						name: i18n.tc('collection', 2),
-						to: `/${currentProjectKey}/collections`,
+						to: `/collections`,
 					},
 				];
 			});

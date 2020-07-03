@@ -1,6 +1,5 @@
 import { computed, ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import useCollection from '@/composables/use-collection';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
@@ -19,16 +18,14 @@ type Query = {
 };
 
 export function useItems(collection: Ref<string>, query: Query) {
-	const projectsStore = useProjectsStore();
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
-		const { currentProjectKey } = projectsStore.state;
 		return collection.value.startsWith('directus_')
-			? `/${currentProjectKey}/${collection.value.substring(9)}`
-			: `/${currentProjectKey}/items/${collection.value}`;
+			? `/${collection.value.substring(9)}`
+			: `/items/${collection.value}`;
 	});
 
 	const items = ref<any>([]);

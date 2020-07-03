@@ -16,12 +16,9 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
-
 		const loading = ref(false);
 		const error = ref<any>(null);
 		const bookmarksCount = ref<number | null>(null);
@@ -32,12 +29,10 @@ export default defineComponent({
 		return { bookmarksCount, presetsCount };
 
 		async function fetchCounts() {
-			const { currentProjectKey } = projectsStore.state;
-
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/collection_presets`, {
+				const response = await api.get(`/collection_presets`, {
 					params: {
 						[`filter[title][nnull]`]: 1,
 						fields: ['id'],

@@ -8,6 +8,7 @@ import { hydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
+import useSettingsStore from '@/stores/settings';
 
 import getRootPath from '@/utils/get-root-path';
 
@@ -93,11 +94,11 @@ export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfi
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const appStore = useAppStore();
+	const settingsStore = useSettingsStore();
 
-	// Make sure the projects store is aware of all projects that exist
-	// if (projectsStore.state.projects === null) {
-	// 	await projectsStore.getProjects();
-	// }
+	if (settingsStore.state.settings === null) {
+		await settingsStore.hydrate();
+	}
 
 	// When there aren't any projects, we should redirect to the install page to force the
 	// user to setup a project.

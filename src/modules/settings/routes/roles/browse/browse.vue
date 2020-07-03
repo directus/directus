@@ -62,7 +62,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
-import useProjectsStore from '@/stores/projects';
+
 import { i18n } from '@/lang';
 import api from '@/api';
 import marked from 'marked';
@@ -82,7 +82,6 @@ export default defineComponent({
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
-		const projectsStore = useProjectsStore();
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
 		const error = ref<any>(null);
@@ -121,19 +120,16 @@ export default defineComponent({
 		fetchRoles();
 
 		const addNewLink = computed(() => {
-			const { currentProjectKey } = projectsStore.state;
-
-			return `/${currentProjectKey}/settings/roles/+`;
+			return `/settings/roles/+`;
 		});
 
 		return { marked, loading, roles, error, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
-			const { currentProjectKey } = projectsStore.state;
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/roles`, {
+				const response = await api.get(`/roles`, {
 					params: { limit: -1, fields: 'id,name,description,icon,users.id' },
 				});
 
@@ -151,8 +147,7 @@ export default defineComponent({
 		}
 
 		function navigateToRole(item: Role) {
-			const { currentProjectKey } = projectsStore.state;
-			router.push(`/${currentProjectKey}/settings/roles/${item.id}`);
+			router.push(`/settings/roles/${item.id}`);
 		}
 	},
 });

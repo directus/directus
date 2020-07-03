@@ -77,7 +77,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import UsersNavigation from '../../components/navigation/';
-import useProjectsStore from '@/stores/projects';
+
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
@@ -102,7 +102,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const layout = ref<LayoutComponent | null>(null);
-		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);
 
@@ -177,15 +176,13 @@ export default defineComponent({
 			return { confirmDelete, deleting, batchDelete };
 
 			async function batchDelete() {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				deleting.value = true;
 
 				confirmDelete.value = false;
 
 				const batchPrimaryKeys = selection.value;
 
-				await api.delete(`/${currentProjectKey}/users/${batchPrimaryKeys}`);
+				await api.delete(`/users/${batchPrimaryKeys}`);
 
 				await layout.value?.refresh();
 
@@ -197,14 +194,12 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/users/+`;
+				return `/users/+`;
 			});
 
 			const batchLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
 				const batchPrimaryKeys = selection.value;
-				return `/${currentProjectKey}/users/${batchPrimaryKeys}`;
+				return `/users/${batchPrimaryKeys}`;
 			});
 
 			return { addNewLink, batchLink };
@@ -212,12 +207,10 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				return [
 					{
 						name: i18n.tc('collection', 2),
-						to: `/${currentProjectKey}/collections`,
+						to: `/collections`,
 					},
 				];
 			});

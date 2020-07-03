@@ -32,7 +32,6 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 
 type User = {
 	first_name: string;
@@ -53,8 +52,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const loading = ref(false);
 		const error = ref(null);
 		const data = ref<User | null>(null);
@@ -85,10 +82,9 @@ export default defineComponent({
 		async function fetchUser() {
 			loading.value = true;
 			error.value = null;
-			const { currentProjectKey } = projectsStore.state;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/users/${props.user}`, {
+				const response = await api.get(`/users/${props.user}`, {
 					params: {
 						fields: ['first_name', 'last_name', 'avatar.data', 'role.name', 'status', 'email'],
 					},

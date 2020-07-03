@@ -1,5 +1,4 @@
 import { RawLocation } from 'vue-router';
-import { useProjectsStore } from '@/stores/projects/';
 import api from '@/api';
 import { hydrate, dehydrate } from '@/hydrate';
 import router from '@/router';
@@ -8,16 +7,14 @@ import router from '@/router';
  * Check if the current user is authenticated to the current project
  */
 export async function checkAuth() {
-	const { currentProjectKey } = useProjectsStore().state;
-
-	if (!currentProjectKey) return false;
-
-	try {
-		const response = await api.get(`/${currentProjectKey}/auth/check`);
-		return response.data.data.authenticated;
-	} catch {
-		return false;
-	}
+	/** @todo base this on existence of access token / response token  */
+	return true;
+	// try {
+	// 	const response = await api.get(`/auth/check`);
+	// 	return response.data.data.authenticated;
+	// } catch {
+	// 	return false;
+	// }
 }
 
 export type LoginCredentials = {
@@ -26,13 +23,12 @@ export type LoginCredentials = {
 };
 
 export async function login(credentials: LoginCredentials) {
-	const projectsStore = useProjectsStore();
-	const { currentProjectKey } = projectsStore.state;
-
-	await api.post(`/${currentProjectKey}/auth/authenticate`, {
+	const response = await api.post(`/auth/authenticate`, {
 		...credentials,
 		mode: 'cookie',
 	});
+
+	api.defaults.headers['Authorization'] = `Bearer ${response.data.data.token}`;
 
 	await hydrate();
 }
@@ -58,22 +54,16 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
-	const projectsStore = useProjectsStore();
-	const { currentProjectKey } = projectsStore.state;
-
-	// You can't logout of a project if you're not in a project
-	if (currentProjectKey === null) return;
-
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
-		await api.post(`/${currentProjectKey}/auth/logout`);
+		await api.post(`/auth/logout`);
 	}
 
 	await dehydrate();
 
 	if (options.navigate === true) {
 		const location: RawLocation = {
-			path: `/${currentProjectKey}/login`,
+			path: `/login`,
 			query: { reason: options.reason },
 		};
 

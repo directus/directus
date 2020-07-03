@@ -137,7 +137,6 @@ import { NavigationGuard } from 'vue-router';
 import CollectionsNavigation from '../../components/navigation/';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
-import useProjectsStore from '@/stores/projects';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
@@ -209,8 +208,6 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
-		const projectsStore = useProjectsStore();
-
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
@@ -274,7 +271,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: currentCollection.value?.name,
-					to: `/${projectsStore.state.currentProjectKey}/collections/${props.collection}`,
+					to: `/collections/${props.collection}`,
 				},
 			]);
 
@@ -300,8 +297,6 @@ export default defineComponent({
 			return { confirmDelete, deleting, batchDelete };
 
 			async function batchDelete() {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				deleting.value = true;
 
 				confirmDelete.value = false;
@@ -309,7 +304,7 @@ export default defineComponent({
 				const batchPrimaryKeys = selection.value;
 
 				try {
-					await api.delete(`/${currentProjectKey}/items/${props.collection}/${batchPrimaryKeys}`);
+					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
 
 					await layout.value?.refresh?.();
 
@@ -325,26 +320,20 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/collections/${props.collection}/+`;
+				return `/collections/${props.collection}/+`;
 			});
 
 			const batchLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
 				const batchPrimaryKeys = selection.value.join();
-				return `/${currentProjectKey}/collections/${props.collection}/${batchPrimaryKeys}`;
+				return `/collections/${props.collection}/${batchPrimaryKeys}`;
 			});
 
 			const collectionsLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
-				return `/${currentProjectKey}/collections`;
+				return `/collections`;
 			});
 
 			const currentCollectionLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
-				return `/${currentProjectKey}/collections/${props.collection}`;
+				return `/collections/${props.collection}`;
 			});
 
 			return { addNewLink, batchLink, collectionsLink, currentCollectionLink };
@@ -364,15 +353,11 @@ export default defineComponent({
 			};
 
 			async function createBookmark(name: string) {
-				const { currentProjectKey } = projectsStore.state;
-
 				creatingBookmark.value = true;
 
 				try {
 					const newBookmark = await saveCurrentAsBookmark({ title: name });
-					router.push(
-						`/${currentProjectKey}/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`
-					);
+					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
 				} catch (error) {

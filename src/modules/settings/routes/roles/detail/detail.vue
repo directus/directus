@@ -2,7 +2,7 @@
 	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
 		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/${currentProjectKey}/settings/roles/`">
+			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import SettingsNavigation from '../../../components/navigation/';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
@@ -101,10 +101,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
 		const userStore = useUserStore();
 
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
@@ -132,7 +130,6 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			currentProjectKey,
 			marked,
 		};
 
@@ -146,7 +143,7 @@ export default defineComponent({
 		async function saveAndQuit() {
 			await save();
 			await userStore.hydrate();
-			router.push(`/${currentProjectKey.value}/settings/roles`);
+			router.push(`/settings/roles`);
 		}
 
 		async function saveAndStay() {
@@ -157,17 +154,17 @@ export default defineComponent({
 		async function saveAndAddNew() {
 			await save();
 			await userStore.hydrate();
-			router.push(`/${currentProjectKey.value}/settings/roles/+`);
+			router.push(`/settings/roles/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/settings/roles/${newPrimaryKey}`);
+			router.push(`/settings/roles/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/settings/roles`);
+			router.push(`/settings/roles`);
 		}
 	},
 });

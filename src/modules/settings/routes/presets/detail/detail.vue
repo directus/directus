@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import SettingsNavigation from '../../../components/navigation';
 import { CollectionPreset, Filter } from '@/stores/collection-presets/types';
 import api from '@/api';
@@ -122,7 +122,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
 		const collectionsStore = useCollectionsStore();
 		const collectionPresetsStore = useCollectionPresetsStore();
 		const { backLink } = useLinks();
@@ -165,8 +164,6 @@ export default defineComponent({
 			return { saving, save };
 
 			async function save() {
-				const { currentProjectKey } = projectsStore.state;
-
 				saving.value = true;
 
 				const editsParsed: Partial<CollectionPreset> = {};
@@ -189,9 +186,9 @@ export default defineComponent({
 
 				try {
 					if (isNew.value === true) {
-						await api.post(`/${currentProjectKey}/collection_presets`, editsParsed);
+						await api.post(`/collection_presets`, editsParsed);
 					} else {
-						await api.patch(`/${currentProjectKey}/collection_presets/${props.id}`, editsParsed);
+						await api.patch(`/collection_presets/${props.id}`, editsParsed);
 					}
 
 					await collectionPresetsStore.hydrate();
@@ -201,7 +198,7 @@ export default defineComponent({
 					console.error(err);
 				} finally {
 					saving.value = false;
-					router.push(`/${currentProjectKey}/settings/presets`);
+					router.push(`/settings/presets`);
 				}
 			}
 		}
@@ -213,13 +210,11 @@ export default defineComponent({
 			return { deleting, confirmDelete, deleteAndQuit };
 
 			async function deleteAndQuit() {
-				const { currentProjectKey } = projectsStore.state;
-
 				deleting.value = true;
 
 				try {
-					await api.delete(`/${currentProjectKey}/collection_presets/${props.id}`);
-					router.push(`/${currentProjectKey}/settings/presets`);
+					await api.delete(`/collection_presets/${props.id}`);
+					router.push(`/settings/presets`);
 				} catch (error) {
 					console.error(error);
 				} finally {
@@ -316,11 +311,10 @@ export default defineComponent({
 			return { loading, error, preset, fetchPreset };
 
 			async function fetchPreset() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/collection_presets/${props.id}`);
+					const response = await api.get(`/collection_presets/${props.id}`);
 
 					preset.value = response.data.data;
 				} catch (err) {
@@ -333,9 +327,7 @@ export default defineComponent({
 
 		function useLinks() {
 			const backLink = computed(() => {
-				const { currentProjectKey } = projectsStore.state;
-
-				return `/${currentProjectKey}/settings/presets`;
+				return `/settings/presets`;
 			});
 
 			return { backLink };
@@ -351,11 +343,10 @@ export default defineComponent({
 			return { loading, error, users };
 
 			async function fetchUsers() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/users`, {
+					const response = await api.get(`/users`, {
 						params: {
 							fields: ['first_name', 'last_name', 'id'],
 						},
@@ -383,11 +374,10 @@ export default defineComponent({
 			return { loading, error, roles };
 
 			async function fetchRoles() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/roles`, {
+					const response = await api.get(`/roles`, {
 						params: {
 							fields: ['name', 'id'],
 						},

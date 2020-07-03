@@ -15,7 +15,8 @@
 import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
-import { useProjectsStore } from '@/stores/projects';
+import { useSettingsStore } from '@/stores/settings';
+
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
 
@@ -23,17 +24,17 @@ export default defineComponent({
 	setup() {
 		const appStore = useAppStore();
 		const userStore = useUserStore();
-		const projectsStore = useProjectsStore();
+		const settingsStore = useSettingsStore();
 
 		const { hydrating, drawerOpen } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': projectsStore.currentProject.value?.color || 'var(--primary)',
+				'--brand': settingsStore.state.settings?.project_color || 'var(--primary)',
 			};
 		});
 
-		watch(() => projectsStore.currentProject.value?.color, setFavicon);
+		watch(() => settingsStore.state.settings?.project_color, setFavicon);
 
 		const { width } = useWindowSize();
 

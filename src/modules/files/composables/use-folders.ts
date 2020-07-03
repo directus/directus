@@ -1,6 +1,5 @@
 import api from '@/api';
 import { ref, Ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
 
 type FolderRaw = {
 	id: number;
@@ -20,8 +19,6 @@ let folders: Ref<Folder[] | null> | null = null;
 let error: Ref<any> | null = null;
 
 export default function useFolders() {
-	const projectsStore = useProjectsStore();
-
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
@@ -40,7 +37,7 @@ export default function useFolders() {
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/${projectsStore.state.currentProjectKey}/folders`, {
+			const response = await api.get(`/folders`, {
 				params: {
 					limit: -1,
 					sort: 'name',

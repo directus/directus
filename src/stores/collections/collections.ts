@@ -1,7 +1,6 @@
 import { createStore } from 'pinia';
 import api from '@/api';
 import { Collection, CollectionRaw } from './types';
-import { useProjectsStore } from '@/stores/projects';
 import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
@@ -22,10 +21,7 @@ export const useCollectionsStore = createStore({
 	},
 	actions: {
 		async hydrate() {
-			const projectsStore = useProjectsStore();
-			const currentProjectKey = projectsStore.state.currentProjectKey;
-
-			const response = await api.get(`/${currentProjectKey}/collections`);
+			const response = await api.get(`/collections`);
 
 			const collections: CollectionRaw[] = response.data.data;
 
@@ -60,10 +56,8 @@ export const useCollectionsStore = createStore({
 			this.reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
-			const { currentProjectKey } = useProjectsStore().state;
-
 			try {
-				await api.patch(`${currentProjectKey}/collections/${collection}`, updates);
+				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
 				notify({
 					type: 'success',
@@ -80,10 +74,8 @@ export const useCollectionsStore = createStore({
 			}
 		},
 		async deleteCollection(collection: string) {
-			const { currentProjectKey } = useProjectsStore().state;
-
 			try {
-				await api.delete(`${currentProjectKey}/collections/${collection}`);
+				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
 				notify({
 					type: 'success',

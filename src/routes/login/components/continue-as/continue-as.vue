@@ -13,17 +13,15 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import { hydrate } from '@/hydrate';
 import router from '@/router';
 
 export default defineComponent({
 	setup() {
-		const projectsStore = useProjectsStore();
-
 		const signOutLink = computed<string>(() => {
-			return `/${projectsStore.state.currentProjectKey}/logout`;
+			return `/logout`;
 		});
 
 		const loading = ref(false);
@@ -31,16 +29,16 @@ export default defineComponent({
 		const name = ref<string | null>(null);
 		const lastPage = ref<string | null>(null);
 
-		watch(() => projectsStore.state.currentProjectKey, fetchUser);
+		fetchUser();
 
 		return { name, lastPage, signOutLink, loading, error, hydrateAndLogin };
 
-		async function fetchUser(projectKey: string | null) {
+		async function fetchUser() {
 			loading.value = true;
 			error.value = null;
 
 			try {
-				const response = await api.get(`/${projectKey}/users/me`, {
+				const response = await api.get(`/users/me`, {
 					params: {
 						fields: ['first_name', 'last_name', 'last_page'],
 					},
@@ -57,7 +55,7 @@ export default defineComponent({
 
 		async function hydrateAndLogin() {
 			await hydrate();
-			router.push(`/${projectsStore.state.currentProjectKey}/collections/`);
+			router.push(`/collections/`);
 		}
 	},
 });

@@ -108,7 +108,6 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import ModalBrowse from '@/views/private/components/modal-browse';
-import useProjectsStore from '@/stores/projects/';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 
@@ -138,7 +137,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, error, file, fetchFile } = useFile();
 
@@ -190,10 +188,8 @@ export default defineComponent({
 				}
 
 				loading.value = true;
-				const { currentProjectKey } = projectsStore.state;
-
 				try {
-					const response = await api.get(`/${currentProjectKey}/files/${props.value}`, {
+					const response = await api.get(`/files/${props.value}`, {
 						params: {
 							fields: ['title', 'data', 'type', 'filename_download'],
 						},
@@ -241,10 +237,8 @@ export default defineComponent({
 			async function importFromURL() {
 				loading.value = true;
 
-				const { currentProjectKey } = projectsStore.state;
-
 				try {
-					const response = await api.post(`/${currentProjectKey}/files`, {
+					const response = await api.post(`/files`, {
 						data: url.value,
 					});
 

@@ -39,7 +39,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { Revision, RevisionsByDate } from './types';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
@@ -62,8 +62,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
-
 		const { revisions, revisionsByDate, loading, error, refresh } = useRevisions(
 			props.collection,
 			props.primaryKey
@@ -110,33 +108,28 @@ export default defineComponent({
 			return { revisions, revisionsByDate, error, loading, refresh };
 
 			async function getRevisions() {
-				const { currentProjectKey } = projectsStore.state;
-
 				error.value = null;
 				loading.value = true;
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${collection}/${primaryKey}/revisions`,
-						{
-							params: {
-								fields: [
-									'id',
-									'data',
-									'delta',
-									'collection',
-									'item',
-									'activity.action',
-									'activity.action_on',
-									'activity.action_by.id',
-									'activity.action_by.first_name',
-									'activity.action_by.last_name',
-									'activity.ip',
-									'activity.user_agent',
-								],
-							},
-						}
-					);
+					const response = await api.get(`/items/${collection}/${primaryKey}/revisions`, {
+						params: {
+							fields: [
+								'id',
+								'data',
+								'delta',
+								'collection',
+								'item',
+								'activity.action',
+								'activity.action_on',
+								'activity.action_by.id',
+								'activity.action_by.first_name',
+								'activity.action_by.last_name',
+								'activity.ip',
+								'activity.user_agent',
+							],
+						},
+					});
 
 					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
 						// revision's action_on date is in iso-8601

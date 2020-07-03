@@ -1,5 +1,5 @@
 import { computed } from '@vue/composition-api';
-import { useProjectsStore } from '@/stores/projects/';
+
 import { useCollectionsStore } from '@/stores/collections/';
 import { Collection } from '@/stores/collections/types';
 import VueI18n from 'vue-i18n';
@@ -19,7 +19,7 @@ export type NavItemGroup = {
 
 export default function useNavigation() {
 	const collectionsStore = useCollectionsStore();
-	const projectsStore = useProjectsStore();
+
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
@@ -39,7 +39,7 @@ export default function useNavigation() {
 							collection: collection,
 							name: collectionInfo.name,
 							icon: collectionInfo.icon,
-							to: `/${projectsStore.state.currentProjectKey}/collections/${collection}`,
+							to: `/collections/${collection}`,
 						};
 
 						return navItem;
@@ -58,7 +58,7 @@ export default function useNavigation() {
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.icon,
-					to: `/${projectsStore.state.currentProjectKey}/collections/${collection.collection}`,
+					to: `/collections/${collection.collection}`,
 				};
 
 				return navItem;

@@ -123,7 +123,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed, reactive } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
+
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
@@ -155,8 +155,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
-
 		const localActive = ref(false);
 
 		const _active = computed({
@@ -240,11 +238,9 @@ export default defineComponent({
 			};
 
 			async function fetchImage() {
-				const { currentProjectKey } = projectsStore.state;
-
 				try {
 					loading.value = true;
-					const response = await api.get(`/${currentProjectKey}/files/${props.id}`, {
+					const response = await api.get(`/files/${props.id}`, {
 						params: {
 							fields: ['data', 'type', 'filesize', 'filename_download', 'width', 'height'],
 						},
@@ -259,7 +255,6 @@ export default defineComponent({
 			}
 
 			function save() {
-				const { currentProjectKey } = projectsStore.state;
 				saving.value = true;
 
 				cropperInstance.value
@@ -276,7 +271,7 @@ export default defineComponent({
 						formData.append('file', blob, imageData.value?.filename_download);
 
 						try {
-							await api.post(`/${currentProjectKey}/files/${props.id}`, formData);
+							await api.post(`/files/${props.id}`, formData);
 							emit('refresh');
 							_active.value = false;
 						} catch (err) {

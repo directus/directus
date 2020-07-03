@@ -95,7 +95,6 @@ import { HeaderRaw } from '../../../../../components/v-table/types';
 import { i18n } from '@/lang/';
 import useCollectionsStore from '@/stores/collections';
 import { Collection } from '@/stores/collections/types';
-import useProjectsStore from '@/stores/projects';
 import router from '@/router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options';
@@ -129,8 +128,7 @@ export default defineComponent({
 		]);
 
 		function openCollection({ collection }: Collection) {
-			const { currentProjectKey } = useProjectsStore().state;
-			router.push(`/${currentProjectKey}/settings/data-model/${collection}`);
+			router.push(`/settings/data-model/${collection}`);
 		}
 
 		const { items } = useItems();

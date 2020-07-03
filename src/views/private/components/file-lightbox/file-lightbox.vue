@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import api from '@/api';
-import { useProjectsStore } from '@/stores/projects';
+
 import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
@@ -57,8 +57,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
-
 		const localActive = ref(false);
 
 		const _active = computed({
@@ -89,13 +87,12 @@ export default defineComponent({
 		return { _active, cacheBuster, loading, error, file };
 
 		async function fetchFile() {
-			const { currentProjectKey } = projectsStore.state;
 			cacheBuster.value = nanoid();
 
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/${currentProjectKey}/files/${props.id}`, {
+				const response = await api.get(`/files/${props.id}`, {
 					params: {
 						fields: ['data', 'type', 'width', 'height', 'title'],
 					},

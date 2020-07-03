@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, reactive } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import InstallWelcome from './install-welcome.vue';
 import InstallRequirements from './install-requirements.vue';
 import InstallProject from './install-project.vue';
@@ -46,10 +46,11 @@ export default defineComponent({
 		InstallFinal,
 	},
 	setup() {
-		const projectsStore = useProjectsStore();
-
 		const first = computed(() => {
-			return projectsStore.state.needsInstall;
+			/**
+			 * @todo remove difference between first or not (it's always first now)
+			 */
+			return true;
 		});
 
 		const panes = ['welcome', 'requirements', 'project', 'database', 'final'];
@@ -95,7 +96,6 @@ export default defineComponent({
 		}
 
 		async function finish() {
-			await projectsStore.hydrate();
 			router.push('/');
 		}
 	},

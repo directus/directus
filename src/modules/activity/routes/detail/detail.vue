@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
+
 import ActivityNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import useItem from '@/composables/use-item';
@@ -50,8 +50,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
@@ -69,7 +67,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: i18n.t('activity_log'),
-					to: `/${currentProjectKey.value}/activity/`,
+					to: `/activity/`,
 				},
 			]);
 

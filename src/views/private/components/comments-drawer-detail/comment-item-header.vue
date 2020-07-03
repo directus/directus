@@ -69,7 +69,7 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
-import useProjectsStore from '@/stores/projects';
+
 import api from '@/api';
 import localizedFormat from '@/utils/localized-format';
 
@@ -99,8 +99,6 @@ export default defineComponent({
 			}
 		);
 
-		const projectsStore = useProjectsStore();
-
 		const formattedTime = computed(() => {
 			if (props.activity.action_on) {
 				// action_on is in iso-8601
@@ -124,8 +122,6 @@ export default defineComponent({
 		return { formattedTime, avatarSource, confirmDelete, deleting, remove, editedOnFormatted };
 
 		function useDelete() {
-			const { currentProjectKey } = projectsStore.state;
-
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
@@ -135,7 +131,7 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					await api.delete(`/${currentProjectKey}/activity/comment/${props.activity.id}`);
+					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
 				} catch (error) {

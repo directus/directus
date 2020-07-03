@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs, Ref, watch, PropType } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
 import useRelationsStore from '@/stores/relations';
 import useCollectionsStore from '@/stores/collections';
 import useCollection from '@/composables/use-collection';
@@ -73,7 +72,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const projectsStore = useProjectsStore();
 		const collectionsStore = useCollectionsStore();
 		const relationsStore = useRelationsStore();
 
@@ -137,7 +135,6 @@ export default defineComponent({
 			return { languages, loading, error, primaryKeyField };
 
 			async function fetchLanguages() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				const fields = getFieldsFromTemplate(props.template);
@@ -147,7 +144,7 @@ export default defineComponent({
 				}
 
 				try {
-					const response = await api.get(`/${currentProjectKey}/items/${props.languagesCollection}`, {
+					const response = await api.get(`/items/${props.languagesCollection}`, {
 						params: {
 							fields: fields,
 							limit: -1,
@@ -180,18 +177,14 @@ export default defineComponent({
 			return { loading, items, error };
 
 			async function fetchCurrent() {
-				const { currentProjectKey } = projectsStore.state;
 				loading.value = true;
 
 				try {
-					const response = await api.get(
-						`/${currentProjectKey}/items/${props.collection}/${props.primaryKey}`,
-						{
-							params: {
-								fields: props.field + '.*',
-							},
-						}
-					);
+					const response = await api.get(`/items/${props.collection}/${props.primaryKey}`, {
+						params: {
+							fields: props.field + '.*',
+						},
+					});
 
 					items.value = response.data.data[props.field];
 				} catch (err) {

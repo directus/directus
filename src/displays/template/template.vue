@@ -21,7 +21,6 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useProjectsStore from '@/stores/projects';
 import useCollection from '@/composables/use-collection';
 import ValueNull from '@/views/private/components/value-null';
 
@@ -50,8 +49,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
 		});
@@ -66,10 +63,9 @@ export default defineComponent({
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
-			const { currentProjectKey } = projectsStore.state;
 			const primaryKey = item[primaryKeyField.value.field];
 
-			return `/${currentProjectKey}/collections/${relatedCollection.value}/${primaryKey}`;
+			return `/collections/${relatedCollection.value}/${primaryKey}`;
 		}
 	},
 });

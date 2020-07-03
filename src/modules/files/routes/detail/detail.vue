@@ -144,7 +144,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
@@ -200,8 +199,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const projectsStore = useProjectsStore();
-		const { currentProjectKey } = toRefs(projectsStore.state);
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
@@ -295,7 +292,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: i18n.t('file_library'),
-					to: `/${currentProjectKey.value}/files/`,
+					to: `/files/`,
 				},
 			]);
 
@@ -304,7 +301,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
-			router.push(`/${currentProjectKey.value}/files`);
+			router.push(`/files`);
 		}
 
 		async function saveAndStay() {
@@ -315,23 +312,23 @@ export default defineComponent({
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const newPrimaryKey = savedItem.id;
-				router.replace(`/${currentProjectKey.value}/collections/files/${newPrimaryKey}`);
+				router.replace(`/collections/files/${newPrimaryKey}`);
 			}
 		}
 
 		async function saveAndAddNew() {
 			await save();
-			router.push(`/${currentProjectKey.value}/files/+`);
+			router.push(`/files/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/${currentProjectKey.value}/files/${newPrimaryKey}`);
+			router.push(`/files/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			await remove();
-			router.push(`/${currentProjectKey.value}/files`);
+			router.push(`/files`);
 		}
 
 		function discardAndLeave() {
@@ -349,10 +346,8 @@ export default defineComponent({
 
 			async function moveToFolder() {
 				moving.value = true;
-				const { currentProjectKey } = projectsStore.state;
-
 				try {
-					await api.patch(`/${currentProjectKey}/files/${props.primaryKey}`, {
+					await api.patch(`/files/${props.primaryKey}`, {
 						folder: selectedFolder.value,
 					});
 					await refresh();

@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
-import useProjectsStore from '@/stores/projects';
+
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
@@ -87,7 +87,6 @@ export default defineComponent({
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
-		const projectsStore = useProjectsStore();
 
 		const selection = ref<Item[]>([]);
 
@@ -138,15 +137,13 @@ export default defineComponent({
 			return { confirmDelete, deleting, batchDelete };
 
 			async function batchDelete() {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				deleting.value = true;
 
 				confirmDelete.value = false;
 
 				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
 
-				await api.delete(`/${currentProjectKey}/settings/webhooks/${batchPrimaryKeys}`);
+				await api.delete(`/settings/webhooks/${batchPrimaryKeys}`);
 
 				await layout.value?.refresh();
 
@@ -158,14 +155,12 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-				return `/${currentProjectKey}/settings/webhooks/+`;
+				return `/settings/webhooks/+`;
 			});
 
 			const batchLink = computed<string>(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
 				const batchPrimaryKeys = selection.value.map((item) => item.id).join();
-				return `/${currentProjectKey}/settings/webhooks/${batchPrimaryKeys}`;
+				return `/settings/webhooks/${batchPrimaryKeys}`;
 			});
 
 			return { addNewLink, batchLink };
@@ -173,12 +168,10 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
-				const currentProjectKey = projectsStore.state.currentProjectKey;
-
 				return [
 					{
 						name: i18n.tc('collection', 2),
-						to: `/${currentProjectKey}/collections`,
+						to: `/collections`,
 					},
 				];
 			});

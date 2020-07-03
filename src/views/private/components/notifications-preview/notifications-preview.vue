@@ -34,7 +34,6 @@ import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import DrawerButton from '../drawer-button';
 import NotificationItem from '../notification-item';
 import useNotificationsStore from '@/stores/notifications';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	components: { DrawerButton, NotificationItem },
@@ -46,8 +45,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const notificationsStore = useNotificationsStore();
-		const projectsStore = useProjectsStore();
-		const activityLink = computed(() => `/${projectsStore.state.currentProjectKey}/activity`);
+
+		const activityLink = computed(() => `/activity`);
 		const active = ref(false);
 
 		watch(

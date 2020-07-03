@@ -1,6 +1,5 @@
 import api from '@/api';
 import { Ref, ref, watch, computed } from '@vue/composition-api';
-import useProjectsStore from '@/stores/projects';
 import notify from '@/utils/notify';
 import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
@@ -20,10 +19,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 
 	const endpoint = computed(() => {
-		const currentProjectKey = useProjectsStore().state.currentProjectKey;
 		return collection.value.startsWith('directus_')
-			? `/${currentProjectKey}/${collection.value.substring(9)}`
-			: `/${currentProjectKey}/items/${collection.value}`;
+			? `/${collection.value.substring(9)}`
+			: `/items/${collection.value}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });

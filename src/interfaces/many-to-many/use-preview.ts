@@ -1,6 +1,5 @@
 import { Ref, ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import useProjectsStore from '@/stores/projects';
 import { Field } from '@/stores/fields/types';
 import { merge } from 'lodash';
 import { Relation } from '@/stores/relations/types';
@@ -36,8 +35,6 @@ export default function usePreview({
 	relatedCollection,
 	fields,
 }: PreviewParam) {
-	const projectsStore = useProjectsStore();
-
 	const loading = ref(false);
 	const previewItems = ref<readonly any[]>([]);
 	const error = ref(null);
@@ -107,7 +104,6 @@ export default function usePreview({
 		// yet, as they can't have been saved yet.
 		if (primaryKey.value === '+') return [];
 
-		const { currentProjectKey } = projectsStore.state;
 		const junctionTable = relationCurrentToJunction.value.collection_many;
 
 		// The stuff we want to fetch is the related junction row, and the content of the
@@ -128,7 +124,7 @@ export default function usePreview({
 		if (fieldsToFetch.includes(`${junctionField}.${relatedPrimaryKey}`) === false)
 			fieldsToFetch.push(`${junctionField}.${relatedPrimaryKey}`);
 
-		const response = await api.get(`/${currentProjectKey}/items/${junctionTable}`, {
+		const response = await api.get(`/items/${junctionTable}`, {
 			params: {
 				fields: adjustFieldsForDisplay(fieldsToFetch, junctionCollection.value),
 				[`filter[${currentInJunction}][eq]`]: primaryKey.value,
@@ -188,8 +184,6 @@ export default function usePreview({
 		if (!relationJunctionToRelated.value) return [];
 		if (!relationJunctionToRelated.value.junction_field) return [];
 
-		const { currentProjectKey } = projectsStore.state;
-
 		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
 		const junctionField = relationCurrentToJunction.value.junction_field;
 		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
@@ -223,8 +217,8 @@ export default function usePreview({
 		if (fieldsToFetch.includes(relatedPrimaryKey) === false) fieldsToFetch.push(relatedPrimaryKey);
 
 		const endpoint = relatedCollection.value.startsWith('directus_')
-			? `/${currentProjectKey}/${relatedCollection.value.substring(9)}/${newlySelectedRelatedKeys.join(',')}`
-			: `/${currentProjectKey}/items/${relatedCollection.value}/${newlySelectedRelatedKeys.join(',')}`;
+			? `/${relatedCollection.value.substring(9)}/${newlySelectedRelatedKeys.join(',')}`
+			: `/items/${relatedCollection.value}/${newlySelectedRelatedKeys.join(',')}`;
 
 		const response = await api.get(endpoint, {
 			params: {

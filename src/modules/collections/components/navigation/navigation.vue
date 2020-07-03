@@ -31,7 +31,6 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../../composables/use-navigation';
 import useCollectionPresetsStore from '@/stores/collection-presets';
-import useProjectsStore from '@/stores/projects';
 
 export default defineComponent({
 	props: {
@@ -42,12 +41,9 @@ export default defineComponent({
 	},
 	setup() {
 		const collectionPresetsStore = useCollectionPresetsStore();
-		const projectsStore = useProjectsStore();
 		const { customNavItems, navItems } = useNavigation();
 
 		const bookmarks = computed(() => {
-			const { currentProjectKey } = projectsStore.state;
-
 			return collectionPresetsStore.state.collectionPresets
 				.filter((preset) => {
 					return preset.title !== null && preset.collection.startsWith('directus_') === false;
@@ -55,7 +51,7 @@ export default defineComponent({
 				.map((preset) => {
 					return {
 						...preset,
-						to: `/${currentProjectKey}/collections/${preset.collection}?bookmark=${preset.id}`,
+						to: `/collections/${preset.collection}?bookmark=${preset.id}`,
 					};
 				});
 		});

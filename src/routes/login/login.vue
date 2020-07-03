@@ -2,10 +2,8 @@
 	<public-view>
 		<h1 class="type-title">{{ $t('sign_in') }}</h1>
 
-		<continue-as v-if="currentProject.authenticated" />
-		<v-notice type="danger" v-else-if="currentProject && currentProject.error">
-			{{ errorFormatted }}
-		</v-notice>
+		<continue-as v-if="authenticated" />
+
 		<login-form v-else :sso-error="ssoErrorCode" />
 
 		<template #notice>
@@ -16,12 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
-import useProjectsStore from '../../stores/projects';
-
-import { translateAPIError } from '@/lang';
+import useAppStore from '../../stores/app';
+import useSettingsStore from '../../stores/settings';
 
 export default defineComponent({
 	props: {
@@ -32,17 +29,13 @@ export default defineComponent({
 	},
 	components: { LoginForm, ContinueAs },
 	setup() {
-		const projectsStore = useProjectsStore();
+		const appStore = useAppStore();
+		const settingsStore = useSettingsStore();
 
-		const errorFormatted = computed(() => {
-			if (projectsStore.currentProject.value?.error) {
-				return translateAPIError(projectsStore.currentProject.value.error.code);
-			}
-
-			return null;
-		});
-
-		return { errorFormatted, currentProject: projectsStore.currentProject };
+		return {
+			authenticated: appStore.state.authenticated,
+			currentProject: settingsStore.state.settings,
+		};
 	},
 });
 </script>
