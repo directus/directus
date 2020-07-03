@@ -18,7 +18,7 @@ export default defineComponent({
 		type: {
 			type: String as PropType<'datetime' | 'time' | 'date'>,
 			required: true,
-			validator: (val: string) => ['datetime', 'date', 'time'].includes(val),
+			validator: (val: string) => ['datetime', 'date', 'time', 'timestamp'].includes(val),
 		},
 	},
 	setup(props) {
@@ -45,7 +45,8 @@ export default defineComponent({
 				if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
 				displayValue.value = await formatLocalized(date, format);
-			}
+			},
+			{ immediate: true }
 		);
 
 		return { displayValue };

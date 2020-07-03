@@ -85,7 +85,7 @@
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
-			:detail-route="'/{{project}}/files/{{primaryKey}}'"
+			:detail-route="'/files/{{primaryKey}}'"
 		/>
 
 		<template #drawer>

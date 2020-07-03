@@ -72,7 +72,6 @@ export const withMiddleware = () =>
 			return { count, middleware };
 
 			function middleware(event: any) {
-				console.log(!!event.target.dataset);
 				return event.target.classList.contains('prevent') === false;
 			}
 		},

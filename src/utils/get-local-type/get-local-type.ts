@@ -70,7 +70,7 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	bpchar: { type: 'string' },
 	timestamptz: { type: 'timestamp' },
 	'timestamp with time zone': { type: 'timestamp', useTimezone: true },
-	'timestamp without thime zone': { type: 'timestamp' },
+	'timestamp without time zone': { type: 'timestamp' },
 	timetz: { type: 'time' },
 	'time with time zone': { type: 'time', useTimezone: true },
 	'time without time zone': { type: 'time' },
@@ -79,7 +79,7 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 };
 
 export default function getLocalType(databaseType: string): Type {
-	const type = localTypeMap[databaseType];
+	const type = localTypeMap[databaseType.toLowerCase()];
 
 	if (type) {
 		return type.type;

@@ -55,7 +55,7 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/users/{{item.role}}/{{primaryKey}}'"
+			:detail-route="'/users/{{item.role}}/{{primaryKey}}'"
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
