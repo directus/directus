@@ -8,36 +8,56 @@ import formatTitle from '@directus/format-title';
 import notify from '@/utils/notify';
 import useRelationsStore from '@/stores/relations';
 import { Relation } from '@/stores/relations/types';
+import getLocalType from '@/utils/get-local-type';
 
 const fakeFilesField: Field = {
-	id: -1,
 	collection: 'directus_files',
 	field: '$file',
+	database: null,
 	name: i18n.t('file'),
-	datatype: null,
-	type: 'file',
-	unique: false,
-	primary_key: false,
-	default_value: null,
-	auto_increment: false,
-	note: null,
-	signed: false,
-	sort: 0,
-	interface: null,
-	options: null,
-	display: 'file',
-	display_options: null,
-	hidden_detail: true,
-	hidden_browse: false,
-	locked: true,
-	required: false,
-	translation: null,
-	readonly: true,
-	width: 'full',
-	validation: null,
-	group: null,
-	length: null,
+	type: 'integer',
+	system: {
+		id: -1,
+		collection: 'directus_files',
+		field: '$file',
+		sort: null,
+		special: null,
+		interface: null,
+		options: null,
+		display: 'file',
+		display_options: null,
+		hidden_detail: true,
+		hidden_browse: false,
+		locked: true,
+		required: false,
+		translation: null,
+		readonly: true,
+		width: 'full',
+		group: null,
+	},
 };
+
+function getSystemDefault(collection: string, field: string): Field['system'] {
+	return {
+		id: -1,
+		collection,
+		field,
+		group: null,
+		hidden_browse: false,
+		hidden_detail: false,
+		interface: null,
+		display: null,
+		display_options: null,
+		locked: false,
+		options: null,
+		readonly: false,
+		required: false,
+		sort: null,
+		special: null,
+		translation: null,
+		width: 'full',
+	};
+}
 
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
@@ -62,17 +82,20 @@ export const useFieldsStore = createStore({
 			 * is a fake m2o to itself.
 			 */
 
-			this.state.fields = [...fields.map(this.addTranslationsForField), fakeFilesField];
+			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
 		},
 		async dehydrate() {
 			this.reset();
 		},
-		addTranslationsForField(field: Field) {
+		parseField(field: FieldRaw): Field {
 			let name: string | VueI18n.TranslateResult;
 
-			if (notEmpty(field.translation) && field.translation.length > 0) {
-				for (let i = 0; i < field.translation.length; i++) {
-					const { locale, translation } = field.translation[i];
+			const type = field.database === null ? 'alias' : getLocalType(field.database.type);
+			const system = field.system === null ? getSystemDefault(field.collection, field.field) : field.system;
+
+			if (notEmpty(system.translation) && system.translation.length > 0) {
+				for (let i = 0; i < system.translation.length; i++) {
+					const { locale, translation } = system.translation[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
@@ -89,6 +112,8 @@ export const useFieldsStore = createStore({
 			return {
 				...field,
 				name,
+				type,
+				system,
 			};
 		},
 		async createField(collectionKey: string, newField: Field) {
@@ -247,7 +272,7 @@ export const useFieldsStore = createStore({
 			/** @NOTE it's safe to assume every collection has a primary key */
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.state.fields.find(
-				(field) => field.collection === collection && field.primary_key === true
+				(field) => field.collection === collection && field.database?.is_primary_key === true
 			);
 
 			return primaryKeyField;

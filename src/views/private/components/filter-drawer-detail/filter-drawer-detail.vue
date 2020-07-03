@@ -72,7 +72,10 @@ export default defineComponent({
 		const fieldTree = computed<FieldTree[]>(() => {
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
-				.filter((field: Field) => field.hidden_browse === false && field.type.toLowerCase() !== 'alias')
+				.filter(
+					(field: Field) =>
+						field.system?.hidden_browse !== true && field.system?.special?.toLowerCase() !== 'alias'
+				)
 				.map((field: Field) => parseField(field, []));
 
 			function parseField(field: Field, parents: Field[]) {
@@ -101,7 +104,8 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.hidden_browse === false && field.type.toLowerCase() !== 'alias'
+										field.system?.hidden_browse !== true &&
+										field.system?.special?.toLowerCase() !== 'alias'
 								);
 						})
 						.flat()

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { computed, Ref } from '@vue/composition-api';
 import { isEmpty } from '@/utils/is-empty';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
@@ -14,37 +16,36 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		 *
 		 * This can be optimized by combining a bunch of these maps and filters
 		 */
-
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
-			const hiddenDetail = field.hidden_detail;
+			const hiddenDetail = field.system?.hidden_detail;
 			if (isEmpty(hiddenDetail)) return true;
 			return hiddenDetail === false;
 		});
 
 		// Sort the fields on the sort column value
 		formFields = formFields.sort((a, b) => {
-			if (a.sort == b.sort) return 0;
-			if (a.sort === null || a.sort === undefined) return 1;
-			if (b.sort === null || b.sort === undefined) return -1;
-			return a.sort > b.sort ? 1 : -1;
+			if (a.system!.sort == b.system!.sort) return 0;
+			if (a.system!.sort === null || a.system!.sort === undefined) return 1;
+			if (b.system!.sort === null || b.system!.sort === undefined) return -1;
+			return a.system!.sort > b.system!.sort ? 1 : -1;
 		});
 
 		// Make sure all form fields have a width associated with it
 		formFields = formFields.map((field) => {
-			if (!field.width) {
-				field.width = 'full';
+			if (!field.system!.width) {
+				field.system!.width = 'full';
 			}
 
 			return field;
 		});
 
 		formFields = formFields.map((field) => {
-			const interfaceUsed = interfaces.find((int) => int.id === field.interface);
+			const interfaceUsed = interfaces.find((int) => int.id === field.system!.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
-				field.interface = getDefaultInterfaceForType(field.type);
+				field.system!.interface = getDefaultInterfaceForType(field.system!.type);
 			}
 
 			if (interfaceUsed?.hideLabel === true) {
@@ -63,11 +64,11 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		formFields = formFields.map((field, index, formFields) => {
 			if (index === 0) return field;
 
-			if (field.width === 'half') {
+			if (field.system!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				if (prevField.width === 'half') {
-					field.width = 'half-right';
+				if (prevField.system!.width === 'half') {
+					field.system!.width = 'half-right';
 				}
 			}
 

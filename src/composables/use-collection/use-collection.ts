@@ -18,19 +18,21 @@ export function useCollection(collection: Ref<string>) {
 	const primaryKeyField = computed(() => {
 		// Every collection has a primary key; rules of the land
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return fields.value?.find((field) => field.collection === collection.value && field.primary_key === true)!;
+		return fields.value?.find(
+			(field) => field.collection === collection.value && field.database.is_primary_key === true
+		)!;
 	});
 
 	const userCreatedField = computed(() => {
-		return fields.value?.find((field) => field.type === 'user_created') || null;
+		return fields.value?.find((field) => field.system?.special === 'user_created') || null;
 	});
 
 	const statusField = computed(() => {
-		return fields.value?.find((field) => field.type === 'status') || null;
+		return fields.value?.find((field) => field.system?.special === 'status') || null;
 	});
 
 	const sortField = computed(() => {
-		return fields.value?.find((field) => field.type === 'sort') || null;
+		return fields.value?.find((field) => field.system?.special === 'sort') || null;
 	});
 
 	type Status = {
@@ -48,7 +50,7 @@ export function useCollection(collection: Ref<string>) {
 	const softDeleteStatus = computed<string | null>(() => {
 		if (statusField.value === null) return null;
 
-		const statuses = Object.values(statusField.value?.options?.status_mapping || {});
+		const statuses = Object.values(statusField.value?.system?.options?.status_mapping || {});
 		return (
 			(statuses.find((status) => (status as Status).soft_delete === true) as Status | undefined)?.value || null
 		);

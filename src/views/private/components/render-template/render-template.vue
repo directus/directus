@@ -64,9 +64,9 @@ export default defineComponent({
 					if (value === undefined) return '???';
 
 					// If no display is configured, we can render the raw value
-					if (field.display === null) return value;
+					if (field.system?.display === null) return value;
 
-					const displayInfo = displays.find((display) => display.id === field.display);
+					const displayInfo = displays.find((display) => display.id === field.system?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
@@ -74,16 +74,16 @@ export default defineComponent({
 					// If the display handler is a function, we parse the value and return the result
 					if (typeof displayInfo.handler === 'function') {
 						const handler = displayInfo.handler as Function;
-						return handler(value, field.display_options);
+						return handler(value, field.system?.display_options);
 					}
 
 					return {
-						component: field.display,
-						options: field.display_options,
+						component: field.system?.display,
+						options: field.system?.display_options,
 						value: value,
-						interface: field.interface,
-						interfaceOptions: field.options,
-						type: field.type,
+						interface: field.system?.interface,
+						interfaceOptions: field.system?.options,
+						type: field.system?.special /** @todo check what this is used for */,
 					};
 				})
 				.map((p) => p)

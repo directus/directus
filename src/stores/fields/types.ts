@@ -7,98 +7,72 @@ type Translation = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export type Type =
+export type LocalType =
 	| 'alias'
-	| 'array'
-	| 'boolean'
+	| 'bigInteger'
 	| 'binary'
-	| 'datetime'
+	| 'binary'
+	| 'boolean'
 	| 'date'
-	| 'time'
-	| 'file'
-	| 'files'
-	| 'hash'
-	| 'group'
-	| 'integer'
+	| 'datetime'
 	| 'decimal'
-	| 'json'
-	| 'lang'
-	| 'm2o'
-	| 'o2m'
-	| 'm2m'
-	| 'slug'
-	| 'sort'
-	| 'status'
+	| 'float'
+	| 'integer'
 	| 'string'
-	| 'translation'
-	| 'uuid'
-	| 'datetime_created'
-	| 'datetime_updated'
-	| 'user_created'
-	| 'user_updated'
-	| 'user';
+	| 'text'
+	| 'time'
+	| 'timestamp'
+	| 'unknown';
 
-export const types: Type[] = [
-	'alias',
-	'array',
-	'boolean',
-	'binary',
-	'datetime',
-	'date',
-	'time',
-	'file',
-	'files',
-	'hash',
-	'group',
-	'integer',
-	'decimal',
-	'json',
-	'lang',
-	'm2o',
-	'o2m',
-	'm2m',
-	'slug',
-	'sort',
-	'status',
-	'string',
-	'translation',
-	'uuid',
-	'datetime_created',
-	'datetime_updated',
-	'user_created',
-	'user_updated',
-	'user',
-];
+export type DatabaseColumn = {
+	/** @todo import this from knex-schema-inspector when that's launched */
+	name: string;
+	table: string;
+	type: string;
+	default_value: any | null;
+	max_length: number | null;
+	is_nullable: boolean;
+	is_primary_key: boolean;
+	has_auto_increment: boolean;
+	foreign_key_column: string | null;
+	foreign_key_table: string | null;
+	comment: string | null;
 
-export interface FieldRaw {
+	// Postgres Only
+	schema?: string;
+	foreign_key_schema?: string | null;
+};
+
+export type SystemField = {
 	id: number;
 	collection: string;
 	field: string;
-	datatype: string | null;
-	unique: boolean;
-	primary_key: boolean;
-	auto_increment: boolean;
-	default_value: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-	note: string | TranslateResult | null;
-	signed: boolean;
-	type: Type;
-	sort: null | number;
-	interface: string | null;
-	options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
-	display: string | null;
-	display_options: null | { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
-	hidden_detail: boolean;
-	hidden_browse: boolean;
-	required: boolean;
-	locked: boolean;
-	translation: null | Translation[];
-	readonly: boolean;
-	width: null | Width;
-	validation: string | null;
 	group: number | null;
-	length: string | number | null;
+	hidden_browse: boolean;
+	hidden_detail: boolean;
+	locked: boolean;
+	interface: string | null;
+	display: string | null;
+	options: null | Record<string, any>;
+	display_options: null | Record<string, any>;
+	readonly: boolean;
+	required: boolean;
+	sort: number | null;
+	special: string | null;
+	translation: null | Translation[];
+	width: Width | null;
+};
+
+export interface FieldRaw {
+	collection: string;
+	field: string;
+
+	database: DatabaseColumn | null;
+	system: SystemField | null;
 }
 
 export interface Field extends FieldRaw {
 	name: string | TranslateResult;
+	type: LocalType;
+	system: SystemField;
 }

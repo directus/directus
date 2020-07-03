@@ -14,11 +14,11 @@ export function defineModule(config: ModuleDefineParam | ((context: ModuleContex
 	if (options.routes !== undefined) {
 		options.routes = options.routes.map((route) => {
 			if (route.path) {
-				route.path = `/:project/${options.id}${route.path}`;
+				route.path = `/${options.id}${route.path}`;
 			}
 
 			if (route.redirect) {
-				route.redirect = `/:project/${options.id}${route.redirect}`;
+				route.redirect = `/${options.id}${route.redirect}`;
 			}
 
 			return route;
