@@ -12,7 +12,7 @@ router.post(
 	'/',
 	useCollection('directus_relations'),
 	asyncHandler(async (req, res) => {
-		const item = await RelationsService.createRelation(req.body, res.locals.query);
+		const item = await RelationsService.createRelation(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -33,7 +33,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RelationsService.readRelations(res.locals.query);
+		const records = await RelationsService.readRelations(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -44,7 +44,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await RelationsService.readRelation(req.params.pk, res.locals.query);
+		const record = await RelationsService.readRelation(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -56,7 +56,7 @@ router.patch(
 		const item = await RelationsService.updateRelation(
 			req.params.pk,
 			req.body,
-			res.locals.query
+			req.sanitizedQuery
 		);
 
 		ActivityService.createActivity({

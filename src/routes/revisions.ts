@@ -13,7 +13,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RevisionsService.readRevisions(res.locals.query);
+		const records = await RevisionsService.readRevisions(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -24,7 +24,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await RevisionsService.readRevision(req.params.pk, res.locals.query);
+		const record = await RevisionsService.readRevision(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );

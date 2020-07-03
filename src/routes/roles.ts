@@ -12,7 +12,7 @@ router.post(
 	'/',
 	useCollection('directus_roles'),
 	asyncHandler(async (req, res) => {
-		const item = await RolesService.createRole(req.body, res.locals.query);
+		const item = await RolesService.createRole(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -33,7 +33,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RolesService.readRoles(res.locals.query);
+		const records = await RolesService.readRoles(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -44,7 +44,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await RolesService.readRole(req.params.pk, res.locals.query);
+		const record = await RolesService.readRole(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -53,7 +53,7 @@ router.patch(
 	'/:pk',
 	useCollection('directus_roles'),
 	asyncHandler(async (req, res) => {
-		const item = await RolesService.updateRole(req.params.pk, req.body, res.locals.query);
+		const item = await RolesService.updateRole(req.params.pk, req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.UPDATE,

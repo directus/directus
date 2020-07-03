@@ -40,8 +40,8 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const [records, meta] = await Promise.all([
-			readItems(req.params.collection, res.locals.query),
-			MetaService.getMetaForQuery(req.params.collection, res.locals.query),
+			readItems(req.params.collection, req.sanitizedQuery),
+			MetaService.getMetaForQuery(req.params.collection, req.sanitizedQuery),
 		]);
 
 		return res.json({

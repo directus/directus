@@ -14,7 +14,7 @@ router.post(
 	'/',
 	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
-		const item = await UsersService.createUser(req.body, res.locals.query);
+		const item = await UsersService.createUser(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -35,7 +35,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const item = await UsersService.readUsers(res.locals.query);
+		const item = await UsersService.readUsers(req.sanitizedQuery);
 
 		return res.json({ data: item });
 	})
@@ -47,7 +47,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const items = await UsersService.readUser(req.params.pk, res.locals.query);
+		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: items });
 	})
 );
@@ -56,7 +56,7 @@ router.patch(
 	'/:pk',
 	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
-		const item = await UsersService.updateUser(req.params.pk, req.body, res.locals.query);
+		const item = await UsersService.updateUser(req.params.pk, req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.UPDATE,

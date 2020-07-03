@@ -1,5 +1,7 @@
 import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
+import runAST from '../database/run-ast';
+import getAST from '../utils/get-ast';
 
 export const createItem = async (
 	collection: string,
@@ -15,54 +17,8 @@ export const readItems = async <T = Record<string, any>>(
 	collection: string,
 	query: Query = {}
 ): Promise<T[]> => {
-	const dbQuery = database.select(query?.fields || '*').from(collection);
-
-	if (query.sort) {
-		dbQuery.orderBy(query.sort);
-	}
-
-	if (query.filter) {
-		query.filter.forEach((filter) => {
-			if (filter.operator === 'eq') {
-				dbQuery.where({ [filter.column]: filter.value });
-			}
-
-			if (filter.operator === 'neq') {
-				dbQuery.whereNot({ [filter.column]: filter.value });
-			}
-
-			if (filter.operator === 'null') {
-				dbQuery.whereNull(filter.column);
-			}
-
-			if (filter.operator === 'nnull') {
-				dbQuery.whereNotNull(filter.column);
-			}
-		});
-	}
-
-	if (query.limit && !query.offset) {
-		dbQuery.limit(query.limit);
-	}
-
-	if (query.offset) {
-		dbQuery.offset(query.offset);
-	}
-
-	if (query.page) {
-		dbQuery.offset(query.limit * (query.page - 1));
-	}
-
-	if (query.single) {
-		dbQuery.limit(1);
-	}
-
-	const records = await dbQuery;
-
-	if (query.single) {
-		return records[0];
-	}
-
+	const ast = await getAST(collection, query);
+	const records = await runAST(ast);
 	return records;
 };
 
@@ -72,11 +28,22 @@ export const readItem = async <T = any>(
 	query: Query = {}
 ): Promise<T> => {
 	const primaryKeyField = await schemaInspector.primary(collection);
-	return await database
-		.select('*')
-		.from(collection)
-		.where({ [primaryKeyField]: pk })
-		.first();
+
+	query = {
+		...query,
+		filter: [
+			...query.filter,
+			{
+				column: primaryKeyField,
+				operator: 'eq',
+				value: pk,
+			},
+		],
+	};
+
+	const ast = await getAST(collection, query);
+	const records = await runAST(ast);
+	return records[0];
 };
 
 export const updateItem = async (
