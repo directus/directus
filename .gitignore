@@ -3,7 +3,6 @@ node_modules
 /dist
 storybook-static
 coverage
-package-lock.json
 
 # local env files
 .env.local
