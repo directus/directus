@@ -53,7 +53,7 @@ export const onError = async (error: RequestError) => {
 	/* istanbul ignore next */
 	const code = error.response?.data?.error?.code;
 
-	if (status === 401 && code === 'INVALID_USER_CREDENTIALS') {
+	if (status === 401 && code === 'INVALID_CREDENTIALS') {
 		try {
 			await refresh();
 		} catch {
