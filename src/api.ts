@@ -5,6 +5,7 @@ import getRootPath from '@/utils/get-root-path';
 
 const api = axios.create({
 	baseURL: getRootPath(),
+	withCredentials: true,
 });
 
 interface RequestConfig extends AxiosRequestConfig {
@@ -54,6 +55,8 @@ export const onError = async (error: RequestError) => {
 
 	if (status === 401 && code === 3) {
 		const loggedIn = await checkAuth();
+
+		/** @todo try refreshing the token */
 
 		if (loggedIn === false) {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });

@@ -28,9 +28,33 @@ export async function login(credentials: LoginCredentials) {
 		mode: 'cookie',
 	});
 
-	api.defaults.headers['Authorization'] = `Bearer ${response.data.data.token}`;
+	const accessToken = response.data.data.access_token;
+
+	// Add the header to the API handler for every request
+	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+
+	// Refresh the token 10 seconds before the access token expires. This means the user will stay
+	// logged in without any noticable hickups or delays
+	setTimeout(() => refresh(), response.data.data.expires * 1000 + 10 * 1000);
 
 	await hydrate();
+}
+
+export async function refresh() {
+	try {
+		const response = await api.post('/auth/refresh');
+
+		const accessToken = response.data.data.access_token;
+
+		// Add the header to the API handler for every request
+		api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+
+		// Refresh the token 10 seconds before the access token expires. This means the user will stay
+		// logged in without any noticable hickups or delays
+		setTimeout(() => refresh(), response.data.data.expires * 1000 + 10 * 1000);
+	} catch (error) {
+		await logout({ navigate: true, reason: LogoutReason.ERROR_SESSION_EXPIRED });
+	}
 }
 
 export enum LogoutReason {
