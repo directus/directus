@@ -8,6 +8,7 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone } from 'lodash';
+import { File } from '../types/files';
 
 type Operation = 'create' | 'read' | 'update';
 
@@ -40,11 +41,20 @@ export const processValues = async (
 		processedPayload.map(async (record: any) => {
 			await Promise.all(
 				specialFieldsInCollection.map(async (field) => {
-					record[field.field] = await processField(field, processedPayload, operation);
+					record[field.field] = await processField(field, record, operation);
 				})
 			);
 		})
 	);
+
+	console.log(processedPayload);
+
+	/** @TODO
+	 *
+	 * - Make config.ts file in root
+	 * - Have it cache settings / env vars a la graphql/dataloader (memory-cache)
+	 * - Have it have a function to reload env vars
+	 */
 
 	// Return the payload in it's original format
 	if (Array.isArray(payload) === false) {
@@ -61,11 +71,12 @@ async function processField(
 ) {
 	switch (field.special) {
 		case 'hash':
-			return await genHash(operation, payload[field.field]);
+			return await genHash(operation, payload[field.field], payload);
 		case 'uuid':
-			return await genUUID(operation, payload[field.field]);
+			return await genUUID(operation, payload[field.field], payload);
 		case 'file-links':
-			return await genFileLinks(operation, payload[field.field]);
+			// This is a system special type that only works on directus_files
+			return await genFileLinks(operation, payload[field.field], payload as File);
 		default:
 			return payload[field.field];
 	}
@@ -76,7 +87,7 @@ async function processField(
  * if you have to rely on heavy operations
  */
 
-async function genHash(operation: Operation, value?: any) {
+async function genHash(operation: Operation, value: any, payload: Record<string, any>) {
 	if (!value) return;
 
 	if (operation === 'create' || operation === 'update') {
@@ -86,7 +97,7 @@ async function genHash(operation: Operation, value?: any) {
 	return value;
 }
 
-async function genUUID(operation: Operation, value?: any) {
+async function genUUID(operation: Operation, value: any, payload: Record<string, any>) {
 	if (operation === 'create' && !value) {
 		return uuidv4();
 	}
@@ -94,10 +105,13 @@ async function genUUID(operation: Operation, value?: any) {
 	return value;
 }
 
-async function genFileLinks(operation: Operation, value?: any) {
-	if (operation === 'read') {
-		return 'test';
+async function genFileLinks(operation: Operation, value: undefined, payload: File) {
+	if (operation === 'read' && payload) {
+		return {
+			asset_url: new URL(`/assets/${payload.id}`, process.env.PUBLIC_URL),
+		};
 	}
 
-	return value;
+	// This is an non-existing column, so there isn't any data to save
+	return undefined;
 }
