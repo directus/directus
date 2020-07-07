@@ -65,7 +65,6 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 		refreshToken,
 		expires: ms(process.env.ACCESS_TOKEN_TTL) / 1000,
 		id: user.id,
-		refreshTokenExpiration,
 	};
 };
 
@@ -94,4 +93,8 @@ export const refresh = async (refreshToken: string) => {
 	await database.delete().from('directus_sessions').where({ token: refreshToken });
 
 	return await authenticate({ email: record.email, ip: record.ip, userAgent: record.user_agent });
+};
+
+export const logout = async (refreshToken: string) => {
+	await database.delete().from('directus_sessions').where({ token: refreshToken });
 };

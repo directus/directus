@@ -20,7 +20,7 @@ const loginSchema = Joi.object({
 });
 
 router.post(
-	'/authenticate',
+	'/login',
 	asyncHandler(async (req, res) => {
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
@@ -32,13 +32,7 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const {
-			accessToken,
-			refreshToken,
-			expires,
-			id,
-			refreshTokenExpiration,
-		} = await AuthService.authenticate({
+		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate({
 			ip,
 			userAgent,
 			email,
@@ -82,19 +76,18 @@ router.post(
 	cookieParser(),
 	asyncHandler(async (req, res) => {
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
-		if (!currentRefreshToken)
+
+		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(
 				`"refresh_token" is required in either the JSON payload or Cookie`
 			);
+		}
 
 		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
 
-		const {
-			accessToken,
-			refreshToken,
-			expires,
-			refreshTokenExpiration,
-		} = await AuthService.refresh(currentRefreshToken);
+		const { accessToken, refreshToken, expires } = await AuthService.refresh(
+			currentRefreshToken
+		);
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -116,6 +109,24 @@ router.post(
 		}
 
 		return res.status(200).json(payload);
+	})
+);
+
+router.post(
+	'/logout',
+	cookieParser(),
+	asyncHandler(async (req, res) => {
+		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+
+		if (!currentRefreshToken) {
+			throw new InvalidPayloadException(
+				`"refresh_token" is required in either the JSON payload or Cookie`
+			);
+		}
+
+		await AuthService.logout(currentRefreshToken);
+
+		res.status(200).end();
 	})
 );
 
