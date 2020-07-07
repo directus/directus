@@ -21,6 +21,12 @@ export const readUser = async (pk: string | number, query?: Query) => {
 };
 
 export const updateUser = async (pk: string | number, data: Record<string, any>, query?: Query) => {
+	/**
+	 * @todo
+	 * Remove "other" refresh token sessions when changing password to enforce "logout everywhere" on password change
+	 *
+	 * Maybe make this an option?
+	 */
 	return await ItemsService.updateItem('directus_users', pk, data, query);
 };
 
