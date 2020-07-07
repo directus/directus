@@ -5,7 +5,6 @@ import validateQuery from '../middleware/validate-query';
 import useCollection from '../middleware/use-collection';
 import * as FoldersService from '../services/folders';
 import * as ActivityService from '../services/activity';
-import * as PayloadService from '../services/payload';
 
 const router = express.Router();
 
@@ -13,8 +12,7 @@ router.post(
 	'/',
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
-		const payload = await PayloadService.processValues('create', req.collection, req.body);
-		const record = await FoldersService.createFolder(payload, req.sanitizedQuery);
+		const record = await FoldersService.createFolder(req.body, req.sanitizedQuery);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -55,11 +53,9 @@ router.patch(
 	'/:pk',
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
-		const payload = await PayloadService.processValues('create', req.collection, req.body);
-
 		const record = await FoldersService.updateFolder(
 			req.params.pk,
-			payload,
+			req.body,
 			req.sanitizedQuery
 		);
 

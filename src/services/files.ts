@@ -1,7 +1,6 @@
 import { Query } from '../types/query';
 import * as ItemsService from './items';
 import storage from '../storage';
-import * as PayloadService from './payload';
 import database from '../database';
 import logger from '../logger';
 import sharp from 'sharp';
@@ -9,14 +8,19 @@ import { parse as parseICC } from 'icc';
 import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
-import { SYSTEM_ASSET_WHITELIST } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 export const createFile = async (
 	data: Record<string, any>,
 	stream: NodeJS.ReadableStream,
 	query?: Query
 ) => {
-	const payload = await PayloadService.processValues('create', 'directus_files', data);
+	const id = uuidv4();
+
+	const payload: Record<string, any> = {
+		...data,
+		id,
+	};
 
 	payload.filename_disk = payload.id + path.extname(payload.filename_disk);
 
@@ -55,29 +59,7 @@ export const readFiles = async (query: Query) => {
 };
 
 export const readFile = async (pk: string | number, query: Query) => {
-	const file = await ItemsService.readItem('directus_files', pk, query);
-
-	const { asset_allowlist: assetAllowlist } =
-		(await database.select('asset_allowlist').from('directus_settings').first()) || {};
-
-	const assetSizes = [...SYSTEM_ASSET_WHITELIST, ...(assetAllowlist || [])];
-
-	file.links = {
-		asset_url: new URL(`/assets/${file.id}`, process.env.PUBLIC_URL),
-		/** @TODO confirm is public url is set before returning */
-		original_url: new URL(
-			file.filename_disk,
-			process.env[`STORAGE_${file.storage.toUpperCase()}_PUBLIC_URL`]
-		),
-		thumbnails: assetSizes.map((size) => {
-			return {
-				...size,
-				url: new URL(`/assets/${file.id}?key=${size.key}`, process.env.PUBLIC_URL),
-			};
-		}),
-	};
-
-	return file;
+	return await ItemsService.readItem('directus_files', pk, query);
 };
 
 // @todo Add query support
@@ -87,8 +69,6 @@ export const updateFile = async (
 	stream?: NodeJS.ReadableStream,
 	query?: Query
 ) => {
-	const payload = await PayloadService.processValues('update', 'directus_files', data);
-
 	/**
 	 * @TODO
 	 * Handle changes in storage adapter -> going from local to S3 needs to delete from one, upload to the other
@@ -110,7 +90,7 @@ export const updateFile = async (
 		await storage.disk(file.storage).put(file.filename_disk, stream as any);
 	}
 
-	return await ItemsService.updateItem('directus_files', pk, payload, query);
+	return await ItemsService.updateItem('directus_files', pk, data, query);
 };
 
 export const deleteFile = async (pk: string | number) => {
