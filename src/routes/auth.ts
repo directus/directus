@@ -8,6 +8,7 @@ import getGrantConfig from '../utils/get-grant-config';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import * as ActivityService from '../services/activity';
+import ms from 'ms';
 
 const router = Router();
 
@@ -25,10 +26,18 @@ router.post(
 
 		const { email, password } = req.body;
 
+		const mode = req.body.mode || 'json';
+
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate({
+		const {
+			accessToken,
+			refreshToken,
+			expires,
+			id,
+			refreshTokenExpiration,
+		} = await AuthService.authenticate({
 			ip,
 			userAgent,
 			email,
@@ -44,9 +53,27 @@ router.post(
 			action_by: id,
 		});
 
-		return res.status(200).json({
-			data: { access_token: accessToken, refresh_token: refreshToken, expires },
-		});
+		const payload = {
+			data: { access_token: accessToken, expires },
+		} as Record<string, Record<string, any>>;
+
+		if (mode === 'json') {
+			payload.data.refresh_token = refreshToken;
+		}
+
+		if (mode === 'cookie') {
+			res.cookie('directus_refresh_token', refreshToken, {
+				httpOnly: true,
+				expires: refreshTokenExpiration,
+				maxAge: ms(process.env.REFRESH_TOKEN_TTL) / 1000,
+				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				sameSite:
+					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
+					'lax',
+			});
+		}
+
+		return res.status(200).json(payload);
 	})
 );
 

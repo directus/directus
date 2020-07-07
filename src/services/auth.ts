@@ -62,6 +62,7 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 		refreshToken,
 		expires: ms(process.env.ACCESS_TOKEN_TTL) / 1000,
 		id: user.id,
+		refreshTokenExpiration,
 	};
 };
 
