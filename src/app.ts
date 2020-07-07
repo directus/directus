@@ -37,10 +37,13 @@ const app = express()
 	.use(logger())
 	.use(bodyParser.json())
 	.use(extractToken)
+
+	// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
+	.use('/auth', authRouter)
+
 	.use(authenticate)
 	.use('/activity', activityRouter)
 	.use('/assets', assetsRouter)
-	.use('/auth', authRouter)
 	.use('/collections', collectionsRouter)
 	.use('/collection_presets', collectionPresetsRouter)
 	.use('/extensions', extensionsRouter)

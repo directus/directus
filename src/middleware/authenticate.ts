@@ -9,6 +9,7 @@ import { InvalidCredentialsException } from '../exceptions';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
+	/** @todo base this on a validation middleware on permissions */
 	if (!req.token) return next();
 
 	if (isJWT(req.token)) {
