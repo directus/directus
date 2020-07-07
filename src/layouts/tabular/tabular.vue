@@ -124,6 +124,14 @@
 			</template>
 		</v-table>
 
+		<v-info v-else-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+			{{ $t('unexpected_error_copy') }}
+
+			<template #append>
+				<v-error :error="error" />
+			</template>
+		</v-info>
+
 		<v-info v-else-if="itemCount === 0 && activeFilterCount > 0" :title="$t('no_results')" icon="search" center>
 			{{ $t('no_results_copy') }}
 
