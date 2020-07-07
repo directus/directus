@@ -1,9 +1,24 @@
 import database from '../database';
 import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
+import { nanoid } from 'nanoid';
+import ms from 'ms';
 import { InvalidCredentialsException } from '../exceptions';
 
-export const authenticate = async (email: string, password?: string) => {
+type AuthenticateOptions = {
+	email: string;
+	password?: string;
+	ip?: string;
+	userAgent?: string;
+};
+
+/**
+ * Retrieve the tokens for a given user email.
+ *
+ * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
+ * to handle password existence checks elsewhere
+ */
+export const authenticate = async ({ email, password, ip, userAgent }: AuthenticateOptions) => {
 	const user = await database
 		.select('id', 'password', 'role')
 		.from('directus_users')
@@ -14,13 +29,6 @@ export const authenticate = async (email: string, password?: string) => {
 		throw new InvalidCredentialsException();
 	}
 
-	/**
-	 * @NOTE
-	 * This undefined check is on purpose so we can login through SSO without having to rely on
-	 * password. However, this check might be a little tricky, as we don't want this login with just
-	 * email to leak anywhere else.. We might have to make a dedicated "copy" of this function to
-	 * signal the difference
-	 */
 	if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
 		throw new InvalidCredentialsException();
 	}
@@ -34,9 +42,27 @@ export const authenticate = async (email: string, password?: string) => {
 	 * Sign token with combination of server secret + user password hash
 	 * That way, old tokens are immediately invalidated whenever the user changes their password
 	 */
-	const token = jwt.sign(payload, process.env.SECRET, {
-		expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
+	const accessToken = jwt.sign(payload, process.env.SECRET, {
+		expiresIn: process.env.ACCESS_TOKEN_TTL,
 	});
 
-	return { token, id: user.id };
+	const refreshToken = nanoid(64);
+	const refreshTokenExpiration = new Date(Date.now() + ms(process.env.REFRESH_TOKEN_TTL));
+
+	await database('directus_sessions').insert({
+		token: refreshToken,
+		user: user.id,
+		expires: refreshTokenExpiration,
+		ip,
+		user_agent: userAgent,
+	});
+
+	return {
+		accessToken,
+		refreshToken,
+		expires: ms(process.env.ACCESS_TOKEN_TTL) / 1000,
+		id: user.id,
+	};
 };
+
+export const refresh = async (refreshToken: string) => {};

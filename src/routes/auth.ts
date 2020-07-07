@@ -25,19 +25,27 @@ router.post(
 
 		const { email, password } = req.body;
 
-		const { token, id } = await AuthService.authenticate(email, password);
+		const ip = req.ip;
+		const userAgent = req.get('user-agent');
+
+		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate({
+			ip,
+			userAgent,
+			email,
+			password,
+		});
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.AUTHENTICATE,
 			collection: 'directus_users',
 			item: id,
-			ip: req.ip,
-			user_agent: req.get('user-agent'),
+			ip: ip,
+			user_agent: userAgent,
 			action_by: id,
 		});
 
 		return res.status(200).json({
-			data: { token },
+			data: { access_token: accessToken, refresh_token: refreshToken, expires },
 		});
 	})
 );
@@ -54,7 +62,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const email = getEmailFromProfile(req.params.provider, req.session.grant.response.profile);
 
-		const { token, id } = await AuthService.authenticate(email);
+		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate(email);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.AUTHENTICATE,
@@ -66,7 +74,7 @@ router.get(
 		});
 
 		return res.status(200).json({
-			data: { token },
+			data: { access_token: accessToken, refresh_token: refreshToken, expires },
 		});
 	})
 );
