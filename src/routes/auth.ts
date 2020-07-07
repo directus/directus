@@ -9,6 +9,7 @@ import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import * as ActivityService from '../services/activity';
 import ms from 'ms';
+import cookieParser from 'cookie-parser';
 
 const router = Router();
 
@@ -77,6 +78,49 @@ router.post(
 	})
 );
 
+router.post(
+	'/refresh',
+	cookieParser(),
+	asyncHandler(async (req, res) => {
+		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		if (!currentRefreshToken)
+			throw new InvalidPayloadException(
+				`"refresh_token" is required in either the JSON payload or Cookie`
+			);
+
+		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
+
+		const {
+			accessToken,
+			refreshToken,
+			expires,
+			refreshTokenExpiration,
+		} = await AuthService.refresh(currentRefreshToken);
+
+		const payload = {
+			data: { access_token: accessToken, expires },
+		} as Record<string, Record<string, any>>;
+
+		if (mode === 'json') {
+			payload.data.refresh_token = refreshToken;
+		}
+
+		if (mode === 'cookie') {
+			res.cookie('directus_refresh_token', refreshToken, {
+				httpOnly: true,
+				expires: refreshTokenExpiration,
+				maxAge: ms(process.env.REFRESH_TOKEN_TTL) / 1000,
+				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				sameSite:
+					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
+					'lax',
+			});
+		}
+
+		return res.status(200).json(payload);
+	})
+);
+
 router.use(
 	'/sso',
 	session({ secret: process.env.SECRET, saveUninitialized: false, resave: false })
@@ -84,6 +128,9 @@ router.use(
 
 router.use(grant.express()(getGrantConfig()));
 
+/**
+ * @todo allow json / cookie mode in SSO
+ */
 router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {

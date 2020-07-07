@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
 import { InvalidCredentialsException } from '../exceptions';
+import { Session } from '../types/sessions';
 
 type AuthenticateOptions = {
 	email: string;
@@ -24,6 +25,8 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 		.from('directus_users')
 		.where({ email })
 		.first();
+
+	/** @todo check for status */
 
 	if (!user) {
 		throw new InvalidCredentialsException();
@@ -66,4 +69,29 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 	};
 };
 
-export const refresh = async (refreshToken: string) => {};
+export const refresh = async (refreshToken: string) => {
+	if (!refreshToken) {
+		throw new InvalidCredentialsException();
+	}
+
+	const record = await database
+		.select<Session & { email: string }>('directus_sessions.*', 'directus_users.email')
+		.from('directus_sessions')
+		.where({ 'directus_sessions.token': refreshToken })
+		.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
+		.first();
+
+	/** @todo
+	 * Check if it's worth checking for ip address and/or user agent. We could make this a little
+	 * more secure by requiring the refresh token to be used from the same device / location as the
+	 * auth session was created in the first place
+	 */
+
+	if (!record || !record.email || record.expires < new Date()) {
+		throw new InvalidCredentialsException();
+	}
+
+	await database.delete().from('directus_sessions').where({ token: refreshToken });
+
+	return await authenticate({ email: record.email, ip: record.ip, userAgent: record.user_agent });
+};
