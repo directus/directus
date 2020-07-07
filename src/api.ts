@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { useRequestsStore } from '@/stores/requests';
-import { LogoutReason, logout, checkAuth } from '@/auth';
+import { LogoutReason, logout, refresh } from '@/auth';
 import getRootPath from '@/utils/get-root-path';
 
 const api = axios.create({
@@ -53,12 +53,10 @@ export const onError = async (error: RequestError) => {
 	/* istanbul ignore next */
 	const code = error.response?.data?.error?.code;
 
-	if (status === 401 && code === 3) {
-		const loggedIn = await checkAuth();
-
-		/** @todo try refreshing the token */
-
-		if (loggedIn === false) {
+	if (status === 401 && code === 'INVALID_USER_CREDENTIALS') {
+		try {
+			await refresh();
+		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 		}
 	}

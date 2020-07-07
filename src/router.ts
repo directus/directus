@@ -3,7 +3,7 @@ import LoginRoute from '@/routes/login';
 import InstallRoute from '@/routes/install';
 import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
-import { checkAuth } from '@/auth';
+import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
@@ -96,46 +96,22 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const appStore = useAppStore();
 	const settingsStore = useSettingsStore();
 
+	// First load
+	if (from.name === null) {
+		// Try retrieving a fresh access token on first load
+		try {
+			await refresh({ navigate: false });
+		} catch {}
+	}
+
 	if (settingsStore.state.settings === null) {
 		await settingsStore.hydrate();
 	}
 
-	// When there aren't any projects, we should redirect to the install page to force the
-	// user to setup a project.
-	/** @todo base this on another flag*/
-	// if (projectsStore.state.needsInstall === true && to.path !== '/install') {
-	// 	return next('/install');
-	// }
-
-	// Keep the projects store currentProjectKey in sync with the route
-	// If we switch projects to a public route, we don't need the store to be hyrdated
-	// if (to.params.project && projectsStore.state.currentProjectKey !== to.params.project) {
-	// 	// If the store is hydrated for the current project, make sure to dehydrate it
-	// 	if (to.meta?.public !== true && appStore.state.hydrated === true) {
-	// 		appStore.state.hydrating = true;
-	// 		await dehydrate();
-	// 	}
-
-	// 	const projectExists = await projectsStore.setCurrentProject(to.params.project);
-
-	// 	// If the project you're trying to access doesn't exist, redirect to `/`
-	// 	if (to.path !== '/' && projectExists === false) {
-	// 		return next('/');
-	// 	}
-	// }
-
-	// The store can only be hydrated if you're an authenticated user. If the store is hydrated, we
-	// can safely assume you're logged in
 	if (to.meta?.public !== true && appStore.state.hydrated === false) {
-		const authenticated = await checkAuth();
-
-		if (authenticated === true) {
-			appStore.state.hydrating = false;
-			await hydrate();
-		} else if (to.meta?.public !== true) {
-			appStore.state.hydrating = false;
-			return next(`/login`);
-		}
+		appStore.state.hydrating = false;
+		if (appStore.state.authenticated) await hydrate();
+		else return next('/login');
 	}
 
 	return next();
