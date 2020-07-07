@@ -1,5 +1,4 @@
 import { Transformation } from './types/assets';
-import { Collection } from './types/collection';
 
 export const SYSTEM_ASSET_WHITELIST: Transformation[] = [
 	{
@@ -38,3 +37,5 @@ export const SYSTEM_ASSET_WHITELIST: Transformation[] = [
 ];
 
 export const ASSET_GENERATION_QUERY_KEYS = ['key', 'w', 'h', 'f'];
+
+export const FIELD_SPECIAL_ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'file-info'];

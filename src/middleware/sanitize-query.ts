@@ -26,6 +26,13 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	if (req.query.limit) {
 		query.limit = sanitizeLimit(req.query.limit);
+	} else {
+		/** @todo is this the right place to set these defaults? */
+		query.limit = 100;
+	}
+
+	if (req.query.limit == '-1') {
+		delete query.limit;
 	}
 
 	if (req.query.offset) {

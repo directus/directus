@@ -7,9 +7,9 @@
 
 import { RequestHandler } from 'express';
 import { Query } from '../types/query';
-import { hasFields } from '../services/schema';
 import asyncHandler from 'express-async-handler';
 import { InvalidQueryException } from '../exceptions';
+import hasFields from '../utils/has-fields';
 
 const validateQuery: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.collection) return next();
@@ -35,25 +35,27 @@ async function validateParams(collection: string, query: Query) {
 }
 
 async function validateFields(collection: string, query: Query) {
-	const fieldsToCheck = new Set<string>();
-
-	if (query.fields) {
-		/** @todo support relationships in here */
-		// query.fields.forEach((field) => fieldsToCheck.add(field));
-	}
-
-	if (query.sort) {
-		query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
-	}
-
-	/** @todo swap with more efficient schemaInspector version */
-	const fieldsExist = await hasFields(collection, Array.from(fieldsToCheck));
-
-	Array.from(fieldsToCheck).forEach((field, index) => {
-		const exists = fieldsExist[index];
-		if (exists === false)
-			throw new InvalidQueryException(`Field ${field} doesn't exist in ${collection}.`);
-	});
+	/**
+	 * @todo combine this with permissions (?)
+	 */
+	/**
+	 * @todo use /utils/has-fields
+	 */
+	// const fieldsToCheck = new Set<string>();
+	// if (query.fields) {
+	// 	/** @todo support relationships in here */
+	// 	query.fields.forEach((field) => fieldsToCheck.add(field));
+	// }
+	// if (query.sort) {
+	// 	query.sort.forEach((sort) => fieldsToCheck.add(sort.column));
+	// }
+	// /** @todo swap with more efficient schemaInspector version */
+	// const fieldsExist = await hasFields(collection, Array.from(fieldsToCheck));
+	// Array.from(fieldsToCheck).forEach((field, index) => {
+	// 	const exists = fieldsExist[index];
+	// 	if (exists === false)
+	// 		throw new InvalidQueryException(`Field ${field} doesn't exist in ${collection}.`);
+	// });
 }
 
 async function validateMeta(query: Query) {
