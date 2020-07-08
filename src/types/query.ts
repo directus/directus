@@ -9,6 +9,7 @@ export type Query = {
 	page?: number;
 	single?: boolean;
 	meta?: Meta[];
+	search?: string;
 };
 
 export type Sort = {

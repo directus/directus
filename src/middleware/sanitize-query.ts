@@ -51,6 +51,10 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.meta = sanitizeMeta(req.query.meta);
 	}
 
+	if (req.query.search && typeof req.query.search === 'string') {
+		query.search = req.query.search;
+	}
+
 	req.sanitizedQuery = query;
 	return next();
 };
