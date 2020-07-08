@@ -1,7 +1,10 @@
 import knex from 'knex';
 import logger from '../logger';
+import dotenv from 'dotenv';
 
 import SchemaInspector from '../knex-schema-inspector/lib/index';
+
+dotenv.config();
 
 const log = logger.child({ module: 'sql' });
 
@@ -13,6 +16,14 @@ const database = knex({
 		user: process.env.DB_USER,
 		password: process.env.DB_PASSWORD,
 		database: process.env.DB_NAME,
+	},
+	migrations: {
+		extension: 'ts',
+		directory: './src/database/migrations',
+	},
+	seeds: {
+		extension: 'ts',
+		directory: './src/database/seeds/',
 	},
 });
 
