@@ -37,5 +37,3 @@ export const SYSTEM_ASSET_WHITELIST: Transformation[] = [
 ];
 
 export const ASSET_GENERATION_QUERY_KEYS = ['key', 'w', 'h', 'f'];
-
-export const FIELD_SPECIAL_ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'file-info'];
