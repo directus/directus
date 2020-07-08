@@ -2,7 +2,8 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 
 export const createWebhook = async (data: Record<string, any>, query: Query) => {
-	return await ItemsService.createItem('directus_webhooks', data, query);
+	const primaryKey = await ItemsService.createItem('directus_webhooks', data);
+	return await ItemsService.readItem('directus_webhooks', primaryKey, query);
 };
 
 export const readWebhooks = async (query: Query) => {
@@ -18,7 +19,8 @@ export const updateWebhook = async (
 	data: Record<string, any>,
 	query: Query
 ) => {
-	return await ItemsService.updateItem('directus_webhooks', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_webhooks', pk, data);
+	return await ItemsService.readItem('directus_webhooks', primaryKey, query);
 };
 
 export const deleteWebhook = async (pk: string | number) => {

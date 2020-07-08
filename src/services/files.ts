@@ -51,7 +51,8 @@ export const createFile = async (
 	}
 
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-	return await ItemsService.createItem('directus_files', payload, query);
+	const primaryKey = await ItemsService.createItem('directus_files', payload);
+	return await ItemsService.readItem('directus_files', primaryKey, query);
 };
 
 export const readFiles = async (query: Query) => {
@@ -90,7 +91,8 @@ export const updateFile = async (
 		await storage.disk(file.storage).put(file.filename_disk, stream as any);
 	}
 
-	return await ItemsService.updateItem('directus_files', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_files', pk, data);
+	return await ItemsService.readItem('directus_files', primaryKey, query);
 };
 
 export const deleteFile = async (pk: string | number) => {

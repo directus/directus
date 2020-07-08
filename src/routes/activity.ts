@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
-import { readActivities, readActivity } from '../services/activity';
+import * as ActivityService from '../services/activity';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
@@ -13,7 +13,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await readActivities(req.sanitizedQuery);
+		const records = await ActivityService.readActivities(req.sanitizedQuery);
 		return res.json({
 			data: records,
 		});
@@ -26,7 +26,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await readActivity(req.params.pk, req.sanitizedQuery);
+		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery);
 
 		return res.json({
 			data: record,

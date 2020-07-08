@@ -2,7 +2,8 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 
 export const createPermission = async (data: Record<string, any>, query: Query) => {
-	return await ItemsService.createItem('directus_permissions', data, query);
+	const primaryKey = await ItemsService.createItem('directus_permissions', data);
+	return await ItemsService.readItem('directus_permissions', primaryKey, query);
 };
 
 export const readPermissions = async (query: Query) => {
@@ -18,7 +19,8 @@ export const updatePermission = async (
 	data: Record<string, any>,
 	query: Query
 ) => {
-	return await ItemsService.updateItem('directus_permissions', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_permissions', pk, data);
+	return await ItemsService.readItem('directus_permissions', primaryKey, query);
 };
 
 export const deletePermission = async (pk: string | number) => {

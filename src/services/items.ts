@@ -3,16 +3,32 @@ import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getAST from '../utils/get-ast';
 import * as PayloadService from './payload';
+import { pick } from 'lodash';
 
-export const createItem = async (
-	collection: string,
-	data: Record<string, any>,
-	query: Query = {}
-) => {
-	const payload = await PayloadService.processValues('create', collection, data);
+export const createItem = async (collection: string, data: Record<string, any>) => {
+	let payload = await PayloadService.processValues('create', collection, data);
+
+	payload = await PayloadService.processM2O(collection, payload);
+
 	const primaryKeyField = await schemaInspector.primary(collection);
-	const result = await database(collection).insert(payload).returning(primaryKeyField);
-	return readItem(collection, result[0], query);
+
+	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+	const columns = await schemaInspector.columns(collection);
+	const primaryKeys = await database(collection)
+		.insert(
+			pick(
+				payload,
+				columns.map(({ column }) => column)
+			)
+		)
+		.returning(primaryKeyField);
+
+	// This allows the o2m values to be populated correctly
+	payload[primaryKeyField] = primaryKeys[0];
+
+	await PayloadService.processO2M(collection, payload);
+
+	return primaryKeys[0];
 };
 
 export const readItems = async <T = Record<string, any>>(
@@ -51,16 +67,27 @@ export const readItem = async <T = any>(
 export const updateItem = async (
 	collection: string,
 	pk: number | string,
-	data: Record<string, any>,
-	query: Query = {}
+	data: Record<string, any>
 ) => {
-	const payload = await PayloadService.processValues('create', collection, data);
+	let payload = await PayloadService.processValues('create', collection, data);
+
+	payload = await PayloadService.processM2O(collection, payload);
+
 	const primaryKeyField = await schemaInspector.primary(collection);
-	const result = await database(collection)
-		.update(payload)
+
+	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+	const columns = await schemaInspector.columns(collection);
+	const primaryKeys = await database(collection)
+		.update(
+			pick(
+				payload,
+				columns.map(({ column }) => column)
+			)
+		)
 		.where({ [primaryKeyField]: pk })
-		.returning('id');
-	return readItem(collection, result[0], query);
+		.returning(primaryKeyField);
+
+	return primaryKeys[0];
 };
 
 export const deleteItem = async (collection: string, pk: number | string) => {
