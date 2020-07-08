@@ -4,12 +4,10 @@ import jwt from 'jsonwebtoken';
 import { sendInviteMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import * as PayloadService from '../services/payload';
 import { InvalidPayloadException } from '../exceptions';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
-	const payload = await PayloadService.processValues('create', 'directus_users', data);
-	return await ItemsService.createItem('directus_users', payload, query);
+	return await ItemsService.createItem('directus_users', data, query);
 };
 
 export const readUsers = async (query?: Query) => {
@@ -35,12 +33,7 @@ export const deleteUser = async (pk: string | number) => {
 };
 
 export const inviteUser = async (email: string, role: string) => {
-	const userPayload = await PayloadService.processValues('create', 'directus_users', {
-		email,
-		role,
-		status: 'invited',
-	});
-	await createUser(userPayload);
+	await createUser({ email, role, status: 'invited' });
 
 	const payload = { email };
 	const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '7d' });

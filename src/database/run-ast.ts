@@ -13,6 +13,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			continue;
 		}
 
+		if (!child.relation) continue;
 		const m2o = isM2O(child);
 
 		if (m2o) {

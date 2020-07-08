@@ -6,7 +6,6 @@ import validateCollection from '../middleware/validate-collection';
 import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
-import * as PayloadService from '../services/payload';
 import * as ActivityService from '../services/activity';
 
 const router = express.Router();
@@ -16,8 +15,7 @@ router.post(
 	validateCollection,
 	validateSingleton,
 	asyncHandler(async (req, res) => {
-		const payload = await PayloadService.processValues('create', req.collection, req.body);
-		const item = await createItem(req.params.collection, payload);
+		const item = await createItem(req.params.collection, req.body);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.CREATE,
@@ -67,8 +65,7 @@ router.patch(
 	'/:collection/:pk',
 	validateCollection,
 	asyncHandler(async (req, res) => {
-		const payload = await PayloadService.processValues('update', req.collection, req.body);
-		const item = await updateItem(req.params.collection, req.params.pk, payload);
+		const item = await updateItem(req.params.collection, req.params.pk, req.body);
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.UPDATE,

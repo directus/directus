@@ -2,14 +2,16 @@ import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getAST from '../utils/get-ast';
+import * as PayloadService from './payload';
 
 export const createItem = async (
 	collection: string,
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
+	const payload = await PayloadService.processValues('create', collection, data);
 	const primaryKeyField = await schemaInspector.primary(collection);
-	const result = await database(collection).insert(data).returning(primaryKeyField);
+	const result = await database(collection).insert(payload).returning(primaryKeyField);
 	return readItem(collection, result[0], query);
 };
 
@@ -19,7 +21,7 @@ export const readItems = async <T = Record<string, any>>(
 ): Promise<T[]> => {
 	const ast = await getAST(collection, query);
 	const records = await runAST(ast);
-	return records;
+	return await PayloadService.processValues('read', collection, records);
 };
 
 export const readItem = async <T = any>(
@@ -43,7 +45,7 @@ export const readItem = async <T = any>(
 
 	const ast = await getAST(collection, query);
 	const records = await runAST(ast);
-	return records[0];
+	return await PayloadService.processValues('read', collection, records[0]);
 };
 
 export const updateItem = async (
@@ -52,9 +54,10 @@ export const updateItem = async (
 	data: Record<string, any>,
 	query: Query = {}
 ) => {
+	const payload = await PayloadService.processValues('create', collection, data);
 	const primaryKeyField = await schemaInspector.primary(collection);
 	const result = await database(collection)
-		.update(data)
+		.update(payload)
 		.where({ [primaryKeyField]: pk })
 		.returning('id');
 	return readItem(collection, result[0], query);
