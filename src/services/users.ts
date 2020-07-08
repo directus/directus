@@ -7,7 +7,8 @@ import argon2 from 'argon2';
 import { InvalidPayloadException } from '../exceptions';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
-	return await ItemsService.createItem('directus_users', data, query);
+	const primaryKey = await ItemsService.createItem('directus_users', data);
+	return await ItemsService.readItem('directus_user', primaryKey, query);
 };
 
 export const readUsers = async (query?: Query) => {
@@ -25,7 +26,8 @@ export const updateUser = async (pk: string | number, data: Record<string, any>,
 	 *
 	 * Maybe make this an option?
 	 */
-	return await ItemsService.updateItem('directus_users', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_users', pk, data);
+	return await ItemsService.readItem('directus_user', primaryKey, query);
 };
 
 export const deleteUser = async (pk: string | number) => {

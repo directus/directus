@@ -16,5 +16,6 @@ export const updateSettings = async (
 	query: Query
 ) => {
 	/** @NOTE I guess this can technically update _all_ items, as we expect there to only be one */
-	return await ItemsService.updateItem('directus_settings', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_settings', pk, data);
+	return await ItemsService.readItem('directus_settings', primaryKey, query);
 };

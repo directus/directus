@@ -2,7 +2,8 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 
 export const createRelation = async (data: Record<string, any>, query: Query) => {
-	return await ItemsService.createItem('directus_relations', data, query);
+	const primaryKey = await ItemsService.createItem('directus_relations', data);
+	return ItemsService.readItem('directus_relations', primaryKey, query);
 };
 
 export const readRelations = async (query: Query) => {
@@ -18,7 +19,8 @@ export const updateRelation = async (
 	data: Record<string, any>,
 	query: Query
 ) => {
-	return await ItemsService.updateItem('directus_relations', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_relations', pk, data);
+	return ItemsService.readItem('directus_relations', primaryKey, query);
 };
 
 export const deleteRelation = async (pk: string | number) => {

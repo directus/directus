@@ -9,8 +9,50 @@ import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone } from 'lodash';
 import { File } from '../types/files';
+import { Relation } from '../types/relation';
+import * as ItemsService from './items';
 
 type Operation = 'create' | 'read' | 'update';
+
+type Transformers = {
+	[type: string]: (
+		operation: Operation,
+		value: any,
+		payload: Record<string, any>
+	) => Promise<any>;
+};
+
+/**
+ * @todo allow this to be extended
+ */
+const transformers: Transformers = {
+	async hash(operation, value) {
+		if (!value) return;
+
+		if (operation === 'create' || operation === 'update') {
+			return await argon2.hash(String(value));
+		}
+
+		return value;
+	},
+	async uuid(operation, value) {
+		if (operation === 'create' && !value) {
+			return uuidv4();
+		}
+
+		return value;
+	},
+	async 'file-info'(operation, value, payload: File) {
+		if (operation === 'read' && payload) {
+			return {
+				asset_url: new URL(`/assets/${payload.id}`, process.env.PUBLIC_URL),
+			};
+		}
+
+		// This is an non-existing column, so there isn't any data to save
+		return undefined;
+	},
+};
 
 /**
  * Process and update all the special fields in the given payload
@@ -47,8 +89,6 @@ export const processValues = async (
 		})
 	);
 
-	console.log(processedPayload);
-
 	/** @TODO
 	 *
 	 * - Make config.ts file in root
@@ -69,49 +109,59 @@ async function processField(
 	payload: Record<string, any>,
 	operation: Operation
 ) {
-	switch (field.special) {
-		case 'hash':
-			return await genHash(operation, payload[field.field], payload);
-		case 'uuid':
-			return await genUUID(operation, payload[field.field], payload);
-		case 'file-links':
-			// This is a system special type that only works on directus_files
-			return await genFileLinks(operation, payload[field.field], payload as File);
-		default:
-			return payload[field.field];
+	if (transformers.hasOwnProperty(field.special)) {
+		return await transformers[field.special](operation, payload[field.field], payload);
 	}
+
+	return payload[field.field];
 }
 
 /**
- * @note The following functions can be called _a lot_. Make sure to utilize some form of caching
- * if you have to rely on heavy operations
+ * Recursively checks for nested relational items, and saves them bottom up, to ensure we have IDs etc ready
  */
+export const processM2O = async (
+	collection: string,
+	payload: Record<string, any> | Record<string, any>[]
+) => {
+	const relations = await database
+		.select<Relation[]>('*')
+		.from('directus_relations')
+		.where({ collection_many: collection });
 
-async function genHash(operation: Operation, value: any, payload: Record<string, any>) {
-	if (!value) return;
+	// Only process related records that are actually in the payload
+	const relationsToProcess = relations.filter((relation) => {
+		return (
+			payload.hasOwnProperty(relation.field_many) &&
+			typeof payload[relation.field_many] === 'object'
+		);
+	});
 
-	if (operation === 'create' || operation === 'update') {
-		return await argon2.hash(String(value));
-	}
+	// Save all nested m2o records
+	await Promise.all(
+		relationsToProcess.map(async (relation) => {
+			const relatedRecord = payload[relation.field_many];
+			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_one);
 
-	return value;
-}
+			let relatedPrimaryKey: string | number;
 
-async function genUUID(operation: Operation, value: any, payload: Record<string, any>) {
-	if (operation === 'create' && !value) {
-		return uuidv4();
-	}
+			if (hasPrimaryKey) {
+				relatedPrimaryKey = relatedRecord[relation.primary_one];
+				await ItemsService.updateItem(
+					relation.collection_one,
+					relatedPrimaryKey,
+					relatedRecord
+				);
+			} else {
+				relatedPrimaryKey = await ItemsService.createItem(
+					relation.collection_one,
+					relatedRecord
+				);
+			}
 
-	return value;
-}
+			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+			payload[relation.field_many] = relatedPrimaryKey;
+		})
+	);
 
-async function genFileLinks(operation: Operation, value: undefined, payload: File) {
-	if (operation === 'read' && payload) {
-		return {
-			asset_url: new URL(`/assets/${payload.id}`, process.env.PUBLIC_URL),
-		};
-	}
-
-	// This is an non-existing column, so there isn't any data to save
-	return undefined;
-}
+	return payload;
+};

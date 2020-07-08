@@ -36,7 +36,7 @@ export const create = async (payload: any) => {
 		});
 	});
 
-	const collection = await ItemsService.createItem('directus_collections', {
+	const primaryKey = await ItemsService.createItem('directus_collections', {
 		collection: payload.collection,
 		hidden: payload.hidden || false,
 		single: payload.single || false,
@@ -44,6 +44,8 @@ export const create = async (payload: any) => {
 		note: payload.note || null,
 		translation: payload.translation || null,
 	});
+
+	const collection = await ItemsService.createItem('directus_collections', primaryKey);
 
 	/**
 	 * @TODO make this flexible and based on payload

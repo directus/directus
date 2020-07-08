@@ -4,15 +4,17 @@ import runAST from '../database/run-ast';
 import getAST from '../utils/get-ast';
 import * as PayloadService from './payload';
 
-export const createItem = async (
-	collection: string,
-	data: Record<string, any>,
-	query: Query = {}
-) => {
-	const payload = await PayloadService.processValues('create', collection, data);
+export const createItem = async (collection: string, data: Record<string, any>) => {
+	let payload = await PayloadService.processValues('create', collection, data);
+
+	payload = await PayloadService.processM2O(collection, payload);
+
 	const primaryKeyField = await schemaInspector.primary(collection);
 	const result = await database(collection).insert(payload).returning(primaryKeyField);
-	return readItem(collection, result[0], query);
+
+	// payload process o2m
+
+	return result[0]; // pk
 };
 
 export const readItems = async <T = Record<string, any>>(
@@ -51,16 +53,16 @@ export const readItem = async <T = any>(
 export const updateItem = async (
 	collection: string,
 	pk: number | string,
-	data: Record<string, any>,
-	query: Query = {}
+	data: Record<string, any>
 ) => {
 	const payload = await PayloadService.processValues('create', collection, data);
 	const primaryKeyField = await schemaInspector.primary(collection);
 	const result = await database(collection)
 		.update(payload)
 		.where({ [primaryKeyField]: pk })
-		.returning('id');
-	return readItem(collection, result[0], query);
+		.returning(primaryKeyField);
+
+	return result[0]; // pk
 };
 
 export const deleteItem = async (collection: string, pk: number | string) => {

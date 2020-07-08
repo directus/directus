@@ -2,7 +2,8 @@ import { Query } from '../types/query';
 import * as ItemsService from './items';
 
 export const createCollectionPreset = async (data: Record<string, any>, query: Query) => {
-	return await ItemsService.createItem('directus_collection_presets', data, query);
+	const primaryKey = await ItemsService.createItem('directus_collection_presets', data);
+	return await ItemsService.readItem('directus_collection_presets', primaryKey, query);
 };
 
 export const readCollectionPresets = async (query: Query) => {
@@ -18,7 +19,8 @@ export const updateCollectionPreset = async (
 	data: Record<string, any>,
 	query: Query
 ) => {
-	return await ItemsService.updateItem('directus_collection_presets', pk, data, query);
+	const primaryKey = await ItemsService.updateItem('directus_collection_presets', pk, data);
+	return await ItemsService.readItem('directus_collection_presets', primaryKey, query);
 };
 
 export const deleteCollectionPreset = async (pk: string | number) => {
