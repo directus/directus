@@ -119,10 +119,9 @@ async function processField(
 /**
  * Recursively checks for nested relational items, and saves them bottom up, to ensure we have IDs etc ready
  */
-export const processM2O = async (
-	collection: string,
-	payload: Record<string, any> | Record<string, any>[]
-) => {
+export const processM2O = async (collection: string, payload: Record<string, any>) => {
+	const payloadClone = clone(payload);
+
 	const relations = await database
 		.select<Relation[]>('*')
 		.from('directus_relations')
@@ -131,15 +130,15 @@ export const processM2O = async (
 	// Only process related records that are actually in the payload
 	const relationsToProcess = relations.filter((relation) => {
 		return (
-			payload.hasOwnProperty(relation.field_many) &&
-			typeof payload[relation.field_many] === 'object'
+			payloadClone.hasOwnProperty(relation.field_many) &&
+			typeof payloadClone[relation.field_many] === 'object'
 		);
 	});
 
 	// Save all nested m2o records
 	await Promise.all(
 		relationsToProcess.map(async (relation) => {
-			const relatedRecord = payload[relation.field_many];
+			const relatedRecord = payloadClone[relation.field_many];
 			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_one);
 
 			let relatedPrimaryKey: string | number;
@@ -159,9 +158,64 @@ export const processM2O = async (
 			}
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
-			payload[relation.field_many] = relatedPrimaryKey;
+			payloadClone[relation.field_many] = relatedPrimaryKey;
 		})
 	);
 
-	return payload;
+	return payloadClone;
+};
+
+export const processO2M = async (collection: string, payload: Record<string, any>) => {
+	const payloadClone = clone(payload);
+
+	const relations = await database
+		.select<Relation[]>('*')
+		.from('directus_relations')
+		.where({ collection_one: collection });
+
+	// Only process related records that are actually in the payload
+	const relationsToProcess = relations.filter((relation) => {
+		return (
+			payloadClone.hasOwnProperty(relation.field_one) &&
+			Array.isArray(payloadClone[relation.field_one])
+		);
+	});
+
+	// Save all nested o2m records
+	await Promise.all(
+		relationsToProcess.map(async (relation) => {
+			const relatedRecords = payloadClone[relation.field_one];
+
+			await Promise.all(
+				relatedRecords.map(async (relatedRecord: any, index: number) => {
+					relatedRecord[relation.field_many] = payloadClone[relation.primary_one];
+
+					const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_many);
+
+					let relatedPrimaryKey: string | number;
+
+					if (hasPrimaryKey) {
+						relatedPrimaryKey = relatedRecord[relation.primary_many];
+
+						await ItemsService.updateItem(
+							relation.collection_many,
+							relatedPrimaryKey,
+							relatedRecord
+						);
+					} else {
+						relatedPrimaryKey = await ItemsService.createItem(
+							relation.collection_many,
+							relatedRecord
+						);
+					}
+
+					relatedRecord[relation.primary_many] = relatedPrimaryKey;
+
+					payloadClone[relation.field_one][index] = relatedRecord;
+				})
+			);
+		})
+	);
+
+	return payloadClone;
 };

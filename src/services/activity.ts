@@ -12,7 +12,8 @@ export enum Action {
 }
 
 export const createActivity = async (data: Record<string, any>, query?: Query) => {
-	return await ItemsService.createItem('directus_activity', data, query);
+	const primaryKey = await ItemsService.createItem('directus_activity', data);
+	return await ItemsService.readItem('directus_activity', primaryKey, query);
 };
 
 export const readActivities = async (query?: Query) => {
