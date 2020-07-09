@@ -4,7 +4,6 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import useCollection from '../middleware/use-collection';
 import * as FoldersService from '../services/folders';
-import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 
