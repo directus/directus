@@ -3,19 +3,9 @@ import * as ItemsService from './items';
 import { Accountability } from '../types';
 
 export const readSettings = async (query: Query) => {
-	const settings = await ItemsService.readItems('directus_settings', {
-		...query,
-		limit: 1,
-	});
-
-	return settings[0];
+	return await ItemsService.readSingleton('directus_settings', query);
 };
 
-export const updateSettings = async (
-	pk: string | number,
-	data: Record<string, any>,
-	accountability: Accountability
-) => {
-	/** @NOTE I guess this can technically update _all_ items, as we expect there to only be one */
-	return await ItemsService.updateItem('directus_settings', pk, data, accountability);
+export const updateSettings = async (data: Record<string, any>, accountability: Accountability) => {
+	return await ItemsService.upsertSingleton('directus_settings', data, accountability);
 };

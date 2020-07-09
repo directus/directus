@@ -173,3 +173,36 @@ export const deleteItem = async (
 		.delete()
 		.where({ [primaryKeyField]: pk });
 };
+
+export const readSingleton = async (collection: string, query: Query = {}) => {
+	const records = await readItems(collection, { ...query, limit: 1 });
+	const record = records[0];
+
+	if (!record) {
+		const columns = await schemaInspector.columnInfo(collection);
+		const defaults = {};
+
+		for (const column of columns) {
+			defaults[column.name] = column.default_value;
+		}
+
+		return defaults;
+	}
+
+	return record;
+};
+
+export const upsertSingleton = async (
+	collection: string,
+	data: Record<string, any>,
+	accountability: Accountability
+) => {
+	const primaryKeyField = await schemaInspector.primary(collection);
+	const record = await database.select(primaryKeyField).from(collection).limit(1).first();
+
+	if (record) {
+		return await updateItem(collection, record.id, data, accountability);
+	}
+
+	return await createItem(collection, data, accountability);
+};

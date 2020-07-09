@@ -3,19 +3,22 @@ import asyncHandler from 'express-async-handler';
 import * as ItemsService from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateCollection from '../middleware/validate-collection';
-import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
+import { RouteNotFoundException } from '../exceptions';
 
 const router = express.Router();
 
 router.post(
 	'/:collection',
 	validateCollection,
-	validateSingleton,
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
+		if (req.single) {
+			throw new RouteNotFoundException(req.path);
+		}
+
 		const primaryKey = await ItemsService.createItem(req.collection, req.body, {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -35,7 +38,9 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const [records, meta] = await Promise.all([
-			ItemsService.readItems(req.collection, req.sanitizedQuery),
+			req.single
+				? ItemsService.readSingleton(req.collection, req.sanitizedQuery)
+				: ItemsService.readItems(req.collection, req.sanitizedQuery),
 			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
 		]);
 
@@ -52,6 +57,10 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
+		if (req.single) {
+			throw new RouteNotFoundException(req.path);
+		}
+
 		const record = await ItemsService.readItem(
 			req.collection,
 			req.params.pk,
@@ -65,11 +74,37 @@ router.get(
 );
 
 router.patch(
+	'/:collection',
+	validateCollection,
+	sanitizeQuery,
+	validateQuery,
+	asyncHandler(async (req, res) => {
+		if (req.single === false) {
+			throw new RouteNotFoundException(req.path);
+		}
+
+		await ItemsService.upsertSingleton(req.collection, req.body, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
+
+		const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery);
+
+		return res.json({ data: item || null });
+	})
+);
+
+router.patch(
 	'/:collection/:pk',
 	validateCollection,
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
+		if (req.single) {
+			throw new RouteNotFoundException(req.path);
+		}
+
 		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body, {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),

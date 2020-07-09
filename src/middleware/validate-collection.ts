@@ -12,12 +12,20 @@ const validateCollection: RequestHandler = asyncHandler(async (req, res, next) =
 
 	const exists = await database.schema.hasTable(req.params.collection);
 
-	if (exists) {
-		req.collection = req.params.collection;
-		return next();
+	if (exists === false) {
+		throw new CollectionNotFoundException(req.params.collection);
 	}
 
-	throw new CollectionNotFoundException(req.params.collection);
+	req.collection = req.params.collection;
+
+	const { single } = await database
+		.select('single')
+		.from('directus_collections')
+		.where({ collection: req.collection })
+		.first();
+	req.single = single;
+
+	return next();
 });
 
 export default validateCollection;
