@@ -11,18 +11,15 @@ const router = express.Router();
 router.post(
 	'/',
 	useCollection('directus_roles'),
+	sanitizeQuery,
+	validateQuery,
 	asyncHandler(async (req, res) => {
-		const item = await RolesService.createRole(req.body, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.CREATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await RolesService.createRole(req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
-
+		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item });
 	})
 );
@@ -52,18 +49,15 @@ router.get(
 router.patch(
 	'/:pk',
 	useCollection('directus_roles'),
+	sanitizeQuery,
+	validateQuery,
 	asyncHandler(async (req, res) => {
-		const item = await RolesService.updateRole(req.params.pk, req.body, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await RolesService.updateRole(req.params.pk, req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
-
+		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item });
 	})
 );
@@ -72,15 +66,10 @@ router.delete(
 	'/:pk',
 	useCollection('directus_roles'),
 	asyncHandler(async (req, res) => {
-		await RolesService.deleteRole(req.params.pk);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.DELETE,
-			collection: req.collection,
-			item: req.params.pk,
+		await RolesService.deleteRole(req.params.pk, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
 
 		return res.status(200).end();
