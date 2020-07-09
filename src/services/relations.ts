@@ -1,9 +1,8 @@
-import { Query } from '../types/query';
+import { Accountability, Query } from '../types';
 import * as ItemsService from './items';
 
-export const createRelation = async (data: Record<string, any>, query: Query) => {
-	const primaryKey = await ItemsService.createItem('directus_relations', data);
-	return ItemsService.readItem('directus_relations', primaryKey, query);
+export const createRelation = async (data: Record<string, any>, accountability: Accountability) => {
+	return await ItemsService.createItem('directus_relations', data, accountability);
 };
 
 export const readRelations = async (query: Query) => {
@@ -17,12 +16,11 @@ export const readRelation = async (pk: string | number, query: Query) => {
 export const updateRelation = async (
 	pk: string | number,
 	data: Record<string, any>,
-	query: Query
+	accountability: Accountability
 ) => {
-	const primaryKey = await ItemsService.updateItem('directus_relations', pk, data);
-	return ItemsService.readItem('directus_relations', primaryKey, query);
+	return await ItemsService.updateItem('directus_relations', pk, data, accountability);
 };
 
-export const deleteRelation = async (pk: string | number) => {
-	await ItemsService.deleteItem('directus_relations', pk);
+export const deleteRelation = async (pk: number, accountability: Accountability) => {
+	await ItemsService.deleteItem('directus_relations', pk, accountability);
 };

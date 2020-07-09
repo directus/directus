@@ -1,28 +1,34 @@
-import { Query } from '../types/query';
+import { Accountability, Query } from '../types';
 import * as ItemsService from './items';
 
-export const createPermission = async (data: Record<string, any>, query: Query) => {
-	const primaryKey = await ItemsService.createItem('directus_permissions', data);
-	return await ItemsService.readItem('directus_permissions', primaryKey, query);
+export const createPermission = async (
+	data: Record<string, any>,
+	accountability: Accountability
+): Promise<number> => {
+	return (await ItemsService.createItem('directus_permissions', data, accountability)) as number;
 };
 
 export const readPermissions = async (query: Query) => {
 	return await ItemsService.readItems('directus_permissions', query);
 };
 
-export const readPermission = async (pk: string | number, query: Query) => {
+export const readPermission = async (pk: number, query: Query) => {
 	return await ItemsService.readItem('directus_permissions', pk, query);
 };
 
 export const updatePermission = async (
-	pk: string | number,
+	pk: number,
 	data: Record<string, any>,
-	query: Query
-) => {
-	const primaryKey = await ItemsService.updateItem('directus_permissions', pk, data);
-	return await ItemsService.readItem('directus_permissions', primaryKey, query);
+	accountability: Accountability
+): Promise<number> => {
+	return (await ItemsService.updateItem(
+		'directus_permissions',
+		pk,
+		data,
+		accountability
+	)) as number;
 };
 
-export const deletePermission = async (pk: string | number) => {
-	await ItemsService.deleteItem('directus_permissions', pk);
+export const deletePermission = async (pk: number, accountability: Accountability) => {
+	await ItemsService.deleteItem('directus_permissions', pk, accountability);
 };

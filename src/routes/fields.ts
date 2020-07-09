@@ -61,7 +61,11 @@ router.post(
 
 		const field: Partial<Field> = req.body;
 
-		const createdField = await FieldsService.createField(req.collection, field);
+		const createdField = await FieldsService.createField(req.collection, field, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
 
 		res.json({ data: createdField });
 	})

@@ -12,17 +12,13 @@ router.post(
 	'/',
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
-		const record = await FoldersService.createFolder(req.body, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.CREATE,
-			collection: req.collection,
-			item: record.id,
+		const primaryKey = await FoldersService.createFolder(req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
 
+		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery);
 		return res.json({ data: record });
 	})
 );
@@ -53,20 +49,13 @@ router.patch(
 	'/:pk',
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
-		const record = await FoldersService.updateFolder(
-			req.params.pk,
-			req.body,
-			req.sanitizedQuery
-		);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: record.id,
+		const primaryKey = await FoldersService.updateFolder(req.params.pk, req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
+
+		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: record });
 	})
@@ -76,7 +65,11 @@ router.delete(
 	'/:pk',
 	useCollection('directus_folders'),
 	asyncHandler(async (req, res) => {
-		await FoldersService.deleteFolder(req.params.pk);
+		await FoldersService.deleteFolder(req.params.pk, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
 
 		ActivityService.createActivity({
 			action: ActivityService.Action.DELETE,

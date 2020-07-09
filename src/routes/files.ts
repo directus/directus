@@ -55,29 +55,26 @@ const multipartHandler = (operation: 'create' | 'update') =>
 
 			try {
 				if (operation === 'create') {
-					const file = await FilesService.createFile(payload, fileStream);
-
-					ActivityService.createActivity({
-						action: ActivityService.Action.UPLOAD,
-						collection: 'directus_files',
-						item: file.id,
+					const pk = await FilesService.createFile(payload, fileStream, {
 						ip: req.ip,
-						user_agent: req.get('user-agent'),
-						action_by: req.user,
+						userAgent: req.get('user-agent'),
+						user: req.user,
 					});
+					const file = await FilesService.readFile(pk, req.sanitizedQuery);
 
 					savedFiles.push(file);
 				} else {
-					const file = await FilesService.updateFile(req.params.pk, payload, fileStream);
-
-					ActivityService.createActivity({
-						action: ActivityService.Action.UPDATE,
-						collection: 'directus_files',
-						item: file.id,
-						ip: req.ip,
-						user_agent: req.get('user-agent'),
-						action_by: req.user,
-					});
+					const pk = await FilesService.updateFile(
+						req.params.pk,
+						payload,
+						{
+							ip: req.ip,
+							userAgent: req.get('user-agent'),
+							user: req.user,
+						},
+						fileStream
+					);
+					const file = await FilesService.readFile(pk, req.sanitizedQuery);
 
 					savedFiles.push(file);
 				}
@@ -130,16 +127,12 @@ router.patch(
 		if (req.is('multipart/form-data')) {
 			file = await multipartHandler('update')(req, res, next);
 		} else {
-			file = await FilesService.updateFile(req.params.pk, req.body);
-
-			ActivityService.createActivity({
-				action: ActivityService.Action.UPDATE,
-				collection: 'directus_files',
-				item: file.id,
+			const pk = await FilesService.updateFile(req.params.pk, req.body, {
 				ip: req.ip,
-				user_agent: req.get('user-agent'),
-				action_by: req.user,
+				userAgent: req.get('user-agent'),
+				user: req.user,
 			});
+			file = await FilesService.readFile(pk, req.sanitizedQuery);
 		}
 
 		return res.status(200).json({ data: file });
@@ -150,7 +143,11 @@ router.delete(
 	'/:pk',
 	useCollection('directus_files'),
 	asyncHandler(async (req, res) => {
-		await FilesService.deleteFile(req.params.pk);
+		await FilesService.deleteFile(req.params.pk, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
 		return res.status(200).end();
 	})
 );

@@ -6,7 +6,6 @@ import validateCollection from '../middleware/validate-collection';
 import validateSingleton from '../middleware/validate-singleton';
 import validateQuery from '../middleware/validate-query';
 import * as MetaService from '../services/meta';
-import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 
@@ -17,18 +16,13 @@ router.post(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await ItemsService.createItem(req.collection, req.body);
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.CREATE,
-			collection: req.collection,
-			/** @TODO don't forget to use real primary key here */
-			item: item.id,
+		const primaryKey = await ItemsService.createItem(req.collection, req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
+
+		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
 
 		res.json({ data: item });
 	})
@@ -76,17 +70,13 @@ router.patch(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body);
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
+
+		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item });
 	})
@@ -96,15 +86,10 @@ router.delete(
 	'/:collection/:pk',
 	validateCollection,
 	asyncHandler(async (req, res) => {
-		await ItemsService.deleteItem(req.collection, req.params.pk);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.DELETE,
-			collection: req.collection,
-			item: req.params.pk,
+		await ItemsService.deleteItem(req.collection, req.params.pk, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
 
 		return res.status(200).end();

@@ -7,7 +7,7 @@ import { System } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
-import { clone } from 'lodash';
+import { clone, isObject } from 'lodash';
 import { File } from '../types/files';
 import { Relation } from '../types/relation';
 import * as ItemsService from './items';
@@ -24,6 +24,10 @@ type Transformers = {
 
 /**
  * @todo allow this to be extended
+ *
+ * @todo allow these extended special types to have "field dependencies"?
+ * f.e. the file-links transformer needs the id and filename_download to be fetched from the DB
+ * in order to work
  */
 const transformers: Transformers = {
 	async hash(operation, value) {
@@ -42,10 +46,13 @@ const transformers: Transformers = {
 
 		return value;
 	},
-	async 'file-info'(operation, value, payload: File) {
-		if (operation === 'read' && payload) {
+	async 'file-links'(operation, value, payload: File) {
+		if (operation === 'read' && payload && payload.storage && payload.filename_disk) {
+			const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
+
 			return {
 				asset_url: new URL(`/assets/${payload.id}`, process.env.PUBLIC_URL),
+				public_url: new URL(payload.filename_disk, process.env[publicKey]),
 			};
 		}
 
@@ -131,7 +138,7 @@ export const processM2O = async (collection: string, payload: Record<string, any
 	const relationsToProcess = relations.filter((relation) => {
 		return (
 			payloadClone.hasOwnProperty(relation.field_many) &&
-			typeof payloadClone[relation.field_many] === 'object'
+			isObject(payloadClone[relation.field_many])
 		);
 	});
 

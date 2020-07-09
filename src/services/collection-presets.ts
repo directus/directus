@@ -1,6 +1,8 @@
 import { Query } from '../types/query';
 import * as ItemsService from './items';
 
+/** @todo check if we want to save activity for collection presets */
+
 export const createCollectionPreset = async (data: Record<string, any>, query: Query) => {
 	const primaryKey = await ItemsService.createItem('directus_collection_presets', data);
 	return await ItemsService.readItem('directus_collection_presets', primaryKey, query);

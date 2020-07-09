@@ -13,7 +13,7 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await SettingsService.readSettings(1, req.sanitizedQuery);
+		const records = await SettingsService.readSettings(req.sanitizedQuery);
 		return res.json({ data: records });
 	})
 );
@@ -21,13 +21,22 @@ router.get(
 router.patch(
 	'/',
 	useCollection('directus_settings'),
+	sanitizeQuery,
+	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await SettingsService.updateSettings(
+		const primaryKey = await SettingsService.updateSettings(
 			req.params.pk /** @TODO Singleton */,
 			req.body,
-			req.sanitizedQuery
+			{
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			}
 		);
-		return res.json({ data: records });
+
+		const record = await SettingsService.readSettings(req.sanitizedQuery);
+
+		return res.json({ data: record });
 	})
 );
 

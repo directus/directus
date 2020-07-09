@@ -12,16 +12,13 @@ router.post(
 	'/',
 	useCollection('directus_webhooks'),
 	asyncHandler(async (req, res) => {
-		const item = await WebhooksService.createWebhook(req.body, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.CREATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await WebhooksService.createWebhook(req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
+
+		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item });
 	})
@@ -53,21 +50,12 @@ router.patch(
 	'/:pk',
 	useCollection('directus_webhooks'),
 	asyncHandler(async (req, res) => {
-		const item = await WebhooksService.updateWebhook(
-			req.params.pk,
-			req.body,
-			req.sanitizedQuery
-		);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await WebhooksService.updateWebhook(req.params.pk, req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
-
+		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item });
 	})
 );
@@ -76,15 +64,10 @@ router.delete(
 	'/:pk',
 	useCollection('directus_webhooks'),
 	asyncHandler(async (req, res) => {
-		await WebhooksService.deleteWebhook(req.params.pk);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.DELETE,
-			collection: req.collection,
-			item: req.params.pk,
+		await WebhooksService.deleteWebhook(req.params.pk, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
 
 		return res.status(200).end();

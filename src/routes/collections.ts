@@ -29,7 +29,12 @@ router.post(
 		const { error } = collectionSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const createdCollection = await CollectionsService.create(req.body);
+		const createdCollection = await CollectionsService.create(req.body, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
+
 		res.json({ data: createdCollection });
 	})
 );
@@ -65,7 +70,12 @@ router.delete(
 			throw new CollectionNotFoundException(req.params.collection);
 		}
 
-		await CollectionsService.deleteCollection(req.params.collection);
+		await CollectionsService.deleteCollection(req.params.collection, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
+
 		res.end();
 	})
 );

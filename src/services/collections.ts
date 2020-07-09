@@ -3,15 +3,18 @@ import * as ItemsService from '../services/items';
 import { Collection } from '../types/collection';
 import { Query } from '../types/query';
 import { ColumnBuilder } from 'knex';
+import { Accountability } from '../types/accountability';
 
 /** @Todo properly type this */
-export const create = async (payload: any) => {
+export const create = async (payload: any, accountability: Accountability) => {
 	await database.schema.createTable(payload.collection, (table) => {
 		if (payload.note) {
 			table.comment(payload.note);
 		}
 
 		/** @todo move this into fields service */
+
+		/** @todo adhere to new nested structure system vs database */
 
 		payload.fields?.forEach((field: any) => {
 			let column: ColumnBuilder;
@@ -36,16 +39,18 @@ export const create = async (payload: any) => {
 		});
 	});
 
-	const primaryKey = await ItemsService.createItem('directus_collections', {
-		collection: payload.collection,
-		hidden: payload.hidden || false,
-		single: payload.single || false,
-		icon: payload.icon || null,
-		note: payload.note || null,
-		translation: payload.translation || null,
-	});
-
-	const collection = await ItemsService.createItem('directus_collections', primaryKey);
+	const primaryKey = await ItemsService.createItem(
+		'directus_collections',
+		{
+			collection: payload.collection,
+			hidden: payload.hidden || false,
+			single: payload.single || false,
+			icon: payload.icon || null,
+			note: payload.note || null,
+			translation: payload.translation || null,
+		},
+		accountability
+	);
 
 	/**
 	 * @TODO make this flexible and based on payload
@@ -62,7 +67,7 @@ export const create = async (payload: any) => {
 		}))
 	);
 
-	return collection;
+	return await ItemsService.readItem('directus_collections', primaryKey);
 };
 
 export const readAll = async (query?: Query) => {
@@ -105,10 +110,10 @@ export const readOne = async (collection: string, query?: Query) => {
 	};
 };
 
-export const deleteCollection = async (collection: string) => {
+export const deleteCollection = async (collection: string, accountability: Accountability) => {
 	await Promise.all([
 		database.schema.dropTable(collection),
-		ItemsService.deleteItem('directus_collections', collection),
+		ItemsService.deleteItem('directus_collections', collection, accountability),
 		database.delete().from('directus_fields').where({ collection }),
 		database
 			.delete()

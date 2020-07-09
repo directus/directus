@@ -1,9 +1,8 @@
-import { Query } from '../types/query';
+import { Accountability, Query } from '../types';
 import * as ItemsService from './items';
 
-export const createWebhook = async (data: Record<string, any>, query: Query) => {
-	const primaryKey = await ItemsService.createItem('directus_webhooks', data);
-	return await ItemsService.readItem('directus_webhooks', primaryKey, query);
+export const createWebhook = async (data: Record<string, any>, accountability: Accountability) => {
+	return await ItemsService.createItem('directus_webhooks', data, accountability);
 };
 
 export const readWebhooks = async (query: Query) => {
@@ -17,12 +16,11 @@ export const readWebhook = async (pk: string | number, query: Query) => {
 export const updateWebhook = async (
 	pk: string | number,
 	data: Record<string, any>,
-	query: Query
+	accountability: Accountability
 ) => {
-	const primaryKey = await ItemsService.updateItem('directus_webhooks', pk, data);
-	return await ItemsService.readItem('directus_webhooks', primaryKey, query);
+	return await ItemsService.updateItem('directus_webhooks', pk, data, accountability);
 };
 
-export const deleteWebhook = async (pk: string | number) => {
-	await ItemsService.deleteItem('directus_webhooks', pk);
+export const deleteWebhook = async (pk: string | number, accountability: Accountability) => {
+	await ItemsService.deleteItem('directus_webhooks', pk, accountability);
 };
