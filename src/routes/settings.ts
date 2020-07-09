@@ -24,15 +24,11 @@ router.patch(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await SettingsService.updateSettings(
-			req.params.pk /** @TODO Singleton */,
-			req.body,
-			{
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-				user: req.user,
-			}
-		);
+		await SettingsService.updateSettings(req.body, {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		});
 
 		const record = await SettingsService.readSettings(req.sanitizedQuery);
 
