@@ -8,7 +8,7 @@ import { InvalidPayloadException } from '../exceptions';
 
 export const createUser = async (data: Record<string, any>, query?: Query) => {
 	const primaryKey = await ItemsService.createItem('directus_users', data);
-	return await ItemsService.readItem('directus_user', primaryKey, query);
+	return await ItemsService.readItem('directus_users', primaryKey, query);
 };
 
 export const readUsers = async (query?: Query) => {
@@ -27,7 +27,7 @@ export const updateUser = async (pk: string | number, data: Record<string, any>,
 	 * Maybe make this an option?
 	 */
 	const primaryKey = await ItemsService.updateItem('directus_users', pk, data);
-	return await ItemsService.readItem('directus_user', primaryKey, query);
+	return await ItemsService.readItem('directus_users', primaryKey, query);
 };
 
 export const deleteUser = async (pk: string | number) => {

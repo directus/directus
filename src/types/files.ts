@@ -2,4 +2,5 @@
 export type File = {
 	id: string; // uuid
 	filename_disk: string;
+	storage: string;
 };

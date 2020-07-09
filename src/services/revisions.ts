@@ -1,6 +1,10 @@
 import { Query } from '../types/query';
 import * as ItemsService from './items';
 
+export const createRevision = async (data: Record<string, any>) => {
+	return await ItemsService.createItem('directus_revisions', data);
+};
+
 export const readRevisions = async (query: Query) => {
 	return await ItemsService.readItems('directus_revisions', query);
 };
