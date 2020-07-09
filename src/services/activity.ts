@@ -11,7 +11,7 @@ export enum Action {
 	AUTHENTICATE = 'authenticate',
 }
 
-export const createActivity = async (data: Record<string, any>, query?: Query) => {
+export const createActivity = async (data: Record<string, any>) => {
 	return await ItemsService.createItem('directus_activity', data);
 };
 
