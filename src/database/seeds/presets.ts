@@ -1,9 +1,9 @@
 import * as Knex from 'knex';
 
 export async function seed(knex: Knex): Promise<any> {
-	await knex.schema.dropTableIfExists('directus_collection_presets');
+	await knex.schema.dropTableIfExists('directus_presets');
 
-	await knex.schema.createTable('directus_collection_presets', (table) => {
+	await knex.schema.createTable('directus_presets', (table) => {
 		table.increments().notNullable();
 		table.string('title').nullable();
 		table.uuid('user').nullable();

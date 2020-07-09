@@ -7,7 +7,6 @@ import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
-import * as ActivityService from '../services/activity';
 
 const router = express.Router();
 

@@ -133,23 +133,22 @@ export const updateItem = async (
 		columns.map(({ column }) => column)
 	);
 
-	const primaryKeys = await database(collection)
+	await database(collection)
 		.update(payloadWithoutAlias)
-		.where({ [primaryKeyField]: pk })
-		.returning(primaryKeyField);
+		.where({ [primaryKeyField]: pk });
 
 	if (accountability) {
 		// Don't await this. It can run async in the background
 		saveActivityAndRevision(
 			ActivityService.Action.UPDATE,
 			collection,
-			primaryKeys[0],
+			String(pk),
 			payloadWithoutAlias,
 			accountability
 		).catch((err) => logger.error(err));
 	}
 
-	return primaryKeys[0];
+	return pk;
 };
 
 export const deleteItem = async (
