@@ -68,9 +68,7 @@ export const useFieldsStore = createStore({
 		async hydrate() {
 			const fieldsResponse = await api.get(`/fields`);
 
-			const fields: FieldRaw[] = fieldsResponse.data.data.filter(
-				({ collection }: FieldRaw) => collection !== 'directus_settings'
-			);
+			const fields: FieldRaw[] = fieldsResponse.data.data;
 
 			/**
 			 * @NOTE

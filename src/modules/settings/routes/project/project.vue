@@ -37,14 +37,16 @@ import useCollection from '@/composables/use-collection';
 import useSettingsStore from '@/stores/settings';
 import marked from 'marked';
 import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';
+import { clone } from 'lodash';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoDrawerDetail },
 	setup() {
 		const settingsStore = useSettingsStore();
+
 		const { fields } = useCollection(ref('directus_settings'));
 
-		const initialValues = settingsStore.formatted;
+		const initialValues = clone(settingsStore.state.settings);
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
