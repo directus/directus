@@ -70,15 +70,6 @@ router.delete(
 			user: req.user,
 		});
 
-		ActivityService.createActivity({
-			action: ActivityService.Action.DELETE,
-			collection: req.collection,
-			item: req.params.pk,
-			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
-		});
-
 		return res.status(200).end();
 	})
 );
