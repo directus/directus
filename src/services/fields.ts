@@ -1,6 +1,8 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { uniq } from 'lodash';
+import { Accountability } from '../types';
+import * as ItemsService from '../services/items';
 
 export const fieldsInCollection = async (collection: string) => {
 	const [fields, columns] = await Promise.all([
@@ -55,20 +57,30 @@ export const readOne = async (collection: string, field: string) => {
 	return data;
 };
 
-export const createField = async (collection: string, field: Partial<Field>) => {
-	await database.schema.alterTable('articles', (table) => {
+export const createField = async (
+	collection: string,
+	field: Partial<Field>,
+	accountability: Accountability
+) => {
+	await database.schema.alterTable(collection, (table) => {
 		table.specificType(field.field, field.database.type);
 		/** @todo add support for other database info (length etc) */
 	});
 
 	if (field.system) {
-		await database('directus_fields').insert({
-			...field.system,
-			collection: collection,
-			field: field.field,
-		});
+		await ItemsService.createItem(
+			'directus_fields',
+			{
+				...field.system,
+				collection: collection,
+				field: field.field,
+			},
+			accountability
+		);
 	}
 
 	const createdField = await readOne(collection, field.field);
 	return createdField;
 };
+
+/** @todo add update / delete field */
