@@ -36,7 +36,7 @@ import { defineComponent, computed, ref } from '@vue/composition-api';
 import ActivityNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-collection-preset';
 import marked from 'marked';
 
 type Item = {
@@ -50,7 +50,7 @@ export default defineComponent({
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
 
-		const { viewOptions, viewQuery } = useCollectionPreset(ref('directus_activity'));
+		const { viewOptions, viewQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		return {

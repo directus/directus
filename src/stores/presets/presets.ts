@@ -1,14 +1,14 @@
 import { createStore } from 'pinia';
-import { CollectionPreset } from './types';
+import { Preset } from './types';
 import { useUserStore } from '@/stores/user/';
 import api from '@/api';
 
-import defaultCollectionPreset from './default-collection-preset';
+import defaultPreset from './default-preset';
 
-export const useCollectionPresetsStore = createStore({
-	id: 'collectionPresetsStore',
+export const usePresetsStore = createStore({
+	id: 'presetsStore',
 	state: () => ({
-		collectionPresets: [] as CollectionPreset[],
+		collectionPresets: [] as Preset[],
 	}),
 	actions: {
 		async hydrate() {
@@ -18,20 +18,20 @@ export const useCollectionPresetsStore = createStore({
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
-				api.get(`/collection_presets`, {
+				api.get(`/presets`, {
 					params: {
 						'filter[user][eq]': id,
 					},
 				}),
 				// All role saved bookmarks and presets
-				api.get(`/collection_presets`, {
+				api.get(`/presets`, {
 					params: {
 						'filter[role][eq]': role.id,
 						'filter[user][null]': 1,
 					},
 				}),
 				// All global saved bookmarks and presets
-				api.get(`/collection_presets`, {
+				api.get(`/presets`, {
 					params: {
 						'filter[role][null]': 1,
 						'filter[user][null]': 1,
@@ -44,15 +44,15 @@ export const useCollectionPresetsStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
-		async create(newPreset: Partial<CollectionPreset>) {
-			const response = await api.post(`/collection_presets`, newPreset);
+		async create(newPreset: Partial<Preset>) {
+			const response = await api.post(`/presets`, newPreset);
 
 			this.state.collectionPresets.push(response.data.data);
 
 			return response.data.data;
 		},
-		async update(id: number, updates: Partial<CollectionPreset>) {
-			const response = await api.patch(`/collection_presets/${id}`, updates);
+		async update(id: number, updates: Partial<Preset>) {
+			const response = await api.patch(`/presets/${id}`, updates);
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				const updatedPreset = response.data.data;
@@ -66,7 +66,7 @@ export const useCollectionPresetsStore = createStore({
 			return response.data.data;
 		},
 		async delete(id: number) {
-			await api.delete(`/collection_presets/${id}`);
+			await api.delete(`/presets/${id}`);
 
 			this.state.collectionPresets = this.state.collectionPresets.filter((preset) => {
 				return preset.id !== id;
@@ -85,8 +85,8 @@ export const useCollectionPresetsStore = createStore({
 
 			const { id: userID, role: userRole } = userStore.state.currentUser;
 
-			const defaultPreset = {
-				...defaultCollectionPreset,
+			const defaultPresetWithCollection = {
+				...defaultPreset,
 				collection: collection,
 				user: userID,
 			};
@@ -104,7 +104,7 @@ export const useCollectionPresetsStore = createStore({
 				return false;
 			});
 
-			if (availablePresets.length === 0) return defaultPreset;
+			if (availablePresets.length === 0) return defaultPresetWithCollection;
 			if (availablePresets.length === 1) return availablePresets[0];
 
 			// In order of specificity: user-role-collection
@@ -130,7 +130,7 @@ export const useCollectionPresetsStore = createStore({
 		 * preset already exists, but doesn't have a user associated, it will create a preset for
 		 * the user. If the preset already exists and is for a user, we update the preset.
 		 */
-		async savePreset(preset: CollectionPreset) {
+		async savePreset(preset: Preset) {
 			const userStore = useUserStore();
 			if (userStore.state.currentUser === null) return null;
 			const { id: userID } = userStore.state.currentUser;

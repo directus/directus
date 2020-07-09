@@ -1,4 +1,4 @@
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import { Relation } from '@/stores/relations/types';
 import { Field } from '@/stores/fields/types';
 import { Ref, ref, computed } from '@vue/composition-api';

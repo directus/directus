@@ -81,13 +81,13 @@
 import { defineComponent, computed, ref } from '@vue/composition-api';
 
 import SettingsNavigation from '../../../components/navigation';
-import { CollectionPreset, Filter } from '@/stores/collection-presets/types';
+import { Preset, Filter } from '@/stores/presets/types';
 import api from '@/api';
 import i18n from '@/lang';
 import useCollectionsStore from '@/stores/collections';
 import layouts from '@/layouts';
 import router from '@/router';
-import useCollectionPresetsStore from '@/stores/collection-presets';
+import usePresetsStore from '@/stores/presets';
 import marked from 'marked';
 
 type User = {
@@ -123,7 +123,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
-		const collectionPresetsStore = useCollectionPresetsStore();
+		const presetsStore = usePresetsStore();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');
@@ -166,7 +166,7 @@ export default defineComponent({
 			async function save() {
 				saving.value = true;
 
-				const editsParsed: Partial<CollectionPreset> = {};
+				const editsParsed: Partial<Preset> = {};
 
 				if (edits.value.name) editsParsed.title = edits.value.name;
 				if (edits.value.name?.length === 0) editsParsed.title = null;
@@ -186,12 +186,12 @@ export default defineComponent({
 
 				try {
 					if (isNew.value === true) {
-						await api.post(`/collection_presets`, editsParsed);
+						await api.post(`/presets`, editsParsed);
 					} else {
-						await api.patch(`/collection_presets/${props.id}`, editsParsed);
+						await api.patch(`/presets/${props.id}`, editsParsed);
 					}
 
-					await collectionPresetsStore.hydrate();
+					await presetsStore.hydrate();
 
 					edits.value = {};
 				} catch (err) {
@@ -213,7 +213,7 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					await api.delete(`/collection_presets/${props.id}`);
+					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
 				} catch (error) {
 					console.error(error);
@@ -304,7 +304,7 @@ export default defineComponent({
 		function usePreset() {
 			const loading = ref(false);
 			const error = ref(null);
-			const preset = ref<CollectionPreset | null>(null);
+			const preset = ref<Preset | null>(null);
 
 			fetchPreset();
 
@@ -314,7 +314,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/collection_presets/${props.id}`);
+					const response = await api.get(`/presets/${props.id}`);
 
 					preset.value = response.data.data;
 				} catch (err) {

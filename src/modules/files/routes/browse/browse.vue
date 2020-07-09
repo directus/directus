@@ -107,7 +107,7 @@ import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import AddFolder from '../../components/add-folder';
@@ -127,7 +127,7 @@ export default defineComponent({
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
-		const { viewType, viewOptions, viewQuery, filters, searchQuery } = useCollectionPreset(ref('directus_files'));
+		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();

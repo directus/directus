@@ -141,7 +141,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
 import useCollection from '@/composables/use-collection';
-import useCollectionPreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
@@ -222,7 +222,7 @@ export default defineComponent({
 			bookmarkExists,
 			saveCurrentAsBookmark,
 			title: bookmarkName,
-		} = useCollectionPreset(collection, bookmarkID);
+		} = usePreset(collection, bookmarkID);
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		const {

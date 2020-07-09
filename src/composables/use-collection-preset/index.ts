@@ -1,4 +1,4 @@
-import { useCollectionPreset } from './use-collection-preset';
+import { usePreset } from './use-collection-preset';
 
-export { useCollectionPreset };
-export default useCollectionPreset;
+export { usePreset };
+export default usePreset;

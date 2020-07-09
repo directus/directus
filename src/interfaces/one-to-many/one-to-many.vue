@@ -69,7 +69,7 @@ import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import { Header } from '@/components/v-table/types';
 
 export default defineComponent({

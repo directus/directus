@@ -32,7 +32,7 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/collection_presets`, {
+				const response = await api.get(`/presets`, {
 					params: {
 						[`filter[title][nnull]`]: 1,
 						fields: ['id'],

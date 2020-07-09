@@ -28,7 +28,7 @@ export type Filter = {
 	locked?: boolean;
 };
 
-export type CollectionPreset = {
+export type Preset = {
 	id?: number;
 	title: string | null;
 	user: number | null;

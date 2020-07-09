@@ -130,13 +130,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { render } from 'micromustache';
+import useRelationsStore from '@/stores/relations';
 
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
@@ -206,6 +207,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const relationsStore = useRelationsStore();
+
 		const layoutElement = ref<HTMLElement | null>(null);
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
@@ -223,7 +226,14 @@ export default defineComponent({
 		);
 
 		const fileFields = computed(() => {
-			return [...availableFields.value.filter((field) => field.system.special === 'file')];
+			return availableFields.value.filter((field) => {
+				if (field.field === '$file') return true;
+				return !!relationsStore.state.relations.find((relation) => {
+					return (
+						relation.collection_many === props.collection && relation.collection_one === 'directus_files'
+					);
+				});
+			});
 		});
 
 		const { size, icon, imageSource, title, subtitle, imageFit } = useViewOptions();
@@ -354,7 +364,9 @@ export default defineComponent({
 
 				if (imageSource.value) {
 					fields.push(`${imageSource.value}.type`);
-					fields.push(`${imageSource.value}.data`);
+					fields.push(`${imageSource.value}.filename_disk`);
+					fields.push(`${imageSource.value}.storage`);
+					fields.push(`${imageSource.value}.links`);
 				}
 
 				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;

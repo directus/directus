@@ -5,7 +5,7 @@ export type Filter = {
 	value: string | number;
 };
 
-export type CollectionPreset = {
+export type Preset = {
 	id: number;
 	collection: string;
 	filters: null | Filter[];

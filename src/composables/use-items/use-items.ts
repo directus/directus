@@ -3,7 +3,7 @@ import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
@@ -139,12 +139,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 			if (fieldsToFetch.includes(sortFieldKey) === false) {
 				fieldsToFetch.push(sortFieldKey);
 			}
-		}
-
-		// Make sure we always fetch the image data for the directus_files collection when opening
-		// the file library
-		if (collection.value === 'directus_files' && fieldsToFetch.includes('data') === false) {
-			fieldsToFetch.push('data');
 		}
 
 		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field

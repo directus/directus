@@ -32,17 +32,12 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
+import getRootPath from '@/utils/get-root-path';
 
 type File = {
 	[key: string]: any;
+	id: string;
 	type: string;
-	data: {
-		full_url: string;
-		thumbnails: {
-			key: string;
-			url: string;
-		}[];
-	};
 };
 
 export default defineComponent({
@@ -100,17 +95,13 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg')) return null;
 
-			let key = 'directus-medium-crop';
+			let key = 'directus-medium-cover';
 
 			if (props.crop === false) {
 				key = 'directus-medium-contain';
 			}
 
-			const thumbnail = props.file.data.thumbnails.find((thumbnail) => thumbnail.key === key);
-
-			if (!thumbnail) return null;
-
-			return thumbnail.url;
+			return getRootPath() + `assets/${props.file.id}?key=${key}`;
 		});
 
 		const svgSource = computed(() => {
@@ -118,7 +109,7 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg') === false) return null;
 
-			return props.file.data.full_url;
+			return getRootPath() + `assets/${props.file.id}`;
 		});
 
 		const selectionIcon = computed(() => {

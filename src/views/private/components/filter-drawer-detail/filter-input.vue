@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { FilterOperator } from '@/stores/collection-presets/types';
+import { FilterOperator } from '@/stores/presets/types';
 
 export default defineComponent({
 	props: {

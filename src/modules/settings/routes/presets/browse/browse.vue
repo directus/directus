@@ -199,7 +199,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/collection_presets`, {
+					const response = await api.get(`/presets`, {
 						params: {
 							fields: [
 								'id',
@@ -280,7 +280,7 @@ export default defineComponent({
 
 				try {
 					const IDs = selection.value.map((item) => item.id).join(',');
-					await api.delete(`/collection_presets/${IDs}`);
+					await api.delete(`/presets/${IDs}`);
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;

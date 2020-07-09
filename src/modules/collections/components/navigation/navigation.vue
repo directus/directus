@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../../composables/use-navigation';
-import useCollectionPresetsStore from '@/stores/collection-presets';
+import usePresetsStore from '@/stores/presets';
 
 export default defineComponent({
 	props: {
@@ -40,11 +40,11 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const collectionPresetsStore = useCollectionPresetsStore();
+		const presetsStore = usePresetsStore();
 		const { customNavItems, navItems } = useNavigation();
 
 		const bookmarks = computed(() => {
-			return collectionPresetsStore.state.collectionPresets
+			return presetsStore.state.collectionPresets
 				.filter((preset) => {
 					return preset.title !== null && preset.collection.startsWith('directus_') === false;
 				})

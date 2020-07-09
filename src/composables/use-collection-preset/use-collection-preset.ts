@@ -1,25 +1,25 @@
-import useCollectionPresetStore from '@/stores/collection-presets';
+import usePresetStore from '@/stores/presets';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
 import useUserStore from '@/stores/user';
 
-import { Filter, CollectionPreset } from '@/stores/collection-presets/types';
+import { Filter, Preset } from '@/stores/presets/types';
 
-export function useCollectionPreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
-	const collectionPresetsStore = useCollectionPresetStore();
+export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
+	const presetsStore = usePresetStore();
 	const userStore = useUserStore();
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
 
-		return !!collectionPresetsStore.state.collectionPresets.find((preset) => preset.id === bookmark.value);
+		return !!presetsStore.state.collectionPresets.find((preset) => preset.id === bookmark.value);
 	});
 
-	const localPreset = ref<Partial<CollectionPreset>>({});
+	const localPreset = ref<Partial<Preset>>({});
 	initLocalPreset();
 
-	const savePreset = async (preset?: Partial<CollectionPreset>) => {
-		const updatedValues = await collectionPresetsStore.savePreset(preset ? preset : localPreset.value);
+	const savePreset = async (preset?: Partial<Preset>) => {
+		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
 
 		localPreset.value.id = updatedValues.id;
 
@@ -147,13 +147,13 @@ export function useCollectionPreset(collection: Ref<string>, bookmark: Ref<numbe
 	function initLocalPreset() {
 		if (bookmark.value === null) {
 			localPreset.value = {
-				...collectionPresetsStore.getPresetForCollection(collection.value),
+				...presetsStore.getPresetForCollection(collection.value),
 			};
 		} else {
 			if (bookmarkExists.value === false) return;
 
 			localPreset.value = {
-				...collectionPresetsStore.getBookmark(+bookmark.value),
+				...presetsStore.getBookmark(+bookmark.value),
 			};
 		}
 	}
@@ -167,7 +167,7 @@ export function useCollectionPreset(collection: Ref<string>, bookmark: Ref<numbe
 	 *
 	 * @param overrides Individual overrides for the collection preset
 	 */
-	async function saveCurrentAsBookmark(overrides: Partial<CollectionPreset>) {
+	async function saveCurrentAsBookmark(overrides: Partial<Preset>) {
 		const data = {
 			...localPreset.value,
 			...overrides,

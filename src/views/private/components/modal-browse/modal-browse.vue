@@ -20,8 +20,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
-import { Filter } from '@/stores/collection-presets/types';
-import useCollectionPreset from '@/composables/use-collection-preset';
+import { Filter } from '@/stores/presets/types';
+import usePreset from '@/composables/use-collection-preset';
 
 export default defineComponent({
 	props: {
@@ -53,7 +53,7 @@ export default defineComponent({
 
 		const { collection } = toRefs(props);
 
-		const { viewType, viewOptions, viewQuery } = useCollectionPreset(collection);
+		const { viewType, viewOptions, viewQuery } = usePreset(collection);
 
 		// This is a local copy of the viewtype. This means that we can sync it the layout without
 		// having use-collection-preset auto-save the values

@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import useFieldsStore from '@/stores/fields';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
 import FilterInput from './filter-input.vue';

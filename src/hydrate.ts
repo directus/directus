@@ -3,7 +3,7 @@ import { useCollectionsStore } from '@/stores/collections/';
 import { useFieldsStore } from '@/stores/fields/';
 import { useUserStore } from '@/stores/user/';
 import { useRequestsStore } from '@/stores/requests/';
-import { useCollectionPresetsStore } from '@/stores/collection-presets/';
+import { usePresetsStore } from '@/stores/presets/';
 import { useSettingsStore } from '@/stores/settings/';
 //
 import { useLatencyStore } from '@/stores/latency';
@@ -24,7 +24,7 @@ export function useStores(
 		useFieldsStore,
 		useUserStore,
 		useRequestsStore,
-		useCollectionPresetsStore,
+		usePresetsStore,
 		useSettingsStore,
 		useLatencyStore,
 		useRelationsStore,

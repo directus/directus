@@ -73,7 +73,7 @@ import SettingsNavigation from '../../../components/navigation/';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import useCollectionPreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-collection-preset';
 import marked from 'marked';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
@@ -90,7 +90,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { viewType, viewOptions, viewQuery } = useCollectionPreset(ref('directus_webhooks'));
+		const { viewType, viewOptions, viewQuery } = usePreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();

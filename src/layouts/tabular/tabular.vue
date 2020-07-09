@@ -163,7 +163,7 @@ import Draggable from 'vuedraggable';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import { render } from 'micromustache';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';

@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { Filter } from '@/stores/collection-presets/types';
+import { Filter } from '@/stores/presets/types';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields';
 import useRelationsStore from '@/stores/relations';
