@@ -9,11 +9,13 @@ import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { Accountability } from '../types';
+import { Readable } from 'stream';
 
 export const createFile = async (
 	data: Record<string, any>,
 	stream: NodeJS.ReadableStream,
-	query?: Query
+	accountability: Accountability
 ) => {
 	const id = uuidv4();
 
@@ -51,8 +53,7 @@ export const createFile = async (
 	}
 
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-	const primaryKey = await ItemsService.createItem('directus_files', payload);
-	return await ItemsService.readItem('directus_files', primaryKey, query);
+	return await ItemsService.createItem('directus_files', payload, accountability);
 };
 
 export const readFiles = async (query: Query) => {
@@ -63,12 +64,11 @@ export const readFile = async (pk: string | number, query: Query) => {
 	return await ItemsService.readItem('directus_files', pk, query);
 };
 
-// @todo Add query support
 export const updateFile = async (
 	pk: string | number,
 	data: Record<string, any>,
-	stream?: NodeJS.ReadableStream,
-	query?: Query
+	accountability: Accountability,
+	stream?: NodeJS.ReadableStream
 ) => {
 	/**
 	 * @TODO
@@ -87,15 +87,13 @@ export const updateFile = async (
 			.where({ id: pk })
 			.first();
 
-		// @todo type of stream in flydrive is wrong: https://github.com/Slynova-Org/flydrive/issues/145
-		await storage.disk(file.storage).put(file.filename_disk, stream as any);
+		await storage.disk(file.storage).put(file.filename_disk, stream as Readable);
 	}
 
-	const primaryKey = await ItemsService.updateItem('directus_files', pk, data);
-	return await ItemsService.readItem('directus_files', primaryKey, query);
+	return await ItemsService.updateItem('directus_files', pk, data, accountability);
 };
 
-export const deleteFile = async (pk: string | number) => {
+export const deleteFile = async (pk: string, accountability: Accountability) => {
 	const file = await database
 		.select('storage', 'filename_disk')
 		.from('directus_files')
