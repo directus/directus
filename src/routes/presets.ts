@@ -21,7 +21,7 @@ router.post(
 			primaryKey,
 			req.sanitizedQuery
 		);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -32,7 +32,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await CollectionPresetsService.readCollectionPresets(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -46,7 +46,7 @@ router.get(
 			req.params.pk,
 			req.sanitizedQuery
 		);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -70,7 +70,7 @@ router.patch(
 			primaryKey,
 			req.sanitizedQuery
 		);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 

@@ -15,7 +15,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const records = await ActivityService.readActivities(req.sanitizedQuery);
 		return res.json({
-			data: records,
+			data: records || null,
 		});
 	})
 );
@@ -29,7 +29,7 @@ router.get(
 		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery);
 
 		return res.json({
-			data: record,
+			data: record || null,
 		});
 	})
 );

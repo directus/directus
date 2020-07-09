@@ -18,7 +18,7 @@ router.post(
 		});
 
 		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -29,7 +29,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await FoldersService.readFolders(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -40,7 +40,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await FoldersService.readFolder(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -56,7 +56,7 @@ router.patch(
 
 		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery);
 
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 

@@ -21,7 +21,7 @@ router.post(
 			user: req.user,
 		});
 		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -32,7 +32,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const item = await UsersService.readUsers(req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -47,7 +47,7 @@ router.get(
 		}
 
 		const item = await UsersService.readUser(req.user, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -58,7 +58,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: items });
+		return res.json({ data: items || null });
 	})
 );
 
@@ -79,7 +79,7 @@ router.patch(
 		});
 
 		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -95,7 +95,7 @@ router.patch(
 			user: req.user,
 		});
 		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 

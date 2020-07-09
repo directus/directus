@@ -14,7 +14,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await RevisionsService.readRevisions(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -25,7 +25,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await RevisionsService.readRevision(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 

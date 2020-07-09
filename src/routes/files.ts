@@ -87,7 +87,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		});
 
 		busboy.on('finish', () => {
-			res.status(200).json({ data: savedFiles });
+			res.status(200).json({ data: savedFiles || null });
 		});
 
 		return req.pipe(busboy);
@@ -102,7 +102,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await FilesService.readFiles(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -113,7 +113,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -134,7 +134,7 @@ router.patch(
 			file = await FilesService.readFile(pk, req.sanitizedQuery);
 		}
 
-		return res.status(200).json({ data: file });
+		return res.status(200).json({ data: file || null });
 	})
 );
 

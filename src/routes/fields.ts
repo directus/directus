@@ -13,7 +13,7 @@ router.get(
 	'/',
 	asyncHandler(async (req, res) => {
 		const fields = await FieldsService.readAll();
-		return res.json({ data: fields });
+		return res.json({ data: fields || null });
 	})
 );
 
@@ -22,7 +22,7 @@ router.get(
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		const fields = await FieldsService.readAll(req.collection);
-		return res.json({ data: fields });
+		return res.json({ data: fields || null });
 	})
 );
 
@@ -34,7 +34,7 @@ router.get(
 		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
 
 		const field = await FieldsService.readOne(req.collection, req.params.field);
-		return res.json({ data: field });
+		return res.json({ data: field || null });
 	})
 );
 
@@ -67,7 +67,7 @@ router.post(
 			user: req.user,
 		});
 
-		res.json({ data: createdField });
+		res.json({ data: createdField || null });
 	})
 );
 

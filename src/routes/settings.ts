@@ -14,7 +14,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await SettingsService.readSettings(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -36,7 +36,7 @@ router.patch(
 
 		const record = await SettingsService.readSettings(req.sanitizedQuery);
 
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 

@@ -19,7 +19,7 @@ router.post(
 			user: req.user,
 		});
 		const item = await RelationsService.readRelation(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -30,7 +30,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await RelationsService.readRelations(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -41,7 +41,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await RelationsService.readRelation(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -57,7 +57,7 @@ router.patch(
 			user: req.user,
 		});
 		const item = await RelationsService.readRelation(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 

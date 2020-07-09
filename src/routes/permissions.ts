@@ -19,7 +19,7 @@ router.post(
 
 		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery);
 
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -30,7 +30,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const item = await PermissionsService.readPermissions(req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -44,7 +44,7 @@ router.get(
 			Number(req.params.pk),
 			req.sanitizedQuery
 		);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -64,7 +64,7 @@ router.patch(
 
 		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery);
 
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 

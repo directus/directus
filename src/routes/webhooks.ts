@@ -19,7 +19,7 @@ router.post(
 
 		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery);
 
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
@@ -30,7 +30,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await WebhooksService.readWebhooks(req.sanitizedQuery);
-		return res.json({ data: records });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -41,7 +41,7 @@ router.get(
 	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await WebhooksService.readWebhook(req.params.pk, req.sanitizedQuery);
-		return res.json({ data: record });
+		return res.json({ data: record || null });
 	})
 );
 
@@ -55,7 +55,7 @@ router.patch(
 			user: req.user,
 		});
 		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery);
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 

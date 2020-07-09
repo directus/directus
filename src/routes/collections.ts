@@ -35,7 +35,7 @@ router.post(
 			user: req.user,
 		});
 
-		res.json({ data: createdCollection });
+		res.json({ data: createdCollection || null });
 	})
 );
 
@@ -44,8 +44,8 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const data = await CollectionsService.readAll(req.sanitizedQuery);
-		res.json({ data });
+		const collections = await CollectionsService.readAll(req.sanitizedQuery);
+		res.json({ data: collections || null });
 	})
 );
 
@@ -58,8 +58,11 @@ router.get(
 
 		if (exists === false) throw new CollectionNotFoundException(req.params.collection);
 
-		const data = await CollectionsService.readOne(req.params.collection, req.sanitizedQuery);
-		res.json({ data });
+		const collection = await CollectionsService.readOne(
+			req.params.collection,
+			req.sanitizedQuery
+		);
+		res.json({ data: collection || null });
 	})
 );
 

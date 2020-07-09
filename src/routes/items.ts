@@ -24,7 +24,7 @@ router.post(
 
 		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
 
-		res.json({ data: item });
+		res.json({ data: item || null });
 	})
 );
 
@@ -41,7 +41,7 @@ router.get(
 
 		return res.json({
 			meta: meta,
-			data: records,
+			data: records || null,
 		});
 	})
 );
@@ -59,7 +59,7 @@ router.get(
 		);
 
 		return res.json({
-			data: record,
+			data: record || null,
 		});
 	})
 );
@@ -78,7 +78,7 @@ router.patch(
 
 		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery);
 
-		return res.json({ data: item });
+		return res.json({ data: item || null });
 	})
 );
 
