@@ -42,7 +42,7 @@ export const createItem = async (
 	collection: string,
 	data: Record<string, any>,
 	accountability?: Accountability
-) => {
+): Promise<string | number> => {
 	let payload = await PayloadService.processValues('create', collection, data);
 
 	payload = await PayloadService.processM2O(collection, payload);
@@ -118,7 +118,7 @@ export const updateItem = async (
 	pk: number | string,
 	data: Record<string, any>,
 	accountability?: Accountability
-) => {
+): Promise<string | number> => {
 	let payload = await PayloadService.processValues('update', collection, data);
 
 	payload = await PayloadService.processM2O(collection, payload);

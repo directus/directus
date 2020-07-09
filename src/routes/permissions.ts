@@ -3,7 +3,6 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import validateQuery from '../middleware/validate-query';
 import * as PermissionsService from '../services/permissions';
-import * as ActivityService from '../services/activity';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
@@ -12,16 +11,13 @@ router.post(
 	'/',
 	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
-		const item = await PermissionsService.createPermission(req.body, req.sanitizedQuery);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.CREATE,
-			collection: req.collection,
-			item: item.id,
+		const primaryKey = await PermissionsService.createPermission(req.body, {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
+
+		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item });
 	})
@@ -44,7 +40,10 @@ router.get(
 	sanitizeQuery,
 	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await PermissionsService.readPermission(req.params.pk, req.sanitizedQuery);
+		const record = await PermissionsService.readPermission(
+			Number(req.params.pk),
+			req.sanitizedQuery
+		);
 		return res.json({ data: record });
 	})
 );
@@ -53,20 +52,17 @@ router.patch(
 	'/:pk',
 	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
-		const item = await PermissionsService.updatePermission(
-			req.params.pk,
+		const primaryKey = await PermissionsService.updatePermission(
+			Number(req.params.pk),
 			req.body,
-			req.sanitizedQuery
+			{
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			}
 		);
 
-		ActivityService.createActivity({
-			action: ActivityService.Action.UPDATE,
-			collection: req.collection,
-			item: item.id,
-			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
-		});
+		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item });
 	})
@@ -76,15 +72,10 @@ router.delete(
 	'/:pk',
 	useCollection('directus_permissions'),
 	asyncHandler(async (req, res) => {
-		await PermissionsService.deletePermission(req.params.pk);
-
-		ActivityService.createActivity({
-			action: ActivityService.Action.DELETE,
-			collection: req.collection,
-			item: req.params.pk,
+		await PermissionsService.deletePermission(Number(req.params.pk), {
 			ip: req.ip,
-			user_agent: req.get('user-agent'),
-			action_by: req.user,
+			userAgent: req.get('user-agent'),
+			user: req.user,
 		});
 
 		return res.status(200).end();
