@@ -44,7 +44,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }) 
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any noticable hickups or delays
-		setTimeout(() => refresh(), response.data.data.expires * 1000 + 10 * 1000);
+		setTimeout(() => refresh(), response.data.data.expires * 1000 - 10 * 1000);
 		appStore.state.authenticated = true;
 	} catch (error) {
 		await logout({ navigate, reason: LogoutReason.ERROR_SESSION_EXPIRED });

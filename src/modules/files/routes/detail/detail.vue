@@ -81,8 +81,8 @@
 
 		<div class="file-detail">
 			<file-preview
-				v-if="isBatch === false && item && item.data"
-				:src="`${item.data.full_url}?cache-buster=${cacheBuster}`"
+				v-if="isBatch === false && item"
+				:src="fileSrc"
 				:mime="item.type"
 				:width="item.width"
 				:height="item.height"
@@ -162,6 +162,7 @@ import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
 import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
+import getRootPath from '@/utils/get-root-path';
 
 type Values = {
 	[field: string]: any;
@@ -225,6 +226,12 @@ export default defineComponent({
 		const cacheBuster = ref(nanoid());
 		const editActive = ref(false);
 		const previewActive = ref(false);
+		const fileSrc = computed(() => {
+			return (
+				getRootPath() +
+				`assets/${props.primaryKey}?cache-buster=${cacheBuster.value}&key=directus-large-contain`
+			);
+		});
 
 		// These are the fields that will be prevented from showing up in the form
 		const fieldsBlacklist: string[] = [
@@ -282,6 +289,7 @@ export default defineComponent({
 			moveToFolder,
 			moving,
 			selectedFolder,
+			fileSrc,
 		};
 
 		function changeCacheBuster() {

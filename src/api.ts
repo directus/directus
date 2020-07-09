@@ -56,6 +56,8 @@ export const onError = async (error: RequestError) => {
 	if (status === 401 && code === 'INVALID_CREDENTIALS') {
 		try {
 			await refresh();
+
+			/** @todo retry failed request */
 		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 		}

@@ -8,7 +8,7 @@
 
 		<file-preview
 			v-else-if="file"
-			:src="`${file.data.full_url}?cache-buster=${cacheBuster}`"
+			:src="fileSrc"
 			:mime="file.type"
 			:width="file.width"
 			:height="file.height"
@@ -30,10 +30,9 @@ import api from '@/api';
 import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
+import getRootPath from '@/utils/get-root-path';
+
 type File = {
-	data: {
-		full_url: string;
-	};
 	type: string;
 	width: number | null;
 	height: number | null;
@@ -48,7 +47,7 @@ export default defineComponent({
 	},
 	props: {
 		id: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		active: {
@@ -74,6 +73,10 @@ export default defineComponent({
 		const file = ref<File | null>(null);
 		const cacheBuster = ref(nanoid());
 
+		const fileSrc = computed(() => {
+			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster}`;
+		});
+
 		watch(
 			() => props.id,
 			(newID, oldID) => {
@@ -84,7 +87,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _active, cacheBuster, loading, error, file };
+		return { _active, cacheBuster, loading, error, file, fileSrc };
 
 		async function fetchFile() {
 			cacheBuster.value = nanoid();
@@ -94,7 +97,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/files/${props.id}`, {
 					params: {
-						fields: ['data', 'type', 'width', 'height', 'title'],
+						fields: ['type', 'width', 'height', 'title'],
 					},
 				});
 
