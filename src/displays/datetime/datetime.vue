@@ -6,7 +6,6 @@
 import { defineComponent, ref, watch, PropType } from '@vue/composition-api';
 import formatLocalized from '@/utils/localized-format';
 import i18n from '@/lang';
-import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 
 export default defineComponent({
@@ -32,13 +31,7 @@ export default defineComponent({
 					return;
 				}
 
-				let date: Date;
-
-				if (newValue.includes('T')) {
-					date = parseISO(props.value);
-				} else {
-					date = parse(props.value, 'yyyy-MM-dd HH:mm:ss', new Date());
-				}
+				const date = parseISO(props.value);
 
 				let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
 				if (props.type === 'date') format = String(i18n.t('date-fns_date'));

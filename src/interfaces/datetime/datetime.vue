@@ -15,7 +15,7 @@
 			</v-input>
 		</template>
 
-		<div class="date-selects" v-if="type === 'datetime' || type === 'date'">
+		<div class="date-selects" v-if="type === 'timestamp' || type === 'datetime' || type === 'date'">
 			<div class="month">
 				<v-select :placeholder="$t('month')" :items="months" v-model="localValue.month" />
 			</div>
@@ -27,9 +27,13 @@
 			</div>
 		</div>
 
-		<v-divider v-if="type === 'datetime'" />
+		<v-divider v-if="type === 'timestamp' || type === 'datetime'" />
 
-		<div class="time-selects" v-if="type === 'datetime' || type === 'time'" :class="{ seconds: includeSeconds }">
+		<div
+			class="time-selects"
+			v-if="type === 'timestamp' || type === 'datetime' || type === 'time'"
+			:class="{ seconds: includeSeconds }"
+		>
 			<div class="hour">
 				<v-select :items="hours" v-model="localValue.hours" />
 			</div>
@@ -54,9 +58,7 @@
 import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
 import formatLocalized from '@/utils/localized-format';
 import { i18n } from '@/lang';
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
+import { formatISO, parseISO } from 'date-fns';
 
 type LocalValue = {
 	month: null | number;
@@ -79,7 +81,9 @@ export default defineComponent({
 			default: null,
 		},
 		type: {
-			type: String as PropType<'datetime' | 'time' | 'date' | 'datetime_created' | 'datetime_updated'>,
+			type: String as PropType<
+				'timestamp' | 'datetime' | 'time' | 'date' | 'datetime_created' | 'datetime_updated'
+			>,
 			required: true,
 			validator: (val: string) =>
 				['datetime', 'date', 'time', 'datetime_created', 'datetime_updated'].includes(val),
@@ -90,31 +94,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const formatString = computed(() => {
-			const date = 'yyyy-MM-dd';
-			const time = 'HH:mm:ss';
-
-			if (props.type === 'datetime') {
-				return date + ' ' + time;
-			}
-
-			if (props.type === 'date') {
-				return date;
-			}
-
-			return time;
-		});
-
 		const valueAsDate = computed(() => {
 			if (props.value === null) return null;
-
-			// The API can return dates as MySQL style (yyyy-mm-dd hh:mm:ss) or ISO 8601.
-			// If the value contains a T, it's safe to assume it's a ISO 8601
-			if (props.value.includes('T')) {
-				return parseISO(props.value);
-			}
-
-			return parse(props.value, formatString.value, new Date());
+			return parseISO(props.value);
 		});
 
 		const displayValue = ref<string | null>(null);
@@ -159,7 +141,7 @@ export default defineComponent({
 
 					const asDate = new Date(year, month, date, period === 'am' ? hours : hours + 12, minutes, seconds);
 
-					emit('input', format(asDate, formatString.value));
+					emit('input', formatISO(asDate));
 				}
 			},
 			{
