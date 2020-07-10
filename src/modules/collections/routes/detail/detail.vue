@@ -1,5 +1,5 @@
 <template>
-	<collections-not-found v-if="error && error.code === 404" />
+	<collections-not-found v-if="error || (collectionInfo.single === true && primaryKey !== null)" />
 	<private-view v-else :title="title">
 		<template #title v-if="isNew === false && isBatch === false && collectionInfo.display_template">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
@@ -178,6 +178,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
+import { NavigationGuard } from 'vue-router';
 
 type Values = {
 	[field: string]: any;
@@ -185,18 +186,6 @@ type Values = {
 
 export default defineComponent({
 	name: 'collections-detail',
-	beforeRouteLeave(to, from, next) {
-		const self = this as any;
-		const hasEdits = Object.keys(self.edits).length > 0;
-
-		if (hasEdits) {
-			self.confirmLeave = true;
-			self.leaveTo = to.fullPath;
-			return next(false);
-		}
-
-		return next();
-	},
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
@@ -211,7 +200,7 @@ export default defineComponent({
 		},
 		primaryKey: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -269,6 +258,18 @@ export default defineComponent({
 		useShortcut('mod+s', saveAndStay);
 		useShortcut('mod+shift+s', saveAndAddNew);
 
+		const navigationGuard: NavigationGuard = (to, from, next) => {
+			const hasEdits = Object.keys(edits.value).length > 0;
+
+			if (hasEdits) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return next(false);
+			}
+
+			return next();
+		};
+
 		return {
 			item,
 			loading,
@@ -299,6 +300,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			navigationGuard,
 		};
 
 		function useBreadcrumb() {

@@ -1,6 +1,6 @@
 import { defineModule } from '@/modules/define';
 import CollectionsOverview from './routes/overview/';
-import CollectionsBrowse from './routes/browse/';
+import CollectionsBrowseOrDetail from './routes/browse-or-detail/';
 import CollectionsDetail from './routes/detail/';
 import CollectionsItemNotFound from './routes/not-found';
 
@@ -17,7 +17,7 @@ export default defineModule(({ i18n }) => ({
 		{
 			name: 'collections-browse',
 			path: '/:collection',
-			component: CollectionsBrowse,
+			component: CollectionsBrowseOrDetail,
 			props: (route) => ({
 				collection: route.params.collection,
 				bookmark: route.query.bookmark,

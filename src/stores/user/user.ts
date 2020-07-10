@@ -53,7 +53,7 @@ export const useUserStore = createStore({
 
 			const end = performance.now();
 
-			latencyStore.state.latency.push({
+			latencyStore.save({
 				timestamp: new Date(),
 				latency: end - start,
 			});

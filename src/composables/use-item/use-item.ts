@@ -5,8 +5,8 @@ import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number>) {
-	const { primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
+	const { info: collectionInfo, primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
 
 	const item = ref<any>(null);
 	const error = ref(null);
@@ -17,11 +17,20 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
+	const isSingle = computed(() => !!collectionInfo.value?.single);
 
 	const endpoint = computed(() => {
 		return collection.value.startsWith('directus_')
 			? `/${collection.value.substring(9)}`
 			: `/items/${collection.value}`;
+	});
+
+	const itemEndpoint = computed(() => {
+		if (isSingle.value) {
+			return endpoint.value;
+		}
+
+		return `${endpoint.value}/${primaryKey.value}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });
@@ -47,8 +56,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		loading.value = true;
 
 		try {
-			const response = await api.get(`${endpoint.value}/${primaryKey.value}`);
-
+			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
@@ -77,7 +85,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					type: 'success',
 				});
 			} else {
-				response = await api.patch(`${endpoint.value}/${primaryKey.value}`, edits.value);
+				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
 					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
@@ -180,11 +188,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					throw new Error('[useItem] You cant soft-delete without a status field');
 				}
 
-				await api.patch(`${endpoint.value}/${primaryKey.value}`, {
+				await api.patch(itemEndpoint.value, {
 					[statusField.value.field]: softDeleteStatus.value,
 				});
 			} else {
-				await api.delete(`${endpoint.value}/${primaryKey.value}`);
+				await api.delete(itemEndpoint.value);
 			}
 
 			item.value = null;

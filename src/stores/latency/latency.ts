@@ -14,5 +14,9 @@ export const useLatencyStore = createStore({
 		async dehydrate() {
 			this.reset();
 		},
+		save(latency: Latency) {
+			this.state.latency.push(latency);
+			this.state.latency = this.state.latency.slice(-20);
+		},
 	},
 });

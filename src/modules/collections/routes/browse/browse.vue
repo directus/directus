@@ -133,10 +133,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
-import { NavigationGuard } from 'vue-router';
 import CollectionsNavigation from '../../components/navigation/';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from '../not-found/';
@@ -149,40 +146,11 @@ import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
 
-const redirectIfNeeded: NavigationGuard = async (to, from, next) => {
-	const collectionsStore = useCollectionsStore();
-	const collectionInfo = collectionsStore.getCollection(to.params.collection);
-
-	if (collectionInfo === null) return next();
-
-	if (collectionInfo.single === true) {
-		const fieldsStore = useFieldsStore();
-
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(to.params.collection);
-
-		const item = await api.get(`/items/${to.params.collection}`, {
-			params: {
-				limit: 1,
-				fields: primaryKeyField.field,
-				single: true,
-			},
-		});
-
-		const primaryKey = item.data.data[primaryKeyField.field];
-
-		return next(`/collections/${to.params.collection}/${primaryKey}`);
-	}
-
-	return next();
-};
-
 type Item = {
 	[field: string]: any;
 };
 
 export default defineComponent({
-	beforeRouteEnter: redirectIfNeeded,
-	beforeRouteUpdate: redirectIfNeeded,
 	name: 'collections-browse',
 	components: {
 		CollectionsNavigation,
