@@ -26,7 +26,7 @@
     "@types/js-yaml": "^3.12.5",
     "@types/lodash": "^4.14.157",
     "@types/mousetrap": "^1.6.3",
-    "@vue/composition-api": "^0.6.3",
+    "@vue/composition-api": "^0.6.7",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "bytes": "^3.1.0",
