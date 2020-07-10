@@ -28,7 +28,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 	if (query.filter) {
 		query.filter.forEach((filter) => {
 			if (filter.operator === 'in') {
-				dbQuery.whereIn(filter.column, filter.value as (string | number)[]);
+				let value = filter.value;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery.whereIn(filter.column, value as string[]);
 			}
 
 			if (filter.operator === 'eq') {
