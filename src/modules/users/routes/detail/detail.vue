@@ -299,7 +299,7 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/users/${props.primaryKey}`, {
 						params: {
-							fields: ['role.name', 'avatar.data'],
+							fields: ['role.name', 'avatar.id'],
 						},
 					});
 

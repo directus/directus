@@ -23,9 +23,7 @@ export type Role = {
 };
 
 export type Avatar = {
-	data: {
-		thumbnails: Thumbnail[];
-	};
+	id: string;
 };
 
 type Thumbnail = {

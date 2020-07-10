@@ -38,6 +38,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import useUserStore from '@/stores/user/';
+import getRootPath from '../../../../utils/get-root-path';
 
 export default defineComponent({
 	setup() {
@@ -49,11 +50,7 @@ export default defineComponent({
 			if (userStore.state.currentUser === null) return null;
 			if (userStore.state.currentUser.avatar === null) return null;
 
-			const thumbnail = userStore.state.currentUser.avatar.data.thumbnails.find((thumb) => {
-				return thumb.key === 'directus-medium-crop';
-			});
-
-			return thumbnail?.url || null;
+			return getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=directus-medium-cover`;
 		});
 
 		const userProfileLink = computed<string>(() => {

@@ -77,7 +77,6 @@ export default defineComponent({
 							'filter[collection][eq]': collection,
 							'filter[item][eq]': primaryKey,
 							'filter[action][in]': 'comment',
-							'filter[comment_deleted_on][null]': 1,
 							sort: '-id', // directus_activity has auto increment and is therefore in chronological order
 							fields: [
 								'id',
@@ -86,9 +85,8 @@ export default defineComponent({
 								'action_by.id',
 								'action_by.first_name',
 								'action_by.last_name',
-								'action_by.avatar.data',
+								'action_by.avatar.id',
 								'comment',
-								'edited_on',
 							],
 						},
 					});

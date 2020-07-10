@@ -86,7 +86,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/users/${props.user}`, {
 					params: {
-						fields: ['first_name', 'last_name', 'avatar.data', 'role.name', 'status', 'email'],
+						fields: ['first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
 					},
 				});
 				data.value = response.data.data;

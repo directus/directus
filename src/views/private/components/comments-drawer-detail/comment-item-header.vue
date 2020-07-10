@@ -69,6 +69,7 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
+import getRootPath from '@/utils/get-root-path';
 
 import api from '@/api';
 import localizedFormat from '@/utils/localized-format';
@@ -111,10 +112,7 @@ export default defineComponent({
 		const avatarSource = computed(() => {
 			if (!props.activity.action_by?.avatar) return null;
 
-			return (
-				props.activity.action_by.avatar.data.thumbnails.find((thumb) => thumb.key === 'directus-small-crop')
-					?.url || null
-			);
+			return getRootPath() + `assets/${props.activity.action_by.avatar.id}?key=directus-small-cover`;
 		});
 
 		const { confirmDelete, deleting, remove } = useDelete();
