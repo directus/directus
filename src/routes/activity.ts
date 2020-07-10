@@ -34,4 +34,60 @@ router.get(
 	})
 );
 
+router.post(
+	'/comment',
+	useCollection('directus_activity'),
+	sanitizeQuery,
+	validateQuery,
+	asyncHandler(async (req, res) => {
+		const primaryKey = await ActivityService.createActivity({
+			...req.body,
+			action: ActivityService.Action.COMMENT,
+			action_by: req.user,
+			ip: req.ip,
+			user_agent: req.get('user-agent'),
+		});
+
+		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery);
+
+		return res.json({
+			data: record || null,
+		});
+	})
+);
+
+router.patch(
+	'/comment/:pk',
+	useCollection('directus_activity'),
+	sanitizeQuery,
+	validateQuery,
+	asyncHandler(async (req, res) => {
+		const primaryKey = await ActivityService.updateActivity(req.params.pk, req.body, {
+			user: req.user,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+		});
+
+		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery);
+
+		return res.json({
+			data: record || null,
+		});
+	})
+);
+
+router.delete(
+	'/comment/:pk',
+	useCollection('directus_activity'),
+	asyncHandler(async (req, res) => {
+		await ActivityService.deleteActivity(req.params.pk, {
+			user: req.user,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+		});
+
+		return res.status(200).end();
+	})
+);
+
 export default router;
