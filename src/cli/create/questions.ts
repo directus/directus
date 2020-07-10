@@ -1,0 +1,50 @@
+const filename = () => ({
+	type: 'input',
+	name: 'filename',
+	message: 'Filename:',
+	default: './data.db',
+});
+
+const host = () => ({
+	type: 'input',
+	name: 'host',
+	message: 'Host:',
+	default: '127.0.0.1',
+});
+
+const port = ({ client }) => ({
+	type: 'input',
+	name: 'port',
+	message: 'Port:',
+	default() {
+		const ports = {
+			pg: 5432,
+			mysql: 3306,
+			oracledb: 1521,
+			mssql: 1433,
+		};
+
+		return ports[client];
+	},
+});
+
+const username = () => ({
+	type: 'input',
+	name: 'username',
+	message: 'Username:',
+});
+
+const password = () => ({
+	type: 'password',
+	name: 'password',
+	message: 'Password:',
+	mask: '*',
+});
+
+export const databaseQuestions = {
+	sqlite3: [filename],
+	mysql: [host, port, username, password],
+	pg: [host, port, username, password],
+	oracledb: [host, port, username, password],
+	mssql: [host, port, username, password],
+};
