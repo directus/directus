@@ -55,7 +55,7 @@
     "vue": "^2.6.11",
     "vue-i18n": "^8.18.2",
     "vue-router": "^3.3.4",
-    "vuedraggable": "^2.23.2"
+    "vuedraggable": "^2.24.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
