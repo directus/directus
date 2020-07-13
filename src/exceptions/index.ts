@@ -1,6 +1,7 @@
 export * from './base';
 export * from './collection-not-found';
 export * from './field-not-found';
+export * from './forbidden';
 export * from './invalid-credentials';
 export * from './invalid-payload';
 export * from './invalid-query';
