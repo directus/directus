@@ -1,4 +1,4 @@
-import { Accountability, Query } from '../types';
+import { Accountability, Permission, Operation, Query } from '../types';
 import * as ItemsService from './items';
 
 export const createPermission = async (
@@ -31,4 +31,28 @@ export const updatePermission = async (
 
 export const deletePermission = async (pk: number, accountability: Accountability) => {
 	await ItemsService.deleteItem('directus_permissions', pk, accountability);
+};
+
+export const authorize = async (operation: Operation, collection: string, role?: string) => {
+	const query: Query = {
+		filter: {
+			collection: {
+				_eq: collection,
+			},
+			operation: {
+				_eq: operation,
+			},
+		},
+		limit: 1,
+	};
+
+	if (role) {
+		query.filter.role = {
+			_eq: role,
+		};
+	}
+
+	const records = await ItemsService.readItems<Permission>('directus_permissions', query);
+
+	return records[0];
 };
