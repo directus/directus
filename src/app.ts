@@ -37,6 +37,10 @@ const app = express()
 	.use(logger())
 	.use(bodyParser.json())
 	.use(extractToken)
+	.use((req, res, next) => {
+		res.setHeader('X-Powered-By', 'Directus');
+		next();
+	})
 
 	// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
 	.use('/auth', authRouter)
