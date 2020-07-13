@@ -2,6 +2,8 @@
  * Custom properties on the req object in express
  */
 
+import { Permission } from './permissions';
+
 export {};
 
 declare global {
@@ -13,6 +15,7 @@ declare global {
 			collection?: string;
 			sanitizedQuery?: Record<string, any>;
 			single?: boolean;
+			permissions?: Permission;
 		}
 	}
 }

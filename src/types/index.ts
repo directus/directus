@@ -5,6 +5,7 @@ export * from './collection';
 export * from './field';
 export * from './files';
 export * from './meta';
+export * from './permissions';
 export * from './query';
 export * from './relation';
 export * from './sessions';
