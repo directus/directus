@@ -12,7 +12,7 @@ declare global {
 			role?: string;
 			collection?: string;
 			sanitizedQuery?: Record<string, any>;
-			single: boolean;
+			single?: boolean;
 		}
 	}
 }
