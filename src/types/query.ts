@@ -3,7 +3,7 @@ import { Meta } from './meta';
 export type Query = {
 	fields?: string[];
 	sort?: Sort[];
-	filter?: Filter[];
+	filter?: Filter;
 	limit?: number;
 	offset?: number;
 	page?: number;
@@ -18,9 +18,7 @@ export type Sort = {
 };
 
 export type Filter = {
-	column: string;
-	operator: FilterOperator;
-	value: null | string | number | (string | number)[];
+	[keyOrOperator: string]: Filter | any;
 };
 
 export type FilterOperator = 'eq' | 'neq' | 'in' | 'nin' | 'null' | 'nnull';

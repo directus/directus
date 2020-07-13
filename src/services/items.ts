@@ -98,14 +98,12 @@ export const readItem = async <T = any>(
 
 	query = {
 		...query,
-		filter: [
-			...(query.filter || []),
-			{
-				column: primaryKeyField,
-				operator: 'eq',
-				value: pk,
+		filter: {
+			...(query.filter || {}),
+			[primaryKeyField]: {
+				_eq: pk,
 			},
-		],
+		},
 	};
 
 	const ast = await getAST(collection, query);

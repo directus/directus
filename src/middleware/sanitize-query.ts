@@ -4,8 +4,9 @@
  */
 
 import { RequestHandler } from 'express';
-import { Query, Sort, Filter, FilterOperator } from '../types/query';
+import { Query, Sort, Filter } from '../types/query';
 import { Meta } from '../types/meta';
+import logger from '../logger';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
@@ -84,14 +85,20 @@ function sanitizeSort(rawSort: any) {
 }
 
 function sanitizeFilter(rawFilter: any) {
-	const filters: Filter[] = [];
+	let filters: Filter = rawFilter;
 
-	Object.keys(rawFilter).forEach((column) => {
-		Object.keys(rawFilter[column]).forEach((operator: FilterOperator) => {
-			const value = rawFilter[column][operator];
-			filters.push({ column, operator, value });
-		});
-	});
+	if (typeof rawFilter === 'string') {
+		try {
+			filters = JSON.parse(rawFilter);
+		} catch {
+			logger.warn('Invalid value passed for filter query parameter.');
+		}
+	}
+
+	/**
+	 * @todo
+	 * validate filter syntax?
+	 */
 
 	return filters;
 }

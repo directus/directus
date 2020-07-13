@@ -1,7 +1,8 @@
 import { AST, NestedCollectionAST } from '../types/ast';
 import { uniq } from 'lodash';
 import database, { schemaInspector } from './index';
-import { Query } from '../types/query';
+import { Filter, Query } from '../types';
+import { QueryBuilder } from 'knex';
 
 export default async function runAST(ast: AST, query = ast.query) {
 	const toplevelFields: string[] = [];
@@ -23,33 +24,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 		nestedCollections.push(child);
 	}
 
-	const dbQuery = database.select(toplevelFields).from(ast.name);
+	let dbQuery = database.select(toplevelFields).from(ast.name);
 
 	if (query.filter) {
-		query.filter.forEach((filter) => {
-			if (filter.operator === 'in') {
-				let value = filter.value;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery.whereIn(filter.column, value as string[]);
-			}
-
-			if (filter.operator === 'eq') {
-				dbQuery.where({ [filter.column]: filter.value });
-			}
-
-			if (filter.operator === 'neq') {
-				dbQuery.whereNot({ [filter.column]: filter.value });
-			}
-
-			if (filter.operator === 'null') {
-				dbQuery.whereNull(filter.column);
-			}
-
-			if (filter.operator === 'nnull') {
-				dbQuery.whereNotNull(filter.column);
-			}
-		});
+		applyFilter(dbQuery, query.filter);
 	}
 
 	if (query.sort) {
@@ -100,30 +78,24 @@ export default async function runAST(ast: AST, query = ast.query) {
 		if (m2o) {
 			batchQuery = {
 				...batch.query,
-				filter: [
-					...(batch.query.filter || []),
-					{
-						column: 'id',
-						operator: 'in',
-						// filter removes null / undefined
-						value: uniq(results.map((res) => res[batch.relation.field_many])).filter(
+				filter: {
+					...(batch.query.filter || {}),
+					[batch.relation.primary_one]: {
+						_in: uniq(results.map((res) => res[batch.relation.field_many])).filter(
 							(id) => id
 						),
 					},
-				],
+				},
 			};
 		} else {
 			batchQuery = {
 				...batch.query,
-				filter: [
-					...(batch.query.filter || []),
-					{
-						column: batch.relation.field_many,
-						operator: 'in',
-						// filter removes null / undefined
-						value: uniq(results.map((res) => res[batch.parentKey])).filter((id) => id),
+				filter: {
+					...(batch.query.filter || {}),
+					[batch.relation.field_many]: {
+						_in: uniq(results.map((res) => res[batch.parentKey])).filter((id) => id),
 					},
-				],
+				},
 			};
 		}
 
@@ -165,4 +137,51 @@ function isM2O(child: NestedCollectionAST) {
 	return (
 		child.relation.collection_one === child.name && child.relation.field_many === child.fieldKey
 	);
+}
+
+function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
+	for (const [key, value] of Object.entries(filter)) {
+		if (key.startsWith('_') === false) {
+			let operator = Object.keys(value)[0];
+			operator = operator.slice(1);
+			operator = operator.toLowerCase();
+
+			const compareValue = Object.values(value)[0];
+
+			if (operator === 'eq') {
+				dbQuery.where({ [key]: compareValue });
+			}
+
+			if (operator === 'neq') {
+				dbQuery.whereNot({ [key]: compareValue });
+			}
+
+			if (operator === 'in') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery.whereIn(key, value as string[]);
+			}
+
+			if (operator === 'null') {
+				dbQuery.whereNull(key);
+			}
+
+			if (operator === 'nnull') {
+				dbQuery.whereNotNull(key);
+			}
+		}
+
+		if (key === '_or') {
+			value.forEach((subFilter: Record<string, any>) => {
+				dbQuery.orWhere((subQuery) => applyFilter(subQuery, subFilter));
+			});
+		}
+
+		if (key === '_and') {
+			value.forEach((subFilter: Record<string, any>) => {
+				dbQuery.andWhere((subQuery) => applyFilter(subQuery, subFilter));
+			});
+		}
+	}
 }

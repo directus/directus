@@ -1,12 +1,9 @@
 import knex from 'knex';
-import logger from '../logger';
 import dotenv from 'dotenv';
 
 import SchemaInspector from '../knex-schema-inspector/lib/index';
 
 dotenv.config();
-
-const log = logger.child({ module: 'sql' });
 
 const database = knex({
 	client: process.env.DB_CLIENT,
@@ -26,8 +23,6 @@ const database = knex({
 		directory: './src/database/seeds/',
 	},
 });
-
-database.on('query', (data) => log.trace(data.sql));
 
 export const schemaInspector = SchemaInspector(database);
 
