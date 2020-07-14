@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as CollectionsService from '../services/collections';
-import database, { schemaInspector } from '../database';
+import { schemaInspector } from '../database';
 import { InvalidPayloadException, CollectionNotFoundException } from '../exceptions';
 import Joi from '@hapi/joi';
+import useCollection from '../middleware/use-collection';
 
 const router = Router();
 
@@ -25,6 +25,7 @@ const collectionSchema = Joi.object({
 
 router.post(
 	'/',
+	useCollection('directus_collections'),
 	asyncHandler(async (req, res) => {
 		const { error } = collectionSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
@@ -41,18 +42,18 @@ router.post(
 
 router.get(
 	'/',
+	useCollection('directus_collections'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const collections = await CollectionsService.readAll(req.sanitizedQuery);
-		res.json({ data: collections || null });
+		// const collections = await CollectionsService.readAll(req.sanitizedQuery);
+		// res.json({ data: collections || null });
 	})
 );
 
 router.get(
 	'/:collection',
+	useCollection('directus_collections'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const exists = await schemaInspector.hasTable(req.params.collection);
 
@@ -68,6 +69,7 @@ router.get(
 
 router.delete(
 	'/:collection',
+	useCollection('directus_collections'),
 	asyncHandler(async (req, res) => {
 		if ((await schemaInspector.hasTable(req.params.collection)) === false) {
 			throw new CollectionNotFoundException(req.params.collection);

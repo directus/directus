@@ -11,7 +11,7 @@ export const createCollectionPreset = async (
 };
 
 export const readCollectionPresets = async (query: Query) => {
-	return await ItemsService.readItems('directus_presets', query);
+	// return await ItemsService.readItems('directus_presets', query);
 };
 
 export const readCollectionPreset = async (pk: string | number, query: Query) => {

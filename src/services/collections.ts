@@ -73,25 +73,25 @@ export const create = async (payload: any, accountability: Accountability) => {
 export const readAll = async (query?: Query) => {
 	const [tables, collections] = await Promise.all([
 		schemaInspector.tableInfo(),
-		ItemsService.readItems<Collection>('directus_collections', query),
+		// ItemsService.readItems<Collection>('directus_collections', query),
 	]);
 
-	const data = tables.map((table) => {
-		const collectionInfo = collections.find((collection) => {
-			return collection.collection === table.name;
-		});
+	// const data = tables.map((table) => {
+	// 	const collectionInfo = collections.find((collection) => {
+	// 		return collection.collection === table.name;
+	// 	});
 
-		return {
-			collection: table.name,
-			note: table.comment,
-			hidden: collectionInfo?.hidden || false,
-			single: collectionInfo?.single || false,
-			icon: collectionInfo?.icon || null,
-			translation: collectionInfo?.translation || null,
-		};
-	});
+	// 	return {
+	// 		collection: table.name,
+	// 		note: table.comment,
+	// 		hidden: collectionInfo?.hidden || false,
+	// 		single: collectionInfo?.single || false,
+	// 		icon: collectionInfo?.icon || null,
+	// 		translation: collectionInfo?.translation || null,
+	// 	};
+	// });
 
-	return data;
+	// return data;
 };
 
 export const readOne = async (collection: string, query?: Query) => {

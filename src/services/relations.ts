@@ -6,7 +6,7 @@ export const createRelation = async (data: Record<string, any>, accountability: 
 };
 
 export const readRelations = async (query: Query) => {
-	return await ItemsService.readItems('directus_relations', query);
+	// return await ItemsService.readItems('directus_relations', query);
 };
 
 export const readRelation = async (pk: string | number, query: Query) => {

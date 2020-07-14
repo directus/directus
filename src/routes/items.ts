@@ -2,18 +2,18 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import * as ItemsService from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateCollection from '../middleware/validate-collection';
-import validateQuery from '../middleware/validate-query';
+import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
+import * as PermissionsService from '../services/permissions';
 import { RouteNotFoundException } from '../exceptions';
+import getASTFromQuery from '../utils/get-ast-from-query';
 
 const router = express.Router();
 
 router.post(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (req.single) {
 			throw new RouteNotFoundException(req.path);
@@ -33,14 +33,17 @@ router.post(
 
 router.get(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
+		let ast = await getASTFromQuery(req.role, req.collection, req.sanitizedQuery);
+
+		ast = await PermissionsService.processAST(req.role, ast);
+
 		const [records, meta] = await Promise.all([
 			req.single
-				? ItemsService.readSingleton(req.collection, req.sanitizedQuery)
-				: ItemsService.readItems(req.collection, req.sanitizedQuery),
+				? ItemsService.readSingleton(req.collection, ast)
+				: ItemsService.readItems(req.collection, ast),
 			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
 		]);
 
@@ -53,9 +56,8 @@ router.get(
 
 router.get(
 	'/:collection/:pk',
-	validateCollection,
+	collectionExists,
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (req.single) {
 			throw new RouteNotFoundException(req.path);
@@ -75,9 +77,8 @@ router.get(
 
 router.patch(
 	'/:collection',
-	validateCollection,
+	collectionExists,
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (req.single === false) {
 			throw new RouteNotFoundException(req.path);
@@ -89,17 +90,16 @@ router.patch(
 			user: req.user,
 		});
 
-		const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery);
+		// const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery);
 
-		return res.json({ data: item || null });
+		// return res.json({ data: item || null });
 	})
 );
 
 router.patch(
 	'/:collection/:pk',
-	validateCollection,
+	collectionExists,
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (req.single) {
 			throw new RouteNotFoundException(req.path);
@@ -119,7 +119,7 @@ router.patch(
 
 router.delete(
 	'/:collection/:pk',
-	validateCollection,
+	collectionExists,
 	asyncHandler(async (req, res) => {
 		await ItemsService.deleteItem(req.collection, req.params.pk, {
 			ip: req.ip,

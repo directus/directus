@@ -11,7 +11,7 @@ export const createUser = async (data: Record<string, any>, accountability: Acco
 };
 
 export const readUsers = async (query?: Query) => {
-	return await ItemsService.readItems('directus_users', query);
+	// return await ItemsService.readItems('directus_users', query);
 };
 
 export const readUser = async (pk: string | number, query?: Query) => {

@@ -9,7 +9,7 @@ export const createFolder = async (
 };
 
 export const readFolders = async (query: Query) => {
-	return await ItemsService.readItems('directus_folders', query);
+	// return await ItemsService.readItems('directus_folders', query);
 };
 
 export const readFolder = async (pk: string, query: Query) => {

@@ -17,7 +17,7 @@ export const createActivity = async (data: Record<string, any>) => {
 };
 
 export const readActivities = async (query?: Query) => {
-	return await ItemsService.readItems('directus_activity', query);
+	// return await ItemsService.readItems('directus_activity', query);
 };
 
 export const readActivity = async (pk: string | number, query?: Query) => {

@@ -1,13 +1,16 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import * as FieldsService from '../services/fields';
-import validateCollection from '../middleware/validate-collection';
+import validateCollection from '../middleware/collection-exists';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
 import Joi from '@hapi/joi';
 import { Field } from '../types/field';
+import useCollection from '../middleware/use-collection';
 
 const router = Router();
+
+router.use(useCollection('directus_fields'));
 
 router.get(
 	'/',

@@ -6,7 +6,7 @@ export const createRole = async (data: Record<string, any>, accountability: Acco
 };
 
 export const readRoles = async (query: Query) => {
-	return await ItemsService.readItems('directus_roles', query);
+	// return await ItemsService.readItems('directus_roles', query);
 };
 
 export const readRole = async (pk: string | number, query: Query) => {

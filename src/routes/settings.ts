@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as SettingsService from '../services/settings';
 import useCollection from '../middleware/use-collection';
 
@@ -11,10 +10,9 @@ router.get(
 	'/',
 	useCollection('directus_settings'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const records = await SettingsService.readSettings(req.sanitizedQuery);
-		return res.json({ data: records || null });
+		// return res.json({ data: records || null });
 	})
 );
 
@@ -22,7 +20,6 @@ router.patch(
 	'/',
 	useCollection('directus_settings'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		await SettingsService.updateSettings(req.body, {
 			ip: req.ip,
@@ -30,9 +27,9 @@ router.patch(
 			user: req.user,
 		});
 
-		const record = await SettingsService.readSettings(req.sanitizedQuery);
+		// const record = await SettingsService.readSettings(req.sanitizedQuery);
 
-		return res.json({ data: record || null });
+		// return res.json({ data: record || null });
 	})
 );
 

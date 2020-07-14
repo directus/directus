@@ -6,7 +6,7 @@ export const createWebhook = async (data: Record<string, any>, accountability: A
 };
 
 export const readWebhooks = async (query: Query) => {
-	return await ItemsService.readItems('directus_webhooks', query);
+	// return await ItemsService.readItems('directus_webhooks', query);
 };
 
 export const readWebhook = async (pk: string | number, query: Query) => {

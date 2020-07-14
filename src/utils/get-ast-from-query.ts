@@ -8,7 +8,11 @@ import { AST, NestedCollectionAST, FieldAST } from '../types/ast';
 import database from '../database';
 import * as FieldsService from '../services/fields';
 
-export default async function getAST(collection: string, query: Query): Promise<AST> {
+export default async function getASTFromQuery(
+	role: string | null,
+	collection: string,
+	query: Query
+): Promise<AST> {
 	const ast: AST = {
 		type: 'collection',
 		name: collection,
@@ -16,13 +20,14 @@ export default async function getAST(collection: string, query: Query): Promise<
 		children: [],
 	};
 
-	if (!query.fields) query.fields = ['*'];
+	const fields = query.fields || ['*'];
 
-	/** @todo support wildcard */
-	const fields = query.fields;
+	// Prevent fields from showing up in the query object
+	delete query.fields;
 
 	// If no relational fields are requested, we can stop early
-	const hasRelations = query.fields.some((field) => field.includes('.'));
+	const hasRelations = fields.some((field) => field.includes('.'));
+
 	if (hasRelations === false) {
 		fields.forEach((field) => {
 			ast.children.push({
@@ -34,12 +39,18 @@ export default async function getAST(collection: string, query: Query): Promise<
 		return ast;
 	}
 
-	// Even though we might not need all records from relations, it'll be faster to load all records
-	// into memory once and search through it in JS than it would be to do individual queries to fetch
-	// this data field by field
+	// Even though we probably don't need all relations in this request, it's faster to fetch all of them up front
+	// and search through the relations in memory than to attempt to read each relation as a single SQL query
+	// @TODO look into using graphql/dataloader for this purpose
 	const relations = await database.select<Relation[]>('*').from('directus_relations');
 
-	ast.children = await parseFields(collection, query.fields);
+	// All collections the current user is allowed to see. This is used to transform the wildcard requests into fields the
+	// user is actually allowed to read
+	const allowedCollections = (
+		await database.select('collection').from('directus_permissions').where({ role })
+	).map(({ collection }) => collection);
+
+	ast.children = await parseFields(collection, fields);
 
 	return ast;
 
@@ -48,9 +59,9 @@ export default async function getAST(collection: string, query: Query): Promise<
 
 		const relationalStructure: Record<string, string[]> = {};
 
-		// Swap *.* case for *,<relational-field>.*
-		for (let i = 0; i < fields.length; i++) {
-			const fieldKey = fields[i];
+		// Swap *.* case for *,<relational-field>.*,<another-relational>.*
+		for (let index = 0; index < fields.length; index++) {
+			const fieldKey = fields[index];
 
 			if (fieldKey.includes('.') === false) continue;
 
@@ -58,13 +69,23 @@ export default async function getAST(collection: string, query: Query): Promise<
 
 			if (parts[0] === '*') {
 				const availableFields = await FieldsService.fieldsInCollection(parentCollection);
-				fields.splice(
-					i,
-					1,
-					...availableFields
-						.filter((field) => !!getRelation(parentCollection, field))
-						.map((field) => `${field}.${parts.slice(1).join('.')}`)
+
+				const relationalFields = availableFields.filter((field) => {
+					const relation = getRelation(parentCollection, field);
+					if (!relation) return false;
+
+					return (
+						allowedCollections.includes(relation.collection_one) &&
+						allowedCollections.includes(relation.collection_many)
+					);
+				});
+
+				const nestedFieldKeys = relationalFields.map(
+					(relationalField) => `${relationalField}.${parts.slice(1).join('.')}`
 				);
+
+				fields.splice(index, 1, ...nestedFieldKeys);
+
 				fields.push('*');
 			}
 		}

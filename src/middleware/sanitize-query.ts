@@ -11,11 +11,10 @@ import logger from '../logger';
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
 
-	const query: Query = {};
-
-	if (req.query.fields) {
-		query.fields = sanitizeFields(req.query.fields);
-	}
+	const query: Query = {
+		fields: sanitizeFields(req.query.fields) || ['*'],
+		limit: sanitizeLimit(req.query.limit) || 100,
+	};
 
 	if (req.query.sort) {
 		query.sort = sanitizeSort(req.query.sort);
@@ -23,13 +22,6 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	if (req.query.filter) {
 		query.filter = sanitizeFilter(req.query.filter);
-	}
-
-	if (req.query.limit) {
-		query.limit = sanitizeLimit(req.query.limit);
-	} else {
-		/** @todo is this the right place to set these defaults? */
-		query.limit = 100;
 	}
 
 	if (req.query.limit == '-1') {
@@ -56,6 +48,13 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.search = req.query.search;
 	}
 
+	if (req.permissions) {
+		query.filter = {
+			...(query.filter || {}),
+			...(req.permissions.permissions || {}),
+		};
+	}
+
 	req.sanitizedQuery = query;
 	return next();
 };
@@ -63,6 +62,8 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 export default sanitizeQuery;
 
 function sanitizeFields(rawFields: any) {
+	if (!rawFields) return;
+
 	let fields: string[] = [];
 
 	if (typeof rawFields === 'string') fields = rawFields.split(',');
@@ -104,6 +105,7 @@ function sanitizeFilter(rawFilter: any) {
 }
 
 function sanitizeLimit(rawLimit: any) {
+	if (!rawLimit) return null;
 	return Number(rawLimit);
 }
 

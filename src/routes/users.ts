@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as UsersService from '../services/users';
 import Joi from '@hapi/joi';
 import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
@@ -13,7 +12,6 @@ router.post(
 	'/',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await UsersService.createUser(req.body, {
 			ip: req.ip,
@@ -29,10 +27,9 @@ router.get(
 	'/',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const item = await UsersService.readUsers(req.sanitizedQuery);
-		return res.json({ data: item || null });
+		// const item = await UsersService.readUsers(req.sanitizedQuery);
+		// return res.json({ data: item || null });
 	})
 );
 
@@ -40,7 +37,6 @@ router.get(
 	'/me',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (!req.user) {
 			throw new InvalidCredentialsException();
@@ -55,7 +51,6 @@ router.get(
 	'/:pk',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: items || null });
@@ -66,7 +61,6 @@ router.patch(
 	'/me',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		if (!req.user) {
 			throw new InvalidCredentialsException();
@@ -87,7 +81,6 @@ router.patch(
 	'/:pk',
 	useCollection('directus_users'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await UsersService.updateUser(req.params.pk, req.body, {
 			ip: req.ip,

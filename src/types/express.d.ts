@@ -9,9 +9,10 @@ export {};
 declare global {
 	namespace Express {
 		export interface Request {
-			token?: string;
-			user?: string;
-			role?: string;
+			token: string;
+			user: string;
+			role: string | null;
+			admin: boolean;
 			collection?: string;
 			sanitizedQuery?: Record<string, any>;
 			single?: boolean;

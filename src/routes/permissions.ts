@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as PermissionsService from '../services/permissions';
 import useCollection from '../middleware/use-collection';
 
@@ -27,10 +26,9 @@ router.get(
 	'/',
 	useCollection('directus_permissions'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const item = await PermissionsService.readPermissions(req.sanitizedQuery);
-		return res.json({ data: item || null });
+		// return res.json({ data: item || null });
 	})
 );
 
@@ -38,7 +36,6 @@ router.get(
 	'/:pk',
 	useCollection('directus_permissions'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await PermissionsService.readPermission(
 			Number(req.params.pk),

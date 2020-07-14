@@ -1,9 +1,9 @@
 import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 import runAST from '../database/run-ast';
-import getAST from '../utils/get-ast';
+import getAST from '../utils/get-ast-from-query';
 import * as PayloadService from './payload';
-import { Accountability } from '../types/accountability';
+import { Accountability, AST } from '../types';
 
 import * as ActivityService from './activity';
 import * as RevisionsService from './revisions';
@@ -82,9 +82,8 @@ export const createItem = async (
 
 export const readItems = async <T = Record<string, any>>(
 	collection: string,
-	query: Query = {}
+	ast: AST
 ): Promise<T[]> => {
-	const ast = await getAST(collection, query);
 	const records = await runAST(ast);
 	return await PayloadService.processValues('read', collection, records);
 };
@@ -106,9 +105,10 @@ export const readItem = async <T = any>(
 		},
 	};
 
-	const ast = await getAST(collection, query);
-	const records = await runAST(ast);
-	return await PayloadService.processValues('read', collection, records[0]);
+	// const ast = await getAST(collection, query);
+	// const records = await runAST(ast);
+	// return await PayloadService.processValues('read', collection, records[0]);
+	return;
 };
 
 export const updateItem = async (
@@ -172,8 +172,10 @@ export const deleteItem = async (
 		.where({ [primaryKeyField]: pk });
 };
 
-export const readSingleton = async (collection: string, query: Query = {}) => {
-	const records = await readItems(collection, { ...query, limit: 1 });
+export const readSingleton = async (collection: string, ast: AST) => {
+	ast.query.limit = 1;
+
+	const records = await readItems(collection, ast);
 	const record = records[0];
 
 	if (!record) {

@@ -57,7 +57,7 @@ export const createFile = async (
 };
 
 export const readFiles = async (query: Query) => {
-	return await ItemsService.readItems('directus_files', query);
+	// return await ItemsService.readItems('directus_files', query);
 };
 
 export const readFile = async (pk: string | number, query: Query) => {

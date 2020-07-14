@@ -2,13 +2,14 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_files'));
 
 const multipartHandler = (operation: 'create' | 'update') =>
 	asyncHandler(async (req, res, next) => {
@@ -93,24 +94,20 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		return req.pipe(busboy);
 	});
 
-router.post('/', useCollection('directus_files'), multipartHandler('create'));
+router.post('/', sanitizeQuery, multipartHandler('create'));
 
 router.get(
 	'/',
-	useCollection('directus_files'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(req.sanitizedQuery);
-		return res.json({ data: records || null });
+		// const records = await FilesService.readFiles(req.sanitizedQuery);
+		// return res.json({ data: records || null });
 	})
 );
 
 router.get(
 	'/:pk',
-	useCollection('directus_files'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record || null });
@@ -119,7 +116,7 @@ router.get(
 
 router.patch(
 	'/:pk',
-	useCollection('directus_files'),
+	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
 		let file: Record<string, any>;
 
@@ -140,7 +137,6 @@ router.patch(
 
 router.delete(
 	'/:pk',
-	useCollection('directus_files'),
 	asyncHandler(async (req, res) => {
 		await FilesService.deleteFile(req.params.pk, {
 			ip: req.ip,

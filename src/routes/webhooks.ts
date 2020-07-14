@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as WebhooksService from '../services/webhooks';
 import useCollection from '../middleware/use-collection';
 
@@ -27,10 +26,9 @@ router.get(
 	'/',
 	useCollection('directus_webhooks'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await WebhooksService.readWebhooks(req.sanitizedQuery);
-		return res.json({ data: records || null });
+		// const records = await WebhooksService.readWebhooks(req.sanitizedQuery);
+		// return res.json({ data: records || null });
 	})
 );
 
@@ -38,7 +36,6 @@ router.get(
 	'/:pk',
 	useCollection('directus_webhooks'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await WebhooksService.readWebhook(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record || null });
