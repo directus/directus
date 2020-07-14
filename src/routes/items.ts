@@ -38,6 +38,8 @@ router.get(
 	asyncHandler(async (req, res) => {
 		let ast = await getASTFromQuery(req.role, req.collection, req.sanitizedQuery);
 
+		console.log(JSON.stringify(ast, null, 2));
+
 		ast = await PermissionsService.processAST(req.role, ast);
 
 		const [records, meta] = await Promise.all([
