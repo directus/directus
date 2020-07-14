@@ -108,6 +108,8 @@ export const processAST = async (role: string | null, ast: AST): Promise<AST> =>
 
 	validateFields(ast);
 
+	applyFilters(ast);
+
 	return ast;
 
 	/**
@@ -148,7 +150,10 @@ export const processAST = async (role: string | null, ast: AST): Promise<AST> =>
 					continue;
 				}
 
+				if (allowedFields.includes('*')) continue;
+
 				const fieldKey = childAST.name;
+
 				if (allowedFields.includes(fieldKey) === false) {
 					throw new ForbiddenException(
 						`You don't have permission to access the "${fieldKey}" field.`
@@ -157,83 +162,28 @@ export const processAST = async (role: string | null, ast: AST): Promise<AST> =>
 			}
 		}
 	}
-};
 
-/*
-// Swap *.* case for *,<relational-field>.*,<another-relational>.*
-for (let index = 0; index < fields.length; index++) {
-	const fieldKey = fields[index];
+	function applyFilters(
+		ast: AST | NestedCollectionAST | FieldAST
+	): AST | NestedCollectionAST | FieldAST {
+		if (ast.type === 'collection') {
+			const collection = ast.name;
 
-	if (fieldKey.includes('.') === false) continue;
-
-	const parts = fieldKey.split('.');
-
-	if (parts[0] === '*') {
-		const availableFields = await FieldsService.fieldsInCollection(parentCollection);
-		const allowedCollections = permissions.map(({ collection }) => collection);
-
-		const relationalFields = availableFields.filter((field) => {
-			const relation = getRelation(parentCollection, field);
-			if (!relation) return false;
-
-			return (
-				allowedCollections.includes(relation.collection_one) &&
-				allowedCollections.includes(relation.collection_many)
+			const permissions = permissionsForCollections.find(
+				(permission) => permission.collection === collection
 			);
-		});
 
-		const nestedFieldKeys = relationalFields.map(
-			(relationalField) => `${relationalField}.${parts.slice(1).join('.')}`
-		);
+			ast.query = {
+				...ast.query,
+				filter: {
+					...(ast.query.filter || {}),
+					...permissions.permissions,
+				},
+			};
 
-		fields.splice(index, 1, ...nestedFieldKeys);
-
-		fields.push('*');
-	}
-}
-
-
-function convertWildcards(ast: AST | NestedCollectionAST) {
-	if (ast.type === 'collection') {
-		const permission = permissionsForCollections.find(
-			(permission) => permission.collection === ast.name
-		);
-
-		const wildcardIndex = ast.children.findIndex((nestedAST) => {
-			return nestedAST.type === 'field' && nestedAST.name === '*';
-		});
-
-		// Replace wildcard with array of fields you're allowed to read
-		if (wildcardIndex !== -1) {
-			const allowedFields = permission?.fields;
-
-			if (allowedFields !== '*') {
-				const currentFieldKeys = ast.children.map((field) => field.type === 'field' ? field.name : field.fieldKey);
-				console.log(currentFieldKeys);
-				const fields: FieldAST[] = allowedFields
-					.split(',')
-					// Make sure we don't include nested collections as columns
-					.filter((fieldKey) => {
-						console.log(currentFieldKeys, fieldKey, currentFieldKeys.includes(fieldKey));
-						return currentFieldKeys.includes(fieldKey) === false;
-					})
-					.map((fieldKey) => ({ type: 'field', name: fieldKey }));
-
-				ast.children.splice(wildcardIndex, 1, ...fields);
-			}
+			ast.children = ast.children.map(applyFilters) as (NestedCollectionAST | FieldAST)[];
 		}
 
-		ast.children = ast.children
-			.map((childAST) => {
-				if (childAST.type === 'collection') {
-					return convertWildcards(childAST) as NestedCollectionAST | FieldAST;
-				}
-
-				return childAST;
-			})
-			.filter((c) => c);
+		return ast;
 	}
-
-	return ast;
-}
-*/
+};

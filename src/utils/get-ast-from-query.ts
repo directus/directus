@@ -5,7 +5,6 @@
 import { Relation } from '../types/relation';
 import { AST, NestedCollectionAST, FieldAST, Query } from '../types';
 import database, { schemaInspector } from '../database';
-import * as FieldsService from '../services/fields';
 
 export default async function getASTFromQuery(
 	role: string | null,
@@ -49,6 +48,7 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
+				if (allowedFields.includes('*')) continue;
 				fields.splice(index, 1, ...allowedFields);
 			}
 

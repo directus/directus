@@ -15,7 +15,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 
 	for (const child of ast.children) {
 		if (child.type === 'field') {
-			if (columnsInCollection.includes(child.name)) {
+			if (columnsInCollection.includes(child.name) || child.name === '*') {
 				toplevelFields.push(child.name);
 			}
 
@@ -180,6 +180,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 	}
 
 	const nestedCollectionKeys = nestedCollections.map(({ fieldKey }) => fieldKey);
+
+	if (toplevelFields.includes('*')) {
+		return results;
+	}
 
 	return results.map((result) =>
 		pick(result, uniq([...nestedCollectionKeys, ...toplevelFields]))
