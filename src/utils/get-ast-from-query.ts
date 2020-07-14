@@ -28,12 +28,12 @@ export default async function getASTFromQuery(
 		children: [],
 	};
 
-	const fields = convertWildcards(collection, query.fields || ['*']);
+	const fields = query.fields || ['*'];
 
 	// Prevent fields from showing up in the query object
 	delete query.fields;
 
-	ast.children = parseFields(collection, fields);
+	ast.children = parseFields(collection, fields).filter(filterEmptyChildCollections);
 
 	return ast;
 
@@ -41,6 +41,8 @@ export default async function getASTFromQuery(
 		const allowedFields = permissions
 			.find((permission) => parentCollection === permission.collection)
 			?.fields?.split(',');
+
+		if (!allowedFields || allowedFields.length === 0) return [];
 
 		for (let index = 0; index < fields.length; index++) {
 			const fieldKey = fields[index];
@@ -55,9 +57,20 @@ export default async function getASTFromQuery(
 			// Swap *.* case for *,<relational-field>.*,<another-relational>.*
 			if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
 				const parts = fieldKey.split('.');
-				const relationalFields = allowedFields.filter(
-					(fieldKey) => !!getRelation(parentCollection, fieldKey)
-				);
+
+				const relationalFields = allowedFields.includes('*')
+					? relations
+							.filter(
+								(relation) =>
+									relation.collection_many === parentCollection ||
+									relation.collection_one === parentCollection
+							)
+							.map((relation) => {
+								const isM2O = relation.collection_many === parentCollection;
+								return isM2O ? relation.field_many : relation.field_one;
+							})
+					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
+
 				const nonRelationalFields = allowedFields.filter(
 					(fieldKey) => relationalFields.includes(fieldKey) === false
 				);
@@ -80,6 +93,8 @@ export default async function getASTFromQuery(
 
 	function parseFields(parentCollection: string, fields: string[]) {
 		fields = convertWildcards(parentCollection, fields);
+
+		if (!fields) return null;
 
 		const children: (NestedCollectionAST | FieldAST)[] = [];
 
@@ -110,7 +125,9 @@ export default async function getASTFromQuery(
 				parentKey: 'id' /** @todo this needs to come from somewhere real */,
 				relation: getRelation(parentCollection, relationalField),
 				query: {} /** @todo inject nested query here */,
-				children: parseFields(relatedCollection, nestedFields),
+				children: parseFields(relatedCollection, nestedFields).filter(
+					filterEmptyChildCollections
+				),
 			};
 
 			children.push(child);
@@ -142,5 +159,10 @@ export default async function getASTFromQuery(
 		if (relation.collection_one === collection && relation.field_one === field) {
 			return relation.collection_many;
 		}
+	}
+
+	function filterEmptyChildCollections(childAST: NestedCollectionAST) {
+		if (childAST.type === 'collection' && childAST.children.length === 0) return false;
+		return true;
 	}
 }

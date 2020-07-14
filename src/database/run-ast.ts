@@ -1,5 +1,5 @@
 import { AST, NestedCollectionAST } from '../types/ast';
-import { uniq, pick } from 'lodash';
+import { clone, uniq, pick } from 'lodash';
 import database, { schemaInspector } from './index';
 import { Filter, Query } from '../types';
 import { QueryBuilder } from 'knex';
@@ -138,9 +138,13 @@ export default async function runAST(ast: AST, query = ast.query) {
 		results = results.map((record) => {
 			if (m2o) {
 				const nestedResult =
-					nestedResults.find((nestedRecord) => {
-						return nestedRecord[batch.relation.primary_one] === record[batch.fieldKey];
-					}) || null;
+					clone(
+						nestedResults.find((nestedRecord) => {
+							return (
+								nestedRecord[batch.relation.primary_one] === record[batch.fieldKey]
+							);
+						})
+					) || null;
 
 				if (tempField && nestedResult) {
 					delete nestedResult[tempField];
