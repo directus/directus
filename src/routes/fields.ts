@@ -74,6 +74,7 @@ router.post(
 
 		const createdField = await FieldsService.createField(req.collection, field, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

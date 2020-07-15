@@ -13,6 +13,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await PermissionsService.createPermission(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -20,6 +21,7 @@ router.post(
 
 		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: item || null });
@@ -32,6 +34,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const item = await PermissionsService.readPermissions(req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: item || null });
 	})
@@ -44,7 +47,7 @@ router.get(
 		const record = await PermissionsService.readPermission(
 			Number(req.params.pk),
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -58,6 +61,7 @@ router.patch(
 			req.body,
 			{
 				role: req.role,
+				admin: req.admin,
 				ip: req.ip,
 				userAgent: req.get('user-agent'),
 				user: req.user,
@@ -66,6 +70,7 @@ router.patch(
 
 		const item = await PermissionsService.readPermission(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: item || null });
@@ -77,6 +82,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await PermissionsService.deletePermission(Number(req.params.pk), {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

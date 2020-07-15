@@ -13,6 +13,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await FoldersService.createFolder(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -20,6 +21,7 @@ router.post(
 
 		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
@@ -29,7 +31,10 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FoldersService.readFolders(req.sanitizedQuery, { role: req.role });
+		const records = await FoldersService.readFolders(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
@@ -40,6 +45,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await FoldersService.readFolder(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
@@ -51,6 +57,7 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await FoldersService.updateFolder(req.params.pk, req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -58,6 +65,7 @@ router.patch(
 
 		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: record || null });
@@ -69,6 +77,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await FoldersService.deleteFolder(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

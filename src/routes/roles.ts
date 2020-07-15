@@ -14,12 +14,14 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await RolesService.createRole(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
 		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: item || null });
 	})
@@ -29,7 +31,10 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RolesService.readRoles(req.sanitizedQuery, { role: req.role });
+		const records = await RolesService.readRoles(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
@@ -40,6 +45,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await RolesService.readRole(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
@@ -51,12 +57,14 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await RolesService.updateRole(req.params.pk, req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
 		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: item || null });
 	})
@@ -67,6 +75,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await RolesService.deleteRole(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

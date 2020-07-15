@@ -13,6 +13,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await WebhooksService.createWebhook(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -20,6 +21,7 @@ router.post(
 
 		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: item || null });
@@ -30,7 +32,10 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await WebhooksService.readWebhooks(req.sanitizedQuery, { role: req.role });
+		const records = await WebhooksService.readWebhooks(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
@@ -41,6 +46,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await WebhooksService.readWebhook(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
@@ -51,12 +57,14 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await WebhooksService.updateWebhook(req.params.pk, req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
 		const item = await WebhooksService.readWebhook(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: item || null });
 	})
@@ -67,6 +75,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await WebhooksService.deleteWebhook(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

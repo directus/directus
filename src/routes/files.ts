@@ -57,12 +57,14 @@ const multipartHandler = (operation: 'create' | 'update') =>
 				if (operation === 'create') {
 					const pk = await FilesService.createFile(payload, fileStream, {
 						role: req.role,
+						admin: req.admin,
 						ip: req.ip,
 						userAgent: req.get('user-agent'),
 						user: req.user,
 					});
 					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
 						role: req.role,
+						admin: req.admin,
 					});
 
 					savedFiles.push(file);
@@ -72,6 +74,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 						payload,
 						{
 							role: req.role,
+							admin: req.admin,
 							ip: req.ip,
 							userAgent: req.get('user-agent'),
 							user: req.user,
@@ -80,6 +83,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 					);
 					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
 						role: req.role,
+						admin: req.admin,
 					});
 
 					savedFiles.push(file);
@@ -106,7 +110,10 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(req.sanitizedQuery, { role: req.role });
+		const records = await FilesService.readFiles(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
@@ -117,6 +124,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
@@ -133,11 +141,15 @@ router.patch(
 		} else {
 			const pk = await FilesService.updateFile(req.params.pk, req.body, {
 				role: req.role,
+				admin: req.admin,
 				ip: req.ip,
 				userAgent: req.get('user-agent'),
 				user: req.user,
 			});
-			file = await FilesService.readFile(pk, req.sanitizedQuery, { role: req.role });
+			file = await FilesService.readFile(pk, req.sanitizedQuery, {
+				role: req.role,
+				admin: req.admin,
+			});
 		}
 
 		return res.status(200).json({ data: file || null });
@@ -149,6 +161,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await FilesService.deleteFile(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

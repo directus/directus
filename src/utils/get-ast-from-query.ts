@@ -2,13 +2,21 @@
  * Generate an AST based on a given collection and query
  */
 
-import { AST, NestedCollectionAST, FieldAST, Query, Relation, Operation } from '../types';
+import {
+	AST,
+	NestedCollectionAST,
+	FieldAST,
+	Query,
+	Relation,
+	Operation,
+	Accountability,
+} from '../types';
 import database from '../database';
 
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	role?: string | null,
+	accountability: Accountability | null,
 	operation?: Operation
 ): Promise<AST> {
 	/**
@@ -18,11 +26,11 @@ export default async function getASTFromQuery(
 	const relations = await database.select<Relation[]>('*').from('directus_relations');
 
 	const permissions =
-		role !== undefined
+		accountability && accountability.admin !== true
 			? await database
 					.select<{ collection: string; fields: string }[]>('collection', 'fields')
 					.from('directus_permissions')
-					.where({ role, operation: 'read' })
+					.where({ role: accountability.role, operation: operation || 'read' })
 			: null;
 
 	const ast: AST = {

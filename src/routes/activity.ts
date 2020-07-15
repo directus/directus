@@ -13,6 +13,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const records = await ActivityService.readActivities(req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({
@@ -28,6 +29,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({
@@ -51,6 +53,7 @@ router.post(
 
 		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({
@@ -66,6 +69,7 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await ActivityService.updateActivity(req.params.pk, req.body, {
 			role: req.role,
+			admin: req.admin,
 			user: req.user,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -73,6 +77,7 @@ router.patch(
 
 		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({
@@ -87,6 +92,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await ActivityService.deleteActivity(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			user: req.user,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),

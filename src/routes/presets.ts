@@ -13,6 +13,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const primaryKey = await CollectionPresetsService.createCollectionPreset(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -21,7 +22,7 @@ router.post(
 		const record = await CollectionPresetsService.readCollectionPreset(
 			primaryKey,
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -33,6 +34,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const records = await CollectionPresetsService.readCollectionPresets(req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: records || null });
 	})
@@ -45,7 +47,7 @@ router.get(
 		const record = await CollectionPresetsService.readCollectionPreset(
 			req.params.pk,
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -60,6 +62,7 @@ router.patch(
 			req.body,
 			{
 				role: req.role,
+				admin: req.admin,
 				ip: req.ip,
 				userAgent: req.get('user-agent'),
 				user: req.user,
@@ -69,7 +72,7 @@ router.patch(
 		const record = await CollectionPresetsService.readCollectionPreset(
 			primaryKey,
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -80,6 +83,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await CollectionPresetsService.deleteCollectionPreset(req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

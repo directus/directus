@@ -20,12 +20,14 @@ router.post(
 		const primaryKey = await ItemsService.createItem(req.collection, req.body, {
 			user: req.user,
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 		});
 
 		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		res.json({ data: item || null });
@@ -39,8 +41,14 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const [records, meta] = await Promise.all([
 			req.single
-				? ItemsService.readSingleton(req.collection, req.sanitizedQuery, { role: req.role })
-				: ItemsService.readItems(req.collection, req.sanitizedQuery, { role: req.role }),
+				? ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
+						role: req.role,
+						admin: req.admin,
+				  })
+				: ItemsService.readItems(req.collection, req.sanitizedQuery, {
+						role: req.role,
+						admin: req.admin,
+				  }),
 			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
 		]);
 
@@ -64,7 +72,7 @@ router.get(
 			req.collection,
 			req.params.pk,
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 
 		return res.json({
@@ -84,6 +92,7 @@ router.patch(
 
 		await ItemsService.upsertSingleton(req.collection, req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -91,6 +100,7 @@ router.patch(
 
 		const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: item || null });
@@ -108,6 +118,7 @@ router.patch(
 
 		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -115,6 +126,7 @@ router.patch(
 
 		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 
 		return res.json({ data: item || null });
@@ -127,6 +139,7 @@ router.delete(
 	asyncHandler(async (req, res) => {
 		await ItemsService.deleteItem(req.collection, req.params.pk, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

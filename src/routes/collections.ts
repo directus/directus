@@ -32,6 +32,7 @@ router.post(
 
 		const createdCollection = await CollectionsService.create(req.body, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -48,6 +49,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const collections = await CollectionsService.readAll(req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		res.json({ data: collections || null });
 	})
@@ -65,7 +67,7 @@ router.get(
 		const collection = await CollectionsService.readOne(
 			req.params.collection,
 			req.sanitizedQuery,
-			{ role: req.role }
+			{ role: req.role, admin: req.admin }
 		);
 		res.json({ data: collection || null });
 	})
@@ -81,6 +83,7 @@ router.delete(
 
 		await CollectionsService.deleteCollection(req.params.collection, {
 			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

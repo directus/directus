@@ -48,7 +48,7 @@ export const createItem = async (
 ): Promise<string | number> => {
 	let payload = data;
 
-	if (accountability) {
+	if (accountability && accountability.admin === false) {
 		payload = await PermissionsService.processValues(
 			'create',
 			collection,
@@ -97,9 +97,9 @@ export const readItems = async <T = Record<string, any>>(
 	query: Query,
 	accountability?: Accountability
 ): Promise<T[]> => {
-	let ast = await getASTFromQuery(collection, query, accountability?.role);
+	let ast = await getASTFromQuery(collection, query, accountability);
 
-	if (accountability) {
+	if (accountability && accountability.admin === false) {
 		ast = await PermissionsService.processAST(ast, accountability.role);
 	}
 
@@ -130,9 +130,9 @@ export const readItem = async <T = any>(
 		},
 	};
 
-	let ast = await getASTFromQuery(collection, query, accountability?.role, operation);
+	let ast = await getASTFromQuery(collection, query, accountability, operation);
 
-	if (accountability) {
+	if (accountability && accountability.admin === false) {
 		ast = await PermissionsService.processAST(ast, accountability.role, operation);
 	}
 
@@ -148,7 +148,7 @@ export const updateItem = async (
 ): Promise<string | number> => {
 	let payload = data;
 
-	if (accountability) {
+	if (accountability && accountability.admin === false) {
 		await PermissionsService.checkAccess('update', collection, pk, accountability.role);
 
 		payload = await PermissionsService.processValues(
@@ -197,7 +197,7 @@ export const deleteItem = async (
 ) => {
 	const primaryKeyField = await schemaInspector.primary(collection);
 
-	if (accountability) {
+	if (accountability && accountability.admin === false) {
 		await PermissionsService.checkAccess('delete', collection, pk, accountability.role);
 
 		// Don't await this. It can run async in the background

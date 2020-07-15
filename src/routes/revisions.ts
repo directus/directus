@@ -14,6 +14,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const records = await RevisionsService.readRevisions(req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: records || null });
 	})
@@ -25,6 +26,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const record = await RevisionsService.readRevision(req.params.pk, req.sanitizedQuery, {
 			role: req.role,
+			admin: req.admin,
 		});
 		return res.json({ data: record || null });
 	})
