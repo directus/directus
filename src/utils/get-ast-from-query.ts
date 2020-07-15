@@ -2,14 +2,14 @@
  * Generate an AST based on a given collection and query
  */
 
-import { Relation } from '../types/relation';
-import { AST, NestedCollectionAST, FieldAST, Query } from '../types';
+import { AST, NestedCollectionAST, FieldAST, Query, Relation, Operation } from '../types';
 import database from '../database';
 
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	role?: string | null
+	role?: string | null,
+	operation?: Operation
 ): Promise<AST> {
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every

@@ -2,7 +2,7 @@ import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { Accountability, AST } from '../types';
+import { Accountability, Operation } from '../types';
 
 import * as PayloadService from './payload';
 import * as PermissionsService from './permissions';
@@ -28,15 +28,17 @@ async function saveActivityAndRevision(
 		action_by: accountability.user,
 	});
 
-	await RevisionsService.createRevision({
-		activity: activityID,
-		collection,
-		item,
-		delta: payload,
-		/** @todo make this configurable */
-		data: await readItem(collection, item, { fields: ['*'] }),
-		parent: accountability.parent,
-	});
+	if (action !== ActivityService.Action.DELETE) {
+		await RevisionsService.createRevision({
+			activity: activityID,
+			collection,
+			item,
+			delta: payload,
+			/** @todo make this configurable */
+			data: await readItem(collection, item, { fields: ['*'] }),
+			parent: accountability.parent,
+		});
+	}
 }
 
 export const createItem = async (
@@ -109,8 +111,13 @@ export const readItem = async <T = any>(
 	collection: string,
 	pk: number | string,
 	query: Query = {},
-	accountability?: Accountability
+	accountability?: Accountability,
+	operation?: Operation
 ): Promise<T> => {
+	// We allow overriding the operation, so we can use the item read logic to validate permissions
+	// for update and delete as well
+	operation = operation || 'read';
+
 	const primaryKeyField = await schemaInspector.primary(collection);
 
 	query = {
@@ -123,10 +130,10 @@ export const readItem = async <T = any>(
 		},
 	};
 
-	let ast = await getASTFromQuery(collection, query, accountability?.role);
+	let ast = await getASTFromQuery(collection, query, accountability?.role, operation);
 
 	if (accountability) {
-		ast = await PermissionsService.processAST(ast, accountability.role);
+		ast = await PermissionsService.processAST(ast, accountability.role, operation);
 	}
 
 	const records = await runAST(ast);
@@ -142,16 +149,17 @@ export const updateItem = async (
 	let payload = data;
 
 	if (accountability) {
+		await PermissionsService.checkAccess('update', collection, pk, accountability.role);
+
 		payload = await PermissionsService.processValues(
 			'validate',
 			collection,
-			accountability?.role,
+			accountability.role,
 			data
 		);
 	}
 
-	payload = await PayloadService.processValues('update', collection, data);
-
+	payload = await PayloadService.processValues('update', collection, payload);
 	payload = await PayloadService.processM2O(collection, payload);
 
 	const primaryKeyField = await schemaInspector.primary(collection);
@@ -190,6 +198,8 @@ export const deleteItem = async (
 	const primaryKeyField = await schemaInspector.primary(collection);
 
 	if (accountability) {
+		await PermissionsService.checkAccess('delete', collection, pk, accountability.role);
+
 		// Don't await this. It can run async in the background
 		saveActivityAndRevision(
 			ActivityService.Action.DELETE,

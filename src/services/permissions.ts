@@ -12,7 +12,6 @@ import database from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { uniq } from 'lodash';
 import generateJoi from '../utils/generate-joi';
-import Joi from '@hapi/joi';
 
 export const createPermission = async (
 	data: Record<string, any>,
@@ -46,13 +45,17 @@ export const deletePermission = async (pk: number, accountability: Accountabilit
 	await ItemsService.deleteItem('directus_permissions', pk, accountability);
 };
 
-export const processAST = async (ast: AST, role: string | null): Promise<AST> => {
+export const processAST = async (
+	ast: AST,
+	role: string | null,
+	operation: Operation = 'read'
+): Promise<AST> => {
 	const collectionsRequested = getCollectionsFromAST(ast);
 
 	const permissionsForCollections = await database
 		.select<Permission[]>('*')
 		.from('directus_permissions')
-		.where({ operation: 'read', role })
+		.where({ operation, role })
 		.whereIn(
 			'collection',
 			collectionsRequested.map(({ collection }) => collection)
@@ -219,4 +222,23 @@ export const processValues = async (
 	}
 
 	return payload;
+};
+
+export const checkAccess = async (
+	operation: Operation,
+	collection: string,
+	pk: string | number,
+	role: string
+) => {
+	try {
+		const query: Query = {
+			fields: ['*'],
+		};
+
+		const result = await ItemsService.readItem(collection, pk, query, { role }, operation);
+
+		if (!result) throw '';
+	} catch {
+		throw new ForbiddenException(`You're not allowed to ${operation} this item.`);
+	}
 };
