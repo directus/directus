@@ -44,15 +44,24 @@ export const createItem = async (
 	data: Record<string, any>,
 	accountability?: Accountability
 ): Promise<string | number> => {
-	let payload = await PayloadService.processValues('create', collection, data);
+	let payload = data;
+
+	if (accountability) {
+		payload = await PermissionsService.processValues(
+			'create',
+			collection,
+			accountability?.role,
+			data
+		);
+	}
+
+	payload = await PayloadService.processValues('create', collection, payload);
 
 	payload = await PayloadService.processM2O(collection, payload);
 
 	const primaryKeyField = await schemaInspector.primary(collection);
-
 	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
 	const columns = await schemaInspector.columns(collection);
-
 	const payloadWithoutAlias = pick(
 		payload,
 		columns.map(({ column }) => column)
@@ -130,7 +139,18 @@ export const updateItem = async (
 	data: Record<string, any>,
 	accountability?: Accountability
 ): Promise<string | number> => {
-	let payload = await PayloadService.processValues('update', collection, data);
+	let payload = data;
+
+	if (accountability) {
+		payload = await PermissionsService.processValues(
+			'validate',
+			collection,
+			accountability?.role,
+			data
+		);
+	}
+
+	payload = await PayloadService.processValues('update', collection, data);
 
 	payload = await PayloadService.processM2O(collection, payload);
 

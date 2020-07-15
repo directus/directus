@@ -1,8 +1,18 @@
-import { Accountability, AST, NestedCollectionAST, FieldAST, Query, Permission } from '../types';
+import {
+	Accountability,
+	AST,
+	NestedCollectionAST,
+	FieldAST,
+	Query,
+	Permission,
+	Operation,
+} from '../types';
 import * as ItemsService from './items';
 import database from '../database';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { uniq } from 'lodash';
+import generateJoi from '../utils/generate-joi';
+import Joi from '@hapi/joi';
 
 export const createPermission = async (
 	data: Record<string, any>,
@@ -164,4 +174,49 @@ export const processAST = async (ast: AST, role: string | null): Promise<AST> =>
 
 		return ast;
 	}
+};
+
+export const processValues = async (
+	operation: Operation,
+	collection: string,
+	role: string | null,
+	data: Record<string, any>
+) => {
+	const permission = await database
+		.select<Permission>('*')
+		.from('directus_permissions')
+		.where({ operation, collection, role })
+		.first();
+
+	if (!permission) throw new ForbiddenException();
+
+	const allowedFields = permission.fields.split(',');
+
+	if (allowedFields.includes('*') === false) {
+		const keysInData = Object.keys(data);
+		const invalidKeys = keysInData.filter(
+			(fieldKey) => allowedFields.includes(fieldKey) === false
+		);
+
+		if (invalidKeys.length > 0) {
+			throw new InvalidPayloadException(`Field "${invalidKeys[0]}" doesn't exist.`);
+		}
+	}
+
+	const preset = permission.presets || {};
+
+	const payload = {
+		...preset,
+		...data,
+	};
+
+	const schema = generateJoi(permission.permissions);
+
+	const { error } = schema.validate(payload);
+
+	if (error) {
+		throw new InvalidPayloadException(error.message);
+	}
+
+	return payload;
 };
