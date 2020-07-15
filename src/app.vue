@@ -5,7 +5,16 @@
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>
-		<router-view v-if="!hydrating" />
+
+		<router-view v-if="!hydrating && appAccess" />
+
+		<v-info v-else-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
+			{{ $t('no_app_access_copy') }}
+
+			<template #append>
+				<v-button to="/logout">Switch User</v-button>
+			</template>
+		</v-info>
 
 		<portal-target name="outlet" multiple />
 	</div>
@@ -69,7 +78,12 @@ export default defineComponent({
 			}
 		);
 
-		return { hydrating, brandStyle };
+		const appAccess = computed(() => {
+			if (!userStore.state.currentUser) return true;
+			return userStore.state.currentUser?.role?.app_access;
+		});
+
+		return { hydrating, brandStyle, appAccess };
 	},
 });
 </script>

@@ -348,6 +348,9 @@
 	"unexpected_error_copy": "Something went wrong.. Please try again later.",
 	"copy_details": "Copy Details",
 
+	"no_app_access": "No App Access",
+	"no_app_access_copy": "This user isn't allowed to use the admin app.",
+
 	"password_reset_sent": "We've sent you a secure link to reset your password",
 	"password_reset_successful": "Password successfully reset",
 	"create_project": "Create Project",

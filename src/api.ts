@@ -53,11 +53,11 @@ export const onError = async (error: RequestError) => {
 	/* istanbul ignore next */
 	const code = error.response?.data?.error?.code;
 
-	if (status === 401 && code === 'INVALID_CREDENTIALS') {
+	if (status === 401 && code === 'INVALID_CREDENTIALS' && error.response?.config?.url !== '/auth/refresh') {
 		try {
 			await refresh();
 
-			/** @todo retry failed request */
+			/** @todo retry failed request after successful refresh */
 		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 		}

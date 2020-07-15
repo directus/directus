@@ -20,6 +20,7 @@ export type Role = {
 	enforce_2fa: null | boolean;
 	external_id: null | string;
 	ip_whitelist: string[];
+	app_access: boolean;
 };
 
 export type Avatar = {

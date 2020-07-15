@@ -1,7 +1,6 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import LoginRoute from '@/routes/login';
 import InstallRoute from '@/routes/install';
-import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
@@ -9,6 +8,7 @@ import useAppStore from '@/stores/app';
 import useUserStore from '@/stores/user';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 import useSettingsStore from '@/stores/settings';
+import { logout } from '@/auth';
 
 import getRootPath from '@/utils/get-root-path';
 
@@ -50,7 +50,10 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		name: 'logout',
 		path: '/logout',
-		component: LogoutRoute,
+		async beforeEnter(to, from, next) {
+			await logout({ navigate: false });
+			next('/login');
+		},
 		meta: {
 			public: true,
 		},
