@@ -13,8 +13,11 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	const query: Query = {
 		fields: sanitizeFields(req.query.fields) || ['*'],
-		limit: sanitizeLimit(req.query.limit) || 100,
 	};
+
+	if (req.query.limit) {
+		query.limit = sanitizeLimit(req.query.limit);
+	}
 
 	if (req.query.sort) {
 		query.sort = sanitizeSort(req.query.sort);

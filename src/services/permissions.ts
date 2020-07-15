@@ -148,6 +148,17 @@ export const processAST = async (ast: AST, role: string | null): Promise<AST> =>
 				},
 			};
 
+			if (permissions.limit && ast.query.limit > permissions.limit) {
+				throw new ForbiddenException(
+					`You can't read more than ${permissions.limit} items at a time.`
+				);
+			}
+
+			// Default to the permissions limit if limit hasn't been set
+			if (permissions.limit && !ast.query.limit) {
+				ast.query.limit = permissions.limit;
+			}
+
 			ast.children = ast.children.map(applyFilters) as (NestedCollectionAST | FieldAST)[];
 		}
 

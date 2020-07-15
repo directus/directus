@@ -39,6 +39,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 
 	let dbQuery = database.select([...toplevelFields, ...tempFields]).from(ast.name);
 
+	// Query defaults
+	query.limit = query.limit || 100;
+	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
+
 	if (query.filter) {
 		applyFilter(dbQuery, query.filter);
 	}
@@ -88,6 +92,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 
 		let batchQuery: Query = {};
 		let tempField: string = null;
+		let tempLimit: number = null;
 
 		if (m2o) {
 			// Make sure we always fetch the nested items primary key field to ensure we have the key to match the item by
@@ -131,6 +136,17 @@ export default async function runAST(ast: AST, query = ast.query) {
 					},
 				},
 			};
+
+			/**
+			 * The nested queries are done with a WHERE m2o IN (pk, pk, pk) query. We have to remove
+			 * LIMIT from that equation to ensure we limit `n` items _per parent record_ instead of
+			 * `n` items in total. This limit will then be re-applied in the stitching process
+			 * down below
+			 */
+			if (batchQuery.limit) {
+				tempLimit = batchQuery.limit;
+				delete batchQuery.limit;
+			}
 		}
 
 		const nestedResults = await runAST(batch, batchQuery);
@@ -157,26 +173,32 @@ export default async function runAST(ast: AST, query = ast.query) {
 			}
 
 			// o2m
+			let resultsForCurrentRecord = nestedResults
+				.filter((nestedRecord) => {
+					return (
+						nestedRecord[batch.relation.field_many] ===
+							record[batch.relation.primary_one] ||
+						// In case of nested object:
+						nestedRecord[batch.relation.field_many]?.[batch.relation.primary_many] ===
+							record[batch.relation.primary_one]
+					);
+				})
+				.map((nestedRecord) => {
+					if (tempField) {
+						delete nestedRecord[tempField];
+					}
+
+					return nestedRecord;
+				});
+
+			// Reapply LIMIT query on a per-record basis
+			if (tempLimit) {
+				resultsForCurrentRecord = resultsForCurrentRecord.slice(0, tempLimit);
+			}
+
 			const newRecord = {
 				...record,
-				[batch.fieldKey]: nestedResults
-					.filter((nestedRecord) => {
-						/**
-						 * @todo
-						 * pull the name ID from somewhere real
-						 */
-						return (
-							nestedRecord[batch.relation.field_many] === record.id ||
-							nestedRecord[batch.relation.field_many]?.id === record.id
-						);
-					})
-					.map((nestedRecord) => {
-						if (tempField) {
-							delete nestedRecord[tempField];
-						}
-
-						return nestedRecord;
-					}),
+				[batch.fieldKey]: resultsForCurrentRecord,
 			};
 
 			return newRecord;
