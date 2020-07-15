@@ -8,12 +8,12 @@ export const createFolder = async (
 	return (await ItemsService.createItem('directus_folders', data, accountability)) as string;
 };
 
-export const readFolders = async (query: Query) => {
-	// return await ItemsService.readItems('directus_folders', query);
+export const readFolders = async (query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_folders', query, accountability);
 };
 
-export const readFolder = async (pk: string, query: Query) => {
-	return await ItemsService.readItem('directus_folders', pk, query);
+export const readFolder = async (pk: string, query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItem('directus_folders', pk, query, accountability);
 };
 
 export const updateFolder = async (

@@ -4,22 +4,26 @@
 
 import { Relation } from '../types/relation';
 import { AST, NestedCollectionAST, FieldAST, Query } from '../types';
-import database, { schemaInspector } from '../database';
+import database from '../database';
 
 export default async function getASTFromQuery(
-	role: string | null,
 	collection: string,
-	query: Query
+	query: Query,
+	role?: string | null
 ): Promise<AST> {
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const permissions = await database
-		.select<{ collection: string; fields: string }[]>('collection', 'fields')
-		.from('directus_permissions')
-		.where({ role, operation: 'read' });
 	const relations = await database.select<Relation[]>('*').from('directus_relations');
+
+	const permissions =
+		role !== undefined
+			? await database
+					.select<{ collection: string; fields: string }[]>('collection', 'fields')
+					.from('directus_permissions')
+					.where({ role, operation: 'read' })
+			: null;
 
 	const ast: AST = {
 		type: 'collection',
@@ -39,8 +43,10 @@ export default async function getASTFromQuery(
 
 	function convertWildcards(parentCollection: string, fields: string[]) {
 		const allowedFields = permissions
-			.find((permission) => parentCollection === permission.collection)
-			?.fields?.split(',');
+			? permissions
+					.find((permission) => parentCollection === permission.collection)
+					?.fields?.split(',')
+			: ['*'];
 
 		if (!allowedFields || allowedFields.length === 0) return [];
 

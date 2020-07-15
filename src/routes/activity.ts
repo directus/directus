@@ -6,24 +6,29 @@ import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
-router.use(useCollection('directus_activity'));
-
 router.get(
 	'/',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		// const records = await ActivityService.readActivities(req.sanitizedQuery);
-		// return res.json({
-		// 	data: records || null,
-		// });
+		const records = await ActivityService.readActivities(req.sanitizedQuery, {
+			role: req.role,
+		});
+
+		return res.json({
+			data: records || null,
+		});
 	})
 );
 
 router.get(
 	'/:pk',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery);
+		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery, {
+			role: req.role,
+		});
 
 		return res.json({
 			data: record || null,
@@ -33,6 +38,7 @@ router.get(
 
 router.post(
 	'/comment',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await ActivityService.createActivity({
@@ -43,7 +49,9 @@ router.post(
 			user_agent: req.get('user-agent'),
 		});
 
-		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery);
+		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+		});
 
 		return res.json({
 			data: record || null,
@@ -53,15 +61,19 @@ router.post(
 
 router.patch(
 	'/comment/:pk',
+	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await ActivityService.updateActivity(req.params.pk, req.body, {
+			role: req.role,
 			user: req.user,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 		});
 
-		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery);
+		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+		});
 
 		return res.json({
 			data: record || null,
@@ -71,8 +83,10 @@ router.patch(
 
 router.delete(
 	'/comment/:pk',
+	useCollection('directus_activity'),
 	asyncHandler(async (req, res) => {
 		await ActivityService.deleteActivity(req.params.pk, {
+			role: req.role,
 			user: req.user,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),

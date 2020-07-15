@@ -10,10 +10,15 @@ import useCollection from '../middleware/use-collection';
 
 const router = Router();
 
-router.use(useCollection('directus_fields'));
+/**
+ * @TODO
+ *
+ * Add accountability / permissions handling to fields
+ */
 
 router.get(
 	'/',
+	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const fields = await FieldsService.readAll();
 		return res.json({ data: fields || null });
@@ -22,6 +27,7 @@ router.get(
 
 router.get(
 	'/:collection',
+	useCollection('directus_fields'),
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		const fields = await FieldsService.readAll(req.collection);
@@ -31,6 +37,7 @@ router.get(
 
 router.get(
 	'/:collection/:field',
+	useCollection('directus_fields'),
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
@@ -54,6 +61,7 @@ const newFieldSchema = Joi.object({
 
 router.post(
 	'/:collection',
+	useCollection('directus_fields'),
 	validateCollection,
 	asyncHandler(async (req, res) => {
 		const { error } = newFieldSchema.validate(req.body);
@@ -65,6 +73,7 @@ router.post(
 		const field: Partial<Field> = req.body;
 
 		const createdField = await FieldsService.createField(req.collection, field, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

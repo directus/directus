@@ -70,34 +70,43 @@ export const create = async (payload: any, accountability: Accountability) => {
 	return await ItemsService.readItem('directus_collections', primaryKey);
 };
 
-export const readAll = async (query?: Query) => {
+export const readAll = async (query?: Query, accountability?: Accountability) => {
 	const [tables, collections] = await Promise.all([
 		schemaInspector.tableInfo(),
-		// ItemsService.readItems<Collection>('directus_collections', query),
+		ItemsService.readItems<Collection>('directus_collections', query, accountability),
 	]);
 
-	// const data = tables.map((table) => {
-	// 	const collectionInfo = collections.find((collection) => {
-	// 		return collection.collection === table.name;
-	// 	});
+	const data = tables.map((table) => {
+		const collectionInfo = collections.find((collection) => {
+			return collection.collection === table.name;
+		});
 
-	// 	return {
-	// 		collection: table.name,
-	// 		note: table.comment,
-	// 		hidden: collectionInfo?.hidden || false,
-	// 		single: collectionInfo?.single || false,
-	// 		icon: collectionInfo?.icon || null,
-	// 		translation: collectionInfo?.translation || null,
-	// 	};
-	// });
+		return {
+			collection: table.name,
+			note: table.comment,
+			hidden: collectionInfo?.hidden || false,
+			single: collectionInfo?.single || false,
+			icon: collectionInfo?.icon || null,
+			translation: collectionInfo?.translation || null,
+		};
+	});
 
-	// return data;
+	return data;
 };
 
-export const readOne = async (collection: string, query?: Query) => {
+export const readOne = async (
+	collection: string,
+	query?: Query,
+	accountability?: Accountability
+) => {
 	const [table, collectionInfo] = await Promise.all([
 		schemaInspector.tableInfo(collection),
-		ItemsService.readItem<Collection>('directus_collections', collection, query),
+		ItemsService.readItem<Collection>(
+			'directus_collections',
+			collection,
+			query,
+			accountability
+		),
 	]);
 
 	return {

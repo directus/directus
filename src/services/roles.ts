@@ -5,12 +5,16 @@ export const createRole = async (data: Record<string, any>, accountability: Acco
 	return await ItemsService.createItem('directus_roles', data, accountability);
 };
 
-export const readRoles = async (query: Query) => {
-	// return await ItemsService.readItems('directus_roles', query);
+export const readRoles = async (query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_roles', query, accountability);
 };
 
-export const readRole = async (pk: string | number, query: Query) => {
-	return await ItemsService.readItem('directus_roles', pk, query);
+export const readRole = async (
+	pk: string | number,
+	query: Query,
+	accountability?: Accountability
+) => {
+	return await ItemsService.readItem('directus_roles', pk, query, accountability);
 };
 
 export const updateRole = async (

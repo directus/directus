@@ -1,10 +1,11 @@
 import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 import runAST from '../database/run-ast';
-import getAST from '../utils/get-ast-from-query';
-import * as PayloadService from './payload';
+import getASTFromQuery from '../utils/get-ast-from-query';
 import { Accountability, AST } from '../types';
 
+import * as PayloadService from './payload';
+import * as PermissionsService from './permissions';
 import * as ActivityService from './activity';
 import * as RevisionsService from './revisions';
 
@@ -82,8 +83,15 @@ export const createItem = async (
 
 export const readItems = async <T = Record<string, any>>(
 	collection: string,
-	ast: AST
+	query: Query,
+	accountability?: Accountability
 ): Promise<T[]> => {
+	let ast = await getASTFromQuery(collection, query, accountability?.role);
+
+	if (accountability) {
+		ast = await PermissionsService.processAST(ast, accountability.role);
+	}
+
 	const records = await runAST(ast);
 	return await PayloadService.processValues('read', collection, records);
 };
@@ -91,7 +99,8 @@ export const readItems = async <T = Record<string, any>>(
 export const readItem = async <T = any>(
 	collection: string,
 	pk: number | string,
-	query: Query = {}
+	query: Query = {},
+	accountability?: Accountability
 ): Promise<T> => {
 	const primaryKeyField = await schemaInspector.primary(collection);
 
@@ -105,10 +114,14 @@ export const readItem = async <T = any>(
 		},
 	};
 
-	// const ast = await getAST(collection, query);
-	// const records = await runAST(ast);
-	// return await PayloadService.processValues('read', collection, records[0]);
-	return;
+	let ast = await getASTFromQuery(collection, query, accountability?.role);
+
+	if (accountability) {
+		ast = await PermissionsService.processAST(ast, accountability.role);
+	}
+
+	const records = await runAST(ast);
+	return await PayloadService.processValues('read', collection, records[0]);
 };
 
 export const updateItem = async (
@@ -172,10 +185,14 @@ export const deleteItem = async (
 		.where({ [primaryKeyField]: pk });
 };
 
-export const readSingleton = async (collection: string, ast: AST) => {
-	ast.query.limit = 1;
+export const readSingleton = async (
+	collection: string,
+	query: Query,
+	accountability?: Accountability
+) => {
+	query.limit = 1;
 
-	const records = await readItems(collection, ast);
+	const records = await readItems(collection, query, accountability);
 	const record = records[0];
 
 	if (!record) {

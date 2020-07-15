@@ -1,13 +1,4 @@
-import {
-	Accountability,
-	AST,
-	NestedCollectionAST,
-	FieldAST,
-	Operation,
-	Query,
-	Permission,
-	Relation,
-} from '../types';
+import { Accountability, AST, NestedCollectionAST, FieldAST, Query, Permission } from '../types';
 import * as ItemsService from './items';
 import database from '../database';
 import { ForbiddenException } from '../exceptions';
@@ -20,12 +11,12 @@ export const createPermission = async (
 	return (await ItemsService.createItem('directus_permissions', data, accountability)) as number;
 };
 
-export const readPermissions = async (query: Query) => {
-	// return await ItemsService.readItems('directus_permissions', query);
+export const readPermissions = async (query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_permissions', query, accountability);
 };
 
-export const readPermission = async (pk: number, query: Query) => {
-	return await ItemsService.readItem('directus_permissions', pk, query);
+export const readPermission = async (pk: number, query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItem('directus_permissions', pk, query, accountability);
 };
 
 export const updatePermission = async (
@@ -45,41 +36,17 @@ export const deletePermission = async (pk: number, accountability: Accountabilit
 	await ItemsService.deleteItem('directus_permissions', pk, accountability);
 };
 
-export const authorize = async (operation: Operation, collection: string, role?: string) => {
-	const query: Query = {
-		filter: {
-			collection: {
-				_eq: collection,
-			},
-			operation: {
-				_eq: operation,
-			},
-		},
-		limit: 1,
-	};
-
-	if (role) {
-		query.filter.role = {
-			_eq: role,
-		};
-	}
-
-	// const records = await ItemsService.readItems<Permission>('directus_permissions', query);
-
-	// return records[0];
-};
-
-export const processAST = async (role: string | null, ast: AST): Promise<AST> => {
+export const processAST = async (ast: AST, role: string | null): Promise<AST> => {
 	const collectionsRequested = getCollectionsFromAST(ast);
 
 	const permissionsForCollections = await database
 		.select<Permission[]>('*')
 		.from('directus_permissions')
+		.where({ operation: 'read', role })
 		.whereIn(
 			'collection',
 			collectionsRequested.map(({ collection }) => collection)
-		)
-		.andWhere('role', role);
+		);
 
 	// If the permissions don't match the collections, you don't have permission to read all of them
 	const uniqueCollectionsRequestedCount = uniq(

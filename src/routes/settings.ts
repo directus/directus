@@ -11,8 +11,8 @@ router.get(
 	useCollection('directus_settings'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await SettingsService.readSettings(req.sanitizedQuery);
-		// return res.json({ data: records || null });
+		const records = await SettingsService.readSettings(req.sanitizedQuery, { role: req.role });
+		return res.json({ data: records || null });
 	})
 );
 
@@ -22,14 +22,15 @@ router.patch(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		await SettingsService.updateSettings(req.body, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
 
-		// const record = await SettingsService.readSettings(req.sanitizedQuery);
+		const record = await SettingsService.readSettings(req.sanitizedQuery, { role: req.role });
 
-		// return res.json({ data: record || null });
+		return res.json({ data: record || null });
 	})
 );
 

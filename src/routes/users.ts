@@ -8,58 +8,60 @@ import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
+router.use(useCollection('directus_users'));
+
 router.post(
 	'/',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await UsersService.createUser(req.body, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
+		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+		});
 		return res.json({ data: item || null });
 	})
 );
 
 router.get(
 	'/',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		// const item = await UsersService.readUsers(req.sanitizedQuery);
-		// return res.json({ data: item || null });
+		const item = await UsersService.readUsers(req.sanitizedQuery, { role: req.role });
+		return res.json({ data: item || null });
 	})
 );
 
 router.get(
 	'/me',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		if (!req.user) {
 			throw new InvalidCredentialsException();
 		}
 
-		const item = await UsersService.readUser(req.user, req.sanitizedQuery);
+		const item = await UsersService.readUser(req.user, req.sanitizedQuery, { role: req.role });
 		return res.json({ data: item || null });
 	})
 );
 
 router.get(
 	'/:pk',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery);
+		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery, {
+			role: req.role,
+		});
 		return res.json({ data: items || null });
 	})
 );
 
 router.patch(
 	'/me',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		if (!req.user) {
@@ -67,36 +69,41 @@ router.patch(
 		}
 
 		const primaryKey = await UsersService.updateUser(req.user, req.body, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
 
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
+		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+		});
 		return res.json({ data: item || null });
 	})
 );
 
 router.patch(
 	'/:pk',
-	useCollection('directus_users'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await UsersService.updateUser(req.params.pk, req.body, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery);
+		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+		});
 		return res.json({ data: item || null });
 	})
 );
 
 router.delete(
 	'/:pk',
-	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		await UsersService.deleteUser(req.params.pk, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -113,11 +120,11 @@ const inviteSchema = Joi.object({
 
 router.post(
 	'/invite',
-	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 		await UsersService.inviteUser(req.body.email, req.body.role, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -133,7 +140,6 @@ const acceptInviteSchema = Joi.object({
 
 router.post(
 	'/invite/accept',
-	useCollection('directus_users'),
 	asyncHandler(async (req, res) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);

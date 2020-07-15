@@ -10,12 +10,16 @@ export const createUser = async (data: Record<string, any>, accountability: Acco
 	return await ItemsService.createItem('directus_users', data, accountability);
 };
 
-export const readUsers = async (query?: Query) => {
-	// return await ItemsService.readItems('directus_users', query);
+export const readUsers = async (query?: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_users', query, accountability);
 };
 
-export const readUser = async (pk: string | number, query?: Query) => {
-	return await ItemsService.readItem('directus_users', pk, query);
+export const readUser = async (
+	pk: string | number,
+	query?: Query,
+	accountability?: Accountability
+) => {
+	return await ItemsService.readItem('directus_users', pk, query, accountability);
 };
 
 export const updateUser = async (

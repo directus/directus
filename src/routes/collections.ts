@@ -31,6 +31,7 @@ router.post(
 		if (error) throw new InvalidPayloadException(error.message);
 
 		const createdCollection = await CollectionsService.create(req.body, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -45,8 +46,10 @@ router.get(
 	useCollection('directus_collections'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		// const collections = await CollectionsService.readAll(req.sanitizedQuery);
-		// res.json({ data: collections || null });
+		const collections = await CollectionsService.readAll(req.sanitizedQuery, {
+			role: req.role,
+		});
+		res.json({ data: collections || null });
 	})
 );
 
@@ -61,7 +64,8 @@ router.get(
 
 		const collection = await CollectionsService.readOne(
 			req.params.collection,
-			req.sanitizedQuery
+			req.sanitizedQuery,
+			{ role: req.role }
 		);
 		res.json({ data: collection || null });
 	})
@@ -76,6 +80,7 @@ router.delete(
 		}
 
 		await CollectionsService.deleteCollection(req.params.collection, {
+			role: req.role,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
