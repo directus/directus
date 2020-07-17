@@ -239,6 +239,8 @@ export const checkAccess = async (
 
 		if (!result) throw '';
 	} catch {
-		throw new ForbiddenException(`You're not allowed to ${operation} this item.`);
+		throw new ForbiddenException(
+			`You're not allowed to ${operation} item "${pk}" in collection "${collection}".`
+		);
 	}
 };

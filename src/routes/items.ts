@@ -131,20 +131,40 @@ router.patch(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const primaryKey = req.params.pk;
 
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const isBatch = primaryKey.includes(',');
 
-		return res.json({ data: item || null });
+		if (isBatch) {
+			const primaryKeys = primaryKey.split(',');
+			const items = await Promise.all(primaryKeys.map(updateItem));
+			return res.json({ data: items || null });
+		} else {
+			const item = await updateItem(primaryKey);
+			return res.json({ data: item || null });
+		}
+
+		async function updateItem(pk: string | number) {
+			const primaryKey = await ItemsService.updateItem(req.collection, pk, req.body, {
+				role: req.role,
+				admin: req.admin,
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			});
+
+			const item = await ItemsService.readItem(
+				req.collection,
+				primaryKey,
+				req.sanitizedQuery,
+				{
+					role: req.role,
+					admin: req.admin,
+				}
+			);
+
+			return item;
+		}
 	})
 );
 
