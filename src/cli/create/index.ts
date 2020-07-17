@@ -4,6 +4,12 @@ import inquirer from 'inquirer';
 import { resolve } from 'path';
 import { databaseQuestions } from './questions';
 import { drivers, getDriverForClient } from './drivers';
+import childProcess from 'child_process';
+import { promisify } from 'util';
+
+const exec = promisify(childProcess.exec);
+
+import installDB, { Credentials } from './install-db';
 
 export default async function create(directory: string, options: Record<string, any>) {
 	const path = resolve(directory);
@@ -31,6 +37,10 @@ export default async function create(directory: string, options: Record<string, 
 		}
 	}
 
+	await fse.mkdir(path);
+
+	await exec(`cd ${path} && npm init -y && npm install directus@preview`);
+
 	let { client } = await inquirer.prompt([
 		{
 			type: 'list',
@@ -42,15 +52,18 @@ export default async function create(directory: string, options: Record<string, 
 
 	client = getDriverForClient(client);
 
-	const responses = await inquirer.prompt(
-		databaseQuestions[client].map((question) => question({ client }))
+	const credentials: Credentials = await inquirer.prompt(
+		databaseQuestions[client].map((question: Function) => question({ client }))
 	);
 
-	/** @todo
-	 * - See if you can connect to DB
-	 * - Install Directus system stuff into DB
-	 * - Start the Node API
-	 */
+	try {
+		await installDB(client, credentials);
+	} catch (error) {
+		console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
+		console.log(error.message);
+	}
+
+	await exec(`cd && directus start`);
 }
 
 function checkRequirements() {
