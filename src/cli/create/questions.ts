@@ -28,6 +28,13 @@ const port = ({ client }) => ({
 	},
 });
 
+const database = () => ({
+	type: 'input',
+	name: 'database',
+	message: 'Database Name:',
+	default: 'directus',
+});
+
 const username = () => ({
 	type: 'input',
 	name: 'username',
@@ -43,8 +50,8 @@ const password = () => ({
 
 export const databaseQuestions = {
 	sqlite3: [filename],
-	mysql: [host, port, username, password],
-	pg: [host, port, username, password],
-	oracledb: [host, port, username, password],
-	mssql: [host, port, username, password],
+	mysql: [host, port, database, username, password],
+	pg: [host, port, database, username, password],
+	oracledb: [host, port, database, username, password],
+	mssql: [host, port, database, username, password],
 };

@@ -5,6 +5,8 @@ import { resolve } from 'path';
 import { databaseQuestions } from './questions';
 import { drivers, getDriverForClient } from './drivers';
 
+import installDB, { Credentials } from './install-db';
+
 export default async function create(directory: string, options: Record<string, any>) {
 	const path = resolve(directory);
 	checkRequirements();
@@ -42,9 +44,16 @@ export default async function create(directory: string, options: Record<string, 
 
 	client = getDriverForClient(client);
 
-	const responses = await inquirer.prompt(
-		databaseQuestions[client].map((question) => question({ client }))
+	const credentials: Credentials = await inquirer.prompt(
+		databaseQuestions[client].map((question: Function) => question({ client }))
 	);
+
+	try {
+		await installDB(client, credentials);
+	} catch (error) {
+		console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
+		console.log(error.message);
+	}
 
 	/** @todo
 	 * - See if you can connect to DB

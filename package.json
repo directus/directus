@@ -9,8 +9,8 @@
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
     "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-    "dev": "LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada",
-    "cli": "ts-node --script-mode --transpile-only src/cli/index.ts"
+    "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada",
+    "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts"
   },
   "repository": {
     "type": "git",
