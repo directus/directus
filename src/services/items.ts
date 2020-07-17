@@ -3,39 +3,37 @@ import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { Accountability, Operation, Item } from '../types';
+import Knex from 'knex';
 
 import * as PayloadService from './payload';
 import * as PermissionsService from './permissions';
 import * as ActivityService from './activity';
-import * as RevisionsService from './revisions';
 
 import { pick, clone } from 'lodash';
 import logger from '../logger';
 
-/**
- * @todo
- * have this support passing in a knex instance, so we can hook it up to the same TX instance
- * as batch insert / update
- */
 async function saveActivityAndRevision(
 	action: ActivityService.Action,
 	collection: string,
 	item: string,
 	payload: Partial<Item>,
-	accountability: Accountability
+	accountability: Accountability,
+	knex: Knex = database
 ) {
-	const activityID = await ActivityService.createActivity({
-		action,
-		collection,
-		item,
-		ip: accountability.ip,
-		user_agent: accountability.userAgent,
-		action_by: accountability.user,
-	});
+	const activityID = await knex('directus_activity')
+		.insert({
+			action,
+			collection,
+			item,
+			ip: accountability.ip,
+			user_agent: accountability.userAgent,
+			action_by: accountability.user,
+		})
+		.returning('id');
 
 	if (action !== ActivityService.Action.DELETE) {
-		await RevisionsService.createRevision({
-			activity: activityID,
+		await knex('directus_revisions').insert({
+			activity: activityID[0],
 			collection,
 			item,
 			delta: payload,
@@ -99,14 +97,14 @@ export async function createItem(
 				await PayloadService.processO2M(collection, payload);
 
 				if (accountability) {
-					// Don't await this. It can run async in the background
-					saveActivityAndRevision(
+					await saveActivityAndRevision(
 						ActivityService.Action.CREATE,
 						collection,
 						primaryKeys[0],
 						payloadWithoutAlias,
-						accountability
-					).catch((err) => logger.error(err));
+						accountability,
+						tx
+					);
 				}
 
 				return primaryKeys[0];
@@ -231,14 +229,14 @@ export const updateItem = async <T extends number | string | (number | string)[]
 					.where({ [primaryKeyField]: key });
 
 				if (accountability) {
-					// Don't await this. It can run async in the background
-					// saveActivityAndRevision(
-					// 	ActivityService.Action.UPDATE,
-					// 	collection,
-					// 	String(pk),
-					// 	payloadWithoutAlias,
-					// 	accountability
-					// ).catch((err) => logger.error(err));
+					await saveActivityAndRevision(
+						ActivityService.Action.UPDATE,
+						collection,
+						String(key),
+						payloadWithoutAlias,
+						accountability,
+						tx
+					);
 				}
 
 				return pk;
@@ -272,18 +270,18 @@ export const deleteItem = async <T extends number | string | (number | string)[]
 				await tx(collection)
 					.where({ [primaryKeyField]: key })
 					.delete();
+
+				await saveActivityAndRevision(
+					ActivityService.Action.DELETE,
+					collection,
+					String(key),
+					{},
+					accountability,
+					tx
+				);
 			})
 		);
 	});
-
-	// Don't await this. It can run async in the background
-	// saveActivityAndRevision(
-	// 	ActivityService.Action.DELETE,
-	// 	collection,
-	// 	String(pk),
-	// 	{},
-	// 	accountability
-	// ).catch((err) => logger.error(err));
 
 	return pk;
 };
