@@ -1,8 +1,8 @@
 import * as ItemsService from './items';
-import { Accountability, Query } from '../types';
+import { Accountability, Query, Item } from '../types';
 
 export const createFolder = async (
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ): Promise<string> => {
 	return (await ItemsService.createItem('directus_folders', data, accountability)) as string;
@@ -18,7 +18,7 @@ export const readFolder = async (pk: string, query: Query, accountability?: Acco
 
 export const updateFolder = async (
 	pk: string,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ): Promise<string> => {
 	return (await ItemsService.updateItem('directus_folders', pk, data, accountability)) as string;

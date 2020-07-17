@@ -3,6 +3,7 @@
  */
 
 import { Permission } from './permissions';
+import { Query } from './query';
 
 export {};
 
@@ -14,7 +15,7 @@ declare global {
 			role: string | null;
 			admin: boolean;
 			collection?: string;
-			sanitizedQuery?: Record<string, any>;
+			sanitizedQuery?: Query;
 			single?: boolean;
 			permissions?: Permission;
 		}

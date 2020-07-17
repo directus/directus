@@ -1,10 +1,10 @@
-import { Accountability, Query } from '../types';
+import { Accountability, Query, Item } from '../types';
 import * as ItemsService from './items';
 
 /** @todo check if we want to save activity for collection presets */
 
 export const createCollectionPreset = async (
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	return await ItemsService.createItem('directus_presets', data, accountability);
@@ -24,7 +24,7 @@ export const readCollectionPreset = async (
 
 export const updateCollectionPreset = async (
 	pk: string | number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	return await ItemsService.updateItem('directus_presets', pk, data, accountability);

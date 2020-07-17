@@ -1,7 +1,7 @@
-import { Accountability, Query } from '../types';
+import { Accountability, Query, Item } from '../types';
 import * as ItemsService from './items';
 
-export const createRelation = async (data: Record<string, any>, accountability: Accountability) => {
+export const createRelation = async (data: Partial<Item>, accountability: Accountability) => {
 	return await ItemsService.createItem('directus_relations', data, accountability);
 };
 
@@ -19,7 +19,7 @@ export const readRelation = async (
 
 export const updateRelation = async (
 	pk: string | number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	return await ItemsService.updateItem('directus_relations', pk, data, accountability);

@@ -6,6 +6,7 @@ import {
 	Query,
 	Permission,
 	Operation,
+	Item,
 } from '../types';
 import * as ItemsService from './items';
 import database from '../database';
@@ -14,7 +15,7 @@ import { uniq } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 
 export const createPermission = async (
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ): Promise<number> => {
 	return (await ItemsService.createItem('directus_permissions', data, accountability)) as number;
@@ -30,7 +31,7 @@ export const readPermission = async (pk: number, query: Query, accountability?: 
 
 export const updatePermission = async (
 	pk: number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ): Promise<number> => {
 	return (await ItemsService.updateItem(
@@ -183,7 +184,7 @@ export const processValues = async (
 	operation: Operation,
 	collection: string,
 	role: string | null,
-	data: Record<string, any>
+	data: Partial<Item>
 ) => {
 	const permission = await database
 		.select<Permission>('*')

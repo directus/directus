@@ -1,7 +1,7 @@
 import * as ItemsService from './items';
-import { Accountability, Query } from '../types';
+import { Accountability, Query, Item } from '../types';
 
-export const createRevision = async (data: Record<string, any>) => {
+export const createRevision = async (data: Partial<Item>) => {
 	return await ItemsService.createItem('directus_revisions', data);
 };
 

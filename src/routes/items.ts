@@ -26,29 +26,16 @@ router.post(
 			userAgent: req.get('user-agent'),
 		};
 
-		const isBatch = Array.isArray(req.body);
+		const primaryKey = await ItemsService.createItem(req.collection, req.body, accountability);
 
-		if (isBatch) {
-			const body: Record<string, any>[] = req.body;
-			const primaryKeys = await ItemsService.createItem(req.collection, body, accountability);
-			const items = await ItemsService.readItem(
-				req.collection,
-				primaryKeys,
-				req.sanitizedQuery,
-				accountability
-			);
-			res.json({ data: items || null });
-		} else {
-			const body: Record<string, any> = req.body;
-			const primaryKey = await ItemsService.createItem(req.collection, body, accountability);
-			const item = await ItemsService.readItem(
-				req.collection,
-				primaryKey,
-				req.sanitizedQuery,
-				accountability
-			);
-			res.json({ data: item || null });
-		}
+		const result = await ItemsService.readItem(
+			req.collection,
+			primaryKey,
+			req.sanitizedQuery,
+			accountability
+		);
+
+		res.json({ data: result || null });
 	})
 );
 
@@ -132,39 +119,30 @@ router.patch(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const primaryKey = req.params.pk;
-		const isBatch = primaryKey.includes(',');
+		const accountability: Accountability = {
+			user: req.user,
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+		};
 
-		if (isBatch) {
-			const primaryKeys = primaryKey.split(',');
-			const items = await Promise.all(primaryKeys.map(updateItem));
-			return res.json({ data: items || null });
-		} else {
-			const item = await updateItem(primaryKey);
-			return res.json({ data: item || null });
-		}
+		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const updatedPrimaryKey = await ItemsService.updateItem(
+			req.collection,
+			primaryKey,
+			req.body,
+			accountability
+		);
 
-		async function updateItem(pk: string | number) {
-			const primaryKey = await ItemsService.updateItem(req.collection, pk, req.body, {
-				role: req.role,
-				admin: req.admin,
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-				user: req.user,
-			});
+		const result = await ItemsService.readItem(
+			req.collection,
+			updatedPrimaryKey,
+			req.sanitizedQuery,
+			accountability
+		);
 
-			const item = await ItemsService.readItem(
-				req.collection,
-				primaryKey,
-				req.sanitizedQuery,
-				{
-					role: req.role,
-					admin: req.admin,
-				}
-			);
-
-			return item;
-		}
+		res.json({ data: result || null });
 	})
 );
 

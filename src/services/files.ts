@@ -9,17 +9,17 @@ import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Accountability } from '../types';
+import { Accountability, Item } from '../types';
 import { Readable } from 'stream';
 
 export const createFile = async (
-	data: Record<string, any>,
+	data: Partial<Item>,
 	stream: NodeJS.ReadableStream,
 	accountability: Accountability
 ) => {
 	const id = uuidv4();
 
-	const payload: Record<string, any> = {
+	const payload: Partial<Item> = {
 		...data,
 		id,
 	};
@@ -70,7 +70,7 @@ export const readFile = async (
 
 export const updateFile = async (
 	pk: string | number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability,
 	stream?: NodeJS.ReadableStream
 ) => {
@@ -98,6 +98,7 @@ export const updateFile = async (
 };
 
 export const deleteFile = async (pk: string, accountability: Accountability) => {
+	/** @todo use ItemsService */
 	const file = await database
 		.select('storage', 'filename_disk')
 		.from('directus_files')
