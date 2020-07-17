@@ -41,56 +41,80 @@ async function saveActivityAndRevision(
 	}
 }
 
-export const createItem = async (
+export async function createItem(
+	collection: string,
+	data: Record<string, any>[],
+	accountability?: Accountability
+): Promise<(string | number)[]>;
+export async function createItem(
 	collection: string,
 	data: Record<string, any>,
 	accountability?: Accountability
-): Promise<string | number> => {
-	let payload = data;
+): Promise<string | number>;
+export async function createItem(
+	collection: string,
+	data: Record<string, any> | Record<string, any>[],
+	accountability?: Accountability
+): Promise<string | number | (string | number)[]> {
+	const isBatch = Array.isArray(data);
 
-	if (accountability && accountability.admin === false) {
-		payload = await PermissionsService.processValues(
-			'create',
-			collection,
-			accountability?.role,
-			data
+	return database.transaction(async (tx) => {
+		let payloads = isBatch ? data : [data];
+
+		const primaryKeys: (string | number)[] = await Promise.all(
+			payloads.map(async (payload: Record<string, any>) => {
+				if (accountability && accountability.admin === false) {
+					payload = await PermissionsService.processValues(
+						'create',
+						collection,
+						accountability?.role,
+						payload
+					);
+				}
+
+				payload = await PayloadService.processValues('create', collection, payload);
+
+				payload = await PayloadService.processM2O(collection, payload);
+
+				const primaryKeyField = await schemaInspector.primary(collection);
+				// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+				const columns = await schemaInspector.columns(collection);
+				const payloadWithoutAlias = pick(
+					payload,
+					columns.map(({ column }) => column)
+				);
+
+				const primaryKeys = await tx(collection)
+					.insert(payloadWithoutAlias)
+					.returning(primaryKeyField);
+
+				// This allows the o2m values to be populated correctly
+				payload[primaryKeyField] = primaryKeys[0];
+
+				await PayloadService.processO2M(collection, payload);
+
+				if (accountability) {
+					// Don't await this. It can run async in the background
+					saveActivityAndRevision(
+						ActivityService.Action.CREATE,
+						collection,
+						primaryKeys[0],
+						payloadWithoutAlias,
+						accountability
+					).catch((err) => logger.error(err));
+				}
+
+				return primaryKeys[0];
+			})
 		);
-	}
 
-	payload = await PayloadService.processValues('create', collection, payload);
-
-	payload = await PayloadService.processM2O(collection, payload);
-
-	const primaryKeyField = await schemaInspector.primary(collection);
-	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
-	const columns = await schemaInspector.columns(collection);
-	const payloadWithoutAlias = pick(
-		payload,
-		columns.map(({ column }) => column)
-	);
-
-	const primaryKeys = await database(collection)
-		.insert(payloadWithoutAlias)
-		.returning(primaryKeyField);
-
-	// This allows the o2m values to be populated correctly
-	payload[primaryKeyField] = primaryKeys[0];
-
-	await PayloadService.processO2M(collection, payload);
-
-	if (accountability) {
-		// Don't await this. It can run async in the background
-		saveActivityAndRevision(
-			ActivityService.Action.CREATE,
-			collection,
-			primaryKeys[0],
-			payloadWithoutAlias,
-			accountability
-		).catch((err) => logger.error(err));
-	}
-
-	return primaryKeys[0];
-};
+		if (isBatch) {
+			return primaryKeys;
+		} else {
+			return primaryKeys[0];
+		}
+	});
+}
 
 export const readItems = async <T = Record<string, any>>(
 	collection: string,
@@ -107,28 +131,55 @@ export const readItems = async <T = Record<string, any>>(
 	return await PayloadService.processValues('read', collection, records);
 };
 
-export const readItem = async <T = any>(
+export async function readItem<T = Record<string, any>>(
 	collection: string,
 	pk: number | string,
+	query?: Query,
+	accountability?: Accountability,
+	operation?: Operation
+): Promise<T>;
+export async function readItem<T = Record<string, any>>(
+	collection: string,
+	pk: (number | string)[],
+	query?: Query,
+	accountability?: Accountability,
+	operation?: Operation
+): Promise<T[]>;
+export async function readItem<T = Record<string, any>>(
+	collection: string,
+	pk: number | string | (number | string)[],
 	query: Query = {},
 	accountability?: Accountability,
 	operation?: Operation
-): Promise<T> => {
+): Promise<T | T[]> {
 	// We allow overriding the operation, so we can use the item read logic to validate permissions
 	// for update and delete as well
 	operation = operation || 'read';
 
 	const primaryKeyField = await schemaInspector.primary(collection);
+	const isBatch = Array.isArray(pk);
 
-	query = {
-		...query,
-		filter: {
-			...(query.filter || {}),
-			[primaryKeyField]: {
-				_eq: pk,
+	if (isBatch) {
+		query = {
+			...query,
+			filter: {
+				...(query.filter || {}),
+				[primaryKeyField]: {
+					_in: pk,
+				},
 			},
-		},
-	};
+		};
+	} else {
+		query = {
+			...query,
+			filter: {
+				...(query.filter || {}),
+				[primaryKeyField]: {
+					_eq: pk,
+				},
+			},
+		};
+	}
 
 	let ast = await getASTFromQuery(collection, query, accountability, operation);
 
@@ -137,8 +188,9 @@ export const readItem = async <T = any>(
 	}
 
 	const records = await runAST(ast);
-	return await PayloadService.processValues('read', collection, records[0]);
-};
+	const processedRecords = await PayloadService.processValues('read', collection, records);
+	return isBatch ? processedRecords : processedRecords[0];
+}
 
 export const updateItem = async (
 	collection: string,

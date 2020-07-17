@@ -145,7 +145,7 @@ export const processM2O = async (collection: string, payload: Record<string, any
 	// Save all nested m2o records
 	await Promise.all(
 		relationsToProcess.map(async (relation) => {
-			const relatedRecord = payloadClone[relation.field_many];
+			const relatedRecord: Record<string, any> = payloadClone[relation.field_many];
 			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_one);
 
 			let relatedPrimaryKey: string | number;
@@ -194,7 +194,7 @@ export const processO2M = async (collection: string, payload: Record<string, any
 			const relatedRecords = payloadClone[relation.field_one];
 
 			await Promise.all(
-				relatedRecords.map(async (relatedRecord: any, index: number) => {
+				relatedRecords.map(async (relatedRecord: Record<string, any>, index: number) => {
 					relatedRecord[relation.field_many] = payloadClone[relation.primary_one];
 
 					const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_many);

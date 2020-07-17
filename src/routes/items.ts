@@ -5,6 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
+import { Accountability } from '../types';
 
 const router = express.Router();
 
@@ -17,34 +18,36 @@ router.post(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		if (Array.isArray(req.body)) {
-			const items = await Promise.all(req.body.map(createItem));
+		const accountability: Accountability = {
+			user: req.user,
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+		};
+
+		const isBatch = Array.isArray(req.body);
+
+		if (isBatch) {
+			const body: Record<string, any>[] = req.body;
+			const primaryKeys = await ItemsService.createItem(req.collection, body, accountability);
+			const items = await ItemsService.readItem(
+				req.collection,
+				primaryKeys,
+				req.sanitizedQuery,
+				accountability
+			);
 			res.json({ data: items || null });
 		} else {
-			const item = await createItem(req.body);
-			res.json({ data: item || null });
-		}
-
-		async function createItem(body: Record<string, any>) {
-			const primaryKey = await ItemsService.createItem(req.collection, body, {
-				user: req.user,
-				role: req.role,
-				admin: req.admin,
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-			});
-
+			const body: Record<string, any> = req.body;
+			const primaryKey = await ItemsService.createItem(req.collection, body, accountability);
 			const item = await ItemsService.readItem(
 				req.collection,
 				primaryKey,
 				req.sanitizedQuery,
-				{
-					role: req.role,
-					admin: req.admin,
-				}
+				accountability
 			);
-
-			return item;
+			res.json({ data: item || null });
 		}
 	})
 );
@@ -101,24 +104,22 @@ router.patch(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single === false) {
-			throw new RouteNotFoundException(req.path);
+		if (req.single === true) {
+			await ItemsService.upsertSingleton(req.collection, req.body, {
+				role: req.role,
+				admin: req.admin,
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			});
+
+			const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
+				role: req.role,
+				admin: req.admin,
+			});
+
+			return res.json({ data: item || null });
 		}
-
-		await ItemsService.upsertSingleton(req.collection, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-
-		const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
-
-		return res.json({ data: item || null });
 	})
 );
 
@@ -132,7 +133,6 @@ router.patch(
 		}
 
 		const primaryKey = req.params.pk;
-
 		const isBatch = primaryKey.includes(',');
 
 		if (isBatch) {
