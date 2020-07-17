@@ -148,6 +148,7 @@ export const readItem = async <T extends number | string | (number | string)[]>(
 	operation = operation || 'read';
 
 	const primaryKeyField = await schemaInspector.primary(collection);
+	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 	const isBatch = Array.isArray(pk);
 
 	if (isBatch) {
@@ -156,7 +157,7 @@ export const readItem = async <T extends number | string | (number | string)[]>(
 			filter: {
 				...(query.filter || {}),
 				[primaryKeyField]: {
-					_in: pk,
+					_in: primaryKeys,
 				},
 			},
 		};
@@ -191,7 +192,7 @@ export const updateItem = async <T extends number | string | (number | string)[]
 ): Promise<T> => {
 	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	const updatedPrimaryKeys = database.transaction(async (tx) => {
+	await database.transaction(async (tx) => {
 		let payload = clone(data);
 
 		return await Promise.all(
@@ -231,13 +232,13 @@ export const updateItem = async <T extends number | string | (number | string)[]
 
 				if (accountability) {
 					// Don't await this. It can run async in the background
-					saveActivityAndRevision(
-						ActivityService.Action.UPDATE,
-						collection,
-						String(pk),
-						payloadWithoutAlias,
-						accountability
-					).catch((err) => logger.error(err));
+					// saveActivityAndRevision(
+					// 	ActivityService.Action.UPDATE,
+					// 	collection,
+					// 	String(pk),
+					// 	payloadWithoutAlias,
+					// 	accountability
+					// ).catch((err) => logger.error(err));
 				}
 
 				return pk;
@@ -245,32 +246,46 @@ export const updateItem = async <T extends number | string | (number | string)[]
 		);
 	});
 
-	return Array.isArray(pk) ? updatedPrimaryKeys : updatedPrimaryKeys[0];
+	return pk;
 };
 
-export const deleteItem = async (
+export const deleteItem = async <T extends number | string | (number | string)[]>(
 	collection: string,
-	pk: number | string,
+	pk: T,
 	accountability?: Accountability
-) => {
+): Promise<T> => {
 	const primaryKeyField = await schemaInspector.primary(collection);
+	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	if (accountability && accountability.admin === false) {
-		await PermissionsService.checkAccess('delete', collection, pk, accountability.role);
+	await database.transaction(async (tx) => {
+		await Promise.all(
+			primaryKeys.map(async (key) => {
+				if (accountability && accountability.admin === false) {
+					await PermissionsService.checkAccess(
+						'delete',
+						collection,
+						key,
+						accountability.role
+					);
+				}
 
-		// Don't await this. It can run async in the background
-		saveActivityAndRevision(
-			ActivityService.Action.DELETE,
-			collection,
-			String(pk),
-			{},
-			accountability
-		).catch((err) => logger.error(err));
-	}
+				await tx(collection)
+					.where({ [primaryKeyField]: key })
+					.delete();
+			})
+		);
+	});
 
-	return await database(collection)
-		.delete()
-		.where({ [primaryKeyField]: pk });
+	// Don't await this. It can run async in the background
+	// saveActivityAndRevision(
+	// 	ActivityService.Action.DELETE,
+	// 	collection,
+	// 	String(pk),
+	// 	{},
+	// 	accountability
+	// ).catch((err) => logger.error(err));
+
+	return pk;
 };
 
 export const readSingleton = async (

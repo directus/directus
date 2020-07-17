@@ -8,8 +8,7 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
-import { File } from '../types/files';
-import { Relation } from '../types/relation';
+import { File, Relation, Item } from '../types';
 import * as ItemsService from './items';
 
 type Operation = 'create' | 'read' | 'update';

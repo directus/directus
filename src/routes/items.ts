@@ -73,15 +73,15 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const record = await ItemsService.readItem(
-			req.collection,
-			req.params.pk,
-			req.sanitizedQuery,
-			{ role: req.role, admin: req.admin }
-		);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+
+		const result = await ItemsService.readItem(req.collection, pk, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 
 		return res.json({
-			data: record || null,
+			data: result || null,
 		});
 	})
 );
@@ -107,6 +107,8 @@ router.patch(
 
 			return res.json({ data: item || null });
 		}
+
+		throw new RouteNotFoundException(req.path);
 	})
 );
 
@@ -150,28 +152,19 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		const primaryKey = req.params.pk;
+		const accountability: Accountability = {
+			user: req.user,
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+		};
 
-		const isBatch = primaryKey.includes(',');
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
-		if (isBatch) {
-			const primaryKeys = primaryKey.split(',');
-			await Promise.all(primaryKeys.map(deleteItem));
-		} else {
-			await deleteItem(primaryKey);
-		}
+		await ItemsService.deleteItem(req.collection, pk, accountability);
 
 		return res.status(200).end();
-
-		async function deleteItem(pk: string | number) {
-			await ItemsService.deleteItem(req.collection, pk, {
-				role: req.role,
-				admin: req.admin,
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-				user: req.user,
-			});
-		}
 	})
 );
 
