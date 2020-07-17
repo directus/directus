@@ -1,19 +1,24 @@
 import knex from 'knex';
 import dotenv from 'dotenv';
+import camelCase from 'camelcase';
 
 import SchemaInspector from '../knex-schema-inspector/lib/index';
 
 dotenv.config();
 
+const connectionConfig: Record<string, any> = {};
+
+for (let [key, value] of Object.entries(process.env)) {
+	key = key.toLowerCase();
+	if (key.startsWith('db') === false) continue;
+	if (key === 'db_client') continue;
+
+	connectionConfig[camelCase(key)] = value;
+}
+
 const database = knex({
 	client: process.env.DB_CLIENT,
-	connection: {
-		host: process.env.DB_HOST,
-		port: Number(process.env.DB_PORT),
-		user: process.env.DB_USER,
-		password: process.env.DB_PASSWORD,
-		database: process.env.DB_NAME,
-	},
+	connection: connectionConfig,
 	migrations: {
 		extension: 'ts',
 		directory: './src/database/migrations',
