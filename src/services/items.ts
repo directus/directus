@@ -10,7 +10,6 @@ import * as PermissionsService from './permissions';
 import * as ActivityService from './activity';
 
 import { pick, clone } from 'lodash';
-import logger from '../logger';
 
 async function saveActivityAndRevision(
 	action: ActivityService.Action,
@@ -61,7 +60,7 @@ export async function createItem(
 ): Promise<string | number | (string | number)[]> {
 	const isBatch = Array.isArray(data);
 
-	return database.transaction(async (tx) => {
+	return database.transaction(async (transaction) => {
 		let payloads = isBatch ? data : [data];
 
 		const primaryKeys: (string | number)[] = await Promise.all(
@@ -87,7 +86,7 @@ export async function createItem(
 					columns.map(({ column }) => column)
 				);
 
-				const primaryKeys = await tx(collection)
+				const primaryKeys = await transaction(collection)
 					.insert(payloadWithoutAlias)
 					.returning(primaryKeyField);
 
@@ -103,7 +102,7 @@ export async function createItem(
 						primaryKeys[0],
 						payloadWithoutAlias,
 						accountability,
-						tx
+						transaction
 					);
 				}
 
@@ -190,7 +189,7 @@ export const updateItem = async <T extends number | string | (number | string)[]
 ): Promise<T> => {
 	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	await database.transaction(async (tx) => {
+	await database.transaction(async (transaction) => {
 		let payload = clone(data);
 
 		return await Promise.all(
@@ -224,7 +223,7 @@ export const updateItem = async <T extends number | string | (number | string)[]
 					columns.map(({ column }) => column)
 				);
 
-				await tx(collection)
+				await transaction(collection)
 					.update(payloadWithoutAlias)
 					.where({ [primaryKeyField]: key });
 
@@ -235,7 +234,7 @@ export const updateItem = async <T extends number | string | (number | string)[]
 						String(key),
 						payloadWithoutAlias,
 						accountability,
-						tx
+						transaction
 					);
 				}
 
@@ -255,7 +254,7 @@ export const deleteItem = async <T extends number | string | (number | string)[]
 	const primaryKeyField = await schemaInspector.primary(collection);
 	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	await database.transaction(async (tx) => {
+	await database.transaction(async (transaction) => {
 		await Promise.all(
 			primaryKeys.map(async (key) => {
 				if (accountability && accountability.admin === false) {
@@ -267,7 +266,7 @@ export const deleteItem = async <T extends number | string | (number | string)[]
 					);
 				}
 
-				await tx(collection)
+				await transaction(collection)
 					.where({ [primaryKeyField]: key })
 					.delete();
 
@@ -277,7 +276,7 @@ export const deleteItem = async <T extends number | string | (number | string)[]
 					String(key),
 					{},
 					accountability,
-					tx
+					transaction
 				);
 			})
 		);
