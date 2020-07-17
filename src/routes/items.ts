@@ -152,15 +152,28 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		await ItemsService.deleteItem(req.collection, req.params.pk, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const primaryKey = req.params.pk;
+
+		const isBatch = primaryKey.includes(',');
+
+		if (isBatch) {
+			const primaryKeys = primaryKey.split(',');
+			await Promise.all(primaryKeys.map(deleteItem));
+		} else {
+			await deleteItem(primaryKey);
+		}
 
 		return res.status(200).end();
+
+		async function deleteItem(pk: string | number) {
+			await ItemsService.deleteItem(req.collection, pk, {
+				role: req.role,
+				admin: req.admin,
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			});
+		}
 	})
 );
 
