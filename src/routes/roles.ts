@@ -1,71 +1,81 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as RolesService from '../services/roles';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
+router.use(useCollection('directus_roles'));
+
 router.post(
 	'/',
-	useCollection('directus_roles'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await RolesService.createRole(req.body, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
-		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery);
+		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: item || null });
 	})
 );
 
 router.get(
 	'/',
-	useCollection('directus_roles'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RolesService.readRoles(req.sanitizedQuery);
+		const records = await RolesService.readRoles(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
 
 router.get(
 	'/:pk',
-	useCollection('directus_roles'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await RolesService.readRole(req.params.pk, req.sanitizedQuery);
+		const record = await RolesService.readRole(req.params.pk, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: record || null });
 	})
 );
 
 router.patch(
 	'/:pk',
-	useCollection('directus_roles'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await RolesService.updateRole(req.params.pk, req.body, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
-		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery);
+		const item = await RolesService.readRole(primaryKey, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: item || null });
 	})
 );
 
 router.delete(
 	'/:pk',
-	useCollection('directus_roles'),
 	asyncHandler(async (req, res) => {
 		await RolesService.deleteRole(req.params.pk, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

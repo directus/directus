@@ -1,17 +1,19 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as CollectionPresetsService from '../services/presets';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
 
+router.use(useCollection('directus_presets'));
+
 router.post(
 	'/',
-	useCollection('directus_presets'),
 	asyncHandler(async (req, res) => {
 		const primaryKey = await CollectionPresetsService.createCollectionPreset(req.body, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
@@ -19,7 +21,8 @@ router.post(
 
 		const record = await CollectionPresetsService.readCollectionPreset(
 			primaryKey,
-			req.sanitizedQuery
+			req.sanitizedQuery,
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -27,24 +30,24 @@ router.post(
 
 router.get(
 	'/',
-	useCollection('directus_presets'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await CollectionPresetsService.readCollectionPresets(req.sanitizedQuery);
+		const records = await CollectionPresetsService.readCollectionPresets(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
 
 router.get(
 	'/:pk',
-	useCollection('directus_presets'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const record = await CollectionPresetsService.readCollectionPreset(
 			req.params.pk,
-			req.sanitizedQuery
+			req.sanitizedQuery,
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -52,14 +55,14 @@ router.get(
 
 router.patch(
 	'/:pk',
-	useCollection('directus_presets'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
 		const primaryKey = await CollectionPresetsService.updateCollectionPreset(
 			req.params.pk,
 			req.body,
 			{
+				role: req.role,
+				admin: req.admin,
 				ip: req.ip,
 				userAgent: req.get('user-agent'),
 				user: req.user,
@@ -68,7 +71,8 @@ router.patch(
 
 		const record = await CollectionPresetsService.readCollectionPreset(
 			primaryKey,
-			req.sanitizedQuery
+			req.sanitizedQuery,
+			{ role: req.role, admin: req.admin }
 		);
 		return res.json({ data: record || null });
 	})
@@ -76,9 +80,10 @@ router.patch(
 
 router.delete(
 	'/:pk',
-	useCollection('directus_presets'),
 	asyncHandler(async (req, res) => {
 		await CollectionPresetsService.deleteCollectionPreset(req.params.pk, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

@@ -10,12 +10,16 @@ export const createCollectionPreset = async (
 	return await ItemsService.createItem('directus_presets', data, accountability);
 };
 
-export const readCollectionPresets = async (query: Query) => {
-	return await ItemsService.readItems('directus_presets', query);
+export const readCollectionPresets = async (query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_presets', query, accountability);
 };
 
-export const readCollectionPreset = async (pk: string | number, query: Query) => {
-	return await ItemsService.readItem('directus_presets', pk, query);
+export const readCollectionPreset = async (
+	pk: string | number,
+	query: Query,
+	accountability?: Accountability
+) => {
+	return await ItemsService.readItem('directus_presets', pk, query, accountability);
 };
 
 export const updateCollectionPreset = async (

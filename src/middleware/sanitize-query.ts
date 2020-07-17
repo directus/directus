@@ -4,16 +4,19 @@
  */
 
 import { RequestHandler } from 'express';
-import { Query, Sort, Filter, FilterOperator } from '../types/query';
+import { Query, Sort, Filter } from '../types/query';
 import { Meta } from '../types/meta';
+import logger from '../logger';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	if (!req.query) return;
 
-	const query: Query = {};
+	const query: Query = {
+		fields: sanitizeFields(req.query.fields) || ['*'],
+	};
 
-	if (req.query.fields) {
-		query.fields = sanitizeFields(req.query.fields);
+	if (req.query.limit) {
+		query.limit = sanitizeLimit(req.query.limit);
 	}
 
 	if (req.query.sort) {
@@ -22,13 +25,6 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 
 	if (req.query.filter) {
 		query.filter = sanitizeFilter(req.query.filter);
-	}
-
-	if (req.query.limit) {
-		query.limit = sanitizeLimit(req.query.limit);
-	} else {
-		/** @todo is this the right place to set these defaults? */
-		query.limit = 100;
 	}
 
 	if (req.query.limit == '-1') {
@@ -55,6 +51,13 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.search = req.query.search;
 	}
 
+	if (req.permissions) {
+		query.filter = {
+			...(query.filter || {}),
+			...(req.permissions.permissions || {}),
+		};
+	}
+
 	req.sanitizedQuery = query;
 	return next();
 };
@@ -62,6 +65,8 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 export default sanitizeQuery;
 
 function sanitizeFields(rawFields: any) {
+	if (!rawFields) return;
+
 	let fields: string[] = [];
 
 	if (typeof rawFields === 'string') fields = rawFields.split(',');
@@ -84,19 +89,26 @@ function sanitizeSort(rawSort: any) {
 }
 
 function sanitizeFilter(rawFilter: any) {
-	const filters: Filter[] = [];
+	let filters: Filter = rawFilter;
 
-	Object.keys(rawFilter).forEach((column) => {
-		Object.keys(rawFilter[column]).forEach((operator: FilterOperator) => {
-			const value = rawFilter[column][operator];
-			filters.push({ column, operator, value });
-		});
-	});
+	if (typeof rawFilter === 'string') {
+		try {
+			filters = JSON.parse(rawFilter);
+		} catch {
+			logger.warn('Invalid value passed for filter query parameter.');
+		}
+	}
+
+	/**
+	 * @todo
+	 * validate filter syntax?
+	 */
 
 	return filters;
 }
 
 function sanitizeLimit(rawLimit: any) {
+	if (!rawLimit) return null;
 	return Number(rawLimit);
 }
 

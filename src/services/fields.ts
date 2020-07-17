@@ -13,6 +13,11 @@ export const fieldsInCollection = async (collection: string) => {
 	return uniq([...fields.map(({ field }) => field), ...columns.map(({ column }) => column)]);
 };
 
+/**
+ * @TODO
+ * update read to use ItemsService instead of direct to db
+ */
+
 export const readAll = async (collection?: string) => {
 	const fieldsQuery = database.select('*').from('directus_fields');
 

@@ -39,18 +39,6 @@ if (emailTransport === 'sendmail') {
 			pass: process.env.EMAIL_SMTP_PASSWORD,
 		},
 	} as any);
-
-	logger.trace('[Email] Verifying SMTP connection.');
-
-	transporter
-		.verify()
-		.then(() => {
-			logger.info('[Email] SMTP connected. Ready to send emails.');
-		})
-		.catch((err) => {
-			logger.error(`[Email] Couldn't connect to SMTP server:`);
-			logger.error(err);
-		});
 }
 
 export type EmailOptions = {

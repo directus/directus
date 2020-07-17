@@ -56,12 +56,16 @@ export const createFile = async (
 	return await ItemsService.createItem('directus_files', payload, accountability);
 };
 
-export const readFiles = async (query: Query) => {
-	return await ItemsService.readItems('directus_files', query);
+export const readFiles = async (query: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_files', query, accountability);
 };
 
-export const readFile = async (pk: string | number, query: Query) => {
-	return await ItemsService.readItem('directus_files', pk, query);
+export const readFile = async (
+	pk: string | number,
+	query: Query,
+	accountability?: Accountability
+) => {
+	return await ItemsService.readItem('directus_files', pk, query, accountability);
 };
 
 export const updateFile = async (

@@ -5,15 +5,15 @@
 import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import database from '../database';
-import { CollectionNotFoundException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 
-const validateCollection: RequestHandler = asyncHandler(async (req, res, next) => {
+const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
 
 	const exists = await database.schema.hasTable(req.params.collection);
 
 	if (exists === false) {
-		throw new CollectionNotFoundException(req.params.collection);
+		throw new ForbiddenException();
 	}
 
 	req.collection = req.params.collection;
@@ -23,9 +23,10 @@ const validateCollection: RequestHandler = asyncHandler(async (req, res, next) =
 		.from('directus_collections')
 		.where({ collection: req.collection })
 		.first();
+
 	req.single = single;
 
 	return next();
 });
 
-export default validateCollection;
+export default collectionExists;

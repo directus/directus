@@ -2,13 +2,14 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
-import validateQuery from '../middleware/validate-query';
 import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_files'));
 
 const multipartHandler = (operation: 'create' | 'update') =>
 	asyncHandler(async (req, res, next) => {
@@ -55,11 +56,16 @@ const multipartHandler = (operation: 'create' | 'update') =>
 			try {
 				if (operation === 'create') {
 					const pk = await FilesService.createFile(payload, fileStream, {
+						role: req.role,
+						admin: req.admin,
 						ip: req.ip,
 						userAgent: req.get('user-agent'),
 						user: req.user,
 					});
-					const file = await FilesService.readFile(pk, req.sanitizedQuery);
+					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
+						role: req.role,
+						admin: req.admin,
+					});
 
 					savedFiles.push(file);
 				} else {
@@ -67,13 +73,18 @@ const multipartHandler = (operation: 'create' | 'update') =>
 						req.params.pk,
 						payload,
 						{
+							role: req.role,
+							admin: req.admin,
 							ip: req.ip,
 							userAgent: req.get('user-agent'),
 							user: req.user,
 						},
 						fileStream
 					);
-					const file = await FilesService.readFile(pk, req.sanitizedQuery);
+					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
+						role: req.role,
+						admin: req.admin,
+					});
 
 					savedFiles.push(file);
 				}
@@ -93,33 +104,35 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		return req.pipe(busboy);
 	});
 
-router.post('/', useCollection('directus_files'), multipartHandler('create'));
+router.post('/', sanitizeQuery, multipartHandler('create'));
 
 router.get(
 	'/',
-	useCollection('directus_files'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(req.sanitizedQuery);
+		const records = await FilesService.readFiles(req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: records || null });
 	})
 );
 
 router.get(
 	'/:pk',
-	useCollection('directus_files'),
 	sanitizeQuery,
-	validateQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery);
+		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 		return res.json({ data: record || null });
 	})
 );
 
 router.patch(
 	'/:pk',
-	useCollection('directus_files'),
+	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
 		let file: Record<string, any>;
 
@@ -127,11 +140,16 @@ router.patch(
 			file = await multipartHandler('update')(req, res, next);
 		} else {
 			const pk = await FilesService.updateFile(req.params.pk, req.body, {
+				role: req.role,
+				admin: req.admin,
 				ip: req.ip,
 				userAgent: req.get('user-agent'),
 				user: req.user,
 			});
-			file = await FilesService.readFile(pk, req.sanitizedQuery);
+			file = await FilesService.readFile(pk, req.sanitizedQuery, {
+				role: req.role,
+				admin: req.admin,
+			});
 		}
 
 		return res.status(200).json({ data: file || null });
@@ -140,9 +158,10 @@ router.patch(
 
 router.delete(
 	'/:pk',
-	useCollection('directus_files'),
 	asyncHandler(async (req, res) => {
 		await FilesService.deleteFile(req.params.pk, {
+			role: req.role,
+			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,

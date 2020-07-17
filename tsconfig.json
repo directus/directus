@@ -4,10 +4,11 @@
         "esModuleInterop": true,
         "target": "es6",
         "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist"
+        "sourceMap": false,
+		"outDir": "dist",
+		"rootDir": "src"
     },
     "lib": [
-        "es2015"
-    ]
+        "es2019"
+	],
 }

@@ -1,5 +1,4 @@
 import database, { schemaInspector } from '../database';
-import { FIELD_SPECIAL_ALIAS_TYPES } from '../constants';
 import { uniq } from 'lodash';
 
 export default async function hasFields(fields: { collection: string; field: string }[]) {
@@ -28,8 +27,7 @@ export async function collectionHasFields(collection: string, fieldKeys: string[
 			.select('field')
 			.from('directus_fields')
 			.where({ collection })
-			.whereIn('field', fieldKeys)
-			.whereIn('special', FIELD_SPECIAL_ALIAS_TYPES),
+			.whereIn('field', fieldKeys),
 	]);
 
 	const existingFields = uniq([

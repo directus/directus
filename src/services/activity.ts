@@ -16,12 +16,16 @@ export const createActivity = async (data: Record<string, any>) => {
 	return await ItemsService.createItem('directus_activity', data);
 };
 
-export const readActivities = async (query?: Query) => {
-	return await ItemsService.readItems('directus_activity', query);
+export const readActivities = async (query?: Query, accountability?: Accountability) => {
+	return await ItemsService.readItems('directus_activity', query, accountability);
 };
 
-export const readActivity = async (pk: string | number, query?: Query) => {
-	return await ItemsService.readItem('directus_activity', pk, query);
+export const readActivity = async (
+	pk: string | number,
+	query?: Query,
+	accountability?: Accountability
+) => {
+	return await ItemsService.readItem('directus_activity', pk, query, accountability);
 };
 
 export const updateActivity = async (
