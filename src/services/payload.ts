@@ -8,18 +8,13 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
-import { File } from '../types/files';
-import { Relation } from '../types/relation';
+import { File, Relation, Item } from '../types';
 import * as ItemsService from './items';
 
 type Operation = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (
-		operation: Operation,
-		value: any,
-		payload: Record<string, any>
-	) => Promise<any>;
+	[type: string]: (operation: Operation, value: any, payload: Partial<Item>) => Promise<any>;
 };
 
 /**
@@ -72,7 +67,7 @@ const transformers: Transformers = {
 export const processValues = async (
 	operation: Operation,
 	collection: string,
-	payload: Record<string, any> | Record<string, any>[]
+	payload: Partial<Item> | Partial<Item>[]
 ) => {
 	let processedPayload = clone(payload);
 
@@ -113,7 +108,7 @@ export const processValues = async (
 
 async function processField(
 	field: Pick<System, 'field' | 'special'>,
-	payload: Record<string, any>,
+	payload: Partial<Item>,
 	operation: Operation
 ) {
 	if (transformers.hasOwnProperty(field.special)) {
@@ -126,7 +121,7 @@ async function processField(
 /**
  * Recursively checks for nested relational items, and saves them bottom up, to ensure we have IDs etc ready
  */
-export const processM2O = async (collection: string, payload: Record<string, any>) => {
+export const processM2O = async (collection: string, payload: Partial<Item>) => {
 	const payloadClone = clone(payload);
 
 	const relations = await database
@@ -145,7 +140,7 @@ export const processM2O = async (collection: string, payload: Record<string, any
 	// Save all nested m2o records
 	await Promise.all(
 		relationsToProcess.map(async (relation) => {
-			const relatedRecord = payloadClone[relation.field_many];
+			const relatedRecord: Partial<Item> = payloadClone[relation.field_many];
 			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_one);
 
 			let relatedPrimaryKey: string | number;
@@ -172,7 +167,7 @@ export const processM2O = async (collection: string, payload: Record<string, any
 	return payloadClone;
 };
 
-export const processO2M = async (collection: string, payload: Record<string, any>) => {
+export const processO2M = async (collection: string, payload: Partial<Item>) => {
 	const payloadClone = clone(payload);
 
 	const relations = await database
@@ -194,7 +189,7 @@ export const processO2M = async (collection: string, payload: Record<string, any
 			const relatedRecords = payloadClone[relation.field_one];
 
 			await Promise.all(
-				relatedRecords.map(async (relatedRecord: any, index: number) => {
+				relatedRecords.map(async (relatedRecord: Partial<Item>, index: number) => {
 					relatedRecord[relation.field_many] = payloadClone[relation.primary_one];
 
 					const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.primary_many);

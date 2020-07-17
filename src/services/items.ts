@@ -2,35 +2,37 @@ import database, { schemaInspector } from '../database';
 import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { Accountability, Operation } from '../types';
+import { Accountability, Operation, Item } from '../types';
+import Knex from 'knex';
 
 import * as PayloadService from './payload';
 import * as PermissionsService from './permissions';
 import * as ActivityService from './activity';
-import * as RevisionsService from './revisions';
 
-import { pick } from 'lodash';
-import logger from '../logger';
+import { pick, clone } from 'lodash';
 
 async function saveActivityAndRevision(
 	action: ActivityService.Action,
 	collection: string,
 	item: string,
-	payload: Record<string, any>,
-	accountability: Accountability
+	payload: Partial<Item>,
+	accountability: Accountability,
+	knex: Knex = database
 ) {
-	const activityID = await ActivityService.createActivity({
-		action,
-		collection,
-		item,
-		ip: accountability.ip,
-		user_agent: accountability.userAgent,
-		action_by: accountability.user,
-	});
+	const activityID = await knex('directus_activity')
+		.insert({
+			action,
+			collection,
+			item,
+			ip: accountability.ip,
+			user_agent: accountability.userAgent,
+			action_by: accountability.user,
+		})
+		.returning('id');
 
 	if (action !== ActivityService.Action.DELETE) {
-		await RevisionsService.createRevision({
-			activity: activityID,
+		await knex('directus_revisions').insert({
+			activity: activityID[0],
 			collection,
 			item,
 			delta: payload,
@@ -41,58 +43,82 @@ async function saveActivityAndRevision(
 	}
 }
 
-export const createItem = async (
+export async function createItem(
 	collection: string,
-	data: Record<string, any>,
+	data: Partial<Item>[],
 	accountability?: Accountability
-): Promise<string | number> => {
-	let payload = data;
+): Promise<(string | number)[]>;
+export async function createItem(
+	collection: string,
+	data: Partial<Item>,
+	accountability?: Accountability
+): Promise<string | number>;
+export async function createItem(
+	collection: string,
+	data: Partial<Item> | Partial<Item>[],
+	accountability?: Accountability
+): Promise<string | number | (string | number)[]> {
+	const isBatch = Array.isArray(data);
 
-	if (accountability && accountability.admin === false) {
-		payload = await PermissionsService.processValues(
-			'create',
-			collection,
-			accountability?.role,
-			data
+	return database.transaction(async (transaction) => {
+		let payloads = isBatch ? data : [data];
+
+		const primaryKeys: (string | number)[] = await Promise.all(
+			payloads.map(async (payload: Partial<Item>) => {
+				if (accountability && accountability.admin === false) {
+					payload = await PermissionsService.processValues(
+						'create',
+						collection,
+						accountability?.role,
+						payload
+					);
+				}
+
+				payload = await PayloadService.processValues('create', collection, payload);
+
+				payload = await PayloadService.processM2O(collection, payload);
+
+				const primaryKeyField = await schemaInspector.primary(collection);
+				// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+				const columns = await schemaInspector.columns(collection);
+				const payloadWithoutAlias = pick(
+					payload,
+					columns.map(({ column }) => column)
+				);
+
+				const primaryKeys = await transaction(collection)
+					.insert(payloadWithoutAlias)
+					.returning(primaryKeyField);
+
+				// This allows the o2m values to be populated correctly
+				payload[primaryKeyField] = primaryKeys[0];
+
+				await PayloadService.processO2M(collection, payload);
+
+				if (accountability) {
+					await saveActivityAndRevision(
+						ActivityService.Action.CREATE,
+						collection,
+						primaryKeys[0],
+						payloadWithoutAlias,
+						accountability,
+						transaction
+					);
+				}
+
+				return primaryKeys[0];
+			})
 		);
-	}
 
-	payload = await PayloadService.processValues('create', collection, payload);
+		if (isBatch) {
+			return primaryKeys;
+		} else {
+			return primaryKeys[0];
+		}
+	});
+}
 
-	payload = await PayloadService.processM2O(collection, payload);
-
-	const primaryKeyField = await schemaInspector.primary(collection);
-	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
-	const columns = await schemaInspector.columns(collection);
-	const payloadWithoutAlias = pick(
-		payload,
-		columns.map(({ column }) => column)
-	);
-
-	const primaryKeys = await database(collection)
-		.insert(payloadWithoutAlias)
-		.returning(primaryKeyField);
-
-	// This allows the o2m values to be populated correctly
-	payload[primaryKeyField] = primaryKeys[0];
-
-	await PayloadService.processO2M(collection, payload);
-
-	if (accountability) {
-		// Don't await this. It can run async in the background
-		saveActivityAndRevision(
-			ActivityService.Action.CREATE,
-			collection,
-			primaryKeys[0],
-			payloadWithoutAlias,
-			accountability
-		).catch((err) => logger.error(err));
-	}
-
-	return primaryKeys[0];
-};
-
-export const readItems = async <T = Record<string, any>>(
+export const readItems = async <T = Partial<Item>>(
 	collection: string,
 	query: Query,
 	accountability?: Accountability
@@ -107,28 +133,42 @@ export const readItems = async <T = Record<string, any>>(
 	return await PayloadService.processValues('read', collection, records);
 };
 
-export const readItem = async <T = any>(
+export const readItem = async <T extends number | string | (number | string)[]>(
 	collection: string,
-	pk: number | string,
+	pk: T,
 	query: Query = {},
 	accountability?: Accountability,
 	operation?: Operation
-): Promise<T> => {
+): Promise<T extends number | string ? Partial<Item> : Partial<Item>[]> => {
 	// We allow overriding the operation, so we can use the item read logic to validate permissions
 	// for update and delete as well
 	operation = operation || 'read';
 
 	const primaryKeyField = await schemaInspector.primary(collection);
+	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
+	const isBatch = Array.isArray(pk);
 
-	query = {
-		...query,
-		filter: {
-			...(query.filter || {}),
-			[primaryKeyField]: {
-				_eq: pk,
+	if (isBatch) {
+		query = {
+			...query,
+			filter: {
+				...(query.filter || {}),
+				[primaryKeyField]: {
+					_in: primaryKeys,
+				},
 			},
-		},
-	};
+		};
+	} else {
+		query = {
+			...query,
+			filter: {
+				...(query.filter || {}),
+				[primaryKeyField]: {
+					_eq: pk,
+				},
+			},
+		};
+	}
 
 	let ast = await getASTFromQuery(collection, query, accountability, operation);
 
@@ -137,82 +177,112 @@ export const readItem = async <T = any>(
 	}
 
 	const records = await runAST(ast);
-	return await PayloadService.processValues('read', collection, records[0]);
+	const processedRecords = await PayloadService.processValues('read', collection, records);
+	return isBatch ? processedRecords : processedRecords[0];
 };
 
-export const updateItem = async (
+export const updateItem = async <T extends number | string | (number | string)[]>(
 	collection: string,
-	pk: number | string,
-	data: Record<string, any>,
+	pk: T,
+	data: Partial<Item>,
 	accountability?: Accountability
-): Promise<string | number> => {
-	let payload = data;
+): Promise<T> => {
+	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	if (accountability && accountability.admin === false) {
-		await PermissionsService.checkAccess('update', collection, pk, accountability.role);
+	await database.transaction(async (transaction) => {
+		let payload = clone(data);
 
-		payload = await PermissionsService.processValues(
-			'validate',
-			collection,
-			accountability.role,
-			data
+		return await Promise.all(
+			primaryKeys.map(async (key) => {
+				if (accountability && accountability.admin === false) {
+					await PermissionsService.checkAccess(
+						'update',
+						collection,
+						key,
+						accountability.role
+					);
+
+					payload = await PermissionsService.processValues(
+						'validate',
+						collection,
+						accountability.role,
+						data
+					);
+				}
+
+				payload = await PayloadService.processValues('update', collection, payload);
+				payload = await PayloadService.processM2O(collection, payload);
+
+				const primaryKeyField = await schemaInspector.primary(collection);
+
+				// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+				const columns = await schemaInspector.columns(collection);
+
+				const payloadWithoutAlias = pick(
+					payload,
+					columns.map(({ column }) => column)
+				);
+
+				await transaction(collection)
+					.update(payloadWithoutAlias)
+					.where({ [primaryKeyField]: key });
+
+				if (accountability) {
+					await saveActivityAndRevision(
+						ActivityService.Action.UPDATE,
+						collection,
+						String(key),
+						payloadWithoutAlias,
+						accountability,
+						transaction
+					);
+				}
+
+				return pk;
+			})
 		);
-	}
-
-	payload = await PayloadService.processValues('update', collection, payload);
-	payload = await PayloadService.processM2O(collection, payload);
-
-	const primaryKeyField = await schemaInspector.primary(collection);
-
-	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
-	const columns = await schemaInspector.columns(collection);
-
-	const payloadWithoutAlias = pick(
-		payload,
-		columns.map(({ column }) => column)
-	);
-
-	await database(collection)
-		.update(payloadWithoutAlias)
-		.where({ [primaryKeyField]: pk });
-
-	if (accountability) {
-		// Don't await this. It can run async in the background
-		saveActivityAndRevision(
-			ActivityService.Action.UPDATE,
-			collection,
-			String(pk),
-			payloadWithoutAlias,
-			accountability
-		).catch((err) => logger.error(err));
-	}
+	});
 
 	return pk;
 };
 
-export const deleteItem = async (
+export const deleteItem = async <T extends number | string | (number | string)[]>(
 	collection: string,
-	pk: number | string,
+	pk: T,
 	accountability?: Accountability
-) => {
+): Promise<T> => {
 	const primaryKeyField = await schemaInspector.primary(collection);
+	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
 
-	if (accountability && accountability.admin === false) {
-		await PermissionsService.checkAccess('delete', collection, pk, accountability.role);
+	await database.transaction(async (transaction) => {
+		await Promise.all(
+			primaryKeys.map(async (key) => {
+				if (accountability && accountability.admin === false) {
+					await PermissionsService.checkAccess(
+						'delete',
+						collection,
+						key,
+						accountability.role
+					);
+				}
 
-		// Don't await this. It can run async in the background
-		saveActivityAndRevision(
-			ActivityService.Action.DELETE,
-			collection,
-			String(pk),
-			{},
-			accountability
-		).catch((err) => logger.error(err));
-	}
+				await transaction(collection)
+					.where({ [primaryKeyField]: key })
+					.delete();
 
-	return await database(collection)
-		.delete()
-		.where({ [primaryKeyField]: pk });
+				await saveActivityAndRevision(
+					ActivityService.Action.DELETE,
+					collection,
+					String(key),
+					{},
+					accountability,
+					transaction
+				);
+			})
+		);
+	});
+
+	return pk;
 };
 
 export const readSingleton = async (
@@ -241,7 +311,7 @@ export const readSingleton = async (
 
 export const upsertSingleton = async (
 	collection: string,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	const primaryKeyField = await schemaInspector.primary(collection);

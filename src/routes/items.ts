@@ -5,6 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
+import { Accountability } from '../types';
 
 const router = express.Router();
 
@@ -17,20 +18,24 @@ router.post(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const primaryKey = await ItemsService.createItem(req.collection, req.body, {
+		const accountability: Accountability = {
 			user: req.user,
 			role: req.role,
 			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
-		});
+		};
 
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const primaryKey = await ItemsService.createItem(req.collection, req.body, accountability);
 
-		res.json({ data: item || null });
+		const result = await ItemsService.readItem(
+			req.collection,
+			primaryKey,
+			req.sanitizedQuery,
+			accountability
+		);
+
+		res.json({ data: result || null });
 	})
 );
 
@@ -68,15 +73,15 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const record = await ItemsService.readItem(
-			req.collection,
-			req.params.pk,
-			req.sanitizedQuery,
-			{ role: req.role, admin: req.admin }
-		);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+
+		const result = await ItemsService.readItem(req.collection, pk, req.sanitizedQuery, {
+			role: req.role,
+			admin: req.admin,
+		});
 
 		return res.json({
-			data: record || null,
+			data: result || null,
 		});
 	})
 );
@@ -86,24 +91,24 @@ router.patch(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single === false) {
-			throw new RouteNotFoundException(req.path);
+		if (req.single === true) {
+			await ItemsService.upsertSingleton(req.collection, req.body, {
+				role: req.role,
+				admin: req.admin,
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+				user: req.user,
+			});
+
+			const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
+				role: req.role,
+				admin: req.admin,
+			});
+
+			return res.json({ data: item || null });
 		}
 
-		await ItemsService.upsertSingleton(req.collection, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-
-		const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
-
-		return res.json({ data: item || null });
+		throw new RouteNotFoundException(req.path);
 	})
 );
 
@@ -116,20 +121,30 @@ router.patch(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const primaryKey = await ItemsService.updateItem(req.collection, req.params.pk, req.body, {
+		const accountability: Accountability = {
+			user: req.user,
 			role: req.role,
 			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		};
 
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const updatedPrimaryKey = await ItemsService.updateItem(
+			req.collection,
+			primaryKey,
+			req.body,
+			accountability
+		);
 
-		return res.json({ data: item || null });
+		const result = await ItemsService.readItem(
+			req.collection,
+			updatedPrimaryKey,
+			req.sanitizedQuery,
+			accountability
+		);
+
+		res.json({ data: result || null });
 	})
 );
 
@@ -137,13 +152,17 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		await ItemsService.deleteItem(req.collection, req.params.pk, {
+		const accountability: Accountability = {
+			user: req.user,
 			role: req.role,
 			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		};
+
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+
+		await ItemsService.deleteItem(req.collection, pk, accountability);
 
 		return res.status(200).end();
 	})

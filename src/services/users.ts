@@ -4,9 +4,9 @@ import { sendInviteMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
 import { InvalidPayloadException } from '../exceptions';
-import { Accountability, Query } from '../types';
+import { Accountability, Query, Item } from '../types';
 
-export const createUser = async (data: Record<string, any>, accountability: Accountability) => {
+export const createUser = async (data: Partial<Item>, accountability: Accountability) => {
 	return await ItemsService.createItem('directus_users', data, accountability);
 };
 
@@ -24,7 +24,7 @@ export const readUser = async (
 
 export const updateUser = async (
 	pk: string | number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	/**

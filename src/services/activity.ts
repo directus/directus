@@ -1,6 +1,5 @@
-import { Query } from '../types/query';
 import * as ItemsService from './items';
-import { Accountability } from '../types';
+import { Accountability, Item, Query } from '../types';
 
 export enum Action {
 	CREATE = 'create',
@@ -12,7 +11,7 @@ export enum Action {
 	AUTHENTICATE = 'authenticate',
 }
 
-export const createActivity = async (data: Record<string, any>) => {
+export const createActivity = async (data: Partial<Item>) => {
 	return await ItemsService.createItem('directus_activity', data);
 };
 
@@ -30,7 +29,7 @@ export const readActivity = async (
 
 export const updateActivity = async (
 	pk: string | number,
-	data: Record<string, any>,
+	data: Partial<Item>,
 	accountability: Accountability
 ) => {
 	return await ItemsService.updateItem('directus_activity', pk, data, accountability);

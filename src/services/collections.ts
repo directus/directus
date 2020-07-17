@@ -101,12 +101,7 @@ export const readOne = async (
 ) => {
 	const [table, collectionInfo] = await Promise.all([
 		schemaInspector.tableInfo(collection),
-		ItemsService.readItem<Collection>(
-			'directus_collections',
-			collection,
-			query,
-			accountability
-		),
+		ItemsService.readItem('directus_collections', collection, query, accountability),
 	]);
 
 	return {

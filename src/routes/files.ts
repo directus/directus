@@ -6,6 +6,7 @@ import * as FilesService from '../services/files';
 import logger from '../logger';
 import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import { Item } from '../types';
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.use(useCollection('directus_files'));
 const multipartHandler = (operation: 'create' | 'update') =>
 	asyncHandler(async (req, res, next) => {
 		const busboy = new Busboy({ headers: req.headers });
-		const savedFiles: Record<string, any> = [];
+		const savedFiles: Item[] = [];
 
 		/**
 		 * The order of the fields in multipart/form-data is important. We require that all fields
@@ -23,7 +24,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		 */
 
 		let disk: string;
-		let payload: Record<string, any> = {};
+		let payload: Partial<Item> = {};
 
 		busboy.on('field', (fieldname, val) => {
 			if (fieldname === 'storage') {
@@ -134,7 +135,7 @@ router.patch(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
-		let file: Record<string, any>;
+		let file: Item;
 
 		if (req.is('multipart/form-data')) {
 			file = await multipartHandler('update')(req, res, next);

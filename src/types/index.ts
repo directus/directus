@@ -9,3 +9,4 @@ export * from './permissions';
 export * from './query';
 export * from './relation';
 export * from './sessions';
+export * from './items';
