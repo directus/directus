@@ -4,6 +4,10 @@ import inquirer from 'inquirer';
 import { resolve } from 'path';
 import { databaseQuestions } from './questions';
 import { drivers, getDriverForClient } from './drivers';
+import childProcess from 'child_process';
+import { promisify } from 'util';
+
+const exec = promisify(childProcess.exec);
 
 import installDB, { Credentials } from './install-db';
 
@@ -33,6 +37,10 @@ export default async function create(directory: string, options: Record<string, 
 		}
 	}
 
+	await fse.mkdir(path);
+
+	await exec(`cd ${path} && npm init -y && npm install directus@preview`);
+
 	let { client } = await inquirer.prompt([
 		{
 			type: 'list',
@@ -55,11 +63,7 @@ export default async function create(directory: string, options: Record<string, 
 		console.log(error.message);
 	}
 
-	/** @todo
-	 * - See if you can connect to DB
-	 * - Install Directus system stuff into DB
-	 * - Start the Node API
-	 */
+	await exec(`cd && directus start`);
 }
 
 function checkRequirements() {

@@ -1,6 +1,6 @@
 {
   "name": "api-node",
-  "version": "9.0.0-alpha.3",
+  "version": "9.0.0-alpha.4",
   "description": "The Directus API in Node.js",
   "main": "dist/server.js",
   "bin": {
