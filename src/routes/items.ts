@@ -17,20 +17,35 @@ router.post(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const primaryKey = await ItemsService.createItem(req.collection, req.body, {
-			user: req.user,
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		});
+		if (Array.isArray(req.body)) {
+			const items = await Promise.all(req.body.map(createItem));
+			res.json({ data: items || null });
+		} else {
+			const item = await createItem(req.body);
+			res.json({ data: item || null });
+		}
 
-		const item = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		async function createItem(body: Record<string, any>) {
+			const primaryKey = await ItemsService.createItem(req.collection, body, {
+				user: req.user,
+				role: req.role,
+				admin: req.admin,
+				ip: req.ip,
+				userAgent: req.get('user-agent'),
+			});
 
-		res.json({ data: item || null });
+			const item = await ItemsService.readItem(
+				req.collection,
+				primaryKey,
+				req.sanitizedQuery,
+				{
+					role: req.role,
+					admin: req.admin,
+				}
+			);
+
+			return item;
+		}
 	})
 );
 
