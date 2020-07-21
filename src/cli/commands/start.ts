@@ -1,7 +1,10 @@
-import app from '../app';
-import logger from '../logger';
+import app from '../../app';
+import logger from '../../logger';
 import getPort from 'get-port';
 import clear from 'clear';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default async function start() {
 	clear();

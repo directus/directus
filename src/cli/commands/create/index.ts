@@ -3,21 +3,19 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { resolve } from 'path';
 import { databaseQuestions } from './questions';
-import { drivers, getDriverForClient } from './drivers';
-import childProcess from 'child_process';
-import { promisify } from 'util';
-import createEnv from './env';
+import { drivers, getDriverForClient } from '../../utils/drivers';
+import createEnv from '../../utils/create-env';
+import execa from 'execa';
+import path from 'path';
 
-const exec = promisify(childProcess.exec);
-
-import installDB, { Credentials } from './install-db';
+import installDB, { Credentials } from '../../utils/install-db';
 
 export default async function create(directory: string, options: Record<string, any>) {
-	const path = resolve(directory);
+	const rootPath = resolve(directory);
 	checkRequirements();
 
-	if (await fse.pathExists(path)) {
-		const stat = await fse.stat(path);
+	if (await fse.pathExists(rootPath)) {
+		const stat = await fse.stat(rootPath);
 
 		if (stat.isDirectory() === false) {
 			console.error(
@@ -26,7 +24,7 @@ export default async function create(directory: string, options: Record<string, 
 			process.exit(1);
 		}
 
-		const files = await fse.readdir(path);
+		const files = await fse.readdir(rootPath);
 
 		if (files.length > 0) {
 			console.error(
@@ -38,9 +36,19 @@ export default async function create(directory: string, options: Record<string, 
 		}
 	}
 
-	await fse.mkdir(path);
+	await fse.mkdir(rootPath);
+	await fse.mkdir(path.join(rootPath, 'uploads'));
+	await fse.mkdir(path.join(rootPath, 'extensions'));
 
-	// await exec(`cd ${path} && npm init -y && npm install directus@preview`);
+	await execa('npm', ['init', '-y'], {
+		cwd: rootPath,
+		stdin: 'ignore',
+	});
+
+	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
+		cwd: rootPath,
+		stdin: 'ignore',
+	});
 
 	let { client } = await inquirer.prompt([
 		{
@@ -57,15 +65,22 @@ export default async function create(directory: string, options: Record<string, 
 		(databaseQuestions[dbClient] as any[]).map((question: Function) => question({ client }))
 	);
 
-	// try {
-	// 	await installDB(client, credentials);
-	// } catch (error) {
-	// 	console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
-	// 	console.log(error.message);
-	// }
+	try {
+		await installDB(client, credentials);
+	} catch (error) {
+		console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
+		console.log(error.message);
+	}
 
-	await createEnv(client, credentials);
-	// await exec(`cd && directus start`);
+	await createEnv(client, credentials, rootPath);
+
+	console.log(`
+Your project has been created at ${chalk.green(rootPath)}.
+
+Start Directus by running:
+  ${chalk.blue('cd')} ${rootPath}
+  ${chalk.blue('npx directus')} start
+`);
 }
 
 function checkRequirements() {

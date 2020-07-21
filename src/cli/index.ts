@@ -4,8 +4,8 @@ import program from 'commander';
 
 const pkg = require('../../package.json');
 
-import start from './start';
-import create from './create';
+import start from './commands/start';
+import create from './commands/create';
 
 program.version(pkg.version, '-v, --version');
 

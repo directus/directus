@@ -46,6 +46,7 @@
     "commander": "^5.1.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
+    "execa": "^4.0.3",
     "exif-reader": "^1.0.3",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
