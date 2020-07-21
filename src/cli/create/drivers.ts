@@ -6,8 +6,10 @@ export const drivers = {
 	mssql: 'Microsoft SQL Server',
 };
 
-export function getDriverForClient(client: string): keyof typeof drivers {
+export function getDriverForClient(client: string): keyof typeof drivers | null {
 	for (const [key, value] of Object.entries(drivers)) {
 		if (value === client) return key as keyof typeof drivers;
 	}
+
+	return null;
 }

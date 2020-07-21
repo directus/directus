@@ -6,6 +6,7 @@ import { databaseQuestions } from './questions';
 import { drivers, getDriverForClient } from './drivers';
 import childProcess from 'child_process';
 import { promisify } from 'util';
+import createEnv from './env';
 
 const exec = promisify(childProcess.exec);
 
@@ -50,19 +51,20 @@ export default async function create(directory: string, options: Record<string, 
 		},
 	]);
 
-	client = getDriverForClient(client);
+	const dbClient = getDriverForClient(client)!;
 
 	const credentials: Credentials = await inquirer.prompt(
-		databaseQuestions[client].map((question: Function) => question({ client }))
+		(databaseQuestions[dbClient] as any[]).map((question: Function) => question({ client }))
 	);
 
-	try {
-		await installDB(client, credentials);
-	} catch (error) {
-		console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
-		console.log(error.message);
-	}
+	// try {
+	// 	await installDB(client, credentials);
+	// } catch (error) {
+	// 	console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
+	// 	console.log(error.message);
+	// }
 
+	await createEnv(client, credentials);
 	// await exec(`cd && directus start`);
 }
 

@@ -12,8 +12,6 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-logger.trace('[Email] Initializing email transport...');
-
 if (!process.env.EMAIL_TRANSPORT) {
 	logger.warn(`[Email] No email transport is configured. Using default: sendmail.`);
 }

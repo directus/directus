@@ -5,7 +5,7 @@ export type Credentials = {
 	host?: string;
 	port?: number;
 	database?: string;
-	username?: string;
+	user?: string;
 	password?: string;
 };
 export default async function installDB(
@@ -18,16 +18,16 @@ export default async function installDB(
 		const { filename } = credentials;
 
 		connection = {
-			filename: filename,
+			filename: filename as string,
 		};
 	} else {
-		const { host, port, database, username, password } = credentials as Credentials;
+		const { host, port, database, user, password } = credentials as Credentials;
 
 		connection = {
 			host: host,
 			port: port,
 			database: database,
-			user: username,
+			user: user,
 			password: password,
 		};
 	}
