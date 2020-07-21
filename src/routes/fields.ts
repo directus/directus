@@ -70,7 +70,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> = req.body;
+		const field: Partial<Field> & { field: string; database: { type: string } } = req.body;
 
 		const createdField = await FieldsService.createField(req.collection, field, {
 			role: req.role,

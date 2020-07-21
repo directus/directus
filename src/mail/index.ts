@@ -53,7 +53,7 @@ export default async function sendMail(options: EmailOptions) {
 	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
 	const html = await liquidEngine.parseAndRender(templateString, { html: options.html });
 
-	options.from = options.from || process.env.EMAIL_FROM;
+	options.from = options.from || (process.env.EMAIL_FROM as string);
 
 	try {
 		await transporter.sendMail({ ...options, html: html });

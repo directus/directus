@@ -14,7 +14,7 @@ export const getMetaForQuery = async (collection: string, query: Query) => {
 	return results.reduce((metaObject: Record<string, any>, value, index) => {
 		return {
 			...metaObject,
-			[query.meta[index]]: value,
+			[query.meta![index]]: value,
 		};
 	}, {});
 };

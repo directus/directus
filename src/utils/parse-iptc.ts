@@ -16,7 +16,7 @@ const IPTC_ENTRY_MARKER = Buffer.from([0x1c, 0x02]);
 export default function parseIPTC(buffer: Buffer) {
 	if (!Buffer.isBuffer(buffer)) return {};
 
-	let iptc = {};
+	let iptc: Record<string, any> = {};
 	let lastIptcEntryPos = buffer.indexOf(IPTC_ENTRY_MARKER);
 
 	while (lastIptcEntryPos !== -1) {
@@ -39,12 +39,14 @@ export default function parseIPTC(buffer: Buffer) {
 		let iptcBlockTypeId = IPTC_ENTRY_TYPES.get(iptcBlockType);
 		let iptcData = buffer.slice(iptcBlockDataPos, iptcBlockDataPos + iptcBlockSize).toString();
 
-		if (iptc[iptcBlockTypeId] == null) {
-			iptc[iptcBlockTypeId] = iptcData;
-		} else if (Array.isArray(iptc[iptcBlockTypeId])) {
-			iptc[iptcBlockTypeId].push(iptcData);
-		} else {
-			iptc[iptcBlockTypeId] = [iptc[iptcBlockTypeId], iptcData];
+		if (iptcBlockTypeId) {
+			if (iptc[iptcBlockTypeId] == null) {
+				iptc[iptcBlockTypeId] = iptcData;
+			} else if (Array.isArray(iptc[iptcBlockTypeId])) {
+				iptc[iptcBlockTypeId].push(iptcData);
+			} else {
+				iptc[iptcBlockTypeId] = [iptc[iptcBlockTypeId], iptcData];
+			}
 		}
 	}
 

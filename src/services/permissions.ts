@@ -74,7 +74,7 @@ export const processAST = async (
 				permissionsForCollections.find(
 					(permission) => permission.collection === collection
 				) === undefined
-		);
+		)!;
 
 		if (field) {
 			throw new ForbiddenException(
@@ -96,7 +96,9 @@ export const processAST = async (
 	/**
 	 * Traverses the AST and returns an array of all collections that are being fetched
 	 */
-	function getCollectionsFromAST(ast: AST | NestedCollectionAST) {
+	function getCollectionsFromAST(
+		ast: AST | NestedCollectionAST
+	): { collection: string; field: string }[] {
 		const collections = [];
 
 		if (ast.type === 'collection') {
@@ -114,16 +116,19 @@ export const processAST = async (
 			}
 		}
 
-		return collections;
+		return collections as { collection: string; field: string }[];
 	}
 
 	function validateFields(ast: AST | NestedCollectionAST) {
 		if (ast.type === 'collection') {
 			const collection = ast.name;
+
+			// We check the availability of the permissions in the step before this is run
 			const permissions = permissionsForCollections.find(
 				(permission) => permission.collection === collection
-			);
-			const allowedFields = permissions.fields.split(',');
+			)!;
+
+			const allowedFields = permissions.fields?.split(',') || [];
 
 			for (const childAST of ast.children) {
 				if (childAST.type === 'collection') {
@@ -150,9 +155,10 @@ export const processAST = async (
 		if (ast.type === 'collection') {
 			const collection = ast.name;
 
+			// We check the availability of the permissions in the step before this is run
 			const permissions = permissionsForCollections.find(
 				(permission) => permission.collection === collection
-			);
+			)!;
 
 			ast.query = {
 				...ast.query,
@@ -162,7 +168,7 @@ export const processAST = async (
 				},
 			};
 
-			if (permissions.limit && ast.query.limit > permissions.limit) {
+			if (permissions.limit && ast.query.limit && ast.query.limit > permissions.limit) {
 				throw new ForbiddenException(
 					`You can't read more than ${permissions.limit} items at a time.`
 				);
@@ -194,7 +200,7 @@ export const processValues = async (
 
 	if (!permission) throw new ForbiddenException();
 
-	const allowedFields = permission.fields.split(',');
+	const allowedFields = permission.fields?.split(',') || [];
 
 	if (allowedFields.includes('*') === false) {
 		const keysInData = Object.keys(data);
@@ -229,7 +235,7 @@ export const checkAccess = async (
 	operation: Operation,
 	collection: string,
 	pk: string | number,
-	role: string
+	role: string | null
 ) => {
 	try {
 		const query: Query = {

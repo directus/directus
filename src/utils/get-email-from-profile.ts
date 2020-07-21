@@ -3,7 +3,7 @@ import { get } from 'lodash';
 // The path in JSON to fetch the email address from the profile.
 // Note: a lot of services use `email` as the path. We fall back to that as default, so no need to
 // map it here
-const profileMap = {};
+const profileMap: Record<string, string> = {};
 
 /**
  * Extract the email address from a given user profile coming from a providers API

@@ -9,8 +9,8 @@ import { Session } from '../types/sessions';
 type AuthenticateOptions = {
 	email: string;
 	password?: string;
-	ip?: string;
-	userAgent?: string;
+	ip?: string | null;
+	userAgent?: string | null;
 };
 
 /**
@@ -45,12 +45,14 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 	 * Sign token with combination of server secret + user password hash
 	 * That way, old tokens are immediately invalidated whenever the user changes their password
 	 */
-	const accessToken = jwt.sign(payload, process.env.SECRET, {
+	const accessToken = jwt.sign(payload, process.env.SECRET as string, {
 		expiresIn: process.env.ACCESS_TOKEN_TTL,
 	});
 
 	const refreshToken = nanoid(64);
-	const refreshTokenExpiration = new Date(Date.now() + ms(process.env.REFRESH_TOKEN_TTL));
+	const refreshTokenExpiration = new Date(
+		Date.now() + ms(process.env.REFRESH_TOKEN_TTL as string)
+	);
 
 	await database('directus_sessions').insert({
 		token: refreshToken,
@@ -63,7 +65,7 @@ export const authenticate = async ({ email, password, ip, userAgent }: Authentic
 	return {
 		accessToken,
 		refreshToken,
-		expires: ms(process.env.ACCESS_TOKEN_TTL) / 1000,
+		expires: ms(process.env.ACCESS_TOKEN_TTL as string) / 1000,
 		id: user.id,
 	};
 };

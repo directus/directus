@@ -9,6 +9,7 @@ import { Meta } from '../types/meta';
 import logger from '../logger';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
+	req.sanitizedQuery = {};
 	if (!req.query) return;
 
 	const query: Query = {
@@ -16,7 +17,11 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 	};
 
 	if (req.query.limit) {
-		query.limit = sanitizeLimit(req.query.limit);
+		const limit = sanitizeLimit(req.query.limit);
+
+		if (limit) {
+			query.limit = limit;
+		}
 	}
 
 	if (req.query.sort) {

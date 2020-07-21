@@ -1,6 +1,6 @@
 export type Accountability = {
-	role: string;
-	user?: string;
+	role: string | null;
+	user?: string | null;
 	admin?: boolean;
 
 	ip?: string;

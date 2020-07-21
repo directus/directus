@@ -1,5 +1,5 @@
 import * as ItemsService from './items';
-import { Accountability, Item, Query } from '../types';
+import { Accountability, Item, Query, PrimaryKey } from '../types';
 
 export enum Action {
 	CREATE = 'create',
@@ -15,16 +15,16 @@ export const createActivity = async (data: Partial<Item>) => {
 	return await ItemsService.createItem('directus_activity', data);
 };
 
-export const readActivities = async (query?: Query, accountability?: Accountability) => {
+export const readActivities = async (query: Query, accountability?: Accountability) => {
 	return await ItemsService.readItems('directus_activity', query, accountability);
 };
 
 export const readActivity = async (
-	pk: string | number,
-	query?: Query,
+	primaryKey: PrimaryKey,
+	query: Query = {},
 	accountability?: Accountability
 ) => {
-	return await ItemsService.readItem('directus_activity', pk, query, accountability);
+	return await ItemsService.readItem('directus_activity', primaryKey, query, accountability);
 };
 
 export const updateActivity = async (

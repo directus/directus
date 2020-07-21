@@ -2,9 +2,9 @@
  * Reads the environment variables to construct the configuration object required by Grant
  */
 export default function getGrantConfig() {
-	const enabledProviders = process.env.OAUTH_PROVIDERS.split(',').map((provider) =>
-		provider.trim()
-	);
+	const enabledProviders = (process.env.OAUTH_PROVIDERS as string)
+		.split(',')
+		.map((provider) => provider.trim());
 
 	const config: any = {
 		defaults: {

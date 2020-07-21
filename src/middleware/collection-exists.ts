@@ -18,13 +18,13 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 
 	req.collection = req.params.collection;
 
-	const { single } = await database
+	const collectionInfo = await database
 		.select('single')
 		.from('directus_collections')
 		.where({ collection: req.collection })
 		.first();
 
-	req.single = single;
+	req.single = collectionInfo?.single || false;
 
 	return next();
 });
