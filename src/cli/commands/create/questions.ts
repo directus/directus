@@ -1,14 +1,14 @@
 const filename = () => ({
 	type: 'input',
 	name: 'filename',
-	message: 'Filename:',
+	message: 'Database File Path:',
 	default: './data.db',
 });
 
 const host = () => ({
 	type: 'input',
 	name: 'host',
-	message: 'Host:',
+	message: 'Database Host:',
 	default: '127.0.0.1',
 });
 
@@ -38,13 +38,13 @@ const database = () => ({
 const username = () => ({
 	type: 'input',
 	name: 'username',
-	message: 'Username:',
+	message: 'Database Username:',
 });
 
 const password = () => ({
 	type: 'password',
 	name: 'password',
-	message: 'Password:',
+	message: 'Database Password:',
 	mask: '*',
 });
 
