@@ -1,8 +1,7 @@
 import database, { schemaInspector } from '../database';
-import { Query } from '../types/query';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { Accountability, Operation, Item } from '../types';
+import { Accountability, Operation, Item, Query, PrimaryKey } from '../types';
 import Knex from 'knex';
 
 import * as PayloadService from './payload';
@@ -43,27 +42,17 @@ async function saveActivityAndRevision(
 	}
 }
 
-export async function createItem(
+export async function createItem<T extends Partial<Item> | Partial<Item>[]>(
 	collection: string,
-	data: Partial<Item>[],
+	data: T,
 	accountability?: Accountability
-): Promise<(string | number)[]>;
-export async function createItem(
-	collection: string,
-	data: Partial<Item>,
-	accountability?: Accountability
-): Promise<string | number>;
-export async function createItem(
-	collection: string,
-	data: Partial<Item> | Partial<Item>[],
-	accountability?: Accountability
-): Promise<string | number | (string | number)[]> {
+): Promise<T extends Partial<Item>[] ? PrimaryKey[] : PrimaryKey> {
 	const isBatch = Array.isArray(data);
 
-	return database.transaction(async (transaction) => {
+	const primaryKeys = await database.transaction(async (transaction) => {
 		let payloads = isBatch ? data : [data];
 
-		const primaryKeys: (string | number)[] = await Promise.all(
+		const primaryKeys: PrimaryKey[] = await Promise.all(
 			payloads.map(async (payload: Partial<Item>) => {
 				if (accountability && accountability.admin === false) {
 					payload = await PermissionsService.processValues(
@@ -106,16 +95,20 @@ export async function createItem(
 					);
 				}
 
-				return primaryKeys[0];
+				return primaryKeys[0] as PrimaryKey;
 			})
 		);
 
-		if (isBatch) {
-			return primaryKeys;
-		} else {
-			return primaryKeys[0];
-		}
+		return primaryKeys;
 	});
+
+	if (Array.isArray(data)) {
+		return primaryKeys as T extends Partial<Record<string, any>>[] ? PrimaryKey[] : PrimaryKey;
+	} else {
+		return primaryKeys[0] as T extends Partial<Record<string, any>>[]
+			? PrimaryKey[]
+			: PrimaryKey;
+	}
 }
 
 export const readItems = async <T = Partial<Item>>(
@@ -130,23 +123,23 @@ export const readItems = async <T = Partial<Item>>(
 	}
 
 	const records = await runAST(ast);
-	return await PayloadService.processValues('read', collection, records);
+	return (await PayloadService.processValues('read', collection, records)) as T[];
 };
 
-export const readItem = async <T extends number | string | (number | string)[]>(
+export async function readItem<T extends PrimaryKey | PrimaryKey[]>(
 	collection: string,
-	pk: T,
-	query: Query = {},
+	primaryKey: T,
+	query: Query,
 	accountability?: Accountability,
 	operation?: Operation
-): Promise<T extends number | string ? Partial<Item> : Partial<Item>[]> => {
+): Promise<T extends PrimaryKey ? Item : Item[]> {
 	// We allow overriding the operation, so we can use the item read logic to validate permissions
 	// for update and delete as well
 	operation = operation || 'read';
 
 	const primaryKeyField = await schemaInspector.primary(collection);
-	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
-	const isBatch = Array.isArray(pk);
+	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
+	const isBatch = Array.isArray(primaryKey);
 
 	if (isBatch) {
 		query = {
@@ -164,7 +157,7 @@ export const readItem = async <T extends number | string | (number | string)[]>(
 			filter: {
 				...(query.filter || {}),
 				[primaryKeyField]: {
-					_eq: pk,
+					_eq: primaryKey,
 				},
 			},
 		};
@@ -179,15 +172,15 @@ export const readItem = async <T extends number | string | (number | string)[]>(
 	const records = await runAST(ast);
 	const processedRecords = await PayloadService.processValues('read', collection, records);
 	return isBatch ? processedRecords : processedRecords[0];
-};
+}
 
-export const updateItem = async <T extends number | string | (number | string)[]>(
+export async function updateItem<T extends PrimaryKey | PrimaryKey[]>(
 	collection: string,
-	pk: T,
+	primaryKey: T,
 	data: Partial<Item>,
 	accountability?: Accountability
-): Promise<T> => {
-	const primaryKeys: any[] = Array.isArray(pk) ? pk : [pk];
+): Promise<T> {
+	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
 
 	await database.transaction(async (transaction) => {
 		let payload = clone(data);
@@ -238,13 +231,13 @@ export const updateItem = async <T extends number | string | (number | string)[]
 					);
 				}
 
-				return pk;
+				return primaryKey as PrimaryKey;
 			})
 		);
 	});
 
-	return pk;
-};
+	return primaryKey;
+}
 
 export const deleteItem = async <T extends number | string | (number | string)[]>(
 	collection: string,
@@ -270,14 +263,16 @@ export const deleteItem = async <T extends number | string | (number | string)[]
 					.where({ [primaryKeyField]: key })
 					.delete();
 
-				await saveActivityAndRevision(
-					ActivityService.Action.DELETE,
-					collection,
-					String(key),
-					{},
-					accountability,
-					transaction
-				);
+				if (accountability) {
+					await saveActivityAndRevision(
+						ActivityService.Action.DELETE,
+						collection,
+						String(key),
+						{},
+						accountability,
+						transaction
+					);
+				}
 			})
 		);
 	});
@@ -297,7 +292,7 @@ export const readSingleton = async (
 
 	if (!record) {
 		const columns = await schemaInspector.columnInfo(collection);
-		const defaults = {};
+		const defaults: Record<string, any> = {};
 
 		for (const column of columns) {
 			defaults[column.name] = column.default_value;

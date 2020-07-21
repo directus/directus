@@ -51,10 +51,12 @@ router.get(
 			);
 		}
 
-		const systemKeys = SYSTEM_ASSET_WHITELIST.map((size) => size.key);
+		const systemKeys = SYSTEM_ASSET_WHITELIST.map((transformation) => transformation.key);
 		const allKeys: string[] = [
 			...systemKeys,
-			...assetSettings.asset_shortcuts.map((size) => size.key),
+			...assetSettings.asset_shortcuts.map(
+				(transformation: Transformation) => transformation.key
+			),
 		];
 
 		// For use in the next request handler
@@ -86,7 +88,10 @@ router.get(
 	// Return file
 	asyncHandler(async (req, res) => {
 		const transformation: Transformation = res.locals.transformation.key
-			? res.locals.shortcuts.find((size) => size.key === res.locals.transformation.key)
+			? res.locals.shortcuts.find(
+					(transformation: Transformation) =>
+						transformation.key === res.locals.transformation.key
+			  )
 			: res.locals.transformation;
 
 		const { stream, file } = await AssetsService.getAsset(req.params.pk, transformation);

@@ -6,9 +6,10 @@
         "moduleResolution": "node",
         "sourceMap": false,
 		"outDir": "dist",
-		"rootDir": "src"
-    },
-    "lib": [
-        "es2019"
-	],
+		"rootDir": "src",
+		"strict": true,
+		"lib": [
+			"es2019"
+		]
+    }
 }

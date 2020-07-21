@@ -10,13 +10,13 @@ export const createUser = async (data: Partial<Item>, accountability: Accountabi
 	return await ItemsService.createItem('directus_users', data, accountability);
 };
 
-export const readUsers = async (query?: Query, accountability?: Accountability) => {
+export const readUsers = async (query: Query, accountability?: Accountability) => {
 	return await ItemsService.readItems('directus_users', query, accountability);
 };
 
 export const readUser = async (
 	pk: string | number,
-	query?: Query,
+	query: Query,
 	accountability?: Accountability
 ) => {
 	return await ItemsService.readItem('directus_users', pk, query, accountability);
@@ -44,14 +44,14 @@ export const inviteUser = async (email: string, role: string, accountability: Ac
 	await createUser({ email, role, status: 'invited' }, accountability);
 
 	const payload = { email };
-	const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '7d' });
+	const token = jwt.sign(payload, process.env.SECRET as string, { expiresIn: '7d' });
 	const acceptURL = process.env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
 
 	await sendInviteMail(email, acceptURL);
 };
 
 export const acceptInvite = async (token: string, password: string) => {
-	const { email } = jwt.verify(token, process.env.SECRET) as { email: string };
+	const { email } = jwt.verify(token, process.env.SECRET as string) as { email: string };
 	const user = await database
 		.select('id', 'status')
 		.from('directus_users')

@@ -5,7 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
-import { Accountability } from '../types';
+import { Accountability, PrimaryKey } from '../types';
 
 const router = express.Router();
 
@@ -73,9 +73,9 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
-		const result = await ItemsService.readItem(req.collection, pk, req.sanitizedQuery, {
+		const result = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
 			role: req.role,
 			admin: req.admin,
 		});
@@ -130,21 +130,40 @@ router.patch(
 		};
 
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const updatedPrimaryKey = await ItemsService.updateItem(
-			req.collection,
-			primaryKey,
-			req.body,
-			accountability
-		);
 
-		const result = await ItemsService.readItem(
-			req.collection,
-			updatedPrimaryKey,
-			req.sanitizedQuery,
-			accountability
-		);
+		if (Array.isArray(primaryKey)) {
+			const updatedPrimaryKey = await ItemsService.updateItem(
+				req.collection,
+				primaryKey,
+				req.body,
+				accountability
+			);
 
-		res.json({ data: result || null });
+			const result = await ItemsService.readItem(
+				req.collection,
+				updatedPrimaryKey,
+				req.sanitizedQuery,
+				accountability
+			);
+
+			res.json({ data: result || null });
+		} else {
+			const updatedPrimaryKey = await ItemsService.updateItem(
+				req.collection,
+				primaryKey,
+				req.body,
+				accountability
+			);
+
+			const result = await ItemsService.readItem(
+				req.collection,
+				updatedPrimaryKey,
+				req.sanitizedQuery,
+				accountability
+			);
+
+			res.json({ data: result || null });
+		}
 	})
 );
 

@@ -10,12 +10,12 @@ export {};
 declare global {
 	namespace Express {
 		export interface Request {
-			token: string;
-			user: string;
+			token: string | null;
+			user: string | null;
 			role: string | null;
+			collection: string;
 			admin: boolean;
-			collection?: string;
-			sanitizedQuery?: Query;
+			sanitizedQuery: Query;
 			single?: boolean;
 			permissions?: Permission;
 		}

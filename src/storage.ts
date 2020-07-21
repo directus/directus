@@ -47,11 +47,14 @@ function registerDrivers(storage: StorageManager) {
 
 	for (const [key, value] of Object.entries(process.env)) {
 		if ((key.startsWith('STORAGE') && key.endsWith('DRIVER')) === false) continue;
-		if (usedDrivers.includes(value) === false) usedDrivers.push(value);
+		if (value && usedDrivers.includes(value) === false) usedDrivers.push(value);
 	}
 
 	usedDrivers.forEach((driver) => {
-		storage.registerDriver<Storage>(driver, getStorageDriver(driver));
+		const storageDriver = getStorageDriver(driver);
+		if (storageDriver) {
+			storage.registerDriver<Storage>(driver, storageDriver);
+		}
 	});
 }
 

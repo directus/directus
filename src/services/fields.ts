@@ -64,7 +64,7 @@ export const readOne = async (collection: string, field: string) => {
 
 export const createField = async (
 	collection: string,
-	field: Partial<Field>,
+	field: Partial<Field> & { field: string; database: { type: string } },
 	accountability: Accountability
 ) => {
 	await database.schema.alterTable(collection, (table) => {

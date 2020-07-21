@@ -59,7 +59,7 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
-				maxAge: ms(process.env.REFRESH_TOKEN_TTL),
+				maxAge: ms(process.env.REFRESH_TOKEN_TTL as string),
 				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
 				sameSite:
 					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
@@ -100,7 +100,7 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
-				maxAge: ms(process.env.REFRESH_TOKEN_TTL),
+				maxAge: ms(process.env.REFRESH_TOKEN_TTL as string),
 				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
 				sameSite:
 					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
@@ -132,7 +132,7 @@ router.post(
 
 router.use(
 	'/sso',
-	session({ secret: process.env.SECRET, saveUninitialized: false, resave: false })
+	session({ secret: process.env.SECRET as string, saveUninitialized: false, resave: false })
 );
 
 router.use(grant.express()(getGrantConfig()));
@@ -143,7 +143,7 @@ router.use(grant.express()(getGrantConfig()));
 router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {
-		const email = getEmailFromProfile(req.params.provider, req.session.grant.response.profile);
+		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);
 
 		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate(email);
 

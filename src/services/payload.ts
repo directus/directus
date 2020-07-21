@@ -8,8 +8,9 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
-import { File, Relation, Item } from '../types';
+import { Relation, Item } from '../types';
 import * as ItemsService from './items';
+import { URL } from 'url';
 
 type Operation = 'create' | 'read' | 'update';
 
@@ -41,7 +42,7 @@ const transformers: Transformers = {
 
 		return value;
 	},
-	async 'file-links'(operation, value, payload: File) {
+	async 'file-links'(operation, value, payload) {
 		if (operation === 'read' && payload && payload.storage && payload.filename_disk) {
 			const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
 
@@ -64,16 +65,23 @@ const transformers: Transformers = {
  * @param payload The actual payload itself
  * @returns The updated payload
  */
-export const processValues = async (
+
+export async function processValues(
+	operation: Operation,
+	collection: string,
+	payload: Partial<Item>
+): Promise<Partial<Item>>;
+export async function processValues(
+	operation: Operation,
+	collection: string,
+	payload: Partial<Item>[]
+): Promise<Partial<Item>[]>;
+export async function processValues(
 	operation: Operation,
 	collection: string,
 	payload: Partial<Item> | Partial<Item>[]
-) => {
-	let processedPayload = clone(payload);
-
-	if (Array.isArray(payload) === false) {
-		processedPayload = [processedPayload];
-	}
+): Promise<Partial<Item> | Partial<Item>[]> {
+	const processedPayload = Array.isArray(payload) ? clone(payload) : [clone(payload)];
 
 	const specialFieldsInCollection = await database
 		.select('field', 'special')
@@ -82,7 +90,7 @@ export const processValues = async (
 		.whereNotNull('special');
 
 	await Promise.all(
-		processedPayload.map(async (record: any) => {
+		payload.map(async (record: any) => {
 			await Promise.all(
 				specialFieldsInCollection.map(async (field) => {
 					record[field.field] = await processField(field, record, operation);
@@ -91,26 +99,20 @@ export const processValues = async (
 		})
 	);
 
-	/** @TODO
-	 *
-	 * - Make config.ts file in root
-	 * - Have it cache settings / env vars a la graphql/dataloader (memory-cache)
-	 * - Have it have a function to reload env vars
-	 */
-
-	// Return the payload in it's original format
-	if (Array.isArray(payload) === false) {
-		return processedPayload[0];
+	if (Array.isArray(payload)) {
+		return processedPayload;
 	}
 
-	return processedPayload;
-};
+	return processedPayload[0];
+}
 
 async function processField(
 	field: Pick<System, 'field' | 'special'>,
 	payload: Partial<Item>,
 	operation: Operation
 ) {
+	if (!field.special) return payload[field.field];
+
 	if (transformers.hasOwnProperty(field.special)) {
 		return await transformers[field.special](operation, payload[field.field], payload);
 	}

@@ -16,7 +16,7 @@ import database from '../database';
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	accountability: Accountability | null,
+	accountability?: Accountability,
 	operation?: Operation
 ): Promise<AST> {
 	/**
@@ -108,7 +108,7 @@ export default async function getASTFromQuery(
 	function parseFields(parentCollection: string, fields: string[]) {
 		fields = convertWildcards(parentCollection, fields);
 
-		if (!fields) return null;
+		if (!fields) return [];
 
 		const children: (NestedCollectionAST | FieldAST)[] = [];
 
@@ -132,13 +132,19 @@ export default async function getASTFromQuery(
 		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
 			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
 
+			if (!relatedCollection) continue;
+
+			const relation = getRelation(parentCollection, relationalField);
+
+			if (!relation) continue;
+
 			const child: NestedCollectionAST = {
 				type: 'collection',
 				name: relatedCollection,
 				fieldKey: relationalField,
 				parentKey: 'id' /** @todo this needs to come from somewhere real */,
-				relation: getRelation(parentCollection, relationalField),
-				query: {} /** @todo inject nested query here */,
+				relation: relation,
+				query: {} /** @todo inject nested query here: ?deep[foo]=bar */,
 				children: parseFields(relatedCollection, nestedFields).filter(
 					filterEmptyChildCollections
 				),
@@ -175,7 +181,7 @@ export default async function getASTFromQuery(
 		}
 	}
 
-	function filterEmptyChildCollections(childAST: NestedCollectionAST) {
+	function filterEmptyChildCollections(childAST: FieldAST | NestedCollectionAST) {
 		if (childAST.type === 'collection' && childAST.children.length === 0) return false;
 		return true;
 	}

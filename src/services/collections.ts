@@ -67,10 +67,10 @@ export const create = async (payload: any, accountability: Accountability) => {
 		}))
 	);
 
-	return await ItemsService.readItem('directus_collections', primaryKey);
+	return await ItemsService.readItem('directus_collections', primaryKey, {});
 };
 
-export const readAll = async (query?: Query, accountability?: Accountability) => {
+export const readAll = async (query: Query, accountability?: Accountability) => {
 	const [tables, collections] = await Promise.all([
 		schemaInspector.tableInfo(),
 		ItemsService.readItems<Collection>('directus_collections', query, accountability),
@@ -96,7 +96,7 @@ export const readAll = async (query?: Query, accountability?: Accountability) =>
 
 export const readOne = async (
 	collection: string,
-	query?: Query,
+	query: Query,
 	accountability?: Accountability
 ) => {
 	const [table, collectionInfo] = await Promise.all([
