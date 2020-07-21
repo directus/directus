@@ -1,7 +1,7 @@
 {
   "name": "directus",
   "version": "0.0.1",
-  "description": "The Directus API in Node.js",
+  "description": "Directus",
   "main": "dist/server.js",
   "bin": {
     "directus": "dist/cli/index.js"
