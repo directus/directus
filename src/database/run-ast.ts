@@ -80,7 +80,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			.forEach((column) => {
 				dbQuery.orWhereRaw(
 					`LOWER(${column.name}) LIKE '%' || LOWER(?) || '%'`,
-					query.search
+					query.search!
 				);
 			});
 	}
@@ -91,8 +91,8 @@ export default async function runAST(ast: AST, query = ast.query) {
 		const m2o = isM2O(batch);
 
 		let batchQuery: Query = {};
-		let tempField: string = null;
-		let tempLimit: number = null;
+		let tempField: string;
+		let tempLimit: number;
 
 		if (m2o) {
 			// Make sure we always fetch the nested items primary key field to ensure we have the key to match the item by

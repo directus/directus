@@ -32,7 +32,7 @@ export default async function installDB(
 		};
 	}
 
-	const db = knex({
+	const knexConfig: Config = {
 		client: client,
 		connection: connection,
 		seeds:
@@ -45,7 +45,13 @@ export default async function installDB(
 						extension: 'js',
 						directory: './dist/database/seeds/',
 				  },
-	});
+	};
+
+	if (client === 'sqlite3') {
+		knexConfig.useNullAsDefault = true;
+	}
+
+	const db = knex(knexConfig);
 
 	await db.seed.run();
 

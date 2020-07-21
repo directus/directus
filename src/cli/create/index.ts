@@ -39,7 +39,7 @@ export default async function create(directory: string, options: Record<string, 
 
 	await fse.mkdir(path);
 
-	await exec(`cd ${path} && npm init -y && npm install directus@preview`);
+	// await exec(`cd ${path} && npm init -y && npm install directus@preview`);
 
 	let { client } = await inquirer.prompt([
 		{
@@ -63,7 +63,7 @@ export default async function create(directory: string, options: Record<string, 
 		console.log(error.message);
 	}
 
-	await exec(`cd && directus start`);
+	// await exec(`cd && directus start`);
 }
 
 function checkRequirements() {

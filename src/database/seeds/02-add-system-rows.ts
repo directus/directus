@@ -119,14 +119,14 @@ const systemData = [
 			},
 		],
 	},
-	{
-		table: 'directus_fields',
-		rows: [
-			/**
-			 * @todo add final system fields setup for admin app
-			 */
-		],
-	},
+	// {
+	// 	table: 'directus_fields',
+	// 	rows: [
+	// 		/**
+	// 		 * @todo add final system fields setup for admin app
+	// 		 */
+	// 	],
+	// },
 	{
 		table: 'directus_relations',
 		rows: [
@@ -237,7 +237,7 @@ const systemData = [
 				project_name: 'Directus',
 				project_url: null,
 				project_color: '#2d6cc0',
-				asset_shortcuts: [],
+				asset_shortcuts: '[]',
 				asset_generation: 'all',
 				project_foreground: null,
 				project_background: null,
@@ -248,7 +248,6 @@ const systemData = [
 
 export async function seed(knex: Knex): Promise<any> {
 	for (const { table, rows } of systemData) {
-		console.log(table, rows);
 		await knex(table).insert(rows);
 	}
 }
