@@ -1,4 +1,3 @@
-import { SettingsCollections } from './collections';
-import { SettingsFields } from './fields';
-
-export { SettingsCollections, SettingsFields };
+export * from './collections';
+export * from './fields';
+export * from './field-detail';

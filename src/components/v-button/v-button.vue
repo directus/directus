@@ -216,10 +216,6 @@ body {
 			justify-content: flex-end;
 		}
 
-		&:active {
-			transform: scale(0.98);
-		}
-
 		&:focus {
 			outline: 0;
 		}
@@ -229,10 +225,6 @@ body {
 			background-color: var(--v-button-background-color-disabled);
 			border: var(--border-width) solid var(--v-button-background-color-disabled);
 			cursor: not-allowed;
-
-			&:active {
-				transform: scale(1);
-			}
 		}
 
 		&.rounded {

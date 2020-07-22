@@ -47,6 +47,8 @@
 				<fields-management :collection="collection" />
 			</div>
 
+			<router-view name="field" :collection="collection" :field="field" :type="type" />
+
 			<v-form
 				collection="directus_collections"
 				:loading="loading"
@@ -85,6 +87,16 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+
+		// Field detail modal only
+		field: {
+			type: String,
+			default: null,
+		},
+		type: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {

@@ -74,7 +74,7 @@ export default defineComponent({
 				.getFieldsForCollection(props.collection)
 				.filter(
 					(field: Field) =>
-						field.system?.hidden_browse !== true && field.system?.special?.toLowerCase() !== 'alias'
+						field.system?.hidden !== true && field.system?.special?.toLowerCase() !== 'alias'
 				)
 				.map((field: Field) => parseField(field, []));
 
@@ -104,7 +104,7 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.system?.hidden_browse !== true &&
+										field.system?.hidden !== true &&
 										field.system?.special?.toLowerCase() !== 'alias'
 								);
 						})

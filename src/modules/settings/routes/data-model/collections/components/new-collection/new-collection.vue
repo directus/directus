@@ -220,8 +220,7 @@ export default defineComponent({
 			const field: DeepPartial<Field> = {
 				field: primaryKeyFieldName.value,
 				system: {
-					hidden_browse: false,
-					hidden_detail: false,
+					hidden: false,
 					interface: 'numeric',
 					readonly: true,
 				},
@@ -318,8 +317,7 @@ export default defineComponent({
 					field: systemFields[1].name,
 					system: {
 						interface: 'sort',
-						hidden_detail: true,
-						hidden_browse: true,
+						hidden: true,
 						width: 'full',
 						special: 'sort',
 					},
@@ -340,8 +338,7 @@ export default defineComponent({
 							display: 'both',
 						},
 						readonly: true,
-						hidden_detail: true,
-						hidden_browse: true,
+						hidden: true,
 						width: 'full',
 					},
 					database: {
@@ -357,8 +354,7 @@ export default defineComponent({
 						special: 'datetime_created',
 						interface: 'datetime-created',
 						readonly: true,
-						hidden_detail: true,
-						hidden_browse: true,
+						hidden: true,
 						width: 'full',
 					},
 					database: {
@@ -378,8 +374,7 @@ export default defineComponent({
 							display: 'both',
 						},
 						readonly: true,
-						hidden_detail: true,
-						hidden_browse: true,
+						hidden: true,
 						width: 'full',
 					},
 					database: {
@@ -395,8 +390,7 @@ export default defineComponent({
 						special: 'datetime_updated',
 						interface: 'datetime-updated',
 						readonly: true,
-						hidden_detail: true,
-						hidden_browse: true,
+						hidden: true,
 						width: 'full',
 					},
 					database: {

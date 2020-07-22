@@ -21,7 +21,7 @@
 			</template>
 
 			<v-list dense>
-				<v-list-item @click="$emit('edit')">
+				<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 					<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('edit_field') }}
@@ -49,7 +49,7 @@
 				</v-list-item>
 				<v-divider />
 				<v-list-item @click="$emit('toggle-visibility', field)">
-					<template v-if="field.hidden_detail === false">
+					<template v-if="field.hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
 						<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
 					</template>

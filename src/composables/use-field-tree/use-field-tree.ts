@@ -14,7 +14,7 @@ export default function useFieldTree(collection: Ref<string>) {
 			.getFieldsForCollection(collection.value)
 			.filter(
 				(field: Field) =>
-					field.system?.hidden_browse === false && field.system?.special?.toLowerCase() !== 'alias'
+					field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
 			)
 			.map((field: Field) => parseField(field, []));
 
@@ -44,7 +44,7 @@ export default function useFieldTree(collection: Ref<string>) {
 							.getFieldsForCollection(relatedCollection)
 							.filter(
 								(field: Field) =>
-									field.system?.hidden_browse === false &&
+									field.system?.hidden === false &&
 									field.system?.special?.toLowerCase() !== 'alias'
 							);
 					})

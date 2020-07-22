@@ -18,7 +18,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		 */
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
-			const hiddenDetail = field.system?.hidden_detail;
+			const hiddenDetail = field.system?.hidden;
 			if (isEmpty(hiddenDetail)) return true;
 			return hiddenDetail === false;
 		});

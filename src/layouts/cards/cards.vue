@@ -222,7 +222,7 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.system.hidden_browse !== true)
+			fieldsInCollection.value.filter((field) => field.system.hidden !== true)
 		);
 
 		const fileFields = computed(() => {

@@ -9,25 +9,26 @@ export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
 export type Type =
 	| 'alias'
+	| 'integer'
 	| 'bigInteger'
-	| 'binary'
+	| 'text'
+	| 'string'
+	| 'float'
+	| 'decimal'
 	| 'boolean'
 	| 'date'
 	| 'datetime'
-	| 'decimal'
-	| 'float'
-	| 'integer'
-	| 'json'
-	| 'string'
-	| 'text'
 	| 'time'
 	| 'timestamp'
+	| 'enum'
+	| 'json'
+	| 'uuid'
+	| 'binary'
 	| 'unknown';
 
 export const types: Type[] = [
 	'alias',
 	'bigInteger',
-	'binary',
 	'boolean',
 	'date',
 	'datetime',
@@ -39,6 +40,7 @@ export const types: Type[] = [
 	'text',
 	'time',
 	'timestamp',
+	'binary',
 	'unknown',
 ];
 
@@ -66,8 +68,7 @@ export type SystemField = {
 	collection: string;
 	field: string;
 	group: number | null;
-	hidden_browse: boolean;
-	hidden_detail: boolean;
+	hidden: boolean;
 	locked: boolean;
 	interface: string | null;
 	display: string | null;

@@ -235,7 +235,7 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.system?.hidden_browse === false)
+			fieldsInCollection.value.filter((field) => field.system?.hidden === false)
 		);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();

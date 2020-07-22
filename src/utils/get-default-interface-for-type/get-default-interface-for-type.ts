@@ -1,6 +1,6 @@
 import { Type } from '@/stores/fields/types';
 
-const defaultInterfaceMap = {
+const defaultInterfaceMap: Record<Type, string> = {
 	alias: 'text-input',
 	bigInteger: 'numeric',
 	binary: 'text-input',
@@ -15,8 +15,14 @@ const defaultInterfaceMap = {
 	text: 'textarea',
 	time: 'datetime',
 	timestamp: 'datetime',
+	enum: 'text-input',
+	uuid: 'text-input',
 	unknown: 'text-input',
 };
+
+/**
+ * @todo default to correct interfaces for uuid / enum
+ */
 
 export default function getDefaultInterfaceForType(type: Type) {
 	return defaultInterfaceMap[type] || 'text-input';

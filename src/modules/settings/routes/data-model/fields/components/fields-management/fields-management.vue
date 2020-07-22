@@ -8,39 +8,55 @@
 			@change="($event) => handleChange($event, 'visible')"
 			:set-data="hideDragImage"
 		>
-			<template #header>
-				<div class="group-name">Visible Fields</div>
-			</template>
-
 			<field-select
 				v-for="field in sortedVisibleFields"
 				:key="field.field"
 				:field="field"
 				@toggle-visibility="toggleVisibility($event, 'visible')"
-				@edit="openFieldSetup(field)"
 			/>
+		</draggable>
 
-			<template #footer>
-				<v-button class="add-field" align="left" dashed outlined large @click="openFieldSetup()">
+		<v-menu attached>
+			<template #activator="{ toggle, active }">
+				<v-button
+					@click="toggle"
+					class="add-field"
+					align="left"
+					:dashed="!active"
+					:class="{ active }"
+					outlined
+					large
+					full-width
+				>
 					<v-icon name="add" />
-
 					{{ $t('add_field') }}
 				</v-button>
 			</template>
-		</draggable>
+
+			<v-list dense>
+				<v-list-item
+					v-for="option in addOptions"
+					:key="option.type"
+					:to="`/settings/data-model/${collection}/+?type=${option.type}`"
+				>
+					<v-list-item-icon>
+						<v-icon :name="option.icon" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ option.text }}
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
 
 		<draggable
-			class="field-grid hidden"
+			class="hidden"
 			:value="sortedHiddenFields"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
 			@change="($event) => handleChange($event, 'hidden')"
 		>
-			<template #header>
-				<div class="group-name">Hidden Fields</div>
-			</template>
-
 			<field-select
 				v-for="field in sortedHiddenFields"
 				:key="field.field"
@@ -48,35 +64,20 @@
 				@toggle-visibility="toggleVisibility($event, 'hidden')"
 				@edit="openFieldSetup(field)"
 			/>
-
-			<template #footer>
-				<v-button class="add-field" align="left" dashed outlined large @click="openFieldSetup()">
-					<v-icon name="add" />
-
-					{{ $t('add_field') }}
-				</v-button>
-			</template>
 		</draggable>
-
-		<field-setup
-			:collection="collection"
-			:active="fieldSetupActive"
-			:existing-field="editingField"
-			@toggle="closeFieldSetup"
-		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/stores/fields/types';
 import useFieldsStore from '@/stores/fields/';
 import FieldSelect from '../field-select/';
-import FieldSetup from '../field-setup/';
 import { sortBy } from 'lodash';
 import hideDragImage from '@/utils/hide-drag-image';
+import { i18n } from '@/lang';
 
 type DraggableEvent = {
 	moved?: {
@@ -91,7 +92,7 @@ type DraggableEvent = {
 };
 
 export default defineComponent({
-	components: { Draggable, FieldSelect, FieldSetup },
+	components: { Draggable, FieldSelect },
 	props: {
 		collection: {
 			type: String,
@@ -105,30 +106,58 @@ export default defineComponent({
 
 		const sortedVisibleFields = computed(() =>
 			sortBy(
-				[...fields.value].filter((field) => field.system.hidden_detail === false),
+				[...fields.value].filter((field) => field.system.hidden === false),
 				(field) => field.system.sort || Infinity
 			)
 		);
 
 		const sortedHiddenFields = computed(() =>
 			sortBy(
-				[...fields.value].filter((field) => field.system.hidden_detail === true),
+				[...fields.value].filter((field) => field.system.hidden === true),
 				(field) => field.system.sort || Infinity
 			)
 		);
 
-		const { fieldSetupActive, editingField, openFieldSetup, closeFieldSetup } = useFieldSetup();
+		const addOptions = computed(() => [
+			{
+				type: 'standard',
+				icon: 'create',
+				text: i18n.t('standard_field'),
+			},
+			{
+				type: 'file',
+				icon: 'photo',
+				text: i18n.t('single_file'),
+			},
+			{
+				type: 'files',
+				icon: 'collections',
+				text: i18n.t('multiple_files'),
+			},
+			{
+				type: 'm2o',
+				icon: 'call_merge',
+				text: i18n.t('m2o_relationship'),
+			},
+			{
+				type: 'o2m',
+				icon: 'call_split',
+				text: i18n.t('o2m_relationship'),
+			},
+			{
+				type: 'm2m',
+				icon: 'import_export',
+				text: i18n.t('m2m_relationship'),
+			},
+		]);
 
 		return {
 			sortedVisibleFields,
 			sortedHiddenFields,
 			handleChange,
 			toggleVisibility,
-			fieldSetupActive,
-			editingField,
-			openFieldSetup,
-			closeFieldSetup,
 			hideDragImage,
+			addOptions,
 		};
 
 		function handleChange(event: DraggableEvent, location: 'visible' | 'hidden') {
@@ -184,7 +213,7 @@ export default defineComponent({
 			updates.push({
 				field: element.field,
 				system: {
-					hidden_detail: location === 'hidden',
+					hidden: location === 'hidden',
 					sort: newSortValue,
 				},
 			});
@@ -208,7 +237,9 @@ export default defineComponent({
 
 				return {
 					field: field.field,
-					sort: move === 'down' ? sortValue - 1 : sortValue + 1,
+					system: {
+						sort: move === 'down' ? sortValue - 1 : sortValue + 1,
+					},
 				};
 			});
 
@@ -221,26 +252,6 @@ export default defineComponent({
 			});
 
 			fieldsStore.updateFields(element.collection, updates);
-		}
-
-		function useFieldSetup() {
-			const fieldSetupActive = ref(false);
-			const editingField = ref<Field | null>(null);
-
-			return { fieldSetupActive, editingField, openFieldSetup, closeFieldSetup };
-
-			function openFieldSetup(field: Field | null) {
-				if (field) {
-					editingField.value = field;
-				}
-
-				fieldSetupActive.value = true;
-			}
-
-			function closeFieldSetup() {
-				editingField.value = null;
-				fieldSetupActive.value = false;
-			}
 		}
 	},
 });
@@ -257,32 +268,24 @@ export default defineComponent({
 	grid-gap: 12px;
 	grid-template-columns: 1fr 1fr;
 	margin-bottom: 24px;
-	padding: 32px 12px 76px 12px;
+	padding: 12px;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
+}
 
-	.group-name {
-		position: absolute;
-		top: 6px;
-		left: 12px;
-		margin-bottom: 8px;
-		color: var(--foreground-subdued);
+.add-field {
+	--v-button-font-size: 14px;
+	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color-hover: var(--primary);
+
+	max-width: 50%;
+
+	.v-icon {
+		margin-right: 8px;
 	}
 
-	.add-field {
-		--v-button-width: 100%;
-		--v-button-font-size: 14px;
-		--v-button-background-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--primary);
-
-		position: absolute;
-		bottom: 12px;
-		left: 12px;
-		width: calc(100% - 24px);
-
-		.v-icon {
-			margin-right: 8px;
-		}
+	&.active {
+		--v-button-background-color: var(--primary);
 	}
 }
 

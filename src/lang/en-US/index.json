@@ -33,10 +33,14 @@
 	"schema_options_title": "All set! Below are some optional configuration options...",
 	"creating_field": "Creating New Field",
 	"enter_field_name": "Enter a field name...",
+
 	"standard_field": "Standard Field",
-	"relational_field": "Relational Field",
 	"single_file": "Single File",
 	"multiple_files": "Multiple Files",
+	"m2o_relationship": "Many to One Relationship",
+	"o2m_relationship": "One to Many Relationship",
+	"m2m_relationship": "Many to Many Relationship",
+
 	"next": "Next",
 	"previous": "Previous",
 	"add_field": "Add Field",
