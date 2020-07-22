@@ -90,7 +90,7 @@ export async function processValues(
 		.whereNotNull('special');
 
 	await Promise.all(
-		payload.map(async (record: any) => {
+		processedPayload.map(async (record: any) => {
 			await Promise.all(
 				specialFieldsInCollection.map(async (field) => {
 					record[field.field] = await processField(field, record, operation);

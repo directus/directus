@@ -55,7 +55,7 @@ export const readOne = async (collection: string, field: string) => {
 	const data = {
 		collection: column.table,
 		field: column.name,
-		database: column,
+		database: column || null,
 		system: fieldInfo || null,
 	};
 
