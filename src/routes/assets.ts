@@ -2,11 +2,12 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import database from '../database';
 import { SYSTEM_ASSET_WHITELIST, ASSET_GENERATION_QUERY_KEYS } from '../constants';
-import { InvalidQueryException, ItemNotFoundException } from '../exceptions';
+import { InvalidQueryException, ForbiddenException } from '../exceptions';
 import * as AssetsService from '../services/assets';
 import validate from 'uuid-validate';
 import { pick } from 'lodash';
 import { Transformation } from '../types/assets';
+import storage from '../storage';
 
 const router = Router();
 
@@ -24,11 +25,21 @@ router.get(
 		 * @todo move this to a validation middleware function
 		 */
 		const isValidUUID = validate(id, 4);
-		if (isValidUUID === false) throw new ItemNotFoundException(id, 'directus_files');
+		if (isValidUUID === false) throw new ForbiddenException();
 
-		const file = await database.select('id').from('directus_files').where({ id });
+		const file = await database
+			.select('id', 'storage', 'filename_disk')
+			.from('directus_files')
+			.where({ id })
+			.first();
 
-		if (!file) throw new ItemNotFoundException(id, 'directus_files');
+		if (!file) throw new ForbiddenException();
+
+		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+
+		if (!exists) throw new ForbiddenException();
+
+		console.log(file.storage, file.filename_disk);
 
 		return next();
 	}),
