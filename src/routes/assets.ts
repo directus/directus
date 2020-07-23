@@ -39,8 +39,6 @@ router.get(
 
 		if (!exists) throw new ForbiddenException();
 
-		console.log(file.storage, file.filename_disk);
-
 		return next();
 	}),
 

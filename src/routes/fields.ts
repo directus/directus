@@ -100,4 +100,23 @@ router.post(
 	})
 );
 
+router.delete(
+	'/:collection/:field',
+	useCollection('directus_fields'),
+	validateCollection,
+	asyncHandler(async (req, res) => {
+		const accountability: Accountability = {
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		};
+
+		await FieldsService.deleteField(req.collection, req.params.field, accountability);
+
+		res.status(200).end();
+	})
+);
+
 export default router;

@@ -137,5 +137,18 @@ export const createField = async (
 	}
 };
 
-/** @todo add update / delete field */
-/** @todo research how to make ^^^ happen in SQLite */
+/** @todo add update field */
+/** @todo research how to make ^ happen in SQLite */
+
+/** @todo save accountability */
+export const deleteField = async (
+	collection: string,
+	field: string,
+	accountability?: Accountability
+) => {
+	await database('directus_fields').delete().where({ collection, field });
+
+	await database.schema.table(collection, (table) => {
+		table.dropColumn(field);
+	});
+};
