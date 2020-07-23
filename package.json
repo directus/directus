@@ -46,7 +46,7 @@
     "mime-types": "2.1.27",
     "mousetrap": "1.6.5",
     "nanoid": "3.1.10",
-    "pinia": "0.0.6",
+    "pinia": "0.0.7",
     "portal-vue": "2.1.7",
     "resize-observer": "1.0.0",
     "semver": "7.3.2",
