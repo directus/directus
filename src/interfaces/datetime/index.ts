@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('datetime'),
 	icon: 'today',
 	component: InterfaceDateTime,
-	types: ['datetime', 'date', 'time', 'timestamp'],
+	types: ['dateTime', 'date', 'time', 'timestamp'],
 	options: [
 		{
 			field: 'includeSeconds',

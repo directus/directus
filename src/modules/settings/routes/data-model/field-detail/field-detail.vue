@@ -10,7 +10,13 @@
 		<setup-display v-if="currentTab[0] === 'display'" :field-data.sync="fieldData" :type="type" />
 
 		<template #footer>
-			<setup-actions :collection="collection" :current.sync="currentTab" :tabs="tabs" />
+			<setup-actions
+				:saving="saving"
+				:collection="collection"
+				:current.sync="currentTab"
+				:tabs="tabs"
+				@save="saveField"
+			/>
 		</template>
 	</v-modal>
 </template>
@@ -25,6 +31,7 @@ import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
 import { isEmpty } from 'lodash';
+import api from '@/api';
 
 export default defineComponent({
 	components: {
@@ -53,25 +60,26 @@ export default defineComponent({
 		const active = ref(false);
 
 		const fieldData = reactive({
-			collection: props.collection,
 			field: null,
 			database: {
-				type: null,
-				default_value: null,
-				max_length: null,
+				type: undefined,
+				default_value: undefined,
+				max_length: undefined,
 				is_nullable: true,
-				comment: '',
+				comment: undefined,
 			},
 			system: {
 				hidden: false,
-				interface: null,
-				options: null,
-				display: null,
-				display_options: null,
+				interface: undefined,
+				options: undefined,
+				display: undefined,
+				display_options: undefined,
 				readonly: false,
-				special: null,
+				special: undefined,
 			},
 		});
+
+		const saving = ref(false);
 
 		// This makes sure we still see the enter animation
 		onMounted(() => {
@@ -104,7 +112,7 @@ export default defineComponent({
 
 		const currentTab = ref(['schema']);
 
-		return { active, tabs, currentTab, fieldData };
+		return { active, tabs, currentTab, fieldData, saveField, saving };
 
 		function interfaceDisabled() {
 			return isEmpty(fieldData.field) || isEmpty(fieldData.database.type);
@@ -112,6 +120,18 @@ export default defineComponent({
 
 		function displayDisabled() {
 			return isEmpty(fieldData.field) || isEmpty(fieldData.database.type);
+		}
+
+		async function saveField() {
+			saving.value = true;
+
+			try {
+				await api.post(`/fields/${props.collection}`, fieldData);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				saving.value = false;
+			}
 		}
 	},
 });

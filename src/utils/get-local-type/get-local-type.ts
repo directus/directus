@@ -1,9 +1,9 @@
-import { Type } from '@/stores/fields/types';
+import { types } from '@/stores/fields/types';
 
 /**
  * Typemap graciously provided by @gpetrov
  */
-const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
+const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: boolean }> = {
 	// Shared
 	boolean: { type: 'boolean' },
 	tinyint: { type: 'boolean' },
@@ -27,7 +27,7 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	ntext: { type: 'text' },
 	char: { type: 'string' },
 	date: { type: 'date' },
-	datetime: { type: 'datetime' },
+	datetime: { type: 'dateTime' },
 	timestamp: { type: 'timestamp' },
 	time: { type: 'time' },
 	float: { type: 'float' },
@@ -47,9 +47,9 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'datetime', useTimezone: true },
-	datetime2: { type: 'datetime' },
-	smalldatetime: { type: 'datetime' },
+	datetimeoffset: { type: 'dateTime', useTimezone: true },
+	datetime2: { type: 'dateTime' },
+	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
 	binary: { type: 'binary' },
 	varbinary: { type: 'binary' },
@@ -78,7 +78,7 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	float8: { type: 'float' },
 };
 
-export default function getLocalType(databaseType: string): Type {
+export default function getLocalType(databaseType: string): typeof types[number] {
 	const type = localTypeMap[databaseType.toLowerCase()];
 
 	if (type) {

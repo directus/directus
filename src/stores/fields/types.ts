@@ -7,32 +7,12 @@ type Translation = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export type Type =
-	| 'alias'
-	| 'integer'
-	| 'bigInteger'
-	| 'text'
-	| 'string'
-	| 'float'
-	| 'decimal'
-	| 'boolean'
-	| 'date'
-	| 'datetime'
-	| 'time'
-	| 'timestamp'
-	| 'enum'
-	| 'json'
-	| 'uuid'
-	| 'binary'
-	| 'uuid'
-	| 'unknown';
-
-export const types: Type[] = [
+export const types = [
 	'alias',
 	'bigInteger',
 	'boolean',
 	'date',
-	'datetime',
+	'dateTime',
 	'decimal',
 	'float',
 	'integer',
@@ -44,7 +24,7 @@ export const types: Type[] = [
 	'binary',
 	'uuid',
 	'unknown',
-];
+] as const;
 
 export type DatabaseColumn = {
 	/** @todo import this from knex-schema-inspector when that's launched */
@@ -94,6 +74,6 @@ export interface FieldRaw {
 
 export interface Field extends FieldRaw {
 	name: string | TranslateResult;
-	type: Type;
+	type: typeof types[number];
 	system: SystemField;
 }

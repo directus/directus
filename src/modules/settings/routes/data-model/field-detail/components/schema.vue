@@ -51,7 +51,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
-import { types, Type } from '@/stores/fields/types';
+import { types } from '@/stores/fields/types';
 import i18n from '@/lang';
 
 export default defineComponent({
@@ -80,7 +80,7 @@ export default defineComponent({
 
 		return { _field, typesWithLabels, setType };
 
-		function setType(value: Type) {
+		function setType(value: typeof types[number]) {
 			if (value === 'uuid') {
 				_field.value.system.special = 'uuid';
 			} else {

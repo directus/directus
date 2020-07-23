@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({

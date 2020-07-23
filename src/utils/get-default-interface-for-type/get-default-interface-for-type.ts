@@ -1,12 +1,12 @@
-import { Type } from '@/stores/fields/types';
+import { types } from '@/stores/fields/types';
 
-const defaultInterfaceMap: Record<Type, string> = {
+const defaultInterfaceMap: Record<typeof types[number], string> = {
 	alias: 'text-input',
 	bigInteger: 'numeric',
 	binary: 'text-input',
 	boolean: 'toggle',
 	date: 'datetime',
-	datetime: 'datetime',
+	dateTime: 'dateTime',
 	decimal: 'numeric',
 	float: 'numeric',
 	integer: 'numeric',
@@ -15,7 +15,6 @@ const defaultInterfaceMap: Record<Type, string> = {
 	text: 'textarea',
 	time: 'datetime',
 	timestamp: 'datetime',
-	enum: 'text-input',
 	uuid: 'text-input',
 	unknown: 'text-input',
 };
@@ -24,6 +23,6 @@ const defaultInterfaceMap: Record<Type, string> = {
  * @todo default to correct interfaces for uuid / enum
  */
 
-export default function getDefaultInterfaceForType(type: Type) {
+export default function getDefaultInterfaceForType(type: typeof types[number]) {
 	return defaultInterfaceMap[type] || 'text-input';
 }

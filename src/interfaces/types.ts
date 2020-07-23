@@ -1,6 +1,6 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
-import { Field, Type } from '@/stores/fields/types';
+import { Field, types } from '@/stores/fields/types';
 
 export type InterfaceConfig = {
 	id: string;
@@ -8,7 +8,7 @@ export type InterfaceConfig = {
 	name: string | VueI18n.TranslateResult;
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
-	types: Type[];
+	types: typeof types[number][];
 	relationship?: null | 'm2o' | 'o2m' | 'm2m';
 	hideLabel?: boolean;
 	hideLoader?: boolean;
