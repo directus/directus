@@ -27,6 +27,7 @@ import rolesRouter from './routes/roles';
 import serverRouter from './routes/server';
 import settingsRouter from './routes/settings';
 import usersRouter from './routes/users';
+import utilsRouter from './routes/utils';
 import webhooksRouter from './routes/webhooks';
 
 import notFoundHandler from './routes/not-found';
@@ -62,6 +63,7 @@ const app = express()
 	.use('/server/', serverRouter)
 	.use('/settings', settingsRouter)
 	.use('/users', usersRouter)
+	.use('/utils', utilsRouter)
 	.use('/webhooks', webhooksRouter)
 	.use(notFoundHandler)
 	.use(errorHandler);
