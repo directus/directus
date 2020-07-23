@@ -83,10 +83,7 @@ router.post(
 			user: req.user,
 		};
 
-		const field: Partial<Field> & {
-			field: string;
-			database: { type: typeof FieldsService.types[number] };
-		} = req.body;
+		const field: Partial<Field> & { field: string } = req.body;
 
 		await FieldsService.createField(req.collection, field, accountability);
 

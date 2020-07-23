@@ -70,14 +70,20 @@ export const readOne = async (
 	field: string,
 	accountability?: Accountability
 ) => {
-	const [column, fieldInfo] = await Promise.all([
-		schemaInspector.columnInfo(collection, field),
-		database.select('*').from('directus_fields').where({ collection, field }).first(),
-	]);
+	let column;
+	const fieldInfo = await database
+		.select('*')
+		.from('directus_fields')
+		.where({ collection, field })
+		.first();
+
+	try {
+		column = await schemaInspector.columnInfo(collection, field);
+	} catch {}
 
 	const data = {
-		collection: column.table,
-		field: column.name,
+		collection,
+		field,
 		database: column || null,
 		system: fieldInfo || null,
 	};
@@ -87,7 +93,7 @@ export const readOne = async (
 
 export const createField = async (
 	collection: string,
-	field: DeepPartial<Field> & { field: string; database: { type: typeof types[number] } },
+	field: Partial<Field> & { field: string },
 	accountability: Accountability
 ) => {
 	/**
@@ -98,6 +104,8 @@ export const createField = async (
 	if (field.database) {
 		await database.schema.alterTable(collection, (table) => {
 			let column: ColumnBuilder;
+
+			if (!field.database) return;
 
 			if (field.database.type === 'string') {
 				column = table.string(

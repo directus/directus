@@ -1,4 +1,5 @@
 import { Column } from '../knex-schema-inspector/lib/types/column';
+import { types } from '../services/fields';
 
 export type System = {
 	id: number;
@@ -22,6 +23,6 @@ export type System = {
 export type Field = {
 	collection: string;
 	field: string;
-	database: Column;
+	database: Column & { type: typeof types[number] };
 	system: System | null;
 };
