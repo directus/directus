@@ -104,7 +104,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
-    "regenerator-runtime": "^0.13.5",
+    "regenerator-runtime": "^0.13.7",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "storybook-addon-themes": "^5.4.1",
