@@ -4,7 +4,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import * as CollectionsService from '../services/collections';
 import { schemaInspector } from '../database';
 import { InvalidPayloadException, CollectionNotFoundException } from '../exceptions';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import useCollection from '../middleware/use-collection';
 
 const router = Router();

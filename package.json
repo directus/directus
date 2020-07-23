@@ -9,7 +9,7 @@
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
     "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-    "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --watch \"src/**/*.ts\" --rs --transpile-only | pino-colada",
+    "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
     "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts"
   },
   "repository": {
@@ -32,7 +32,6 @@
   },
   "homepage": "https://github.com/directus/api-node#readme",
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
     "@slynova/flydrive-s3": "^1.0.2",
@@ -57,6 +56,7 @@
     "grant": "^5.2.0",
     "icc": "^2.0.0",
     "inquirer": "^7.3.1",
+    "joi": "^17.1.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
     "liquidjs": "^9.14.1",
@@ -86,6 +86,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/hapi__joi": "^17.1.3",
     "@types/inquirer": "^6.5.0",
+    "@types/joi": "^14.3.4",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.157",
     "@types/ms": "^0.7.31",

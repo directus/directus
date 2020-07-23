@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import * as UsersService from '../services/users';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

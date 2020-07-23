@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import session from 'express-session';
 import asyncHandler from 'express-async-handler';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import * as AuthService from '../services/auth';
 import grant from 'grant';
 import getGrantConfig from '../utils/get-grant-config';

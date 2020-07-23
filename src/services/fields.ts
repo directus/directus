@@ -3,6 +3,24 @@ import { Field } from '../types/field';
 import { uniq } from 'lodash';
 import { Accountability } from '../types';
 import * as ItemsService from '../services/items';
+import { ColumnBuilder } from 'knex';
+
+export const types = [
+	'bigInteger',
+	'boolean',
+	'date',
+	'dateTime',
+	'decimal',
+	'float',
+	'integer',
+	'json',
+	'string',
+	'text',
+	'time',
+	'timestamp',
+	'binary',
+	'uuid',
+] as const;
 
 export const fieldsInCollection = async (collection: string) => {
 	const [fields, columns] = await Promise.all([
@@ -46,7 +64,12 @@ export const readAll = async (collection?: string) => {
 	});
 };
 
-export const readOne = async (collection: string, field: string) => {
+/** @todo add accountability */
+export const readOne = async (
+	collection: string,
+	field: string,
+	accountability?: Accountability
+) => {
 	const [column, fieldInfo] = await Promise.all([
 		schemaInspector.columnInfo(collection, field),
 		database.select('*').from('directus_fields').where({ collection, field }).first(),
@@ -64,13 +87,42 @@ export const readOne = async (collection: string, field: string) => {
 
 export const createField = async (
 	collection: string,
-	field: Partial<Field> & { field: string; database: { type: string } },
+	field: DeepPartial<Field> & { field: string; database: { type: typeof types[number] } },
 	accountability: Accountability
 ) => {
-	await database.schema.alterTable(collection, (table) => {
-		table.specificType(field.field, field.database.type);
-		/** @todo add support for other database info (length etc) */
-	});
+	/**
+	 * @todo
+	 * Check if table / directus_fields row already exists
+	 */
+
+	if (field.database) {
+		await database.schema.alterTable(collection, (table) => {
+			let column: ColumnBuilder;
+
+			if (field.database.type === 'string') {
+				column = table.string(
+					field.field,
+					field.database.max_length !== null ? field.database.max_length : undefined
+				);
+			} else if (['float', 'decimal'].includes(field.database.type)) {
+				const type = field.database.type as 'float' | 'decimal';
+				/** @todo add precision and scale support */
+				column = table[type](field.field /* precision, scale */);
+			} else {
+				column = table[field.database.type](field.field);
+			}
+
+			if (field.database.default_value) {
+				column.defaultTo(field.database.default_value);
+			}
+
+			if (field.database.is_nullable && field.database.is_nullable === true) {
+				column.nullable();
+			} else {
+				column.notNullable();
+			}
+		});
+	}
 
 	if (field.system) {
 		await ItemsService.createItem(
@@ -83,9 +135,7 @@ export const createField = async (
 			accountability
 		);
 	}
-
-	const createdField = await readOne(collection, field.field);
-	return createdField;
 };
 
 /** @todo add update / delete field */
+/** @todo research how to make ^^^ happen in SQLite */

@@ -1,5 +1,5 @@
 import { Filter } from '../types';
-import Joi, { AnySchema } from '@hapi/joi';
+import Joi, { AnySchema } from 'joi';
 
 export default function generateJoi(filter: Filter) {
 	const schema: Record<string, AnySchema> = {};

@@ -4,9 +4,10 @@ import * as FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { Field } from '../types/field';
 import useCollection from '../middleware/use-collection';
+import { Accountability } from '../types';
 
 const router = Router();
 
@@ -51,12 +52,16 @@ router.get(
 const newFieldSchema = Joi.object({
 	field: Joi.string().required(),
 	database: Joi.object({
-		type: Joi.string().required(),
-	}).required(),
-	system: Joi.object({
-		hidden_browse: Joi.boolean(),
-		/** @todo extract this dynamically from the DB schema */
+		type: Joi.string()
+			.valid(...FieldsService.types)
+			.required(),
+		comment: Joi.string(),
+		default_value: Joi.any(),
+		max_length: [Joi.number(), Joi.string()],
+		is_nullable: Joi.bool(),
 	}),
+	/** @todo base this on default validation */
+	system: Joi.any(),
 });
 
 router.post(
@@ -70,17 +75,28 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> & { field: string; database: { type: string } } = req.body;
-
-		const createdField = await FieldsService.createField(req.collection, field, {
+		const accountability: Accountability = {
 			role: req.role,
 			admin: req.admin,
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			user: req.user,
-		});
+		};
 
-		res.json({ data: createdField || null });
+		const field: Partial<Field> & {
+			field: string;
+			database: { type: typeof FieldsService.types[number] };
+		} = req.body;
+
+		await FieldsService.createField(req.collection, field, accountability);
+
+		const createdField = await FieldsService.readOne(
+			req.collection,
+			field.field,
+			accountability
+		);
+
+		return res.json({ data: createdField || null });
 	})
 );
 
