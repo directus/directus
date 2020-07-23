@@ -33,6 +33,7 @@ const fakeFilesField: Field = {
 		readonly: true,
 		width: 'full',
 		group: null,
+		note: null,
 	},
 };
 
@@ -54,6 +55,7 @@ function getSystemDefault(collection: string, field: string): Field['system'] {
 		special: null,
 		translation: null,
 		width: 'full',
+		note: null,
 	};
 }
 

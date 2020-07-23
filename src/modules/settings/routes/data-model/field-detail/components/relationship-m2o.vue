@@ -100,6 +100,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .grid {
+	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--family-monospace);
+
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);

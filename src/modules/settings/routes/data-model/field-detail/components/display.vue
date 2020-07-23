@@ -43,7 +43,7 @@ export default defineComponent({
 		const _field = useSync(props, 'fieldData', emit);
 		const availabledisplays = computed(() =>
 			displays.filter((display) => {
-				const matchesType = display.types.includes(props.fieldData.database.type);
+				const matchesType = display.types.includes(props.fieldData.database?.type || 'alias');
 				const matchesRelation = true;
 
 				// if (props.type === 'standard') {

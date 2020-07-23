@@ -10,6 +10,7 @@
 			:field-data.sync="fieldData"
 			:type="type"
 		/>
+
 		<setup-relationship
 			:collection="collection"
 			v-if="currentTab[0] === 'relationship'"
@@ -17,12 +18,14 @@
 			:relations.sync="relations"
 			:type="type"
 		/>
+
 		<setup-interface
 			:collection="collection"
 			v-if="currentTab[0] === 'interface'"
 			:field-data.sync="fieldData"
 			:type="type"
 		/>
+
 		<setup-display
 			:collection="collection"
 			v-if="currentTab[0] === 'display'"
@@ -115,7 +118,7 @@ export default defineComponent({
 					},
 				];
 
-				if (['o2m', 'm2o', 'm2m'].includes(props.type)) {
+				if (['o2m', 'm2o', 'm2m', 'files'].includes(props.type)) {
 					tabs.splice(1, 0, {
 						text: i18n.t('relationship'),
 						value: 'relationship',
@@ -131,7 +134,10 @@ export default defineComponent({
 			return { tabs, currentTab };
 
 			function relationshipDisabled() {
-				return isEmpty(fieldData.field) || isEmpty(fieldData.database.type);
+				return (
+					isEmpty(fieldData.field) ||
+					(['o2m', 'm2m', 'files'].includes(props.type) === false && isEmpty(fieldData.database.type))
+				);
 			}
 
 			function interfaceDisplayDisabled() {
@@ -162,7 +168,6 @@ export default defineComponent({
 					default_value: undefined,
 					max_length: undefined,
 					is_nullable: true,
-					comment: undefined,
 				},
 				system: {
 					hidden: false,
@@ -172,6 +177,7 @@ export default defineComponent({
 					display_options: undefined,
 					readonly: false,
 					special: undefined,
+					note: undefined,
 				},
 			});
 
@@ -217,6 +223,63 @@ export default defineComponent({
 				);
 			}
 
+			if (props.type === 'm2m' || props.type === 'files') {
+				delete fieldData.database;
+
+				relations.value = [
+					{
+						collection_many: '',
+						field_many: '',
+						primary_many: '',
+						collection_one: props.collection,
+						field_one: fieldData.field,
+						primary_one: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
+					},
+					{
+						collection_many: '',
+						field_many: '',
+						primary_many: '',
+						collection_one: props.type === 'files' ? 'directus_files' : '',
+						field_one: null,
+						primary_one:
+							props.type === 'files'
+								? fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field
+								: '',
+					},
+				];
+
+				watch(
+					() => fieldData.field,
+					() => {
+						relations.value[0].field_one = fieldData.field;
+					}
+				);
+
+				watch(
+					() => relations.value[0].collection_many,
+					() => {
+						const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relations.value[0].collection_many)
+							?.field;
+						relations.value[0].primary_many = pkField;
+						relations.value[1].primary_many = pkField;
+					}
+				);
+
+				watch(
+					() => relations.value[0].field_many,
+					() => {
+						relations.value[1].junction_field = relations.value[0].field_many;
+					}
+				);
+
+				watch(
+					() => relations.value[1].field_many,
+					() => {
+						relations.value[0].junction_field = relations.value[1].field_many;
+					}
+				);
+			}
+
 			return { fieldData, relations };
 		}
 
@@ -225,6 +288,7 @@ export default defineComponent({
 
 			try {
 				await api.post(`/fields/${props.collection}`, fieldData);
+				await api.post(`/relations`, relations.value);
 			} catch (error) {
 				console.error(error);
 			} finally {

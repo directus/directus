@@ -36,6 +36,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 					special: null,
 					translation: null,
 					width: 'full',
+					note: null,
 				};
 			}
 

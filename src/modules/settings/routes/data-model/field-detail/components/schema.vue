@@ -10,7 +10,9 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('type') }}</div>
+				<v-input v-if="!_field.database" :value="$t('alias')" disabled />
 				<v-select
+					v-else
 					:disabled="typeDisabled"
 					:value="_field.database.type"
 					@input="setType"
@@ -20,11 +22,11 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="_field.database.comment" :placeholder="$t('add_note')" />
+				<v-input v-model="_field.system.comment" :placeholder="$t('add_note')" />
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field">
+			<div class="field" v-if="_field.database">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					class="monospace"
@@ -33,7 +35,7 @@
 				/>
 			</div>
 
-			<div class="field">
+			<div class="field" v-if="_field.database">
 				<div class="label type-label">{{ $t('length') }}</div>
 				<v-input
 					type="number"
@@ -43,7 +45,7 @@
 				/>
 			</div>
 
-			<div class="field">
+			<div class="field" v-if="_field.database">
 				<div class="label type-label">{{ $t('allow_null') }}</div>
 				<v-checkbox v-model="_field.database.is_nullable" :label="$t('allow_null_label')" block />
 			</div>

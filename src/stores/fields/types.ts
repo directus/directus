@@ -62,6 +62,7 @@ export type SystemField = {
 	special: string | null;
 	translation: null | Translation[];
 	width: Width | null;
+	note: string | null;
 };
 
 export interface FieldRaw {

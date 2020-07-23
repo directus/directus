@@ -43,7 +43,7 @@ export default defineComponent({
 		const _field = useSync(props, 'fieldData', emit);
 		const availableInterfaces = computed(() =>
 			interfaces.filter((inter) => {
-				const matchesType = inter.types.includes(props.fieldData.database.type);
+				const matchesType = inter.types.includes(props.fieldData.database?.type || 'alias');
 				let matchesRelation = false;
 
 				if (props.type === 'standard') {

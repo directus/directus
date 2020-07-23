@@ -51,6 +51,7 @@
 	"not_available_for_type": "Not Available for this Type",
 
 	"configure_m2o": "Configure your Many-to-One Relationship...",
+	"configure_m2m": "Configure your Many-to-Many Relationship...",
 
 	"include_seconds": "Include Seconds",
 
