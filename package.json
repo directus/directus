@@ -30,7 +30,7 @@
     "axios": "0.19.2",
     "base-64": "0.1.0",
     "bytes": "3.1.0",
-    "codemirror": "5.55.0",
+    "codemirror": "5.56.0",
     "cropperjs": "1.5.7",
     "csslint": "1.0.5",
     "date-fns": "2.14.0",
