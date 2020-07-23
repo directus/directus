@@ -48,6 +48,10 @@
 	"uuid": "UUID",
 	"unknown": "Unknown",
 
+	"not_available_for_type": "Not Available for this Type",
+
+	"configure_m2o": "Configure your Many-to-One Relationship...",
+
 	"include_seconds": "Include Seconds",
 
 	"add_note": "Add a helpful note for users...",

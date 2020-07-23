@@ -13,9 +13,35 @@ export default function useFormFields(fields: Ref<Field[]>) {
 
 		/**
 		 * @TODO
-		 *
 		 * This can be optimized by combining a bunch of these maps and filters
 		 */
+
+		// Make sure all system fields have some sort of system data
+		formFields = formFields.map((field) => {
+			if (!field.system) {
+				field.system = {
+					id: -1,
+					collection: field.collection,
+					field: field.field,
+					group: null,
+					hidden: false,
+					locked: false,
+					interface: null,
+					options: null,
+					display: null,
+					display_options: null,
+					readonly: false,
+					required: false,
+					sort: null,
+					special: null,
+					translation: null,
+					width: 'full',
+				};
+			}
+
+			return field;
+		});
+
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
 			const hiddenDetail = field.system?.hidden;
@@ -25,16 +51,16 @@ export default function useFormFields(fields: Ref<Field[]>) {
 
 		// Sort the fields on the sort column value
 		formFields = formFields.sort((a, b) => {
-			if (a.system!.sort == b.system!.sort) return 0;
-			if (a.system!.sort === null || a.system!.sort === undefined) return 1;
+			if (a.system.sort == b.system!.sort) return 0;
+			if (a.system.sort === null || a.system.sort === undefined) return 1;
 			if (b.system!.sort === null || b.system!.sort === undefined) return -1;
-			return a.system!.sort > b.system!.sort ? 1 : -1;
+			return a.system.sort > b.system!.sort ? 1 : -1;
 		});
 
 		// Make sure all form fields have a width associated with it
 		formFields = formFields.map((field) => {
-			if (!field.system!.width) {
-				field.system!.width = 'full';
+			if (!field.system.width) {
+				field.system.width = 'full';
 			}
 
 			return field;

@@ -10,7 +10,12 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('type') }}</div>
-				<v-select :value="_field.database.type" @input="setType" :items="typesWithLabels" />
+				<v-select
+					:disabled="typeDisabled"
+					:value="_field.database.type"
+					@input="setType"
+					:items="typesWithLabels"
+				/>
 			</div>
 
 			<div class="field full">
@@ -18,6 +23,7 @@
 				<v-input v-model="_field.database.comment" :placeholder="$t('add_note')" />
 			</div>
 
+			<!-- @todo base default value field type on selected type -->
 			<div class="field">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
@@ -29,7 +35,12 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('length') }}</div>
-				<v-input v-model="_field.database.max_length" />
+				<v-input
+					type="number"
+					:placeholder="_field.database.type !== 'string' ? $t('not_available_for_type') : '255'"
+					:disabled="_field.database.type !== 'string'"
+					v-model="_field.database.max_length"
+				/>
 			</div>
 
 			<div class="field">
@@ -60,6 +71,10 @@ export default defineComponent({
 			type: Object,
 			required: true,
 		},
+		type: {
+			type: String,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
 		const _field = useSync(props, 'fieldData', emit);
@@ -78,7 +93,11 @@ export default defineComponent({
 				})
 		);
 
-		return { _field, typesWithLabels, setType };
+		const typeDisabled = computed(() => {
+			return props.type !== 'standard';
+		});
+
+		return { _field, typesWithLabels, setType, typeDisabled };
 
 		function setType(value: typeof types[number]) {
 			if (value === 'uuid') {
