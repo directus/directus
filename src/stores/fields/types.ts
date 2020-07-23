@@ -24,6 +24,7 @@ export type Type =
 	| 'json'
 	| 'uuid'
 	| 'binary'
+	| 'uuid'
 	| 'unknown';
 
 export const types: Type[] = [
@@ -41,6 +42,7 @@ export const types: Type[] = [
 	'time',
 	'timestamp',
 	'binary',
+	'uuid',
 	'unknown',
 ];
 

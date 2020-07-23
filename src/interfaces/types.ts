@@ -7,8 +7,9 @@ export type InterfaceConfig = {
 	icon: string;
 	name: string | VueI18n.TranslateResult;
 	component: Component;
-	options: Partial<Field>[] | Component;
+	options: DeepPartial<Field>[] | Component;
 	types: Type[];
+	relationship?: null | 'm2o' | 'o2m' | 'm2m';
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 };

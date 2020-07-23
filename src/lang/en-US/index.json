@@ -26,9 +26,42 @@
 	"duplicate_where_to": "Where would you like to duplicate this field to?",
 	"editing_field": "Editing {field}",
 	"within_collectoin": "within {collection}",
+
+	"schema_setup_title": "How should this field save to the database?",
+
+	"key": "Key",
+
+	"alias": "Alias",
+	"bigInteger": "Big Integer",
+	"boolean": "Boolean",
+	"date": "Date",
+	"datetime": "DateTime",
+	"decimal": "Decimal",
+	"float": "Float",
+	"integer": "Integer",
+	"json": "JSON",
+	"string": "String",
+	"text": "Text",
+	"time": "Time",
+	"timestamp": "Timestamp",
+	"binary": "Binary",
+	"uuid": "UUID",
+	"unknown": "Unknown",
+
+	"include_seconds": "Include Seconds",
+
+	"add_note": "Add a helpful note for users...",
+
+	"default_value": "Default Value",
+	"add_a_default_value": "Add a default value...",
+
+	"allow_null": "Allow NULL",
+	"allow_null_label": "Can be set to \"NULL\"",
+
+	"interface_setup_title": "How will users view or interact with this field?",
+
 	"field_setup_title": "What type of field are you creating?",
 	"relationship_setup_title": "What kind of relationship are you creating?",
-	"interface_setup_title": "How will users view or interact with this field?",
 	"display_setup_title": "How should this field’s value be displayed?",
 	"schema_options_title": "All set! Below are some optional configuration options...",
 	"creating_field": "Creating New Field",
@@ -48,8 +81,6 @@
 	"database_column_name": "Database Column Name",
 	"translations": "Translations",
 	"note": "Note",
-	"add_helpful_note": "Enter a helpful comment for App users...",
-	"default_value": "Default Value",
 	"enter_a_value": "Enter a value...",
 	"length": "Length",
 	"required": "Required",
@@ -151,7 +182,6 @@
 	"interfaces": "Interfaces",
 	"interface_count": "No Interfaces | One Interface | {count} Interfaces",
 
-	"datetime": "DateTime",
 	"today": "Today",
 	"yesterday": "Yesterday",
 
@@ -163,7 +193,6 @@
 	"date-fns_date_short": "MMM d, u",
 	"date-fns_date_short_no_year": "MMM d",
 	"month": "Month",
-	"date": "Date",
 	"year": "Year",
 
 	"select_all": "Select All",
@@ -225,7 +254,6 @@
 	"primary_key_field": "Primary Key Field",
 	"type": "Type",
 	"number": "Number",
-	"string": "String",
 	"creating_new_collection": "Creating New Collection",
 	"status": "Status",
 	"sort": "Sort",
@@ -660,7 +688,6 @@
   "activity_log": "Activity Log",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
-  "add_note": "Add a helpful note for users...",
   "additional_info": "Additional Info",
   "admin_email": "Admin Email",
   "admin_password": "Admin Password",
@@ -1026,7 +1053,6 @@
   "spacing": "Spacing",
   "statuses": "Statuses",
   "template": "Template",
-  "text": "Text",
   "translation": "Translation",
   "translated_field_name": "Translated field name...",
   "not_translated_in_language": "Not Translated in {language}",
