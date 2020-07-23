@@ -41,7 +41,7 @@
     "jsonlint": "1.6.3",
     "jsonlint-mod": "1.7.5",
     "lodash": "4.17.19",
-    "marked": "1.1.0",
+    "marked": "1.1.1",
     "micromustache": "7.1.0",
     "mime-types": "2.1.27",
     "mousetrap": "1.6.5",
