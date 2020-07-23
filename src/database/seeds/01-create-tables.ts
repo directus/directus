@@ -60,12 +60,12 @@ export async function seed(knex: Knex): Promise<any> {
 		table.string('interface', 64);
 		table.json('options');
 		table.string('display', 64);
+		table.string('note', 255);
 		table.json('display_options');
 		table.boolean('locked').notNullable().defaultTo(false);
 		table.boolean('required').notNullable().defaultTo(false);
 		table.boolean('readonly').notNullable().defaultTo(false);
-		table.boolean('hidden_detail').notNullable().defaultTo(false);
-		table.boolean('hidden_browse').notNullable().defaultTo(false);
+		table.boolean('hidden').notNullable().defaultTo(false);
 		table.integer('sort');
 		table.string('width', 30);
 		table.integer('group');
