@@ -198,6 +198,25 @@ export default defineComponent({
 				);
 			}
 
+			if (props.type === 'm2o') {
+				relations.value = [
+					{
+						collection_many: props.collection,
+						field_many: '',
+						primary_many: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
+						collection_one: '',
+						primary_one: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					},
+				];
+
+				watch(
+					() => fieldData.field,
+					() => {
+						relations.value[0].field_many = fieldData.field;
+					}
+				);
+			}
+
 			return { fieldData, relations };
 		}
 

@@ -82,6 +82,11 @@ export default defineComponent({
 		const typesWithLabels = computed(() =>
 			types
 				.filter((type) => {
+					// Only allow primary key types in m2o fields
+					if (props.type === 'm2o') {
+						return ['integer', 'string', 'uuid'].includes(type);
+					}
+
 					// Remove alias and unknown, as those aren't real column types you can use
 					return ['alias', 'unknown'].includes(type) === false;
 				})
@@ -94,7 +99,7 @@ export default defineComponent({
 		);
 
 		const typeDisabled = computed(() => {
-			return props.type !== 'standard';
+			return ['file', 'files', 'o2m', 'm2m'].includes(props.type);
 		});
 
 		return { _field, typesWithLabels, setType, typeDisabled };
