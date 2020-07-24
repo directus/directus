@@ -60,6 +60,7 @@ import api from '@/api';
 import { Relation } from '@/stores/relations/types';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@/stores/fields/types';
+import router from '@/router';
 
 export default defineComponent({
 	components: {
@@ -244,10 +245,55 @@ export default defineComponent({
 						fieldData.database.type = field.database.type;
 					}
 				);
+
+				watch(
+					() => relations.value[0].collection_one,
+					() => {
+						if (newFields.value.length > 0) {
+							newFields.value[0].collection = relations.value[0].collection_one;
+						}
+					}
+				);
+			}
+
+			if (props.type === 'o2m') {
+				delete fieldData.database;
+
+				fieldData.system.special = 'o2m';
+
+				relations.value = [
+					{
+						collection_many: '',
+						field_many: '',
+						primary_many: '',
+
+						collection_one: props.collection,
+						field_one: fieldData.field,
+						primary_one: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
+					},
+				];
+
+				watch(
+					() => fieldData.field,
+					() => {
+						relations.value[0].field_one = fieldData.field;
+					}
+				);
+
+				watch(
+					() => relations.value[0].collection_many,
+					() => {
+						relations.value[0].primary_many = fieldsStore.getPrimaryKeyFieldForCollection(
+							relations.value[0].collection_many
+						).field;
+					}
+				);
 			}
 
 			if (props.type === 'm2m' || props.type === 'files') {
 				delete fieldData.database;
+
+				fieldData.system.special = 'm2m';
 
 				relations.value = [
 					{
@@ -319,6 +365,8 @@ export default defineComponent({
 				);
 
 				await api.post(`/relations`, relations.value);
+
+				router.push(`/settings/data-model/${props.collection}`);
 			} catch (error) {
 				console.error(error);
 			} finally {

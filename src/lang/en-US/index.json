@@ -51,7 +51,12 @@
 	"not_available_for_type": "Not Available for this Type",
 
 	"configure_m2o": "Configure your Many-to-One Relationship...",
+	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",
+
+	"add_m2o_to_collection": "Add Many-to-One to \"{collection}\"",
+	"add_o2m_to_collection": "Add One-to-Many to \"{collection}\"",
+	"add_m2m_to_collection": "Add Many-to-Many to \"{collection}\"",
 
 	"choose_a_type": "Choose a Type...",
 	"determined_by_relationship": "Determined by Relationship",

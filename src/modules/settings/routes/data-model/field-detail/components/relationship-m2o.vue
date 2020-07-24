@@ -24,7 +24,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
-				<v-checkbox block :label="$t('add_field_related')" v-model="hasCorresponding" />
+				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
@@ -43,6 +43,7 @@ import { orderBy } from 'lodash';
 import useSync from '@/composables/use-sync';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
+import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -75,9 +76,17 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { items, relatedPrimary } = useRelation();
-		const { hasCorresponding, correspondingField } = useCorresponding();
+		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
-		return { _relations, _newFields, items, relatedPrimary, hasCorresponding, correspondingField };
+		return {
+			_relations,
+			_newFields,
+			items,
+			relatedPrimary,
+			hasCorresponding,
+			correspondingField,
+			correspondingLabel,
+		};
 
 		function useRelation() {
 			const availableCollections = computed(() => {
@@ -132,21 +141,6 @@ export default defineComponent({
 				},
 			});
 
-			watch(
-				() => _relations.value[0].collection_one,
-				() => {
-					if (hasCorresponding.value === true) {
-						_newFields.value = [
-							{
-								...(_newFields.value[0] || {}),
-								collection: _relations.value[0].collection_one,
-							},
-						];
-					}
-				},
-				{ immediate: true }
-			);
-
 			const correspondingField = computed({
 				get() {
 					return _newFields.value?.[0]?.field || null;
@@ -168,7 +162,15 @@ export default defineComponent({
 				},
 			});
 
-			return { hasCorresponding, correspondingField };
+			const correspondingLabel = computed(() => {
+				if (_relations.value[0].collection_one) {
+					return i18n.t('add_o2m_to_collection', { collection: _relations.value[0].collection_one });
+				}
+
+				return i18n.t('add_field_related');
+			});
+
+			return { hasCorresponding, correspondingField, correspondingLabel };
 		}
 	},
 });
