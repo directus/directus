@@ -100,6 +100,8 @@ export default defineComponent({
 			return fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => ({
 				text: field.field,
 				value: field.field,
+				disabled:
+					_relations.value[0].field_many === field.field || _relations.value[1].field_many === field.field,
 			}));
 		});
 

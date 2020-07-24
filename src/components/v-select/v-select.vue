@@ -46,6 +46,7 @@
 				v-for="item in _items"
 				:key="item.value"
 				:active="multiple ? (value || []).includes(item.value) : value === item.value"
+				:disabled="item.disabled"
 				@click="multiple ? null : $emit('input', item.value)"
 			>
 				<v-list-item-content>
@@ -117,6 +118,7 @@ import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/us
 type Item = {
 	text: string;
 	value: string;
+	disabled?: boolean;
 };
 
 type ItemsRaw = (string | any)[];
@@ -207,6 +209,7 @@ export default defineComponent({
 					return {
 						text: item[props.itemText],
 						value: item[props.itemValue],
+						disabled: item.disabled,
 					};
 				});
 

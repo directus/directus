@@ -3,6 +3,7 @@
 		:collection="collection"
 		:field-data="fieldData"
 		:relations.sync="_relations"
+		:new-fields.sync="_newFields"
 		:type="type"
 		v-if="type === 'm2o' || type === 'file'"
 	/>
@@ -10,6 +11,7 @@
 		:collection="collection"
 		:field-data="fieldData"
 		:relations.sync="_relations"
+		:new-fields.sync="_newFields"
 		:type="type"
 		v-else-if="type === 'o2m'"
 	/>
@@ -17,6 +19,7 @@
 		:collection="collection"
 		:field-data="fieldData"
 		:relations.sync="_relations"
+		:new-fields.sync="_newFields"
 		:type="type"
 		v-else-if="type === 'm2m' || type === 'files'"
 	/>
@@ -25,6 +28,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
 import { Relation } from '@/stores/relations/types';
+import { Field } from '@/stores/fields/types';
 import useSync from '@/composables/use-sync';
 
 import RelationshipM2o from './relationship-m2o.vue';
@@ -46,6 +50,10 @@ export default defineComponent({
 			type: Array as PropType<Relation[]>,
 			required: true,
 		},
+		newFields: {
+			type: Array as PropType<DeepPartial<Field>[]>,
+			required: true,
+		},
 		fieldData: {
 			type: Object,
 			required: true,
@@ -57,8 +65,9 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const _relations = useSync(props, 'relations', emit);
+		const _newFields = useSync(props, 'newFields', emit);
 
-		return { _relations };
+		return { _relations, _newFields };
 	},
 });
 </script>

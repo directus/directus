@@ -17,6 +17,7 @@
 					:value="_field.database.type"
 					@input="setType"
 					:items="typesWithLabels"
+					:placeholder="typePlaceholder"
 				/>
 			</div>
 
@@ -101,10 +102,18 @@ export default defineComponent({
 		);
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2o'].includes(props.type);
 		});
 
-		return { _field, typesWithLabels, setType, typeDisabled };
+		const typePlaceholder = computed(() => {
+			if (props.type === 'm2o') {
+				return i18n.t('determined_by_relationship');
+			}
+
+			return i18n.t('choose_a_type');
+		});
+
+		return { _field, typesWithLabels, setType, typeDisabled, typePlaceholder };
 
 		function setType(value: typeof types[number]) {
 			if (value === 'uuid') {

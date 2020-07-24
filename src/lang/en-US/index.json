@@ -53,6 +53,9 @@
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",
 
+	"choose_a_type": "Choose a Type...",
+	"determined_by_relationship": "Determined by Relationship",
+
 	"include_seconds": "Include Seconds",
 
 	"add_note": "Add a helpful note for users...",

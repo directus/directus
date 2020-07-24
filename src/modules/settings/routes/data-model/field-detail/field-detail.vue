@@ -16,6 +16,7 @@
 			v-if="currentTab[0] === 'relationship'"
 			:field-data.sync="fieldData"
 			:relations.sync="relations"
+			:new-fields.sync="newFields"
 			:type="type"
 		/>
 
@@ -58,6 +59,7 @@ import { isEmpty } from 'lodash';
 import api from '@/api';
 import { Relation } from '@/stores/relations/types';
 import { useFieldsStore } from '@/stores/fields';
+import { Field } from '@/stores/fields/types';
 
 export default defineComponent({
 	components: {
@@ -92,11 +94,11 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { tabs, currentTab } = useTabs();
-		const { fieldData, relations } = useData();
+		const { fieldData, relations, newFields } = useData();
 
 		const saving = ref(false);
 
-		return { active, tabs, currentTab, fieldData, saveField, saving, relations };
+		return { active, tabs, currentTab, fieldData, saveField, saving, relations, newFields };
 
 		function useTabs() {
 			const tabs = computed(() => {
@@ -136,7 +138,7 @@ export default defineComponent({
 			function relationshipDisabled() {
 				return (
 					isEmpty(fieldData.field) ||
-					(['o2m', 'm2m', 'files'].includes(props.type) === false && isEmpty(fieldData.database.type))
+					(['o2m', 'm2m', 'files', 'm2o'].includes(props.type) === false && isEmpty(fieldData.database.type))
 				);
 			}
 
@@ -151,8 +153,15 @@ export default defineComponent({
 				}
 
 				if (['m2m', 'files'].includes(props.type)) {
-					/** @todo extend with all values */
-					return relations.value.length !== 2;
+					return (
+						relations.value.length !== 2 ||
+						isEmpty(relations.value[0].collection_many) ||
+						isEmpty(relations.value[0].field_many) ||
+						isEmpty(relations.value[0].field_one) ||
+						isEmpty(relations.value[1].collection_many) ||
+						isEmpty(relations.value[1].field_many) ||
+						isEmpty(relations.value[1].collection_one)
+					);
 				}
 
 				return isEmpty(fieldData.field) || isEmpty(fieldData.database.type);
@@ -182,6 +191,10 @@ export default defineComponent({
 			});
 
 			const relations = ref<Partial<Relation>[]>([]);
+
+			// Allow the panes to create additional fields outside of this one. This is used to
+			// auto generated related o2m columns / junction collections etc
+			const newFields = ref<DeepPartial<Field>[]>([]);
 
 			if (props.type === 'file') {
 				fieldData.database.type = 'uuid';
@@ -219,6 +232,16 @@ export default defineComponent({
 					() => fieldData.field,
 					() => {
 						relations.value[0].field_many = fieldData.field;
+					}
+				);
+
+				// Make sure to keep the current m2o field type in sync with the primary key of the
+				// selected related collection
+				watch(
+					() => relations.value[0].collection_one,
+					() => {
+						const field = fieldsStore.getPrimaryKeyFieldForCollection(relations.value[0].collection_one);
+						fieldData.database.type = field.database.type;
 					}
 				);
 			}
@@ -280,7 +303,7 @@ export default defineComponent({
 				);
 			}
 
-			return { fieldData, relations };
+			return { fieldData, relations, newFields };
 		}
 
 		async function saveField() {
@@ -288,6 +311,13 @@ export default defineComponent({
 
 			try {
 				await api.post(`/fields/${props.collection}`, fieldData);
+
+				await Promise.all(
+					newFields.value.map((newField) => {
+						return api.post(`/fields/${newField.collection}`, newField);
+					})
+				);
+
 				await api.post(`/relations`, relations.value);
 			} catch (error) {
 				console.error(error);

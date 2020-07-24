@@ -24,11 +24,11 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
-				<v-checkbox block :label="$t('add_field_related')" />
+				<v-checkbox block :label="$t('add_field_related')" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
-				<v-input />
+				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" />
 			</div>
 			<v-icon name="arrow_forward" />
 		</div>
@@ -36,8 +36,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, watch } from '@vue/composition-api';
 import { Relation } from '@/stores/relations/types';
+import { Field } from '@/stores/fields/types';
 import { orderBy } from 'lodash';
 import useSync from '@/composables/use-sync';
 import useCollectionsStore from '@/stores/collections';
@@ -53,6 +54,10 @@ export default defineComponent({
 			type: Array as PropType<Relation[]>,
 			required: true,
 		},
+		newFields: {
+			type: Array as PropType<DeepPartial<Field>[]>,
+			required: true,
+		},
 		fieldData: {
 			type: Object,
 			required: true,
@@ -64,36 +69,107 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const _relations = useSync(props, 'relations', emit);
+		const _newFields = useSync(props, 'newFields', emit);
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const availableCollections = computed(() => {
-			return orderBy(
-				collectionsStore.state.collections.filter((collection) => {
-					return (
-						collection.collection.startsWith('directus_') === false &&
-						collection.collection !== props.collection
-					);
-				}),
-				['collection'],
-				['asc']
+		const { items, relatedPrimary } = useRelation();
+		const { hasCorresponding, correspondingField } = useCorresponding();
+
+		return { _relations, _newFields, items, relatedPrimary, hasCorresponding, correspondingField };
+
+		function useRelation() {
+			const availableCollections = computed(() => {
+				return orderBy(
+					collectionsStore.state.collections.filter((collection) => {
+						return (
+							collection.collection.startsWith('directus_') === false &&
+							collection.collection !== props.collection
+						);
+					}),
+					['collection'],
+					['asc']
+				);
+			});
+
+			const items = computed(() =>
+				availableCollections.value.map((collection) => ({
+					text: collection.collection,
+					value: collection.collection,
+				}))
 			);
-		});
 
-		const items = computed(() =>
-			availableCollections.value.map((collection) => ({
-				text: collection.name,
-				value: collection.collection,
-			}))
-		);
+			const relatedPrimary = computed(() => {
+				return _relations.value[0].collection_one
+					? fieldsStore.getPrimaryKeyFieldForCollection(_relations.value[0].collection_one)?.field
+					: null;
+			});
 
-		const relatedPrimary = computed(() => {
-			return _relations.value[0].collection_one
-				? fieldsStore.getPrimaryKeyFieldForCollection(_relations.value[0].collection_one)?.field
-				: null;
-		});
+			return { items, relatedPrimary };
+		}
 
-		return { _relations, items, relatedPrimary };
+		function useCorresponding() {
+			const hasCorresponding = computed({
+				get() {
+					return _newFields.value.length > 0;
+				},
+				set(enabled: boolean) {
+					if (enabled === true) {
+						_newFields.value = [
+							{
+								field: '',
+								collection: _relations.value[0].collection_one,
+								system: {
+									special: 'o2m',
+									interface: 'one-to-many',
+								},
+							},
+						];
+					} else {
+						_newFields.value = [];
+					}
+				},
+			});
+
+			watch(
+				() => _relations.value[0].collection_one,
+				() => {
+					if (hasCorresponding.value === true) {
+						_newFields.value = [
+							{
+								...(_newFields.value[0] || {}),
+								collection: _relations.value[0].collection_one,
+							},
+						];
+					}
+				},
+				{ immediate: true }
+			);
+
+			const correspondingField = computed({
+				get() {
+					return _newFields.value?.[0]?.field || null;
+				},
+				set(field: string | null) {
+					_newFields.value = [
+						{
+							...(_newFields.value[0] || {}),
+							field: field || '',
+						},
+					];
+
+					_relations.value = [
+						{
+							..._relations.value[0],
+							field_one: field,
+						},
+					];
+				},
+			});
+
+			return { hasCorresponding, correspondingField };
+		}
 	},
 });
 </script>
