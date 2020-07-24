@@ -213,7 +213,15 @@ export default defineComponent({
 					})
 				);
 
-				await api.post(`/relations`, state.relations);
+				await Promise.all(
+					state.relations.map((relation: Partial<Relation>) => {
+						if (relation.id) {
+							return api.patch(`/relations/${relation.id}`, relation);
+						} else {
+							return api.post(`/relations`, relation);
+						}
+					})
+				);
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
