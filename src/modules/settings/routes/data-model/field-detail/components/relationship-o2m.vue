@@ -12,10 +12,10 @@
 			</div>
 			<v-input disabled :value="currentCollectionPrimaryKey.field" />
 			<v-select
-				v-model="_relations[0].field_many"
-				:disabled="!_relations[0].collection_many"
+				v-model="relations[0].field_many"
+				:disabled="!relations[0].collection_many"
 				:items="fields"
-				:placeholder="!_relations[0].collection_many ? $t('choose_a_collection') : $t('choose_a_field')"
+				:placeholder="!relations[0].collection_many ? $t('choose_a_collection') : $t('choose_a_field')"
 			/>
 			<v-icon name="arrow_forward" />
 		</div>
@@ -32,22 +32,12 @@ import useFieldsStore from '@/stores/fields';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
 
+import { state } from '../store';
+
 export default defineComponent({
 	props: {
 		type: {
 			type: String,
-			required: true,
-		},
-		relations: {
-			type: Array as PropType<Relation[]>,
-			required: true,
-		},
-		newFields: {
-			type: Array as PropType<DeepPartial<Field>[]>,
-			required: true,
-		},
-		fieldData: {
-			type: Object,
 			required: true,
 		},
 		collection: {
@@ -56,15 +46,12 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _relations = useSync(props, 'relations', emit);
-		const _newFields = useSync(props, 'newFields', emit);
-
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
 		const { items, fields, currentCollectionPrimaryKey, collectionMany } = useRelation();
 
-		return { _relations, items, fields, currentCollectionPrimaryKey, collectionMany };
+		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany };
 
 		function useRelation() {
 			const availableCollections = computed(() => {
@@ -92,16 +79,15 @@ export default defineComponent({
 			);
 
 			const fields = computed(() => {
-				if (!_relations.value[0].collection_many) return [];
+				if (!state.relations[0].collection_many) return [];
 
 				return fieldsStore.state.fields
 					.filter((field) => {
-						if (field.collection !== _relations.value[0].collection_many) return false;
+						if (field.collection !== state.relations[0].collection_many) return false;
 
 						// Make sure the selected field matches the type of primary key of the current
 						// collection. Otherwise you aren't able to properly save the primary key
-						if (!field.database || field.database.type !== currentCollectionPrimaryKey.value.database.type)
-							return false;
+						if (!field.database || field.type !== currentCollectionPrimaryKey.value.type) return false;
 
 						return true;
 					})
@@ -110,48 +96,15 @@ export default defineComponent({
 
 			const collectionMany = computed({
 				get() {
-					return _relations.value[0].collection_many;
+					return state.relations[0].collection_many!;
 				},
 				set(collection: string) {
-					_relations.value[0].collection_many = collection;
-					_relations.value[0].field_many = '';
+					state.relations[0].collection_many = collection;
+					state.relations[0].field_many = '';
 				},
 			});
 
 			return { availableCollections, items, fields, currentCollectionPrimaryKey, collectionMany };
-		}
-
-		function useCorresponding() {
-			const hasCorresponding = computed({
-				get() {
-					return _newFields.value.length > 0;
-				},
-				set(enabled: boolean) {
-					if (enabled === true) {
-						_newFields.value = [
-							{
-								field: _relations.value[0].field_many,
-								collection: _relations.value[0].collection_many,
-								system: {
-									interface: 'many-to-one',
-								},
-							},
-						];
-					} else {
-						_newFields.value = [];
-					}
-				},
-			});
-
-			const correspondingLabel = computed(() => {
-				if (_relations.value[0].collection_many) {
-					return i18n.t('add_m2o_to_collection', { collection: _relations.value[0].collection_many });
-				}
-
-				return i18n.t('add_field_related');
-			});
-
-			return { hasCorresponding, correspondingLabel };
 		}
 	},
 });

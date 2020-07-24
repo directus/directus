@@ -5,16 +5,16 @@
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">{{ $t('key') }}</div>
-				<v-input autofocus class="monospace" v-model="_field.field" db-safe />
+				<v-input :disabled="isExisting" autofocus class="monospace" v-model="fieldData.field" db-safe />
 			</div>
 
 			<div class="field">
 				<div class="label type-label">{{ $t('type') }}</div>
-				<v-input v-if="!_field.database" :value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.database" :value="$t('alias')" disabled />
 				<v-select
 					v-else
-					:disabled="typeDisabled"
-					:value="_field.database.type"
+					:disabled="typeDisabled || isExisting"
+					:value="fieldData.type"
 					@input="setType"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
@@ -23,32 +23,32 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="_field.system.comment" :placeholder="$t('add_note')" />
+				<v-input v-model="fieldData.system.comment" :placeholder="$t('add_note')" />
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field" v-if="_field.database">
+			<div class="field" v-if="fieldData.database">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					class="monospace"
-					v-model="_field.database.default_value"
+					v-model="fieldData.database.default_value"
 					:placeholder="$t('add_a_default_value')"
 				/>
 			</div>
 
-			<div class="field" v-if="_field.database">
+			<div class="field" v-if="fieldData.database">
 				<div class="label type-label">{{ $t('length') }}</div>
 				<v-input
 					type="number"
-					:placeholder="_field.database.type !== 'string' ? $t('not_available_for_type') : '255'"
-					:disabled="_field.database.type !== 'string'"
-					v-model="_field.database.max_length"
+					:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
+					:disabled="isExisting || fieldData.type !== 'string'"
+					v-model="fieldData.database.max_length"
 				/>
 			</div>
 
-			<div class="field" v-if="_field.database">
+			<div class="field" v-if="fieldData.database">
 				<div class="label type-label">{{ $t('allow_null') }}</div>
-				<v-checkbox v-model="_field.database.is_nullable" :label="$t('allow_null_label')" block />
+				<v-checkbox v-model="fieldData.database.is_nullable" :label="$t('allow_null_label')" block />
 			</div>
 
 			<!--
@@ -56,7 +56,7 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('unique') }}</div>
-				<v-input v-model="_field.database.unique" />
+				<v-input v-model="fieldData.database.unique" />
 			</div> -->
 		</div>
 	</div>
@@ -67,11 +67,12 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
 import { types } from '@/stores/fields/types';
 import i18n from '@/lang';
+import { state } from '../store';
 
 export default defineComponent({
 	props: {
-		fieldData: {
-			type: Object,
+		isExisting: {
+			type: Boolean,
 			required: true,
 		},
 		type: {
@@ -80,8 +81,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _field = useSync(props, 'fieldData', emit);
-
 		const typesWithLabels = computed(() =>
 			types
 				.filter((type) => {
@@ -113,23 +112,22 @@ export default defineComponent({
 			return i18n.t('choose_a_type');
 		});
 
-		return { _field, typesWithLabels, setType, typeDisabled, typePlaceholder };
+		return { fieldData: state.fieldData, typesWithLabels, setType, typeDisabled, typePlaceholder };
 
 		function setType(value: typeof types[number]) {
 			if (value === 'uuid') {
-				_field.value.system.special = 'uuid';
+				state.fieldData.system.special = 'uuid';
 			} else {
-				_field.value.system.special = null;
+				state.fieldData.system.special = null;
 			}
 
 			// We'll reset the interface/display as they most likely won't work for the newly selected
 			// type
-			_field.value.system.interface = null;
-			_field.value.system.options = null;
-			_field.value.system.display = null;
-			_field.value.system.display_options = null;
-
-			_field.value.database.type = value;
+			state.fieldData.system.interface = null;
+			state.fieldData.system.options = null;
+			state.fieldData.system.display = null;
+			state.fieldData.system.display_options = null;
+			state.fieldData.type = value;
 		}
 	},
 });

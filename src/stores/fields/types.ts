@@ -68,6 +68,7 @@ export type SystemField = {
 export interface FieldRaw {
 	collection: string;
 	field: string;
+	type: typeof types[number];
 
 	database: DatabaseColumn | null;
 	system: SystemField | null;

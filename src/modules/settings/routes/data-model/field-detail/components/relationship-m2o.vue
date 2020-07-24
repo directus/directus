@@ -4,14 +4,14 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="_relations[0].collection_many" />
+				<v-input disabled :value="relations[0].collection_many" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
 				<v-select
 					:placeholder="$t('choose_a_collection')"
 					:items="items"
-					v-model="_relations[0].collection_one"
+					v-model="relations[0].collection_one"
 				/>
 			</div>
 			<v-input disabled :value="fieldData.field" />
@@ -45,22 +45,12 @@ import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
 import i18n from '@/lang';
 
+import { state } from '../store';
+
 export default defineComponent({
 	props: {
 		type: {
 			type: String,
-			required: true,
-		},
-		relations: {
-			type: Array as PropType<Relation[]>,
-			required: true,
-		},
-		newFields: {
-			type: Array as PropType<DeepPartial<Field>[]>,
-			required: true,
-		},
-		fieldData: {
-			type: Object,
 			required: true,
 		},
 		collection: {
@@ -69,9 +59,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _relations = useSync(props, 'relations', emit);
-		const _newFields = useSync(props, 'newFields', emit);
-
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -79,13 +66,13 @@ export default defineComponent({
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		return {
-			_relations,
-			_newFields,
+			relations: state.relations,
 			items,
 			relatedPrimary,
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
+			fieldData: state.fieldData,
 		};
 
 		function useRelation() {
@@ -110,8 +97,8 @@ export default defineComponent({
 			);
 
 			const relatedPrimary = computed(() => {
-				return _relations.value[0].collection_one
-					? fieldsStore.getPrimaryKeyFieldForCollection(_relations.value[0].collection_one)?.field
+				return state.relations[0].collection_one
+					? fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].collection_one)?.field
 					: null;
 			});
 
@@ -121,14 +108,14 @@ export default defineComponent({
 		function useCorresponding() {
 			const hasCorresponding = computed({
 				get() {
-					return _newFields.value.length > 0;
+					return state.newFields.length > 0;
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
-						_newFields.value = [
+						state.newFields = [
 							{
 								field: '',
-								collection: _relations.value[0].collection_one,
+								collection: state.relations[0].collection_one,
 								system: {
 									special: 'o2m',
 									interface: 'one-to-many',
@@ -136,26 +123,26 @@ export default defineComponent({
 							},
 						];
 					} else {
-						_newFields.value = [];
+						state.newFields = [];
 					}
 				},
 			});
 
 			const correspondingField = computed({
 				get() {
-					return _newFields.value?.[0]?.field || null;
+					return state.newFields?.[0]?.field || null;
 				},
 				set(field: string | null) {
-					_newFields.value = [
+					state.newFields = [
 						{
-							...(_newFields.value[0] || {}),
+							...(state.newFields[0] || {}),
 							field: field || '',
 						},
 					];
 
-					_relations.value = [
+					state.relations = [
 						{
-							..._relations.value[0],
+							...state.relations[0],
 							field_one: field,
 						},
 					];
@@ -163,8 +150,8 @@ export default defineComponent({
 			});
 
 			const correspondingLabel = computed(() => {
-				if (_relations.value[0].collection_one) {
-					return i18n.t('add_o2m_to_collection', { collection: _relations.value[0].collection_one });
+				if (state.relations[0].collection_one) {
+					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].collection_one });
 				}
 
 				return i18n.t('add_field_related');

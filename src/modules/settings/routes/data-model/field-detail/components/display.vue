@@ -2,9 +2,9 @@
 	<div>
 		<h2 class="type-title">{{ $t('display_setup_title') }}</h2>
 
-		<v-fancy-select class="select" :items="selectItems" v-model="_field.system.display" />
+		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.system.display" />
 
-		<template v-if="_field.system.display">
+		<template v-if="fieldData.system.display">
 			<v-form
 				v-if="
 					selectedDisplay.options &&
@@ -13,7 +13,7 @@
 				"
 				:fields="selectedDisplay.options"
 				primary-key="+"
-				v-model="_field.system.options"
+				v-model="fieldData.system.options"
 			/>
 
 			<v-notice v-else>
@@ -26,24 +26,20 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import displays from '@/displays';
-import useSync from '@/composables/use-sync';
+
+import { state } from '../store';
 
 export default defineComponent({
 	props: {
-		fieldData: {
-			type: Object,
-			required: true,
-		},
 		type: {
 			type: String,
 			required: true,
 		},
 	},
 	setup(props, { emit }) {
-		const _field = useSync(props, 'fieldData', emit);
-		const availabledisplays = computed(() =>
+		const availableDisplays = computed(() =>
 			displays.filter((display) => {
-				const matchesType = display.types.includes(props.fieldData.database?.type || 'alias');
+				const matchesType = display.types.includes(state.fieldData?.type || 'alias');
 				const matchesRelation = true;
 
 				// if (props.type === 'standard') {
@@ -61,7 +57,7 @@ export default defineComponent({
 		);
 
 		const selectItems = computed(() =>
-			availabledisplays.value.map((display) => ({
+			availableDisplays.value.map((display) => ({
 				text: display.name,
 				value: display.id,
 				icon: display.icon,
@@ -69,10 +65,10 @@ export default defineComponent({
 		);
 
 		const selectedDisplay = computed(() => {
-			return displays.find((display) => display.id === _field.value.system.display);
+			return displays.find((display) => display.id === state.fieldData.system.display);
 		});
 
-		return { _field, selectItems, selectedDisplay };
+		return { fieldData: state.fieldData, selectItems, selectedDisplay };
 	},
 });
 </script>

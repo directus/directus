@@ -88,7 +88,6 @@ export const useFieldsStore = createStore({
 		parseField(field: FieldRaw): Field {
 			let name: string | VueI18n.TranslateResult;
 
-			const type = field.database === null ? 'alias' : getLocalType(field.database.type);
 			const system = field.system === null ? getSystemDefault(field.collection, field.field) : field.system;
 
 			if (notEmpty(system.translation) && system.translation.length > 0) {
@@ -110,7 +109,6 @@ export const useFieldsStore = createStore({
 			return {
 				...field,
 				name,
-				type,
 				system,
 			};
 		},

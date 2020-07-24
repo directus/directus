@@ -1,37 +1,35 @@
 <template>
 	<v-modal :active="active" title="Test" persistent>
 		<template #sidebar>
-			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="type" />
+			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
 		</template>
 
 		<setup-schema
-			:collection="collection"
 			v-if="currentTab[0] === 'schema'"
-			:field-data.sync="fieldData"
-			:type="type"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
 		/>
 
 		<setup-relationship
-			:collection="collection"
 			v-if="currentTab[0] === 'relationship'"
-			:field-data.sync="fieldData"
-			:relations.sync="relations"
-			:new-fields.sync="newFields"
-			:type="type"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
 		/>
 
 		<setup-interface
-			:collection="collection"
 			v-if="currentTab[0] === 'interface'"
-			:field-data.sync="fieldData"
-			:type="type"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
 		/>
 
 		<setup-display
-			:collection="collection"
 			v-if="currentTab[0] === 'display'"
-			:field-data.sync="fieldData"
-			:type="type"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
 		/>
 
 		<template #footer>
@@ -41,6 +39,7 @@
 				:current.sync="currentTab"
 				:tabs="tabs"
 				@save="saveField"
+				@cancel="cancelField"
 			/>
 		</template>
 	</v-modal>
@@ -59,8 +58,11 @@ import { isEmpty } from 'lodash';
 import api from '@/api';
 import { Relation } from '@/stores/relations/types';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Field } from '@/stores/fields/types';
 import router from '@/router';
+
+import { initLocalStore, state, clearLocalStore } from './store';
 
 export default defineComponent({
 	components: {
@@ -86,20 +88,45 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const localType = computed(() => {
+			if (props.field === '+') return props.type;
+
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' = 'standard';
+
+			const existingField = fieldsStore.getField(props.collection, props.field);
+			type = getLocalTypeForField(props.collection, props.field);
+
+			return type;
+		});
+
 		// This makes sure we still see the enter animation
+		/** @todo fix this in the transition */
 		const active = ref(false);
 		onMounted(() => {
 			active.value = true;
 		});
 
-		const fieldsStore = useFieldsStore();
+		initLocalStore(props.collection, props.field, localType.value);
 
 		const { tabs, currentTab } = useTabs();
-		const { fieldData, relations, newFields } = useData();
 
 		const saving = ref(false);
 
-		return { active, tabs, currentTab, fieldData, saveField, saving, relations, newFields };
+		return {
+			active,
+			tabs,
+			currentTab,
+			fieldData: state.fieldData,
+			saveField,
+			saving,
+			relations: state.relations,
+			newFields: state.newFields,
+			cancelField,
+			localType,
+		};
 
 		function useTabs() {
 			const tabs = computed(() => {
@@ -121,7 +148,7 @@ export default defineComponent({
 					},
 				];
 
-				if (['o2m', 'm2o', 'm2m', 'files'].includes(props.type)) {
+				if (['o2m', 'm2o', 'm2m', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
 						text: i18n.t('relationship'),
 						value: 'relationship',
@@ -138,240 +165,98 @@ export default defineComponent({
 
 			function relationshipDisabled() {
 				return (
-					isEmpty(fieldData.field) ||
-					(['o2m', 'm2m', 'files', 'm2o'].includes(props.type) === false && isEmpty(fieldData.database.type))
+					isEmpty(state.fieldData.field) ||
+					(['o2m', 'm2m', 'files', 'm2o'].includes(localType.value) === false &&
+						isEmpty(state.fieldData.type))
 				);
 			}
 
 			function interfaceDisplayDisabled() {
-				if (['o2m', 'm2o', 'file'].includes(props.type)) {
+				if (['o2m', 'm2o', 'file'].includes(localType.value)) {
 					return (
-						relations.value.length === 0 ||
-						isEmpty(relations.value[0].collection_many) ||
-						isEmpty(relations.value[0].field_many) ||
-						isEmpty(relations.value[0].collection_one)
+						state.relations.length === 0 ||
+						isEmpty(state.relations[0].collection_many) ||
+						isEmpty(state.relations[0].field_many) ||
+						isEmpty(state.relations[0].collection_one)
 					);
 				}
 
-				if (['m2m', 'files'].includes(props.type)) {
+				if (['m2m', 'files'].includes(localType.value)) {
 					return (
-						relations.value.length !== 2 ||
-						isEmpty(relations.value[0].collection_many) ||
-						isEmpty(relations.value[0].field_many) ||
-						isEmpty(relations.value[0].field_one) ||
-						isEmpty(relations.value[1].collection_many) ||
-						isEmpty(relations.value[1].field_many) ||
-						isEmpty(relations.value[1].collection_one)
+						state.relations.length !== 2 ||
+						isEmpty(state.relations[0].collection_many) ||
+						isEmpty(state.relations[0].field_many) ||
+						isEmpty(state.relations[0].field_one) ||
+						isEmpty(state.relations[1].collection_many) ||
+						isEmpty(state.relations[1].field_many) ||
+						isEmpty(state.relations[1].collection_one)
 					);
 				}
 
-				return isEmpty(fieldData.field) || isEmpty(fieldData.database.type);
+				return isEmpty(state.fieldData.field) || isEmpty(state.fieldData.type);
 			}
-		}
-
-		function useData() {
-			/** @todo this should technically be a DeepPartial<Field>, but that's a bit annoying to deal with rn */
-			const fieldData = reactive<any>({
-				field: '',
-				database: {
-					type: undefined,
-					default_value: undefined,
-					max_length: undefined,
-					is_nullable: true,
-				},
-				system: {
-					hidden: false,
-					interface: undefined,
-					options: undefined,
-					display: undefined,
-					display_options: undefined,
-					readonly: false,
-					special: undefined,
-					note: undefined,
-				},
-			});
-
-			const relations = ref<Partial<Relation>[]>([]);
-
-			// Allow the panes to create additional fields outside of this one. This is used to
-			// auto generated related o2m columns / junction collections etc
-			const newFields = ref<DeepPartial<Field>[]>([]);
-
-			if (props.type === 'file') {
-				fieldData.database.type = 'uuid';
-
-				relations.value = [
-					{
-						collection_many: props.collection,
-						field_many: '',
-						primary_many: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
-						collection_one: 'directus_files',
-						primary_one: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
-					},
-				];
-
-				watch(
-					() => fieldData.field,
-					() => {
-						relations.value[0].field_many = fieldData.field;
-					}
-				);
-			}
-
-			if (props.type === 'm2o') {
-				relations.value = [
-					{
-						collection_many: props.collection,
-						field_many: '',
-						primary_many: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
-						collection_one: '',
-						primary_one: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
-					},
-				];
-
-				watch(
-					() => fieldData.field,
-					() => {
-						relations.value[0].field_many = fieldData.field;
-					}
-				);
-
-				// Make sure to keep the current m2o field type in sync with the primary key of the
-				// selected related collection
-				watch(
-					() => relations.value[0].collection_one,
-					() => {
-						const field = fieldsStore.getPrimaryKeyFieldForCollection(relations.value[0].collection_one);
-						fieldData.database.type = field.database.type;
-					}
-				);
-
-				watch(
-					() => relations.value[0].collection_one,
-					() => {
-						if (newFields.value.length > 0) {
-							newFields.value[0].collection = relations.value[0].collection_one;
-						}
-					}
-				);
-			}
-
-			if (props.type === 'o2m') {
-				delete fieldData.database;
-
-				fieldData.system.special = 'o2m';
-
-				relations.value = [
-					{
-						collection_many: '',
-						field_many: '',
-						primary_many: '',
-
-						collection_one: props.collection,
-						field_one: fieldData.field,
-						primary_one: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
-					},
-				];
-
-				watch(
-					() => fieldData.field,
-					() => {
-						relations.value[0].field_one = fieldData.field;
-					}
-				);
-
-				watch(
-					() => relations.value[0].collection_many,
-					() => {
-						relations.value[0].primary_many = fieldsStore.getPrimaryKeyFieldForCollection(
-							relations.value[0].collection_many
-						).field;
-					}
-				);
-			}
-
-			if (props.type === 'm2m' || props.type === 'files') {
-				delete fieldData.database;
-
-				fieldData.system.special = 'm2m';
-
-				relations.value = [
-					{
-						collection_many: '',
-						field_many: '',
-						primary_many: '',
-						collection_one: props.collection,
-						field_one: fieldData.field,
-						primary_one: fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field,
-					},
-					{
-						collection_many: '',
-						field_many: '',
-						primary_many: '',
-						collection_one: props.type === 'files' ? 'directus_files' : '',
-						field_one: null,
-						primary_one:
-							props.type === 'files'
-								? fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field
-								: '',
-					},
-				];
-
-				watch(
-					() => fieldData.field,
-					() => {
-						relations.value[0].field_one = fieldData.field;
-					}
-				);
-
-				watch(
-					() => relations.value[0].collection_many,
-					() => {
-						const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relations.value[0].collection_many)
-							?.field;
-						relations.value[0].primary_many = pkField;
-						relations.value[1].primary_many = pkField;
-					}
-				);
-
-				watch(
-					() => relations.value[0].field_many,
-					() => {
-						relations.value[1].junction_field = relations.value[0].field_many;
-					}
-				);
-
-				watch(
-					() => relations.value[1].field_many,
-					() => {
-						relations.value[0].junction_field = relations.value[1].field_many;
-					}
-				);
-			}
-
-			return { fieldData, relations, newFields };
 		}
 
 		async function saveField() {
 			saving.value = true;
 
 			try {
-				await api.post(`/fields/${props.collection}`, fieldData);
+				if (props.field !== '+') {
+					await api.patch(`/fields/${props.collection}/${props.field}`, state.fieldData);
+				} else {
+					await api.post(`/fields/${props.collection}`, state.fieldData);
+				}
 
 				await Promise.all(
-					newFields.value.map((newField) => {
+					state.newFields.map((newField: Partial<Field>) => {
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
 
-				await api.post(`/relations`, relations.value);
+				await api.post(`/relations`, state.relations);
 
 				router.push(`/settings/data-model/${props.collection}`);
+				clearLocalStore();
 			} catch (error) {
 				console.error(error);
 			} finally {
 				saving.value = false;
 			}
+		}
+
+		function cancelField() {
+			router.push(`/settings/data-model/${props.collection}`);
+			clearLocalStore();
+		}
+
+		function getLocalTypeForField(
+			collection: string,
+			field: string
+		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' {
+			const fieldInfo = fieldsStore.getField(collection, field);
+			const relations = relationsStore.getRelationsForField(collection, field);
+
+			if (relations.length === 0) return 'standard';
+
+			if (relations.length === 1) {
+				const relation = relations[0];
+				if (relation.collection_one === 'directus_files') return 'file';
+				if (relation.collection_many === collection) return 'm2o';
+				return 'o2m';
+			}
+
+			if (relations.length === 2) {
+				if (
+					relations[0].collection_one === 'directus_files' ||
+					relations[1].collection_one === 'directus_files'
+				) {
+					return 'files';
+				} else {
+					return 'm2m';
+				}
+			}
+
+			return 'standard';
 		}
 	},
 });

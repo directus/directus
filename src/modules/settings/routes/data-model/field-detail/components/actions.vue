@@ -1,6 +1,6 @@
 <template>
 	<div class="actions">
-		<v-button secondary :to="`/settings/data-model/${collection}`">
+		<v-button secondary @click="$emit('cancel')">
 			{{ $t('cancel') }}
 		</v-button>
 		<div class="spacer" />
