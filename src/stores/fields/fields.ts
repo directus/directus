@@ -125,7 +125,7 @@ export const useFieldsStore = createStore({
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
-						return this.addTranslationsForField(response.data.data);
+						return this.parseField(response.data.data);
 					}
 
 					return field;
@@ -168,7 +168,7 @@ export const useFieldsStore = createStore({
 
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === fieldKey) {
-						return this.addTranslationsForField(response.data.data);
+						return this.parseField(response.data.data);
 					}
 
 					return field;
@@ -218,7 +218,7 @@ export const useFieldsStore = createStore({
 						const newDataForField = response.data.data.find(
 							(update: Field) => update.field === field.field
 						);
-						if (newDataForField) return this.addTranslationsForField(newDataForField);
+						if (newDataForField) return this.parseField(newDataForField);
 					}
 
 					return field;

@@ -1,5 +1,5 @@
 <template>
-	<div :class="hidden ? 'half' : field.width">
+	<div :class="hidden ? 'half' : field.system.width">
 		<v-menu attached close-on-content-click>
 			<template #activator="{ toggle, active }">
 				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
@@ -35,15 +35,15 @@
 					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 				</v-list-item>
 				<v-divider />
-				<v-list-item @click="setWidth('half')" :disabled="hidden || field.width === 'half'">
+				<v-list-item @click="setWidth('half')" :disabled="hidden || field.system.width === 'half'">
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="setWidth('full')" :disabled="hidden || field.width === 'full'">
+				<v-list-item @click="setWidth('full')" :disabled="hidden || field.system.width === 'full'">
 					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.width === 'fill'">
+				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.system.width === 'fill'">
 					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>
@@ -147,7 +147,7 @@ export default defineComponent({
 		};
 
 		function setWidth(width: string) {
-			fieldsStore.updateField(props.field.collection, props.field.field, { width });
+			fieldsStore.updateField(props.field.collection, props.field.field, { system: { width } });
 		}
 
 		function useDeleteField() {
