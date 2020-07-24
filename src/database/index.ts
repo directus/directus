@@ -22,14 +22,6 @@ for (let [key, value] of Object.entries(process.env)) {
 const knexConfig: Config = {
 	client: process.env.DB_CLIENT,
 	connection: connectionConfig,
-	migrations: {
-		extension: 'ts',
-		directory: './src/database/migrations',
-	},
-	seeds: {
-		extension: 'ts',
-		directory: './src/database/seeds/',
-	},
 };
 
 if (process.env.DB_CLIENT === 'sqlite3') {

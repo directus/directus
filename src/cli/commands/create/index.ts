@@ -11,6 +11,9 @@ import { v4 as uuidV4 } from 'uuid';
 
 import argon2 from 'argon2';
 
+import { seed as seedCreateTables } from '../../../database/seeds/01-create-tables';
+import { seed as seedAddSystemRows } from '../../../database/seeds/02-add-system-rows';
+
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 
 export default async function create(directory: string, options: Record<string, any>) {
@@ -43,10 +46,14 @@ export default async function create(directory: string, options: Record<string, 
 	await fse.mkdir(path.join(rootPath, 'uploads'));
 	await fse.mkdir(path.join(rootPath, 'extensions'));
 
+	console.log('Adding package.json');
+
 	await execa('npm', ['init', '-y'], {
 		cwd: rootPath,
 		stdin: 'ignore',
 	});
+
+	console.log('Installing Directus');
 
 	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
 		cwd: rootPath,
@@ -72,7 +79,8 @@ export default async function create(directory: string, options: Record<string, 
 
 	const db = createDBConnection(dbClient, credentials);
 
-	await db.seed.run();
+	await seedCreateTables(db);
+	await seedAddSystemRows(db);
 
 	console.log(`Creating the .env file...`);
 
