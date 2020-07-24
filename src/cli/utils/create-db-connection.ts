@@ -36,16 +36,10 @@ export default function createDBConnection(
 	const knexConfig: Config = {
 		client: client,
 		connection: connection,
-		seeds:
-			process.env.NODE_ENV === 'development'
-				? {
-						extension: 'ts',
-						directory: path.resolve(__dirname, '../../database/seeds/'),
-				  }
-				: {
-						extension: 'js',
-						directory: path.resolve(__dirname, '../../database/seeds/'),
-				  },
+		seeds: {
+			extension: 'js',
+			directory: path.resolve(__dirname, '../../database/seeds/'),
+		},
 	};
 
 	if (client === 'sqlite3') {
