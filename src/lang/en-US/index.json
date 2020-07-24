@@ -36,6 +36,9 @@
 	"updating_field_field": "Updating Field {field}",
 	"within_collection": "Within {collection}",
 
+	"visible_fields": "Visible Fields",
+	"hidden_fields": "Hidden Fields",
+
 	"key": "Key",
 
 	"alias": "Alias",

@@ -8,11 +8,36 @@
 			@change="($event) => handleChange($event, 'visible')"
 			:set-data="hideDragImage"
 		>
+			<template #header>
+				<div class="group-name">{{ $t('visible_fields') }}</div>
+			</template>
+
 			<field-select
 				v-for="field in sortedVisibleFields"
 				:key="field.field"
 				:field="field"
 				@toggle-visibility="toggleVisibility($event, 'visible')"
+			/>
+		</draggable>
+
+		<draggable
+			class="field-grid hidden"
+			:value="sortedHiddenFields"
+			handle=".drag-handle"
+			group="fields"
+			:set-data="hideDragImage"
+			@change="($event) => handleChange($event, 'hidden')"
+		>
+			<template #header>
+				<div class="group-name">{{ $t('hidden_fields') }}</div>
+			</template>
+
+			<field-select
+				v-for="field in sortedHiddenFields"
+				:key="field.field"
+				:field="field"
+				@toggle-visibility="toggleVisibility($event, 'hidden')"
+				@edit="openFieldSetup(field)"
 			/>
 		</draggable>
 
@@ -48,23 +73,6 @@
 				</v-list-item>
 			</v-list>
 		</v-menu>
-
-		<draggable
-			class="hidden"
-			:value="sortedHiddenFields"
-			handle=".drag-handle"
-			group="fields"
-			:set-data="hideDragImage"
-			@change="($event) => handleChange($event, 'hidden')"
-		>
-			<field-select
-				v-for="field in sortedHiddenFields"
-				:key="field.field"
-				:field="field"
-				@toggle-visibility="toggleVisibility($event, 'hidden')"
-				@edit="openFieldSetup(field)"
-			/>
-		</draggable>
 	</div>
 </template>
 
@@ -269,8 +277,17 @@ export default defineComponent({
 	grid-template-columns: 1fr 1fr;
 	margin-bottom: 24px;
 	padding: 12px;
+	padding-top: 32px;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
+
+	.group-name {
+		position: absolute;
+		top: 6px;
+		left: 12px;
+		margin-bottom: 8px;
+		color: var(--foreground-subdued);
+	}
 }
 
 .add-field {
