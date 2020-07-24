@@ -300,7 +300,11 @@
 	"report_bug": "Report Bug",
 	"request_feature": "Request Feature",
 
-	"interface_not_found": "Interface \"{interface}\" not found",
+	"interface_not_found": "Interface \"{interface}\" not found.",
+	"reset_interface": "Reset Interface",
+
+	"display_not_found": "Display \"{display}\" not found.",
+	"reset_display": "Reset Display",
 
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",

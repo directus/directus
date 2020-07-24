@@ -4,7 +4,13 @@
 
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.system.interface" />
 
-		<template v-if="fieldData.system.interface">
+		<v-notice class="not-found" type="danger" v-if="fieldData.system.interface && !selectedInterface">
+			{{ $t('interface_not_found', { interface: fieldData.system.interface }) }}
+			<div class="spacer" />
+			<button @click="fieldData.system.interface = null">{{ $t('reset_interface') }}</button>
+		</v-notice>
+
+		<template v-if="fieldData.system.interface && selectedInterface">
 			<v-form
 				v-if="
 					selectedInterface.options &&
@@ -77,5 +83,15 @@ export default defineComponent({
 .type-title,
 .select {
 	margin-bottom: 32px;
+}
+
+.not-found {
+	.spacer {
+		flex-grow: 1;
+	}
+
+	button {
+		text-decoration: underline;
+	}
 }
 </style>

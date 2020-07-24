@@ -4,7 +4,13 @@
 
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.system.display" />
 
-		<template v-if="fieldData.system.display">
+		<v-notice class="not-found" type="danger" v-if="fieldData.system.display && !selectedDisplay">
+			{{ $t('display_not_found', { display: fieldData.system.display }) }}
+			<div class="spacer" />
+			<button @click="fieldData.system.display = null">{{ $t('reset_display') }}</button>
+		</v-notice>
+
+		<template v-if="fieldData.system.display && !selectedDisplay">
 			<v-form
 				v-if="
 					selectedDisplay.options &&
