@@ -50,6 +50,7 @@ router.get(
 );
 
 const newFieldSchema = Joi.object({
+	collection: Joi.string().optional(),
 	field: Joi.string().required(),
 	database: Joi.object({
 		type: Joi.string()
