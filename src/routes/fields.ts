@@ -7,7 +7,7 @@ import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
 import Joi from 'joi';
 import { Field } from '../types/field';
 import useCollection from '../middleware/use-collection';
-import { Accountability } from '../types';
+import { Accountability, types } from '../types';
 
 const router = Router();
 
@@ -52,10 +52,10 @@ router.get(
 const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
+	type: Joi.string()
+		.valid(...types)
+		.required(),
 	database: Joi.object({
-		type: Joi.string()
-			.valid(...FieldsService.types)
-			.required(),
 		comment: Joi.string(),
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string()],
@@ -84,7 +84,7 @@ router.post(
 			user: req.user,
 		};
 
-		const field: Partial<Field> & { field: string } = req.body;
+		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		await FieldsService.createField(req.collection, field, accountability);
 

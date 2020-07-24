@@ -1,5 +1,21 @@
 import { Column } from '../knex-schema-inspector/lib/types/column';
-import { types } from '../services/fields';
+
+export const types = [
+	'bigInteger',
+	'boolean',
+	'date',
+	'dateTime',
+	'decimal',
+	'float',
+	'integer',
+	'json',
+	'string',
+	'text',
+	'time',
+	'timestamp',
+	'binary',
+	'uuid',
+] as const;
 
 export type System = {
 	id: number;
@@ -23,6 +39,7 @@ export type System = {
 export type Field = {
 	collection: string;
 	field: string;
-	database: Column & { type: typeof types[number] };
+	type: typeof types[number];
+	database: Column;
 	system: System | null;
 };

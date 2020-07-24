@@ -4,23 +4,8 @@ import { uniq } from 'lodash';
 import { Accountability } from '../types';
 import * as ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
-
-export const types = [
-	'bigInteger',
-	'boolean',
-	'date',
-	'dateTime',
-	'decimal',
-	'float',
-	'integer',
-	'json',
-	'string',
-	'text',
-	'time',
-	'timestamp',
-	'binary',
-	'uuid',
-] as const;
+import getLocalType from '../utils/get-local-type';
+import { types } from '../types';
 
 export const fieldsInCollection = async (collection: string) => {
 	const [fields, columns] = await Promise.all([
@@ -56,6 +41,7 @@ export const readAll = async (collection?: string) => {
 		const data = {
 			collection: column.table,
 			field: column.name,
+			type: column ? getLocalType(column.type) : 'alias',
 			database: column,
 			system: field || null,
 		};
@@ -84,6 +70,7 @@ export const readOne = async (
 	const data = {
 		collection,
 		field,
+		type: column ? getLocalType(column.type) : 'alias',
 		database: column || null,
 		system: fieldInfo || null,
 	};
@@ -93,7 +80,7 @@ export const readOne = async (
 
 export const createField = async (
 	collection: string,
-	field: Partial<Field> & { field: string },
+	field: Partial<Field> & { field: string; type: typeof types[number] },
 	accountability: Accountability
 ) => {
 	/**
@@ -107,17 +94,17 @@ export const createField = async (
 
 			if (!field.database) return;
 
-			if (field.database.type === 'string') {
+			if (field.type === 'string') {
 				column = table.string(
 					field.field,
 					field.database.max_length !== null ? field.database.max_length : undefined
 				);
-			} else if (['float', 'decimal'].includes(field.database.type)) {
-				const type = field.database.type as 'float' | 'decimal';
+			} else if (['float', 'decimal'].includes(field.type)) {
+				const type = field.type as 'float' | 'decimal';
 				/** @todo add precision and scale support */
 				column = table[type](field.field /* precision, scale */);
 			} else {
-				column = table[field.database.type](field.field);
+				column = table[field.type](field.field);
 			}
 
 			if (field.database.default_value) {
