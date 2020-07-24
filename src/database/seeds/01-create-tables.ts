@@ -178,7 +178,7 @@ export async function seed(knex: Knex): Promise<any> {
 
 	await knex.schema.dropTableIfExists('directus_sessions');
 	await knex.schema.createTable('directus_sessions', (table) => {
-		table.increments();
+		table.string('token', 64).primary().notNullable();
 		table.uuid('user').notNullable();
 		table.foreign('user').references('id').inTable('directus_users');
 		table.timestamp('expires').notNullable();

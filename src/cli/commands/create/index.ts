@@ -106,12 +106,16 @@ export default async function create(directory: string, options: Record<string, 
 	firstUser.password = await argon2.hash(firstUser.password);
 	const id = uuidV4();
 
+	const adminRole = await db.select('id').from('directus_roles').first();
+
 	await db('directus_users').insert({
 		id,
+		status: 'active',
 		email: firstUser.email,
 		password: firstUser.password,
 		first_name: 'Admin',
 		last_name: 'User',
+		role: adminRole.id,
 	});
 
 	db.destroy();

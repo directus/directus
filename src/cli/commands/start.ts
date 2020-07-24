@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 export default async function start() {
 	dotenv.config();
-	const app = require('../../app');
+	const app = require('../../app').default;
 
 	clear();
 
