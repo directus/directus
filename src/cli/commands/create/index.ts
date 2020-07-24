@@ -48,10 +48,10 @@ export default async function create(directory: string, options: Record<string, 
 		stdin: 'ignore',
 	});
 
-	// await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
-	// 	cwd: rootPath,
-	// 	stdin: 'ignore',
-	// });
+	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
+		cwd: rootPath,
+		stdin: 'ignore',
+	});
 
 	let { client } = await inquirer.prompt([
 		{
