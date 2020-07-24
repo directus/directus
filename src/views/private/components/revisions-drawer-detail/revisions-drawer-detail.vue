@@ -112,9 +112,16 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					/** @todo use endpoint thing where startswith directus_ etc */
-					const response = await api.get(`/items/${collection}/${primaryKey}/revisions`, {
+					const response = await api.get(`/revisions`, {
 						params: {
+							filter: {
+								collection: {
+									_eq: collection,
+								},
+								item: {
+									_eq: primaryKey,
+								},
+							},
 							fields: [
 								'id',
 								'data',
