@@ -244,6 +244,21 @@ const systemData = [
 			},
 		],
 	},
+	{
+		table: 'directus_permissions',
+		rows: [
+			{
+				id: 1,
+				role: null,
+				collection: 'directus_settings',
+				operation: 'read',
+				permissions: '{}',
+				presets: null,
+				fields: '*',
+				limit: null,
+			},
+		],
+	},
 ];
 
 export async function seed(knex: Knex): Promise<any> {

@@ -45,7 +45,7 @@ export async function seed(knex: Knex): Promise<any> {
 		table.timestamp('last_access_on');
 		table.string('last_page', 100);
 		table.string('2fa_secret', 255);
-		table.string('theme', 20);
+		table.string('theme', 20).defaultTo('light');
 		table.uuid('role');
 		table.foreign('role').references('id').inTable('directus_roles');
 	});
