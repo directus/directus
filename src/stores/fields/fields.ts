@@ -8,7 +8,7 @@ import formatTitle from '@directus/format-title';
 import notify from '@/utils/notify';
 import useRelationsStore from '@/stores/relations';
 import { Relation } from '@/stores/relations/types';
-import getLocalType from '@/utils/get-local-type';
+import { merge } from 'lodash';
 
 const fakeFilesField: Field = {
 	collection: 'directus_files',
@@ -198,10 +198,7 @@ export const useFieldsStore = createStore({
 					const updatesForThisField = updates.find((update) => update.field === field.field);
 
 					if (updatesForThisField) {
-						return {
-							...field,
-							...updatesForThisField,
-						};
+						return merge({}, field, updatesForThisField);
 					}
 				}
 
