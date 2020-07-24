@@ -74,9 +74,9 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/activity`, {
 						params: {
-							'filter[collection][eq]': collection,
-							'filter[item][eq]': primaryKey,
-							'filter[action][in]': 'comment',
+							'filter[collection][_eq]': collection,
+							'filter[item][_eq]': primaryKey,
+							'filter[action][_in]': 'comment',
 							sort: '-id', // directus_activity has auto increment and is therefore in chronological order
 							fields: [
 								'id',

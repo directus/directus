@@ -47,7 +47,7 @@ type User = {
 export default defineComponent({
 	props: {
 		user: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 	},

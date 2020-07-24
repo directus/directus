@@ -42,7 +42,7 @@ export default function usePermissions(role: Ref<number>) {
 		try {
 			const response = await api.get(`/permissions`, {
 				params: {
-					'filter[role][eq]': role.value,
+					'filter[role][_eq]': role.value,
 				},
 			});
 
