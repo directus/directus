@@ -68,32 +68,17 @@ export default async function create(directory: string, options: Record<string, 
 		(databaseQuestions[dbClient] as any[]).map((question: Function) => question({ client }))
 	);
 
-	console.log(`
-
-Installing database...
-
-	`);
+	console.log(`Installing database...`);
 
 	const db = createDBConnection(dbClient, credentials);
 
-	try {
-		await db.seed.run();
-	} catch (error) {
-		console.log(`${chalk.red('Database Error')}: Couldn't install the database:`);
-		console.log(error.message);
-	}
+	await db.seed.run();
 
-	console.log(`
-
-Creating the .env file...
-
-	`);
+	console.log(`Creating the .env file...`);
 
 	await createEnv(dbClient, credentials, rootPath);
 
-	console.log(`
-
-Create your first admin user:`);
+	console.log(`Create your first admin user:`);
 
 	const firstUser = await inquirer.prompt([
 		{
