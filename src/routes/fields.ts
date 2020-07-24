@@ -28,8 +28,8 @@ router.get(
 
 router.get(
 	'/:collection',
-	useCollection('directus_fields'),
 	validateCollection,
+	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const fields = await FieldsService.readAll(req.collection);
 		return res.json({ data: fields || null });
@@ -38,8 +38,8 @@ router.get(
 
 router.get(
 	'/:collection/:field',
-	useCollection('directus_fields'),
 	validateCollection,
+	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
 		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
@@ -67,8 +67,8 @@ const newFieldSchema = Joi.object({
 
 router.post(
 	'/:collection',
-	useCollection('directus_fields'),
 	validateCollection,
+	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const { error } = newFieldSchema.validate(req.body);
 
@@ -86,10 +86,10 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
-		await FieldsService.createField(req.collection, field, accountability);
+		await FieldsService.createField(req.params.collection, field, accountability);
 
 		const createdField = await FieldsService.readOne(
-			req.collection,
+			req.params.collection,
 			field.field,
 			accountability
 		);
@@ -99,9 +99,43 @@ router.post(
 );
 
 router.patch(
-	'/:collection/:field',
-	useCollection('directus_fields'),
+	'/:collection',
 	validateCollection,
+	useCollection('directus_fields'),
+	asyncHandler(async (req, res) => {
+		const accountability: Accountability = {
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		};
+
+		if (Array.isArray(req.body) === false)
+			throw new InvalidPayloadException('Submitted body has to be an array.');
+
+		let results: any = [];
+
+		for (const field of req.body) {
+			await FieldsService.updateField(req.params.collection, field, accountability);
+
+			const updatedField = await FieldsService.readOne(
+				req.params.collection,
+				field.field,
+				accountability
+			);
+
+			results.push(updatedField);
+		}
+
+		return res.json({ data: results || null });
+	})
+);
+
+router.patch(
+	'/:collection/:field',
+	validateCollection,
+	useCollection('directus_fields'),
 	// @todo: validate field
 	asyncHandler(async (req, res) => {
 		const accountability: Accountability = {
@@ -114,15 +148,12 @@ router.patch(
 
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
-		await FieldsService.updateField(
-			req.collection,
-			req.params.field,
-			fieldData,
-			accountability
-		);
+		if (!fieldData.field) fieldData.field = req.params.field;
+
+		await FieldsService.updateField(req.params.collection, fieldData, accountability);
 
 		const updatedField = await FieldsService.readOne(
-			req.collection,
+			req.params.collection,
 			req.params.field,
 			accountability
 		);
@@ -133,8 +164,8 @@ router.patch(
 
 router.delete(
 	'/:collection/:field',
-	useCollection('directus_fields'),
 	validateCollection,
+	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const accountability: Accountability = {
 			role: req.role,
@@ -144,7 +175,7 @@ router.delete(
 			user: req.user,
 		};
 
-		await FieldsService.deleteField(req.collection, req.params.field, accountability);
+		await FieldsService.deleteField(req.params.collection, req.params.field, accountability);
 
 		res.status(200).end();
 	})

@@ -6,6 +6,7 @@ import * as ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
+import { InvalidPayloadException, FieldNotFoundException } from '../exceptions';
 
 export const fieldsInCollection = async (collection: string) => {
 	const [fields, columns] = await Promise.all([
@@ -132,15 +133,15 @@ export const createField = async (
 	}
 };
 
-/** @todo save accountability */
 /** @todo research how to make this happen in SQLite / Redshift */
+
+type RawField = Partial<Field> & { field: string; type: typeof types[number] };
+
 export const updateField = async (
 	collection: string,
-	fieldKey: string,
-	field: Partial<Field> & { field: string; type: typeof types[number] },
+	field: RawField,
 	accountability?: Accountability
 ) => {
-	/** @todo merge this with create. The only difference is the .alter() statement at the end */
 	if (field.database) {
 		await database.schema.alterTable(collection, (table) => {
 			let column: ColumnBuilder;
@@ -149,7 +150,7 @@ export const updateField = async (
 
 			if (field.type === 'string') {
 				column = table.string(
-					fieldKey,
+					field.field,
 					field.database.max_length !== null ? field.database.max_length : undefined
 				);
 			} else if (['float', 'decimal'].includes(field.type)) {
@@ -175,10 +176,18 @@ export const updateField = async (
 	}
 
 	if (field.system) {
+		const record = await database
+			.select<{ id: number }>('id')
+			.from('directus_fields')
+			.where({ collection, field: field.field })
+			.first();
+		if (!record) throw new FieldNotFoundException(collection, field.field);
 		await database('directus_fields')
 			.update(field.system)
-			.where({ collection, field: fieldKey });
+			.where({ collection, field: field.field });
 	}
+
+	return field.field;
 };
 
 /** @todo save accountability */
