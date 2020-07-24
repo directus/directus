@@ -98,6 +98,39 @@ router.post(
 	})
 );
 
+router.patch(
+	'/:collection/:field',
+	useCollection('directus_fields'),
+	validateCollection,
+	// @todo: validate field
+	asyncHandler(async (req, res) => {
+		const accountability: Accountability = {
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		};
+
+		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+
+		await FieldsService.updateField(
+			req.collection,
+			req.params.field,
+			fieldData,
+			accountability
+		);
+
+		const updatedField = await FieldsService.readOne(
+			req.collection,
+			req.params.field,
+			accountability
+		);
+
+		return res.json({ data: updatedField || null });
+	})
+);
+
 router.delete(
 	'/:collection/:field',
 	useCollection('directus_fields'),

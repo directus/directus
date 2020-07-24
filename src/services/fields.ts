@@ -132,8 +132,54 @@ export const createField = async (
 	}
 };
 
-/** @todo add update field */
-/** @todo research how to make ^ happen in SQLite */
+/** @todo save accountability */
+/** @todo research how to make this happen in SQLite / Redshift */
+export const updateField = async (
+	collection: string,
+	fieldKey: string,
+	field: Partial<Field> & { field: string; type: typeof types[number] },
+	accountability?: Accountability
+) => {
+	/** @todo merge this with create. The only difference is the .alter() statement at the end */
+	if (field.database) {
+		await database.schema.alterTable(collection, (table) => {
+			let column: ColumnBuilder;
+
+			if (!field.database) return;
+
+			if (field.type === 'string') {
+				column = table.string(
+					fieldKey,
+					field.database.max_length !== null ? field.database.max_length : undefined
+				);
+			} else if (['float', 'decimal'].includes(field.type)) {
+				const type = field.type as 'float' | 'decimal';
+				/** @todo add precision and scale support */
+				column = table[type](field.field /* precision, scale */);
+			} else {
+				column = table[field.type](field.field);
+			}
+
+			if (field.database.default_value) {
+				column.defaultTo(field.database.default_value);
+			}
+
+			if (field.database.is_nullable && field.database.is_nullable === true) {
+				column.nullable();
+			} else {
+				column.notNullable();
+			}
+
+			column.alter();
+		});
+	}
+
+	if (field.system) {
+		await database('directus_fields')
+			.update(field.system)
+			.where({ collection, field: fieldKey });
+	}
+};
 
 /** @todo save accountability */
 export const deleteField = async (
