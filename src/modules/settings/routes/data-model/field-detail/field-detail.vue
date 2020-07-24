@@ -1,5 +1,9 @@
 <template>
-	<v-modal :active="active" title="Test" persistent>
+	<v-modal
+		:active="active"
+		:title="field === '+' ? $t('creating_new_field') : $t('updating_field_field', { field: existingField.name })"
+		persistent
+	>
 		<template #sidebar>
 			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
 		</template>
@@ -91,12 +95,17 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
+		const existingField = computed(() => {
+			if (props.field === '+') return null;
+
+			const existingField = fieldsStore.getField(props.collection, props.field);
+			return existingField;
+		});
+
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
 			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' = 'standard';
-
-			const existingField = fieldsStore.getField(props.collection, props.field);
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -126,6 +135,7 @@ export default defineComponent({
 			newFields: state.newFields,
 			cancelField,
 			localType,
+			existingField,
 		};
 
 		function useTabs() {

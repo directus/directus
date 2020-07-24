@@ -29,6 +29,13 @@
 
 	"schema_setup_title": "How should this field save to the database?",
 
+	"create_field": "Create Field",
+	"update_field": "Update Field",
+
+	"creating_new_field": "Creating New Field",
+	"updating_field_field": "Updating Field {field}",
+	"within_collection": "Within {collection}",
+
 	"key": "Key",
 
 	"alias": "Alias",
@@ -126,10 +133,6 @@
 
 	"editing_role": "{role} Role",
 	"adding_webhook": "Adding Webhook",
-
-	"creating_new_field": "Creating New Field",
-	"updating_field_field": "Updating Field {field}",
-	"within_collection": "Within {collection}",
 
 	"code": "Code",
 	"loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}",
@@ -799,7 +802,6 @@
   "contains": "Contains",
   "continue": "Continue",
   "continue_as": "<b>{name}</b> is already authenticated for this project. If you recognize this account, please press continue.",
-  "create_field": "Create Field",
   "create_role": "Create Role",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
@@ -1078,7 +1080,6 @@
   "turn_all_on": "Turn all on",
   "turn_all_off": "Turn all off",
   "update_confirm": "Are you sure you want to update {count} items?",
-  "update_field": "Update Field",
   "upload_exceeds_max_size": "{filename} can't be uploaded. Your server is not configured to handle uploads of this size.",
   "user_edit_warning": "{first_name} {last_name} is editing this item too. Please coordinate with them so you don't lose your changes.",
   "validation": "Validation",
