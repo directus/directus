@@ -1,8 +1,8 @@
 {
   "name": "directus",
-  "version": "0.0.1",
+  "version": "0.1.0-preview.1",
   "description": "Directus",
-  "main": "dist/server.js",
+  "main": "dist/app.js",
   "bin": {
     "directus": "dist/cli/index.js"
   },
@@ -10,12 +10,19 @@
     "start": "NODE_ENV=production node dist/server.js",
     "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
-    "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts"
+    "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
+    "prepublishOnly": "make bundle"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/directus/api-node.git"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "example.env"
+  ],
   "keywords": [
     "directus",
     "api",
@@ -26,7 +33,7 @@
     "crm"
   ],
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/directus/api-node/issues"
   },

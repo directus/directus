@@ -6,3 +6,4 @@ uploads
 debug.db
 test
 dist
+tmp
