@@ -7,8 +7,11 @@ import { drivers, getDriverForClient } from '../../utils/drivers';
 import createEnv from '../../utils/create-env';
 import execa from 'execa';
 import path from 'path';
+import { v4 as uuidV4 } from 'uuid';
 
-import installDB, { Credentials } from '../../utils/install-db';
+import argon2 from 'argon2';
+
+import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 
 export default async function create(directory: string, options: Record<string, any>) {
 	const rootPath = resolve(directory);
@@ -45,10 +48,10 @@ export default async function create(directory: string, options: Record<string, 
 		stdin: 'ignore',
 	});
 
-	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
-		cwd: rootPath,
-		stdin: 'ignore',
-	});
+	// await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
+	// 	cwd: rootPath,
+	// 	stdin: 'ignore',
+	// });
 
 	let { client } = await inquirer.prompt([
 		{
@@ -65,14 +68,60 @@ export default async function create(directory: string, options: Record<string, 
 		(databaseQuestions[dbClient] as any[]).map((question: Function) => question({ client }))
 	);
 
+	console.log(`
+
+Installing database...
+
+	`);
+
+	const db = createDBConnection(dbClient, credentials);
+
 	try {
-		await installDB(client, credentials);
+		await db.seed.run();
 	} catch (error) {
-		console.log(`${chalk.red('Database Error')}: Couln't install the database:`);
+		console.log(`${chalk.red('Database Error')}: Couldn't install the database:`);
 		console.log(error.message);
 	}
 
-	await createEnv(client, credentials, rootPath);
+	console.log(`
+
+Creating the .env file...
+
+	`);
+
+	await createEnv(dbClient, credentials, rootPath);
+
+	console.log(`
+
+Create your first admin user:`);
+
+	const firstUser = await inquirer.prompt([
+		{
+			type: 'input',
+			name: 'email',
+			message: 'Email',
+			default: 'admin@example.com',
+		},
+		{
+			type: 'password',
+			name: 'password',
+			message: 'Password',
+			mask: '*',
+		},
+	]);
+
+	firstUser.password = await argon2.hash(firstUser.password);
+	const id = uuidV4();
+
+	await db('directus_users').insert({
+		id,
+		email: firstUser.email,
+		password: firstUser.password,
+		first_name: 'Admin',
+		last_name: 'User',
+	});
+
+	db.destroy();
 
 	console.log(`
 Your project has been created at ${chalk.green(rootPath)}.

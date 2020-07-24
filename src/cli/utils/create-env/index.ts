@@ -1,5 +1,5 @@
 import { drivers } from '../drivers';
-import { Credentials } from '../install-db';
+import { Credentials } from '../create-db-connection';
 import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import { Liquid } from 'liquidjs';

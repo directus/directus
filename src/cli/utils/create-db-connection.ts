@@ -1,4 +1,5 @@
 import knex, { Config } from 'knex';
+import path from 'path';
 
 export type Credentials = {
 	filename?: string;
@@ -8,10 +9,10 @@ export type Credentials = {
 	user?: string;
 	password?: string;
 };
-export default async function installDB(
+export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
 	credentials: Credentials
-): Promise<void> {
+) {
 	let connection: Config['connection'] = {};
 
 	if (client === 'sqlite3') {
@@ -39,11 +40,11 @@ export default async function installDB(
 			process.env.NODE_ENV === 'development'
 				? {
 						extension: 'ts',
-						directory: './src/database/seeds/',
+						directory: path.resolve(__dirname, '../../database/seeds/'),
 				  }
 				: {
 						extension: 'js',
-						directory: './dist/database/seeds/',
+						directory: path.resolve(__dirname, '../../database/seeds/'),
 				  },
 	};
 
@@ -52,8 +53,5 @@ export default async function installDB(
 	}
 
 	const db = knex(knexConfig);
-
-	await db.seed.run();
-
-	db.destroy();
+	return db;
 }
