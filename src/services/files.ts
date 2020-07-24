@@ -52,8 +52,11 @@ export const createFile = async (
 		});
 	}
 
+	const pk = await ItemsService.createItem('directus_files', payload, accountability);
+
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-	return await ItemsService.createItem('directus_files', payload, accountability);
+
+	return pk;
 };
 
 export const readFiles = async (query: Query, accountability?: Accountability) => {

@@ -99,6 +99,16 @@ export async function processValues(
 		})
 	);
 
+	if (['create', 'update'].includes(operation)) {
+		processedPayload.forEach((record) => {
+			for (const [key, value] of Object.entries(record)) {
+				if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
+					record[key] = JSON.stringify(value);
+				}
+			}
+		});
+	}
+
 	if (Array.isArray(payload)) {
 		return processedPayload;
 	}

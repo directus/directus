@@ -3,8 +3,6 @@ import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
 import * as FilesService from '../services/files';
-import logger from '../logger';
-import { InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { Item } from '../types';
 
@@ -17,14 +15,23 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		const busboy = new Busboy({ headers: req.headers });
 		const savedFiles: Item[] = [];
 
+		const accountability = {
+			role: req.role,
+			admin: req.admin,
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			user: req.user,
+		};
+
 		/**
 		 * The order of the fields in multipart/form-data is important. We require that all fields
 		 * are provided _before_ the files. This allows us to set the storage location, and create
 		 * the row in directus_files async during the upload of the actual file.
 		 */
 
-		let disk: string;
+		let disk: string = (process.env.STORAGE_LOCATIONS as string).split(',')[0].trim();
 		let payload: Partial<Item> = {};
+		let fileCount = 0;
 
 		busboy.on('field', (fieldname, val) => {
 			if (fieldname === 'storage') {
@@ -35,9 +42,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		});
 
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
-			if (!disk) {
-				return busboy.emit('error', new InvalidPayloadException('No storage provided.'));
-			}
+			fileCount++;
 
 			payload = {
 				...payload,
@@ -46,48 +51,40 @@ const multipartHandler = (operation: 'create' | 'update') =>
 				type: mimetype,
 			};
 
+			if (!payload.storage) {
+				payload.storage = disk;
+			}
+
 			if (req.user) {
 				payload.uploaded_by = req.user;
 			}
 
-			fileStream.on('end', () => {
-				logger.info(`File ${filename} uploaded to ${disk}.`);
-			});
-
 			try {
 				if (operation === 'create') {
-					const pk = await FilesService.createFile(payload, fileStream, {
-						role: req.role,
-						admin: req.admin,
-						ip: req.ip,
-						userAgent: req.get('user-agent'),
-						user: req.user,
-					});
-					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
-						role: req.role,
-						admin: req.admin,
-					});
+					const pk = await FilesService.createFile(payload, fileStream, accountability);
+					const file = await FilesService.readFile(
+						pk,
+						req.sanitizedQuery,
+						accountability
+					);
 
 					savedFiles.push(file);
+					tryDone();
 				} else {
 					const pk = await FilesService.updateFile(
 						req.params.pk,
 						payload,
-						{
-							role: req.role,
-							admin: req.admin,
-							ip: req.ip,
-							userAgent: req.get('user-agent'),
-							user: req.user,
-						},
+						accountability,
 						fileStream
 					);
-					const file = await FilesService.readFile(pk, req.sanitizedQuery, {
-						role: req.role,
-						admin: req.admin,
-					});
+					const file = await FilesService.readFile(
+						pk,
+						req.sanitizedQuery,
+						accountability
+					);
 
 					savedFiles.push(file);
+					tryDone();
 				}
 			} catch (err) {
 				busboy.emit('error', err);
@@ -99,10 +96,20 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		});
 
 		busboy.on('finish', () => {
-			res.status(200).json({ data: savedFiles || null });
+			tryDone();
 		});
 
-		return req.pipe(busboy);
+		req.pipe(busboy);
+
+		function tryDone() {
+			if (savedFiles.length === fileCount) {
+				if (fileCount === 1) {
+					return res.status(200).json({ data: savedFiles[0] });
+				} else {
+					return res.status(200).json({ data: savedFiles });
+				}
+			}
+		}
 	});
 
 router.post('/', sanitizeQuery, multipartHandler('create'));
