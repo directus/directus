@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "0.1.0-preview.11",
+  "version": "0.1.0-preview.12",
   "description": "Directus",
   "main": "dist/app.js",
   "bin": {
