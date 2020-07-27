@@ -24,7 +24,7 @@ export const createFile = async (
 		id,
 	};
 
-	payload.filename_disk = payload.id + path.extname(payload.filename_disk);
+	payload.filename_disk = payload.id + path.extname(payload.filename_download);
 
 	/**
 	 * @note

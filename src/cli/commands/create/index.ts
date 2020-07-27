@@ -55,7 +55,7 @@ export default async function create(directory: string, options: Record<string, 
 
 	const spinner = ora('Installing Directus').start();
 
-	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
+	await execa('npm', ['install', 'directus', '--production', '--no-optional'], {
 		cwd: rootPath,
 		stdin: 'ignore',
 	});
