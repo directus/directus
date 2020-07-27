@@ -142,9 +142,9 @@ function checkRequirements() {
 	const nodeVersion = process.versions.node;
 	const major = +nodeVersion.split('.')[0];
 
-	if (major < 12) {
+	if (major < 10) {
 		console.error(`You are running Node ${nodeVersion}.`);
-		console.error('Directus requires Node 12 and up.');
+		console.error('Directus requires Node 10 and up.');
 		console.error('Please update your Node version and try again.');
 		process.exit(1);
 	}

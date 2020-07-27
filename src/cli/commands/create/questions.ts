@@ -35,10 +35,10 @@ const database = () => ({
 	default: 'directus',
 });
 
-const username = () => ({
+const user = () => ({
 	type: 'input',
-	name: 'username',
-	message: 'Database Username:',
+	name: 'user',
+	message: 'Database User:',
 });
 
 const password = () => ({
@@ -50,8 +50,8 @@ const password = () => ({
 
 export const databaseQuestions = {
 	sqlite3: [filename],
-	mysql: [host, port, database, username, password],
-	pg: [host, port, database, username, password],
-	oracledb: [host, port, database, username, password],
-	mssql: [host, port, database, username, password],
+	mysql: [host, port, database, user, password],
+	pg: [host, port, database, user, password],
+	oracledb: [host, port, database, user, password],
+	mssql: [host, port, database, user, password],
 };

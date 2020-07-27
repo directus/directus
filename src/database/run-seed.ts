@@ -60,6 +60,7 @@ export default async function runSeed(knex: Knex, seed: string) {
 
 						if (columnInfo.default !== undefined) {
 							let defaultValue = columnInfo.default;
+
 							if (isObject(defaultValue) || Array.isArray(defaultValue))
 								defaultValue = JSON.stringify(defaultValue);
 
