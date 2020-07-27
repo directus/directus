@@ -47,7 +47,6 @@ export default async function runSeed(knex: Knex, seed: string) {
 						} else if (columnInfo.increments) {
 							column = table.increments();
 						} else {
-							console.log(columnInfo.type);
 							column = table[columnInfo.type!](columnName);
 						}
 
@@ -87,7 +86,6 @@ export default async function runSeed(knex: Knex, seed: string) {
 
 		if (seedData.rows) {
 			for (const [table, values] of Object.entries(seedData.rows)) {
-				console.log(values);
 				await transaction(table).insert(values);
 			}
 		}
