@@ -1,0 +1,3 @@
+# Schemas
+
+Predefined boilerplate schemas.

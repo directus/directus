@@ -167,7 +167,7 @@ export async function seed(knex: Knex): Promise<any> {
 	await knex.schema.createTable('directus_revisions', (table) => {
 		table.increments();
 		table.integer('activity').notNullable();
-		table.foreign('id').references('id').inTable('directus_activity');
+		table.foreign('activity').references('id').inTable('directus_activity');
 		table.string('collection', 64).notNullable();
 		table.foreign('collection').references('collection').inTable('directus_collections');
 		table.string('item', 255).notNullable();

@@ -1,0 +1,908 @@
+# The order of the tables matters as we'll be adding foreign keys during creation
+tables:
+	- directus_collections:
+		- collection:
+			type: string
+			primary: true
+		- hidden:
+			type: boolean
+			nullable: false
+			default: false
+		- singleton:
+			type: boolean
+			nullable: false
+			default: false
+		- icon:
+			type: string
+			length: 30
+		- note:
+			type: text
+		- translation:
+			type: json
+		- display_template:
+			type: string;
+			length: 255
+
+	- directus_roles:
+		- id:
+			type: uuid
+			primary: true
+		- name:
+			type: string
+			length: 100
+			nullable: false
+		- icon:
+			type: string
+			length: 30
+			nullable: false
+			default: people
+		- description:
+			type: text
+		- ip_allow_list:
+			type: json
+		- enforce_tfa:
+			type: boolean
+			nullable: false
+			default: false
+		- module_list:
+			type: json
+		- collection_list:
+			type: json
+		- admin:
+			type: boolean
+			nullable: false
+			default: false
+		- app_access:
+			type: boolean
+			nullable: false
+			default: true
+
+	- directus_users:
+		- id:
+			type: uuid
+			primary: true
+		- status:
+			type: string
+			length: 16
+			nullable: false
+			default: draft
+		- first_name:
+			type: string
+			length: 50
+		- last_name:
+			type: string
+			length: 50
+		- email:
+			type: string
+			length: 128
+			nullable: false
+		- password:
+			type: string
+			length: 255
+		- token:
+			type: string
+			length: 255
+		- timezone:
+			type: string
+			length: 255
+			default: 'America/New_York'
+		- locale:
+			type: string
+			length: 8
+			default: 'en-US'
+		- avatar:
+			type: uuid
+		- company:
+			type: string
+			length: 255
+		- title:
+			type: string
+			length: 50
+		- theme:
+			type: string
+			length: 20
+			default: auto
+		- tfa_secret:
+			type: string
+			length: 255
+		- last_access_on:
+			type: timestamp
+		- last_page:
+			type: string
+			length: 255
+		- role:
+			type: uuid
+			nullable: false
+			references:
+				table: directus_roles
+				column: id
+
+	- directus_fields:
+		- id:
+			increments: true
+		- collection:
+			type: string
+			length: 64
+			nullable: false
+			references:
+				table: directus_collections
+				column: collection
+		- field:
+			type: string
+			length: 64
+			nullable: false
+		- special:
+			type: string
+			length: 64
+		- interface:
+			type: string
+			length: 64
+		- options:
+			type: json
+		- display:
+			type: string
+			length: 64
+		- display_options:
+			type: json
+		- locked:
+			type: boolean
+			default: false
+			nullable: false
+		- readonly:
+			type: boolean
+			default: false
+			nullable: false
+		- hidden:
+			type: boolean
+			default: false
+			nullable: false
+		- sort:
+			type: integer
+			unsigned: true
+		- width:
+			type: string
+			length: 30
+		- group:
+			type: integer
+			unsigned: true
+			references:
+				table: directus_fields
+				column: id
+		- translation:
+			type: json
+		- note:
+			type: text
+
+	- directus_activity:
+		- id:
+			increments: true
+		- action:
+			type: string
+			length: 45
+			nullable: false
+		- action_by:
+			type: uuid
+		- action_on:
+			type: timestamp
+			nullable: false
+		- ip:
+			type: string
+			length: 50
+			nullable: false
+		- user_agent:
+			type: string
+			length: 255
+			nullabel: false
+		- collection:
+			type: string
+			length: 64
+			nullable: false
+			references:
+				table: directus_collections
+				column: collection
+		- item:
+			type: string
+			length: 255
+			nullable: false
+		- comment:
+			type: text
+
+	- directus_folders:
+		- id:
+			type: uuid
+			primary: true
+			nullable: false
+		- name:
+			type: string
+			length: 255
+			nullable: false
+		- parent_folder:
+			type: uuid
+			references:
+				table: directus_folders
+				column: id
+
+	- directus_files:
+		- id:
+			type: uuid
+			primary: true
+			nullable: false
+		- storage:
+			type: string
+			nullable: false
+		- filename_disk:
+			type: string
+			length: 255
+			nullable: false
+		- filename_download:
+			type: string
+			length: 255
+			nullable: false
+		- title:
+			type: string
+			length: 255
+		- type:
+			type: string
+			length: 255
+		- folder:
+			type: uuid
+			references:
+				table: directus_folders
+				column: id
+		- uploaded_by:
+			type: uuid
+			references:
+				table: directus_users
+				column: id
+		- uploaded_on:
+			type: timestamp
+			nullable: false
+			default: '$now'
+		- charset:
+			type: string
+			length: 50
+		- filesize:
+			type: integer
+			nullable: false
+			default: 0
+			unsigned: true
+		- width:
+			type: integer
+			unsigned: true
+		- height:
+			type: integer
+			unsigned: true
+		- duration:
+			type: integer
+			unsigned: true
+		- embed:
+			type: string
+			length: 200
+		- description:
+			type: text
+		- location:
+			type: text
+		- tags:
+			type: text
+		- metadata:
+			type: json
+
+	- directus_permissions:
+		- id:
+			increments: true
+		- role:
+			type: uuid
+			references:
+				table: directus_roles
+				column: id
+		- collection:
+			type: string
+			length: 64
+			references:
+				table: directus_collections
+				column: collection
+		- operation:
+			type: string
+			length: 10
+			nullable: false
+		- permissions:
+			type: json
+			nullable: false
+			default: {}
+		- presets:
+			type: json
+		- fields:
+			type: text
+		- limit:
+			type: integer
+			unsigned: true
+
+	- directus_presets:
+		- id:
+			increments: true
+		- title:
+			type: string
+			length: 255
+		- user:
+			type: uuid
+			references:
+				table: directus_user
+				column: id
+		- role:
+			type: uuid
+			references:
+				table: directus_roles
+				column: id
+		- collection:
+			type: string
+			length: 64
+			references:
+				table: directus_collections
+				column: collection
+		- search:
+			type: string
+			length: 100
+		- filters:
+			type: json
+		- view_type:
+			type: string
+			length: 100
+			default: tabular
+		- view_query:
+			type: json
+		- view_options:
+			type: json
+
+	- directus_relations:
+		- id:
+			increments: true
+		- many_collection:
+			type: string
+			length: 64
+			nullable: false
+			references:
+				table: directus_collections
+				column: collection
+		- many_field:
+			type: string
+			length: 64
+			nullable: false
+		- many_primary:
+			type: string
+			length: 64
+			nullable: false
+		- one_collection:
+			type: string
+			length: 64
+			nullable: false
+			references:
+				table: directus_collections
+				column: collection
+		- one_field:
+			type: string
+			length: 64
+			nullable: false
+		- one_primary:
+			type: string
+			length: 64
+			nullable: false
+		- junction_field:
+			type: string
+			length: 64
+
+	- directus_revisions:
+		- id:
+			increments: true
+		- activity:
+			type: integer
+			unsigned: true
+			nullable: false
+			references:
+				collection: directus_activity
+				column: id
+		- collection:
+			type: string
+			length: 64
+			nullable: false
+			references:
+				table: directus_collections
+				column: collection
+		- item:
+			type: string
+			length: 255
+			nullable: false
+		- data:
+			type: json
+		- delta:
+			type: json
+		- parent:
+			type: integer
+			references:
+				table: directus_revisions
+				column: id
+
+	- directus_sessions:
+		- token:
+			type: string
+			length: 64
+			primary: true
+			nullable: false
+		- user:
+			type: uuid
+			nullable: false
+			references:
+				table: directus_users
+				column: id
+		- expires:
+			type: timestamp
+			nullable: false
+		- ip:
+			type: string
+			length: 255
+		- user_agent:
+			type: string
+			length: 255
+
+	- directus_settings:
+		- id:
+			increments: true
+		- project_name:
+			type: string;
+			length: 100
+			nullable: false
+			default: 'Directus'
+		- project_url:
+			type: string
+			length: 255
+		- project_logo:
+			type: uuid
+			references:
+				table: directus_files
+				column: id
+		- project_color:
+			type: string
+			length: 10
+		- project_foreground:
+			type: uuid
+			references:
+				table: directus_files
+				column: id
+		- project_background:
+			type: uuid
+			references:
+				table: directus_files
+				column: id
+		- project_note:
+			type: text
+		- project_telemetry:
+			type: boolean
+			default: true
+		- auth_password_policy:
+			type: string
+			length: 100
+		- auth_idle_timeout:
+			type: integer
+			unsigned: true
+			default: 10080
+		- auth_login_attempts:
+			type: integer
+			default: 25
+			unsigned: true
+		- storage_asset_presets:
+			type: json
+		- storage_asset_transforms:
+			type: string # One of: 'all', 'none', 'presets'
+			length: 7
+
+	- directus_webhooks:
+		- id:
+			increments: true
+		# TBD
+
+- rows:
+	- directus_collections:
+		- collection: directus_activity
+		- collection: directus_collections
+		- collection: directus_fields
+		- collection: directus_files
+		- collection: directus_folders
+		- collection: directus_permissions
+		- collection: directus_presets
+		- collection: directus_relations
+		- collection: directus_revisions
+		- collection: directus_roles
+		- collection: directus_settings
+		- collection: directus_users
+		- collection: directus_webhooks
+
+	- directus_fields:
+		- collection: directus_collections
+		  field: collection
+		  interface: text-input
+		  locked: true
+		  readonly: true
+		  sort: 1
+		  width: half
+		- collection: directus_collections
+		  field: note
+		  interface: text-input
+		  locked: true
+		  sort: 2
+		  width: half
+		- collection: directus_collections
+		  field: hidden
+		  interface: toggle
+		  locked: true
+		  # @todo update this to be a versioned link
+		  note: | [Learn More](https://docs.directus.io/guides/collections.html#hidden).
+		  sort: 3
+		  width: half
+		- collection: directus_collections
+		  field: singleton
+		  interface: toggle
+		  locked: true
+		  # @todo update this to be a versioned link
+		  note: | [Learn More](https://docs.directus.io/guides/collections.html#single).
+		  sort: 4
+		  width: half
+		- collection: icon
+		  field: icon
+		  interface: icon
+		  locked: true
+		  sort: 5
+		- collection: directus_collections
+		  field: translations
+		  interface: repeater
+		  locked: true
+		  options:
+		  	fields:
+			  - field: locale
+			    type: string
+				interface: language
+				options:
+					limit: true
+				width: half
+			  - field: translation
+			    type: string
+				interface: text-input
+				width: half
+		  sort: 6
+		  width: full
+
+		- collection: directus_files
+		  field: title
+		  interface: text-input
+		  locked: true
+		  options:
+		  	iconRight: title
+		  sort: 1
+		  width: full
+		- collection: directus_files
+		  field: description
+		  interface: wysiwyg
+		  locked: true
+		  sort: 2
+		  width: full
+		- collection: directus_files
+		  field: tags
+		  interface: tags
+		  locked: true
+		  options:
+		    iconRight: local_offer
+		  sort: 3
+		  width: half
+		- collection: directus_files
+		  field: location
+		  interface: text-input
+		  locked: true
+		  options:
+		  	iconRight: place
+		  sort: 4
+		  width: half
+
+		- collection: directus_roles
+		  field: name
+		  interface: text-input
+		  locked: true
+		  sort: 1
+		  width: half
+		- collection: directus_roles
+		  field: description
+		  interface: text-input
+		  locked: true
+		  sort: 2
+		  width: half
+		- collection: directus_roles
+		  field: ip_allow_list
+		  interface: tags
+		  locked: true
+		  sort: 3
+		  width: full
+		- collection: directus_roles
+		  field: enforce_tfa
+		  interface: toggle
+		  locked: true
+		  sort: 4
+		  width: full
+		- collection: directus_roles
+		  field: module_list
+		  interface: repeater
+		  locked: true
+		  options:
+		  	template: "{{ name }}"
+			createItemText: Add Module
+			fields:
+			- name: Icon
+			  field: icon
+			  interface: icon
+			  type: string
+			  width: half
+			- name: Name
+			  field: name
+			  interface: text-input
+			  type: string
+			  width: half
+			  options:
+				iconRight: title
+				placeholder: Enter a title...
+			- name: Link
+			  field: link
+			  interface: text-input
+			  type: string
+			  width: full
+			  options:
+				iconRight: link
+				placeholder: Relative or absolute URL...
+		  sort: 5
+		  width: full
+		- collection: directus_roles
+		  field: collection_list
+		  interface: repeater
+		  locked: true
+		  options:
+			template: "{{ group_name }}"
+			createItemText: Add Group
+			fields:
+			- name: Group Name
+			  field: group_name
+			  width: half
+			  interface: text-input
+			  type: string
+			  options:
+				iconRight: title
+				placeholder: Label this group...
+			- name: Accordion
+			  field: accordion
+			  width: half
+			  interface: dropdown
+			  type: string
+			  default_value: always_open
+			  options:
+				choices:
+				  - value: always_open
+				    text: Always Open
+				  - value: start_open
+				    text: Start Open
+				  - value: start_collapsed
+				    text: Start Collapsed
+			- name: Collections
+			  field: collections
+			  interface: repeater
+			  type: JSON
+			  options:
+				createItemText: Add Collection
+				template: "{{ collection }}"
+				fields:
+				  - name: Collection
+				    field: collection
+				    type: string
+				    interface: collections
+				    width: full
+		  sort: 6
+		  width: full
+		- collection: directus_roles
+		  field: users
+		  interface: one-to-many
+		  locked: true
+		  sort: 7
+		  width: full
+		  special: o2m
+
+		- collection: directus_settings
+		  field: project_name
+		  interface: text-input
+		  locked: true
+		  options:
+		    iconRight: title
+			placeholder: My project...
+		  sort: 1
+		  translation:
+		    locale: en-US
+			translation: Name
+		  width: half
+		- collection: directus_settings
+		  field: project_url
+		  interface: text-input
+		  locked: true
+		  options:
+		    iconRight: link
+			placeholder: https://example.com
+		  sort: 2
+		  translation:
+		    locale: en-US
+			translation: Website
+		  width: half
+		- collection: directus_settings
+		  field: project_logo
+		  interface: file
+		  locked: true
+		  note: White 40x40 SVG/PNG
+		  sort: 3
+		  translation:
+		    locale: en-US
+			translation: Brand Logo
+		  width: half
+		- collection: directus_settings
+		  field: project_color
+		  interface: color
+		  locked: true
+		  note: Login & Logo Background
+		  sort: 4
+		  translation:
+		    locale: en-US
+			translation: Brand Color
+		  width: half
+		- collection: directus_settings
+		  field: project_foreground
+		  interface: image
+		  locked: true
+		  sort: 5
+		  translation:
+		    locale: en-US
+			translation: Login Foreground
+		  width: half
+		- collection: directus_settings
+		  field: project_background
+		  interface: image
+		  locked: true
+		  sort: 6
+		  translation:
+		    locale: en-US
+			translation: Login Background
+		  width: half
+		- collection: directus_settings
+		  field: project_note
+		  interface: text-input
+		  locked: true
+		  options:
+		  	placeholder: A short, public message that supports markdown formatting...
+		  sort: 7
+		  translation:
+		    locale: en-US
+			translation: Login Message
+		  width: full
+		- collection: directus_settings
+		  field: project_telemetry
+		  interface: toggle
+		  locked: true
+		  options:
+		  	label: Send Anonymous Diagnostics
+		  sort: 8
+		  width: half
+
+		- collection: directus_settings
+		  field: security_divider
+		  interface: divider
+		  locked: true
+		  options:
+		    icon: security
+			title: Security
+			color: '#2f80ed'
+		  sort: 9
+		  width: full
+		- collection: directus_settings
+		  field: auth_password_policy
+		  interface: dropdown
+		  locked: true
+		  options:
+		    choices:
+			  - value: null
+			    text: None – Not Recommended
+			  - value: "/^.{8,}$/"
+			    text: Weak – Minimum 8 Characters
+			  - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
+			    text: Strong – Upper / Lowercase / Numbers / Special
+		  sort: 10
+		  width: half
+		- collection: directus_settings
+		  field: auth_idle_timeout
+		  interface: numeric
+		  locked: true
+		  options:
+		    iconRight: timer
+		  sort: 11
+		  width: half
+		- collection: directus_settings
+		  field: auth_login_attempts
+		  interface: numeric
+		  locked: true
+		  options:
+		  	iconRight: lock
+		  sort: 12
+		  width: half
+		- collection: directus_settings
+		  field: files_divider
+		  interface: divider
+		  locked: true
+		  options:
+		    icon: storage
+			title: Files & Thumbnails
+			color: '#2f80ed'
+		  sort: 13
+		  width: full
+		- collection: directus_settings
+		  field: storage_asset_presets
+		  interface: repeater
+		  locked: true
+		  options:
+			fields:
+				- field: key
+				  interface: slug
+				  name: Key
+				  options:
+					onlyOnCreate: false
+					required: true
+					type: string
+					width: half
+				- field: fit
+				  interface: dropdown
+				  name: Fit
+				  options:
+					choices:
+						- value: contain
+						  text: Contain (preserve aspect ratio)
+						- value: crop
+						  text: Crop (forces exact size)
+					required: true
+					type: string
+					width: half
+				- field: width
+				  interface: numeric
+				  name: Width
+				  required: true
+				  type: integer
+				  width: half
+				- field: height
+				  interface: numeric
+				  name: Height
+				  required: true
+				  type: integer
+				  width: half
+				- field: quality
+				  default_value: 80
+				  interface: slider
+				  name: Quality
+				  options:
+					max: 100
+					min: 0
+					step: 1
+				  required: true
+				  type: integer
+				  width: full
+				  template: "{{key}}"
+		  sort: 13
+		  width: full
+		- collection: directus_settings
+		  field: storage_asset_transform
+		  interface: dropdown
+		  locked: true
+		  options:
+		    choices:
+				- value: all
+				  text: All
+				- value: none
+				  text: None
+				- value: presets
+				  text: Presets Only\
+		  sort: 14
+		  width: half
