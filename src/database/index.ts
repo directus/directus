@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import camelCase from 'camelcase';
 import path from 'path';
 
-import SchemaInspector from '../knex-schema-inspector/lib/index';
+import SchemaInspector from 'knex-schema-inspector';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 
