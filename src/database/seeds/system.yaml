@@ -934,6 +934,7 @@ rows:
       field: avatar
       interface: file
       locked: true
+      special: file
       sort: 1
       width: full
     - collection: directus_users

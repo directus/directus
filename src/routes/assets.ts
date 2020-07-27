@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import database from '../database';
-import { SYSTEM_ASSET_WHITELIST, ASSET_GENERATION_QUERY_KEYS } from '../constants';
+import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constants';
 import { InvalidQueryException, ForbiddenException } from '../exceptions';
 import * as AssetsService from '../services/assets';
 import validate from 'uuid-validate';
@@ -44,15 +44,15 @@ router.get(
 
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
-		const defaults = { asset_shortcuts: '[]', asset_generation: 'all' };
+		const defaults = { storage_asset_presets: [], storage_asset_transforms: 'all' };
 
 		const assetSettings =
 			(await database
-				.select('asset_shortcuts', 'asset_generation')
+				.select('storage_asset_presets', 'storage_asset_transforms')
 				.from('directus_settings')
 				.first()) || defaults;
 
-		const transformation = pick(req.query, ASSET_GENERATION_QUERY_KEYS);
+		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
 		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(
@@ -60,16 +60,16 @@ router.get(
 			);
 		}
 
-		const systemKeys = SYSTEM_ASSET_WHITELIST.map((transformation) => transformation.key);
+		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key);
 		const allKeys: string[] = [
 			...systemKeys,
-			...assetSettings.asset_shortcuts.map(
+			...(assetSettings.storage_asset_presets || []).map(
 				(transformation: Transformation) => transformation.key
 			),
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_WHITELIST, assetSettings.asset_shortcuts];
+		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, assetSettings.storage_asset_presets];
 		res.locals.transformation = transformation;
 
 		if (Object.keys(transformation).length === 0) {
