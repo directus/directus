@@ -309,7 +309,6 @@ tables:
     permissions:
       type: json
       nullable: false
-      default: {}
     presets:
       type: json
     fields:
