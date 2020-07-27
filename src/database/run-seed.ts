@@ -5,8 +5,6 @@ import yaml from 'js-yaml';
 import { types } from '../types';
 import { isObject } from 'lodash';
 
-import database from './index';
-
 type SeedData = {
 	tables?: {
 		[table: string]: {
@@ -95,6 +93,3 @@ export default async function runSeed(knex: Knex, seed: string) {
 		}
 	});
 }
-
-// @ts-ignore
-runSeed(database, 'system');
