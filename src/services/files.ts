@@ -26,6 +26,17 @@ export const createFile = async (
 
 	payload.filename_disk = payload.id + path.extname(payload.filename_disk);
 
+	/**
+	 * @note
+	 * We save a subset first. This allows the permissions check to run and the file to be created with
+	 * proper accountability and revisions.
+	 * Afterwards, we'll save the file to disk. During this process, we extract the metadata of the
+	 * file itself. After the file is saved to disk, we'll update the just created item with the
+	 * updated values to ensure we save the filesize etc. We explicitly save this without accountability
+	 * in order to prevent update permissions to kick in and to pervent an extra revision from being created
+	 */
+	const pk = await ItemsService.createItem('directus_files', payload, accountability);
+
 	const pipeline = sharp();
 
 	if (payload.type?.startsWith('image')) {
@@ -52,9 +63,12 @@ export const createFile = async (
 		});
 	}
 
-	const pk = await ItemsService.createItem('directus_files', payload, accountability);
+	if (!payload.title) {
+		payload.title = payload.id;
+	}
 
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
+	await ItemsService.updateItem('directus_files', pk, payload);
 
 	return pk;
 };
@@ -84,6 +98,11 @@ export const updateFile = async (
 
 	/**
 	 * @TODO
+	 * Remove old thumbnails
+	 */
+
+	/**
+	 * @TODO
 	 * Extract metadata here too
 	 */
 
@@ -107,7 +126,10 @@ export const deleteFile = async (pk: string, accountability: Accountability) => 
 		.from('directus_files')
 		.where({ id: pk })
 		.first();
+
+	/** @todo delete thumbnails here. should be able to use storage.disk().flatList(prefix: string) */
 	const { wasDeleted } = await storage.disk(file.storage).delete(file.filename_disk);
+
 	logger.info(`File ${file.filename_download} deleted: ${wasDeleted}`);
 	await database.delete().from('directus_files').where({ id: pk });
 };

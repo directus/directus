@@ -46,7 +46,6 @@ const multipartHandler = (operation: 'create' | 'update') =>
 
 			payload = {
 				...payload,
-				filename_disk: filename,
 				filename_download: filename,
 				type: mimetype,
 			};
@@ -142,10 +141,8 @@ router.patch(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
-		let file: Item;
-
 		if (req.is('multipart/form-data')) {
-			file = await multipartHandler('update')(req, res, next);
+			return multipartHandler('update')(req, res, next);
 		} else {
 			const pk = await FilesService.updateFile(req.params.pk, req.body, {
 				role: req.role,
@@ -154,13 +151,14 @@ router.patch(
 				userAgent: req.get('user-agent'),
 				user: req.user,
 			});
-			file = await FilesService.readFile(pk, req.sanitizedQuery, {
+
+			const file = await FilesService.readFile(pk, req.sanitizedQuery, {
 				role: req.role,
 				admin: req.admin,
 			});
-		}
 
-		return res.status(200).json({ data: file || null });
+			return res.status(200).json({ data: file || null });
+		}
 	})
 );
 
