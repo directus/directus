@@ -3,7 +3,7 @@
 		<portal to="layout-options">
 			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.cards.image_source') }}</div>
-				<v-select v-model="imageSource" allow-null item-value="field" item-text="name" :items="fileFields" />
+				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
 			</div>
 
 			<div class="layout-option">
@@ -228,11 +228,16 @@ export default defineComponent({
 		const fileFields = computed(() => {
 			return availableFields.value.filter((field) => {
 				if (field.field === '$file') return true;
-				return !!relationsStore.state.relations.find((relation) => {
+
+				const relation = relationsStore.state.relations.find((relation) => {
 					return (
-						relation.many_collection === props.collection && relation.one_collection === 'directus_files'
+						relation.many_collection === props.collection &&
+						relation.many_field === field.field &&
+						relation.one_collection === 'directus_files'
 					);
 				});
+
+				return !!relation;
 			});
 		});
 
