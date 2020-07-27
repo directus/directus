@@ -2,35 +2,35 @@ import { Transformation } from './types/assets';
 
 export const SYSTEM_ASSET_ALLOW_LIST: Transformation[] = [
 	{
-		key: 'directus-small-cover',
+		key: 'system-small-cover',
 		w: 64,
 		h: 64,
 		f: 'cover',
 	},
 	{
-		key: 'directus-small-contain',
+		key: 'system-small-contain',
 		w: 64,
 		f: 'contain',
 	},
 	{
-		key: 'directus-medium-cover',
+		key: 'system-medium-cover',
 		w: 300,
 		h: 300,
 		f: 'cover',
 	},
 	{
-		key: 'directus-medium-contain',
+		key: 'system-medium-contain',
 		w: 300,
 		f: 'contain',
 	},
 	{
-		key: 'directus-large-cover',
+		key: 'system-large-cover',
 		w: 800,
 		h: 600,
 		f: 'cover',
 	},
 	{
-		key: 'directus-large-contain',
+		key: 'system-large-contain',
 		w: 800,
 		f: 'contain',
 	},
