@@ -8,6 +8,7 @@ import createEnv from '../../utils/create-env';
 import execa from 'execa';
 import path from 'path';
 import { v4 as uuidV4 } from 'uuid';
+import ora from 'ora';
 
 import argon2 from 'argon2';
 
@@ -52,12 +53,14 @@ export default async function create(directory: string, options: Record<string, 
 		stdin: 'ignore',
 	});
 
-	console.log('Installing Directus');
+	const spinner = ora('Installing Directus').start();
 
 	await execa('npm', ['install', 'directus@preview', '--production', '--no-optional'], {
 		cwd: rootPath,
 		stdin: 'ignore',
 	});
+
+	spinner.stopAndPersist();
 
 	let { client } = await inquirer.prompt([
 		{
@@ -71,7 +74,9 @@ export default async function create(directory: string, options: Record<string, 
 	const dbClient = getDriverForClient(client)!;
 
 	const credentials: Credentials = await inquirer.prompt(
-		(databaseQuestions[dbClient] as any[]).map((question: Function) => question({ client }))
+		(databaseQuestions[dbClient] as any[]).map((question: Function) =>
+			question({ client: dbClient })
+		)
 	);
 
 	console.log(`Installing database...`);
