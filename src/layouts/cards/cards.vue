@@ -230,7 +230,7 @@ export default defineComponent({
 				if (field.field === '$file') return true;
 				return !!relationsStore.state.relations.find((relation) => {
 					return (
-						relation.collection_many === props.collection && relation.collection_one === 'directus_files'
+						relation.many_collection === props.collection && relation.one_collection === 'directus_files'
 					);
 				});
 			});

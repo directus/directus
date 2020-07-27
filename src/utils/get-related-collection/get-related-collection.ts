@@ -13,9 +13,9 @@ export default function getRelatedCollection(collection: string, field: string) 
 	let relatedCollection: string | null = null;
 
 	if (['user', 'user_updated', 'owner', 'file', 'm2o'].includes(type)) {
-		relatedCollection = relations[0].collection_one;
+		relatedCollection = relations[0].one_collection;
 	} else if (type === 'o2m') {
-		relatedCollection = relations[0].collection_many;
+		relatedCollection = relations[0].many_collection;
 	}
 
 	return relatedCollection;

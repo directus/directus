@@ -19,7 +19,7 @@ export const useRelationsStore = createStore({
 		},
 		getRelationsForCollection(collection: string) {
 			return this.state.relations.filter((relation) => {
-				return relation.collection_many === collection || relation.collection_one === collection;
+				return relation.many_collection === collection || relation.one_collection === collection;
 			});
 		},
 		getRelationsForField(collection: string, field: string) {
@@ -31,10 +31,10 @@ export const useRelationsStore = createStore({
 			if (fieldInfo.type === 'file') {
 				return [
 					{
-						collection_many: collection,
-						field_many: field,
-						collection_one: 'directus_files',
-						field_one: null,
+						many_collection: collection,
+						many_field: field,
+						one_collection: 'directus_files',
+						one_field: null,
 						junction_field: null,
 					},
 				] as Relation[];
@@ -43,17 +43,17 @@ export const useRelationsStore = createStore({
 			if (['user', 'user_created', 'user_updated', 'owner'].includes(fieldInfo.type)) {
 				return [
 					{
-						collection_many: collection,
-						field_many: field,
-						collection_one: 'directus_users',
-						field_one: null,
+						many_collection: collection,
+						many_field: field,
+						one_collection: 'directus_users',
+						one_field: null,
 						junction_field: null,
 					},
 				] as Relation[];
 			}
 
 			const relations = this.getRelationsForCollection(collection).filter((relation: Relation) => {
-				return relation.field_many === field || relation.field_one === field;
+				return relation.many_field === field || relation.one_field === field;
 			});
 
 			if (relations.length > 0) {
@@ -65,8 +65,8 @@ export const useRelationsStore = createStore({
 				if (isM2M) {
 					const secondaryRelation = this.state.relations.find((relation) => {
 						return (
-							relation.collection_many === relations[0].collection_many &&
-							relation.field_many === relations[0].junction_field
+							relation.many_collection === relations[0].many_collection &&
+							relation.many_field === relations[0].junction_field
 						);
 					});
 

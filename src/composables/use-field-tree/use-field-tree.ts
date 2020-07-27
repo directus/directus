@@ -13,8 +13,7 @@ export default function useFieldTree(collection: Ref<string>) {
 		return fieldsStore
 			.getFieldsForCollection(collection.value)
 			.filter(
-				(field: Field) =>
-					field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
+				(field: Field) => field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
 			)
 			.map((field: Field) => parseField(field, []));
 
@@ -34,9 +33,9 @@ export default function useFieldTree(collection: Ref<string>) {
 				const relatedFields = relations
 					.map((relation: Relation) => {
 						const relatedCollection =
-							relation.collection_many === field.collection
-								? relation.collection_one
-								: relation.collection_many;
+							relation.many_collection === field.collection
+								? relation.one_collection
+								: relation.many_collection;
 
 						if (relation.junction_field === field.field) return [];
 
@@ -44,8 +43,7 @@ export default function useFieldTree(collection: Ref<string>) {
 							.getFieldsForCollection(relatedCollection)
 							.filter(
 								(field: Field) =>
-									field.system?.hidden === false &&
-									field.system?.special?.toLowerCase() !== 'alias'
+									field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
 							);
 					})
 					.flat()

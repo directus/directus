@@ -111,7 +111,7 @@ export default defineComponent({
 
 			const relatedCollection = computed(() => {
 				if (!relation.value) return null;
-				return collectionsStore.getCollection(relation.value.collection_many);
+				return collectionsStore.getCollection(relation.value.many_collection);
 			});
 
 			const { collection } = toRefs(relatedCollection.value);

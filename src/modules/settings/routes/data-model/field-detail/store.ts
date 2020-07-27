@@ -62,11 +62,11 @@ function initLocalStore(
 
 			state.relations = [
 				{
-					collection_many: collection,
-					field_many: '',
-					primary_many: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
-					collection_one: 'directus_files',
-					primary_one: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					many_collection: collection,
+					many_field: '',
+					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					one_collection: 'directus_files',
+					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
 				},
 			];
 		}
@@ -74,7 +74,7 @@ function initLocalStore(
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].field_many = state.fieldData.field;
+				state.relations[0].many_field = state.fieldData.field;
 			}
 		);
 	}
@@ -83,11 +83,11 @@ function initLocalStore(
 		if (!isExisting) {
 			state.relations = [
 				{
-					collection_many: collection,
-					field_many: '',
-					primary_many: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
-					collection_one: '',
-					primary_one: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					many_collection: collection,
+					many_field: '',
+					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					one_collection: '',
+					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
 				},
 			];
 		}
@@ -95,25 +95,25 @@ function initLocalStore(
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].field_many = state.fieldData.field;
+				state.relations[0].many_field = state.fieldData.field;
 			}
 		);
 
 		// Make sure to keep the current m2o field type in sync with the primary key of the
 		// selected related collection
 		watch(
-			() => state.relations[0].collection_one,
+			() => state.relations[0].one_collection,
 			() => {
-				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].collection_one);
+				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
 				state.fieldData.type = field.type;
 			}
 		);
 
 		watch(
-			() => state.relations[0].collection_one,
+			() => state.relations[0].one_collection,
 			() => {
 				if (state.newFields.length > 0) {
-					state.newFields[0].collection = state.relations[0].collection_one;
+					state.newFields[0].collection = state.relations[0].one_collection;
 				}
 			}
 		);
@@ -127,13 +127,13 @@ function initLocalStore(
 
 			state.relations.push = [
 				{
-					collection_many: '',
-					field_many: '',
-					primary_many: '',
+					many_collection: '',
+					many_field: '',
+					many_primary: '',
 
-					collection_one: collection,
-					field_one: state.fieldData.field,
-					primary_one: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					one_collection: collection,
+					one_field: state.fieldData.field,
+					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 				},
 			];
 		}
@@ -141,15 +141,15 @@ function initLocalStore(
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].field_one = state.fieldData.field;
+				state.relations[0].one_field = state.fieldData.field;
 			}
 		);
 
 		watch(
-			() => state.relations[0].collection_many,
+			() => state.relations[0].many_collection,
 			() => {
-				state.relations[0].primary_many = fieldsStore.getPrimaryKeyFieldForCollection(
-					state.relations[0].collection_many
+				state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+					state.relations[0].many_collection
 				).field;
 			}
 		);
@@ -163,20 +163,20 @@ function initLocalStore(
 
 			state.relations = [
 				{
-					collection_many: '',
-					field_many: '',
-					primary_many: '',
-					collection_one: collection,
-					field_one: state.fieldData.field,
-					primary_one: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					many_collection: '',
+					many_field: '',
+					many_primary: '',
+					one_collection: collection,
+					one_field: state.fieldData.field,
+					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 				},
 				{
-					collection_many: '',
-					field_many: '',
-					primary_many: '',
-					collection_one: type === 'files' ? 'directus_files' : '',
-					field_one: null,
-					primary_one:
+					many_collection: '',
+					many_field: '',
+					many_primary: '',
+					one_collection: type === 'files' ? 'directus_files' : '',
+					one_field: null,
+					one_primary:
 						type === 'files' ? fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field : '',
 				},
 			];
@@ -185,30 +185,30 @@ function initLocalStore(
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].field_one = state.fieldData.field;
+				state.relations[0].one_field = state.fieldData.field;
 			}
 		);
 
 		watch(
-			() => state.relations[0].collection_many,
+			() => state.relations[0].many_collection,
 			() => {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].collection_many)?.field;
-				state.relations[0].primary_many = pkField;
-				state.relations[1].primary_many = pkField;
+				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
+				state.relations[0].many_primary = pkField;
+				state.relations[1].many_primary = pkField;
 			}
 		);
 
 		watch(
-			() => state.relations[0].field_many,
+			() => state.relations[0].many_field,
 			() => {
-				state.relations[1].junction_field = state.relations[0].field_many;
+				state.relations[1].junction_field = state.relations[0].many_field;
 			}
 		);
 
 		watch(
-			() => state.relations[1].field_many,
+			() => state.relations[1].many_field,
 			() => {
-				state.relations[0].junction_field = state.relations[1].field_many;
+				state.relations[0].junction_field = state.relations[1].many_field;
 			}
 		);
 	}

@@ -139,7 +139,7 @@ export default defineComponent({
 
 			const relatedCollection = computed(() => {
 				if (!relation.value) return null;
-				return collectionsStore.getCollection(relation.value.collection_many);
+				return collectionsStore.getCollection(relation.value.many_collection);
 			});
 
 			const { collection } = toRefs(relatedCollection.value);
@@ -253,7 +253,7 @@ export default defineComponent({
 						return item;
 					})
 					.filter((item) => item.hasOwnProperty(pkField))
-					.filter((item) => item[relation.value.field_many] !== null);
+					.filter((item) => item[relation.value.many_field] !== null);
 
 				const newlyAddedItems = changes.filter(
 					(change) =>
@@ -474,7 +474,7 @@ export default defineComponent({
 				return emit('input', [
 					{
 						[pkField]: itemPrimaryKey,
-						[relation.value.field_many]: null,
+						[relation.value.many_field]: null,
 					},
 				]);
 			}
@@ -505,7 +505,7 @@ export default defineComponent({
 						if (stagedValue[pkField] === itemPrimaryKey) {
 							return {
 								[pkField]: itemPrimaryKey,
-								[relation.value.field_many]: null,
+								[relation.value.many_field]: null,
 							};
 						}
 
@@ -518,7 +518,7 @@ export default defineComponent({
 				...props.value,
 				{
 					[pkField]: itemPrimaryKey,
-					[relation.value.field_many]: null,
+					[relation.value.many_field]: null,
 				},
 			]);
 		}

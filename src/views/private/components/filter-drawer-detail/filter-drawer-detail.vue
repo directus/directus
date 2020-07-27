@@ -73,8 +73,7 @@ export default defineComponent({
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
 				.filter(
-					(field: Field) =>
-						field.system?.hidden !== true && field.system?.special?.toLowerCase() !== 'alias'
+					(field: Field) => field.system?.hidden !== true && field.system?.special?.toLowerCase() !== 'alias'
 				)
 				.map((field: Field) => parseField(field, []));
 
@@ -94,9 +93,9 @@ export default defineComponent({
 					const relatedFields = relations
 						.map((relation: Relation) => {
 							const relatedCollection =
-								relation.collection_many === field.collection
-									? relation.collection_one
-									: relation.collection_many;
+								relation.many_collection === field.collection
+									? relation.one_collection
+									: relation.many_collection;
 
 							if (relation.junction_field === field.field) return [];
 

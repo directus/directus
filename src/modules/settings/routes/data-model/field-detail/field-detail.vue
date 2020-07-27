@@ -185,21 +185,21 @@ export default defineComponent({
 				if (['o2m', 'm2o', 'file'].includes(localType.value)) {
 					return (
 						state.relations.length === 0 ||
-						isEmpty(state.relations[0].collection_many) ||
-						isEmpty(state.relations[0].field_many) ||
-						isEmpty(state.relations[0].collection_one)
+						isEmpty(state.relations[0].many_collection) ||
+						isEmpty(state.relations[0].many_field) ||
+						isEmpty(state.relations[0].one_collection)
 					);
 				}
 
 				if (['m2m', 'files'].includes(localType.value)) {
 					return (
 						state.relations.length !== 2 ||
-						isEmpty(state.relations[0].collection_many) ||
-						isEmpty(state.relations[0].field_many) ||
-						isEmpty(state.relations[0].field_one) ||
-						isEmpty(state.relations[1].collection_many) ||
-						isEmpty(state.relations[1].field_many) ||
-						isEmpty(state.relations[1].collection_one)
+						isEmpty(state.relations[0].many_collection) ||
+						isEmpty(state.relations[0].many_field) ||
+						isEmpty(state.relations[0].one_field) ||
+						isEmpty(state.relations[1].many_collection) ||
+						isEmpty(state.relations[1].many_field) ||
+						isEmpty(state.relations[1].one_collection)
 					);
 				}
 
@@ -258,15 +258,15 @@ export default defineComponent({
 
 			if (relations.length === 1) {
 				const relation = relations[0];
-				if (relation.collection_one === 'directus_files') return 'file';
-				if (relation.collection_many === collection) return 'm2o';
+				if (relation.one_collection === 'directus_files') return 'file';
+				if (relation.many_collection === collection) return 'm2o';
 				return 'o2m';
 			}
 
 			if (relations.length === 2) {
 				if (
-					relations[0].collection_one === 'directus_files' ||
-					relations[1].collection_one === 'directus_files'
+					relations[0].one_collection === 'directus_files' ||
+					relations[1].one_collection === 'directus_files'
 				) {
 					return 'files';
 				} else {

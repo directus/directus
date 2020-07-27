@@ -104,7 +104,7 @@ export default function usePreview({
 		// yet, as they can't have been saved yet.
 		if (primaryKey.value === '+') return [];
 
-		const junctionTable = relationCurrentToJunction.value.collection_many;
+		const junctionTable = relationCurrentToJunction.value.many_collection;
 
 		// The stuff we want to fetch is the related junction row, and the content of the
 		// deeply related item nested. This should match the value that's set in the fields

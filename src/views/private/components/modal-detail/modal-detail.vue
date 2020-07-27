@@ -224,9 +224,9 @@ export default defineComponent({
 				return (
 					relations.find((relation: Relation) => {
 						return (
-							relation.collection_many === props.collection && relation.field_many === props.junctionField
+							relation.many_collection === props.collection && relation.many_field === props.junctionField
 						);
-					})?.collection_one || null
+					})?.one_collection || null
 				);
 			});
 

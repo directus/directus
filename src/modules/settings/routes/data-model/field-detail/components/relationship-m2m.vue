@@ -12,14 +12,14 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :disabled="type === 'files'" :items="collectionItems" v-model="relations[1].collection_one" />
+				<v-select :disabled="type === 'files'" :items="collectionItems" v-model="relations[1].one_collection" />
 			</div>
-			<v-input disabled :value="relations[0].primary_one" />
-			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[0].field_many" />
+			<v-input disabled :value="relations[0].one_primary" />
+			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[0].many_field" />
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[1].field_many" />
-			<v-input disabled :value="relations[1].primary_one" />
+			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[1].many_field" />
+			<v-input disabled :value="relations[1].one_primary" />
 			<v-icon name="arrow_forward" />
 			<v-icon name="arrow_backward" />
 		</div>
@@ -73,11 +73,11 @@ export default defineComponent({
 
 		const junctionCollection = computed({
 			get() {
-				return state.relations[0].collection_many;
+				return state.relations[0].many_collection;
 			},
 			set(collection: string) {
-				state.relations[0].collection_many = collection;
-				state.relations[1].collection_many = collection;
+				state.relations[0].many_collection = collection;
+				state.relations[1].many_collection = collection;
 			},
 		});
 
@@ -88,7 +88,7 @@ export default defineComponent({
 				text: field.field,
 				value: field.field,
 				disabled:
-					state.relations[0].field_many === field.field || state.relations[1].field_many === field.field,
+					state.relations[0].many_field === field.field || state.relations[1].many_field === field.field,
 			}));
 		});
 

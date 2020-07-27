@@ -54,7 +54,7 @@
 		<modal-browse
 			v-if="!disabled"
 			:active.sync="showBrowseModal"
-			:collection="relationJunctionToRelated.collection_one"
+			:collection="relationJunctionToRelated.one_collection"
 			:selection="[]"
 			:filters="selectionFilters"
 			@input="stageSelection"

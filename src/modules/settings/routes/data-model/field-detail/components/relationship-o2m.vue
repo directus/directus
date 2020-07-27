@@ -12,10 +12,10 @@
 			</div>
 			<v-input disabled :value="currentCollectionPrimaryKey.field" />
 			<v-select
-				v-model="relations[0].field_many"
-				:disabled="!relations[0].collection_many"
+				v-model="relations[0].many_field"
+				:disabled="!relations[0].many_collection"
 				:items="fields"
-				:placeholder="!relations[0].collection_many ? $t('choose_a_collection') : $t('choose_a_field')"
+				:placeholder="!relations[0].many_collection ? $t('choose_a_collection') : $t('choose_a_field')"
 			/>
 			<v-icon name="arrow_forward" />
 		</div>
@@ -79,11 +79,11 @@ export default defineComponent({
 			);
 
 			const fields = computed(() => {
-				if (!state.relations[0].collection_many) return [];
+				if (!state.relations[0].many_collection) return [];
 
 				return fieldsStore.state.fields
 					.filter((field) => {
-						if (field.collection !== state.relations[0].collection_many) return false;
+						if (field.collection !== state.relations[0].many_collection) return false;
 
 						// Make sure the selected field matches the type of primary key of the current
 						// collection. Otherwise you aren't able to properly save the primary key
@@ -96,11 +96,11 @@ export default defineComponent({
 
 			const collectionMany = computed({
 				get() {
-					return state.relations[0].collection_many!;
+					return state.relations[0].many_collection!;
 				},
 				set(collection: string) {
-					state.relations[0].collection_many = collection;
-					state.relations[0].field_many = '';
+					state.relations[0].many_collection = collection;
+					state.relations[0].many_field = '';
 				},
 			});
 

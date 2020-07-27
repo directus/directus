@@ -19,7 +19,7 @@ export default function useRelation({ collection, field }: RelationParams) {
 
 	const relationCurrentToJunction = computed(() => {
 		return relations.value.find(
-			(relation: Relation) => relation.collection_one === collection.value && relation.field_one === field.value
+			(relation: Relation) => relation.one_collection === collection.value && relation.one_field === field.value
 		);
 	});
 
@@ -30,8 +30,8 @@ export default function useRelation({ collection, field }: RelationParams) {
 		return relations.value[index];
 	});
 
-	const junctionCollection = computed(() => relations.value[0].collection_many);
-	const relatedCollection = computed(() => relations.value[1].collection_one);
+	const junctionCollection = computed(() => relations.value[0].many_collection);
+	const relatedCollection = computed(() => relations.value[1].one_collection);
 
 	const { primaryKeyField: junctionCollectionPrimaryKeyField } = useCollection(junctionCollection);
 	const { primaryKeyField: relatedCollectionPrimaryKeyField } = useCollection(relatedCollection);

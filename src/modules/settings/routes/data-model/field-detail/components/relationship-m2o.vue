@@ -4,14 +4,14 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].collection_many" />
+				<v-input disabled :value="relations[0].many_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
 				<v-select
 					:placeholder="$t('choose_a_collection')"
 					:items="items"
-					v-model="relations[0].collection_one"
+					v-model="relations[0].one_collection"
 				/>
 			</div>
 			<v-input disabled :value="fieldData.field" />
@@ -97,8 +97,8 @@ export default defineComponent({
 			);
 
 			const relatedPrimary = computed(() => {
-				return state.relations[0].collection_one
-					? fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].collection_one)?.field
+				return state.relations[0].one_collection
+					? fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection)?.field
 					: null;
 			});
 
@@ -115,7 +115,7 @@ export default defineComponent({
 						state.newFields = [
 							{
 								field: '',
-								collection: state.relations[0].collection_one,
+								collection: state.relations[0].one_collection,
 								system: {
 									special: 'o2m',
 									interface: 'one-to-many',
@@ -143,15 +143,15 @@ export default defineComponent({
 					state.relations = [
 						{
 							...state.relations[0],
-							field_one: field,
+							one_field: field,
 						},
 					];
 				},
 			});
 
 			const correspondingLabel = computed(() => {
-				if (state.relations[0].collection_one) {
-					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].collection_one });
+				if (state.relations[0].one_collection) {
+					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].one_collection });
 				}
 
 				return i18n.t('add_field_related');

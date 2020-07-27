@@ -290,11 +290,11 @@ export const useFieldsStore = createStore({
 			const parts = fields.split('.');
 			const relationshipForField = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.field_many === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0]);
 
 			if (relationshipForField === undefined) return false;
 
-			const relatedCollection = relationshipForField.collection_one;
+			const relatedCollection = relationshipForField.one_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);
