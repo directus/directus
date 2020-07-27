@@ -54,7 +54,7 @@ export const withAvatar = () =>
 					data: {
 						thumbnails: [
 							{
-								key: 'directus-small-crop',
+								key: 'system-small-crop',
 								url: 'https://randomuser.me/api/portraits/women/44.jpg',
 							},
 						],

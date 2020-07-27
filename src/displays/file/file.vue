@@ -49,7 +49,7 @@ export default defineComponent({
 			if (!props.value) return null;
 			if (props.value.type.includes('svg')) return props.value.data.asset_url;
 			if (props.value.type.includes('image') === false) return null;
-			return props.value.data.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url;
+			return props.value.data.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url;
 		});
 
 		const { height } = useElementSize(previewEl);

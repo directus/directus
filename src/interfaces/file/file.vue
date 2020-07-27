@@ -37,7 +37,7 @@
 
 			<v-list dense>
 				<template v-if="file">
-					<v-list-item :download="file.filename_download" :href="file.data.asset_url">
+					<v-list-item :download="file.filename_download" :href="assetURL">
 						<v-list-item-icon><v-icon name="file_download" /></v-list-item-icon>
 						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -110,25 +110,19 @@ import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import ModalBrowse from '@/views/private/components/modal-browse';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
+import getRootPath from '@/utils/get-root-path';
 
 type FileInfo = {
 	id: number;
 	title: string;
 	type: string;
-	data: {
-		asset_url: string;
-		thumbnails?: {
-			key: string;
-			url: string;
-		}[];
-	};
 };
 
 export default defineComponent({
 	components: { ModalBrowse },
 	props: {
 		value: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 		disabled: {
@@ -140,18 +134,20 @@ export default defineComponent({
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, error, file, fetchFile } = useFile();
 
-		watch(() => props.value, fetchFile);
+		watch(() => props.value, fetchFile, { immediate: true });
 
 		const fileExtension = computed(() => {
 			if (file.value === null) return null;
 			return readableMimeType(file.value.type, true);
 		});
 
+		const assetURL = computed(() => getRootPath() + `assets/${props.value}`);
+
 		const imageThumbnail = computed(() => {
 			if (file.value === null) return null;
-			if (file.value.type.includes('svg')) return file.value.data.asset_url;
+			if (file.value.type.includes('svg')) return assetURL.value;
 			if (file.value.type.includes('image') === false) return null;
-			return file.value.data.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url;
+			return assetURL.value + `?key=system-small-cover`;
 		});
 
 		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
@@ -170,6 +166,7 @@ export default defineComponent({
 			urlError,
 			importFromURL,
 			isValidURL,
+			assetURL,
 		};
 
 		function useFile() {
@@ -188,10 +185,11 @@ export default defineComponent({
 				}
 
 				loading.value = true;
+
 				try {
 					const response = await api.get(`/files/${props.value}`, {
 						params: {
-							fields: ['title', 'data', 'type', 'filename_download'],
+							fields: ['title', 'type', 'filename_download'],
 						},
 					});
 
@@ -236,6 +234,10 @@ export default defineComponent({
 
 			async function importFromURL() {
 				loading.value = true;
+
+				/**
+				 * @TODO add /files/import endpoint to API + use it here
+				 */
 
 				try {
 					const response = await api.post(`/files`, {

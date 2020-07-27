@@ -101,7 +101,7 @@ export default defineComponent({
 				return image.value.data.full_url;
 			}
 
-			const url = image.value.data.thumbnails.find((thumb) => thumb.key === 'directus-large-crop')?.url;
+			const url = image.value.data.thumbnails.find((thumb) => thumb.key === 'system-large-crop')?.url;
 
 			if (url) {
 				return `${url}&cache-buster=${cacheBuster.value}`;

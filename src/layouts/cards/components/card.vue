@@ -95,10 +95,10 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg')) return null;
 
-			let key = 'directus-medium-cover';
+			let key = 'system-medium-cover';
 
 			if (props.crop === false) {
-				key = 'directus-medium-contain';
+				key = 'system-medium-contain';
 			}
 
 			return getRootPath() + `assets/${props.file.id}?key=${key}`;

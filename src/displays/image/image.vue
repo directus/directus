@@ -33,7 +33,7 @@ export default defineComponent({
 	setup(props) {
 		const src = computed(() => {
 			if (props.value === null) return null;
-			return props.value?.data?.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url || null;
+			return props.value?.data?.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url || null;
 		});
 
 		return { src };

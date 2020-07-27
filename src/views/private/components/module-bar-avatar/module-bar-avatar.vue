@@ -50,7 +50,7 @@ export default defineComponent({
 			if (userStore.state.currentUser === null) return null;
 			if (userStore.state.currentUser.avatar === null) return null;
 
-			return getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=directus-medium-cover`;
+			return getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`;
 		});
 
 		const userProfileLink = computed<string>(() => {

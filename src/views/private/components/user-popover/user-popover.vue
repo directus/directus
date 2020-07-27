@@ -59,7 +59,7 @@ export default defineComponent({
 		const avatarSrc = computed(() => {
 			if (data.value === null) return null;
 
-			return data.value.avatar?.data?.thumbnails?.find((thumbnail) => thumbnail.key === 'directus-medium-crop')
+			return data.value.avatar?.data?.thumbnails?.find((thumbnail) => thumbnail.key === 'system-medium-crop')
 				?.url;
 		});
 

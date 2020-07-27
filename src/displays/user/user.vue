@@ -56,7 +56,7 @@ export default defineComponent({
 		const src = computed(() => {
 			if (props.value === null) return null;
 			return (
-				props.value?.avatar?.data?.thumbnails?.find((thumb) => thumb.key === 'directus-small-crop')?.url || null
+				props.value?.avatar?.data?.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url || null
 			);
 		});
 

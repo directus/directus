@@ -304,7 +304,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.data?.thumbnails?.find(
-						(thumb: any) => thumb.key === 'directus-medium-crop'
+						(thumb: any) => thumb.key === 'system-medium-crop'
 					)?.url;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {

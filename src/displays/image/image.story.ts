@@ -24,9 +24,8 @@ export const basic = () =>
 				data: {
 					thumbnails: [
 						{
-							key: 'directus-small-crop',
-							url:
-								'https://demo.directus.io/thumper/assets/pnw7s9lqy68048g0?key=directus-small-crop',
+							key: 'system-small-crop',
+							url: 'https://demo.directus.io/thumper/assets/pnw7s9lqy68048g0?key=system-small-crop',
 						},
 					],
 				},

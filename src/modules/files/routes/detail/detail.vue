@@ -228,8 +228,7 @@ export default defineComponent({
 		const previewActive = ref(false);
 		const fileSrc = computed(() => {
 			return (
-				getRootPath() +
-				`assets/${props.primaryKey}?cache-buster=${cacheBuster.value}&key=directus-large-contain`
+				getRootPath() + `assets/${props.primaryKey}?cache-buster=${cacheBuster.value}&key=system-large-contain`
 			);
 		});
 

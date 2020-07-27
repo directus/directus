@@ -112,7 +112,7 @@ export default defineComponent({
 		const avatarSource = computed(() => {
 			if (!props.activity.action_by?.avatar) return null;
 
-			return getRootPath() + `assets/${props.activity.action_by.avatar.id}?key=directus-small-cover`;
+			return getRootPath() + `assets/${props.activity.action_by.avatar.id}?key=system-small-cover`;
 		});
 
 		const { confirmDelete, deleting, remove } = useDelete();

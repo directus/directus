@@ -371,7 +371,7 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.type`);
 					fields.push(`${imageSource.value}.filename_disk`);
 					fields.push(`${imageSource.value}.storage`);
-					fields.push(`${imageSource.value}.links`);
+					fields.push(`${imageSource.value}.id`);
 				}
 
 				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
