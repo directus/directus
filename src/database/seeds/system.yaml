@@ -381,7 +381,6 @@ tables:
     one_field:
       type: string
       length: 64
-      nullable: false
     one_primary:
       type: string
       length: 64
