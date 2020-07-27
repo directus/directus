@@ -1,3 +1,0 @@
-# Schemas
-
-Predefined boilerplate schemas.

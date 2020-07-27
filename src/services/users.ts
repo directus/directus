@@ -52,6 +52,7 @@ export const inviteUser = async (email: string, role: string, accountability: Ac
 
 export const acceptInvite = async (token: string, password: string) => {
 	const { email } = jwt.verify(token, process.env.SECRET as string) as { email: string };
+
 	const user = await database
 		.select('id', 'status')
 		.from('directus_users')

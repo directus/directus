@@ -11,8 +11,7 @@ import { v4 as uuidV4 } from 'uuid';
 
 import argon2 from 'argon2';
 
-import { seed as seedCreateTables } from '../../../database/seeds/01-create-tables';
-import { seed as seedAddSystemRows } from '../../../database/seeds/02-add-system-rows';
+import runSeed from '../../../database/run-seed';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 
@@ -79,8 +78,7 @@ export default async function create(directory: string, options: Record<string, 
 
 	const db = createDBConnection(dbClient, credentials);
 
-	await seedCreateTables(db);
-	await seedAddSystemRows(db);
+	await runSeed(db, 'system');
 
 	console.log(`Creating the .env file...`);
 
