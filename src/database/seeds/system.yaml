@@ -1438,3 +1438,67 @@ rows:
         placeholder: Enter a secure token...
       sort: 16
       width: full
+
+  directus_permissions:
+    - collection: directus_settings
+      operation: read
+      permissions: {}
+      fields:
+        - project_name
+        - project_url
+        - project_logo
+        - project_color
+        - project_foreground
+        - project_background
+        - project_note
+
+  directus_relations:
+    - many_collection: directus_users
+      many_field: role
+      many_primary: id
+      one_collection: directus_roles
+      one_field: users
+      one_primary: id
+    - many_collection: directus_users
+      many_field: avatar
+      many_primary: id
+      one_collection: directus_files
+      one_primary: id
+    - many_collection: directus_revisions
+      many_field: activity
+      many_primary: id
+      one_collection: directus_activity
+      one_field: revisions
+      one_primary: id
+    - many_collection: directus_presets
+      many_field: user
+      many_primary: id
+      one_collection: directus_users
+      one_primary: id
+    - many_collection: directus_folders
+      many_field: parent_folder
+      many_primary: id
+      one_collection: directus_folders
+      one_primary: id
+    - many_collection: directus_files
+      many_field: folder
+      many_primary: id
+      one_collection: directus_folders
+      one_primary: id
+    - many_collection: directus_files
+      many_field: uploaded_by
+      many_primary: id
+      one_collection: directus_users
+      one_primary: id
+    - many_collection: directus_fields
+      many_field: collection
+      many_primary: id
+      one_collection: directus_collections
+      one_field: fields
+      one_primary: id
+    - many_collection: directus_activity
+      many_field: action_by
+      many_primary: id
+      one_collection: directus_users
+      one_field: fields
+      one_primary: id

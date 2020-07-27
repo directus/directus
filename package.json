@@ -48,7 +48,6 @@
     "busboy": "^0.3.1",
     "camelcase": "^6.0.0",
     "chalk": "^4.1.0",
-    "clear": "^0.1.0",
     "commander": "^5.1.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
