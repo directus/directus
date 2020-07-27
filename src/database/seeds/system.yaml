@@ -185,6 +185,7 @@ tables:
     action_on:
       type: timestamp
       nullable: false
+      default: '$now'
     ip:
       type: string
       length: 50

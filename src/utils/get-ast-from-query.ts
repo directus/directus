@@ -76,12 +76,12 @@ export default async function getASTFromQuery(
 					? relations
 							.filter(
 								(relation) =>
-									relation.collection_many === parentCollection ||
-									relation.collection_one === parentCollection
+									relation.many_collection === parentCollection ||
+									relation.one_collection === parentCollection
 							)
 							.map((relation) => {
-								const isM2O = relation.collection_many === parentCollection;
-								return isM2O ? relation.field_many : relation.field_one;
+								const isM2O = relation.many_collection === parentCollection;
+								return isM2O ? relation.many_field : relation.one_field;
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
@@ -159,8 +159,8 @@ export default async function getASTFromQuery(
 	function getRelation(collection: string, field: string) {
 		const relation = relations.find((relation) => {
 			return (
-				(relation.collection_many === collection && relation.field_many === field) ||
-				(relation.collection_one === collection && relation.field_one === field)
+				(relation.many_collection === collection && relation.many_field === field) ||
+				(relation.one_collection === collection && relation.one_field === field)
 			);
 		});
 
@@ -172,12 +172,12 @@ export default async function getASTFromQuery(
 
 		if (!relation) return null;
 
-		if (relation.collection_many === collection && relation.field_many === field) {
-			return relation.collection_one;
+		if (relation.many_collection === collection && relation.many_field === field) {
+			return relation.one_collection;
 		}
 
-		if (relation.collection_one === collection && relation.field_one === field) {
-			return relation.collection_many;
+		if (relation.one_collection === collection && relation.one_field === field) {
+			return relation.many_collection;
 		}
 	}
 

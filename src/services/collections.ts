@@ -122,7 +122,7 @@ export const deleteCollection = async (collection: string, accountability: Accou
 		database
 			.delete()
 			.from('directus_relations')
-			.where({ collection_many: collection })
-			.orWhere({ collection_one: collection }),
+			.where({ many_collection: collection })
+			.orWhere({ one_collection: collection }),
 	]);
 };

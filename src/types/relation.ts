@@ -1,11 +1,11 @@
 export type Relation = {
 	id: number;
 
-	collection_many: string;
-	field_many: string;
-	primary_many: string;
+	many_collection: string;
+	many_field: string;
+	many_primary: string;
 
-	collection_one: string;
-	field_one: string;
-	primary_one: string;
+	one_collection: string;
+	one_field: string;
+	one_primary: string;
 };

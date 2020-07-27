@@ -26,7 +26,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 		const m2o = isM2O(child);
 
 		if (m2o) {
-			toplevelFields.push(child.relation.field_many);
+			toplevelFields.push(child.relation.many_field);
 		}
 
 		nestedCollections.push(child);
@@ -99,17 +99,17 @@ export default async function runAST(ast: AST, query = ast.query) {
 			const toplevelFields = batch.children
 				.filter(({ type }) => type === 'field')
 				.map(({ name }) => name);
-			if (toplevelFields.includes(batch.relation.primary_one) === false) {
-				tempField = batch.relation.primary_one;
-				batch.children.push({ type: 'field', name: batch.relation.primary_one });
+			if (toplevelFields.includes(batch.relation.one_primary) === false) {
+				tempField = batch.relation.one_primary;
+				batch.children.push({ type: 'field', name: batch.relation.one_primary });
 			}
 
 			batchQuery = {
 				...batch.query,
 				filter: {
 					...(batch.query.filter || {}),
-					[batch.relation.primary_one]: {
-						_in: uniq(results.map((res) => res[batch.relation.field_many])).filter(
+					[batch.relation.one_primary]: {
+						_in: uniq(results.map((res) => res[batch.relation.many_field])).filter(
 							(id) => id
 						),
 					},
@@ -122,16 +122,16 @@ export default async function runAST(ast: AST, query = ast.query) {
 			const toplevelFields = batch.children
 				.filter(({ type }) => type === 'field')
 				.map(({ name }) => name);
-			if (toplevelFields.includes(batch.relation.field_many) === false) {
-				tempField = batch.relation.field_many;
-				batch.children.push({ type: 'field', name: batch.relation.field_many });
+			if (toplevelFields.includes(batch.relation.many_field) === false) {
+				tempField = batch.relation.many_field;
+				batch.children.push({ type: 'field', name: batch.relation.many_field });
 			}
 
 			batchQuery = {
 				...batch.query,
 				filter: {
 					...(batch.query.filter || {}),
-					[batch.relation.field_many]: {
+					[batch.relation.many_field]: {
 						_in: uniq(results.map((res) => res[batch.parentKey])).filter((id) => id),
 					},
 				},
@@ -157,7 +157,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 					clone(
 						nestedResults.find((nestedRecord) => {
 							return (
-								nestedRecord[batch.relation.primary_one] === record[batch.fieldKey]
+								nestedRecord[batch.relation.one_primary] === record[batch.fieldKey]
 							);
 						})
 					) || null;
@@ -176,11 +176,11 @@ export default async function runAST(ast: AST, query = ast.query) {
 			let resultsForCurrentRecord = nestedResults
 				.filter((nestedRecord) => {
 					return (
-						nestedRecord[batch.relation.field_many] ===
-							record[batch.relation.primary_one] ||
+						nestedRecord[batch.relation.many_field] ===
+							record[batch.relation.one_primary] ||
 						// In case of nested object:
-						nestedRecord[batch.relation.field_many]?.[batch.relation.primary_many] ===
-							record[batch.relation.primary_one]
+						nestedRecord[batch.relation.many_field]?.[batch.relation.many_primary] ===
+							record[batch.relation.one_primary]
 					);
 				})
 				.map((nestedRecord) => {
@@ -218,7 +218,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 
 function isM2O(child: NestedCollectionAST) {
 	return (
-		child.relation.collection_one === child.name && child.relation.field_many === child.fieldKey
+		child.relation.one_collection === child.name && child.relation.many_field === child.fieldKey
 	);
 }
 

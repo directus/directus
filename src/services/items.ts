@@ -141,6 +141,8 @@ export async function readItem<T extends PrimaryKey | PrimaryKey[]>(
 	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
 	const isBatch = Array.isArray(primaryKey);
 
+	query = query || {};
+
 	if (isBatch) {
 		query = {
 			...query,
