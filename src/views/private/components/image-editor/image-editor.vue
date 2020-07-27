@@ -16,7 +16,7 @@
 			error
 		</v-notice>
 
-		<div v-show="imageData && imageData.data.full_url && !loading && !error" class="editor-container">
+		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
@@ -130,9 +130,6 @@ import throttle from 'lodash/throttle';
 
 type Image = {
 	type: string;
-	data: {
-		full_url: string;
-	};
 	filesize: number;
 	filename_download: string;
 	width: number;
@@ -146,7 +143,7 @@ export default defineComponent({
 	},
 	props: {
 		id: {
-			type: Number,
+			type: String,
 			required: true,
 		},
 		active: {
@@ -196,7 +193,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return imageData && imageData.value && imageData.value.data.full_url + '?' + nanoid();
+			return `/assets/${props.id}?${nanoid()}`;
 		});
 
 		return {
@@ -240,9 +237,10 @@ export default defineComponent({
 			async function fetchImage() {
 				try {
 					loading.value = true;
+
 					const response = await api.get(`/files/${props.id}`, {
 						params: {
-							fields: ['data', 'type', 'filesize', 'filename_download', 'width', 'height'],
+							fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
 						},
 					});
 
@@ -271,7 +269,7 @@ export default defineComponent({
 						formData.append('file', blob, imageData.value?.filename_download);
 
 						try {
-							await api.post(`/files/${props.id}`, formData);
+							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
 							_active.value = false;
 						} catch (err) {
@@ -381,11 +379,8 @@ export default defineComponent({
 					cropperInstance.value.destroy();
 				}
 
-				if (!imageData.value) return;
-
 				cropperInstance.value = new Cropper(imageElement.value, {
 					autoCrop: false,
-					aspectRatio: imageData.value.width / imageData.value.height,
 					toggleDragModeOnDblclick: false,
 					dragMode: 'move',
 					crop: throttle((event) => {
