@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
 import { types } from '../types';
-import { isObject } from 'lodash';
+import { isObject, merge } from 'lodash';
 
 type SeedData = {
 	tables?: {
@@ -26,7 +26,10 @@ type SeedData = {
 	};
 
 	rows?: {
-		[table: string]: Record<string, any>[];
+		[table: string]: {
+			defaults: Record<string, any>;
+			data: Record<string, any>[];
+		};
 	};
 };
 
@@ -91,8 +94,19 @@ export default async function runSeed(knex: Knex, seed: string) {
 		}
 
 		if (seedData.rows) {
-			for (const [table, values] of Object.entries(seedData.rows)) {
-				await transaction(table).insert(values);
+			for (const [table, { defaults, data }] of Object.entries(seedData.rows)) {
+				const dataWithDefaults = data.map((row) => {
+					// Stringify all nested JSON values
+					for (const [key, value] of Object.entries(row)) {
+						if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
+							row[key] = JSON.stringify(value);
+						}
+					}
+
+					return merge({}, defaults, row);
+				});
+
+				await transaction(table).insert(dataWithDefaults);
 			}
 		}
 	});

@@ -4,7 +4,7 @@
 
 ## Installation
 
-Run `npx directus@preview create <directory>`
+Run `npx directus create <directory>`
 
 Start the API by running `npx directus start`.
 
