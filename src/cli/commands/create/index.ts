@@ -75,7 +75,7 @@ export default async function create(directory: string, options: Record<string, 
 
 	const credentials: Credentials = await inquirer.prompt(
 		(databaseQuestions[dbClient] as any[]).map((question: Function) =>
-			question({ client: dbClient })
+			question({ client: dbClient, filepath: rootPath })
 		)
 	);
 

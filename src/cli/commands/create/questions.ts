@@ -1,8 +1,10 @@
-const filename = () => ({
+import path from 'path';
+
+const filename = ({ filepath }: { filepath: string }) => ({
 	type: 'input',
 	name: 'filename',
 	message: 'Database File Path:',
-	default: './data.db',
+	default: path.join(filepath, 'data.db'),
 });
 
 const host = () => ({
