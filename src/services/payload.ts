@@ -67,6 +67,13 @@ export default class PayloadService {
 			// This is an non-existing column, so there isn't any data to save
 			return undefined;
 		},
+		async boolean(operation, value) {
+			if (operation === 'read') {
+				return value === true || value === 1 || value === '1';
+			}
+
+			return value;
+		},
 	};
 
 	processValues(operation: Operation, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;

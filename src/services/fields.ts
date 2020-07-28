@@ -1,206 +1,198 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { uniq } from 'lodash';
-import { Accountability } from '../types';
+import { Accountability, AbstractServiceOptions } from '../types';
 import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
-import { InvalidPayloadException, FieldNotFoundException } from '../exceptions';
-
-/**
- * @TODO turn into class
- */
-
-export const fieldsInCollection = async (collection: string) => {
-	const [fields, columns] = await Promise.all([
-		database.select('field').from('directus_fields').where({ collection }),
-		schemaInspector.columns(collection),
-	]);
-
-	return uniq([...fields.map(({ field }) => field), ...columns.map(({ column }) => column)]);
-};
-
-/**
- * @TODO
- * update read to use ItemsService instead of direct to db
- */
-
-export const readAll = async (collection?: string) => {
-	const fieldsQuery = database.select('*').from('directus_fields');
-
-	if (collection) {
-		fieldsQuery.where({ collection });
-	}
-
-	const [columns, fields] = await Promise.all([
-		schemaInspector.columnInfo(collection),
-		fieldsQuery,
-	]);
-
-	return columns.map((column) => {
-		const field = fields.find(
-			(field) => field.field === column.name && field.collection === column.table
-		);
-
-		const data = {
-			collection: column.table,
-			field: column.name,
-			type: column ? getLocalType(column.type) : 'alias',
-			database: column,
-			system: field || null,
-		};
-
-		return data;
-	});
-};
-
-/** @todo add accountability */
-export const readOne = async (
-	collection: string,
-	field: string,
-	accountability?: Accountability
-) => {
-	let column;
-	const fieldInfo = await database
-		.select('*')
-		.from('directus_fields')
-		.where({ collection, field })
-		.first();
-
-	try {
-		column = await schemaInspector.columnInfo(collection, field);
-	} catch {}
-
-	const data = {
-		collection,
-		field,
-		type: column ? getLocalType(column.type) : 'alias',
-		database: column || null,
-		system: fieldInfo || null,
-	};
-
-	return data;
-};
-
-export const createField = async (
-	collection: string,
-	field: Partial<Field> & { field: string; type: typeof types[number] },
-	accountability?: Accountability
-) => {
-	const itemsService = new ItemsService('directus_fields', { accountability });
-
-	/**
-	 * @todo
-	 * Check if table / directus_fields row already exists
-	 */
-
-	if (field.database) {
-		await database.schema.alterTable(collection, (table) => {
-			let column: ColumnBuilder;
-
-			if (!field.database) return;
-
-			if (field.type === 'string') {
-				column = table.string(
-					field.field,
-					field.database.max_length !== null ? field.database.max_length : undefined
-				);
-			} else if (['float', 'decimal'].includes(field.type)) {
-				const type = field.type as 'float' | 'decimal';
-				/** @todo add precision and scale support */
-				column = table[type](field.field /* precision, scale */);
-			} else {
-				column = table[field.type](field.field);
-			}
-
-			if (field.database.default_value) {
-				column.defaultTo(field.database.default_value);
-			}
-
-			if (field.database.is_nullable && field.database.is_nullable === true) {
-				column.nullable();
-			} else {
-				column.notNullable();
-			}
-		});
-	}
-
-	if (field.system) {
-		await itemsService.create({
-			...field.system,
-			collection: collection,
-			field: field.field,
-		});
-	}
-};
-
-/** @todo research how to make this happen in SQLite / Redshift */
+import { FieldNotFoundException } from '../exceptions';
+import Knex from 'knex';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
-export const updateField = async (
-	collection: string,
-	field: RawField,
-	accountability?: Accountability
-) => {
-	if (field.database) {
-		await database.schema.alterTable(collection, (table) => {
-			let column: ColumnBuilder;
+export default class FieldsService {
+	knex: Knex;
+	accountability: Accountability | null;
+	service: ItemsService;
 
-			if (!field.database) return;
+	constructor(options?: AbstractServiceOptions) {
+		this.knex = options?.knex || database;
+		this.accountability = options?.accountability || null;
+		this.service = new ItemsService('directus_fields', options);
+	}
 
-			if (field.type === 'string') {
-				column = table.string(
-					field.field,
-					field.database.max_length !== null ? field.database.max_length : undefined
-				);
-			} else if (['float', 'decimal'].includes(field.type)) {
-				const type = field.type as 'float' | 'decimal';
-				/** @todo add precision and scale support */
-				column = table[type](field.field /* precision, scale */);
-			} else {
-				column = table[field.type](field.field);
-			}
+	async fieldsInCollection(collection: string) {
+		const [fields, columns] = await Promise.all([
+			this.service.readByQuery({ filter: { collection: { _eq: collection } } }),
+			schemaInspector.columns(collection),
+		]);
 
-			if (field.database.default_value) {
-				column.defaultTo(field.database.default_value);
-			}
+		return uniq([...fields.map(({ field }) => field), ...columns.map(({ column }) => column)]);
+	}
 
-			if (field.database.is_nullable && field.database.is_nullable === true) {
-				column.nullable();
-			} else {
-				column.notNullable();
-			}
+	async readAll(collection?: string) {
+		const fieldsQuery = this.knex.select('*').from('directus_fields');
 
-			column.alter();
+		if (collection) {
+			fieldsQuery.where({ collection });
+		}
+
+		let [columns, fields] = await Promise.all([
+			schemaInspector.columnInfo(collection),
+			fieldsQuery,
+		]);
+
+		return columns.map((column) => {
+			const field = fields.find(
+				(field) => field.field === column.name && field.collection === column.table
+			);
+
+			const data = {
+				collection: column.table,
+				field: column.name,
+				type: column ? getLocalType(column.type) : 'alias',
+				database: column,
+				system: field || null,
+			};
+
+			return data;
 		});
 	}
 
-	if (field.system) {
-		const record = await database
-			.select<{ id: number }>('id')
+	/** @todo add accountability */
+	async readOne(collection: string, field: string, accountability?: Accountability) {
+		let column;
+		const fieldInfo = await this.knex
+			.select('*')
 			.from('directus_fields')
-			.where({ collection, field: field.field })
+			.where({ collection, field })
 			.first();
-		if (!record) throw new FieldNotFoundException(collection, field.field);
-		await database('directus_fields')
-			.update(field.system)
-			.where({ collection, field: field.field });
+
+		try {
+			column = await schemaInspector.columnInfo(collection, field);
+		} catch {}
+
+		const data = {
+			collection,
+			field,
+			type: column ? getLocalType(column.type) : 'alias',
+			database: column || null,
+			system: fieldInfo || null,
+		};
+
+		return data;
 	}
 
-	return field.field;
-};
+	async createField(
+		collection: string,
+		field: Partial<Field> & { field: string; type: typeof types[number] },
+		accountability?: Accountability
+	) {
+		const itemsService = new ItemsService('directus_fields', { accountability });
 
-/** @todo save accountability */
-export const deleteField = async (
-	collection: string,
-	field: string,
-	accountability?: Accountability
-) => {
-	await database('directus_fields').delete().where({ collection, field });
+		/**
+		 * @todo
+		 * Check if table / directus_fields row already exists
+		 */
 
-	await database.schema.table(collection, (table) => {
-		table.dropColumn(field);
-	});
-};
+		if (field.database) {
+			await database.schema.alterTable(collection, (table) => {
+				let column: ColumnBuilder;
+
+				if (!field.database) return;
+
+				if (field.type === 'string') {
+					column = table.string(
+						field.field,
+						field.database.max_length !== null ? field.database.max_length : undefined
+					);
+				} else if (['float', 'decimal'].includes(field.type)) {
+					const type = field.type as 'float' | 'decimal';
+					/** @todo add precision and scale support */
+					column = table[type](field.field /* precision, scale */);
+				} else {
+					column = table[field.type](field.field);
+				}
+
+				if (field.database.default_value) {
+					column.defaultTo(field.database.default_value);
+				}
+
+				if (field.database.is_nullable && field.database.is_nullable === true) {
+					column.nullable();
+				} else {
+					column.notNullable();
+				}
+			});
+		}
+
+		if (field.system) {
+			await itemsService.create({
+				...field.system,
+				collection: collection,
+				field: field.field,
+			});
+		}
+	}
+
+	/** @todo research how to make this happen in SQLite / Redshift */
+
+	async updateField(collection: string, field: RawField, accountability?: Accountability) {
+		if (field.database) {
+			await database.schema.alterTable(collection, (table) => {
+				let column: ColumnBuilder;
+
+				if (!field.database) return;
+
+				if (field.type === 'string') {
+					column = table.string(
+						field.field,
+						field.database.max_length !== null ? field.database.max_length : undefined
+					);
+				} else if (['float', 'decimal'].includes(field.type)) {
+					const type = field.type as 'float' | 'decimal';
+					/** @todo add precision and scale support */
+					column = table[type](field.field /* precision, scale */);
+				} else {
+					column = table[field.type](field.field);
+				}
+
+				if (field.database.default_value) {
+					column.defaultTo(field.database.default_value);
+				}
+
+				if (field.database.is_nullable && field.database.is_nullable === true) {
+					column.nullable();
+				} else {
+					column.notNullable();
+				}
+
+				column.alter();
+			});
+		}
+
+		if (field.system) {
+			const record = await database
+				.select<{ id: number }>('id')
+				.from('directus_fields')
+				.where({ collection, field: field.field })
+				.first();
+			if (!record) throw new FieldNotFoundException(collection, field.field);
+			await database('directus_fields')
+				.update(field.system)
+				.where({ collection, field: field.field });
+		}
+
+		return field.field;
+	}
+
+	/** @todo save accountability */
+	async deleteField(collection: string, field: string, accountability?: Accountability) {
+		await database('directus_fields').delete().where({ collection, field });
+
+		await database.schema.table(collection, (table) => {
+			table.dropColumn(field);
+		});
+	}
+}

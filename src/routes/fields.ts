@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import * as FieldsService from '../services/fields';
+import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
@@ -21,7 +21,9 @@ router.get(
 	'/',
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		const fields = await FieldsService.readAll();
+		const service = new FieldsService({ accountability: req.accountability });
+
+		const fields = await service.readAll();
 		return res.json({ data: fields || null });
 	})
 );
@@ -31,7 +33,9 @@ router.get(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		const fields = await FieldsService.readAll(req.collection);
+		const service = new FieldsService({ accountability: req.accountability });
+
+		const fields = await service.readAll(req.collection);
 		return res.json({ data: fields || null });
 	})
 );
@@ -41,10 +45,12 @@ router.get(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
+		const service = new FieldsService({ accountability: req.accountability });
+
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
 		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
 
-		const field = await FieldsService.readOne(req.collection, req.params.field);
+		const field = await service.readOne(req.collection, req.params.field);
 		return res.json({ data: field || null });
 	})
 );
@@ -70,6 +76,8 @@ router.post(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
+		const service = new FieldsService({ accountability: req.accountability });
+
 		const { error } = newFieldSchema.validate(req.body);
 
 		if (error) {
@@ -78,9 +86,9 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
-		await FieldsService.createField(req.params.collection, field, req.accountability);
+		await service.createField(req.params.collection, field, req.accountability);
 
-		const createdField = await FieldsService.readOne(
+		const createdField = await service.readOne(
 			req.params.collection,
 			field.field,
 			req.accountability
@@ -95,15 +103,17 @@ router.patch(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
+		const service = new FieldsService({ accountability: req.accountability });
+
 		if (Array.isArray(req.body) === false)
 			throw new InvalidPayloadException('Submitted body has to be an array.');
 
 		let results: any = [];
 
 		for (const field of req.body) {
-			await FieldsService.updateField(req.params.collection, field, req.accountability);
+			await service.updateField(req.params.collection, field, req.accountability);
 
-			const updatedField = await FieldsService.readOne(
+			const updatedField = await service.readOne(
 				req.params.collection,
 				field.field,
 				req.accountability
@@ -122,13 +132,15 @@ router.patch(
 	useCollection('directus_fields'),
 	// @todo: validate field
 	asyncHandler(async (req, res) => {
+		const service = new FieldsService({ accountability: req.accountability });
+
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 
-		await FieldsService.updateField(req.params.collection, fieldData, req.accountability);
+		await service.updateField(req.params.collection, fieldData, req.accountability);
 
-		const updatedField = await FieldsService.readOne(
+		const updatedField = await service.readOne(
 			req.params.collection,
 			req.params.field,
 			req.accountability
@@ -143,11 +155,9 @@ router.delete(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		await FieldsService.deleteField(
-			req.params.collection,
-			req.params.field,
-			req.accountability
-		);
+		const service = new FieldsService({ accountability: req.accountability });
+
+		await service.deleteField(req.params.collection, req.params.field, req.accountability);
 
 		res.status(200).end();
 	})

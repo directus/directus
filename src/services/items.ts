@@ -15,9 +15,9 @@ import Knex from 'knex';
 
 import PayloadService from './payload';
 import AuthService from './auth';
-import ActivityService from './activity';
 
 import { pick, clone } from 'lodash';
+import getDefaultValue from '../utils/get-default-value';
 
 export default class ItemsService implements AbstractService {
 	collection: string;
@@ -202,7 +202,7 @@ export default class ItemsService implements AbstractService {
 			const defaults: Record<string, any> = {};
 
 			for (const column of columns) {
-				defaults[column.name] = column.default_value;
+				defaults[column.name] = getDefaultValue(column);
 			}
 
 			return defaults;
