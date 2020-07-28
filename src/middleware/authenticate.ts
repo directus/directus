@@ -9,7 +9,13 @@ import { InvalidCredentialsException } from '../exceptions';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
-	req.accountability = undefined;
+	req.accountability = {
+		user: null,
+		role: null,
+		admin: false,
+		ip: req.ip,
+		userAgent: req.get('user-agent'),
+	};
 
 	if (!req.token) return next();
 
@@ -35,13 +41,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		/** @TODO verify user status */
 
-		req.accountability = {
-			user: payload.id,
-			role: user.role,
-			admin: user.admin === true || user.admin == 1,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		};
+		req.accountability.user = payload.id;
+		req.accountability.role = user.role;
+		req.accountability.admin = user.admin === true || user.admin == 1;
 
 		return next();
 	}

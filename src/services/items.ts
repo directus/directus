@@ -14,7 +14,7 @@ import {
 import Knex from 'knex';
 
 import PayloadService from './payload';
-import * as PermissionsService from './permissions';
+import AuthService from './auth';
 import ActivityService from './activity';
 
 import { pick, clone } from 'lodash';
@@ -93,10 +93,11 @@ export default class ItemsService implements AbstractService {
 
 	async readByQuery(query: Query): Promise<Item[]> {
 		const payloadService = new PayloadService(this.collection);
+		const authService = new AuthService({ accountability: this.accountability });
 		let ast = await getASTFromQuery(this.collection, query, this.accountability);
 
 		if (this.accountability && this.accountability.admin === false) {
-			ast = await PermissionsService.processAST(ast, this.accountability.role);
+			ast = await authService.processAST(ast);
 		}
 
 		const records = await runAST(ast);
@@ -133,7 +134,8 @@ export default class ItemsService implements AbstractService {
 		);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			ast = await PermissionsService.processAST(ast, this.accountability.role, operation);
+			const authService = new AuthService({ accountability: this.accountability });
+			ast = await authService.processAST(ast, operation);
 		}
 
 		const records = await runAST(ast);

@@ -1,6 +1,10 @@
 import { Query } from '../types/query';
 import database from '../database';
 
+/**
+ * @todo turn into class
+ */
+
 export const getMetaForQuery = async (collection: string, query: Query) => {
 	if (!query || !query.meta) return;
 

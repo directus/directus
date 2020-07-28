@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import database from '../database';
 import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constants';
 import { InvalidQueryException, ForbiddenException } from '../exceptions';
-import * as AssetsService from '../services/assets';
+import AssetsService from '../services/assets';
 import validate from 'uuid-validate';
 import { pick } from 'lodash';
 import { Transformation } from '../types/assets';
@@ -96,6 +96,7 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
+		const service = new AssetsService({ accountability: req.accountability });
 		const transformation: Transformation = res.locals.transformation.key
 			? res.locals.shortcuts.find(
 					(transformation: Transformation) =>
@@ -103,7 +104,7 @@ router.get(
 			  )
 			: res.locals.transformation;
 
-		const { stream, file } = await AssetsService.getAsset(req.params.pk, transformation);
+		const { stream, file } = await service.getAsset(req.params.pk, transformation);
 
 		res.setHeader('Content-Disposition', 'attachment; filename=' + file.filename_download);
 		res.setHeader('Content-Type', file.type);

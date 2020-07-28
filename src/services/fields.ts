@@ -8,6 +8,10 @@ import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { InvalidPayloadException, FieldNotFoundException } from '../exceptions';
 
+/**
+ * @TODO turn into class
+ */
+
 export const fieldsInCollection = async (collection: string) => {
 	const [fields, columns] = await Promise.all([
 		database.select('field').from('directus_fields').where({ collection }),

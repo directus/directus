@@ -12,6 +12,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Accountability, Item } from '../types';
 import { Readable } from 'stream';
 
+/**
+ * @todo turn into class
+ */
+
 export const createFile = async (
 	data: Partial<Item>,
 	stream: NodeJS.ReadableStream,
