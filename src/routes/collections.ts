@@ -30,13 +30,7 @@ router.post(
 		const { error } = collectionSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const createdCollection = await CollectionsService.create(req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const createdCollection = await CollectionsService.create(req.body, req.accountability);
 
 		res.json({ data: createdCollection || null });
 	})
@@ -47,10 +41,10 @@ router.get(
 	useCollection('directus_collections'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const collections = await CollectionsService.readAll(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const collections = await CollectionsService.readAll(
+			req.sanitizedQuery,
+			req.accountability
+		);
 		res.json({ data: collections || null });
 	})
 );
@@ -67,7 +61,7 @@ router.get(
 		const collection = await CollectionsService.readOne(
 			req.params.collection,
 			req.sanitizedQuery,
-			{ role: req.role, admin: req.admin }
+			req.accountability
 		);
 		res.json({ data: collection || null });
 	})
@@ -81,13 +75,7 @@ router.delete(
 			throw new CollectionNotFoundException(req.params.collection);
 		}
 
-		await CollectionsService.deleteCollection(req.params.collection, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		await CollectionsService.deleteCollection(req.params.collection, req.accountability);
 
 		res.end();
 	})

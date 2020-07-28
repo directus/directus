@@ -76,22 +76,14 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const accountability: Accountability = {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		};
-
 		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
-		await FieldsService.createField(req.params.collection, field, accountability);
+		await FieldsService.createField(req.params.collection, field, req.accountability);
 
 		const createdField = await FieldsService.readOne(
 			req.params.collection,
 			field.field,
-			accountability
+			req.accountability
 		);
 
 		return res.json({ data: createdField || null });
@@ -103,26 +95,18 @@ router.patch(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		const accountability: Accountability = {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		};
-
 		if (Array.isArray(req.body) === false)
 			throw new InvalidPayloadException('Submitted body has to be an array.');
 
 		let results: any = [];
 
 		for (const field of req.body) {
-			await FieldsService.updateField(req.params.collection, field, accountability);
+			await FieldsService.updateField(req.params.collection, field, req.accountability);
 
 			const updatedField = await FieldsService.readOne(
 				req.params.collection,
 				field.field,
-				accountability
+				req.accountability
 			);
 
 			results.push(updatedField);
@@ -138,24 +122,16 @@ router.patch(
 	useCollection('directus_fields'),
 	// @todo: validate field
 	asyncHandler(async (req, res) => {
-		const accountability: Accountability = {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		};
-
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 
-		await FieldsService.updateField(req.params.collection, fieldData, accountability);
+		await FieldsService.updateField(req.params.collection, fieldData, req.accountability);
 
 		const updatedField = await FieldsService.readOne(
 			req.params.collection,
 			req.params.field,
-			accountability
+			req.accountability
 		);
 
 		return res.json({ data: updatedField || null });
@@ -167,15 +143,11 @@ router.delete(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		const accountability: Accountability = {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		};
-
-		await FieldsService.deleteField(req.params.collection, req.params.field, accountability);
+		await FieldsService.deleteField(
+			req.params.collection,
+			req.params.field,
+			req.accountability
+		);
 
 		res.status(200).end();
 	})

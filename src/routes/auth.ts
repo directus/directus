@@ -7,9 +7,10 @@ import grant from 'grant';
 import getGrantConfig from '../utils/get-grant-config';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
-import * as ActivityService from '../services/activity';
 import ms from 'ms';
 import cookieParser from 'cookie-parser';
+import ItemsService from '../services/items';
+import { Action } from '../types';
 
 const router = Router();
 
@@ -22,6 +23,8 @@ const loginSchema = Joi.object({
 router.post(
 	'/login',
 	asyncHandler(async (req, res) => {
+		const activityService = new ItemsService('directus_activity');
+
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
@@ -39,8 +42,9 @@ router.post(
 			password,
 		});
 
-		ActivityService.createActivity({
-			action: ActivityService.Action.AUTHENTICATE,
+		/** @todo move activity creation to AuthService */
+		await activityService.create({
+			action: Action.AUTHENTICATE,
 			collection: 'directus_users',
 			item: id,
 			ip: ip,
@@ -143,16 +147,20 @@ router.use(grant.express()(getGrantConfig()));
 router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {
+		const activityService = new ItemsService('directus_activity');
 		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);
 
 		const { accessToken, refreshToken, expires, id } = await AuthService.authenticate(email);
 
-		ActivityService.createActivity({
-			action: ActivityService.Action.AUTHENTICATE,
+		const ip = req.ip;
+		const userAgent = req.get('user-agent');
+
+		await activityService.create({
+			action: Action.AUTHENTICATE,
 			collection: 'directus_users',
 			item: id,
-			ip: req.ip,
-			user_agent: req.get('user-agent'),
+			ip: ip,
+			user_agent: userAgent,
 			action_by: id,
 		});
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as ItemsService from '../services/items';
+import ItemsService from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
@@ -18,22 +18,9 @@ router.post(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const accountability: Accountability = {
-			user: req.user,
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		};
-
-		const primaryKey = await ItemsService.createItem(req.collection, req.body, accountability);
-
-		const result = await ItemsService.readItem(
-			req.collection,
-			primaryKey,
-			req.sanitizedQuery,
-			accountability
-		);
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const primaryKey = await service.create(req.body);
+		const result = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		res.json({ data: result || null });
 	})
@@ -44,16 +31,12 @@ router.get(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
+
 		const [records, meta] = await Promise.all([
 			req.single
-				? ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
-						role: req.role,
-						admin: req.admin,
-				  })
-				: ItemsService.readItems(req.collection, req.sanitizedQuery, {
-						role: req.role,
-						admin: req.admin,
-				  }),
+				? service.readSingleton(req.sanitizedQuery)
+				: service.readByQuery(req.sanitizedQuery),
 			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
 		]);
 
@@ -73,12 +56,9 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-
-		const result = await ItemsService.readItem(req.collection, primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
 
 		return res.json({
 			data: result || null,
@@ -91,19 +71,11 @@ router.patch(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single === true) {
-			await ItemsService.upsertSingleton(req.collection, req.body, {
-				role: req.role,
-				admin: req.admin,
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-				user: req.user,
-			});
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
 
-			const item = await ItemsService.readSingleton(req.collection, req.sanitizedQuery, {
-				role: req.role,
-				admin: req.admin,
-			});
+		if (req.single === true) {
+			await service.upsertSingleton(req.body);
+			const item = await service.readSingleton(req.sanitizedQuery);
 
 			return res.json({ data: item || null });
 		}
@@ -121,49 +93,14 @@ router.patch(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const accountability: Accountability = {
-			user: req.user,
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		};
-
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
-		if (Array.isArray(primaryKey)) {
-			const updatedPrimaryKey = await ItemsService.updateItem(
-				req.collection,
-				primaryKey,
-				req.body,
-				accountability
-			);
+		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
 
-			const result = await ItemsService.readItem(
-				req.collection,
-				updatedPrimaryKey,
-				req.sanitizedQuery,
-				accountability
-			);
+		const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
 
-			res.json({ data: result || null });
-		} else {
-			const updatedPrimaryKey = await ItemsService.updateItem(
-				req.collection,
-				primaryKey,
-				req.body,
-				accountability
-			);
-
-			const result = await ItemsService.readItem(
-				req.collection,
-				updatedPrimaryKey,
-				req.sanitizedQuery,
-				accountability
-			);
-
-			res.json({ data: result || null });
-		}
+		res.json({ data: result || null });
 	})
 );
 
@@ -171,17 +108,9 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		const accountability: Accountability = {
-			user: req.user,
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		};
-
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-
-		await ItemsService.deleteItem(req.collection, pk, accountability);
+		await service.delete(pk as any);
 
 		return res.status(200).end();
 	})

@@ -1,10 +1,10 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import * as UsersService from '../services/users';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import UsersService from '../services/users';
 
 const router = express.Router();
 
@@ -14,17 +14,9 @@ router.post(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await UsersService.createUser(req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new UsersService({ accountability: req.accountability });
+		const primaryKey = await service.create(req.body);
+		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item || null });
 	})
 );
@@ -33,10 +25,8 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const item = await UsersService.readUsers(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new UsersService({ accountability: req.accountability });
+		const item = await service.readByQuery(req.sanitizedQuery);
 		return res.json({ data: item || null });
 	})
 );
@@ -45,14 +35,12 @@ router.get(
 	'/me',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (!req.user) {
+		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
+		const service = new UsersService({ accountability: req.accountability });
 
-		const item = await UsersService.readUser(req.user, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
 
 		return res.json({ data: item || null });
 	})
@@ -62,10 +50,8 @@ router.get(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const items = await UsersService.readUser(req.params.pk, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new UsersService({ accountability: req.accountability });
+		const items = await service.readByKey(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: items || null });
 	})
 );
@@ -74,22 +60,14 @@ router.patch(
 	'/me',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (!req.user) {
+		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
+		const service = new UsersService({ accountability: req.accountability });
 
-		const primaryKey = await UsersService.updateUser(req.user, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const primaryKey = await service.update(req.body, req.accountability.user);
 
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item || null });
 	})
@@ -99,18 +77,10 @@ router.patch(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await UsersService.updateUser(req.params.pk, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const service = new UsersService({ accountability: req.accountability });
+		const primaryKey = await service.update(req.body, req.params.pk);
 
-		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item || null });
 	})
@@ -119,13 +89,8 @@ router.patch(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res) => {
-		await UsersService.deleteUser(req.params.pk, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const service = new UsersService({ accountability: req.accountability });
+		await service.delete(req.params.pk);
 
 		return res.status(200).end();
 	})
@@ -141,13 +106,9 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
-		await UsersService.inviteUser(req.body.email, req.body.role, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+
+		const service = new UsersService({ accountability: req.accountability });
+		await service.inviteUser(req.body.email, req.body.role);
 		res.end();
 	})
 );
@@ -162,7 +123,8 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
-		await UsersService.acceptInvite(req.body.token, req.body.password);
+		const service = new UsersService({ accountability: req.accountability });
+		await service.acceptInvite(req.body.token, req.body.password);
 		res.end();
 	})
 );

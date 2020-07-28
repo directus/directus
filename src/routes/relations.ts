@@ -1,8 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import * as RelationsService from '../services/relations';
 import useCollection from '../middleware/use-collection';
+import RelationsService from '../services/relations';
 
 const router = express.Router();
 
@@ -12,17 +12,9 @@ router.post(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await RelationsService.createRelation(req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-		const item = await RelationsService.readRelation(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new RelationsService({ accountability: req.accountability });
+		const primaryKey = await service.create(req.body);
+		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item || null });
 	})
 );
@@ -31,10 +23,8 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await RelationsService.readRelations(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new RelationsService({ accountability: req.accountability });
+		const records = await service.readByQuery(req.sanitizedQuery);
 		return res.json({ data: records || null });
 	})
 );
@@ -43,10 +33,8 @@ router.get(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await RelationsService.readRelation(req.params.pk, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new RelationsService({ accountability: req.accountability });
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 		return res.json({ data: record || null });
 	})
 );
@@ -55,17 +43,9 @@ router.patch(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await RelationsService.updateRelation(req.params.pk, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-		const item = await RelationsService.readRelation(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new RelationsService({ accountability: req.accountability });
+		const primaryKey = await service.update(req.body, req.params.pk);
+		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 		return res.json({ data: item || null });
 	})
 );
@@ -73,13 +53,8 @@ router.patch(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res) => {
-		await RelationsService.deleteRelation(Number(req.params.pk), {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const service = new RelationsService({ accountability: req.accountability });
+		await service.delete(Number(req.params.pk));
 
 		return res.status(200).end();
 	})

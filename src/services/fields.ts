@@ -2,7 +2,7 @@ import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { uniq } from 'lodash';
 import { Accountability } from '../types';
-import * as ItemsService from '../services/items';
+import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
@@ -82,8 +82,10 @@ export const readOne = async (
 export const createField = async (
 	collection: string,
 	field: Partial<Field> & { field: string; type: typeof types[number] },
-	accountability: Accountability
+	accountability?: Accountability
 ) => {
+	const itemsService = new ItemsService('directus_fields', { accountability });
+
 	/**
 	 * @todo
 	 * Check if table / directus_fields row already exists
@@ -121,15 +123,11 @@ export const createField = async (
 	}
 
 	if (field.system) {
-		await ItemsService.createItem(
-			'directus_fields',
-			{
-				...field.system,
-				collection: collection,
-				field: field.field,
-			},
-			accountability
-		);
+		await itemsService.create({
+			...field.system,
+			collection: collection,
+			field: field.field,
+		});
 	}
 };
 

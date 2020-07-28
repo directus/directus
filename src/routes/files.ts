@@ -15,14 +15,6 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		const busboy = new Busboy({ headers: req.headers });
 		const savedFiles: Item[] = [];
 
-		const accountability = {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		};
-
 		/**
 		 * The order of the fields in multipart/form-data is important. We require that all fields
 		 * are provided _before_ the files. This allows us to set the storage location, and create
@@ -54,17 +46,21 @@ const multipartHandler = (operation: 'create' | 'update') =>
 				payload.storage = disk;
 			}
 
-			if (req.user) {
-				payload.uploaded_by = req.user;
+			if (req.accountability?.user) {
+				payload.uploaded_by = req.accountability.user;
 			}
 
 			try {
 				if (operation === 'create') {
-					const pk = await FilesService.createFile(payload, fileStream, accountability);
+					const pk = await FilesService.createFile(
+						payload,
+						fileStream,
+						req.accountability
+					);
 					const file = await FilesService.readFile(
 						pk,
 						req.sanitizedQuery,
-						accountability
+						req.accountability
 					);
 
 					savedFiles.push(file);
@@ -73,13 +69,13 @@ const multipartHandler = (operation: 'create' | 'update') =>
 					const pk = await FilesService.updateFile(
 						req.params.pk,
 						payload,
-						accountability,
+						req.accountability,
 						fileStream
 					);
 					const file = await FilesService.readFile(
 						pk,
 						req.sanitizedQuery,
-						accountability
+						req.accountability
 					);
 
 					savedFiles.push(file);
@@ -117,10 +113,7 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const records = await FilesService.readFiles(req.sanitizedQuery, req.accountability);
 		return res.json({ data: records || null });
 	})
 );
@@ -129,10 +122,11 @@ router.get(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FilesService.readFile(req.params.pk, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const record = await FilesService.readFile(
+			req.params.pk,
+			req.sanitizedQuery,
+			req.accountability
+		);
 		return res.json({ data: record || null });
 	})
 );
@@ -144,18 +138,9 @@ router.patch(
 		if (req.is('multipart/form-data')) {
 			return multipartHandler('update')(req, res, next);
 		} else {
-			const pk = await FilesService.updateFile(req.params.pk, req.body, {
-				role: req.role,
-				admin: req.admin,
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
-				user: req.user,
-			});
+			const pk = await FilesService.updateFile(req.params.pk, req.body, req.accountability);
 
-			const file = await FilesService.readFile(pk, req.sanitizedQuery, {
-				role: req.role,
-				admin: req.admin,
-			});
+			const file = await FilesService.readFile(pk, req.sanitizedQuery, req.accountability);
 
 			return res.status(200).json({ data: file || null });
 		}
@@ -165,13 +150,7 @@ router.patch(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res) => {
-		await FilesService.deleteFile(req.params.pk, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		await FilesService.deleteFile(req.params.pk, req.accountability);
 		return res.status(200).end();
 	})
 );

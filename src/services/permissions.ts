@@ -8,42 +8,46 @@ import {
 	Operation,
 	Item,
 } from '../types';
-import * as ItemsService from './items';
+import ItemsService from './items';
 import database from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { uniq } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 
+/**
+ * @todo convert to class
+ */
+
 export const createPermission = async (
 	data: Partial<Item>,
-	accountability: Accountability
+	accountability?: Accountability
 ): Promise<number> => {
-	return (await ItemsService.createItem('directus_permissions', data, accountability)) as number;
+	const itemsService = new ItemsService('directus_permissions', { accountability });
+	return (await itemsService.create(data)) as number;
 };
 
 export const readPermissions = async (query: Query, accountability?: Accountability) => {
-	return await ItemsService.readItems('directus_permissions', query, accountability);
+	const itemsService = new ItemsService('directus_permissions', { accountability });
+	return await itemsService.readByQuery(query);
 };
 
 export const readPermission = async (pk: number, query: Query, accountability?: Accountability) => {
-	return await ItemsService.readItem('directus_permissions', pk, query, accountability);
+	const itemsService = new ItemsService('directus_permissions', { accountability });
+	return await itemsService.readByKey(pk, query);
 };
 
 export const updatePermission = async (
 	pk: number,
 	data: Partial<Item>,
-	accountability: Accountability
+	accountability?: Accountability
 ): Promise<number> => {
-	return (await ItemsService.updateItem(
-		'directus_permissions',
-		pk,
-		data,
-		accountability
-	)) as number;
+	const itemsService = new ItemsService('directus_permissions', { accountability });
+	return (await itemsService.update(data, pk)) as number;
 };
 
-export const deletePermission = async (pk: number, accountability: Accountability) => {
-	await ItemsService.deleteItem('directus_permissions', pk, accountability);
+export const deletePermission = async (pk: number, accountability?: Accountability) => {
+	const itemsService = new ItemsService('directus_permissions', { accountability });
+	await itemsService.delete(pk);
 };
 
 export const processAST = async (
@@ -237,12 +241,14 @@ export const checkAccess = async (
 	pk: string | number,
 	role: string | null
 ) => {
+	const itemsService = new ItemsService(collection, { accountability: { role } });
+
 	try {
 		const query: Query = {
 			fields: ['*'],
 		};
 
-		const result = await ItemsService.readItem(collection, pk, query, { role }, operation);
+		const result = await itemsService.readByKey(pk, query, operation);
 
 		if (!result) throw '';
 	} catch {

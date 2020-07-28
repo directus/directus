@@ -1,7 +1,7 @@
 import { AST, NestedCollectionAST } from '../types/ast';
 import { clone, uniq, pick } from 'lodash';
 import database, { schemaInspector } from './index';
-import { Filter, Query } from '../types';
+import { Filter, Query, Item } from '../types';
 import { QueryBuilder } from 'knex';
 
 export default async function runAST(ast: AST, query = ast.query) {
@@ -85,7 +85,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			});
 	}
 
-	let results = await dbQuery;
+	let results: Item[] = await dbQuery;
 
 	for (const batch of nestedCollections) {
 		const m2o = isM2O(batch);

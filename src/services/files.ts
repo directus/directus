@@ -1,5 +1,5 @@
 import { Query } from '../types/query';
-import * as ItemsService from './items';
+import ItemsService from './items';
 import storage from '../storage';
 import database from '../database';
 import logger from '../logger';
@@ -15,9 +15,10 @@ import { Readable } from 'stream';
 export const createFile = async (
 	data: Partial<Item>,
 	stream: NodeJS.ReadableStream,
-	accountability: Accountability
+	accountability?: Accountability
 ) => {
 	const id = uuidv4();
+	const itemsService = new ItemsService('directus_files', { accountability });
 
 	const payload: Partial<Item> = {
 		...data,
@@ -35,7 +36,7 @@ export const createFile = async (
 	 * updated values to ensure we save the filesize etc. We explicitly save this without accountability
 	 * in order to prevent update permissions to kick in and to pervent an extra revision from being created
 	 */
-	const pk = await ItemsService.createItem('directus_files', payload, accountability);
+	const pk = await itemsService.create(payload);
 
 	const pipeline = sharp();
 
@@ -68,13 +69,14 @@ export const createFile = async (
 	}
 
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-	await ItemsService.updateItem('directus_files', pk, payload);
+	await itemsService.update(payload, pk);
 
 	return pk;
 };
 
 export const readFiles = async (query: Query, accountability?: Accountability) => {
-	return await ItemsService.readItems('directus_files', query, accountability);
+	const itemsService = new ItemsService('directus_files', { accountability });
+	return await itemsService.readByQuery(query);
 };
 
 export const readFile = async (
@@ -82,15 +84,18 @@ export const readFile = async (
 	query: Query,
 	accountability?: Accountability
 ) => {
-	return await ItemsService.readItem('directus_files', pk, query, accountability);
+	const itemsService = new ItemsService('directus_files', { accountability });
+	return await itemsService.readByKey(pk, query);
 };
 
 export const updateFile = async (
 	pk: string | number,
 	data: Partial<Item>,
-	accountability: Accountability,
+	accountability?: Accountability,
 	stream?: NodeJS.ReadableStream
 ) => {
+	const itemsService = new ItemsService('directus_files', { accountability });
+
 	/**
 	 * @TODO
 	 * Handle changes in storage adapter -> going from local to S3 needs to delete from one, upload to the other
@@ -116,10 +121,10 @@ export const updateFile = async (
 		await storage.disk(file.storage).put(file.filename_disk, stream as Readable);
 	}
 
-	return await ItemsService.updateItem('directus_files', pk, data, accountability);
+	return await itemsService.update(data, pk);
 };
 
-export const deleteFile = async (pk: string, accountability: Accountability) => {
+export const deleteFile = async (pk: string, accountability?: Accountability) => {
 	/** @todo use ItemsService */
 	const file = await database
 		.select('storage', 'filename_disk')
@@ -131,5 +136,7 @@ export const deleteFile = async (pk: string, accountability: Accountability) => 
 	const { wasDeleted } = await storage.disk(file.storage).delete(file.filename_disk);
 
 	logger.info(`File ${file.filename_download} deleted: ${wasDeleted}`);
+
+	/** @todo use itemsService */
 	await database.delete().from('directus_files').where({ id: pk });
 };

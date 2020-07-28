@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
-import * as FoldersService from '../services/folders';
+import FoldersService from '../services/folders';
 
 const router = express.Router();
 
@@ -11,18 +11,10 @@ router.use(useCollection('directus_folders'));
 router.post(
 	'/',
 	asyncHandler(async (req, res) => {
-		const primaryKey = await FoldersService.createFolder(req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const service = new FoldersService({ accountability: req.accountability });
+		const primaryKey = await service.create(req.body);
+		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
 		return res.json({ data: record || null });
 	})
 );
@@ -31,10 +23,9 @@ router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FoldersService.readFolders(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new FoldersService({ accountability: req.accountability });
+		const records = await service.readByQuery(req.sanitizedQuery);
+
 		return res.json({ data: records || null });
 	})
 );
@@ -43,10 +34,9 @@ router.get(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FoldersService.readFolder(req.params.pk, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new FoldersService({ accountability: req.accountability });
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+
 		return res.json({ data: record || null });
 	})
 );
@@ -55,18 +45,9 @@ router.patch(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await FoldersService.updateFolder(req.params.pk, req.body, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
-
-		const record = await FoldersService.readFolder(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new FoldersService({ accountability: req.accountability });
+		const primaryKey = await service.update(req.body, req.params.pk);
+		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: record || null });
 	})
@@ -75,13 +56,8 @@ router.patch(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res) => {
-		await FoldersService.deleteFolder(req.params.pk, {
-			role: req.role,
-			admin: req.admin,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			user: req.user,
-		});
+		const service = new FoldersService({ accountability: req.accountability });
+		await service.delete(req.params.pk);
 
 		return res.status(200).end();
 	})

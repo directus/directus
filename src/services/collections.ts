@@ -1,12 +1,17 @@
 import database, { schemaInspector } from '../database';
-import * as ItemsService from '../services/items';
-import { Collection } from '../types/collection';
+import ItemsService from '../services/items';
 import { Query } from '../types/query';
 import { ColumnBuilder } from 'knex';
 import { Accountability } from '../types/accountability';
 
+/**
+ * @TODO turn this into a class
+ */
+
 /** @Todo properly type this */
-export const create = async (payload: any, accountability: Accountability) => {
+export const create = async (payload: any, accountability?: Accountability) => {
+	const itemsService = new ItemsService('directus_collections', { accountability });
+
 	await database.schema.createTable(payload.collection, (table) => {
 		if (payload.note) {
 			table.comment(payload.note);
@@ -39,18 +44,14 @@ export const create = async (payload: any, accountability: Accountability) => {
 		});
 	});
 
-	const primaryKey = await ItemsService.createItem(
-		'directus_collections',
-		{
-			collection: payload.collection,
-			hidden: payload.hidden || false,
-			single: payload.single || false,
-			icon: payload.icon || null,
-			note: payload.note || null,
-			translation: payload.translation || null,
-		},
-		accountability
-	);
+	const primaryKey = await itemsService.create({
+		collection: payload.collection,
+		hidden: payload.hidden || false,
+		single: payload.single || false,
+		icon: payload.icon || null,
+		note: payload.note || null,
+		translation: payload.translation || null,
+	});
 
 	/**
 	 * @TODO make this flexible and based on payload
@@ -67,13 +68,15 @@ export const create = async (payload: any, accountability: Accountability) => {
 		}))
 	);
 
-	return await ItemsService.readItem('directus_collections', primaryKey, {});
+	return await itemsService.readByKey(primaryKey);
 };
 
 export const readAll = async (query: Query, accountability?: Accountability) => {
+	const itemsService = new ItemsService('directus_collections', { accountability });
+
 	const [tables, collections] = await Promise.all([
 		schemaInspector.tableInfo(),
-		ItemsService.readItems<Collection>('directus_collections', query, accountability),
+		itemsService.readByQuery(query),
 	]);
 
 	const data = tables.map((table) => {
@@ -99,25 +102,29 @@ export const readOne = async (
 	query: Query,
 	accountability?: Accountability
 ) => {
+	const itemsService = new ItemsService('directus_collections', { accountability });
+
 	const [table, collectionInfo] = await Promise.all([
 		schemaInspector.tableInfo(collection),
-		ItemsService.readItem('directus_collections', collection, query, accountability),
+		itemsService.readByQuery(query),
 	]);
 
 	return {
 		collection: table.name,
 		note: table.comment,
-		hidden: collectionInfo?.hidden || false,
-		single: collectionInfo?.single || false,
-		icon: collectionInfo?.icon || null,
-		translation: collectionInfo?.translation || null,
+		hidden: collectionInfo[0]?.hidden || false,
+		single: collectionInfo[0]?.single || false,
+		icon: collectionInfo[0]?.icon || null,
+		translation: collectionInfo[0]?.translation || null,
 	};
 };
 
-export const deleteCollection = async (collection: string, accountability: Accountability) => {
+export const deleteCollection = async (collection: string, accountability?: Accountability) => {
+	const itemsService = new ItemsService('directus_collections', { accountability });
+
 	await Promise.all([
 		database.schema.dropTable(collection),
-		ItemsService.deleteItem('directus_collections', collection, accountability),
+		itemsService.delete(collection),
 		database.delete().from('directus_fields').where({ collection }),
 		database
 			.delete()

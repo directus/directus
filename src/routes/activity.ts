@@ -1,8 +1,9 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import * as ActivityService from '../services/activity';
 import useCollection from '../middleware/use-collection';
+import ActivityService from '../services/activity';
+import { Action } from '../types';
 
 const router = express.Router();
 
@@ -11,10 +12,8 @@ router.get(
 	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await ActivityService.readActivities(req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new ActivityService({ accountability: req.accountability });
+		const records = await service.readByQuery(req.sanitizedQuery);
 
 		return res.json({
 			data: records || null,
@@ -27,10 +26,8 @@ router.get(
 	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await ActivityService.readActivity(req.params.pk, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new ActivityService({ accountability: req.accountability });
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		return res.json({
 			data: record || null,
@@ -43,18 +40,17 @@ router.post(
 	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await ActivityService.createActivity({
+		const service = new ActivityService({ accountability: req.accountability });
+
+		const primaryKey = await service.create({
 			...req.body,
-			action: ActivityService.Action.COMMENT,
-			action_by: req.user,
+			action: Action.COMMENT,
+			action_by: req.accountability?.user,
 			ip: req.ip,
 			user_agent: req.get('user-agent'),
 		});
 
-		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({
 			data: record || null,
@@ -67,18 +63,9 @@ router.patch(
 	useCollection('directus_activity'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const primaryKey = await ActivityService.updateActivity(req.params.pk, req.body, {
-			role: req.role,
-			admin: req.admin,
-			user: req.user,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		});
-
-		const record = await ActivityService.readActivity(primaryKey, req.sanitizedQuery, {
-			role: req.role,
-			admin: req.admin,
-		});
+		const service = new ActivityService({ accountability: req.accountability });
+		const primaryKey = await service.update(req.body, req.params.pk);
+		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({
 			data: record || null,
@@ -90,13 +77,8 @@ router.delete(
 	'/comment/:pk',
 	useCollection('directus_activity'),
 	asyncHandler(async (req, res) => {
-		await ActivityService.deleteActivity(req.params.pk, {
-			role: req.role,
-			admin: req.admin,
-			user: req.user,
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-		});
+		const service = new ActivityService({ accountability: req.accountability });
+		await service.delete(req.params.pk);
 
 		return res.status(200).end();
 	})

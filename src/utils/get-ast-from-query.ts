@@ -16,7 +16,7 @@ import database from '../database';
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	accountability?: Accountability,
+	accountability?: Accountability | null,
 	operation?: Operation
 ): Promise<AST> {
 	/**
