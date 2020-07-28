@@ -74,6 +74,17 @@ export default class PayloadService {
 
 			return value;
 		},
+		async json(operation, value) {
+			if (operation === 'read') {
+				if (typeof value === 'string') {
+					try {
+						return JSON.parse(value);
+					} catch {
+						return value;
+					}
+				}
+			}
+		},
 	};
 
 	processValues(operation: Operation, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;

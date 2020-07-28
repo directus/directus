@@ -2,7 +2,7 @@ import { Router } from 'express';
 import session from 'express-session';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
-import AuthService from '../services/auth';
+import AuthenticationService from '../services/authentication';
 import grant from 'grant';
 import getGrantConfig from '../utils/get-grant-config';
 import getEmailFromProfile from '../utils/get-email-from-profile';
@@ -23,7 +23,9 @@ const loginSchema = Joi.object({
 router.post(
 	'/login',
 	asyncHandler(async (req, res) => {
-		const authService = new AuthService({ accountability: req.accountability });
+		const authenticationService = new AuthenticationService({
+			accountability: req.accountability,
+		});
 		const activityService = new ActivityService();
 
 		const { error } = loginSchema.validate(req.body);
@@ -36,12 +38,14 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires, id } = await authService.authenticate({
-			ip,
-			userAgent,
-			email,
-			password,
-		});
+		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
+			{
+				ip,
+				userAgent,
+				email,
+				password,
+			}
+		);
 
 		/** @todo move activity creation to AuthService */
 		await activityService.create({
@@ -80,7 +84,9 @@ router.post(
 	'/refresh',
 	cookieParser(),
 	asyncHandler(async (req, res) => {
-		const authService = new AuthService({ accountability: req.accountability });
+		const authenticationService = new AuthenticationService({
+			accountability: req.accountability,
+		});
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
@@ -91,7 +97,7 @@ router.post(
 
 		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
 
-		const { accessToken, refreshToken, expires } = await authService.refresh(
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(
 			currentRefreshToken
 		);
 
@@ -122,7 +128,9 @@ router.post(
 	'/logout',
 	cookieParser(),
 	asyncHandler(async (req, res) => {
-		const authService = new AuthService({ accountability: req.accountability });
+		const authenticationService = new AuthenticationService({
+			accountability: req.accountability,
+		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
@@ -132,7 +140,7 @@ router.post(
 			);
 		}
 
-		await authService.logout(currentRefreshToken);
+		await authenticationService.logout(currentRefreshToken);
 
 		res.status(200).end();
 	})
@@ -152,11 +160,15 @@ router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {
 		const activityService = new ActivityService();
-		const authService = new AuthService({ accountability: req.accountability });
+		const authenticationService = new AuthenticationService({
+			accountability: req.accountability,
+		});
 
 		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);
 
-		const { accessToken, refreshToken, expires, id } = await authService.authenticate(email);
+		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
+			email
+		);
 
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');

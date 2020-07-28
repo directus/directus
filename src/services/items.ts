@@ -14,7 +14,7 @@ import {
 import Knex from 'knex';
 
 import PayloadService from './payload';
-import AuthService from './auth';
+import AuthorizationService from './authorization';
 
 import { pick, clone } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
@@ -42,6 +42,7 @@ export default class ItemsService implements AbstractService {
 
 		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, { knex: trx });
+			const authorizationService = new AuthorizationService({ knex: trx });
 
 			payloads = await payloadService.processValues('create', payloads);
 			payloads = await payloadService.processM2O(payloads);
@@ -53,17 +54,15 @@ export default class ItemsService implements AbstractService {
 				)
 			);
 
-			// for every payload
-			// if (this.accountability && this.accountability.admin !== true) {
-			// 	payload = await PermissionsService.processValues(
-			// 		'create',
-			// 		this.collection,
-			// 		this.accountability.role,
-			// 		payload
-			// 	);
-			// }
+			if (this.accountability && this.accountability.admin !== true) {
+				payloads = await authorizationService.processValues(
+					'create',
+					this.collection,
+					payloads
+				);
+			}
 
-			const primaryKeys = await trx.insert(payloadsWithoutAliases);
+			const primaryKeys = await trx.insert(payloadsWithoutAliases).into(this.collection);
 
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
@@ -93,11 +92,13 @@ export default class ItemsService implements AbstractService {
 
 	async readByQuery(query: Query): Promise<Item[]> {
 		const payloadService = new PayloadService(this.collection);
-		const authService = new AuthService({ accountability: this.accountability });
+		const authorizationService = new AuthorizationService({
+			accountability: this.accountability,
+		});
 		let ast = await getASTFromQuery(this.collection, query, this.accountability);
 
 		if (this.accountability && this.accountability.admin === false) {
-			ast = await authService.processAST(ast);
+			ast = await authorizationService.processAST(ast);
 		}
 
 		const records = await runAST(ast);
@@ -134,8 +135,10 @@ export default class ItemsService implements AbstractService {
 		);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const authService = new AuthService({ accountability: this.accountability });
-			ast = await authService.processAST(ast, operation);
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+			});
+			ast = await authorizationService.processAST(ast, operation);
 		}
 
 		const records = await runAST(ast);
@@ -151,7 +154,83 @@ export default class ItemsService implements AbstractService {
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
-		return 15;
+		return 15; /** nothing to see here 👀 */
+
+		// // /**
+		// //  * Update one or more items to the given payload
+		// //  */
+		// export async function updateItem<T extends PrimaryKey | PrimaryKey[]>(
+		// 	collection: string,
+		// 	primaryKey: T,
+		// 	data: Partial<Item>,
+		// 	accountability?: Accountability
+		// ): Promise<T> {
+		// 	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
+
+		// 	let payload = clone(data);
+
+		// 	if (accountability?.admin !== true) {
+		// 		payload = await PermissionsService.processValues(
+		// 			'validate',
+		// 			collection,
+		// 			accountability?.role || null,
+		// 			payload
+		// 		);
+		// 	}
+
+		// 	payload = await PayloadService.processValues('update', collection, payload);
+		// 	payload = await PayloadService.processM2O(collection, payload);
+
+		// 	const primaryKeyField = await schemaInspector.primary(collection);
+
+		// 	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
+		// 	const columns = await schemaInspector.columns(collection);
+
+		// 	const payloadWithoutAlias = pick(
+		// 		payload,
+		// 		columns.map(({ column }) => column)
+		// 	);
+
+		// 	// Make sure the user has access to every item they're trying to update
+		// 	await Promise.all(
+		// 		primaryKeys.map(async (key) => {
+		// 			if (accountability && accountability.admin === false) {
+		// 				return await PermissionsService.checkAccess(
+		// 					'update',
+		// 					collection,
+		// 					key,
+		// 					accountability.role
+		// 				);
+		// 			} else {
+		// 				return Promise.resolve();
+		// 			}
+		// 		})
+		// 	);
+
+		// 	// Save updates
+		// 	await database.transaction(async (transaction) => {
+		// 		for (const key of primaryKeys) {
+		// 			await transaction(collection)
+		// 				.where({ [primaryKeyField]: key })
+		// 				.update(payloadWithoutAlias);
+
+		// 			if (accountability) {
+		// 				await saveActivityAndRevision(
+		// 					ActivityService.Action.UPDATE,
+		// 					collection,
+		// 					String(key),
+		// 					payloadWithoutAlias,
+		// 					accountability,
+		// 					transaction
+		// 				);
+		// 			}
+		// 		}
+
+		// 		return;
+		// 	});
+
+		// 	return primaryKey;
+		// }
 	}
 
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
@@ -160,16 +239,13 @@ export default class ItemsService implements AbstractService {
 		const keys = (Array.isArray(key) ? key : [key]) as PrimaryKey[];
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
-		/**
-		 * if (accountability && accountability.admin === false) {
-				await PermissionsService.checkAccess(
-					'delete',
-					collection,
-					key,
-					accountability.role
-				);
-			}
-		 */
+		if (this.accountability && this.accountability.admin !== false) {
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+			});
+
+			await authorizationService.checkAccess('delete', this.collection, key);
+		}
 
 		await database.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
@@ -213,7 +289,8 @@ export default class ItemsService implements AbstractService {
 
 	async upsertSingleton(data: Partial<Item>) {
 		const primaryKeyField = await schemaInspector.primary(this.collection);
-		const record = await database
+
+		const record = await this.knex
 			.select(primaryKeyField)
 			.from(this.collection)
 			.limit(1)
@@ -226,79 +303,3 @@ export default class ItemsService implements AbstractService {
 		return await this.create(data);
 	}
 }
-
-// // /**
-// //  * Update one or more items to the given payload
-// //  */
-// export async function updateItem<T extends PrimaryKey | PrimaryKey[]>(
-// 	collection: string,
-// 	primaryKey: T,
-// 	data: Partial<Item>,
-// 	accountability?: Accountability
-// ): Promise<T> {
-// 	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
-
-// 	let payload = clone(data);
-
-// 	if (accountability?.admin !== true) {
-// 		payload = await PermissionsService.processValues(
-// 			'validate',
-// 			collection,
-// 			accountability?.role || null,
-// 			payload
-// 		);
-// 	}
-
-// 	payload = await PayloadService.processValues('update', collection, payload);
-// 	payload = await PayloadService.processM2O(collection, payload);
-
-// 	const primaryKeyField = await schemaInspector.primary(collection);
-
-// 	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
-// 	const columns = await schemaInspector.columns(collection);
-
-// 	const payloadWithoutAlias = pick(
-// 		payload,
-// 		columns.map(({ column }) => column)
-// 	);
-
-// 	// Make sure the user has access to every item they're trying to update
-// 	await Promise.all(
-// 		primaryKeys.map(async (key) => {
-// 			if (accountability && accountability.admin === false) {
-// 				return await PermissionsService.checkAccess(
-// 					'update',
-// 					collection,
-// 					key,
-// 					accountability.role
-// 				);
-// 			} else {
-// 				return Promise.resolve();
-// 			}
-// 		})
-// 	);
-
-// 	// Save updates
-// 	await database.transaction(async (transaction) => {
-// 		for (const key of primaryKeys) {
-// 			await transaction(collection)
-// 				.where({ [primaryKeyField]: key })
-// 				.update(payloadWithoutAlias);
-
-// 			if (accountability) {
-// 				await saveActivityAndRevision(
-// 					ActivityService.Action.UPDATE,
-// 					collection,
-// 					String(key),
-// 					payloadWithoutAlias,
-// 					accountability,
-// 					transaction
-// 				);
-// 			}
-// 		}
-
-// 		return;
-// 	});
-
-// 	return primaryKey;
-// }

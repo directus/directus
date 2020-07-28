@@ -32,16 +32,23 @@ export default class FieldsService {
 	}
 
 	async readAll(collection?: string) {
+		let fields: Field[];
+
+		if (collection) {
+			fields = (await this.service.readByQuery({
+				filter: { collection: { _eq: collection } },
+			})) as Field[];
+		} else {
+			fields = (await this.service.readByQuery({})) as Field[];
+		}
+
 		const fieldsQuery = this.knex.select('*').from('directus_fields');
 
 		if (collection) {
 			fieldsQuery.where({ collection });
 		}
 
-		let [columns, fields] = await Promise.all([
-			schemaInspector.columnInfo(collection),
-			fieldsQuery,
-		]);
+		const columns = await schemaInspector.columnInfo(collection);
 
 		return columns.map((column) => {
 			const field = fields.find(
