@@ -39,7 +39,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		req.user = payload.id;
 		req.role = user.role;
-		req.admin = user.admin;
+		req.admin = user.admin === true || user.admin == 1;
 		return next();
 	}
 

@@ -1,4 +1,5 @@
 import atob from 'atob';
+import logger from '../logger';
 
 /**
  * Check if a given string conforms to the structure of a JWT.
@@ -15,7 +16,7 @@ export default function isJWT(string: string) {
 		atob(parts[1]);
 		atob(parts[2]);
 	} catch (err) {
-		console.log(err);
+		logger.error(err);
 		return false;
 	}
 

@@ -53,6 +53,7 @@ router.get(
 			role: req.role,
 			admin: req.admin,
 		});
+
 		return res.json({ data: item || null });
 	})
 );
@@ -89,6 +90,7 @@ router.patch(
 			role: req.role,
 			admin: req.admin,
 		});
+
 		return res.json({ data: item || null });
 	})
 );
@@ -104,10 +106,12 @@ router.patch(
 			userAgent: req.get('user-agent'),
 			user: req.user,
 		});
+
 		const item = await UsersService.readUser(primaryKey, req.sanitizedQuery, {
 			role: req.role,
 			admin: req.admin,
 		});
+
 		return res.json({ data: item || null });
 	})
 );
