@@ -79,7 +79,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 };
 
 export default function getLocalType(databaseType: string): typeof types[number] | 'unknown' {
-	const type = localTypeMap[databaseType.toLowerCase()];
+	const type = localTypeMap[databaseType.toLowerCase().split('(')[0]];
 
 	if (type) {
 		return type.type;
