@@ -16,7 +16,7 @@
 						class="status-dot"
 						:style="
 							current
-								? { backgroundColor: current.background_color }
+								? { backgroundColor: current.backgroundColor }
 								: { backgroundColor: 'var(--border-normal)' }
 						"
 					/>
@@ -33,7 +33,7 @@
 				@click="$emit('input', status.value)"
 			>
 				<v-list-item-icon>
-					<div class="status-dot" :style="{ backgroundColor: status.color }" />
+					<div class="status-dot" :style="{ backgroundColor: status.backgroundColor }" />
 				</v-list-item-icon>
 				<v-list-item-content>{{ status.name }}</v-list-item-content>
 			</v-list-item>
@@ -50,7 +50,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		status_mapping: {
+		statuses: {
 			type: Object,
 			default: null,
 		},
@@ -60,28 +60,14 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const statuses = computed(() => {
-			if (props.status_mapping === null) return null;
-
-			return Object.keys(props.status_mapping).map((key: string) => {
-				const status = props.status_mapping[key];
-
-				return {
-					value: key,
-					name: status.name,
-					color: status.background_color,
-				};
-			});
-		});
-
 		const current = computed(() => {
 			if (props.value === null) return null;
-			if (props.status_mapping.hasOwnProperty(props.value) === false) return null;
+			if (props.statuses.hasOwnProperty(props.value) === false) return null;
 
-			return props.status_mapping[props.value] || null;
+			return props.statuses[props.value] || null;
 		});
 
-		return { statuses, current };
+		return { current };
 	},
 });
 </script>
