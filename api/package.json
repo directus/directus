@@ -70,19 +70,21 @@
     "liquidjs": "^9.14.1",
     "lodash": "^4.17.19",
     "ms": "^2.1.2",
-    "mssql": "^6.2.0",
-    "mysql": "^2.18.1",
     "nanoid": "^3.1.10",
     "nodemailer": "^6.4.10",
     "ora": "^4.0.5",
-    "oracledb": "^5.0.0",
-    "pg": "^8.3.0",
     "pino": "^6.3.2",
     "resolve-cwd": "^3.0.0",
     "sharp": "^0.25.4",
-    "sqlite3": "^5.0.0",
     "uuid": "^8.2.0",
     "uuid-validate": "0.0.3"
+  },
+  "optionalDependencies": {
+    "mssql": "^6.2.0",
+    "mysql": "^2.18.1",
+    "oracledb": "^5.0.0",
+    "pg": "^8.3.0",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "@types/atob": "^2.1.2",
