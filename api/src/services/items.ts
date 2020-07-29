@@ -48,6 +48,7 @@ export default class ItemsService implements AbstractService {
 				accountability: this.accountability,
 				knex: trx,
 			});
+
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				knex: trx,

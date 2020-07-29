@@ -42,13 +42,9 @@ export default class FieldsService {
 			fields = (await this.service.readByQuery({})) as Field[];
 		}
 
-		const fieldsQuery = this.knex.select('*').from('directus_fields');
-
-		if (collection) {
-			fieldsQuery.where({ collection });
-		}
-
 		const columns = await schemaInspector.columnInfo(collection);
+
+		console.log(columns);
 
 		return columns.map((column) => {
 			const field = fields.find(

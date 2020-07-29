@@ -9,8 +9,6 @@ import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import ms from 'ms';
 import cookieParser from 'cookie-parser';
-import { Action } from '../types';
-import ActivityService from '../services/activity';
 
 const router = Router();
 
@@ -26,7 +24,6 @@ router.post(
 		const authenticationService = new AuthenticationService({
 			accountability: req.accountability,
 		});
-		const activityService = new ActivityService();
 
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
@@ -46,16 +43,6 @@ router.post(
 				password,
 			}
 		);
-
-		/** @todo move activity creation to AuthService */
-		await activityService.create({
-			action: Action.AUTHENTICATE,
-			collection: 'directus_users',
-			item: id,
-			ip: ip,
-			user_agent: userAgent,
-			action_by: id,
-		});
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -159,7 +146,6 @@ router.use(grant.express()(getGrantConfig()));
 router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {
-		const activityService = new ActivityService();
 		const authenticationService = new AuthenticationService({
 			accountability: req.accountability,
 		});
@@ -169,18 +155,6 @@ router.get(
 		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
 			email
 		);
-
-		const ip = req.ip;
-		const userAgent = req.get('user-agent');
-
-		await activityService.create({
-			action: Action.AUTHENTICATE,
-			collection: 'directus_users',
-			item: id,
-			ip: ip,
-			user_agent: userAgent,
-			action_by: id,
-		});
 
 		return res.status(200).json({
 			data: { access_token: accessToken, refresh_token: refreshToken, expires },

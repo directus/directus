@@ -4,8 +4,9 @@ import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
 import { InvalidCredentialsException } from '../exceptions';
-import { Session, Accountability, AbstractServiceOptions } from '../types';
+import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
+import ActivityService from '../services/activity';
 
 type AuthenticateOptions = {
 	email: string;
@@ -17,10 +18,12 @@ type AuthenticateOptions = {
 export default class AuthenticationService {
 	knex: Knex;
 	accountability: Accountability | null;
+	activityService: ActivityService;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
+		this.activityService = new ActivityService();
 	}
 
 	/**
@@ -71,6 +74,17 @@ export default class AuthenticationService {
 			ip,
 			user_agent: userAgent,
 		});
+
+		if (this.accountability) {
+			await this.activityService.create({
+				action: Action.AUTHENTICATE,
+				action_by: user.id,
+				ip: this.accountability.ip,
+				user_agent: this.accountability.userAgent,
+				collection: 'directus_users',
+				item: user.id,
+			});
+		}
 
 		return {
 			accessToken,
