@@ -1,13 +1,16 @@
 {
   "name": "create-directus-project",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm.",
-  "main": "index.js",
-  "bin": "./index.js",
+  "main": "lib/index.js",
+  "bin": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "directus",
+    "installer"
+  ],
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
@@ -15,6 +18,7 @@
     "chalk": "^4.1.0",
     "commander": "^6.0.0",
     "execa": "^4.0.3",
+    "fs-extra": "^9.0.1",
     "fse": "^4.0.1",
     "inquirer": "^7.3.3",
     "knex": "^0.21.2",
