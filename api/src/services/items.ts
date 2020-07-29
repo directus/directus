@@ -76,7 +76,10 @@ export default class ItemsService implements AbstractService {
 				);
 			}
 
-			const primaryKeys = await trx.insert(payloadsWithoutAliases).into(this.collection);
+			const primaryKeys: PrimaryKey[] = await trx
+				.insert(payloadsWithoutAliases)
+				.into(this.collection)
+				.returning('id');
 
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
