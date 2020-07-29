@@ -1,0 +1,130 @@
+{
+  "name": "directus",
+  "version": "0.1.0-preview.18",
+  "description": "Directus",
+  "main": "dist/app.js",
+  "bin": {
+    "directus": "dist/cli/index.js"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node dist/server.js",
+    "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+    "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
+    "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
+    "prepublishOnly": "make bundle"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/api-node.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "example.env"
+  ],
+  "keywords": [
+    "directus",
+    "api",
+    "headless",
+    "database",
+    "cms",
+    "dam",
+    "crm"
+  ],
+  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/directus/api-node/issues"
+  },
+  "homepage": "https://github.com/directus/api-node#readme",
+  "dependencies": {
+    "@slynova/flydrive": "^1.0.2",
+    "@slynova/flydrive-gcs": "^1.0.2",
+    "@slynova/flydrive-s3": "^1.0.2",
+    "argon2": "^0.26.2",
+    "atob": "^2.1.2",
+    "body-parser": "^1.19.0",
+    "busboy": "^0.3.1",
+    "camelcase": "^6.0.0",
+    "chalk": "^4.1.0",
+    "commander": "^5.1.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "execa": "^4.0.3",
+    "exif-reader": "^1.0.3",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "express-pino-logger": "^5.0.0",
+    "express-session": "^1.17.1",
+    "fs-extra": "^9.0.1",
+    "get-port": "^5.1.1",
+    "grant": "^5.2.0",
+    "icc": "^2.0.0",
+    "inquirer": "^7.3.1",
+    "joi": "^17.1.1",
+    "js-yaml": "^3.14.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.1",
+    "knex-schema-inspector": "0.0.1",
+    "liquidjs": "^9.14.1",
+    "lodash": "^4.17.19",
+    "ms": "^2.1.2",
+    "mssql": "^6.2.0",
+    "mysql": "^2.18.1",
+    "nanoid": "^3.1.10",
+    "nodemailer": "^6.4.10",
+    "ora": "^4.0.5",
+    "oracledb": "^5.0.0",
+    "pg": "^8.3.0",
+    "pino": "^6.3.2",
+    "resolve-cwd": "^3.0.0",
+    "sharp": "^0.25.4",
+    "sqlite3": "^5.0.0",
+    "uuid": "^8.2.0",
+    "uuid-validate": "0.0.3"
+  },
+  "devDependencies": {
+    "@types/atob": "^2.1.2",
+    "@types/busboy": "^0.2.3",
+    "@types/clear": "^0.1.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.7",
+    "@types/express-pino-logger": "^4.0.2",
+    "@types/express-session": "^1.17.0",
+    "@types/fs-extra": "^9.0.1",
+    "@types/inquirer": "^6.5.0",
+    "@types/joi": "^14.3.4",
+    "@types/js-yaml": "^3.12.5",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/lodash": "^4.14.157",
+    "@types/ms": "^0.7.31",
+    "@types/nodemailer": "^6.4.0",
+    "@types/pino": "^6.3.0",
+    "@types/sharp": "^0.25.0",
+    "@types/uuid": "^8.0.0",
+    "@types/uuid-validate": "0.0.1",
+    "copyfiles": "^2.3.0",
+    "eslint": "^7.4.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "pino-colada": "^2.0.1",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.51",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write"
+    ]
+  }
+}

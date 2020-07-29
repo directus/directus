@@ -1,0 +1,9 @@
+node_modules
+.cache
+.env
+.DS_Store
+uploads
+debug.db
+test
+dist
+tmp
