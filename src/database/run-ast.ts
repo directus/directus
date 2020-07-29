@@ -99,7 +99,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 			const toplevelFields = batch.children
 				.filter(({ type }) => type === 'field')
 				.map(({ name }) => name);
-			if (toplevelFields.includes(batch.relation.one_primary) === false) {
+			if (
+				toplevelFields.includes(batch.relation.one_primary) === false &&
+				toplevelFields.includes('*') === false
+			) {
 				tempField = batch.relation.one_primary;
 				batch.children.push({ type: 'field', name: batch.relation.one_primary });
 			}
@@ -122,7 +125,10 @@ export default async function runAST(ast: AST, query = ast.query) {
 			const toplevelFields = batch.children
 				.filter(({ type }) => type === 'field')
 				.map(({ name }) => name);
-			if (toplevelFields.includes(batch.relation.many_field) === false) {
+			if (
+				toplevelFields.includes(batch.relation.many_field) === false &&
+				toplevelFields.includes('*') === false
+			) {
 				tempField = batch.relation.many_field;
 				batch.children.push({ type: 'field', name: batch.relation.many_field });
 			}
