@@ -14,7 +14,13 @@ _Directus requires NodeJS 10+_
 We've created a little CLI tool you can use to quickly start up a Directus project. You can use it by running:
 
 ```
-npx create-directus-project <directory>
+npx create-directus-project my-project
+```
+
+or using yarn:
+
+```
+yarn create directus-project my-project
 ```
 
 on the command line. This will create the given directory, setup the configuration, and install the database. 
