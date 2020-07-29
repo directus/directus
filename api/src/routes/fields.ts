@@ -86,7 +86,7 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
-		await service.createField(req.params.collection, field, req.accountability);
+		await service.createField(req.params.collection, field);
 
 		const createdField = await service.readOne(
 			req.params.collection,
