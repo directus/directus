@@ -25,6 +25,14 @@ yarn create directus-project my-project
 
 on the command line. This will create the given directory, setup the configuration, and install the database. 
 
+## ✨ Updating
+
+To update an existing Directus project, navigate to your project directory and run:
+
+```
+npm update
+```
+
 ## 🔧 Contributing
 
 Please report any and all quirks / issues you come across as [an issue](https://github.com/directus/next/issues/new).
