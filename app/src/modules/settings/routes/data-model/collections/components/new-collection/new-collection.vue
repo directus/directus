@@ -219,6 +219,7 @@ export default defineComponent({
 		function getPrimaryKeyField() {
 			const field: DeepPartial<Field> = {
 				field: primaryKeyFieldName.value,
+				type: 'integer',
 				system: {
 					hidden: false,
 					interface: 'numeric',
@@ -227,28 +228,38 @@ export default defineComponent({
 				database: {
 					has_auto_increment: true,
 					is_primary_key: true,
-					type: 'INT',
 				},
 			};
 
 			if (primaryKeyFieldType.value === 'uuid') {
 				return {
 					...field,
-					interface: 'text-input',
 					type: 'uuid',
-					datatype: 'VARCHAR',
-					length: 36,
-					auto_increment: false,
+					system: {
+						...field.system,
+						interface: 'text-input',
+						special: 'uuid',
+					},
+					database: {
+						...field.database,
+						length: 36,
+						has_auto_increment: false,
+					}
 				};
 			} else if (primaryKeyFieldType.value === 'manual') {
 				return {
 					...field,
-					interface: 'text-input',
 					type: 'string',
-					datatype: 'VARCHAR',
-					length: 255,
-					auto_increment: false,
-					readonly: false,
+					system: {
+						...field.system,
+						interface: 'text-input',
+						readonly: false,
+					},
+					database: {
+						...field.database,
+						length: 255,
+						auto_increment: false,
+					}
 				};
 			} else {
 				// auto_int
@@ -266,7 +277,7 @@ export default defineComponent({
 						width: 'full',
 						required: true,
 						options: {
-							status_mapping: {
+							statuses: {
 								published: {
 									name: 'Published',
 									value: 'published',
