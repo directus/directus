@@ -4,6 +4,8 @@ import { databaseQuestions } from './questions';
 import { drivers, getDriverForClient } from '../../utils/drivers';
 import createEnv from '../../utils/create-env';
 import { v4 as uuidV4 } from 'uuid';
+import execa from 'execa';
+import ora from 'ora';
 
 import argon2 from 'argon2';
 
@@ -25,19 +27,19 @@ export default async function init(options: Record<string, any>) {
 
 	const dbClient = getDriverForClient(client)!;
 
+	const spinnerDriver = ora('Installing Database Driver...').start();
+	await execa('npm', ['install', dbClient, '--production']);
+	spinnerDriver.stop();
+
 	const credentials: Credentials = await inquirer.prompt(
 		(databaseQuestions[dbClient] as any[]).map((question: Function) =>
 			question({ client: dbClient, filepath: rootPath })
 		)
 	);
 
-	console.log(`Installing database...`);
-
 	const db = createDBConnection(dbClient, credentials);
 
 	await runSeed(db, 'system');
-
-	console.log(`Creating the .env file...`);
 
 	await createEnv(dbClient, credentials, rootPath);
 
