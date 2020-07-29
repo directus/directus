@@ -65,5 +65,5 @@ async function create(directory) {
 		stdio: 'inherit'
 	});
 
-	process.exit(1);
+	process.exit(0);
 }
