@@ -46,7 +46,7 @@ export default defineComponent({
 
 		const { fields } = useCollection(ref('directus_settings'));
 
-		const initialValues = clone(settingsStore.state.settings);
+		const initialValues = ref(clone(settingsStore.state.settings));
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
@@ -62,6 +62,7 @@ export default defineComponent({
 			await settingsStore.updateSettings(edits.value);
 			edits.value = null;
 			saving.value = false;
+			initialValues.value = clone(settingsStore.state.settings);
 		}
 	},
 });
