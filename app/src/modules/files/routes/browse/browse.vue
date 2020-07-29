@@ -65,9 +65,7 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink">
-				<v-icon name="add" />
-			</v-button>
+			<add-file @upload="refresh" />
 		</template>
 
 		<template #navigation>
@@ -111,6 +109,7 @@ import usePreset from '@/composables/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import AddFolder from '../../components/add-folder';
+import AddFile from '../../components/add-file';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
@@ -121,14 +120,14 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, AddFile, SearchInput, FolderPicker },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
-		const { addNewLink, batchLink } = useLinks();
+		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
 
@@ -179,7 +178,6 @@ export default defineComponent({
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		return {
-			addNewLink,
 			batchDelete,
 			batchLink,
 			breadcrumb,
@@ -199,6 +197,7 @@ export default defineComponent({
 			moveToFolder,
 			moving,
 			selectedFolder,
+			refresh,
 		};
 
 		function useBatchDelete() {
@@ -225,16 +224,12 @@ export default defineComponent({
 		}
 
 		function useLinks() {
-			const addNewLink = computed<string>(() => {
-				return `/files/+`;
-			});
-
 			const batchLink = computed<string>(() => {
 				const batchPrimaryKeys = selection.value;
 				return `/files/${batchPrimaryKeys}`;
 			});
 
-			return { addNewLink, batchLink };
+			return { batchLink };
 		}
 
 		function useBreadcrumb() {
@@ -272,6 +267,10 @@ export default defineComponent({
 					moving.value = false;
 				}
 			}
+		}
+
+		function refresh() {
+			layout.value?.refresh();
 		}
 	},
 });
