@@ -9,7 +9,11 @@ export default function getDefaultValue(column: Column) {
 	if (defaultValue === null) return null;
 
 	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite
-	if (defaultValue.startsWith(`'`) && defaultValue.endsWith(`'`)) {
+	if (
+		typeof defaultValue === 'string' &&
+		defaultValue.startsWith(`'`) &&
+		defaultValue.endsWith(`'`)
+	) {
 		defaultValue = defaultValue.slice(1, -1);
 	}
 
