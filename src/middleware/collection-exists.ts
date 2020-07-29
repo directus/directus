@@ -19,12 +19,12 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 	req.collection = req.params.collection;
 
 	const collectionInfo = await database
-		.select('single')
+		.select('singleton')
 		.from('directus_collections')
 		.where({ collection: req.collection })
 		.first();
 
-	req.single = collectionInfo?.single || false;
+	req.singleton = collectionInfo?.singleton || false;
 
 	return next();
 });

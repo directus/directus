@@ -15,7 +15,7 @@ declare global {
 			token: string | null;
 			collection: string;
 			sanitizedQuery: Query;
-			single?: boolean;
+			singleton?: boolean;
 			permissions?: Permission;
 		}
 	}

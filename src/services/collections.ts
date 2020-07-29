@@ -47,7 +47,7 @@ export const create = async (payload: any, accountability?: Accountability) => {
 	const primaryKey = await itemsService.create({
 		collection: payload.collection,
 		hidden: payload.hidden || false,
-		single: payload.single || false,
+		singleton: payload.singleton || false,
 		icon: payload.icon || null,
 		note: payload.note || null,
 		translation: payload.translation || null,
@@ -88,7 +88,7 @@ export const readAll = async (query: Query, accountability?: Accountability) => 
 			collection: table.name,
 			note: table.comment,
 			hidden: collectionInfo?.hidden || false,
-			single: collectionInfo?.single || false,
+			singleton: collectionInfo?.singleton || false,
 			icon: collectionInfo?.icon || null,
 			translation: collectionInfo?.translation || null,
 		};
@@ -113,7 +113,7 @@ export const readOne = async (
 		collection: table.name,
 		note: table.comment,
 		hidden: collectionInfo[0]?.hidden || false,
-		single: collectionInfo[0]?.single || false,
+		singleton: collectionInfo[0]?.singleton || false,
 		icon: collectionInfo[0]?.icon || null,
 		translation: collectionInfo[0]?.translation || null,
 	};

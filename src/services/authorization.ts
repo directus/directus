@@ -162,6 +162,9 @@ export default class AuthorizationService {
 		}
 	}
 
+	/**
+	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
+	 */
 	processValues(
 		operation: Operation,
 		collection: string,

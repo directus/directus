@@ -8,7 +8,7 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
-import { Relation, Item, AbstractServiceOptions } from '../types';
+import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
 import ItemsService from './items';
 import { URL } from 'url';
 import Knex from 'knex';
@@ -20,12 +20,14 @@ type Transformers = {
 };
 
 export default class PayloadService {
-	collection: string;
+	accountability: Accountability | null;
 	knex: Knex;
+	collection: string;
 
 	constructor(collection: string, options?: AbstractServiceOptions) {
-		this.collection = collection;
+		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
+		this.collection = collection;
 
 		return this;
 	}
@@ -105,7 +107,8 @@ export default class PayloadService {
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
 					specialFieldsInCollection.map(async (field) => {
-						record[field.field] = await this.processField(field, record, operation);
+						const newValue = await this.processField(field, record, operation);
+						if (newValue !== undefined) record[field.field] = newValue;
 					})
 				);
 			})
@@ -142,133 +145,103 @@ export default class PayloadService {
 		return payload[field.field];
 	}
 
+	/**
+	 * Recursively save/update all nested related m2o items
+	 */
 	processM2O(payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
 	processM2O(payloads: Partial<Item>): Promise<Partial<Item>>;
 	async processM2O(
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-		});
+		const relations = await this.knex
+			.select<Relation[]>('*')
+			.from('directus_relations')
+			.where({ many_collection: this.collection });
 
-		const payloads = Array.isArray(payload) ? payload : [payload];
+		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
 
-		const processedPayloads = [];
-
-		for (const payload of payloads) {
-			const payloadClone = clone(payload);
-
-			const relations = await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ many_collection: this.collection });
+		for (let i = 0; i < payloads.length; i++) {
+			let payload = payloads[i];
 
 			// Only process related records that are actually in the payload
 			const relationsToProcess = relations.filter((relation) => {
 				return (
-					payloadClone.hasOwnProperty(relation.many_field) &&
-					isObject(payloadClone[relation.many_field])
+					payload.hasOwnProperty(relation.many_field) &&
+					isObject(payload[relation.many_field])
 				);
 			});
 
-			// Save all nested m2o records
-			await Promise.all(
-				relationsToProcess.map(async (relation) => {
-					const relatedRecord: Partial<Item> = payloadClone[relation.many_field];
-					const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
+			for (const relation of relationsToProcess) {
+				const itemsService = new ItemsService(relation.one_collection, {
+					accountability: this.accountability,
+					knex: this.knex,
+				});
 
-					let relatedPrimaryKey: string | number;
+				const relatedRecord: Partial<Item> = payload[relation.many_field];
+				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
 
-					// if (hasPrimaryKey) {
-					// 	relatedPrimaryKey = relatedRecord[relation.one_primary];
-					// 	await itemsService.update(
-					// 		relatedPrimaryKey,
-					// 		relatedRecord
-					// 	);
-					// } else {
-					// 	relatedPrimaryKey = await itemsService.create(
-					// 		relation.one_collection,
-					// 		relatedRecord
-					// 	);
-					// }
+				let relatedPrimaryKey: PrimaryKey;
 
-					// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
-					// payloadClone[relation.many_field] = relatedPrimaryKey;
-				})
-			);
+				if (hasPrimaryKey) {
+					relatedPrimaryKey = relatedRecord[relation.one_primary];
+					await itemsService.update(relatedRecord, relatedPrimaryKey);
+				} else {
+					relatedPrimaryKey = await itemsService.create(relatedRecord);
+				}
 
-			processedPayloads.push(payloadClone);
+				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+				payload[relation.many_field] = relatedPrimaryKey;
+			}
 		}
 
-		return Array.isArray(payload) ? processedPayloads : processedPayloads[0];
+		return Array.isArray(payload) ? payloads : payloads[0];
 	}
 
-	processO2M(payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processO2M(payloads: Partial<Item>): Promise<Partial<Item>>;
-	async processO2M(
-		payload: Partial<Item> | Partial<Item>[]
-	): Promise<Partial<Item> | Partial<Item>[]> {
-		const payloads = Array.isArray(payload) ? payload : [payload];
+	/**
+	 * Recursively save/update all nested related o2m items
+	 */
+	async processO2M(payload: Partial<Item> | Partial<Item>[]) {
+		const relations = await this.knex
+			.select<Relation[]>('*')
+			.from('directus_relations')
+			.where({ one_collection: this.collection });
 
-		const processedPayloads = [];
+		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
 
-		for (const payload of payloads) {
-			const payloadClone = clone(payload);
-
-			const relations = await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ one_collection: this.collection });
+		for (let i = 0; i < payloads.length; i++) {
+			let payload = payloads[i];
 
 			// Only process related records that are actually in the payload
 			const relationsToProcess = relations.filter((relation) => {
 				return (
-					payloadClone.hasOwnProperty(relation.one_field) &&
-					Array.isArray(payloadClone[relation.one_field])
+					payload.hasOwnProperty(relation.one_field) &&
+					Array.isArray(payload[relation.one_field])
 				);
 			});
 
-			// Save all nested o2m records
-			await Promise.all(
-				relationsToProcess.map(async (relation) => {
-					const relatedRecords = payloadClone[relation.one_field];
+			for (const relation of relationsToProcess) {
+				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
+					(record: Partial<Item>) => ({
+						...record,
+						[relation.many_field]: payload[relation.one_primary],
+					})
+				);
 
-					await Promise.all(
-						relatedRecords.map(async (relatedRecord: Partial<Item>, index: number) => {
-							relatedRecord[relation.many_field] = payloadClone[relation.one_primary];
+				const itemsService = new ItemsService(relation.many_collection, {
+					accountability: this.accountability,
+					knex: this.knex,
+				});
 
-							const hasPrimaryKey = relatedRecord.hasOwnProperty(
-								relation.many_primary
-							);
+				const toBeCreated = relatedRecords.filter(
+					(record) => record.hasOwnProperty(relation.many_primary) === false
+				);
+				const toBeUpdated = relatedRecords.filter(
+					(record) => record.hasOwnProperty(relation.many_primary) === true
+				);
 
-							let relatedPrimaryKey: string | number;
-
-							// if (hasPrimaryKey) {
-							// 	relatedPrimaryKey = relatedRecord[relation.many_primary];
-
-							// 	await ItemsService.updateItem(
-							// 		relation.many_collection,
-							// 		relatedPrimaryKey,
-							// 		relatedRecord
-							// 	);
-							// } else {
-							// 	relatedPrimaryKey = await ItemsService.createItem(
-							// 		relation.many_collection,
-							// 		relatedRecord
-							// 	);
-							// }
-
-							// relatedRecord[relation.many_primary] = relatedPrimaryKey;
-
-							// payloadClone[relation.one_field][index] = relatedRecord;
-						})
-					);
-				})
-			);
-
-			processedPayloads.push(payloadClone);
+				await itemsService.create(toBeCreated);
+				await itemsService.update(toBeUpdated);
+			}
 		}
-
-		return Array.isArray(payload) ? processedPayloads : processedPayloads[0];
 	}
 }

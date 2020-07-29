@@ -1,4 +1,5 @@
-import database, { schemaInspector } from '../database';
+import database from '../database';
+import SchemaInspector from 'knex-schema-inspector';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import {
@@ -18,6 +19,7 @@ import AuthorizationService from './authorization';
 
 import { pick, clone } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
+import { InvalidPayloadException } from '../exceptions';
 
 export default class ItemsService implements AbstractService {
 	collection: string;
@@ -35,23 +37,34 @@ export default class ItemsService implements AbstractService {
 	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	async create(data: Partial<Item>): Promise<PrimaryKey>;
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 		const columns = await schemaInspector.columns(this.collection);
 
 		let payloads = clone(Array.isArray(data) ? data : [data]);
 
 		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
-			const payloadService = new PayloadService(this.collection, { knex: trx });
-			const authorizationService = new AuthorizationService({ knex: trx });
+			const payloadService = new PayloadService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+			});
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+				knex: trx,
+			});
 
-			payloads = await payloadService.processValues('create', payloads);
 			payloads = await payloadService.processM2O(payloads);
 
-			const payloadsWithoutAliases = payloads.map((payload) =>
+			let payloadsWithoutAliases = payloads.map((payload) =>
 				pick(
 					payload,
 					columns.map(({ column }) => column)
 				)
+			);
+
+			payloadsWithoutAliases = await payloadService.processValues(
+				'create',
+				payloadsWithoutAliases
 			);
 
 			if (this.accountability && this.accountability.admin !== true) {
@@ -113,6 +126,7 @@ export default class ItemsService implements AbstractService {
 		query: Query = {},
 		operation: Operation = 'read'
 	): Promise<Item | Item[]> {
+		const schemaInspector = SchemaInspector(this.knex);
 		const payloadService = new PayloadService(this.collection);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 		const keys = Array.isArray(key) ? key : [key];
@@ -154,89 +168,78 @@ export default class ItemsService implements AbstractService {
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
-		return 15; /** nothing to see here 👀 */
+		const schemaInspector = SchemaInspector(this.knex);
+		const primaryKeyField = await schemaInspector.primary(this.collection);
+		const columns = await schemaInspector.columns(this.collection);
 
-		// // /**
-		// //  * Update one or more items to the given payload
-		// //  */
-		// export async function updateItem<T extends PrimaryKey | PrimaryKey[]>(
-		// 	collection: string,
-		// 	primaryKey: T,
-		// 	data: Partial<Item>,
-		// 	accountability?: Accountability
-		// ): Promise<T> {
-		// 	const primaryKeys = (Array.isArray(primaryKey) ? primaryKey : [primaryKey]) as PrimaryKey[];
+		// Updating one or more items to the same payload
+		if (data && key) {
+			const keys = Array.isArray(key) ? key : [key];
 
-		// 	let payload = clone(data);
+			let payload = clone(data);
 
-		// 	if (accountability?.admin !== true) {
-		// 		payload = await PermissionsService.processValues(
-		// 			'validate',
-		// 			collection,
-		// 			accountability?.role || null,
-		// 			payload
-		// 		);
-		// 	}
+			if (this.accountability && this.accountability.admin !== true) {
+				const authorizationService = new AuthorizationService({
+					accountability: this.accountability,
+				});
+				await authorizationService.checkAccess('update', this.collection, keys);
+				payload = await authorizationService.processValues(
+					'validate',
+					this.collection,
+					payload
+				);
+			}
 
-		// 	payload = await PayloadService.processValues('update', collection, payload);
-		// 	payload = await PayloadService.processM2O(collection, payload);
+			await this.knex.transaction(async (trx) => {
+				const payloadService = new PayloadService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+				});
+				payload = await payloadService.processM2O(payload);
+				payload = await payloadService.processValues('update', payload);
+				const payloadWithoutAliases = pick(
+					payload,
+					columns.map(({ column }) => column)
+				);
+				await trx(this.collection)
+					.update(payloadWithoutAliases)
+					.whereIn(primaryKeyField, keys);
+				await payloadService.processO2M(payload);
 
-		// 	const primaryKeyField = await schemaInspector.primary(collection);
+				/**
+				 * @todo save activity
+				 */
+			});
 
-		// 	// Only insert the values that actually save to an existing column. This ensures we ignore aliases etc
-		// 	const columns = await schemaInspector.columns(collection);
+			return key;
+		}
 
-		// 	const payloadWithoutAlias = pick(
-		// 		payload,
-		// 		columns.map(({ column }) => column)
-		// 	);
+		const keys: PrimaryKey[] = [];
 
-		// 	// Make sure the user has access to every item they're trying to update
-		// 	await Promise.all(
-		// 		primaryKeys.map(async (key) => {
-		// 			if (accountability && accountability.admin === false) {
-		// 				return await PermissionsService.checkAccess(
-		// 					'update',
-		// 					collection,
-		// 					key,
-		// 					accountability.role
-		// 				);
-		// 			} else {
-		// 				return Promise.resolve();
-		// 			}
-		// 		})
-		// 	);
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+			});
 
-		// 	// Save updates
-		// 	await database.transaction(async (transaction) => {
-		// 		for (const key of primaryKeys) {
-		// 			await transaction(collection)
-		// 				.where({ [primaryKeyField]: key })
-		// 				.update(payloadWithoutAlias);
+			for (const single of data as Partial<Item>[]) {
+				let payload = clone(single);
+				const key = payload[primaryKeyField];
+				if (!key)
+					throw new InvalidPayloadException('Primary key is missing in update payload.');
+				keys.push(key);
+				await itemsService.update(payload, key);
+			}
+		});
 
-		// 			if (accountability) {
-		// 				await saveActivityAndRevision(
-		// 					ActivityService.Action.UPDATE,
-		// 					collection,
-		// 					String(key),
-		// 					payloadWithoutAlias,
-		// 					accountability,
-		// 					transaction
-		// 				);
-		// 			}
-		// 		}
-
-		// 		return;
-		// 	});
-
-		// 	return primaryKey;
-		// }
+		return keys;
 	}
 
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = (Array.isArray(key) ? key : [key]) as PrimaryKey[];
+		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
 		if (this.accountability && this.accountability.admin !== false) {
@@ -247,7 +250,7 @@ export default class ItemsService implements AbstractService {
 			await authorizationService.checkAccess('delete', this.collection, key);
 		}
 
-		await database.transaction(async (trx) => {
+		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability) {
@@ -268,6 +271,7 @@ export default class ItemsService implements AbstractService {
 	}
 
 	async readSingleton(query: Query) {
+		const schemaInspector = SchemaInspector(this.knex);
 		query.limit = 1;
 
 		const records = await this.readByQuery(query);
@@ -288,6 +292,7 @@ export default class ItemsService implements AbstractService {
 	}
 
 	async upsertSingleton(data: Partial<Item>) {
+		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
 		const record = await this.knex

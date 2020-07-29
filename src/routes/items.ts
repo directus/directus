@@ -14,7 +14,7 @@ router.post(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single) {
+		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
 
@@ -34,7 +34,7 @@ router.get(
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 
 		const [records, meta] = await Promise.all([
-			req.single
+			req.singleton
 				? service.readSingleton(req.sanitizedQuery)
 				: service.readByQuery(req.sanitizedQuery),
 			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
@@ -52,7 +52,7 @@ router.get(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single) {
+		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
 
@@ -73,7 +73,7 @@ router.patch(
 	asyncHandler(async (req, res) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 
-		if (req.single === true) {
+		if (req.singleton === true) {
 			await service.upsertSingleton(req.body);
 			const item = await service.readSingleton(req.sanitizedQuery);
 
@@ -89,7 +89,7 @@ router.patch(
 	collectionExists,
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		if (req.single) {
+		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
 
