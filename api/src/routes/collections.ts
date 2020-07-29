@@ -1,38 +1,23 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import * as CollectionsService from '../services/collections';
+import CollectionsService from '../services/collections';
 import { schemaInspector } from '../database';
-import { InvalidPayloadException, CollectionNotFoundException } from '../exceptions';
-import Joi from 'joi';
+import { CollectionNotFoundException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 
 const router = Router();
-
-const fieldSchema = Joi.object({
-	field: Joi.string().required(),
-	datatype: Joi.string().required(),
-	note: Joi.string().required(),
-	primary_key: Joi.boolean(),
-	auto_increment: Joi.boolean(),
-});
-
-const collectionSchema = Joi.object({
-	collection: Joi.string().required(),
-	fields: Joi.array().items(fieldSchema).min(1).unique().required(),
-	note: Joi.string(),
-});
 
 router.post(
 	'/',
 	useCollection('directus_collections'),
 	asyncHandler(async (req, res) => {
-		const { error } = collectionSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+		const collectionsService = new CollectionsService({ accountability: req.accountability });
 
-		const createdCollection = await CollectionsService.create(req.body, req.accountability);
+		const collectionKey = await collectionsService.create(req.body);
+		const record = await collectionsService.readByKey(collectionKey);
 
-		res.json({ data: createdCollection || null });
+		res.json({ data: record || null });
 	})
 );
 
@@ -41,10 +26,9 @@ router.get(
 	useCollection('directus_collections'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const collections = await CollectionsService.readAll(
-			req.sanitizedQuery,
-			req.accountability
-		);
+		const collectionsService = new CollectionsService({ accountability: req.accountability });
+		const collections = await collectionsService.readByQuery(req.sanitizedQuery);
+
 		res.json({ data: collections || null });
 	})
 );
@@ -54,15 +38,17 @@ router.get(
 	useCollection('directus_collections'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
+		/** @todo move this validation to CollectionsService methods */
 		const exists = await schemaInspector.hasTable(req.params.collection);
-
 		if (exists === false) throw new CollectionNotFoundException(req.params.collection);
 
-		const collection = await CollectionsService.readOne(
+		const collectionsService = new CollectionsService({ accountability: req.accountability });
+
+		const collection = await collectionsService.readByKey(
 			req.params.collection,
-			req.sanitizedQuery,
-			req.accountability
+			req.sanitizedQuery
 		);
+
 		res.json({ data: collection || null });
 	})
 );
@@ -71,11 +57,13 @@ router.delete(
 	'/:collection',
 	useCollection('directus_collections'),
 	asyncHandler(async (req, res) => {
+		/** @todo move this validation to CollectionsService methods */
 		if ((await schemaInspector.hasTable(req.params.collection)) === false) {
 			throw new CollectionNotFoundException(req.params.collection);
 		}
 
-		await CollectionsService.deleteCollection(req.params.collection, req.accountability);
+		const collectionsService = new CollectionsService({ accountability: req.accountability });
+		await collectionsService.delete(req.params.collection);
 
 		res.end();
 	})

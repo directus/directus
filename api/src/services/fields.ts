@@ -7,7 +7,7 @@ import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { FieldNotFoundException } from '../exceptions';
-import Knex from 'knex';
+import Knex, { CreateTableBuilder } from 'knex';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -88,52 +88,64 @@ export default class FieldsService {
 	async createField(
 		collection: string,
 		field: Partial<Field> & { field: string; type: typeof types[number] },
-		accountability?: Accountability
+		table?: CreateTableBuilder // allows collection creation to
 	) {
-		const itemsService = new ItemsService('directus_fields', { accountability });
-
 		/**
 		 * @todo
 		 * Check if table / directus_fields row already exists
 		 */
 
 		if (field.database) {
-			await database.schema.alterTable(collection, (table) => {
-				let column: ColumnBuilder;
-
-				if (!field.database) return;
-
-				if (field.type === 'string') {
-					column = table.string(
-						field.field,
-						field.database.max_length !== null ? field.database.max_length : undefined
-					);
-				} else if (['float', 'decimal'].includes(field.type)) {
-					const type = field.type as 'float' | 'decimal';
-					/** @todo add precision and scale support */
-					column = table[type](field.field /* precision, scale */);
-				} else {
-					column = table[field.type](field.field);
-				}
-
-				if (field.database.default_value) {
-					column.defaultTo(field.database.default_value);
-				}
-
-				if (field.database.is_nullable && field.database.is_nullable === true) {
-					column.nullable();
-				} else {
-					column.notNullable();
-				}
-			});
+			if (table) {
+				addColumnToTable(table);
+			} else {
+				await database.schema.alterTable(collection, (table) => {
+					addColumnToTable(table);
+				});
+			}
 		}
 
 		if (field.system) {
-			await itemsService.create({
+			await this.service.create({
 				...field.system,
 				collection: collection,
 				field: field.field,
 			});
+		}
+
+		function addColumnToTable(table: CreateTableBuilder) {
+			let column: ColumnBuilder;
+
+			if (!field.database) return;
+
+			if (field.database.has_auto_increment) {
+				column = table.increments(field.field);
+			} else if (field.type === 'string') {
+				column = table.string(
+					field.field,
+					field.database.max_length !== null ? field.database.max_length : undefined
+				);
+			} else if (['float', 'decimal'].includes(field.type)) {
+				const type = field.type as 'float' | 'decimal';
+				/** @todo add precision and scale support */
+				column = table[type](field.field /* precision, scale */);
+			} else {
+				column = table[field.type](field.field);
+			}
+
+			if (field.database.default_value) {
+				column.defaultTo(field.database.default_value);
+			}
+
+			if (field.database.is_nullable && field.database.is_nullable === true) {
+				column.nullable();
+			} else {
+				column.notNullable();
+			}
+
+			if (field.database.is_primary_key) {
+				column.primary();
+			}
 		}
 	}
 

@@ -1,3 +1,5 @@
+import { Field } from './field';
+
 export type Collection = {
 	collection: string;
 	note: string | null;
@@ -5,4 +7,5 @@ export type Collection = {
 	single: boolean;
 	icon: string | null;
 	translation: Record<string, string>;
+	fields?: Field[];
 };
