@@ -2,8 +2,8 @@ import Knex, { ColumnBuilder } from 'knex';
 import fse from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
-import { types } from '../types';
-import { isObject, merge } from 'lodash';
+import { types, Item } from '../types';
+import { isObject, merge, reduce } from 'lodash';
 
 type SeedData = {
 	tables?: {
@@ -106,8 +106,30 @@ export default async function runSeed(knex: Knex, seed: string) {
 					return merge({}, defaults, row);
 				});
 
-				await transaction(table).insert(dataWithDefaults);
+				const chunks = chunkArray(dataWithDefaults, 25);
+
+				for (const chunk of chunks) {
+					await transaction(table).insert(chunk);
+				}
 			}
 		}
 	});
+}
+
+function chunkArray(array: Item[], chunkSize: number) {
+	return reduce(
+		array,
+		(result: Item[][], value) => {
+			let lastChunk: Item[] = result[result.length - 1];
+
+			if (lastChunk.length < chunkSize) {
+				lastChunk.push(value);
+			} else {
+				result.push([value]);
+			}
+
+			return result;
+		},
+		[[]]
+	);
 }

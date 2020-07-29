@@ -62,6 +62,8 @@ async function create(directory) {
 
 	await execa('npx', ['directus', 'init'], {
 		cwd: rootPath,
-		stdin: 'ignore',
+		stdio: 'inherit'
 	});
+
+	process.exit(1);
 }
