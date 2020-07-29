@@ -44,8 +44,6 @@ export default class FieldsService {
 
 		const columns = await schemaInspector.columnInfo(collection);
 
-		console.log(columns);
-
 		return columns.map((column) => {
 			const field = fields.find(
 				(field) => field.field === column.name && field.collection === column.table

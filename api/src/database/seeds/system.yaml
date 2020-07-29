@@ -526,7 +526,6 @@ rows:
 
   directus_fields:
     defaults:
-      id: null
       collection: null
       field: null
       special: null
@@ -1569,7 +1568,6 @@ rows:
 
   directus_permissions:
     defaults:
-      id: null
       role: null
       collection: null
       operation: null
@@ -1593,7 +1591,6 @@ rows:
 
   directus_relations:
     defaults:
-      id: null
       many_collection: directus_users
       many_field: null
       many_primary: null
