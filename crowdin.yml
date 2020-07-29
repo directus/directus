@@ -1,0 +1,5 @@
+files:
+  - source: /src/lang/en-US/*.json
+    ignore:
+      - /src/lang/en-US/date-format.json
+    translation: /src/lang/%locale%/%original_file_name%

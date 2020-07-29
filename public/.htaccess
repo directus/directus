@@ -1,0 +1,12 @@
+<ifModule mod_rewrite.c>
+
+  RewriteEngine on
+
+  # If file or directory exists behave normally
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Otherwise use index.html (you might need to update path)
+  RewriteRule ^.*$ /index.html [L,QSA]
+
+</ifModule>

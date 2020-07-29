@@ -1,0 +1,24 @@
+{
+	"layouts": {
+		"cards": {
+			"cards": "Cards",
+			"size": "Size",
+			"image_source": "Image Source",
+			"image_fit": "Image Fit",
+			"crop": "Crop",
+			"contain": "Contain",
+			"title": "Title",
+			"subtitle": "Subtitle",
+			"fallback_icon": "Fallback Icon"
+		},
+		"tabular": {
+			"tabular": "Table",
+			"fields": "Fields",
+			"spacing": "Spacing",
+			"comfortable": "Comfortable",
+			"compact": "Compact",
+			"cozy": "Cozy",
+			"per_page": "Per Page"
+		}
+	}
+}
