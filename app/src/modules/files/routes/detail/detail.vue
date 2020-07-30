@@ -1,5 +1,6 @@
 <template>
-	<private-view :title="loading || !item ? $t('loading') : item.title">
+	<files-not-found v-if="!loading && !item" />
+	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
 				<v-icon name="arrow_back" />
@@ -68,7 +69,6 @@
 					<save-options
 						:disabled="hasEdits === false"
 						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
 				</template>
@@ -163,6 +163,7 @@ import useFormFields from '@/composables/use-form-fields';
 import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
+import FilesNotFound from '../not-found/';
 
 type Values = {
 	[field: string]: any;
@@ -192,6 +193,7 @@ export default defineComponent({
 		FileLightbox,
 		FileInfoDrawerDetail,
 		FolderPicker,
+		FilesNotFound,
 	},
 	props: {
 		primaryKey: {
@@ -271,7 +273,6 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			saveAndStay,
-			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
 			changeCacheBuster,
@@ -313,19 +314,7 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
-
 			revisionsDrawerDetail.value?.$data?.refresh?.();
-
-			if (props.primaryKey === '+') {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const newPrimaryKey = savedItem.id;
-				router.replace(`/collections/files/${newPrimaryKey}`);
-			}
-		}
-
-		async function saveAndAddNew() {
-			await save();
-			router.push(`/files/+`);
 		}
 
 		async function saveAsCopyAndNavigate() {
