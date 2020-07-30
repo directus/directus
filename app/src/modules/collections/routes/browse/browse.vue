@@ -205,7 +205,7 @@ export default defineComponent({
 			if (viewType.value === null) {
 				viewType.value = 'tabular';
 			}
-		});
+		}, { immediate: true });
 
 		return {
 			addNewLink,
