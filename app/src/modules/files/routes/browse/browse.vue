@@ -88,7 +88,7 @@
 			@update:filters="filters = $event"
 		/>
 
-		<router-view name="addNew" />
+		<router-view name="addNew" @upload="refresh" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
