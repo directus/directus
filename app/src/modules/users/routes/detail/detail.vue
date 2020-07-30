@@ -130,6 +130,7 @@ import useFieldsStore from '@/stores/fields';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/stores/fields/types';
 import UserInfoDrawerDetail from './components/user-info-drawer-detail.vue';
+import getRootPath from '../../../../utils/get-root-path';
 
 type Values = {
 	[field: string]: any;
@@ -303,9 +304,7 @@ export default defineComponent({
 						},
 					});
 
-					avatarSrc.value = response.data.data.avatar?.data?.thumbnails?.find(
-						(thumb: any) => thumb.key === 'system-medium-crop'
-					)?.url;
+					avatarSrc.value = response.data.data.avatar?.id ? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover` : null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
 					error.value = err;
