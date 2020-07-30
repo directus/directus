@@ -145,7 +145,7 @@ export default defineComponent({
 		const assetURL = computed(() => getRootPath() + `assets/${props.value}`);
 
 		const imageThumbnail = computed(() => {
-			if (file.value === null) return null;
+			if (file.value === null || props.value === null) return null;
 			if (file.value.type.includes('svg')) return assetURL.value;
 			if (file.value.type.includes('image') === false) return null;
 			return assetURL.value + `?key=system-small-cover`;
