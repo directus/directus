@@ -90,18 +90,22 @@ export const useFieldsStore = createStore({
 
 			const system = field.system === null ? getSystemDefault(field.collection, field.field) : field.system;
 
-			if (notEmpty(system.translation) && system.translation.length > 0) {
+			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
+				name = i18n.t(`fields.${field.collection}.${field.field}`);
+			} else if (notEmpty(system.translation) && system.translation.length > 0) {
 				for (let i = 0; i < system.translation.length; i++) {
 					const { locale, translation } = system.translation[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
-							[field.field]: translation,
+							[field.collection]: {
+								[field.field]: translation
+							}
 						},
 					});
 				}
 
-				name = i18n.t(`fields.${field.field}`);
+				name = i18n.t(`fields.${field.collection}.${field.field}`);
 			} else {
 				name = formatTitle(field.field);
 			}

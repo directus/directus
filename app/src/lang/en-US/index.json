@@ -791,8 +791,23 @@
       "locale": "Locale",
       "avatar": "Avatar",
       "theme": "Theme",
-      "2fa_secret": "Two-Factor Authentication"
-    }
+      "tfa_secret": "Two-Factor Authentication"
+	},
+	"directus_settings": {
+		"project_name": "Project Name",
+		"project_url": "Project URL",
+		"project_color": "Project Color",
+		"project_logo": "Project Logo",
+		"public_foreground": "Public Foreground",
+		"public_background": "Public Background",
+		"public_note": "Public Note",
+		"auth_password_policy": "Auth Password Policy",
+		"auth_idle_timeout": "Auth Idle Timeout",
+		"auth_login_attempts": "Auth Login Attempts",
+		"storage_asset_presets": "Storage Asset Presets",
+		"storage_asset_transform": "Storage Asset Transform",
+		"telemetry": "Telemetry"
+	}
   },
 
   "modules": {},
