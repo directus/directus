@@ -11,6 +11,17 @@ export default function useFormFields(fields: Ref<Field[]>) {
 	const formFields = computed(() => {
 		let formFields = [...fields.value];
 
+		// Sort the fields on the sort column value
+		formFields = formFields.sort((a, b) => {
+			const aSort = a.system?.sort || null;
+			const bSort = b.system?.sort || null;
+
+			if (aSort === bSort) return 0;
+			if (aSort === null) return 1;
+			if (bSort === null) return -1;
+			return aSort < bSort ? -1 : 1;
+		});
+
 		formFields = formFields.map((field, index) => {
 			if (!field.system) {
 				field.system = {
@@ -58,8 +69,10 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			if (index !== 0 && field.system!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				if (prevField.system!.width === 'half') {
-					field.system!.width = 'half-right';
+				console.log(prevField);
+
+				if (prevField.system.width === 'half') {
+					field.system.width = 'half-right';
 				}
 			}
 
@@ -71,14 +84,6 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			const hidden = field.system?.hidden;
 			const systemFake = field.field.startsWith('$');
 			return hidden === false && systemFake === false;
-		});
-
-		// Sort the fields on the sort column value
-		formFields = formFields.sort((a, b) => {
-			if (a.system.sort == b.system!.sort) return 0;
-			if (a.system.sort === null || a.system.sort === undefined) return 1;
-			if (b.system!.sort === null || b.system!.sort === undefined) return -1;
-			return a.system.sort > b.system!.sort ? 1 : -1;
 		});
 
 		return formFields;
