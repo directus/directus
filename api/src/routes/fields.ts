@@ -88,11 +88,7 @@ router.post(
 
 		await service.createField(req.params.collection, field);
 
-		const createdField = await service.readOne(
-			req.params.collection,
-			field.field,
-			req.accountability
-		);
+		const createdField = await service.readOne(req.params.collection, field.field);
 
 		return res.json({ data: createdField || null });
 	})
@@ -113,11 +109,7 @@ router.patch(
 		for (const field of req.body) {
 			await service.updateField(req.params.collection, field, req.accountability);
 
-			const updatedField = await service.readOne(
-				req.params.collection,
-				field.field,
-				req.accountability
-			);
+			const updatedField = await service.readOne(req.params.collection, field.field);
 
 			results.push(updatedField);
 		}
@@ -140,11 +132,7 @@ router.patch(
 
 		await service.updateField(req.params.collection, fieldData, req.accountability);
 
-		const updatedField = await service.readOne(
-			req.params.collection,
-			req.params.field,
-			req.accountability
-		);
+		const updatedField = await service.readOne(req.params.collection, req.params.field);
 
 		return res.json({ data: updatedField || null });
 	})
