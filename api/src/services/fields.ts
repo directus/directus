@@ -1,7 +1,7 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { uniq } from 'lodash';
-import { Accountability, AbstractServiceOptions } from '../types';
+import { Accountability, AbstractServiceOptions, System } from '../types';
 import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -10,6 +10,15 @@ import { FieldNotFoundException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
+
+/**
+ * @todo
+ *
+ * - Only allow admins to create/update/delete
+ * - Only return fields you have permission to read (based on permissions)
+ * - Don't use items service, as this is a different case than regular collections
+ * - Same goes for CollectionsService
+ */
 
 export default class FieldsService {
 	knex: Knex;
@@ -44,7 +53,7 @@ export default class FieldsService {
 
 		const columns = await schemaInspector.columnInfo(collection);
 
-		return columns.map((column) => {
+		const columnsWithSystem = columns.map((column) => {
 			const field = fields.find(
 				(field) => field.field === column.name && field.collection === column.table
 			);
@@ -59,10 +68,29 @@ export default class FieldsService {
 
 			return data;
 		});
+
+		const aliasColumns = (
+			await this.knex
+				.select<System[]>('*')
+				.from('directus_fields')
+				.whereIn('special', ['alias', 'o2m'])
+		).map((field) => {
+			const data = {
+				collection: field.collection,
+				field: field.field,
+				type: field.special,
+				database: null,
+				system: field,
+			};
+
+			return data;
+		});
+
+		return [...columnsWithSystem, ...aliasColumns];
 	}
 
 	/** @todo add accountability */
-	async readOne(collection: string, field: string, accountability?: Accountability) {
+	async readOne(collection: string, field: string) {
 		let column;
 		const fieldInfo = await this.knex
 			.select('*')

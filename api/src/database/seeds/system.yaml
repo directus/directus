@@ -61,11 +61,6 @@ tables:
     id:
       type: uuid
       primary: true
-    status:
-      type: string
-      length: 16
-      nullable: false
-      default: draft
     first_name:
       type: string
       length: 50
@@ -79,25 +74,24 @@ tables:
     password:
       type: string
       length: 255
-    token:
-      type: string
-      length: 255
-    timezone:
-      type: string
-      length: 255
-      default: 'America/New_York'
-    locale:
-      type: string
-      length: 8
-      default: 'en-US'
-    avatar:
-      type: uuid
-    company:
+    location:
       type: string
       length: 255
     title:
       type: string
       length: 50
+    description:
+      type: text
+    tags:
+      type: json
+    timezone:
+      type: string
+      length: 255
+      default: 'America/New_York'
+    language:
+      type: string
+      length: 8
+      default: 'en-US'
     theme:
       type: string
       length: 20
@@ -105,17 +99,27 @@ tables:
     tfa_secret:
       type: string
       length: 255
-    last_access_on:
-      type: timestamp
-    last_page:
+    status:
       type: string
-      length: 255
+      length: 16
+      nullable: false
+      default: draft
     role:
       type: uuid
       nullable: false
       references:
         table: directus_roles
         column: id
+    token:
+      type: string
+      length: 255
+    last_login:
+      type: timestamp
+    avatar:
+      type: uuid
+    last_page:
+      type: string
+      length: 255
 
   directus_fields:
     id:
@@ -723,24 +727,12 @@ rows:
         width: half
 
       - collection: directus_users
-        field: id
-        hidden: true
-        locked: true
-        special: uuid
-      - collection: directus_users
-        field: avatar
-        interface: file
-        locked: true
-        special: file
-        sort: 1
-        width: full
-      - collection: directus_users
         field: first_name
         interface: text-input
         locked: true
         options:
           iconRight: account_circle
-        sort: 2
+        sort: 1
         width: half
       - collection: directus_users
         field: last_name
@@ -748,15 +740,15 @@ rows:
         locked: true
         options:
           iconRight: account_circle
-        sort: 3
+        sort: 2
         width: half
       - collection: directus_users
         field: email
         interface: text-input
         locked: true
         options:
-          iconRight: alternate_email
-        sort: 4
+          iconRight: email
+        sort: 3
         width: half
       - collection: directus_users
         field: password
@@ -766,29 +758,34 @@ rows:
         options:
           iconRight: lock
           masked: true
-        sort: 5
+        sort: 4
         width: half
       - collection: directus_users
         field: location
         interface: text-input
         options:
           iconRight: place
-        sort: 6
+        sort: 5
         width: half
       - collection: directus_users
         field: title
         interface: text-input
         options:
           iconRight: work
-        sort: 7
+        sort: 6
         width: half
       - collection: directus_users
         field: description
         interface: textarea
-        options:
-          placeholder: Enter a bio...
+        sort: 7
+        width: full
+      - collection: directus_users
+        field: tags
+        interface: tags
         sort: 8
         width: full
+        options:
+          iconRight: local_offer
       - collection: directus_users
         field: preferences_divider
         interface: divider
@@ -796,6 +793,7 @@ rows:
           icon: face
           title: User Preferences
           color: "#2F80ED"
+        special: alias
         sort: 9
         width: full
       - collection: directus_users
@@ -831,7 +829,7 @@ rows:
             text: "(UTC-06:00) Central Time (US & Canada)"
           - value: America/Guadalajara
             text: "(UTC-06:00) Guadalajara"
-          - value: America/Mexico City
+          - value: America/Mexico_City
             text: "(UTC-06:00) Mexico City"
           - value: America/Monterrey
             text: "(UTC-06:00) Monterrey"
@@ -841,7 +839,7 @@ rows:
             text: "(UTC-05:00) Bogota"
           - value: US/Eastern
             text: "(UTC-05:00) Eastern Time (US & Canada)"
-          - value: US/East Indiana
+          - value: US/East_Indiana
             text: "(UTC-05:00) Indiana (East)"
           - value: America/Lima
             text: "(UTC-05:00) Lima"
@@ -849,7 +847,7 @@ rows:
             text: "(UTC-05:00) Quito"
           - value: Canada/Atlantic
             text: "(UTC-04:00) Atlantic Time (Canada)"
-          - value: America/New York
+          - value: America/New_York
             text: "(UTC-04:00) New York"
           - value: America/Caracas
             text: "(UTC-04:30) Caracas"
@@ -857,7 +855,7 @@ rows:
             text: "(UTC-04:00) La Paz"
           - value: America/Santiago
             text: "(UTC-04:00) Santiago"
-          - value: America/Santo Domingo
+          - value: America/Santo_Domingo
             text: "(UTC-04:00) Santo Domingo"
           - value: Canada/Newfoundland
             text: "(UTC-03:30) Newfoundland"
@@ -1097,7 +1095,7 @@ rows:
         sort: 10
         width: half
       - collection: directus_users
-        field: locale
+        field: language
         interface: dropdown
         locked: true
         options:
@@ -1165,9 +1163,6 @@ rows:
           - text: Vietnamese (Vietnam)
             value: vi-VN
         sort: 11
-        translation:
-          locale: en-US
-          translation: Language
         width: half
       - collection: directus_users
         field: theme
@@ -1196,6 +1191,7 @@ rows:
           icon: verified_user
           title: Admin Options
           color: "#F2994A"
+        special: alias
         sort: 14
         width: full
       - collection: directus_users
@@ -1232,9 +1228,21 @@ rows:
         field: role
         interface: roles
         locked: true
-        options:
-          placeholder: Enter a secure token...
         sort: 16
+        width: half
+      - collection: directus_users
+        field: token
+        interface: token
+        locked: true
+        sort: 17
+        width: full
+      - collection: directus_users
+        field: id
+        interface: text-input
+        locked: true
+        options:
+          iconRight: vpn_key
+        sort: 18
         width: full
 
       # directus_fields isn't surfaced in the app
