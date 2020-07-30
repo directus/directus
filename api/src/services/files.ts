@@ -44,7 +44,7 @@ export const createFile = async (
 
 	const pipeline = sharp();
 
-	if (payload.type?.startsWith('image')) {
+	if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
 		pipeline.metadata().then((meta) => {
 			payload.width = meta.width;
 			payload.height = meta.height;
