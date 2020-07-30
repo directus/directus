@@ -783,28 +783,34 @@ rows:
         sort: 4
         width: half
       - collection: directus_users
+        field: avatar
+        interface: file
+        locked: true
+        sort: 5
+        width: full
+      - collection: directus_users
         field: location
         interface: text-input
         options:
           iconRight: place
-        sort: 5
+        sort: 6
         width: half
       - collection: directus_users
         field: title
         interface: text-input
         options:
           iconRight: work
-        sort: 6
+        sort: 7
         width: half
       - collection: directus_users
         field: description
         interface: textarea
-        sort: 7
+        sort: 8
         width: full
       - collection: directus_users
         field: tags
         interface: tags
-        sort: 8
+        sort: 9
         width: full
         options:
           iconRight: local_offer
@@ -816,7 +822,7 @@ rows:
           title: User Preferences
           color: "#2F80ED"
         special: alias
-        sort: 9
+        sort: 10
         width: full
       - collection: directus_users
         field: timezone
@@ -1114,7 +1120,7 @@ rows:
           - value: Pacific/Tongatapu
             text: "(UTC+13:00) Nuku'alofa"
           placeholder: Choose a timezone...
-        sort: 10
+        sort: 11
         width: half
       - collection: directus_users
         field: language
@@ -1184,7 +1190,7 @@ rows:
             value: uk-UA
           - text: Vietnamese (Vietnam)
             value: vi-VN
-        sort: 11
+        sort: 12
         width: half
       - collection: directus_users
         field: theme
@@ -1198,12 +1204,12 @@ rows:
               text: Light Mode
             - value: dark
               text: Dark Mode
-        sort: 12
+        sort: 13
         width: half
       - collection: directus_users
         field: tfa_secret
         locked: true
-        sort: 13
+        sort: 14
         width: half
       - collection: directus_users
         field: admin_divider
@@ -1214,7 +1220,7 @@ rows:
           title: Admin Options
           color: "#F2994A"
         special: alias
-        sort: 14
+        sort: 15
         width: full
       - collection: directus_users
         field: status
@@ -1244,7 +1250,7 @@ rows:
               color: "#FFFFFF"
               backgroundColor: "#EB5757"
               soft_delete: true
-        sort: 15
+        sort: 16
         width: half
       - collection: directus_users
         field: role
@@ -1252,13 +1258,13 @@ rows:
         locked: true
         options:
           template: '{{ name }}'
-        sort: 16
+        sort: 17
         width: half
       - collection: directus_users
         field: token
         interface: token
         locked: true
-        sort: 17
+        sort: 18
         width: full
       - collection: directus_users
         field: id
@@ -1266,7 +1272,7 @@ rows:
         locked: true
         options:
           iconRight: vpn_key
-        sort: 18
+        sort: 19
         width: full
 
       # directus_fields isn't surfaced in the app
