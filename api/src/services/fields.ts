@@ -99,11 +99,13 @@ export default class FieldsService {
 	/** @todo add accountability */
 	async readOne(collection: string, field: string) {
 		let column;
-		const fieldInfo = await this.knex
+		let fieldInfo = await this.knex
 			.select('*')
 			.from('directus_fields')
 			.where({ collection, field })
 			.first();
+
+		fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as System[];
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);

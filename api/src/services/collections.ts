@@ -1,5 +1,4 @@
-import database, { schemaInspector } from '../database';
-import { Query } from '../types/query';
+import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection } from '../types';
 import Knex from 'knex';
 import ItemsService from '../services/items';
