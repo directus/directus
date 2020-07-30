@@ -44,11 +44,11 @@ router.get(
 
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
-		const defaults = { storage_asset_presets: [], storage_asset_transforms: 'all' };
+		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		const assetSettings =
 			(await database
-				.select('storage_asset_presets', 'storage_asset_transforms')
+				.select('storage_asset_presets', 'storage_asset_transform')
 				.from('directus_settings')
 				.first()) || defaults;
 
