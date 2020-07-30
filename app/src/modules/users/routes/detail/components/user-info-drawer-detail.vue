@@ -2,12 +2,8 @@
 	<drawer-detail icon="info_outline" :title="$t('information')" close>
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id">
-				<dt>{{ $t('primary_key') }}</dt>
+				<dt>{{ $t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
-			</div>
-			<div v-if="user.external_id">
-				<dt>{{ $t('external_id') }}</dt>
-				<dd>{{ user.external_id }}</dd>
 			</div>
 			<div v-if="user.last_page">
 				<dt>{{ $t('last_page') }}</dt>
