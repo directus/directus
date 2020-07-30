@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/directus/api-node#readme",
   "dependencies": {
+    "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
     "@slynova/flydrive-s3": "^1.0.2",

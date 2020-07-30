@@ -6,6 +6,7 @@ import * as FilesService from '../services/files';
 import useCollection from '../middleware/use-collection';
 import { Item } from '../types';
 import path from 'path';
+import formatTitle from '@directus/format-title';
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 			}
 
 			if (!payload.title) {
-				payload.title = path.parse(filename).name;
+				payload.title = formatTitle(path.parse(filename).name);
 			}
 
 			if (req.accountability?.user) {
