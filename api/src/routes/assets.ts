@@ -5,9 +5,10 @@ import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constant
 import { InvalidQueryException, ForbiddenException } from '../exceptions';
 import AssetsService from '../services/assets';
 import validate from 'uuid-validate';
-import { pick } from 'lodash';
+import { pick, merge } from 'lodash';
 import { Transformation } from '../types/assets';
 import storage from '../storage';
+import PayloadService from '../services/payload';
 
 const router = Router();
 
@@ -44,13 +45,19 @@ router.get(
 
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
+		const payloadService = new PayloadService('directus_settings');
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
-		const assetSettings =
-			(await database
-				.select('storage_asset_presets', 'storage_asset_transform')
-				.from('directus_settings')
-				.first()) || defaults;
+		let savedAssetSettings = await database
+			.select('storage_asset_presets', 'storage_asset_transform')
+			.from('directus_settings')
+			.first();
+
+		if (savedAssetSettings) {
+			await payloadService.processValues('read', savedAssetSettings);
+		}
+
+		const assetSettings = savedAssetSettings || defaults;
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
