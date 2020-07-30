@@ -1331,7 +1331,7 @@ rows:
         width: full
       - collection: directus_files
         field: description
-        interface: wysiwyg
+        interface: textarea
         locked: true
         sort: 2
         width: full
