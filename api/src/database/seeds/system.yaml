@@ -728,6 +728,10 @@ rows:
         locked: true
         special: o2m
         sort: 7
+        options:
+          fields:
+            - first_name
+            - last_name
         width: full
       - collection: directus_roles
         field: admin
@@ -1244,8 +1248,10 @@ rows:
         width: half
       - collection: directus_users
         field: role
-        interface: roles
+        interface: m2o
         locked: true
+        options:
+          template: '{{ name }}'
         sort: 16
         width: half
       - collection: directus_users
@@ -1695,5 +1701,4 @@ rows:
         many_field: action_by
         many_primary: id
         one_collection: directus_users
-        one_field: fields
         one_primary: id
