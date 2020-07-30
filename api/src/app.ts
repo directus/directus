@@ -5,6 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'express-pino-logger';
 import path from 'path';
+import cors from 'cors';
 
 import errorHandler from './middleware/error-handler';
 
@@ -33,18 +34,30 @@ import webhooksRouter from './routes/webhooks';
 
 import notFoundHandler from './routes/not-found';
 
-const app = express()
-	.disable('x-powered-by')
-	.set('trust proxy', true)
-	.use(logger())
+const app = express().disable('x-powered-by').set('trust proxy', true);
+
+app.use(logger())
 	.use(bodyParser.json())
 	.use(extractToken)
 	.use((req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
 		next();
-	})
+	});
 
-	.get('/', (req, res) => res.redirect('/admin/'))
+if (process.env.CORS_ENABLED === 'true') {
+	app.use(
+		cors({
+			origin: process.env.CORS_ORIGIN || true,
+			methods: process.env.CORS_METHODS || 'GET,POST,PATCH,DELETE',
+			allowedHeaders: process.env.CORS_ALLOWED_HEADERS,
+			exposedHeaders: process.env.CORS_EXPOSED_HEADERS,
+			credentials: process.env.CORS_CREDENTIALS === 'true' || undefined,
+			maxAge: Number(process.env.CORS_MAX_AGE) || undefined,
+		})
+	);
+}
+
+app.get('/', (req, res) => res.redirect('/admin/'))
 
 	// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
 	.use('/admin', express.static(path.join(__dirname, 'admin')))
@@ -70,8 +83,8 @@ const app = express()
 	.use('/settings', settingsRouter)
 	.use('/users', usersRouter)
 	.use('/utils', utilsRouter)
-	.use('/webhooks', webhooksRouter)
-	.use(notFoundHandler)
-	.use(errorHandler);
+	.use('/webhooks', webhooksRouter);
+
+app.use(notFoundHandler).use(errorHandler);
 
 export default app;
