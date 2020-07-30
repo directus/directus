@@ -747,7 +747,7 @@ rows:
         interface: text-input
         locked: true
         options:
-          iconright: account_circle
+          iconRight: account_circle
         sort: 3
         width: half
       - collection: directus_users
