@@ -245,6 +245,14 @@ function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 				dbQuery.whereNot({ [key]: compareValue });
 			}
 
+			if (operator === '_contains') {
+				dbQuery.where(key, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_ncontains') {
+				dbQuery.where(key, 'like', `%${compareValue}%`);
+			}
+
 			if (operator === '_in') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');

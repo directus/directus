@@ -125,7 +125,8 @@ export default defineComponent({
 				localFilters.value = props.value?.filter((filter) => {
 					return !!fieldsStore.getField(props.collection, filter.field);
 				});
-			}
+			},
+			{ immediate: true }
 		);
 
 		const syncWithProp = debounce(() => {
