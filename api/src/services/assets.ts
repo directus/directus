@@ -18,24 +18,32 @@ export default class AssetsService {
 	async getAsset(id: string, transformation: Transformation) {
 		const file = await database.select('*').from('directus_files').where({ id }).first();
 
-		const resizeOptions = this.parseTransformation(transformation);
-		const assetFilename =
-			path.basename(file.filename_disk, path.extname(file.filename_disk)) +
-			this.getAssetSuffix(resizeOptions) +
-			path.extname(file.filename_disk);
+		const type = file.type;
 
-		const { exists } = await storage.disk(file.storage).exists(assetFilename);
+		// We can only transform JPEG, PNG, and WebP
+		if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+			const resizeOptions = this.parseTransformation(transformation);
+			const assetFilename =
+				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
+				this.getAssetSuffix(resizeOptions) +
+				path.extname(file.filename_disk);
 
-		if (exists) {
+			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+
+			if (exists) {
+				return { stream: storage.disk(file.storage).getStream(assetFilename), file };
+			}
+
+			const readStream = storage.disk(file.storage).getStream(file.filename_disk);
+			const transformer = sharp().resize(resizeOptions);
+
+			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
+
 			return { stream: storage.disk(file.storage).getStream(assetFilename), file };
+		} else {
+			const readStream = storage.disk(file.storage).getStream(file.filename_disk);
+			return { stream: readStream, file };
 		}
-
-		const readStream = storage.disk(file.storage).getStream(file.filename_disk);
-		const transformer = sharp().resize(resizeOptions);
-
-		await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
-
-		return { stream: storage.disk(file.storage).getStream(assetFilename), file };
 	}
 
 	private parseTransformation(transformation: Transformation): ResizeOptions {
