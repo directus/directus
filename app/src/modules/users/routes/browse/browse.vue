@@ -147,6 +147,7 @@ export default defineComponent({
 					icon: 'person',
 					title: '{{first_name}} {{last_name}}',
 					subtitle: '{{ title }}',
+					size: 4
 				};
 			}
 		}

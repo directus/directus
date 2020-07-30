@@ -333,7 +333,7 @@ export default defineComponent({
 		}
 
 		function useViewOptions() {
-			const size = createViewOption<number>('size', 2);
+			const size = createViewOption<number>('size', 4);
 			const icon = createViewOption('icon', 'box');
 			const title = createViewOption<string>('title', null);
 			const subtitle = createViewOption<string>('subtitle', null);

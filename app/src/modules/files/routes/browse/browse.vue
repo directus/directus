@@ -175,6 +175,7 @@ export default defineComponent({
 				icon: 'insert_drive_file',
 				title: '{{title}}',
 				subtitle: '{{type}} • {{filesize}}',
+				size: 4
 			};
 		}
 
