@@ -152,7 +152,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 					fields: fieldsToFetch,
 					sort: sort.value,
 					page: page.value,
-					q: searchQuery.value,
+					search: searchQuery.value,
 					...filtersToQuery(filters.value),
 				},
 			});
@@ -203,7 +203,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 				limit: 0,
 				fields: primaryKeyField.value.field,
 				meta: 'filter_count,total_count',
-				q: searchQuery.value,
+				search: searchQuery.value,
 				...filtersToQuery(filters.value),
 			},
 		});
