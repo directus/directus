@@ -21,15 +21,11 @@ export type Role = {
 	external_id: null | string;
 	ip_whitelist: string[];
 	app_access: boolean;
+	admin: boolean;
 };
 
 export type Avatar = {
 	id: string;
-};
-
-type Thumbnail = {
-	url: string;
-	key: string;
 };
 
 // There's more data returned in thumbnails and the avatar data, but we

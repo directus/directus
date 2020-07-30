@@ -78,7 +78,7 @@ export default defineComponent({
 
 		const { navItems } = useNavigation();
 
-		const isAdmin = computed(() => userStore.state.currentUser?.role.id === 1);
+		const isAdmin = computed(() => userStore.state.currentUser?.role.admin === true);
 
 		const dataModelLink = computed(() => {
 			return `/settings/data-model`;
