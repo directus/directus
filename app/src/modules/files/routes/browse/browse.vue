@@ -65,7 +65,9 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<add-file @upload="refresh" />
+			<v-button rounded icon class="add-new" to="/files/+">
+				<v-icon name="add" />
+			</v-button>
 		</template>
 
 		<template #navigation>
@@ -82,9 +84,11 @@
 			:view-query.sync="viewQuery"
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
-			@update:filters="filters = $event"
 			:detail-route="'/files/{{primaryKey}}'"
+			@update:filters="filters = $event"
 		/>
+
+		<router-view name="addNew" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -109,7 +113,6 @@ import usePreset from '@/composables/use-collection-preset';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import AddFolder from '../../components/add-folder';
-import AddFile from '../../components/add-file';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
@@ -120,7 +123,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-browse',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, AddFile, SearchInput, FolderPicker },
+	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
 	props: {},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);

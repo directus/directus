@@ -1,6 +1,7 @@
 import { defineModule } from '@/modules/define';
 import FilesBrowse from './routes/browse/';
 import FilesDetail from './routes/detail/';
+import FilesAddNew from './routes/add-new/';
 
 export default defineModule(({ i18n }) => ({
 	id: 'files',
@@ -12,6 +13,15 @@ export default defineModule(({ i18n }) => ({
 			path: '/',
 			component: FilesBrowse,
 			props: true,
+			children: [
+				{
+					path: '+',
+					name: 'add-file',
+					components: {
+						addNew: FilesAddNew
+					},
+				}
+			]
 		},
 		{
 			name: 'files-detail',

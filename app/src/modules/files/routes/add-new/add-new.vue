@@ -1,25 +1,20 @@
 <template>
-	<v-dialog v-model="dialogActive">
-		<template #activator="{ on }">
-			<v-button rounded icon class="add-new" @click="on">
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
+	<v-dialog :active="dialogActive" @toggle="close">
 		<v-card>
 			<v-card-title>{{ $t('add_new_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload @upload="onUpload" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="close">{{ $t('cancel') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, onMounted } from '@vue/composition-api';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -31,10 +26,16 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const dialogActive = ref(false);
 
-		return { dialogActive, onUpload };
+		onMounted(() => dialogActive.value = true);
+
+		return { onUpload, close, dialogActive };
+
+		function close() {
+			dialogActive.value = false;
+			router.push('/files');
+		}
 
 		function onUpload() {
-			dialogActive.value = false;
 			emit('upload');
 		}
 	},
