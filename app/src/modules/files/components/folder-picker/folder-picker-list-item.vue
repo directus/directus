@@ -41,7 +41,7 @@ export default defineComponent({
 			required: true,
 		},
 		currentFolder: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 		clickHandler: {

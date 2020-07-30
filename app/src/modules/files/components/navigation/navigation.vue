@@ -39,7 +39,7 @@ export default defineComponent({
 	},
 	props: {
 		currentFolder: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 	},

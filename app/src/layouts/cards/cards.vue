@@ -65,7 +65,7 @@
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<template v-if="loading">
-					<card v-for="n in limit" :key="`loader-${n}`" item-key="loading" loading />
+					<card v-for="n in 6" :key="`loader-${n}`" item-key="loading" loading />
 				</template>
 
 				<card

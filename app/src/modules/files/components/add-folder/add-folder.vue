@@ -29,7 +29,7 @@ import api from '@/api';
 export default defineComponent({
 	props: {
 		parent: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 	},
