@@ -119,6 +119,7 @@ export default class ItemsService implements AbstractService {
 		}
 
 		const records = await runAST(ast);
+
 		const processedRecords = await payloadService.processValues('read', records);
 		return processedRecords;
 	}

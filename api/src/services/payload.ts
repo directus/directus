@@ -97,10 +97,13 @@ export default class PayloadService {
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
 
+		const fieldsInPayload = Object.keys(processedPayload);
+
 		const specialFieldsInCollection = await this.knex
 			.select('field', 'special')
 			.from<System>('directus_fields')
 			.where({ collection: this.collection })
+			.whereIn('field', fieldsInPayload)
 			.whereNotNull('special');
 
 		await Promise.all(

@@ -1629,14 +1629,7 @@ rows:
       - collection: directus_settings
         operation: read
         permissions: {}
-        fields:
-          - project_name
-          - project_url
-          - project_logo
-          - project_color
-          - project_foreground
-          - project_background
-          - project_note
+        fields: "project_name,project_logo,project_color,public_foreground,public_background,public_note"
 
   directus_relations:
     defaults:

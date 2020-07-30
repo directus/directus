@@ -10935,7 +10935,7 @@
 		{
 			"id": 824,
 			"collection": "directus_settings",
-			"field": "project_foreground",
+			"field": "public_foreground",
 			"type": "file",
 			"interface": "image",
 			"options": null,

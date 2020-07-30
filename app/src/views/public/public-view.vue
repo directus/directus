@@ -49,8 +49,8 @@ export default defineComponent({
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (settingsStore.state.settings?.project_background) {
-				return `url(${settingsStore.state.settings?.project_background})`;
+			if (settingsStore.state.settings?.public_background) {
+				return `url(${settingsStore.state.settings?.public_background})`;
 			}
 
 			return settingsStore.state.settings?.project_color || defaultColor;
