@@ -117,7 +117,6 @@ export default class ItemsService implements AbstractService {
 	}
 
 	async readByQuery(query: Query): Promise<Item[]> {
-		const payloadService = new PayloadService(this.collection);
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
@@ -128,9 +127,7 @@ export default class ItemsService implements AbstractService {
 		}
 
 		const records = await runAST(ast);
-
-		const processedRecords = await payloadService.processValues('read', records);
-		return processedRecords;
+		return records;
 	}
 
 	readByKey(keys: PrimaryKey[], query?: Query, operation?: Operation): Promise<Item[]>;
@@ -141,7 +138,6 @@ export default class ItemsService implements AbstractService {
 		operation: Operation = 'read'
 	): Promise<Item | Item[]> {
 		const schemaInspector = SchemaInspector(this.knex);
-		const payloadService = new PayloadService(this.collection);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 		const keys = Array.isArray(key) ? key : [key];
 
@@ -170,9 +166,7 @@ export default class ItemsService implements AbstractService {
 		}
 
 		const records = await runAST(ast);
-		const processedRecords = await payloadService.processValues('read', records);
-
-		return Array.isArray(key) ? processedRecords : processedRecords[0];
+		return Array.isArray(key) ? records : records[0];
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;

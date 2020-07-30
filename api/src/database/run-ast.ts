@@ -3,6 +3,7 @@ import { clone, uniq, pick } from 'lodash';
 import database, { schemaInspector } from './index';
 import { Filter, Query, Item } from '../types';
 import { QueryBuilder } from 'knex';
+import PayloadService from '../services/payload';
 
 export default async function runAST(ast: AST, query = ast.query) {
 	const toplevelFields: string[] = [];
@@ -12,6 +13,8 @@ export default async function runAST(ast: AST, query = ast.query) {
 	const columnsInCollection = (await schemaInspector.columns(ast.name)).map(
 		({ column }) => column
 	);
+
+	const payloadService = new PayloadService(ast.name);
 
 	for (const child of ast.children) {
 		if (child.type === 'field') {
@@ -78,14 +81,13 @@ export default async function runAST(ast: AST, query = ast.query) {
 					column.type.toLowerCase().includes('char')
 			)
 			.forEach((column) => {
-				dbQuery.orWhereRaw(
-					`LOWER(${column.name}) LIKE '%' || LOWER(?) || '%'`,
-					query.search!
-				);
+				dbQuery.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
 			});
 	}
 
 	let results: Item[] = await dbQuery;
+
+	results = await payloadService.processValues('read', results);
 
 	for (const batch of nestedCollections) {
 		const m2o = isM2O(batch);
