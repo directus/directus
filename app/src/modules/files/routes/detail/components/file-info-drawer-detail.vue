@@ -55,7 +55,7 @@
 				<dd>{{ folder.name }}</dd>
 			</div>
 
-			<template v-if="file.metadata && file.metadata.exif">
+			<template v-if="file.metadata && file.metadata.exif && file.metadata.exif.exif && file.metadata.exif.image">
 				<v-divider />
 
 				<div v-if="file.metadata.exif.image.Make && file.metadata.exif.image.Model">
