@@ -54,6 +54,35 @@
 				<dt>{{ $t('folder') }}</dt>
 				<dd>{{ folder.name }}</dd>
 			</div>
+
+			<template v-if="file.metadata && file.metadata.exif">
+				<v-divider />
+
+				<div v-if="file.metadata.exif.image.Make && file.metadata.exif.image.Model">
+					<dt>{{ $t('camera') }}</dt>
+					<dd>{{ file.metadata.exif.image.Make }} {{ file.metadata.exif.image.Model }}</dd>
+				</div>
+
+				<div v-if="file.metadata.exif.exif.FNumber">
+					<dt>{{ $t('exposure') }}</dt>
+					<dd>ƒ/{{ file.metadata.exif.exif.FNumber }}</dd>
+				</div>
+
+				<div v-if="file.metadata.exif.exif.ExposureTime">
+					<dt>{{ $t('shutter') }}</dt>
+					<dd>1/{{ 1 / +file.metadata.exif.exif.ExposureTime }} {{ $t('second') }}</dd>
+				</div>
+
+				<div v-if="file.metadata.exif.exif.FocalLength">
+					<dt>{{ $t('focal_length') }}</dt>
+					<dd>{{ file.metadata.exif.exif.FocalLength }}mm</dd>
+				</div>
+
+				<div v-if="file.metadata.exif.exif.ISO">
+					<dt>{{ $t('iso') }}</dt>
+					<dd>{{ file.metadata.exif.exif.ISO }}</dd>
+				</div>
+			</template>
 		</dl>
 	</drawer-detail>
 </template>
@@ -195,5 +224,9 @@ export default defineComponent({
 	dd {
 		font-family: var(--family-monospace);
 	}
+}
+
+.v-divider {
+	margin: 20px 0;
 }
 </style>

@@ -27,6 +27,12 @@
 	"editing_field": "Editing {field}",
 	"within_collectoin": "within {collection}",
 
+	"camera": "Camera",
+	"exposure": "Exposure",
+	"shutter": "Shutter",
+	"iso": "ISO",
+	"focal_length": "Focal Length",
+
 	"schema_setup_title": "How should this field save to the database?",
 
 	"create_field": "Create Field",
