@@ -97,7 +97,9 @@ export default class PayloadService {
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
 
-		const fieldsInPayload = Object.keys(processedPayload);
+		if (processedPayload.length === 0) return [];
+
+		const fieldsInPayload = Object.keys(processedPayload[0]);
 
 		const specialFieldsInCollection = await this.knex
 			.select('field', 'special')
