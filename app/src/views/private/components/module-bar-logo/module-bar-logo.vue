@@ -12,6 +12,7 @@
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useRequestsStore } from '@/stores/requests/';
 import { useSettingsStore } from '@/stores/settings/';
+import getRootPath from '../../../../utils/get-root-path';
 
 export default defineComponent({
 	setup() {
@@ -20,7 +21,8 @@ export default defineComponent({
 
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.state.settings === null) return null;
-			return settingsStore.state.settings.project_logo || null;
+			if (!settingsStore.state.settings?.project_logo) return null;
+			return getRootPath() + `assets/${settingsStore.state.settings.project_logo}`;
 		});
 
 		const showLoader = ref(false);

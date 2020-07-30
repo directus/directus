@@ -2,8 +2,8 @@
 	<div class="public-view">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
-				<div class="public-view-logo" v-if="settings && settings.project_logo">
-					<img :src="settings.project_logo" :alt="settings.project_name || 'Logo'" />
+				<div v-if="settings && settings.project_logo" class="logo" :style="{ backgroundColor: settings.project_color }">
+					<img :src="logoURL" :alt="settings.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
 				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
@@ -69,7 +69,13 @@ export default defineComponent({
 			return getRootPath() + `assets/${settingsStore.state.settings.public_foreground}`;
 		})
 
-		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL };
+
+		const logoURL = computed<string | null>(() => {
+			if (!settingsStore.state.settings?.project_logo) return null;
+			return getRootPath() + `assets/${settingsStore.state.settings.project_logo}`;
+		});
+
+		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL, logoURL };
 	},
 });
 </script>
@@ -167,6 +173,13 @@ export default defineComponent({
 		height: 64px;
 		background-color: var(--brand);
 		border-radius: var(--border-radius);
+
+		img {
+			width: 40px;
+			height: 40px;
+			object-fit: contain;
+			object-position: center center;
+		}
 	}
 
 	.default-logo {
