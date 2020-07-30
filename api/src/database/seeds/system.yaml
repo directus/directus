@@ -736,6 +736,13 @@ rows:
         special: boolean
         sort: 8
         width: half
+      - collection: directus_roles
+        field: app_access
+        interface: toggle
+        locked: true
+        special: boolean
+        sort: 9
+        width: half
 
       - collection: directus_users
         field: first_name
