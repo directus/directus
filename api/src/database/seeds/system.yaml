@@ -458,32 +458,26 @@ tables:
     project_url:
       type: string
       length: 255
+    project_color:
+      type: string
+      length: 10
     project_logo:
       type: uuid
       references:
         table: directus_files
         column: id
-    project_color:
-      type: string
-      length: 10
-    project_foreground:
+    public_foreground:
       type: uuid
       references:
         table: directus_files
         column: id
-    project_background:
+    public_background:
       type: uuid
       references:
         table: directus_files
         column: id
-    project_note:
+    public_note:
       type: text
-    project_telemetry:
-      type: boolean
-      default: true
-    auth_password_policy:
-      type: string
-      length: 100
     auth_idle_timeout:
       type: integer
       unsigned: true
@@ -492,11 +486,18 @@ tables:
       type: integer
       default: 25
       unsigned: true
-    storage_asset_presets:
-      type: json
-    storage_asset_transforms:
+    auth_password_policy:
+      type: string
+      length: 100
+    storage_asset_transform:
       type: string # One of: 'all', 'none', 'presets'
       length: 7
+      default: all
+    storage_asset_presets:
+      type: json
+    telemetry:
+      type: boolean
+      default: true
 
   directus_webhooks:
     id:
@@ -590,14 +591,16 @@ rows:
           fields:
           - field: locale
             type: string
-            interface: language
-            options:
-              limit: true
-            width: half
+            system:
+              interface: language
+              options:
+                limit: true
+              width: half
           - field: translation
             type: string
-          interface: text-input
-          width: half
+            system:
+              interface: text-input
+              width: half
         special: json
         sort: 6
         width: full
@@ -643,25 +646,28 @@ rows:
           fields:
           - name: Icon
             field: icon
-            interface: icon
             type: string
-            width: half
+            system:
+              interface: icon
+              width: half
           - name: Name
             field: name
-            interface: text-input
             type: string
-            width: half
-            options:
-            iconRight: title
-            placeholder: Enter a title...
+            system:
+              interface: text-input
+              width: half
+              options:
+                iconRight: title
+                placeholder: Enter a title...
           - name: Link
             field: link
-            interface: text-input
             type: string
-            width: full
-            options:
-            iconRight: link
-            placeholder: Relative or absolute URL...
+            system:
+              interface: text-input
+              width: full
+              options:
+                iconRight: link
+                placeholder: Relative or absolute URL...
         special: json
         sort: 5
         width: full
@@ -675,39 +681,44 @@ rows:
           fields:
           - name: Group Name
             field: group_name
-            width: half
-            interface: text-input
             type: string
-            options:
-            iconRight: title
-            placeholder: Label this group...
+            system:
+              width: half
+              interface: text-input
+              options:
+                iconRight: title
+                placeholder: Label this group...
           - name: Accordion
             field: accordion
-            width: half
-            interface: dropdown
             type: string
-            default_value: always_open
-            options:
-            choices:
-              - value: always_open
-                text: Always Open
-              - value: start_open
-                text: Start Open
-              - value: start_collapsed
-                text: Start Collapsed
+            database:
+              default_value: always_open
+            system:
+              width: half
+              interface: dropdown
+              options:
+                choices:
+                  - value: always_open
+                    text: Always Open
+                  - value: start_open
+                    text: Start Open
+                  - value: start_collapsed
+                    text: Start Collapsed
           - name: Collections
             field: collections
-            interface: repeater
             type: JSON
-            options:
-            createItemText: Add Collection
-            template: "{{ collection }}"
-            fields:
-              - name: Collection
-                field: collection
-                type: string
-                interface: collections
-                width: full
+            system:
+              interface: repeater
+              options:
+                createItemText: Add Collection
+                template: "{{ collection }}"
+                fields:
+                  - name: Collection
+                    field: collection
+                    type: string
+                    system:
+                      interface: collections
+                      width: full
         special: json
         sort: 6
         width: full
@@ -1369,7 +1380,7 @@ rows:
         locked: true
         special: json
 
-      # diretus_sessions isn't surfaced in the app
+      # directus_sessions isn't surfaced in the app
 
       - collection: directus_settings
         field: project_name
@@ -1396,64 +1407,62 @@ rows:
           translation: Website
         width: half
       - collection: directus_settings
-        field: project_logo
-        interface: file
-        locked: true
-        note: White 40x40 SVG/PNG
-        sort: 3
-        translation:
-          locale: en-US
-          translation: Brand Logo
-        width: half
-      - collection: directus_settings
         field: project_color
         interface: color
         locked: true
         note: Login & Logo Background
-        sort: 4
+        sort: 3
         translation:
           locale: en-US
           translation: Brand Color
         width: half
       - collection: directus_settings
-        field: project_foreground
-        interface: image
+        field: project_logo
+        interface: file
         locked: true
+        note: White 40x40 SVG/PNG
+        sort: 4
+        translation:
+          locale: en-US
+          translation: Brand Logo
+        width: half
+      - collection: directus_settings
+        field: public_divider
+        interface: divider
+        locked: true
+        options:
+          icon: public
+          title: Public Pages
+          color: '#B0BEC5'
+        special: alias
         sort: 5
+        width: full
+      - collection: directus_settings
+        field: public_foreground
+        interface: file
+        locked: true
+        sort: 6
         translation:
           locale: en-US
           translation: Login Foreground
         width: half
       - collection: directus_settings
-        field: project_background
-        interface: image
+        field: public_background
+        interface: file
         locked: true
-        sort: 6
+        sort: 7
         translation:
           locale: en-US
           translation: Login Background
         width: half
       - collection: directus_settings
-        field: project_note
-        interface: text-input
+        field: public_note
+        interface: textarea
         locked: true
         options:
           placeholder: A short, public message that supports markdown formatting...
-        sort: 7
-        translation:
-          locale: en-US
-          translation: Login Message
-        width: full
-      - collection: directus_settings
-        field: project_telemetry
-        interface: toggle
-        locked: true
-        options:
-          label: Send Anonymous Diagnostics
-        special: boolean
         sort: 8
-        width: half
-
+        width: full
       - collection: directus_settings
         field: security_divider
         interface: divider
@@ -1461,7 +1470,8 @@ rows:
         options:
           icon: security
           title: Security
-          color: '#2f80ed'
+          color: '#B0BEC5'
+        special: alias
         sort: 9
         width: full
       - collection: directus_settings
@@ -1501,7 +1511,8 @@ rows:
         options:
           icon: storage
           title: Files & Thumbnails
-          color: '#2f80ed'
+          color: '#B0BEC5'
+        special: alias
         sort: 13
         width: full
       - collection: directus_settings
@@ -1511,51 +1522,57 @@ rows:
         options:
           fields:
             - field: key
-              interface: slug
               name: Key
-              options:
-              onlyOnCreate: false
-              required: true
               type: string
-              width: half
+              system:
+                interface: slug
+                options:
+                  onlyOnCreate: false
+                required: true
+                width: half
             - field: fit
-              interface: dropdown
               name: Fit
-              options:
-              choices:
-                - value: contain
-                  text: Contain (preserve aspect ratio)
-                - value: crop
-                  text: Crop (forces exact size)
-              required: true
               type: string
-              width: half
+              system:
+                interface: dropdown
+                options:
+                  choices:
+                    - value: contain
+                      text: Contain (preserve aspect ratio)
+                    - value: cover
+                      text: Cover (forces exact size)
+                required: true
+                width: half
             - field: width
-              interface: numeric
               name: Width
-              required: true
               type: integer
-              width: half
+              system:
+                interface: numeric
+                required: true
+                width: half
             - field: height
-              interface: numeric
               name: Height
-              required: true
               type: integer
-              width: half
+              system:
+                interface: numeric
+                required: true
+                width: half
             - field: quality
-              default_value: 80
-              interface: slider
-              name: Quality
-              options:
-              max: 100
-              min: 0
-              step: 1
-              required: true
               type: integer
-              width: full
-              template: "{{key}}"
+              name: Quality
+              database:
+                default_value: 80
+              system:
+                interface: slider
+                options:
+                  max: 100
+                  min: 0
+                  step: 1
+                required: true
+                width: full
+          template: "{{key}}"
         special: json
-        sort: 13
+        sort: 14
         width: full
       - collection: directus_settings
         field: storage_asset_transform
@@ -1568,9 +1585,33 @@ rows:
           - value: none
             text: None
           - value: presets
-            text: Presets Only\
-        sort: 14
+            text: Presets Only
+        sort: 15
         width: half
+      - collection: directus_settings
+        field: misc_divider
+        interface: divider
+        locked: true
+        options:
+          icon: pending
+          title: Miscellaneous
+          color: '#B0BEC5'
+        special: alias
+        sort: 16
+        width: full
+      - collection: directus_settings
+        field: telemetry
+        interface: toggle
+        locked: true
+        options:
+          label: Send Anonymous Diagnostics
+        special: boolean
+        sort: 17
+        width: half
+      - collection: directus_settings
+        field: id
+        hidden: true
+        locked: true
 
     # directus_webhooks TBD
 
