@@ -3,7 +3,7 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div class="public-view-logo" v-if="settings && settings.project_logo">
-					<img :src="settings.project_logo" :alt="settings.name || 'Logo'" />
+					<img :src="settings.project_logo" :alt="settings.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
 				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
@@ -20,9 +20,9 @@
 			<transition name="scale">
 				<img
 					class="foreground"
-					v-if="settings && settings.foreground_image"
-					:src="settings.foreground_image"
-					:alt="settings.name"
+					v-if="foregroundURL"
+					:src="foregroundURL"
+					:alt="settings.project_name"
 				/>
 			</transition>
 			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
@@ -35,6 +35,7 @@ import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
 import useSettingsStore from '@/stores/settings';
 import marked from 'marked';
+import getRootPath from '../../utils/get-root-path';
 
 export default defineComponent({
 	props: {
@@ -50,7 +51,8 @@ export default defineComponent({
 			const defaultColor = '#263238';
 
 			if (settingsStore.state.settings?.public_background) {
-				return `url(${settingsStore.state.settings?.public_background})`;
+				const url = getRootPath() + `assets/${settingsStore.state.settings.public_background}`;
+				return `url(${url})`;
 			}
 
 			return settingsStore.state.settings?.project_color || defaultColor;
@@ -62,7 +64,12 @@ export default defineComponent({
 			backgroundPosition: 'center center',
 		}));
 
-		return { version, artStyles, marked, settings: settingsStore.state.settings };
+		const foregroundURL = computed(() => {
+			if (!settingsStore.state.settings?.public_foreground) return null;
+			return getRootPath() + `assets/${settingsStore.state.settings.public_foreground}`;
+		})
+
+		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL };
 	},
 });
 </script>
