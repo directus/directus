@@ -70,7 +70,7 @@
 
 				<div v-if="file.metadata.exif.exif.ExposureTime">
 					<dt>{{ $t('shutter') }}</dt>
-					<dd>1/{{ 1 / +file.metadata.exif.exif.ExposureTime }} {{ $t('second') }}</dd>
+					<dd>1/{{ Math.round(1 / +file.metadata.exif.exif.ExposureTime) }} {{ $t('second') }}</dd>
 				</div>
 
 				<div v-if="file.metadata.exif.exif.FocalLength">
