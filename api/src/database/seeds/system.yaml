@@ -1360,6 +1360,12 @@ rows:
         hidden: true
         locked: true
         special: json
+      - collection: directus_files
+        field: type
+        display: mime-type
+      - collection: directus_files
+        field: filesize
+        display: filesize
 
       # directus_permissions isn't surfaced in the app
       - collection: directus_permissions
