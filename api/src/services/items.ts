@@ -76,10 +76,19 @@ export default class ItemsService implements AbstractService {
 				);
 			}
 
-			const primaryKeys: PrimaryKey[] = await trx
-				.insert(payloadsWithoutAliases)
-				.into(this.collection)
-				.returning(primaryKeyField);
+			const primaryKeys: PrimaryKey[] = [];
+
+			for (const payloadWithoutAlias of payloadsWithoutAliases) {
+				// string / uuid primary
+				let primaryKey = payloadWithoutAlias[primaryKeyField];
+
+				const result = await trx.insert(payloadWithoutAlias).into(this.collection);
+
+				// Auto-incremented id
+				if (!primaryKey) primaryKey = result[0];
+
+				primaryKeys.push(primaryKey);
+			}
 
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
@@ -227,7 +236,9 @@ export default class ItemsService implements AbstractService {
 				knex: trx,
 			});
 
-			for (const single of data as Partial<Item>[]) {
+			const payloads = Array.isArray(data) ? data : [data];
+
+			for (const single of payloads as Partial<Item>[]) {
 				let payload = clone(single);
 				const key = payload[primaryKeyField];
 				if (!key)

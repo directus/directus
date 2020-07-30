@@ -101,12 +101,17 @@ export default class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		const specialFieldsInCollection = await this.knex
+		const specialFieldsQuery = this.knex
 			.select('field', 'special')
 			.from<System>('directus_fields')
 			.where({ collection: this.collection })
-			.whereIn('field', fieldsInPayload)
 			.whereNotNull('special');
+
+		if (operation === 'read') {
+			specialFieldsQuery.whereIn('field', fieldsInPayload);
+		}
+
+		const specialFieldsInCollection = await specialFieldsQuery;
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
