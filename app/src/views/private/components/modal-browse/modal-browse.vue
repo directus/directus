@@ -7,6 +7,7 @@
 			:filters="filters"
 			:view-query.sync="query"
 			:view-options.sync="options"
+			:detail-route="detailRoute"
 			@update:selection="onSelect"
 			select-mode
 		/>
@@ -44,6 +45,10 @@ export default defineComponent({
 		filters: {
 			type: Array as PropType<Filter[]>,
 			default: () => [],
+		},
+		detailRoute: {
+			type: String,
+			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
