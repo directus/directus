@@ -8,6 +8,7 @@ import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { FieldNotFoundException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
+import PayloadService from '../services/payload';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -23,17 +24,19 @@ type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 export default class FieldsService {
 	knex: Knex;
 	accountability: Accountability | null;
-	service: ItemsService;
+	itemsService: ItemsService;
+	payloadService: PayloadService;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
-		this.service = new ItemsService('directus_fields', options);
+		this.itemsService = new ItemsService('directus_fields', options);
+		this.payloadService = new PayloadService('directus_fields');
 	}
 
 	async fieldsInCollection(collection: string) {
 		const [fields, columns] = await Promise.all([
-			this.service.readByQuery({ filter: { collection: { _eq: collection } } }),
+			this.itemsService.readByQuery({ filter: { collection: { _eq: collection } } }),
 			schemaInspector.columns(collection),
 		]);
 
@@ -41,15 +44,17 @@ export default class FieldsService {
 	}
 
 	async readAll(collection?: string) {
-		let fields: Field[];
+		let fields: System[];
 
 		if (collection) {
-			fields = (await this.service.readByQuery({
+			fields = (await this.itemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
-			})) as Field[];
+			})) as System[];
 		} else {
-			fields = (await this.service.readByQuery({})) as Field[];
+			fields = (await this.itemsService.readByQuery({})) as System[];
 		}
+
+		fields = (await this.payloadService.processValues('read', fields)) as System[];
 
 		const columns = await schemaInspector.columnInfo(collection);
 
@@ -66,15 +71,17 @@ export default class FieldsService {
 				system: field || null,
 			};
 
-			return data;
+			return data as Field;
 		});
 
-		const aliasColumns = (
-			await this.knex
-				.select<System[]>('*')
-				.from('directus_fields')
-				.whereIn('special', ['alias', 'o2m'])
-		).map((field) => {
+		let aliasFields = await this.knex
+			.select<System[]>('*')
+			.from('directus_fields')
+			.whereIn('special', ['alias', 'o2m']);
+
+		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as System[];
+
+		const aliasFieldsAsField = aliasFields.map((field) => {
 			const data = {
 				collection: field.collection,
 				field: field.field,
@@ -86,7 +93,7 @@ export default class FieldsService {
 			return data;
 		});
 
-		return [...columnsWithSystem, ...aliasColumns];
+		return [...columnsWithSystem, ...aliasFieldsAsField];
 	}
 
 	/** @todo add accountability */
@@ -134,7 +141,7 @@ export default class FieldsService {
 		}
 
 		if (field.system) {
-			await this.service.create({
+			await this.itemsService.create({
 				...field.system,
 				collection: collection,
 				field: field.field,
