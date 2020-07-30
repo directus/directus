@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import isJWT from '../utils/is-jwt';
 import database from '../database';
 import asyncHandler from 'express-async-handler';
@@ -27,6 +27,8 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		} catch (err) {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');
+			} else if (err instanceof JsonWebTokenError) {
+				throw new InvalidCredentialsException('Token corrupt.');
 			} else {
 				throw err;
 			}
