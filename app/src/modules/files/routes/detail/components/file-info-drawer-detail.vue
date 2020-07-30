@@ -21,6 +21,16 @@
 				<dd>{{ size }}</dd>
 			</div>
 
+			<div v-if="file.charset">
+				<dt>{{ $t('charset') }}</dt>
+				<dd>{{ charset }}</dd>
+			</div>
+
+			<div v-if="file.embed">
+				<dt>{{ $t('embed') }}</dt>
+				<dd>{{ embed }}</dd>
+			</div>
+
 			<div v-if="creationDate">
 				<dt>{{ $t('created') }}</dt>
 				<dd>{{ creationDate }}</dd>

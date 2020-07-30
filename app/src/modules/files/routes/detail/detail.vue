@@ -234,8 +234,8 @@ export default defineComponent({
 			);
 		});
 
-		// These are the fields that will be prevented from showing up in the form
-		const fieldsBlacklist: string[] = [
+		// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
+		const fieldsDenyList: string[] = [
 			'type',
 			'width',
 			'height',
@@ -244,12 +244,15 @@ export default defineComponent({
 			'uploaded_by',
 			'uploaded_on',
 			'duration',
+			'folder',
+			'charset',
+			'embed'
 		];
 
 		const fieldsFiltered = computed(() => {
 			return fieldsStore
 				.getFieldsForCollection('directus_files')
-				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
+				.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
