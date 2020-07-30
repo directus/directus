@@ -5,6 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import * as FilesService from '../services/files';
 import useCollection from '../middleware/use-collection';
 import { Item } from '../types';
+import path from 'path';
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ const multipartHandler = (operation: 'create' | 'update') =>
 
 			if (!payload.storage) {
 				payload.storage = disk;
+			}
+
+			if (!payload.title) {
+				payload.title = path.parse(filename).name;
 			}
 
 			if (req.accountability?.user) {
@@ -139,7 +144,6 @@ router.patch(
 			return multipartHandler('update')(req, res, next);
 		} else {
 			const pk = await FilesService.updateFile(req.params.pk, req.body, req.accountability);
-
 			const file = await FilesService.readFile(pk, req.sanitizedQuery, req.accountability);
 
 			return res.status(200).json({ data: file || null });

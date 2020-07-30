@@ -68,10 +68,6 @@ export const createFile = async (
 		});
 	}
 
-	if (!payload.title) {
-		payload.title = payload.id;
-	}
-
 	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
 	await itemsService.update(payload, pk);
 
