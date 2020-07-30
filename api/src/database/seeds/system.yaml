@@ -627,6 +627,7 @@ rows:
         field: ip_allow_list
         interface: tags
         locked: true
+        special: json
         sort: 3
         width: full
       - collection: directus_roles
@@ -810,6 +811,7 @@ rows:
       - collection: directus_users
         field: tags
         interface: tags
+        special: json
         sort: 9
         width: full
         options:
@@ -1341,6 +1343,7 @@ rows:
         locked: true
         options:
           iconRight: local_offer
+        special: json
         sort: 3
         width: half
       - collection: directus_files
