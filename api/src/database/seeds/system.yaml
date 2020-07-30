@@ -1256,10 +1256,11 @@ rows:
         width: half
       - collection: directus_users
         field: role
-        interface: m2o
+        interface: many-to-one
         locked: true
         options:
           template: '{{ name }}'
+        special: m2o
         sort: 17
         width: half
       - collection: directus_users
