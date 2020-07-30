@@ -11,13 +11,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 	const formFields = computed(() => {
 		let formFields = [...fields.value];
 
-		/**
-		 * @TODO
-		 * This can be optimized by combining a bunch of these maps and filters
-		 */
-
-		// Make sure all system fields have some sort of system data
-		formFields = formFields.map((field) => {
+		formFields = formFields.map((field, index) => {
 			if (!field.system) {
 				field.system = {
 					id: -1,
@@ -40,40 +34,18 @@ export default function useFormFields(fields: Ref<Field[]>) {
 				};
 			}
 
-			return field;
-		});
-
-		// Filter out the fields that are marked hidden on detail
-		formFields = formFields.filter((field) => {
-			const hiddenDetail = field.system?.hidden;
-			if (isEmpty(hiddenDetail)) return true;
-			return hiddenDetail === false;
-		});
-
-		// Sort the fields on the sort column value
-		formFields = formFields.sort((a, b) => {
-			if (a.system.sort == b.system!.sort) return 0;
-			if (a.system.sort === null || a.system.sort === undefined) return 1;
-			if (b.system!.sort === null || b.system!.sort === undefined) return -1;
-			return a.system.sort > b.system!.sort ? 1 : -1;
-		});
-
-		// Make sure all form fields have a width associated with it
-		formFields = formFields.map((field) => {
 			if (!field.system.width) {
 				field.system.width = 'full';
 			}
 
-			return field;
-		});
-
-		formFields = formFields.map((field) => {
-			const interfaceUsed = interfaces.find((int) => int.id === field.system!.interface);
+			let interfaceUsed = interfaces.find((int) => int.id === field.system.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
-				field.system!.interface = getDefaultInterfaceForType(field.type);
+				field.system.interface = getDefaultInterfaceForType(field.type);
 			}
+
+			interfaceUsed = interfaces.find((int) => int.id === field.system.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;
@@ -83,15 +55,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 				(field as FormField).hideLoader = true;
 			}
 
-			return field;
-		});
-
-		// Change the class to half-right if the current element is preceded by another half width field
-		// this makes them align side by side
-		formFields = formFields.map((field, index, formFields) => {
-			if (index === 0) return field;
-
-			if (field.system!.width === 'half') {
+			if (index !== 0 && field.system!.width === 'half') {
 				const prevField = formFields[index - 1];
 
 				if (prevField.system!.width === 'half') {
@@ -100,6 +64,21 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			}
 
 			return field;
+		});
+
+		// Filter out the fields that are marked hidden on detail
+		formFields = formFields.filter((field) => {
+			const hidden = field.system?.hidden;
+			const systemFake = field.field.startsWith('$');
+			return hidden === false && systemFake === false;
+		});
+
+		// Sort the fields on the sort column value
+		formFields = formFields.sort((a, b) => {
+			if (a.system.sort == b.system!.sort) return 0;
+			if (a.system.sort === null || a.system.sort === undefined) return 1;
+			if (b.system!.sort === null || b.system!.sort === undefined) return -1;
+			return a.system.sort > b.system!.sort ? 1 : -1;
 		});
 
 		return formFields;
