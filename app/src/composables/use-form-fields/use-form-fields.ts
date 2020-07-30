@@ -69,8 +69,6 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			if (index !== 0 && field.system!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				console.log(prevField);
-
 				if (prevField.system.width === 'half') {
 					field.system.width = 'half-right';
 				}
