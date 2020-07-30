@@ -38,7 +38,7 @@ export type User = {
 	last_name: string;
 	email: string;
 	token: string;
-	last_access_on: string;
+	last_login: string;
 	last_page: string;
 	external_id: string;
 	'2fa_secret': string;

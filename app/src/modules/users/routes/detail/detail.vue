@@ -195,7 +195,7 @@ export default defineComponent({
 			'id',
 			'external_id',
 			'last_page',
-			'last_access_on',
+			'last_login',
 			'created_on',
 			'created_by',
 			'modified_by',

@@ -15,9 +15,9 @@
 					<router-link :to="user.last_page">{{ user.last_page }}</router-link>
 				</dd>
 			</div>
-			<div v-if="user.last_access_on">
+			<div v-if="user.last_login">
 				<dt>{{ $t('last_login') }}</dt>
-				<dd>{{ user.last_access_on }}</dd>
+				<dd>{{ user.last_login }}</dd>
 			</div>
 			<div v-if="user.created_on">
 				<dt>{{ $t('created_on') }}</dt>

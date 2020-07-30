@@ -10656,9 +10656,9 @@
 					"group": null,
 					"length": "10"
 				},
-				"last_access_on": {
+				"last_login": {
 					"collection": "directus_users",
-					"field": "last_access_on",
+					"field": "last_login",
 					"datatype": "DATETIME",
 					"unique": false,
 					"primary_key": false,
