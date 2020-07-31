@@ -42,9 +42,9 @@ export const createFile = async (
 	 */
 	const pk = await itemsService.create(payload);
 
-	const pipeline = sharp();
-
 	if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
+		const pipeline = sharp();
+
 		pipeline.metadata().then((meta) => {
 			payload.width = meta.width;
 			payload.height = meta.height;
@@ -66,10 +66,13 @@ export const createFile = async (
 				payload.description = payload.description || payload.metadata.iptc.caption;
 			}
 		});
-	}
 
-	await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-	await itemsService.update(payload, pk);
+		await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
+
+		await itemsService.update(payload, pk);
+	} else {
+		await storage.disk(data.storage).put(payload.filename_disk, stream);
+	}
 
 	return pk;
 };
