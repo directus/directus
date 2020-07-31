@@ -80,9 +80,15 @@ export default defineComponent({
 		.avatar-image {
 			opacity: 0.75;
 			transition: opacity var(--fast) var(--transition);
+		}
 
-			&:hover {
+		&:hover {
+			.avatar-image {
 				opacity: 1;
+			}
+
+			.v-icon {
+				--v-icon-color: var(--white);
 			}
 		}
 	}
