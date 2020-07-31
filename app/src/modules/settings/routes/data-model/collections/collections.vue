@@ -178,8 +178,7 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.system === null)
-						.map((collection) => ({ ...collection, system: { icon: 'block' }})),
+						.filter((collection) => collection.system === null),
 					'collection'
 				);
 			});

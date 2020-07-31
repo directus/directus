@@ -1,6 +1,6 @@
 <template>
 	<v-button
-		v-if="collection.managed === false && collection.collection.startsWith('directus_') === false"
+		v-if="collection.system === null && collection.collection.startsWith('directus_') === false"
 		x-small
 		outlined
 		class="manage"
@@ -95,15 +95,15 @@ export default defineComponent({
 			return { savingManaged, toggleManaged };
 
 			async function toggleManaged(on: boolean) {
-				savingManaged.value = true;
+				// savingManaged.value = true;
 
-				try {
-					await collectionsStore.updateCollection(props.collection.collection, {
-						managed: on,
-					});
-				} finally {
-					savingManaged.value = false;
-				}
+				// try {
+				// 	await collectionsStore.updateCollection(props.collection.collection, {
+				// 		managed: on,
+				// 	});
+				// } finally {
+				// 	savingManaged.value = false;
+				// }
 			}
 		}
 	},

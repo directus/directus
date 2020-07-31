@@ -336,12 +336,10 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				if (!relation.value) return null;
-				return collectionsStore.getCollection(relation.value.one_collection);
+				return collectionsStore.getCollection(relation.value.one_collection)!
 			});
 
-			const { collection } = toRefs(relatedCollection.value);
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(collection as Ref<string>);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
@@ -363,7 +361,7 @@ export default defineComponent({
 		function usePreview() {
 			const displayTemplate = computed(() => {
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.display_template;
+				return collectionInfo.value?.system?.display_template;
 			});
 
 			const requiredFields = computed(() => {

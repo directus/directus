@@ -91,7 +91,7 @@ export const useCollectionsStore = createStore({
 				throw error;
 			}
 		},
-		getCollection(collectionKey: string) {
+		getCollection(collectionKey: string): Collection | null {
 			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},

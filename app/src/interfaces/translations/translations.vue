@@ -110,13 +110,10 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				if (!relation.value) return null;
-				return collectionsStore.getCollection(relation.value.many_collection);
+				return collectionsStore.getCollection(relation.value.many_collection)!;
 			});
 
-			const { collection } = toRefs(relatedCollection.value);
-
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(collection as Ref<string>);
+			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
