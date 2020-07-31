@@ -6,18 +6,11 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<activity-navigation />
-		</template>
-
-		<layout-tabular
-			class="layout"
-			ref="layout"
-			collection="directus_activity"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/activity/{{primaryKey}}'"
-		/>
+		<div class="content">
+			<v-notice>
+				Pre-Release: Feature not yet available
+			</v-notice>
+		</div>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -78,23 +71,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-150);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-activated: var(--foreground-normal);
-}
-
-.layout {
-	--layout-offset-top: 64px;
+.content {
+	padding: var(--content-padding);
 }
 </style>

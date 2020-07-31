@@ -52,7 +52,10 @@
 					{{ $t('permissions') }}
 					<span class="instant-save">{{ $t('saves_automatically') }}</span>
 				</h2>
-				<permissions-management :role="+primaryKey" />
+
+				<v-notice>
+					Pre-Release: Feature not yet available
+				</v-notice>
 			</div>
 			<v-form
 				collection="directus_roles"

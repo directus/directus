@@ -8,6 +8,11 @@
 			</v-button>
 		</template>
 
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<!--
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
@@ -39,10 +44,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<layout-tabular
 			class="layout"
 			ref="layout"
@@ -51,7 +52,13 @@
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
 			:detail-route="'/{{project}}/settings/webhooks/{{primaryKey}}'"
-		/>
+		/> -->
+
+		<div class="content">
+			<v-notice>
+				Pre-Release: Feature not yet available
+			</v-notice>
+		</div>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -183,26 +190,30 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
-}
+// .action-delete {
+// 	--v-button-background-color: var(--danger-25);
+// 	--v-button-color: var(--danger);
+// 	--v-button-background-color-hover: var(--danger-50);
+// 	--v-button-color-hover: var(--danger);
+// }
 
-.action-batch {
-	--v-button-background-color: var(--warning-25);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
-	--v-button-color-hover: var(--warning);
-}
+// .action-batch {
+// 	--v-button-background-color: var(--warning-25);
+// 	--v-button-color: var(--warning);
+// 	--v-button-background-color-hover: var(--warning-50);
+// 	--v-button-color-hover: var(--warning);
+// }
 
-.layout {
-	--layout-offset-top: 64px;
-}
+// .layout {
+// 	--layout-offset-top: 64px;
+// }
 
 .header-icon {
 	--v-button-color-disabled: var(--warning);
 	--v-button-background-color-disabled: var(--warning-25);
+}
+
+.content {
+	padding: var(--content-padding);
 }
 </style>
