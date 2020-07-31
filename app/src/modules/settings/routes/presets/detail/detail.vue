@@ -420,61 +420,76 @@ export default defineComponent({
 				{
 					field: 'collection',
 					name: i18n.t('collection'),
-					interface: 'dropdown',
-					options: {
-						choices: collectionsStore.state.collections
-							.map((collection) => ({
-								text: collection.name,
-								value: collection.collection,
-							}))
-							.filter((option) => {
-								if (option.value.startsWith('directus_'))
-									return systemCollectionWhiteList.includes(option.value);
+					type: 'string',
+					system: {
+						interface: 'dropdown',
+						options: {
+							choices: collectionsStore.state.collections
+								.map((collection) => ({
+									text: collection.name,
+									value: collection.collection,
+								}))
+								.filter((option) => {
+									if (option.value.startsWith('directus_'))
+										return systemCollectionWhiteList.includes(option.value);
 
-								return true;
-							}),
-					},
-					width: 'half',
+									return true;
+								}),
+						},
+						width: 'half',
+					}
 				},
 				{
 					field: 'scope',
 					name: i18n.t('scope'),
-					interface: 'dropdown',
-					options: {
-						choices: scopeChoices.value,
-					},
-					width: 'half',
+					type: 'string',
+					system: {
+						interface: 'dropdown',
+						options: {
+							choices: scopeChoices.value,
+						},
+						width: 'half',
+					}
 				},
 				{
 					field: 'layout',
 					name: i18n.t('layout'),
-					interface: 'dropdown',
-					options: {
-						choices: layouts.map((layout) => ({
-							text: layout.name,
-							value: layout.id,
-						})),
-					},
-					width: 'half',
+					type: 'string',
+					system: {
+						interface: 'dropdown',
+						options: {
+							choices: layouts.map((layout) => ({
+								text: layout.name,
+								value: layout.id,
+							})),
+						},
+						width: 'half',
+					}
 				},
 				{
 					field: 'name',
 					name: i18n.t('name'),
-					interface: 'text-input',
-					width: 'half',
-					options: {
-						placeholder: i18n.t('preset_name_placeholder'),
-					},
+					type: 'string',
+					system: {
+						interface: 'text-input',
+						width: 'half',
+						options: {
+							placeholder: i18n.t('preset_name_placeholder'),
+						},
+					}
 				},
 				{
 					field: 'divider',
 					name: i18n.t('divider'),
-					interface: 'divider',
-					width: 'fill',
-					options: {
-						title: i18n.t('layout_preview'),
-						color: '#2F80ED',
-					},
+					type: 'alias',
+					system: {
+						interface: 'divider',
+						width: 'fill',
+						options: {
+							title: i18n.t('layout_preview'),
+							color: '#2F80ED',
+						},
+					}
 				},
 			]);
 
