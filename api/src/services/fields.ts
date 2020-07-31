@@ -19,7 +19,6 @@ type RawField = Partial<Field> & { field: string; type: typeof types[number] };
  * - Only allow admins to create/update/delete
  * - Only return fields you have permission to read (based on permissions)
  * - Don't use items service, as this is a different case than regular collections
- * - Same goes for CollectionsService
  */
 
 export default class FieldsService {
@@ -143,10 +142,10 @@ export default class FieldsService {
 
 		if (field.database) {
 			if (table) {
-				addColumnToTable(table);
+				this.addColumnToTable(table, field as Field);
 			} else {
 				await database.schema.alterTable(collection, (table) => {
-					addColumnToTable(table);
+					this.addColumnToTable(table, field as Field);
 				});
 			}
 		}
@@ -157,41 +156,6 @@ export default class FieldsService {
 				collection: collection,
 				field: field.field,
 			});
-		}
-
-		function addColumnToTable(table: CreateTableBuilder) {
-			let column: ColumnBuilder;
-
-			if (!field.database) return;
-
-			if (field.database.has_auto_increment) {
-				column = table.increments(field.field);
-			} else if (field.type === 'string') {
-				column = table.string(
-					field.field,
-					field.database.max_length !== null ? field.database.max_length : undefined
-				);
-			} else if (['float', 'decimal'].includes(field.type)) {
-				const type = field.type as 'float' | 'decimal';
-				/** @todo add precision and scale support */
-				column = table[type](field.field /* precision, scale */);
-			} else {
-				column = table[field.type](field.field);
-			}
-
-			if (field.database.default_value) {
-				column.defaultTo(field.database.default_value);
-			}
-
-			if (field.database.is_nullable && field.database.is_nullable === true) {
-				column.nullable();
-			} else {
-				column.notNullable();
-			}
-
-			if (field.database.is_primary_key) {
-				column.primary();
-			}
 		}
 	}
 
@@ -253,5 +217,35 @@ export default class FieldsService {
 		await database.schema.table(collection, (table) => {
 			table.dropColumn(field);
 		});
+	}
+
+	public addColumnToTable(table: CreateTableBuilder, field: Field) {
+		let column: ColumnBuilder;
+
+		if (field.database?.has_auto_increment) {
+			column = table.increments(field.field);
+		} else if (field.type === 'string') {
+			column = table.string(field.field, field.database?.max_length || undefined);
+		} else if (['float', 'decimal'].includes(field.type)) {
+			const type = field.type as 'float' | 'decimal';
+			/** @todo add precision and scale support */
+			column = table[type](field.field /* precision, scale */);
+		} else {
+			column = table[field.type](field.field);
+		}
+
+		if (field.database?.default_value) {
+			column.defaultTo(field.database.default_value);
+		}
+
+		if (field.database?.is_nullable && field.database.is_nullable === true) {
+			column.nullable();
+		} else {
+			column.notNullable();
+		}
+
+		if (field.database?.is_primary_key) {
+			column.primary();
+		}
 	}
 }
