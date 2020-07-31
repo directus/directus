@@ -52,10 +52,10 @@
 			<v-form
 				collection="directus_collections"
 				:loading="loading"
-				:initial-values="item"
+				:initial-values="item && item.system"
 				:batch-mode="isBatch"
 				:primary-key="collection"
-				v-model="edits"
+				v-model="edits.system"
 			/>
 		</div>
 

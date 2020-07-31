@@ -588,6 +588,7 @@ rows:
         interface: repeater
         locked: true
         options:
+          template: '{{ locale }}'
           fields:
           - field: locale
             type: string
