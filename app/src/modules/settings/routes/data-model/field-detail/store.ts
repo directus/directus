@@ -12,29 +12,7 @@ import { reactive, watch } from '@vue/composition-api';
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 
-const state = reactive<any>({
-	fieldData: {
-		field: '',
-		type: '',
-		database: {
-			default_value: undefined,
-			max_length: undefined,
-			is_nullable: true,
-		},
-		system: {
-			hidden: false,
-			interface: undefined,
-			options: undefined,
-			display: undefined,
-			display_options: undefined,
-			readonly: false,
-			special: undefined,
-			note: undefined,
-		},
-	},
-	relations: [],
-	newFields: [],
-});
+let state: any;
 
 export { state, initLocalStore, clearLocalStore };
 
@@ -43,6 +21,30 @@ function initLocalStore(
 	field: string,
 	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m'
 ) {
+	state = reactive<any>({
+		fieldData: {
+			field: '',
+			type: '',
+			database: {
+				default_value: undefined,
+				max_length: undefined,
+				is_nullable: true,
+			},
+			system: {
+				hidden: false,
+				interface: undefined,
+				options: undefined,
+				display: undefined,
+				display_options: undefined,
+				readonly: false,
+				special: undefined,
+				note: undefined,
+			},
+		},
+		relations: [],
+		newFields: [],
+	});
+
 	const isExisting = field !== '+';
 
 	if (isExisting) {
@@ -75,7 +77,7 @@ function initLocalStore(
 			() => state.fieldData.field,
 			() => {
 				state.relations[0].many_field = state.fieldData.field;
-			}
+			},
 		);
 	}
 
@@ -87,7 +89,7 @@ function initLocalStore(
 					many_field: '',
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					one_primary: '',
 				},
 			];
 		}
@@ -215,26 +217,5 @@ function initLocalStore(
 }
 
 function clearLocalStore() {
-	state.fieldData = {
-		field: '',
-		type: '',
-		database: {
-			default_value: undefined,
-			max_length: undefined,
-			is_nullable: true,
-		},
-		system: {
-			hidden: false,
-			interface: undefined,
-			options: undefined,
-			display: undefined,
-			display_options: undefined,
-			readonly: false,
-			special: undefined,
-			note: undefined,
-		},
-	};
-
-	state.relations = [];
-	state.newFields = [];
+	state = null;
 }
