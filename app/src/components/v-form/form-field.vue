@@ -39,7 +39,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<small class="note" v-if="field.note" v-html="marked(field.note)" />
+		<small class="note" v-if="field.system.note" v-html="marked(field.system.note)" />
 	</div>
 </template>
 
