@@ -21,8 +21,14 @@ const loginSchema = Joi.object({
 router.post(
 	'/login',
 	asyncHandler(async (req, res) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
 		const authenticationService = new AuthenticationService({
-			accountability: req.accountability,
+			accountability: accountability,
 		});
 
 		const { error } = loginSchema.validate(req.body);
@@ -71,9 +77,16 @@ router.post(
 	'/refresh',
 	cookieParser(),
 	asyncHandler(async (req, res) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
 		const authenticationService = new AuthenticationService({
-			accountability: req.accountability,
+			accountability: accountability,
 		});
+
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
@@ -115,8 +128,14 @@ router.post(
 	'/logout',
 	cookieParser(),
 	asyncHandler(async (req, res) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
 		const authenticationService = new AuthenticationService({
-			accountability: req.accountability,
+			accountability: accountability,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
@@ -146,8 +165,14 @@ router.use(grant.express()(getGrantConfig()));
 router.get(
 	'/sso/:provider/callback',
 	asyncHandler(async (req, res) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
 		const authenticationService = new AuthenticationService({
-			accountability: req.accountability,
+			accountability: accountability,
 		});
 
 		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);

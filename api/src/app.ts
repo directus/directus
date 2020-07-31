@@ -63,9 +63,10 @@ app.get('/', (req, res) => res.redirect('/admin/'))
 	.use('/admin', express.static(path.join(__dirname, 'admin')))
 	.use('/admin/*', (req, res) => res.sendFile(path.join(__dirname, 'admin/index.html')))
 
+	.use('/auth', authRouter)
+
 	.use(authenticate)
 
-	.use('/auth', authRouter)
 	.use('/activity', activityRouter)
 	.use('/assets', assetsRouter)
 	.use('/collections', collectionsRouter)

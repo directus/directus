@@ -72,6 +72,8 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
+	delete api.defaults.headers.Authorization;
+
 	const options = { ...defaultOptions, ...optionsRaw };
 
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
