@@ -53,13 +53,16 @@
 					<span class="instant-save">{{ $t('saves_automatically') }}</span>
 				</h2>
 
-				<v-notice v-if="(edits.admin !== undefined ? edits.admin : item.admin) === true">
-					{{ $t('admins_have_all_permissions') }}
-				</v-notice>
+				<v-skeleton-loader v-if="loading" />
+				<template v-else>
+					<v-notice v-if="(edits.admin !== undefined ? edits.admin : item.admin) === true">
+						{{ $t('admins_have_all_permissions') }}
+					</v-notice>
 
-				<v-notice v-else>
-					Pre-Release: Feature not yet available
-				</v-notice>
+					<v-notice v-else>
+						Pre-Release: Feature not yet available
+					</v-notice>
+				</template>
 			</div>
 			<v-form
 				collection="directus_roles"
@@ -190,7 +193,7 @@ export default defineComponent({
 	padding-bottom: var(--content-padding-bottom);
 }
 
-.v-notice {
+.v-notice, .v-skeleton-loader {
 	max-width: 800px;
 }
 
