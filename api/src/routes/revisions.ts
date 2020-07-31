@@ -6,10 +6,9 @@ import RevisionsService from '../services/revisions';
 
 const router = express.Router();
 
-router.use(useCollection('directus_revisions'));
-
 router.get(
 	'/',
+	useCollection('directus_revisions'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new RevisionsService({ accountability: req.accountability });
@@ -20,6 +19,7 @@ router.get(
 
 router.get(
 	'/:pk',
+	useCollection('directus_revisions'),
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new RevisionsService({ accountability: req.accountability });

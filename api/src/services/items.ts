@@ -90,6 +90,13 @@ export default class ItemsService implements AbstractService {
 				primaryKeys.push(primaryKey);
 			}
 
+			payloads = payloads.map((payload, index) => {
+				payload[primaryKeyField] = primaryKeys[index];
+				return payload;
+			});
+
+			await payloadService.processO2M(payloads);
+
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
 					action: Action.CREATE,
@@ -100,15 +107,23 @@ export default class ItemsService implements AbstractService {
 					item: key,
 				}));
 
-				await trx.insert(activityRecords).into('directus_activity');
+				const activityPrimaryKeys: PrimaryKey[] = [];
+
+				for (const activityRecord of activityRecords) {
+					const result = await trx.insert(activityRecord).into('directus_activity');
+					activityPrimaryKeys.push(result[0]);
+				}
+
+				const revisionRecords = activityPrimaryKeys.map((key, index) => ({
+					activity: key,
+					collection: this.collection,
+					item: primaryKeys[index],
+					data: JSON.stringify(payloads[index]),
+					delta: JSON.stringify(payloads[index]),
+				}));
+
+				await trx.insert(revisionRecords).into('directus_revisions');
 			}
-
-			payloads = payloads.map((payload, index) => {
-				payload[primaryKeyField] = primaryKeys[index];
-				return payload;
-			});
-
-			await payloadService.processO2M(payloads);
 
 			return primaryKeys;
 		});
