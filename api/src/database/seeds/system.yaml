@@ -551,38 +551,51 @@ rows:
         field: collection
         interface: text-input
         locked: true
+        options:
+          font: monospace
         readonly: true
         sort: 1
+        width: half
+      - collection: directus_collections
+        field: icon
+        interface: icon
+        locked: true
+        sort: 2
         width: half
       - collection: directus_collections
         field: note
         interface: text-input
         locked: true
-        sort: 2
-        width: half
+        options:
+          placeholder: A description of this collection...
+        sort: 3
+        width: full
+      - collection: directus_collections
+        field: display_template
+        interface: text-input
+        locked: true
+        options:
+          placeholder: 'Reference title for items, eg: {{ first_name }} {{ last_name }}'
+        sort: 4
+        width: full
       - collection: directus_collections
         field: hidden
         interface: toggle
         locked: true
-        # @todo update this to be a versioned link
-        note: '[Learn More](https://docs.directus.io/guides/collections.html#hidden).'
-        sort: 3
+        options:
+          label: Hide within the App
+        sort: 5
         special: boolean
         width: half
       - collection: directus_collections
         field: singleton
         interface: toggle
         locked: true
-        # @todo update this to be a versioned link
-        note: '[Learn More](https://docs.directus.io/guides/collections.html#single).'
-        sort: 4
+        options:
+          label: Treat as single object
+        sort: 6
         special: boolean
         width: half
-      - collection: directus_collections
-        field: icon
-        interface: icon
-        locked: true
-        sort: 5
       - collection: directus_collections
         field: translation
         interface: repeater
@@ -603,7 +616,7 @@ rows:
               interface: text-input
               width: half
         special: json
-        sort: 6
+        sort: 7
         width: full
 
       - collection: directus_roles
