@@ -342,6 +342,7 @@ export default defineComponent({
 			if (systemFields[3].enabled === true) {
 				fields.push({
 					field: systemFields[3].name,
+					type: 'timestamp',
 					system: {
 						special: 'datetime_created',
 						interface: 'datetime-created',
@@ -349,15 +350,13 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
-					database: {
-						type: 'DATETIME',
-					},
 				});
 			}
 
 			if (systemFields[4].enabled === true) {
 				fields.push({
 					field: systemFields[4].name,
+					type: 'uuid',
 					system: {
 						special: 'user_updated',
 						interface: 'user-updated',
@@ -369,24 +368,19 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
-					database: {
-						type: 'INT',
-					},
 				});
 			}
 
 			if (systemFields[5].enabled === true) {
 				fields.push({
 					field: systemFields[5].name,
+					type: 'timestamp',
 					system: {
 						special: 'datetime_updated',
 						interface: 'datetime-updated',
 						readonly: true,
 						hidden: true,
 						width: 'full',
-					},
-					database: {
-						type: 'DATETIME',
 					},
 				});
 			}
