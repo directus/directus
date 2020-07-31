@@ -156,14 +156,13 @@ export const useFieldsStore = createStore({
 			// Update locally first, so the changes are visible immediately
 			this.state.fields = this.state.fields.map((field) => {
 				if (field.collection === collectionKey && field.field === fieldKey) {
-					return {
-						...field,
-						...updates,
-					};
+					return merge({}, field, updates);
 				}
 
 				return field;
 			});
+
+
 
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API

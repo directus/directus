@@ -36,6 +36,7 @@
 				v-for="field in sortedHiddenFields"
 				:key="field.field"
 				:field="field"
+				hidden
 				@toggle-visibility="toggleVisibility($event, 'hidden')"
 				@edit="openFieldSetup(field)"
 			/>
