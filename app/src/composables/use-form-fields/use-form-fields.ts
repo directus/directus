@@ -81,7 +81,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		formFields = formFields.filter((field) => {
 			const hidden = field.system?.hidden;
 			const systemFake = field.field.startsWith('$');
-			return hidden === false && systemFake === false;
+			return hidden !== true && systemFake === false;
 		});
 
 		return formFields;
