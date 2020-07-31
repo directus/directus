@@ -147,7 +147,7 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections.filter(
 						(collection) =>
-							collection.collection.startsWith('directus_') === false && collection.hidden === false
+							collection.collection.startsWith('directus_') === false && collection.system?.hidden === false
 					),
 					'collection'
 				);
@@ -158,7 +158,7 @@ export default defineComponent({
 					collectionsStore.state.collections
 						.filter(
 							(collection) =>
-								collection.collection.startsWith('directus_') === false && collection.hidden === true
+								collection.collection.startsWith('directus_') === false && collection.system?.hidden === true
 						)
 						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
 					'collection'
@@ -178,8 +178,8 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.managed === false)
-						.map((collection) => ({ ...collection, icon: 'block' })),
+						.filter((collection) => collection.system === null)
+						.map((collection) => ({ ...collection, system: { icon: 'block' }})),
 					'collection'
 				);
 			});

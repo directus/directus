@@ -16,7 +16,7 @@ export const useCollectionsStore = createStore({
 		visibleCollections: (state) => {
 			return state.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter(({ hidden }) => hidden !== true);
+				.filter(collection => collection.system?.hidden !== true);
 		},
 	},
 	actions: {
@@ -27,11 +27,11 @@ export const useCollectionsStore = createStore({
 
 			this.state.collections = collections.map((collection: CollectionRaw) => {
 				let name: string | VueI18n.TranslateResult;
-				const icon = collection.icon || 'box';
+				const icon = collection.system?.icon || 'box';
 
-				if (notEmpty(collection.translation)) {
-					for (let i = 0; i < collection.translation.length; i++) {
-						const { locale, translation } = collection.translation[i];
+				if (collection.system && notEmpty(collection.system.translation)) {
+					for (let i = 0; i < collection.system.translation.length; i++) {
+						const { locale, translation } = collection.system.translation[i];
 
 						i18n.mergeLocaleMessage(locale, {
 							collections: {
