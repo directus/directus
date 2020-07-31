@@ -223,7 +223,7 @@ export default defineComponent({
 				field: primaryKeyFieldName.value,
 				type: 'integer',
 				system: {
-					hidden: false,
+					hidden: true,
 					interface: 'numeric',
 					readonly: true,
 				},
@@ -256,6 +256,7 @@ export default defineComponent({
 						...field.system,
 						interface: 'text-input',
 						readonly: false,
+						hidden: false,
 					},
 					database: {
 						...field.database,
