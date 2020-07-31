@@ -185,10 +185,13 @@ export default class FieldsService {
 					column.defaultTo(field.database.default_value);
 				}
 
-				if (field.database.is_nullable && field.database.is_nullable === true) {
-					column.nullable();
-				} else {
+				if (
+					field.database.is_nullable !== undefined &&
+					field.database.is_nullable === false
+				) {
 					column.notNullable();
+				} else {
+					column.nullable();
 				}
 
 				column.alter();
