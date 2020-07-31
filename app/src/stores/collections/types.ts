@@ -16,7 +16,7 @@ export interface CollectionRaw {
 		translation: Translation[] | null;
 		display_template: string | null;
 	} | null;
-	database: Record<string, any>:
+	database: Record<string, any>;
 }
 
 export interface Collection extends CollectionRaw {
