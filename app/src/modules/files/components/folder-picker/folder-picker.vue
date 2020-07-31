@@ -28,13 +28,13 @@ import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 
 type FolderRaw = {
-	id: number;
+	id: string;
 	name: string;
-	parent_folder: null | number;
+	parent_folder: null | string;
 };
 
 type Folder = {
-	id: number;
+	id: string;
 	name: string;
 	children: Folder[];
 };
@@ -43,7 +43,7 @@ export default defineComponent({
 	components: { FolderPickerListItem },
 	props: {
 		value: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 	},

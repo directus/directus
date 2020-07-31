@@ -7,9 +7,11 @@
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover class="user" :user="revision.activity.action_by.id">
+			<user-popover v-if="revision.activity.action_by" class="user" :user="revision.activity.action_by.id">
 				<span>{{ user }}</span>
 			</user-popover>
+
+			<span v-else>{{ $t('private_user') }}</span>
 		</div>
 	</div>
 </template>
@@ -58,7 +60,7 @@ export default defineComponent({
 		});
 
 		const user = computed(() => {
-			if (props.revision.activity.action_by !== null && typeof props.revision.activity.action_by === 'object') {
+			if (props.revision?.activity?.action_by && typeof props.revision.activity.action_by === 'object') {
 				const { first_name, last_name } = props.revision.activity.action_by as {
 					first_name: string;
 					last_name: string;

@@ -28,7 +28,7 @@
 import { defineComponent, PropType } from '@vue/composition-api';
 
 type Folder = {
-	id: number;
+	id: string;
 	name: string;
 	children: Folder[];
 };

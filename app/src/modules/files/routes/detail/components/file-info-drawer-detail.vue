@@ -157,6 +157,7 @@ export default defineComponent({
 
 			async function fetchUser() {
 				if (!props.file) return null;
+				if (!props.file.uploaded_by) return null;
 
 				loading.value = true;
 
