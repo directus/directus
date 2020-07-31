@@ -1257,7 +1257,7 @@ rows:
               name: Deleted
               color: "#FFFFFF"
               backgroundColor: "#EB5757"
-              soft_delete: true
+              softDelete: true
         sort: 16
         width: half
       - collection: directus_users
