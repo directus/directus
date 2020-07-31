@@ -832,7 +832,7 @@
 		"icon": "Role Icon",
 		"description": "Description",
 		"ip_allow_list": "IP Access Allow List",
-		"app_access": "Allow App Access",
+		"app_access": "App Access",
 		"admin": "Admin Access",
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",

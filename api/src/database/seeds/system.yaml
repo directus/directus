@@ -166,6 +166,7 @@ tables:
     width:
       type: string
       length: 30
+      default: full
     group:
       type: integer
       unsigned: true
