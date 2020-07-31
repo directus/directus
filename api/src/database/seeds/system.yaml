@@ -1352,7 +1352,7 @@ rows:
           iconRight: local_offer
         special: json
         sort: 3
-        width: half
+        width: full
       - collection: directus_files
         field: location
         interface: text-input
@@ -1360,6 +1360,41 @@ rows:
         options:
           iconRight: place
         sort: 4
+        width: half
+      - collection: directus_files
+        field: storage
+        interface: text-input
+        locked: true
+        options:
+          iconRight: storage
+        sort: 5
+        width: half
+      - collection: directus_settings
+        field: storage_divider
+        interface: divider
+        locked: true
+        options:
+          icon: insert_drive_file
+          title: File Naming
+          color: '#B0BEC5'
+        special: alias
+        sort: 6
+        width: full
+      - collection: directus_settings
+        field: filename_disk
+        interface: text-input
+        locked: true
+        options:
+          iconRight: publish
+        sort: 7
+        width: half
+      - collection: directus_settings
+        field: filename_download
+        interface: text-input
+        locked: true
+        options:
+          iconRight: get_app
+        sort: 8
         width: half
       - collection: directus_files
         field: metadata
