@@ -1273,6 +1273,9 @@ rows:
         field: token
         interface: token
         locked: true
+        options:
+          iconRight: vpn_key
+          placeholder: Enter a secure access token...
         sort: 18
         width: full
       - collection: directus_users
