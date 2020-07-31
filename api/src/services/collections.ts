@@ -166,7 +166,7 @@ export default class CollectionsService {
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
-				system: system.find((systemInfo) => systemInfo.collection === table.name),
+				system: system.find((systemInfo) => systemInfo.collection === table.name) || null,
 				database: table,
 			};
 
