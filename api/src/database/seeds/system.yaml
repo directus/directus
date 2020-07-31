@@ -1388,7 +1388,7 @@ rows:
           iconRight: storage
         sort: 5
         width: half
-      - collection: directus_settings
+      - collection: directus_files
         field: storage_divider
         interface: divider
         locked: true
@@ -1399,7 +1399,7 @@ rows:
         special: alias
         sort: 6
         width: full
-      - collection: directus_settings
+      - collection: directus_files
         field: filename_disk
         interface: text-input
         locked: true
@@ -1407,7 +1407,7 @@ rows:
           iconRight: publish
         sort: 7
         width: half
-      - collection: directus_settings
+      - collection: directus_files
         field: filename_download
         interface: text-input
         locked: true
