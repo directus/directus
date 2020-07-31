@@ -9,6 +9,7 @@ import { types } from '../types';
 import { FieldNotFoundException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
 import PayloadService from '../services/payload';
+import getDefaultValue from '../utils/get-default-value';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -56,7 +57,14 @@ export default class FieldsService {
 
 		fields = (await this.payloadService.processValues('read', fields)) as System[];
 
-		const columns = await schemaInspector.columnInfo(collection);
+		let columns = await schemaInspector.columnInfo(collection);
+
+		columns = columns.map((column) => {
+			return {
+				...column,
+				default_value: getDefaultValue(column),
+			};
+		});
 
 		const columnsWithSystem = columns.map((column) => {
 			const field = fields.find(
@@ -109,6 +117,7 @@ export default class FieldsService {
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);
+			column.default_value = getDefaultValue(column);
 		} catch {}
 
 		const data = {
