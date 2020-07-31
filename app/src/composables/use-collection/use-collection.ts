@@ -1,11 +1,13 @@
-import { computed, Ref } from '@vue/composition-api';
+import { computed, Ref, ref } from '@vue/composition-api';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
 import { Field } from '@/stores/fields/types';
 
-export function useCollection(collection: Ref<string>) {
+export function useCollection(collectionKey: string | Ref<string>) {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
+
+	const collection: Ref<string> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
 		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);
