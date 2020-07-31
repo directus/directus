@@ -273,6 +273,7 @@ export default defineComponent({
 			if (systemFields[0].enabled === true) {
 				fields.push({
 					field: systemFields[0].name,
+					type: 'string',
 					system: {
 						width: 'full',
 						required: true,
@@ -280,36 +281,19 @@ export default defineComponent({
 							statuses: {
 								published: {
 									name: 'Published',
-									value: 'published',
-									text_color: 'white',
-									background_color: 'accent',
-									browse_subdued: false,
-									browse_badge: true,
-									soft_delete: false,
-									published: true,
-									required_fields: true,
+									color: 'white',
+									backgroundColor: '#2f80ed',
 								},
 								draft: {
 									name: 'Draft',
-									value: 'draft',
-									text_color: 'white',
-									background_color: 'blue-grey-100',
-									browse_subdued: true,
-									browse_badge: true,
-									soft_delete: false,
-									published: false,
-									required_fields: false,
+									color: 'white',
+									backgroundColor: '#eceff1',
 								},
 								deleted: {
 									name: 'Deleted',
-									value: 'deleted',
-									text_color: 'white',
-									background_color: 'red',
-									browse_subdued: true,
-									browse_badge: true,
-									soft_delete: true,
-									published: false,
-									required_fields: false,
+									color: 'white',
+									backgroundColor: '#eb5757',
+									softDelete: true
 								},
 							},
 						},
@@ -317,7 +301,6 @@ export default defineComponent({
 						interface: 'status',
 					},
 					database: {
-						type: 'VARCHAR',
 						default_value: 'draft',
 					},
 				});
@@ -326,21 +309,21 @@ export default defineComponent({
 			if (systemFields[1].enabled === true) {
 				fields.push({
 					field: systemFields[1].name,
+					type: 'integer',
 					system: {
 						interface: 'sort',
 						hidden: true,
 						width: 'full',
 						special: 'sort',
 					},
-					database: {
-						type: 'INT',
-					},
+					database: {},
 				});
 			}
 
 			if (systemFields[2].enabled === true) {
 				fields.push({
 					field: systemFields[2].name,
+					type: 'uuid',
 					system: {
 						special: 'user_created',
 						interface: 'owner',
@@ -352,9 +335,7 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
-					database: {
-						type: 'INT' /** @todo make these vendor based */,
-					},
+					database: {},
 				});
 			}
 
