@@ -218,20 +218,52 @@ export default class ItemsService implements AbstractService {
 					accountability: this.accountability,
 					knex: trx,
 				});
+
 				payload = await payloadService.processM2O(payload);
 				payload = await payloadService.processValues('update', payload);
+
 				const payloadWithoutAliases = pick(
 					payload,
 					columns.map(({ column }) => column)
 				);
+
 				await trx(this.collection)
 					.update(payloadWithoutAliases)
 					.whereIn(primaryKeyField, keys);
+
 				await payloadService.processO2M(payload);
 
-				/**
-				 * @todo save activity
-				 */
+				if (this.accountability) {
+					const activityRecords = keys.map((key) => ({
+						action: Action.UPDATE,
+						action_by: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						item: key,
+					}));
+
+					const activityPrimaryKeys: PrimaryKey[] = [];
+
+					for (const activityRecord of activityRecords) {
+						const result = await trx.insert(activityRecord).into('directus_activity');
+						activityPrimaryKeys.push(result[0]);
+					}
+
+					const itemsService = new ItemsService(this.collection, { knex: trx });
+
+					const snapshots = await itemsService.readByKey(keys);
+
+					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
+						activity: key,
+						collection: this.collection,
+						item: keys[index],
+						data: JSON.stringify(snapshots[index]),
+						delta: JSON.stringify(payloadWithoutAliases),
+					}));
+
+					await trx.insert(revisionRecords).into('directus_revisions');
+				}
 			});
 
 			return key;

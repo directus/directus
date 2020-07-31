@@ -63,10 +63,14 @@ router.patch(
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
+
+		/**
+		 * @TODO implement skip-activity query param so we don't end up saving activity / revisions
+		 * for every single page navigation that was done
+		 */
+
 		const service = new UsersService({ accountability: req.accountability });
-
 		const primaryKey = await service.update(req.body, req.accountability.user);
-
 		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		return res.json({ data: item || null });
