@@ -632,24 +632,57 @@ rows:
         sort: 1
         width: half
       - collection: directus_roles
-        field: description
-        interface: text-input
+        field: icon
+        interface: icon
         locked: true
         sort: 2
         width: half
+      - collection: directus_roles
+        field: description
+        interface: text-input
+        options:
+          placeholder: A description of this role...
+        locked: true
+        sort: 3
+        width: full
       - collection: directus_roles
         field: ip_allow_list
         interface: tags
         locked: true
         special: json
-        sort: 3
+        sort: 4
         width: full
+      - collection: directus_roles
+        field: admin
+        interface: toggle
+        locked: true
+        special: boolean
+        sort: 6
+        width: half
+      - collection: directus_roles
+        field: app_access
+        interface: toggle
+        locked: true
+        special: boolean
+        sort: 7
+        width: half
       - collection: directus_roles
         field: enforce_tfa
         interface: toggle
         locked: true
-        sort: 4
+        sort: 8
         special: boolean
+        width: half
+      - collection: directus_roles
+        field: users
+        interface: one-to-many
+        locked: true
+        special: o2m
+        sort: 9
+        options:
+          fields:
+            - first_name
+            - last_name
         width: full
       - collection: directus_roles
         field: module_list
@@ -684,7 +717,7 @@ rows:
                 iconRight: link
                 placeholder: Relative or absolute URL...
         special: json
-        sort: 5
+        sort: 10
         width: full
       - collection: directus_roles
         field: collection_list
@@ -735,38 +768,7 @@ rows:
                       interface: collections
                       width: full
         special: json
-        sort: 6
-        width: full
-      - collection: directus_roles
-        field: users
-        interface: one-to-many
-        locked: true
-        special: o2m
-        sort: 7
-        options:
-          fields:
-            - first_name
-            - last_name
-        width: full
-      - collection: directus_roles
-        field: admin
-        interface: toggle
-        locked: true
-        special: boolean
-        sort: 8
-        width: half
-      - collection: directus_roles
-        field: app_access
-        interface: toggle
-        locked: true
-        special: boolean
-        sort: 9
-        width: half
-      - collection: directus_roles
-        field: icon
-        interface: icon
-        locked: true
-        sort: 10
+        sort: 11
         width: full
 
       - collection: directus_users

@@ -817,6 +817,27 @@
 		"storage_asset_presets": "Storage Asset Presets",
 		"storage_asset_transform": "Storage Asset Transform",
 		"telemetry": "Telemetry"
+	},
+	"directus_fields": {
+		"collection": "Collection Name",
+		"icon": "Collection Icon",
+		"note": "Note",
+		"hidden": "Hidden",
+		"singleton": "Singleton",
+		"translation": "Translations",
+		"display_template": "Template"
+	},
+	"directus_roles": {
+		"name": "Role Name",
+		"icon": "Role Icon",
+		"description": "Description",
+		"ip_allow_list": "IP Access Allow List",
+		"app_access": "Allow App Access",
+		"admin": "Admin Access",
+		"enforce_tfa": "Require 2FA",
+		"users": "Users in Role",
+		"module_list": "Module Navigation",
+		"collection_list": "Collections navigation"
 	}
   },
 
