@@ -6,7 +6,7 @@
 				<v-upload @upload="onUpload" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="close">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="close">{{ $t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
