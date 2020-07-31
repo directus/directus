@@ -157,11 +157,11 @@ body {
 
 		.fill {
 			position: absolute;
-			top: 50%;
+			top: calc(50% + 3px);
 			right: 0;
 			left: 0;
 			z-index: 2;
-			width: calc(100% - 14px);
+			width: 100%;
 			height: 2px;
 			background-color: var(--v-slider-fill-color);
 			transform: translateY(3px) scaleX(calc(var(--_v-slider-percentage) / 100));
