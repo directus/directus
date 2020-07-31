@@ -233,6 +233,7 @@ export default defineComponent({
 					})
 				);
 
+				await fieldsStore.hydrate();
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
 			} catch (error) {
