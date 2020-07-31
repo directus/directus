@@ -6,7 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('textarea'),
 	icon: 'text_fields',
 	component: InterfaceTextarea,
-	types: ['string'],
+	types: ['string', 'text'],
 	options: [
 		{
 			field: 'placeholder',
