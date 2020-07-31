@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/directus/api-node.git"
+    "url": "git+https://github.com/directus/next.git"
   },
   "files": [
     "dist",
@@ -35,9 +35,9 @@
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/directus/api-node/issues"
+    "url": "https://github.com/directus/next/issues"
   },
-  "homepage": "https://github.com/directus/api-node#readme",
+  "homepage": "https://github.com/directus/next#readme",
   "dependencies": {
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
