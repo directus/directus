@@ -748,6 +748,12 @@ rows:
         special: boolean
         sort: 9
         width: half
+      - collection: directus_roles
+        field: icon
+        interface: icon
+        locked: true
+        sort: 10
+        width: full
 
       - collection: directus_users
         field: first_name
