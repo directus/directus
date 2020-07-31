@@ -27,6 +27,8 @@
 	"editing_field": "Editing {field}",
 	"within_collectoin": "within {collection}",
 
+	"admins_have_all_permissions": "Admins have all permissions",
+
 	"camera": "Camera",
 	"exposure": "Exposure",
 	"shutter": "Shutter",

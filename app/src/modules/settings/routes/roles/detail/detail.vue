@@ -53,7 +53,11 @@
 					<span class="instant-save">{{ $t('saves_automatically') }}</span>
 				</h2>
 
-				<v-notice>
+				<v-notice v-if="(edits.admin !== undefined ? edits.admin : item.admin) === true">
+					{{ $t('admins_have_all_permissions') }}
+				</v-notice>
+
+				<v-notice v-else>
 					Pre-Release: Feature not yet available
 				</v-notice>
 			</div>
@@ -184,6 +188,10 @@ export default defineComponent({
 .roles {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+}
+
+.v-notice {
+	max-width: 800px;
 }
 
 .header-icon {
