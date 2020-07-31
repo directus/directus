@@ -27,10 +27,10 @@
 
 		<v-list dense>
 			<v-list-item
-				v-for="status in statuses"
-				:key="status.value"
-				:active="status.value === value"
-				@click="$emit('input', status.value)"
+				v-for="(status, key) in statuses"
+				:key="key"
+				:active="key === value"
+				@click="$emit('input', key)"
 			>
 				<v-list-item-icon>
 					<div class="status-dot" :style="{ backgroundColor: status.backgroundColor }" />

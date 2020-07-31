@@ -13,7 +13,7 @@
 				</v-card-title>
 
 				<v-card-text>
-					{{ saveError && saveError.response.data.error.message }}
+					{{ saveError && saveError.response && saveErrors.response.data.error.message }}
 				</v-card-text>
 
 				<v-card-actions>
@@ -147,34 +147,35 @@ export default defineComponent({
 				label: 'sort',
 				icon: 'low_priority',
 			},
-			{
-				id: 'owner',
-				enabled: false,
-				name: 'created_by',
-				label: 'created_by_owner',
-				icon: 'account_circle',
-			},
-			{
-				id: 'created_on',
-				enabled: false,
-				name: 'created_on',
-				label: 'created_on',
-				icon: 'access_time',
-			},
-			{
-				id: 'modified_by',
-				enabled: false,
-				name: 'modified_by',
-				label: 'modified_by',
-				icon: 'account_circle',
-			},
-			{
-				id: 'modified_on',
-				enabled: false,
-				name: 'modified_on',
-				label: 'modified_on',
-				icon: 'access_time',
-			},
+			/** @TODO re-enable these when the api supports the special types for created/modified by/on */
+			// {
+			// 	id: 'owner',
+			// 	enabled: false,
+			// 	name: 'created_by',
+			// 	label: 'created_by_owner',
+			// 	icon: 'account_circle',
+			// },
+			// {
+			// 	id: 'created_on',
+			// 	enabled: false,
+			// 	name: 'created_on',
+			// 	label: 'created_on',
+			// 	icon: 'access_time',
+			// },
+			// {
+			// 	id: 'modified_by',
+			// 	enabled: false,
+			// 	name: 'modified_by',
+			// 	label: 'modified_by',
+			// 	icon: 'account_circle',
+			// },
+			// {
+			// 	id: 'modified_on',
+			// 	enabled: false,
+			// 	name: 'modified_on',
+			// 	label: 'modified_on',
+			// 	icon: 'access_time',
+			// },
 		]);
 
 		const saving = ref(false);
@@ -210,6 +211,7 @@ export default defineComponent({
 
 				emit('toggle', false);
 			} catch (error) {
+				console.log(error);
 				saveError.value = error;
 			} finally {
 				saving.value = false;
@@ -297,7 +299,6 @@ export default defineComponent({
 								},
 							},
 						},
-						special: 'status',
 						interface: 'status',
 					},
 					database: {
@@ -320,70 +321,70 @@ export default defineComponent({
 				});
 			}
 
-			if (systemFields[2].enabled === true) {
-				fields.push({
-					field: systemFields[2].name,
-					type: 'uuid',
-					system: {
-						special: 'user_created',
-						interface: 'owner',
-						options: {
-							template: '{{first_name}} {{last_name}}',
-							display: 'both',
-						},
-						readonly: true,
-						hidden: true,
-						width: 'full',
-					},
-					database: {},
-				});
-			}
+			// if (systemFields[2].enabled === true) {
+			// 	fields.push({
+			// 		field: systemFields[2].name,
+			// 		type: 'uuid',
+			// 		system: {
+			// 			special: 'user_created',
+			// 			interface: 'owner',
+			// 			options: {
+			// 				template: '{{first_name}} {{last_name}}',
+			// 				display: 'both',
+			// 			},
+			// 			readonly: true,
+			// 			hidden: true,
+			// 			width: 'full',
+			// 		},
+			// 		database: {},
+			// 	});
+			// }
 
-			if (systemFields[3].enabled === true) {
-				fields.push({
-					field: systemFields[3].name,
-					type: 'timestamp',
-					system: {
-						special: 'datetime_created',
-						interface: 'datetime-created',
-						readonly: true,
-						hidden: true,
-						width: 'full',
-					},
-				});
-			}
+			// if (systemFields[3].enabled === true) {
+			// 	fields.push({
+			// 		field: systemFields[3].name,
+			// 		type: 'timestamp',
+			// 		system: {
+			// 			special: 'datetime_created',
+			// 			interface: 'datetime-created',
+			// 			readonly: true,
+			// 			hidden: true,
+			// 			width: 'full',
+			// 		},
+			// 	});
+			// }
 
-			if (systemFields[4].enabled === true) {
-				fields.push({
-					field: systemFields[4].name,
-					type: 'uuid',
-					system: {
-						special: 'user_updated',
-						interface: 'user-updated',
-						options: {
-							template: '{{first_name}} {{last_name}}',
-							display: 'both',
-						},
-						readonly: true,
-						hidden: true,
-						width: 'full',
-					},
-				});
-			}
+			// if (systemFields[4].enabled === true) {
+			// 	fields.push({
+			// 		field: systemFields[4].name,
+			// 		type: 'uuid',
+			// 		system: {
+			// 			special: 'user_updated',
+			// 			interface: 'user-updated',
+			// 			options: {
+			// 				template: '{{first_name}} {{last_name}}',
+			// 				display: 'both',
+			// 			},
+			// 			readonly: true,
+			// 			hidden: true,
+			// 			width: 'full',
+			// 		},
+			// 	});
+			// }
 
-			if (systemFields[5].enabled === true) {
-				fields.push({
-					field: systemFields[5].name,
-					type: 'timestamp',
-					system: {
-						special: 'datetime_updated',
-						interface: 'datetime-updated',
-						readonly: true,
-						hidden: true,
-						width: 'full',
-					},
-				});
-			}
+			// if (systemFields[5].enabled === true) {
+			// 	fields.push({
+			// 		field: systemFields[5].name,
+			// 		type: 'timestamp',
+			// 		system: {
+			// 			special: 'datetime_updated',
+			// 			interface: 'datetime-updated',
+			// 			readonly: true,
+			// 			hidden: true,
+			// 			width: 'full',
+			// 		},
+			// 	});
+			// }
 
 			return fields;
 		}
