@@ -30,7 +30,7 @@
 
 				<v-list-item @click="duplicateActive = true">
 					<v-list-item-icon>
-						<v-icon name="control_point_duplicate" />
+						<v-icon name="content_copy" />
 					</v-list-item-icon>
 					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 				</v-list-item>
