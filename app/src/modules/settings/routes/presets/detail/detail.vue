@@ -398,17 +398,17 @@ export default defineComponent({
 
 				const options = [
 					{
-						text: i18n.t('all'),
+						text: i18n.t('global') + ': ' + i18n.t('all'),
 						value: 'all',
 					},
 				];
 
 				roles.value?.forEach((role) => {
-					options.push({ text: i18n.t('role') + ' ' + role.name, value: `role_${role.id}` });
+					options.push({ text: i18n.t('role') + ': ' + role.name, value: `role_${role.id}` });
 				});
 
 				users.value?.forEach((user) => {
-					options.push({ text: i18n.t('user') + ' ' + user.name, value: `user_${user.id}` });
+					options.push({ text: i18n.t('user') + ': ' + user.name, value: `user_${user.id}` });
 				});
 
 				return options;
