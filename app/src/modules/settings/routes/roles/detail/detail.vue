@@ -55,7 +55,7 @@
 
 				<v-skeleton-loader v-if="loading" />
 				<template v-else>
-					<v-notice v-if="(edits.admin !== undefined ? edits.admin : item.admin) === true">
+					<v-notice v-if="(edits.admin !== undefined ? edits.admin : item && item.admin) === true">
 						{{ $t('admins_have_all_permissions') }}
 					</v-notice>
 
