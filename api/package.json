@@ -25,14 +25,41 @@
   ],
   "keywords": [
     "directus",
-    "api",
-    "headless",
+    "realtime",
     "database",
+    "api",
+    "rest",
+    "graphql",
+    "app",
+    "dashboard",
+    "content management system",
+    "content management framework",
+    "headless",
     "cms",
-    "dam",
-    "crm"
+    "mysql",
+    "postgresql",
+    "sqlite",
+    "mariadb",
+    "framework",
+    "vue"
   ],
-  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "author": {
+    "name": "Monospace Inc",
+    "email": "info@monospace.io",
+    "url": "https://monospace.io"
+  },
+  "maintainers": [
+    {
+      "name": "Rijk van Zanten",
+      "email": "rijkvanzanten@me.com",
+      "url": "https://github.com/rijkvanzanten"
+    },
+    {
+      "name": "Ben Haynes",
+      "email": "ben@rngr.org",
+      "url": "https://github.com/benhaynes"
+    }
+  ],
   "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/directus/next/issues"
