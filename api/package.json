@@ -159,5 +159,6 @@
     "*.{js,ts}": [
       "prettier --write"
     ]
-  }
+  },
+  "gitHead": "807b3e56438e360ce307f6da4200625eed0fb0ef"
 }
