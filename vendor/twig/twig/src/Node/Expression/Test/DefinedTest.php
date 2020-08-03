@@ -35,7 +35,7 @@ use Twig\Node\Node;
  */
 class DefinedTest extends TestExpression
 {
-    public function __construct(Node $node, string $name, Node $arguments = null, int $lineno)
+    public function __construct(Node $node, string $name, ?Node $arguments, int $lineno)
     {
         if ($node instanceof NameExpression) {
             $node->setAttribute('is_defined_test', true);

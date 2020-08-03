@@ -28,7 +28,7 @@ use Twig\Source;
  */
 final class ModuleNode extends Node
 {
-    public function __construct(Node $body, AbstractExpression $parent = null, Node $blocks, Node $macros, Node $traits, $embeddedTemplates, Source $source)
+    public function __construct(Node $body, ?AbstractExpression $parent, Node $blocks, Node $macros, Node $traits, $embeddedTemplates, Source $source)
     {
         $nodes = [
             'body' => $body,

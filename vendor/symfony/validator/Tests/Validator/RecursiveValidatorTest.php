@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Constraints\Required;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Context\ExecutionContextFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -28,6 +29,7 @@ use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
 use Symfony\Component\Validator\Tests\Constraints\Fixtures\ChildA;
 use Symfony\Component\Validator\Tests\Constraints\Fixtures\ChildB;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
+use Symfony\Component\Validator\Tests\Fixtures\EntityParent;
 use Symfony\Component\Validator\Tests\Fixtures\EntityWithGroupedConstraintOnMethods;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
@@ -141,6 +143,31 @@ class RecursiveValidatorTest extends AbstractTest
         $this->assertCount(2, $violations);
         $this->assertInstanceOf(NotNull::class, $violations->get(0)->getConstraint());
         $this->assertInstanceOf(IsTrue::class, $violations->get(1)->getConstraint());
+    }
+
+    public function testValidConstraintOnGetterReturningNull()
+    {
+        $metadata = new ClassMetadata(EntityParent::class);
+        $metadata->addGetterConstraint('child', new Valid());
+
+        $this->metadataFactory->addMetadata($metadata);
+
+        $violations = $this->validator->validate(new EntityParent());
+
+        $this->assertCount(0, $violations);
+    }
+
+    public function testNotNullConstraintOnGetterReturningNull()
+    {
+        $metadata = new ClassMetadata(EntityParent::class);
+        $metadata->addGetterConstraint('child', new NotNull());
+
+        $this->metadataFactory->addMetadata($metadata);
+
+        $violations = $this->validator->validate(new EntityParent());
+
+        $this->assertCount(1, $violations);
+        $this->assertInstanceOf(NotNull::class, $violations->get(0)->getConstraint());
     }
 
     public function testAllConstraintValidateAllGroupsForNestedConstraints()

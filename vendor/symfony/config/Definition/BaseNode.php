@@ -26,7 +26,7 @@ abstract class BaseNode implements NodeInterface
 {
     const DEFAULT_PATH_SEPARATOR = '.';
 
-    private static $placeholderUniquePrefix;
+    private static $placeholderUniquePrefixes = [];
     private static $placeholders = [];
 
     protected $name;
@@ -74,7 +74,7 @@ abstract class BaseNode implements NodeInterface
     }
 
     /**
-     * Sets a common prefix for dynamic placeholder values.
+     * Adds a common prefix for dynamic placeholder values.
      *
      * Matching configuration values will be skipped from being processed and are returned as is, thus preserving the
      * placeholder. An exact match provided by {@see setPlaceholder()} might take precedence.
@@ -83,7 +83,7 @@ abstract class BaseNode implements NodeInterface
      */
     public static function setPlaceholderUniquePrefix(string $prefix): void
     {
-        self::$placeholderUniquePrefix = $prefix;
+        self::$placeholderUniquePrefixes[] = $prefix;
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class BaseNode implements NodeInterface
      */
     public static function resetPlaceholders(): void
     {
-        self::$placeholderUniquePrefix = null;
+        self::$placeholderUniquePrefixes = [];
         self::$placeholders = [];
     }
 
@@ -513,8 +513,10 @@ abstract class BaseNode implements NodeInterface
                 return self::$placeholders[$value];
             }
 
-            if (self::$placeholderUniquePrefix && 0 === strpos($value, self::$placeholderUniquePrefix)) {
-                return [];
+            foreach (self::$placeholderUniquePrefixes as $placeholderUniquePrefix) {
+                if (0 === strpos($value, $placeholderUniquePrefix)) {
+                    return [];
+                }
             }
         }
 

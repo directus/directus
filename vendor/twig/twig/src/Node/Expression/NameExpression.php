@@ -36,7 +36,7 @@ class NameExpression extends AbstractExpression
         if ($this->getAttribute('is_defined_test')) {
             if ($this->isSpecial()) {
                 $compiler->repr(true);
-            } elseif (\PHP_VERSION_ID >= 700400) {
+            } elseif (\PHP_VERSION_ID >= 70400) {
                 $compiler
                     ->raw('array_key_exists(')
                     ->string($name)

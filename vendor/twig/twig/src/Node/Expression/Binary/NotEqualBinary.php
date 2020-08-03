@@ -24,11 +24,11 @@ class NotEqualBinary extends AbstractBinary
         }
 
         $compiler
-            ->raw('0 !== twig_compare(')
+            ->raw('(0 !== twig_compare(')
             ->subcompile($this->getNode('left'))
             ->raw(', ')
             ->subcompile($this->getNode('right'))
-            ->raw(')')
+            ->raw('))')
         ;
     }
 

@@ -7,7 +7,7 @@ missing items:
 
 .. code-block:: twig
 
-    {% set items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] %}
+    {% set items = ['a', 'b', 'c', 'd'] %}
 
     <table>
     {% for row in items|batch(3, 'No item') %}
@@ -31,11 +31,6 @@ The above example will be rendered as:
         </tr>
         <tr>
             <td>d</td>
-            <td>e</td>
-            <td>f</td>
-        </tr>
-        <tr>
-            <td>g</td>
             <td>No item</td>
             <td>No item</td>
         </tr>

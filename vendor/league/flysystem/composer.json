@@ -25,7 +25,7 @@
         "ext-fileinfo": "*"
     },
     "require-dev": {
-        "phpspec/phpspec": "^3.4",
+        "phpspec/phpspec": "^3.4 || ^4.0 || ^5.0 || ^6.0",
         "phpunit/phpunit": "^5.7.26"
     },
     "autoload": {

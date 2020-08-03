@@ -35,12 +35,14 @@ class AddConstraintValidatorsPassTest extends TestCase
         $addConstraintValidatorsPass = new AddConstraintValidatorsPass();
         $addConstraintValidatorsPass->process($container);
 
+        $locator = $container->getDefinition((string) $validatorFactory->getArgument(0));
+        $this->assertTrue(!$locator->isPublic() || $locator->isPrivate());
         $expected = (new Definition(ServiceLocator::class, [[
             Validator1::class => new ServiceClosureArgument(new Reference('my_constraint_validator_service1')),
             'my_constraint_validator_alias1' => new ServiceClosureArgument(new Reference('my_constraint_validator_service1')),
             Validator2::class => new ServiceClosureArgument(new Reference('my_constraint_validator_service2')),
         ]]))->addTag('container.service_locator')->setPublic(false);
-        $this->assertEquals($expected, $container->getDefinition((string) $validatorFactory->getArgument(0)));
+        $this->assertEquals($expected, $locator->setPublic(false));
     }
 
     public function testAbstractConstraintValidator()

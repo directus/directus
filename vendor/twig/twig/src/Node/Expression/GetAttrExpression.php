@@ -18,7 +18,7 @@ use Twig\Template;
 
 class GetAttrExpression extends AbstractExpression
 {
-    public function __construct(AbstractExpression $node, AbstractExpression $attribute, AbstractExpression $arguments = null, string $type, int $lineno)
+    public function __construct(AbstractExpression $node, AbstractExpression $attribute, ?AbstractExpression $arguments, string $type, int $lineno)
     {
         $nodes = ['node' => $node, 'attribute' => $attribute];
         if (null !== $arguments) {

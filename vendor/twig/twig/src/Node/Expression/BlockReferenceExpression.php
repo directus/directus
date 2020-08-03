@@ -22,7 +22,7 @@ use Twig\Node\Node;
  */
 class BlockReferenceExpression extends AbstractExpression
 {
-    public function __construct(Node $name, Node $template = null, int $lineno, string $tag = null)
+    public function __construct(Node $name, ?Node $template, int $lineno, string $tag = null)
     {
         $nodes = ['name' => $name];
         if (null !== $template) {

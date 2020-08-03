@@ -87,7 +87,7 @@ trait ServiceLocatorTrait
                 } else {
                     $type = (new \ReflectionFunction($factory))->getReturnType();
 
-                    $this->providedTypes[$name] = $type ? ($type->allowsNull() ? '?' : '').$type->getName() : '?';
+                    $this->providedTypes[$name] = $type ? ($type->allowsNull() ? '?' : '').($type instanceof \ReflectionNamedType ? $type->getName() : $type) : '?';
                 }
             }
         }

@@ -74,8 +74,6 @@ abstract class Template
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @param array $context
-     *
      * @return Template|TemplateWrapper|false The parent template or false if there is no parent
      */
     public function getParent(array $context)
@@ -313,7 +311,7 @@ abstract class Template
             }
 
             if ($template === $this->getTemplateName()) {
-                $class = \get_class($this);
+                $class = static::class;
                 if (false !== $pos = strrpos($class, '___', -1)) {
                     $class = substr($class, 0, $pos);
                 }

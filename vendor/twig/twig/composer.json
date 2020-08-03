@@ -5,6 +5,7 @@
     "keywords": ["templating"],
     "homepage": "https://twig.symfony.com",
     "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Fabien Potencier",
@@ -23,12 +24,12 @@
         }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": ">=7.2.5",
         "symfony/polyfill-mbstring": "^1.3",
         "symfony/polyfill-ctype": "^1.8"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^4.4|^5.0",
+        "symfony/phpunit-bridge": "^4.4.9|^5.0.9",
         "psr/container": "^1.0"
     },
     "autoload": {

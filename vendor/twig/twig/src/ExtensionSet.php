@@ -103,7 +103,7 @@ final class ExtensionSet
 
         foreach ($this->extensions as $extension) {
             $r = new \ReflectionObject($extension);
-            if (file_exists($r->getFileName()) && ($extensionTime = filemtime($r->getFileName())) > $this->lastModified) {
+            if (is_file($r->getFileName()) && ($extensionTime = filemtime($r->getFileName())) > $this->lastModified) {
                 $this->lastModified = $extensionTime;
             }
         }

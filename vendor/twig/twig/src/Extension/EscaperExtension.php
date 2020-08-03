@@ -260,7 +260,7 @@ function twig_escape_filter(Environment $env, $string, $strategy = 'html', $char
 
                 /*
                  * A few characters have short escape sequences in JSON and JavaScript.
-                 * Escape sequences supported only by JavaScript, not JSON, are ommitted.
+                 * Escape sequences supported only by JavaScript, not JSON, are omitted.
                  * \" is also supported but omitted, because the resulting string is not HTML safe.
                  */
                 static $shortMap = [

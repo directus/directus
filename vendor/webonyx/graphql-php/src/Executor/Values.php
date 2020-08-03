@@ -77,7 +77,7 @@ class Values
                                 $error->getSource(),
                                 $error->getPositions(),
                                 $error->getPath(),
-                                $error,
+                                $error->getPrevious(),
                                 $error->getExtensions()
                             );
                         }

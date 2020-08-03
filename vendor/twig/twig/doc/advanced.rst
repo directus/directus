@@ -182,7 +182,7 @@ If you want to access the current environment instance in your filter, set the
 ``needs_environment`` option to ``true``; Twig will pass the current
 environment as the first argument to the filter call::
 
-    $filter = new \Twig\TwigFilter('rot13', function (Twig_Environment $env, $string) {
+    $filter = new \Twig\TwigFilter('rot13', function (\Twig\Environment $env, $string) {
         // get the current charset for instance
         $charset = $env->getCharset();
 
@@ -201,7 +201,7 @@ the first argument to the filter call (or the second one if
         // ...
     }, ['needs_context' => true]);
 
-    $filter = new \Twig\TwigFilter('rot13', function (Twig_Environment $env, $context, $string) {
+    $filter = new \Twig\TwigFilter('rot13', function (\Twig\Environment $env, $context, $string) {
         // ...
     }, ['needs_context' => true, 'needs_environment' => true]);
 
@@ -326,14 +326,20 @@ When creating tests you can use the ``node_class`` option to provide custom test
 compilation. This is useful if your test can be compiled into PHP primitives.
 This is used by many of the tests built into Twig::
 
-    $twig = new \Twig\Environment($loader);
-    $test = new \Twig\TwigTest(
+    namespace App;
+    
+    use Twig\Environment;
+    use Twig\Node\Expression\TestExpression;
+    use Twig\TwigTest;
+    
+    $twig = new Environment($loader);
+    $test = new TwigTest(
         'odd',
         null,
-        ['node_class' => \Twig\Node\Expression\Test\OddTest::class]);
+        ['node_class' => OddTestExpression::class]);
     $twig->addTest($test);
 
-    class Twig_Node_Expression_Test_Odd extends \Twig\Node\Expression\TestExpression
+    class OddTestExpression extends TestExpression
     {
         public function compile(\Twig\Compiler $compiler)
         {

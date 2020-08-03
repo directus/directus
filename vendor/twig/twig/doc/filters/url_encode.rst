@@ -17,6 +17,7 @@ or an array as query string:
 
 .. note::
 
-    Internally, Twig uses the PHP ``rawurlencode``.
+    Internally, Twig uses the PHP `rawurlencode`_ or the `http_build_query`_ function.
 
 .. _`rawurlencode`: https://secure.php.net/rawurlencode
+.. _`http_build_query`: https://secure.php.net/http_build_query

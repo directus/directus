@@ -16,7 +16,7 @@ use Twig\Node\Node;
 
 class TestExpression extends CallExpression
 {
-    public function __construct(Node $node, string $name, Node $arguments = null, int $lineno)
+    public function __construct(Node $node, string $name, ?Node $arguments, int $lineno)
     {
         $nodes = ['node' => $node];
         if (null !== $arguments) {

@@ -13,10 +13,13 @@ namespace Symfony\Component\Validator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Tests\Fixtures\ClassConstraint;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintB;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintC;
+use Symfony\Component\Validator\Tests\Fixtures\ConstraintWithStaticProperty;
+use Symfony\Component\Validator\Tests\Fixtures\ConstraintWithTypedProperty;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintWithValue;
 use Symfony\Component\Validator\Tests\Fixtures\ConstraintWithValueAsDefault;
 
@@ -244,5 +247,26 @@ class ConstraintTest extends TestCase
         $this->expectException('Symfony\Component\Validator\Exception\ConstraintDefinitionException');
         $this->expectExceptionMessage('No default option is configured for constraint "Symfony\Component\Validator\Tests\Fixtures\ConstraintB".');
         new ConstraintB(['value' => 1]);
+    }
+
+    public function testStaticPropertiesAreNoOptions()
+    {
+        $this->expectException(InvalidOptionsException::class);
+
+        new ConstraintWithStaticProperty([
+            'foo' => 'bar',
+        ]);
+    }
+
+    /**
+     * @requires PHP 7.4
+     */
+    public function testSetTypedProperty()
+    {
+        $constraint = new ConstraintWithTypedProperty([
+            'foo' => 'bar',
+        ]);
+
+        $this->assertSame('bar', $constraint->foo);
     }
 }

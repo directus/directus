@@ -1,5 +1,7 @@
 language: php
 
+dist: xenial
+
 cache:
     directories:
         - vendor
@@ -12,24 +14,28 @@ env:
 
 before_install:
     - phpenv config-rm xdebug.ini || return 0
+    - echo memory_limit = -1 >> ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/travis.ini
 
 install:
     - travis_retry composer install
+    - export PHPUNIT=$(readlink -f ./vendor/bin/simple-phpunit)
+    - $PHPUNIT install
     - (cd extra/cssinliner-extra && travis_retry composer install)
     - (cd extra/html-extra && travis_retry composer install)
     - (cd extra/inky-extra && travis_retry composer install)
     - (cd extra/intl-extra && travis_retry composer install)
+    - ([[ $TRAVIS_PHP_VERSION = nightly ]] && (cd extra/markdown-extra && composer config platform.php 7.4.99) || true)
     - (cd extra/markdown-extra && travis_retry composer install)
     - (cd extra/string-extra && travis_retry composer install)
 
 script:
-    - ./vendor/bin/simple-phpunit
-    - (cd extra/cssinliner-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/html-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/inky-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/intl-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/markdown-extra && ./vendor/bin/simple-phpunit)
-    - (cd extra/string-extra && ./vendor/bin/simple-phpunit)
+    - $PHPUNIT
+    - (cd extra/cssinliner-extra && $PHPUNIT)
+    - (cd extra/html-extra && $PHPUNIT)
+    - (cd extra/inky-extra && $PHPUNIT)
+    - (cd extra/intl-extra && $PHPUNIT)
+    - (cd extra/markdown-extra && $PHPUNIT)
+    - (cd extra/string-extra && $PHPUNIT)
 
 jobs:
     fast_finish: true
@@ -37,6 +43,7 @@ jobs:
         - php: 7.2
         - php: 7.3
         - php: 7.4
+        - php: nightly
         # Drupal does not support 3.x yet
         #- stage: integration tests
         #  php: 7.3

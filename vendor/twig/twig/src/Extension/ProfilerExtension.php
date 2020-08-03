@@ -47,6 +47,6 @@ class ProfilerExtension extends AbstractExtension
 
     public function getNodeVisitors(): array
     {
-        return [new ProfilerNodeVisitor(\get_class($this))];
+        return [new ProfilerNodeVisitor(static::class)];
     }
 }

@@ -66,6 +66,11 @@ class Terminal
             return self::$stty;
         }
 
+        // skip check if exec function is disabled
+        if (!\function_exists('exec')) {
+            return false;
+        }
+
         exec('stty 2>&1', $output, $exitcode);
 
         return self::$stty = 0 === $exitcode;

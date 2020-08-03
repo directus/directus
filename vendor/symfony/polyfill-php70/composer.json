@@ -1,0 +1,37 @@
+{
+    "name": "symfony/polyfill-php70",
+    "type": "library",
+    "description": "Symfony polyfill backporting some PHP 7.0+ features to lower PHP versions",
+    "keywords": ["polyfill", "shim", "compatibility", "portable"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "paragonie/random_compat": "~1.0|~2.0|~9.99"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Polyfill\\Php70\\": "" },
+        "files": [ "bootstrap.php" ],
+        "classmap": [ "Resources/stubs" ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.18-dev"
+        },
+        "thanks": {
+            "name": "symfony/polyfill",
+            "url": "https://github.com/symfony/polyfill"
+        }
+    }
+}

@@ -465,10 +465,15 @@ class Lexer
         foreach ($operators as $operator => $length) {
             // an operator that ends with a character must be followed by
             // a whitespace or a parenthesis
+            $r = preg_quote($operator, '/');
             if (ctype_alpha($operator[$length - 1])) {
-                $r = preg_quote($operator, '/').'(?=[\s()])';
-            } else {
-                $r = preg_quote($operator, '/');
+                $r .= '(?=[\s()])';
+            }
+
+            // an operator that begins with a character must have a space before
+            // or a parenthesis
+            if (ctype_alpha($operator[0])) {
+                $r = '(?<=[\s(])'.$r;
             }
 
             // an operator with a space can be any amount of whitespaces

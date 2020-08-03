@@ -125,6 +125,7 @@ class FacebookUser implements ResourceOwnerInterface
      * Returns the cover photo URL of the user as a string if present.
      *
      * @return string|null
+     * @deprecated
      */
     public function getCoverPhotoUrl()
     {
@@ -145,6 +146,7 @@ class FacebookUser implements ResourceOwnerInterface
      * Returns the locale of the user as a string if available.
      *
      * @return string|null
+     * @deprecated
      */
     public function getLocale()
     {
@@ -165,6 +167,7 @@ class FacebookUser implements ResourceOwnerInterface
      * Returns the current timezone offset from UTC (from -24 to 24)
      *
      * @return float|null
+     * @deprecated
      */
     public function getTimezone()
     {

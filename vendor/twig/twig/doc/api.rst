@@ -133,10 +133,7 @@ Compilation Cache
 ~~~~~~~~~~~~~~~~~
 
 All template loaders can cache the compiled templates on the filesystem for
-future reuse. It speeds up Twig a lot as templates are only compiled once; and
-the performance boost is even larger if you use a PHP accelerator such as
-OPCache. See the ``cache`` and ``auto_reload`` options of ``\Twig\Environment``
-above for more information.
+future reuse. It speeds up Twig a lot as templates are only compiled once.
 
 Built-in Loaders
 ~~~~~~~~~~~~~~~~

@@ -28,6 +28,10 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.1-dev"
+        },
+        "thanks": {
+            "name": "symfony/contracts",
+            "url": "https://github.com/symfony/contracts"
         }
     }
 }

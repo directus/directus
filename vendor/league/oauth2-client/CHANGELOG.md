@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.5.0
+
+_Released: 2020-07-18_
+
+* Allow Guzzle 7.x to be used [#847](https://github.com/thephpleague/oauth2-client/pull/847)
+
 ## 2.4.1
 
 _Released: 2018-11-22_

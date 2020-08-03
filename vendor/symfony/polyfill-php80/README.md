@@ -6,6 +6,7 @@ This component provides features added to PHP 8.0 core:
 - `Stringable` interface
 - [`fdiv`](https://php.net/fdiv)
 - `ValueError` class
+- `UnhandledMatchError` class
 - `FILTER_VALIDATE_BOOL` constant
 - [`get_debug_type`](https://php.net/get_debug_type)
 - [`preg_last_error_msg`](https://php.net/preg_last_error_msg)

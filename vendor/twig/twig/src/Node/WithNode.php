@@ -20,7 +20,7 @@ use Twig\Compiler;
  */
 class WithNode extends Node
 {
-    public function __construct(Node $body, Node $variables = null, bool $only = false, int $lineno, string $tag = null)
+    public function __construct(Node $body, ?Node $variables, bool $only, int $lineno, string $tag = null)
     {
         $nodes = ['body' => $body];
         if (null !== $variables) {

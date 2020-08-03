@@ -18,6 +18,7 @@ class EntityParent implements EntityInterfaceA
     protected $firstName;
     private $internal;
     private $data = 'Data';
+    private $child;
 
     /**
      * @NotNull
@@ -27,5 +28,10 @@ class EntityParent implements EntityInterfaceA
     public function getData()
     {
         return 'Data';
+    }
+
+    public function getChild()
+    {
+        return $this->child;
     }
 }
