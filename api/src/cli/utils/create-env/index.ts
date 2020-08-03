@@ -16,7 +16,7 @@ const liquidEngine = new Liquid({
 
 const defaults = {
 	general: {
-		PORT: 3000,
+		PORT: 41201,
 		PUBLIC_URL: '/',
 	},
 	storage: {
