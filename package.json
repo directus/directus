@@ -2,7 +2,9 @@
   "name": "directus-monorepo",
   "private": true,
   "scripts": {
-    "setup": "lerna clean -y && lerna bootstrap --hoist"
+    "setup": "lerna clean -y && lerna bootstrap",
+    "dev": "lerna run --parallel dev",
+    "build": "lerna run build"
   },
   "repository": {
     "type": "git",
