@@ -1,3 +1,6 @@
 .DS_Store
 node_modules
 .vs_code
+.env
+.npm-debug.log
+.lerna-debug.log
