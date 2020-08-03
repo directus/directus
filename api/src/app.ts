@@ -60,8 +60,10 @@ if (process.env.CORS_ENABLED === 'true') {
 app.get('/', (req, res) => res.redirect('/admin/'))
 
 	// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
-	.use('/admin', express.static(path.join(__dirname, 'admin')))
-	.use('/admin/*', (req, res) => res.sendFile(path.join(__dirname, 'admin/index.html')))
+	.use('/admin', express.static(path.join(__dirname, '../node_modules', '@directus/app/dist')))
+	.use('/admin/*', (req, res) =>
+		res.sendFile(path.join(__dirname, '../node_modules', '@directus/app/dist/index.html'))
+	)
 
 	.use('/auth', authRouter)
 

@@ -1,0 +1,19 @@
+{
+  "name": "directus-monorepo",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/next.git"
+  },
+  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/directus/next/issues"
+  },
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
+}

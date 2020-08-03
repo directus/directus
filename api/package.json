@@ -11,7 +11,7 @@
     "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
     "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
-    "prepublishOnly": "make bundle"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -66,6 +66,7 @@
   },
   "homepage": "https://github.com/directus/next#readme",
   "dependencies": {
+    "@directus/app": "^9.0.0-alpha.3",
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
