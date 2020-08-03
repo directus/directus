@@ -2,7 +2,7 @@
   "name": "directus-monorepo",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "lerna clean -y && lerna bootstrap --hoist"
   },
   "repository": {
     "type": "git",
