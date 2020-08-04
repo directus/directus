@@ -1,145 +1,100 @@
-import { Query } from '../types/query';
 import ItemsService from './items';
 import storage from '../storage';
-import database from '../database';
-import logger from '../logger';
 import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
 import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import { Accountability, Item } from '../types';
-import { Readable } from 'stream';
+import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import { clone } from 'lodash';
 
-/**
- * @todo turn into class
- */
-
-export const createFile = async (
-	data: Partial<Item>,
-	stream: NodeJS.ReadableStream,
-	accountability?: Accountability
-) => {
-	const id = uuidv4();
-	const itemsService = new ItemsService('directus_files', { accountability });
-
-	const payload: Partial<Item> = {
-		...data,
-		id,
-	};
-
-	payload.filename_disk = payload.id + path.extname(payload.filename_download);
-
-	/**
-	 * @note
-	 * We save a subset first. This allows the permissions check to run and the file to be created with
-	 * proper accountability and revisions.
-	 * Afterwards, we'll save the file to disk. During this process, we extract the metadata of the
-	 * file itself. After the file is saved to disk, we'll update the just created item with the
-	 * updated values to ensure we save the filesize etc. We explicitly save this without accountability
-	 * in order to prevent update permissions to kick in and to pervent an extra revision from being created
-	 */
-	const pk = await itemsService.create(payload);
-
-	if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
-		const pipeline = sharp();
-
-		pipeline.metadata().then((meta) => {
-			payload.width = meta.width;
-			payload.height = meta.height;
-			payload.filesize = meta.size;
-			payload.metadata = {};
-
-			if (meta.icc) {
-				payload.metadata.icc = parseICC(meta.icc);
-			}
-
-			if (meta.exif) {
-				payload.metadata.exif = parseEXIF(meta.exif);
-			}
-
-			if (meta.iptc) {
-				payload.metadata.iptc = parseIPTC(meta.iptc);
-
-				payload.title = payload.title || payload.metadata.iptc.headline;
-				payload.description = payload.description || payload.metadata.iptc.caption;
-			}
-		});
-
-		await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-
-		await itemsService.update(payload, pk);
-	} else {
-		await storage.disk(data.storage).put(payload.filename_disk, stream);
+export default class FilesService extends ItemsService {
+	constructor(options?: AbstractServiceOptions) {
+		super('directus_files', options);
 	}
 
-	return pk;
-};
+	async upload(
+		stream: NodeJS.ReadableStream,
+		data: Partial<File> & { filename_download: string; storage: string },
+		primaryKey?: PrimaryKey
+	) {
+		const payload = clone(data);
 
-export const readFiles = async (query: Query, accountability?: Accountability) => {
-	const itemsService = new ItemsService('directus_files', { accountability });
-	return await itemsService.readByQuery(query);
-};
+		if (primaryKey !== undefined) {
+			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
+			// delete the previously saved file and thumbnails to ensure they're generated fresh
+			const disk = storage.disk(payload.storage);
 
-export const readFile = async (
-	pk: string | number,
-	query: Query,
-	accountability?: Accountability
-) => {
-	const itemsService = new ItemsService('directus_files', { accountability });
-	return await itemsService.readByKey(pk, query);
-};
+			for await (const file of disk.flatList(String(primaryKey))) {
+				await disk.delete(file.path);
+			}
 
-export const updateFile = async (
-	pk: string | number,
-	data: Partial<Item>,
-	accountability?: Accountability,
-	stream?: NodeJS.ReadableStream
-) => {
-	const itemsService = new ItemsService('directus_files', { accountability });
+			await this.update(payload, primaryKey);
+		} else {
+			primaryKey = await this.create(payload);
+		}
 
-	/**
-	 * @TODO
-	 * Handle changes in storage adapter -> going from local to S3 needs to delete from one, upload to the other
-	 */
+		payload.filename_disk = primaryKey + path.extname(payload.filename_download);
 
-	/**
-	 * @TODO
-	 * Remove old thumbnails
-	 */
+		if (!payload.type) {
+			payload.type = 'application/octet-stream';
+		}
 
-	/**
-	 * @TODO
-	 * Extract metadata here too
-	 */
+		if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
+			const pipeline = sharp();
 
-	if (stream) {
-		const file = await database
-			.select('storage', 'filename_disk')
-			.from('directus_files')
-			.where({ id: pk })
-			.first();
+			pipeline.metadata().then((meta) => {
+				payload.width = meta.width;
+				payload.height = meta.height;
+				payload.filesize = meta.size;
+				payload.metadata = {};
 
-		await storage.disk(file.storage).put(file.filename_disk, stream as Readable);
+				if (meta.icc) {
+					payload.metadata.icc = parseICC(meta.icc);
+				}
+
+				if (meta.exif) {
+					payload.metadata.exif = parseEXIF(meta.exif);
+				}
+
+				if (meta.iptc) {
+					payload.metadata.iptc = parseIPTC(meta.iptc);
+
+					payload.title = payload.title || payload.metadata.iptc.headline;
+					payload.description = payload.description || payload.metadata.iptc.caption;
+				}
+			});
+
+			await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
+		} else {
+			await storage.disk(data.storage).put(payload.filename_disk, stream);
+		}
+
+		// We do this in a service without accountability. Even if you don't have update permissions to the file,
+		// we still want to be able to set the extracted values from the file on create
+		const sudoService = new ItemsService('directus_files');
+		await sudoService.update(payload, primaryKey);
+
+		return primaryKey;
 	}
 
-	return await itemsService.update(data, pk);
-};
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const keys = Array.isArray(key) ? key : [key];
+		const files = await super.readByKey(keys, { fields: ['id', 'storage'] });
 
-export const deleteFile = async (pk: string, accountability?: Accountability) => {
-	/** @todo use ItemsService */
-	const file = await database
-		.select('storage', 'filename_disk')
-		.from('directus_files')
-		.where({ id: pk })
-		.first();
+		for (const file of files) {
+			const disk = storage.disk(file.storage);
 
-	/** @todo delete thumbnails here. should be able to use storage.disk().flatList(prefix: string) */
-	const { wasDeleted } = await storage.disk(file.storage).delete(file.filename_disk);
+			// Delete file + thumbnails
+			for await (const { path } of disk.flatList(file.id)) {
+				await disk.delete(path);
+			}
+		}
 
-	logger.info(`File ${file.filename_download} deleted: ${wasDeleted}`);
+		await super.delete(keys);
 
-	/** @todo use itemsService */
-	await database.delete().from('directus_files').where({ id: pk });
-};
+		return key;
+	}
+}

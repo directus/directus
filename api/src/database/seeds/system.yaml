@@ -239,7 +239,6 @@ tables:
     filename_disk:
       type: string
       length: 255
-      nullable: false
     filename_download:
       type: string
       length: 255

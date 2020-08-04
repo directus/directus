@@ -2,9 +2,9 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
-import * as FilesService from '../services/files';
+import FilesService from '../services/files';
 import useCollection from '../middleware/use-collection';
-import { Item } from '../types';
+import { File, PrimaryKey } from '../types';
 import path from 'path';
 import formatTitle from '@directus/format-title';
 import env from '../env';
@@ -13,114 +13,102 @@ const router = express.Router();
 
 router.use(useCollection('directus_files'));
 
-const multipartHandler = (operation: 'create' | 'update') =>
-	asyncHandler(async (req, res, next) => {
-		const busboy = new Busboy({ headers: req.headers });
-		const savedFiles: Item[] = [];
+const multipartHandler = asyncHandler(async (req, res, next) => {
+	if (req.is('multipart/form-data') === false) return next();
 
-		/**
-		 * The order of the fields in multipart/form-data is important. We require that all fields
-		 * are provided _before_ the files. This allows us to set the storage location, and create
-		 * the row in directus_files async during the upload of the actual file.
-		 */
+	const busboy = new Busboy({ headers: req.headers });
+	const savedFiles: PrimaryKey[] = [];
+	const service = new FilesService({ accountability: req.accountability });
 
-		let disk: string = (env.STORAGE_LOCATIONS as string).split(',')[0].trim();
-		let payload: Partial<Item> = {};
-		let fileCount = 0;
+	/**
+	 * The order of the fields in multipart/form-data is important. We require that all fields
+	 * are provided _before_ the files. This allows us to set the storage location, and create
+	 * the row in directus_files async during the upload of the actual file.
+	 */
 
-		busboy.on('field', (fieldname, val) => {
-			if (fieldname === 'storage') {
-				disk = val;
-			}
+	let disk: string = (env.STORAGE_LOCATIONS as string).split(',')[0].trim();
+	let payload: Partial<File> = {};
+	let fileCount = 0;
 
-			payload[fieldname] = val;
-		});
-
-		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
-			fileCount++;
-
-			payload = {
-				...payload,
-				filename_download: filename,
-				type: mimetype,
-			};
-
-			if (!payload.storage) {
-				payload.storage = disk;
-			}
-
-			if (!payload.title) {
-				payload.title = formatTitle(path.parse(filename).name);
-			}
-
-			if (req.accountability?.user) {
-				payload.uploaded_by = req.accountability.user;
-			}
-
-			try {
-				if (operation === 'create') {
-					const pk = await FilesService.createFile(
-						payload,
-						fileStream,
-						req.accountability
-					);
-					const file = await FilesService.readFile(
-						pk,
-						req.sanitizedQuery,
-						req.accountability
-					);
-
-					savedFiles.push(file);
-					tryDone();
-				} else {
-					const pk = await FilesService.updateFile(
-						req.params.pk,
-						payload,
-						req.accountability,
-						fileStream
-					);
-					const file = await FilesService.readFile(
-						pk,
-						req.sanitizedQuery,
-						req.accountability
-					);
-
-					savedFiles.push(file);
-					tryDone();
-				}
-			} catch (err) {
-				busboy.emit('error', err);
-			}
-		});
-
-		busboy.on('error', (error: Error) => {
-			next(error);
-		});
-
-		busboy.on('finish', () => {
-			tryDone();
-		});
-
-		req.pipe(busboy);
-
-		function tryDone() {
-			if (savedFiles.length === fileCount) {
-				if (fileCount === 1) {
-					return res.status(200).json({ data: savedFiles[0] });
-				} else {
-					return res.status(200).json({ data: savedFiles });
-				}
-			}
+	busboy.on('field', (fieldname: keyof File, val) => {
+		if (fieldname === 'storage') {
+			disk = val;
 		}
+
+		payload[fieldname] = val;
 	});
 
-router.post('/', sanitizeQuery, multipartHandler('create'));
+	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		fileCount++;
+
+		if (!payload.title) {
+			payload.title = formatTitle(path.parse(filename).name);
+		}
+
+		if (req.accountability?.user) {
+			payload.uploaded_by = req.accountability.user;
+		}
+
+		const payloadWithRequiredFields: Partial<File> & {
+			filename_download: string;
+			type: string;
+			storage: string;
+		} = {
+			...payload,
+			filename_download: filename,
+			type: mimetype,
+			storage: payload.storage || disk,
+		};
+
+		const primaryKey = await service.upload(fileStream, payloadWithRequiredFields);
+		savedFiles.push(primaryKey);
+		tryDone();
+	});
+
+	busboy.on('error', (error: Error) => {
+		next(error);
+	});
+
+	busboy.on('finish', () => {
+		tryDone();
+	});
+
+	req.pipe(busboy);
+
+	function tryDone() {
+		if (savedFiles.length === fileCount) {
+			res.locals.savedFiles = savedFiles;
+			return next();
+		}
+	}
+});
+
+router.post(
+	'/',
+	sanitizeQuery,
+	multipartHandler,
+	asyncHandler(async (req, res) => {
+		const service = new FilesService({ accountability: req.accountability });
+		let keys: PrimaryKey | PrimaryKey[] = [];
+
+		if (req.is('multipart/form-data')) {
+			keys = res.locals.savedFiles;
+		} else {
+			// @TODO is this ever used in real life? Wouldn't you always upload a file on create?
+			keys = await service.create(req.body);
+		}
+
+		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+		return res.json({ data: record || null });
+	})
+);
 
 router.get(
 	'/',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const records = await FilesService.readFiles(req.sanitizedQuery, req.accountability);
+		const service = new FilesService({ accountability: req.accountability });
+		const records = await service.readByQuery(req.sanitizedQuery);
 		return res.json({ data: records || null });
 	})
 );
@@ -129,11 +117,9 @@ router.get(
 	'/:pk',
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
-		const record = await FilesService.readFile(
-			req.params.pk,
-			req.sanitizedQuery,
-			req.accountability
-		);
+		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const service = new FilesService({ accountability: req.accountability });
+		const record = await service.readByKey(keys as any, req.sanitizedQuery);
 		return res.json({ data: record || null });
 	})
 );
@@ -141,22 +127,29 @@ router.get(
 router.patch(
 	'/:pk',
 	sanitizeQuery,
-	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data')) {
-			return multipartHandler('update')(req, res, next);
-		} else {
-			const pk = await FilesService.updateFile(req.params.pk, req.body, req.accountability);
-			const file = await FilesService.readFile(pk, req.sanitizedQuery, req.accountability);
+	multipartHandler,
+	asyncHandler(async (req, res) => {
+		const service = new FilesService({ accountability: req.accountability });
+		let keys: PrimaryKey | PrimaryKey[] = [];
 
-			return res.status(200).json({ data: file || null });
+		if (req.is('multipart/form-data')) {
+			keys = res.locals.savedFiles;
+		} else {
+			keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+			await service.update(req.body, keys as any);
 		}
+
+		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+		return res.json({ data: record || null });
 	})
 );
 
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res) => {
-		await FilesService.deleteFile(req.params.pk, req.accountability);
+		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const service = new FilesService({ accountability: req.accountability });
+		await service.delete(keys as any);
 		return res.status(200).end();
 	})
 );
