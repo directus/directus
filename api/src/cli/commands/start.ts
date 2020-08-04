@@ -1,7 +1,12 @@
 import logger from '../../logger';
 
 export default async function start() {
-	const env = require('../../env').default;
+	const { default: env, validateEnv } = require('../../env');
+	const { validateDBConnection } = require('../../database');
+
+	validateEnv();
+	await validateDBConnection();
+
 	const app = require('../../app').default;
 
 	const port = env.PORT;
