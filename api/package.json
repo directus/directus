@@ -51,10 +51,10 @@
     "directus": "dist/cli/index.js"
   },
   "scripts": {
-    "start": "NODE_ENV=production node dist/server.js",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-    "dev": "NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
-    "cli": "NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
+    "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
+    "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -135,6 +135,7 @@
     "@types/uuid": "^8.0.0",
     "@types/uuid-validate": "0.0.1",
     "copyfiles": "^2.3.0",
+    "cross-env": "^7.0.2",
     "eslint": "^7.5.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
