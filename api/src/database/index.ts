@@ -2,6 +2,7 @@ import knex, { Config } from 'knex';
 import dotenv from 'dotenv';
 import camelCase from 'camelcase';
 import path from 'path';
+import logger from '../logger';
 import env from '../env';
 
 import SchemaInspector from 'knex-schema-inspector';
@@ -31,6 +32,15 @@ if (env.DB_CLIENT === 'sqlite3') {
 
 const database = knex(knexConfig);
 
-export const schemaInspector = SchemaInspector(database);
+export async function validateDBConnection() {
+	try {
+		await database.raw('select 1+1 as result');
+	} catch (error) {
+		logger.fatal(`Can't connect to the database.`);
+		logger.fatal(error);
+		process.exit(1);
+	}
+}
 
+export const schemaInspector = SchemaInspector(database);
 export default database;

@@ -3,10 +3,11 @@ import bodyParser from 'body-parser';
 import logger from 'express-pino-logger';
 import path from 'path';
 import cors from 'cors';
-
 import env, { validateEnv } from './env';
+import { validateDBConnection } from './database';
 
 validateEnv();
+validateDBConnection();
 
 import errorHandler from './middleware/error-handler';
 
