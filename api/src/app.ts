@@ -1,11 +1,9 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'express-pino-logger';
 import path from 'path';
 import cors from 'cors';
+import env from './env';
 
 import errorHandler from './middleware/error-handler';
 
@@ -44,15 +42,15 @@ app.use(logger())
 		next();
 	});
 
-if (process.env.CORS_ENABLED === 'true') {
+if (env.CORS_ENABLED === 'true') {
 	app.use(
 		cors({
-			origin: process.env.CORS_ORIGIN || true,
-			methods: process.env.CORS_METHODS || 'GET,POST,PATCH,DELETE',
-			allowedHeaders: process.env.CORS_ALLOWED_HEADERS,
-			exposedHeaders: process.env.CORS_EXPOSED_HEADERS,
-			credentials: process.env.CORS_CREDENTIALS === 'true' || undefined,
-			maxAge: Number(process.env.CORS_MAX_AGE) || undefined,
+			origin: env.CORS_ORIGIN || true,
+			methods: env.CORS_METHODS || 'GET,POST,PATCH,DELETE',
+			allowedHeaders: env.CORS_ALLOWED_HEADERS,
+			exposedHeaders: env.CORS_EXPOSED_HEADERS,
+			credentials: env.CORS_CREDENTIALS === 'true' || undefined,
+			maxAge: Number(env.CORS_MAX_AGE) || undefined,
 		})
 	);
 }

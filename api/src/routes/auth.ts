@@ -9,6 +9,7 @@ import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import ms from 'ms';
 import cookieParser from 'cookie-parser';
+import env from '../env';
 
 const router = Router();
 
@@ -61,11 +62,10 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
-				maxAge: ms(process.env.REFRESH_TOKEN_TTL as string),
-				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
 				sameSite:
-					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
-					'strict',
+					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -112,11 +112,10 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
-				maxAge: ms(process.env.REFRESH_TOKEN_TTL as string),
-				secure: process.env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
 				sameSite:
-					(process.env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') ||
-					'strict',
+					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -154,7 +153,7 @@ router.post(
 
 router.use(
 	'/sso',
-	session({ secret: process.env.SECRET as string, saveUninitialized: false, resave: false })
+	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
 );
 
 router.use(grant.express()(getGrantConfig()));

@@ -4,6 +4,7 @@ import isJWT from '../utils/is-jwt';
 import database from '../database';
 import asyncHandler from 'express-async-handler';
 import { InvalidCredentialsException } from '../exceptions';
+import env from '../env';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -23,7 +24,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		let payload: { id: string };
 
 		try {
-			payload = jwt.verify(req.token, process.env.SECRET as string) as { id: string };
+			payload = jwt.verify(req.token, env.SECRET as string) as { id: string };
 		} catch (err) {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');

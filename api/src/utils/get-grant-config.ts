@@ -1,21 +1,23 @@
+import env from '../env';
+
 /**
  * Reads the environment variables to construct the configuration object required by Grant
  */
 export default function getGrantConfig() {
-	const enabledProviders = (process.env.OAUTH_PROVIDERS as string)
+	const enabledProviders = (env.OAUTH_PROVIDERS as string)
 		.split(',')
 		.map((provider) => provider.trim());
 
 	const config: any = {
 		defaults: {
-			origin: process.env.PUBLIC_URL,
+			origin: env.PUBLIC_URL,
 			transport: 'session',
 			prefix: '/auth/sso',
 			response: ['tokens', 'profile'],
 		},
 	};
 
-	for (const [key, value] of Object.entries(process.env)) {
+	for (const [key, value] of Object.entries(env)) {
 		if (key.startsWith('OAUTH') === false) continue;
 
 		const parts = key.split('_');

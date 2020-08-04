@@ -1,6 +1,7 @@
 import { ErrorRequestHandler } from 'express';
 import { BaseException } from '../exceptions';
 import logger from '../logger';
+import env from '../env';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	if (err instanceof BaseException) {
@@ -15,7 +16,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			},
 		};
 
-		if (process.env.NODE_ENV === 'development') {
+		if (env.NODE_ENV === 'development') {
 			payload.error.stack = err.stack;
 		}
 
@@ -32,7 +33,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			},
 		};
 
-		if (process.env.NODE_ENV === 'development') {
+		if (env.NODE_ENV === 'development') {
 			payload.error.stack = err.stack;
 		}
 

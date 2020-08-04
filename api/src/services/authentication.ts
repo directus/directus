@@ -7,6 +7,7 @@ import { InvalidCredentialsException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
+import env from '../env';
 
 type AuthenticateOptions = {
 	email: string;
@@ -58,14 +59,12 @@ export default class AuthenticationService {
 		 * Sign token with combination of server secret + user password hash
 		 * That way, old tokens are immediately invalidated whenever the user changes their password
 		 */
-		const accessToken = jwt.sign(payload, process.env.SECRET as string, {
-			expiresIn: process.env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(payload, env.SECRET as string, {
+			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(
-			Date.now() + ms(process.env.REFRESH_TOKEN_TTL as string)
-		);
+		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
 		await database('directus_sessions').insert({
 			token: refreshToken,
@@ -89,7 +88,7 @@ export default class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(process.env.ACCESS_TOKEN_TTL as string) / 1000,
+			expires: ms(env.ACCESS_TOKEN_TTL as string) / 1000,
 			id: user.id,
 		};
 	}
