@@ -47,7 +47,7 @@ export const useUserStore = createStore({
 
 			const start = performance.now();
 
-			await api.patch(`/users/me`, {
+			await api.patch(`/users/me/track/page`, {
 				last_page: page,
 			});
 
