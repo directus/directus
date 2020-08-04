@@ -24,6 +24,17 @@ for (let [key, value] of Object.entries(env)) {
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
 	connection: connectionConfig,
+	log: {
+		warn: (msg) => {
+			/** @note this is wild */
+			if (msg === '.returning() is not supported by mysql and will not have any effect.')
+				return;
+			logger.warn(msg);
+		},
+		error: (msg) => logger.error(msg),
+		deprecate: (msg) => logger.info(msg),
+		debug: (msg) => logger.debug(msg),
+	},
 };
 
 if (env.DB_CLIENT === 'sqlite3') {
