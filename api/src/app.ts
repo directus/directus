@@ -55,15 +55,16 @@ if (env.CORS_ENABLED === 'true') {
 	);
 }
 
+const adminPath = require.resolve('@directus/app/dist/index.html');
+
 app.get('/', (req, res) => res.redirect('/admin/'))
-
 	// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
-	.use('/admin', express.static(path.join(__dirname, '../node_modules', '@directus/app/dist')))
-	.use('/admin/*', (req, res) =>
-		res.sendFile(path.join(__dirname, '../node_modules', '@directus/app/dist/index.html'))
-	)
+	.use('/admin', express.static(path.join(adminPath, '..')))
+	.use('/admin/*', (req, res) => {
+		res.sendFile(adminPath);
+	});
 
-	.use('/auth', authRouter)
+app.use('/auth', authRouter)
 
 	.use(authenticate)
 
