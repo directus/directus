@@ -108,7 +108,7 @@ router.get(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new FilesService({ accountability: req.accountability });
-		const records = service.readByQuery(req.sanitizedQuery);
+		const records = await service.readByQuery(req.sanitizedQuery);
 		return res.json({ data: records || null });
 	})
 );

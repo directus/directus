@@ -23,15 +23,15 @@ export default class FilesService extends ItemsService {
 		if (primaryKey !== undefined) {
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.disk(data.storage);
+			const disk = storage.disk(payload.storage);
 
 			for await (const file of disk.flatList(String(primaryKey))) {
 				await disk.delete(file.path);
 			}
 
-			await this.update(data, primaryKey);
+			await this.update(payload, primaryKey);
 		} else {
-			primaryKey = await this.create(data);
+			primaryKey = await this.create(payload);
 		}
 
 		payload.filename_disk = primaryKey + path.extname(payload.filename_download);
@@ -66,14 +66,14 @@ export default class FilesService extends ItemsService {
 			});
 
 			await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-
-			// We do this in a service without accountability. Even if you don't have update permissions to the file,
-			// we still want to be able to set the extracted values from the file on create
-			const sudoService = new ItemsService('directus_files');
-			await sudoService.update(payload, primaryKey);
 		} else {
 			await storage.disk(data.storage).put(payload.filename_disk, stream);
 		}
+
+		// We do this in a service without accountability. Even if you don't have update permissions to the file,
+		// we still want to be able to set the extracted values from the file on create
+		const sudoService = new ItemsService('directus_files');
+		await sudoService.update(payload, primaryKey);
 
 		return primaryKey;
 	}
@@ -82,11 +82,15 @@ export default class FilesService extends ItemsService {
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = Array.isArray(key) ? key : [key];
-
-		const files = await super.readByKey(keys, { fields: ['storage', 'filename_disk'] });
+		const files = await super.readByKey(keys, { fields: ['id', 'storage'] });
 
 		for (const file of files) {
-			await storage.disk(file.storage).delete(file.filename_disk);
+			const disk = storage.disk(file.storage);
+
+			// Delete file + thumbnails
+			for await (const { path } of disk.flatList(file.id)) {
+				await disk.delete(path);
+			}
 		}
 
 		await super.delete(keys);
