@@ -12,6 +12,7 @@ import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } fr
 import ItemsService from './items';
 import { URL } from 'url';
 import Knex from 'knex';
+import env from '../env';
 
 type Operation = 'create' | 'read' | 'update';
 
@@ -61,8 +62,8 @@ export default class PayloadService {
 				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
 
 				return {
-					asset_url: new URL(`/assets/${payload.id}`, process.env.PUBLIC_URL),
-					public_url: new URL(payload.filename_disk, process.env[publicKey]),
+					asset_url: new URL(`/assets/${payload.id}`, env.PUBLIC_URL),
+					public_url: new URL(payload.filename_disk, env[publicKey]),
 				};
 			}
 

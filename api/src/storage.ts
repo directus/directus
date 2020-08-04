@@ -5,6 +5,7 @@ import {
 	Storage,
 } from '@slynova/flydrive';
 import camelcase from 'camelcase';
+import env from './env';
 
 import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
 import { GoogleCloudStorage } from '@slynova/flydrive-gcs';
@@ -20,7 +21,7 @@ export default storage;
 function getStorageConfig(): StorageManagerConfig {
 	const config: any = { disks: {} };
 
-	for (const [key, value] of Object.entries(process.env)) {
+	for (const [key, value] of Object.entries(env)) {
 		if (key.startsWith('STORAGE') === false) continue;
 		if (key === 'STORAGE_LOCATIONS') continue;
 		if (key.endsWith('PUBLIC_URL')) continue;
@@ -45,7 +46,7 @@ function getStorageConfig(): StorageManagerConfig {
 function registerDrivers(storage: StorageManager) {
 	const usedDrivers: string[] = [];
 
-	for (const [key, value] of Object.entries(process.env)) {
+	for (const [key, value] of Object.entries(env)) {
 		if ((key.startsWith('STORAGE') && key.endsWith('DRIVER')) === false) continue;
 		if (value && usedDrivers.includes(value) === false) usedDrivers.push(value);
 	}

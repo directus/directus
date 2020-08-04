@@ -2,6 +2,7 @@ import knex, { Config } from 'knex';
 import dotenv from 'dotenv';
 import camelCase from 'camelcase';
 import path from 'path';
+import env from '../env';
 
 import SchemaInspector from 'knex-schema-inspector';
 
@@ -9,7 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 
 const connectionConfig: Record<string, any> = {};
 
-for (let [key, value] of Object.entries(process.env)) {
+for (let [key, value] of Object.entries(env)) {
 	key = key.toLowerCase();
 	if (key.startsWith('db') === false) continue;
 	if (key === 'db_client') continue;
@@ -20,11 +21,11 @@ for (let [key, value] of Object.entries(process.env)) {
 }
 
 const knexConfig: Config = {
-	client: process.env.DB_CLIENT,
+	client: env.DB_CLIENT,
 	connection: connectionConfig,
 };
 
-if (process.env.DB_CLIENT === 'sqlite3') {
+if (env.DB_CLIENT === 'sqlite3') {
 	knexConfig.useNullAsDefault = true;
 }
 

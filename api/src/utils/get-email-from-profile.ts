@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import env from '../env';
 
 // The path in JSON to fetch the email address from the profile.
 // Note: a lot of services use `email` as the path. We fall back to that as default, so no need to
@@ -15,9 +16,7 @@ const profileMap: Record<string, string> = {};
  */
 export default function getEmailFromProfile(provider: string, profile: Record<string, any>) {
 	const path =
-		profileMap[provider] ||
-		process.env[`OAUTH_${provider.toUpperCase()}_PROFILE_EMAIL`] ||
-		'email';
+		profileMap[provider] || env[`OAUTH_${provider.toUpperCase()}_PROFILE_EMAIL`] || 'email';
 	const email = get(profile, path);
 
 	if (!email) {

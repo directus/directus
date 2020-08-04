@@ -7,6 +7,7 @@ import useCollection from '../middleware/use-collection';
 import { Item } from '../types';
 import path from 'path';
 import formatTitle from '@directus/format-title';
+import env from '../env';
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ const multipartHandler = (operation: 'create' | 'update') =>
 		 * the row in directus_files async during the upload of the actual file.
 		 */
 
-		let disk: string = (process.env.STORAGE_LOCATIONS as string).split(',')[0].trim();
+		let disk: string = (env.STORAGE_LOCATIONS as string).split(',')[0].trim();
 		let payload: Partial<Item> = {};
 		let fileCount = 0;
 

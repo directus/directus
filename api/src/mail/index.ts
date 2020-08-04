@@ -4,6 +4,7 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
+import env from '../env';
 
 const readFile = promisify(fs.readFile);
 
@@ -12,29 +13,23 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-if (!process.env.EMAIL_TRANSPORT) {
-	logger.warn(`[Email] No email transport is configured. Using default: sendmail.`);
-}
-
-const emailTransport = process.env.EMAIL_TRANSPORT || 'sendmail';
-
 let transporter: Transporter;
 
-if (emailTransport === 'sendmail') {
+if (env.EMAIL_TRANSPORT === 'sendmail') {
 	transporter = nodemailer.createTransport({
 		sendmail: true,
-		newline: process.env.EMAIL_SENDMAIL_NEW_LINE || 'unix',
-		path: process.env.EMAIL_SENDMAIL_PATH || '/usr/sbin/sendmail',
+		newline: env.EMAIL_SENDMAIL_NEW_LINE || 'unix',
+		path: env.EMAIL_SENDMAIL_PATH || '/usr/sbin/sendmail',
 	});
-} else if (emailTransport.toLowerCase() === 'smtp') {
+} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'smtp') {
 	transporter = nodemailer.createTransport({
-		pool: process.env.EMAIL_SMTP_POOL === 'true',
-		host: process.env.EMAIL_SMTP_HOST,
-		port: Number(process.env.EMAIL_SMTP_PORT),
-		secure: process.env.EMAIL_SMTP_SECURE === 'true',
+		pool: env.EMAIL_SMTP_POOL === 'true',
+		host: env.EMAIL_SMTP_HOST,
+		port: Number(env.EMAIL_SMTP_PORT),
+		secure: env.EMAIL_SMTP_SECURE === 'true',
 		auth: {
-			user: process.env.EMAIL_SMTP_USER,
-			pass: process.env.EMAIL_SMTP_PASSWORD,
+			user: env.EMAIL_SMTP_USER,
+			pass: env.EMAIL_SMTP_PASSWORD,
 		},
 	} as any);
 }
@@ -51,7 +46,7 @@ export default async function sendMail(options: EmailOptions) {
 	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
 	const html = await liquidEngine.parseAndRender(templateString, { html: options.html });
 
-	options.from = options.from || (process.env.EMAIL_FROM as string);
+	options.from = options.from || (env.EMAIL_FROM as string);
 
 	try {
 		await transporter.sendMail({ ...options, html: html });
@@ -68,5 +63,5 @@ export async function sendInviteMail(email: string, url: string) {
 	const projectName = 'directus';
 
 	const html = await liquidEngine.renderFile('user-invitation', { email, url, projectName });
-	await transporter.sendMail({ from: process.env.EMAIL_FROM, to: email, html: html });
+	await transporter.sendMail({ from: env.EMAIL_FROM, to: email, html: html });
 }
