@@ -26,7 +26,7 @@ const defaults = {
 		STORAGE_LOCAL_ROOT: './uploads',
 	},
 	security: {
-		UUID: uuidv4(),
+		KEY: uuidv4(),
 		SECRET: nanoid(32),
 		ACCESS_TOKEN_TTL: '15m',
 		REFRESH_TOKEN_TTL: '7d',
