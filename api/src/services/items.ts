@@ -82,7 +82,9 @@ export default class ItemsService implements AbstractService {
 				// string / uuid primary
 				let primaryKey = payloadWithoutAlias[primaryKeyField];
 
-				const result = await trx.insert(payloadWithoutAlias).into(this.collection);
+				const result = await trx
+					.insert(payloadWithoutAlias, primaryKeyField)
+					.into(this.collection);
 
 				// Auto-incremented id
 				if (!primaryKey) primaryKey = result[0];
@@ -110,7 +112,7 @@ export default class ItemsService implements AbstractService {
 				const activityPrimaryKeys: PrimaryKey[] = [];
 
 				for (const activityRecord of activityRecords) {
-					const result = await trx.insert(activityRecord).into('directus_activity');
+					const result = await trx.insert(activityRecord, 'id').into('directus_activity');
 					activityPrimaryKeys.push(result[0]);
 				}
 
@@ -246,7 +248,9 @@ export default class ItemsService implements AbstractService {
 					const activityPrimaryKeys: PrimaryKey[] = [];
 
 					for (const activityRecord of activityRecords) {
-						const result = await trx.insert(activityRecord).into('directus_activity');
+						const result = await trx
+							.insert(activityRecord, 'id')
+							.into('directus_activity');
 						activityPrimaryKeys.push(result[0]);
 					}
 

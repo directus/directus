@@ -5,7 +5,6 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import * as MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
-import { Accountability, PrimaryKey } from '../types';
 
 const router = express.Router();
 
