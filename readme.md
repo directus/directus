@@ -7,6 +7,20 @@ Welcome to the preview release of the next major version of Directus.
 **NOTE:** This is pre-release software and should be treated as such. DO NOT use this in production.
 Migrations between versions aren't provided, and breaking changes might happen at any release.
 
+## 🚧 Alpha
+
+Note that this is an alpha version of the software. This means that certain features might be missing or broken. The following (big) features are still being worked on:
+
+- [ ] GraphQL Endpoint
+- [ ] MS SQL Support
+- [ ] OracleDB Support
+- [ ] App Permissions
+- [ ] Import/Export Endpoints
+- [ ] Caching
+- [ ] Rate Limiting
+
+See [the issue tracker](https://github.com/directus/next/issues) for a more in-depth list of all things coming up.
+
 ## ⚙️ Installation
 
 _Directus requires NodeJS 10+_
