@@ -16,8 +16,8 @@
 			</template>
 		</v-info>
 
-		<portal-target name="dialog-outlet" transition="transition-dialog" />
-		<portal-target name="menu-outlet" transition="transition-bounce" />
+		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
+		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
 	</div>
 </template>
 

@@ -1,15 +1,16 @@
 <template>
-	<transition name="dialog">
+	<transition-group name="dialog">
 		<slot />
-	</transition>
+	</transition-group>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+/** @NOTE this is not scoped on purpose. The children are outsisde of the tree (portal) */
 .dialog-enter-active,
 .dialog-leave-active {
 	transition: opacity var(--slow) var(--transition);
 
-	::v-deep > *:not(.v-overlay) {
+	& > *:not(.v-overlay) {
 		transform: translateY(0px);
 		transition: transform var(--slow) var(--transition-in);
 	}
@@ -19,7 +20,7 @@
 .dialog-leave-to {
 	opacity: 0;
 
-	::v-deep > *:not(.v-overlay) {
+	& > *:not(.v-overlay) {
 		transform: translateY(50px);
 		transition: transform var(--slow) var(--transition-out);
 	}

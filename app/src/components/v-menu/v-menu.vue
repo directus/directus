@@ -18,8 +18,9 @@
 			/>
 		</div>
 
-		<portal to="menu-outlet" v-if="isActive">
+		<portal to="menu-outlet">
 			<div
+				v-if="isActive"
 				class="v-menu-popper"
 				:key="id"
 				:id="id"

@@ -3,7 +3,7 @@
 		<slot name="activator" v-bind="{ on: () => $emit('toggle', true) }" />
 
 		<portal to="dialog-outlet">
-			<div v-if="active" class="container" :class="[className]">
+			<div v-if="active" class="container" :class="[className]" :key="id">
 				<v-overlay active absolute @click="emitToggle" />
 				<slot />
 			</div>
@@ -12,7 +12,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
+import { nanoid } from 'nanoid';
 
 export default defineComponent({
 	model: {
@@ -31,8 +32,9 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const className = ref<string | null>(null);
+		const id = computed(() => nanoid());
 
-		return { emitToggle, className, nudge };
+		return { emitToggle, className, nudge, id };
 
 		function emitToggle() {
 			if (props.persistent === false) {

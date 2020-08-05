@@ -1,15 +1,16 @@
 <template>
-	<transition name="bounce">
+	<transition-group name="bounce" tag="div">
 		<slot />
-	</transition>
+	</transition-group>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+/** @NOTE this is not scoped on purpose. The children are outsisde of the tree (portal) */
 .bounce-enter-active,
 .bounce-leave-active {
 	transition: opacity var(--fast) var(--transition);
 
-	& ::v-deep > .v-menu-content {
+	& > .v-menu-content {
 		transition: transform var(--fast) cubic-bezier(0, 0, 0.2, 1.5);
 	}
 }
@@ -18,51 +19,51 @@
 .bounce-leave-to {
 	opacity: 0;
 
-	&[data-placement='top'] ::v-deep > .v-menu-content {
+	&[data-placement='top'] > .v-menu-content {
 		transform: scaleY(0.8);
 	}
 
-	&[data-placement='top-start'] ::v-deep > .v-menu-content {
+	&[data-placement='top-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 
-	&[data-placement='top-end'] ::v-deep > .v-menu-content {
+	&[data-placement='top-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 
-	&[data-placement='right'] ::v-deep > .v-menu-content {
+	&[data-placement='right'] > .v-menu-content {
 		transform: scaleX(0.8);
 	}
 
-	&[data-placement='right-start'] ::v-deep > .v-menu-content {
+	&[data-placement='right-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 
-	&[data-placement='right-end'] ::v-deep > .v-menu-content {
+	&[data-placement='right-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 
-	&[data-placement='bottom'] ::v-deep > .v-menu-content {
+	&[data-placement='bottom'] > .v-menu-content {
 		transform: scaleY(0.8);
 	}
 
-	&[data-placement='bottom-start'] ::v-deep > .v-menu-content {
+	&[data-placement='bottom-start'] > .v-menu-content {
 		transform: scaleY(0.8);
 	}
 
-	&[data-placement='bottom-end'] ::v-deep > .v-menu-content {
+	&[data-placement='bottom-end'] > .v-menu-content {
 		transform: scaleY(0.8);
 	}
 
-	&[data-placement='left'] ::v-deep > .v-menu-content {
+	&[data-placement='left'] > .v-menu-content {
 		transform: scaleX(0.8);
 	}
 
-	&[data-placement='left-start'] ::v-deep > .v-menu-content {
+	&[data-placement='left-start'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 
-	&[data-placement='left-end'] ::v-deep > .v-menu-content {
+	&[data-placement='left-end'] > .v-menu-content {
 		transform: scaleY(0.8) scaleX(0.8);
 	}
 }
