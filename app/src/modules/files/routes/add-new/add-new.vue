@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :active="dialogActive" @toggle="close">
+	<v-dialog :active="true" @toggle="close">
 		<v-card>
 			<v-card-title>{{ $t('add_new_file') }}</v-card-title>
 			<v-card-text>
@@ -24,14 +24,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const dialogActive = ref(false);
-
-		onMounted(() => dialogActive.value = true);
-
-		return { onUpload, close, dialogActive };
+		return { onUpload, close };
 
 		function close() {
-			dialogActive.value = false;
 			router.push('/files');
 		}
 
