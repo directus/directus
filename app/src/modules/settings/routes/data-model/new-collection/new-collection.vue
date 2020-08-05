@@ -1,8 +1,7 @@
 <template>
 	<v-modal
 		:title="$t('creating_new_collection')"
-		:active="active"
-		@toggle="$emit('toggle', $event)"
+		:active="true"
 		class="new-collection"
 		persistent
 	>
@@ -82,7 +81,7 @@
 		</v-tabs-items>
 
 		<template #footer>
-			<v-button secondary @click="$emit('toggle', false)">
+			<v-button secondary to="/settings/data-model">
 				{{ $t('cancel') }}
 			</v-button>
 			<div class="spacer" />
@@ -110,19 +109,10 @@ import { Field } from '@/stores/fields/types';
 import useCollectionsStore from '@/stores/collections';
 import useFieldsStore from '@/stores/fields';
 import notify from '@/utils/notify';
+import router from '@/router';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
-	props: {
-		active: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props, { emit }) {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -209,7 +199,7 @@ export default defineComponent({
 					type: 'success',
 				});
 
-				emit('toggle', false);
+				router.push('/settings/data-model');
 			} catch (error) {
 				console.log(error);
 				saveError.value = error;

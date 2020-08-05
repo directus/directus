@@ -1,6 +1,6 @@
 import { defineModule } from '@/modules/define';
 import SettingsProject from './routes/project';
-import { SettingsCollections, SettingsFields, SettingsFieldDetail } from './routes/data-model/';
+import { SettingsCollections, SettingsNewCollection, SettingsFields, SettingsFieldDetail } from './routes/data-model/';
 import { SettingsRolesBrowse, SettingsRolesDetail } from './routes/roles';
 import { SettingsWebhooksBrowse, SettingsWebhooksDetail } from './routes/webhooks';
 import { SettingsPresetsBrowse, SettingsPresetsDetail } from './routes/presets';
@@ -25,6 +25,15 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-collections',
 			path: '/data-model',
 			component: SettingsCollections,
+			children: [
+				{
+					path: '+',
+					name: 'settings-add-new',
+					components: {
+						add: SettingsNewCollection
+					}
+				}
+			]
 		},
 		{
 			name: 'settings-fields',
