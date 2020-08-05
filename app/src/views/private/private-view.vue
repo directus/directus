@@ -26,7 +26,7 @@
 			class="drawer alt-colors"
 			aria-label="Module Drawer"
 			:class="{ 'is-open': drawerOpen }"
-			@click="drawerOpen = true"
+			@click="openDrawer"
 		>
 			<div class="flex-container">
 				<drawer-detail-group :drawer-open="drawerOpen">
@@ -119,6 +119,7 @@ export default defineComponent({
 			onDrop,
 			dragging,
 			drawerOpen,
+			openDrawer,
 		};
 
 		function useFileUpload() {
@@ -236,6 +237,12 @@ export default defineComponent({
 
 				notificationsStore.remove(fileUploadNotificationID);
 			}
+		}
+
+		function openDrawer(event: PointerEvent) {
+			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
+				drawerOpen.value = true
+ 			}
 		}
 	},
 });
