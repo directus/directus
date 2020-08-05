@@ -1,13 +1,22 @@
 import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
+import { nanoid } from 'nanoid';
+
+const handlers: Record<string, () => void> = {};
 
 const Tooltip: DirectiveOptions = {
 	bind(element, binding) {
-		element.addEventListener('mouseenter', onEnterTooltip(element, binding));
-		element.addEventListener('mouseleave', onLeaveTooltip());
+		element.dataset.tooltip = nanoid();
+		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
+		element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
+		element.addEventListener('mouseleave', onLeaveTooltip);
 	},
-	unbind() {
+	unbind(element) {
+		element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
+		element.removeEventListener('mouseleave', onLeaveTooltip);
 		clearTimeout(tooltipTimer);
+		const tooltip = getTooltip();
+		tooltip.classList.remove('visible');
 	}
 };
 
@@ -15,7 +24,7 @@ export default Tooltip;
 
 let tooltipTimer: number;
 
-export function onEnterTooltip(element: HTMLElement, binding: DirectiveBinding) {
+export function createEnterHandler(element: HTMLElement, binding: DirectiveBinding) {
 	return () => {
 		const tooltip = getTooltip();
 
@@ -33,12 +42,10 @@ export function onEnterTooltip(element: HTMLElement, binding: DirectiveBinding) 
 }
 
 export function onLeaveTooltip() {
-	return () => {
-		const tooltip = getTooltip();
+	const tooltip = getTooltip();
 
-		clearTimeout(tooltipTimer);
-		animateOut(tooltip);
-	};
+	clearTimeout(tooltipTimer);
+	animateOut(tooltip);
 }
 
 export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement) {
