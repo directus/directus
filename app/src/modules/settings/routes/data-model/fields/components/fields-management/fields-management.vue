@@ -42,7 +42,7 @@
 			/>
 		</draggable>
 
-		<v-menu attached>
+		<v-menu attached close-on-content-click>
 			<template #activator="{ toggle, active }">
 				<v-button
 					@click="toggle"

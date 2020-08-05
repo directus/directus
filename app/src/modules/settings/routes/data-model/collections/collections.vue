@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon @click="addNewActive = true">
+			<v-button rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -23,7 +23,7 @@
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button @click="addNewActive = true">{{ $t('create_collection') }}</v-button>
+					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 				</template>
 			</v-info>
 
@@ -73,7 +73,7 @@
 			</v-table>
 		</div>
 
-		<new-collection v-model="addNewActive" />
+		<router-view name="add" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -90,7 +90,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
-import NewCollection from './components/new-collection/';
 import { HeaderRaw } from '../../../../../components/v-table/types';
 import { i18n } from '@/lang/';
 import useCollectionsStore from '@/stores/collections';
@@ -102,9 +101,8 @@ import CollectionsFilter from './components/collections-filter';
 import marked from 'marked';
 
 export default defineComponent({
-	components: { SettingsNavigation, NewCollection, CollectionOptions, CollectionsFilter },
+	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
-		const addNewActive = ref(false);
 		const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 
 		const collectionsStore = useCollectionsStore();
@@ -134,7 +132,6 @@ export default defineComponent({
 		const { items } = useItems();
 
 		return {
-			addNewActive,
 			tableHeaders,
 			items,
 			openCollection,
