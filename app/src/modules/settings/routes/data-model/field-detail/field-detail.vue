@@ -1,6 +1,6 @@
 <template>
 	<v-modal
-		:active="active"
+		:active="true"
 		:title="field === '+' ? $t('creating_new_field') : $t('updating_field_field', { field: existingField.name })"
 		persistent
 	>
@@ -111,13 +111,6 @@ export default defineComponent({
 			return type;
 		});
 
-		// This makes sure we still see the enter animation
-		/** @todo fix this in the transition */
-		const active = ref(false);
-		onMounted(() => {
-			active.value = true;
-		});
-
 		initLocalStore(props.collection, props.field, localType.value);
 
 		const { tabs, currentTab } = useTabs();
@@ -125,7 +118,7 @@ export default defineComponent({
 		const saving = ref(false);
 
 		return {
-			active,
+			// active,
 			tabs,
 			currentTab,
 			fieldData: state.fieldData,

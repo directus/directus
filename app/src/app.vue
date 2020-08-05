@@ -16,7 +16,8 @@
 			</template>
 		</v-info>
 
-		<portal-target name="outlet" multiple />
+		<portal-target name="dialog-outlet" transition="transition-dialog" />
+		<portal-target name="menu-outlet" transition="transition-bounce" />
 	</div>
 </template>
 
@@ -114,4 +115,5 @@ export default defineComponent({
 .fade-leave-to {
 	opacity: 0;
 }
+
 </style>
