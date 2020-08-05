@@ -74,10 +74,13 @@ export default class CollectionsService {
 
 				const collectionInfo = omit(payload, 'fields');
 				await collectionItemsService.create(collectionInfo);
+
 				const fieldPayloads = payload
 					.fields!.filter((field) => field.system)
 					.map((field) => field.system);
+
 				await fieldItemsService.create(fieldPayloads);
+
 				createdCollections.push(payload.collection);
 			}
 		});
