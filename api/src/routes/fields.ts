@@ -58,9 +58,7 @@ router.get(
 const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
-	type: Joi.string()
-		.valid(...types)
-		.required(),
+	type: Joi.string().valid(...types),
 	database: Joi.object({
 		comment: Joi.string(),
 		default_value: Joi.any(),
