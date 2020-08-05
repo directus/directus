@@ -54,6 +54,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	async function getItem() {
 		loading.value = true;
+		error.value = null;
 
 		try {
 			const response = await api.get(itemEndpoint.value);

@@ -112,6 +112,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 	async function getItems() {
 		loading.value = true;
+		error.value = null;
 
 		let fieldsToFetch = [...fields.value];
 
