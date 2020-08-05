@@ -123,6 +123,7 @@ function initLocalStore(
 
 	if (type === 'o2m') {
 		delete state.fieldData.database;
+		delete state.fieldData.type;
 
 		if (!isExisting) {
 			state.fieldData.system.special = 'o2m';
@@ -159,6 +160,7 @@ function initLocalStore(
 
 	if (type === 'm2m' || type === 'files') {
 		delete state.fieldData.database;
+		delete state.fieldData.type;
 
 		if (!isExisting) {
 			state.fieldData.system.special = 'm2m';
