@@ -21,7 +21,7 @@
 				{{ $t('no_collections_copy_admin') }}
 			</template>
 			<template #append v-if="isAdmin">
-				<v-button :to="dataModelLink">{{ $t('create_collection') }}</v-button>
+				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
 				{{ $t('no_collections_copy') }}
@@ -80,16 +80,11 @@ export default defineComponent({
 
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin === true);
 
-		const dataModelLink = computed(() => {
-			return `/settings/data-model`;
-		});
-
 		return {
 			tableHeaders,
 			navItems,
 			navigateToCollection,
 			isAdmin,
-			dataModelLink,
 			marked,
 		};
 
