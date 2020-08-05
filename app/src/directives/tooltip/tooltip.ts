@@ -17,6 +17,7 @@ const Tooltip: DirectiveOptions = {
 		clearTimeout(tooltipTimer);
 		const tooltip = getTooltip();
 		tooltip.classList.remove('visible');
+		delete handlers[element.dataset.tooltip as string];
 	}
 };
 
