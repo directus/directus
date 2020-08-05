@@ -127,7 +127,7 @@ function initLocalStore(
 		if (!isExisting) {
 			state.fieldData.system.special = 'o2m';
 
-			state.relations.push = [
+			state.relations = [
 				{
 					many_collection: '',
 					many_field: '',
