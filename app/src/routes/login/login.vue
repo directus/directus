@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
 import useAppStore from '../../stores/app';
@@ -32,10 +32,10 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const settingsStore = useSettingsStore();
 
-		return {
-			authenticated: appStore.state.authenticated,
-			currentProject: settingsStore.state.settings,
-		};
+		const authenticated = computed(() => appStore.state.authenticated);
+		const currentProject = computed(() => settingsStore.state.settings);
+
+		return { authenticated, currentProject };
 	},
 });
 </script>
