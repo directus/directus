@@ -9,10 +9,10 @@
 			<div class="title" v-show="drawerOpen">
 				{{ title }}
 			</div>
-			<div v-if="close" class="close" @click.stop="drawerOpen = !drawerOpen">
-				<v-icon name="close" />
-			</div>
 		</button>
+		<div v-if="close" v-show="drawerOpen" class="close" @click="drawerOpen = false">
+			<v-icon name="close" />
+		</div>
 		<transition-expand class="scroll-container">
 			<div v-show="active">
 				<div class="content">
@@ -90,31 +90,35 @@ body {
 			height: 100%;
 		}
 
-		.close {
-			position: absolute;
-			top: 0;
-			right: 0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 64px;
-			height: 64px;
-			color: var(--foreground-normal);
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
-			pointer-events: none;
-
-			&:hover {
-				color: var(--drawer-detail-color-active);
-			}
-		}
-
 		&.open,
 		&:hover {
 			color: var(--drawer-detail-color-active);
 			.icon {
 				--v-icon-color: var(--drawer-detail-color-active);
 			}
+		}
+	}
+
+	.close {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 64px;
+		height: 64px;
+		color: var(--foreground-normal);
+		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		z-index: 50;
+		cursor: pointer;
+
+		.v-icon {
+			pointer-events: none;
+		}
+
+		&:hover {
+			color: var(--drawer-detail-color-active);
 		}
 	}
 
