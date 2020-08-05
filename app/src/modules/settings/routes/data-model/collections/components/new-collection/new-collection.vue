@@ -82,7 +82,7 @@
 		</v-tabs-items>
 
 		<template #footer>
-			<v-button secondary outlined @click="$emit('toggle', false)">
+			<v-button secondary @click="$emit('toggle', false)">
 				{{ $t('cancel') }}
 			</v-button>
 			<div class="spacer" />
