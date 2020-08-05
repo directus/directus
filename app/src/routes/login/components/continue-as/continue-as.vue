@@ -4,7 +4,7 @@
 		<template v-else>
 			<p v-html="$t('continue_as', { name })" />
 			<div class="actions">
-				<router-link :to="signOutLink" class="sign-out">{{ $t('sign_out') }}</router-link>
+				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
 				<v-button large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
 			</div>
 		</template>
@@ -20,10 +20,6 @@ import router from '@/router';
 
 export default defineComponent({
 	setup() {
-		const signOutLink = computed<string>(() => {
-			return `/logout`;
-		});
-
 		const loading = ref(false);
 		const error = ref(null);
 		const name = ref<string | null>(null);
@@ -31,7 +27,7 @@ export default defineComponent({
 
 		fetchUser();
 
-		return { name, lastPage, signOutLink, loading, error, hydrateAndLogin };
+		return { name, lastPage, loading, error, hydrateAndLogin };
 
 		async function fetchUser() {
 			loading.value = true;
