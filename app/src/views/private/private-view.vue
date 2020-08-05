@@ -28,13 +28,15 @@
 			:class="{ 'is-open': drawerOpen }"
 			@click="drawerOpen = true"
 		>
-			<drawer-detail-group :drawer-open="drawerOpen">
-				<slot name="drawer" />
-			</drawer-detail-group>
+			<div class="flex-container">
+				<drawer-detail-group :drawer-open="drawerOpen">
+					<slot name="drawer" />
+				</drawer-detail-group>
 
-			<div class="spacer" />
+				<div class="spacer" />
 
-			<notifications-preview :drawer-open="drawerOpen" />
+				<notifications-preview :drawer-open="drawerOpen" />
+			</div>
 		</aside>
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
@@ -325,8 +327,6 @@ export default defineComponent({
 		top: 0;
 		right: 0;
 		z-index: 30;
-		display: flex;
-		flex-direction: column;
 		width: 284px;
 		height: 100%;
 		overflow: hidden;
@@ -357,6 +357,13 @@ export default defineComponent({
 				flex-basis: 284px;
 				transform: none;
 			}
+		}
+
+		.flex-container {
+			width: 284px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
 		}
 	}
 
