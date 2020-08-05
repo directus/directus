@@ -18,33 +18,31 @@
 			/>
 		</div>
 
-		<portal to="outlet">
-			<transition name="bounce">
+		<portal to="menu-outlet" v-if="isActive">
+			<div
+				class="v-menu-popper"
+				:key="id"
+				:id="id"
+				:class="{ active: isActive, attached }"
+				:data-placement="popperPlacement"
+				:style="styles"
+				v-click-outside="{
+					handler: deactivate,
+					middleware: onClickOutsideMiddleware,
+					disabled: isActive === false || closeOnClick === false,
+					events: ['click'],
+				}"
+			>
 				<div
-					class="v-menu-popper"
-					:id="id"
-					:class="{ active: isActive, attached }"
-					:data-placement="popperPlacement"
-					:style="styles"
-					v-if="isActive"
-					v-click-outside="{
-						handler: deactivate,
-						middleware: onClickOutsideMiddleware,
-						disabled: isActive === false || closeOnClick === false,
-						events: ['click'],
-					}"
-				>
-					<div
-						class="arrow"
-						:class="{ active: showArrow && isActive }"
-						:style="arrowStyles"
-						data-popper-arrow
-					/>
-					<div class="v-menu-content" @click.stop="onContentClick">
-						<slot :active="isActive" />
-					</div>
+					class="arrow"
+					:class="{ active: showArrow && isActive }"
+					:style="arrowStyles"
+					data-popper-arrow
+				/>
+				<div class="v-menu-content" @click.stop="onContentClick">
+					<slot :active="isActive" />
 				</div>
-			</transition>
+			</div>
 		</portal>
 	</div>
 </template>
@@ -408,68 +406,6 @@ body {
 
 [data-placement='left-end'] > .v-menu-content {
 	transform-origin: bottom right;
-}
-
-.bounce-enter-active,
-.bounce-leave-active {
-	transition: opacity var(--fast) var(--transition);
-
-	& > .v-menu-content {
-		transition: transform var(--fast) cubic-bezier(0, 0, 0.2, 1.5);
-	}
-}
-
-.bounce-enter,
-.bounce-leave-to {
-	opacity: 0;
-
-	&[data-placement='top'] > .v-menu-content {
-		transform: scaleY(0.8);
-	}
-
-	&[data-placement='top-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
-
-	&[data-placement='top-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
-
-	&[data-placement='right'] > .v-menu-content {
-		transform: scaleX(0.8);
-	}
-
-	&[data-placement='right-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
-
-	&[data-placement='right-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
-
-	&[data-placement='bottom'] > .v-menu-content {
-		transform: scaleY(0.8);
-	}
-
-	&[data-placement='bottom-start'] > .v-menu-content {
-		transform: scaleY(0.8);
-	}
-
-	&[data-placement='bottom-end'] > .v-menu-content {
-		transform: scaleY(0.8);
-	}
-
-	&[data-placement='left'] > .v-menu-content {
-		transform: scaleX(0.8);
-	}
-
-	&[data-placement='left-start'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
-
-	&[data-placement='left-end'] > .v-menu-content {
-		transform: scaleY(0.8) scaleX(0.8);
-	}
 }
 
 .attached {

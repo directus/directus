@@ -2,13 +2,11 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => $emit('toggle', true) }" />
 
-		<portal to="outlet">
-			<transition name="dialog">
-				<div v-if="active" class="container" :class="[className]">
-					<v-overlay active absolute @click="emitToggle" />
-					<slot />
-				</div>
-			</transition>
+		<portal to="dialog-outlet">
+			<div v-if="active" class="container" :class="[className]">
+				<v-overlay active absolute @click="emitToggle" />
+				<slot />
+			</div>
 		</portal>
 	</div>
 </template>
@@ -112,26 +110,6 @@ export default defineComponent({
 
 	100% {
 		transform: scale(1);
-	}
-}
-
-.dialog-enter-active,
-.dialog-leave-active {
-	transition: opacity var(--slow) var(--transition);
-
-	::v-deep > *:not(.v-overlay) {
-		transform: translateY(0px);
-		transition: transform var(--slow) var(--transition-in);
-	}
-}
-
-.dialog-enter,
-.dialog-leave-to {
-	opacity: 0;
-
-	::v-deep > *:not(.v-overlay) {
-		transform: translateY(50px);
-		transition: transform var(--slow) var(--transition-out);
 	}
 }
 </style>
