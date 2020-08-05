@@ -118,13 +118,17 @@ export default class ItemsService implements AbstractService {
 
 				for (const activityRecord of activityRecords) {
 					await trx.insert(activityRecord).into('directus_activity');
+
 					let primaryKey;
+
 					const result = await trx
 						.select('id')
 						.from('directus_activity')
-						.orderBy(primaryKeyField, 'desc')
+						.orderBy('id', 'desc')
 						.first();
-					primaryKey = result[primaryKeyField];
+
+					primaryKey = result.id;
+
 					activityPrimaryKeys.push(primaryKey);
 				}
 
@@ -265,9 +269,9 @@ export default class ItemsService implements AbstractService {
 						const result = await trx
 							.select('id')
 							.from('directus_activity')
-							.orderBy(primaryKeyField, 'desc')
+							.orderBy('id', 'desc')
 							.first();
-						primaryKey = result[primaryKeyField];
+						primaryKey = result.id;
 						activityPrimaryKeys.push(primaryKey);
 					}
 
