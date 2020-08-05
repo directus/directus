@@ -99,8 +99,12 @@ Vue.component('v-tabs', VTabs);
 Vue.component('v-textarea', VTextarea);
 Vue.component('v-upload', VUpload);
 
+import TransitionBounce from './transition/bounce';
+import TransitionDialog from './transition/dialog';
 import TransitionExpand from './transition/expand';
 
+Vue.component('transition-bounce', TransitionBounce);
+Vue.component('transition-dialog', TransitionDialog);
 Vue.component('transition-expand', TransitionExpand);
 
 import RenderDisplay from '@/views/private/components/render-display';
