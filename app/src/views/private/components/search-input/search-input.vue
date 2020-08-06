@@ -4,6 +4,7 @@
 		:class="{ active, 'has-content': !!value }"
 		v-click-outside="disable"
 		@click="active = true"
+		v-tooltip.bottom="active ? null : $t('search')"
 	>
 		<v-icon name="search" />
 		<input ref="input" :value="value" @input="emitValue" />
