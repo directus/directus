@@ -4,7 +4,7 @@ import { Table } from 'knex-schema-inspector/lib/types/table';
 export type Collection = {
 	collection: string;
 	fields?: Field[];
-	system: {
+	meta: {
 		collection: string;
 		note: string | null;
 		hidden: boolean;
@@ -12,5 +12,5 @@ export type Collection = {
 		icon: string | null;
 		translation: Record<string, string>;
 	} | null;
-	database: Table;
+	schema: Table;
 };

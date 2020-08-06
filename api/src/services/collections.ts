@@ -27,9 +27,9 @@ export default class CollectionsService {
 			if (!collection.fields) collection.fields = [];
 
 			collection.fields = collection.fields.map((field) => {
-				if (field.system) {
-					field.system = {
-						...field.system,
+				if (field.meta) {
+					field.meta = {
+						...field.meta,
 						field: field.field,
 						collection: collection.collection!,
 					};
@@ -76,8 +76,8 @@ export default class CollectionsService {
 				await collectionItemsService.create(collectionInfo);
 
 				const fieldPayloads = payload
-					.fields!.filter((field) => field.system)
-					.map((field) => field.system);
+					.fields!.filter((field) => field.meta)
+					.map((field) => field.meta);
 
 				await fieldItemsService.create(fieldPayloads);
 
@@ -122,7 +122,7 @@ export default class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const system: any[] = await collectionItemsService.readByQuery({
+		const meta: any[] = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
 		});
 
@@ -131,8 +131,8 @@ export default class CollectionsService {
 		for (const table of tables) {
 			const collection: Collection = {
 				collection: table.name,
-				system: system.find((systemInfo) => systemInfo.collection === table.name) || null,
-				database: table,
+				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				schema: table,
 			};
 
 			collections.push(collection);
@@ -160,7 +160,7 @@ export default class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-		const system: any[] = await collectionItemsService.readByQuery({
+		const meta: any[] = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
 		});
 
@@ -169,8 +169,8 @@ export default class CollectionsService {
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
-				system: system.find((systemInfo) => systemInfo.collection === table.name) || null,
-				database: table,
+				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				schema: table,
 			};
 
 			collections.push(collection);
@@ -198,11 +198,11 @@ export default class CollectionsService {
 		if (data && key) {
 			const payload = data as Partial<Collection>;
 
-			if (!payload.system) {
+			if (!payload.meta) {
 				throw new InvalidPayloadException(`"system" key is required`);
 			}
 
-			return (await collectionItemsService.update(payload.system!, key as any)) as
+			return (await collectionItemsService.update(payload.meta!, key as any)) as
 				| string
 				| string[];
 		}
@@ -211,7 +211,7 @@ export default class CollectionsService {
 
 		const collectionUpdates = payloads.map((collection) => {
 			return {
-				...collection.system,
+				...collection.meta,
 				collection: collection.collection,
 			};
 		});

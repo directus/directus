@@ -17,7 +17,7 @@ export const types = [
 	'uuid',
 ] as const;
 
-export type System = {
+export type FieldMeta = {
 	id: number;
 	collection: string;
 	field: string;
@@ -40,6 +40,6 @@ export type Field = {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-	database: Column;
-	system: System | null;
+	schema: Column;
+	meta: FieldMeta | null;
 };

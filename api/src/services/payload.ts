@@ -3,7 +3,7 @@
  * handled correctly.
  */
 
-import { System } from '../types/field';
+import { FieldMeta } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
@@ -104,7 +104,7 @@ export default class PayloadService {
 
 		const specialFieldsQuery = this.knex
 			.select('field', 'special')
-			.from<System>('directus_fields')
+			.from<FieldMeta>('directus_fields')
 			.where({ collection: this.collection })
 			.whereNotNull('special');
 
@@ -143,7 +143,7 @@ export default class PayloadService {
 	}
 
 	async processField(
-		field: Pick<System, 'field' | 'special'>,
+		field: Pick<FieldMeta, 'field' | 'special'>,
 		payload: Partial<Item>,
 		operation: Operation
 	) {
