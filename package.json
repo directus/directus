@@ -2,8 +2,8 @@
   "name": "directus-monorepo",
   "private": true,
   "scripts": {
-    "postinstall": "npm run setup",
-    "setup": "lerna clean -y && lerna bootstrap",
+    "clean": "lerna clean -y",
+    "bootstrap": "lerna bootstrap --hoist",
     "dev": "lerna run --parallel dev",
     "build": "lerna run build"
   },
@@ -17,7 +17,6 @@
     "url": "https://github.com/directus/next/issues"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
     "lerna": "^3.22.1"
   }
 }

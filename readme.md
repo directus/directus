@@ -56,7 +56,7 @@ Pull requests are more than welcome and always appreciated. Seeing this is in ac
 To install the project locally:
 
 1. Clone the repo
-2. Run `npm install` in the root
+2. Run `npm run bootstrap` in the root
 3. Run `npm run dev` to start the dev environment for the Directus suite
 
 ## ❤️ Supporting Directus

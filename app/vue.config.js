@@ -34,5 +34,15 @@ module.exports = {
 		}
 	},
 
-	productionSourceMap: false
+	productionSourceMap: false,
+
+	css: {
+		loaderOptions: {
+			postcss: {
+				plugins: [
+					require('autoprefixer')()
+				]
+			}
+		}
+	}
 };
