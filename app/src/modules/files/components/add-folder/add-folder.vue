@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="dialogActive">
 		<template #activator="{ on }">
-			<v-button rounded icon class="add-new" @click="on">
+			<v-button rounded icon class="add-new" @click="on" v-tooltip.bottom="$t('add_new_folder')">
 				<v-icon name="create_new_folder" />
 			</v-button>
 		</template>

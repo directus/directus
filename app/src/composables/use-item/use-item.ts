@@ -17,7 +17,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
-	const isSingle = computed(() => !!collectionInfo.value?.system?.single);
+	const isSingle = computed(() => !!collectionInfo.value?.meta?.single);
 
 	const endpoint = computed(() => {
 		return collection.value.startsWith('directus_')

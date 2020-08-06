@@ -9,7 +9,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
+					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete')">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -28,7 +28,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit">
+			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
 
 				<template #append-outer>

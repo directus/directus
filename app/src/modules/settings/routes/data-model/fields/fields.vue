@@ -10,7 +10,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
+					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete_collection')">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -29,7 +29,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit">
+			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -52,10 +52,10 @@
 			<v-form
 				collection="directus_collections"
 				:loading="loading"
-				:initial-values="item && item.system"
+				:initial-values="item && item.meta"
 				:batch-mode="isBatch"
 				:primary-key="collection"
-				v-model="edits.system"
+				v-model="edits.meta"
 			/>
 		</div>
 

@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button icon rounded :disabled="noEdits" :loading="saving" @click="save">
+			<v-button icon rounded :disabled="noEdits" :loading="saving" @click="save" v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
