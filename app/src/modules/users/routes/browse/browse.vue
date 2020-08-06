@@ -34,11 +34,11 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink">
+			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_user')">
 				<v-icon name="add" />
 			</v-button>
 		</template>

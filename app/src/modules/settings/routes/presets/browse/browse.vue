@@ -11,7 +11,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on">
+					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -30,7 +30,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :to="addNewLink">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_preset')">
 				<v-icon name="add" />
 			</v-button>
 		</template>

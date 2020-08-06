@@ -7,7 +7,7 @@ type Translation = {
 
 export interface CollectionRaw {
 	collection: string;
-	system: {
+	meta: {
 		note: string | null;
 		hidden: boolean;
 		single: boolean;
@@ -16,7 +16,7 @@ export interface CollectionRaw {
 		translation: Translation[] | null;
 		display_template: string | null;
 	} | null;
-	database: Record<string, any>;
+	schema: Record<string, any>;
 }
 
 export interface Collection extends CollectionRaw {

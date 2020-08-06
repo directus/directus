@@ -26,7 +26,7 @@ export default defineComponent({
 
 		const isSingle = computed(() => {
 			const collectionInfo = collectionsStore.getCollection(props.collection);
-			return !!collectionInfo?.system?.single === true;
+			return !!collectionInfo?.meta?.single === true;
 		});
 
 		return { component, isSingle };

@@ -4,20 +4,31 @@ import { nanoid } from 'nanoid';
 
 const handlers: Record<string, () => void> = {};
 
+
+function bind(element: HTMLElement, binding: DirectiveBinding) {
+	element.dataset.tooltip = nanoid();
+	handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
+	element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
+	element.addEventListener('mouseleave', onLeaveTooltip);
+}
+
+function unbind(element: HTMLElement) {
+	element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
+	element.removeEventListener('mouseleave', onLeaveTooltip);
+	clearTimeout(tooltipTimer);
+	const tooltip = getTooltip();
+	tooltip.classList.remove('visible');
+	delete handlers[element.dataset.tooltip as string];
+}
+
 const Tooltip: DirectiveOptions = {
-	bind(element, binding) {
-		element.dataset.tooltip = nanoid();
-		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
-		element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
-		element.addEventListener('mouseleave', onLeaveTooltip);
-	},
-	unbind(element) {
-		element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
-		element.removeEventListener('mouseleave', onLeaveTooltip);
-		clearTimeout(tooltipTimer);
-		const tooltip = getTooltip();
-		tooltip.classList.remove('visible');
-		delete handlers[element.dataset.tooltip as string];
+	bind, unbind,
+	update(element, binding) {
+		if (binding.value && !binding.oldValue) {
+			bind(element, binding);
+		} else if (!binding.value && binding.oldValue) {
+			unbind(element);
+		}
 	}
 };
 

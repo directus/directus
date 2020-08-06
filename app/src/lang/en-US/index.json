@@ -10,6 +10,10 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"add_preset": "Add Preset",
+	"add_role": "Add Role",
+	"add_user": "Add User",
+
 	"uploaded_by": "Uploaded By",
 	"hide_field_on_detail": "Hide Field on Detail",
 	"show_field_on_detail": "Show Field on Detail",

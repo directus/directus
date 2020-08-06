@@ -38,7 +38,7 @@ export default function useNavigation() {
 						const navItem: NavItem = {
 							collection: collection,
 							name: collectionInfo.name,
-							icon: collectionInfo.system?.icon || 'box',
+							icon: collectionInfo.meta?.icon || 'box',
 							to: `/collections/${collection}`,
 						};
 
@@ -57,7 +57,7 @@ export default function useNavigation() {
 				const navItem: NavItem = {
 					collection: collection.collection,
 					name: collection.name,
-					icon: collection.system?.icon || 'box',
+					icon: collection.meta?.icon || 'box',
 					to: `/collections/${collection.collection}`,
 				};
 

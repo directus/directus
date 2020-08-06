@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon to="/settings/data-model/+">
+			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="$t('create_collection')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -41,7 +41,7 @@
 						class="icon"
 						:class="{
 							hidden: item.hidden,
-							system: item.collection.startsWith('directus_'),
+							meta: item.collection.startsWith('directus_'),
 							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
 						}"
 						:name="item.icon"
@@ -53,7 +53,7 @@
 						class="collection"
 						:class="{
 							hidden: item.hidden,
-							system: item.collection.startsWith('directus_'),
+							meta: item.collection.startsWith('directus_'),
 							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
 						}"
 					>
@@ -144,7 +144,7 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections.filter(
 						(collection) =>
-							collection.collection.startsWith('directus_') === false && collection.system?.hidden === false
+							collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
 					),
 					'collection'
 				);
@@ -155,14 +155,14 @@ export default defineComponent({
 					collectionsStore.state.collections
 						.filter(
 							(collection) =>
-								collection.collection.startsWith('directus_') === false && collection.system?.hidden === true
+								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
 						)
 						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
 					'collection'
 				);
 			});
 
-			const system = computed(() => {
+			const meta = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === true)
@@ -175,7 +175,7 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.system === null),
+						.filter((collection) => collection.meta === null),
 					'collection'
 				);
 			});
@@ -195,8 +195,8 @@ export default defineComponent({
 					items.push(unmanaged.value);
 				}
 
-				if (activeTypes.value.includes('system')) {
-					items.push(system.value);
+				if (activeTypes.value.includes('meta')) {
+					items.push(meta.value);
 				}
 
 				return items.flat();
@@ -217,7 +217,7 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
-.system {
+.meta {
 	color: var(--primary);
 }
 

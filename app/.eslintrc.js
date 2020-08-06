@@ -17,6 +17,7 @@ module.exports = {
 		'@typescript-eslint/no-use-before-define': 0,
 		'@typescript-eslint/ban-ts-ignore': 0,
 		'@typescript-eslint/no-explicit-any': 0,
+		'vue/valid-v-slot': 0,
 		'comma-dangle': [
 			'error',
 			{

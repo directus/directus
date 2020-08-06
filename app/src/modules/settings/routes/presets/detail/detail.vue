@@ -14,7 +14,7 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="preset === null || id === '+'" @click="on">
+					<v-button rounded icon class="action-delete" :disabled="preset === null || id === '+'" @click="on" v-tooltip.bottom="$t('delete')">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -33,7 +33,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button icon rounded :disabled="hasEdits === false" :loading="saving" @click="save">
+			<v-button icon rounded :disabled="hasEdits === false" :loading="saving" @click="save" v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
