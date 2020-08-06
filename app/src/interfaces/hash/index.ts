@@ -11,14 +11,20 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
-			width: 'half',
-			interface: 'text-input',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'text-input',
+			}
 		},
 		{
 			field: 'masked',
 			name: i18n.t('masked'),
-			width: 'half',
-			interface: 'toggle',
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			}
 		},
 	],
 }));

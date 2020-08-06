@@ -6,25 +6,34 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('slider'),
 	icon: 'linear_scale',
 	component: InterfaceSlider,
-	types: ['integer', 'decimal', 'float'],
+	types: ['integer', 'decimal', 'float', 'bigInteger'],
 	options: [
 		{
 			field: 'minValue',
 			name: i18n.t('minimum_value'),
-			width: 'half',
-			interface: 'numeric',
+			type: 'integer',
+			system: {
+				width: 'half',
+				interface: 'numeric',
+			}
 		},
 		{
 			field: 'maxValue',
 			name: i18n.t('maximum_value'),
-			width: 'half',
-			interface: 'numeric',
+			type: 'integer',
+			system: {
+				width: 'half',
+				interface: 'numeric',
+			}
 		},
 		{
 			field: 'stepInterval',
 			name: i18n.t('step_interval'),
-			width: 'half',
-			interface: 'numeric',
+			type: 'integer',
+			system: {
+				width: 'half',
+				interface: 'numeric',
+			}
 		},
 	],
 }));

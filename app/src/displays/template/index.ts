@@ -16,14 +16,18 @@ export default defineDisplay(({ i18n }) => ({
 	icon: 'text_fields',
 	handler: DisplayTemplate,
 	options: [
+		/** @todo make this a component so we have dynamic collection for display template component */
 		{
 			field: 'template',
 			name: i18n.t('display_template'),
-			interface: 'text-input',
-			width: 'full',
+			type: 'string',
+			system: {
+				interface: 'text-input',
+				width: 'full',
+			}
 		},
 	],
-	types: ['alias', 'string', 'integer', 'bigInteger', 'text'],
+	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	fields: (options: Options, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));

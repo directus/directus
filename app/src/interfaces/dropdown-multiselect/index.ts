@@ -10,30 +10,65 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'choices',
+			type: 'json',
 			name: i18n.t('choices'),
-			note: i18n.t('use_double_colon_for_key'),
-			width: 'full',
-			interface: 'textarea',
+			system: {
+				width: 'full',
+				interface: 'repeater',
+				options: {
+					template: '{{ text }}',
+					fields: [
+						{
+							field: 'text',
+							type: 'string',
+							name: i18n.t('text'),
+							system: {
+								interface: 'text-input',
+							}
+						},
+						{
+							field: 'value',
+							type: 'string',
+							name: i18n.t('value'),
+							system: {
+								interface: 'text-input',
+								options: {
+									font: 'monospace'
+								},
+							}
+						},
+					]
+				}
+			}
 		},
 		{
 			field: 'allowOther',
 			name: i18n.t('allow_other'),
-			width: 'half',
-			interface: 'toggle',
-			default_value: false,
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+				default_value: false,
+			}
 		},
 		{
 			field: 'allowNone',
 			name: i18n.t('allow_none'),
-			width: 'half',
-			interface: 'toggle',
-			default_value: false,
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+				default_value: false,
+			}
 		},
 		{
 			field: 'icon',
 			name: i18n.t('icon'),
-			width: 'half',
-			interface: 'icon',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			}
 		},
 	],
 }));

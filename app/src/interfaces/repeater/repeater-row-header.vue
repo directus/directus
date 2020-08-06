@@ -11,6 +11,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { render } from 'micromustache';
 import i18n from '@/lang';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	props: {
@@ -40,7 +41,18 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayValue = computed(() => (props.value ? render(props.template, props.value) : null));
+		const fieldsInTemplate = computed(() => getFieldsFromTemplate(props.template));
+		const displayValue = computed(() => {
+			if (!props.value) return;
+
+			for (const [key, value] of Object.entries(props.value)) {
+				if (fieldsInTemplate.value.includes(key) === false) continue;
+
+				if (value === undefined) return null;
+			}
+
+			return render(props.template, props.value);
+		});
 
 		return { displayValue };
 	},

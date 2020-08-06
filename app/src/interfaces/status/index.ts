@@ -8,11 +8,18 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceStatus,
 	types: ['string'],
 	options: [
+		/** @TODO change this to a custom options element */
 		{
 			field: 'status_mapping',
 			name: i18n.t('status_mapping'),
-			width: 'full',
-			interface: 'code',
+			type: 'json',
+			system: {
+				width: 'full',
+				interface: 'code',
+				options: {
+					language: 'json'
+				}
+			}
 		},
 	],
 }));

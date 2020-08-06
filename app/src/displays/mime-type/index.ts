@@ -10,11 +10,14 @@ export default defineDisplay(({ i18n }) => ({
 		{
 			field: 'showAsExtension',
 			name: i18n.t('extension_only'),
-			interface: 'toggle',
-			options: {
-				label: i18n.t('only_show_the_file_extension'),
-			},
-			default_value: false,
+			type: 'boolean',
+			system: {
+				interface: 'toggle',
+				options: {
+					label: i18n.t('only_show_the_file_extension'),
+				},
+				default_value: false,
+			}
 		},
 	],
 	types: ['string'],

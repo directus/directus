@@ -11,44 +11,65 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
-			width: 'half',
-			interface: 'text-input',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'text-input',
+			}
 		},
 		{
 			field: 'lowercase',
 			name: i18n.t('lowercase'),
-			width: 'half',
-			interface: 'toggle',
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			}
 		},
 		{
 			field: 'alphabetize',
 			name: i18n.t('alphabetize'),
-			width: 'half',
-			interface: 'toggle',
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			}
 		},
 		{
 			field: 'iconLeft',
 			name: i18n.t('icon_left'),
-			width: 'half',
-			interface: 'icon',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			}
 		},
 		{
 			field: 'iconRight',
 			name: i18n.t('icon_right'),
-			width: 'half',
-			interface: 'icon',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			}
 		},
 		{
 			field: 'presets',
 			name: i18n.t('presets'),
-			width: 'full',
-			interface: 'text-input',
+			type: 'string',
+			system: {
+				width: 'full',
+				interface: 'text-input',
+			}
 		},
 		{
 			field: 'allowCustom',
 			name: i18n.t('allow_custom'),
-			width: 'half',
-			interface: 'toggle',
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			}
 		},
 	],
 }));

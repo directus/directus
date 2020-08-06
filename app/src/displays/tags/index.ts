@@ -11,9 +11,12 @@ export default defineDisplay(({ i18n }) => ({
 		{
 			field: 'format',
 			name: i18n.t('format_text'),
-			width: 'half',
-			interface: 'toggle',
-			default_value: true,
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+				default_value: true,
+			}
 		},
 	],
 }));

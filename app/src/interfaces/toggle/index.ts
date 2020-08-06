@@ -11,30 +11,42 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'iconOff',
 			name: i18n.t('icon_off'),
-			width: 'half',
-			interface: 'icon',
-			default_value: 'check_box_outline_blank',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+				default_value: 'check_box_outline_blank',
+			}
 		},
 		{
 			field: 'iconOn',
 			name: i18n.t('icon_on'),
-			width: 'half',
-			interface: 'icon',
-			default_value: 'check_box',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+				default_value: 'check_box',
+			}
 		},
 		{
 			field: 'label',
 			name: i18n.t('label'),
-			width: 'half',
-			interface: 'text-input',
-			default_value: i18n.t('active'),
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'text-input',
+				default_value: i18n.t('active'),
+			}
 		},
 		{
 			field: 'color',
 			name: i18n.t('color'),
-			width: 'half',
-			interface: 'color',
-			default_value: 'var(--primary)',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'color',
+				default_value: 'var(--primary)',
+			}
 		},
 	],
 }));

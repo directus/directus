@@ -27,6 +27,11 @@
 	"editing_field": "Editing {field}",
 	"within_collectoin": "within {collection}",
 
+	"line_number": "Line Number",
+	"language": "Language",
+
+	"preset_colors": "Preset Colors",
+
 	"global": "Global",
 
 	"admins_have_all_permissions": "Admins have all permissions",

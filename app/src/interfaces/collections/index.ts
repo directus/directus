@@ -11,12 +11,17 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'includeSystem',
 			name: i18n.t('system'),
-			width: 'half',
-			interface: 'toggle',
-			options: {
-				label: i18n.t('include_system_collections'),
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('include_system_collections'),
+				},
 			},
-			default_value: false,
+			database: {
+				default_value: false,
+			}
 		},
 	],
 }));

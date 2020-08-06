@@ -102,12 +102,13 @@
 		<div class="presets" v-if="presets">
 			<v-button
 				v-for="preset in presets"
-				:key="preset"
+				:key="preset.color"
 				class="preset"
 				rounded
 				icon
-				:style="{ '--v-button-background-color': preset }"
-				@click="() => (hexValue = preset)"
+				:style="{ '--v-button-background-color': preset.color }"
+				v-tooltip="preset.name"
+				@click="() => (hexValue = preset.color)"
 			/>
 		</div>
 	</v-menu>
@@ -130,16 +131,46 @@ export default defineComponent({
 		presets: {
 			type: Array as PropType<string[]>,
 			default: () => [
-				'#EB5757',
-				'#F2994A',
-				'#F2C94C',
-				'#6FCF97',
-				'#27AE60',
-				'#56CCF2',
-				'#2F80ED',
-				'#9B51E0',
-				'#BB6BD9',
-				'#607D8B',
+				{
+					name: 'Red',
+					color: '#EB5757',
+				},
+				{
+					name: 'Orange',
+					color: '#F2994A',
+				},
+				{
+					name: 'Yellow',
+					color: '#F2C94C',
+				},
+				{
+					name: 'Teal',
+					color: '#6FCF97',
+				},
+				{
+					name: 'Green',
+					color: '#27AE60',
+				},
+				{
+					name: 'Light Blue',
+					color: '#56CCF2',
+				},
+				{
+					name: 'Blue',
+					color: '#2F80ED',
+				},
+				{
+					name: 'Purple',
+					color: '#9B51E0',
+				},
+				{
+					name: 'Pink',
+					color: '#BB6BD9',
+				},
+				{
+					name: 'Gray',
+					color: '#607D8B',
+				},
 			],
 		},
 	},

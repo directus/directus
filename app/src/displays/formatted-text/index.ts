@@ -4,7 +4,7 @@ import DisplayFormattedText from './formatted-text.vue';
 export default defineDisplay(({ i18n }) => ({
 	id: 'formatted-text',
 	name: i18n.t('formatted_text'),
-	types: ['string'],
+	types: ['string', 'text'],
 	icon: 'text_format',
 	handler: DisplayFormattedText,
 	options: [

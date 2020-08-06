@@ -27,8 +27,8 @@ export type DisplayConfig = {
 	name: string | VueI18n.TranslateResult;
 
 	handler: DisplayHandlerFunction | Component;
-	options: null | Partial<Field>[] | Component;
-	types: typeof types[number][];
+	options: null | DeepPartial<Field>[] | Component;
+	types: readonly typeof types[number][];
 	fields?: string[] | DisplayFieldsFunction;
 };
 

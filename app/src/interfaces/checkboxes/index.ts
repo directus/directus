@@ -10,38 +10,84 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'choices',
+			type: 'json',
 			name: i18n.t('choices'),
-			note: i18n.t('use_double_colon_for_key'),
-			width: 'full',
-			interface: 'textarea',
+			system: {
+				width: 'full',
+				interface: 'repeater',
+				options: {
+					template: '{{ text }}',
+					fields: [
+						{
+							field: 'text',
+							type: 'string',
+							name: i18n.t('text'),
+							system: {
+								interface: 'text-input',
+							}
+						},
+						{
+							field: 'value',
+							type: 'string',
+							name: i18n.t('value'),
+							system: {
+								interface: 'text-input',
+								options: {
+									font: 'monospace'
+								},
+							}
+						},
+					]
+				}
+			}
 		},
 		{
 			field: 'allowOther',
 			name: i18n.t('allow_other'),
-			width: 'half',
-			interface: 'toggle',
-			default_value: false,
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			},
+			database: {
+				default_value: false,
+			}
 		},
 		{
 			field: 'iconOff',
 			name: i18n.t('icon_off'),
-			width: 'half',
-			interface: 'icon',
-			default_value: 'check_box_outline_blank',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			},
+			database: {
+				default_value: 'check_box_outline_blank',
+			}
 		},
 		{
 			field: 'iconOn',
 			name: i18n.t('icon_on'),
-			width: 'half',
-			interface: 'icon',
-			default_value: 'check_box',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			},
+			database: {
+				default_value: 'check_box',
+			}
 		},
 		{
 			field: 'color',
 			name: i18n.t('color'),
-			width: 'half',
-			interface: 'color',
-			default_value: 'var(--primary)',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'color',
+			},
+			database: {
+				default_value: '#2f80ed',
+			}
 		},
 	],
 }));

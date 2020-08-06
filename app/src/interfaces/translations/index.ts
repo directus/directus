@@ -7,5 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'replay',
 	types: ['alias'],
 	component: InterfaceTranslations,
-	options: [],
+	options: [
+		/** @todo add custom options component */
+	],
 }));

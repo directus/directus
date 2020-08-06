@@ -59,7 +59,7 @@ export default defineComponent({
 		},
 		language: {
 			type: String,
-			default: 'json',
+			default: 'text/plain',
 		},
 	},
 	setup(props, { emit }) {

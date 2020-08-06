@@ -20,30 +20,39 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'template',
 			name: i18n.t('template'),
-			width: 'full',
-			interface: 'code',
-			default_value: null,
+			type: 'text',
+			system: {
+				width: 'full',
+				interface: 'code',
+				options: {
+					language: 'text/plain'
+				}
+			},
+			database: {
+				default_value: null,
+			}
 		},
 		{
 			field: 'lineNumber',
 			name: i18n.t('line_number'),
-			width: 'half',
-			interface: 'toggle',
-			default_value: false,
+			type: 'boolean',
+			system: {
+				width: 'half',
+				interface: 'toggle',
+			},
+			database: {
+				default_value: false,
+			}
 		},
 		{
 			field: 'language',
 			name: i18n.t('language'),
-			width: 'half',
-			interface: 'dropdown',
-			options: choices,
-		},
-		{
-			field: 'altOptions',
-			name: i18n.t('alt_options'),
-			width: 'full',
-			interface: 'code',
-			default_value: null,
-		},
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'dropdown',
+				options: { choices },
+			},
+		}
 	],
 }));

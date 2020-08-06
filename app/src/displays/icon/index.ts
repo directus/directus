@@ -1,5 +1,6 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayIcon from './icon.vue';
+import { types } from '@/stores/fields/types';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'icon',
@@ -9,10 +10,13 @@ export default defineDisplay(({ i18n }) => ({
 	options: [
 		{
 			field: 'icon',
-			name: 'Icon',
-			interface: 'icon',
-			width: 'half',
+			name: i18n.t('icon'),
+			type: 'string',
+			system: {
+				interface: 'icon',
+				width: 'half',
+			}
 		},
 	],
-	types: ['string'],
+	types: types,
 }));

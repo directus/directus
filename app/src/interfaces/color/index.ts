@@ -10,9 +10,35 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'presets',
-			name: 'Preset Colors',
-			width: 'full',
-			interface: 'repeater<color>',
+			name: i18n.t('preset_colors'),
+			type: 'string',
+			system: {
+				width: 'full',
+				interface: 'repeater',
+				options: {
+					template: '{{ name }} - {{ color }}',
+					fields: [
+						{
+							field: 'name',
+							type: 'string',
+							name: i18n.t('name'),
+							system: {
+								interface: 'text-input',
+								width: 'half',
+							}
+						},
+						{
+							field: 'color',
+							type: 'string',
+							name: i18n.t('color'),
+							system: {
+								interface: 'color',
+								width: 'half'
+							}
+						}
+					]
+				}
+			}
 		},
 	],
 }));

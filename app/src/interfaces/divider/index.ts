@@ -13,20 +13,29 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'color',
 			name: i18n.t('color'),
-			width: 'half',
-			interface: 'color',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'color',
+			}
 		},
 		{
 			field: 'icon',
 			name: i18n.t('icon'),
-			width: 'half',
-			interface: 'icon',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'icon',
+			}
 		},
 		{
 			field: 'title',
 			name: i18n.t('title'),
-			width: 'half',
-			interface: 'text-input',
+			type: 'string',
+			system: {
+				width: 'half',
+				interface: 'text-input',
+			}
 		},
 	],
 }));
