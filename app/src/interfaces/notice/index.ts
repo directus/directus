@@ -14,7 +14,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'color',
 			name: i18n.t('color'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				default_value: 'normal',
@@ -33,7 +33,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'icon',
 			name: i18n.t('icon'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}
@@ -42,7 +42,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'text',
 			name: i18n.t('text'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'textarea',
 			}

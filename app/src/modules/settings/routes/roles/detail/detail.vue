@@ -92,7 +92,6 @@ import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import PermissionsManagement from './components/permissions-management';
 import marked from 'marked';
 import useUserStore from '@/stores/user';
 import RoleInfoDrawerDetail from './components/role-info-drawer-detail';
@@ -103,7 +102,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-detail',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, PermissionsManagement, RoleInfoDrawerDetail },
+	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, RoleInfoDrawerDetail },
 	props: {
 		primaryKey: {
 			type: String,

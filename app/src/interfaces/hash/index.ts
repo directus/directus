@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			}
@@ -21,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'masked',
 			name: i18n.t('masked'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			}

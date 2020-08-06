@@ -26,7 +26,7 @@ export const types = [
 	'unknown',
 ] as const;
 
-export type DatabaseColumn = {
+export type FieldSchema = {
 	/** @todo import this from knex-schema-inspector when that's launched */
 	name: string;
 	table: string;
@@ -45,7 +45,7 @@ export type DatabaseColumn = {
 	foreign_key_schema?: string | null;
 };
 
-export type SystemField = {
+export type FieldMeta = {
 	id: number;
 	collection: string;
 	field: string;
@@ -70,12 +70,12 @@ export interface FieldRaw {
 	field: string;
 	type: typeof types[number];
 
-	database: DatabaseColumn | null;
-	system: SystemField | null;
+	schema: FieldSchema | null;
+	meta: FieldMeta | null;
 }
 
 export interface Field extends FieldRaw {
 	name: string | TranslateResult;
 	type: typeof types[number];
-	system: SystemField;
+	meta: FieldMeta;
 }

@@ -21,14 +21,14 @@ export default defineInterface(({ i18n }) => ({
 			field: 'template',
 			name: i18n.t('template'),
 			type: 'text',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'code',
 				options: {
 					language: 'text/plain'
 				}
 			},
-			database: {
+			schema: {
 				default_value: null,
 			}
 		},
@@ -36,11 +36,11 @@ export default defineInterface(({ i18n }) => ({
 			field: 'lineNumber',
 			name: i18n.t('line_number'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			},
-			database: {
+			schema: {
 				default_value: false,
 			}
 		},
@@ -48,7 +48,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'language',
 			name: i18n.t('language'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: { choices },

@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconOff',
 			name: i18n.t('icon_off'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 				default_value: 'check_box_outline_blank',
@@ -22,7 +22,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconOn',
 			name: i18n.t('icon_on'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 				default_value: 'check_box',
@@ -32,7 +32,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'label',
 			name: i18n.t('label'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 				default_value: i18n.t('active'),
@@ -42,7 +42,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'color',
 			name: i18n.t('color'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'color',
 				default_value: 'var(--primary)',

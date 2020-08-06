@@ -1,7 +1,7 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { uniq } from 'lodash';
-import { Accountability, AbstractServiceOptions, System } from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta } from '../types';
 import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -44,17 +44,17 @@ export default class FieldsService {
 	}
 
 	async readAll(collection?: string) {
-		let fields: System[];
+		let fields: FieldMeta[];
 
 		if (collection) {
 			fields = (await this.itemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
-			})) as System[];
+			})) as FieldMeta[];
 		} else {
-			fields = (await this.itemsService.readByQuery({})) as System[];
+			fields = (await this.itemsService.readByQuery({})) as FieldMeta[];
 		}
 
-		fields = (await this.payloadService.processValues('read', fields)) as System[];
+		fields = (await this.payloadService.processValues('read', fields)) as FieldMeta[];
 
 		let columns = await schemaInspector.columnInfo(collection);
 
@@ -74,27 +74,27 @@ export default class FieldsService {
 				collection: column.table,
 				field: column.name,
 				type: column ? getLocalType(column.type) : 'alias',
-				database: column,
-				system: field || null,
+				schema: column,
+				meta: field || null,
 			};
 
 			return data as Field;
 		});
 
 		let aliasFields = await this.knex
-			.select<System[]>('*')
+			.select<FieldMeta[]>('*')
 			.from('directus_fields')
 			.whereIn('special', ['alias', 'o2m']);
 
-		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as System[];
+		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as FieldMeta[];
 
 		const aliasFieldsAsField = aliasFields.map((field) => {
 			const data = {
 				collection: field.collection,
 				field: field.field,
 				type: field.special,
-				database: null,
-				system: field,
+				schema: null,
+				meta: field,
 			};
 
 			return data;
@@ -112,7 +112,7 @@ export default class FieldsService {
 			.where({ collection, field })
 			.first();
 
-		fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as System[];
+		fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);
@@ -140,7 +140,7 @@ export default class FieldsService {
 		 * Check if table / directus_fields row already exists
 		 */
 
-		if (field.database) {
+		if (field.schema) {
 			if (table) {
 				this.addColumnToTable(table, field as Field);
 			} else {
@@ -150,9 +150,9 @@ export default class FieldsService {
 			}
 		}
 
-		if (field.system) {
+		if (field.meta) {
 			await this.itemsService.create({
-				...field.system,
+				...field.meta,
 				collection: collection,
 				field: field.field,
 			});
@@ -162,16 +162,16 @@ export default class FieldsService {
 	/** @todo research how to make this happen in SQLite / Redshift */
 
 	async updateField(collection: string, field: RawField, accountability?: Accountability) {
-		if (field.database) {
-			await database.schema.alterTable(collection, (table) => {
+		if (field.schema) {
+			await this.knex.schema.alterTable(collection, (table) => {
 				let column: ColumnBuilder;
 
-				if (!field.database) return;
+				if (!field.schema) return;
 
 				if (field.type === 'string') {
 					column = table.string(
 						field.field,
-						field.database.max_length !== null ? field.database.max_length : undefined
+						field.schema.max_length !== null ? field.schema.max_length : undefined
 					);
 				} else if (['float', 'decimal'].includes(field.type)) {
 					const type = field.type as 'float' | 'decimal';
@@ -181,14 +181,11 @@ export default class FieldsService {
 					column = table[field.type](field.field);
 				}
 
-				if (field.database.default_value) {
-					column.defaultTo(field.database.default_value);
+				if (field.schema.default_value) {
+					column.defaultTo(field.schema.default_value);
 				}
 
-				if (
-					field.database.is_nullable !== undefined &&
-					field.database.is_nullable === false
-				) {
+				if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
 					column.notNullable();
 				} else {
 					column.nullable();
@@ -198,7 +195,7 @@ export default class FieldsService {
 			});
 		}
 
-		if (field.system) {
+		if (field.meta) {
 			const record = await database
 				.select<{ id: number }>('id')
 				.from('directus_fields')
@@ -206,7 +203,7 @@ export default class FieldsService {
 				.first();
 			if (!record) throw new FieldNotFoundException(collection, field.field);
 			await database('directus_fields')
-				.update(field.system)
+				.update(field.meta)
 				.where({ collection, field: field.field });
 		}
 
@@ -225,10 +222,10 @@ export default class FieldsService {
 	public addColumnToTable(table: CreateTableBuilder, field: Field) {
 		let column: ColumnBuilder;
 
-		if (field.database?.has_auto_increment) {
+		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.database?.max_length || undefined);
+			column = table.string(field.field, field.schema?.max_length || undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 			/** @todo add precision and scale support */
@@ -237,17 +234,17 @@ export default class FieldsService {
 			column = table[field.type](field.field);
 		}
 
-		if (field.database?.default_value) {
-			column.defaultTo(field.database.default_value);
+		if (field.schema?.default_value) {
+			column.defaultTo(field.schema.default_value);
 		}
 
-		if (field.database.is_nullable !== undefined && field.database.is_nullable === false) {
+		if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
 			column.notNullable();
 		} else {
 			column.nullable();
 		}
 
-		if (field.database?.is_primary_key) {
+		if (field.schema?.is_primary_key) {
 			column.primary();
 		}
 	}

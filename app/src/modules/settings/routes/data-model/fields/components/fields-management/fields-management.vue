@@ -115,15 +115,15 @@ export default defineComponent({
 
 		const sortedVisibleFields = computed(() =>
 			sortBy(
-				[...fields.value].filter((field) => field.system.hidden === false),
-				(field) => field.system.sort || Infinity
+				[...fields.value].filter((field) => field.meta.hidden === false),
+				(field) => field.meta.sort || Infinity
 			)
 		);
 
 		const sortedHiddenFields = computed(() =>
 			sortBy(
-				[...fields.value].filter((field) => field.system.hidden === true),
-				(field) => field.system.sort || Infinity
+				[...fields.value].filter((field) => field.meta.hidden === true),
+				(field) => field.meta.sort || Infinity
 			)
 		);
 
@@ -197,7 +197,7 @@ export default defineComponent({
 
 			const updates: DeepPartial<Field>[] = fieldsInGroup.slice(newIndex).map((field) => {
 				const sortValue =
-					field.system.sort ||
+					field.meta.sort ||
 					fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
 
 				return {
@@ -208,11 +208,11 @@ export default defineComponent({
 
 			const addedToEnd = newIndex === fieldsInGroup.length;
 
-			let newSortValue = fieldsInGroup[newIndex]?.system.sort;
+			let newSortValue = fieldsInGroup[newIndex]?.meta.sort;
 
 			if (!newSortValue && addedToEnd) {
 				const previousItem = fieldsInGroup[newIndex - 1];
-				if (previousItem && previousItem.system.sort) newSortValue = previousItem.system.sort + 1;
+				if (previousItem && previousItem.meta.sort) newSortValue = previousItem.meta.sort + 1;
 			}
 
 			if (!newSortValue) {
@@ -221,7 +221,7 @@ export default defineComponent({
 
 			updates.push({
 				field: element.field,
-				system: {
+				meta: {
 					hidden: location === 'hidden',
 					sort: newSortValue,
 				},
@@ -242,20 +242,20 @@ export default defineComponent({
 				// If field.sort isn't set yet, base it on the index of the array. That way, the
 				// new sort value will match what's visible on the screen
 				const sortValue =
-					field.system.sort || fields.findIndex((existingField) => existingField.field === field.field);
+					field.meta.sort || fields.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,
-					system: {
+					meta: {
 						sort: move === 'down' ? sortValue - 1 : sortValue + 1,
 					},
 				};
 			});
 
-			const sortOfItemOnNewIndex = fields[newIndex].system.sort || newIndex;
+			const sortOfItemOnNewIndex = fields[newIndex].meta.sort || newIndex;
 			updates.push({
 				field: element.field,
-				system: {
+				meta: {
 					sort: sortOfItemOnNewIndex,
 				},
 			});

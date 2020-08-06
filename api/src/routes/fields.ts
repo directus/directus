@@ -59,14 +59,14 @@ const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
 	type: Joi.string().valid(...types),
-	database: Joi.object({
+	schema: Joi.object({
 		comment: Joi.string(),
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string()],
 		is_nullable: Joi.bool(),
 	}),
 	/** @todo base this on default validation */
-	system: Joi.any(),
+	meta: Joi.any(),
 });
 
 router.post(

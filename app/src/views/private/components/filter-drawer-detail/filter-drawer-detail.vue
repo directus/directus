@@ -73,7 +73,7 @@ export default defineComponent({
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
 				.filter(
-					(field: Field) => field.system?.hidden !== true && field.system?.special?.toLowerCase() !== 'alias'
+					(field: Field) => field.meta?.hidden !== true && field.meta?.special?.toLowerCase() !== 'alias'
 				)
 				.map((field: Field) => parseField(field, []));
 
@@ -103,8 +103,8 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.system?.hidden !== true &&
-										field.system?.special?.toLowerCase() !== 'alias'
+										field.meta?.hidden !== true &&
+										field.meta?.special?.toLowerCase() !== 'alias'
 								);
 						})
 						.flat()

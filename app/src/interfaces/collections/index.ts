@@ -12,14 +12,14 @@ export default defineInterface(({ i18n }) => ({
 			field: 'includeSystem',
 			name: i18n.t('system'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
 					label: i18n.t('include_system_collections'),
 				},
 			},
-			database: {
+			schema: {
 				default_value: false,
 			}
 		},

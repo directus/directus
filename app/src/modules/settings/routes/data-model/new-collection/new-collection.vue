@@ -212,12 +212,12 @@ export default defineComponent({
 			const field: DeepPartial<Field> = {
 				field: primaryKeyFieldName.value,
 				type: 'integer',
-				system: {
+				meta: {
 					hidden: true,
 					interface: 'numeric',
 					readonly: true,
 				},
-				database: {
+				schema: {
 					has_auto_increment: true,
 					is_primary_key: true,
 				},
@@ -227,13 +227,13 @@ export default defineComponent({
 				return {
 					...field,
 					type: 'uuid',
-					system: {
-						...field.system,
+					meta: {
+						...field.meta,
 						interface: 'text-input',
 						special: 'uuid',
 					},
-					database: {
-						...field.database,
+					schema: {
+						...field.schema,
 						length: 36,
 						has_auto_increment: false,
 					}
@@ -242,14 +242,14 @@ export default defineComponent({
 				return {
 					...field,
 					type: 'string',
-					system: {
-						...field.system,
+					meta: {
+						...field.meta,
 						interface: 'text-input',
 						readonly: false,
 						hidden: false,
 					},
-					database: {
-						...field.database,
+					schema: {
+						...field.schema,
 						length: 255,
 						auto_increment: false,
 					}
@@ -267,7 +267,7 @@ export default defineComponent({
 				fields.push({
 					field: systemFields[0].name,
 					type: 'string',
-					system: {
+					meta: {
 						width: 'full',
 						required: true,
 						options: {
@@ -292,7 +292,7 @@ export default defineComponent({
 						},
 						interface: 'status',
 					},
-					database: {
+					schema: {
 						default_value: 'draft',
 					},
 				});
@@ -302,13 +302,13 @@ export default defineComponent({
 				fields.push({
 					field: systemFields[1].name,
 					type: 'integer',
-					system: {
+					meta: {
 						interface: 'sort',
 						hidden: true,
 						width: 'full',
 						special: 'sort',
 					},
-					database: {},
+					schema: {},
 				});
 			}
 
@@ -316,7 +316,7 @@ export default defineComponent({
 			// 	fields.push({
 			// 		field: systemFields[2].name,
 			// 		type: 'uuid',
-			// 		system: {
+			// 		meta: {
 			// 			special: 'user_created',
 			// 			interface: 'owner',
 			// 			options: {
@@ -327,7 +327,7 @@ export default defineComponent({
 			// 			hidden: true,
 			// 			width: 'full',
 			// 		},
-			// 		database: {},
+			// 		schema: {},
 			// 	});
 			// }
 
@@ -335,7 +335,7 @@ export default defineComponent({
 			// 	fields.push({
 			// 		field: systemFields[3].name,
 			// 		type: 'timestamp',
-			// 		system: {
+			// 		meta: {
 			// 			special: 'datetime_created',
 			// 			interface: 'datetime-created',
 			// 			readonly: true,
@@ -349,7 +349,7 @@ export default defineComponent({
 			// 	fields.push({
 			// 		field: systemFields[4].name,
 			// 		type: 'uuid',
-			// 		system: {
+			// 		meta: {
 			// 			special: 'user_updated',
 			// 			interface: 'user-updated',
 			// 			options: {
@@ -367,7 +367,7 @@ export default defineComponent({
 			// 	fields.push({
 			// 		field: systemFields[5].name,
 			// 		type: 'timestamp',
-			// 		system: {
+			// 		meta: {
 			// 			special: 'datetime_updated',
 			// 			interface: 'datetime-updated',
 			// 			readonly: true,

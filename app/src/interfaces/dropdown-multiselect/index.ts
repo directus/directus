@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'choices',
 			type: 'json',
 			name: i18n.t('choices'),
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
@@ -22,7 +22,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'text',
 							type: 'string',
 							name: i18n.t('text'),
-							system: {
+							meta: {
 								interface: 'text-input',
 							}
 						},
@@ -30,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'value',
 							type: 'string',
 							name: i18n.t('value'),
-							system: {
+							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace'
@@ -45,7 +45,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'allowOther',
 			name: i18n.t('allow_other'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
@@ -55,7 +55,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'allowNone',
 			name: i18n.t('allow_none'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
@@ -65,7 +65,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'icon',
 			name: i18n.t('icon'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}

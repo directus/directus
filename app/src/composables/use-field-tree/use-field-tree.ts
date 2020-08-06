@@ -13,7 +13,7 @@ export default function useFieldTree(collection: Ref<string>) {
 		return fieldsStore
 			.getFieldsForCollection(collection.value)
 			.filter(
-				(field: Field) => field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
+				(field: Field) => field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias'
 			)
 			.map((field: Field) => parseField(field, []));
 
@@ -43,7 +43,7 @@ export default function useFieldTree(collection: Ref<string>) {
 							.getFieldsForCollection(relatedCollection)
 							.filter(
 								(field: Field) =>
-									field.system?.hidden === false && field.system?.special?.toLowerCase() !== 'alias'
+									field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias'
 							);
 					})
 					.flat()

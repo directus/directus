@@ -11,11 +11,11 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'includeSeconds',
 			name: i18n.t('include_seconds'),
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			},
-			database: {
+			schema: {
 				default_value: false,
 			},
 		},

@@ -235,7 +235,7 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.system?.hidden === false)
+			fieldsInCollection.value.filter((field) => field.meta?.hidden === false)
 		);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
@@ -377,7 +377,7 @@ export default defineComponent({
 						_viewQuery.value?.fields ||
 						availableFields.value
 							.filter((field: Field) => {
-								return field.database?.is_primary_key === false && field.system.special !== 'sort';
+								return field.schema?.is_primary_key === false && field.meta.special !== 'sort';
 							})
 							.slice(0, 4)
 							.map(({ field }) => field);
@@ -433,10 +433,10 @@ export default defineComponent({
 						value: field.field,
 						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.system.display,
-							displayOptions: field.system.display_options,
-							interface: field.system.interface,
-							interfaceOptions: field.system.options,
+							display: field.meta.display,
+							displayOptions: field.meta.display_options,
+							interface: field.meta.interface,
+							interfaceOptions: field.meta.options,
 							type: field.type,
 							field: field.field,
 						},
@@ -524,11 +524,11 @@ export default defineComponent({
 				const field = availableFields.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
-				if (!field.system.display) return null;
+				if (!field.meta.display) return null;
 
 				return {
-					display: field.system.display,
-					options: field.system.display_options,
+					display: field.meta.display,
+					options: field.meta.display_options,
 				};
 			}
 		}
