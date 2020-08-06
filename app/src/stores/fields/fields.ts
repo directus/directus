@@ -13,10 +13,10 @@ import { merge } from 'lodash';
 const fakeFilesField: Field = {
 	collection: 'directus_files',
 	field: '$file',
-	database: null,
+	schema: null,
 	name: i18n.t('file'),
 	type: 'integer',
-	system: {
+	meta: {
 		id: -1,
 		collection: 'directus_files',
 		field: '$file',
@@ -37,7 +37,7 @@ const fakeFilesField: Field = {
 	},
 };
 
-function getSystemDefault(collection: string, field: string): Field['system'] {
+function getMetaDefault(collection: string, field: string): Field['meta'] {
 	return {
 		id: -1,
 		collection,
@@ -88,13 +88,13 @@ export const useFieldsStore = createStore({
 		parseField(field: FieldRaw): Field {
 			let name: string | VueI18n.TranslateResult;
 
-			const system = field.system === null ? getSystemDefault(field.collection, field.field) : field.system;
+			const meta = field.meta === null ? getMetaDefault(field.collection, field.field) : field.meta;
 
 			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
 				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (notEmpty(system.translation) && system.translation.length > 0) {
-				for (let i = 0; i < system.translation.length; i++) {
-					const { locale, translation } = system.translation[i];
+			} else if (notEmpty(meta.translation) && meta.translation.length > 0) {
+				for (let i = 0; i < meta.translation.length; i++) {
+					const { locale, translation } = meta.translation[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
@@ -113,7 +113,7 @@ export const useFieldsStore = createStore({
 			return {
 				...field,
 				name,
-				system,
+				meta,
 			};
 		},
 		async createField(collectionKey: string, newField: Field) {
@@ -268,7 +268,7 @@ export const useFieldsStore = createStore({
 			/** @NOTE it's safe to assume every collection has a primary key */
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.state.fields.find(
-				(field) => field.collection === collection && field.database?.is_primary_key === true
+				(field) => field.collection === collection && field.schema?.is_primary_key === true
 			);
 
 			return primaryKeyField;

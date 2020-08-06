@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'choices',
 			type: 'json',
 			name: i18n.t('choices'),
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
@@ -22,7 +22,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'text',
 							type: 'string',
 							name: i18n.t('text'),
-							system: {
+							meta: {
 								interface: 'text-input',
 							}
 						},
@@ -30,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'value',
 							type: 'string',
 							name: i18n.t('value'),
-							system: {
+							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace'
@@ -45,11 +45,11 @@ export default defineInterface(({ i18n }) => ({
 			field: 'allowOther',
 			name: i18n.t('allow_other'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			},
-			database: {
+			schema: {
 				default_value: false,
 			}
 		},
@@ -57,11 +57,11 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconOff',
 			name: i18n.t('icon_off'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			},
-			database: {
+			schema: {
 				default_value: 'check_box_outline_blank',
 			}
 		},
@@ -69,11 +69,11 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconOn',
 			name: i18n.t('icon_on'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			},
-			database: {
+			schema: {
 				default_value: 'check_box',
 			}
 		},
@@ -81,11 +81,11 @@ export default defineInterface(({ i18n }) => ({
 			field: 'color',
 			name: i18n.t('color'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'color',
 			},
-			database: {
+			schema: {
 				default_value: '#2f80ed',
 			}
 		},

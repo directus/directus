@@ -9,11 +9,11 @@
 
 		<component
 			v-if="interfaceExists"
-			:is="`interface-${field.system.interface}`"
-			v-bind="field.system.options"
+			:is="`interface-${field.meta.interface}`"
+			v-bind="field.meta.options"
 			:disabled="disabled"
-			:value="value === undefined ? field.database.default_value : value"
-			:width="field.system.width"
+			:value="value === undefined ? field.schema.default_value : value"
+			:width="field.meta.width"
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
@@ -66,7 +66,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const interfaceExists = computed(() => {
-			return !!interfaces.find((inter) => inter.id === props.field.system.interface);
+			return !!interfaces.find((inter) => inter.id === props.field.meta.interface);
 		});
 
 		return { interfaceExists };

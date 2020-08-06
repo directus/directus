@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'minValue',
 			name: i18n.t('minimum_value'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}
@@ -21,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'maxValue',
 			name: i18n.t('maximum_value'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}
@@ -30,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'stepInterval',
 			name: i18n.t('step_interval'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}

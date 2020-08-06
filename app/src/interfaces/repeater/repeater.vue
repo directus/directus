@@ -99,7 +99,7 @@ export default defineComponent({
 
 			props.fields.forEach((field) => {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				newDefaults[field.field!] = field.database?.default_value;
+				newDefaults[field.field!] = field.schema?.default_value;
 			});
 
 			if (props.value !== null) {

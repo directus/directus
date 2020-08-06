@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'toolbar',
 			name: i18n.t('toolbar'),
 			type: 'json',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'checkboxes',
 				default_value: [
@@ -219,7 +219,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'font',
 			name: i18n.t('font'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				default: 'sans-serif',
@@ -236,7 +236,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'customFormats',
 			name: i18n.t('custom_formats'),
 			type: 'json',
-			system: {
+			meta: {
 				interface: 'code',
 				options: {
 					language: 'json',
@@ -254,7 +254,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'tinymceOverrides',
 			name: i18n.t('tinymce_options_override'),
 			type: 'json',
-			system: {
+			meta: {
 				interface: 'code',
 				options: {
 					language: 'json',

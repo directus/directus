@@ -1,5 +1,5 @@
 <template>
-	<div class="field" :key="field.field" :class="field.system.width">
+	<div class="field" :key="field.field" :class="field.meta.width">
 		<v-menu
 			v-if="field.hideLabel !== true"
 			placement="bottom-start"
@@ -39,7 +39,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<small class="note" v-if="field.system.note" v-html="marked(field.system.note)" />
+		<small class="note" v-if="field.meta.note" v-html="marked(field.meta.note)" />
 	</div>
 </template>
 
@@ -90,7 +90,7 @@ export default defineComponent({
 	setup(props) {
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
-			if (props.field.system.readonly) return true;
+			if (props.field.meta.readonly) return true;
 			if (props.batchMode && props.batchActive === false) return true;
 			return false;
 		});
@@ -98,7 +98,7 @@ export default defineComponent({
 		const _value = computed(() => {
 			if (props.value !== undefined) return props.value;
 			if (props.initialValue !== undefined) return props.initialValue;
-			return props.field.database?.default_value;
+			return props.field.schema?.default_value;
 		});
 
 		return { isDisabled, marked, _value };

@@ -11,7 +11,7 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			},
@@ -19,7 +19,7 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'iconLeft',
 			name: i18n.t('icon_left'),
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			},
@@ -27,7 +27,7 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'iconRight',
 			name: i18n.t('icon_right'),
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			},
@@ -35,7 +35,7 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'font',
 			name: i18n.t('font'),
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				default: 'sans-serif',

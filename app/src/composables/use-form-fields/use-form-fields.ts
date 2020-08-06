@@ -13,8 +13,8 @@ export default function useFormFields(fields: Ref<Field[]>) {
 
 		// Sort the fields on the sort column value
 		formFields = formFields.sort((a, b) => {
-			const aSort = a.system?.sort || null;
-			const bSort = b.system?.sort || null;
+			const aSort = a.meta?.sort || null;
+			const bSort = b.meta?.sort || null;
 
 			if (aSort === bSort) return 0;
 			if (aSort === null) return 1;
@@ -23,8 +23,8 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		});
 
 		formFields = formFields.map((field, index) => {
-			if (!field.system) {
-				field.system = {
+			if (!field.meta) {
+				field.meta = {
 					id: -1,
 					collection: field.collection,
 					field: field.field,
@@ -45,18 +45,18 @@ export default function useFormFields(fields: Ref<Field[]>) {
 				};
 			}
 
-			if (!field.system.width) {
-				field.system.width = 'full';
+			if (!field.meta.width) {
+				field.meta.width = 'full';
 			}
 
-			let interfaceUsed = interfaces.find((int) => int.id === field.system.interface);
+			let interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
-				field.system.interface = getDefaultInterfaceForType(field.type);
+				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.find((int) => int.id === field.system.interface);
+			interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;
@@ -66,11 +66,11 @@ export default function useFormFields(fields: Ref<Field[]>) {
 				(field as FormField).hideLoader = true;
 			}
 
-			if (index !== 0 && field.system!.width === 'half') {
+			if (index !== 0 && field.meta!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				if (prevField.system.width === 'half') {
-					field.system.width = 'half-right';
+				if (prevField.meta.width === 'half') {
+					field.meta.width = 'half-right';
 				}
 			}
 
@@ -79,7 +79,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
-			const hidden = field.system?.hidden;
+			const hidden = field.meta?.hidden;
 			const systemFake = field.field.startsWith('$');
 			return hidden !== true && systemFake === false;
 		});

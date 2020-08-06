@@ -87,7 +87,7 @@ export default defineComponent({
 
 						// Make sure the selected field matches the type of primary key of the current
 						// collection. Otherwise you aren't able to properly save the primary key
-						if (!field.database || field.type !== currentCollectionPrimaryKey.value.type) return false;
+						if (!field.schema || field.type !== currentCollectionPrimaryKey.value.type) return false;
 
 						return true;
 					})

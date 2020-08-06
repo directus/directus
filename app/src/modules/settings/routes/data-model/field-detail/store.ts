@@ -52,8 +52,8 @@ function initLocalStore(
 
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;
-		state.fieldData.database = existingField.database;
-		state.fieldData.system = existingField.system;
+		state.fieldData.database = existingField.schema;
+		state.fieldData.system = existingField.meta;
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	}

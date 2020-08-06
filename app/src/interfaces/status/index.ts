@@ -13,7 +13,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'status_mapping',
 			name: i18n.t('status_mapping'),
 			type: 'json',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'code',
 				options: {

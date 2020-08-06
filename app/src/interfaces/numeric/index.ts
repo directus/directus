@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			}
@@ -21,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'min',
 			name: i18n.t('minimum_value'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}
@@ -30,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'max',
 			name: i18n.t('maximum_value'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}
@@ -39,7 +39,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'step',
 			name: i18n.t('step_interval'),
 			type: 'integer',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'numeric',
 			}
@@ -48,7 +48,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconLeft',
 			name: i18n.t('icon_left'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}
@@ -57,7 +57,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconRight',
 			name: i18n.t('icon_right'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}
@@ -66,7 +66,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'font',
 			name: i18n.t('font'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {

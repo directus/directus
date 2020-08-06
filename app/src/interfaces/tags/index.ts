@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			}
@@ -21,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'lowercase',
 			name: i18n.t('lowercase'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			}
@@ -30,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'alphabetize',
 			name: i18n.t('alphabetize'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			}
@@ -39,7 +39,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconLeft',
 			name: i18n.t('icon_left'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}
@@ -48,7 +48,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'iconRight',
 			name: i18n.t('icon_right'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'icon',
 			}
@@ -57,7 +57,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'presets',
 			name: i18n.t('presets'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'text-input',
 			}
@@ -66,7 +66,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'allowCustom',
 			name: i18n.t('allow_custom'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			}

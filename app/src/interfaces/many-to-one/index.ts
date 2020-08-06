@@ -13,7 +13,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'template',
 			name: i18n.t('display_template'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			}

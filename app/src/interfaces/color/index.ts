@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'presets',
 			name: i18n.t('preset_colors'),
 			type: 'string',
-			system: {
+			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
@@ -22,7 +22,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'name',
 							type: 'string',
 							name: i18n.t('name'),
-							system: {
+							meta: {
 								interface: 'text-input',
 								width: 'half',
 							}
@@ -31,7 +31,7 @@ export default defineInterface(({ i18n }) => ({
 							field: 'color',
 							type: 'string',
 							name: i18n.t('color'),
-							system: {
+							meta: {
 								interface: 'color',
 								width: 'half'
 							}

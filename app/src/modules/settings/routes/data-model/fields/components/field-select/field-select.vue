@@ -1,5 +1,5 @@
 <template>
-	<div :class="field.system.width || 'full'">
+	<div :class="field.meta.width || 'full'">
 		<v-menu attached close-on-content-click>
 			<template #activator="{ toggle, active }">
 				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
@@ -35,15 +35,15 @@
 					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 				</v-list-item>
 				<v-divider />
-				<v-list-item @click="setWidth('half')" :disabled="hidden || field.system.width === 'half'">
+				<v-list-item @click="setWidth('half')" :disabled="hidden || field.meta.width === 'half'">
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="setWidth('full')" :disabled="hidden || field.system.width === 'full'">
+				<v-list-item @click="setWidth('full')" :disabled="hidden || field.meta.width === 'full'">
 					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.system.width === 'fill'">
+				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.meta.width === 'fill'">
 					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>
@@ -128,7 +128,7 @@ export default defineComponent({
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.find((inter) => inter.id === props.field.system.interface)?.name;
+			return interfaces.find((inter) => inter.id === props.field.meta.interface)?.name;
 		});
 
 		return {
@@ -194,8 +194,8 @@ export default defineComponent({
 					collection: duplicateTo.value,
 				};
 
-				delete newField.system.id;
-				delete newField.system.sort;
+				delete newField.meta.id;
+				delete newField.meta.sort;
 				delete newField.name;
 
 				duplicating.value = true;
