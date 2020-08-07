@@ -8,6 +8,9 @@
 		},
 		"rating": {
 			"rating": "Rating"
+		},
+		"raw": {
+			"raw": "Raw Value"
 		}
 	}
 }
