@@ -117,12 +117,20 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	return next();
 };
 
+let trackTimeout: number | null= null;
+
 export const onAfterEach = (to: Route) => {
 	const userStore = useUserStore();
 
 	if (to.meta.public !== true) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
 		// this call while more important things are loading
+
+		if (trackTimeout) {
+			clearTimeout(trackTimeout);
+			trackTimeout = null;
+		}
+
 		setTimeout(() => {
 			userStore.trackPage(to.fullPath);
 		}, 2500);
