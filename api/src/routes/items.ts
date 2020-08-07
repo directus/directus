@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
-import * as MetaService from '../services/meta';
+import MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
 
 const router = express.Router();
@@ -31,13 +31,13 @@ router.get(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const metaService = new MetaService({ accountability: req.accountability });
 
-		const [records, meta] = await Promise.all([
-			req.singleton
-				? service.readSingleton(req.sanitizedQuery)
-				: service.readByQuery(req.sanitizedQuery),
-			MetaService.getMetaForQuery(req.collection, req.sanitizedQuery),
-		]);
+		const records = req.singleton
+			? await service.readSingleton(req.sanitizedQuery)
+			: await service.readByQuery(req.sanitizedQuery);
+
+		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
 		return res.json({
 			meta: meta,

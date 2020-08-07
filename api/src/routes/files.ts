@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
 import FilesService from '../services/files';
+import MetaService from '../services/meta';
 import useCollection from '../middleware/use-collection';
 import { File, PrimaryKey } from '../types';
 import path from 'path';
@@ -108,8 +109,12 @@ router.get(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new FilesService({ accountability: req.accountability });
+		const metaService = new MetaService({ accountability: req.accountability });
+
 		const records = await service.readByQuery(req.sanitizedQuery);
-		return res.json({ data: records || null });
+		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+
+		return res.json({ data: records || null, meta });
 	})
 );
 

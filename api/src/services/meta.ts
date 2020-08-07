@@ -1,35 +1,49 @@
 import { Query } from '../types/query';
 import database from '../database';
+import { AbstractServiceOptions, Accountability } from '../types';
+import Knex from 'knex';
+import { applyFilter } from '../utils/apply-query';
 
-/**
- * @todo turn into class
- */
+export default class MetaService {
+	knex: Knex;
+	accountability: Accountability | null;
 
-export const getMetaForQuery = async (collection: string, query: Query) => {
-	if (!query || !query.meta) return;
+	constructor(options?: AbstractServiceOptions) {
+		this.knex = options?.knex || database;
+		this.accountability = options?.accountability || null;
+	}
 
-	const results = await Promise.all(
-		query.meta.map((metaVal) => {
-			if (metaVal === 'total_count') return totalCount(collection);
-			if (metaVal === 'filter_count') return filterCount(collection, query);
-		})
-	);
+	async getMetaForQuery(collection: string, query: Query) {
+		if (!query || !query.meta) return;
 
-	return results.reduce((metaObject: Record<string, any>, value, index) => {
-		return {
-			...metaObject,
-			[query.meta![index]]: value,
-		};
-	}, {});
-};
+		const results = await Promise.all(
+			query.meta.map((metaVal) => {
+				if (metaVal === 'total_count') return this.totalCount(collection);
+				if (metaVal === 'filter_count') return this.filterCount(collection, query);
+			})
+		);
 
-export const totalCount = async (collection: string) => {
-	const records = await database(collection).count('*');
-	return records[0].count;
-};
+		return results.reduce((metaObject: Record<string, any>, value, index) => {
+			return {
+				...metaObject,
+				[query.meta![index]]: value,
+			};
+		}, {});
+	}
 
-export const filterCount = async (collection: string, query: Query) => {
-	/** @TODO use actual query builder logic from items service to get count */
-	const records = await database(collection).count('*');
-	return records[0].count;
-};
+	async totalCount(collection: string) {
+		const records = await database(collection).count('*');
+		return Number(records[0].count);
+	}
+
+	async filterCount(collection: string, query: Query) {
+		const dbQuery = database(collection).count('*');
+
+		if (query.filter) {
+			applyFilter(dbQuery, query.filter);
+		}
+
+		const records = await dbQuery;
+		return Number(records[0].count);
+	}
+}

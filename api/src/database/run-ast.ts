@@ -1,9 +1,9 @@
 import { AST, NestedCollectionAST } from '../types/ast';
 import { clone, uniq, pick } from 'lodash';
 import database, { schemaInspector } from './index';
-import { Filter, Query, Item } from '../types';
-import { QueryBuilder } from 'knex';
+import { Query, Item } from '../types';
 import PayloadService from '../services/payload';
+import applyQuery from '../utils/apply-query';
 
 export default async function runAST(ast: AST, query = ast.query) {
 	const toplevelFields: string[] = [];
@@ -46,46 +46,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 	query.limit = query.limit || 100;
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	if (query.filter) {
-		applyFilter(dbQuery, query.filter);
-	}
-
-	if (query.sort) {
-		dbQuery.orderBy(query.sort);
-	}
-
-	if (query.limit && !query.offset) {
-		dbQuery.limit(query.limit);
-	}
-
-	if (query.offset) {
-		dbQuery.offset(query.offset);
-	}
-
-	if (query.page) {
-		dbQuery.offset(query.limit * (query.page - 1));
-	}
-
-	if (query.single) {
-		dbQuery.limit(1).first();
-	}
-
-	if (query.search && ast.type === 'collection') {
-		const columns = await schemaInspector.columnInfo(ast.name);
-
-		dbQuery.andWhere(function () {
-			columns
-				/** @todo Check if this scales between SQL vendors */
-				.filter(
-					(column) =>
-						column.type.toLowerCase().includes('text') ||
-						column.type.toLowerCase().includes('char')
-				)
-				.forEach((column) => {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
-				});
-		});
-	}
+	await applyQuery(ast.name, dbQuery, query);
 
 	let results: Item[] = await dbQuery;
 
@@ -230,57 +191,4 @@ function isM2O(child: NestedCollectionAST) {
 	return (
 		child.relation.one_collection === child.name && child.relation.many_field === child.fieldKey
 	);
-}
-
-function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
-	for (const [key, value] of Object.entries(filter)) {
-		if (key.startsWith('_') === false) {
-			let operator = Object.keys(value)[0];
-
-			const compareValue = Object.values(value)[0];
-
-			if (operator === '_eq') {
-				dbQuery.where({ [key]: compareValue });
-			}
-
-			if (operator === '_neq') {
-				dbQuery.whereNot({ [key]: compareValue });
-			}
-
-			if (operator === '_contains') {
-				dbQuery.where(key, 'like', `%${compareValue}%`);
-			}
-
-			if (operator === '_ncontains') {
-				dbQuery.where(key, 'like', `%${compareValue}%`);
-			}
-
-			if (operator === '_in') {
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery.whereIn(key, value as string[]);
-			}
-
-			if (operator === '_null') {
-				dbQuery.whereNull(key);
-			}
-
-			if (operator === '_nnull') {
-				dbQuery.whereNotNull(key);
-			}
-		}
-
-		if (key === '_or') {
-			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.orWhere((subQuery) => applyFilter(subQuery, subFilter));
-			});
-		}
-
-		if (key === '_and') {
-			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.andWhere((subQuery) => applyFilter(subQuery, subFilter));
-			});
-		}
-	}
 }
