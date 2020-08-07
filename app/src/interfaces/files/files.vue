@@ -59,7 +59,7 @@
 		<v-dialog v-model="showUpload">
 			<v-card>
 				<v-card-title>{{ $t('upload_file') }}</v-card-title>
-				<v-card-text><v-upload @upload="onUpload" /></v-card-text>
+				<v-card-text><v-upload @upload="onUpload" multiple /></v-card-text>
 				<v-card-actions>
 					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
 				</v-card-actions>

@@ -42,7 +42,7 @@ export default function usePreview({
 	// Every time the value changes, we'll reset the preview values. This ensures that we'll
 	// almost show the most up to date information in the preview table, regardless of if this
 	// is the first load or a subsequent edit.
-	watch(value, setPreview);
+	watch(value, setPreview, { immediate: true });
 
 	return { loading, previewItems, error };
 
@@ -127,7 +127,7 @@ export default function usePreview({
 		const response = await api.get(`/items/${junctionTable}`, {
 			params: {
 				fields: adjustFieldsForDisplay(fieldsToFetch, junctionCollection.value),
-				[`filter[${currentInJunction}][eq]`]: primaryKey.value,
+				[`filter[${currentInJunction}][_eq]`]: primaryKey.value,
 			},
 		});
 
