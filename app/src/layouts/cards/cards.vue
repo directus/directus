@@ -217,9 +217,7 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.meta.hidden !== true)
-		);
+		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta.hidden !== true));
 
 		const fileFields = computed(() => {
 			return availableFields.value.filter((field) => {
@@ -364,6 +362,10 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.filename_disk`);
 					fields.push(`${imageSource.value}.storage`);
 					fields.push(`${imageSource.value}.id`);
+				}
+
+				if (props.collection === 'directus_files' && imageSource.value === '$file') {
+					fields.push('type');
 				}
 
 				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;

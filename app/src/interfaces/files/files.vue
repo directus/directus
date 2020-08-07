@@ -124,7 +124,7 @@ export default defineComponent({
 
 			const jf = relationCurrentToJunction.value.junction_field;
 
-			return ['id', 'data', 'type', 'title'].map((key) => `${jf}.${key}`);
+			return ['id', 'type', 'title'].map((key) => `${jf}.${key}`);
 		});
 
 		const tableHeaders = ref<TableHeader[]>([

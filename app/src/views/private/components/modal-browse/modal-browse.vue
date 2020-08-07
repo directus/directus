@@ -9,6 +9,7 @@
 			:view-options.sync="options"
 			@update:selection="onSelect"
 			select-mode
+			class="layout"
 		/>
 
 		<template #footer>

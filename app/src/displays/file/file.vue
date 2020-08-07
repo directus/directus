@@ -18,17 +18,12 @@
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
 import useElementSize from '@/composables/use-element-size';
+import getRootPath from '@/utils/get-root-path';
 
 type File = {
+	id: string;
 	type: string;
 	title: string;
-	data: {
-		asset_url: string;
-		thumbnails: {
-			key: string;
-			url: string;
-		}[];
-	};
 };
 
 export default defineComponent({
@@ -47,9 +42,9 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (!props.value) return null;
-			if (props.value.type.includes('svg')) return props.value.data.asset_url;
+			if (props.value.type.includes('svg')) return getRootPath() + `assets/${props.value.id}`;
 			if (props.value.type.includes('image') === false) return null;
-			return props.value.data.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url;
+			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		const { height } = useElementSize(previewEl);
