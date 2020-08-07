@@ -58,6 +58,7 @@
     "marked": "^1.1.1",
     "micromustache": "^7.1.0",
     "mime-types": "^2.1.27",
+    "mitt": "^2.1.0",
     "mousetrap": "^1.6.5",
     "nanoid": "^3.1.10",
     "pinia": "^0.0.7",

@@ -137,7 +137,7 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
-				router.push(props.to);
+				router.push(props.to, () => {});
 			}
 		}
 	},

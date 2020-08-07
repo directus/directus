@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import api from '@/api';
@@ -115,6 +115,7 @@ import AddFolder from '../../components/add-folder';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
+import emitter, { Events } from '@/events';
 
 type Item = {
 	[field: string]: any;
@@ -191,6 +192,9 @@ export default defineComponent({
 		}
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
+		onMounted(() => emitter.on(Events.upload, refresh));
+		onUnmounted(() => emitter.off(Events.upload, refresh));
 
 		return {
 			batchDelete,
