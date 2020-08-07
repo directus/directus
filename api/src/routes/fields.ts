@@ -35,7 +35,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
-		const fields = await service.readAll(req.collection);
+		const fields = await service.readAll(req.params.collection);
 		return res.json({ data: fields || null });
 	})
 );
@@ -50,7 +50,7 @@ router.get(
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
 		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
 
-		const field = await service.readOne(req.collection, req.params.field);
+		const field = await service.readOne(req.params.collection, req.params.field);
 		return res.json({ data: field || null });
 	})
 );

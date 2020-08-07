@@ -81,10 +81,16 @@ export default class FieldsService {
 			return data as Field;
 		});
 
-		let aliasFields = await this.knex
+		const aliasQuery = this.knex
 			.select<FieldMeta[]>('*')
 			.from('directus_fields')
-			.whereIn('special', ['alias', 'o2m']);
+			.whereIn('special', ['alias', 'o2m', 'm2m']);
+
+		if (collection) {
+			aliasQuery.andWhere('collection', collection);
+		}
+
+		let aliasFields = await aliasQuery;
 
 		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as FieldMeta[];
 

@@ -100,7 +100,8 @@ router.post(
 		}
 
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
-		return res.json({ data: record || null });
+
+		return res.json({ data: res.locals.savedFiles.length === 1 ? record[0] : record || null });
 	})
 );
 
