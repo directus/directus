@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('image'),
 	icon: 'insert_photo',
 	component: InterfaceImage,
-	types: ['string'],
+	types: ['uuid'],
+	relationship: 'm2o',
 	options: [],
 }));

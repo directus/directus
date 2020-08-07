@@ -1,7 +1,6 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
-import InstallRoute from '@/routes/install';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
@@ -16,17 +15,6 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		path: '/',
 		redirect: '/login',
-	},
-	{
-		name: 'install',
-		path: '/install',
-		component: InstallRoute,
-		/**
-		 * @todo redirect to /login if project is already installed
-		 */
-		meta: {
-			public: true,
-		},
 	},
 	{
 		name: 'login',
@@ -117,12 +105,20 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	return next();
 };
 
+let trackTimeout: number | null= null;
+
 export const onAfterEach = (to: Route) => {
 	const userStore = useUserStore();
 
 	if (to.meta.public !== true) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
 		// this call while more important things are loading
+
+		if (trackTimeout) {
+			clearTimeout(trackTimeout);
+			trackTimeout = null;
+		}
+
 		setTimeout(() => {
 			userStore.trackPage(to.fullPath);
 		}, 2500);

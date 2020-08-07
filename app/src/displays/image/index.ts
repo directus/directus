@@ -19,5 +19,5 @@ export default defineDisplay(({ i18n }) => ({
 			}
 		},
 	],
-	fields: ['data', 'type', 'title'],
+	fields: ['id', 'type', 'title'],
 }));

@@ -2,15 +2,15 @@
 	<div>
 		<h2 class="type-title">{{ $t('display_setup_title') }}</h2>
 
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.system.display" />
+		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
 
-		<v-notice class="not-found" type="danger" v-if="fieldData.system.display && !selectedDisplay">
-			{{ $t('display_not_found', { display: fieldData.system.display }) }}
+		<v-notice class="not-found" type="danger" v-if="fieldData.meta.display && !selectedDisplay">
+			{{ $t('display_not_found', { display: fieldData.meta.display }) }}
 			<div class="spacer" />
-			<button @click="fieldData.system.display = null">{{ $t('reset_display') }}</button>
+			<button @click="fieldData.meta.display = null">{{ $t('reset_display') }}</button>
 		</v-notice>
 
-		<template v-if="fieldData.system.display && !selectedDisplay">
+		<template v-if="fieldData.meta.display && !selectedDisplay">
 			<v-form
 				v-if="
 					selectedDisplay.options &&
@@ -19,7 +19,7 @@
 				"
 				:fields="selectedDisplay.options"
 				primary-key="+"
-				v-model="fieldData.system.options"
+				v-model="fieldData.meta.options"
 			/>
 
 			<v-notice v-else>
@@ -71,7 +71,7 @@ export default defineComponent({
 		);
 
 		const selectedDisplay = computed(() => {
-			return displays.find((display) => display.id === state.fieldData.system.display);
+			return displays.find((display) => display.id === state.fieldData.meta.display);
 		});
 
 		return { fieldData: state.fieldData, selectItems, selectedDisplay };

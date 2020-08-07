@@ -59,7 +59,7 @@
 		<v-dialog v-model="showUpload">
 			<v-card>
 				<v-card-title>{{ $t('upload_file') }}</v-card-title>
-				<v-card-text><v-upload @upload="onUpload" /></v-card-text>
+				<v-card-text><v-upload @upload="onUpload" multiple /></v-card-text>
 				<v-card-actions>
 					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
 				</v-card-actions>
@@ -124,7 +124,7 @@ export default defineComponent({
 
 			const jf = relationCurrentToJunction.value.junction_field;
 
-			return ['id', 'data', 'type', 'title'].map((key) => `${jf}.${key}`);
+			return ['id', 'type', 'title'].map((key) => `${jf}.${key}`);
 		});
 
 		const tableHeaders = ref<TableHeader[]>([
