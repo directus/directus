@@ -2,8 +2,9 @@ import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 import { nanoid } from 'nanoid';
 
-const handlers: Record<string, () => void> = {};
+const tooltipDelay = 300;
 
+const handlers: Record<string, () => void> = {};
 
 function bind(element: HTMLElement, binding: DirectiveBinding) {
 	element.dataset.tooltip = nanoid();
@@ -48,7 +49,7 @@ export function createEnterHandler(element: HTMLElement, binding: DirectiveBindi
 			tooltipTimer = window.setTimeout(() => {
 				animateIn(tooltip);
 				updateTooltip(element, binding, tooltip);
-			}, 600);
+			}, tooltipDelay);
 		}
 	};
 }
