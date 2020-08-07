@@ -195,7 +195,12 @@ export default class PayloadService {
 
 				if (hasPrimaryKey) {
 					relatedPrimaryKey = relatedRecord[relation.one_primary];
-					await itemsService.update(relatedRecord, relatedPrimaryKey);
+
+					if (relatedRecord.hasOwnProperty('$delete') && relatedRecord.$delete) {
+						await itemsService.delete(relatedPrimaryKey);
+					} else {
+						await itemsService.update(relatedRecord, relatedPrimaryKey);
+					}
 				} else {
 					relatedPrimaryKey = await itemsService.create(relatedRecord);
 				}
