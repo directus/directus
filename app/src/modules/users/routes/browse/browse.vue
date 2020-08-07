@@ -55,7 +55,6 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:detail-route="'/users/{{item.role}}/{{primaryKey}}'"
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
@@ -75,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../../components/navigation/';
 
 import { i18n } from '@/lang';
@@ -95,8 +94,8 @@ export default defineComponent({
 	name: 'users-browse',
 	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
 	props: {
-		role: {
-			type: String,
+		queryFilters: {
+			type: Object as PropType<Record<string, string>>,
 			default: null,
 		},
 	},
@@ -111,30 +110,25 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 
 		const _filters = computed(() => {
-			if (props.role !== null) {
-				return [
-					{
+			if (props.queryFilters !== null) {
+				const urlFilters = [];
+
+				for (const [field, value] of Object.entries(props.queryFilters)) {
+					urlFilters.push({
 						locked: true,
-						field: 'role',
 						operator: 'eq',
-						value: props.role,
-					},
+						field,
+						value,
+					});
+				}
+
+				return [
+					...urlFilters,
 					...filters.value,
 				];
 			}
 
-			return [
-				// This filter is basically a no-op. Every user has a role. However, by filtering on
-				// this field, we can ensure that the field data is fetched, which is needed to build
-				// out the navigation links
-				{
-					locked: true,
-					field: 'role',
-					operator: 'nnull',
-					value: 1,
-				},
-				...filters.value,
-			];
+			return filters.value;
 		});
 
 		if (viewType.value === null) {

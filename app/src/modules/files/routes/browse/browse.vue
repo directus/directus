@@ -84,7 +84,6 @@
 			:view-query.sync="viewQuery"
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
-			:detail-route="'/files/{{primaryKey}}'"
 			@update:filters="filters = $event"
 		/>
 

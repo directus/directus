@@ -51,7 +51,6 @@
 			:selection.sync="selection"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:detail-route="'/{{project}}/settings/webhooks/{{primaryKey}}'"
 		/> -->
 
 		<div class="content">

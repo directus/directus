@@ -1296,6 +1296,7 @@ rows:
         width: full
       - collection: directus_users
         field: id
+        special: uuid
         interface: text-input
         locked: true
         options:

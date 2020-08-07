@@ -82,7 +82,6 @@
 		<modal-browse
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
-			:detail-route="`/files/{{primaryKey}}`"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>
