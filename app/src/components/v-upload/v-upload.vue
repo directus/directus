@@ -15,7 +15,7 @@
 
 		<template v-else-if="uploading">
 			<p class="type-label">{{ progress }}%</p>
-			<p class="type-text">{{ $t('upload_file_indeterminate') }}</p>
+			<p class="type-text">{{ multiple && numberOfFiles > 1 ? $t('upload_files_indeterminate', { done: done, total: numberOfFiles }) : $t('upload_file_indeterminate') }}</p>
 			<v-progress-linear :value="progress" rounded />
 		</template>
 
@@ -29,12 +29,17 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import uploadFile from '@/utils/upload-file';
+import uploadFiles from '@/utils/upload-files';
 
 export default defineComponent({
-	props: {},
+	props: {
+		multiple: {
+			type: Boolean,
+			default: false,
+		}
+	},
 	setup(props, { emit }) {
-		const { uploading, progress, error, upload, onBrowseSelect } = useUpload();
+		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
 
 		return {
@@ -46,40 +51,50 @@ export default defineComponent({
 			onDrop,
 			dragging,
 			onBrowseSelect,
+			done,
+			numberOfFiles
 		};
 
 		function useUpload() {
 			const uploading = ref(false);
 			const progress = ref(0);
+			const numberOfFiles = ref(0);
+			const done = ref(0);
 			const error = ref(null);
 
-			return { uploading, progress, error, upload, onBrowseSelect };
+			return { uploading, progress, error, upload, onBrowseSelect, numberOfFiles, done };
 
-			async function upload(file: File) {
+			async function upload(files: FileList) {
 				uploading.value = true;
 				progress.value = 0;
+				error.value = null;
 
 				try {
-					const response = await uploadFile(file, (percentage) => {
-						progress.value = percentage;
+					numberOfFiles.value = files.length;
+
+					const uploadedFiles = await uploadFiles(Array.from(files), (percentage) => {
+						progress.value = Math.round(percentage.reduce((acc, cur) => acc += cur) / files.length);
+						done.value = percentage.filter((p) => p === 100).length;
 					});
 
-					if (response) {
-						emit('upload', response.data.data);
+					if (uploadedFiles) {
+						emit('upload', props.multiple ? uploadedFiles : uploadedFiles[0]);
 					}
 				} catch (err) {
 					console.error(err);
 					error.value = err;
 				} finally {
 					uploading.value = false;
+					done.value = 0;
+					numberOfFiles.value = 0;
 				}
 			}
 
 			function onBrowseSelect(event: InputEvent) {
-				const file = (event.target as HTMLInputElement)?.files?.[0];
+				const files = (event.target as HTMLInputElement)?.files;
 
-				if (file) {
-					upload(file);
+				if (files) {
+					upload(files);
 				}
 			}
 		}
@@ -111,10 +126,10 @@ export default defineComponent({
 				dragCounter = 0;
 				dragging.value = false;
 
-				const file = event.dataTransfer?.files[0];
+				const files = event.dataTransfer?.files;
 
-				if (file) {
-					upload(file);
+				if (files) {
+					upload(files);
 				}
 			}
 		}
@@ -141,7 +156,7 @@ export default defineComponent({
 		color: inherit;
 	}
 
-	&:hover {
+	&:not(.uploading):hover {
 		color: var(--primary);
 		border-color: var(--primary);
 	}

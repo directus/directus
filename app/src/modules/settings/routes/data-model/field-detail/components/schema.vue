@@ -10,7 +10,7 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('type') }}</div>
-				<v-input v-if="!fieldData.database" :value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
@@ -23,32 +23,32 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="fieldData.system.comment" :placeholder="$t('add_note')" />
+				<v-input v-model="fieldData.meta.comment" :placeholder="$t('add_note')" />
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field" v-if="fieldData.database">
+			<div class="field" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					class="monospace"
-					v-model="fieldData.database.default_value"
+					v-model="fieldData.schema.default_value"
 					:placeholder="$t('add_a_default_value')"
 				/>
 			</div>
 
-			<div class="field" v-if="fieldData.database">
+			<div class="field" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('length') }}</div>
 				<v-input
 					type="number"
 					:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
 					:disabled="isExisting || fieldData.type !== 'string'"
-					v-model="fieldData.database.max_length"
+					v-model="fieldData.schema.max_length"
 				/>
 			</div>
 
-			<div class="field" v-if="fieldData.database">
+			<div class="field" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('allow_null') }}</div>
-				<v-checkbox v-model="fieldData.database.is_nullable" :label="$t('allow_null_label')" block />
+				<v-checkbox v-model="fieldData.schema.is_nullable" :label="$t('allow_null_label')" block />
 			</div>
 
 			<!--
@@ -56,7 +56,7 @@
 
 			<div class="field">
 				<div class="label type-label">{{ $t('unique') }}</div>
-				<v-input v-model="fieldData.database.unique" />
+				<v-input v-model="fieldData.schema.unique" />
 			</div> -->
 		</div>
 	</div>
@@ -116,17 +116,17 @@ export default defineComponent({
 
 		function setType(value: typeof types[number]) {
 			if (value === 'uuid') {
-				state.fieldData.system.special = 'uuid';
+				state.fieldData.meta.special = 'uuid';
 			} else {
-				state.fieldData.system.special = null;
+				state.fieldData.meta.special = null;
 			}
 
 			// We'll reset the interface/display as they most likely won't work for the newly selected
 			// type
-			state.fieldData.system.interface = null;
-			state.fieldData.system.options = null;
-			state.fieldData.system.display = null;
-			state.fieldData.system.display_options = null;
+			state.fieldData.meta.interface = null;
+			state.fieldData.meta.options = null;
+			state.fieldData.meta.display = null;
+			state.fieldData.meta.display_options = null;
 			state.fieldData.type = value;
 		}
 	},

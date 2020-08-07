@@ -18,7 +18,7 @@
 				<v-button
 					icon
 					rounded
-					:href="image.data.full_url"
+					:href="downloadSrc"
 					:download="image.filename_download"
 					v-tooltip="$t('download')"
 				>
@@ -57,16 +57,11 @@ import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
+import getRootPath from '@/utils/get-root-path';
 
 type Image = {
+	id: string; // uuid
 	type: string;
-	data: {
-		full_url: string;
-		thumbnails: {
-			key: string;
-			url: string;
-		}[];
-	};
 	filesize: number;
 	width: number;
 	height: number;
@@ -77,7 +72,7 @@ export default defineComponent({
 	components: { FileLightbox, ImageEditor },
 	props: {
 		value: {
-			type: Number,
+			type: String,
 			default: null,
 		},
 		disabled: {
@@ -98,16 +93,19 @@ export default defineComponent({
 			if (!image.value) return null;
 
 			if (image.value.type.includes('svg')) {
-				return image.value.data.full_url;
+				return getRootPath() + `assets/${image.value.id}`;
 			}
 
-			const url = image.value.data.thumbnails.find((thumb) => thumb.key === 'system-large-crop')?.url;
-
-			if (url) {
-				return `${url}&cache-buster=${cacheBuster.value}`;
+			if (image.value.type.includes('image')) {
+				return getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
 			}
 
 			return null;
+		});
+
+		const downloadSrc = computed(() => {
+			if (!image.value) return null;
+			return getRootPath() + `assets/${image.value.id}`;
 		});
 
 		const meta = computed(() => {
@@ -143,6 +141,7 @@ export default defineComponent({
 			changeCacheBuster,
 			setImage,
 			deselect,
+			downloadSrc,
 		};
 
 		async function fetchImage() {
@@ -151,7 +150,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/files/${props.value}`, {
 					params: {
-						fields: ['id', 'data', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+						fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
 					},
 				});
 
@@ -169,6 +168,7 @@ export default defineComponent({
 
 		function setImage(data: Image) {
 			image.value = data;
+			emit('input', data.id);
 		}
 
 		function deselect() {

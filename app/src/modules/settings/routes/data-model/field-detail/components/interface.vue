@@ -2,15 +2,15 @@
 	<div>
 		<h2 class="type-title">{{ $t('interface_setup_title') }}</h2>
 
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.system.interface" />
+		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
 
-		<v-notice class="not-found" type="danger" v-if="fieldData.system.interface && !selectedInterface">
-			{{ $t('interface_not_found', { interface: fieldData.system.interface }) }}
+		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
+			{{ $t('interface_not_found', { interface: fieldData.meta.interface }) }}
 			<div class="spacer" />
-			<button @click="fieldData.system.interface = null">{{ $t('reset_interface') }}</button>
+			<button @click="fieldData.meta.interface = null">{{ $t('reset_interface') }}</button>
 		</v-notice>
 
-		<template v-if="fieldData.system.interface && selectedInterface">
+		<template v-if="fieldData.meta.interface && selectedInterface">
 			<v-form
 				v-if="
 					selectedInterface.options &&
@@ -19,7 +19,7 @@
 				"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				v-model="fieldData.system.options"
+				v-model="fieldData.meta.options"
 			/>
 
 			<v-notice v-else>
@@ -71,7 +71,7 @@ export default defineComponent({
 		);
 
 		const selectedInterface = computed(() => {
-			return interfaces.find((inter) => inter.id === state.fieldData.system.interface);
+			return interfaces.find((inter) => inter.id === state.fieldData.meta.interface);
 		});
 
 		return { fieldData: state.fieldData, selectItems, selectedInterface };

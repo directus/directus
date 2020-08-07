@@ -1,7 +1,6 @@
 import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
-import InstallRoute from '@/routes/install';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
@@ -16,17 +15,6 @@ export const defaultRoutes: RouteConfig[] = [
 	{
 		path: '/',
 		redirect: '/login',
-	},
-	{
-		name: 'install',
-		path: '/install',
-		component: InstallRoute,
-		/**
-		 * @todo redirect to /login if project is already installed
-		 */
-		meta: {
-			public: true,
-		},
 	},
 	{
 		name: 'login',

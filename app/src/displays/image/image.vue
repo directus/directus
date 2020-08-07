@@ -6,16 +6,12 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import ValueNull from '@/views/private/components/value-null';
+import getRootPath from '@/utils/get-root-path';
 
 type Image = {
+	id: string;
 	type: string;
 	title: string;
-	data: {
-		thumbnails: {
-			key: string;
-			url: string;
-		}[];
-	};
 };
 
 export default defineComponent({
@@ -33,7 +29,7 @@ export default defineComponent({
 	setup(props) {
 		const src = computed(() => {
 			if (props.value === null) return null;
-			return props.value?.data?.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url || null;
+			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
 		});
 
 		return { src };

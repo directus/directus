@@ -25,12 +25,12 @@ function initLocalStore(
 		fieldData: {
 			field: '',
 			type: '',
-			database: {
+			schema: {
 				default_value: undefined,
 				max_length: undefined,
 				is_nullable: true,
 			},
-			system: {
+			meta: {
 				hidden: false,
 				interface: undefined,
 				options: undefined,
@@ -52,8 +52,8 @@ function initLocalStore(
 
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;
-		state.fieldData.database = existingField.schema;
-		state.fieldData.system = existingField.meta;
+		state.fieldData.schema = existingField.schema;
+		state.fieldData.meta = existingField.meta;
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	}
@@ -122,11 +122,11 @@ function initLocalStore(
 	}
 
 	if (type === 'o2m') {
-		delete state.fieldData.database;
+		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
 		if (!isExisting) {
-			state.fieldData.system.special = 'o2m';
+			state.fieldData.meta.special = 'o2m';
 
 			state.relations = [
 				{
@@ -159,11 +159,11 @@ function initLocalStore(
 	}
 
 	if (type === 'm2m' || type === 'files') {
-		delete state.fieldData.database;
+		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
 		if (!isExisting) {
-			state.fieldData.system.special = 'm2m';
+			state.fieldData.meta.special = 'm2m';
 
 			state.relations = [
 				{

@@ -3,6 +3,8 @@ import api from '@/api';
 import notify from '@/utils/notify';
 import i18n from '@/lang';
 
+import emitter, { Events } from '@/events';
+
 export default async function uploadFile(
 	file: File,
 	onProgressChange?: (percentage: number) => void,
@@ -24,7 +26,9 @@ export default async function uploadFile(
 			});
 		}
 
-		return response;
+		emitter.emit(Events.upload);
+
+		return response.data.data;
 	} catch (error) {
 		if (showNotifications) {
 			notify({

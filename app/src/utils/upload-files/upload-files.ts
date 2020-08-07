@@ -8,7 +8,7 @@ export default async function uploadFiles(files: File[], onProgressChange?: (per
 	const progressForFiles = files.map(() => 0);
 
 	try {
-		await Promise.all(
+		const uploadedFiles = await Promise.all(
 			files.map((file, index) =>
 				uploadFile(
 					file,
@@ -20,10 +20,13 @@ export default async function uploadFiles(files: File[], onProgressChange?: (per
 				)
 			)
 		);
+
 		notify({
 			title: i18n.t('upload_files_success', { count: files.length }),
 			type: 'success',
 		});
+
+		return uploadedFiles;
 	} catch (error) {
 		notify({
 			title: i18n.t('upload_files_failed', { count: files.length }),

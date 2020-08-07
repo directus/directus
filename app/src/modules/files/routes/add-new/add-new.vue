@@ -3,7 +3,7 @@
 		<v-card>
 			<v-card-title>{{ $t('add_new_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload @upload="onUpload" />
+				<v-upload multiple @upload="close" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ $t('done') }}</v-button>
@@ -24,14 +24,10 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		return { onUpload, close };
+		return { close };
 
 		function close() {
 			router.push('/files');
-		}
-
-		function onUpload() {
-			emit('upload');
 		}
 	},
 });
