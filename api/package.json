@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "9.0.0-alpha.10",
+  "version": "9.0.0-alpha.14",
   "license": "GPL-3.0-only",
   "homepage": "https://github.com/directus/next#readme",
   "description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -52,7 +52,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/server.js",
-    "build": "rimraf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+    "build": "rm -rf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
     "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
     "prepublishOnly": "npm run build"
@@ -64,7 +64,7 @@
     "example.env"
   ],
   "dependencies": {
-    "@directus/app": "^9.0.0-alpha.9",
+    "@directus/app": "^9.0.0-alpha.14",
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
@@ -97,7 +97,7 @@
     "liquidjs": "^9.14.1",
     "lodash": "^4.17.19",
     "ms": "^2.1.2",
-    "nanoid": "^3.1.11",
+    "nanoid": "^3.1.12",
     "nodemailer": "^6.4.11",
     "ora": "^4.0.5",
     "pino": "^6.4.1",
@@ -118,7 +118,7 @@
     "@types/busboy": "^0.2.3",
     "@types/clear": "^0.1.0",
     "@types/cookie-parser": "^1.4.2",
-    "@types/cors": "^2.8.6",
+    "@types/cors": "^2.8.7",
     "@types/express": "^4.17.7",
     "@types/express-pino-logger": "^4.0.2",
     "@types/express-session": "^1.17.0",
@@ -127,25 +127,25 @@
     "@types/joi": "^14.3.4",
     "@types/js-yaml": "^3.12.5",
     "@types/jsonwebtoken": "^8.5.0",
-    "@types/lodash": "^4.14.158",
+    "@types/lodash": "^4.14.159",
     "@types/ms": "^0.7.31",
     "@types/nodemailer": "^6.4.0",
     "@types/pino": "^6.3.0",
     "@types/sharp": "^0.25.1",
     "@types/uuid": "^8.0.0",
     "@types/uuid-validate": "0.0.1",
+    "concat-map": "0.0.1",
     "copyfiles": "^2.3.0",
     "cross-env": "^7.0.2",
-    "eslint": "^7.5.0",
+    "eslint": "^7.6.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "pino-colada": "^2.0.1",
     "prettier": "^2.0.5",
-    "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.56",
-    "tslint": "^6.1.2",
+    "tslint": "^6.1.3",
     "typescript": "^3.9.7"
   },
   "husky": {
@@ -158,5 +158,5 @@
       "prettier --write"
     ]
   },
-  "gitHead": "807b3e56438e360ce307f6da4200625eed0fb0ef"
+  "gitHead": "9092740d708c1e9ed1575b0932a01f531d224f77"
 }
