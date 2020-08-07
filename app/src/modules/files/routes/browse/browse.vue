@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import api from '@/api';
@@ -123,8 +123,13 @@ type Item = {
 export default defineComponent({
 	name: 'files-browse',
 	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
-	props: {},
-	setup() {
+	props: {
+		queryFilters: {
+			type: Object as PropType<Record<string, string>>,
+			default: null,
+		},
+	},
+	setup(props) {
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
@@ -136,21 +141,28 @@ export default defineComponent({
 		const currentFolder = ref(null);
 
 		const filtersWithFolderAndType = computed(() => {
-			if (currentFolder.value !== null) {
-				return [
-					...filters.value,
-					{
-						field: 'folder',
-						operator: 'eq',
-						value: currentFolder.value,
-						locked: true,
-					},
+			if (props.queryFilters !== null) {
+				const urlFilters: any[] = [
 					{
 						locked: true,
 						field: 'type',
 						operator: 'nnull',
 						value: 1,
 					},
+				];
+
+				for (const [field, value] of Object.entries(props.queryFilters)) {
+					urlFilters.push({
+						locked: true,
+						operator: 'eq',
+						field,
+						value,
+					});
+				}
+
+				return [
+					...urlFilters,
+					...filters.value,
 				];
 			}
 

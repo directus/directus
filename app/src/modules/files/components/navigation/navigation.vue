@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<v-list-item @click="$emit('filter', null)" :active="currentFolder === null">
+		<v-list-item to="/files/" exact>
 			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
 		</v-list-item>
@@ -15,12 +15,10 @@
 
 		<div class="folders">
 			<navigation-folder
-				@click="$emit('filter', $event)"
 				v-for="folder in folders"
 				:key="folder.id"
 				:folder="folder"
 				:current-folder="currentFolder"
-				:click-handler="(id) => $emit('filter', id)"
 			/>
 		</div>
 	</v-list>

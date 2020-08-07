@@ -12,7 +12,9 @@ export default defineModule(({ i18n }) => ({
 			name: 'files-browse',
 			path: '/',
 			component: FilesBrowse,
-			props: true,
+			props: (route) => ({
+				queryFilters: route.query
+			}),
 			children: [
 				{
 					path: '+',
