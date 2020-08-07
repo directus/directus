@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import WebhooksService from '../services/webhooks';
 import useCollection from '../middleware/use-collection';
+import MetaService from '../services/meta';
 
 const router = express.Router();
 
@@ -24,9 +25,12 @@ router.get(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new WebhooksService({ accountability: req.accountability });
-		const records = await service.readByQuery(req.sanitizedQuery);
+		const metaService = new MetaService({ accountability: req.accountability });
 
-		return res.json({ data: records || null });
+		const records = await service.readByQuery(req.sanitizedQuery);
+		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+
+		return res.json({ data: records || null, meta });
 	})
 );
 

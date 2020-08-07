@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import CollectionsService from '../services/collections';
 import useCollection from '../middleware/use-collection';
+import MetaService from '../services/meta';
 
 const router = Router();
 
@@ -24,9 +25,12 @@ router.get(
 	useCollection('directus_collections'),
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
-		const collections = await collectionsService.readByQuery();
+		const metaService = new MetaService({ accountability: req.accountability });
 
-		res.json({ data: collections || null });
+		const collections = await collectionsService.readByQuery();
+		const meta = await metaService.getMetaForQuery(req.collection, {});
+
+		res.json({ data: collections || null, meta });
 	})
 );
 

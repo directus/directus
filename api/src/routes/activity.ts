@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
 import ActivityService from '../services/activity';
+import MetaService from '../services/meta';
 import { Action } from '../types';
 
 const router = express.Router();
@@ -13,10 +14,14 @@ router.get(
 	sanitizeQuery,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
+		const metaService = new MetaService({ accountability: req.accountability });
+
 		const records = await service.readByQuery(req.sanitizedQuery);
+		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
 		return res.json({
 			data: records || null,
+			meta,
 		});
 	})
 );
