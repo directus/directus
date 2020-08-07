@@ -1,6 +1,6 @@
 {
   "name": "create-directus-project",
-  "version": "9.0.0-alpha.11",
+  "version": "9.0.0-alpha.12",
   "description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm.",
   "main": "lib/index.js",
   "bin": "./lib/index.js",
@@ -20,5 +20,5 @@
     "fs-extra": "^9.0.1",
     "ora": "^4.0.5"
   },
-  "gitHead": "807b3e56438e360ce307f6da4200625eed0fb0ef"
+  "gitHead": "19ad9ab29e502e76a94a7d9dffc9ba4ff0f0b182"
 }
