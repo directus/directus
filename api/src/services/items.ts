@@ -102,7 +102,9 @@ export default class ItemsService implements AbstractService {
 				return payload;
 			});
 
-			await payloadService.processO2M(payloads);
+			for (const key of primaryKeys) {
+				await payloadService.processO2M(payloads, key);
+			}
 
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
@@ -238,18 +240,23 @@ export default class ItemsService implements AbstractService {
 				});
 
 				payload = await payloadService.processM2O(payload);
-				payload = await payloadService.processValues('update', payload);
 
-				const payloadWithoutAliases = pick(
+				let payloadWithoutAliases = pick(
 					payload,
 					columns.map(({ column }) => column)
 				);
 
-				await trx(this.collection)
-					.update(payloadWithoutAliases)
-					.whereIn(primaryKeyField, keys);
+				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
 
-				await payloadService.processO2M(payload);
+				if (Object.keys(payloadWithoutAliases).length > 0) {
+					await trx(this.collection)
+						.update(payloadWithoutAliases)
+						.whereIn(primaryKeyField, keys);
+				}
+
+				for (const key of keys) {
+					await payloadService.processO2M(payload, key);
+				}
 
 				if (this.accountability) {
 					const activityRecords = keys.map((key) => ({

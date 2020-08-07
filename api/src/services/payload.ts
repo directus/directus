@@ -211,7 +211,7 @@ export default class PayloadService {
 	/**
 	 * Recursively save/update all nested related o2m items
 	 */
-	async processO2M(payload: Partial<Item> | Partial<Item>[]) {
+	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
 		const relations = await this.knex
 			.select<Relation[]>('*')
 			.from('directus_relations')
@@ -234,7 +234,7 @@ export default class PayloadService {
 				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
 					(record: Partial<Item>) => ({
 						...record,
-						[relation.many_field]: payload[relation.one_primary],
+						[relation.many_field]: parent || payload[relation.one_primary],
 					})
 				);
 
@@ -246,6 +246,7 @@ export default class PayloadService {
 				const toBeCreated = relatedRecords.filter(
 					(record) => record.hasOwnProperty(relation.many_primary) === false
 				);
+
 				const toBeUpdated = relatedRecords.filter(
 					(record) => record.hasOwnProperty(relation.many_primary) === true
 				);
