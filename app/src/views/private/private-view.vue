@@ -69,6 +69,7 @@ import uploadFiles from '@/utils/upload-files';
 import i18n from '@/lang';
 import useEventListener from '@/composables/use-event-listener';
 import useAppStore from '@/stores/app';
+import emitter, { Events } from '@/events';
 
 export default defineComponent({
 	components: {
@@ -234,6 +235,8 @@ export default defineComponent({
 						progress: percentageDone,
 					});
 				});
+
+				emitter.emit(Events.upload);
 
 				notificationsStore.remove(fileUploadNotificationID);
 			}
