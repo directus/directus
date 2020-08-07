@@ -73,16 +73,18 @@ export default async function runAST(ast: AST, query = ast.query) {
 	if (query.search && ast.type === 'collection') {
 		const columns = await schemaInspector.columnInfo(ast.name);
 
-		columns
-			/** @todo Check if this scales between SQL vendors */
-			.filter(
-				(column) =>
-					column.type.toLowerCase().includes('text') ||
-					column.type.toLowerCase().includes('char')
-			)
-			.forEach((column) => {
-				dbQuery.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
-			});
+		dbQuery.andWhere(function () {
+			columns
+				/** @todo Check if this scales between SQL vendors */
+				.filter(
+					(column) =>
+						column.type.toLowerCase().includes('text') ||
+						column.type.toLowerCase().includes('char')
+				)
+				.forEach((column) => {
+					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
+				});
+		});
 	}
 
 	let results: Item[] = await dbQuery;
