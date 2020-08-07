@@ -248,11 +248,16 @@ export default class PayloadService {
 				);
 
 				const toBeUpdated = relatedRecords.filter(
-					(record) => record.hasOwnProperty(relation.many_primary) === true
+					(record) => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') === false
 				);
+
+				const toBeDeleted = relatedRecords
+					.filter(record => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') && record.$delete === true)
+					.map(record => record[relation.many_primary]);
 
 				await itemsService.create(toBeCreated);
 				await itemsService.update(toBeUpdated);
+				await itemsService.delete(toBeDeleted);
 			}
 		}
 	}
