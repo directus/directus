@@ -189,10 +189,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		detailRoute: {
-			type: String,
-			default: `/collections/{{collection}}/{{primaryKey}}`,
-		},
 		file: {
 			type: Object as PropType<File>,
 			default: null,
@@ -254,11 +250,7 @@ export default defineComponent({
 		});
 
 		const newLink = computed(() => {
-			return render(props.detailRoute, {
-				collection: collection.value,
-				primaryKey: '+',
-				item: null,
-			});
+			return `/collections/${collection.value}/+`;
 		});
 
 		const showingCount = computed(() => {
@@ -412,12 +404,7 @@ export default defineComponent({
 		}
 
 		function getLinkForItem(item: Record<string, any>) {
-			return render(props.detailRoute, {
-				item: item,
-				collection: props.collection,
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				primaryKey: item[primaryKeyField.value!.field],
-			});
+			return `/collections/${props.collection}/${item[primaryKeyField.value!.field]}`;
 		}
 
 		function selectAll() {

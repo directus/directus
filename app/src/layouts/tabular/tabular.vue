@@ -144,7 +144,7 @@
 			{{ $t('no_items_copy') }}
 
 			<template #append>
-				<v-button :to="newLink">{{ $t('add_new_item') }}</v-button>
+				<v-button :to="`/collections/${collection}/+`">{{ $t('add_new_item') }}</v-button>
 			</template>
 		</v-info>
 	</div>
@@ -212,10 +212,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		detailRoute: {
-			type: String,
-			default: `/collections/{{collection}}/{{primaryKey}}`,
-		},
 		readonly: {
 			type: Boolean,
 			default: false,
@@ -259,14 +255,6 @@ export default defineComponent({
 			tableSpacing,
 		} = useTable();
 
-		const newLink = computed(() => {
-			return render(props.detailRoute, {
-				collection: collection.value,
-				primaryKey: '+',
-				item: null,
-			});
-		});
-
 		const showingCount = computed(() => {
 			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
@@ -306,7 +294,6 @@ export default defineComponent({
 			primaryKeyField,
 			_filters,
 			info,
-			newLink,
 			clearFilters,
 			showingCount,
 			sortField,
@@ -503,13 +490,8 @@ export default defineComponent({
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const primaryKey = item[primaryKeyField.value!.field];
-					router.push(
-						render(props.detailRoute, {
-							collection: collection.value,
-							primaryKey,
-							item,
-						})
-					);
+
+					router.push(`/collections/${collection.value}/${primaryKey}`, () => {});
 				}
 			}
 

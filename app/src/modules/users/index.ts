@@ -9,31 +9,16 @@ export default defineModule(({ i18n }) => ({
 	icon: 'people',
 	routes: [
 		{
-			path: '/',
-			redirect: '/all',
-		},
-		{
 			name: 'users-browse-all',
-			path: '/all',
+			path: '/',
 			component: UsersBrowse,
-		},
-		{
-			name: 'users-detail-add-new',
-			path: '/+',
-			component: UsersDetail,
-			props: {
-				primaryKey: '+',
-			},
-		},
-		{
-			name: 'users-browse-role',
-			path: '/:role',
-			component: UsersBrowse,
-			props: true,
+			props: (route) => ({
+				queryFilters: route.query
+			}),
 		},
 		{
 			name: 'users-detail',
-			path: '/:role/:primaryKey',
+			path: '/:primaryKey',
 			component: UsersDetail,
 			props: true,
 		},
