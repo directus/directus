@@ -15,7 +15,9 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 * **A modern dashboard.** A Vue.js Admin App so safe and intuitive, non-technical users require no training.
 
 **[Learn more about Directus on our website.](https://directus.io)**
+
 <br>
+
 ## 🚧 Alpha
 
 **DO NOT USE THIS VERSION IN PRODUCTION.**
