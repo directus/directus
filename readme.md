@@ -8,9 +8,9 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 * **Free & open-source.** No artificial limitations, vendor lock-in, or hidden pricing.
 * **REST & GraphQL API.** Instantly adds a blazingly fast Node.js API layer to your database.
-* **Manage pure, custom SQL.** Works with existing SQL databases, or create new architectures from scratch.
+* **Manage pure SQL.** Works with existing SQL databases, or helps build new architectures from scratch.
 * **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, MariaDB and MS-SQL.
-* **Allows self-hosting.** Choose your own hosting and infrastructure, run locally, or deeply integrate on-premises.
+* **Allows self-hosting.** Choose your hosting and infrastructure, run locally, or deeply integrate on-premises.
 * **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 * **A modern dashboard.** A Vue.js Admin App so safe and intuitive, non-technical users require no training.
 
