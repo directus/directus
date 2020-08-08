@@ -16,6 +16,8 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 **[Learn more about Directus on our website.](https://directus.io)**
 
+<br>
+
 ## 🚧 Alpha
 
 **DO NOT USE THIS VERSION IN PRODUCTION.**
@@ -30,6 +32,8 @@ This is *pre-release* software, therefore migrations will not be provided, break
 - [ ] Import/Export Endpoints
 - [ ] Caching
 - [ ] Rate Limiting
+
+<br>
 
 ## ⚙️ Installation
 
@@ -46,6 +50,8 @@ yarn create directus-project my-project
 ```
 
 Simply follow the setup prompts and the CLI will create your new project directory (eg: `my-project`), configuration file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is important to keep your projects up-to-date. For more information, view our docs on [Updates & Migrations](#).
+
+<br>
 
 ## 📌 Requirements
 
@@ -73,6 +79,8 @@ Directus only requires Node.js (or [PHP](https://github.com/directus/api-next)),
 
 _Other operating systems may also work, but are not officially supported._
 
+<br>
+
 ## 🤔 Community Help
 
 In addition to the [Directus Documentation](https://docs.directus.io), you can also request help via the following channels:
@@ -82,6 +90,8 @@ In addition to the [Directus Documentation](https://docs.directus.io), you can a
 * [GitHub Discussions](https://github.com/directus/next/discussions/category_choices) (Questions, Feature Requests)
 * [Twitter](https://twitter.com/directus) (Latest News)
 * [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
+
+<br>
 
 ## ❤️ Contributing & Sponsoring
 
