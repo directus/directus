@@ -12,7 +12,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 * **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, MariaDB and MS-SQL.
 * **Allows self-hosting.** Choose your own hosting and infrastructure, run locally, or deeply integrate on-premises.
 * **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
-* **A modern dashboard.** Our Vue.js Admin App is safe and intuitive enough for non-technical users without training.
+* **A modern dashboard.** A Vue.js Admin App so safe and intuitive, non-technical users require no training.
 
 **[Learn more about Directus on our website.](https://directus.io)**
 
@@ -83,16 +83,12 @@ In addition to the [Directus Documentation](https://docs.directus.io), you can a
 * [Twitter](https://twitter.com/directus) (Latest News)
 * [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
-## 🔧 Contributing
+## ❤️ Contributing & Sponsoring
 
 Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting Pull Requests.
 
-## ❤️ Supporting Directus
+Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all. Monospace Inc owns all Directus trademarks and logos on behalf of our project's community.
 
-Directus is a premium open-source project, made possible with support from our core team, contributors, and sponsors: [GitHub Sponsors](https://github.com/sponsors/directus)
-
-## 📄 License
-
-Offered free and open-source under the [GPLv3 license](./license). Monospace Inc owns all Directus trademarks and logos on behalf of our project's community.
+<br>
 
 © 2006-2020, Monospace Inc.
