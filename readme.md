@@ -97,8 +97,8 @@ In addition to the [Directus Documentation](https://docs.directus.io), you can a
 
 Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting Pull Requests.
 
-Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all. Monospace Inc owns all Directus trademarks and logos on behalf of our project's community.
+Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
 
 <br>
 
-© 2006-2020, Monospace Inc.
+© 2006-2020, Monospace Inc
