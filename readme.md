@@ -1,72 +1,98 @@
-<img width="250" alt="Logo" src="https://user-images.githubusercontent.com/9141017/88821768-0dc99800-d191-11ea-8c66-09c55ab451a2.png">
+<p align="center"><img width="400" alt="Logo" src="https://user-images.githubusercontent.com/522079/89687381-23943700-d8ce-11ea-9a4d-ae3eae136423.png"></p>
+
+<br><br>
 
 ## 🐰 Introduction
 
-Welcome to the preview release of the next major version of Directus.
+Directus is a free and open-source platform for managing SQL database content via a real-time API and intuitive App dashboard.
 
-**NOTE:** This is pre-release software and should be treated as such. DO NOT use this in production.
-Migrations between versions aren't provided, and breaking changes might happen at any release.
+* **Take control over your data.** Manage the content within your new or existing databases.
+* **Choose your SQL vendor.** Supports PostgreSQL, MySQL, SQLite, OracleDB, MariaDB and MS-SQL.
+* **Self-hosted option.** Integrates into your infrastructure, for 100% transparancy and scale.
+* **Completely extensible.** Customize and white-label our modular platform without any limitations.
+* **REST and GraphQL API.** Instantly adds a dynamic and feature-rich API to your datastore.
+* **Completely extensible.** Customize and white-label our modular platform without any limitations.
+
+**[Learn more about Directus on our website.](https://directus.io)**
 
 ## 🚧 Alpha
 
-Note that this is an alpha version of the software. This means that certain features might be missing or broken. The following (big) features are still being worked on:
+**DO NOT USE THIS VERSION IN PRODUCTION.**
+
+This is *pre-release* software, therefore migrations will not be provided, breaking changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/next/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
 
 - [ ] GraphQL Endpoint
+- [ ] App Permissions
 - [ ] MS SQL Support
 - [ ] OracleDB Support
-- [ ] App Permissions
+- [ ] Webhooks
 - [ ] Import/Export Endpoints
 - [ ] Caching
 - [ ] Rate Limiting
 
-See [the issue tracker](https://github.com/directus/next/issues) for a more in-depth list of all things coming up.
-
 ## ⚙️ Installation
 
-_Directus requires NodeJS 10+_
-
-We've created a little CLI tool you can use to quickly start up a Directus project. You can use it by running:
+Create a new Directus project by running the following npm command:
 
 ```
 npx create-directus-project my-project
 ```
 
-or using yarn:
+Or, using yarn:
 
 ```
 yarn create directus-project my-project
 ```
 
-on the command line. This will create the given directory, setup the configuration, and install the database.
+Follow the prompts and the CLI will create your new project directory (eg: `my-project`), setup the configuration file, and install/seed the database. To get the most out of Directus, and to ensure you have the latest security patches, it is important to keep your projects up-to-date. For more information, view our documentation on [Updates & Migrations](#).
 
-## ✨ Updating
+## ✨ Requirements
 
-To update an existing Directus project, navigate to your project directory and run:
+Directus only requires Node.js — and supports most operating systems and SQL database vendors.
 
-```
-npm update
-```
+* Node.js 10+
+* npm 6.x+
+
+#### Supported Databases
+
+* PostgreSQL 10+
+* MySQL 5.6+
+* MariaDB 10.1+
+* SQLite 3+
+* MS-SQL X.X+
+* OracleDB X.X+
+
+#### Supported OS
+
+* Ubuntu 18.04
+* Windows
+* Docker ([DockerHub](https://hub.docker.com/r/directus/directus) + [Docker Repo](https://github.com/directus/docker))
+
+_Other operating systems may also work, but are not officially supported._
 
 ## 🔧 Contributing
 
-Please report any and all quirks / issues you come across as [an issue](https://github.com/directus/next/issues/new).
+Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting Pull Requests.
 
-Pull requests are more than welcome and always appreciated. Seeing this is in active development, please make sure to reach out a member of the core team in an issue or [on Discord](http://discord.gg/directus) before you start working on a feature or bug to ensure you don't work on the same thing as somebody else :)
+## 🤔 Community Help
 
-To install the project locally:
+In addition to the [Directus Documentation](https://docs.directus.io), you can also request help via the following channels:
 
-1. Clone the repo
-2. Run `npm run bootstrap` in the root
-3. Run `npm run dev` to start the dev environment for the Directus suite
+* [Discord](http://discord.gg/directus) (Live Discussions)
+* [GitHub Issues](https://github.com/directus/next/issues) (Report Bugs)
+* [GitHub Discussions](https://github.com/directus/next/discussions/category_choices) (Questions, Feature Requests)
+* [Twitter](https://twitter.com/directus) (Latest News)
+* [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
 ## ❤️ Supporting Directus
 
-Directus is a GPLv3-licensed open source project with development made possible by support from our core team, contributors, and sponsors. It's not easy building premium open-source software; if you would like to help ensure Directus stays free, please consider becoming a sponsor.
+Directus is a premium open-source project, with development made possible by support from our core team, contributors, and sponsors. If you would like to help ensure Directus remains free, please consider becoming a sponsor.
 
 * [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
 * [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
 
 ## 📄 License
 
-Directus is released under [the GPLv3 license](./license). Monospace Inc. owns all Directus trademarks and logos on behalf of our project's community. Copyright © 2006-2020, Monospace Inc.
+Released under [the GPLv3 license](./license); Monospace Inc owns all Directus trademarks and logos on behalf of our project's community.
 
+© 2006-2020, Monospace Inc.
