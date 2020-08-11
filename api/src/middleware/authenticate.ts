@@ -29,7 +29,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');
 			} else if (err instanceof JsonWebTokenError) {
-				throw new InvalidCredentialsException('Token corrupt.');
+				throw new InvalidCredentialsException('Token invalid.');
 			} else {
 				throw err;
 			}
