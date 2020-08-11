@@ -1728,6 +1728,40 @@ rows:
         permissions: {}
         fields: "project_name,project_logo,project_color,public_foreground,public_background,public_note"
 
+  directus_presets:
+    defaults:
+      title: null
+      user: null
+      role: null
+      collection: null
+      search: null
+      filters: []
+      view_type: tabular
+      view_query: null
+      view_options: null
+
+    data:
+      - collection: directus_files
+        view_type: cards
+        view_query:
+          cards:
+            sort: -uploaded_on
+        view_options:
+          cards:
+            icon: insert_drive_file
+            title: '{{ title }}'
+            subtitle: '{{ type }} • {{ filesize }}'
+            size: 4
+            imageFit: crop
+      - collection: directus_users
+        view_type: cards
+        view_options:
+          cards:
+            icon: person
+            title: '{{ first_name }} {{ last_name }}'
+            subtitle: '{{ title }}'
+            size: 4
+
   directus_relations:
     defaults:
       many_collection: directus_users

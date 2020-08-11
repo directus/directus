@@ -34,7 +34,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="edit" />
 			</v-button>
 
@@ -122,29 +129,11 @@ export default defineComponent({
 					});
 				}
 
-				return [
-					...urlFilters,
-					...filters.value,
-				];
+				return [...urlFilters, ...filters.value];
 			}
 
 			return filters.value;
 		});
-
-		if (viewType.value === null) {
-			viewType.value = 'cards';
-		}
-
-		if (viewOptions.value === null) {
-			if (viewType.value === 'cards') {
-				viewOptions.value = {
-					icon: 'person',
-					title: '{{first_name}} {{last_name}}',
-					subtitle: '{{ title }}',
-					size: 4
-				};
-			}
-		}
 
 		return {
 			_filters,

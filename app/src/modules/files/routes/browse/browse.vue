@@ -188,25 +188,6 @@ export default defineComponent({
 			];
 		});
 
-		if (viewType.value === null) {
-			viewType.value = 'cards';
-		}
-
-		if (viewOptions.value === null && viewType.value === 'cards') {
-			viewOptions.value = {
-				icon: 'insert_drive_file',
-				title: '{{title}}',
-				subtitle: '{{type}} • {{filesize}}',
-				size: 4,
-			};
-		}
-
-		if (viewQuery.value === null && viewType.value === 'cards') {
-			viewQuery.value = {
-				sort: '-uploaded_on',
-			};
-		}
-
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		onMounted(() => emitter.on(Events.upload, refresh));

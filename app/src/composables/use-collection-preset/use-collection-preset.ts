@@ -76,7 +76,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	const viewType = computed<string | null>({
 		get() {
-			return localPreset.value.view_type || null;
+			return localPreset.value.view_type || 'tabular';
 		},
 		set(val) {
 			localPreset.value = {
