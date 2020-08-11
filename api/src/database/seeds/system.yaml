@@ -1356,6 +1356,7 @@ rows:
         locked: true
         options:
           iconRight: title
+          placeholder: A unique title...
         sort: 1
         width: full
       - collection: directus_files
@@ -1364,6 +1365,8 @@ rows:
         locked: true
         sort: 2
         width: full
+        options:
+          placeholder: An optional description...
       - collection: directus_files
         field: tags
         interface: tags
@@ -1379,6 +1382,7 @@ rows:
         locked: true
         options:
           iconRight: place
+          placeholder: An optional location...
         sort: 4
         width: half
       - collection: directus_files
@@ -1406,6 +1410,7 @@ rows:
         locked: true
         options:
           iconRight: publish
+          placeholder: Name on disk storage...
         sort: 7
         width: half
       - collection: directus_files
@@ -1414,6 +1419,7 @@ rows:
         locked: true
         options:
           iconRight: get_app
+          placeholder: Name when downloading...
         sort: 8
         width: half
       - collection: directus_files
