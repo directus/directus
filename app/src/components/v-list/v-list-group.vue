@@ -1,10 +1,10 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick">
+		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" />
+				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
 			</v-list-item-icon>
 		</v-list-item>
 
@@ -35,6 +35,10 @@ export default defineComponent({
 			default: false,
 		},
 		exact: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
 			type: Boolean,
 			default: false,
 		},

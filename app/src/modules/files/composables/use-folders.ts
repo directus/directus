@@ -2,14 +2,15 @@ import api from '@/api';
 import { ref, Ref } from '@vue/composition-api';
 
 type FolderRaw = {
-	id: number;
+	id: string;
 	name: string;
-	parent_folder: number;
+	parent_folder: string;
 };
 
 export type Folder = {
-	id: number;
+	id: string;
 	name: string;
+	parent_folder: string;
 	children?: Folder[];
 };
 

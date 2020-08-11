@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached close-on-content-click v-model="menuActive">
+	<v-menu attached v-model="menuActive">
 		<template #activator="{ toggle }">
 			<v-input>
 				<template #input>

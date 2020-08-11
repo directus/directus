@@ -1,6 +1,6 @@
 <template>
 	<div class="user">
-		<v-menu v-model="menuActive" attached close-on-content-click :disabled="disabled">
+		<v-menu v-model="menuActive" attached :disabled="disabled">
 			<template #activator="{ active }">
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input

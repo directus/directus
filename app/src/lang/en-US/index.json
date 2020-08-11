@@ -14,6 +14,8 @@
 	"add_role": "Add Role",
 	"add_user": "Add User",
 
+	"rename_folder": "Rename Folder",
+
 	"uploaded_by": "Uploaded By",
 	"hide_field_on_detail": "Hide Field on Detail",
 	"show_field_on_detail": "Show Field on Detail",
@@ -206,6 +208,7 @@
 	"submit": "Submit",
 
 	"move_to_folder": "Move to Folder",
+	"delete_folder": "Delete Folder",
 	"select_folder": "Select Folder",
 	"move": "Move",
 

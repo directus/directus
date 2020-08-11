@@ -55,7 +55,7 @@ body {
 	--v-list-padding: 4px 0;
 	--v-list-max-height: none;
 	--v-list-max-width: none;
-	--v-list-min-width: none;
+	--v-list-min-width: 220px;
 	--v-list-min-height: none;
 	--v-list-color: var(--foreground-normal);
 	--v-list-color-hover: var(--foreground-normal);

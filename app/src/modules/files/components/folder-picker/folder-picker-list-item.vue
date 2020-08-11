@@ -3,11 +3,12 @@
 		v-if="folder.children.length === 0"
 		@click="clickHandler(folder.id)"
 		:active="currentFolder === folder.id"
+		:disabled="disabled"
 	>
 		<v-list-item-icon><v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" /></v-list-item-icon>
 		<v-list-item-content>{{ folder.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else @click="clickHandler(folder.id)" :active="currentFolder === folder.id">
+	<v-list-group v-else @click="clickHandler(folder.id)" :active="currentFolder === folder.id" :disabled="disabled">
 		<template #activator>
 			<v-list-item-icon>
 				<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
@@ -47,6 +48,10 @@ export default defineComponent({
 		clickHandler: {
 			type: Function,
 			default: () => undefined,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 });

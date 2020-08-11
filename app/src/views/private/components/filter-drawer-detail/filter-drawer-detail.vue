@@ -16,7 +16,7 @@
 
 		<v-divider v-if="filters.length" />
 
-		<v-menu attached close-on-content-click :disabled="loading">
+		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle, active }">
 				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')" :disabled="loading">
 					<template #prepend><v-icon name="add" /></template>
