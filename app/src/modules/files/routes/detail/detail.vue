@@ -171,7 +171,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
@@ -372,10 +372,15 @@ export default defineComponent({
 			const moving = ref(false);
 			const selectedFolder = ref<number | null>();
 
+			watch(item, () => {
+				selectedFolder.value = item.value.folder;
+			});
+
 			return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
 			async function moveToFolder() {
 				moving.value = true;
+
 				try {
 					await api.patch(`/files/${props.primaryKey}`, {
 						folder: selectedFolder.value,

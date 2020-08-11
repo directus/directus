@@ -8,7 +8,13 @@
 		<v-list-item-icon><v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" /></v-list-item-icon>
 		<v-list-item-content>{{ folder.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else @click="clickHandler(folder.id)" :active="currentFolder === folder.id" :disabled="disabled">
+	<v-list-group
+		:open="startOpenFolders.includes(folder.id)"
+		v-else
+		@click="clickHandler(folder.id)"
+		:active="currentFolder === folder.id"
+		:disabled="disabled"
+	>
 		<template #activator>
 			<v-list-item-icon>
 				<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
@@ -23,6 +29,7 @@
 			:click-handler="clickHandler"
 			:disabled="disabledFolders.includes(childFolder.id)"
 			:disabled-folders="disabledFolders"
+			:start-open-folders="startOpenFolders"
 		/>
 	</v-list-group>
 </template>
@@ -56,6 +63,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabledFolders: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
+		startOpenFolders: {
 			type: Array as PropType<string[]>,
 			default: () => [],
 		},

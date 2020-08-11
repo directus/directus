@@ -16,8 +16,8 @@
 			:to="`/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
 			exact
-			@contextmenu.native.prevent="$refs.contextMenu.activate"
 			:open="isOpen"
+			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
 			<template #activator>
 				<v-list-item-icon>
