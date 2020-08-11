@@ -59,25 +59,6 @@ router.get(
 	})
 )
 
-/*
-
-router.get(
-	'/me',
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
-		}
-		const service = new UsersService({ accountability: req.accountability });
-
-		const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
-
-		return res.json({ data: item || null });
-	})
-);
-
-*/
-
 router.get(
 	'/:pk',
 	sanitizeQuery,
