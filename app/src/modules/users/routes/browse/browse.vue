@@ -88,7 +88,6 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-collection-preset';
-import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
@@ -99,7 +98,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-browse',
-	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
+	components: { UsersNavigation, LayoutDrawerDetail, SearchInput },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,

@@ -1,48 +1,75 @@
 <template>
-	<private-view title="Updated: Item Display Template">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
-				<v-icon name="arrow_back" />
+	<v-modal active title="Activity Item" @toggle="close">
+		<v-progress-circular indeterminate v-if="loading" />
+
+		<template v-else-if="error">
+			<v-notice type="danger">
+				{{ error }}
+			</v-notice>
+		</template>
+
+		<template v-else>
+			<!-- @TODO add final design -->
+			<p class="type-label">User:</p>
+			<user-popover v-if="item.action_by" :user="item.action_by.id">
+				{{ item.action_by.first_name }} {{ item.action_by.last_name }}
+			</user-popover>
+
+			<p class="type-label">Action:</p>
+			<p>{{ item.action }}</p>
+
+			<p class="type-label">Date:</p>
+			<p>{{ item.action_on }}</p>
+
+			<p class="type-label">IP Address:</p>
+			<p>{{ item.ip }}</p>
+
+			<p class="type-label">User Agent:</p>
+			<p>{{ item.user_agent }}</p>
+
+			<p class="type-label">Collection:</p>
+			<p>{{ item.collection }}</p>
+
+			<p class="type-label">Item:</p>
+			<p>{{ item.item }}</p>
+		</template>
+
+		<template #footer>
+			<v-button v-if="openItemLink" :to="openItemLink">
+				<v-icon name="launch" left />
+				{{ $t('open') }}
 			</v-button>
-		</template>
 
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
+			<v-button to="/activity">{{ $t('done') }}</v-button>
 		</template>
-
-		<template #navigation>
-			<activity-navigation />
-		</template>
-
-		<v-form collection="directus_activity" :loading="loading" :initial-values="item" :primary-key="primaryKey" />
-
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_activity_detail'))" />
-			</drawer-detail>
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
-			</drawer-detail>
-		</template>
-	</private-view>
+	</v-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-
-import ActivityNavigation from '../../components/navigation/';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import { i18n } from '@/lang';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import marked from 'marked';
+import router from '@/router';
+import api from '@/api';
 
 type Values = {
 	[field: string]: any;
 };
 
+type ActivityRecord = {
+	action_by: {
+		first_name: string;
+		last_name: string;
+	} | null;
+	action: string;
+	action_on: string;
+	ip: string;
+	user_agent: string;
+	collection: string;
+	item: string;
+};
+
 export default defineComponent({
 	name: 'activity-detail',
-	components: { ActivityNavigation, SaveOptions },
 	props: {
 		primaryKey: {
 			type: String,
@@ -51,46 +78,63 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { primaryKey } = toRefs(props);
-		const { breadcrumb } = useBreadcrumb();
+		const item = ref<ActivityRecord>();
+		const loading = ref(false);
+		const error = ref<any>(null);
 
-		const { item, loading, error } = useItem(ref('directus_activity'), primaryKey);
+		const openItemLink = computed(() => {
+			if (!item || !item.value) return;
+
+			return `/collections/${item.value.collection}/${item.value.item}`;
+		});
+
+		watch(() => props.primaryKey, loadActivity, { immediate: true });
 
 		return {
 			item,
 			loading,
 			error,
-			breadcrumb,
-			marked,
+			close,
+			openItemLink,
 		};
 
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: i18n.t('activity_log'),
-					to: `/activity/`,
-				},
-			]);
+		async function loadActivity() {
+			loading.value = true;
 
-			return { breadcrumb };
+			try {
+				const response = await api.get(`/activity/${props.primaryKey}`, {
+					params: {
+						fields: [
+							'action_by.id',
+							'action_by.first_name',
+							'action_by.last_name',
+							'action',
+							'action_on',
+							'ip',
+							'user_agent',
+							'collection',
+							'item',
+						],
+					},
+				});
+
+				item.value = response.data.data;
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+		}
+
+		function close() {
+			router.push('/activity');
 		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-dark);
-}
-
-.header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-activated: var(--foreground-normal);
-}
-
-.v-form {
-	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+.type-label:not(:first-child) {
+	margin-top: 24px;
 }
 </style>
