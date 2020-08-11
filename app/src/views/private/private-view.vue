@@ -218,20 +218,22 @@ export default defineComponent({
 					loading: true,
 				});
 
-				await uploadFiles(files, (progress) => {
-					const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
+				await uploadFiles(files, {
+					onProgressChange: (progress) => {
+						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
-					const total = files.length;
-					const done = progress.filter((p) => p === 100).length;
+						const total = files.length;
+						const done = progress.filter((p) => p === 100).length;
 
-					notificationsStore.update(fileUploadNotificationID, {
-						title: i18n.tc('upload_file_indeterminate', files.length, {
-							done,
-							total,
-						}),
-						loading: false,
-						progress: percentageDone,
-					});
+						notificationsStore.update(fileUploadNotificationID, {
+							title: i18n.tc('upload_file_indeterminate', files.length, {
+								done,
+								total,
+							}),
+							loading: false,
+							progress: percentageDone,
+						});
+					},
 				});
 
 				emitter.emit(Events.upload);

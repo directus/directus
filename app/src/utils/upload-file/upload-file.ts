@@ -7,11 +7,21 @@ import emitter, { Events } from '@/events';
 
 export default async function uploadFile(
 	file: File,
-	onProgressChange?: (percentage: number) => void,
-	showNotifications = true
+	options?: {
+		onProgressChange?: (percentage: number) => void;
+		notifications?: boolean;
+		preset?: Record<string, string>;
+	}
 ) {
-	const progressHandler = onProgressChange || (() => undefined);
+	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
+
+	if (options?.preset) {
+		for (const [key, value] of Object.entries(options.preset)) {
+			formData.append(key, value);
+		}
+	}
+
 	formData.append('file', file);
 
 	try {
@@ -19,7 +29,7 @@ export default async function uploadFile(
 			onUploadProgress,
 		});
 
-		if (showNotifications) {
+		if (options?.notifications) {
 			notify({
 				title: i18n.t('upload_file_success'),
 				type: 'success',
@@ -30,7 +40,7 @@ export default async function uploadFile(
 
 		return response.data.data;
 	} catch (error) {
-		if (showNotifications) {
+		if (options?.notifications) {
 			notify({
 				title: i18n.t('upload_file_failed'),
 			});

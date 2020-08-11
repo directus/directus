@@ -15,7 +15,13 @@
 
 		<template v-else-if="uploading">
 			<p class="type-label">{{ progress }}%</p>
-			<p class="type-text">{{ multiple && numberOfFiles > 1 ? $t('upload_files_indeterminate', { done: done, total: numberOfFiles }) : $t('upload_file_indeterminate') }}</p>
+			<p class="type-text">
+				{{
+					multiple && numberOfFiles > 1
+						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: $t('upload_file_indeterminate')
+				}}
+			</p>
 			<v-progress-linear :value="progress" rounded />
 		</template>
 
@@ -36,7 +42,11 @@ export default defineComponent({
 		multiple: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		preset: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	setup(props, { emit }) {
 		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
@@ -52,7 +62,7 @@ export default defineComponent({
 			dragging,
 			onBrowseSelect,
 			done,
-			numberOfFiles
+			numberOfFiles,
 		};
 
 		function useUpload() {
@@ -72,9 +82,12 @@ export default defineComponent({
 				try {
 					numberOfFiles.value = files.length;
 
-					const uploadedFiles = await uploadFiles(Array.from(files), (percentage) => {
-						progress.value = Math.round(percentage.reduce((acc, cur) => acc += cur) / files.length);
-						done.value = percentage.filter((p) => p === 100).length;
+					const uploadedFiles = await uploadFiles(Array.from(files), {
+						onProgressChange: (percentage) => {
+							progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
+							done.value = percentage.filter((p) => p === 100).length;
+						},
+						preset: props.preset,
 					});
 
 					if (uploadedFiles) {

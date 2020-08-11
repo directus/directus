@@ -13,7 +13,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="currentFolder" />
+			<add-folder :parent="queryFilters && queryFilters.folder" />
 
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0">
 				<template #activator="{ on }">
@@ -72,13 +72,19 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon class="add-new" to="/files/+" v-tooltip.bottom="$t('add_new_file')">
+			<v-button
+				rounded
+				icon
+				class="add-new"
+				:to="{ path: '/files/+', query: queryFilters }"
+				v-tooltip.bottom="$t('add_new_file')"
+			>
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
 		<template #navigation>
-			<files-navigation v-model="currentFolder" />
+			<files-navigation />
 		</template>
 
 		<component
@@ -94,7 +100,7 @@
 			@update:filters="filters = $event"
 		/>
 
-		<router-view name="addNew" @upload="refresh" />
+		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -146,8 +152,6 @@ export default defineComponent({
 		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
-
-		const currentFolder = ref(null);
 
 		const filtersWithFolderAndType = computed(() => {
 			if (props.queryFilters !== null) {
@@ -213,7 +217,6 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			viewType,
-			currentFolder,
 			filtersWithFolderAndType,
 			searchQuery,
 			marked,
