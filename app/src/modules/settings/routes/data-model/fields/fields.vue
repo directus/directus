@@ -174,6 +174,7 @@ export default defineComponent({
 
 .collections-detail {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .fields {
