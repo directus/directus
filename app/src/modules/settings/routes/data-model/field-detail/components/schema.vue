@@ -23,7 +23,7 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="fieldData.meta.comment" :placeholder="$t('add_note')" />
+				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
