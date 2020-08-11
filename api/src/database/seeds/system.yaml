@@ -1393,6 +1393,7 @@ rows:
           iconRight: storage
         sort: 5
         width: half
+        readonly: true
       - collection: directus_files
         field: storage_divider
         interface: divider

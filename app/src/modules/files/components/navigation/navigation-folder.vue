@@ -3,6 +3,7 @@
 		<v-list-item
 			v-if="folder.children === undefined"
 			:to="`/files?folder=${folder.id}`"
+			:active="currentFolder === folder.id"
 			exact
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
@@ -13,6 +14,7 @@
 		<v-list-group
 			v-else
 			:to="`/files?folder=${folder.id}`"
+			:active="currentFolder === folder.id"
 			exact
 			@contextmenu.native.prevent="$refs.contextMenu.activate"
 		>
@@ -109,6 +111,7 @@ import useFolders, { Folder } from '../../composables/use-folders';
 import notify from '@/utils/notify';
 import api from '@/api';
 import FolderPicker from '../folder-picker';
+import router from '@/router';
 
 export default defineComponent({
 	name: 'navigation-folder',
@@ -240,6 +243,12 @@ export default defineComponent({
 					}
 
 					await api.delete(`/folders/${props.folder.id}`);
+
+					if (newParent) {
+						router.push(`/files?folder=${newParent}`);
+					} else {
+						router.push('/files');
+					}
 
 					deleteActive.value = false;
 				} catch (error) {

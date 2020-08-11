@@ -61,7 +61,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="edit" />
 			</v-button>
 
@@ -116,6 +123,7 @@ import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
 import emitter, { Events } from '@/events';
+import router from '@/router';
 
 type Item = {
 	[field: string]: any;
@@ -161,10 +169,7 @@ export default defineComponent({
 					});
 				}
 
-				return [
-					...urlFilters,
-					...filters.value,
-				];
+				return [...urlFilters, ...filters.value];
 			}
 
 			return [
@@ -187,7 +192,7 @@ export default defineComponent({
 				icon: 'insert_drive_file',
 				title: '{{title}}',
 				subtitle: '{{type}} • {{filesize}}',
-				size: 4
+				size: 4,
 			};
 		}
 
@@ -278,7 +283,12 @@ export default defineComponent({
 						folder: selectedFolder.value,
 					});
 
+					selection.value = [];
 					await layout.value?.refresh();
+
+					if (selectedFolder.value) {
+						router.push(`/files?folder=${selectedFolder.value}`);
+					}
 				} catch (err) {
 					console.error(err);
 				} finally {

@@ -104,7 +104,7 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation />
+			<files-navigation :current-folder="item && item.folder" />
 		</template>
 
 		<div class="file-detail">
@@ -151,7 +151,7 @@
 		</v-dialog>
 
 		<template #drawer>
-			<file-info-drawer-detail :file="item" />
+			<file-info-drawer-detail :file="item" @move-folder="moveToDialogActive = true" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -192,6 +192,7 @@ import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
 import FilesNotFound from '../not-found/';
+import useShortcut from '@/composables/use-shortcut';
 
 type Values = {
 	[field: string]: any;
@@ -289,6 +290,8 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
+		useShortcut('mod+s', saveAndStay);
 
 		return {
 			item,
