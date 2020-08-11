@@ -45,7 +45,7 @@
 					v-tooltip.bottom.inverted="$t('flip_vertical')"
 				/>
 
-				<v-menu placement="top" show-arrow close-on-content-click>
+				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
 						<v-icon
 							:name="aspectRatioIcon"

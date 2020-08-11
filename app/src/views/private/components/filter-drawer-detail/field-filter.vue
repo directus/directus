@@ -5,7 +5,7 @@
 				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
-			<v-menu show-arrow :disabled="disabled" close-on-content-click>
+			<v-menu show-arrow :disabled="disabled">
 				<template #activator="{ toggle }">
 					<div class="operator" @click="toggle">
 						<span>{{ $t(`operators.${activeOperator}`) }}</span>

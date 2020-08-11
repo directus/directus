@@ -6,7 +6,7 @@
 		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>
-		<v-menu v-model="menuActive" attached close-on-content-click :disabled="disabled">
+		<v-menu v-model="menuActive" attached :disabled="disabled">
 			<template #activator="{ active }">
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input

@@ -1,12 +1,6 @@
 <template>
 	<div class="field" :key="field.field" :class="field.meta.width">
-		<v-menu
-			v-if="field.hideLabel !== true"
-			placement="bottom-start"
-			show-arrow
-			close-on-content-click
-			:disabled="isDisabled"
-		>
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"

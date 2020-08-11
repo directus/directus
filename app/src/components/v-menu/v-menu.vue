@@ -34,12 +34,7 @@
 					events: ['click'],
 				}"
 			>
-				<div
-					class="arrow"
-					:class="{ active: showArrow && isActive }"
-					:style="arrowStyles"
-					data-popper-arrow
-				/>
+				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 				<div class="v-menu-content" @click.stop="onContentClick">
 					<slot :active="isActive" />
 				</div>
@@ -54,18 +49,6 @@ import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
 import Vue from 'vue';
-
-/**
- * @NOTE
- *
- * The framerate takes a little hit when opening menus, as we're rendering the content of it while
- * we're opening it. We could potentially optimize this by rendering the menu content ahead of time,
- * so all the processing power is freed up for the popper calculations and transition logic.
- *
- * However, we _can not_ render all menu content at all times, as that greatly decreases perf in the
- * app. I'm thinking we might be able to pre-render the menu content on hover of the activator, so
- * the actual act of opening the menu is quicker.
- */
 
 export default defineComponent({
 	props: {
@@ -83,7 +66,7 @@ export default defineComponent({
 		},
 		closeOnContentClick: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		attached: {
 			type: Boolean,
@@ -109,9 +92,19 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement | null>(null);
+		const reference = ref<HTMLElement | null>(null);
 
-		const reference = computed<HTMLElement | null>(() => {
-			return (activator.value as HTMLElement)?.childNodes[0] as HTMLElement;
+		const virtualReference = ref({
+			getBoundingClientRect() {
+				return {
+					top: 0,
+					left: 0,
+					bottom: 0,
+					right: 0,
+					width: 0,
+					height: 0,
+				};
+			},
 		});
 
 		const id = computed(() => nanoid());
@@ -175,6 +168,8 @@ export default defineComponent({
 					return localIsActive.value;
 				},
 				async set(newActive) {
+					reference.value =
+						((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
 					localIsActive.value = newActive;
 					emit('input', newActive);
 				},
@@ -194,7 +189,21 @@ export default defineComponent({
 
 			return { isActive, activate, deactivate, toggle };
 
-			function activate() {
+			function activate(event?: MouseEvent) {
+				if (event) {
+					virtualReference.value = {
+						getBoundingClientRect() {
+							return {
+								top: event.clientY,
+								left: event.clientX,
+								bottom: 0,
+								right: 0,
+								width: 0,
+								height: 0,
+							};
+						},
+					};
+				}
 				isActive.value = true;
 			}
 

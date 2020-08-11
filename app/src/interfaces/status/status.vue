@@ -2,7 +2,7 @@
 	<v-notice v-if="!statuses">
 		{{ $t('statuses_not_configured') }}
 	</v-notice>
-	<v-menu v-else attached :disabled="disabled" close-on-content-click>
+	<v-menu v-else attached :disabled="disabled">
 		<template #activator="{ toggle, active }">
 			<v-input
 				readonly

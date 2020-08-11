@@ -16,6 +16,8 @@
 					:folder="folder"
 					:current-folder="value"
 					:click-handler="(id) => $emit('input', id)"
+					:disabled="disabledFolders.includes(folder.id)"
+					:disabled-folders="disabledFolders"
 				/>
 			</v-list-group>
 		</v-list>
@@ -23,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 
@@ -42,6 +44,10 @@ type Folder = {
 export default defineComponent({
 	components: { FolderPickerListItem },
 	props: {
+		disabledFolders: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
 		value: {
 			type: String,
 			default: null,
@@ -91,6 +97,7 @@ export default defineComponent({
 				const response = await api.get(`/folders`, {
 					params: {
 						limit: -1,
+						sort: 'name',
 					},
 				});
 

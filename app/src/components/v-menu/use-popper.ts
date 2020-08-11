@@ -82,6 +82,12 @@ export function usePopper(
 					padding: 8,
 				},
 			},
+			{
+				name: 'arrow',
+				options: {
+					padding: 6,
+				},
+			},
 			computeStyles,
 			flip,
 			eventListeners,

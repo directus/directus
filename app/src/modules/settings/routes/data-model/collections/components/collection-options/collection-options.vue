@@ -11,7 +11,7 @@
 	</v-button>
 
 	<div v-else-if="collection.collection.startsWith('directus_') === false">
-		<v-menu placement="left-start" show-arrow close-on-content-click :disabled="savingManaged">
+		<v-menu placement="left-start" show-arrow :disabled="savingManaged">
 			<template #activator="{ toggle }">
 				<v-progress-circular small v-if="savingManaged" indeterminate />
 				<v-icon v-else name="more_vert" @click="toggle" class="ctx-toggle" />

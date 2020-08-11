@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="header-right">
-			<v-menu show-arrow placement="bottom-end" close-on-content-click>
+			<v-menu show-arrow placement="bottom-end">
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
 					<div class="time">

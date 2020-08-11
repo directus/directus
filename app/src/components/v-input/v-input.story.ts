@@ -123,7 +123,7 @@ export const withMenu = () =>
 		components: { VMenu },
 		template: `
 			<div>
-				<v-menu placement="bottom-start" close-on-content-click attached>
+				<v-menu placement="bottom-start" attached>
 					<template #activator="{ toggle, active }">
 						<v-input placeholder="Enter value...">
 							<template #append><v-icon @click="toggle" name="public" :style="{

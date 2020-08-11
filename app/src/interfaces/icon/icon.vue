@@ -1,6 +1,6 @@
 <template>
-	<v-menu attached :disabled="disabled" close-on-content-click>
-		<template #activator="{ toggle, active, activate }">
+	<v-menu attached :disabled="disabled">
+		<template #activator="{ active, activate }">
 			<v-input
 				:disabled="disabled"
 				:placeholder="value ? formatTitle(value) : $t('search_for_icon')"

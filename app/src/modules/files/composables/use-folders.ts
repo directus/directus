@@ -2,14 +2,15 @@ import api from '@/api';
 import { ref, Ref } from '@vue/composition-api';
 
 type FolderRaw = {
-	id: number;
+	id: string;
 	name: string;
-	parent_folder: number;
+	parent_folder: string;
 };
 
 export type Folder = {
-	id: number;
+	id: string;
 	name: string;
+	parent_folder: string;
 	children?: Folder[];
 };
 
@@ -63,7 +64,7 @@ export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {
 	const folder: FolderRaw & Folder = { ...rawFolder };
 
 	const children = rawFolders
-		.filter((childFolder) => childFolder.parent_folder === rawFolder.id)
+		.filter((childFolder) => childFolder.parent_folder === rawFolder.id && childFolder.id !== rawFolder.id)
 		.map((childRawFolder) => nestChildren(childRawFolder, rawFolders));
 
 	if (children.length > 0) {

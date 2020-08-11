@@ -1,5 +1,5 @@
 <template>
-	<v-menu close-on-content-click show-arrow>
+	<v-menu show-arrow>
 		<template #activator="{ toggle }">
 			<span @click="toggle" class="picker">
 				{{ selectedOption && selectedOption.text }}
