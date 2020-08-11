@@ -8,7 +8,7 @@
 			<span class="time">{{ time }}</span>
 			–
 			<user-popover v-if="revision.activity.action_by" class="user" :user="revision.activity.action_by.id">
-				<span>{{ user }}</span>
+				<router-link :to="`/users/${revision.activity.action_by.id}`">{{ user }}</router-link>
 			</user-popover>
 
 			<span v-else>{{ $t('private_user') }}</span>
