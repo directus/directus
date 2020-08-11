@@ -6,8 +6,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { Relation } from '@/types';
+import { Field } from '@/types';
 
 import RelationshipM2o from './relationship-m2o.vue';
 import RelationshipO2m from './relationship-o2m.vue';

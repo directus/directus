@@ -38,11 +38,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { Filter } from '@/stores/presets/types';
-import { Field } from '@/stores/fields/types';
-import useFieldsStore from '@/stores/fields';
-import useRelationsStore from '@/stores/relations';
-import { Relation } from '@/stores/relations/types';
+import { Filter, Relation, Field } from '@/types';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
@@ -72,9 +69,7 @@ export default defineComponent({
 		const fieldTree = computed<FieldTree[]>(() => {
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
-				.filter(
-					(field: Field) => field.meta?.hidden !== true && field.meta?.special?.toLowerCase() !== 'alias'
-				)
+				.filter((field: Field) => field.meta?.hidden !== true && field.meta?.special?.toLowerCase() !== 'alias')
 				.map((field: Field) => parseField(field, []));
 
 			function parseField(field: Field, parents: Field[]) {
@@ -103,8 +98,7 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.meta?.hidden !== true &&
-										field.meta?.special?.toLowerCase() !== 'alias'
+										field.meta?.hidden !== true && field.meta?.special?.toLowerCase() !== 'alias'
 								);
 						})
 						.flat()

@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useCollectionsStore from '@/stores/collections';
+import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {

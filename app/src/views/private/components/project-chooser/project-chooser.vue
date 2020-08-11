@@ -8,7 +8,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import LatencyIndicator from '../latency-indicator';
-import { useSettingsStore } from '@/stores/settings';
+import { useSettingsStore } from '@/stores/';
 
 export default defineComponent({
 	components: { LatencyIndicator },

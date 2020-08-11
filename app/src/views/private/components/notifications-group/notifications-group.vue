@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
-import useNotificationsStore from '@/stores/notifications';
+import { useNotificationsStore } from '@/stores/';
 import NotificationItem from '../notification-item';
 
 export default defineComponent({

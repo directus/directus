@@ -1,13 +1,15 @@
-import { useAppStore } from '@/stores/app/';
-import { useCollectionsStore } from '@/stores/collections/';
-import { useFieldsStore } from '@/stores/fields/';
-import { useUserStore } from '@/stores/user/';
-import { useRequestsStore } from '@/stores/requests/';
-import { usePresetsStore } from '@/stores/presets/';
-import { useSettingsStore } from '@/stores/settings/';
-//
-import { useLatencyStore } from '@/stores/latency';
-import { useRelationsStore } from '@/stores/relations';
+import {
+	useAppStore,
+	useCollectionsStore,
+	useFieldsStore,
+	useUserStore,
+	useRequestsStore,
+	usePresetsStore,
+	useSettingsStore,
+	useLatencyStore,
+	useRelationsStore,
+} from '@/stores';
+
 import { setLanguage, Language } from '@/lang';
 
 type GenericStore = {

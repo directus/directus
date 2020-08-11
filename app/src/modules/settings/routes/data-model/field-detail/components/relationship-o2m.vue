@@ -24,11 +24,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { Relation, Field } from '@/types';
 import useSync from '@/composables/use-sync';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
 

@@ -1,8 +1,8 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import { useLatencyStore } from '@/stores/latency';
+import { useLatencyStore } from '@/stores';
 
-import { User } from './types';
+import { User } from '@/types';
 
 export const useUserStore = createStore({
 	id: 'userStore',

@@ -60,10 +60,9 @@ import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
 import { isEmpty } from 'lodash';
 import api from '@/api';
-import { Relation } from '@/stores/relations/types';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { Field } from '@/stores/fields/types';
+import { Relation } from '@/types';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Field } from '@/types';
 import router from '@/router';
 
 import { initLocalStore, state, clearLocalStore } from './store';

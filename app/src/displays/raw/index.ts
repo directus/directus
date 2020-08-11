@@ -1,5 +1,5 @@
 import { defineDisplay } from '@/displays/define';
-import { types } from '@/stores/fields/types';
+import { types } from '@/types';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'raw',

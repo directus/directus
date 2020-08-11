@@ -92,8 +92,8 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation/';
 import { HeaderRaw } from '../../../../../components/v-table/types';
 import { i18n } from '@/lang/';
-import useCollectionsStore from '@/stores/collections';
-import { Collection } from '@/stores/collections/types';
+import { useCollectionsStore } from '@/stores/';
+import { Collection } from '@/types';
 import router from '@/router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options';
@@ -155,7 +155,8 @@ export default defineComponent({
 					collectionsStore.state.collections
 						.filter(
 							(collection) =>
-								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
+								collection.collection.startsWith('directus_') === false &&
+								collection.meta?.hidden === true
 						)
 						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
 					'collection'

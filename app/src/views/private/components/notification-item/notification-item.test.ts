@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import NotificationItem from './notification-item.vue';
-import useNotificationsStore from '@/stores/notifications/';
+import { useNotificationsStore } from '@/stores/';
 import VIcon from '@/components/v-icon';
 
 const localVue = createLocalVue();

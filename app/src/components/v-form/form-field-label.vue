@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types/';
 
 export default defineComponent({
 	props: {

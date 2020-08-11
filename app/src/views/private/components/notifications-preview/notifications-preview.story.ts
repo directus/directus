@@ -3,12 +3,11 @@ import { defineComponent, ref } from '@vue/composition-api';
 import NotificationsPreview from './notifications-preview.vue';
 import NotificationItem from '../notification-item/';
 import DrawerButton from '../drawer-button/';
-import useNotificationsStore from '@/stores/notifications';
-import { NotificationRaw } from '@/stores/notifications/types';
+import { NotificationRaw } from '@/types';
 import { i18n } from '@/lang';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import VueRouter from 'vue-router';
-import useAppStore from '@/stores/app';
+import { useAppStore, useNotificationsStore } from '@/stores/';
 
 export default {
 	title: 'Views / Private / Components / Notifications Preview',

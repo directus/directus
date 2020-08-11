@@ -3,7 +3,7 @@ import markdown from './readme.md';
 import { defineComponent, provide, ref, watch } from '@vue/composition-api';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import withAltColors from '../../../../../.storybook/decorators/with-alt-colors';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 
 export default {
 	title: 'Views / Private / Components / Drawer Detail',

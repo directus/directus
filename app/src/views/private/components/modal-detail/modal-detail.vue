@@ -32,10 +32,9 @@ import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/co
 import api from '@/api';
 
 import useCollection from '@/composables/use-collection';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 import i18n from '@/lang';
-import useRelationsStore from '@/stores/relations';
-import { Relation } from '@/stores/relations/types';
+import { Relation } from '@/types';
 
 export default defineComponent({
 	model: {

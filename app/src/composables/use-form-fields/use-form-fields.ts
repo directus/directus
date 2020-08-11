@@ -5,7 +5,7 @@ import { isEmpty } from '@/utils/is-empty';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 import interfaces from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 
 export default function useFormFields(fields: Ref<Field[]>) {
 	const formFields = computed(() => {

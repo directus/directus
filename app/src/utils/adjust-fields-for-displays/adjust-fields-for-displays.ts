@@ -1,6 +1,6 @@
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types/';
 import displays from '@/displays';
-import { Field } from '@/stores/fields/types';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string) {
 	const fieldsStore = useFieldsStore();

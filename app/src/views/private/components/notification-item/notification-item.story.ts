@@ -2,7 +2,7 @@ import withPadding from '../../../../../.storybook/decorators/with-padding';
 import { withKnobs, text, select, boolean } from '@storybook/addon-knobs';
 import readme from './readme.md';
 import { defineComponent } from '@vue/composition-api';
-import useNotificationStore from '@/stores/notifications/';
+import { useNotificationsStore } from '@/stores/';
 import NotificationItem from './notification-item.vue';
 
 export default {
@@ -17,7 +17,7 @@ export const basic = () =>
 	defineComponent({
 		components: { NotificationItem },
 		setup() {
-			useNotificationStore({});
+			useNotificationsStore({});
 		},
 		template: `
 			<div>

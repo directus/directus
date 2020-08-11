@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -103,15 +103,15 @@ body {
 		position: absolute;
 		top: 0;
 		right: 0;
+		z-index: 50;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 64px;
 		height: 64px;
 		color: var(--foreground-normal);
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
-		z-index: 50;
 		cursor: pointer;
+		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 
 		.v-icon {
 			pointer-events: none;

@@ -5,8 +5,7 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import useFieldsStore from '@/stores/fields';
-import useRelationsStore from '@/stores/relations';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { reactive, watch } from '@vue/composition-api';
 
 const fieldsStore = useFieldsStore();
@@ -77,7 +76,7 @@ function initLocalStore(
 			() => state.fieldData.field,
 			() => {
 				state.relations[0].many_field = state.fieldData.field;
-			},
+			}
 		);
 	}
 

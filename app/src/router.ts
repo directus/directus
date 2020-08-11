@@ -4,10 +4,8 @@ import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import useAppStore from '@/stores/app';
-import useUserStore from '@/stores/user';
+import { useAppStore, useUserStore, useSettingsStore } from '@/stores/';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
-import useSettingsStore from '@/stores/settings';
 
 import getRootPath from '@/utils/get-root-path';
 
@@ -105,7 +103,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	return next();
 };
 
-let trackTimeout: number | null= null;
+let trackTimeout: number | null = null;
 
 export const onAfterEach = (to: Route) => {
 	const userStore = useUserStore();

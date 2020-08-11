@@ -1,10 +1,5 @@
 <template>
-	<v-modal
-		:title="$t('creating_new_collection')"
-		:active="true"
-		class="new-collection"
-		persistent
-	>
+	<v-modal :title="$t('creating_new_collection')" :active="true" class="new-collection" persistent>
 		<v-dialog :active="saveError !== null" @toggle="saveError = null">
 			<v-card class="selectable">
 				<v-card-title>
@@ -105,9 +100,8 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
-import { Field } from '@/stores/fields/types';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
+import { Field } from '@/types';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import notify from '@/utils/notify';
 import router from '@/router';
 
@@ -236,7 +230,7 @@ export default defineComponent({
 						...field.schema,
 						length: 36,
 						has_auto_increment: false,
-					}
+					},
 				};
 			} else if (primaryKeyFieldType.value === 'manual') {
 				return {
@@ -252,7 +246,7 @@ export default defineComponent({
 						...field.schema,
 						length: 255,
 						auto_increment: false,
-					}
+					},
 				};
 			} else {
 				// auto_int
@@ -286,7 +280,7 @@ export default defineComponent({
 									name: 'Deleted',
 									color: 'white',
 									backgroundColor: '#eb5757',
-									softDelete: true
+									softDelete: true,
 								},
 							},
 						},

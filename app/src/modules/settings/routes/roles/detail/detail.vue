@@ -9,7 +9,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-tooltip.bottom="$t('delete')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -28,7 +35,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
+			<v-button
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -93,7 +107,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
-import useUserStore from '@/stores/user';
+import { useUserStore } from '@/stores/';
 import RoleInfoDrawerDetail from './components/role-info-drawer-detail';
 
 type Values = {
@@ -192,7 +206,8 @@ export default defineComponent({
 	padding-bottom: var(--content-padding-bottom);
 }
 
-.v-notice, .v-skeleton-loader {
+.v-notice,
+.v-skeleton-loader {
 	max-width: 800px;
 }
 
