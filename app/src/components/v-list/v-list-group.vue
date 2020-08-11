@@ -85,6 +85,11 @@ export default defineComponent({
 	.activator-icon {
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
+		color: var(--foreground-subdued);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
 
 		&.active {
 			transform: rotate(90deg);
