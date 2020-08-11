@@ -16,7 +16,7 @@
 
 	"rename_folder": "Rename Folder",
 
-	"nested_files_folders_will_be_moved": "Nested files and folders will be moved to the File Library.",
+	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
 	"uploaded_by": "Uploaded By",
 	"hide_field_on_detail": "Hide Field on Detail",

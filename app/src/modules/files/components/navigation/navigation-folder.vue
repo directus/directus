@@ -73,6 +73,19 @@
 			</v-card>
 		</v-dialog>
 
+		<v-dialog v-model="moveActive" persistent>
+			<v-card>
+				<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<v-card-text>
+					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="moveActive = false">{{ $t('cancel') }}</v-button>
+					<v-button @click="moveSave" :loading="moveSaving">{{ $t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<v-dialog v-model="deleteActive" persistent>
 			<v-card>
 				<v-card-title>{{ $t('delete_folder') }}</v-card-title>
@@ -213,15 +226,17 @@ export default defineComponent({
 						},
 					});
 
+					const newParent = props.folder.parent_folder || null;
+
 					const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
 					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
 					if (folderKeys.length > 0) {
-						await api.patch(`/folders/${folderKeys.join(',')}`, { parent_folder: null });
+						await api.patch(`/folders/${folderKeys.join(',')}`, { parent_folder: newParent });
 					}
 
 					if (fileKeys.length > 0) {
-						await api.patch(`/files/${fileKeys.join(',')}`, { folder: null });
+						await api.patch(`/files/${fileKeys.join(',')}`, { folder: newParent });
 					}
 
 					await api.delete(`/folders/${props.folder.id}`);
