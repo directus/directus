@@ -49,7 +49,7 @@
 						{{ $t('move_to_folder') }}
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item>
+				<v-list-item @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" />
 					</v-list-item-icon>
@@ -73,15 +73,17 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="moveActive" persistent>
+		<v-dialog v-model="deleteActive" persistent>
 			<v-card>
-				<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<v-card-title>{{ $t('delete_folder') }}</v-card-title>
 				<v-card-text>
-					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
+					<v-notice>
+						{{ $t('nested_files_folders_will_be_moved') }}
+					</v-notice>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="moveActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="moveSave" :loading="moveSaving">{{ $t('save') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
+					<v-button @click="deleteSave" :loading="deleteSaving">{{ $t('delete') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -115,9 +117,23 @@ export default defineComponent({
 	setup(props) {
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
+		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
+
 		const { fetchFolders } = useFolders();
 
-		return { renameActive, renameValue, renameSave, renameSaving, moveActive, moveValue, moveSave, moveSaving };
+		return {
+			renameActive,
+			renameValue,
+			renameSave,
+			renameSaving,
+			moveActive,
+			moveValue,
+			moveSave,
+			moveSaving,
+			deleteActive,
+			deleteSave,
+			deleteSaving,
+		};
 
 		function useRenameFolder() {
 			const renameActive = ref(false);
@@ -163,6 +179,59 @@ export default defineComponent({
 					moveSaving.value = false;
 					await fetchFolders();
 					moveActive.value = false;
+				}
+			}
+		}
+
+		function useDeleteFolder() {
+			const deleteActive = ref(false);
+			const deleteSaving = ref(false);
+
+			return { deleteActive, deleteSave, deleteSaving };
+
+			async function deleteSave() {
+				deleteSaving.value = true;
+
+				try {
+					const foldersToUpdate = await api.get('/folders', {
+						params: {
+							filter: {
+								parent_folder: {
+									_eq: props.folder.id,
+								},
+							},
+						},
+					});
+
+					const filesToUpdate = await api.get('/files', {
+						params: {
+							filter: {
+								folder: {
+									_eq: props.folder.id,
+								},
+							},
+						},
+					});
+
+					const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
+					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
+
+					if (folderKeys.length > 0) {
+						await api.patch(`/folders/${folderKeys.join(',')}`, { parent_folder: null });
+					}
+
+					if (fileKeys.length > 0) {
+						await api.patch(`/files/${fileKeys.join(',')}`, { folder: null });
+					}
+
+					await api.delete(`/folders/${props.folder.id}`);
+
+					deleteActive.value = false;
+				} catch (error) {
+					console.error(error);
+				} finally {
+					await fetchFolders();
+					deleteSaving.value = false;
 				}
 			}
 		}
