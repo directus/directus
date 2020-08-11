@@ -18,6 +18,10 @@
 
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
+	"revision_post_update": "Here is what this item looked like after the update...",
+	"changes_made": "These are the specific changes that were made...",
+	"no_relational_data": "Keep in mind that this does not include relational data.",
+
 	"uploaded_by": "Uploaded By",
 	"hide_field_on_detail": "Hide Field on Detail",
 	"show_field_on_detail": "Show Field on Detail",
