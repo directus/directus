@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { isEmpty } from '@/utils';
+import { isEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	props: {

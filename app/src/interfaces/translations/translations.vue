@@ -37,7 +37,7 @@ import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/co
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	props: {

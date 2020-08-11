@@ -1,5 +1,5 @@
 import { Component } from 'vue';
-import { registerComponent } from '@/utils';
+import registerComponent from '@/utils/register-component/';
 import displays from './index';
 
 displays.forEach((display) => {

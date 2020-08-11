@@ -34,7 +34,7 @@ import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
 import { useSettingsStore } from '@/stores';
 import marked from 'marked';
-import { getRootPath } from '@/utils';
+import getRootPath from '../../utils/get-root-path';
 
 export default defineComponent({
 	props: {

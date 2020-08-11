@@ -1,4 +1,4 @@
-import { capitalizeFirst } from '@/utils';
+import capitalizeFirst from '@/utils/capitalize-first';
 
 interface HTMLExpandElement extends HTMLElement {
 	_parent?: (Node & ParentNode & HTMLElement) | null;

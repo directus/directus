@@ -135,11 +135,12 @@ import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
-import { getFieldsFromTemplate, adjustFieldsForDisplays } from '@/utils';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
 
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import useElementSize from '@/composables/use-element-size';
 import { clone } from 'lodash';
 

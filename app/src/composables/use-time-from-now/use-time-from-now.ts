@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted, ref } from '@vue/composition-api';
-import { localizedFormatDistance } from '@/utils';
+import localizedFormatDistance from '@/utils/localized-format-distance/';
 
 export async function useTimeFromNow(date: Date | number, autoUpdate = 60000) {
 	let interval: number;

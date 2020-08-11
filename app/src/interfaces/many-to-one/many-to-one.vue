@@ -105,7 +105,7 @@
 import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
-import { getFieldsFromTemplate } from '@/utils';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';

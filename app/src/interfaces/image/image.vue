@@ -52,11 +52,12 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import api from '@/api';
-import { formatFilesize, getRootPath } from '@/utils';
+import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
+import getRootPath from '@/utils/get-root-path';
 
 type Image = {
 	id: string; // uuid
@@ -96,9 +97,7 @@ export default defineComponent({
 			}
 
 			if (image.value.type.includes('image')) {
-				return (
-					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
-				);
+				return getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
 			}
 
 			return null;

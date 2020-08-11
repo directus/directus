@@ -2,9 +2,10 @@ import { createStore } from 'pinia';
 import api from '@/api';
 import { Collection, CollectionRaw } from '@/types';
 import i18n from '@/lang/';
-import { notEmpty, notify } from '@/utils';
+import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
+import notify from '@/utils/notify';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',

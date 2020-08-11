@@ -190,7 +190,7 @@ import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
 import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
-import { getRootPath } from '@/utils';
+import getRootPath from '@/utils/get-root-path';
 import FilesNotFound from '../not-found/';
 
 type Values = {

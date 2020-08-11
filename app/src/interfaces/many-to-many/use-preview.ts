@@ -2,7 +2,7 @@ import { Ref, ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Field, Relation } from '@/types';
 import { merge } from 'lodash';
-import { adjustFieldsForDisplays } from '@/utils';
+import adjustFieldsForDisplay from '@/utils/adjust-fields-for-displays';
 import isNew from './is-new';
 
 /**
@@ -125,7 +125,7 @@ export default function usePreview({
 
 		const response = await api.get(`/items/${junctionTable}`, {
 			params: {
-				fields: adjustFieldsForDisplays(fieldsToFetch, junctionCollection.value),
+				fields: adjustFieldsForDisplay(fieldsToFetch, junctionCollection.value),
 				[`filter[${currentInJunction}][_eq]`]: primaryKey.value,
 			},
 		});
@@ -221,7 +221,7 @@ export default function usePreview({
 
 		const response = await api.get(endpoint, {
 			params: {
-				fields: adjustFieldsForDisplays(fieldsToFetch, junctionCollection.value),
+				fields: adjustFieldsForDisplay(fieldsToFetch, junctionCollection.value),
 			},
 		});
 

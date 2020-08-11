@@ -102,11 +102,11 @@ import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
 import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores/';
-import { notify } from '@/utils';
+import notify from '@/utils/notify';
 import router from '@/router';
 
 export default defineComponent({
-	setup() {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 

@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
-import { getRootPath } from '@/utils';
+import getRootPath from '@/utils/get-root-path';
 
 type File = {
 	[key: string]: any;
@@ -137,7 +137,6 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				router.push(props.to, () => {});
 			}
 		}

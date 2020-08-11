@@ -109,7 +109,8 @@
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import ModalBrowse from '@/views/private/components/modal-browse';
 import api from '@/api';
-import { readableMimeType, getRootPath } from '@/utils';
+import readableMimeType from '@/utils/readable-mime-type';
+import getRootPath from '@/utils/get-root-path';
 
 type FileInfo = {
 	id: number;

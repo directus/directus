@@ -15,13 +15,7 @@
 
 		<template v-else-if="uploading">
 			<p class="type-label">{{ progress }}%</p>
-			<p class="type-text">
-				{{
-					multiple && numberOfFiles > 1
-						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: $t('upload_file_indeterminate')
-				}}
-			</p>
+			<p class="type-text">{{ multiple && numberOfFiles > 1 ? $t('upload_files_indeterminate', { done: done, total: numberOfFiles }) : $t('upload_file_indeterminate') }}</p>
 			<v-progress-linear :value="progress" rounded />
 		</template>
 
@@ -35,14 +29,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { uploadFiles } from '@/utils';
+import uploadFiles from '@/utils/upload-files';
 
 export default defineComponent({
 	props: {
 		multiple: {
 			type: Boolean,
 			default: false,
-		},
+		}
 	},
 	setup(props, { emit }) {
 		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
@@ -58,7 +52,7 @@ export default defineComponent({
 			dragging,
 			onBrowseSelect,
 			done,
-			numberOfFiles,
+			numberOfFiles
 		};
 
 		function useUpload() {
@@ -79,7 +73,7 @@ export default defineComponent({
 					numberOfFiles.value = files.length;
 
 					const uploadedFiles = await uploadFiles(Array.from(files), (percentage) => {
-						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
+						progress.value = Math.round(percentage.reduce((acc, cur) => acc += cur) / files.length);
 						done.value = percentage.filter((p) => p === 100).length;
 					});
 

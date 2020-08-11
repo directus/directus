@@ -1,4 +1,4 @@
-import { registerComponent } from '@/utils';
+import registerComponent from '@/utils/register-component/';
 import layouts from './index';
 
 layouts.forEach((layout) => {

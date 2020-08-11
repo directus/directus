@@ -144,7 +144,7 @@ import { useFieldsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoDrawerDetail from './components/user-info-drawer-detail.vue';
-import { getRootPath } from '@/utils';
+import getRootPath from '../../../../utils/get-root-path';
 
 type Values = {
 	[field: string]: any;

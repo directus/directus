@@ -30,7 +30,7 @@ import api from '@/api';
 import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
-import { getRootPath } from '@/utils';
+import getRootPath from '@/utils/get-root-path';
 
 type File = {
 	type: string;

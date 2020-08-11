@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { useUserStore } from '@/stores/';
-import { getRootPath } from '@/utils';
+import getRootPath from '../../../../utils/get-root-path';
 
 export default defineComponent({
 	setup() {
