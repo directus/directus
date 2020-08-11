@@ -229,6 +229,10 @@ export default defineComponent({
 	}
 }
 
+button {
+	color: var(--primary);
+}
+
 .v-divider {
 	margin: 20px 0;
 }
