@@ -17,6 +17,7 @@
 					:current-folder="value"
 					:click-handler="(id) => $emit('input', id)"
 					:disabled="disabledFolders.includes(folder.id)"
+					:disabled-folders="disabledFolders"
 				/>
 			</v-list-group>
 		</v-list>
@@ -96,6 +97,7 @@ export default defineComponent({
 				const response = await api.get(`/folders`, {
 					params: {
 						limit: -1,
+						sort: 'name',
 					},
 				});
 

@@ -21,6 +21,8 @@
 			:folder="childFolder"
 			:current-folder="currentFolder"
 			:click-handler="clickHandler"
+			:disabled="disabledFolders.includes(childFolder.id)"
+			:disabled-folders="disabledFolders"
 		/>
 	</v-list-group>
 </template>
@@ -52,6 +54,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		disabledFolders: {
+			type: Array as PropType<string[]>,
+			default: () => [],
 		},
 	},
 });
