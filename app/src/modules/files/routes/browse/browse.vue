@@ -84,7 +84,7 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation />
+			<files-navigation :current-folder="queryFilters && queryFilters.folder" />
 		</template>
 
 		<component
@@ -130,6 +130,7 @@ import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
 import emitter, { Events } from '@/events';
 import router from '@/router';
+import Vue from 'vue';
 
 type Item = {
 	[field: string]: any;
@@ -287,11 +288,13 @@ export default defineComponent({
 					});
 
 					selection.value = [];
-					await layout.value?.refresh();
 
 					if (selectedFolder.value) {
 						router.push(`/files?folder=${selectedFolder.value}`);
 					}
+
+					await Vue.nextTick();
+					await refresh();
 				} catch (err) {
 					console.error(err);
 				} finally {

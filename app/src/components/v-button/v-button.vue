@@ -126,7 +126,11 @@ export default defineComponent({
 			if (notEmpty(props.to)) return 'router-link';
 			return 'button';
 		});
-		const { active, toggle } = useGroupable(props.value, 'button-group');
+
+		const { active, toggle } = useGroupable({
+			value: props.value,
+			group: 'button-group',
+		});
 
 		return { sizeClass, onClick, component, active, toggle };
 

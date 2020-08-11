@@ -17,10 +17,11 @@
 			:active="currentFolder === folder.id"
 			exact
 			@contextmenu.native.prevent="$refs.contextMenu.activate"
+			:open="isOpen"
 		>
-			<template #activator="{ active }">
+			<template #activator>
 				<v-list-item-icon>
-					<v-icon :name="active ? 'folder_open' : 'folder'" />
+					<v-icon name="folder" />
 				</v-list-item-icon>
 				<v-list-item-content>{{ folder.name }}</v-list-item-content>
 			</template>
@@ -30,6 +31,7 @@
 				:folder="childFolder"
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
+				:start-open-folders="startOpenFolders"
 			/>
 		</v-list-group>
 
@@ -106,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref, watch, computed } from '@vue/composition-api';
 import useFolders, { Folder } from '../../composables/use-folders';
 import notify from '@/utils/notify';
 import api from '@/api';
@@ -129,6 +131,10 @@ export default defineComponent({
 			type: Function,
 			default: () => undefined,
 		},
+		startOpenFolders: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
 	},
 	setup(props) {
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
@@ -136,6 +142,10 @@ export default defineComponent({
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
 
 		const { fetchFolders } = useFolders();
+
+		const isOpen = computed(() => {
+			return props.startOpenFolders.includes(props.folder.id);
+		});
 
 		return {
 			renameActive,
@@ -149,6 +159,7 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
+			isOpen,
 		};
 
 		function useRenameFolder() {

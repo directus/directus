@@ -48,7 +48,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.title, 'drawer-detail');
+		const { active, toggle } = useGroupable({
+			value: props.title,
+			group: 'drawer-detail',
+		});
 		const appStore = useAppStore();
 		const { drawerOpen } = toRefs(appStore.state);
 		return { active, toggle, drawerOpen };

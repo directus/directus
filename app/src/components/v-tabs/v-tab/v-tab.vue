@@ -23,7 +23,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.value, 'v-tabs');
+		const { active, toggle } = useGroupable({
+			value: props.value,
+			group: 'v-tabs',
+		});
+
 		const vertical = inject('v-tabs-vertical', ref(false));
 
 		return { active, toggle, onClick, vertical };

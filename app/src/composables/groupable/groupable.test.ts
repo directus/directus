@@ -40,7 +40,7 @@ describe('Groupable', () => {
 
 			mountComposable(() => {
 				provide('item-group', { register, unregister, toggle });
-				useGroupable('custom-value');
+				useGroupable({ value: 'custom-value' });
 			});
 
 			expect(register).toHaveBeenCalledWith({
@@ -56,7 +56,7 @@ describe('Groupable', () => {
 
 			mountComposable(() => {
 				provide('item-group', { register, unregister, toggle });
-				const result = useGroupable('custom-value');
+				const result = useGroupable({ value: 'custom-value' });
 				expect(result!.active).toEqual({ value: false });
 				expect(result!.toggle).toBeInstanceOf(Function);
 			});
@@ -69,7 +69,7 @@ describe('Groupable', () => {
 
 			mountComposable(() => {
 				provide('item-group', { register, unregister, toggle });
-				const result = useGroupable('custom-value');
+				const result = useGroupable({ value: 'custom-value' });
 				result!.toggle();
 				expect(toggle).toHaveBeenCalled();
 			});
@@ -82,7 +82,7 @@ describe('Groupable', () => {
 
 			mountComposable(() => {
 				provide('item-group', { register, unregister, toggle });
-				const result = useGroupable('custom-value');
+				const result = useGroupable({ value: 'custom-value' });
 				result!.toggle();
 				expect(result!.active).toEqual({ value: true });
 			});

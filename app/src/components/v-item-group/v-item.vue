@@ -20,7 +20,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.value, props.scope);
+		const { active, toggle } = useGroupable({
+			value: props.value,
+			group: props.scope,
+		});
+
 		return { active, toggle };
 	},
 });

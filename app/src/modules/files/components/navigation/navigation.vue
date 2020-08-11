@@ -5,9 +5,9 @@
 			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
 		</v-list-item>
 
-		<v-divider v-if="loading || folders.length > 0" />
+		<v-divider v-if="loading || nestedFolders.length > 0" />
 
-		<template v-if="loading && (folders === null || folders.length === 0)">
+		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />
 			</v-list-item>
@@ -15,17 +15,18 @@
 
 		<div class="folders">
 			<navigation-folder
-				v-for="folder in folders"
+				v-for="folder in nestedFolders"
 				:key="folder.id"
 				:folder="folder"
 				:current-folder="currentFolder"
+				:start-open-folders="startOpenFolders"
 			/>
 		</div>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import useFolders from '../../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 
@@ -41,10 +42,31 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup() {
-		const { folders, error, loading } = useFolders();
+	setup(props) {
+		const { nestedFolders, folders, error, loading } = useFolders();
 
-		return { folders, error, loading };
+		const startOpenFolders = computed(() => {
+			if (!folders.value) return [];
+
+			const openFolders: string[] = [];
+
+			parseFolder(props.currentFolder);
+
+			return openFolders;
+
+			function parseFolder(id: string) {
+				if (!folders.value) return;
+				openFolders.push(id);
+
+				const folder = folders.value.find((folder) => folder.id === id);
+
+				if (folder && folder.parent_folder) {
+					parseFolder(folder.parent_folder);
+				}
+			}
+		});
+
+		return { folders, nestedFolders, error, loading, startOpenFolders };
 	},
 });
 </script>

@@ -16,23 +16,26 @@ export type Folder = {
 
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
+let nestedFolders: Ref<Folder[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
 export default function useFolders() {
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
+	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
 	}
 
-	return { loading, folders, error, fetchFolders };
+	return { loading, folders, nestedFolders, error, fetchFolders };
 
 	async function fetchFolders() {
 		if (loading === null) return;
 		if (folders === null) return;
+		if (nestedFolders === null) return;
 		if (error === null) return;
 
 		loading.value = true;
@@ -45,7 +48,8 @@ export default function useFolders() {
 				},
 			});
 
-			folders.value = nestFolders(response.data.data);
+			folders.value = response.data.data;
+			nestedFolders.value = nestFolders(response.data.data);
 		} catch (err) {
 			error.value = err;
 		} finally {
