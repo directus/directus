@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import useUserStore from '@/stores/user/';
+import { useUserStore } from '@/stores/';
 import getRootPath from '../../../../utils/get-root-path';
 
 export default defineComponent({
@@ -81,16 +81,6 @@ export default defineComponent({
 			opacity: 0.75;
 			transition: opacity var(--fast) var(--transition);
 		}
-
-		&:hover {
-			.avatar-image {
-				opacity: 1;
-			}
-
-			.v-icon {
-				--v-icon-color: var(--white);
-			}
-		}
 	}
 }
 
@@ -105,6 +95,16 @@ export default defineComponent({
 
 	&.show {
 		transform: translateY(-100%);
+	}
+
+	.v-icon {
+		--v-icon-color: var(--white);
+	}
+}
+
+.v-avatar:hover {
+	.avatar-image {
+		opacity: 1;
 	}
 
 	.v-icon {

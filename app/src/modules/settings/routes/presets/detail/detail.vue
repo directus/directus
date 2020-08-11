@@ -14,7 +14,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="preset === null || id === '+'" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="preset === null || id === '+'"
+						@click="on"
+						v-tooltip.bottom="$t('delete')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -33,7 +40,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button icon rounded :disabled="hasEdits === false" :loading="saving" @click="save" v-tooltip.bottom="$t('save')">
+			<v-button
+				icon
+				rounded
+				:disabled="hasEdits === false"
+				:loading="saving"
+				@click="save"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -81,13 +95,12 @@
 import { defineComponent, computed, ref } from '@vue/composition-api';
 
 import SettingsNavigation from '../../../components/navigation';
-import { Preset, Filter } from '@/stores/presets/types';
+import { Preset, Filter } from '@/types';
 import api from '@/api';
 import i18n from '@/lang';
-import useCollectionsStore from '@/stores/collections';
+import { useCollectionsStore, usePresetsStore } from '@/stores';
 import layouts from '@/layouts';
 import router from '@/router';
-import usePresetsStore from '@/stores/presets';
 import marked from 'marked';
 
 type User = {
@@ -437,7 +450,7 @@ export default defineComponent({
 								}),
 						},
 						width: 'half',
-					}
+					},
 				},
 				{
 					field: 'scope',
@@ -449,7 +462,7 @@ export default defineComponent({
 							choices: scopeChoices.value,
 						},
 						width: 'half',
-					}
+					},
 				},
 				{
 					field: 'layout',
@@ -464,7 +477,7 @@ export default defineComponent({
 							})),
 						},
 						width: 'half',
-					}
+					},
 				},
 				{
 					field: 'name',
@@ -476,7 +489,7 @@ export default defineComponent({
 						options: {
 							placeholder: i18n.t('preset_name_placeholder'),
 						},
-					}
+					},
 				},
 				{
 					field: 'divider',
@@ -489,7 +502,7 @@ export default defineComponent({
 							title: i18n.t('layout_preview'),
 							color: '#2F80ED',
 						},
-					}
+					},
 				},
 			]);
 

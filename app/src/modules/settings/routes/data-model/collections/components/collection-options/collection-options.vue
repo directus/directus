@@ -54,8 +54,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from '@vue/composition-api';
-import { Collection } from '@/stores/collections/types';
-import useCollectionsStore from '@/stores/collections';
+import { Collection } from '@/types';
+import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {
@@ -94,9 +94,9 @@ export default defineComponent({
 
 			return { savingManaged, toggleManaged };
 
-			async function toggleManaged(on: boolean) {
+			/** @TODO finalize what's supposed to happen on manage */
+			async function toggleManaged() {
 				// savingManaged.value = true;
-
 				// try {
 				// 	await collectionsStore.updateCollection(props.collection.collection, {
 				// 		managed: on,

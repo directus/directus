@@ -2,7 +2,11 @@
 	<div class="public-view">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
-				<div v-if="settings && settings.project_logo" class="logo" :style="{ backgroundColor: settings.project_color }">
+				<div
+					v-if="settings && settings.project_logo"
+					class="logo"
+					:style="{ backgroundColor: settings.project_color }"
+				>
 					<img :src="logoURL" :alt="settings.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
@@ -18,12 +22,7 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img
-					class="foreground"
-					v-if="foregroundURL"
-					:src="foregroundURL"
-					:alt="settings.project_name"
-				/>
+				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="settings.project_name" />
 			</transition>
 			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
 		</div>
@@ -33,7 +32,7 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
-import useSettingsStore from '@/stores/settings';
+import { useSettingsStore } from '@/stores';
 import marked from 'marked';
 import getRootPath from '../../utils/get-root-path';
 
@@ -67,8 +66,7 @@ export default defineComponent({
 		const foregroundURL = computed(() => {
 			if (!settingsStore.state.settings?.public_foreground) return null;
 			return getRootPath() + `assets/${settingsStore.state.settings.public_foreground}`;
-		})
-
+		});
 
 		const logoURL = computed<string | null>(() => {
 			if (!settingsStore.state.settings?.project_logo) return null;

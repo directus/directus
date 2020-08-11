@@ -1,7 +1,6 @@
 import { computed, Ref, ref } from '@vue/composition-api';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 
 export function useCollection(collectionKey: string | Ref<string>) {
 	const collectionsStore = useCollectionsStore();

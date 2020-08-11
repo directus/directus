@@ -1,7 +1,7 @@
 import { ref, Ref } from '@vue/composition-api';
 
 import api from '@/api';
-import { Role } from '@/stores/user/types';
+import { Role } from '@/types';
 
 let roles: Ref<Role[] | null> | null = null;
 let loading: Ref<boolean> | null = null;

@@ -103,9 +103,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
-import { Field } from '@/stores/fields/types';
-import useFieldsStore from '@/stores/fields/';
-import useCollectionsStore from '@/stores/collections/';
+import { Field } from '@/types';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import interfaces from '@/interfaces';
 
 export default defineComponent({

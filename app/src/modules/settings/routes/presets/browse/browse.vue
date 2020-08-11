@@ -100,7 +100,7 @@ import SettingsNavigation from '../../../components/navigation';
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import i18n from '@/lang';
-import useCollectionsStore from '@/stores/collections';
+import { useCollectionsStore } from '@/stores/';
 import layouts from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';

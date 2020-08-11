@@ -155,15 +155,13 @@ import Vue from 'vue';
 import { defineComponent, PropType, ref, computed, inject, toRefs, Ref } from '@vue/composition-api';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
-import { Field } from '@/stores/fields/types';
+import { Field, Filter } from '@/types';
 import router from '@/router';
 import useSync from '@/composables/use-sync';
 import { debounce } from 'lodash';
 import Draggable from 'vuedraggable';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
-import { render } from 'micromustache';
-import { Filter } from '@/stores/presets/types';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
@@ -491,6 +489,7 @@ export default defineComponent({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const primaryKey = item[primaryKeyField.value!.field];
 
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
 					router.push(`/collections/${collection.value}/${primaryKey}`, () => {});
 				}
 			}

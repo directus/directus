@@ -1,6 +1,5 @@
 import { ref, Ref } from '@vue/composition-api';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { Field, Relation } from '@/types';
 import isNew from './is-new';
 import { set } from 'lodash';
 

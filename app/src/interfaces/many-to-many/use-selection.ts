@@ -1,6 +1,5 @@
-import { Filter } from '@/stores/presets/types';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { Relation, Filter } from '@/types/';
+import { Field } from '@/types';
 import { Ref, ref, computed } from '@vue/composition-api';
 
 type SelectionParam = {

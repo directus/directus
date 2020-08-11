@@ -81,8 +81,8 @@
 import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
-import { Field } from '@/stores/fields/types';
-import useFieldsStore from '@/stores/fields/';
+import { Field } from '@/types';
+import { useFieldsStore } from '@/stores/';
 import FieldSelect from '../field-select/';
 import { sortBy } from 'lodash';
 import hideDragImage from '@/utils/hide-drag-image';
@@ -197,8 +197,7 @@ export default defineComponent({
 
 			const updates: DeepPartial<Field>[] = fieldsInGroup.slice(newIndex).map((field) => {
 				const sortValue =
-					field.meta.sort ||
-					fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
+					field.meta.sort || fieldsInGroup.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,

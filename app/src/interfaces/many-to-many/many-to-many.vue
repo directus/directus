@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, PropType, toRefs } from '@vue/composition-api';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore } from '@/stores/';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ModalBrowse from '@/views/private/components/modal-browse';
 import ModalDetail from '@/views/private/components/modal-detail';

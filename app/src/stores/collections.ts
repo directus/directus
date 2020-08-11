@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import { Collection, CollectionRaw } from './types';
+import { Collection, CollectionRaw } from '@/types';
 import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
@@ -16,7 +16,7 @@ export const useCollectionsStore = createStore({
 		visibleCollections: (state) => {
 			return state.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter(collection => collection.meta?.hidden !== true);
+				.filter((collection) => collection.meta?.hidden !== true);
 		},
 	},
 	actions: {

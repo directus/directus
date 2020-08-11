@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
-import { Filter } from '@/stores/presets/types';
+import { Filter } from '@/types';
 import usePreset from '@/composables/use-collection-preset';
 
 export default defineComponent({

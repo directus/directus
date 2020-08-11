@@ -1,4 +1,4 @@
-import { types } from '@/stores/fields/types';
+import { types } from '@/types';
 
 /**
  * Typemap graciously provided by @gpetrov

@@ -65,7 +65,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
-import { types } from '@/stores/fields/types';
+import { types } from '@/types';
 import i18n from '@/lang';
 import { state } from '../store';
 

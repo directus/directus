@@ -1,8 +1,7 @@
 import { Ref, ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import { Field } from '@/stores/fields/types';
+import { Field, Relation } from '@/types';
 import { merge } from 'lodash';
-import { Relation } from '@/stores/relations/types';
 import adjustFieldsForDisplay from '@/utils/adjust-fields-for-displays';
 import isNew from './is-new';
 

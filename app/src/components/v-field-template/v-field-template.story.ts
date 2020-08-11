@@ -5,9 +5,7 @@ import fullWidth from '../../../.storybook/decorators/full-width';
 import readme from './readme.md';
 import RawValue from '../../../.storybook/raw-value.vue';
 
-import useFieldsStore from '@/stores/fields';
-import useCollectionsStore from '@/stores/collections';
-import useRelationsStore from '@/stores/relations';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 
 import fields from '../../../.storybook/mock-data/fields.json';
 import collections from '../../../.storybook/mock-data/collections.json';

@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Revision } from './types';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
 import RevisionsModalUpdatesChange from './revisions-modal-updates-change.vue';
 

@@ -1,9 +1,7 @@
 import { Ref, computed } from '@vue/composition-api';
 import { FieldTree } from './types';
-import useFieldsStore from '@/stores/fields';
-import useRelationsStore from '@/stores/relations';
-import { Field } from '@/stores/fields/types';
-import { Relation } from '@/stores/relations/types';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Field, Relation } from '@/types';
 
 export default function useFieldTree(collection: Ref<string>) {
 	const fieldsStore = useFieldsStore();
@@ -12,9 +10,7 @@ export default function useFieldTree(collection: Ref<string>) {
 	const tree = computed<FieldTree[]>(() => {
 		return fieldsStore
 			.getFieldsForCollection(collection.value)
-			.filter(
-				(field: Field) => field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias'
-			)
+			.filter((field: Field) => field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias')
 			.map((field: Field) => parseField(field, []));
 
 		function parseField(field: Field, parents: Field[]) {

@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import RepeaterRow from './repeater-row.vue';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';
 import hideDragImage from '@/utils/hide-drag-image';

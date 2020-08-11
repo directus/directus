@@ -130,14 +130,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '@/stores/presets/types';
+import { Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import { render } from 'micromustache';
-import useRelationsStore from '@/stores/relations';
+import { useRelationsStore } from '@/stores/';
 
 import CardsHeader from './components/header.vue';
 import i18n from '@/lang';

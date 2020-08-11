@@ -7,7 +7,7 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import Vue from 'vue';
 import CollectionsBrowse from '../browse';
 import CollectionsDetail from '../detail';
-import useCollectionsStore from '@/stores/collections';
+import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
 	components: {

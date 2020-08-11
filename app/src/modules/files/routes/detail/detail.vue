@@ -14,7 +14,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-tooltip.bottom="$t('delete')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -35,7 +42,14 @@
 
 			<v-dialog v-model="moveToDialogActive" v-if="isNew === false">
 				<template #activator="{ on }">
-					<v-button rounded icon :disabled="item === null" @click="on" class="folder" v-tooltip.bottom="$t('move_to_folder')">
+					<v-button
+						rounded
+						icon
+						:disabled="item === null"
+						@click="on"
+						class="folder"
+						v-tooltip.bottom="$t('move_to_folder')"
+					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -58,11 +72,25 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-if="item && item.type.includes('image')" rounded icon @click="editActive = true" class="edit" v-tooltip.bottom="$t('edit')">
+			<v-button
+				v-if="item && item.type.includes('image')"
+				rounded
+				icon
+				@click="editActive = true"
+				class="edit"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="tune" />
 			</v-button>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
+			<v-button
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -155,8 +183,8 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import useFieldsStore from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
 import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
@@ -246,7 +274,7 @@ export default defineComponent({
 			'duration',
 			'folder',
 			'charset',
-			'embed'
+			'embed',
 		];
 
 		const fieldsFiltered = computed(() => {
@@ -316,7 +344,7 @@ export default defineComponent({
 		}
 
 		async function saveAndStay() {
-			const savedItem: Record<string, any> = await save();
+			await save();
 			revisionsDrawerDetail.value?.$data?.refresh?.();
 		}
 

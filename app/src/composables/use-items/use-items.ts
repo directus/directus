@@ -3,7 +3,7 @@ import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
-import { Filter } from '@/stores/presets/types';
+import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
 import moveInArray from '@/utils/move-in-array';

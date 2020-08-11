@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import notify from './notify';
-import useNotificationsStore from '@/stores/notifications/';
+import { useNotificationsStore } from '@/stores/';
 
 describe('Utils / Notify', () => {
 	beforeAll(() => {

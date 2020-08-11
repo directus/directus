@@ -1,4 +1,4 @@
-import { Avatar } from '@/stores/user/types';
+import { Avatar } from '@/types';
 
 export type Activity = {
 	id: number;

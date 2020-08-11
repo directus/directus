@@ -27,12 +27,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 
 import { state } from '../store';
 
@@ -47,7 +45,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 

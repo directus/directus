@@ -23,9 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useSettingsStore } from '@/stores/settings';
+import { useAppStore, useUserStore, useSettingsStore } from '@/stores';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
@@ -115,5 +113,4 @@ export default defineComponent({
 .fade-leave-to {
 	opacity: 0;
 }
-
 </style>

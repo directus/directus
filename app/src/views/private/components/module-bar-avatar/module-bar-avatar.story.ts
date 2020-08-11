@@ -2,7 +2,7 @@ import markdown from './readme.md';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import { defineComponent } from '@vue/composition-api';
 
-import useUserStore from '@/stores/user';
+import { useUserStore } from '@/stores/';
 import ModuleBarAvatar from './module-bar-avatar.vue';
 import { i18n } from '@/lang/';
 import VueRouter from 'vue-router';
