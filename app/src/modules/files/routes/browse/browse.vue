@@ -201,6 +201,12 @@ export default defineComponent({
 			};
 		}
 
+		if (viewQuery.value === null && viewType.value === 'cards') {
+			viewQuery.value = {
+				sort: '-uploaded_on',
+			};
+		}
+
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		onMounted(() => emitter.on(Events.upload, refresh));
