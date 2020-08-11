@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
-import getRootPath from '../../../../utils/get-root-path';
+import { getRootPath } from '@/utils';
 
 export default defineComponent({
 	setup() {

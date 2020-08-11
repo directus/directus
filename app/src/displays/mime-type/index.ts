@@ -1,4 +1,4 @@
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils';
 import { extension } from 'mime-types';
 import { defineDisplay } from '@/displays/define';
 
@@ -17,7 +17,7 @@ export default defineDisplay(({ i18n }) => ({
 					label: i18n.t('only_show_the_file_extension'),
 				},
 				default_value: false,
-			}
+			},
 		},
 	],
 	types: ['string'],

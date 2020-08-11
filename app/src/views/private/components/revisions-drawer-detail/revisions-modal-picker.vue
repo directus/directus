@@ -25,7 +25,7 @@
 import { defineComponent, PropType, computed, watch, ref } from '@vue/composition-api';
 import { Revision } from './types';
 import useSync from '@/composables/use-sync';
-import localizedFormat from '@/utils/localized-format';
+import { localizedFormat } from '@/utils';
 import i18n from '@/lang';
 
 type Option = {

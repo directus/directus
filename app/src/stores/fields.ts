@@ -1,10 +1,9 @@
 import { createStore } from 'pinia';
 import api from '@/api';
 import VueI18n from 'vue-i18n';
-import { notEmpty } from '@/utils/is-empty/';
+import { notEmpty, notify } from '@/utils';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
-import notify from '@/utils/notify';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';

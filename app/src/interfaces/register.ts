@@ -1,4 +1,4 @@
-import registerComponent from '@/utils/register-component/';
+import { registerComponent } from '@/utils';
 import interfaces from './index';
 
 // inter, cause interface is a reserved keyword in JS... :C

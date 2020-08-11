@@ -26,7 +26,7 @@ import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
 import { useAppStore, useUserStore, useSettingsStore } from '@/stores';
 
 import useWindowSize from '@/composables/use-window-size';
-import setFavicon from '@/utils/set-favicon';
+import { setFavicon } from '@/utils';
 
 export default defineComponent({
 	setup() {

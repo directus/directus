@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import ValueNull from '@/views/private/components/value-null';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils';
 
 type Image = {
 	id: string;

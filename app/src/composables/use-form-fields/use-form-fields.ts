@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { computed, Ref } from '@vue/composition-api';
-import { isEmpty } from '@/utils/is-empty';
-import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
+import { getDefaultInterfaceForType } from '@/utils';
 import interfaces from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';

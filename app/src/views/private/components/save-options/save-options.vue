@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import translateShortcut from '@/utils/translate-shortcut';
+import { translateShortcut } from '@/utils';
 
 export default defineComponent({
 	props: {

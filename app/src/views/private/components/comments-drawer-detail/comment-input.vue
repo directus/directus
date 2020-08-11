@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 
-import notify from '@/utils/notify';
+import { notify } from '@/utils';
 import api from '@/api';
 import i18n from '@/lang';
 

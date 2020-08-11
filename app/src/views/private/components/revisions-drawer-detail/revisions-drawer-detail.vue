@@ -45,7 +45,7 @@ import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import { TranslateResult } from 'vue-i18n';
 import i18n from '@/lang';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils';
 import RevisionItem from './revision-item.vue';
 import RevisionsModal from './revisions-modal.vue';
 
@@ -158,8 +158,8 @@ export default defineComponent({
 						if (today) dateFormatted = i18n.t('today');
 						else if (yesterday) dateFormatted = i18n.t('yesterday');
 						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
+							dateFormatted = await localizedFormat(date, String(i18n.t('date-fns_date_short_no_year')));
+						else dateFormatted = await localizedFormat(date, String(i18n.t('date-fns_date_short')));
 
 						revisionsGrouped.push({
 							date: date,

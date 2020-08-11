@@ -1,5 +1,5 @@
 import { Ref, ref, isRef, onMounted, onUnmounted } from '@vue/composition-api';
-import { notEmpty } from '@/utils/is-empty';
+import { notEmpty } from '@/utils';
 import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
 
 declare global {

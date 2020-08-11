@@ -1,6 +1,6 @@
 import api from '@/api';
 import { Ref, ref, watch, computed } from '@vue/composition-api';
-import notify from '@/utils/notify';
+import { notify } from '@/utils';
 import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';

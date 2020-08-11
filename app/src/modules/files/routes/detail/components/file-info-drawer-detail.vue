@@ -89,10 +89,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType, localizedFormat } from '@/utils';
 import bytes from 'bytes';
 import i18n from '@/lang';
-import localizedFormat from '@/utils/localized-format';
 import api from '@/api';
 
 export default defineComponent({

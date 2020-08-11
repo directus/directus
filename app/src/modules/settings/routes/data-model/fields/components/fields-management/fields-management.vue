@@ -85,7 +85,7 @@ import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from '../field-select/';
 import { sortBy } from 'lodash';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils';
 import { i18n } from '@/lang';
 
 type DraggableEvent = {

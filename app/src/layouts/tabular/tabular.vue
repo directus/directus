@@ -163,8 +163,7 @@ import Draggable from 'vuedraggable';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import i18n from '@/lang';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import hideDragImage from '@/utils/hide-drag-image';
+import { adjustFieldsForDisplays, hideDragImage } from '@/utils';
 
 type ViewOptions = {
 	widths?: {

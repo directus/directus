@@ -30,7 +30,7 @@ import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
 import { groupBy } from 'lodash';
 import i18n from '@/lang';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import { TranslateResult } from 'vue-i18n';
 import CommentItem from './comment-item.vue';
@@ -110,8 +110,8 @@ export default defineComponent({
 						if (today) dateFormatted = i18n.t('today');
 						else if (yesterday) dateFormatted = i18n.t('yesterday');
 						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
+							dateFormatted = await localizedFormat(date, String(i18n.t('date-fns_date_short_no_year')));
+						else dateFormatted = await localizedFormat(date, String(i18n.t('date-fns_date_short')));
 
 						activityGrouped.push({
 							date: date,

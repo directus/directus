@@ -47,7 +47,7 @@ import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { Location } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 import { useGroupable } from '@/composables/groupable';
-import { notEmpty } from '@/utils/is-empty';
+import { notEmpty } from '@/utils';
 
 export default defineComponent({
 	props: {

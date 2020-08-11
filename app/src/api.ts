@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { useRequestsStore } from '@/stores/';
 import { LogoutReason, logout, refresh } from '@/auth';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils';
 
 const api = axios.create({
 	baseURL: getRootPath(),

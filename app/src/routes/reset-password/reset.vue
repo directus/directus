@@ -23,7 +23,7 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import api from '@/api';
 import { translateAPIError } from '@/lang';
 import { RequestError } from '@/api';
-import jwtPayload from '@/utils/jwt-payload';
+import { jwtPayload } from '@/utils';
 
 export default defineComponent({
 	props: {

@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import notify from '@/utils/notify';
+import { notify } from '@/utils';
 import { i18n } from '@/lang';
 import { merge } from 'lodash';
 

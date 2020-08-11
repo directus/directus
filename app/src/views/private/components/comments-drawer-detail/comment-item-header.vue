@@ -69,10 +69,9 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath, localizedFormat } from '@/utils';
 
 import api from '@/api';
-import localizedFormat from '@/utils/localized-format';
 
 export default defineComponent({
 	props: {

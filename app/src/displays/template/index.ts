@@ -1,8 +1,6 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayTemplate from './template.vue';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import getRelatedCollection from '@/utils/get-related-collection';
+import { getRelatedCollection, getFieldsFromTemplate, adjustFieldsForDisplays } from '@/utils';
 import useCollection from '@/composables/use-collection';
 import { ref } from '@vue/composition-api';
 
@@ -24,7 +22,7 @@ export default defineDisplay(({ i18n }) => ({
 			system: {
 				interface: 'text-input',
 				width: 'full',
-			}
+			},
 		},
 	],
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],

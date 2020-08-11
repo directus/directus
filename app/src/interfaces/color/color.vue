@@ -115,7 +115,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch } from '@vue/composition-api';
-import color, { RGB, HSL } from '@/utils/color';
+import { color, RGB, HSL } from '@/utils';
 
 export default defineComponent({
 	props: {

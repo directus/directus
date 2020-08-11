@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, PropType } from '@vue/composition-api';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils';
 import i18n from '@/lang';
 import parseISO from 'date-fns/parseISO';
 
@@ -37,7 +37,7 @@ export default defineComponent({
 				if (props.type === 'date') format = String(i18n.t('date-fns_date'));
 				if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
-				displayValue.value = await formatLocalized(date, format);
+				displayValue.value = await localizedFormat(date, format);
 			},
 			{ immediate: true }
 		);

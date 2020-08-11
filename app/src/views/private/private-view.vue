@@ -64,7 +64,7 @@ import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import { useNotificationsStore, useUserStore, useAppStore } from '@/stores';
 import NotificationItem from './components/notification-item';
-import uploadFiles from '@/utils/upload-files';
+import { uploadFiles } from '@/utils';
 import i18n from '@/lang';
 import useEventListener from '@/composables/use-event-listener';
 import emitter, { Events } from '@/events';

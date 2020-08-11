@@ -25,7 +25,7 @@ import RepeaterRow from './repeater-row.vue';
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils';
 
 export default defineComponent({
 	components: { RepeaterRow, Draggable },

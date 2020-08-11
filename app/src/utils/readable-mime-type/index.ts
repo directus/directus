@@ -1,4 +1,10 @@
-import readableMimeType from './readable-mime-type';
+import types from './types.json';
+import extensions from './extensions.json';
 
-export { readableMimeType };
-export default readableMimeType;
+export function readableMimeType(type: string, extension = false) {
+	if (extension) {
+		return (extensions as any)[type] || null;
+	}
+
+	return (types as any)[type] || null;
+}

@@ -56,7 +56,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
-import formatLocalized from '@/utils/localized-format';
+import { localizedFormat } from '@/utils';
 import { i18n } from '@/lang';
 import { formatISO, parseISO } from 'date-fns';
 
@@ -188,7 +188,7 @@ export default defineComponent({
 			if (props.type === 'date') format = String(i18n.t('date-fns_date'));
 			if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
-			displayValue.value = await formatLocalized(valueAsDate.value as Date, format);
+			displayValue.value = await localizedFormat(valueAsDate.value as Date, format);
 		}
 
 		function onAMPMInput(newValue: 'PM' | 'AM') {
