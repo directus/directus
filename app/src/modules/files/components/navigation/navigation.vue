@@ -49,8 +49,9 @@ export default defineComponent({
 			if (!folders.value) return [];
 
 			const openFolders: string[] = [];
+			const folder = folders.value.find((folder) => folder.id === props.currentFolder);
 
-			parseFolder(props.currentFolder);
+			if (folder && folder.parent_folder) parseFolder(folder.parent_folder);
 
 			return openFolders;
 
