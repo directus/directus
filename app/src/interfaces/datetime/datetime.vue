@@ -15,7 +15,7 @@
 			</v-input>
 		</template>
 
-		<div class="date-selects" v-if="type === 'timestamp' || type === 'datetime' || type === 'date'">
+		<div class="date-selects" v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'">
 			<div class="month">
 				<v-select :placeholder="$t('month')" :items="months" v-model="localValue.month" />
 			</div>
@@ -27,11 +27,11 @@
 			</div>
 		</div>
 
-		<v-divider v-if="type === 'timestamp' || type === 'datetime'" />
+		<v-divider v-if="type === 'timestamp' || type === 'dateTime'" />
 
 		<div
 			class="time-selects"
-			v-if="type === 'timestamp' || type === 'datetime' || type === 'time'"
+			v-if="type === 'timestamp' || type === 'dateTime' || type === 'time'"
 			:class="{ seconds: includeSeconds }"
 		>
 			<div class="hour">
