@@ -1,13 +1,9 @@
 <template>
-	<v-list-item
-		v-if="folder.children === undefined"
-		:to="`/files?folder=${folder.id}`"
-		exact
-	>
+	<v-list-item v-if="folder.children === undefined" :to="`/files?folder=${folder.id}`" exact>
 		<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 		<v-list-item-content>{{ folder.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else @click="clickHandler(folder.id)" :active="currentFolder === folder.id">
+	<v-list-group v-else :to="`/files?folder=${folder.id}`" exact>
 		<template #activator="{ active }">
 			<v-list-item-icon>
 				<v-icon :name="active ? 'folder_open' : 'folder'" />
