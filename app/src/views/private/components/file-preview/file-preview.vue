@@ -1,6 +1,6 @@
 <template>
 	<div class="file-preview" v-if="type">
-		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG }" @click="$emit('click')">
+		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG, 'max-size': inModal === false }" @click="$emit('click')">
 			<img :src="src" :width="width" :height="height" :alt="title" />
 			<v-icon v-if="inModal === false" name="fullscreen" />
 		</div>
@@ -91,7 +91,14 @@ audio {
 	height: 100%;
 	cursor: pointer;
 
+	&.max-size {
+		max-height: 75vh;
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+	}
+
 	img {
+		max-height: inherit;
 		z-index: 1;
 		display: block;
 	}
@@ -116,7 +123,7 @@ audio {
 
 .svg {
 	padding: 64px;
-	background-color: var(--background-subdued);
+	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 }
 </style>
