@@ -13,36 +13,36 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # mysql:
-      #   image: mysql:latest
-      #   env:
-      #     MYSQL_ROOT_PASSWORD: password
-      #   ports:
-      #   - 3306:3306
-      #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-      postgres:
-        image: postgres
+      mysql:
+        image: mysql:5.7
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          MYSQL_ROOT_PASSWORD: password
         ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+        - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      # postgres:
+      #   image: postgres
+      #   env:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
+      #   ports:
+      #     - 5432:5432
+      #   options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v2
 
-    # - name: Setup Database
-    #   run: |
-    #     sudo apt-get install -y mysql-client
-    #     cd api/tests/openapi
-    #     mysql --host 127.0.0.1 --port 5432 -uroot -ppassword < mysql.sql
-    #     mysql --host 127.0.0.1 --port 5432 -uroot -ppassword -e "SHOW DATABASES"
-
     - name: Setup Database
       run: |
+        sudo apt-get install -y mysql-client
         cd api/tests/openapi
-        PGPASSWORD=postgres psql -h localhost -U postgres -f postgres.sql
+        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword < mysql.sql
+        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword -e "SHOW DATABASES"
+
+    # - name: Setup Database
+    #   run: |
+    #     cd api/tests/openapi
+    #     PGPASSWORD=postgres psql -h localhost -U postgres -f postgres.sql
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
