@@ -171,6 +171,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		preset: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
@@ -184,6 +188,13 @@ export default defineComponent({
 			ref('directus_users'),
 			primaryKey
 		);
+
+		if (props.preset) {
+			edits.value = {
+				...props.preset,
+				...edits.value,
+			};
+		}
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 

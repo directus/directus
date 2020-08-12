@@ -13,14 +13,17 @@ export default defineModule(({ i18n }) => ({
 			path: '/',
 			component: UsersBrowse,
 			props: (route) => ({
-				queryFilters: route.query
+				queryFilters: route.query,
 			}),
 		},
 		{
 			name: 'users-detail',
 			path: '/:primaryKey',
 			component: UsersDetail,
-			props: true,
+			props: (route) => ({
+				primaryKey: route.params.primaryKey,
+				preset: route.query,
+			}),
 		},
 	],
 }));
