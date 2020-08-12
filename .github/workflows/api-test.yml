@@ -47,7 +47,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
     
-    - name: Installation
+    - name: Installation & Setup
       run: |
         npm install
         npm run clean
@@ -56,10 +56,12 @@ jobs:
         npm install
         mv ./tests/openapi/mysql.env ./.env
         npm run build
+        npm run start
+      env:
+        CI: true
         
     
     - name: Test
       run: |
         cd api
-        npm run start
         npm run tests:openapi
