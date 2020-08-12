@@ -5,8 +5,8 @@
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
-			:disabled="field.default_value === undefined || value === field.default_value"
-			@click="$emit('unset', field)"
+			:disabled="!field.schema || !field.schema.default_value"
+			@click="$emit('input', field.schema.default_value)"
 		>
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
