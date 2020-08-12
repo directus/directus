@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "9.0.0-alpha.18",
+  "version": "9.0.0-alpha.19",
   "license": "GPL-3.0-only",
   "homepage": "https://github.com/directus/next#readme",
   "description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -64,7 +64,7 @@
     "example.env"
   ],
   "dependencies": {
-    "@directus/app": "^9.0.0-alpha.18",
+    "@directus/app": "^9.0.0-alpha.19",
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
@@ -101,6 +101,7 @@
     "nodemailer": "^6.4.11",
     "ora": "^4.1.1",
     "pino": "^6.4.1",
+    "pino-colada": "^2.1.0",
     "resolve-cwd": "^3.0.0",
     "sharp": "^0.25.4",
     "uuid": "^8.3.0",
@@ -141,7 +142,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
-    "pino-colada": "^2.1.0",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.56",
