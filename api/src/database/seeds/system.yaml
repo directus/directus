@@ -35,7 +35,7 @@ tables:
       type: string
       length: 30
       nullable: false
-      default: people
+      default: supervised_user_circle
     description:
       type: text
     ip_access:
