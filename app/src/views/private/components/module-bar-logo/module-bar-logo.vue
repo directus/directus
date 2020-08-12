@@ -1,8 +1,8 @@
 <template>
-	<component :is="url ? 'a' : 'div'" :href="url" target="_blank" ref="noopener noreferer" class="module-bar-logo">
+	<component :is="url ? 'a' : 'div'" :href="url" target="_blank" ref="noopener noreferer" class="module-bar-logo" :class="{ loading : showLoader }">
 		<template v-if="customLogoPath">
-			<v-progress-circular indeterminate v-if="showLoader" />
-			<img v-else class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+			<v-progress-linear indeterminate rounded v-if="true" />
+			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopRunningIfQueueIsEmpty" />
 	</component>
@@ -54,8 +54,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .module-bar-logo {
-	--v-progress-circular-color: var(--white);
-	--v-progress-circular-background-color: rgba(255, 255, 255, 0.25);
+	--v-progress-linear-height: 2px;
+	--v-progress-linear-color: var(--white);
+	--v-progress-linear-background-color: rgba(255, 255, 255, 0.5);
 
 	position: relative;
 	display: flex;
@@ -66,7 +67,24 @@ export default defineComponent({
 	padding: 12px;
 	background-color: var(--brand);
 
+	&.loading {
+		.v-progress-linear {
+			opacity: 1;
+		}
+	}
+
+	.v-progress-linear {
+		transition: opacity var(--slow) var(--transition);
+		position: absolute;
+		width: 40px;
+		bottom: 5px;
+		left: 12px;
+		right: 12px;
+		opacity: 0;
+	}
+
 	.custom-logo {
+		// transition: opacity var(--slow) var(--transition);
 		display: block;
 		width: 40px;
 		height: 40px;
