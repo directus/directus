@@ -1,6 +1,11 @@
 <template>
 	<div class="v-progress-circular" :class="sizeClass">
-		<svg class="circle" viewBox="0 0 30 30" :class="{ indeterminate }">
+		<svg
+			class="circle"
+			viewBox="0 0 30 30"
+			:class="{ indeterminate }"
+			@animationiteration="$emit('animationiteration')"
+		>
 			<path
 				class="circle-background"
 				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"

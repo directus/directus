@@ -1,7 +1,7 @@
 <template>
 	<component :is="url ? 'a' : 'div'" :href="url" target="_blank" ref="noopener noreferer" class="module-bar-logo">
 		<template v-if="customLogoPath">
-			<v-progress-circular indeterminate v-if="showLoader" />
+			<v-progress-circular indeterminate v-if="showLoader" @animationiteration="stopRunningIfQueueIsEmpty" />
 			<img v-else class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopRunningIfQueueIsEmpty" />
@@ -32,7 +32,6 @@ export default defineComponent({
 			() => queueHasItems.value,
 			(hasItems) => {
 				if (hasItems) showLoader.value = true;
-				else if (customLogoPath.value !== null) showLoader.value = false;
 			}
 		);
 
