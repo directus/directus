@@ -855,13 +855,13 @@
 		"name": "Role Name",
 		"icon": "Role Icon",
 		"description": "Description",
-		"ip_allow_list": "IP Access Allow List",
+		"ip_access": "IP Access",
 		"app_access": "App Access",
 		"admin": "Admin Access",
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections navigation"
+		"collection_list": "Collections Navigation"
 	}
   },
 

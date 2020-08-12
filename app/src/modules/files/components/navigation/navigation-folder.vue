@@ -7,7 +7,7 @@
 			exact
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
-			<v-list-item-icon><v-icon :name="root ? 'folder_special' : 'folder'" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>{{ folder.name }}</v-list-item-content>
 		</v-list-item>
 
@@ -23,7 +23,7 @@
 		>
 			<template #activator>
 				<v-list-item-icon>
-					<v-icon :name="root ? 'folder_special' : 'folder'" />
+					<v-icon name="folder" />
 				</v-list-item-icon>
 				<v-list-item-content>{{ folder.name }}</v-list-item-content>
 			</template>
