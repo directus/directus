@@ -1,10 +1,10 @@
 on:
   push:
     branches:
-      - '!master'
+      - 'main'
   pull_request:
     branches:
-      - '!master'
+      - 'main'
 
 name: api-test
 
@@ -16,29 +16,28 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_DATABASE: directus
           MYSQL_ROOT_PASSWORD: password
         ports:
-        - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Verify SQL Connection
+    - name: Setup Database
       run: |
         sudo apt-get install -y mysql-client
-        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 --port 3306 -u root -p password < /tests/openapi/directus.sql
+        mysql --host 127.0.0.1 --port 3306 -u root -p password -e "SHOW DATABASES"
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
     
     - name: Installation
       run: |
+        cd api
         npm i
-        mv /tests/openapi/.env /
+        mv /tests/openapi/test.env /.env
     
     - name: Build
       run: |
