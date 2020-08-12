@@ -50,7 +50,7 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 		if (key.startsWith('_') === false) {
 			let operator = Object.keys(value)[0];
 
-			const compareValue = Object.values(value)[0];
+			const compareValue: any = Object.values(value)[0];
 
 			if (operator === '_eq') {
 				dbQuery.where({ [key]: compareValue });
@@ -66,6 +66,22 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 
 			if (operator === '_ncontains') {
 				dbQuery.where(key, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_gt') {
+				dbQuery.where(key, '>', compareValue);
+			}
+
+			if (operator === '_gte') {
+				dbQuery.where(key, '>=', compareValue);
+			}
+
+			if (operator === '_lt') {
+				dbQuery.where(key, '<', compareValue);
+			}
+
+			if (operator === '_lte') {
+				dbQuery.where(key, '<=', compareValue);
 			}
 
 			if (operator === '_in') {
