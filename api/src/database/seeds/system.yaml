@@ -1766,7 +1766,6 @@ rows:
         display_options:
           font: monospace
 
-
   directus_permissions:
     defaults:
       role: null
