@@ -1,5 +1,12 @@
 <template>
 	<v-list nav>
+		<v-list-item to="/files/" exact>
+			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
+		</v-list-item>
+
+		<v-divider v-if="loading || nestedFolders.length > 0" />
+
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />
@@ -18,12 +25,6 @@
 			</v-item-group>
 		</div>
 
-		<v-divider v-if="loading || nestedFolders.length > 0" />
-
-		<v-list-item to="/files/" exact>
-			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
-		</v-list-item>
 	</v-list>
 </template>
 
