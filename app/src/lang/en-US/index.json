@@ -288,6 +288,12 @@
 	"download": "Download",
 	"open": "Open",
 
+	"foreground_color": "Foreground Color",
+	"background_color": "Background Color",
+
+	"default_foreground": "Default Foreground",
+	"default_background": "Default Background",
+
 	"upload_from_device": "Upload File from Device",
 	"choose_from_library": "Choose File from Library",
 	"import_from_url": "Import File from URL",

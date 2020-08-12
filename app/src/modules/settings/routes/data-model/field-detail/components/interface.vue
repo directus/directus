@@ -11,20 +11,18 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
+			<v-notice v-if="!selectedInterface.options">
+				{{ $t('no_options_available') }}
+			</v-notice>
+
 			<v-form
-				v-if="
-					selectedInterface.options &&
-					Array.isArray(selectedInterface.options) &&
-					selectedInterface.options.length > 0
-				"
+				v-else-if="Array.isArray(selectedInterface.options)"
 				:fields="selectedInterface.options"
 				primary-key="+"
 				v-model="fieldData.meta.options"
 			/>
 
-			<v-notice v-else>
-				{{ $t('no_options_available') }}
-			</v-notice>
+			<component v-model="fieldData" :is="`interface-options-${selectedInterface.id}`" />
 		</template>
 	</div>
 </template>

@@ -10,21 +10,19 @@
 			<button @click="fieldData.meta.display = null">{{ $t('reset_display') }}</button>
 		</v-notice>
 
-		<template v-if="fieldData.meta.display && !selectedDisplay">
-			<v-form
-				v-if="
-					selectedDisplay.options &&
-					Array.isArray(selectedDisplay.options) &&
-					selectedDisplay.options.length > 0
-				"
-				:fields="selectedDisplay.options"
-				primary-key="+"
-				v-model="fieldData.meta.options"
-			/>
-
-			<v-notice v-else>
+		<template v-if="fieldData.meta.display && selectedDisplay">
+			<v-notice v-if="!selectedDisplay.options">
 				{{ $t('no_options_available') }}
 			</v-notice>
+
+			<v-form
+				v-else-if="Array.isArray(selectedDisplay.options)"
+				:fields="selectedDisplay.options"
+				primary-key="+"
+				v-model="fieldData.meta.display_options"
+			/>
+
+			<component v-model="fieldData" :is="`display-options-${selectedDisplay.id}`" v-else />
 		</template>
 	</div>
 </template>
