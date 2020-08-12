@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import logger from 'express-pino-logger';
+import logger from './logger';
+import expressLogger from 'express-pino-logger';
 import path from 'path';
 import cors from 'cors';
 import env from './env';
@@ -34,7 +35,7 @@ import notFoundHandler from './routes/not-found';
 
 const app = express().disable('x-powered-by').set('trust proxy', true);
 
-app.use(logger())
+app.use(expressLogger({ logger }))
 	.use(bodyParser.json())
 	.use(extractToken)
 	.use((req, res, next) => {
