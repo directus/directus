@@ -6,6 +6,7 @@
 				:placeholder="value ? formatTitle(value) : $t('search_for_icon')"
 				v-model="searchQuery"
 				@focus="activate"
+				:class="{ 'has-value' : value}"
 			>
 				<template #prepend>
 					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />
@@ -90,7 +91,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-input {
+.v-input.has-value {
 	--v-input-placeholder-color: var(--primary);
 
 	&:focus-within {
