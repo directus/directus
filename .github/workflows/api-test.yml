@@ -42,11 +42,8 @@ jobs:
         cd api
         npm install
         mv ./tests/openapi/test.env ./.env
-    
-    - name: Build
-      run: |
-        cd api
         npm run build
+        
     
     - name: Test
       run: |
