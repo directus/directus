@@ -28,7 +28,7 @@ export default function useFolders() {
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
-	if (openFolders === null) openFolders = ref(['$root']);
+	if (openFolders === null) openFolders = ref(['root']);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
@@ -53,14 +53,7 @@ export default function useFolders() {
 			});
 
 			folders.value = response.data.data;
-			nestedFolders.value = [
-				{
-					id: null,
-					name: i18n.t('file_library'),
-					children: nestFolders(response.data.data),
-					parent_folder: null,
-				},
-			];
+			nestedFolders.value = nestFolders(response.data.data);
 		} catch (err) {
 			error.value = err;
 		} finally {

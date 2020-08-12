@@ -13,9 +13,9 @@
 
 		<v-list-group
 			v-else
-			:to="root ? `/files?folder=root` : `/files?folder=${folder.id}`"
-			:active="root ? currentFolder === 'root' : currentFolder === folder.id"
-			:value="root ? '$root' : folder.id"
+			:to="`/files?folder=${folder.id}`"
+			:active="currentFolder === folder.id"
+			:value="folder.id"
 			scope="files-navigation"
 			exact
 			disable-groupable-parent
@@ -132,10 +132,6 @@ export default defineComponent({
 		clickHandler: {
 			type: Function,
 			default: () => undefined,
-		},
-		root: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	setup(props) {

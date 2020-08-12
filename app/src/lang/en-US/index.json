@@ -585,6 +585,8 @@
 	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
 	"per_page": "Per Page",
 	"all_files": "All Files",
+	"my_files": "My Files",
+	"recent_files": "Recent Files",
 	"create_folder": "Create Folder",
 	"folder_name": "Folder Name...",
 	"add_file": "Add File",

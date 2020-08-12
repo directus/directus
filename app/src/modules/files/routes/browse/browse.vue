@@ -151,6 +151,8 @@ import FolderPicker from '../../components/folder-picker';
 import emitter, { Events } from '@/events';
 import router from '@/router';
 import Vue from 'vue';
+import { useUserStore } from '@/stores';
+import { subDays } from 'date-fns';
 
 type Item = {
 	[field: string]: any;
@@ -164,10 +166,16 @@ export default defineComponent({
 			type: Object as PropType<Record<string, string>>,
 			default: null,
 		},
+		special: {
+			type: String as PropType<'all' | 'recent' | 'mine'>,
+			default: null,
+		},
 	},
 	setup(props) {
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
+
+		const userStore = useUserStore();
 
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
@@ -175,38 +183,7 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 
 		const filtersWithFolderAndType = computed(() => {
-			if (props.queryFilters !== null) {
-				const urlFilters: any[] = [
-					{
-						locked: true,
-						field: 'type',
-						operator: 'nnull',
-						value: 1,
-					},
-				];
-
-				for (const [field, value] of Object.entries(props.queryFilters)) {
-					if (value === 'root') {
-						urlFilters.push({
-							locked: true,
-							operator: 'null',
-							field,
-							value: true,
-						});
-					} else {
-						urlFilters.push({
-							locked: true,
-							operator: 'eq',
-							field,
-							value,
-						});
-					}
-				}
-
-				return [...urlFilters, ...filters.value];
-			}
-
-			return [
+			const filtersParsed: any[] = [
 				...filters.value,
 				{
 					locked: true,
@@ -215,6 +192,46 @@ export default defineComponent({
 					value: 1,
 				},
 			];
+
+			if (props.special === null) {
+				if (Object.keys(props.queryFilters).length > 0) {
+					for (const [field, value] of Object.entries(props.queryFilters)) {
+						filtersParsed.push({
+							locked: true,
+							operator: 'eq',
+							field,
+							value,
+						});
+					}
+				} else {
+					filtersParsed.push({
+						locked: true,
+						operator: 'null',
+						field: 'folder',
+						value: true,
+					});
+				}
+			}
+
+			if (props.special === 'mine' && userStore.state.currentUser) {
+				filtersParsed.push({
+					locked: true,
+					operator: 'eq',
+					field: 'uploaded_by',
+					value: userStore.state.currentUser.id,
+				});
+			}
+
+			if (props.special === 'recent') {
+				filtersParsed.push({
+					locked: true,
+					operator: 'gt',
+					field: 'uploaded_on',
+					value: subDays(new Date(), 5).toISOString(),
+				});
+			}
+
+			return filtersParsed;
 		});
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();

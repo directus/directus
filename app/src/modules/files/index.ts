@@ -13,17 +13,38 @@ export default defineModule(({ i18n }) => ({
 			path: '/',
 			component: FilesBrowse,
 			props: (route) => ({
-				queryFilters: route.query
+				queryFilters: route.query,
 			}),
 			children: [
 				{
 					path: '+',
 					name: 'add-file',
 					components: {
-						addNew: FilesAddNew
+						addNew: FilesAddNew,
 					},
-				}
-			]
+				},
+			],
+		},
+		{
+			path: '/all',
+			component: FilesBrowse,
+			props: () => ({
+				special: 'all',
+			}),
+		},
+		{
+			path: '/mine',
+			component: FilesBrowse,
+			props: () => ({
+				special: 'mine',
+			}),
+		},
+		{
+			path: '/recent',
+			component: FilesBrowse,
+			props: () => ({
+				special: 'recent',
+			}),
 		},
 		{
 			name: 'files-detail',
