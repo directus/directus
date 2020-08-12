@@ -17,8 +17,7 @@ export const useUserStore = createStore({
 			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
 		},
 		isAdmin(state) {
-			/** @todo base this on UUID */
-			return state.currentUser?.role.id === 1;
+			return state.currentUser?.role.admin === true || false;
 		},
 	},
 	actions: {

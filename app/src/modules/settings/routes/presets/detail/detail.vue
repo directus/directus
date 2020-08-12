@@ -191,9 +191,9 @@ export default defineComponent({
 
 				if (edits.value.scope) {
 					if (edits.value.scope.startsWith('role_')) {
-						editsParsed.role = +edits.value.scope.substring(5);
+						editsParsed.role = edits.value.scope.substring(5);
 					} else if (edits.value.scope.startsWith('user_')) {
-						editsParsed.user = +edits.value.scope.substring(5);
+						editsParsed.user = edits.value.scope.substring(5);
 					}
 				}
 
@@ -434,7 +434,7 @@ export default defineComponent({
 					field: 'collection',
 					name: i18n.t('collection'),
 					type: 'string',
-					system: {
+					meta: {
 						interface: 'dropdown',
 						options: {
 							choices: collectionsStore.state.collections
@@ -456,7 +456,7 @@ export default defineComponent({
 					field: 'scope',
 					name: i18n.t('scope'),
 					type: 'string',
-					system: {
+					meta: {
 						interface: 'dropdown',
 						options: {
 							choices: scopeChoices.value,
@@ -468,7 +468,7 @@ export default defineComponent({
 					field: 'layout',
 					name: i18n.t('layout'),
 					type: 'string',
-					system: {
+					meta: {
 						interface: 'dropdown',
 						options: {
 							choices: layouts.map((layout) => ({
@@ -483,7 +483,7 @@ export default defineComponent({
 					field: 'name',
 					name: i18n.t('name'),
 					type: 'string',
-					system: {
+					meta: {
 						interface: 'text-input',
 						width: 'half',
 						options: {
@@ -495,7 +495,7 @@ export default defineComponent({
 					field: 'divider',
 					name: i18n.t('divider'),
 					type: 'alias',
-					system: {
+					meta: {
 						interface: 'divider',
 						width: 'fill',
 						options: {
