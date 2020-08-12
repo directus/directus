@@ -1,5 +1,9 @@
 <template>
-	<private-view :title="$t('file_library')">
+	<private-view :title="title">
+		<template #headline v-if="breadcrumb">
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="folder" />
@@ -153,6 +157,7 @@ import router from '@/router';
 import Vue from 'vue';
 import { useUserStore } from '@/stores';
 import { subDays } from 'date-fns';
+import useFolders from '../../composables/use-folders';
 
 type Item = {
 	[field: string]: any;
@@ -172,6 +177,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { folders } = useFolders();
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
@@ -180,7 +186,7 @@ export default defineComponent({
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
+		const { breadcrumb, title } = useBreadcrumb();
 
 		const filtersWithFolderAndType = computed(() => {
 			const filtersParsed: any[] = [
@@ -243,6 +249,7 @@ export default defineComponent({
 			batchDelete,
 			batchLink,
 			breadcrumb,
+			title,
 			confirmDelete,
 			deleting,
 			filters,
@@ -295,16 +302,44 @@ export default defineComponent({
 		}
 
 		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
-				return [
-					{
-						name: i18n.tc('collection', 2),
-						to: `/collections`,
-					},
-				];
+			const title = computed(() => {
+				if (props.special === 'all') {
+					return i18n.t('all_files');
+				}
+
+				if (props.special === 'mine') {
+					return i18n.t('my_files');
+				}
+
+				if (props.special === 'recent') {
+					return i18n.t('recent_files');
+				}
+
+				if (props.queryFilters?.folder) {
+					const folder = folders.value?.find((folder) => folder.id === props.queryFilters.folder);
+
+					if (folder) {
+						return folder.name;
+					}
+				}
+
+				return i18n.t('file_library');
 			});
 
-			return { breadcrumb };
+			const breadcrumb = computed(() => {
+				if (title.value !== i18n.t('file_library')) {
+					return [
+						{
+							name: i18n.t('file_library'),
+							to: `/files`,
+						},
+					];
+				}
+
+				return null;
+			});
+
+			return { breadcrumb, title };
 		}
 
 		function useMovetoFolder() {
