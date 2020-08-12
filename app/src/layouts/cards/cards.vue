@@ -110,21 +110,8 @@
 			</div>
 		</template>
 
-		<v-info v-else-if="itemCount === 0 && activeFilterCount > 0" :title="$t('no_results')" icon="search" center>
-			{{ $t('no_results_copy') }}
-
-			<template #append>
-				<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
-			</template>
-		</v-info>
-
-		<v-info v-else :title="$tc('item_count', 0)" :icon="info.icon" center>
-			{{ $t('no_items_copy') }}
-
-			<template #append>
-				<v-button :to="newLink">{{ $t('add_new_item') }}</v-button>
-			</template>
-		</v-info>
+		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
+		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
 
@@ -266,7 +253,7 @@ export default defineComponent({
 		});
 
 		const activeFilterCount = computed(() => {
-			return _filters.value.filter((filter) => !filter.locked);
+			return _filters.value.filter((filter) => !filter.locked).length;
 		});
 
 		return {
@@ -294,7 +281,6 @@ export default defineComponent({
 			_filters,
 			newLink,
 			info,
-			clearFilters,
 			showingCount,
 			isSingleRow,
 			width,
@@ -314,11 +300,6 @@ export default defineComponent({
 				top: 0,
 				behavior: 'smooth',
 			});
-		}
-
-		function clearFilters() {
-			_filters.value = [];
-			_searchQuery.value = null;
 		}
 
 		function useViewOptions() {

@@ -98,7 +98,27 @@
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('file_count', 0)" icon="folder" center>
+					{{ $t('no_files_copy') }}
+
+					<template #append>
+						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ $t('add_new_file') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
@@ -222,6 +242,7 @@ export default defineComponent({
 			moving,
 			selectedFolder,
 			refresh,
+			clearFilters,
 		};
 
 		function useBatchDelete() {
@@ -302,6 +323,11 @@ export default defineComponent({
 
 		function refresh() {
 			layout.value?.refresh();
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
 		}
 	},
 });

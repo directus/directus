@@ -349,6 +349,10 @@
 
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",
+
+	"file_count": "No Files | One File | {count} Files",
+	"no_files_copy": "It looks like you don’t have any files yet. You can click the button below to add a file.",
+
 	"all_items": "All Items",
 
 	"no_collections": "No Collections",

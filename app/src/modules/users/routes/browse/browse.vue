@@ -65,7 +65,17 @@
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -150,6 +160,7 @@ export default defineComponent({
 			viewType,
 			searchQuery,
 			marked,
+			clearFilters,
 		};
 
 		function useBatchDelete() {
@@ -199,6 +210,11 @@ export default defineComponent({
 			});
 
 			return { breadcrumb };
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
 		}
 	},
 });
