@@ -70,6 +70,7 @@ export default async function init(options: Record<string, any>) {
 		name: 'Admin',
 		icon: 'verified_user',
 		admin: true,
+		description: 'Initial role with complete access to the App and API',
 	});
 
 	await db('directus_users').insert({
