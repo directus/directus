@@ -46,6 +46,7 @@ import router from '@/router';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
+import { useUserStore } from '@/stores';
 
 type Credentials = {
 	email: string;
@@ -67,6 +68,7 @@ export default defineComponent({
 		const error = ref<RequestError | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
+		const userStore = useUserStore();
 
 		watch(email, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
@@ -120,7 +122,9 @@ export default defineComponent({
 
 				await login(credentials);
 
-				router.push(`/collections/`);
+				// Stores are hydrated after login
+				const lastPage = userStore.state.currentUser?.last_page;
+				router.push(lastPage || '/collections');
 			} catch (err) {
 				/** @todo use new error code */
 				if (err.response?.data?.error?.code === 111) {
