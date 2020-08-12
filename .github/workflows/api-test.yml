@@ -30,22 +30,23 @@ jobs:
         cd api/tests/openapi
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < directus.sql
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
-        cd ../..
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
     
     - name: Installation
       run: |
+        cd api
         npm install
-        ls
         mv /tests/openapi/test.env /.env
     
     - name: Build
       run: |
+        cd api
         npm run build
     
     - name: Test
       run: |
+        cd api
         npm run start
         npm run tests:openapi
