@@ -6,6 +6,14 @@
 			</v-button>
 		</template>
 
+		<template #actions:prepend>
+			<portal-target name="actions:prepend" />
+		</template>
+
+		<template #actions>
+			<search-input v-model="searchQuery" />
+		</template>
+
 		<component
 			class="layout"
 			ref="layout"
@@ -42,6 +50,7 @@ import usePreset from '@/composables/use-collection-preset';
 import marked from 'marked';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import SearchInput from '@/views/private/components/search-input';
 
 type Item = {
 	[field: string]: any;
@@ -49,7 +58,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'activity-browse',
-	components: { ActivityNavigation, FilterDrawerDetail, LayoutDrawerDetail },
+	components: { ActivityNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
 	props: {
 		primaryKey: {
 			type: String,
