@@ -23,6 +23,7 @@ jobs:
       postgres:
         image: postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
@@ -31,12 +32,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # - name: Setup Database
+    #   run: |
+    #     sudo apt-get install -y mysql-client
+    #     cd api/tests/openapi
+    #     mysql --host 127.0.0.1 --port 5432 -uroot -ppassword < directus.sql
+    #     mysql --host 127.0.0.1 --port 5432 -uroot -ppassword -e "SHOW DATABASES"
+
     - name: Setup Database
       run: |
-        sudo apt-get install -y mysql-client
         cd api/tests/openapi
-        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword < directus.sql
-        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword -e "SHOW DATABASES"
+        psql -h localhost -U postgres -f directus.sql
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
