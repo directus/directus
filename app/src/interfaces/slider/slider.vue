@@ -26,11 +26,11 @@ export default defineComponent({
 		},
 		minValue: {
 			type: Number,
-			default: null,
+			default: 0,
 		},
 		maxValue: {
 			type: Number,
-			default: null,
+			default: 100,
 		},
 		stepInterval: {
 			type: Number,
