@@ -4,7 +4,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, PropType } from '@vue/composition-api';
-import formatLocalized from '@/utils/localized-format';
+import localizedFormat from '@/utils/localized-format';
+import localizedFormatDistance from '@/utils/localized-format-distance';
 import i18n from '@/lang';
 import parseISO from 'date-fns/parseISO';
 
@@ -18,6 +19,10 @@ export default defineComponent({
 			type: String as PropType<'datetime' | 'time' | 'date'>,
 			required: true,
 			validator: (val: string) => ['datetime', 'date', 'time', 'timestamp'].includes(val),
+		},
+		relative: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -33,11 +38,17 @@ export default defineComponent({
 
 				const date = parseISO(props.value);
 
-				let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
-				if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-				if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+				if (props.relative) {
+					displayValue.value = await localizedFormatDistance(date, new Date(), {
+						addSuffix: true,
+					});
+				} else {
+					let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
+					if (props.type === 'date') format = String(i18n.t('date-fns_date'));
+					if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
-				displayValue.value = await formatLocalized(date, format);
+					displayValue.value = await localizedFormat(date, format);
+				}
 			},
 			{ immediate: true }
 		);
