@@ -6,6 +6,7 @@
 		ref="noopener noreferer"
 		class="module-bar-logo"
 		:class="{ loading: showLoader }"
+		v-tooltip.right="urlTooltip"
 	>
 		<template v-if="customLogoPath">
 			<transition name="fade">
@@ -51,11 +52,16 @@ export default defineComponent({
 
 		const url = computed(() => settingsStore.state.settings?.project_url);
 
+		const urlTooltip = computed(() => {
+		    return (settingsStore.state.settings?.project_url) ? i18n.t('view_project') : false;
+		});
+
 		return {
 			customLogoPath,
 			showLoader,
 			stopSpinnerIfQueueIsEmpty,
 			url,
+			urlTooltip,
 		};
 
 		function stopSpinnerIfQueueIsEmpty() {
