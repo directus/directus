@@ -114,9 +114,11 @@ import RenderTemplate from '@/views/private/components/render-template';
 import DrawerDetail from '@/views/private/components/drawer-detail/';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import UserPopover from '@/views/private/components/user-popover';
+import ValueNull from '@/views/private/components/value-null';
 
 Vue.component('render-display', RenderDisplay);
 Vue.component('render-template', RenderTemplate);
 Vue.component('filter-drawer-detail', FilterDrawerDetail);
 Vue.component('drawer-detail', DrawerDetail);
 Vue.component('user-popover', UserPopover);
+Vue.component('value-null', ValueNull);
