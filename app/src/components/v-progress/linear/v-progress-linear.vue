@@ -9,6 +9,7 @@
 			rounded,
 			top,
 		}"
+		@animationiteration="$emit('animationiteration')"
 	>
 		<div
 			class="inner"
