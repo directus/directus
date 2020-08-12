@@ -38,7 +38,7 @@ jobs:
       run: |
         cd api
         npm install
-        mv /tests/openapi/test.env /.env
+        mv ./tests/openapi/test.env ./.env
     
     - name: Build
       run: |
