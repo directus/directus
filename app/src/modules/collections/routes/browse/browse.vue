@@ -78,7 +78,7 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_new')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_item')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -130,7 +130,7 @@
 					{{ $t('no_items_copy') }}
 
 					<template #append>
-						<v-button :to="`/collections/${collection}/+`">{{ $t('add_new_item') }}</v-button>
+						<v-button :to="`/collections/${collection}/+`">{{ $t('create_item') }}</v-button>
 					</template>
 				</v-info>
 			</template>

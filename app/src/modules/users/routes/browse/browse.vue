@@ -45,7 +45,7 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_user')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -81,7 +81,7 @@
 					{{ $t('no_users_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('add_new_user') }}</v-button>
+						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
 					</template>
 				</v-info>
 			</template>

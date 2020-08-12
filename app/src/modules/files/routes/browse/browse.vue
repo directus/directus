@@ -77,7 +77,7 @@
 				icon
 				class="add-new"
 				:to="{ path: '/files/+', query: queryFilters }"
-				v-tooltip.bottom="$t('add_new_file')"
+				v-tooltip.bottom="$t('add_file')"
 			>
 				<v-icon name="add" />
 			</v-button>
@@ -114,7 +114,7 @@
 					{{ $t('no_files_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ $t('add_new_file') }}</v-button>
+						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ $t('add_file') }}</v-button>
 					</template>
 				</v-info>
 			</template>

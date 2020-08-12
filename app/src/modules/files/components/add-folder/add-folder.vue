@@ -1,13 +1,13 @@
 <template>
 	<v-dialog v-model="dialogActive">
 		<template #activator="{ on }">
-			<v-button rounded icon class="add-new" @click="on" v-tooltip.bottom="$t('add_new_folder')">
+			<v-button rounded icon class="add-new" @click="on" v-tooltip.bottom="$t('create_folder')">
 				<v-icon name="create_new_folder" />
 			</v-button>
 		</template>
 
 		<v-card>
-			<v-card-title>{{ $t('add_new_folder') }}</v-card-title>
+			<v-card-title>{{ $t('create_folder') }}</v-card-title>
 			<v-card-text>
 				<v-input :placeholder="$t('folder_name')" v-model="newFolderName" />
 			</v-card-text>

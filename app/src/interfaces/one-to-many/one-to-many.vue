@@ -32,7 +32,7 @@
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('add_new') }}</v-button>
+			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
 			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>

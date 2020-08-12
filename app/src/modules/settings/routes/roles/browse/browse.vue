@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_role')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_role')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
