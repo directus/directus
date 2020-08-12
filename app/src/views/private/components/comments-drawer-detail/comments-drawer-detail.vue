@@ -86,6 +86,7 @@ export default defineComponent({
 								'action_by.first_name',
 								'action_by.last_name',
 								'action_by.avatar.id',
+								'revisions.id',
 								'comment',
 							],
 						},

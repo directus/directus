@@ -1765,6 +1765,16 @@ rows:
         display: formatted-text
         display_options:
           font: monospace
+      - collection: directus_activity
+        field: revisions
+        interface: one-to-many
+        locked: true
+        special: o2m
+        options:
+          fields:
+            - collection
+            - item
+        width: full
 
   directus_permissions:
     defaults:
