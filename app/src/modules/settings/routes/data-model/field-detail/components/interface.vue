@@ -22,7 +22,7 @@
 				v-model="fieldData.meta.options"
 			/>
 
-			<component v-model="fieldData" :is="`interface-options-${selectedInterface.id}`" />
+			<component v-model="fieldData" :is="`interface-options-${selectedInterface.id}`" v-else />
 		</template>
 	</div>
 </template>

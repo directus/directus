@@ -10,7 +10,15 @@
 			@update:selection="onSelect"
 			select-mode
 			class="layout"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+			</template>
+		</component>
 
 		<template #footer>
 			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
@@ -23,6 +31,7 @@
 import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-collection-preset';
+import useCollection from '@/composables/use-collection';
 
 export default defineComponent({
 	props: {
@@ -54,6 +63,7 @@ export default defineComponent({
 
 		const { collection } = toRefs(props);
 
+		const { info: collectionInfo } = useCollection(collection);
 		const { viewType, viewOptions, viewQuery } = usePreset(collection);
 
 		// This is a local copy of the viewtype. This means that we can sync it the layout without
@@ -62,7 +72,7 @@ export default defineComponent({
 		const options = ref(viewOptions.value);
 		const query = ref(viewQuery.value);
 
-		return { save, cancel, _active, _selection, onSelect, layout, options, query };
+		return { save, cancel, _active, _selection, onSelect, layout, options, query, collectionInfo };
 
 		function useActiveState() {
 			const localActive = ref(false);
