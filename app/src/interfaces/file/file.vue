@@ -211,7 +211,6 @@ export default defineComponent({
 		}
 
 		function onUpload(fileInfo: FileInfo) {
-			console.log(fileInfo);
 			file.value = fileInfo;
 			activeDialog.value = null;
 			emit('input', fileInfo.id);
