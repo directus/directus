@@ -1,7 +1,7 @@
 {
   "about_directus": "О Directus",
   "activity": "Активность",
-  "activity_log": "Логи активности",
+  "activity_feed": "Логи активности",
   "activity_outside_directus": "Этот элемент был создан за пределами Directus.",
   "add_field_filter": "Добавить фильтр поля",
   "add_new": "Создать",

@@ -1,7 +1,7 @@
 {
   "about_directus": "О Директусу",
   "activity": "Активност",
-  "activity_log": "Дневник активности",
+  "activity_feed": "Дневник активности",
   "activity_outside_directus": "Ставка направљена изван Директуса",
   "add_field_filter": "Додај филтер за поље",
   "add_new": "Додај нови",

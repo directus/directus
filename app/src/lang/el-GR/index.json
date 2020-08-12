@@ -1,7 +1,7 @@
 {
   "about_directus": "Σχετικά με το Directus",
   "activity": "Δραστηριότητα",
-  "activity_log": "Αρχείο Δραστηριοτήτων",
+  "activity_feed": "Αρχείο Δραστηριοτήτων",
   "activity_outside_directus": "Στοιχείο που δημιουργήθηκε εκτός του Directus",
   "add_field_filter": "Προσθέστε ένα φίλτρο πεδίου",
   "add_new": "Προσθήκη νέου",

@@ -755,7 +755,7 @@
 	"page_help_users_detail": "**User Detail** — Manage your account information, or view the details of other users.",
 
   "about_directus": "About Directus",
-  "activity_log": "Activity Log",
+  "activity_feed": "Activity Feed",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
   "create_new": "Create New",

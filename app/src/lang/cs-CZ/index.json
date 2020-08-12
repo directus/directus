@@ -1,7 +1,7 @@
 {
   "about_directus": "O aplikaci Directus",
   "activity": "Aktivita",
-  "activity_log": "Záznam aktivit",
+  "activity_feed": "Záznam aktivit",
   "activity_outside_directus": "Tato položka byla vytvořena mimo administraci.",
   "add_field_filter": "Přidat filtr na sloupec",
   "add_new": "Přidat nový",

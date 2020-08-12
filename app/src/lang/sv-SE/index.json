@@ -1,7 +1,7 @@
 {
   "about_directus": "Om Directus",
   "activity": "Händelser",
-  "activity_log": "Händelselogg",
+  "activity_feed": "Händelselogg",
   "activity_outside_directus": "Objekt skapat utanför Directus",
   "add_field_filter": "Lägg till ett fältfilter",
   "add_new": "Lägg till ny",

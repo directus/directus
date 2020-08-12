@@ -1,7 +1,7 @@
 {
   "about_directus": "حول directus",
   "activity": "نشاط",
-  "activity_log": "سجل الأنشطة",
+  "activity_feed": "سجل الأنشطة",
   "activity_outside_directus": "عنصر تم إنشاؤه خارج Directus",
   "add_field_filter": "أضف فرز أو فلتر للحقل",
   "add_new": "إضافة جديدة",
