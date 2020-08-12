@@ -38,7 +38,7 @@ tables:
       default: people
     description:
       type: text
-    ip_allow_list:
+    ip_access:
       type: json
     enforce_tfa:
       type: boolean
@@ -646,31 +646,33 @@ rows:
         sort: 3
         width: full
       - collection: directus_roles
-        field: ip_allow_list
-        interface: tags
-        locked: true
-        special: json
-        sort: 4
-        width: full
-      - collection: directus_roles
         field: admin
         interface: toggle
         locked: true
         special: boolean
-        sort: 6
+        sort: 4
         width: half
       - collection: directus_roles
         field: app_access
         interface: toggle
         locked: true
         special: boolean
-        sort: 7
+        sort: 5
         width: half
+      - collection: directus_roles
+        field: ip_access
+        interface: tags
+        options:
+          placeholder: Add allowed IP addresses, leave empty to allow all...
+        locked: true
+        special: json
+        sort: 6
+        width: full
       - collection: directus_roles
         field: enforce_tfa
         interface: toggle
         locked: true
-        sort: 8
+        sort: 7
         special: boolean
         width: half
       - collection: directus_roles
@@ -678,7 +680,7 @@ rows:
         interface: one-to-many
         locked: true
         special: o2m
-        sort: 9
+        sort: 8
         options:
           fields:
             - first_name
@@ -717,7 +719,7 @@ rows:
                 iconRight: link
                 placeholder: Relative or absolute URL...
         special: json
-        sort: 10
+        sort: 9
         width: full
       - collection: directus_roles
         field: collection_list
@@ -768,7 +770,7 @@ rows:
                       interface: collections
                       width: full
         special: json
-        sort: 11
+        sort: 10
         width: full
 
       - collection: directus_users
