@@ -57,9 +57,6 @@ jobs:
         mv ./tests/openapi/mysql.env ./.env
         npm run build
         npm run start
-      env:
-        CI: true
-        
     
     - name: Test
       run: |
