@@ -232,6 +232,7 @@ body {
 .v-input {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
+	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
 	align-items: center;
@@ -302,7 +303,7 @@ body {
 
 			color: var(--foreground-normal);
 			background-color: var(--background-page);
-			border-color: var(--primary);
+			border-color: var(--v-input-border-color-focus);
 		}
 
 		&.disabled {

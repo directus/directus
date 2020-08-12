@@ -1,5 +1,5 @@
 <template>
-	<div class="public-view">
+	<div class="public-view" :class="{ branded : isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
@@ -46,6 +46,10 @@ export default defineComponent({
 	setup() {
 		const settingsStore = useSettingsStore();
 
+		const isBranded = computed(() => {
+			return (settingsStore.state.settings?.project_color) ? true : false;
+		});
+
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
@@ -73,7 +77,7 @@ export default defineComponent({
 			return getRootPath() + `assets/${settingsStore.state.settings.project_logo}`;
 		});
 
-		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL, logoURL };
+		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL, logoURL, isBranded };
 	},
 });
 </script>
@@ -86,6 +90,20 @@ export default defineComponent({
 	width: 100%;
 	height: 100%;
 	color: #263238;
+
+	&.branded {
+		::v-deep {
+			.v-button {
+				--v-button-background-color: var(--foreground-normal);
+				--v-button-background-color-hover: var(--foreground-normal);
+				--v-button-background-color-activated: var(--foreground-normal);
+			}
+
+			.v-input {
+				--v-input-border-color-focus: var(--foreground-normal);
+			}
+		}
+	}
 
 	.container {
 		display: flex;
