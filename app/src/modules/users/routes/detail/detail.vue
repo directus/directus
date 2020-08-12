@@ -61,7 +61,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation />
+			<users-navigation :current-role="(item && item.role) || (preset && preset.role)" />
 		</template>
 
 		<div class="user-detail">

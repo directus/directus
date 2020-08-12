@@ -51,7 +51,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation />
+			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
 		<component
