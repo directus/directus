@@ -26,7 +26,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
-import getRootPath from '../../../../utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
+import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
@@ -53,7 +54,7 @@ export default defineComponent({
 		const url = computed(() => settingsStore.state.settings?.project_url);
 
 		const urlTooltip = computed(() => {
-		    return (settingsStore.state.settings?.project_url) ? i18n.t('view_project') : false;
+			return settingsStore.state.settings?.project_url ? i18n.t('view_project') : false;
 		});
 
 		return {
