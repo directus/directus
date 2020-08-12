@@ -166,12 +166,21 @@ export default defineComponent({
 				];
 
 				for (const [field, value] of Object.entries(props.queryFilters)) {
-					urlFilters.push({
-						locked: true,
-						operator: 'eq',
-						field,
-						value,
-					});
+					if (value === 'root') {
+						urlFilters.push({
+							locked: true,
+							operator: 'null',
+							field,
+							value: true,
+						});
+					} else {
+						urlFilters.push({
+							locked: true,
+							operator: 'eq',
+							field,
+							value,
+						});
+					}
 				}
 
 				return [...urlFilters, ...filters.value];

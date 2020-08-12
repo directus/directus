@@ -13,13 +13,13 @@
 
 		<v-list-group
 			v-else
-			:to="root ? '/files' : `/files?folder=${folder.id}`"
-			:active="currentFolder === folder.id"
-			exact
-			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
-			scope="files-navigation"
+			:to="root ? `/files?folder=root` : `/files?folder=${folder.id}`"
+			:active="root ? currentFolder === 'root' : currentFolder === folder.id"
 			:value="root ? '$root' : folder.id"
+			scope="files-navigation"
+			exact
 			disable-groupable-parent
+			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
 			<template #activator>
 				<v-list-item-icon>
