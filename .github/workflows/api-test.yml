@@ -42,7 +42,7 @@ jobs:
     - name: Setup Database
       run: |
         cd api/tests/openapi
-        psql -h localhost -U postgres -f directus.sql
+        PGPASSWORD=postgres psql -h localhost -U postgres -f directus.sql
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
