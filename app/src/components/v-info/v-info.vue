@@ -46,15 +46,15 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 120px;
-	height: 120px;
-	margin-bottom: 20px;
+	width: 100px;
+	height: 100px;
+	margin-bottom: 16px;
 	border-radius: 50%;
 }
 
 .info .icon {
-	color: var(--primary);
-	background-color: var(--primary-alt);
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
 }
 
 .success .icon {
@@ -73,15 +73,15 @@ export default defineComponent({
 }
 
 .title {
-	margin-bottom: 12px;
+	margin-bottom: 8px;
 }
 
 .content {
-	max-width: 360px;
+	max-width: 300px;
 	color: var(--foreground-subdued);
 
 	&:not(:last-child) {
-		margin-bottom: 32px;
+		margin-bottom: 24px;
 	}
 }
 
