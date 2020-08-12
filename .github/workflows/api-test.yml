@@ -54,7 +54,7 @@ jobs:
         npm run bootstrap
         cd api
         npm install
-        mv ./tests/openapi/postgres.env ./.env
+        mv ./tests/openapi/mysql.env ./.env
         npm run build
         
     
