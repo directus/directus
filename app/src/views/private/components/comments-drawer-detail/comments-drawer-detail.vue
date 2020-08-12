@@ -1,9 +1,5 @@
 <template>
-	<drawer-detail
-		:title="$t('comments')"
-		icon="chat_bubble_outline"
-		:badge="activity && activity.length > 0 ? activity.length : null"
-	>
+	<drawer-detail :title="$t('comments')" icon="chat_bubble_outline" :badge="count || null">
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
 		<v-progress-linear indeterminate v-if="loading" />
@@ -49,23 +45,25 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { activity, loading, error, refresh } = useActivity(props.collection, props.primaryKey);
+		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
 
 		return {
 			activity,
 			loading,
 			error,
 			refresh,
+			count,
 		};
 
 		function useActivity(collection: string, primaryKey: string | number) {
 			const activity = ref<ActivityByDate[] | null>(null);
+			const count = ref(0);
 			const error = ref(null);
 			const loading = ref(false);
 
 			getActivity();
 
-			return { activity, error, loading, refresh };
+			return { activity, error, loading, refresh, count };
 
 			async function getActivity() {
 				error.value = null;
@@ -91,6 +89,8 @@ export default defineComponent({
 							],
 						},
 					});
+
+					count.value = response.data.data.length;
 
 					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
 						// activity's action_on date is in iso-8601
