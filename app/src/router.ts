@@ -119,7 +119,7 @@ export const onAfterEach = (to: Route) => {
 
 		setTimeout(() => {
 			userStore.trackPage(to.fullPath);
-		}, 2500);
+		}, 500);
 	}
 };
 
