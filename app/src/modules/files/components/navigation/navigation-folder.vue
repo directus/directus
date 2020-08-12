@@ -13,7 +13,7 @@
 
 		<v-list-group
 			v-else
-			:to="`/files?folder=${folder.id}`"
+			:to="root ? '/files' : `/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
 			exact
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
