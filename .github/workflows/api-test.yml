@@ -36,6 +36,7 @@ jobs:
     
     - name: Installation
       run: |
+        npm install
         npm run clean
         npm run bootstrap
         cd api
