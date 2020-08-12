@@ -27,8 +27,7 @@ jobs:
     - name: Setup Database
       run: |
         sudo apt-get install -y mysql-client
-        pwd
-        mysql --host 127.0.0.1 --port 3306 -u root -p password < /api/tests/openapi/directus.sql
+        mysql --host 127.0.0.1 --port 3306 -u root -p password < home/runner/work/next/next/api/tests/openapi/directus.sql
         mysql --host 127.0.0.1 --port 3306 -u root -p password -e "SHOW DATABASES"
       
     - name: Setup Node.js environment
