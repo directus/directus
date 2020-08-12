@@ -155,6 +155,12 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				...presetsStore.getBookmark(+bookmark.value),
 			};
 		}
+
+		if (!localPreset.value.view_type)
+			localPreset.value = {
+				...localPreset.value,
+				view_type: 'tabular',
+			};
 	}
 
 	/**
