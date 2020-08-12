@@ -55,6 +55,7 @@
     "build": "rm -rf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
     "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
+    "tests:openapi": "cd tests/openapi && node setup.js && curl -LJO https://github.com/directus/SDK-Generator/releases/latest/download/openapi.json --output openapi.json && jest",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -71,6 +72,7 @@
     "@slynova/flydrive-s3": "^1.0.2",
     "argon2": "^0.26.2",
     "atob": "^2.1.2",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "busboy": "^0.3.1",
     "camelcase": "^6.0.0",
@@ -124,6 +126,7 @@
     "@types/express-session": "^1.17.0",
     "@types/fs-extra": "^9.0.1",
     "@types/inquirer": "^6.5.0",
+    "@types/jest": "^26.0.9",
     "@types/joi": "^14.3.4",
     "@types/js-yaml": "^3.12.5",
     "@types/jsonwebtoken": "^8.5.0",
@@ -140,9 +143,12 @@
     "eslint": "^7.6.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
+    "jest": "^26.3.0",
+    "jest-openapi": "^0.9.4",
     "lint-staged": "^10.2.11",
     "pino-colada": "^2.1.0",
     "prettier": "^2.0.5",
+    "ts-jest": "^26.1.4",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.56",
     "tslint": "^6.1.3",
@@ -156,6 +162,20 @@
   "lint-staged": {
     "*.{js,ts}": [
       "prettier --write"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ]
   },
   "gitHead": "9092740d708c1e9ed1575b0932a01f531d224f77"
