@@ -17,22 +17,22 @@ describe('Collections', function () {
 
 	it('POST /collections', async function () {
 		const res = await axios.post(`${api}/collections?access_token=admin`, {
-			collection: 'test_collection',
-			fields: [
+			"collection": "test_collection",
+			"fields": [
 				{
-					field: 'id',
-					type: 'integer',
-					system: {
-						hidden: true,
-						interface: 'numeric',
-						readonly: true,
+					"field": "id",
+					"type": "integer",
+					"meta": {
+						"hidden": true,
+						"interface": "numeric",
+						"readonly": true
 					},
-					database: {
-						has_auto_increment: true,
-						is_primary_key: true,
-					},
-				},
-			],
+					"schema": {
+						"has_auto_increment": true,
+						"is_primary_key": true
+					}
+				}
+			]
 		});
 
 		collection = res.data.data.collection;
@@ -50,8 +50,8 @@ describe('Collections', function () {
 
 	it('PATCH /collections/{collection}', async function () {
 		const res = await axios.patch(`${api}/collections/${collection}?access_token=admin`, {
-			system: {
-				note: 'This is a note.',
+			"meta": {
+				"note": 'This is a note.',
 			},
 		});
 

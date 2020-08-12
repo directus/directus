@@ -2,6 +2,9 @@ import jestOpenAPI from 'jest-openapi';
 import axios from 'axios';
 import path from 'path';
 import { api } from './api';
+import { createReadStream } from 'fs'
+import FormData from 'form-data'
+
 
 jestOpenAPI(path.join(__dirname, 'openapi.json'));
 
@@ -16,13 +19,14 @@ describe('Files', function () {
 	var file_id: number;
 
 	it('POST /files', async function () {
-		const res = await axios.post(`${api}/files?access_token=admin`, {
-			uploaded_by: '63716273-0f29-4648-8a2a-2af2948f6f78',
-			filename_disk: 'text.txt',
-			type: 'text/plain',
-			title: 'text',
-			storage: 'finder',
+		const formData = new FormData();
+		formData.append('file.txt', createReadStream('./file.txt'))
+
+		const res = await axios.post(`${api}/files?access_token=admin`, formData, {
+			headers: formData.getHeaders()
 		});
+
+		
 
 		file_id = res.data.data.id;
 

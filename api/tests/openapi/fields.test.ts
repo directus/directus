@@ -26,19 +26,19 @@ describe('Fields', function () {
 
 	it('POST /fields/{collection}', async function () {
 		const res = await axios.post(`${api}/fields/${collection}?access_token=admin`, {
-			field: 'test',
-			type: 'string',
-			database: {
-				is_nullable: true,
+			"field": 'test',
+			"type": 'string',
+			"schema": {
+				"is_nullable": true,
 			},
-			system: {
-				hidden: false,
-				interface: 'text-input',
-				options: null,
-				display: null,
-				display_options: null,
-				readonly: false,
-				special: null,
+			"meta": {
+				"hidden": false,
+				"interface": 'text-input',
+				"options": null,
+				"display": null,
+				"display_options": null,
+				"readonly": false,
+				"special": null,
 			},
 		});
 
