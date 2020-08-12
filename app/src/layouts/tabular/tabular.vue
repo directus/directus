@@ -547,7 +547,6 @@ export default defineComponent({
 	justify-content: space-between;
 	width: 100%;
 	padding: 32px var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
 
 	.pagination {
 		display: inline-block;
