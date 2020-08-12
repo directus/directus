@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('activity_log')">
+	<private-view :title="$t('activity_feed')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="notifications" />

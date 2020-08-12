@@ -1,7 +1,7 @@
 {
   "about_directus": "A Directus -ról",
   "activity": "Tevékenységek",
-  "activity_log": "Tevékenységnapló",
+  "activity_feed": "Tevékenységnapló",
   "activity_outside_directus": "Elem létrehozva a Directus-on kívül",
   "add_field_filter": "Szűrőmező hozzáadása",
   "add_new": "Új hozzáadása",

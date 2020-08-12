@@ -1,7 +1,7 @@
 {
   "about_directus": "O aplikacji Directus",
   "activity": "Aktywność",
-  "activity_log": "Log aktywności",
+  "activity_feed": "Log aktywności",
   "activity_outside_directus": "Element utworzony poza Directus",
   "add_field_filter": "Dodaj filtrowanie po polu",
   "add_new": "Dodaj nowy",

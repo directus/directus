@@ -1,7 +1,7 @@
 {
   "about_directus": "About Directus",
   "activity": "Activity",
-  "activity_log": "Activity Log",
+  "activity_feed": "Activity Log",
   "activity_outside_directus": "Item created outside of Directus",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",

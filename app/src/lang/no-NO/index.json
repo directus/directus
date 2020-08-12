@@ -1,7 +1,7 @@
 {
   "about_directus": "Om Directus",
   "activity": "Aktivitet",
-  "activity_log": "Aktivitetslogg",
+  "activity_feed": "Aktivitetslogg",
   "activity_outside_directus": "Element opprettet utenfor Directus",
   "add_field_filter": "Legg til et feltfilter",
   "add_new": "Legg til ny",

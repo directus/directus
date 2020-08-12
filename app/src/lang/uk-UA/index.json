@@ -1,7 +1,7 @@
 {
   "about_directus": "Про Directus",
   "activity": "Активність",
-  "activity_log": "Журнал активності",
+  "activity_feed": "Журнал активності",
   "activity_outside_directus": "Елемент створено не в Directus",
   "add_field_filter": "Добавити фільтр поля",
   "add_new": "Створити",

@@ -1,7 +1,7 @@
 {
   "about_directus": "Acerca de Directus",
   "activity": "Actividad",
-  "activity_log": "Registro de actividad",
+  "activity_feed": "Registro de actividad",
   "activity_outside_directus": "Entrada creada fuera de Directus",
   "add_field_filter": "Añadir un filtro de campos",
   "add_new": "Añadir Nuevo",
