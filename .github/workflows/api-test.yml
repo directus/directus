@@ -38,3 +38,13 @@ jobs:
     - name: Installation
       run: |
         npm i
+        mv /tests/openapi/.env /
+    
+    - name: Build
+      run: |
+        npm run build
+    
+    - name: Test
+      run: |
+        npm run start
+        npm run tests:openapi
