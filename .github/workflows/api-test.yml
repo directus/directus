@@ -13,13 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:latest
+      # mysql:
+      #   image: mysql:latest
+      #   env:
+      #     MYSQL_ROOT_PASSWORD: password
+      #   ports:
+      #   - 3306:3306
+      #   options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres
         env:
-          MYSQL_ROOT_PASSWORD: password
+          POSTGRES_PASSWORD: postgres
         ports:
-        - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 5432:5432
+        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v2
@@ -30,7 +37,6 @@ jobs:
         cd api/tests/openapi
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < directus.sql
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
-        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'pwd'"
       
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
@@ -42,7 +48,7 @@ jobs:
         npm run bootstrap
         cd api
         npm install
-        mv ./tests/openapi/test.env ./.env
+        mv ./tests/openapi/postgres.env ./.env
         npm run build
         
     
