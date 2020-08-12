@@ -1,5 +1,5 @@
 export type Role = {
-	id: number;
+	id: string;
 	name: string;
 	description: string;
 	collection_listing:
@@ -32,7 +32,7 @@ export type Avatar = {
 // only care about the thumbnails in this context
 
 export type User = {
-	id: number;
+	id: string;
 	status: string;
 	first_name: string;
 	last_name: string;

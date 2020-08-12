@@ -1,5 +1,9 @@
 <template>
-	<private-view :title="$t('user_directory')">
+	<private-view :title="title">
+		<template #headline v-if="breadcrumb">
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="people" />
@@ -111,6 +115,7 @@ import usePreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
+import useNavigation from '../../composables/use-navigation';
 
 type Item = {
 	[field: string]: any;
@@ -126,6 +131,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { roles } = useNavigation();
 		const layout = ref<LayoutComponent | null>(null);
 
 		const selection = ref<Item[]>([]);
@@ -133,7 +139,7 @@ export default defineComponent({
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_users'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
+		const { breadcrumb, title } = useBreadcrumb();
 
 		const _filters = computed(() => {
 			if (props.queryFilters !== null) {
@@ -160,6 +166,7 @@ export default defineComponent({
 			batchDelete,
 			batchLink,
 			breadcrumb,
+			title,
 			confirmDelete,
 			deleting,
 			filters,
@@ -211,15 +218,22 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
+				if (!props.queryFilters?.role) return null;
+
 				return [
 					{
-						name: i18n.tc('collection', 2),
-						to: `/collections`,
+						name: i18n.t('user_directory'),
+						to: `/users`,
 					},
 				];
 			});
 
-			return { breadcrumb };
+			const title = computed(() => {
+				if (!props.queryFilters?.role) return i18n.t('user_directory');
+				return roles.value?.find((role) => role.id === props.queryFilters.role)?.name;
+			});
+
+			return { breadcrumb, title };
 		}
 
 		function clearFilters() {
