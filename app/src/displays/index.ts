@@ -1,4 +1,5 @@
 import DisplayBadge from './badge';
+import DisplayCollection from './collection';
 import DisplayDateTime from './datetime';
 import DisplayFile from './file';
 import DisplayFilesize from './filesize';
@@ -17,6 +18,7 @@ import DisplayUser from './user';
 
 export const displays = [
 	DisplayBadge,
+	DisplayCollection,
 	DisplayDateTime,
 	DisplayFile,
 	DisplayFilesize,
