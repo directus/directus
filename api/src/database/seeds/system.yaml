@@ -1789,7 +1789,7 @@ rows:
       role: null
       collection: null
       search: null
-      filters: []
+      filters: '[]'
       view_type: tabular
       view_query: null
       view_options: null
@@ -1819,7 +1819,7 @@ rows:
 
       - collection: directus_activity
         view_type: tabular
-        view_options:
+        view_query:
           tabular:
             fields:
               - action
