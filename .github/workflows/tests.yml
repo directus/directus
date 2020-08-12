@@ -18,7 +18,6 @@ jobs:
         env:
           MYSQL_USER: root
           MYSQL_PASSWORD: root
-          MYSQL_DATABASE: directus
           MYSQL_ROOT_PASSWORD: password
         ports:
         - 3306
