@@ -38,6 +38,7 @@ jobs:
     - name: Installation
       run: |
         npm install
+        ls
         mv /tests/openapi/test.env /.env
     
     - name: Build
