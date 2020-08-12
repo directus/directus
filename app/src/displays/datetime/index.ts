@@ -6,6 +6,18 @@ export default defineDisplay(({ i18n }) => ({
 	name: i18n.t('datetime'),
 	icon: 'query_builder',
 	handler: DisplayDateTime,
-	options: [],
+	options: [
+		{
+			field: 'relative',
+			name: i18n.t('relative'),
+			type: 'boolean',
+			meta: {
+				interface: 'toggle',
+				options: {
+					label: 'Show relative time, eg: 5 minutes ago',
+				},
+			},
+		},
+	],
 	types: ['dateTime', 'date', 'time', 'timestamp'],
 }));

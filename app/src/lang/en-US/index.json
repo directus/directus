@@ -344,6 +344,8 @@
 	"interface_not_found": "Interface \"{interface}\" not found.",
 	"reset_interface": "Reset Interface",
 
+	"relative": "Relative",
+
 	"display_not_found": "Display \"{display}\" not found.",
 	"reset_display": "Reset Display",
 
