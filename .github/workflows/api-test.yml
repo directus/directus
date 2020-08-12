@@ -28,8 +28,8 @@ jobs:
       run: |
         sudo apt-get install -y mysql-client
         cd api/tests/openapi
-        mysql --host 127.0.0.1 --port 3306 -uroot -p < directus.sql
-        mysql --host 127.0.0.1 --port 3306 -uroot -p -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < directus.sql
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
         cd ../..
       
     - name: Setup Node.js environment
