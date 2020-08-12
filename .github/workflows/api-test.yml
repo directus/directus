@@ -36,6 +36,8 @@ jobs:
     
     - name: Installation
       run: |
+        npm run clean
+        npm run bootstrap
         cd api
         npm install
         mv ./tests/openapi/test.env ./.env
