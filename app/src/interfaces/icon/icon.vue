@@ -90,6 +90,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-input {
+	--v-input-placeholder-color: var(--primary);
+
+	&:focus-within {
+		--v-input-placeholder-color: var(--foreground-subdued);
+	}
+}
+
 .content {
 	padding: 8px;
 
