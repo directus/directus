@@ -214,7 +214,8 @@ export default defineComponent({
 					if (newValue === null) {
 						currentItem.value = null;
 					}
-				}
+				},
+				{ immediate: true }
 			);
 
 			const currentPrimaryKey = computed<string | number>(() => {
