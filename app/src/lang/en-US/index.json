@@ -73,6 +73,7 @@
 	"boolean": "Boolean",
 	"date": "Date",
 	"dateTime": "DateTime",
+	"datetime": "DateTime",
 	"decimal": "Decimal",
 	"float": "Float",
 	"integer": "Integer",
