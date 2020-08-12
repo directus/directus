@@ -36,8 +36,8 @@ jobs:
       run: |
         sudo apt-get install -y mysql-client
         cd api/tests/openapi
-        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword < mysql.sql
-        mysql --host 127.0.0.1 --port 5432 -uroot -ppassword -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < mysql.sql
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
 
     # - name: Setup Database
     #   run: |
