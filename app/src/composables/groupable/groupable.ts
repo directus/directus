@@ -15,6 +15,7 @@ type GroupableOptions = {
 	value?: string | number;
 	group?: string;
 	active?: Ref<boolean>;
+	watch?: boolean;
 };
 
 export function useGroupable(options?: GroupableOptions) {
@@ -43,14 +44,12 @@ export function useGroupable(options?: GroupableOptions) {
 		toggle: (item: GroupableInstance) => void;
 	} = parentFunctions;
 
-	const active = ref(false);
+	const active = ref(options?.active?.value === true ? true : false);
 	const item = { active, value: options?.value };
 
 	register(item);
 
-	if (options?.active) {
-		if (options.active.value === true) toggle(item);
-
+	if (options?.active !== undefined && options.watch === true) {
 		watch(options.active, () => {
 			if (options.active === undefined) return;
 

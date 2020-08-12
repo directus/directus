@@ -1,12 +1,5 @@
 <template>
 	<v-list nav>
-		<v-list-item to="/files/" exact>
-			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
-		</v-list-item>
-
-		<v-divider v-if="loading || nestedFolders.length > 0" />
-
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />
@@ -14,21 +7,31 @@
 		</template>
 
 		<div class="folders">
-			<navigation-folder
-				v-for="folder in nestedFolders"
-				:key="folder.id"
-				:folder="folder"
-				:current-folder="currentFolder"
-				:start-open-folders="startOpenFolders"
-			/>
+			<v-item-group scope="files-navigation" multiple v-model="openFolders">
+				<navigation-folder
+					v-for="folder in nestedFolders"
+					:key="folder.id"
+					:folder="folder"
+					:current-folder="currentFolder"
+					root
+				/>
+			</v-item-group>
 		</div>
+
+		<v-divider v-if="loading || nestedFolders.length > 0" />
+
+		<v-list-item to="/files/" exact>
+			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
+		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import useFolders from '../../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
+import arraysAreEqual from '@/utils/arrays-are-equal';
 
 export default defineComponent({
 	components: { NavigationFolder },
@@ -43,21 +46,38 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { nestedFolders, folders, error, loading } = useFolders();
+		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
 
-		const startOpenFolders = computed(() => {
+		setOpenFolders();
+
+		watch(() => props.currentFolder, setOpenFolders);
+
+		return { folders, nestedFolders, error, loading, openFolders };
+
+		function setOpenFolders() {
 			if (!folders.value) return [];
+			if (!openFolders?.value) return [];
 
-			const openFolders: string[] = [];
+			const shouldBeOpen: string[] = [];
 			const folder = folders.value.find((folder) => folder.id === props.currentFolder);
 
 			if (folder && folder.parent_folder) parseFolder(folder.parent_folder);
 
-			return openFolders;
+			const newOpenFolders = [...openFolders.value];
+
+			for (const folderID of shouldBeOpen) {
+				if (newOpenFolders.includes(folderID) === false) {
+					newOpenFolders.push(folderID);
+				}
+			}
+
+			if (newOpenFolders.length !== 1 && arraysAreEqual(newOpenFolders, openFolders.value) === false) {
+				openFolders.value = newOpenFolders;
+			}
 
 			function parseFolder(id: string) {
 				if (!folders.value) return;
-				openFolders.push(id);
+				shouldBeOpen.push(id);
 
 				const folder = folders.value.find((folder) => folder.id === id);
 
@@ -65,9 +85,7 @@ export default defineComponent({
 					parseFolder(folder.parent_folder);
 				}
 			}
-		});
-
-		return { folders, nestedFolders, error, loading, startOpenFolders };
+		}
 	},
 });
 </script>

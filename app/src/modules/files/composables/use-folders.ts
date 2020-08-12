@@ -1,22 +1,25 @@
 import api from '@/api';
+import i18n from '@/lang';
 import { ref, Ref } from '@vue/composition-api';
+import { TranslateResult } from 'vue-i18n';
 
 type FolderRaw = {
 	id: string;
 	name: string;
-	parent_folder: string;
+	parent_folder: string | null;
 };
 
 export type Folder = {
-	id: string;
-	name: string;
-	parent_folder: string;
+	id: string | null;
+	name: string | TranslateResult;
+	parent_folder: string | null;
 	children?: Folder[];
 };
 
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
 let nestedFolders: Ref<Folder[] | null> | null = null;
+let openFolders: Ref<string[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
@@ -25,12 +28,13 @@ export default function useFolders() {
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
+	if (openFolders === null) openFolders = ref(['$root']);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
 	}
 
-	return { loading, folders, nestedFolders, error, fetchFolders };
+	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
 
 	async function fetchFolders() {
 		if (loading === null) return;
@@ -49,7 +53,14 @@ export default function useFolders() {
 			});
 
 			folders.value = response.data.data;
-			nestedFolders.value = nestFolders(response.data.data);
+			nestedFolders.value = [
+				{
+					id: null,
+					name: i18n.t('file_library'),
+					children: nestFolders(response.data.data),
+					parent_folder: null,
+				},
+			];
 		} catch (err) {
 			error.value = err;
 		} finally {

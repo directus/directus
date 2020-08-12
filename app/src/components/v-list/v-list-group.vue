@@ -8,11 +8,11 @@
 			</v-list-item-icon>
 		</v-list-item>
 
-		<transition-expand>
-			<div class="items" v-show="groupActive">
-				<slot />
-			</div>
-		</transition-expand>
+		<!-- <transition-expand> -->
+		<div class="items" v-show="groupActive">
+			<slot />
+		</div>
+		<!-- </transition-expand> -->
 	</div>
 </template>
 
@@ -42,24 +42,33 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		open: {
+		disableGroupableParent: {
 			type: Boolean,
 			default: false,
+		},
+		scope: {
+			type: String,
+			default: undefined,
+		},
+		value: {
+			type: [String, Number],
+			default: undefined,
 		},
 	},
 	setup(props, { listeners, emit }) {
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
-			active: toRefs(props).open,
+			group: props.scope,
+			value: props.value,
 		});
 
-		// watch(() => props.open, () => props.open ? activate() : deactivate(), { immediate: true });
-
-		useGroupableParent(
-			{},
-			{
-				multiple: toRefs(props).multiple,
-			}
-		);
+		if (props.disableGroupableParent !== true) {
+			useGroupableParent(
+				{},
+				{
+					multiple: toRefs(props).multiple,
+				}
+			);
+		}
 
 		return { groupActive, toggle, onClick };
 
@@ -83,9 +92,9 @@ export default defineComponent({
 	}
 
 	.activator-icon {
+		color: var(--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
-		color: var(--foreground-subdued);
 
 		&:hover {
 			color: var(--foreground-normal);

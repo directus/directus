@@ -334,7 +334,12 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: i18n.t('file_library'),
-					to: `/files/`,
+					to: {
+						path: `/files/`,
+						query: {
+							folder: item?.value?.folder,
+						},
+					},
 				},
 			]);
 

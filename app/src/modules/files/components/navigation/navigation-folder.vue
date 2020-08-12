@@ -7,7 +7,7 @@
 			exact
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
-			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="root ? 'folder_special' : 'folder'" /></v-list-item-icon>
 			<v-list-item-content>{{ folder.name }}</v-list-item-content>
 		</v-list-item>
 
@@ -16,22 +16,24 @@
 			:to="`/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
 			exact
-			:open="isOpen"
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+			scope="files-navigation"
+			:value="root ? '$root' : folder.id"
+			disable-groupable-parent
 		>
 			<template #activator>
 				<v-list-item-icon>
-					<v-icon name="folder" />
+					<v-icon :name="root ? 'folder_special' : 'folder'" />
 				</v-list-item-icon>
 				<v-list-item-content>{{ folder.name }}</v-list-item-content>
 			</template>
+
 			<navigation-folder
 				v-for="childFolder in folder.children"
 				:key="childFolder.id"
 				:folder="childFolder"
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
-				:start-open-folders="startOpenFolders"
 			/>
 		</v-list-group>
 
@@ -131,9 +133,9 @@ export default defineComponent({
 			type: Function,
 			default: () => undefined,
 		},
-		startOpenFolders: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		root: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -142,10 +144,6 @@ export default defineComponent({
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
 
 		const { fetchFolders } = useFolders();
-
-		const isOpen = computed(() => {
-			return props.startOpenFolders.includes(props.folder.id);
-		});
 
 		return {
 			renameActive,
@@ -159,7 +157,6 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
-			isOpen,
 		};
 
 		function useRenameFolder() {
