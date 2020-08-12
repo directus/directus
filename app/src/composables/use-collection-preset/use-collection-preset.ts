@@ -1,12 +1,11 @@
-import usePresetStore from '@/stores/presets';
+import { usePresetsStore, useUserStore } from '@/stores';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
-import useUserStore from '@/stores/user';
 
-import { Filter, Preset } from '@/stores/presets/types';
+import { Filter, Preset } from '@/types/';
 
 export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
-	const presetsStore = usePresetStore();
+	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
 	const bookmarkExists = computed(() => {
@@ -77,7 +76,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	const viewType = computed<string | null>({
 		get() {
-			return localPreset.value.view_type || null;
+			return localPreset.value.view_type || 'tabular';
 		},
 		set(val) {
 			localPreset.value = {

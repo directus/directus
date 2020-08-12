@@ -11,15 +11,26 @@ type GroupableInstance = {
  * Used to make child item part of the group context. Needs to be used in a component that is a child
  * of a component that has the `useGroupableParent` composition enabled
  */
-export function useGroupable(value?: string | number, group = 'item-group') {
+type GroupableOptions = {
+	value?: string | number;
+	group?: string;
+	active?: Ref<boolean>;
+	watch?: boolean;
+};
+
+export function useGroupable(options?: GroupableOptions) {
 	// Injects the registration / toggle functions from the parent scope
-	const parentFunctions = inject(group, null);
+	const parentFunctions = inject(options?.group || 'item-group', null);
 
 	if (isEmpty(parentFunctions)) {
 		return {
 			active: ref(false),
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			toggle: () => {},
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			activate: () => {},
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			deactivate: () => {},
 		};
 	}
 
@@ -33,10 +44,27 @@ export function useGroupable(value?: string | number, group = 'item-group') {
 		toggle: (item: GroupableInstance) => void;
 	} = parentFunctions;
 
-	const active = ref(false);
-	const item = { active, value };
+	const active = ref(options?.active?.value === true ? true : false);
+	const item = { active, value: options?.value };
 
 	register(item);
+
+	if (options?.active !== undefined && options.watch === true) {
+		watch(options.active, () => {
+			if (options.active === undefined) return;
+
+			if (options.active.value === true) {
+				if (active.value === false) toggle(item);
+				active.value = true;
+			}
+
+			if (options.active.value === false) {
+				if (active.value === true) toggle(item);
+				active.value = false;
+			}
+		});
+	}
+
 	onBeforeUnmount(() => unregister(item));
 
 	return {
@@ -44,6 +72,14 @@ export function useGroupable(value?: string | number, group = 'item-group') {
 		toggle: () => {
 			active.value = !active.value;
 			toggle(item);
+		},
+		activate: () => {
+			if (active.value === false) toggle(item);
+			active.value = true;
+		},
+		deactivate: () => {
+			if (active.value === true) toggle(item);
+			active.value = false;
 		},
 	};
 }

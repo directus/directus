@@ -32,7 +32,7 @@ import { defineComponent, Ref, computed } from '@vue/composition-api';
 import { modules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
-import useUserStore from '@/stores/user';
+import { useUserStore } from '@/stores/';
 
 export default defineComponent({
 	components: {

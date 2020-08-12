@@ -13,7 +13,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="currentFolder" />
+			<add-folder :parent="queryFilters && queryFilters.folder" />
 
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0">
 				<template #activator="{ on }">
@@ -61,17 +61,30 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon class="add-new" to="/files/+" v-tooltip.bottom="$t('add_new_file')">
+			<v-button
+				rounded
+				icon
+				class="add-new"
+				:to="{ path: '/files/+', query: queryFilters }"
+				v-tooltip.bottom="$t('add_new_file')"
+			>
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
 		<template #navigation>
-			<files-navigation v-model="currentFolder" />
+			<files-navigation :current-folder="queryFilters && queryFilters.folder" />
 		</template>
 
 		<component
@@ -87,7 +100,7 @@
 			@update:filters="filters = $event"
 		/>
 
-		<router-view name="addNew" @upload="refresh" />
+		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -116,6 +129,8 @@ import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../../components/folder-picker';
 import emitter, { Events } from '@/events';
+import router from '@/router';
+import Vue from 'vue';
 
 type Item = {
 	[field: string]: any;
@@ -139,8 +154,6 @@ export default defineComponent({
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb } = useBreadcrumb();
 
-		const currentFolder = ref(null);
-
 		const filtersWithFolderAndType = computed(() => {
 			if (props.queryFilters !== null) {
 				const urlFilters: any[] = [
@@ -153,18 +166,24 @@ export default defineComponent({
 				];
 
 				for (const [field, value] of Object.entries(props.queryFilters)) {
-					urlFilters.push({
-						locked: true,
-						operator: 'eq',
-						field,
-						value,
-					});
+					if (value === 'root') {
+						urlFilters.push({
+							locked: true,
+							operator: 'null',
+							field,
+							value: true,
+						});
+					} else {
+						urlFilters.push({
+							locked: true,
+							operator: 'eq',
+							field,
+							value,
+						});
+					}
 				}
 
-				return [
-					...urlFilters,
-					...filters.value,
-				];
+				return [...urlFilters, ...filters.value];
 			}
 
 			return [
@@ -177,19 +196,6 @@ export default defineComponent({
 				},
 			];
 		});
-
-		if (viewType.value === null) {
-			viewType.value = 'cards';
-		}
-
-		if (viewOptions.value === null && viewType.value === 'cards') {
-			viewOptions.value = {
-				icon: 'insert_drive_file',
-				title: '{{title}}',
-				subtitle: '{{type}} • {{filesize}}',
-				size: 4
-			};
-		}
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
@@ -208,7 +214,6 @@ export default defineComponent({
 			viewOptions,
 			viewQuery,
 			viewType,
-			currentFolder,
 			filtersWithFolderAndType,
 			searchQuery,
 			marked,
@@ -278,7 +283,14 @@ export default defineComponent({
 						folder: selectedFolder.value,
 					});
 
-					await layout.value?.refresh();
+					selection.value = [];
+
+					if (selectedFolder.value) {
+						router.push(`/files?folder=${selectedFolder.value}`);
+					}
+
+					await Vue.nextTick();
+					await refresh();
 				} catch (err) {
 					console.error(err);
 				} finally {

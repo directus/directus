@@ -10,8 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
-import { useRequestsStore } from '@/stores/requests/';
-import { useSettingsStore } from '@/stores/settings/';
+import { useSettingsStore, useRequestsStore } from '@/stores/';
 import getRootPath from '../../../../utils/get-root-path';
 
 export default defineComponent({

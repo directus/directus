@@ -36,13 +36,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, watch } from '@vue/composition-api';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { defineComponent, computed, watch } from '@vue/composition-api';
+import { Relation } from '@/types';
+import { Field } from '@/types';
 import { orderBy } from 'lodash';
 import useSync from '@/composables/use-sync';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
 import i18n from '@/lang';
 
 import { state } from '../store';

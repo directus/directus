@@ -1,6 +1,6 @@
 import { Ref } from '@vue/composition-api';
-import { Relation } from '@/stores/relations/types';
-import { Field } from '@/stores/fields/types';
+import { Relation } from '@/types/';
+import { Field } from '@/types';
 
 type IsNewContext = {
 	relationCurrentToJunction: Ref<Relation | undefined>;

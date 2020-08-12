@@ -13,7 +13,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-tooltip.bottom="$t('delete')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -32,7 +39,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
+			<v-button
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -126,9 +140,9 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
 import api from '@/api';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 import UserInfoDrawerDetail from './components/user-info-drawer-detail.vue';
 import getRootPath from '../../../../utils/get-root-path';
 
@@ -304,7 +318,9 @@ export default defineComponent({
 						},
 					});
 
-					avatarSrc.value = response.data.data.avatar?.id ? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover` : null;
+					avatarSrc.value = response.data.data.avatar?.id
+						? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						: null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
 					error.value = err;

@@ -30,6 +30,7 @@ import VList, {
 } from './v-list/';
 import VMenu from './v-menu/';
 import VModal from './v-modal/';
+import VModalHeading from './v-modal/v-modal-heading.vue';
 import VNotice from './v-notice/';
 import VOverlay from './v-overlay/';
 import VPagination from './v-pagination/';
@@ -80,6 +81,7 @@ Vue.component('v-list-item', VListItem);
 Vue.component('v-list', VList);
 Vue.component('v-menu', VMenu);
 Vue.component('v-modal', VModal);
+Vue.component('v-modal-heading', VModalHeading);
 Vue.component('v-notice', VNotice);
 Vue.component('v-overlay', VOverlay);
 Vue.component('v-pagination', VPagination);

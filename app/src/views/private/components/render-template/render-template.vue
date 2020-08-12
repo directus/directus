@@ -19,9 +19,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 import displays from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 

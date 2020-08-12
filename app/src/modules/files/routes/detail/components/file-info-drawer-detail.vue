@@ -52,7 +52,9 @@
 
 			<div v-if="folder">
 				<dt>{{ $t('folder') }}</dt>
-				<dd>{{ folder.name }}</dd>
+				<dd>
+					<button @click="$emit('move-folder')">{{ folder.name }}</button>
+				</dd>
 			</div>
 
 			<template v-if="file.metadata && file.metadata.exif && file.metadata.exif.exif && file.metadata.exif.image">
@@ -173,7 +175,7 @@ export default defineComponent({
 					user.value = {
 						id: props.file.uploaded_by,
 						name: first_name + ' ' + last_name,
-						link: `/users/${role}/${id}`,
+						link: `/users/${id}`,
 					};
 				} finally {
 					loading.value = false;
@@ -225,6 +227,10 @@ export default defineComponent({
 	dd {
 		font-family: var(--family-monospace);
 	}
+}
+
+button {
+	color: var(--primary);
 }
 
 .v-divider {

@@ -1,9 +1,9 @@
 <template>
 	<div class="v-dialog">
-		<slot name="activator" v-bind="{ on: () => $emit('toggle', true) }" />
+		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
-			<div v-if="active" class="container" :class="[className]" :key="id">
+			<div v-if="_active" class="container" :class="[className]" :key="id">
 				<v-overlay active absolute @click="emitToggle" />
 				<slot />
 			</div>
@@ -23,7 +23,7 @@ export default defineComponent({
 	props: {
 		active: {
 			type: Boolean,
-			default: false,
+			default: undefined,
 		},
 		persistent: {
 			type: Boolean,
@@ -31,10 +31,22 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const localActive = ref(false);
+
 		const className = ref<string | null>(null);
 		const id = computed(() => nanoid());
 
-		return { emitToggle, className, nudge, id };
+		const _active = computed({
+			get() {
+				return props.active !== undefined ? props.active : localActive.value;
+			},
+			set(newActive: boolean) {
+				localActive.value = newActive;
+				emit('toggle', newActive);
+			},
+		});
+
+		return { emitToggle, className, nudge, id, _active };
 
 		function emitToggle() {
 			if (props.persistent === false) {

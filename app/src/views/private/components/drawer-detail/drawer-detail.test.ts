@@ -6,7 +6,7 @@ import VIcon from '@/components/v-icon';
 import VDivider from '@/components/v-divider';
 import TransitionExpand from '@/components/transition/expand';
 import VBadge from '@/components/v-badge/';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

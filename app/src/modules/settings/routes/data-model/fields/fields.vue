@@ -10,7 +10,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete_collection')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-tooltip.bottom="$t('delete_collection')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -29,7 +36,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
+			<v-button
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -78,7 +92,7 @@ import FieldsManagement from './components/fields-management';
 
 import useItem from '@/composables/use-item';
 import router from '@/router';
-import useCollectionsStore from '@/stores/collections';
+import { useCollectionsStore } from '@/stores';
 import marked from 'marked';
 
 export default defineComponent({
@@ -160,6 +174,7 @@ export default defineComponent({
 
 .collections-detail {
 	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 
 .fields {

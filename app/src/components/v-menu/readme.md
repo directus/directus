@@ -14,7 +14,7 @@ within a menu. If you ever find yourself doing this:
 | `placement`              | Where to position the popper.                                     | `bottom`    |
 | `value`                  | Value to control menu active state                                | `undefined` |
 | `close-on-click`         | Close the menu when clicking outside of the menu                  | `true`      |
-| `close-on-content-click` | Close the menu when clicking the content of the menu              | `false`     |
+| `close-on-content-click` | Close the menu when clicking the content of the menu              | `true`     |
 | `attached`               | Attach the menu to an input                                       | `false`     |
 | `show-arrow`             | Show an arrow pointer                                             | `false`     |
 | `disabled`               | Menu does not appear                                              | `false`     |

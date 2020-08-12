@@ -1,6 +1,6 @@
 <template>
 	<div class="file">
-		<v-menu attached close-on-content-click :disabled="disabled || loading">
+		<v-menu attached :disabled="disabled || loading">
 			<template #activator="{ toggle }">
 				<div>
 					<v-skeleton-loader type="input" v-if="loading" />

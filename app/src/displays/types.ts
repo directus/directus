@@ -1,6 +1,6 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
-import { Field, types } from '@/stores/fields/types';
+import { Field, types } from '@/types';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;

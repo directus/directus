@@ -4,6 +4,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import PermissionsService from '../services/permissions';
 import useCollection from '../middleware/use-collection';
 import MetaService from '../services/meta';
+import { InvalidCredentialsException } from '../exceptions';
 
 const router = express.Router();
 
@@ -33,6 +34,30 @@ router.get(
 		return res.json({ data: item || null, meta });
 	})
 );
+
+router.get(
+	'/me',
+	sanitizeQuery,
+	asyncHandler(async (req, res) => {
+		if (!req.accountability?.user || !req.accountability?.role) {
+			throw new InvalidCredentialsException();
+		}
+
+		const service = new PermissionsService();
+		const query = req.sanitizedQuery || {};
+
+		query.filter = {
+			...(query.filter || {}),
+			role: {
+				_eq: req.accountability.role
+			}
+		}
+
+		const items = await service.readByQuery(req.sanitizedQuery);
+
+		return res.json({ data: items || null });
+	})
+)
 
 router.get(
 	'/:pk',

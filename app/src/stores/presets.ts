@@ -1,9 +1,18 @@
 import { createStore } from 'pinia';
-import { Preset } from './types';
-import { useUserStore } from '@/stores/user/';
+import { Preset } from '@/types';
+import { useUserStore } from '@/stores/';
 import api from '@/api';
 
-import defaultPreset from './default-preset';
+const defaultPreset: Omit<Preset, 'collection'> = {
+	title: null,
+	role: null,
+	user: null,
+	search_query: null,
+	filters: null,
+	view_type: null,
+	view_query: null,
+	view_options: null,
+};
 
 export const usePresetsStore = createStore({
 	id: 'presetsStore',

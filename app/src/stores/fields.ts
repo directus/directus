@@ -1,13 +1,12 @@
 import { createStore } from 'pinia';
-import { FieldRaw, Field } from './types';
 import api from '@/api';
 import VueI18n from 'vue-i18n';
 import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 import notify from '@/utils/notify';
-import useRelationsStore from '@/stores/relations';
-import { Relation } from '@/stores/relations/types';
+import { useRelationsStore } from '@/stores/';
+import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';
 
 const fakeFilesField: Field = {
@@ -99,8 +98,8 @@ export const useFieldsStore = createStore({
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
 							[field.collection]: {
-								[field.field]: translation
-							}
+								[field.field]: translation,
+							},
 						},
 					});
 				}
@@ -161,8 +160,6 @@ export const useFieldsStore = createStore({
 
 				return field;
 			});
-
-
 
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API

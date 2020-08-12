@@ -61,15 +61,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, toRefs, Ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
 import api from '@/api';
-import useRelationsStore from '@/stores/relations';
 import useCollection from '@/composables/use-collection';
-import useCollectionsStore from '@/stores/collections';
-import useFieldsStore from '@/stores/fields';
+import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
-import { Filter } from '@/stores/presets/types';
+import { Filter } from '@/types';
 import { Header } from '@/components/v-table/types';
 
 export default defineComponent({

@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../../composables/use-navigation';
-import usePresetsStore from '@/stores/presets';
+import { usePresetsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {

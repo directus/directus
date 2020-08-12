@@ -13,12 +13,15 @@ export default defineModule(({ i18n }) => ({
 			path: '/',
 			component: ActivityBrowse,
 			props: true,
-		},
-		{
-			name: 'activity-detail',
-			path: '/:primaryKey',
-			component: ActivityDetail,
-			props: true,
+			children: [
+				{
+					name: 'activity-detail',
+					path: ':primaryKey',
+					components: {
+						detail: ActivityDetail,
+					},
+				},
+			],
 		},
 	],
 }));

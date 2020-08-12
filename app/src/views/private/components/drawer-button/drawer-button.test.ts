@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 import VIcon from '@/components/v-icon/';
 import DrawerButton from './drawer-button.vue';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 
 const localVue = createLocalVue();
 localVue.use(VueCompositionAPI);

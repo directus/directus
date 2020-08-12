@@ -1,6 +1,6 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayIcon from './icon.vue';
-import { types } from '@/stores/fields/types';
+import { types } from '@/types';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'icon',
@@ -15,7 +15,7 @@ export default defineDisplay(({ i18n }) => ({
 			system: {
 				interface: 'icon',
 				width: 'half',
-			}
+			},
 		},
 	],
 	types: types,

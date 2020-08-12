@@ -16,7 +16,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable(props.value);
+		const { active, toggle } = useGroupable({ value: props.value });
 		return { active, toggle };
 	},
 });

@@ -1,7 +1,7 @@
 import { Ref, computed } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection';
-import { Relation } from '@/stores/relations/types';
-import useRelationsStore from '@/stores/relations';
+import { Relation } from '@/types/';
+import { useRelationsStore } from '@/stores/';
 
 type RelationParams = {
 	collection: Ref<string>;

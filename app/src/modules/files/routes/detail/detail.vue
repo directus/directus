@@ -14,7 +14,14 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						:disabled="item === null"
+						@click="on"
+						v-tooltip.bottom="$t('delete')"
+					>
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -35,7 +42,14 @@
 
 			<v-dialog v-model="moveToDialogActive" v-if="isNew === false">
 				<template #activator="{ on }">
-					<v-button rounded icon :disabled="item === null" @click="on" class="folder" v-tooltip.bottom="$t('move_to_folder')">
+					<v-button
+						rounded
+						icon
+						:disabled="item === null"
+						@click="on"
+						class="folder"
+						v-tooltip.bottom="$t('move_to_folder')"
+					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -58,11 +72,25 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button v-if="item && item.type.includes('image')" rounded icon @click="editActive = true" class="edit" v-tooltip.bottom="$t('edit')">
+			<v-button
+				v-if="item && item.type.includes('image')"
+				rounded
+				icon
+				@click="editActive = true"
+				class="edit"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="tune" />
 			</v-button>
 
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit" v-tooltip.bottom="$t('save')">
+			<v-button
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+				v-tooltip.bottom="$t('save')"
+			>
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -76,7 +104,7 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation />
+			<files-navigation :current-folder="item && item.folder" />
 		</template>
 
 		<div class="file-detail">
@@ -123,7 +151,7 @@
 		</v-dialog>
 
 		<template #drawer>
-			<file-info-drawer-detail :file="item" />
+			<file-info-drawer-detail :file="item" @move-folder="moveToDialogActive = true" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -143,7 +171,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import FilesNavigation from '../../components/navigation/';
 import { i18n } from '@/lang';
 import router from '@/router';
@@ -155,8 +183,8 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import useFieldsStore from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
 import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
@@ -164,6 +192,7 @@ import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
 import FilesNotFound from '../not-found/';
+import useShortcut from '@/composables/use-shortcut';
 
 type Values = {
 	[field: string]: any;
@@ -246,7 +275,7 @@ export default defineComponent({
 			'duration',
 			'folder',
 			'charset',
-			'embed'
+			'embed',
 		];
 
 		const fieldsFiltered = computed(() => {
@@ -261,6 +290,8 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
+		useShortcut('mod+s', saveAndStay);
 
 		return {
 			item,
@@ -303,7 +334,12 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: i18n.t('file_library'),
-					to: `/files/`,
+					to: {
+						path: `/files/`,
+						query: {
+							folder: item?.value?.folder,
+						},
+					},
 				},
 			]);
 
@@ -316,7 +352,7 @@ export default defineComponent({
 		}
 
 		async function saveAndStay() {
-			const savedItem: Record<string, any> = await save();
+			await save();
 			revisionsDrawerDetail.value?.$data?.refresh?.();
 		}
 
@@ -341,10 +377,15 @@ export default defineComponent({
 			const moving = ref(false);
 			const selectedFolder = ref<number | null>();
 
+			watch(item, () => {
+				selectedFolder.value = item.value.folder;
+			});
+
 			return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
 			async function moveToFolder() {
 				moving.value = true;
+
 				try {
 					await api.patch(`/files/${props.primaryKey}`, {
 						folder: selectedFolder.value,

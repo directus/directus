@@ -17,8 +17,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
-import useAppStore from '../../stores/app';
-import useSettingsStore from '../../stores/settings';
+import { useAppStore, useSettingsStore } from '@/stores';
 
 export default defineComponent({
 	props: {

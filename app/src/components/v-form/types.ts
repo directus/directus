@@ -1,4 +1,4 @@
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 import { TranslateResult } from 'vue-i18n';
 
 export type FormField = DeepPartial<Field> & {

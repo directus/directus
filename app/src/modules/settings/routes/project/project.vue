@@ -34,7 +34,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation/';
 import useCollection from '@/composables/use-collection';
-import useSettingsStore from '@/stores/settings';
+import { useSettingsStore } from '@/stores';
 import marked from 'marked';
 import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';
 import { clone } from 'lodash';

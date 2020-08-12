@@ -116,6 +116,8 @@ export default defineComponent({
 .file-preview {
 	width: 90%;
 	height: 90%;
+	margin-bottom: 0;
+	max-width: initial;
 }
 
 .close {

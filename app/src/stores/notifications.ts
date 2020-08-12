@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { Notification, NotificationRaw } from './types';
+import { Notification, NotificationRaw } from '@/types';
 import { nanoid } from 'nanoid';
 import { reverse, sortBy } from 'lodash';
 

@@ -1,6 +1,6 @@
 <template>
 	<div :class="field.meta.width || 'full'">
-		<v-menu attached close-on-content-click>
+		<v-menu attached>
 			<template #activator="{ toggle, active }">
 				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
 					<template #prepend>
@@ -103,9 +103,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
-import { Field } from '@/stores/fields/types';
-import useFieldsStore from '@/stores/fields/';
-import useCollectionsStore from '@/stores/collections/';
+import { Field } from '@/types';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import interfaces from '@/interfaces';
 
 export default defineComponent({

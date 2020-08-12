@@ -6,7 +6,7 @@
 		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>
-		<v-menu v-model="menuActive" attached close-on-content-click :disabled="disabled">
+		<v-menu v-model="menuActive" attached :disabled="disabled">
 			<template #activator="{ active }">
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input
@@ -102,12 +102,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch, PropType, Ref } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/relations';
+import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
+import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
-import useCollectionsStore from '@/stores/collections';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
 
@@ -336,7 +335,7 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.one_collection)!
+				return collectionsStore.getCollection(relation.value.one_collection)!;
 			});
 
 			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);

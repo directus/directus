@@ -1,7 +1,7 @@
 import readme from './readme.md';
 import { defineComponent } from '@vue/composition-api';
-import useNotificationsStore from '@/stores/notifications';
-import { NotificationRaw } from '@/stores/notifications/types';
+import { useNotificationsStore } from '@/stores/';
+import { NotificationRaw } from '@/types';
 import NotificationsGroup from './notifications-group.vue';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 

@@ -20,8 +20,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { clone } from 'lodash';
 import marked from 'marked';

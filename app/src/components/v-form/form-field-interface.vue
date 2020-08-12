@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types';
 import interfaces from '@/interfaces';
 
 export default defineComponent({

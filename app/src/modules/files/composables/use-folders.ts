@@ -1,37 +1,45 @@
 import api from '@/api';
+import i18n from '@/lang';
 import { ref, Ref } from '@vue/composition-api';
+import { TranslateResult } from 'vue-i18n';
 
 type FolderRaw = {
-	id: number;
+	id: string;
 	name: string;
-	parent_folder: number;
+	parent_folder: string | null;
 };
 
 export type Folder = {
-	id: number;
-	name: string;
+	id: string | null;
+	name: string | TranslateResult;
+	parent_folder: string | null;
 	children?: Folder[];
 };
 
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
+let nestedFolders: Ref<Folder[] | null> | null = null;
+let openFolders: Ref<string[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
 export default function useFolders() {
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
+	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
+	if (openFolders === null) openFolders = ref(['$root']);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
 	}
 
-	return { loading, folders, error, fetchFolders };
+	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
 
 	async function fetchFolders() {
 		if (loading === null) return;
 		if (folders === null) return;
+		if (nestedFolders === null) return;
 		if (error === null) return;
 
 		loading.value = true;
@@ -44,7 +52,15 @@ export default function useFolders() {
 				},
 			});
 
-			folders.value = nestFolders(response.data.data);
+			folders.value = response.data.data;
+			nestedFolders.value = [
+				{
+					id: null,
+					name: i18n.t('file_library'),
+					children: nestFolders(response.data.data),
+					parent_folder: null,
+				},
+			];
 		} catch (err) {
 			error.value = err;
 		} finally {
@@ -63,7 +79,7 @@ export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {
 	const folder: FolderRaw & Folder = { ...rawFolder };
 
 	const children = rawFolders
-		.filter((childFolder) => childFolder.parent_folder === rawFolder.id)
+		.filter((childFolder) => childFolder.parent_folder === rawFolder.id && childFolder.id !== rawFolder.id)
 		.map((childRawFolder) => nestChildren(childRawFolder, rawFolders));
 
 	if (children.length > 0) {

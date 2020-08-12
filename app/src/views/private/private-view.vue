@@ -62,13 +62,11 @@ import ProjectChooser from './components/project-chooser';
 import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
-import useUserStore from '@/stores/user';
+import { useNotificationsStore, useUserStore, useAppStore } from '@/stores';
 import NotificationItem from './components/notification-item';
-import useNotificationsStore from '@/stores/notifications';
 import uploadFiles from '@/utils/upload-files';
 import i18n from '@/lang';
 import useEventListener from '@/composables/use-event-listener';
-import useAppStore from '@/stores/app';
 import emitter, { Events } from '@/events';
 
 export default defineComponent({
@@ -220,20 +218,22 @@ export default defineComponent({
 					loading: true,
 				});
 
-				await uploadFiles(files, (progress) => {
-					const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
+				await uploadFiles(files, {
+					onProgressChange: (progress) => {
+						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
-					const total = files.length;
-					const done = progress.filter((p) => p === 100).length;
+						const total = files.length;
+						const done = progress.filter((p) => p === 100).length;
 
-					notificationsStore.update(fileUploadNotificationID, {
-						title: i18n.tc('upload_file_indeterminate', files.length, {
-							done,
-							total,
-						}),
-						loading: false,
-						progress: percentageDone,
-					});
+						notificationsStore.update(fileUploadNotificationID, {
+							title: i18n.tc('upload_file_indeterminate', files.length, {
+								done,
+								total,
+							}),
+							loading: false,
+							progress: percentageDone,
+						});
+					},
 				});
 
 				emitter.emit(Events.upload);
@@ -244,8 +244,8 @@ export default defineComponent({
 
 		function openDrawer(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
-				drawerOpen.value = true
- 			}
+				drawerOpen.value = true;
+			}
 		}
 	},
 });
@@ -352,6 +352,13 @@ export default defineComponent({
 			transform: translateX(0);
 		}
 
+		.flex-container {
+			display: flex;
+			flex-direction: column;
+			width: 284px;
+			height: 100%;
+		}
+
 		@include breakpoint(medium) {
 			transform: translateX(calc(100% - 64px));
 		}
@@ -367,13 +374,6 @@ export default defineComponent({
 				flex-basis: 284px;
 				transform: none;
 			}
-		}
-
-		.flex-container {
-			width: 284px;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
 		}
 	}
 

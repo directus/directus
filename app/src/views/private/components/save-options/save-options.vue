@@ -41,9 +41,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-icon.disabled {
+.v-icon {
 	color: var(--foreground-subdued);
-	cursor: not-allowed;
+
+	&:hover:not(.disabled) {
+		color: var(--foreground-normal);
+	}
+
+	&.disabled {
+		cursor: not-allowed;
+	}
 }
 
 .v-list-item {

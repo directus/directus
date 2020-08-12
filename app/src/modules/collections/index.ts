@@ -24,8 +24,16 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_activity') {
+		if (to.params.primaryKey) {
+			return next(`/activity/${to.params.primaryKey}`);
+		} else {
+			return next('/activity');
+		}
+	}
+
 	return next();
-}
+};
 
 export default defineModule(({ i18n }) => ({
 	id: 'collections',
@@ -45,20 +53,20 @@ export default defineModule(({ i18n }) => ({
 				collection: route.params.collection,
 				bookmark: route.query.bookmark,
 			}),
-			beforeEnter: checkForSystem
+			beforeEnter: checkForSystem,
 		},
 		{
 			name: 'collections-detail',
 			path: '/:collection/:primaryKey',
 			component: CollectionsDetail,
 			props: true,
-			beforeEnter: checkForSystem
+			beforeEnter: checkForSystem,
 		},
 		{
 			name: 'collections-item-not-found',
 			path: '/:collection/*',
 			component: CollectionsItemNotFound,
-			beforeEnter: checkForSystem
+			beforeEnter: checkForSystem,
 		},
 	],
 }));

@@ -3,7 +3,7 @@ import { defineComponent, watch } from '@vue/composition-api';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
 import withAltColors from '../../../../../.storybook/decorators/with-alt-colors';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 
 import DrawerButton from './drawer-button.vue';
 

@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useLatencyStore from '@/stores/latency';
+import { useLatencyStore } from '@/stores';
 import { sortBy } from 'lodash';
 
 export default defineComponent({

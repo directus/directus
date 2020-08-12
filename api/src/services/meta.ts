@@ -32,18 +32,19 @@ export default class MetaService {
 	}
 
 	async totalCount(collection: string) {
-		const records = await database(collection).count('*');
+		const records = await database(collection).count('*', { as: 'count' });
 		return Number(records[0].count);
 	}
 
 	async filterCount(collection: string, query: Query) {
-		const dbQuery = database(collection).count('*');
+		const dbQuery = database(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
 			applyFilter(dbQuery, query.filter);
 		}
 
 		const records = await dbQuery;
+
 		return Number(records[0].count);
 	}
 }

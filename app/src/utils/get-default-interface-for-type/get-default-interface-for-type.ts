@@ -1,4 +1,4 @@
-import { types } from '@/stores/fields/types';
+import { types } from '@/types';
 
 const defaultInterfaceMap: Record<typeof types[number], string> = {
 	alias: 'text-input',

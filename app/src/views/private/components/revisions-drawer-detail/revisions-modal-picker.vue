@@ -1,5 +1,5 @@
 <template>
-	<v-menu close-on-content-click show-arrow>
+	<v-menu show-arrow>
 		<template #activator="{ toggle }">
 			<span @click="toggle" class="picker">
 				{{ selectedOption && selectedOption.text }}
@@ -69,7 +69,8 @@ export default defineComponent({
 				}
 
 				options.value = newOptions;
-			}
+			},
+			{ immediate: true }
 		);
 
 		const selectedOption = computed(() => {
@@ -80,7 +81,6 @@ export default defineComponent({
 
 		async function getFormattedDate(revision: Revision) {
 			const date = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_date')));
-
 			const time = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_time')));
 
 			return `${date} (${time})`;

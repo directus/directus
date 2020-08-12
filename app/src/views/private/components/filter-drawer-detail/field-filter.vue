@@ -5,7 +5,7 @@
 				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
-			<v-menu show-arrow :disabled="disabled" close-on-content-click>
+			<v-menu show-arrow :disabled="disabled">
 				<template #activator="{ toggle }">
 					<div class="operator" @click="toggle">
 						<span>{{ $t(`operators.${activeOperator}`) }}</span>
@@ -35,8 +35,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Filter } from '@/stores/presets/types';
-import useFieldsStore from '@/stores/fields';
+import { Filter } from '@/types';
+import { useFieldsStore } from '@/stores';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
 import FilterInput from './filter-input.vue';
 

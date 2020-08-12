@@ -32,6 +32,7 @@ This is *pre-release* software, therefore migrations will not be provided, break
 - [ ] Import/Export Endpoints
 - [ ] Caching
 - [ ] Rate Limiting
+- [ ] Custom Extensions
 
 <br>
 

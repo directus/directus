@@ -6,7 +6,7 @@ import withAltColors from '../../../../../.storybook/decorators/with-alt-colors'
 import { defineComponent } from '@vue/composition-api';
 import DrawerDetailGroup from './drawer-detail-group.vue';
 import DrawerDetail from '../drawer-detail';
-import useAppStore from '@/stores/app';
+import { useAppStore } from '@/stores';
 
 export default {
 	title: 'Views / Private / Components / Drawer Detail Group',

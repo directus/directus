@@ -34,7 +34,14 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="edit" />
 			</v-button>
 
@@ -81,7 +88,6 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-collection-preset';
-import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
@@ -92,7 +98,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-browse',
-	components: { UsersNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
+	components: { UsersNavigation, LayoutDrawerDetail, SearchInput },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -122,29 +128,11 @@ export default defineComponent({
 					});
 				}
 
-				return [
-					...urlFilters,
-					...filters.value,
-				];
+				return [...urlFilters, ...filters.value];
 			}
 
 			return filters.value;
 		});
-
-		if (viewType.value === null) {
-			viewType.value = 'cards';
-		}
-
-		if (viewOptions.value === null) {
-			if (viewType.value === 'cards') {
-				viewOptions.value = {
-					icon: 'person',
-					title: '{{first_name}} {{last_name}}',
-					subtitle: '{{ title }}',
-					size: 4
-				};
-			}
-		}
 
 		return {
 			_filters,

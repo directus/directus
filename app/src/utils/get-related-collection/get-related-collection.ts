@@ -1,5 +1,4 @@
-import useRelationsStore from '@/stores/relations';
-import useFieldsStore from '@/stores/fields';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 
 export default function getRelatedCollection(collection: string, field: string) {
 	const relationsStore = useRelationsStore();

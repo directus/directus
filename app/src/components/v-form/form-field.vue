@@ -1,12 +1,6 @@
 <template>
 	<div class="field" :key="field.field" :class="field.meta.width">
-		<v-menu
-			v-if="field.hideLabel !== true"
-			placement="bottom-start"
-			show-arrow
-			close-on-content-click
-			:disabled="isDisabled"
-		>
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -45,7 +39,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '@/stores/fields/types';
+import { Field } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';

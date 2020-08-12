@@ -1,23 +1,23 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" @click="onClick">
+		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" />
+				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<transition-expand>
-			<div class="items" v-show="groupActive">
-				<slot />
-			</div>
-		</transition-expand>
+		<!-- <transition-expand> -->
+		<div class="items" v-show="groupActive">
+			<slot />
+		</div>
+		<!-- </transition-expand> -->
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs, watch } from '@vue/composition-api';
 import { useGroupableParent, useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -34,16 +34,41 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		exact: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		disableGroupableParent: {
+			type: Boolean,
+			default: false,
+		},
+		scope: {
+			type: String,
+			default: undefined,
+		},
+		value: {
+			type: [String, Number],
+			default: undefined,
+		},
 	},
 	setup(props, { listeners, emit }) {
-		const { active: groupActive, toggle } = useGroupable();
+		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
+			group: props.scope,
+			value: props.value,
+		});
 
-		useGroupableParent(
-			{},
-			{
-				multiple: toRefs(props).multiple,
-			}
-		);
+		if (props.disableGroupableParent !== true) {
+			useGroupableParent(
+				{},
+				{
+					multiple: toRefs(props).multiple,
+				}
+			);
+		}
 
 		return { groupActive, toggle, onClick };
 
@@ -67,8 +92,13 @@ export default defineComponent({
 	}
 
 	.activator-icon {
+		color: var(--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
 
 		&.active {
 			transform: rotate(90deg);

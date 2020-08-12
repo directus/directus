@@ -1,14 +1,10 @@
 <template>
 	<div>
-		<v-modal
-			v-model="_active"
-			:title="$t('item_revision')"
-			heading="Dynamic Based on Pane"
-			subheading="Dynamic Based on Pane"
-		>
+		<v-modal v-model="_active" :title="$t('item_revision')">
 			<template #subtitle>
 				<revisions-modal-picker :revisions="revisions" :current.sync="_current" />
 			</template>
+
 			<template #sidebar>
 				<v-tabs vertical v-model="currentTab">
 					<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
@@ -33,6 +29,7 @@
 				<v-button @click="close">{{ $t('done') }}</v-button>
 			</template>
 		</v-modal>
+
 		<v-dialog v-model="confirmRevert" :persistent="reverting">
 			<v-card>
 				<v-card-title>{{ $t('confirm_revert') }}</v-card-title>

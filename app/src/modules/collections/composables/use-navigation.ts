@@ -1,9 +1,8 @@
 import { computed } from '@vue/composition-api';
 
-import { useCollectionsStore } from '@/stores/collections/';
-import { Collection } from '@/stores/collections/types';
+import { useCollectionsStore, useUserStore } from '@/stores/';
+import { Collection } from '@/types';
 import VueI18n from 'vue-i18n';
-import useUserStore from '@/stores/user';
 
 export type NavItem = {
 	collection: string;

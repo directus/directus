@@ -6,16 +6,25 @@
 			</v-button>
 		</template>
 
-		<div class="content">
-			<v-notice>
-				Pre-Release: Feature not yet available
-			</v-notice>
-		</div>
+		<component
+			class="layout"
+			ref="layout"
+			:is="`layout-${viewType}`"
+			collection="directus_activity"
+			:view-options.sync="viewOptions"
+			:view-query.sync="viewQuery"
+			:filters="filters"
+			:search-query="searchQuery"
+			@update:filters="filters = $event"
+		/>
+
+		<router-view name="detail" :primary-key="primaryKey" />
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="format-markdown" v-html="marked($t('page_help_activity_browse'))" />
 			</drawer-detail>
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
 			<portal-target name="drawer" />
 			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
@@ -31,6 +40,8 @@ import { i18n } from '@/lang';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-collection-preset';
 import marked from 'marked';
+import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 
 type Item = {
 	[field: string]: any;
@@ -38,20 +49,28 @@ type Item = {
 
 export default defineComponent({
 	name: 'activity-browse',
-	components: { ActivityNavigation },
-	props: {},
+	components: { ActivityNavigation, FilterDrawerDetail, LayoutDrawerDetail },
+	props: {
+		primaryKey: {
+			type: String,
+			default: null,
+		},
+	},
 	setup() {
 		const layout = ref<LayoutComponent | null>(null);
 
-		const { viewOptions, viewQuery } = usePreset(ref('directus_activity'));
+		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		return {
 			breadcrumb,
 			layout,
+			marked,
+			viewType,
 			viewOptions,
 			viewQuery,
-			marked,
+			filters,
+			searchQuery,
 		};
 
 		function useBreadcrumb() {

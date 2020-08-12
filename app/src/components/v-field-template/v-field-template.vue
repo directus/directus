@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached close-on-content-click v-model="menuActive">
+	<v-menu attached v-model="menuActive">
 		<template #activator="{ toggle }">
 			<v-input>
 				<template #input>
@@ -28,8 +28,8 @@
 <script lang="ts">
 import { defineComponent, toRefs, ref, watch, onMounted } from '@vue/composition-api';
 import FieldListItem from './field-list-item.vue';
-import useFieldsStore from '@/stores/fields';
-import { Field } from '@/stores/fields/types';
+import { useFieldsStore } from '@/stores';
+import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({

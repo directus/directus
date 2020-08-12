@@ -3,7 +3,7 @@ import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
-import { Filter } from '@/stores/presets/types';
+import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
@@ -179,15 +179,13 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 			items.value = fetchedItems;
 
-			if (itemCount.value === null) {
-				itemCount.value = response.data.data.length;
+			itemCount.value = response.data.data.length;
 
-				if (response.data.data.length === limit.value) {
-					// Requesting the page filter count in the actual request every time slows
-					// the request down by like 600ms-1s. This makes sure we only fetch the count
-					// once if needed.
-					getItemCount();
-				}
+			if (response.data.data.length === limit.value) {
+				// Requesting the page filter count in the actual request every time slows
+				// the request down by like 600ms-1s. This makes sure we only fetch the count
+				// once if needed.
+				getItemCount();
 			}
 		} catch (err) {
 			error.value = err;

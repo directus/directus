@@ -1,29 +1,39 @@
 <template>
 	<v-skeleton-loader v-if="loading" />
 	<div class="folder-picker" v-else>
-		<v-list>
-			<v-list-group @click="$emit('input', null)" :active="value === null">
-				<template #activator>
-					<v-list-item-icon>
-						<v-icon name="folder_special" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
-				</template>
+		<v-list dense>
+			<v-item-group scope="folder-picker" multiple v-model="openFolders">
+				<v-list-group
+					disable-groupable-parent
+					@click="$emit('input', null)"
+					:active="value === null"
+					scope="folder-picker"
+					value="root"
+				>
+					<template #activator>
+						<v-list-item-icon>
+							<v-icon name="folder_special" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
+					</template>
 
-				<folder-picker-list-item
-					v-for="folder in tree"
-					:key="folder.id"
-					:folder="folder"
-					:current-folder="value"
-					:click-handler="(id) => $emit('input', id)"
-				/>
-			</v-list-group>
+					<folder-picker-list-item
+						v-for="folder in tree"
+						:key="folder.id"
+						:folder="folder"
+						:current-folder="value"
+						:click-handler="(id) => $emit('input', id)"
+						:disabled="disabledFolders.includes(folder.id)"
+						:disabled-folders="disabledFolders"
+					/>
+				</v-list-group>
+			</v-item-group>
 		</v-list>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 
@@ -42,6 +52,10 @@ type Folder = {
 export default defineComponent({
 	components: { FolderPickerListItem },
 	props: {
+		disabledFolders: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
 		value: {
 			type: String,
 			default: null,
@@ -75,13 +89,27 @@ export default defineComponent({
 			}
 		});
 
+		const shouldBeOpen: string[] = [];
+		const folder = folders.value.find((folder) => folder.id === props.value);
+
+		if (folder && folder.parent_folder) parseFolder(folder.parent_folder);
+
+		const startOpenFolders = ['root'];
+
+		for (const folderID of shouldBeOpen) {
+			if (startOpenFolders.includes(folderID) === false) {
+				startOpenFolders.push(folderID);
+			}
+		}
 		const selectedFolder = computed(() => {
 			return folders.value.find((folder) => folder.id === props.value) || {};
 		});
 
+		const openFolders = ref(startOpenFolders);
+
 		fetchFolders();
 
-		return { loading, folders, tree, selectedFolder };
+		return { loading, folders, tree, selectedFolder, openFolders };
 
 		async function fetchFolders() {
 			if (folders.value.length > 0) return;
@@ -91,6 +119,7 @@ export default defineComponent({
 				const response = await api.get(`/folders`, {
 					params: {
 						limit: -1,
+						sort: 'name',
 					},
 				});
 
@@ -99,6 +128,17 @@ export default defineComponent({
 				error.value = err;
 			} finally {
 				loading.value = false;
+			}
+		}
+
+		function parseFolder(id: string) {
+			if (!folders.value) return;
+			shouldBeOpen.push(id);
+
+			const folder = folders.value.find((folder) => folder.id === id);
+
+			if (folder && folder.parent_folder) {
+				parseFolder(folder.parent_folder);
 			}
 		}
 	},

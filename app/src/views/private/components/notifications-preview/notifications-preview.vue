@@ -33,7 +33,7 @@
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import DrawerButton from '../drawer-button';
 import NotificationItem from '../notification-item';
-import useNotificationsStore from '@/stores/notifications';
+import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
 	components: { DrawerButton, NotificationItem },

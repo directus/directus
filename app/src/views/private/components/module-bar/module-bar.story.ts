@@ -3,8 +3,7 @@ import ModuleBar from './module-bar.vue';
 import { defineComponent } from '@vue/composition-api';
 import VueRouter from 'vue-router';
 
-import useRequestsStore from '@/stores/requests';
-import useUserStore from '@/stores/user';
+import { useRequestsStore, useUserStore } from '@/stores/';
 import i18n from '@/lang/';
 
 export default {

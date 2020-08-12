@@ -25,6 +25,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../../composables/use-folders';
 import api from '@/api';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -47,15 +48,17 @@ export default defineComponent({
 			saving.value = true;
 
 			try {
-				await api.post(`/folders`, {
+				const newFolder = await api.post(`/folders`, {
 					name: newFolderName.value,
-					parent_folder: props.parent,
+					parent_folder: props.parent === 'root' ? null : props.parent,
 				});
 
 				await fetchFolders();
 
 				dialogActive.value = false;
 				newFolderName.value = null;
+
+				router.push({ path: '/files', query: { folder: newFolder.data.data.id } });
 			} catch (err) {
 				savingError.value = err;
 			} finally {
