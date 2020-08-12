@@ -7,10 +7,12 @@ const tooltipDelay = 300;
 const handlers: Record<string, () => void> = {};
 
 function bind(element: HTMLElement, binding: DirectiveBinding) {
-	element.dataset.tooltip = nanoid();
-	handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
-	element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
-	element.addEventListener('mouseleave', onLeaveTooltip);
+	if (binding.value) {
+		element.dataset.tooltip = nanoid();
+		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
+		element.addEventListener('mouseenter', handlers[element.dataset.tooltip]);
+		element.addEventListener('mouseleave', onLeaveTooltip);
+	}
 }
 
 function unbind(element: HTMLElement) {
@@ -23,14 +25,15 @@ function unbind(element: HTMLElement) {
 }
 
 const Tooltip: DirectiveOptions = {
-	bind, unbind,
+	bind,
+	unbind,
 	update(element, binding) {
 		if (binding.value && !binding.oldValue) {
 			bind(element, binding);
 		} else if (!binding.value && binding.oldValue) {
 			unbind(element);
 		}
-	}
+	},
 };
 
 export default Tooltip;
