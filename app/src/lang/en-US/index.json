@@ -353,6 +353,10 @@
 	"file_count": "No Files | One File | {count} Files",
 	"no_files_copy": "It looks like you don’t have any files yet. You can click the button below to add a file.",
 
+	"user_count": "No Users | One User | {count} Users",
+	"no_users_copy": "It looks like you don’t have any users yet. You can click the button below to add a user.",
+	"add_new_user": "Add New User",
+
 	"all_items": "All Items",
 
 	"no_collections": "No Collections",

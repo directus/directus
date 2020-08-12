@@ -75,6 +75,16 @@
 					</template>
 				</v-info>
 			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('user_count', 0)" icon="people" center>
+					{{ $t('no_users_copy') }}
+
+					<template #append>
+						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('add_new_user') }}</v-button>
+					</template>
+				</v-info>
+			</template>
 		</component>
 
 		<template #drawer>
