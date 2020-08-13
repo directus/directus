@@ -6,9 +6,13 @@ import FilesService from '../services/files';
 import MetaService from '../services/meta';
 import useCollection from '../middleware/use-collection';
 import { File, PrimaryKey } from '../types';
-import path from 'path';
 import formatTitle from '@directus/format-title';
 import env from '../env';
+import axios from 'axios';
+import Joi from 'joi';
+import { InvalidPayloadException } from '../exceptions';
+import url from 'url';
+import path from 'path';
 
 const router = express.Router();
 
@@ -106,6 +110,45 @@ router.post(
 		return res.json({ data: res.locals.savedFiles.length === 1 ? record[0] : record || null });
 	})
 );
+
+const importSchema = Joi.object({
+	url: Joi.string().required()
+});
+
+router.post(
+	'/import',
+	sanitizeQuery,
+	asyncHandler(async (req, res) => {
+		const { error } = importSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		const service = new FilesService({ accountability: req.accountability });
+
+		const fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
+			responseType: 'stream'
+		});
+
+		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+		const filename = path.basename(parsedURL.pathname as string);
+
+		const payload = {
+			filename_download: filename,
+			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
+			type: fileResponse.headers['content-type'],
+			title: formatTitle(filename),
+			...req.body
+		};
+
+		delete payload.url;
+
+		const primaryKey = await service.upload(fileResponse.data, payload);
+		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+		return res.json({ data: record || null });
+	})
+)
 
 router.get(
 	'/',
