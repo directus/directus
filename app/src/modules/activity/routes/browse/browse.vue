@@ -14,6 +14,10 @@
 			<search-input v-model="searchQuery" />
 		</template>
 
+		<template #navigation>
+			<activity-navigation />
+		</template>
+
 		<component
 			class="layout"
 			ref="layout"
@@ -21,7 +25,7 @@
 			collection="directus_activity"
 			:view-options.sync="viewOptions"
 			:view-query.sync="viewQuery"
-			:filters="filters"
+			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
 		/>
@@ -51,6 +55,7 @@ import marked from 'marked';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { nanoid } from 'nanoid';
 
 type Item = {
 	[field: string]: any;
@@ -64,12 +69,34 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		queryFilters: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
-	setup() {
+	setup(props) {
 		const layout = ref<LayoutComponent | null>(null);
 
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
+
+		const _filters = computed(() => {
+			const filtersFormatted = [...filters.value];
+
+			if (props.queryFilters) {
+				for (const [key, value] of Object.entries(props.queryFilters)) {
+					filtersFormatted.push({
+						key: nanoid(),
+						locked: true,
+						field: key,
+						operator: 'eq',
+						value: value,
+					});
+				}
+			}
+
+			return filtersFormatted;
+		});
 
 		return {
 			breadcrumb,
@@ -80,6 +107,7 @@ export default defineComponent({
 			viewQuery,
 			filters,
 			searchQuery,
+			_filters,
 		};
 
 		function useBreadcrumb() {

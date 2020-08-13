@@ -12,7 +12,10 @@ export default defineModule(({ i18n }) => ({
 			name: 'activity-browse',
 			path: '/',
 			component: ActivityBrowse,
-			props: true,
+			props: (route) => ({
+				queryFilters: route.query,
+				primaryKey: route.params.primaryKey,
+			}),
 			children: [
 				{
 					name: 'activity-detail',
