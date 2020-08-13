@@ -21,6 +21,8 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability });
 
+	const existingPrimaryKey = req.params.pk || undefined;
+
 	/**
 	 * The order of the fields in multipart/form-data is important. We require that all fields
 	 * are provided _before_ the files. This allows us to set the storage location, and create
@@ -61,7 +63,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			storage: payload.storage || disk,
 		};
 
-		const primaryKey = await service.upload(fileStream, payloadWithRequiredFields);
+		const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 		savedFiles.push(primaryKey);
 		tryDone();
 	});
