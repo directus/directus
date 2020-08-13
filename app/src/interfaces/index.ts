@@ -1,65 +1,65 @@
-import InterfaceTextInput from './text-input/';
-import InterfaceTextarea from './textarea/';
+import InterfaceCheckboxes from './checkboxes';
+import InterfaceCode from './code';
+import InterfaceCollections from './collections';
+import InterfaceColor from './color';
+import InterfaceDateTime from './datetime';
 import InterfaceDivider from './divider/';
-import InterfaceNumeric from './numeric/';
-import InterfaceSlider from './slider/';
-import InterfaceToggle from './toggle/';
-import InterfaceWYSIWYG from './wysiwyg/';
 import InterfaceDropdown from './dropdown/';
 import InterfaceDropdownMultiselect from './dropdown-multiselect/';
-import InterfaceRadioButtons from './radio-buttons';
-import InterfaceCheckboxes from './checkboxes';
-import InterfaceStatus from './status';
-import InterfaceDateTime from './datetime';
-import InterfaceImage from './image';
-import InterfaceIcon from './icon';
-import InterfaceNotice from './notice';
-import InterfaceManyToOne from './many-to-one';
-import InterfaceOneToMany from './one-to-many';
-import InterfaceColor from './color';
-import InterfaceHash from './hash';
-import InterfaceSlug from './slug';
-import InterfaceUser from './user';
-import InterfaceTags from './tags';
-import InterfaceRepeater from './repeater';
-import InterfaceCode from './code';
 import InterfaceFile from './file';
-import InterfaceCollections from './collections';
-import InterfaceTranslations from './translations';
-import InterfaceManyToMany from './many-to-many';
 import InterfaceFiles from './files';
+import InterfaceHash from './hash';
+import InterfaceIcon from './icon';
+import InterfaceImage from './image';
+import InterfaceManyToMany from './many-to-many';
+import InterfaceManyToOne from './many-to-one';
+import InterfaceNotice from './notice';
+import InterfaceNumeric from './numeric/';
+import InterfaceOneToMany from './one-to-many';
+import InterfaceRadioButtons from './radio-buttons';
+import InterfaceRepeater from './repeater';
+import InterfaceSlider from './slider/';
+import InterfaceSlug from './slug';
+import InterfaceStatus from './status';
+import InterfaceTags from './tags';
+import InterfaceTextarea from './textarea/';
+import InterfaceTextInput from './text-input/';
+import InterfaceToggle from './toggle/';
+import InterfaceTranslations from './translations';
+import InterfaceUser from './user';
+import InterfaceWYSIWYG from './wysiwyg/';
 
 export const interfaces = [
-	InterfaceTextInput,
-	InterfaceTextarea,
-	InterfaceNumeric,
-	InterfaceSlider,
+	InterfaceCheckboxes,
+	InterfaceCode,
+	InterfaceCollections,
+	InterfaceColor,
+	InterfaceDateTime,
 	InterfaceDivider,
-	InterfaceToggle,
-	InterfaceWYSIWYG,
 	InterfaceDropdown,
 	InterfaceDropdownMultiselect,
-	InterfaceRadioButtons,
-	InterfaceCheckboxes,
-	InterfaceStatus,
-	InterfaceDateTime,
-	InterfaceImage,
-	InterfaceIcon,
-	InterfaceNotice,
-	InterfaceManyToOne,
-	InterfaceOneToMany,
-	InterfaceColor,
-	InterfaceHash,
-	InterfaceSlug,
-	InterfaceUser,
-	InterfaceTags,
-	InterfaceRepeater,
-	InterfaceCode,
 	InterfaceFile,
-	InterfaceCollections,
-	InterfaceTranslations,
-	InterfaceManyToMany,
 	InterfaceFiles,
+	InterfaceHash,
+	InterfaceIcon,
+	InterfaceImage,
+	InterfaceManyToMany,
+	InterfaceManyToOne,
+	InterfaceNotice,
+	InterfaceNumeric,
+	InterfaceOneToMany,
+	InterfaceRadioButtons,
+	InterfaceRepeater,
+	InterfaceSlider,
+	InterfaceSlug,
+	InterfaceStatus,
+	InterfaceTags,
+	InterfaceTextarea,
+	InterfaceTextInput,
+	InterfaceToggle,
+	InterfaceTranslations,
+	InterfaceUser,
+	InterfaceWYSIWYG,
 ];
 
 export default interfaces;

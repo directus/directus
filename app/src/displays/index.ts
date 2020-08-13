@@ -17,6 +17,7 @@ import DisplayTemplate from './template';
 import DisplayUser from './user';
 
 export const displays = [
+	DisplayRaw,
 	DisplayBadge,
 	DisplayCollection,
 	DisplayDateTime,
@@ -28,7 +29,6 @@ export const displays = [
 	DisplayImage,
 	DisplayMimeType,
 	DisplayRating,
-	DisplayRaw,
 	DisplayStatusBadge,
 	DisplayStatusDot,
 	DisplayTags,
