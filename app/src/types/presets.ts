@@ -31,8 +31,8 @@ export type Filter = {
 export type Preset = {
 	id?: number;
 	title: string | null;
-	user: number | null;
-	role: number | null;
+	user: string | null;
+	role: string | null;
 	collection: string;
 	search_query: string | null;
 	filters: readonly Filter[] | null;

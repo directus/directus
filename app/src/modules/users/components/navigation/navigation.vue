@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<v-list-item to="/users" exact>
+		<v-list-item to="/users" exact :active="currentRole === null">
 			<v-list-item-icon><v-icon name="people" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
 		</v-list-item>
@@ -13,8 +13,14 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item v-for="{ name, id } in roles" :key="id" :to="`/users?role=${id}`" exact>
-			<v-list-item-icon><v-icon name="people" /></v-list-item-icon>
+		<v-list-item
+			v-for="{ name, id, icon } in roles"
+			:key="id"
+			:to="`/users?role=${id}`"
+			exact
+			:active="currentRole === id"
+		>
+			<v-list-item-icon><v-icon :name="icon" /></v-list-item-icon>
 			<v-list-item-content>{{ name }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
@@ -26,6 +32,12 @@ import { defineComponent } from '@vue/composition-api';
 import useNavigation from '../../composables/use-navigation';
 
 export default defineComponent({
+	props: {
+		currentRole: {
+			type: String,
+			default: null,
+		},
+	},
 	setup() {
 		const { roles, loading } = useNavigation();
 

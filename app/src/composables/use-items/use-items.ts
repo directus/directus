@@ -94,14 +94,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 
-		/**
-		 * @NOTE
-		 *
-		 * When the filters or items per page change, we have to re-calculate the total amount of
-		 * items too, as the total amount of available items and pages is based on the two.
-		 */
-		itemCount.value = null;
-
 		await Vue.nextTick();
 		if (loading.value === false) {
 			getItems();
@@ -111,8 +103,11 @@ export function useItems(collection: Ref<string>, query: Query) {
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
-		loading.value = true;
 		error.value = null;
+
+		const loadingTimeout = setTimeout(() => {
+			loading.value = true;
+		}, 250);
 
 		let fieldsToFetch = [...fields.value];
 
@@ -178,18 +173,15 @@ export function useItems(collection: Ref<string>, query: Query) {
 			}
 
 			items.value = fetchedItems;
-
 			itemCount.value = response.data.data.length;
 
 			if (response.data.data.length === limit.value) {
-				// Requesting the page filter count in the actual request every time slows
-				// the request down by like 600ms-1s. This makes sure we only fetch the count
-				// once if needed.
 				getItemCount();
 			}
 		} catch (err) {
 			error.value = err;
 		} finally {
+			clearTimeout(loadingTimeout);
 			loading.value = false;
 		}
 	}

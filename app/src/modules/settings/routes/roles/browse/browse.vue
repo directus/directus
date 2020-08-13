@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_role')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_role')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -130,7 +130,7 @@ export default defineComponent({
 
 			try {
 				const response = await api.get(`/roles`, {
-					params: { limit: -1, fields: 'id,name,description,icon,users.id' },
+					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
 				});
 
 				roles.value = response.data.data.map((role: any) => {

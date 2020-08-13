@@ -1,7 +1,7 @@
 {
   "about_directus": "关于 Directus",
   "activity": "活动",
-  "activity_log": "活动日志",
+  "activity_feed": "活动日志",
   "activity_outside_directus": "此项目是在 Directus 之外创建的。",
   "add_field_filter": "添加字段筛选器",
   "add_new": "新增",

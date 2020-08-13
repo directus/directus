@@ -7,15 +7,15 @@
 			exact
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
-			<v-list-item-icon><v-icon :name="root ? 'folder_special' : 'folder'" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>{{ folder.name }}</v-list-item-content>
 		</v-list-item>
 
 		<v-list-group
 			v-else
-			:to="root ? `/files?folder=root` : `/files?folder=${folder.id}`"
-			:active="root ? currentFolder === 'root' : currentFolder === folder.id"
-			:value="root ? '$root' : folder.id"
+			:to="`/files?folder=${folder.id}`"
+			:active="currentFolder === folder.id"
+			:value="folder.id"
 			scope="files-navigation"
 			exact
 			disable-groupable-parent
@@ -23,7 +23,7 @@
 		>
 			<template #activator>
 				<v-list-item-icon>
-					<v-icon :name="root ? 'folder_special' : 'folder'" />
+					<v-icon name="folder" />
 				</v-list-item-icon>
 				<v-list-item-content>{{ folder.name }}</v-list-item-content>
 			</template>
@@ -132,10 +132,6 @@ export default defineComponent({
 		clickHandler: {
 			type: Function,
 			default: () => undefined,
-		},
-		root: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	setup(props) {

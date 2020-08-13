@@ -28,7 +28,7 @@
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
 					<div class="time">
-						<span class="dot" v-if="activity.edited_on !== null" v-tooltip="editedOnFormatted" />
+						<span class="dot" v-if="activity.revisions.length > 0" v-tooltip="editedOnFormatted" />
 						{{ formattedTime }}
 					</div>
 				</template>

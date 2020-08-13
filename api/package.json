@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "9.0.0-alpha.16",
+  "version": "9.0.0-alpha.19",
   "license": "GPL-3.0-only",
   "homepage": "https://github.com/directus/next#readme",
   "description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -53,7 +53,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/server.js &",
     "build": "rm -rf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-    "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --clear --respawn --watch \"src/**/*.ts\" --transpile-only | pino-colada",
+    "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
     "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
     "tests:openapi": "cd tests/openapi && node setup.js && curl -LJO https://github.com/directus/SDK-Generator/releases/latest/download/openapi.json --output openapi.json && jest --forceExit",
     "prepublishOnly": "npm run build"
@@ -65,7 +65,7 @@
     "example.env"
   ],
   "dependencies": {
-    "@directus/app": "^9.0.0-alpha.16",
+    "@directus/app": "^9.0.0-alpha.19",
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
@@ -103,6 +103,7 @@
     "nodemailer": "^6.4.11",
     "ora": "^4.1.1",
     "pino": "^6.4.1",
+    "pino-colada": "^2.1.0",
     "resolve-cwd": "^3.0.0",
     "sharp": "^0.25.4",
     "uuid": "^8.3.0",
@@ -147,7 +148,6 @@
     "jest": "^26.4.0",
     "jest-openapi": "^0.9.4",
     "lint-staged": "^10.2.11",
-    "pino-colada": "^2.1.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.2.0",
     "ts-node": "^8.10.2",

@@ -1,5 +1,9 @@
 <template>
-	<private-view :title="$t('user_directory')">
+	<private-view :title="title">
+		<template #headline v-if="breadcrumb">
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="people" />
@@ -45,13 +49,13 @@
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_user')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
 		<template #navigation>
-			<users-navigation />
+			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
 		<component
@@ -65,7 +69,27 @@
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('user_count', 0)" icon="people" center>
+					{{ $t('no_users_copy') }}
+
+					<template #append>
+						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -91,6 +115,7 @@ import usePreset from '@/composables/use-collection-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
+import useNavigation from '../../composables/use-navigation';
 
 type Item = {
 	[field: string]: any;
@@ -106,6 +131,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { roles } = useNavigation();
 		const layout = ref<LayoutComponent | null>(null);
 
 		const selection = ref<Item[]>([]);
@@ -113,7 +139,7 @@ export default defineComponent({
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_users'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
+		const { breadcrumb, title } = useBreadcrumb();
 
 		const _filters = computed(() => {
 			if (props.queryFilters !== null) {
@@ -140,6 +166,7 @@ export default defineComponent({
 			batchDelete,
 			batchLink,
 			breadcrumb,
+			title,
 			confirmDelete,
 			deleting,
 			filters,
@@ -150,6 +177,7 @@ export default defineComponent({
 			viewType,
 			searchQuery,
 			marked,
+			clearFilters,
 		};
 
 		function useBatchDelete() {
@@ -190,15 +218,27 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
+				if (!props.queryFilters?.role) return null;
+
 				return [
 					{
-						name: i18n.tc('collection', 2),
-						to: `/collections`,
+						name: i18n.t('user_directory'),
+						to: `/users`,
 					},
 				];
 			});
 
-			return { breadcrumb };
+			const title = computed(() => {
+				if (!props.queryFilters?.role) return i18n.t('user_directory');
+				return roles.value?.find((role) => role.id === props.queryFilters.role)?.name;
+			});
+
+			return { breadcrumb, title };
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
 		}
 	},
 });

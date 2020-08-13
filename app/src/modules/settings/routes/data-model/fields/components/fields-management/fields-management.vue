@@ -55,7 +55,7 @@
 					full-width
 				>
 					<v-icon name="add" />
-					{{ $t('add_field') }}
+					{{ $t('create_field') }}
 				</v-button>
 			</template>
 

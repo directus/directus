@@ -193,11 +193,21 @@ body {
 	&.left {
 		margin-right: 8px;
 		margin-left: -4px;
+
+		&.small {
+			margin-right: 4px;
+			margin-left: -2px;
+		}
 	}
 
 	&.right {
 		margin-right: -4px;
 		margin-left: 8px;
+
+		&.small {
+			margin-right: 4px;
+			margin-left: -2px;
+		}
 	}
 }
 </style>

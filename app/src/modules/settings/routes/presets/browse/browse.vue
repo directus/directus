@@ -30,7 +30,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_preset')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_preset')">
 				<v-icon name="add" />
 			</v-button>
 		</template>

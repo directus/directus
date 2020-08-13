@@ -67,11 +67,18 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink" v-tooltip.bottom="$t('edit')">
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
 				<v-icon name="edit" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('add_new')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_item')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -107,7 +114,27 @@
 			:view-query.sync="viewQuery"
 			:filters.sync="filters"
 			:search-query.sync="searchQuery"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('item_count', 0)" :icon="currentCollection.icon" center>
+					{{ $t('no_items_copy') }}
+
+					<template #append>
+						<v-button :to="`/collections/${collection}/+`">{{ $t('create_item') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -201,11 +228,15 @@ export default defineComponent({
 			editBookmark,
 		} = useBookmarks();
 
-		watch(collection, () => {
-			if (viewType.value === null) {
-				viewType.value = 'tabular';
-			}
-		}, { immediate: true });
+		watch(
+			collection,
+			() => {
+				if (viewType.value === null) {
+					viewType.value = 'tabular';
+				}
+			},
+			{ immediate: true }
+		);
 
 		return {
 			addNewLink,
@@ -233,6 +264,7 @@ export default defineComponent({
 			editBookmark,
 			breadcrumb,
 			marked,
+			clearFilters,
 		};
 
 		function useBreadcrumb() {
@@ -339,6 +371,11 @@ export default defineComponent({
 				bookmarkName.value = name;
 				bookmarkDialogActive.value = false;
 			}
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
 		}
 	},
 });

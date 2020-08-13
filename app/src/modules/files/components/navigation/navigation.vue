@@ -8,21 +8,39 @@
 
 		<div class="folders">
 			<v-item-group scope="files-navigation" multiple v-model="openFolders">
-				<navigation-folder
-					v-for="folder in nestedFolders"
-					:key="folder.id"
-					:folder="folder"
-					:current-folder="currentFolder"
-					root
-				/>
+				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
+					<template #activator>
+						<v-list-item-icon>
+							<v-icon name="folder" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
+					</template>
+
+					<navigation-folder
+						v-for="folder in nestedFolders"
+						:key="folder.id"
+						:folder="folder"
+						:current-folder="currentFolder"
+					/>
+				</v-list-group>
 			</v-item-group>
 		</div>
 
-		<v-divider v-if="loading || nestedFolders.length > 0" />
+		<v-divider />
 
-		<v-list-item to="/files/" exact>
+		<v-list-item to="/files/all" exact>
 			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
+		</v-list-item>
+
+		<v-list-item to="/files/mine" exact>
+			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('my_files') }}</v-list-item-content>
+		</v-list-item>
+
+		<v-list-item to="/files/recent" exact>
+			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('recent_files') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>

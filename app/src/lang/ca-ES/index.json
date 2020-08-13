@@ -1,7 +1,7 @@
 {
   "about_directus": "Sobre Directus",
   "activity": "Activitat",
-  "activity_log": "Registre d'activitat",
+  "activity_feed": "Registre d'activitat",
   "activity_outside_directus": "Element creat fora de Directus",
   "add_field_filter": "Afegiu un filtre de camp",
   "add_new": "Afegir nou",

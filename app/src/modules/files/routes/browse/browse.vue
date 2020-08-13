@@ -1,5 +1,9 @@
 <template>
-	<private-view :title="$t('file_library')">
+	<private-view :title="title">
+		<template #headline v-if="breadcrumb">
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="folder" />
@@ -77,7 +81,7 @@
 				icon
 				class="add-new"
 				:to="{ path: '/files/+', query: queryFilters }"
-				v-tooltip.bottom="$t('add_new_file')"
+				v-tooltip.bottom="$t('add_file')"
 			>
 				<v-icon name="add" />
 			</v-button>
@@ -98,7 +102,27 @@
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
-		/>
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('file_count', 0)" icon="folder" center>
+					{{ $t('no_files_copy') }}
+
+					<template #append>
+						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ $t('add_file') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
@@ -131,6 +155,9 @@ import FolderPicker from '../../components/folder-picker';
 import emitter, { Events } from '@/events';
 import router from '@/router';
 import Vue from 'vue';
+import { useUserStore } from '@/stores';
+import { subDays } from 'date-fns';
+import useFolders from '../../composables/use-folders';
 
 type Item = {
 	[field: string]: any;
@@ -144,49 +171,25 @@ export default defineComponent({
 			type: Object as PropType<Record<string, string>>,
 			default: null,
 		},
+		special: {
+			type: String as PropType<'all' | 'recent' | 'mine'>,
+			default: null,
+		},
 	},
 	setup(props) {
+		const { folders } = useFolders();
 		const layout = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
+
+		const userStore = useUserStore();
 
 		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-		const { breadcrumb } = useBreadcrumb();
+		const { breadcrumb, title } = useBreadcrumb();
 
 		const filtersWithFolderAndType = computed(() => {
-			if (props.queryFilters !== null) {
-				const urlFilters: any[] = [
-					{
-						locked: true,
-						field: 'type',
-						operator: 'nnull',
-						value: 1,
-					},
-				];
-
-				for (const [field, value] of Object.entries(props.queryFilters)) {
-					if (value === 'root') {
-						urlFilters.push({
-							locked: true,
-							operator: 'null',
-							field,
-							value: true,
-						});
-					} else {
-						urlFilters.push({
-							locked: true,
-							operator: 'eq',
-							field,
-							value,
-						});
-					}
-				}
-
-				return [...urlFilters, ...filters.value];
-			}
-
-			return [
+			const filtersParsed: any[] = [
 				...filters.value,
 				{
 					locked: true,
@@ -195,6 +198,46 @@ export default defineComponent({
 					value: 1,
 				},
 			];
+
+			if (props.special === null) {
+				if (Object.keys(props.queryFilters).length > 0) {
+					for (const [field, value] of Object.entries(props.queryFilters)) {
+						filtersParsed.push({
+							locked: true,
+							operator: 'eq',
+							field,
+							value,
+						});
+					}
+				} else {
+					filtersParsed.push({
+						locked: true,
+						operator: 'null',
+						field: 'folder',
+						value: true,
+					});
+				}
+			}
+
+			if (props.special === 'mine' && userStore.state.currentUser) {
+				filtersParsed.push({
+					locked: true,
+					operator: 'eq',
+					field: 'uploaded_by',
+					value: userStore.state.currentUser.id,
+				});
+			}
+
+			if (props.special === 'recent') {
+				filtersParsed.push({
+					locked: true,
+					operator: 'gt',
+					field: 'uploaded_on',
+					value: subDays(new Date(), 5).toISOString(),
+				});
+			}
+
+			return filtersParsed;
 		});
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
@@ -206,6 +249,7 @@ export default defineComponent({
 			batchDelete,
 			batchLink,
 			breadcrumb,
+			title,
 			confirmDelete,
 			deleting,
 			filters,
@@ -222,6 +266,7 @@ export default defineComponent({
 			moving,
 			selectedFolder,
 			refresh,
+			clearFilters,
 		};
 
 		function useBatchDelete() {
@@ -257,16 +302,44 @@ export default defineComponent({
 		}
 
 		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
-				return [
-					{
-						name: i18n.tc('collection', 2),
-						to: `/collections`,
-					},
-				];
+			const title = computed(() => {
+				if (props.special === 'all') {
+					return i18n.t('all_files');
+				}
+
+				if (props.special === 'mine') {
+					return i18n.t('my_files');
+				}
+
+				if (props.special === 'recent') {
+					return i18n.t('recent_files');
+				}
+
+				if (props.queryFilters?.folder) {
+					const folder = folders.value?.find((folder) => folder.id === props.queryFilters.folder);
+
+					if (folder) {
+						return folder.name;
+					}
+				}
+
+				return i18n.t('file_library');
 			});
 
-			return { breadcrumb };
+			const breadcrumb = computed(() => {
+				if (title.value !== i18n.t('file_library')) {
+					return [
+						{
+							name: i18n.t('file_library'),
+							to: `/files`,
+						},
+					];
+				}
+
+				return null;
+			});
+
+			return { breadcrumb, title };
 		}
 
 		function useMovetoFolder() {
@@ -302,6 +375,11 @@ export default defineComponent({
 
 		function refresh() {
 			layout.value?.refresh();
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
 		}
 	},
 });

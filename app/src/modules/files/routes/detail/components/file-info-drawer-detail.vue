@@ -50,10 +50,10 @@
 				</dd>
 			</div>
 
-			<div v-if="folder">
+			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
-					<button @click="$emit('move-folder')">{{ folder.name }}</button>
+					<button @click="$emit('move-folder')">{{ (folder) ? folder.name : $t('file_library') }}</button>
 				</dd>
 			</div>
 

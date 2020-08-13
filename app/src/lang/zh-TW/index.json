@@ -1,7 +1,7 @@
 {
   "about_directus": "關於Directus",
   "activity": "活動",
-  "activity_log": "活動紀錄",
+  "activity_feed": "活動紀錄",
   "activity_outside_directus": "在Directus以外建立的項目",
   "add_field_filter": "新增過濾欄位",
   "add_new": "新增",

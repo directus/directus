@@ -10,9 +10,9 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
-	"add_preset": "Add Preset",
-	"add_role": "Add Role",
-	"add_user": "Add User",
+	"create_preset": "Create Preset",
+	"create_role": "Create Role",
+	"create_user": "Create User",
 
 	"rename_folder": "Rename Folder",
 
@@ -73,6 +73,7 @@
 	"boolean": "Boolean",
 	"date": "Date",
 	"dateTime": "DateTime",
+	"datetime": "DateTime",
 	"decimal": "Decimal",
 	"float": "Float",
 	"integer": "Integer",
@@ -126,7 +127,7 @@
 
 	"next": "Next",
 	"previous": "Previous",
-	"add_field": "Add Field",
+	"create_field": "Create Field",
 	"field_name": "Field Name",
 	"database_column_name": "Database Column Name",
 	"translations": "Translations",
@@ -288,6 +289,12 @@
 	"download": "Download",
 	"open": "Open",
 
+	"foreground_color": "Foreground Color",
+	"background_color": "Background Color",
+
+	"default_foreground": "Default Foreground",
+	"default_background": "Default Background",
+
 	"upload_from_device": "Upload File from Device",
 	"choose_from_library": "Choose File from Library",
 	"import_from_url": "Import File from URL",
@@ -314,7 +321,7 @@
 	"generated_uuid": "Generated UUID",
 	"manual_string": "Manually entered string",
 
-	"save_and_add_new": "Save and Add New",
+	"save_and_create_new": "Save and Create New",
 	"save_and_stay": "Save and Stay",
 	"save_as_copy": "Save as Copy",
 
@@ -337,11 +344,20 @@
 	"interface_not_found": "Interface \"{interface}\" not found.",
 	"reset_interface": "Reset Interface",
 
+	"relative": "Relative",
+
 	"display_not_found": "Display \"{display}\" not found.",
 	"reset_display": "Reset Display",
 
 	"item_count": "No Items | One Item | {count} Items",
-	"no_items_copy": "It looks like you don’t have any items in this collection. You can click the button below to add an item.",
+	"no_items_copy": "There are no items in this collection yet.",
+
+	"file_count": "No Files | One File | {count} Files",
+	"no_files_copy": "There are no files here.",
+
+	"user_count": "No Users | One User | {count} Users",
+	"no_users_copy": "There are no users in this role yet.",
+
 	"all_items": "All Items",
 
 	"no_collections": "No Collections",
@@ -561,7 +577,7 @@
 
 	"choose_a_color": "Choose a Color...",
 
-	"add_new_item": "Add New Item",
+	"create_item": "Create Item",
 
 	"many-to-one": "Many to One",
 	"display_template": "Display Template",
@@ -569,9 +585,11 @@
 	"n_items_selected": "No Items Selected | 1 Item Selected | {n} Items Selected",
 	"per_page": "Per Page",
 	"all_files": "All Files",
-	"add_new_folder": "Add New Folder",
+	"my_files": "My Files",
+	"recent_files": "Recent Files",
+	"create_folder": "Create Folder",
 	"folder_name": "Folder Name...",
-	"add_new_file": "Add New File",
+	"add_file": "Add File",
 
 	"no_results": "No Results",
 	"no_results_copy": "Adjust or clear search filters to see results.",
@@ -737,9 +755,10 @@
 	"page_help_users_detail": "**User Detail** — Manage your account information, or view the details of other users.",
 
   "about_directus": "About Directus",
-  "activity_log": "Activity Log",
+  "activity_feed": "Activity Feed",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
+  "create_new": "Create New",
   "additional_info": "Additional Info",
   "admin_email": "Admin Email",
   "admin_password": "Admin Password",
@@ -849,13 +868,13 @@
 		"name": "Role Name",
 		"icon": "Role Icon",
 		"description": "Description",
-		"ip_allow_list": "IP Access Allow List",
+		"ip_access": "IP Access",
 		"app_access": "App Access",
 		"admin": "Admin Access",
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections navigation"
+		"collection_list": "Collections Navigation"
 	}
   },
 
@@ -1155,6 +1174,7 @@
   "values": "Values",
   "version": "Version",
   "version_and_updates": "Version and Updates",
+  "view_project": "View Project",
   "visible_all_users": "Visible for all users",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

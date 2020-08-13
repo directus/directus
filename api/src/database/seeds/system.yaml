@@ -35,10 +35,10 @@ tables:
       type: string
       length: 30
       nullable: false
-      default: people
+      default: supervised_user_circle
     description:
       type: text
-    ip_allow_list:
+    ip_access:
       type: json
     enforce_tfa:
       type: boolean
@@ -646,31 +646,33 @@ rows:
         sort: 3
         width: full
       - collection: directus_roles
-        field: ip_allow_list
-        interface: tags
-        locked: true
-        special: json
-        sort: 4
-        width: full
-      - collection: directus_roles
         field: admin
         interface: toggle
         locked: true
         special: boolean
-        sort: 6
+        sort: 4
         width: half
       - collection: directus_roles
         field: app_access
         interface: toggle
         locked: true
         special: boolean
-        sort: 7
+        sort: 5
         width: half
+      - collection: directus_roles
+        field: ip_access
+        interface: tags
+        options:
+          placeholder: Add allowed IP addresses, leave empty to allow all...
+        locked: true
+        special: json
+        sort: 6
+        width: full
       - collection: directus_roles
         field: enforce_tfa
         interface: toggle
         locked: true
-        sort: 8
+        sort: 7
         special: boolean
         width: half
       - collection: directus_roles
@@ -678,7 +680,7 @@ rows:
         interface: one-to-many
         locked: true
         special: o2m
-        sort: 9
+        sort: 8
         options:
           fields:
             - first_name
@@ -717,7 +719,7 @@ rows:
                 iconRight: link
                 placeholder: Relative or absolute URL...
         special: json
-        sort: 10
+        sort: 9
         width: full
       - collection: directus_roles
         field: collection_list
@@ -768,7 +770,7 @@ rows:
                       interface: collections
                       width: full
         special: json
-        sort: 11
+        sort: 10
         width: full
 
       - collection: directus_users
@@ -1712,6 +1714,68 @@ rows:
 
     # directus_webhooks TBD
 
+      - collection: directus_activity
+        field: action
+        display: badge
+        display_options:
+          defaultForeground: "#263238"
+          defaultBackground: "#eceff1"
+          choices:
+            - text: Create
+              value: create
+              foreground: "#27ae60"
+              background: "#c9ebd7"
+            - text: Update
+              value: update
+              foreground: "#2f80ed"
+              background: "#cbdffb"
+            - text: Delete
+              value: delete
+              foreground: "#eb5757"
+              background: "#fad5d5"
+            - text: Login
+              value: authenticate
+              foreground: "#9b51e0"
+              background: "#e6d3f7"
+      - collection: directus_activity
+        field: collection
+        display: collection
+        display_options:
+          icon: true
+      - collection: directus_activity
+        field: action_on
+        display: datetime
+        options:
+          relative: true
+      - collection: directus_activity
+        field: action_by
+        display: user
+      - collection: directus_activity
+        field: comment
+        display: formatted-text
+        display_options:
+          subdued: true
+      - collection: directus_activity
+        field: user_agent
+        display: formatted-text
+        display_options:
+          font: monospace
+      - collection: directus_activity
+        field: ip
+        display: formatted-text
+        display_options:
+          font: monospace
+      - collection: directus_activity
+        field: revisions
+        interface: one-to-many
+        locked: true
+        special: o2m
+        options:
+          fields:
+            - collection
+            - item
+        width: full
+
   directus_permissions:
     defaults:
       role: null
@@ -1735,7 +1799,7 @@ rows:
       role: null
       collection: null
       search: null
-      filters: []
+      filters: '[]'
       view_type: tabular
       view_query: null
       view_options: null
@@ -1753,6 +1817,7 @@ rows:
             subtitle: '{{ type }} • {{ filesize }}'
             size: 4
             imageFit: crop
+
       - collection: directus_users
         view_type: cards
         view_options:
@@ -1761,6 +1826,18 @@ rows:
             title: '{{ first_name }} {{ last_name }}'
             subtitle: '{{ title }}'
             size: 4
+
+      - collection: directus_activity
+        view_type: tabular
+        view_query:
+          tabular:
+            fields:
+              - action
+              - collection
+              - action_on
+              - action_by
+              - comment
+
 
   directus_relations:
     defaults:

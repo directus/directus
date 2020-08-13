@@ -61,7 +61,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation />
+			<users-navigation :current-role="(item && item.role) || (preset && preset.role)" />
 		</template>
 
 		<div class="user-detail">
@@ -144,7 +144,8 @@ import { useFieldsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoDrawerDetail from './components/user-info-drawer-detail.vue';
-import getRootPath from '../../../../utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
+import useShortcut from '@/composables/use-shortcut';
 
 type Values = {
 	[field: string]: any;
@@ -170,6 +171,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		preset: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
@@ -183,6 +188,13 @@ export default defineComponent({
 			ref('directus_users'),
 			primaryKey
 		);
+
+		if (props.preset) {
+			edits.value = {
+				...props.preset,
+				...edits.value,
+			};
+		}
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
@@ -223,6 +235,9 @@ export default defineComponent({
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
+
+		useShortcut('mod+s', saveAndStay);
+		useShortcut('mod+shift+s', saveAndAddNew);
 
 		return {
 			title,

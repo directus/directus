@@ -1,7 +1,7 @@
 <template>
 	<v-dialog :active="true" @toggle="close">
 		<v-card>
-			<v-card-title>{{ $t('add_new_file') }}</v-card-title>
+			<v-card-title>{{ $t('add_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload :preset="preset" multiple @upload="close" />
 			</v-card-text>

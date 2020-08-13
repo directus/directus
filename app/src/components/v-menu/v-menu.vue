@@ -122,15 +122,16 @@ export default defineComponent({
 
 		const { isActive, activate, deactivate, toggle } = useActiveState();
 
-		watch(
-			isActive,
-			() => {
+		watch(isActive, (newActive) => {
+			if (newActive === true) {
+				reference.value =
+					((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+
 				Vue.nextTick(() => {
 					popper.value = document.getElementById(id.value);
 				});
-			},
-			{ immediate: true }
-		);
+			}
+		});
 
 		const { onClick, onPointerEnter, onPointerLeave } = useEvents();
 
@@ -168,8 +169,6 @@ export default defineComponent({
 					return localIsActive.value;
 				},
 				async set(newActive) {
-					reference.value =
-						((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
 					localIsActive.value = newActive;
 					emit('input', newActive);
 				},

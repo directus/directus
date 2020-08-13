@@ -1,5 +1,5 @@
 <template>
-	<v-menu show-arrow placement="top" trigger="hover" :delay="500" v-model="active">
+	<v-menu show-arrow placement="top" trigger="hover" :delay="300" v-model="active">
 		<template #activator><slot /></template>
 
 		<div class="loading" v-if="loading">

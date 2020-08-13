@@ -157,7 +157,7 @@ body {
 
 		.fill {
 			position: absolute;
-			top: calc(50% + 3px);
+			top: 50%;
 			right: 0;
 			left: 0;
 			z-index: 2;
@@ -171,7 +171,7 @@ body {
 
 		.ticks {
 			position: absolute;
-			top: 12px;
+			top: 13px;
 			left: 0;
 			display: flex;
 			align-items: center;

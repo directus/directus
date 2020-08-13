@@ -1,7 +1,7 @@
 {
   "about_directus": "Directusについて",
   "activity": "操作履歴",
-  "activity_log": "操作履歴ログ",
+  "activity_feed": "操作履歴ログ",
   "activity_outside_directus": "Directus外部で作成したアイテム",
   "add_field_filter": "フィールドフィルター追加",
   "add_new": "新規追加",

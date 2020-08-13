@@ -45,7 +45,7 @@
 							<v-icon
 								class="add"
 								name="add"
-								v-tooltip="$t('add_new_item')"
+								v-tooltip="$t('create_item')"
 								@click.stop="editModalActive = true"
 							/>
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
@@ -214,7 +214,8 @@ export default defineComponent({
 					if (newValue === null) {
 						currentItem.value = null;
 					}
-				}
+				},
+				{ immediate: true }
 			);
 
 			const currentPrimaryKey = computed<string | number>(() => {

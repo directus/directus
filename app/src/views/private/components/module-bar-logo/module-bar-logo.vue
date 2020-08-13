@@ -1,17 +1,33 @@
 <template>
-	<component :is="url ? 'a' : 'div'" :href="url" target="_blank" ref="noopener noreferer" class="module-bar-logo">
+	<component
+		:is="url ? 'a' : 'div'"
+		:href="url"
+		target="_blank"
+		ref="noopener noreferer"
+		class="module-bar-logo"
+		:class="{ loading: showLoader }"
+		v-tooltip.right="urlTooltip"
+	>
 		<template v-if="customLogoPath">
-			<v-progress-circular indeterminate v-if="showLoader" />
-			<img v-else class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+			<transition name="fade">
+				<v-progress-linear
+					indeterminate
+					rounded
+					v-if="showLoader"
+					@animationiteration="stopSpinnerIfQueueIsEmpty"
+				/>
+			</transition>
+			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
-		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopRunningIfQueueIsEmpty" />
+		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
 	</component>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
-import getRootPath from '../../../../utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
+import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
@@ -32,20 +48,24 @@ export default defineComponent({
 			() => queueHasItems.value,
 			(hasItems) => {
 				if (hasItems) showLoader.value = true;
-				else if (customLogoPath.value !== null) showLoader.value = false;
 			}
 		);
 
 		const url = computed(() => settingsStore.state.settings?.project_url);
 
+		const urlTooltip = computed(() => {
+			return settingsStore.state.settings?.project_url ? i18n.t('view_project') : false;
+		});
+
 		return {
 			customLogoPath,
 			showLoader,
-			stopRunningIfQueueIsEmpty,
+			stopSpinnerIfQueueIsEmpty,
 			url,
+			urlTooltip,
 		};
 
-		function stopRunningIfQueueIsEmpty() {
+		function stopSpinnerIfQueueIsEmpty() {
 			if (queueHasItems.value === false) showLoader.value = false;
 		}
 	},
@@ -54,8 +74,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .module-bar-logo {
-	--v-progress-circular-color: var(--white);
-	--v-progress-circular-background-color: rgba(255, 255, 255, 0.25);
+	--v-progress-linear-height: 2px;
+	--v-progress-linear-color: var(--white);
+	--v-progress-linear-background-color: rgba(255, 255, 255, 0.5);
 
 	position: relative;
 	display: flex;
@@ -65,6 +86,14 @@ export default defineComponent({
 	height: 64px;
 	padding: 12px;
 	background-color: var(--brand);
+
+	.v-progress-linear {
+		position: absolute;
+		right: 12px;
+		bottom: 5px;
+		left: 12px;
+		width: 40px;
+	}
 
 	.custom-logo {
 		display: block;
@@ -88,6 +117,16 @@ export default defineComponent({
 	.running {
 		animation: 560ms run steps(14) infinite;
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--slow) var(--transition);
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 
 @keyframes run {

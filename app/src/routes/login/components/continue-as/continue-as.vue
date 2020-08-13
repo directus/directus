@@ -51,7 +51,7 @@ export default defineComponent({
 
 		async function hydrateAndLogin() {
 			await hydrate();
-			router.push(`/collections/`);
+			router.push(lastPage.value || `/collections/`);
 		}
 	},
 });

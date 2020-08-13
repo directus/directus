@@ -44,7 +44,7 @@ export default defineComponent({
 			default: null,
 		},
 		display: {
-			type: String as PropType<'avatar' | 'name'>,
+			type: String as PropType<'avatar' | 'name' | 'both'>,
 			default: 'avatar',
 		},
 		circle: {

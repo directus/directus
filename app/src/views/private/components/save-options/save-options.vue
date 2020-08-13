@@ -12,7 +12,7 @@
 			</v-list-item>
 			<v-list-item :disabled="disabled" @click="$emit('save-and-add-new')">
 				<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('save_and_add_new') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('save_and_create_new') }}</v-list-item-content>
 				<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
 			</v-list-item>
 			<v-list-item :disabled="disabled" @click="$emit('save-as-copy')">

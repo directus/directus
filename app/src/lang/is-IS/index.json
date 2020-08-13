@@ -1,7 +1,7 @@
 {
   "about_directus": "Um Directus",
   "activity": "Virkni",
-  "activity_log": "Virkniskrá",
+  "activity_feed": "Virkniskrá",
   "activity_outside_directus": "Efni stofnað utan Directus",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",

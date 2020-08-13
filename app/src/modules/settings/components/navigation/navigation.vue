@@ -56,7 +56,7 @@ export default defineComponent({
 			{
 				icon: 'bug_report',
 				name: i18n.t('report_bug'),
-				href: 'https://github.com/directus/app/issues/new?template=bug_report.md',
+				href: 'https://github.com/directus/directus/issues/new/choose',
 			},
 			{
 				icon: 'new_releases',

@@ -24,7 +24,8 @@ export default defineInterface(({ i18n }) => ({
 							name: i18n.t('text'),
 							meta: {
 								interface: 'text-input',
-							}
+								width: 'half',
+							},
 						},
 						{
 							field: 'value',
@@ -33,13 +34,14 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								options: {
-									font: 'monospace'
+									font: 'monospace',
 								},
-							}
+								width: 'half',
+							},
 						},
-					]
-				}
-			}
+					],
+				},
+			},
 		},
 		{
 			field: 'allowOther',
@@ -49,7 +51,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
-			}
+			},
 		},
 		{
 			field: 'allowNone',
@@ -59,7 +61,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
-			}
+			},
 		},
 		{
 			field: 'icon',
@@ -68,7 +70,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'placeholder',
@@ -77,7 +79,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
-			}
+			},
 		},
 	],
 }));

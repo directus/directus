@@ -17,22 +17,6 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'iconLeft',
-			name: i18n.t('icon_left'),
-			meta: {
-				width: 'half',
-				interface: 'icon',
-			},
-		},
-		{
-			field: 'iconRight',
-			name: i18n.t('icon_right'),
-			meta: {
-				width: 'half',
-				interface: 'icon',
-			},
-		},
-		{
 			field: 'font',
 			name: i18n.t('font'),
 			meta: {
@@ -46,6 +30,22 @@ export default defineInterface(({ i18n }) => ({
 						{ text: i18n.t('serif'), value: 'serif' },
 					],
 				},
+			},
+		},
+		{
+			field: 'iconLeft',
+			name: i18n.t('icon_left'),
+			meta: {
+				width: 'half',
+				interface: 'icon',
+			},
+		},
+		{
+			field: 'iconRight',
+			name: i18n.t('icon_right'),
+			meta: {
+				width: 'half',
+				interface: 'icon',
 			},
 		},
 	],
