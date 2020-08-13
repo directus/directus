@@ -129,8 +129,8 @@ export default class FieldsService {
 			collection,
 			field,
 			type: column ? getLocalType(column.type) : 'alias',
-			database: column || null,
-			system: fieldInfo || null,
+			meta: fieldInfo || null,
+			schema: column || null,
 		};
 
 		return data;
