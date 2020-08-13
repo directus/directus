@@ -2,7 +2,7 @@
 	<v-list nav>
 		<v-list-item to="/activity" exact>
 			<v-list-item-icon>
-				<v-icon name="history" />
+				<v-icon name="access_time" />
 			</v-list-item-icon>
 			<v-list-item-content>
 				{{ $t('all_activity') }}
@@ -11,7 +11,7 @@
 
 		<v-list-item :to="`/activity?action_by=${currentUserID}`" exact>
 			<v-list-item-icon>
-				<v-icon name="history" />
+				<v-icon name="face" />
 			</v-list-item-icon>
 			<v-list-item-content>
 				{{ $t('my_activity') }}
@@ -31,7 +31,7 @@
 
 		<v-list-item to="/activity?action=update" exact>
 			<v-list-item-icon>
-				<v-icon name="edit" />
+				<v-icon name="check" />
 			</v-list-item-icon>
 			<v-list-item-content>
 				{{ $t('update') }}
@@ -47,6 +47,15 @@
 			</v-list-item-content>
 		</v-list-item>
 
+		<v-list-item to="/activity?action=comment" exact>
+			<v-list-item-icon>
+				<v-icon name="notes" />
+			</v-list-item-icon>
+			<v-list-item-content>
+				{{ $t('comment') }}
+			</v-list-item-content>
+		</v-list-item>
+
 		<v-list-item to="/activity?action=authenticate" exact>
 			<v-list-item-icon>
 				<v-icon name="login" />
@@ -56,14 +65,6 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/activity?action=comment" exact>
-			<v-list-item-icon>
-				<v-icon name="comment" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				{{ $t('comment') }}
-			</v-list-item-content>
-		</v-list-item>
 	</v-list>
 </template>
 
