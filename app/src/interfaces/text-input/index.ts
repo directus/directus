@@ -14,6 +14,9 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
+				options: {
+					placeholder: i18n.t('text_shown_when_no_value'),
+				},
 			},
 		},
 		{

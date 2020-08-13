@@ -24,7 +24,7 @@ export default defineInterface(({ i18n }) => ({
 							name: i18n.t('text'),
 							meta: {
 								interface: 'text-input',
-							}
+							},
 						},
 						{
 							field: 'value',
@@ -33,33 +33,13 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								options: {
-									font: 'monospace'
+									font: 'monospace',
 								},
-							}
+							},
 						},
-					]
-				}
-			}
-		},
-		{
-			field: 'allowOther',
-			name: i18n.t('allow_other'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-				default_value: false,
-			}
-		},
-		{
-			field: 'iconOff',
-			name: i18n.t('icon_off'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'icon',
-				default_value: 'check_box_outline_blank',
-			}
+					],
+				},
+			},
 		},
 		{
 			field: 'iconOn',
@@ -68,8 +48,22 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-				default_value: 'check_box',
-			}
+			},
+			schema: {
+				default_value: 'radio_button_checked',
+			},
+		},
+		{
+			field: 'iconOff',
+			name: i18n.t('icon_off'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'icon',
+			},
+			schema: {
+				default_value: 'radio_button_unchecked',
+			},
 		},
 		{
 			field: 'color',
@@ -78,8 +72,25 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'color',
-				default_value: 'var(--primary)',
-			}
+			},
+			schema: {
+				default_value: '#2f80ed',
+			},
+		},
+		{
+			field: 'allowOther',
+			name: i18n.t('allow_other'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('enable_custom_values'),
+				},
+			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 }));

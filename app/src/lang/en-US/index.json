@@ -209,8 +209,12 @@
 	"last_page": "Last Page",
 	"last_login": "Last Login",
 
-	"choose_a_collection": "Choose a Collection...",
+	"choose_a_collection": "Choose a collection...",
 	"choose_a_field": "Choose a Field...",
+
+	"text_shown_when_no_value": "Text shown when no value...",
+
+	"enable_custom_values": "Enable custom values",
 
 	"submit": "Submit",
 
@@ -575,6 +579,8 @@
 
 	"all_activity": "All Activity",
 
+	"badge": "Badge",
+
 	"none": "None",
 
 	"choose_a_color": "Choose a Color...",
@@ -636,8 +642,8 @@
 	"subdued": "Subdued",
 
 	"toggle": "Toggle",
-	"icon_on": "Icon (On)",
-	"icon_off": "Icon (Off)",
+	"icon_on": "Icon On",
+	"icon_off": "Icon Off",
 	"label": "Label",
 	"wysiwyg": "WYSIWYG",
 	"toolbar": "Toolbar",
