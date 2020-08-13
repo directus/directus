@@ -37,6 +37,11 @@ const fakeFilesField: Field = {
 };
 
 function getMetaDefault(collection: string, field: string): Field['meta'] {
+	/**
+	 * @TODO
+	 *
+	 * Get rid of this. Have it work without any meta
+	 */
 	return {
 		id: -1,
 		collection,
