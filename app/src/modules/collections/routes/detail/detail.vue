@@ -1,21 +1,30 @@
 <template>
-	<collections-not-found v-if="error || (collectionInfo.single === true && primaryKey !== null)" />
+	<collections-not-found v-if="error || (collectionInfo.meta.singleton === true && primaryKey !== null)" />
+
 	<private-view v-else :title="title">
-		<template #title v-if="isNew === false && isBatch === false && collectionInfo.display_template">
+		<template v-if="collectionInfo.meta.singleton === true">
+			<h1 class="type-title">
+				{{ collectionInfo.name }}
+			</h1>
+		</template>
+
+		<template #title v-else-if="isNew === false && isBatch === false && collectionInfo.meta.display_template">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
+
 			<h1 class="type-title" v-else>
 				<render-template
 					:collection="collectionInfo.collection"
 					:item="templateValues"
-					:template="collectionInfo.display_template"
+					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
 		</template>
 
 		<template #title-outer:prepend>
-			<v-button v-if="collectionInfo.single" class="header-icon" rounded icon secondary disabled>
+			<v-button v-if="collectionInfo.meta.singleton === true" class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
+
 			<v-button
 				v-else
 				class="header-icon"
@@ -30,7 +39,7 @@
 			</v-button>
 		</template>
 
-		<template #headline>
+		<template #headline v-if="collectionInfo.meta.singleton === false">
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
@@ -44,7 +53,7 @@
 						v-tooltip.bottom="$t('delete_forever')"
 						:disabled="item === null"
 						@click="on"
-						v-if="collectionInfo.single === false"
+						v-if="collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete_forever" />
 					</v-button>
@@ -73,7 +82,7 @@
 						v-tooltip.bottom="$t('delete')"
 						:disabled="item === null"
 						@click="on"
-						v-if="collectionInfo.single === false"
+						v-if="collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete" />
 					</v-button>
@@ -105,7 +114,7 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="collectionInfo.single !== true"
+						v-if="collectionInfo.meta.singleton !== true"
 						:disabled="hasEdits === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -146,14 +155,14 @@
 				<div class="format-markdown" v-html="marked($t('page_help_collections_detail'))" />
 			</drawer-detail>
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false"
+				v-if="collectionInfo.meta.singleton === false && isBatch === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-drawer-detail
-				v-if="isBatch === false && isNew === false"
+				v-if="collectionInfo.meta.singleton === false && isBatch === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 			/>

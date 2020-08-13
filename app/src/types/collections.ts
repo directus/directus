@@ -10,8 +10,7 @@ export interface CollectionRaw {
 	meta: {
 		note: string | null;
 		hidden: boolean;
-		single: boolean;
-		managed: boolean;
+		singleton: boolean;
 		icon: string | null;
 		translation: Translation[] | null;
 		display_template: string | null;
