@@ -5,6 +5,7 @@
         "target": "es6",
         "moduleResolution": "node",
         "sourceMap": false,
+		"skipLibCheck": true,
 		"outDir": "dist",
 		"rootDir": "src",
 		"strict": true,
@@ -12,5 +13,9 @@
 			"es2019"
 		],
 		"skipLibCheck": true
-	}
+	},
+	"exclude": [
+		"node_modules",
+		"tests"
+	]
 }

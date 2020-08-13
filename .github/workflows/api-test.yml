@@ -1,0 +1,64 @@
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+name: api-test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+        - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      # postgres:
+      #   image: postgres
+      #   env:
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
+      #   ports:
+      #     - 5432:5432
+      #   options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Database
+      run: |
+        sudo apt-get install -y mysql-client
+        cd api/tests/openapi
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < mysql.sql
+        mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
+
+    # - name: Setup Database
+    #   run: |
+    #     cd api/tests/openapi
+    #     PGPASSWORD=postgres psql -h localhost -U postgres -f postgres.sql
+      
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.2
+    
+    - name: Installation & Setup
+      run: |
+        npm install
+        npm run clean
+        npm run bootstrap
+        cd api
+        npm install
+        mv ./tests/openapi/mysql.env ./.env
+        npm run build
+        npm run start
+    
+    - name: Test
+      run: |
+        cd api
+        npm run tests:openapi
