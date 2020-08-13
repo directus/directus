@@ -71,6 +71,7 @@
     "@slynova/flydrive-s3": "^1.0.2",
     "argon2": "^0.26.2",
     "atob": "^2.1.2",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "busboy": "^0.3.1",
     "camelcase": "^6.0.0",
