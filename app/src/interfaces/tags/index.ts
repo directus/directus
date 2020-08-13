@@ -9,22 +9,13 @@ export default defineInterface(({ i18n }) => ({
 	types: ['json'],
 	options: [
 		{
-			field: 'placeholder',
-			name: i18n.t('placeholder'),
+			field: 'presets',
+			name: i18n.t('presets'),
 			type: 'string',
 			meta: {
-				width: 'half',
-				interface: 'text-input',
-			}
-		},
-		{
-			field: 'lowercase',
-			name: i18n.t('lowercase'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-			}
+				width: 'full',
+				interface: 'tags',
+			},
 		},
 		{
 			field: 'alphabetize',
@@ -33,7 +24,43 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
-			}
+				options: {
+					label: i18n.t('force_alphabetical_order'),
+				},
+			},
+		},
+		{
+			field: 'lowercase',
+			name: i18n.t('lowercase'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('force_lowercase'),
+				},
+			},
+		},
+		{
+			field: 'placeholder',
+			name: i18n.t('placeholder'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'text-input',
+			},
+		},
+		{
+			field: 'allowCustom',
+			name: i18n.t('allow_other'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('enable_custom_values'),
+				},
+			},
 		},
 		{
 			field: 'iconLeft',
@@ -42,7 +69,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'iconRight',
@@ -51,25 +78,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
-		},
-		{
-			field: 'presets',
-			name: i18n.t('presets'),
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'text-input',
-			}
-		},
-		{
-			field: 'allowCustom',
-			name: i18n.t('allow_custom'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-			}
+			},
 		},
 	],
 }));

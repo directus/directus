@@ -49,7 +49,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('enables_custom_value'),
+					label: i18n.t('enable_custom_values'),
 				},
 			},
 			schema: {

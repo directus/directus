@@ -127,7 +127,6 @@
 
 	"next": "Next",
 	"previous": "Previous",
-	"create_field": "Create Field",
 	"field_name": "Field Name",
 	"database_column_name": "Database Column Name",
 	"translations": "Translations",
@@ -343,8 +342,6 @@
 	"select_item": "Select Item",
 
 	"no_items": "No items",
-
-	"enables_custom_value": "Enables custom value option",
 
 	"disabled": "Disabled",
 	"information": "Information",
@@ -572,6 +569,12 @@
 	},
 
 	"loading": "Loading...",
+
+	"alphabetize": "Alphabetize",
+	"force_alphabetical_order": "Force alphabetical order",
+
+	"lowercase": "Lowercase",
+	"force_lowercase": "Force lowercase",
 
 	"search_for_icon": "Search for icon...",
 
