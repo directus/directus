@@ -146,7 +146,7 @@ export default defineComponent({
 		};
 
 		function setWidth(width: string) {
-			fieldsStore.updateField(props.field.collection, props.field.field, { system: { width } });
+			fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
 		}
 
 		function useDeleteField() {

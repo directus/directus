@@ -38,11 +38,11 @@
 				@click:row="navigateToRole"
 			>
 				<template #item.icon="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ system: [1, 2].includes(item.id) }" />
+					<v-icon class="icon" :name="item.icon" :class="{ meta: [1, 2].includes(item.id) }" />
 				</template>
 
 				<template #item.name="{ item }">
-					<span class="name" :class="{ system: [1, 2].includes(item.id) }">
+					<span class="name" :class="{ meta: [1, 2].includes(item.id) }">
 						{{ item.name }}
 					</span>
 				</template>

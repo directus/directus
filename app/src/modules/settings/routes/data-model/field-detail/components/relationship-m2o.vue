@@ -115,7 +115,7 @@ export default defineComponent({
 							{
 								field: '',
 								collection: state.relations[0].one_collection,
-								system: {
+								meta: {
 									special: 'o2m',
 									interface: 'one-to-many',
 								},

@@ -12,7 +12,7 @@ export default defineDisplay(({ i18n }) => ({
 			field: 'icon',
 			name: i18n.t('icon'),
 			type: 'string',
-			system: {
+			meta: {
 				interface: 'icon',
 				width: 'half',
 			},

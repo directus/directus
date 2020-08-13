@@ -21,10 +21,10 @@ export default defineDisplay(({ i18n }) => ({
 			field: 'template',
 			name: i18n.t('display_template'),
 			type: 'string',
-			system: {
+			meta: {
 				interface: 'text-input',
 				width: 'full',
-			}
+			},
 		},
 	],
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],

@@ -12,11 +12,11 @@ export default defineDisplay(({ i18n }) => ({
 			field: 'circle',
 			name: i18n.t('circle'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
-			}
+			},
 		},
 	],
 	fields: ['id', 'type', 'title'],

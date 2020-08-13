@@ -12,8 +12,7 @@ export default defineDisplay(({ i18n }) => ({
 			field: 'display',
 			name: i18n.t('display'),
 			type: 'string',
-			system: {
-				default_value: 'avatar',
+			meta: {
 				interface: 'dropdown',
 				options: [
 					{
@@ -28,18 +27,21 @@ export default defineDisplay(({ i18n }) => ({
 						text: i18n.t('both'),
 						value: 'both',
 					},
-				]
-			}
+				],
+			},
+			schema: {
+				default_value: 'avatar',
+			},
 		},
 		{
 			field: 'circle',
 			name: i18n.t('circle'),
 			type: 'boolean',
-			system: {
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 				default_value: false,
-			}
+			},
 		},
 	],
 	fields: ['id', 'avatar.id', 'first_name', 'last_name'],
