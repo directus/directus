@@ -52,6 +52,8 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 
 			const compareValue: any = Object.values(value)[0];
 
+			if (compareValue === '') continue;
+
 			if (operator === '_eq') {
 				dbQuery.where({ [key]: compareValue });
 			}
@@ -91,12 +93,47 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 				dbQuery.whereIn(key, value as string[]);
 			}
 
+			if (operator === '_nin') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery.whereNotIn(key, value as string[]);
+			}
+
 			if (operator === '_null') {
 				dbQuery.whereNull(key);
 			}
 
 			if (operator === '_nnull') {
 				dbQuery.whereNotNull(key);
+			}
+
+			if (operator === '_empty') {
+				dbQuery.andWhere(query => {
+					query.whereNull(key);
+					query.orWhere(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty') {
+				dbQuery.andWhere(query => {
+					query.whereNotNull(key);
+					query.orWhere(key, '!=', '');
+				});
+			}
+
+			if (operator === '_between') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery.whereBetween(key, value);
+			}
+
+			if (operator === '_nbetween') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery.whereNotBetween(key, value);
 			}
 		}
 
