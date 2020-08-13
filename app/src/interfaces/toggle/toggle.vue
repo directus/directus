@@ -24,7 +24,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.t('active'),
+			default: i18n.t('enabled'),
 		},
 		iconOn: {
 			type: String,
