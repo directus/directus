@@ -23,7 +23,7 @@
 		/>
 
 		<v-notice v-else type="warning">
-			{{ $t('interface_not_found', { interface: field.interface }) }}
+			{{ $t('interface_not_found', { interface: field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>

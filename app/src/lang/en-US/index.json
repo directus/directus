@@ -711,7 +711,7 @@
 		"directionality": "Directionality"
 	},
 	"custom_formats": "Custom Formats",
-	"tinymce_options_override": "TinyMCE Options Override",
+	"options_override": "Options Override",
 
 	"dropdown": "Dropdown",
 	"dropdown_multiselect": "Dropdown (Multiselect)",

@@ -12,9 +12,7 @@ export default defineInterface(({ i18n }) => ({
 			field: 'toolbar',
 			name: i18n.t('toolbar'),
 			type: 'json',
-			meta: {
-				width: 'full',
-				interface: 'checkboxes',
+			schema: {
 				default_value: [
 					'bold',
 					'italic',
@@ -33,6 +31,10 @@ export default defineInterface(({ i18n }) => ({
 					'code',
 					'fullscreen',
 				],
+			},
+			meta: {
+				width: 'half',
+				interface: 'dropdown-multiselect',
 				options: {
 					choices: [
 						{
@@ -213,7 +215,7 @@ export default defineInterface(({ i18n }) => ({
 						},
 					],
 				},
-			}
+			},
 		},
 		{
 			field: 'font',
@@ -230,7 +232,7 @@ export default defineInterface(({ i18n }) => ({
 						{ text: i18n.t('serif'), value: 'serif' },
 					],
 				},
-			}
+			},
 		},
 		{
 			field: 'customFormats',
@@ -240,26 +242,30 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'code',
 				options: {
 					language: 'json',
-					template: JSON.stringify({
-						title: 'My Custom Format',
-						inline: 'span',
-						classes: 'custom-wrapper',
-						styles: { color: '#00ff00', 'font-size': '20px' },
-						attributes: { title: 'My Custom Wrapper' },
-					}, null, 4),
+					template: JSON.stringify(
+						{
+							title: 'My Custom Format',
+							inline: 'span',
+							classes: 'custom-wrapper',
+							styles: { color: '#00ff00', 'font-size': '20px' },
+							attributes: { title: 'My Custom Wrapper' },
+						},
+						null,
+						4
+					),
 				},
-			}
+			},
 		},
 		{
 			field: 'tinymceOverrides',
-			name: i18n.t('tinymce_options_override'),
+			name: i18n.t('options_override'),
 			type: 'json',
 			meta: {
 				interface: 'code',
 				options: {
 					language: 'json',
 				},
-			}
+			},
 		},
 	],
 }));
