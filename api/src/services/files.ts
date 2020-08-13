@@ -68,6 +68,8 @@ export default class FilesService extends ItemsService {
 			await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
 		} else {
 			await storage.disk(data.storage).put(payload.filename_disk, stream);
+			const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+			payload.filesize = size;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
