@@ -24,7 +24,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 		.where({ collection: req.collection })
 		.first();
 
-	req.singleton = collectionInfo?.singleton || false;
+	req.singleton = collectionInfo?.singleton === true || collectionInfo?.singleton === 1;
 
 	return next();
 });
