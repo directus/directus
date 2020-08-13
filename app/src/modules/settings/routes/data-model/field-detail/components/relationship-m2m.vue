@@ -8,17 +8,36 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
-				<v-select :items="collectionItems" v-model="junctionCollection" />
+				<v-select
+					:items="collectionItems"
+					v-model="junctionCollection"
+					:placeholder="$t('choose_a_collection')"
+				/>
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :disabled="type === 'files'" :items="collectionItems" v-model="relations[1].one_collection" />
+				<v-select
+					:disabled="type === 'files'"
+					:items="collectionItems"
+					v-model="relations[1].one_collection"
+					:placeholder="$t('choose_a_collection')"
+				/>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
-			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[0].many_field" />
+			<v-select
+				:disabled="!junctionCollection"
+				:items="junctionFields"
+				v-model="relations[0].many_field"
+				:placeholder="$t('choose_a_field')"
+			/>
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-select :disabled="!junctionCollection" :items="junctionFields" v-model="relations[1].many_field" />
+			<v-select
+				:disabled="!junctionCollection"
+				:items="junctionFields"
+				v-model="relations[1].many_field"
+				:placeholder="$t('choose_a_field')"
+			/>
 			<v-input disabled :value="relations[1].one_primary" />
 			<v-icon name="arrow_forward" />
 			<v-icon name="arrow_backward" />

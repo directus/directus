@@ -6,6 +6,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('many_to_many'),
 	icon: 'note_add',
 	component: InterfaceManyToMany,
+	relationship: 'm2m',
 	types: ['alias'],
 	options: [],
 }));

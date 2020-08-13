@@ -179,8 +179,7 @@ function initLocalStore(
 					many_primary: '',
 					one_collection: type === 'files' ? 'directus_files' : '',
 					one_field: null,
-					one_primary:
-						type === 'files' ? fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field : '',
+					one_primary: type === 'files' ? 'id' : '',
 				},
 			];
 		}
@@ -212,6 +211,15 @@ function initLocalStore(
 			() => state.relations[1].many_field,
 			() => {
 				state.relations[0].junction_field = state.relations[1].many_field;
+			}
+		);
+
+		watch(
+			() => state.relations[1].one_collection,
+			() => {
+				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+					state.relations[1].one_collection
+				)?.field;
 			}
 		);
 	}
