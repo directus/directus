@@ -3,8 +3,7 @@ import DisplayCollection from './collection';
 import DisplayDateTime from './datetime';
 import DisplayFile from './file';
 import DisplayFilesize from './filesize';
-import DisplayFormattedText from './formatted-text';
-import DisplayFormatTitle from './format-title/';
+import DisplayFormattedValue from './formatted-value';
 import DisplayIcon from './icon/';
 import DisplayImage from './image';
 import DisplayMimeType from './mime-type';
@@ -18,13 +17,12 @@ import DisplayUser from './user';
 
 export const displays = [
 	DisplayRaw,
+	DisplayFormattedValue,
 	DisplayBadge,
 	DisplayCollection,
 	DisplayDateTime,
 	DisplayFile,
 	DisplayFilesize,
-	DisplayFormattedText,
-	DisplayFormatTitle,
 	DisplayIcon,
 	DisplayImage,
 	DisplayMimeType,

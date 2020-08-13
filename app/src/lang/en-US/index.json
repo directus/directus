@@ -420,6 +420,12 @@
 
 	"enabled": "Enabled",
 
+	"use_bold_style": "Use bold style",
+
+	"formatted_value": "Formatted Value",
+	"format_title": "Format Title",
+	"auto_format_casing": "Auto-format casing",
+
 	"errors": {
 		"3": "Only super admins have access to this",
 		"4": "Super Admin Token not provided",
@@ -641,7 +647,6 @@
 	"status_dot": "Status (Dot)",
 	"status_badge": "Status (Badge)",
 	"tags": "Tags",
-	"formatted_text": "Formatted Text",
 	"format_text": "Format Text",
 
 	"bold": "Bold",

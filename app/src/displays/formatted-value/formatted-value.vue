@@ -1,20 +1,14 @@
 <template>
-	<span
-		class="display-formatted-text"
-		:class="[
-			{
-				bold,
-				subdued,
-			},
-			font,
-		]"
-	>
+	<value-null v-if="!displayValue" />
+
+	<span v-else class="display-formatted-text" :class="[{ bold }, font]" :style="{ color }">
 		{{ displayValue }}
 	</span>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -22,17 +16,17 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		interfaceOptions: {
-			type: Object,
-			default: null,
+		formatTitle: {
+			type: Boolean,
+			default: true,
 		},
 		bold: {
 			type: Boolean,
 			default: false,
 		},
-		subdued: {
-			type: Boolean,
-			default: false,
+		color: {
+			type: String,
+			default: null,
 		},
 		font: {
 			type: String,
@@ -41,7 +35,17 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayValue = computed(() => props.value.replace(/(<([^>]+)>)/gi, ''));
+		const displayValue = computed(() => {
+			if (!props.value) return null;
+			let value = String(props.value);
+			value = props.value.replace(/(<([^>]+)>)/gi, '');
+
+			if (props.formatTitle) {
+				value = formatTitle(value);
+			}
+
+			return value;
+		});
 
 		return { displayValue };
 	},
