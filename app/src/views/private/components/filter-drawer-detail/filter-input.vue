@@ -6,7 +6,7 @@
 				:value="csvValue[0]"
 				@input="setCSV(0, $event)"
 				:disabled="disabled"
-				:placeholder="$t('upper_limit')"
+				:placeholder="$t('lower_limit')"
 			>
 				<template #append>
 					<v-icon name="vertical_align_top" />
@@ -17,7 +17,7 @@
 				:value="csvValue[1]"
 				@input="setCSV(1, $event)"
 				:disabled="disabled"
-				:placeholder="$t('lower_limit')"
+				:placeholder="$t('upper_limit')"
 			>
 				<template #append>
 					<v-icon name="vertical_align_bottom" />
