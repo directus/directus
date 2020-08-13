@@ -109,7 +109,7 @@
 	"allow_null": "Allow NULL",
 	"allow_null_label": "Can be set to \"NULL\"",
 
-	"interface_setup_title": "How will users view or interact with this field?",
+	"interface_setup_title": "How will users interact with this field?",
 
 	"field_setup_title": "What type of field are you creating?",
 	"relationship_setup_title": "What kind of relationship are you creating?",
