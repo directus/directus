@@ -235,19 +235,16 @@ export default defineComponent({
 			async function importFromURL() {
 				loading.value = true;
 
-				/**
-				 * @TODO add /files/import endpoint to API + use it here
-				 */
-
 				try {
-					const response = await api.post(`/files`, {
-						data: url.value,
+					const response = await api.post(`/files/import`, {
+						url: url.value,
 					});
 
 					file.value = response.data.data;
 
 					activeDialog.value = null;
 					url.value = '';
+					emit('input', file.value?.id);
 				} catch (err) {
 					error.value = err;
 				} finally {
