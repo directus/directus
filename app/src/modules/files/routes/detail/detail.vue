@@ -331,17 +331,28 @@ export default defineComponent({
 		}
 
 		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: i18n.t('file_library'),
-					to: {
-						path: `/files/`,
-						query: {
-							folder: item?.value?.folder,
+			const breadcrumb = computed(() => {
+				if (!item?.value?.folder) {
+					return [
+						{
+							name: i18n.t('file_library'),
+							to: '/files',
+						},
+					];
+				}
+
+				return [
+					{
+						name: i18n.t('file_library'),
+						to: {
+							path: `/files/`,
+							query: {
+								folder: item?.value?.folder,
+							},
 						},
 					},
-				},
-			]);
+				];
+			});
 
 			return { breadcrumb };
 		}
