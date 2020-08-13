@@ -10,7 +10,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	decimal: 'numeric',
 	float: 'numeric',
 	integer: 'numeric',
-	json: 'json',
+	json: 'code',
 	string: 'text-input',
 	text: 'textarea',
 	time: 'datetime',
