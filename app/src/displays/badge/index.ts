@@ -16,6 +16,9 @@ export default defineDisplay(({ i18n }) => ({
 				interface: 'color',
 				width: 'half',
 			},
+			schema: {
+				default_value: '#263238',
+			},
 		},
 		{
 			field: 'defaultBackground',
@@ -24,6 +27,9 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				interface: 'color',
 				width: 'half',
+			},
+			schema: {
+				default_value: '#eceff1',
 			},
 		},
 		{

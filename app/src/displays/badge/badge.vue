@@ -28,11 +28,11 @@ export default defineComponent({
 		},
 		defaultBackground: {
 			type: String,
-			required: true,
+			default: '#eceff1',
 		},
 		defaultForeground: {
 			type: String,
-			required: true,
+			default: '#263238',
 		},
 	},
 	setup(props) {
