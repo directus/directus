@@ -29,17 +29,17 @@
 		<v-divider />
 
 		<v-list-item to="/files/all" exact>
-			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item to="/files/mine" exact>
-			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="face" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('my_files') }}</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item to="/files/recent" exact>
-			<v-list-item-icon><v-icon name="folder_special" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('recent_files') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
