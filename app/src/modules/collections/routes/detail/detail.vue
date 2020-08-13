@@ -2,7 +2,7 @@
 	<collections-not-found v-if="error || (collectionInfo.meta.singleton === true && primaryKey !== null)" />
 
 	<private-view v-else :title="title">
-		<template v-if="collectionInfo.meta.singleton === true">
+		<template #title v-if="collectionInfo.meta.singleton === true">
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
@@ -133,7 +133,7 @@
 			:initial-values="item"
 			:collection="collection"
 			:batch-mode="isBatch"
-			:primary-key="primaryKey"
+			:primary-key="primaryKey || '+'"
 			v-model="edits"
 		/>
 
