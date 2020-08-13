@@ -18,19 +18,14 @@ export default defineInterface(({ i18n }) => ({
 	types: ['string', 'json', 'text'],
 	options: [
 		{
-			field: 'template',
-			name: i18n.t('template'),
-			type: 'text',
+			field: 'language',
+			name: i18n.t('language'),
+			type: 'string',
 			meta: {
-				width: 'full',
-				interface: 'code',
-				options: {
-					language: 'text/plain'
-				}
+				width: 'half',
+				interface: 'dropdown',
+				options: { choices },
 			},
-			schema: {
-				default_value: null,
-			}
 		},
 		{
 			field: 'lineNumber',
@@ -42,17 +37,22 @@ export default defineInterface(({ i18n }) => ({
 			},
 			schema: {
 				default_value: false,
-			}
+			},
 		},
 		{
-			field: 'language',
-			name: i18n.t('language'),
-			type: 'string',
+			field: 'template',
+			name: i18n.t('template'),
+			type: 'text',
 			meta: {
-				width: 'half',
-				interface: 'dropdown',
-				options: { choices },
+				width: 'full',
+				interface: 'code',
+				options: {
+					language: 'text/plain',
+				},
 			},
-		}
+			schema: {
+				default_value: null,
+			},
+		},
 	],
 }));

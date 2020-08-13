@@ -2,18 +2,9 @@
 	<div class="interface-code codemirror-custom-styles">
 		<textarea ref="codemirrorEl" :value="stringValue" />
 
-		<v-button v-if="template" v-tooltip="$t('interfaces.code.fill_template')" @click="fillTemplate">
+		<v-button small icon secondary v-if="template" v-tooltip.left="$t('fill_template')" @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
-
-		<small v-if="language" class="line-count type-note">
-			{{
-				$tc('loc', lineCount, {
-					count: lineCount,
-					lang: formatTitle(language),
-				})
-			}}
-		</small>
 	</div>
 </template>
 
@@ -50,7 +41,7 @@ export default defineComponent({
 			default: null,
 		},
 		template: {
-			type: [Object, Array],
+			type: String,
 			default: null,
 		},
 		lineNumber: {
@@ -60,6 +51,10 @@ export default defineComponent({
 		language: {
 			type: String,
 			default: 'text/plain',
+		},
+		type: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -72,13 +67,14 @@ export default defineComponent({
 
 				await getImports(cmOptions.value);
 				codemirror.value = CodeMirror.fromTextArea(codemirrorElVal, cmOptions.value);
-				codemirror.value.setValue(stringValue.value || props.template || '');
+				codemirror.value.setValue(stringValue.value || '');
 				await setLanguage();
 				codemirror.value.on('change', (cm) => {
 					const content = cm.getValue();
-					try {
+
+					if (props.type === 'json') {
 						emit('input', JSON.parse(content));
-					} catch {
+					} else {
 						emit('input', content);
 					}
 				});
@@ -92,7 +88,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value == null) return '';
 
-			if (typeof props.value === 'object') {
+			if (props.type === 'json') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -105,6 +101,12 @@ export default defineComponent({
 				setLanguage();
 			}
 		);
+
+		watch(stringValue, () => {
+			if (codemirror.value?.getValue() !== stringValue.value) {
+				codemirror.value?.setValue(stringValue.value || '');
+			}
+		});
 
 		async function setLanguage() {
 			if (codemirror.value) {
@@ -153,6 +155,8 @@ export default defineComponent({
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					await import(`codemirror/addon/lint/${linter}-lint.js`);
 					codemirror.value.setOption('lint', (CodeMirror as any).lint[linter]);
+				} else if (lang === 'text/plain') {
+					codemirror.value.setOption('mode', { name: null });
 				} else {
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					codemirror.value.setOption('mode', { name: lang });
@@ -258,15 +262,7 @@ export default defineComponent({
 		};
 
 		function fillTemplate() {
-			if (props.template instanceof Object || props.template instanceof Array) {
-				return emit('input', JSON.stringify(props.template, null, 4));
-			}
-
-			try {
-				emit('input', JSON.parse(props.template));
-			} catch (e) {
-				emit('input', props.template);
-			}
+			emit('input', props.template);
 		}
 	},
 });

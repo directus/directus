@@ -44,7 +44,7 @@
 
 			<v-list-item
 				v-for="item in _items"
-				:key="item.value"
+				:key="item.text + item.value"
 				:active="multiple ? (value || []).includes(item.value) : value === item.value"
 				:disabled="item.disabled"
 				@click="multiple ? null : $emit('input', item.value)"
