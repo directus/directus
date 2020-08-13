@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
+import formatTitle from '@directus/format-title';
 
 type Choice = {
 	value: string;
@@ -42,7 +43,7 @@ export default defineComponent({
 		});
 
 		const displayValue = computed(() => {
-			if (!currentChoice.value) return props.value;
+			if (!currentChoice.value) return formatTitle(props.value);
 			return currentChoice.value.text;
 		});
 

@@ -211,6 +211,8 @@
 
 	"fill_template": "Fill with Template Value",
 
+	"a_unique_column_name": "A unique column name...",
+
 	"choose_a_collection": "Choose a collection...",
 	"choose_a_field": "Choose a Field...",
 
@@ -415,6 +417,8 @@
 
 	"select_an_item": "Select an item...",
 	"edit": "Edit",
+
+	"enabled": "Enabled",
 
 	"errors": {
 		"3": "Only super admins have access to this",
