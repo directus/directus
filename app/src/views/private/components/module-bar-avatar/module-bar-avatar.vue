@@ -57,7 +57,7 @@ export default defineComponent({
 			const id = userStore.state.currentUser?.id;
 			const role = userStore.state.currentUser?.role?.id;
 
-			return `/users/${role}/${id}`;
+			return `/users/${id}`;
 		});
 
 		const signOutLink = computed<string>(() => {
