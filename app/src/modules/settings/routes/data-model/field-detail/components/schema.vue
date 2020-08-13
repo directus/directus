@@ -5,7 +5,14 @@
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">{{ $t('key') }}</div>
-				<v-input :disabled="isExisting" autofocus class="monospace" v-model="fieldData.field" db-safe />
+				<v-input
+					:disabled="isExisting"
+					autofocus
+					class="monospace"
+					v-model="fieldData.field"
+					db-safe
+					:placeholder="$t('a_unique_column_name')"
+				/>
 			</div>
 
 			<div class="field">
