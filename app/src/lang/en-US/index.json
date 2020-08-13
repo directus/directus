@@ -649,6 +649,9 @@
 	"tags": "Tags",
 	"format_text": "Format Text",
 
+	"outline": "Outline",
+	"use_outline_variant": "Use the outline variant",
+
 	"bold": "Bold",
 	"subdued": "Subdued",
 
