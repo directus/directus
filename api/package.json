@@ -55,7 +55,7 @@
     "build": "rm -rf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
     "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
     "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
-    "tests:openapi": "cd tests/openapi && node setup.js && curl -LJO https://github.com/directus/SDK-Generator/releases/latest/download/openapi.json --output openapi.json && jest --forceExit",
+    "tests:openapi": "cd tests/openapi && node setup.js && curl -LJO https://github.com/directus/SDK-Generator/releases/latest/download/openapi.json --output openapi.json && jest --detectOpenHandles",
     "prepublishOnly": "npm run build"
   },
   "files": [
