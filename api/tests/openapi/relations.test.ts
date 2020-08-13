@@ -19,8 +19,10 @@ describe('Relations', function () {
 		const res = await axios.post(`${api}/relations?access_token=admin`, {
 			many_collection: 'houses',
 			many_field: 'street',
+			many_primary: "id",
 			one_collection: 'streets',
 			one_field: null,
+			one_primary: "id"
 		});
 
 		relation_id = res.data.data.id;

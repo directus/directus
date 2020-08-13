@@ -17,10 +17,14 @@ describe('Permissions', function () {
 
 	it('POST /permissions', async function () {
 		const res = await axios.post(`${api}/permissions?access_token=admin`, {
-			collection: 'houses',
-			role: '2f24211d-d928-469a-aea3-3c8f53d4e426',
-			read: 'mine',
-		});
+			"role": "2f24211d-d928-469a-aea3-3c8f53d4e426",
+			"collection": "directus_settings",
+			"operation": "read",
+			"permissions": "{}",
+			"presets": null,
+			"fields": "project_name,project_logo,project_color,public_foreground,public_background,public_note",
+			"limit": null
+		  });
 
 		permission_id = res.data.data.id;
 	
