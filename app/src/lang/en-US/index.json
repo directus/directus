@@ -344,6 +344,8 @@
 
 	"no_items": "No items",
 
+	"enables_custom_value": "Enables custom value option",
+
 	"disabled": "Disabled",
 	"information": "Information",
 
@@ -532,8 +534,8 @@
 	"maximum_value": "Maximum Value",
 	"placeholder": "Placeholder",
 	"step_interval": "Step Interval",
-	"icon_left": "Icon (Left)",
-	"icon_right": "Icon (Right)",
+	"icon_left": "Icon Left",
+	"icon_right": "Icon Right",
 	"font_family": "Font Family",
 	"font": "Font",
 	"numeric": "Numeric",
@@ -912,7 +914,6 @@
   "contains": "Contains",
   "continue": "Continue",
   "continue_as": "<b>{name}</b> is already authenticated for this project. If you recognize this account, please press continue.",
-  "create_role": "Create Role",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",

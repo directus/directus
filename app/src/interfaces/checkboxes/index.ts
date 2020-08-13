@@ -4,7 +4,7 @@ import InterfaceCheckboxes from './checkboxes.vue';
 export default defineInterface(({ i18n }) => ({
 	id: 'checkboxes',
 	name: i18n.t('checkboxes'),
-	icon: 'radio_button_checked',
+	icon: 'check_box',
 	component: InterfaceCheckboxes,
 	types: ['json'],
 	options: [
@@ -24,7 +24,7 @@ export default defineInterface(({ i18n }) => ({
 							name: i18n.t('text'),
 							meta: {
 								interface: 'text-input',
-							}
+							},
 						},
 						{
 							field: 'value',
@@ -33,13 +33,13 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								options: {
-									font: 'monospace'
+									font: 'monospace',
 								},
-							}
+							},
 						},
-					]
-				}
-			}
+					],
+				},
+			},
 		},
 		{
 			field: 'allowOther',
@@ -48,34 +48,13 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
+				options: {
+					label: i18n.t('enables_custom_value'),
+				},
 			},
 			schema: {
 				default_value: false,
-			}
-		},
-		{
-			field: 'iconOff',
-			name: i18n.t('icon_off'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'icon',
 			},
-			schema: {
-				default_value: 'check_box_outline_blank',
-			}
-		},
-		{
-			field: 'iconOn',
-			name: i18n.t('icon_on'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'icon',
-			},
-			schema: {
-				default_value: 'check_box',
-			}
 		},
 		{
 			field: 'color',
@@ -87,7 +66,31 @@ export default defineInterface(({ i18n }) => ({
 			},
 			schema: {
 				default_value: '#2f80ed',
-			}
+			},
+		},
+		{
+			field: 'iconOn',
+			name: i18n.t('icon_on'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'icon',
+			},
+			schema: {
+				default_value: 'check_box',
+			},
+		},
+		{
+			field: 'iconOff',
+			name: i18n.t('icon_off'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'icon',
+			},
+			schema: {
+				default_value: 'check_box_outline_blank',
+			},
 		},
 	],
 }));
