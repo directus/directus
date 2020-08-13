@@ -24,7 +24,7 @@ describe('Permissions', function () {
 
 		permission_id = res.data.data.id;
 
-		console.log(res);
+		console.error(res);
 		
 
 		expect(res.status).toEqual(200);

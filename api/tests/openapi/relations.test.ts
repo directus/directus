@@ -23,7 +23,7 @@ describe('Relations', function () {
 			one_field: null,
 		});
 
-		console.log(res);
+		console.error(res);
 		
 
 		relation_id = res.data.data.id;
