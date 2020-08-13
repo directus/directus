@@ -16,7 +16,7 @@ describe('Files', function () {
 		expect(res).toSatisfyApiSpec();
 	});
 
-	var file_id: number;
+	var file_id: string;
 
 	it('POST /files', async function () {
 		const formData = new FormData();

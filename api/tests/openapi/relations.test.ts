@@ -23,6 +23,9 @@ describe('Relations', function () {
 			one_field: null,
 		});
 
+		console.log(res);
+		
+
 		relation_id = res.data.data.id;
 
 		expect(res.status).toEqual(200);
