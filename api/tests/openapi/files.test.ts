@@ -4,6 +4,7 @@ import path from 'path';
 import { api } from './api';
 import { createReadStream } from 'fs'
 import FormData from 'form-data'
+import fs from 'fs'
 
 
 jestOpenAPI(path.join(__dirname, 'openapi.json'));
@@ -27,11 +28,13 @@ describe('Files', function () {
 		});
 
 		
-
 		file_id = res.data.data.id;
-
+		
 		expect(res.status).toEqual(200);
 		expect(res).toSatisfyApiSpec();
+
+		expect(fs.existsSync(`../../uploads/${res.data.data.filename_disk}`)).toBe(true)
+
 	});
 
 	it('GET /files/{id}', async function () {
@@ -50,10 +53,10 @@ describe('Files', function () {
 		expect(res).toSatisfyApiSpec();
 	});
 
-	it('DELETE /files/{id}', async function () {
-		const res = await axios.delete(`${api}/files/${file_id}?access_token=admin`);
+	// it('DELETE /files/{id}', async function () {
+	// 	const res = await axios.delete(`${api}/files/${file_id}?access_token=admin`);
 
-		expect(res.status).toEqual(200);
-		expect(res).toSatisfyApiSpec();
-	});
+	// 	expect(res.status).toEqual(200);
+	// 	expect(res).toSatisfyApiSpec();
+	// });
 });
