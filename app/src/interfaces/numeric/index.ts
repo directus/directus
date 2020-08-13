@@ -9,22 +9,13 @@ export default defineInterface(({ i18n }) => ({
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
 	options: [
 		{
-			field: 'placeholder',
-			name: i18n.t('placeholder'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'text-input',
-			}
-		},
-		{
 			field: 'min',
 			name: i18n.t('minimum_value'),
 			type: 'integer',
 			meta: {
 				width: 'half',
 				interface: 'numeric',
-			}
+			},
 		},
 		{
 			field: 'max',
@@ -33,7 +24,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'numeric',
-			}
+			},
 		},
 		{
 			field: 'step',
@@ -42,7 +33,16 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'numeric',
-			}
+			},
+		},
+		{
+			field: 'placeholder',
+			name: i18n.t('placeholder'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'text-input',
+			},
 		},
 		{
 			field: 'iconLeft',
@@ -51,7 +51,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'iconRight',
@@ -60,7 +60,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'font',
@@ -70,13 +70,13 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					items: [
-						{ itemText: i18n.t('sans_serif'), itemValue: 'sans-serif' },
-						{ itemText: i18n.t('monospace'), itemValue: 'monospace' },
-						{ itemText: i18n.t('serif'), itemValue: 'serif' },
+					choices: [
+						{ text: i18n.t('sans_serif'), value: 'sans-serif' },
+						{ text: i18n.t('monospace'), value: 'monospace' },
+						{ text: i18n.t('serif'), value: 'serif' },
 					],
 				},
-			}
+			},
 		},
 	],
 }));
