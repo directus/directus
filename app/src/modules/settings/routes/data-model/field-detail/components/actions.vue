@@ -4,9 +4,6 @@
 			{{ $t('cancel') }}
 		</v-button>
 		<div class="spacer" />
-		<v-button @click="previousTab" secondary :disabled="previousDisabled">
-			{{ $t('previous') }}
-		</v-button>
 		<v-button v-if="currentTabIndex < tabs.length - 1" @click="nextTab" :disabled="nextDisabled">
 			{{ $t('next') }}
 		</v-button>

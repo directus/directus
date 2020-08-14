@@ -85,9 +85,6 @@
 				{{ $t('cancel') }}
 			</v-button>
 			<div class="spacer" />
-			<v-button secondary @click="currentTab = ['collection']" :disabled="currentTab[0] === 'collection'">
-				{{ $t('previous') }}
-			</v-button>
 			<v-button
 				:disabled="!collectionName || collectionName.length === 0"
 				v-if="currentTab[0] === 'collection'"
