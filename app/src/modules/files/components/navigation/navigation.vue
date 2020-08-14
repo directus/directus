@@ -11,7 +11,7 @@
 				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
 					<template #activator>
 						<v-list-item-icon>
-							<v-icon name="folder" />
+							<v-icon name="folder_special" />
 						</v-list-item-icon>
 						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
 					</template>
