@@ -67,7 +67,7 @@ export default async function init(options: Record<string, any>) {
 
 	await db('directus_roles').insert({
 		id: roleID,
-		name: 'Admin',
+		name: 'Administrator',
 		icon: 'verified_user',
 		admin: true,
 		description: 'Initial role with complete access to the App and API',
