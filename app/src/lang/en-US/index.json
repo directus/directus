@@ -369,8 +369,8 @@
 
 	"no_collections": "No Collections",
 	"create_collection": "Create Collection",
-	"no_collections_copy_admin": "It looks like you don’t have any Collections yet. Fortunately, it’s very easy to create one — click the button below to get started.",
-	"no_collections_copy": "It looks like you don’t have any Collections yet. Please contact your system administrator to have them create your data-model.",
+	"no_collections_copy_admin": "You don’t have any Collections yet. Click the button below to get started.",
+	"no_collections_copy": "You don’t have any Collections yet. Please contact your system administrator.",
 
 	"text_input": "Text Input",
 	"radio_buttons": "Radio Buttons",
