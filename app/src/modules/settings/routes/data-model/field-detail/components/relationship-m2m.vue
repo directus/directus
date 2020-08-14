@@ -11,7 +11,7 @@
 				<v-select
 					:items="collectionItems"
 					v-model="junctionCollection"
-					:placeholder="$t('choose_a_collection')"
+					:placeholder="$t('select_one')"
 				/>
 			</div>
 			<div class="field">
@@ -20,7 +20,7 @@
 					:disabled="type === 'files'"
 					:items="collectionItems"
 					v-model="relations[1].one_collection"
-					:placeholder="$t('choose_a_collection')"
+					:placeholder="$t('select_one')"
 				/>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
@@ -28,7 +28,7 @@
 				:disabled="!junctionCollection"
 				:items="junctionFields"
 				v-model="relations[0].many_field"
-				:placeholder="$t('choose_a_field')"
+				:placeholder="$t('select_one')"
 			/>
 			<div class="spacer" />
 			<div class="spacer" />
@@ -36,7 +36,7 @@
 				:disabled="!junctionCollection"
 				:items="junctionFields"
 				v-model="relations[1].many_field"
-				:placeholder="$t('choose_a_field')"
+				:placeholder="$t('select_one')"
 			/>
 			<v-input disabled :value="relations[1].one_primary" />
 			<v-icon name="arrow_forward" />

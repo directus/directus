@@ -213,8 +213,7 @@
 	"a_unique_table_name": "A unique table name...",
 	"a_unique_column_name": "A unique column name...",
 
-	"choose_a_collection": "Choose a collection...",
-	"choose_a_field": "Choose a Field...",
+	"select_one": "Select one...",
 
 	"text_shown_when_no_value": "Text shown when no value...",
 

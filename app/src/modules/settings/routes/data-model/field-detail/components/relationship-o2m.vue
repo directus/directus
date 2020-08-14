@@ -8,14 +8,14 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :placeholder="$t('choose_a_collection')" :items="items" v-model="collectionMany" />
+				<v-select :placeholder="$t('select_one')" :items="items" v-model="collectionMany" />
 			</div>
 			<v-input disabled :value="currentCollectionPrimaryKey.field" />
 			<v-select
 				v-model="relations[0].many_field"
 				:disabled="!relations[0].many_collection"
 				:items="fields"
-				:placeholder="!relations[0].many_collection ? $t('choose_a_collection') : $t('choose_a_field')"
+				:placeholder="!relations[0].many_collection ? $t('select_one') : $t('select_one')"
 			/>
 			<v-icon name="arrow_forward" />
 		</div>

@@ -9,7 +9,7 @@
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
 				<v-select
-					:placeholder="$t('choose_a_collection')"
+					:placeholder="$t('select_one')"
 					:items="items"
 					v-model="relations[0].one_collection"
 				/>
