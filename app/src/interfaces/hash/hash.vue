@@ -64,7 +64,7 @@ export default defineComponent({
 	--v-icon-color: var(--warning);
 
 	&.hashed {
-		--v-icon-color: var(--success);
+		--v-icon-color: var(--primary);
 	}
 }
 
@@ -73,10 +73,10 @@ export default defineComponent({
 }
 
 .hashed {
-	--v-input-placeholder-color: var(--success);
+	--v-input-placeholder-color: var(--primary);
 }
 
 .hashed .lock {
-	--v-icon-color: var(--success);
+	--v-icon-color: var(--primary);
 }
 </style>

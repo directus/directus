@@ -424,7 +424,7 @@ export default defineComponent({
 		.status-role {
 			color: var(--foreground-subdued);
 			&.active {
-				color: var(--success);
+				color: var(--primary);
 			}
 		}
 		.email {
