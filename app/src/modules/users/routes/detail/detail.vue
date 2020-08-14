@@ -79,8 +79,8 @@
 					</template>
 					<template v-else-if="isNew === false">
 						<div class="name type-title">{{ item.first_name }} {{ item.last_name }}</div>
-						<div class="status-role" :class="item.status">{{ $t(item.status) }} {{ roleName }}</div>
 						<div class="email">{{ item.email }}</div>
+						<v-chip :class="item.status" small>{{ roleName }}</v-chip>
 					</template>
 				</div>
 			</div>
@@ -396,6 +396,7 @@ export default defineComponent({
 		margin-right: 22px;
 		overflow: hidden;
 		background-color: var(--background-normal);
+		border: solid var(--border-width) var(--border-normal);
 		border-radius: var(--border-radius);
 
 		.v-skeleton-loader {
@@ -421,10 +422,19 @@ export default defineComponent({
 			margin-bottom: 16px;
 		}
 
-		.status-role {
-			color: var(--foreground-subdued);
+		.v-chip {
+			margin-top: 4px;
+
+			--v-chip-color: var(--foreground-subdued);
+			--v-chip-background-color: var(--background-subdued);
+			--v-chip-color-hover: var(--foreground-subdued);
+			--v-chip-background-color-hover: var(--background-subdued);
+
 			&.active {
-				color: var(--primary);
+				--v-chip-color: var(--primary);
+				--v-chip-background-color: var(--primary-25);
+				--v-chip-color-hover: var(--primary);
+				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}
 		.email {
