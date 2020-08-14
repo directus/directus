@@ -1831,12 +1831,19 @@ rows:
         view_type: tabular
         view_query:
           tabular:
+            sort: -action_on
             fields:
               - action
               - collection
               - action_on
               - action_by
-              - comment
+        view_options:
+          tabular:
+            widths:
+              action: 100
+              collection: 210
+              action_on: 240
+              action_by: 240
 
 
   directus_relations:
