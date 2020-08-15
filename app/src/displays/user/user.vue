@@ -45,7 +45,7 @@ export default defineComponent({
 		},
 		display: {
 			type: String as PropType<'avatar' | 'name' | 'both'>,
-			default: 'avatar',
+			default: 'both',
 		},
 		circle: {
 			type: Boolean,

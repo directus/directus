@@ -30,7 +30,7 @@ export default defineDisplay(({ i18n }) => ({
 				],
 			},
 			schema: {
-				default_value: 'avatar',
+				default_value: 'both',
 			},
 		},
 		{
