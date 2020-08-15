@@ -646,14 +646,14 @@ rows:
         sort: 3
         width: full
       - collection: directus_roles
-        field: admin
+        field: app_access
         interface: toggle
         locked: true
         special: boolean
         sort: 4
         width: half
       - collection: directus_roles
-        field: app_access
+        field: admin
         interface: toggle
         locked: true
         special: boolean
