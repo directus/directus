@@ -84,7 +84,7 @@ export default defineComponent({
 
 		const title = computed(() => {
 			if (props.primaryKey === '+') {
-				return i18n.t('adding_in', { collection: collectionInfo.value?.name });
+				return i18n.t('creating_in', { collection: collectionInfo.value?.name });
 			}
 
 			return i18n.t('editing_in', { collection: collectionInfo.value?.name });

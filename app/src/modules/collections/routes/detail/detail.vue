@@ -260,7 +260,7 @@ export default defineComponent({
 			}
 
 			return isNew.value
-				? i18n.t('adding_in', { collection: collectionInfo.value?.name })
+				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
