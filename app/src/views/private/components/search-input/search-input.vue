@@ -7,7 +7,7 @@
 		v-tooltip.bottom="active ? null : $t('search')"
 	>
 		<v-icon name="search" />
-		<input ref="input" :value="value" @input="emitValue" />
+		<input ref="input" :value="value" @input="emitValue" placeholder="Search items..." />
 		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
@@ -113,6 +113,10 @@ input {
 	background-color: var(--background-page);
 	border: none;
 	border-radius: 0;
+
+	&::placeholder {
+		color: var(--foreground-subdued);
+	}
 }
 
 .value {
