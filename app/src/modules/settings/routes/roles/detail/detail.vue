@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
+	<private-view :title="loading ? $t('loading') : (isNew === false)? $t('editing_role', { role: item && item.name }) : $t('creating_role') ">
 		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
