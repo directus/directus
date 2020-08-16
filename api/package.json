@@ -88,6 +88,7 @@
     "express-session": "^1.17.1",
     "fs-extra": "^9.0.1",
     "grant": "^5.3.0",
+    "hi-base32": "^0.5.0",
     "icc": "^2.0.0",
     "inquirer": "^7.3.3",
     "joi": "^17.1.1",
