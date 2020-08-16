@@ -3,17 +3,19 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import { InvalidCredentialsException } from '../exceptions';
+import { InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
 import env from '../env';
+import { authenticator } from 'otplib';
 
 type AuthenticateOptions = {
 	email: string;
 	password?: string;
 	ip?: string | null;
 	userAgent?: string | null;
+	otp?: string;
 };
 
 export default class AuthenticationService {
@@ -33,21 +35,31 @@ export default class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate({ email, password, ip, userAgent }: AuthenticateOptions) {
+	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions) {
 		const user = await database
-			.select('id', 'password', 'role')
+			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.where({ email })
 			.first();
 
-		/** @todo check for status */
-
-		if (!user) {
+		if (!user || user.status !== 'active') {
 			throw new InvalidCredentialsException();
 		}
 
 		if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
 			throw new InvalidCredentialsException();
+		}
+
+		if (user.tfa_secret && !otp) {
+			throw new InvalidPayloadException(`"otp" is required`);
+		}
+
+		if (user.tfa_secret && otp) {
+			const otpValid = await this.verifyOTP(user.id, otp);
+
+			if (otpValid === false) {
+				throw new InvalidPayloadException(`"otp" is invalid`);
+			}
 		}
 
 		const payload = {
@@ -126,5 +138,27 @@ export default class AuthenticationService {
 
 	async logout(refreshToken: string) {
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
+	}
+
+	generateTFASecret() {
+		const secret = authenticator.generateSecret();
+		return secret;
+	}
+
+	async generateOTPAuthURL(pk: string, secret: string) {
+		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
+		const name = `${user.first_name} ${user.last_name}`;
+		return authenticator.keyuri(name, 'Directus', secret);
+	}
+
+	async verifyOTP(pk: string, otp: string): Promise<boolean> {
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (!user.tfa_secret) {
+			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
+		}
+
+		const secret = user.tfa_secret;
+		return authenticator.check(otp, secret);
 	}
 }

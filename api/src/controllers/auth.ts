@@ -17,6 +17,7 @@ const loginSchema = Joi.object({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
+	otp: Joi.string()
 });
 
 router.post(
@@ -35,7 +36,7 @@ router.post(
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const { email, password } = req.body;
+		const { email, password, otp } = req.body;
 
 		const mode = req.body.mode || 'json';
 
@@ -48,6 +49,7 @@ router.post(
 				userAgent,
 				email,
 				password,
+				otp,
 			}
 		);
 
