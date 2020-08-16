@@ -56,7 +56,7 @@ export default class UsersService extends ItemsService {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
-			throw new Error('TFA Secret is already set for this user');
+			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
 		const authService = new AuthService();
@@ -64,6 +64,10 @@ export default class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 
-		return await authService.generateOTPAuthURL(secret);
+		return await authService.generateOTPAuthURL(pk, secret);
+	}
+
+	async disableTFA(pk: string) {
+		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
 }

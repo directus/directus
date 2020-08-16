@@ -8,9 +8,7 @@ import { Session, Accountability, AbstractServiceOptions, Action } from '../type
 import Knex from 'knex';
 import ActivityService from '../services/activity';
 import env from '../env';
-import { customAlphabet } from 'nanoid';
-import url from 'url';
-import base32 from 'hi-base32';
+import { authenticator } from 'otplib';
 
 type AuthenticateOptions = {
 	email: string;
@@ -54,6 +52,14 @@ export default class AuthenticationService {
 
 		if (user.tfa_secret && !otp) {
 			throw new InvalidPayloadException(`"otp" is required`);
+		}
+
+		if (user.tfa_secret && otp) {
+			const otpValid = await this.verifyOTP(user.id, otp);
+
+			if (otpValid === false) {
+				throw new InvalidPayloadException(`"otp" is invalid`);
+			}
 		}
 
 		const payload = {
@@ -135,34 +141,24 @@ export default class AuthenticationService {
 	}
 
 	generateTFASecret() {
-		const set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz!@#$%^&*()<>?/[]{},.:;';
-		const nanoid = customAlphabet(set, 32);
-		return nanoid();
+		const secret = authenticator.generateSecret();
+		return secret;
 	}
 
-	async generateOTPAuthURL(secret: string) {
-		const settings = await this.knex.select('project_name').from('directus_settings').first();
-		const label = settings?.project_name || 'Directus';
-
-		const urlSecret = base32.encode(secret);
-
-		const query = {
-			secret: urlSecret,
-			algorithm: 'SHA1',
-			digits: 6,
-			period: 30,
-		};
-
-		return url.format({
-			protocol: 'otpauth',
-			slashes: true,
-			hostname: 'totp',
-			pathname: encodeURIComponent(label),
-			query
-		});
+	async generateOTPAuthURL(pk: string, secret: string) {
+		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
+		const name = `${user.first_name} ${user.last_name}`;
+		return authenticator.keyuri(name, 'Directus', secret);
 	}
 
-	verifyOTP(secret: string, token: string): boolean {
-		return true;
+	async verifyOTP(pk: string, otp: string): Promise<boolean> {
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (!user.tfa_secret) {
+			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
+		}
+
+		const secret = user.tfa_secret;
+		return authenticator.check(otp, secret);
 	}
 }
