@@ -3,17 +3,21 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import { InvalidCredentialsException } from '../exceptions';
+import { InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
 import env from '../env';
+import { customAlphabet } from 'nanoid';
+import url from 'url';
+import base32 from 'hi-base32';
 
 type AuthenticateOptions = {
 	email: string;
 	password?: string;
 	ip?: string | null;
 	userAgent?: string | null;
+	otp?: string;
 };
 
 export default class AuthenticationService {
@@ -33,21 +37,23 @@ export default class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate({ email, password, ip, userAgent }: AuthenticateOptions) {
+	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions) {
 		const user = await database
-			.select('id', 'password', 'role')
+			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.where({ email })
 			.first();
 
-		/** @todo check for status */
-
-		if (!user) {
+		if (!user || user.status !== 'active') {
 			throw new InvalidCredentialsException();
 		}
 
 		if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
 			throw new InvalidCredentialsException();
+		}
+
+		if (user.tfa_secret && !otp) {
+			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
 		const payload = {
@@ -126,5 +132,37 @@ export default class AuthenticationService {
 
 	async logout(refreshToken: string) {
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
+	}
+
+	generateTFASecret() {
+		const set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz!@#$%^&*()<>?/[]{},.:;';
+		const nanoid = customAlphabet(set, 32);
+		return nanoid();
+	}
+
+	async generateOTPAuthURL(secret: string) {
+		const settings = await this.knex.select('project_name').from('directus_settings').first();
+		const label = settings?.project_name || 'Directus';
+
+		const urlSecret = base32.encode(secret);
+
+		const query = {
+			secret: urlSecret,
+			algorithm: 'SHA1',
+			digits: 6,
+			period: 30,
+		};
+
+		return url.format({
+			protocol: 'otpauth',
+			slashes: true,
+			hostname: 'totp',
+			pathname: encodeURIComponent(label),
+			query
+		});
+	}
+
+	verifyOTP(secret: string, token: string): boolean {
+		return true;
 	}
 }

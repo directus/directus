@@ -152,4 +152,15 @@ router.post(
 	})
 );
 
+router.post('/me/tfa/enable/', asyncHandler(async (req, res) => {
+	if (!req.accountability?.user) {
+		throw new InvalidCredentialsException();
+	}
+
+	const service = new UsersService({ accountability: req.accountability });
+	const url = await service.enableTFA(req.accountability.user);
+
+	return res.json({ data: { otpauth_url: url }});
+}));
+
 export default router;
