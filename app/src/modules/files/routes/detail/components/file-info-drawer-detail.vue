@@ -42,7 +42,7 @@
 			</div>
 
 			<div v-if="user">
-				<dt>{{ $t('uploaded_by') }}</dt>
+				<dt>{{ $t('owner') }}</dt>
 				<dd>
 					<user-popover :user="user.id">
 						<router-link :to="user.link">{{ user.name }}</router-link>
