@@ -84,6 +84,8 @@ tables:
       type: text
     tags:
       type: json
+    avatar:
+      type: uuid
     timezone:
       type: string
       length: 255
@@ -115,8 +117,6 @@ tables:
       length: 255
     last_login:
       type: timestamp
-    avatar:
-      type: uuid
     last_page:
       type: string
       length: 255
