@@ -455,8 +455,8 @@
 
 	"presets": "Presets",
 
-	"unexpected_error": "An unexpected error occured",
-	"unexpected_error_copy": "Something went wrong.. Please try again later.",
+	"unexpected_error": "Unexpected Error",
+	"unexpected_error_copy": "An unexpected error has occured. Please try again later.",
 	"copy_details": "Copy Details",
 
 	"no_app_access": "No App Access",
