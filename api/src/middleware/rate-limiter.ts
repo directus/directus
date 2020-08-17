@@ -8,6 +8,7 @@ import { RequestHandler } from 'express';
 import redis from 'redis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import { HitRateLimitException } from '../exceptions';
+import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
 
 const redisClient = redis.createClient({
@@ -21,8 +22,7 @@ const rateLimiter: RequestHandler = (req, res, next) => {
 	try {
 		// first need to check that redis is running!
 		if (!redisClient) {
-			throw new Error('Redis client does not exist');
-			process.exit(1);
+			throw new RedisNotFoundException('Redis client does not exist');
 		}
 		// options for the rate limiter are set below. Opts can be found
 		// at https://github.com/animir/node-rate-limiter-flexible/wiki/Options
@@ -46,8 +46,8 @@ const rateLimiter: RequestHandler = (req, res, next) => {
 				next();
 			})
 			.catch((rejRes) => {
-				if (rejRes instanceof Error) {
-					throw new Error('Redis insurance limiter not set up');
+				if (rejRes instanceof RedisNotFoundException) {
+					throw new RedisNotFoundException('Redis insurance limiter not set up');
 				} else {
 					// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
 					const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
