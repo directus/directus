@@ -7,6 +7,7 @@
 import { RequestHandler } from 'express';
 import redis from 'redis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
+import { HitRateLimitException } from '../exceptions';
 import env from '../env';
 
 const redisClient = redis.createClient({
@@ -47,14 +48,12 @@ const rateLimiter: RequestHandler = (req, res, next) => {
 			.catch((rejRes) => {
 				if (rejRes instanceof Error) {
 					throw new Error('Redis insurance limiter not set up');
-					process.exit(1);
 				} else {
 					// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
 					const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
 					res.set('Retry-After', String(secs));
 					res.status(429).send('Too Many Requests');
-					throw new Error(`To many requests, retry after ${secs}.`);
-					process.exit(1);
+					throw new HitRateLimitException(`To many requests, retry after ${secs}.`);
 				}
 			});
 	} catch (error) {
