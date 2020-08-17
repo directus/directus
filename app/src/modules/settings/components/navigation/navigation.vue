@@ -15,12 +15,21 @@
 				<v-list-item-title>{{ item.name }}</v-list-item-title>
 			</v-list-item-content>
 		</v-list-item>
+
+		<v-list-item href="https://github.com/directus/directus/releases" class="version">
+			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-list-item-title class="version">Directus {{ version }}</v-list-item-title>
+			</v-list-item-content>
+		</v-list-item>
+
 	</v-list>
 </template>
 
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
 import { i18n } from '@/lang';
+import { version } from '../../../../../package.json';
 
 export default defineComponent({
 	setup() {
@@ -65,7 +74,30 @@ export default defineComponent({
 			},
 		];
 
-		return { navItems, externalItems };
+		return { version, navItems, externalItems };
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+
+.version {
+	.v-icon {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+	::v-deep .type-text {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+	&:hover {
+		.v-icon {
+			color: var(--foreground-normal);
+		}
+		::v-deep .type-text {
+			color: var(--foreground-normal);
+		}
+	}
+}
+
+</style>
