@@ -25,6 +25,11 @@ const defaults = {
 		STORAGE_LOCAL_DRIVER: 'local',
 		STORAGE_LOCAL_ROOT: './uploads',
 	},
+	rServer: {
+		REDIS_HOST: '127.0.0.1',
+		REDIS_PORT: '6379',
+		REDIS_PASSWORD: null,
+	},
 	security: {
 		KEY: uuidv4(),
 		SECRET: nanoid(32),
