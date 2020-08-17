@@ -20,11 +20,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<span class="subdued">{{ $t('no_additional_info') }}</span>
-			</drawer-detail>
-
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_collections_overview'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_roles_browse'))" />
 			</drawer-detail>
 		</template>
 
@@ -157,11 +153,6 @@ export default defineComponent({
 .header-icon {
 	--v-button-color-disabled: var(--warning);
 	--v-button-background-color-disabled: var(--warning-25);
-}
-
-.subdued {
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 
 .roles {

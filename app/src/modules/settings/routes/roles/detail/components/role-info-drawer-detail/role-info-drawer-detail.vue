@@ -6,11 +6,16 @@
 				<dd>{{ role.id }}</dd>
 			</div>
 		</dl>
+
+		<v-divider />
+
+		<div class="page-description" v-html="marked($t('page_help_settings_roles_detail'))" />
 	</drawer-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
+import marked from 'marked';
 
 export default defineComponent({
 	props: {
@@ -23,5 +28,14 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	setup() {
+		return { marked };
+	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 20px 0;
+}
+</style>

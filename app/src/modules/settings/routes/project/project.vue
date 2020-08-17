@@ -23,9 +23,6 @@
 
 		<template #drawer>
 			<project-info-drawer-detail />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_project'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -35,7 +32,6 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation/';
 import useCollection from '@/composables/use-collection';
 import { useSettingsStore } from '@/stores';
-import marked from 'marked';
 import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';
 import { clone } from 'lodash';
 
@@ -54,7 +50,7 @@ export default defineComponent({
 
 		const saving = ref(false);
 
-		return { fields, initialValues, edits, noEdits, saving, save, marked };
+		return { fields, initialValues, edits, noEdits, saving, save };
 
 		async function save() {
 			if (edits.value === null) return;

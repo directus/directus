@@ -138,13 +138,8 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				Page Info Here...
-			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
-			<portal-target name="drawer" />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
 				<div
-					class="format-markdown"
+					class="page-description"
 					v-html="
 						marked(
 							$t('page_help_collections_browse', {
@@ -154,6 +149,8 @@
 					"
 				/>
 			</drawer-detail>
+			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<portal-target name="drawer" />
 		</template>
 	</private-view>
 </template>

@@ -59,12 +59,9 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_webhooks_detail'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_detail'))" />
 			</drawer-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_webhooks_detail'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>

@@ -128,13 +128,10 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_files_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_files_browse'))" />
 			</drawer-detail>
 			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
 			<portal-target name="drawer" />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_files_browse'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>

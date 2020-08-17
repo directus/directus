@@ -86,9 +86,6 @@
 
 		<template #drawer>
 			<presets-info-drawer-detail />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_presets_browse'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -105,7 +102,6 @@ import layouts from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
-import marked from 'marked';
 import PresetsInfoDrawerDetail from './components/presets-info-drawer-detail.vue';
 
 type PresetRaw = {
@@ -152,7 +148,6 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			deleteSelection,
-			marked,
 		};
 
 		function useLinks() {

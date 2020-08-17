@@ -30,12 +30,17 @@
 				<dd>3306</dd>
 			</div>
 		</dl>
+
+		<v-divider />
+
+		<div class="page-description" v-html="marked($t('page_help_settings_project'))" />
 	</drawer-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import i18n from '@/lang';
+import marked from 'marked';
 import { version } from '../../../../../../package.json';
 
 import bytes from 'bytes';
@@ -47,7 +52,13 @@ import bytes from 'bytes';
 
 export default defineComponent({
 	setup() {
-		return { version, project: {}, bytes };
+		return { version, project: {}, bytes, marked };
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 20px 0;
+}
+</style>
