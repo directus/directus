@@ -53,7 +53,7 @@ const rateLimiter: RequestHandler = (req, res, next) => {
 					const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
 					res.set('Retry-After', String(secs));
 					res.status(429).send('Too Many Requests');
-					throw new HitRateLimitException(`To many requests, retry after ${secs}.`);
+					throw new HitRateLimitException(`Too many requests, retry after ${secs}.`);
 				}
 			});
 	} catch (error) {
