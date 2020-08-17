@@ -1,7 +1,16 @@
 <template>
 	<div class="file-preview" v-if="type">
 		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG, 'max-size': inModal === false }" @click="$emit('click')">
-			<img :src="src" :width="width" :height="height" :alt="title" />
+			<img
+				:src="src"
+				:width="width"
+				:height="height"
+				:style="{
+					'maxWidth': width ? width + 'px' : '100%',
+					'maxHeight': height ? height + 'px' : '100%'
+				}"
+				:alt="title"
+			/>
 			<v-icon v-if="inModal === false" name="fullscreen" />
 		</div>
 
@@ -101,6 +110,7 @@ audio {
 		max-height: inherit;
 		z-index: 1;
 		display: block;
+		margin: 0 auto;
 	}
 
 	.v-icon {
