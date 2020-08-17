@@ -7,8 +7,14 @@
 import { RequestHandler } from 'express';
 import redis from 'redis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
+import env from '../env';
 
-const redisClient = redis.createClient({ enable_offline_queue: false });
+const redisClient = redis.createClient({
+	enable_offline_queue: false,
+	host: env.REDIS_HOST,
+	port: env.REDIS_PORT,
+	password: env.REDIS_PASSWORD,
+});
 
 const rateLimiter: RequestHandler = (req, res, next) => {
 	try {

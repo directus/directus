@@ -4,3 +4,4 @@ node_modules
 .env
 npm-debug.log
 lerna-debug.log
+api/example.env
