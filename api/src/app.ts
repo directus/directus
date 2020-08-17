@@ -11,27 +11,27 @@ import errorHandler from './middleware/error-handler';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 
-import activityRouter from './routes/activity';
-import assetsRouter from './routes/assets';
-import authRouter from './routes/auth';
-import collectionsRouter from './routes/collections';
-import extensionsRouter from './routes/extensions';
-import fieldsRouter from './routes/fields';
-import filesRouter from './routes/files';
-import foldersRouter from './routes/folders';
-import itemsRouter from './routes/items';
-import permissionsRouter from './routes/permissions';
-import presetsRouter from './routes/presets';
-import relationsRouter from './routes/relations';
-import revisionsRouter from './routes/revisions';
-import rolesRouter from './routes/roles';
-import serverRouter from './routes/server';
-import settingsRouter from './routes/settings';
-import usersRouter from './routes/users';
-import utilsRouter from './routes/utils';
-import webhooksRouter from './routes/webhooks';
+import activityRouter from './controllers/activity';
+import assetsRouter from './controllers/assets';
+import authRouter from './controllers/auth';
+import collectionsRouter from './controllers/collections';
+import extensionsRouter from './controllers/extensions';
+import fieldsRouter from './controllers/fields';
+import filesRouter from './controllers/files';
+import foldersRouter from './controllers/folders';
+import itemsRouter from './controllers/items';
+import permissionsRouter from './controllers/permissions';
+import presetsRouter from './controllers/presets';
+import relationsRouter from './controllers/relations';
+import revisionsRouter from './controllers/revisions';
+import rolesRouter from './controllers/roles';
+import serverRouter from './controllers/server';
+import settingsRouter from './controllers/settings';
+import usersRouter from './controllers/users';
+import utilsRouter from './controllers/utils';
+import webhooksRouter from './controllers/webhooks';
 
-import notFoundHandler from './routes/not-found';
+import notFoundHandler from './controllers/not-found';
 
 const app = express().disable('x-powered-by').set('trust proxy', true);
 

@@ -6,6 +6,7 @@ import { InvalidPayloadException, InvalidCredentialsException } from '../excepti
 import useCollection from '../middleware/use-collection';
 import UsersService from '../services/users';
 import MetaService from '../services/meta';
+import AuthService from '../services/authentication';
 
 const router = express.Router();
 
@@ -151,5 +152,39 @@ router.post(
 		res.end();
 	})
 );
+
+router.post('/me/tfa/enable/', asyncHandler(async (req, res) => {
+	if (!req.accountability?.user) {
+		throw new InvalidCredentialsException();
+	}
+
+	const service = new UsersService({ accountability: req.accountability });
+	const url = await service.enableTFA(req.accountability.user);
+
+	return res.json({ data: { otpauth_url: url }});
+}));
+
+router.post('/me/tfa/disable', asyncHandler(async (req, res) => {
+	if (!req.accountability?.user) {
+		throw new InvalidCredentialsException();
+	}
+
+	if (!req.body.otp) {
+		throw new InvalidPayloadException(`"otp" is required`);
+	}
+
+	const service = new UsersService({ accountability: req.accountability });
+	const authService = new AuthService({ accountability: req.accountability });
+
+	const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
+
+	if (otpValid === false) {
+		throw new InvalidPayloadException(`"otp" is invalid`);
+	}
+
+	await service.disableTFA(req.accountability.user);
+
+	return res.status(200).end();
+}));
 
 export default router;

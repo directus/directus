@@ -1,3 +1,4 @@
+import AuthService from './authentication';
 import ItemsService from './items';
 import jwt from 'jsonwebtoken';
 import { sendInviteMail } from '../mail';
@@ -49,5 +50,24 @@ export default class UsersService extends ItemsService {
 		await database('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
+	}
+
+	async enableTFA(pk: string) {
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (user?.tfa_secret !== null) {
+			throw new InvalidPayloadException('TFA Secret is already set for this user');
+		}
+
+		const authService = new AuthService();
+		const secret = authService.generateTFASecret();
+
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
+
+		return await authService.generateOTPAuthURL(pk, secret);
+	}
+
+	async disableTFA(pk: string) {
+		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
 }
