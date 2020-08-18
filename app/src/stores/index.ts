@@ -3,6 +3,7 @@ export * from './collections';
 export * from './fields';
 export * from './latency';
 export * from './notifications';
+export * from './permissions';
 export * from './presets';
 export * from './relations';
 export * from './requests';

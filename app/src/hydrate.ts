@@ -8,6 +8,7 @@ import {
 	useSettingsStore,
 	useLatencyStore,
 	useRelationsStore,
+	usePermissionsStore,
 } from '@/stores';
 
 import { setLanguage, Language } from '@/lang';
@@ -30,6 +31,7 @@ export function useStores(
 		useSettingsStore,
 		useLatencyStore,
 		useRelationsStore,
+		usePermissionsStore,
 	]
 ) {
 	return stores.map((useStore) => useStore()) as GenericStore[];
