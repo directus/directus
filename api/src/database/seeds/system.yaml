@@ -22,6 +22,9 @@ tables:
     display_template:
       type: string
       length: 255
+    sort_field:
+      type: string
+      length: 64
 
   directus_roles:
     id:
