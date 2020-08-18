@@ -14,6 +14,7 @@ export interface CollectionRaw {
 		icon: string | null;
 		translation: Translation[] | null;
 		display_template: string | null;
+		sort_field: string | null;
 	} | null;
 	schema: Record<string, any>;
 }
