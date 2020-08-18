@@ -78,7 +78,7 @@
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
 			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
-			:manual-sort-key="sortField && sortField.field"
+			:manual-sort-key="sortField"
 			selection-use-keys
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
@@ -343,7 +343,7 @@ export default defineComponent({
 						_viewQuery.value?.fields ||
 						availableFields.value
 							.filter((field: Field) => {
-								return field.schema?.is_primary_key === false && field.meta.special !== 'sort';
+								return field.schema?.is_primary_key === false;
 							})
 							.slice(0, 4)
 							.map(({ field }) => field);
