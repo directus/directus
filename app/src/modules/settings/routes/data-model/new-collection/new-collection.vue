@@ -64,15 +64,15 @@
 			<v-tab-item value="system">
 				<h2 class="type-title">{{ $t('creating_collection_system') }}</h2>
 				<div class="grid system">
-					<div class="field" v-for="field in systemFields" :key="field.id">
-						<div class="type-label">{{ $t(field.label) }}</div>
-						<v-input v-model="field.name" class="monospace">
+					<div class="field" v-for="(info, field) in systemFields" :key="field">
+						<div class="type-label">{{ $t(info.label) }}</div>
+						<v-input v-model="info.name" class="monospace">
 							<template #prepend>
-								<v-checkbox v-model="field.enabled" />
+								<v-checkbox v-model="info.enabled" />
 							</template>
 
 							<template #append>
-								<v-icon :name="field.icon" />
+								<v-icon :name="info.icon" />
 							</template>
 						</v-input>
 					</div>
@@ -108,7 +108,7 @@ import notify from '@/utils/notify';
 import router from '@/router';
 
 export default defineComponent({
-	setup(props) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -118,51 +118,51 @@ export default defineComponent({
 		const primaryKeyFieldName = ref('id');
 		const primaryKeyFieldType = ref<'auto_int' | 'uuid' | 'manual'>('auto_int');
 
-		const systemFields = reactive([
-			{
-				id: 'status',
+		const sortField = ref<string>();
+
+		const systemFields = reactive({
+			status: {
 				enabled: false,
 				name: 'status',
 				label: 'status',
 				icon: 'flag',
 			},
-			{
-				id: 'sort',
+			sort: {
 				enabled: false,
 				name: 'sort',
 				label: 'sort',
 				icon: 'low_priority',
 			},
-			/** @TODO re-enable these when the api supports the special types for created/modified by/on */
-			// {
-			// 	id: 'owner',
-			// 	enabled: false,
-			// 	name: 'created_by',
-			// 	label: 'created_by_owner',
-			// 	icon: 'account_circle',
-			// },
-			// {
-			// 	id: 'created_on',
-			// 	enabled: false,
-			// 	name: 'created_on',
-			// 	label: 'created_on',
-			// 	icon: 'access_time',
-			// },
-			// {
-			// 	id: 'modified_by',
-			// 	enabled: false,
-			// 	name: 'modified_by',
-			// 	label: 'modified_by',
-			// 	icon: 'account_circle',
-			// },
-			// {
-			// 	id: 'modified_on',
-			// 	enabled: false,
-			// 	name: 'modified_on',
-			// 	label: 'modified_on',
-			// 	icon: 'access_time',
-			// },
-		]);
+		});
+
+		/** @TODO re-enable these when the api supports the special types for created/modified by/on */
+		// {
+		// 	id: 'owner',
+		// 	enabled: false,
+		// 	name: 'created_by',
+		// 	label: 'created_by_owner',
+		// 	icon: 'account_circle',
+		// },
+		// {
+		// 	id: 'created_on',
+		// 	enabled: false,
+		// 	name: 'created_on',
+		// 	label: 'created_on',
+		// 	icon: 'access_time',
+		// },
+		// {
+		// 	id: 'modified_by',
+		// 	enabled: false,
+		// 	name: 'modified_by',
+		// 	label: 'modified_by',
+		// 	icon: 'account_circle',
+		// },
+		// {
+		// 	id: 'modified_on',
+		// 	enabled: false,
+		// 	name: 'modified_on',
+		// 	label: 'modified_on',
+		// 	icon: 'access_time',
 
 		const saving = ref(false);
 		const saveError = ref(null);
@@ -185,6 +185,7 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
+					sort_field: sortField.value,
 				});
 
 				await collectionsStore.hydrate();
@@ -259,9 +260,10 @@ export default defineComponent({
 		function getSystemFields() {
 			const fields: DeepPartial<Field>[] = [];
 
-			if (systemFields[0].enabled === true) {
+			// Status
+			if (systemFields.status.enabled === true) {
 				fields.push({
-					field: systemFields[0].name,
+					field: systemFields.status.name,
 					type: 'string',
 					meta: {
 						width: 'full',
@@ -294,9 +296,10 @@ export default defineComponent({
 				});
 			}
 
-			if (systemFields[1].enabled === true) {
+			// Sort
+			if (systemFields.sort.enabled === true) {
 				fields.push({
-					field: systemFields[1].name,
+					field: systemFields.sort.name,
 					type: 'integer',
 					meta: {
 						interface: 'sort',
@@ -306,6 +309,8 @@ export default defineComponent({
 					},
 					schema: {},
 				});
+
+				sortField.value = systemFields.sort.name;
 			}
 
 			// if (systemFields[2].enabled === true) {
