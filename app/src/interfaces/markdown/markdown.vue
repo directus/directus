@@ -49,11 +49,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const currentTab = ref(0);
+		const currentTab = ref([0]);
 
-		const html = computed(() => marked(props.value));
-		const showEdit = computed(() => !props.tabbed || currentTab.value === 0);
-		const showPreview = computed(() => !props.tabbed || currentTab.value !== 0);
+		const html = computed(() => (props.value ? marked(props.value) : ''));
+		const showEdit = computed(() => !props.tabbed || currentTab.value[0] === 0);
+		const showPreview = computed(() => !props.tabbed || currentTab.value[0] !== 0);
 
 		return { html, currentTab, showEdit, showPreview };
 	},
