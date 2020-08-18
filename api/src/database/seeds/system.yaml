@@ -628,6 +628,8 @@ rows:
       - collection: directus_roles
         field: name
         interface: text-input
+        options:
+          placeholder: The unique name for this role...
         locked: true
         sort: 1
         width: half
