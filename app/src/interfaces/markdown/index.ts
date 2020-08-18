@@ -11,7 +11,8 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
-			system: {
+			type: 'string',
+			meta: {
 				width: 'half',
 				interface: 'text-input',
 			},
@@ -19,7 +20,8 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'tabbed',
 			name: i18n.t('tabbed'),
-			system: {
+			type: 'boolean',
+			meta: {
 				width: 'half',
 				interface: 'toggle',
 			},
