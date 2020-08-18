@@ -56,9 +56,9 @@
     "dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
     "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
     "prepublishOnly": "npm run build",
-    "build-windows":"rd /s /q dist 2>nul && tsc -b && copyfiles \"src\\**\\*.*\" -e \"src\\**\\*.ts\" -u 1 dist",
-    "dev-windows":"cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src\\server.ts --respawn --watch \"src\\**\\*.ts\" --transpile-only",
-    "cli-windows":"cross-env NODE_ENV=development ts-node --script-mode --transpile-only src\\cli\\index.ts",
+    "build-windows": "rd /s /q dist 2>nul && tsc -b && copyfiles \"src\\**\\*.*\" -e \"src\\**\\*.ts\" -u 1 dist",
+    "dev-windows": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src\\server.ts --respawn --watch \"src\\**\\*.ts\" --transpile-only",
+    "cli-windows": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src\\cli\\index.ts",
     "prepublishOnly-windows": "npm run build-windows"
   },
   "files": [
@@ -103,6 +103,7 @@
     "lodash": "^4.17.19",
     "ms": "^2.1.2",
     "nanoid": "^3.1.12",
+    "node-cache": "^5.1.2",
     "nodemailer": "^6.4.11",
     "ora": "^4.1.1",
     "otplib": "^12.0.1",

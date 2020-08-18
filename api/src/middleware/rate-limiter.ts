@@ -20,33 +20,38 @@ const redisClient = redis.createClient({
 });
 
 const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
-	// first need to check that redis is running!
-	if (!redisClient) {
-		throw new RedisNotFoundException('Redis client does not exist');
-	}
 	// options for the rate limiter are set below. Opts can be found
 	// at https://github.com/animir/node-rate-limiter-flexible/wiki/Options
+	// more basic for memory store
 	const opts = {
-		storeClient: redisClient,
 		points: env.CONSUMED_POINTS_LIMIT, // Number of points
 		duration: env.CONSUMED_RESET_DURATION, // Number of seconds before consumed points are reset.
-
-		// Custom
-		execEvenly: env.EXEC_EVENLY, // delay actions after first action - this may need adjusting (leaky bucket)
-		blockDuration: env.BLOCK_POINT_DURATION, // Do not block if consumed more than points
-		inmemoryBlockOnConsumed: env.INMEMORY_BLOCK_CONSUMED, // eg if 200 points consumed
-		inmemoryBlockDuration: env.INMEMEMORY_BLOCK_DURATION, // block for certain amount of seconds
 		keyPrefix: 'rlflx', // must be unique for limiters with different purpose
-		insuranceLimiter: new RateLimiterMemory({
-			points: 20, // 20 is fair if you have 5 workers and 1 cluster
-			duration: 1,
-		}),
 	};
 
-	const rateLimiterRedis = new RateLimiterRedis(opts);
+	let rateLimiterSet = new RateLimiterMemory(opts);
+
+	if (env.RATE_LIMIT_TYPE === 'redis') {
+		const redisOpts = {
+			...opts,
+			storeClient: redisClient,
+			// Custom
+			execEvenly: env.EXEC_EVENLY, // delay actions after first action - this may need adjusting (leaky bucket)
+			blockDuration: env.BLOCK_POINT_DURATION, // Do not block if consumed more than points
+			inmemoryBlockOnConsumed: env.INMEMORY_BLOCK_CONSUMED, // eg if 200 points consumed
+			inmemoryBlockDuration: env.INMEMEMORY_BLOCK_DURATION, // block for certain amount of seconds
+		};
+
+		rateLimiterSet = new RateLimiterRedis(redisOpts);
+
+		// first need to check that redis is running!
+		if (!redisClient) {
+			throw new RedisNotFoundException('Redis client does not exist');
+		}
+	}
 
 	try {
-		await rateLimiterRedis.consume(req.ip);
+		await rateLimiterSet.consume(req.ip);
 	} catch (rejRes) {
 		// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
 		const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
