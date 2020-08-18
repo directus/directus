@@ -41,7 +41,7 @@ const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	try {
 		await rateLimiterRedis.consume(req.ip);
-	} catch (rejRes) {
+	} catch (err) {
 		// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
 		const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
 		res.set('Retry-After', String(secs));
