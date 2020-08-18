@@ -7,7 +7,7 @@
 import { RequestHandler } from 'express';
 import redis from 'redis';
 import asyncHandler from 'express-async-handler';
-import { RateLimiterRedis } from 'rate-limiter-flexible';
+import { RateLimiterRedis, RateLimiterMemory } from 'rate-limiter-flexible';
 import { HitRateLimitException } from '../exceptions';
 import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
@@ -34,7 +34,13 @@ const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 		// Custom
 		execEvenly: env.EXEC_EVENLY, // delay actions after first action - this may need adjusting (leaky bucket)
 		blockDuration: env.BLOCK_POINT_DURATION, // Do not block if consumed more than points
+		inmemoryBlockOnConsumed: env.INMEMORY_BLOCK_CONSUMED, // eg if 200 points consumed
+		inmemoryBlockDuration: env.INMEMEMORY_BLOCK_DURATION, // block for certain amount of seconds
 		keyPrefix: 'rlflx', // must be unique for limiters with different purpose
+		insuranceLimiter: new RateLimiterMemory({
+			points: 20, // 20 is fair if you have 5 workers and 1 cluster
+			duration: 1,
+		}),
 	};
 
 	const rateLimiterRedis = new RateLimiterRedis(opts);
@@ -42,14 +48,10 @@ const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 	try {
 		await rateLimiterRedis.consume(req.ip);
 	} catch (rejRes) {
-		if (rejRes instanceof Error) {
-			throw Error;
-		} else {
-			// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
-			const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
-			res.set('Retry-After', String(secs));
-			throw new HitRateLimitException(`Too many requests, retry after ${secs}.`);
-		}
+		// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
+		const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
+		res.set('Retry-After', String(secs));
+		throw new HitRateLimitException(`Too many requests, retry after ${secs}.`);
 	}
 
 	return next();
