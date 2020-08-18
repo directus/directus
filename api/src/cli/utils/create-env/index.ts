@@ -31,6 +31,8 @@ const defaults = {
 		REDIS_PASSWORD: null,
 	},
 	rateLimits: {
+		RATE_LIMIT_TYPE: 'redis',
+		CACHE_TYPE: 'redis',
 		CONSUMED_POINTS_LIMIT: 5,
 		CONSUMED_RESET_DURATION: 1,
 		EXEC_EVENLY: true,
