@@ -33,7 +33,7 @@ export function useCollection(collectionKey: string | Ref<string>) {
 	});
 
 	const sortField = computed(() => {
-		return fields.value?.find((field) => field.meta?.special === 'sort') || null;
+		return info.value?.meta?.sort_field || null;
 	});
 
 	type Status = {
