@@ -28,12 +28,12 @@ const rateLimiter: RequestHandler = (req, res, next) => {
 		// at https://github.com/animir/node-rate-limiter-flexible/wiki/Options
 		const opts = {
 			storeClient: redisClient,
-			points: 5, // Number of points
-			duration: 5, // Number of seconds before consumed points are reset.
+			points: env.CONSUMED_POINTS_LIMIT, // Number of points
+			duration: env.CONSUMED_RESET_DURATION, // Number of seconds before consumed points are reset.
 
 			// Custom
-			execEvenly: true, // delay actions after first action - this may need adjusting (leaky bucket)
-			blockDuration: 0, // Do not block if consumed more than points
+			execEvenly: env.EXEC_EVENLY, // delay actions after first action - this may need adjusting (leaky bucket)
+			blockDuration: env.BLOCK_POINT_DURATION, // Do not block if consumed more than points
 			keyPrefix: 'rlflx', // must be unique for limiters with different purpose
 		};
 

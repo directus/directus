@@ -30,6 +30,12 @@ const defaults = {
 		REDIS_PORT: '6379',
 		REDIS_PASSWORD: null,
 	},
+	rateLimits: {
+		CONSUMED_POINTS_LIMIT: 5,
+		CONSUMED_RESET_DURATION: 5,
+		EXEC_EVENLY: true,
+		BLOCK_POINT_DURATION: 0,
+	},
 	security: {
 		KEY: uuidv4(),
 		SECRET: nanoid(32),
