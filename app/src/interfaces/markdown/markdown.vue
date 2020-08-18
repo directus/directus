@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import marked from 'marked';
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -52,8 +52,8 @@ export default defineComponent({
 		const currentTab = ref(0);
 
 		const html = computed(() => marked(props.value));
-		const showEdit = computed(() => !props.tabbed || currentTab.value == 0);
-		const showPreview = computed(() => !props.tabbed || currentTab.value != 0);
+		const showEdit = computed(() => !props.tabbed || currentTab.value === 0);
+		const showPreview = computed(() => !props.tabbed || currentTab.value !== 0);
 
 		return { html, currentTab, showEdit, showPreview };
 	},
