@@ -304,8 +304,6 @@ export default defineComponent({
 					meta: {
 						interface: 'sort',
 						hidden: true,
-						width: 'full',
-						special: 'sort',
 					},
 					schema: {},
 				});
