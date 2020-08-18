@@ -41,12 +41,15 @@ const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	try {
 		await rateLimiterRedis.consume(req.ip);
-	} catch (err) {
-		// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
-		const secs = Math.round(err.msBeforeNext / 1000) || 1;
-		res.set('Retry-After', String(secs));
-		res.status(429).send('Too Many Requests');
-		throw new HitRateLimitException(`Too many requests, retry after ${secs}.`);
+	} catch (rejRes) {
+		if (rejRes instanceof Error) {
+			throw Error;
+		} else {
+			// If there is no error, rateLimiterRedis promise rejected with number of ms before next request allowed
+			const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
+			res.set('Retry-After', String(secs));
+			throw new HitRateLimitException(`Too many requests, retry after ${secs}.`);
+		}
 	}
 
 	return next();
