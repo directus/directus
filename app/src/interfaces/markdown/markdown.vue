@@ -13,13 +13,13 @@
 			</v-tabs>
 		</div>
 		<v-textarea
-			v-show="!tabbed || currentTab == 0"
+			v-show="showEdit"
 			:placeholder="placeholder"
 			:value="value"
 			:disabled="disabled"
 			@input="$listeners.input"
 		/>
-		<div v-show="!tabbed || currentTab != 0" class="preview-container">
+		<div v-show="showPreview" class="preview-container">
 			<div class="preview" v-html="html"></div>
 		</div>
 	</div>
@@ -52,15 +52,17 @@ export default defineComponent({
 		const currentTab = ref(0);
 
 		const html = computed(() => marked(props.value));
+		const showEdit = computed(() => !props.tabbed || currentTab.value == 0);
+		const showPreview = computed(() => !props.tabbed || currentTab.value != 0);
 
-		return { html, currentTab };
+		return { html, currentTab, showEdit, showPreview };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .interface-markdown {
-	--v-textarea-min-height: 200px;
+	--v-textarea-min-height: var(--input-height-tall);
 	--v-textarea-max-height: 400px;
 
 	display: flex;

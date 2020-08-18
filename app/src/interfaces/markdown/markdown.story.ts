@@ -6,6 +6,7 @@ import markdown from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import { defineComponent, ref } from '@vue/composition-api';
 import RawValue from '../../../.storybook/raw-value.vue';
+import i18n from '@/lang';
 
 Vue.component('interface-markdown', InterfaceMarkdown);
 
@@ -20,6 +21,7 @@ export default {
 export const basic = () =>
 	defineComponent({
 		components: { RawValue },
+		i18n,
 		props: {
 			disabled: {
 				default: boolean('Disabled', false, 'Options'),
