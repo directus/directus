@@ -10,12 +10,18 @@
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>
+
+		<v-divider />
+
+		<div class="page-description" v-html="marked($t('page_help_settings_presets_browse'))" />
+
 	</drawer-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
+import marked from 'marked';
 
 export default defineComponent({
 	setup() {
@@ -26,7 +32,7 @@ export default defineComponent({
 
 		fetchCounts();
 
-		return { bookmarksCount, presetsCount };
+		return { bookmarksCount, presetsCount, marked };
 
 		async function fetchCounts() {
 			loading.value = true;
@@ -51,3 +57,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 20px 0;
+}
+</style>

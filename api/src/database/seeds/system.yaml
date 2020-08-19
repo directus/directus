@@ -22,6 +22,9 @@ tables:
     display_template:
       type: string
       length: 255
+    sort_field:
+      type: string
+      length: 64
 
   directus_roles:
     id:
@@ -84,6 +87,8 @@ tables:
       type: text
     tags:
       type: json
+    avatar:
+      type: uuid
     timezone:
       type: string
       length: 255
@@ -115,8 +120,6 @@ tables:
       length: 255
     last_login:
       type: timestamp
-    avatar:
-      type: uuid
     last_page:
       type: string
       length: 255
@@ -628,6 +631,8 @@ rows:
       - collection: directus_roles
         field: name
         interface: text-input
+        options:
+          placeholder: The unique name for this role...
         locked: true
         sort: 1
         width: half

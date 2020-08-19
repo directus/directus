@@ -121,9 +121,6 @@
 				collection="directus_users"
 				:primary-key="primaryKey"
 			/>
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_users_detail'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -138,7 +135,6 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import marked from 'marked';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
@@ -258,7 +254,6 @@ export default defineComponent({
 			saveAsCopyAndNavigate,
 			isBatch,
 			revisionsDrawerDetail,
-			marked,
 			previewLoading,
 			avatarSrc,
 			roleName,

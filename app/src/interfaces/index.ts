@@ -13,6 +13,7 @@ import InterfaceIcon from './icon';
 import InterfaceImage from './image';
 import InterfaceManyToMany from './many-to-many';
 import InterfaceManyToOne from './many-to-one';
+import InterfaceMarkdown from './markdown';
 import InterfaceNotice from './notice';
 import InterfaceNumeric from './numeric/';
 import InterfaceOneToMany from './one-to-many';
@@ -45,6 +46,7 @@ export const interfaces = [
 	InterfaceImage,
 	InterfaceManyToMany,
 	InterfaceManyToOne,
+	InterfaceMarkdown,
 	InterfaceNotice,
 	InterfaceNumeric,
 	InterfaceOneToMany,

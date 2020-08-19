@@ -120,10 +120,14 @@ body {
 @keyframes indeterminate {
 	0% {
 		transform: scaleX(0);
+	}
+
+	10% {
+		transform: scaleX(0);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
 	}
 
-	50% {
+	60% {
 		transform: scaleX(1) translateX(25%);
 		animation-timing-function: cubic-bezier(0.4, 0.1, 0.2, 0.9);
 	}

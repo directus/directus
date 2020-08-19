@@ -119,9 +119,12 @@ export default defineComponent({
 	}
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade-enter-active {
 	transition: opacity var(--slow) var(--transition);
+}
+
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
 }
 
 .fade-enter,

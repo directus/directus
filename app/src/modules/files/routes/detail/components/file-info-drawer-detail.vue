@@ -42,7 +42,7 @@
 			</div>
 
 			<div v-if="user">
-				<dt>{{ $t('uploaded_by') }}</dt>
+				<dt>{{ $t('owner') }}</dt>
 				<dd>
 					<user-popover :user="user.id">
 						<router-link :to="user.link">{{ user.name }}</router-link>
@@ -86,6 +86,11 @@
 				</div>
 			</template>
 		</dl>
+
+		<v-divider />
+
+		<div class="page-description" v-html="marked($t('page_help_files_detail'))" />
+
 	</drawer-detail>
 </template>
 
@@ -94,6 +99,7 @@ import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
 import i18n from '@/lang';
+import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
 import api from '@/api';
 
@@ -122,7 +128,7 @@ export default defineComponent({
 		const { user } = useUser();
 		const { folder } = useFolder();
 
-		return { readableMimeType, size, creationDate, user, folder };
+		return { readableMimeType, size, creationDate, user, folder, marked };
 
 		function useCreationDate() {
 			const creationDate = ref<string | null>(null);

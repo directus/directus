@@ -151,7 +151,10 @@ body {
 	.content {
 		padding: 16px;
 		::v-deep {
-			.format-markdown {
+			.page-description {
+				color: var(--foreground-subdued);
+				margin-bottom: 8px;
+
 				a {
 					color: var(--primary);
 				}

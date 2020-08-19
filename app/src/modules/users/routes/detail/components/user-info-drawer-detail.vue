@@ -29,14 +29,15 @@
 			</div>
 		</dl>
 
-		<template v-else>
-			--
-		</template>
+		<v-divider />
+
+		<div class="page-description" v-html="marked($t('page_help_users_detail'))" />
 	</drawer-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import marked from 'marked';
 
 export default defineComponent({
 	props: {
@@ -49,5 +50,14 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	setup(props) {
+		return { marked };
+	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 20px 0;
+}
+</style>

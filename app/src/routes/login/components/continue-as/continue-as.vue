@@ -66,7 +66,7 @@ export default defineComponent({
 	::v-deep {
 		// In the translated string for continue as, there's a B element to emphasize the users name
 		b {
-			font-weight: 500;
+			font-weight: 600;
 		}
 	}
 

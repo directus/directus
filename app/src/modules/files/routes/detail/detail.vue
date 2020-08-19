@@ -163,9 +163,6 @@
 				collection="directus_files"
 				:primary-key="primaryKey"
 			/>
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_files_detail'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -186,7 +183,6 @@ import FileLightbox from '@/views/private/components/file-lightbox';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import FileInfoDrawerDetail from './components/file-info-drawer-detail.vue';
-import marked from 'marked';
 import useFormFields from '@/composables/use-form-fields';
 import FolderPicker from '../../components/folder-picker';
 import api from '@/api';
@@ -315,7 +311,6 @@ export default defineComponent({
 			previewActive,
 			revisionsDrawerDetail,
 			formFields,
-			marked,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
