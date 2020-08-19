@@ -5,6 +5,7 @@ import {
 	IRateLimiterStoreOptions,
 	IRateLimiterOptions,
 } from 'rate-limiter-flexible';
+import camelcase from 'camelcase';
 import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
 
@@ -40,9 +41,9 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	const redisConfig: any = {};
 	const redisClient = redis.createClient({
 		enable_offline_queue: false,
-		host: env.REDIS_HOST,
-		port: env.REDIS_PORT,
-		password: env.REDIS_PASSWORD,
+		host: env.SREDIS_HOST,
+		port: env.SREDIS_PORT,
+		password: env.SREDIS_PASSWORD,
 	});
 
 	if (!redisClient) {
@@ -53,29 +54,12 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	redisConfig.storeClient = redisClient;
 
 	for (const [key, value] of Object.entries(env)) {
-		if (key === 'CONSUMED_POINTS_LIMIT') {
-			redisConfig.points = value;
-			continue;
-		}
-		if (key === 'CONSUMED_RESET_DURATION') {
-			redisConfig.duration = value;
-			continue;
-		}
-		if (key === 'EXEC_EVENLY') {
-			redisConfig.execEvenly = value;
-			continue;
-		}
-		if (key === 'BLOCK_POINT_DURATION') {
-			redisConfig.blockDuration = value;
-			continue;
-		}
-		if (key === 'INMEMORY_BLOCK_CONSUMED') {
-			redisConfig.inmemoryBlockOnConsumed = value;
-			continue;
-		}
-		if (key === 'INMEMEMORY_BLOCK_DURATION') {
-			redisConfig.inmemoryBlockDuration = value;
-			continue;
+		if (key.startsWith('REDIS')) {
+			// amended as we want the second and third words
+			const configKey = camelcase(
+				key.split('_').filter((_, index) => [0, 0].includes(index) === false)
+			);
+			redisConfig[configKey] = value;
 		}
 	}
 
