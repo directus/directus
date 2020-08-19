@@ -208,9 +208,12 @@ export default class FieldsService {
 				.where({ collection, field: field.field })
 				.first();
 			if (!record) throw new FieldNotFoundException(collection, field.field);
-			await database('directus_fields')
-				.update(field.meta)
-				.where({ collection, field: field.field });
+
+			await this.itemsService.update({
+				...field.meta,
+				collection: collection,
+				field: field.field,
+			}, record.id);
 		}
 
 		return field.field;
