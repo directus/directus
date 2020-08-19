@@ -104,7 +104,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' = 'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -193,6 +193,10 @@ export default defineComponent({
 						isEmpty(state.relations[1].many_field) ||
 						isEmpty(state.relations[1].one_collection)
 					);
+				}
+
+				if (localType.value === 'presentation') {
+					return isEmpty(state.fieldData.field);
 				}
 
 				return isEmpty(state.fieldData.field) || isEmpty(state.fieldData.type);

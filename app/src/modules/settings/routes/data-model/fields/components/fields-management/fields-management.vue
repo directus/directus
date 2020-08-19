@@ -60,18 +60,21 @@
 			</template>
 
 			<v-list dense>
-				<v-list-item
-					v-for="option in addOptions"
-					:key="option.type"
-					:to="`/settings/data-model/${collection}/+?type=${option.type}`"
-				>
-					<v-list-item-icon>
-						<v-icon :name="option.icon" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ option.text }}
-					</v-list-item-content>
-				</v-list-item>
+				<template v-for="(option, index) in addOptions">
+					<v-divider v-if="option.divider === true" :key="index" />
+					<v-list-item
+						v-else
+						:key="option.type"
+						:to="`/settings/data-model/${collection}/+?type=${option.type}`"
+					>
+						<v-list-item-icon>
+							<v-icon :name="option.icon" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ option.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 	</div>
@@ -134,6 +137,14 @@ export default defineComponent({
 				text: i18n.t('standard_field'),
 			},
 			{
+				type: 'presentation',
+				icon: 'scatter_plot',
+				text: i18n.t('presentation_and_aliases'),
+			},
+			{
+				divider: true,
+			},
+			{
 				type: 'file',
 				icon: 'photo',
 				text: i18n.t('single_file'),
@@ -142,6 +153,9 @@ export default defineComponent({
 				type: 'files',
 				icon: 'collections',
 				text: i18n.t('multiple_files'),
+			},
+			{
+				divider: true,
 			},
 			{
 				type: 'm2o',
