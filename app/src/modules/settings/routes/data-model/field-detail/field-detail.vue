@@ -86,7 +86,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m'>,
+			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'>,
 			default: null,
 		},
 	},
