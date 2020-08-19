@@ -23,11 +23,10 @@ let rateLimiterConfig = new RateLimiterMemory(getRateLimiterConfig());
 // need to pick redis or memory
 if (env.RATE_LIMIT_TYPE === 'redis') {
 	rateLimiterConfig = new RateLimiterRedis(getRateLimiterRedisConfig());
-}
-// first need to check that redis is running!
 
-if (!redisClient) {
-	throw new RedisNotFoundException('Redis client does not exist');
+	if (!redisClient) {
+		throw new RedisNotFoundException('Redis client does not exist');
+	}
 }
 
 export default rateLimiterConfig;
