@@ -274,11 +274,7 @@ export default defineComponent({
 .interface-code {
 	position: relative;
 	width: 100%;
-	font-size: 12px;
-
-	&:focus {
-		border-color: var(--primary-125);
-	}
+	font-size: 14px;
 }
 
 .small {
