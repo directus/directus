@@ -76,14 +76,14 @@ body {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		height: 44px;
-		padding: 12px 20px;
+		height: 38px;
+		padding: 8px 20px;
 		cursor: pointer;
 	}
 
 	.slider {
 		position: absolute;
-		bottom: 0;
+		bottom: -2px;
 		left: calc(100% / var(--_v-tabs-items) * var(--_v-tabs-selected));
 		width: calc(100% / var(--_v-tabs-items));
 		height: 2px;

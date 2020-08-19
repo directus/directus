@@ -52,8 +52,7 @@ body {
 .v-tab.horizontal {
 	color: var(--v-tab-color);
 	font-weight: 500;
-	font-size: 12px;
-	text-transform: uppercase;
+	font-size: 14px;
 	background-color: var(--v-tab-background-color);
 
 	&.active {

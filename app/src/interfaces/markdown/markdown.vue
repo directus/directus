@@ -7,7 +7,7 @@
 					{{ $t('edit') }}
 				</v-tab>
 				<v-tab>
-					<v-icon name="visibility" left />
+					<v-icon name="visibility" outline left />
 					{{ $t('preview') }}
 				</v-tab>
 			</v-tabs>
@@ -65,16 +65,25 @@ export default defineComponent({
 	--v-textarea-min-height: var(--input-height-tall);
 	--v-textarea-max-height: 400px;
 
+	--v-tab-color: var(--foreground-normal);
+	--v-tab-background-color: var(--background-subdued);
+	--v-tab-color-active: var(--foreground-normal);
+	--v-tab-background-color-active: var(--background-subdued);
+
 	display: flex;
 	flex-wrap: wrap;
 
 	.toolbar {
 		width: 100%;
+		height: 42px;
 		border: var(--border-width) solid var(--border-normal);
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+		background-color: var(--background-subdued);
 	}
 
 	.v-textarea {
 		height: unset;
+		min-height: var(--input-height-tall);
 		border-radius: var(--border-radius) 0 0 var(--border-radius);
 	}
 
@@ -109,14 +118,16 @@ export default defineComponent({
 
 	::v-deep {
 		.preview {
-			font-weight: 400;
+			font-weight: 500;
 			font-size: 14px;
-			line-height: 1.6;
 			& > *:first-child {
 				margin-top: 0;
 			}
 			& > *:last-child {
 				margin-bottom: 0;
+			}
+			a {
+				text-decoration: underline;
 			}
 			h1,
 			h2,
@@ -218,10 +229,6 @@ export default defineComponent({
 				padding-top: 0;
 			}
 			& > h1:first-child {
-				margin-top: 0;
-				padding-top: 0;
-			}
-			& > h1:first-child + h2 {
 				margin-top: 0;
 				padding-top: 0;
 			}
