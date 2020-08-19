@@ -20,8 +20,27 @@ export default class NodeCacheService {
 			useClones: false,
 		});
 	}
-	// need to get/set/delete cache
+	// delete the cache with the given key. Casted to string by node-cache
+	// so might as well do it here too for consitancy
 
+	async delCache(keys: string) {
+		this.apiCache.del(keys);
+	}
+	// attempt to get the cache based on the key, if it is empty then set it
+
+	async getCache(key: string, setData: JSON) {
+		// first get the value
+		const value = this.apiCache.get(key);
+
+		if (value) {
+			return Promise.resolve(value);
+		}
+
+		this.apiCache.set(key, setData);
+		return setData;
+	}
+
+	// this flushes all data. important!
 	async flushCache() {
 		this.apiCache.flushAll();
 	}
