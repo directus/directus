@@ -18,7 +18,7 @@ export { state, initLocalStore, clearLocalStore };
 function initLocalStore(
 	collection: string,
 	field: string,
-	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m'
+	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'
 ) {
 	state = reactive<any>({
 		fieldData: {
@@ -222,6 +222,12 @@ function initLocalStore(
 				)?.field;
 			}
 		);
+	}
+
+	if (type === 'presentation') {
+		delete state.fieldData.schema;
+		delete state.fieldData.type;
+		state.fieldData.meta.special = 'alias';
 	}
 }
 

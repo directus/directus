@@ -40,13 +40,13 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const availableInterfaces = computed(() =>
 			interfaces.filter((inter) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				let matchesRelation = false;
 
-				if (props.type === 'standard') {
+				if (props.type === 'standard' || props.type === 'presentation') {
 					matchesRelation = inter.relationship === null || inter.relationship === undefined;
 				} else if (props.type === 'file') {
 					matchesRelation = inter.relationship === 'm2o';
