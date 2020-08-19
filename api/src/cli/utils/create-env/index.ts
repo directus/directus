@@ -32,13 +32,15 @@ const defaults = {
 	},
 	rateLimits: {
 		RATE_LIMIT_TYPE: 'redis',
-		CACHE_TYPE: 'redis',
 		CONSUMED_POINTS_LIMIT: 5,
 		CONSUMED_RESET_DURATION: 1,
 		EXEC_EVENLY: true,
 		BLOCK_POINT_DURATION: 0,
 		INMEMORY_BLOCK_CONSUMED: 200,
 		INMEMEMORY_BLOCK_DURATION: 30,
+	},
+	caching: {
+		CACHE_TYPE: 'redis',
 	},
 	security: {
 		KEY: uuidv4(),

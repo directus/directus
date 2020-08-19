@@ -6,6 +6,7 @@
  *  checkPeriod is the amount of seconds for the
  *  autodelete to wait before checking
  *  if cache needs to be deleted.
+ *  Have wrapped node cache so we can extend if needed
  */
 import NodeCache from 'node-cache';
 
