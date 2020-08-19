@@ -27,8 +27,10 @@ export default class NodeCacheService {
 		this.apiCache.del(keys);
 	}
 	// attempt to get the cache based on the key, if it is empty then set it
+	// am aware there is json interface but not sure but looks like endpoints
+	// convert string to json
 
-	async getCache(key: string, setData: JSON) {
+	async getCache(key: string, setData: string) {
 		// first get the value
 		const value = this.apiCache.get(key);
 
