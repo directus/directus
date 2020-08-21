@@ -58,7 +58,7 @@ export default class UtilsService {
 			const lastSortValueResponse = await this.knex.max(sortField).from(collection).first();
 			const rowsWithoutSortValue = await this.knex.select(primaryKeyField, sortField).from(collection).whereNull(sortField).orderBy(primaryKeyField);
 
-			let lastSortValue = lastSortValueResponse!.max;
+			let lastSortValue = lastSortValueResponse?.max || 0;
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
