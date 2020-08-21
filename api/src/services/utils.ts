@@ -53,7 +53,13 @@ export default class UtilsService {
 		const primaryKeyField = await schemaInspector.primary(collection);
 
 		// Make sure all rows have a sort value
-		const countResponse = await this.knex.count('*').from(collection).whereNull(sortField).first();
+		const countResponse = await this.knex
+			.count('*')
+			.as('count')
+			.from(collection)
+			.whereNull(sortField)
+			.first();
+
 		if (countResponse?.count && +countResponse.count !== 0) {
 			const lastSortValueResponse = await this.knex.max(sortField).from(collection).first();
 			const rowsWithoutSortValue = await this.knex
