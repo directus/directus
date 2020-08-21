@@ -29,7 +29,15 @@ export default class UtilsService {
 		}
 
 		if (this.accountability?.admin !== true) {
-			const permissions = await this.knex.select('fields').from('directus_permissions').where({ role: this.accountability?.role || null, collection }).first();
+			const permissions = await this.knex
+				.select('fields')
+				.from('directus_permissions')
+				.where({
+					collection,
+					operation: 'update',
+					role: this.accountability?.role || null,
+				})
+				.first();
 
 			if (!permissions) {
 				throw new ForbiddenException();
