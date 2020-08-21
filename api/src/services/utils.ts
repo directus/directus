@@ -13,7 +13,7 @@ export default class UtilsService {
 		this.accountability = options?.accountability || null;
 	}
 
-	async sort(collection: string, { from, to }: { from: PrimaryKey, to: PrimaryKey }) {
+	async sort(collection: string, { item, to }: { item: PrimaryKey, to: PrimaryKey }) {
 		const schemaInspector = SchemaInspector(this.knex);
 
 		const sortFieldResponse = await this.knex
@@ -58,6 +58,27 @@ export default class UtilsService {
 			}
 		}
 
+		const targetSortValueResponse = await this.knex.select(sortField).from(collection).where({ [primaryKeyField]: to }).first();
+		const targetSortValue = targetSortValueResponse[sortField];
 
+		const sourceSortValueResponse = await this.knex.select(sortField).from(collection).where({ [primaryKeyField]: item }).first();
+		const sourceSortValue = sourceSortValueResponse[sortField];
+
+		// Set the target item to the new sort value
+		await this.knex(collection).update({ [sortField]: targetSortValue }).where({ [primaryKeyField]: item });
+
+		if (sourceSortValue < targetSortValue) {
+			await this.knex(collection)
+				.decrement(sortField, 1)
+				.where(sortField, '>', sourceSortValue)
+				.andWhere(sortField, '<=', targetSortValue)
+				.andWhereNot({ [primaryKeyField]: item });
+		} else {
+			await this.knex(collection)
+				.increment(sortField, 1)
+				.where(sortField, '>=', targetSortValue)
+				.andWhere(sortField, '<=', sourceSortValue)
+				.andWhereNot({ [primaryKeyField]: item });
+		}
 	}
 }
