@@ -54,7 +54,9 @@ export default class UtilsService {
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
-				await this.knex(collection).update({ [sortField]: lastSortValue }).where({ [primaryKeyField]: row[primaryKeyField] });
+				await this.knex(collection)
+					.update({ [sortField]: lastSortValue })
+					.where({ [primaryKeyField]: row[primaryKeyField] });
 			}
 		}
 
