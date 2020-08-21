@@ -9,6 +9,7 @@
  *  Have wrapped node cache so we can extend if needed
  */
 import NodeCache from 'node-cache';
+import { InvalidCacheKeyException } from '../exceptions';
 
 export default class NodeCacheService {
 	apiCache: NodeCache;
@@ -25,6 +26,9 @@ export default class NodeCacheService {
 	// so might as well do it here too for consitancy
 
 	async delCache(keys: string) {
+		if (!keys) {
+			throw new InvalidCacheKeyException('Keys was not provided for cache');
+		}
 		this.apiCache.del(keys);
 	}
 	// attempt to get the cache based on the key, if it is empty then set it
@@ -32,6 +36,9 @@ export default class NodeCacheService {
 	// convert string to json
 
 	async getCache(key: string, setData: string) {
+		if (!setData) {
+			throw new InvalidCacheKeyException('No response data was provided for cache');
+		}
 		// first get the value
 		const value = this.apiCache.get(key);
 
