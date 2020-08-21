@@ -54,20 +54,23 @@ export default class UtilsService {
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex
-			.count('*')
-			.as('count')
+			.count('* as count')
 			.from(collection)
 			.whereNull(sortField)
 			.first();
 
 		if (countResponse?.count && +countResponse.count !== 0) {
-			const lastSortValueResponse = await this.knex.max(sortField).from(collection).first();
+			const lastSortValueResponse = await this.knex
+				.max(sortField)
+				.from(collection)
+				.first();
+
 			const rowsWithoutSortValue = await this.knex
 				.select(primaryKeyField, sortField)
 				.from(collection)
 				.whereNull(sortField);
 
-			let lastSortValue = lastSortValueResponse?.max || 0;
+			let lastSortValue = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;

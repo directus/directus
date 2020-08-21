@@ -304,8 +304,7 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					return _viewQuery.value?.sort || primaryKeyField.value!.field;
+					return _viewQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
 					page.value = 1;
