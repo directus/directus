@@ -21,5 +21,6 @@ export default function moveInArray(array: readonly any[], fromIndex: number, to
 			...array.slice(targetIndex, length),
 		];
 	}
+
 	return array;
 }

@@ -227,7 +227,7 @@ export default defineComponent({
 			page,
 			fields: fieldsWithRelational,
 			filters: _filters,
-			searchQuery,
+			searchQuery: _searchQuery,
 		});
 
 		const {
