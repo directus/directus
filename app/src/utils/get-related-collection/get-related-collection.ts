@@ -9,13 +9,10 @@ export default function getRelatedCollection(collection: string, field: string) 
 	const fieldInfo = fieldsStore.getField(collection, field);
 	const type = fieldInfo.type.toLowerCase();
 
-	let relatedCollection: string | null = null;
-
-	if (['user', 'user_updated', 'owner', 'file', 'm2o'].includes(type)) {
-		relatedCollection = relations[0].one_collection;
-	} else if (type === 'o2m') {
-		relatedCollection = relations[0].many_collection;
+	// o2m | m2m
+	if (type === 'alias') {
+		return relations[0].many_collection;
 	}
 
-	return relatedCollection;
+	return relations[0].one_collection;
 }

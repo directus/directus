@@ -336,6 +336,8 @@ export default defineComponent({
 						if (typeof _viewQuery.value.fields === 'string') {
 							return (_viewQuery.value.fields as string).split(',');
 						}
+
+						if (Array.isArray(_viewQuery.value.fields)) return _viewQuery.value.fields;
 					}
 
 					const fields =
