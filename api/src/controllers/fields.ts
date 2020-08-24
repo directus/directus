@@ -2,6 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
+import cacheMiddleware from '../middleware/cache';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
 import Joi from 'joi';
@@ -20,6 +21,7 @@ const router = Router();
 router.get(
 	'/',
 	useCollection('directus_fields'),
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -32,6 +34,7 @@ router.get(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 

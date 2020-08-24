@@ -20,6 +20,7 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	// make the key of the cache the URL
 	// need to check that this will work for all endpoints
 	// node cache service
+	// have used query as then can decide whather to use cache or not from api call
 
 	if (!req.query.TTL) return next();
 	if (!req.query.dTTL) return next();

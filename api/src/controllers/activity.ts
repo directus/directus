@@ -32,6 +32,7 @@ router.get(
 	'/:pk',
 	useCollection('directus_activity'),
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);

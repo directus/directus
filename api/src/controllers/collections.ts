@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
+import cacheMiddleware from '../middleware/cache';
 import CollectionsService from '../services/collections';
 import useCollection from '../middleware/use-collection';
 import MetaService from '../services/meta';
@@ -23,6 +24,7 @@ router.post(
 router.get(
 	'/',
 	useCollection('directus_collections'),
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -38,6 +40,7 @@ router.get(
 	'/:collection',
 	useCollection('directus_collections'),
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const collectionKey = req.params.collection.includes(',')
