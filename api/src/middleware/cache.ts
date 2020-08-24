@@ -53,7 +53,6 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 		});
 	} else {
 		// use the node cache
-		// set for ten minutes
 		const nodeCache = new CacheService(TTLnum, cDnum);
 
 		nodeCache.getCache(key, JSON.stringify(res.json));
