@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
 import sanitizeQuery from '../middleware/sanitize-query';
+import cacheMiddleware from '../middleware/cache';
 import collectionExists from '../middleware/collection-exists';
 import MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
@@ -29,6 +30,7 @@ router.get(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });

@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
+import cacheMiddleware from '../middleware/cache';
 import RevisionsService from '../services/revisions';
 import MetaService from '../services/meta';
 
@@ -26,6 +27,7 @@ router.get(
 	'/:pk',
 	useCollection('directus_revisions'),
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new RevisionsService({ accountability: req.accountability });
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);

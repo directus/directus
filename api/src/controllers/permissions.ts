@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import PermissionsService from '../services/permissions';
 import useCollection from '../middleware/use-collection';
+import cacheMiddleware from '../middleware/cache';
 import MetaService from '../services/meta';
 import { InvalidCredentialsException } from '../exceptions';
 
@@ -24,6 +25,7 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -38,6 +40,7 @@ router.get(
 router.get(
 	'/me',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (!req.accountability?.user || !req.accountability?.role) {
 			throw new InvalidCredentialsException();
@@ -49,19 +52,20 @@ router.get(
 		query.filter = {
 			...(query.filter || {}),
 			role: {
-				_eq: req.accountability.role
-			}
-		}
+				_eq: req.accountability.role,
+			},
+		};
 
 		const items = await service.readByQuery(req.sanitizedQuery);
 
 		return res.json({ data: items || null });
 	})
-)
+);
 
 router.get(
 	'/:pk',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const record = await service.readByKey(Number(req.params.pk), req.sanitizedQuery);

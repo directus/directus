@@ -4,6 +4,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import cacheMiddleware from '../middleware/cache';
 import UsersService from '../services/users';
 import MetaService from '../services/meta';
 import AuthService from '../services/authentication';
@@ -26,6 +27,7 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new UsersService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -40,6 +42,7 @@ router.get(
 router.get(
 	'/me',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
@@ -55,6 +58,7 @@ router.get(
 router.get(
 	'/:pk',
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new UsersService({ accountability: req.accountability });
 		const items = await service.readByKey(req.params.pk, req.sanitizedQuery);
@@ -153,38 +157,44 @@ router.post(
 	})
 );
 
-router.post('/me/tfa/enable/', asyncHandler(async (req, res) => {
-	if (!req.accountability?.user) {
-		throw new InvalidCredentialsException();
-	}
+router.post(
+	'/me/tfa/enable/',
+	asyncHandler(async (req, res) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
 
-	const service = new UsersService({ accountability: req.accountability });
-	const url = await service.enableTFA(req.accountability.user);
+		const service = new UsersService({ accountability: req.accountability });
+		const url = await service.enableTFA(req.accountability.user);
 
-	return res.json({ data: { otpauth_url: url }});
-}));
+		return res.json({ data: { otpauth_url: url } });
+	})
+);
 
-router.post('/me/tfa/disable', asyncHandler(async (req, res) => {
-	if (!req.accountability?.user) {
-		throw new InvalidCredentialsException();
-	}
+router.post(
+	'/me/tfa/disable',
+	asyncHandler(async (req, res) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
 
-	if (!req.body.otp) {
-		throw new InvalidPayloadException(`"otp" is required`);
-	}
+		if (!req.body.otp) {
+			throw new InvalidPayloadException(`"otp" is required`);
+		}
 
-	const service = new UsersService({ accountability: req.accountability });
-	const authService = new AuthService({ accountability: req.accountability });
+		const service = new UsersService({ accountability: req.accountability });
+		const authService = new AuthService({ accountability: req.accountability });
 
-	const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
+		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
 
-	if (otpValid === false) {
-		throw new InvalidPayloadException(`"otp" is invalid`);
-	}
+		if (otpValid === false) {
+			throw new InvalidPayloadException(`"otp" is invalid`);
+		}
 
-	await service.disableTFA(req.accountability.user);
+		await service.disableTFA(req.accountability.user);
 
-	return res.status(200).end();
-}));
+		return res.status(200).end();
+	})
+);
 
 export default router;

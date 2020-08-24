@@ -47,6 +47,7 @@ router.get(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
