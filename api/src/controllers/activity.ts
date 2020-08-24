@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
+import cacheMiddleware from '../middleware/cache';
 import ActivityService from '../services/activity';
 import MetaService from '../services/meta';
 import { Action } from '../types';
@@ -12,6 +13,7 @@ router.get(
 	'/',
 	useCollection('directus_activity'),
 	sanitizeQuery,
+	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
