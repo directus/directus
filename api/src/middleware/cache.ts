@@ -5,9 +5,10 @@
 import { RequestHandler } from 'express';
 import redis from 'redis';
 import asyncHandler from 'express-async-handler';
-import CacheService from '../services/authentication';
+import CacheService from '../services/node-cache';
 import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
+import NodeCache from 'node-cache';
 const redisClient = redis.createClient({
 	enable_offline_queue: false,
 	host: env.REDIS_HOST,
@@ -40,6 +41,11 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 				redisClient.setex(key, 600, JSON.stringify(res.json));
 			}
 		});
+	} else {
+		// use the node cache
+		const nodeCache = new CacheService(600, 600);
+
+		const cahced = nodeCache.getCache(key, JSON.stringify(res.json));
 	}
 
 	return next();
