@@ -1,4 +1,4 @@
-/** node cache service.
+/** cache service.
  *  Makes dealing with cache management easier
  *  in case a new cache is used in future
  *  sdtTTL is the amount of time a cache should be
@@ -11,7 +11,7 @@
 import NodeCache from 'node-cache';
 import { InvalidCacheKeyException } from '../exceptions';
 
-export default class NodeCacheService {
+export default class CacheService {
 	apiCache: NodeCache;
 
 	constructor(stdTTLSecs: number, checkPeriodSecs: number) {
@@ -32,8 +32,6 @@ export default class NodeCacheService {
 		this.apiCache.del(keys);
 	}
 	// attempt to get the cache based on the key, if it is empty then set it
-	// am aware there is json interface but not sure but looks like endpoints
-	// convert string to json
 
 	async getCache(key: string, setData: string) {
 		if (!setData) {
@@ -50,7 +48,7 @@ export default class NodeCacheService {
 		return setData;
 	}
 
-	// this flushes all data. important!
+	// this flushes all data. important incase cache gets too full.
 	async flushCache() {
 		this.apiCache.flushAll();
 	}

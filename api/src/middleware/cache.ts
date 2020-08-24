@@ -5,7 +5,7 @@
 import { RequestHandler } from 'express';
 import redis from 'redis';
 import asyncHandler from 'express-async-handler';
-import NodeCacheService from '../services/authentication';
+import CacheService from '../services/authentication';
 import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
 const redisClient = redis.createClient({
@@ -15,18 +15,34 @@ const redisClient = redis.createClient({
 	password: env.REDIS_PASSWORD,
 });
 
-const cache: RequestHandler = asyncHandler(async (req, res, next) => {
+const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	// make the key of the cache the URL
 	// need to check that this will work for all endpoints
+	// node cache service
 	const key = req.url;
+
 	// we have two options here. Redis or node cache
 	if (env.CACHE_TYPE === 'redis') {
 		if (!redisClient) {
 			throw new RedisNotFoundException('Redis client does not exist');
 		}
+
+		redisClient.get(key, (error, resultData) => {
+			if (error) {
+				throw new RedisNotFoundException('Error retreiving redis cache');
+			}
+
+			if (resultData) {
+				res.send(resultData);
+			}
+			if (!resultData) {
+				// set data and then return
+				redisClient.setex(key, 600, JSON.stringify(res.json));
+			}
+		});
 	}
 
 	return next();
 });
 
-export default cache;
+export default cacheMiddleware;
