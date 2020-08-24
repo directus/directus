@@ -28,6 +28,9 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	const TTL = req.query.TTL;
 	const checkDeath = req.query.dTTL;
 
+	const TTLnum = Number(TTL);
+	const cDnum = Number(checkDeath);
+
 	// we have two options here. Redis or node cache
 	if (env.CACHE_TYPE === 'redis') {
 		if (!redisClient) {
@@ -44,13 +47,13 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 			}
 			if (!resultData) {
 				// set data and then return
-				redisClient.setex(key, TTL, JSON.stringify(res.json));
+				redisClient.setex(key, TTLnum, JSON.stringify(res.json));
 			}
 		});
 	} else {
 		// use the node cache
 		// set for ten minutes
-		const nodeCache = new CacheService(TTL, checkDeath);
+		const nodeCache = new CacheService(TTLnum, cDnum);
 
 		nodeCache.getCache(key, JSON.stringify(res.json));
 	}
