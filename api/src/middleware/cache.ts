@@ -16,7 +16,7 @@ const redisClient = redis.createClient({
 	password: env.REDIS_PASSWORD,
 });
 
-const cacheMiddleware = (TTL: number, checkDeath: number) =>
+const cacheMiddleware = (TTL: number, checkDeath: number) => {
 	asyncHandler(async (req, res, next) => {
 		// make the key of the cache the URL
 		// need to check that this will work for all endpoints
@@ -52,5 +52,6 @@ const cacheMiddleware = (TTL: number, checkDeath: number) =>
 
 		return next();
 	});
+};
 
 export default cacheMiddleware;
