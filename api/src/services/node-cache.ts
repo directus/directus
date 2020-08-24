@@ -7,6 +7,7 @@
  *  autodelete to wait before checking
  *  if cache needs to be deleted.
  *  Have wrapped node cache so we can extend if needed
+ *  could put redis cache in here too
  */
 import NodeCache from 'node-cache';
 import { InvalidCacheKeyException } from '../exceptions';
