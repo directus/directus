@@ -45,7 +45,7 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 		// use the node cache
 		const nodeCache = new CacheService(600, 600);
 
-		const cahced = nodeCache.getCache(key, JSON.stringify(res.json));
+		nodeCache.getCache(key, JSON.stringify(res.json));
 	}
 
 	return next();
