@@ -127,7 +127,10 @@ export default defineComponent({
 				router.push(lastPage || '/collections');
 			} catch (err) {
 				/** @todo use new error code */
-				if (err.response?.data?.error?.code === 111) {
+				if (
+					err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' &&
+					requiresTFA.value === false
+				) {
 					requiresTFA.value = true;
 				} else {
 					error.value = err;
