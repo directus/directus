@@ -19,22 +19,7 @@ registerDrivers(storage);
 export default storage;
 
 function getStorageConfig(): StorageManagerConfig {
-	const config: any = { disks: {} };
-
-	for (const [key, value] of Object.entries(env)) {
-		if (key.startsWith('STORAGE') === false) continue;
-		if (key === 'STORAGE_LOCATIONS') continue;
-		if (key.endsWith('PUBLIC_URL')) continue;
-
-		const disk = key.split('_')[1].toLowerCase();
-		if (!config.disks[disk]) config.disks[disk] = { config: {} };
-
-		if (key.endsWith('DRIVER')) {
-			config.disks[disk].driver = value;
-			continue;
-		}
-		config.disks[disk].config[parseEnv(key, 1)] = value;
-	}
+	const config = parseEnv(1, 'storage');
 
 	return config;
 }

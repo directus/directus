@@ -37,7 +37,7 @@ function getRateLimiterConfig(): IRateLimiterOptions {
 
 function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	const redis = require('redis');
-	const redisConfig: any = {};
+	const redisConfig = parseEnv(0, 'redis');
 	const redisClient = redis.createClient({
 		enable_offline_queue: false,
 		host: env.SREDIS_HOST,
@@ -50,14 +50,6 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	}
 
 	redisConfig.storeClient = redisClient;
-
-	for (const [key, value] of Object.entries(env)) {
-		if (key.startsWith('REDIS')) {
-			// amended as we want the second and third words
-
-			redisConfig[parseEnv(key, 0)] = value;
-		}
-	}
 
 	return redisConfig;
 }
