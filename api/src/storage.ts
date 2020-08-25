@@ -4,7 +4,7 @@ import {
 	StorageManagerConfig,
 	Storage,
 } from '@slynova/flydrive';
-import camelcase from 'camelcase';
+import parseEnv from './utils/parse-env';
 import env from './env';
 
 import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
@@ -33,11 +33,7 @@ function getStorageConfig(): StorageManagerConfig {
 			config.disks[disk].driver = value;
 			continue;
 		}
-
-		const configKey = camelcase(
-			key.split('_').filter((_, index) => [0, 1].includes(index) === false)
-		);
-		config.disks[disk].config[configKey] = value;
+		config.disks[disk].config[parseEnv(key, 1)] = value;
 	}
 
 	return config;

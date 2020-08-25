@@ -4,7 +4,7 @@ import {
 	IRateLimiterStoreOptions,
 	IRateLimiterOptions,
 } from 'rate-limiter-flexible';
-import camelcase from 'camelcase';
+import parseEnv from './utils/parse-env';
 import { RedisNotFoundException } from './exceptions';
 import env from './env';
 
@@ -54,10 +54,8 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	for (const [key, value] of Object.entries(env)) {
 		if (key.startsWith('REDIS')) {
 			// amended as we want the second and third words
-			const configKey = camelcase(
-				key.split('_').filter((_, index) => [0, 0].includes(index) === false)
-			);
-			redisConfig[configKey] = value;
+
+			redisConfig[parseEnv(key, 0)] = value;
 		}
 	}
 
