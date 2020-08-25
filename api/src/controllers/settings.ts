@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
-import cacheMiddleware from '../middleware/cache';
 import useCollection from '../middleware/use-collection';
 import SettingsService from '../services/settings';
 
@@ -11,7 +10,6 @@ router.get(
 	'/',
 	useCollection('directus_settings'),
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new SettingsService({ accountability: req.accountability });
 		const records = await service.readSingleton(req.sanitizedQuery);

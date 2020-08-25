@@ -1,11 +1,21 @@
 import express from 'express';
+import redis from 'redis';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
 import cacheMiddleware from '../middleware/cache';
+import CacheService from '../services/node-cache';
 import ActivityService from '../services/activity';
 import MetaService from '../services/meta';
 import { Action } from '../types';
+import env from '../env';
+
+const redisClient = redis.createClient({
+	enable_offline_queue: false,
+	host: env.REDIS_HOST,
+	port: env.REDIS_PORT,
+	password: env.REDIS_PASSWORD,
+});
 
 const router = express.Router();
 
@@ -15,11 +25,37 @@ router.get(
 	sanitizeQuery,
 	cacheMiddleware,
 	asyncHandler(async (req, res) => {
+		const key = req.url;
+		const TTL = req.query.TTL;
+		const TTLnum = Number(TTL);
+		const dTTL = Number(req.query.dTTL);
+
 		const service = new ActivityService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
 		const records = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+		if (TTL) {
+			if (env.CACHE_TYPE === 'redis') {
+				redisClient.setex(
+					key,
+					TTLnum,
+					JSON.stringify({
+						data: records || null,
+						meta,
+					})
+				);
+			} else {
+				const cacheService = new CacheService(TTLnum, dTTL);
+				cacheService.setCache(
+					key,
+					JSON.stringify({
+						data: records || null,
+						meta,
+					})
+				);
+			}
+		}
 		return res.json({
 			data: records || null,
 			meta,
@@ -33,8 +69,32 @@ router.get(
 	sanitizeQuery,
 	cacheMiddleware,
 	asyncHandler(async (req, res) => {
+		const key = req.url;
+		const TTL = req.query.TTL;
+		const TTLnum = Number(TTL);
+		const dTTL = Number(req.query.dTTL);
 		const service = new ActivityService({ accountability: req.accountability });
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+
+		if (TTL) {
+			if (env.CACHE_TYPE === 'redis') {
+				redisClient.setex(
+					key,
+					TTLnum,
+					JSON.stringify({
+						data: record || null,
+					})
+				);
+			} else {
+				const cacheService = new CacheService(TTLnum, dTTL);
+				cacheService.setCache(
+					key,
+					JSON.stringify({
+						data: record || null,
+					})
+				);
+			}
+		}
 
 		return res.json({
 			data: record || null,

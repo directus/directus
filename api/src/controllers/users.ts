@@ -4,7 +4,6 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
-import cacheMiddleware from '../middleware/cache';
 import UsersService from '../services/users';
 import MetaService from '../services/meta';
 import AuthService from '../services/authentication';
@@ -27,7 +26,6 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new UsersService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -42,7 +40,6 @@ router.get(
 router.get(
 	'/me',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
@@ -58,7 +55,6 @@ router.get(
 router.get(
 	'/:pk',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new UsersService({ accountability: req.accountability });
 		const items = await service.readByKey(req.params.pk, req.sanitizedQuery);

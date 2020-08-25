@@ -2,7 +2,6 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
-import cacheMiddleware from '../middleware/cache';
 import RelationsService from '../services/relations';
 import MetaService from '../services/meta';
 
@@ -24,7 +23,6 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new RelationsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -39,7 +37,6 @@ router.get(
 router.get(
 	'/:pk',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new RelationsService({ accountability: req.accountability });
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);

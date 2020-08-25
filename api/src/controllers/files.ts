@@ -4,7 +4,6 @@ import Busboy from 'busboy';
 import sanitizeQuery from '../middleware/sanitize-query';
 import FilesService from '../services/files';
 import MetaService from '../services/meta';
-import cacheMiddleware from '../middleware/cache';
 import useCollection from '../middleware/use-collection';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
@@ -158,7 +157,6 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
-	cacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FilesService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
