@@ -12,7 +12,7 @@
 		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" />
 		<span class="label type-text">
-			<slot name="label" v-if="customValue === false">{{ label }}</slot>
+			<slot v-if="customValue === false">{{ label }}</slot>
 			<input @click.stop class="custom-input" v-else v-model="_value" />
 		</span>
 		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
@@ -132,6 +132,7 @@ body {
 	appearance: none;
 
 	.label:not(:empty) {
+		flex-grow: 1;
 		margin-left: 8px;
 		transition: color var(--fast) var(--transition);
 
