@@ -1239,7 +1239,9 @@ rows:
         width: half
       - collection: directus_users
         field: tfa_secret
+        interface: tfa-setup
         locked: true
+        special: conceal
         sort: 14
         width: half
       - collection: directus_users
