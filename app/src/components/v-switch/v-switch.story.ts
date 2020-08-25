@@ -90,7 +90,7 @@ export const htmlLabel = () => ({
 	},
 	template: `
 		<v-switch v-model="checked" @change="onChange">
-			<template #label>
+			<template>
 				Any <i>custom</i> markup in here
 			</template>
 		</v-switch>
