@@ -33,7 +33,7 @@
 		</span>
 
 		<v-button
-			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2)"
+			v-if="showFirstLast && value <= length - Math.ceil(totalVisible / 2)"
 			:class="{ active: value === length }"
 			@click="toPage(length)"
 			secondary
