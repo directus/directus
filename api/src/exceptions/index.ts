@@ -3,6 +3,7 @@ export * from './collection-not-found';
 export * from './field-not-found';
 export * from './forbidden';
 export * from './invalid-credentials';
+export * from './invalid-otp';
 export * from './invalid-payload';
 export * from './invalid-query';
 export * from './item-limit';
