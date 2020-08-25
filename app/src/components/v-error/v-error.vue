@@ -24,7 +24,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const code = computed(() => {
-			return props.error?.response?.data?.error?.code || 'UNKNOWN';
+			return props.error?.response?.data?.errors?.[0]?.extensions?.code || 'UNKNOWN';
 		});
 
 		const copied = ref(false);
