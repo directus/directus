@@ -7,7 +7,7 @@
 import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import { HitRateLimitException } from '../exceptions';
-import rateLimiterConfig from '../utils/get-rate-limiter-config';
+import rateLimiterConfig from '../get-rate-limiter-config';
 
 const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 	try {
