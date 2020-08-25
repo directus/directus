@@ -43,6 +43,9 @@ export default defineComponent({
 	setup(props) {
 		const availableInterfaces = computed(() =>
 			interfaces.filter((inter) => {
+				// Filter out all system interfaces
+				if (inter.system !== undefined && inter.system === true) return false;
+
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				let matchesRelation = false;
 

@@ -5,7 +5,7 @@ import { sendInviteMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
 import { InvalidPayloadException } from '../exceptions';
-import { Accountability, Query, Item, AbstractServiceOptions } from '../types';
+import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
 import Knex from 'knex';
 import env from '../env';
 
@@ -20,6 +20,29 @@ export default class UsersService extends ItemsService {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
 		this.service = new ItemsService('directus_users', options);
+	}
+
+	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
+	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async update(
+		data: Partial<Item> | Partial<Item>[],
+		key?: PrimaryKey | PrimaryKey[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
+		/**
+		 * @NOTE
+		 * This is just an extra bit of hardcoded security. We don't want anybody to be able to disable 2fa through
+		 * the regular /users endpoint. Period. You should only be able to manage the 2fa status through the /tfa endpoint.
+		 */
+		const payloads = Array.isArray(data) ? data : [data];
+
+		for (const payload of payloads) {
+			if (payload.hasOwnProperty('tfa_secret')) {
+				throw new InvalidPayloadException(`You can't change the tfa_secret manually.`);
+			}
+		}
+
+		return this.service.update(data, key as any);
 	}
 
 	async inviteUser(email: string, role: string) {
@@ -64,7 +87,10 @@ export default class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 
-		return await authService.generateOTPAuthURL(pk, secret);
+		return {
+			secret,
+			url: await authService.generateOTPAuthURL(pk, secret),
+		};
 	}
 
 	async disableTFA(pk: string) {

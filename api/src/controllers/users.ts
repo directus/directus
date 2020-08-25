@@ -159,9 +159,9 @@ router.post('/me/tfa/enable/', asyncHandler(async (req, res) => {
 	}
 
 	const service = new UsersService({ accountability: req.accountability });
-	const url = await service.enableTFA(req.accountability.user);
+	const { url, secret } = await service.enableTFA(req.accountability.user);
 
-	return res.json({ data: { otpauth_url: url }});
+	return res.json({ data: { secret, otpauth_url: url }});
 }));
 
 router.post('/me/tfa/disable', asyncHandler(async (req, res) => {

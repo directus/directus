@@ -23,6 +23,7 @@ import InterfaceSlider from './slider/';
 import InterfaceSlug from './slug';
 import InterfaceStatus from './status';
 import InterfaceTags from './tags';
+import InterfaceTFASetup from './tfa-setup';
 import InterfaceTextarea from './textarea/';
 import InterfaceTextInput from './text-input/';
 import InterfaceToggle from './toggle/';
@@ -56,6 +57,7 @@ export const interfaces = [
 	InterfaceSlug,
 	InterfaceStatus,
 	InterfaceTags,
+	InterfaceTFASetup,
 	InterfaceTextarea,
 	InterfaceTextInput,
 	InterfaceToggle,

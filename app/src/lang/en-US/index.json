@@ -422,6 +422,11 @@
 
 	"enabled": "Enabled",
 
+	"enable_tfa": "Enable 2FA",
+	"disable_tfa": "Disable 2FA",
+	"tfa_scan_code": "Scan the code in your authenticator app to finish setting up 2FA",
+	"enter_otp_to_disable_tfa": "Enter the OTP to disable 2FA",
+
 	"use_bold_style": "Use bold style",
 
 	"formatted_value": "Formatted Value",
