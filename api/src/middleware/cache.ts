@@ -4,11 +4,13 @@
  */
 import { RequestHandler } from 'express';
 import redis from 'redis';
+import NodeCache from 'node-cache';
 import asyncHandler from 'express-async-handler';
 import CacheService from '../services/node-cache';
 import { RedisNotFoundException } from '../exceptions';
+import { InvalidCacheKeyException } from '../exceptions';
 import env from '../env';
-import NodeCache from 'node-cache';
+
 const redisClient = redis.createClient({
 	enable_offline_queue: false,
 	host: env.REDIS_HOST,
@@ -25,12 +27,10 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.query.TTL) return next();
 	if (!req.query.dTTL) return next();
 
-	const key = req.url;
-	const TTL = req.query.TTL;
-	const checkDeath = req.query.dTTL;
+	const TTLnumber = Number(req.query.TTL);
+	const dTTL = Number(req.query.dTTL);
 
-	const TTLnum = Number(TTL);
-	const cDnum = Number(checkDeath);
+	const key = req.url;
 
 	// we have two options here. Redis or node cache
 	if (env.CACHE_TYPE === 'redis') {
@@ -44,18 +44,13 @@ const cacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 			}
 
 			if (resultData) {
-				res.send(resultData);
-			}
-			if (!resultData) {
-				// set data and then return
-				redisClient.setex(key, TTLnum, JSON.stringify(res.json));
+				const reponse = JSON.parse(resultData);
+				res.json(reponse);
 			}
 		});
 	} else {
-		// use the node cache
-		const nodeCache = new CacheService(TTLnum, cDnum);
-
-		nodeCache.getCache(key, JSON.stringify(res.json));
+		const cacheService = new CacheService(TTLnumber, dTTL);
+		res.json(cacheService.getCache(key));
 	}
 
 	return next();

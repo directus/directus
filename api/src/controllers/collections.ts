@@ -3,8 +3,18 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import cacheMiddleware from '../middleware/cache';
 import CollectionsService from '../services/collections';
+import CacheService from '../services/node-cache';
 import useCollection from '../middleware/use-collection';
 import MetaService from '../services/meta';
+import redis from 'redis';
+import env from '../env';
+
+const redisClient = redis.createClient({
+	enable_offline_queue: false,
+	host: env.REDIS_HOST,
+	port: env.REDIS_PORT,
+	password: env.REDIS_PASSWORD,
+});
 
 const router = Router();
 
@@ -26,12 +36,16 @@ router.get(
 	useCollection('directus_collections'),
 	cacheMiddleware,
 	asyncHandler(async (req, res) => {
+		const key = req.url;
+		const TTL = req.query.TTL;
+		const TTLnum = Number(TTL);
+
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
 		const collections = await collectionsService.readByQuery();
 		const meta = await metaService.getMetaForQuery(req.collection, {});
-
+		redisClient.setex(key, TTLnum, JSON.stringify({ data: collections || null, meta }));
 		res.json({ data: collections || null, meta });
 	})
 );
@@ -42,11 +56,22 @@ router.get(
 	sanitizeQuery,
 	cacheMiddleware,
 	asyncHandler(async (req, res) => {
+		const key = req.url;
+		const TTL = req.query.TTL;
+		const TTLnum = Number(TTL);
+		const dTTL = Number(req.query.dTTL);
+
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const collectionKey = req.params.collection.includes(',')
 			? req.params.collection.split(',')
 			: req.params.collection;
 		const collection = await collectionsService.readByKey(collectionKey as any);
+		if (env.CACHE_TYPE === 'redis') {
+			redisClient.setex(key, TTLnum, JSON.stringify({ data: collection || null }));
+		} else {
+			const cacheService = new CacheService(TTLnum, dTTL);
+			cacheService.setCache(key, JSON.stringify({ data: collection || null }));
+		}
 		res.json({ data: collection || null });
 	})
 );

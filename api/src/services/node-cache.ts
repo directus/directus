@@ -34,19 +34,16 @@ export default class CacheService {
 	}
 	// attempt to get the cache based on the key, if it is empty then set it
 
-	async getCache(key: string, setData: string) {
-		if (!setData) {
-			throw new InvalidCacheKeyException('No response data was provided for cache');
-		}
-		// first get the value
+	async getCache(key: string) {
 		const value = this.apiCache.get(key);
 
 		if (value) {
 			return Promise.resolve(value);
 		}
+	}
 
-		this.apiCache.set(key, setData);
-		return setData;
+	async setCache(key: string, data: {}) {
+		this.apiCache.set(key, data);
 	}
 
 	// this flushes all data. important incase cache gets too full.

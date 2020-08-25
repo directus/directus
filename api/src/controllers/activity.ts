@@ -20,7 +20,6 @@ router.get(
 
 		const records = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
-
 		return res.json({
 			data: records || null,
 			meta,
