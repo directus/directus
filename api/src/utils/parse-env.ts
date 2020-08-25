@@ -25,7 +25,9 @@ export default function parseEnv(splitWord: number, envType?: string) {
 			if (key.startsWith('REDIS')) {
 				config[configCamel(key, splitWord)] = value;
 			}
-		} else {
+		}
+
+		if (!envType) {
 			config[configCamel(key, splitWord)] = value;
 		}
 	}
