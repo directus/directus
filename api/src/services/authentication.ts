@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import { InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
+import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
@@ -51,14 +51,14 @@ export default class AuthenticationService {
 		}
 
 		if (user.tfa_secret && !otp) {
-			throw new InvalidPayloadException(`"otp" is required`);
+			throw new InvalidOTPException(`"otp" is required`);
 		}
 
 		if (user.tfa_secret && otp) {
 			const otpValid = await this.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
-				throw new InvalidPayloadException(`"otp" is invalid`);
+				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
 
