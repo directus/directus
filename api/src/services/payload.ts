@@ -87,7 +87,13 @@ export default class PayloadService {
 					}
 				}
 			}
+
+			return value;
 		},
+		async conceal(operation, value) {
+			if (operation === 'read') return '**********';
+			return value;
+		}
 	};
 
 	processValues(operation: Operation, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -149,11 +155,20 @@ export default class PayloadService {
 	) {
 		if (!field.special) return payload[field.field];
 
-		if (this.transformers.hasOwnProperty(field.special)) {
-			return await this.transformers[field.special](operation, payload[field.field], payload);
+		const fieldSpecials = field.special.split(',').map(s => s.trim());
+
+
+		let value = clone(payload[field.field]);
+
+		if (field.field === 'password') console.log(value);
+
+		for (const special of fieldSpecials) {
+			if (this.transformers.hasOwnProperty(special)) {
+				value = await this.transformers[special](operation, value, payload);
+			}
 		}
 
-		return payload[field.field];
+		return value;
 	}
 
 	/**
@@ -267,3 +282,4 @@ export default class PayloadService {
 		}
 	}
 }
+0

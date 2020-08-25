@@ -804,7 +804,7 @@ rows:
         width: half
       - collection: directus_users
         field: password
-        special: hash
+        special: hash, conceal
         interface: hash
         locked: true
         options:
