@@ -6,3 +6,4 @@ debug.db
 test
 dist
 tmp
+.env

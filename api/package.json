@@ -111,7 +111,8 @@
     "resolve-cwd": "^3.0.0",
     "sharp": "^0.25.4",
     "uuid": "^8.3.0",
-    "uuid-validate": "0.0.3"
+    "uuid-validate": "0.0.3",
+    "rate-limiter-flexible": "^2.1.10"
   },
   "optionalDependencies": {
     "mssql": "^6.2.0",
@@ -119,7 +120,6 @@
     "oracledb": "^5.0.0",
     "pg": "^8.3.0",
     "sqlite3": "^5.0.0",
-    "rate-limiter-flexible": "^2.1.10",
     "redis": "^3.0.2"
   },
   "devDependencies": {

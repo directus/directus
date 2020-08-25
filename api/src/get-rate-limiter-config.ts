@@ -1,4 +1,3 @@
-import redis from 'redis';
 import {
 	RateLimiterRedis,
 	RateLimiterMemory,
@@ -6,8 +5,8 @@ import {
 	IRateLimiterOptions,
 } from 'rate-limiter-flexible';
 import camelcase from 'camelcase';
-import { RedisNotFoundException } from '../exceptions';
-import env from '../env';
+import { RedisNotFoundException } from './exceptions';
+import env from './env';
 
 // options for the rate limiter are set below. Opts can be found
 // at https://github.com/animir/node-rate-limiter-flexible/wiki/Options
@@ -22,7 +21,6 @@ export default rateLimiterConfig;
 
 function getRateLimiterConfig(): IRateLimiterOptions {
 	const config: any = {};
-	config.keyPrefix = 'rlflx';
 	for (const [key, value] of Object.entries(env)) {
 		if (key === 'CONSUMED_POINTS_LIMIT') {
 			config.points = value;
@@ -38,6 +36,7 @@ function getRateLimiterConfig(): IRateLimiterOptions {
 }
 
 function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
+	const redis = require('redis');
 	const redisConfig: any = {};
 	const redisClient = redis.createClient({
 		enable_offline_queue: false,
@@ -50,7 +49,6 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 		throw new RedisNotFoundException('Redis client does not exist');
 	}
 
-	redisConfig.keyPrefix = 'rlflx';
 	redisConfig.storeClient = redisClient;
 
 	for (const [key, value] of Object.entries(env)) {
