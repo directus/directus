@@ -68,7 +68,9 @@ if (env.NODE_ENV !== 'development') {
 }
 
 // use the rate limiter - all routes for now
-app.use(rateLimiter);
+if (env.RATE_LIMIT_ENABLED === 'true') {
+	app.use(rateLimiter);
+}
 app.use('/auth', authRouter)
 
 	.use(authenticate)

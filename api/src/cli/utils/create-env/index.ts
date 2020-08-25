@@ -26,9 +26,10 @@ const defaults = {
 		STORAGE_LOCAL_ROOT: './uploads',
 	},
 	rateLimits: {
-		REDIS_HOST: '127.0.0.1',
-		REDIS_PORT: '6379',
-		REDIS_PASSWORD: null,
+		RATE_LIMIT_ENABLED: true,
+		SREDIS_HOST: '127.0.0.1',
+		SREDIS_PORT: '6379',
+		SREDIS_PASSWORD: null,
 		RATE_LIMIT_TYPE: 'redis',
 		CONSUMED_POINTS_LIMIT: 5,
 		CONSUMED_RESET_DURATION: 1,
