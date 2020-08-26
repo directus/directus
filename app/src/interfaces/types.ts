@@ -16,7 +16,5 @@ export type InterfaceConfig = {
 };
 
 export type InterfaceContext = { i18n: VueI18n };
-
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;
-
 export type InterfaceDefineParamGeneric<T> = T | ((context: InterfaceContext) => T);

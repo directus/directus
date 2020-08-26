@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceRepeater from './repeater.vue';
+import RepeaterOptions from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'repeater',
@@ -7,5 +8,5 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'replay',
 	component: InterfaceRepeater,
 	types: ['json'],
-	options: [],
+	options: RepeaterOptions,
 }));
