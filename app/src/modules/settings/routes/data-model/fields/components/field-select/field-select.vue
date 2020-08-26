@@ -105,7 +105,7 @@
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import interfaces from '@/interfaces';
+import { getInterfaces } from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -119,6 +119,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const interfaces = getInterfaces();
+
 		const editActive = ref(false);
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
@@ -127,7 +129,7 @@ export default defineComponent({
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.find((inter) => inter.id === props.field.meta.interface)?.name;
+			return interfaces.value.find((inter) => inter.id === props.field.meta.interface)?.name;
 		});
 
 		return {

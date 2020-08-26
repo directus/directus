@@ -22,14 +22,19 @@
 				v-model="fieldData.meta.options"
 			/>
 
-			<component v-model="fieldData" :is="`interface-options-${selectedInterface.id}`" v-else />
+			<component
+				v-model="fieldData.meta.options"
+				:field-data="fieldData"
+				:is="`interface-options-${selectedInterface.id}`"
+				v-else
+			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import interfaces from '@/interfaces';
+import { getInterfaces } from '@/interfaces';
 
 import { state } from '../store';
 
@@ -41,8 +46,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const interfaces = getInterfaces();
+
 		const availableInterfaces = computed(() =>
-			interfaces.filter((inter) => {
+			interfaces.value.filter((inter) => {
 				// Filter out all system interfaces
 				if (inter.system !== undefined && inter.system === true) return false;
 
@@ -72,7 +79,7 @@ export default defineComponent({
 		);
 
 		const selectedInterface = computed(() => {
-			return interfaces.find((inter) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
 		});
 
 		return { fieldData: state.fieldData, selectItems, selectedInterface };
