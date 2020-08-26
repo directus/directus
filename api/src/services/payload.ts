@@ -160,8 +160,6 @@ export default class PayloadService {
 
 		let value = clone(payload[field.field]);
 
-		if (field.field === 'password') console.log(value);
-
 		for (const special of fieldSpecials) {
 			if (this.transformers.hasOwnProperty(special)) {
 				value = await this.transformers[special](operation, value, payload);
