@@ -1,5 +1,13 @@
 <template>
-	<private-view :title="loading ? $t('loading') : (isNew === false)? $t('editing_role', { role: item && item.name }) : $t('creating_role') ">
+	<private-view
+		:title="
+			loading
+				? $t('loading')
+				: isNew === false
+				? $t('editing_role', { role: item && item.name })
+				: $t('creating_role')
+		"
+	>
 		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -61,23 +69,8 @@
 		</template>
 
 		<div class="roles">
-			<div class="permissions" v-if="primaryKey != 1">
-				<h2 class="title type-label">
-					{{ $t('permissions') }}
-					<span class="instant-save">{{ $t('saves_automatically') }}</span>
-				</h2>
+			<permissions-overview :role="primaryKey" />
 
-				<v-skeleton-loader v-if="loading" />
-				<template v-else>
-					<v-notice v-if="(edits.admin !== undefined ? edits.admin : item && item.admin) === true">
-						{{ $t('admins_have_all_permissions') }}
-					</v-notice>
-
-					<v-notice v-else>
-						Pre-Release: Feature not yet available
-					</v-notice>
-				</template>
-			</div>
 			<v-form
 				collection="directus_roles"
 				:primary-key="primaryKey"
@@ -105,6 +98,7 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import { useUserStore } from '@/stores/';
 import RoleInfoDrawerDetail from './components/role-info-drawer-detail';
+import PermissionsOverview from './components/permissions-overview';
 
 type Values = {
 	[field: string]: any;
@@ -112,7 +106,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-detail',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, RoleInfoDrawerDetail },
+	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, RoleInfoDrawerDetail, PermissionsOverview },
 	props: {
 		primaryKey: {
 			type: String,
@@ -213,16 +207,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--warning);
 }
 
-.title {
-	margin-bottom: 12px;
-
-	.instant-save {
-		margin-left: 4px;
-		color: var(--warning);
-	}
-}
-
-.permissions {
+.permissions-overview {
 	margin-bottom: 48px;
 }
 </style>

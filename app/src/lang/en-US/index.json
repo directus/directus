@@ -21,6 +21,12 @@
 	"markdown": "Markdown",
 	"tabbed": "Tabbed",
 
+	"all_access": "All Access",
+	"no_access": "No Access",
+	"use_custom": "Use Custom",
+	"edit_custom": "Edit Custom",
+
+
 	"presentation_and_aliases": "Presentation & Aliases",
 
 	"revision_post_update": "Here is what this item looked like after the update...",
