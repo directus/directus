@@ -113,7 +113,7 @@
     "mssql": "^6.2.0",
     "mysql": "^2.18.1",
     "oracledb": "^5.0.0",
-    "pg": "^8.3.0",
+    "pg": "^8.3.2",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
