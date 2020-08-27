@@ -12,6 +12,19 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
+	RATE_LIMIT_ENABLED: true,
+	RATE_LIMIT_DRIVER: 'memory',
+	RATE_LIMIT_REDIS_HOST: '127.0.0.1',
+	RATE_LIMIT_REDIS_PORT: '6379',
+	RATE_LIMIT_REDIS_PASSWORD: null,
+	CONSUMED_POINTS_LIMIT: 100,
+	CONSUMED_RESET_DURATION: 5,
+	REDIS_POINTS: 100,
+	REDIS_EXEC_EVENLY: true,
+	REDIS_BLOCK_DURATION: 0,
+	REDIS_INMEMORY_BLOCK_ON_CONSUMED: 200,
+	REDIS_INMEMEMORY_BLOCK_DURATION: 30,
+
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
@@ -42,7 +55,11 @@ export function validateEnv() {
 	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
 		requiredKeys.push('DB_FILENAME');
 	} else {
-		requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+		if (env.DB_CLIENT === 'pg') {
+			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_SSL');
+		} else {
+			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+		}
 	}
 
 	for (const requiredKey of requiredKeys) {
