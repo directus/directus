@@ -1,20 +1,31 @@
 import {
 	RateLimiterRedis,
 	RateLimiterMemory,
+	RateLimiterMemcache,
 	IRateLimiterStoreOptions,
 	IRateLimiterOptions,
 } from 'rate-limiter-flexible';
 import parseEnv from './utils/parse-env';
-import { RedisNotFoundException } from './exceptions';
+import { RedisNotFoundException, MemCacheNotFoundException } from './exceptions';
 import env from './env';
 
 // options for the rate limiter are set below. Opts can be found
 // at https://github.com/animir/node-rate-limiter-flexible/wiki/Options
-
 let rateLimiterConfig = new RateLimiterMemory(getRateLimiterConfig());
-// need to pick redis or memory
-if (env.RATE_LIMIT_TYPE === 'redis') {
-	rateLimiterConfig = new RateLimiterRedis(getRateLimiterRedisConfig());
+
+switch (env.RATE_LIMIT_DRIVER) {
+	case 'memcache': {
+		rateLimiterConfig = new RateLimiterMemcache(getRateLimiterMemCacheConfig());
+		break;
+	}
+	case 'redis': {
+		rateLimiterConfig = new RateLimiterRedis(getRateLimiterRedisConfig());
+		break;
+	}
+	default: {
+		rateLimiterConfig = new RateLimiterMemory(getRateLimiterConfig());
+		break;
+	}
 }
 
 export default rateLimiterConfig;
@@ -40,9 +51,9 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	const redisConfig = parseEnv(0, 'redis');
 	const redisClient = redis.createClient({
 		enable_offline_queue: false,
-		host: env.SREDIS_HOST,
-		port: env.SREDIS_PORT,
-		password: env.SREDIS_PASSWORD,
+		host: env.RATE_LIMIT_HOST,
+		port: env.RATE_LIMIT_PORT,
+		password: env.RATE_LIMIT_REDIS_PASSWORD,
 	});
 
 	if (!redisClient) {
@@ -52,4 +63,32 @@ function getRateLimiterRedisConfig(): IRateLimiterStoreOptions {
 	redisConfig.storeClient = redisClient;
 
 	return redisConfig;
+}
+
+function getRateLimiterMemCacheConfig(): IRateLimiterStoreOptions {
+	const Memcached = require('memcached');
+
+	const memCacheClient = Memcached.createClient({
+		host: env.RATE_LIMIT_HOST,
+		port: env.RATE_LIMIT_PORT,
+	});
+
+	if (!Memcached) {
+		throw new MemCacheNotFoundException('Cannot connect to memcache');
+	}
+
+	const config: any = {};
+	for (const [key, value] of Object.entries(env)) {
+		if (key === 'CONSUMED_POINTS_LIMIT') {
+			config.points = value;
+			continue;
+		}
+		if (key === 'CONSUMED_RESET_DURATION') {
+			config.duration = value;
+			continue;
+		}
+	}
+	config.storeClient = memCacheClient;
+
+	return config;
 }
