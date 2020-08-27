@@ -34,7 +34,7 @@ export default class UtilsService {
 				.from('directus_permissions')
 				.where({
 					collection,
-					operation: 'update',
+					action: 'update',
 					role: this.accountability?.role || null,
 				})
 				.first();

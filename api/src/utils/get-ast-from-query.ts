@@ -8,7 +8,7 @@ import {
 	FieldAST,
 	Query,
 	Relation,
-	Operation,
+	PermissionsAction,
 	Accountability,
 } from '../types';
 import database from '../database';
@@ -17,7 +17,7 @@ export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
 	accountability?: Accountability | null,
-	operation?: Operation
+	action?: PermissionsAction
 ): Promise<AST> {
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
@@ -30,7 +30,7 @@ export default async function getASTFromQuery(
 			? await database
 					.select<{ collection: string; fields: string }[]>('collection', 'fields')
 					.from('directus_permissions')
-					.where({ role: accountability.role, operation: operation || 'read' })
+					.where({ role: accountability.role, action: action || 'read' })
 			: null;
 
 	const ast: AST = {

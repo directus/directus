@@ -101,7 +101,7 @@ export default class CollectionsService {
 			const permissions = await this.knex
 				.select('collection')
 				.from('directus_permissions')
-				.where({ operation: 'read' })
+				.where({ action: 'read' })
 				.where({ role: this.accountability.role })
 				.whereIn('collection', collectionKeys);
 
@@ -150,7 +150,7 @@ export default class CollectionsService {
 			const collectionsYouHavePermissionToRead: string[] = (
 				await this.knex.select('collection').from('directus_permissions').where({
 					role: this.accountability.role,
-					operation: 'read',
+					action: 'read',
 				})
 			).map(({ collection }) => collection);
 

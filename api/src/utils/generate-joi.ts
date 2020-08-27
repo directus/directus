@@ -1,7 +1,9 @@
 import { Filter } from '../types';
 import Joi, { AnySchema } from 'joi';
 
-export default function generateJoi(filter: Filter) {
+export default function generateJoi(filter: Filter | null) {
+	filter = filter || {};
+
 	const schema: Record<string, AnySchema> = {};
 
 	for (const [key, value] of Object.entries(filter)) {
