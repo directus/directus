@@ -51,9 +51,9 @@ const password = () => ({
 });
 
 const ssl = () => ({
-	type: 'bool',
+	type: 'confirm',
 	name: 'ssl',
-	message: 'Enable SSL?:',
+	message: 'Enable SSL:',
 	default: false,
 });
 
