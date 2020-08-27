@@ -310,11 +310,13 @@ tables:
       references:
         table: directus_collections
         column: collection
-    operation:
+    action:
       type: string
       length: 10
       nullable: false
     permissions:
+      type: json
+    validation:
       type: json
     presets:
       type: json
@@ -1787,15 +1789,16 @@ rows:
     defaults:
       role: null
       collection: null
-      operation: null
+      action: null
       permissions: null
+      validation: null
       presets: null
       fields: null
       limit: null
 
     data:
       - collection: directus_settings
-        operation: read
+        action: read
         permissions: {}
         fields: "project_name,project_logo,project_color,public_foreground,public_background,public_note"
 
