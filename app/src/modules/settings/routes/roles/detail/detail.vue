@@ -69,7 +69,10 @@
 		</template>
 
 		<div class="roles">
-			<permissions-overview :role="primaryKey" :permission="permissionKey" />
+			<v-notice v-if="adminEnabled" type="info">
+				{{ $t('admins_have_all_permissions') }}
+			</v-notice>
+			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" />
 
 			<v-form
 				collection="directus_roles"
@@ -131,6 +134,15 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
+		const adminEnabled = computed(() => {
+			const values = {
+				...item.value,
+				...edits.value,
+			};
+
+			return !!values.admin;
+		});
+
 		return {
 			item,
 			loading,
@@ -147,6 +159,7 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
+			adminEnabled,
 		};
 
 		/**
@@ -211,7 +224,8 @@ export default defineComponent({
 	--v-button-color-hover: var(--warning);
 }
 
-.permissions-overview {
+.permissions-overview,
+.roles .v-notice {
 	margin-bottom: 48px;
 }
 </style>
