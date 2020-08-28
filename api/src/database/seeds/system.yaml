@@ -1832,7 +1832,7 @@ rows:
         view_type: cards
         view_options:
           cards:
-            icon: person
+            icon: account_circle
             title: '{{ first_name }} {{ last_name }}'
             subtitle: '{{ title }}'
             size: 4

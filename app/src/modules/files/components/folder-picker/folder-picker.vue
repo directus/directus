@@ -12,7 +12,7 @@
 				>
 					<template #activator>
 						<v-list-item-icon>
-							<v-icon name="folder_special" />
+							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
 						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
 					</template>

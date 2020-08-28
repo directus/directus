@@ -22,7 +22,7 @@
 
 			<v-list dense>
 				<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-					<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+					<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('edit_field') }}
 					</v-list-item-content>
@@ -60,7 +60,7 @@
 				</v-list-item>
 
 				<v-list-item @click="deleteActive = true">
-					<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
+					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_field') }}
 					</v-list-item-content>

@@ -49,7 +49,7 @@
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -75,7 +75,7 @@
 				:to="batchLink"
 				v-tooltip.bottom="$t('edit')"
 			>
-				<v-icon name="edit" />
+				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_item')">

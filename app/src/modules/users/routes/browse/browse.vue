@@ -6,7 +6,7 @@
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="people" />
+				<v-icon name="people_alt" outline />
 			</v-button>
 		</template>
 
@@ -20,7 +20,7 @@
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -46,7 +46,7 @@
 				:to="batchLink"
 				v-tooltip.bottom="$t('edit')"
 			>
-				<v-icon name="edit" />
+				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
@@ -81,7 +81,7 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('user_count', 0)" icon="people" center>
+				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
 					{{ $t('no_users_copy') }}
 
 					<template #append>

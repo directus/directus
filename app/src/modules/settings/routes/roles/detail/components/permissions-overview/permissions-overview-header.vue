@@ -3,8 +3,8 @@
 		<span class="name">{{ $t('collection') }}</span>
 		<v-icon name="add" />
 		<v-icon name="visibility" />
-		<v-icon name="edit" />
-		<v-icon name="delete" />
+		<v-icon name="edit" outline />
+		<v-icon name="delete" outline />
 	</div>
 </template>
 

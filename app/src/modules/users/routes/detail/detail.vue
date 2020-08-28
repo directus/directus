@@ -21,7 +21,7 @@
 						@click="on"
 						v-tooltip.bottom="$t('delete')"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -69,7 +69,7 @@
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
 					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.first_name" />
-					<v-icon v-else name="person" x-large />
+					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">

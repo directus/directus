@@ -1,7 +1,7 @@
 <template>
 	<v-list nav>
 		<v-list-item to="/users" exact :active="currentRole === null">
-			<v-list-item-icon><v-icon name="people" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="folder_shared" outline /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
 		</v-list-item>
 
@@ -20,7 +20,7 @@
 			exact
 			:active="currentRole === id"
 		>
-			<v-list-item-icon><v-icon :name="icon" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
 			<v-list-item-content>{{ name }}</v-list-item-content>
 		</v-list-item>
 	</v-list>

@@ -4,7 +4,7 @@
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="send" />
+				<v-icon name="anchor" />
 			</v-button>
 		</template>
 
@@ -17,7 +17,7 @@
 			<v-dialog v-model="confirmDelete">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" v-if="selection.length > 0" @click="on">
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -36,7 +36,7 @@
 			</v-dialog>
 
 			<v-button rounded icon class="action-batch" v-if="selection.length > 1" :to="batchLink">
-				<v-icon name="edit" />
+				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button rounded icon :to="addNewLink">

@@ -28,7 +28,7 @@
 
 				<v-list-item @click="deleteActive = true">
 					<v-list-item-icon>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_collection') }}

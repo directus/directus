@@ -55,7 +55,7 @@
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
 					>
-						<v-icon name="delete_forever" />
+						<v-icon name="delete_forever" outline />
 					</v-button>
 				</template>
 
@@ -84,7 +84,7 @@
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 

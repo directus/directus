@@ -18,7 +18,7 @@
 						@click="on"
 						v-tooltip.bottom="$t('delete_collection')"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 

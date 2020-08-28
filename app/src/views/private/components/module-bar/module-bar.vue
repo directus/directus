@@ -19,7 +19,7 @@
 						: null
 				"
 			>
-				<v-icon :name="module.icon" />
+				<v-icon :name="module.icon" outline />
 			</v-button>
 		</div>
 		<module-bar-avatar />
