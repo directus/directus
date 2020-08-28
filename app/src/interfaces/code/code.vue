@@ -73,7 +73,11 @@ export default defineComponent({
 					const content = cm.getValue();
 
 					if (props.type === 'json') {
-						emit('input', JSON.parse(content));
+						try {
+							emit('input', JSON.parse(content));
+						} catch {
+							// We won't stage invalid JSON
+						}
 					} else {
 						emit('input', content);
 					}
