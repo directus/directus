@@ -330,11 +330,15 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
+			if (saveAllowed.value === false || hasEdits.value === false) return;
+
 			await save();
 			router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {
+			if (saveAllowed.value === false || hasEdits.value === false) return;
+
 			const savedItem: Record<string, any> = await save();
 
 			revisionsDrawerDetail.value?.$data?.refresh?.();
@@ -347,6 +351,8 @@ export default defineComponent({
 		}
 
 		async function saveAndAddNew() {
+			if (saveAllowed.value === false || hasEdits.value === false) return;
+
 			await save();
 			router.push(`/collections/${props.collection}/+`);
 		}

@@ -177,24 +177,24 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	}
 
 	async function remove(soft = false) {
-		if (soft) {
-			softDeleting.value = true;
-		} else {
-			deleting.value = true;
-		}
+		// if (soft) {
+		// 	softDeleting.value = true;
+		// } else {
+		deleting.value = true;
+		// }
 
 		try {
-			if (soft) {
-				if (!statusField.value || softDeleteStatus.value === null) {
-					throw new Error('[useItem] You cant soft-delete without a status field');
-				}
+			// if (soft) {
+			// 	if (!statusField.value || softDeleteStatus.value === null) {
+			// 		throw new Error('[useItem] You cant soft-delete without a status field');
+			// 	}
 
-				await api.patch(itemEndpoint.value, {
-					[statusField.value.field]: softDeleteStatus.value,
-				});
-			} else {
-				await api.delete(itemEndpoint.value);
-			}
+			// 	await api.patch(itemEndpoint.value, {
+			// 		[statusField.value.field]: softDeleteStatus.value,
+			// 	});
+			// } else {
+			await api.delete(itemEndpoint.value);
+			// }
 
 			item.value = null;
 
@@ -218,11 +218,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			throw err;
 		} finally {
-			if (soft) {
-				softDeleting.value = false;
-			} else {
-				deleting.value = false;
-			}
+			// if (soft) {
+			// 	softDeleting.value = false;
+			// } else {
+			deleting.value = false;
+			// }
 		}
 	}
 
