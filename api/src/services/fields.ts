@@ -6,7 +6,7 @@ import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
-import { FieldNotFoundException } from '../exceptions';
+import { FieldNotFoundException, ForbiddenException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
 import PayloadService from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
@@ -34,24 +34,16 @@ export default class FieldsService {
 		this.payloadService = new PayloadService('directus_fields');
 	}
 
-	async fieldsInCollection(collection: string) {
-		const [fields, columns] = await Promise.all([
-			this.itemsService.readByQuery({ filter: { collection: { _eq: collection } } }),
-			schemaInspector.columns(collection),
-		]);
-
-		return uniq([...fields.map(({ field }) => field), ...columns.map(({ column }) => column)]);
-	}
-
 	async readAll(collection?: string) {
 		let fields: FieldMeta[];
+		const nonAuthorizedItemsService = new ItemsService('directus_fields', { knex: this.knex });
 
 		if (collection) {
-			fields = (await this.itemsService.readByQuery({
+			fields = (await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
 			})) as FieldMeta[];
 		} else {
-			fields = (await this.itemsService.readByQuery({})) as FieldMeta[];
+			fields = (await nonAuthorizedItemsService.readByQuery({})) as FieldMeta[];
 		}
 
 		fields = (await this.payloadService.processValues('read', fields)) as FieldMeta[];
@@ -106,11 +98,50 @@ export default class FieldsService {
 			return data;
 		});
 
-		return [...columnsWithSystem, ...aliasFieldsAsField];
+		const result = [...columnsWithSystem, ...aliasFieldsAsField];
+
+		// Filter the result so we only return the fields you have read access to
+		if (this.accountability) {
+			const permissions = await this.knex.select('collection', 'fields').from('directus_permissions').where({ role: this.accountability.role, action: 'read' });
+			const allowedFieldsInCollection: Record<string, string[]> = {};
+
+			permissions.forEach((permission) => {
+				allowedFieldsInCollection[permission.collection] = permission.fields.split(',');
+			});
+
+			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
+				throw new ForbiddenException();
+			}
+
+			return result.filter((field) => {
+				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
+				const allowedFields = allowedFieldsInCollection[field.collection];
+				if (allowedFields[0] === '*') return true;
+				return allowedFields.includes(field.field);
+			});
+		}
+
+		return result;
 	}
 
-	/** @todo add accountability */
 	async readOne(collection: string, field: string) {
+		if (this.accountability) {
+			const permissions = await this.knex
+				.select('fields')
+				.from('directus_permissions')
+				.where({
+					role: this.accountability.role,
+					collection,
+					action: 'read'
+				}).first();
+
+			if (!permissions) throw new ForbiddenException();
+			if (permissions.fields !== '*') {
+				const allowedFields = permissions.fields.split(',');
+				if (allowedFields.includes(field) === false) throw new ForbiddenException();
+			}
+		}
+
 		let column;
 		let fieldInfo = await this.knex
 			.select('*')
