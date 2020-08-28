@@ -8,4 +8,5 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceOptions,
 	types: ['string'],
 	options: [],
+	system: true,
 }));
