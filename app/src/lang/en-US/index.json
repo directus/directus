@@ -19,6 +19,8 @@
 	"public": "Public",
 	"public_description": "Controls what API data is available without authenticating.",
 
+	"not_allowed": "Not Allowed",
+
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
 	"markdown": "Markdown",

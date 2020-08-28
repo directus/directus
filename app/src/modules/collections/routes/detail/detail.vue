@@ -44,14 +44,14 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete">
+			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="$t('delete_forever')"
-						:disabled="item === null"
+						v-tooltip.bottom="deleteAllowed ? $t('delete_forever') : $t('not_allowed')"
+						:disabled="item === null || deleteAllowed === false"
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
 					>
@@ -185,6 +185,8 @@ import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import generateJoi from '@/utils/generate-joi';
 
 type Values = {
 	[field: string]: any;
@@ -210,6 +212,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const permissionsStore = usePermissionsStore();
+		const userStore = useUserStore();
+
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
@@ -276,6 +281,8 @@ export default defineComponent({
 			return next();
 		};
 
+		const { deleteAllowed } = usePermissions();
+
 		return {
 			item,
 			loading,
@@ -307,6 +314,7 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 			navigationGuard,
+			deleteAllowed,
 		};
 
 		function useBreadcrumb() {
@@ -356,6 +364,31 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
+		}
+
+		function usePermissions() {
+			const permissions = computed(() => {
+				return permissionsStore.state.permissions.filter((permission) => permission.collection === props.collection);
+			});
+
+			const deleteAllowed = computed(() => {
+				if (userStore.isAdmin.value === true) return true;
+
+				const deletePermission = permissions.value.find((permission) => permission.action === 'delete');
+
+				if (!deletePermission) return false;
+
+				const schema = generateJoi(deletePermission.permissions);
+				const { error } = schema.validate(item.value);
+
+				if (!error) {
+					return true;
+				}
+
+				return false;
+			});
+
+			return { deleteAllowed };
 		}
 	},
 });

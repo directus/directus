@@ -1,4 +1,3 @@
-import { Filter } from '../types';
 import Joi, { AnySchema } from 'joi';
 
 /**
@@ -6,7 +5,7 @@ import Joi, { AnySchema } from 'joi';
  * This is copy pasted between app and api. Make this a reusable module.
  */
 
-export default function generateJoi(filter: Filter | null) {
+export default function generateJoi(filter: Record<string, any> | null) {
 	filter = filter || {};
 
 	const schema: Record<string, AnySchema> = {};

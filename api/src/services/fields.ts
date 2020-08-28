@@ -101,12 +101,12 @@ export default class FieldsService {
 		const result = [...columnsWithSystem, ...aliasFieldsAsField];
 
 		// Filter the result so we only return the fields you have read access to
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = await this.knex.select('collection', 'fields').from('directus_permissions').where({ role: this.accountability.role, action: 'read' });
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields.split(',');
+				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(',');
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -125,7 +125,7 @@ export default class FieldsService {
 	}
 
 	async readOne(collection: string, field: string) {
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = await this.knex
 				.select('fields')
 				.from('directus_permissions')
@@ -137,7 +137,7 @@ export default class FieldsService {
 
 			if (!permissions) throw new ForbiddenException();
 			if (permissions.fields !== '*') {
-				const allowedFields = permissions.fields.split(',');
+				const allowedFields = (permissions.fields || '').split(',');
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
 			}
 		}
