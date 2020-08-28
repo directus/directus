@@ -56,8 +56,7 @@ export const onError = async (error: RequestError) => {
 	if (status === 401 && code === 'INVALID_CREDENTIALS' && error.request.responseURL.includes('refresh') === false) {
 		try {
 			await refresh();
-
-			/** @todo retry failed request after successful refresh */
+			return api.request(error.config);
 		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
 		}
