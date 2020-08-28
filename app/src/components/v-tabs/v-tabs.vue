@@ -4,7 +4,6 @@
 	</v-list>
 	<div v-else class="v-tabs horizontal">
 		<slot />
-		<div class="slider" :style="slideStyle" />
 	</div>
 </template>
 
@@ -40,20 +39,11 @@ export default defineComponent({
 			'v-tabs'
 		);
 
-		const slideStyle = computed(() => {
-			const activeIndex = items.value.findIndex((item) => item.active.value);
-
-			return {
-				'--_v-tabs-items': items.value.length,
-				'--_v-tabs-selected': activeIndex,
-			};
-		});
-
 		function update(newSelection: readonly (string | number)[]) {
 			emit('input', newSelection);
 		}
 
-		return { update, slideStyle, items };
+		return { update, items };
 	},
 });
 </script>
@@ -67,7 +57,7 @@ body {
 <style lang="scss" scoped>
 .v-tabs.horizontal {
 	position: relative;
-	display: flex;
+	display: inline-flex;
 
 	::v-deep .v-tab {
 		display: flex;
@@ -79,17 +69,6 @@ body {
 		height: 38px;
 		padding: 8px 20px;
 		cursor: pointer;
-	}
-
-	.slider {
-		position: absolute;
-		bottom: -2px;
-		left: calc(100% / var(--_v-tabs-items) * var(--_v-tabs-selected));
-		width: calc(100% / var(--_v-tabs-items));
-		height: 2px;
-		background-color: var(--v-tabs-underline-color);
-		transition: var(--medium) cubic-bezier(0.66, 0, 0.33, 1);
-		transition-property: left, top;
 	}
 }
 </style>

@@ -65,9 +65,7 @@ export default defineComponent({
 	--v-textarea-min-height: var(--input-height-tall);
 	--v-textarea-max-height: 400px;
 
-	--v-tab-color: var(--foreground-normal);
 	--v-tab-background-color: var(--background-subdued);
-	--v-tab-color-active: var(--foreground-normal);
 	--v-tab-background-color-active: var(--background-subdued);
 
 	display: flex;
