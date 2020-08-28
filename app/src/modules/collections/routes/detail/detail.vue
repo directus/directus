@@ -106,8 +106,8 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false"
-				v-tooltip.bottom="$t('save')"
+				:disabled="saveAllowed === false || hasEdits === false"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -281,7 +281,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed } = usePermissions();
+		const { deleteAllowed, saveAllowed } = usePermissions();
 
 		return {
 			item,
@@ -315,6 +315,7 @@ export default defineComponent({
 			discardAndLeave,
 			navigationGuard,
 			deleteAllowed,
+			saveAllowed,
 		};
 
 		function useBreadcrumb() {
@@ -368,13 +369,20 @@ export default defineComponent({
 
 		function usePermissions() {
 			const permissions = computed(() => {
-				return permissionsStore.state.permissions.filter((permission) => permission.collection === props.collection);
+				return permissionsStore.state.permissions.filter(
+					(permission) => permission.collection === props.collection
+				);
 			});
 
-			const deleteAllowed = computed(() => {
+			const deleteAllowed = computed(() => isAllowed('delete'));
+			const saveAllowed = computed(() => isAllowed('update'));
+
+			return { deleteAllowed, saveAllowed };
+
+			function isAllowed(action: string) {
 				if (userStore.isAdmin.value === true) return true;
 
-				const deletePermission = permissions.value.find((permission) => permission.action === 'delete');
+				const deletePermission = permissions.value.find((permission) => permission.action === action);
 
 				if (!deletePermission) return false;
 
@@ -386,9 +394,7 @@ export default defineComponent({
 				}
 
 				return false;
-			});
-
-			return { deleteAllowed };
+			}
 		}
 	},
 });
