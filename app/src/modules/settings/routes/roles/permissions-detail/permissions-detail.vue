@@ -38,7 +38,7 @@ export default defineComponent({
 	props: {
 		roleKey: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		permissionKey: {
 			type: String,
@@ -61,8 +61,13 @@ export default defineComponent({
 		});
 
 		const modalTitle = computed(() => {
-			if (!permission.value || !role.value || loading.value) return i18n.t('loading');
-			return role.value!.name + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
+			if (loading.value || !permission.value) return i18n.t('loading');
+
+			if (props.roleKey) {
+				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
+			}
+
+			return i18n.t('public') + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });
@@ -128,13 +133,13 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const [roleRes, permRes] = await Promise.all([
-					api.get(`/roles/${props.roleKey}`),
-					api.get(`/permissions/${props.permissionKey}`),
-				]);
+				if (props.roleKey) {
+					const response = await api.get(`/roles/${props.roleKey}`);
+					role.value = response.data.data;
+				}
 
-				role.value = roleRes.data.data;
-				permission.value = permRes.data.data;
+				const response = await api.get(`/permissions/${props.permissionKey}`);
+				permission.value = response.data.data;
 			} catch (err) {
 				error.value = err;
 			} finally {

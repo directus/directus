@@ -34,17 +34,17 @@
 				@click:row="navigateToRole"
 			>
 				<template #item.icon="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ meta: [1, 2].includes(item.id) }" />
+					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
 				<template #item.name="{ item }">
-					<span class="name" :class="{ meta: [1, 2].includes(item.id) }">
+					<span class="name" :class="{ public: item.public }">
 						{{ item.name }}
 					</span>
 				</template>
 
 				<template #item.count="{ item }">
-					<value-null v-if="item.id === 2" />
+					<value-null v-if="item.public" />
 				</template>
 
 				<template #item.description="{ item }">
@@ -129,12 +129,21 @@ export default defineComponent({
 					params: { limit: -1, fields: 'id,name,description,icon,users.id', sort: 'name' },
 				});
 
-				roles.value = response.data.data.map((role: any) => {
-					return {
-						...role,
-						count: role.users.length,
-					};
-				});
+				roles.value = [
+					{
+						public: true,
+						name: i18n.t('public'),
+						icon: 'public',
+						description: i18n.t('public_description'),
+						id: 'public',
+					},
+					...response.data.data.map((role: any) => {
+						return {
+							...role,
+							count: role.users.length,
+						};
+					}),
+				];
 			} catch (err) {
 				error.value = err;
 			} finally {
@@ -168,5 +177,9 @@ export default defineComponent({
 
 .description {
 	color: var(--foreground-subdued);
+}
+
+.public {
+	color: var(--primary);
 }
 </style>

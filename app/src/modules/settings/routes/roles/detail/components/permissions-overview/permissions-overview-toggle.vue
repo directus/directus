@@ -61,7 +61,7 @@ export default defineComponent({
 		},
 		role: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		action: {
 			type: String,
@@ -149,7 +149,7 @@ export default defineComponent({
 
 		async function openPermissions() {
 			if (props.permission) {
-				router.push(`/settings/roles/${props.role}/${props.permission.id}`);
+				router.push(`/settings/roles/${props.role || 'public'}/${props.permission.id}`);
 			} else {
 				saving.value = true;
 
@@ -162,7 +162,7 @@ export default defineComponent({
 				await refresh?.();
 
 				saving.value = false;
-				router.push(`/settings/roles/${props.role}/${permResponse.data.data.id}`);
+				router.push(`/settings/roles/${props.role || 'public'}/${permResponse.data.data.id}`);
 			}
 		}
 	},

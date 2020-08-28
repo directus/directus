@@ -45,7 +45,7 @@ export default defineComponent({
 	props: {
 		role: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		collection: {
 			type: Object as PropType<Collection>,

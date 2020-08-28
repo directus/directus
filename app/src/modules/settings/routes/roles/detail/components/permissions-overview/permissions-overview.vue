@@ -58,7 +58,7 @@ export default defineComponent({
 	props: {
 		role: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		permission: {
 			// the permission row primary key in case we're on the permission detail modal view

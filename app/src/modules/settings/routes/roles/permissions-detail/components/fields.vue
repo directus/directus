@@ -1,7 +1,12 @@
 <template>
 	<div>
 		<v-modal-heading
-			:heading="$t('fields_for_role', { role: role.name, action: $t(permission.action).toLowerCase() })"
+			:heading="
+				$t('fields_for_role', {
+					role: role ? role.name : $t('public'),
+					action: $t(permission.action).toLowerCase(),
+				})
+			"
 		/>
 		<p class="type-label">{{ $tc('field', 0) }}</p>
 		<interface-checkboxes v-model="fields" type="json" :choices="fieldsInCollection" />
@@ -22,7 +27,7 @@ export default defineComponent({
 		},
 		role: {
 			type: Object as PropType<Role>,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {

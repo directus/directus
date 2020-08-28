@@ -1,6 +1,6 @@
 <template>
 	<div class="actions">
-		<v-button secondary :to="`/settings/roles/${roleKey}`">{{ $t('cancel') }}</v-button>
+		<v-button secondary :to="`/settings/roles/${roleKey || 'public'}`">{{ $t('cancel') }}</v-button>
 		<v-button @click="save" :loading="loading">{{ $t('save') }}</v-button>
 	</div>
 </template>
@@ -15,7 +15,7 @@ export default defineComponent({
 	props: {
 		roleKey: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		permission: {
 			type: Object as PropType<Permission>,
@@ -35,7 +35,7 @@ export default defineComponent({
 			try {
 				await api.patch(`/permissions/${props.permission.id}`, props.permission);
 				emit('refresh');
-				router.push(`/settings/roles/${props.roleKey}`);
+				router.push(`/settings/roles/${props.roleKey || 'public'}`);
 			} catch (err) {
 				error.value = err;
 			} finally {

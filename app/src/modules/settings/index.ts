@@ -1,7 +1,12 @@
 import { defineModule } from '@/modules/define';
 import SettingsProject from './routes/project';
 import { SettingsCollections, SettingsNewCollection, SettingsFields, SettingsFieldDetail } from './routes/data-model/';
-import { SettingsRolesBrowse, SettingsRolesDetail, SettingsRolesPermissionsDetail } from './routes/roles';
+import {
+	SettingsRolesBrowse,
+	SettingsRolesDetail,
+	SettingsRolesPermissionsDetail,
+	SettingsRolesPublicDetail,
+} from './routes/roles';
 import { SettingsWebhooksBrowse, SettingsWebhooksDetail } from './routes/webhooks';
 import { SettingsPresetsBrowse, SettingsPresetsDetail } from './routes/presets';
 import SettingsNotFound from './routes/not-found';
@@ -58,6 +63,19 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-roles-browse',
 			path: '/roles',
 			component: SettingsRolesBrowse,
+		},
+		{
+			path: '/roles/public',
+			component: SettingsRolesPublicDetail,
+			props: true,
+			children: [
+				{
+					path: ':permissionKey',
+					components: {
+						permissionsDetail: SettingsRolesPermissionsDetail,
+					},
+				},
+			],
 		},
 		{
 			name: 'settings-roles-detail',

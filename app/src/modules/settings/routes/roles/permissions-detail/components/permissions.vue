@@ -1,7 +1,12 @@
 <template>
 	<div>
 		<v-modal-heading
-			:heading="$t('permissions_for_role', { action: $t(permission.action).toLowerCase(), role: role.name })"
+			:heading="
+				$t('permissions_for_role', {
+					action: $t(permission.action).toLowerCase(),
+					role: role ? role.name : $t('public'),
+				})
+			"
 		/>
 		<interface-code v-model="permissions" language="json" type="json" />
 	</div>
@@ -20,7 +25,7 @@ export default defineComponent({
 		},
 		role: {
 			type: Object as PropType<Role>,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
