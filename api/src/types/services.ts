@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { Accountability } from './accountability';
 import { Item, PrimaryKey } from './items';
 import { Query } from './query';
-import { Operation } from './permissions';
+import { PermissionsAction } from './permissions';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;
@@ -18,8 +18,8 @@ export interface AbstractService {
 
 	readByQuery(query: Query): Promise<Item[]>;
 
-	readByKey(keys: PrimaryKey[], query: Query, operation: Operation): Promise<Item[]>;
-	readByKey(key: PrimaryKey, query: Query, operation: Operation): Promise<Item>;
+	readByKey(keys: PrimaryKey[], query: Query, action: PermissionsAction): Promise<Item[]>;
+	readByKey(key: PrimaryKey, query: Query, action: PermissionsAction): Promise<Item>;
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;

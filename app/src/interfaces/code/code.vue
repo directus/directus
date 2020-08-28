@@ -73,7 +73,15 @@ export default defineComponent({
 					const content = cm.getValue();
 
 					if (props.type === 'json') {
-						emit('input', JSON.parse(content));
+						if (content.length === 0) {
+							return emit('input', null);
+						}
+
+						try {
+							emit('input', JSON.parse(content));
+						} catch {
+							// We won't stage invalid JSON
+						}
 					} else {
 						emit('input', content);
 					}
@@ -130,9 +138,7 @@ export default defineComponent({
 						if (text.length > 0) {
 							try {
 								jsonlint.parse(text);
-							} catch (e) {
-								console.error(e);
-							}
+							} catch (e) {}
 						}
 						return found;
 					});

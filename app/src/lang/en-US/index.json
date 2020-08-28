@@ -21,6 +21,21 @@
 	"markdown": "Markdown",
 	"tabbed": "Tabbed",
 
+	"all_access": "All Access",
+	"no_access": "No Access",
+	"use_custom": "Use Custom",
+	"edit_custom": "Edit Custom",
+
+	"item_permissions": "Item Permissions",
+	"field_permissions": "Field Permissions",
+	"field_validation": "Field Validation",
+	"field_presets": "Field Presets",
+
+	"permissions_for_role": "Items the {role} Role can {action}.",
+	"fields_for_role": "Fields the {role} Role can {action}.",
+	"validation_for_role": "Field {action} rules the {role} Role must obey.",
+	"presets_for_role": "Field value defaults for the {role} Role.",
+
 	"presentation_and_aliases": "Presentation & Aliases",
 
 	"revision_post_update": "Here is what this item looked like after the update...",
