@@ -79,7 +79,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .permissions-overview-row {
 	display: flex;
-	padding: 12px;
+	align-items: center;
+	height: 48px;
+	padding: 0 12px;
 	background-color: var(--background-page);
 
 	.name {

@@ -16,6 +16,24 @@
 				:permissions="permissions.filter((p) => p.collection === collection.collection)"
 				:refreshing="refreshing"
 			/>
+
+			<button class="system-toggle" @click="systemVisible = !systemVisible">
+				{{ $t('system_collections') }}
+				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
+			</button>
+
+			<transition-expand>
+				<div v-if="systemVisible">
+					<permissions-overview-row
+						v-for="collection in systemCollections"
+						:key="collection.collection"
+						:collection="collection"
+						:role="role"
+						:permissions="permissions.filter((p) => p.collection === collection.collection)"
+						:refreshing="refreshing"
+					/>
+				</div>
+			</transition-expand>
 		</div>
 
 		<router-view
@@ -59,9 +77,11 @@ export default defineComponent({
 
 		const systemCollections = computed(() =>
 			collectionsStore.state.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
+				(collection) => collection.collection.startsWith('directus_') === true
 			)
 		);
+
+		const systemVisible = ref(false);
 
 		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
@@ -70,6 +90,7 @@ export default defineComponent({
 		provide('refresh-permissions', fetchPermissions);
 
 		return {
+			systemVisible,
 			regularCollections,
 			systemCollections,
 			permissions,
@@ -153,5 +174,16 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
+}
+
+.system-toggle {
+	width: 100%;
+	height: 48px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+
+	.v-icon {
+		vertical-align: -7px;
+	}
 }
 </style>
