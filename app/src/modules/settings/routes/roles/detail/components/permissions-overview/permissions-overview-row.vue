@@ -5,28 +5,32 @@
 		</span>
 
 		<permissions-overview-toggle
-			:collection="collection"
-			:role="role"
 			action="create"
+			:collection="collection"
+			:role="role"
 			:permission="getPermission('create')"
+			:loading="isLoading('create')"
 		/>
 		<permissions-overview-toggle
-			:collection="collection"
-			:role="role"
 			action="read"
+			:collection="collection"
+			:role="role"
 			:permission="getPermission('read')"
+			:loading="isLoading('read')"
 		/>
 		<permissions-overview-toggle
-			:collection="collection"
-			:role="role"
 			action="update"
-			:permission="getPermission('update')"
-		/>
-		<permissions-overview-toggle
 			:collection="collection"
 			:role="role"
+			:permission="getPermission('update')"
+			:loading="isLoading('update')"
+		/>
+		<permissions-overview-toggle
 			action="delete"
+			:collection="collection"
+			:role="role"
 			:permission="getPermission('delete')"
+			:loading="isLoading('delete')"
 		/>
 	</div>
 </template>
@@ -51,12 +55,22 @@ export default defineComponent({
 			type: Array as PropType<Permission[]>,
 			required: true,
 		},
+		refreshing: {
+			type: Array as PropType<number[]>,
+			required: true,
+		},
 	},
 	setup(props) {
-		return { getPermission };
+		return { getPermission, isLoading };
 
 		function getPermission(action: string) {
 			return props.permissions.find((permission) => permission.action === action);
+		}
+
+		function isLoading(action: string) {
+			const permission = getPermission(action);
+			if (!permission) return false;
+			return props.refreshing.includes(permission.id);
 		}
 	},
 });

@@ -3,7 +3,8 @@
 		<v-menu show-arrow>
 			<template #activator="{ toggle }">
 				<div>
-					<v-icon v-if="permissionLevel === 'all'" @click="toggle" name="check" class="all" />
+					<v-progress-circular indeterminate v-if="loading || saving" small />
+					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" class="all" />
 					<v-icon v-else-if="permissionLevel === 'custom'" @click="toggle" name="rule" class="custom" />
 					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" class="none" />
 				</div>
@@ -30,7 +31,7 @@
 
 				<v-divider />
 
-				<v-list-item>
+				<v-list-item @click="openPermissions">
 					<v-list-item-icon>
 						<v-icon name="rule" />
 					</v-list-item-icon>
@@ -50,6 +51,7 @@
 import { defineComponent, PropType, computed, inject, ref } from '@vue/composition-api';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -69,6 +71,10 @@ export default defineComponent({
 			type: Object as PropType<Permission>,
 			default: null,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
@@ -87,14 +93,14 @@ export default defineComponent({
 			}
 		});
 
-		const loading = ref(false);
+		const saving = ref(false);
 
 		const refresh = inject<() => Promise<void>>('refresh-permissions');
 
-		return { permissionLevel, loading, setFullAccess, setNoAccess };
+		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions };
 
 		async function setFullAccess() {
-			loading.value = true;
+			saving.value = true;
 
 			if (props.permission) {
 				try {
@@ -107,7 +113,7 @@ export default defineComponent({
 					console.error(err);
 				} finally {
 					await refresh?.();
-					loading.value = false;
+					saving.value = false;
 				}
 			} else {
 				try {
@@ -121,7 +127,7 @@ export default defineComponent({
 					console.error(err);
 				} finally {
 					await refresh?.();
-					loading.value = false;
+					saving.value = false;
 				}
 			}
 		}
@@ -129,15 +135,34 @@ export default defineComponent({
 		async function setNoAccess() {
 			if (!props.permission) return;
 
-			loading.value = true;
+			saving.value = true;
 
 			try {
 				await api.delete(`/permissions/${props.permission.id}`);
 			} catch (err) {
 				console.error(err);
 			} finally {
-				await refresh();
-				loading.value = false;
+				await refresh?.();
+				saving.value = false;
+			}
+		}
+
+		async function openPermissions() {
+			if (props.permission) {
+				router.push(`/settings/roles/${props.role}/${props.permission.id}`);
+			} else {
+				saving.value = true;
+
+				const permResponse = await api.post('/permissions', {
+					role: props.role,
+					collection: props.collection.collection,
+					action: props.action,
+				});
+
+				await refresh?.();
+
+				saving.value = false;
+				router.push(`/settings/roles/${props.role}/${permResponse.data.data.id}`);
 			}
 		}
 	},

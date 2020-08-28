@@ -14,8 +14,16 @@
 				:collection="collection"
 				:role="role"
 				:permissions="permissions.filter((p) => p.collection === collection.collection)"
+				:refreshing="refreshing"
 			/>
 		</div>
+
+		<router-view
+			name="permissionsDetail"
+			:role-key="role"
+			:permission-key="permission"
+			@refresh="refreshPermission"
+		/>
 	</div>
 </template>
 
@@ -34,6 +42,11 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		permission: {
+			// the permission row primary key in case we're on the permission detail modal view
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
@@ -50,20 +63,30 @@ export default defineComponent({
 			)
 		);
 
-		const { permissions, loading, error, fetchPermissions } = usePermissions();
+		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
 		fetchPermissions();
 
 		provide('refresh-permissions', fetchPermissions);
 
-		return { regularCollections, systemCollections, permissions, loading, error };
+		return {
+			regularCollections,
+			systemCollections,
+			permissions,
+			loading,
+			error,
+			fetchPermissions,
+			refreshPermission,
+			refreshing,
+		};
 
 		function usePermissions() {
 			const permissions = ref<Permission[]>([]);
 			const loading = ref(false);
+			const refreshing = ref<number[]>([]);
 			const error = ref();
 
-			return { permissions, loading, error, fetchPermissions };
+			return { permissions, loading, error, fetchPermissions, refreshPermission, refreshing };
 
 			async function fetchPermissions() {
 				error.value = null;
@@ -85,6 +108,25 @@ export default defineComponent({
 					error.value = err;
 				} finally {
 					loading.value = false;
+				}
+			}
+
+			async function refreshPermission(id: number) {
+				if (refreshing.value.includes(id) === false) {
+					refreshing.value.push(id);
+				}
+
+				try {
+					const response = await api.get(`/permissions/${id}`);
+
+					permissions.value = permissions.value.map((permission) => {
+						if (permission.id === id) return response.data.data;
+						return permission;
+					});
+				} catch (err) {
+					console.log(`Couldn't refresh permissions ${id}`);
+				} finally {
+					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}
 			}
 		}

@@ -69,7 +69,7 @@
 		</template>
 
 		<div class="roles">
-			<permissions-overview :role="primaryKey" />
+			<permissions-overview :role="primaryKey" :permission="permissionKey" />
 
 			<v-form
 				collection="directus_roles"
@@ -111,6 +111,10 @@ export default defineComponent({
 		primaryKey: {
 			type: String,
 			required: true,
+		},
+		permissionKey: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
