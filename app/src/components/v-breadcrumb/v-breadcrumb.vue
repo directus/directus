@@ -46,9 +46,12 @@ body {
 </style>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .v-breadcrumb {
 	display: flex;
 	align-items: center;
+	font-size: 12px;
 
 	.section {
 		display: contents;
@@ -88,6 +91,10 @@ body {
 				cursor: default;
 			}
 		}
+	}
+
+	@include breakpoint(small) {
+		font-size: inherit;
 	}
 }
 </style>

@@ -164,6 +164,7 @@ body {
 			background-color: var(--background-normal);
 			transform: translateX(-100%);
 			transition: transform var(--slow) var(--transition-out);
+			z-index: 2;
 
 			&.active {
 				transform: translateX(0);
@@ -177,16 +178,17 @@ body {
 		}
 
 		.v-overlay {
-			--v-overlay-z-index: none;
+			--v-overlay-z-index: 1;
 
 			@include breakpoint(medium) {
+				--v-overlay-z-index: none;
 				display: none;
 			}
 		}
 
 		.main {
 			flex-grow: 1;
-			padding: 8px 16px;
+			padding: 16px 16px 32px;
 			overflow: auto;
 
 			@include breakpoint(medium) {

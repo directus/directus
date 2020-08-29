@@ -5,12 +5,12 @@
 		</v-button>
 
 		<div class="action-buttons">
+			<v-button class="drawer-toggle" icon rounded secondary outlined @click="$emit('toggle:drawer')">
+				<v-icon name="info" outline />
+			</v-button>
+
 			<slot />
 		</div>
-
-		<v-button class="drawer-toggle" icon rounded secondary outlined @click="$emit('toggle:drawer')">
-			<v-icon name="info" />
-		</v-button>
 	</div>
 </template>
 
@@ -39,6 +39,7 @@ export default defineComponent({
 	}
 
 	.expand {
+		--v-icon-color: var(--foreground-normal);
 		flex-shrink: 0;
 		margin-right: 8px;
 
@@ -51,18 +52,21 @@ export default defineComponent({
 		display: flex;
 		flex-shrink: 0;
 
+		.v-button.secondary {
+			--v-icon-color: var(--foreground-normal);
+		}
+
 		> *:not(:last-child) {
 			display: none;
 			margin-right: 8px;
 		}
-	}
 
-	.drawer-toggle {
-		flex-shrink: 0;
-		margin-left: 8px;
+		.drawer-toggle {
+			flex-shrink: 0;
 
-		@include breakpoint(medium) {
-			display: none;
+			@include breakpoint(medium) {
+				display: none;
+			}
 		}
 	}
 
@@ -90,7 +94,7 @@ export default defineComponent({
 
 	@include breakpoint(medium) {
 		.action-buttons ::v-deep {
-			> * {
+			> *:not(.drawer-toggle) {
 				display: inherit !important;
 			}
 		}

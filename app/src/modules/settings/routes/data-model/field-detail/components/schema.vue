@@ -141,6 +141,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .type-title {
 	margin-bottom: 32px;
 }
@@ -151,8 +153,20 @@ export default defineComponent({
 	grid-template-columns: 1fr 1fr;
 }
 
+.field {
+	grid-column: 1 / span 2;
+
+	@include breakpoint(small) {
+		grid-column: 1;
+	}
+}
+
 .full {
 	grid-column: 1 / span 2;
+
+	@include breakpoint(small) {
+		grid-column: 1 / span 2;
+	}
 }
 
 .label {

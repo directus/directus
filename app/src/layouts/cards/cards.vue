@@ -401,6 +401,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .layout-cards {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -449,6 +451,11 @@ export default defineComponent({
 	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
+	display: none;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
 }
 
 .fade-enter-active,

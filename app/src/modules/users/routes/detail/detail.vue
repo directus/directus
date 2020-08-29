@@ -350,6 +350,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .action-delete {
 	--v-button-background-color: var(--danger-25);
 	--v-button-color: var(--danger);
@@ -372,12 +374,16 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
-	height: 172px;
+	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 12px;
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
+
+	@include breakpoint(small) {
+		height: 172px;
+	}
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);
@@ -386,13 +392,19 @@ export default defineComponent({
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 144px;
-		height: 144px;
-		margin-right: 22px;
+		width: 84px;
+		height: 84px;
+		margin-right: 16px;
 		overflow: hidden;
 		background-color: var(--background-normal);
 		border: solid var(--border-width) var(--border-normal);
 		border-radius: var(--border-radius);
+
+		@include breakpoint(small) {
+			width: 144px;
+			height: 144px;
+			margin-right: 22px;
+		}
 
 		.v-skeleton-loader {
 			width: 100%;

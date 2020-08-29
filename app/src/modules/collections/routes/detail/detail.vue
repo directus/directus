@@ -407,6 +407,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .action-delete {
 	--v-button-background-color: var(--danger-25);
 	--v-button-color: var(--danger);
@@ -421,8 +423,13 @@ export default defineComponent({
 }
 
 .v-form {
-	padding: var(--content-padding);
+	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+
+	@include breakpoint(small) {
+		padding: var(--content-padding);
+		padding-bottom: var(--content-padding-bottom);
+	}
 }
 
 .title-loader {
