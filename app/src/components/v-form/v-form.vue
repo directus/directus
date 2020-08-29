@@ -182,6 +182,8 @@ body {
 </style>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .v-form {
 	&.grid {
 		display: grid;
@@ -198,15 +200,27 @@ body {
 	& > .half,
 	& > .half-left,
 	& > .half-space {
-		grid-column: start / half;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / half;
+		}
 	}
 
 	& > .half-right {
-		grid-column: half / full;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: half / full;
+		}
 	}
 
 	& > .full {
-		grid-column: start / full;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / full;
+		}
 	}
 
 	& > .fill {

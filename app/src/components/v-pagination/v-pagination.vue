@@ -1,11 +1,12 @@
 <template>
 	<div class="v-pagination">
-		<v-button v-if="value !== 1" :disabled="disabled" secondary icon small @click="toPrev">
+		<v-button v-if="value !== 1" class="previous" :disabled="disabled" secondary icon small @click="toPrev">
 			<v-icon name="chevron_left" />
 		</v-button>
 
 		<v-button
 			v-if="showFirstLast && value > Math.ceil(totalVisible / 2)"
+			class="page"
 			@click="toPage(1)"
 			secondary
 			small
@@ -20,6 +21,7 @@
 			v-for="page in visiblePages"
 			:key="page"
 			:class="{ active: value === page }"
+			class="page"
 			@click="toPage(page)"
 			secondary
 			small
@@ -35,6 +37,7 @@
 		<v-button
 			v-if="showFirstLast && value <= length - Math.ceil(totalVisible / 2)"
 			:class="{ active: value === length }"
+			class="page"
 			@click="toPage(length)"
 			secondary
 			small
@@ -43,7 +46,7 @@
 			{{ length }}
 		</v-button>
 
-		<v-button v-if="value !== length" :disabled="disabled" secondary icon small @click="toNext">
+		<v-button v-if="value !== length" class="next" :disabled="disabled" secondary icon small @click="toNext">
 			<v-icon name="chevron_right" />
 		</v-button>
 	</div>
@@ -130,10 +133,20 @@ body {
 </style>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .v-pagination {
+	display: flex;
+
 	.gap {
 		margin: 0 4px;
 		color: var(--foreground-subdued);
+		display: none;
+		line-height: 2em;
+
+		@include breakpoint(small) {
+			display: inline;
+		}
 	}
 
 	.v-button {
@@ -143,6 +156,14 @@ body {
 
 		margin: 0 2px;
 		vertical-align: middle;
+
+		&.page:not(.active) {
+			display: none;
+
+			@include breakpoint(small) {
+				display: inline;
+			}
+		}
 
 		& ::v-deep {
 			.small {

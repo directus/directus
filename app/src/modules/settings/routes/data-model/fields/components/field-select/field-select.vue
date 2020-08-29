@@ -216,6 +216,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 // The default display: contents doens't play nicely with drag and drop
 .v-menu {
 	display: block;
@@ -257,12 +259,28 @@ export default defineComponent({
 }
 
 .field {
+
 	.name {
 		flex-grow: 1;
 
 		.interface {
+			transition: opacity var(--fast) var(--transition);
 			margin-left: 4px;
 			color: var(--foreground-subdued);
+			display: none;
+			opacity: 0;
+
+			@include breakpoint(small) {
+				display: initial;
+			}
+		}
+	}
+
+	&:hover {
+		.name {
+			.interface {
+				opacity: 1;
+			}
 		}
 	}
 }
