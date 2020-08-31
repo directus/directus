@@ -122,4 +122,8 @@ export default defineModule(({ i18n }) => ({
 			component: SettingsNotFound,
 		},
 	],
+	preRegisterCheck: (user) => {
+		return user.role.admin === true;
+	},
+	order: Infinity,
 }));

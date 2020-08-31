@@ -69,4 +69,5 @@ export default defineModule(({ i18n }) => ({
 			beforeEnter: checkForSystem,
 		},
 	],
+	order: 5,
 }));

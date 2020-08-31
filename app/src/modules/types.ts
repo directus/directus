@@ -12,6 +12,7 @@ export type ModuleConfig = {
 	link?: string;
 	color?: string;
 	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;
+	order?: number;
 };
 
 export type ModuleContext = { i18n: VueI18n };

@@ -33,6 +33,7 @@ import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -42,8 +43,6 @@ export default defineComponent({
 	setup() {
 		const userStore = useUserStore();
 		const modules = getModules();
-
-		console.log(modules);
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_listing;
@@ -64,20 +63,24 @@ export default defineComponent({
 				});
 			}
 
-			return modules.value
-				.map((module) => ({
-					...module,
-					href: module.link || null,
-					to: module.link === undefined ? `/${module.id}/` : null,
-				}))
-				.filter((module) => {
-					if (module.hidden !== undefined) {
-						if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
-							return false;
+			return orderBy(
+				modules.value
+					.map((module) => ({
+						...module,
+						href: module.link || null,
+						to: module.link === undefined ? `/${module.id}/` : null,
+					}))
+					.filter((module) => {
+						if (module.hidden !== undefined) {
+							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
+								return false;
+							}
 						}
-					}
-					return true;
-				});
+						return true;
+					}),
+				['order'],
+				['asc']
+			);
 		});
 
 		return { _modules };

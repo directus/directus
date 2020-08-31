@@ -53,4 +53,11 @@ export default defineModule(({ i18n }) => ({
 			props: true,
 		},
 	],
+	order: 15,
+	preRegisterCheck(user, permissions) {
+		const permission = permissions.find(
+			(permission) => permission.collection === 'directus_files' && permission.action === 'read'
+		);
+		return !!permission;
+	},
 }));

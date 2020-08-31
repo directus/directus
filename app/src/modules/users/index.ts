@@ -26,4 +26,11 @@ export default defineModule(({ i18n }) => ({
 			}),
 		},
 	],
+	order: 10,
+	preRegisterCheck(user, permissions) {
+		const permission = permissions.find(
+			(permission) => permission.collection === 'directus_users' && permission.action === 'read'
+		);
+		return !!permission;
+	},
 }));
