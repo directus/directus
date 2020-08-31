@@ -260,6 +260,7 @@ export default class CollectionsService {
 				await fieldsService.deleteField(relation.one_collection, relation.one_field);
 			} else {
 				await this.knex('directus_relations').update({ one_field: null }).where({ one_collection: collection, field: relation.one_field });
+				await fieldsService.deleteField(relation.many_collection, relation.many_field);
 			}
 		}
 
