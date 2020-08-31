@@ -226,7 +226,7 @@ import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
-import { usePermissionsStore } from '@/stores';
+import { usePermissionsStore, useUserStore } from '@/stores';
 
 type Item = {
 	[field: string]: any;
@@ -253,6 +253,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layout = ref<LayoutComponent | null>(null);
 
@@ -476,6 +477,9 @@ export default defineComponent({
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin === true;
+				if (admin) return true;
+
 				const updatePermissions = permissionsStore.state.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
 				);
@@ -484,6 +488,8 @@ export default defineComponent({
 
 			const batchSoftDeleteAllowed = computed(() => {
 				if (!currentCollection.value?.meta?.soft_delete_field) return false;
+				const admin = userStore.state?.currentUser?.role.admin === true;
+				if (admin) return true;
 
 				const updatePermissions = permissionsStore.state.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
@@ -495,6 +501,9 @@ export default defineComponent({
 			});
 
 			const batchDeleteAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin === true;
+				if (admin) return true;
+
 				const deletePermissions = permissionsStore.state.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === collection.value
 				);
@@ -502,6 +511,9 @@ export default defineComponent({
 			});
 
 			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin === true;
+				if (admin) return true;
+
 				const createPermissions = permissionsStore.state.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === collection.value
 				);

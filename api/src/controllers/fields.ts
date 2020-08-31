@@ -105,7 +105,7 @@ router.patch(
 		let results: any = [];
 
 		for (const field of req.body) {
-			await service.updateField(req.params.collection, field, req.accountability);
+			await service.updateField(req.params.collection, field);
 
 			const updatedField = await service.readOne(req.params.collection, field.field);
 
@@ -120,17 +120,13 @@ router.patch(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	// @todo: validate field
 	asyncHandler(async (req, res) => {
-		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
-		if (exists === false) throw new ForbiddenException();
-
 		const service = new FieldsService({ accountability: req.accountability });
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 
-		await service.updateField(req.params.collection, fieldData, req.accountability);
+		await service.updateField(req.params.collection, fieldData);
 
 		const updatedField = await service.readOne(req.params.collection, req.params.field);
 
@@ -143,11 +139,7 @@ router.delete(
 	validateCollection,
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
-		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
-		if (exists === false) throw new ForbiddenException();
-
 		const service = new FieldsService({ accountability: req.accountability });
-
 		await service.deleteField(req.params.collection, req.params.field, req.accountability);
 
 		res.status(200).end();

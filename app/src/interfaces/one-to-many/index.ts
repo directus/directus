@@ -8,5 +8,18 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceOneToMany,
 	types: ['alias'],
 	relationship: 'o2m',
-	options: [],
+	options: [
+		{
+			field: 'fields',
+			type: 'json',
+			name: i18n.tc('field', 0),
+			meta: {
+				interface: 'tags',
+				width: 'full',
+				options: {
+					placeholder: i18n.t('readable_fields_copy'),
+				},
+			},
+		},
+	],
 }));
