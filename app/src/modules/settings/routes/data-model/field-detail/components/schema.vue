@@ -157,7 +157,7 @@ export default defineComponent({
 	grid-column: 1 / span 2;
 
 	@include breakpoint(small) {
-		grid-column: 1;
+		grid-column: auto;
 	}
 }
 
