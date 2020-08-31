@@ -122,6 +122,7 @@ export default defineComponent({
 		const sizeClass = useSizeClass(props);
 
 		const component = computed<'a' | 'router-link' | 'button'>(() => {
+			if (props.disabled) return 'button';
 			if (notEmpty(props.href)) return 'a';
 			if (notEmpty(props.to)) return 'router-link';
 			return 'button';

@@ -48,8 +48,15 @@
 
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
-						<v-icon name="delete" outline />
+					<v-button
+						:disabled="batchDeleteAllowed !== true"
+						rounded
+						icon
+						class="action-delete"
+						@click="on"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+					>
+						<v-icon name="delete_forever" outline />
 					</v-button>
 				</template>
 
@@ -67,13 +74,45 @@
 				</v-card>
 			</v-dialog>
 
+			<v-dialog
+				v-model="confirmSoftDelete"
+				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.soft_delete_field"
+			>
+				<template #activator="{ on }">
+					<v-button
+						:disabled="batchSoftDeleteAllowed !== true"
+						rounded
+						icon
+						class="action-soft-delete"
+						@click="on"
+						v-tooltip.bottom="batchEditAllowed ? $t('move_to_trash') : $t('not_allowed')"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $tc('move_to_trash_confirm_count', selection.length) }}</v-card-title>
+
+					<v-card-actions>
+						<v-button @click="confirmSoftDelete = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="batchDelete" class="action-soft-delete" :loading="softDeleting">
+							{{ $t('move_to_trash') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
 			<v-button
 				rounded
 				icon
 				class="action-batch"
 				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
+				:disabled="batchEditAllowed === false"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -152,6 +191,18 @@
 			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
 			<portal-target name="drawer" />
 		</template>
+
+		<v-dialog v-if="deleteError" active>
+			<v-card>
+				<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
+				<v-card-text>
+					<v-error :error="deleteError" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -169,6 +220,7 @@ import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
+import { usePermissionsStore } from '@/stores';
 
 type Item = {
 	[field: string]: any;
@@ -195,6 +247,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const permissionsStore = usePermissionsStore();
 		const layout = ref<LayoutComponent | null>(null);
 
 		const { collection } = toRefs(props);
@@ -215,7 +268,15 @@ export default defineComponent({
 			saveCurrentAsBookmark,
 			title: bookmarkName,
 		} = usePreset(collection, bookmarkID);
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+		const {
+			confirmDelete,
+			deleting,
+			batchDelete,
+			confirmSoftDelete,
+			softDelete,
+			softDeleting,
+			error: deleteError,
+		} = useBatchDelete();
 
 		const {
 			bookmarkDialogActive,
@@ -234,6 +295,8 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+
+		const { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed } = usePermissions();
 
 		return {
 			addNewLink,
@@ -262,6 +325,13 @@ export default defineComponent({
 			breadcrumb,
 			marked,
 			clearFilters,
+			confirmSoftDelete,
+			softDelete,
+			softDeleting,
+			batchEditAllowed,
+			batchSoftDeleteAllowed,
+			batchDeleteAllowed,
+			deleteError,
 		};
 
 		function useBreadcrumb() {
@@ -291,26 +361,48 @@ export default defineComponent({
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			return { confirmDelete, deleting, batchDelete };
+			const confirmSoftDelete = ref(false);
+			const softDeleting = ref(false);
+
+			const error = ref<any>();
+
+			return { confirmDelete, deleting, batchDelete, confirmSoftDelete, softDeleting, softDelete, error };
 
 			async function batchDelete() {
 				deleting.value = true;
-
-				confirmDelete.value = false;
 
 				const batchPrimaryKeys = selection.value;
 
 				try {
 					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
-
 					await layout.value?.refresh?.();
 
 					selection.value = [];
 					confirmDelete.value = false;
 				} catch (err) {
-					console.error(err);
+					error.value = err;
 				} finally {
 					deleting.value = false;
+				}
+			}
+
+			async function softDelete() {
+				if (!currentCollection.value?.meta?.soft_delete_field) return;
+
+				softDeleting.value = true;
+
+				const batchPrimaryKeys = selection.value;
+
+				try {
+					await api.patch(`/items/${props.collection}/${batchPrimaryKeys}`);
+					await layout.value?.refresh?.();
+
+					selection.value = [];
+					confirmSoftDelete.value = false;
+				} catch (err) {
+					error.value = err;
+				} finally {
+					softDeleting.value = false;
 				}
 			}
 		}
@@ -374,6 +466,36 @@ export default defineComponent({
 			filters.value = [];
 			searchQuery.value = null;
 		}
+
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === collection.value
+				);
+				return !!updatePermissions;
+			});
+
+			const batchSoftDeleteAllowed = computed(() => {
+				if (!currentCollection.value?.meta?.soft_delete_field) return false;
+
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === collection.value
+				);
+				if (!updatePermissions) return false;
+				if (!updatePermissions.fields) return false;
+				if (updatePermissions.fields === '*') return true;
+				return updatePermissions.fields.split(',').includes(currentCollection.value.meta.soft_delete_field);
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const deletePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === collection.value
+				);
+				return !!deletePermissions;
+			});
+
+			return { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed };
+		}
 	},
 });
 </script>
@@ -384,6 +506,13 @@ export default defineComponent({
 	--v-button-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-50);
 	--v-button-color-hover: var(--danger);
+}
+
+.action-soft-delete {
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .action-batch {

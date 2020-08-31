@@ -189,8 +189,9 @@ import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { useUserStore } from '@/stores';
 import generateJoi from '@/utils/generate-joi';
+import { isAllowed } from '@/utils/is-allowed';
 
 type Values = {
 	[field: string]: any;
@@ -216,7 +217,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const permissionsStore = usePermissionsStore();
 		const userStore = useUserStore();
 
 		const { collection, primaryKey } = toRefs(props);
@@ -384,42 +384,17 @@ export default defineComponent({
 		}
 
 		function usePermissions() {
-			const permissions = computed(() => {
-				return permissionsStore.state.permissions.filter(
-					(permission) => permission.collection === props.collection
-				);
-			});
-
-			const deleteAllowed = computed(() => isAllowed('delete'));
-			const saveAllowed = computed(() => isAllowed('update'));
+			const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
+			const saveAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
 			const softDeleteAllowed = computed(() => {
 				if (!collectionInfo.value?.meta?.soft_delete_field) return false;
 
-				return isAllowed('update', {
+				return isAllowed(collection.value, 'update', {
 					[collectionInfo.value.meta.soft_delete_field]: collectionInfo.value.meta.soft_delete_value,
 				});
 			});
 
 			return { deleteAllowed, saveAllowed, softDeleteAllowed };
-
-			function isAllowed(action: string, value?: any) {
-				value = value || item.value;
-
-				if (userStore.isAdmin.value === true) return true;
-
-				const permissionInfo = permissions.value.find((permission) => permission.action === action);
-
-				if (!permissionInfo) return false;
-
-				const schema = generateJoi(permissionInfo.permissions, { allowUnknown: permissionInfo.fields === '*' });
-				const { error } = schema.validate(value);
-
-				if (!error) {
-					return true;
-				}
-
-				return false;
-			}
 		}
 	},
 });
