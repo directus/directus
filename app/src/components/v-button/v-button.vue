@@ -203,7 +203,7 @@ body {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;
 
-		&:hover {
+		&:not(.activated):hover {
 			color: var(--v-button-color-hover);
 			background-color: var(--v-button-background-color-hover);
 			border-color: var(--v-button-background-color-hover);
@@ -241,8 +241,9 @@ body {
 
 			background-color: transparent;
 
-			&:hover {
+			&:not(.activated):hover {
 				color: var(--v-button-background-color-hover);
+				background-color: transparent;
 				border-color: var(--v-button-background-color-hover);
 			}
 

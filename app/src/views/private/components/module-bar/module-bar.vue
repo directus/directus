@@ -14,7 +14,7 @@
 				:style="
 					module.color
 						? {
-								'--v-button-background-color-activated': module.color,
+								'--v-button-color-activated': module.color,
 						  }
 						: null
 				"
@@ -90,10 +90,10 @@ export default defineComponent({
 
 <style>
 body {
-	--module-background: #13181a;
-	--module-background-alt: var(--background-normal);
-	--module-icon: #607d8b;
-	--module-icon-alt: var(--foreground-normal);
+    --module-background: #13181A;
+    --module-background-alt: var(--background-normal);
+    --module-icon: #607D8B;
+    --module-icon-alt: var(--foreground-normal);
 }
 </style>
 
@@ -113,6 +113,7 @@ body {
 
 	.v-button {
 		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
 		--v-button-color-activated: var(--module-icon-alt);
 		--v-button-background-color: var(--module-background);
 		--v-button-background-color-hover: var(--module-background);
