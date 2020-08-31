@@ -9,8 +9,6 @@ import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
 
 const delCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
-	// setting the cache
-
 	if (env.CACHE_ENABLED !== 'true') return next();
 
 	//key needs to have url, query and permissions
