@@ -24,6 +24,16 @@
 				<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
 			</v-list-item>
 		</template>
+
+		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
+			<template v-if="isAdmin">
+				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+			</template>
+			<template v-else>
+				{{ $t('no_collections_copy') }}
+			</template>
+		</div>
+
 	</v-list>
 </template>
 
@@ -31,6 +41,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore } from '@/stores/';
+import { useUserStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -42,6 +53,8 @@ export default defineComponent({
 	setup() {
 		const presetsStore = usePresetsStore();
 		const { customNavItems, navItems } = useNavigation();
+		const userStore = useUserStore();
+		const isAdmin = computed(() => userStore.state.currentUser?.role.admin === true);
 
 		const bookmarks = computed(() => {
 			return presetsStore.state.collectionPresets
@@ -56,7 +69,7 @@ export default defineComponent({
 				});
 		});
 
-		return { navItems, bookmarks, customNavItems };
+		return { navItems, bookmarks, customNavItems, isAdmin };
 	},
 });
 </script>
@@ -65,5 +78,13 @@ export default defineComponent({
 .group-name {
 	padding-left: 8px;
 	font-weight: 600;
+}
+
+.empty {
+	color: var(--foreground-subdued);
+	.v-button {
+		--v-button-background-color: var(--foreground-subdued);
+		--v-button-background-color-hover: var(--primary);
+	}
 }
 </style>
