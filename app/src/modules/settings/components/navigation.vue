@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent, toRefs } from '@vue/composition-api';
 import { i18n } from '@/lang';
-import { version } from '../../../../../package.json';
+import { version } from '../../../../package.json';
 
 export default defineComponent({
 	setup() {
