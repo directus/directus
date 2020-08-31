@@ -133,6 +133,7 @@
 		</template>
 
 		<v-form
+			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
 			:collection="collection"
@@ -286,7 +287,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, softDeleteAllowed, saveAllowed } = usePermissions();
+		const { deleteAllowed, softDeleteAllowed, saveAllowed, updateAllowed } = usePermissions();
 
 		return {
 			item,
@@ -321,6 +322,7 @@ export default defineComponent({
 			deleteAllowed,
 			saveAllowed,
 			softDeleteAllowed,
+			updateAllowed,
 		};
 
 		function useBreadcrumb() {
@@ -385,7 +387,15 @@ export default defineComponent({
 
 		function usePermissions() {
 			const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
-			const saveAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
+			const saveAllowed = computed(() => {
+				if (isNew.value) {
+					return true;
+				}
+
+				return isAllowed(collection.value, 'update', item.value);
+			});
+			const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
+
 			const softDeleteAllowed = computed(() => {
 				if (!collectionInfo.value?.meta?.soft_delete_field) return false;
 
@@ -394,7 +404,7 @@ export default defineComponent({
 				});
 			});
 
-			return { deleteAllowed, saveAllowed, softDeleteAllowed };
+			return { deleteAllowed, saveAllowed, softDeleteAllowed, updateAllowed };
 		}
 	},
 });
