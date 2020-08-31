@@ -117,7 +117,13 @@
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_item')">
+			<v-button
+				rounded
+				icon
+				:to="addNewLink"
+				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:disabled="createAllowed === false"
+			>
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -296,7 +302,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		const { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed } = usePermissions();
+		const { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 		return {
 			addNewLink,
@@ -332,6 +338,7 @@ export default defineComponent({
 			batchSoftDeleteAllowed,
 			batchDeleteAllowed,
 			deleteError,
+			createAllowed,
 		};
 
 		function useBreadcrumb() {
@@ -494,7 +501,14 @@ export default defineComponent({
 				return !!deletePermissions;
 			});
 
-			return { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed };
+			const createAllowed = computed(() => {
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === collection.value
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed, createAllowed };
 		}
 	},
 });
