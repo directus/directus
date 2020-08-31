@@ -51,7 +51,7 @@
 						icon
 						class="action-delete"
 						v-tooltip.bottom="deleteAllowed ? $t('delete_forever') : $t('not_allowed')"
-						:disabled="item === null || deleteAllowed === false"
+						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
 					>
@@ -76,15 +76,16 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.soft_delete_field && !isNew"
 				v-model="confirmSoftDelete"
+				:disabled="softDeleteAllowed === false"
 			>
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
 						class="action-soft-delete"
-						v-tooltip.bottom="$t('move_to_trash')"
-						:disabled="item === null"
+						v-tooltip.bottom="softDeleteAllowed ? $t('move_to_trash') : $t('not_allowed')"
 						@click="on"
+						:disabled="item === null || softDeleteAllowed !== true"
 						v-if="collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete" outline />
@@ -285,7 +286,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, saveAllowed } = usePermissions();
+		const { deleteAllowed, softDeleteAllowed, saveAllowed } = usePermissions();
 
 		return {
 			item,
@@ -319,6 +320,7 @@ export default defineComponent({
 			navigationGuard,
 			deleteAllowed,
 			saveAllowed,
+			softDeleteAllowed,
 		};
 
 		function useBreadcrumb() {
@@ -390,18 +392,27 @@ export default defineComponent({
 
 			const deleteAllowed = computed(() => isAllowed('delete'));
 			const saveAllowed = computed(() => isAllowed('update'));
+			const softDeleteAllowed = computed(() => {
+				if (!collectionInfo.value?.meta?.soft_delete_field) return false;
 
-			return { deleteAllowed, saveAllowed };
+				return isAllowed('update', {
+					[collectionInfo.value.meta.soft_delete_field]: collectionInfo.value.meta.soft_delete_value,
+				});
+			});
 
-			function isAllowed(action: string) {
+			return { deleteAllowed, saveAllowed, softDeleteAllowed };
+
+			function isAllowed(action: string, value?: any) {
+				value = value || item.value;
+
 				if (userStore.isAdmin.value === true) return true;
 
-				const deletePermission = permissions.value.find((permission) => permission.action === action);
+				const permissionInfo = permissions.value.find((permission) => permission.action === action);
 
-				if (!deletePermission) return false;
+				if (!permissionInfo) return false;
 
-				const schema = generateJoi(deletePermission.permissions);
-				const { error } = schema.validate(item.value);
+				const schema = generateJoi(permissionInfo.permissions, { allowUnknown: permissionInfo.fields === '*' });
+				const { error } = schema.validate(value);
 
 				if (!error) {
 					return true;

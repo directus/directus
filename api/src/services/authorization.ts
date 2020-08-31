@@ -200,7 +200,9 @@ export default class AuthorizationService {
 				);
 
 				if (invalidKeys.length > 0) {
-					throw new InvalidPayloadException(`Field "${invalidKeys[0]}" doesn't exist.`);
+					throw new ForbiddenException(
+						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+					)
 				}
 			}
 		}

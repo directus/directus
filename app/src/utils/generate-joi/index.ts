@@ -5,8 +5,21 @@ import Joi, { AnySchema } from 'joi';
  * This is copy pasted between app and api. Make this a reusable module.
  */
 
-export default function generateJoi(filter: Record<string, any> | null) {
+type JoiOptions = {
+	allowUnknown: boolean;
+};
+
+const defaults: JoiOptions = {
+	allowUnknown: true,
+};
+
+export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions) {
 	filter = filter || {};
+
+	options = {
+		...defaults,
+		...(options || {}),
+	};
 
 	const schema: Record<string, AnySchema> = {};
 
@@ -100,5 +113,9 @@ export default function generateJoi(filter: Record<string, any> | null) {
 		}
 	}
 
-	return Joi.object(schema).unknown();
+	if (options.allowUnknown) {
+		return Joi.object(schema).unknown();
+	}
+
+	return Joi.object(schema);
 }
