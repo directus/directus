@@ -30,6 +30,7 @@ import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
+import CustomIconLogout from './custom-icons/logout.vue';
 
 const customIcons: string[] = [
 	'directus',
@@ -47,6 +48,7 @@ const customIcons: string[] = [
 	'flip_horizontal',
 	'flip_vertical',
 	'folder_move',
+	'logout',
 ];
 
 export default defineComponent({
@@ -66,6 +68,7 @@ export default defineComponent({
 		CustomIconFlipHorizontal,
 		CustomIconFlipVertical,
 		CustomIconFolderMove,
+		CustomIconLogout,
 	},
 	props: {
 		name: {
