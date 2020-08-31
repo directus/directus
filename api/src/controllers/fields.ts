@@ -140,7 +140,7 @@ router.delete(
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
-		await service.deleteField(req.params.collection, req.params.field, req.accountability);
+		await service.deleteField(req.params.collection, req.params.field);
 
 		res.status(200).end();
 	})
