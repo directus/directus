@@ -216,7 +216,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+@import '@/styles/mixins/breakpoint';
 
 // The default display: contents doens't play nicely with drag and drop
 .v-menu {
@@ -282,5 +282,5 @@ export default defineComponent({
 			}
 		}
 	}
-}@import '@/styles/mixins/breakpoint';
+}
 </style>
