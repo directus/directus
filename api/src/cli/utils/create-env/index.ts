@@ -40,7 +40,13 @@ const defaults = {
 		INMEMEMORY_BLOCK_DURATION: 30,
 	},
 	caching: {
-		CACHE_TYPE: 'redis',
+		CACHE_ENABLED: true,
+		CACHE_DRIVER: 'redis',
+		CACHE_HOST: '127.0.0.1',
+		CACHE_PORT: '6379',
+		CACHE_REDIS_PASSWORD: null,
+		CACHE_TTL: 300,
+		CACHE_CHECK_LIVE: 300,
 	},
 	security: {
 		KEY: uuidv4(),

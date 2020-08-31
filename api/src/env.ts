@@ -19,6 +19,14 @@ const defaults: Record<string, any> = {
 
 	CORS_ENABLED: false,
 
+	CACHE_ENABLED: true,
+	CACHE_DRIVER: 'redis',
+	CACHE_HOST: '127.0.0.1',
+	CACHE_PORT: '6379',
+	CACHE_REDIS_PASSWORD: null,
+	CACHE_TTL: 300,
+	CACHE_CHECK_LIVE: 300,
+
 	OAUTH_PROVIDERS: '',
 
 	EXTENSIONS_PATH: './extensions',

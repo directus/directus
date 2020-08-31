@@ -10,7 +10,6 @@ import errorHandler from './middleware/error-handler';
 
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
-import rateLimiter from './middleware/rate-limiter';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -66,8 +65,6 @@ if (env.NODE_ENV !== 'development') {
 			res.sendFile(adminPath);
 		});
 }
-
-// use the rate limiter - all routes for now
 
 app.use('/auth', authRouter)
 

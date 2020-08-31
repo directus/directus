@@ -10,16 +10,18 @@
  *  could put redis cache in here too
  */
 import NodeCache from 'node-cache';
+import redis from 'redis';
 import { InvalidCacheKeyException } from '../exceptions';
+import env from '../env';
 
 export default class CacheService {
 	apiCache: NodeCache;
 
-	constructor(stdTTLSecs: number, checkPeriodSecs: number) {
+	constructor() {
 		// options found at https://github.com/node-cache/node-cache
 		this.apiCache = new NodeCache({
-			stdTTL: stdTTLSecs,
-			checkperiod: checkPeriodSecs,
+			stdTTL: env.CACHE_TTL,
+			checkperiod: env.CACHE_CHECK_LIVE,
 			useClones: false,
 		});
 	}

@@ -2,20 +2,12 @@ import express from 'express';
 import redis from 'redis';
 import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
-import cacheMiddleware from '../middleware/cache';
+import checkCacheMiddleware from '../middleware/check-cache';
+import setCacheMiddleware from '../middleware/set-cache';
 import sanitizeQuery from '../middleware/sanitize-query';
-import CacheService from '../services/node-cache';
 import collectionExists from '../middleware/collection-exists';
 import MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
-import env from '../env';
-
-const redisClient = redis.createClient({
-	enable_offline_queue: false,
-	host: env.REDIS_HOST,
-	port: env.REDIS_PORT,
-	password: env.REDIS_PASSWORD,
-});
 
 const router = express.Router();
 
@@ -40,12 +32,8 @@ router.get(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
-	cacheMiddleware,
+	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
-		const key = req.url;
-		const TTL = req.query.TTL;
-		const TTLnum = Number(TTL);
-		const dTTL = Number(req.query.dTTL);
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
@@ -54,64 +42,34 @@ router.get(
 			: await service.readByQuery(req.sanitizedQuery);
 
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
-		if (TTL) {
-			if (env.CACHE_TYPE === 'redis') {
-				redisClient.setex(
-					key,
-					TTLnum,
-					JSON.stringify({ meta: meta, data: records || null })
-				);
-			} else {
-				const cacheService = new CacheService(TTLnum, dTTL);
-				cacheService.setCache(key, JSON.stringify({ meta: meta, data: records || null }));
-			}
-		}
+
 		return res.json({
 			meta: meta,
 			data: records || null,
 		});
-	})
+	}),
+	setCacheMiddleware
 );
 
 router.get(
 	'/:collection/:pk',
 	collectionExists,
 	sanitizeQuery,
-	cacheMiddleware,
+	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
-		const key = req.url;
-		const TTL = req.query.TTL;
-		const TTLnum = Number(TTL);
-		const dTTL = Number(req.query.dTTL);
+
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
-		if (TTL) {
-			if (env.CACHE_TYPE === 'redis') {
-				redisClient.setex(
-					key,
-					TTLnum,
-					JSON.stringify({
-						data: result || null,
-					})
-				);
-			} else {
-				const cacheService = new CacheService(TTLnum, dTTL);
-				cacheService.setCache(
-					key,
-					JSON.stringify({
-						data: result || null,
-					})
-				);
-			}
-		}
+
 		return res.json({
 			data: result || null,
 		});
-	})
+	}),
+	setCacheMiddleware
 );
 
 router.patch(

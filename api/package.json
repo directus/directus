@@ -120,7 +120,6 @@
     "oracledb": "^5.0.0",
     "pg": "^8.3.0",
     "sqlite3": "^5.0.0",
-    "rate-limiter-flexible": "^2.1.10",
     "redis": "^3.0.2"
   },
   "devDependencies": {

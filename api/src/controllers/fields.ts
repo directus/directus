@@ -3,22 +3,14 @@ import asyncHandler from 'express-async-handler';
 import redis from 'redis';
 import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
-import CacheService from '../services/node-cache';
-import cacheMiddleware from '../middleware/cache';
+import checkCacheMiddleware from '../middleware/check-cache';
+import setCacheMiddleware from '../middleware/set-cache';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
 import Joi from 'joi';
 import { Field } from '../types/field';
 import useCollection from '../middleware/use-collection';
 import { Accountability, types } from '../types';
-import env from '../env';
-
-const redisClient = redis.createClient({
-	enable_offline_queue: false,
-	host: env.REDIS_HOST,
-	port: env.REDIS_PORT,
-	password: env.REDIS_PASSWORD,
-});
 
 const router = Router();
 
@@ -31,79 +23,48 @@ const router = Router();
 router.get(
 	'/',
 	useCollection('directus_fields'),
-	cacheMiddleware,
+	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
-		const key = req.url;
-		const TTL = req.query.TTL;
-		const TTLnum = Number(TTL);
-		const dTTL = Number(req.query.dTTL);
 		const service = new FieldsService({ accountability: req.accountability });
 
 		const fields = await service.readAll();
 
-		if (TTL) {
-			if (env.CACHE_TYPE === 'redis') {
-				redisClient.setex(key, TTLnum, JSON.stringify({ data: fields || null }));
-			} else {
-				const cacheService = new CacheService(TTLnum, dTTL);
-				cacheService.setCache(key, JSON.stringify({ data: fields || null }));
-			}
-		}
 		return res.json({ data: fields || null });
-	})
+	}),
+	setCacheMiddleware
 );
 
 router.get(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
-	cacheMiddleware,
+	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
-		const key = req.url;
-		const TTL = req.query.TTL;
-		const TTLnum = Number(TTL);
-		const dTTL = Number(req.query.dTTL);
 		const service = new FieldsService({ accountability: req.accountability });
 
 		const fields = await service.readAll(req.params.collection);
-		if (TTL) {
-			if (env.CACHE_TYPE === 'redis') {
-				redisClient.setex(key, TTLnum, JSON.stringify({ data: fields || null }));
-			} else {
-				const cacheService = new CacheService(TTLnum, dTTL);
-				cacheService.setCache(key, JSON.stringify({ data: fields || null }));
-			}
-		}
+
 		return res.json({ data: fields || null });
-	})
+	}),
+	setCacheMiddleware
 );
 
 router.get(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	cacheMiddleware,
+	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
-		const key = req.url;
-		const TTL = req.query.TTL;
-		const TTLnum = Number(TTL);
-		const dTTL = Number(req.query.dTTL);
 		const service = new FieldsService({ accountability: req.accountability });
 
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
 		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
 
 		const field = await service.readOne(req.params.collection, req.params.field);
-		if (TTL) {
-			if (env.CACHE_TYPE === 'redis') {
-				redisClient.setex(key, TTLnum, JSON.stringify({ data: field || null }));
-			} else {
-				const cacheService = new CacheService(TTLnum, dTTL);
-				cacheService.setCache(key, JSON.stringify({ data: field || null }));
-			}
-		}
+
 		return res.json({ data: field || null });
-	})
+	}),
+	setCacheMiddleware
 );
 
 const newFieldSchema = Joi.object({
