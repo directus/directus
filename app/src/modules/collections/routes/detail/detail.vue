@@ -73,13 +73,16 @@
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-if="softDeleteStatus && !isNew" v-model="confirmSoftDelete">
+			<v-dialog
+				v-if="collectionInfo.meta && collectionInfo.meta.soft_delete_field && !isNew"
+				v-model="confirmSoftDelete"
+			>
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
-						class="action-delete"
-						v-tooltip.bottom="$t('delete')"
+						class="action-soft-delete"
+						v-tooltip.bottom="$t('move_to_trash')"
 						:disabled="item === null"
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
@@ -89,14 +92,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('move_to_trash_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmSoftDelete = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit(true)" class="action-delete" :loading="softDeleting">
-							{{ $t('delete') }}
+						<v-button @click="deleteAndQuit(true)" class="action-soft-delete" :loading="softDeleting">
+							{{ $t('move_to_trash') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -220,7 +223,7 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, softDeleteStatus, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 		const {
 			isNew,
@@ -232,6 +235,7 @@ export default defineComponent({
 			save,
 			remove,
 			deleting,
+			softDelete,
 			softDeleting,
 			saveAsCopy,
 			isBatch,
@@ -303,7 +307,6 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			softDeleteStatus,
 			templateValues,
 			breadcrumb,
 			title,
@@ -363,7 +366,12 @@ export default defineComponent({
 		}
 
 		async function deleteAndQuit(soft = false) {
-			await remove(soft);
+			if (soft) {
+				await softDelete();
+			} else {
+				await remove();
+			}
+
 			router.push(`/collections/${props.collection}`);
 		}
 
@@ -414,6 +422,13 @@ export default defineComponent({
 	--v-button-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-50);
 	--v-button-color-hover: var(--danger);
+}
+
+.action-soft-delete {
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .header-icon.secondary {

@@ -21,6 +21,9 @@
 
 	"not_allowed": "Not Allowed",
 
+	"move_to_trash": "Move to Trash",
+	"move_to_trash_confirm": "Are you sure you want to move this item to the trash?",
+
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
 	"markdown": "Markdown",

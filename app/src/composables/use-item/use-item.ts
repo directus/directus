@@ -6,7 +6,7 @@ import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
-	const { info: collectionInfo, primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<any>(null);
 	const error = ref(null);
@@ -45,6 +45,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		save,
 		isNew,
 		remove,
+		softDelete,
 		deleting,
 		softDeleting,
 		saveAsCopy,
@@ -176,25 +177,18 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 	}
 
-	async function remove(soft = false) {
-		// if (soft) {
-		// 	softDeleting.value = true;
-		// } else {
-		deleting.value = true;
-		// }
+	async function softDelete() {
+		if (!collectionInfo.value?.meta?.soft_delete_field) return;
+
+		softDeleting.value = true;
+
+		const field = collectionInfo.value.meta.soft_delete_field;
+		const value = collectionInfo.value.meta.soft_delete_value;
 
 		try {
-			// if (soft) {
-			// 	if (!statusField.value || softDeleteStatus.value === null) {
-			// 		throw new Error('[useItem] You cant soft-delete without a status field');
-			// 	}
-
-			// 	await api.patch(itemEndpoint.value, {
-			// 		[statusField.value.field]: softDeleteStatus.value,
-			// 	});
-			// } else {
-			await api.delete(itemEndpoint.value);
-			// }
+			await api.patch(itemEndpoint.value, {
+				[field]: value,
+			});
 
 			item.value = null;
 
@@ -218,11 +212,39 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			throw err;
 		} finally {
-			// if (soft) {
-			// 	softDeleting.value = false;
-			// } else {
+			softDeleting.value = false;
+		}
+	}
+
+	async function remove() {
+		deleting.value = true;
+
+		try {
+			await api.delete(itemEndpoint.value);
+
+			item.value = null;
+
+			notify({
+				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
+					collection: collection.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
+				}),
+				type: 'success',
+			});
+		} catch (err) {
+			notify({
+				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
+					collection: collection.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
+				}),
+				type: 'error',
+			});
+
+			throw err;
+		} finally {
 			deleting.value = false;
-			// }
 		}
 	}
 
