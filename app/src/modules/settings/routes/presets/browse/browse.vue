@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import SettingsNavigation from '../../../components/navigation';
+import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';

@@ -25,6 +25,12 @@ tables:
     sort_field:
       type: string
       length: 64
+    soft_delete_field:
+      type: string
+      length: 64
+    soft_delete_value:
+      type: string
+      length: 255
 
   directus_roles:
     id:

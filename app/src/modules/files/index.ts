@@ -1,7 +1,7 @@
 import { defineModule } from '@/modules/define';
-import FilesBrowse from './routes/browse/';
-import FilesDetail from './routes/detail/';
-import FilesAddNew from './routes/add-new/';
+import FilesBrowse from './routes/browse.vue';
+import FilesDetail from './routes/detail.vue';
+import FilesAddNew from './routes/add-new.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'files',
@@ -53,4 +53,14 @@ export default defineModule(({ i18n }) => ({
 			props: true,
 		},
 	],
+	order: 15,
+	preRegisterCheck(user, permissions) {
+		const admin = user.role.admin;
+		if (admin) return true;
+
+		const permission = permissions.find(
+			(permission) => permission.collection === 'directus_files' && permission.action === 'read'
+		);
+		return !!permission;
+	},
 }));

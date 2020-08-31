@@ -28,34 +28,9 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return fields.value?.find((field) => field.meta?.special === 'user_created') || null;
 	});
 
-	const statusField = computed(() => {
-		return fields.value?.find((field) => field.meta?.special === 'status') || null;
-	});
-
 	const sortField = computed(() => {
 		return info.value?.meta?.sort_field || null;
 	});
 
-	type Status = {
-		background_color: string;
-		browse_badge: string;
-		browse_subdued: string;
-		name: string;
-		published: boolean;
-		required_fields: boolean;
-		soft_delete: boolean;
-		text_color: string;
-		value: string;
-	};
-
-	const softDeleteStatus = computed<string | null>(() => {
-		if (statusField.value === null) return null;
-
-		const statuses = Object.values(statusField.value?.meta?.options?.status_mapping || {});
-		return (
-			(statuses.find((status) => (status as Status).soft_delete === true) as Status | undefined)?.value || null
-		);
-	});
-
-	return { info, fields, primaryKeyField, userCreatedField, statusField, softDeleteStatus, sortField };
+	return { info, fields, primaryKeyField, userCreatedField, sortField };
 }

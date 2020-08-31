@@ -331,7 +331,7 @@ export default class ItemsService implements AbstractService {
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
-		if (this.accountability && this.accountability.admin !== false) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 			});

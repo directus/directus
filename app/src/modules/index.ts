@@ -1,15 +1,12 @@
-import CollectionsModule from './collections/';
-import FilesModule from './files/';
-import UsersModule from './users/';
-import ActivityModule from './activity/';
-import SettingsModule from './settings/';
+import { ref, Ref } from '@vue/composition-api';
+import { ModuleConfig } from './types';
 
-export const modules = [
-	ActivityModule,
-	CollectionsModule,
-	UsersModule,
-	FilesModule,
-	SettingsModule,
-];
+let modules: Ref<ModuleConfig[]>;
 
-export default modules;
+export function getModules() {
+	if (!modules) {
+		modules = ref([]);
+	}
+
+	return modules;
+}

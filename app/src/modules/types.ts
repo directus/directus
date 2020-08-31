@@ -1,6 +1,7 @@
 import VueI18n from 'vue-i18n';
 import { RouteConfig } from 'vue-router';
 import { Ref } from '@vue/composition-api';
+import { User, Permission } from '@/types';
 
 export type ModuleConfig = {
 	id: string;
@@ -10,6 +11,8 @@ export type ModuleConfig = {
 	routes?: RouteConfig[];
 	link?: string;
 	color?: string;
+	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;
+	order?: number;
 };
 
 export type ModuleContext = { i18n: VueI18n };
