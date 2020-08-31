@@ -1,7 +1,7 @@
 <template>
 	<v-list nav>
 		<v-list-item v-for="item in navItems" :to="item.to" :key="item.to">
-			<v-list-item-icon><v-icon :name="item.icon" :outline="item.outline" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-list-item-title>{{ item.name }}</v-list-item-title>
 			</v-list-item-content>
@@ -10,7 +10,7 @@
 		<v-divider />
 
 		<v-list-item v-for="item in externalItems" :href="item.href" :key="item.href">
-			<v-list-item-icon><v-icon :name="item.icon" :outline="item.outline" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-list-item-title>{{ item.name }}</v-list-item-title>
 			</v-list-item-content>
