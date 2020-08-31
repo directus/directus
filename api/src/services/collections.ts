@@ -242,6 +242,7 @@ export default class CollectionsService {
 		await this.knex('directus_presets').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_revisions').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
+		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
 
 		await this.knex('directus_relations')
 			.delete()
