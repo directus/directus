@@ -8,11 +8,9 @@ import CacheService from '../services/cache';
 import { RedisNotFoundException } from '../exceptions';
 import env from '../env';
 
-const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
-	// make the key of the cache the URL
-	// need to check that this will work for all endpoints
-	// node cache service
-	// have used query as then can decide whather to use cache or not from api call
+const delCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
+	// setting the cache
+
 	if (env.CACHE_ENABLED !== 'true') return next();
 
 	//key needs to have url, query and permissions
@@ -32,22 +30,13 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 			throw new RedisNotFoundException('Redis client does not exist');
 		}
 
-		redisClient.get(key, (error, resultData) => {
-			if (error) {
-				throw new RedisNotFoundException('Error retreiving redis cache');
-			}
-
-			if (resultData) {
-				const reponse = JSON.parse(resultData);
-				res.json(reponse);
-			}
-		});
+		redisClient.del(key);
 	} else {
 		const cacheService = new CacheService();
-		res.json(cacheService.getCache(key));
+		cacheService.delCache(key);
 	}
 
 	return next();
 });
 
-export default checkCacheMiddleware;
+export default delCacheMiddleware;

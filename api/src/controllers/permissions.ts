@@ -5,6 +5,7 @@ import sanitizeQuery from '../middleware/sanitize-query';
 import PermissionsService from '../services/permissions';
 import useCollection from '../middleware/use-collection';
 import checkCacheMiddleware from '../middleware/check-cache';
+import delCacheMiddleware from '../middleware/delete-cache';
 import setCacheMiddleware from '../middleware/set-cache';
 import MetaService from '../services/meta';
 import { InvalidCredentialsException } from '../exceptions';
@@ -16,6 +17,7 @@ router.use(useCollection('directus_permissions'));
 
 router.post(
 	'/',
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
@@ -82,6 +84,7 @@ router.get(
 
 router.patch(
 	'/:pk',
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const primaryKey = await service.update(req.body, Number(req.params.pk));
@@ -94,6 +97,7 @@ router.patch(
 
 router.delete(
 	'/:pk',
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		await service.delete(Number(req.params.pk));

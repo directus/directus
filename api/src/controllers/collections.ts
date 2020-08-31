@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import checkCacheMiddleware from '../middleware/check-cache';
 import setCacheMiddleware from '../middleware/set-cache';
+import delCacheMiddleware from '../middleware/delete-cache';
 import CollectionsService from '../services/collections';
 import useCollection from '../middleware/use-collection';
 import MetaService from '../services/meta';
@@ -13,6 +14,7 @@ const router = Router();
 router.post(
 	'/',
 	useCollection('directus_collections'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 
@@ -58,6 +60,7 @@ router.get(
 router.patch(
 	'/:collection',
 	useCollection('directus_collections'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const collectionKey = req.params.collection.includes(',')
@@ -72,6 +75,7 @@ router.patch(
 router.delete(
 	'/:collection',
 	useCollection('directus_collections'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const collectionKey = req.params.collection.includes(',')

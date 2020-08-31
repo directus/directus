@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
 import checkCacheMiddleware from '../middleware/check-cache';
 import setCacheMiddleware from '../middleware/set-cache';
+import delCacheMiddleware from '../middleware/delete-cache';
 import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import MetaService from '../services/meta';
@@ -15,6 +16,7 @@ router.post(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
@@ -76,6 +78,7 @@ router.patch(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 
@@ -96,6 +99,7 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	sanitizeQuery,
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
@@ -114,6 +118,7 @@ router.patch(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;

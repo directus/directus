@@ -5,6 +5,7 @@ import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import checkCacheMiddleware from '../middleware/check-cache';
 import setCacheMiddleware from '../middleware/set-cache';
+import delCacheMiddleware from '../middleware/delete-cache';
 import { schemaInspector } from '../database';
 import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
 import Joi from 'joi';
@@ -85,6 +86,7 @@ router.post(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -108,6 +110,7 @@ router.patch(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -132,6 +135,7 @@ router.patch(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
+	delCacheMiddleware,
 	// @todo: validate field
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
@@ -152,6 +156,7 @@ router.delete(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
+	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
