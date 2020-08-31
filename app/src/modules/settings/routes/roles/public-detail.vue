@@ -20,9 +20,9 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 
-import SettingsNavigation from '../../../components/navigation/';
+import SettingsNavigation from '../../components/navigation.vue';
 import router from '@/router';
-import PermissionsOverview from '../detail/components/permissions-overview';
+import PermissionsOverview from './detail/components/permissions-overview.vue';
 
 export default defineComponent({
 	name: 'roles-detail',

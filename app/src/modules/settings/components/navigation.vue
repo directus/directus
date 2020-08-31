@@ -22,7 +22,6 @@
 				<v-list-item-title class="version">Directus {{ version }}</v-list-item-title>
 			</v-list-item-content>
 		</v-list-item>
-
 	</v-list>
 </template>
 
@@ -83,7 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .version {
 	.v-icon {
 		color: var(--foreground-subdued);
@@ -102,5 +100,4 @@ export default defineComponent({
 		}
 	}
 }
-
 </style>

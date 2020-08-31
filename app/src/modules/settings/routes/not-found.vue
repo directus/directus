@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import SettingsNavigation from '../../components/navigation/';
+import SettingsNavigation from '../components/navigation.vue';
 
 export default defineComponent({
 	components: { SettingsNavigation },

@@ -86,7 +86,7 @@ import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
-import FieldSelect from '../field-select/';
+import FieldSelect from './field-select.vue';
 import { sortBy } from 'lodash';
 import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
