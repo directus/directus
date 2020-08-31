@@ -203,10 +203,16 @@ body {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color border;
 
-		&:not(.activated):hover {
+		&:hover {
 			color: var(--v-button-color-hover);
 			background-color: var(--v-button-background-color-hover);
 			border-color: var(--v-button-background-color-hover);
+		}
+
+		&.activated {
+		    color: var(--v-button-color);
+		    background-color: var(--v-button-background-color);
+		    border-color: var(--v-button-background-color);
 		}
 
 		&.align-left {
