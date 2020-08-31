@@ -55,6 +55,9 @@ export default defineModule(({ i18n }) => ({
 	],
 	order: 15,
 	preRegisterCheck(user, permissions) {
+		const admin = user.role.admin;
+		if (admin) return true;
+
 		const permission = permissions.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'read'
 		);
