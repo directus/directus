@@ -29,7 +29,7 @@
 <script lang="ts">
 import { defineComponent, Ref, computed } from '@vue/composition-api';
 
-import { modules } from '@/modules/';
+import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
@@ -41,6 +41,9 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
+		const modules = getModules();
+
+		console.log(modules);
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_listing;
@@ -61,7 +64,7 @@ export default defineComponent({
 				});
 			}
 
-			return modules
+			return modules.value
 				.map((module) => ({
 					...module,
 					href: module.link || null,
@@ -81,6 +84,15 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style>
+body {
+	--module-background: #13181a;
+	--module-background-alt: var(--background-normal);
+	--module-icon: #607d8b;
+	--module-icon-alt: var(--foreground-normal);
+}
+</style>
 
 <style lang="scss" scoped>
 .module-bar {
