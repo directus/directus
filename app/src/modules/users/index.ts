@@ -1,7 +1,7 @@
 import { defineModule } from '@/modules/define';
 
-import UsersBrowse from './routes/browse/';
-import UsersDetail from './routes/detail/';
+import UsersBrowse from './routes/browse.vue';
+import UsersDetail from './routes/detail.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'users',

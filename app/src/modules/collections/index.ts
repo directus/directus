@@ -1,8 +1,8 @@
 import { defineModule } from '@/modules/define';
-import CollectionsOverview from './routes/overview/';
-import CollectionsBrowseOrDetail from './routes/browse-or-detail/';
-import CollectionsDetail from './routes/detail/';
-import CollectionsItemNotFound from './routes/not-found';
+import CollectionsOverview from './routes/overview.vue';
+import CollectionsBrowseOrDetail from './routes/browse-or-detail.vue';
+import CollectionsDetail from './routes/detail.vue';
+import CollectionsItemNotFound from './routes/not-found.vue';
 import { NavigationGuard } from 'vue-router';
 
 const checkForSystem: NavigationGuard = (to, from, next) => {
