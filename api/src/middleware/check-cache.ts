@@ -32,7 +32,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 			throw new RedisNotFoundException('Redis client does not exist');
 		}
 
-		redisClient.get(key, (error, resultData) => {
+		redisClient.get(key, (error: string, resultData: string) => {
 			if (error) {
 				throw new RedisNotFoundException('Error retreiving redis cache');
 			}
