@@ -31,6 +31,8 @@ import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
+import { start } from '@popperjs/core';
+import { af } from 'date-fns/locale';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -58,31 +60,34 @@ export default defineComponent({
 		const { tree } = useFieldTree(collection);
 
 		watch(() => props.value, setContent, { immediate: true });
-		onMounted(setContent);
+		onMounted(() => {
+			document.onselectionchange = onSelect;
+			setContent();
+		});
 
-		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive };
+		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect };
 
 		function onInput() {
 			if (!contentEl.value) return;
 
 			const valueString = getInputValue();
-
 			emit('input', valueString);
 		}
 
 		function onClick(event: MouseEvent) {
 			const target = event.target as HTMLElement;
 
-			if (target.tagName.toLowerCase() !== 'button') return;
+			if (target.tagName.toLowerCase() !== 'label') return;
 
 			const field = target.dataset.field;
 			emit('input', props.value.replace(`{{${field}}}`, ''));
 
-			// A button is wrapped in two empty `<span></span>` elements
-			target.previousElementSibling?.remove();
-			target.nextElementSibling?.remove();
+			const before = target.previousElementSibling;
+			const after = target.nextElementSibling;
+			if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
 			target.remove();
-
+			joinElements(before, after);
+			window.getSelection()?.removeAllRanges();
 			onInput();
 		}
 
@@ -93,33 +98,98 @@ export default defineComponent({
 			}
 		}
 
+		function onSelect() {
+			if (!contentEl.value) return;
+			const selection = window.getSelection();
+			if (!selection) return;
+			const range = selection.getRangeAt(0);
+			if (!range) return;
+			const start = range.startContainer;
+
+			if (
+				!(start instanceof HTMLElement && start.classList.contains('text')) &&
+				!start.parentElement?.classList.contains('text')
+			) {
+				selection.removeAllRanges();
+				const range = new Range();
+				let textSpan = null;
+
+				for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
+					const child = contentEl.value.children[i];
+					if (child.classList.contains('text')) {
+						textSpan = child;
+					}
+				}
+				if (!textSpan) {
+					textSpan = document.createElement('span');
+					textSpan.classList.add('text');
+					contentEl.value.appendChild(textSpan);
+				}
+
+				range.setStart(textSpan, 0);
+				selection.addRange(range);
+			}
+		}
+
 		function addField(fieldKey: string) {
 			if (!contentEl.value) return;
 			const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 			if (!field) return;
 
-			const button = document.createElement('button');
-			button.dataset.field = fieldKey;
-			button.setAttribute('contenteditable', 'false');
-			button.innerText = String(field.name);
+			const label = document.createElement('label');
+			label.dataset.field = fieldKey;
+			label.setAttribute('contenteditable', 'false');
+			label.innerText = String(field.name);
 
 			const range = window.getSelection()?.getRangeAt(0);
-			range?.deleteContents();
-			range?.insertNode(button);
-			window.getSelection()?.removeAllRanges();
+			if (!range) return;
+			range.deleteContents();
 
+			const end = splitElements();
+			if (!end) return;
+			contentEl.value.insertBefore(label, end);
+			window.getSelection()?.removeAllRanges();
 			onInput();
+		}
+
+		function joinElements(first: HTMLElement, second: HTMLElement) {
+			first.innerText += second.innerText;
+			second.remove();
+		}
+
+		function splitElements() {
+			const range = window.getSelection()?.getRangeAt(0);
+			if (!range) return;
+
+			const textNode = range.startContainer;
+			if (textNode.nodeType != Node.TEXT_NODE) return;
+			const start = textNode.parentElement;
+			if (!(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
+
+			const startOffset = range.startOffset;
+
+			const left = start.textContent?.substr(0, startOffset) || '';
+			const right = start.textContent?.substr(startOffset) || '';
+
+			start.innerText = left;
+
+			const nextSpan = document.createElement('span');
+			nextSpan.classList.add('text');
+			nextSpan.innerText = right;
+			contentEl.value?.insertBefore(nextSpan, start.nextSibling);
+			return nextSpan;
 		}
 
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
 			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
-				if (node.nodeType === Node.TEXT_NODE) return (acc += node.textContent);
-
 				const el = node as HTMLElement;
 				const tag = el.tagName;
-				if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				if (tag) {
+					if (tag.toLowerCase() === 'label') return (acc += `{{${el.dataset.field}}}`);
+					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
+				}
 				return (acc += '');
 			}, '');
 		}
@@ -127,30 +197,34 @@ export default defineComponent({
 		function setContent() {
 			if (!contentEl.value) return;
 
-			if (props.value === null) {
-				contentEl.value.innerHTML = '';
+			if (props.value === null || props.value === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
 				return;
 			}
 
 			if (props.value !== getInputValue()) {
 				const regex = /({{.*?}})/g;
 
+				const before = null;
+				const after = null;
+
 				const newInnerHTML = props.value
 					.split(regex)
 					.map((part) => {
-						if (part.startsWith('{{') === false) return part;
-
-						const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+						if (part.startsWith('{{') === false) {
+							return `<span class="text">${part}</span>`;
+						}
+						const fieldKey = part.replaceAll(/({|})/g, '').trim();
 						const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 
 						// Instead of crashing when the field doesn't exist, we'll render a couple question
 						// marks to indicate it's absence
-						if (!field) return '???';
+						// Not possible anymore because it would mess up the innerHTML
+						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
+						return `<label contenteditable="false" data-field="${field.field}">${field.name}</label>`;
 					})
 					.join('');
-
 				contentEl.value.innerHTML = newInnerHTML;
 			}
 		}
@@ -169,7 +243,7 @@ export default defineComponent({
 
 	::v-deep {
 		> * {
-			display: inline;
+			display: inline-block;
 			white-space: nowrap;
 		}
 
@@ -177,8 +251,12 @@ export default defineComponent({
 			display: none;
 		}
 
-		button {
-			margin: 0;
+		span {
+			min-height: 1em;
+		}
+
+		label {
+			margin: 0 4px;
 			padding: 0 4px;
 			color: var(--primary);
 			background-color: var(--primary-alt);
@@ -193,5 +271,10 @@ export default defineComponent({
 			}
 		}
 	}
+}
+</style>
+<style lang="scss">
+.v-input .input {
+	padding: 0;
 }
 </style>
