@@ -27,7 +27,7 @@ export const useCollectionsStore = createStore({
 
 			this.state.collections = collections.map((collection: CollectionRaw) => {
 				let name: string | VueI18n.TranslateResult;
-				const icon = collection.meta?.icon || 'box';
+				const icon = collection.meta?.icon || 'label';
 
 				if (collection.meta && notEmpty(collection.meta.translation)) {
 					for (let i = 0; i < collection.meta.translation.length; i++) {
