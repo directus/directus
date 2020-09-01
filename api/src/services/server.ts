@@ -1,10 +1,11 @@
-import ItemsService from './items';
 import { AbstractServiceOptions, Accountability } from '../types';
 import Knex from 'knex';
 import database from '../database';
 import os from 'os';
 import { ForbiddenException } from '../exceptions';
+// @ts-ignore
 import { version } from '../../package.json';
+import macosRelease from 'macos-release';
 
 export default class ServerService {
 	knex: Knex;
@@ -20,6 +21,9 @@ export default class ServerService {
 			throw new ForbiddenException();
 		}
 
+		const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
+		const osVersion = osType === 'macOS' ? `${macosRelease().name} (${macosRelease().version})` : os.release();
+
 		return {
 			directus: {
 				version,
@@ -29,10 +33,10 @@ export default class ServerService {
 				uptime: Math.round(process.uptime()),
 			},
 			os: {
-				type: os.type(),
-				version: os.release(),
+				type: osType,
+				version: osVersion,
 				uptime: Math.round(os.uptime()),
-				totalmen: os.totalmem(),
+				totalmem: os.totalmem(),
 			}
 		}
 	}
