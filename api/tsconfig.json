@@ -12,6 +12,5 @@
 			"es2019"
 		],
 		"skipLibCheck": true,
-		"resolveJsonModule": true,
 	}
 }
