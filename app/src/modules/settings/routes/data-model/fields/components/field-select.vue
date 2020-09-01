@@ -2,7 +2,7 @@
 	<div :class="field.meta.width || 'full'">
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
-				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
+				<v-input class="field" :class="{ hidden, active }" readonly @click="openFieldDetail">
 					<template #prepend>
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 					</template>
@@ -15,7 +15,7 @@
 					</template>
 
 					<template #append>
-						<v-icon name="expand_more" />
+						<v-icon @click.stop="toggle" name="more_vert" />
 					</template>
 				</v-input>
 			</template>
@@ -106,6 +106,7 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -145,6 +146,7 @@ export default defineComponent({
 			duplicateTo,
 			saveDuplicate,
 			duplicating,
+			openFieldDetail,
 		};
 
 		function setWidth(width: string) {
@@ -211,12 +213,16 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function openFieldDetail() {
+			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
+
 
 // The default display: contents doens't play nicely with drag and drop
 .v-menu {
@@ -282,5 +288,5 @@ export default defineComponent({
 			}
 		}
 	}
-}
+}@import '@/styles/mixins/breakpoint';
 </style>
