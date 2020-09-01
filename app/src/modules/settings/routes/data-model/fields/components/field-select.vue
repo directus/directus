@@ -48,8 +48,8 @@
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>
 				<v-divider />
-				<v-list-item @click="$emit('toggle-visibility', field)">
-					<template v-if="field.hidden === false">
+				<v-list-item @click="toggleVisibility">
+					<template v-if="hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
 						<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
 					</template>
@@ -114,10 +114,6 @@ export default defineComponent({
 			type: Object as PropType<Field>,
 			required: true,
 		},
-		hidden: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	setup(props) {
 		const interfaces = getInterfaces();
@@ -133,6 +129,8 @@ export default defineComponent({
 			return interfaces.value.find((inter) => inter.id === props.field.meta.interface)?.name;
 		});
 
+		const hidden = computed(() => props.field.meta.hidden === true);
+
 		return {
 			interfaceName,
 			editActive,
@@ -147,10 +145,18 @@ export default defineComponent({
 			saveDuplicate,
 			duplicating,
 			openFieldDetail,
+			hidden,
+			toggleVisibility,
 		};
 
 		function setWidth(width: string) {
 			fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
+		}
+
+		function toggleVisibility() {
+			fieldsStore.updateField(props.field.collection, props.field.field, {
+				meta: { hidden: !props.field.meta.hidden },
+			});
 		}
 
 		function useDeleteField() {
@@ -222,7 +228,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+@import '@/styles/mixins/breakpoint';
 
 // The default display: contents doens't play nicely with drag and drop
 .v-menu {
@@ -288,5 +294,5 @@ export default defineComponent({
 			}
 		}
 	}
-}@import '@/styles/mixins/breakpoint';
+}
 </style>
