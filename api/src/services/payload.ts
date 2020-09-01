@@ -91,7 +91,7 @@ export default class PayloadService {
 			return value;
 		},
 		async conceal(action, value) {
-			if (action === 'read') return '**********';
+			if (action === 'read') return value ? '**********' : null;
 			return value;
 		}
 	};

@@ -10,6 +10,7 @@ import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import ms from 'ms';
 import cookieParser from 'cookie-parser';
 import env from '../env';
+import UsersService from '../services/users';
 
 const router = Router();
 
@@ -152,6 +153,55 @@ router.post(
 		res.status(200).end();
 	})
 );
+
+router.post(
+	'/password/request',
+	asyncHandler(async (req, res) => {
+		if (!req.body.email) {
+			throw new InvalidPayloadException(`"email" field is required.`);
+		}
+
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
+		const service = new UsersService({ accountability });
+
+		try {
+			await service.requestPasswordReset(req.body.email);
+		} catch {
+			// We don't want to give away what email addresses exist, so we'll always return a 200
+			// from this endpoint
+		} finally {
+			return res.status(200).end();
+		}
+	})
+)
+
+router.post(
+	'/password/reset',
+	asyncHandler(async (req, res) => {
+		if (!req.body.token) {
+			throw new InvalidPayloadException(`"token" field is required.`);
+		}
+
+		if (!req.body.password) {
+			throw new InvalidPayloadException(`"password" field is required.`);
+		}
+
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
+		const service = new UsersService({ accountability });
+		await service.resetPassword(req.body.token, req.body.password);
+		return res.status(200).end();
+	})
+)
 
 router.use(
 	'/sso',
