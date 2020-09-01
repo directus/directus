@@ -192,6 +192,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .drawer-detail {
+	--v-badge-color: var(--background-normal);
 	--v-badge-background-color: var(--foreground-normal);
 }
 

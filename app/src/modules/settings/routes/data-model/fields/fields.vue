@@ -83,9 +83,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import SettingsNavigation from '../../../components/navigation/';
+import SettingsNavigation from '../../../components/navigation.vue';
 import useCollection from '@/composables/use-collection/';
-import FieldsManagement from './components/fields-management';
+import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
 import router from '@/router';

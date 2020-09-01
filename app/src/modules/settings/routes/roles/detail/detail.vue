@@ -94,14 +94,14 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 
-import SettingsNavigation from '../../../components/navigation/';
+import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import { useUserStore } from '@/stores/';
-import RoleInfoDrawerDetail from './components/role-info-drawer-detail';
-import PermissionsOverview from './components/permissions-overview';
+import RoleInfoDrawerDetail from './components/role-info-drawer-detail.vue';
+import PermissionsOverview from './components/permissions-overview.vue';
 
 type Values = {
 	[field: string]: any;

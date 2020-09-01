@@ -122,6 +122,7 @@ export default defineComponent({
 		const sizeClass = useSizeClass(props);
 
 		const component = computed<'a' | 'router-link' | 'button'>(() => {
+			if (props.disabled) return 'button';
 			if (notEmpty(props.href)) return 'a';
 			if (notEmpty(props.to)) return 'router-link';
 			return 'button';
@@ -208,6 +209,12 @@ body {
 			border-color: var(--v-button-background-color-hover);
 		}
 
+		&.activated {
+		    color: var(--v-button-color);
+		    background-color: var(--v-button-background-color);
+		    border-color: var(--v-button-background-color);
+		}
+
 		&.align-left {
 			justify-content: flex-start;
 		}
@@ -240,8 +247,9 @@ body {
 
 			background-color: transparent;
 
-			&:hover {
+			&:not(.activated):hover {
 				color: var(--v-button-background-color-hover);
+				background-color: transparent;
 				border-color: var(--v-button-background-color-hover);
 			}
 

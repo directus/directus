@@ -1,6 +1,6 @@
 import { defineModule } from '@/modules/define';
-import ActivityBrowse from './routes/browse/';
-import ActivityDetail from './routes/detail/';
+import ActivityBrowse from './routes/browse.vue';
+import ActivityDetail from './routes/detail.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'activity',

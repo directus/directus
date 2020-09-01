@@ -1,5 +1,5 @@
 import database, { schemaInspector } from '../database';
-import { AbstractServiceOptions, Accountability, Collection } from '../types';
+import { AbstractServiceOptions, Accountability, Collection, Relation } from '../types';
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import SchemaInspector from 'knex-schema-inspector';
@@ -228,6 +228,8 @@ export default class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		const fieldsService = new FieldsService({ knex: this.knex, accountability: this.accountability });
+
 		const tablesInDatabase = await schemaInspector.tables();
 
 		const collectionKeys = Array.isArray(collection) ? collection : [collection];
@@ -242,11 +244,25 @@ export default class CollectionsService {
 		await this.knex('directus_presets').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_revisions').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
+		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
 
-		await this.knex('directus_relations')
-			.delete()
-			.whereIn('many_collection', collectionKeys)
-			.orWhereIn('one_collection', collectionKeys);
+		const relations = await this.knex
+			.select<Relation[]>('*')
+			.from('directus_relations')
+			.where({ many_collection: collection })
+			.orWhere({ one_collection: collection });
+
+		for (const relation of relations) {
+			const isM2O = relation.many_collection === collection;
+
+			if (isM2O) {
+				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: relation.many_field });
+				await fieldsService.deleteField(relation.one_collection, relation.one_field);
+			} else {
+				await this.knex('directus_relations').update({ one_field: null }).where({ one_collection: collection, field: relation.one_field });
+				await fieldsService.deleteField(relation.many_collection, relation.many_field);
+			}
+		}
 
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,

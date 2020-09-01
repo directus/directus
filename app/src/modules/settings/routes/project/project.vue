@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import SettingsNavigation from '../../components/navigation/';
+import SettingsNavigation from '../../components/navigation.vue';
 import useCollection from '@/composables/use-collection';
 import { useSettingsStore } from '@/stores';
 import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';

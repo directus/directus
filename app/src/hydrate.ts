@@ -10,6 +10,7 @@ import {
 	useRelationsStore,
 	usePermissionsStore,
 } from '@/stores';
+import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 
 import { setLanguage, Language } from '@/lang';
 
@@ -59,6 +60,8 @@ export async function hydrate(stores = useStores()) {
 		setLanguage((userStore.state.currentUser?.locale as Language) || 'en-US');
 
 		await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
+
+		registerModules();
 	} catch (error) {
 		appStore.state.error = error;
 	} finally {
@@ -77,6 +80,8 @@ export async function dehydrate(stores = useStores()) {
 	for (const store of stores) {
 		await store.dehydrate?.();
 	}
+
+	unregisterModules();
 
 	appStore.state.hydrated = false;
 }

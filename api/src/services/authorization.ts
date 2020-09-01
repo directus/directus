@@ -200,7 +200,9 @@ export default class AuthorizationService {
 				);
 
 				if (invalidKeys.length > 0) {
-					throw new InvalidPayloadException(`Field "${invalidKeys[0]}" doesn't exist.`);
+					throw new ForbiddenException(
+						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+					)
 				}
 			}
 		}
@@ -237,9 +239,12 @@ export default class AuthorizationService {
 			const result = await itemsService.readByKey(pk as any, query, action);
 
 			if (!result) throw '';
+			if (Array.isArray(pk) && result.length !== pk.length) throw '';
 		} catch {
 			throw new ForbiddenException(
-				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`
+				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
+					collection, item: pk, action
+				}
 			);
 		}
 	}

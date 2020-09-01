@@ -55,10 +55,17 @@ export const onError = async (error: RequestError) => {
 
 	if (status === 401 && code === 'INVALID_CREDENTIALS' && error.request.responseURL.includes('refresh') === false) {
 		try {
-			await refresh();
-			return api.request(error.config);
+			const newToken = await refresh();
+
+			return api.request({
+				...error.config,
+				headers: {
+					Authorization: `Bearer ${newToken}`,
+				},
+			});
 		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
+			return Promise.reject();
 		}
 	}
 

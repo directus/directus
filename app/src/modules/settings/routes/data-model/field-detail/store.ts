@@ -7,6 +7,7 @@
 
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { reactive, watch } from '@vue/composition-api';
+import { clone } from 'lodash';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -47,7 +48,7 @@ function initLocalStore(
 	const isExisting = field !== '+';
 
 	if (isExisting) {
-		const existingField = fieldsStore.getField(collection, field);
+		const existingField = clone(fieldsStore.getField(collection, field));
 
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;

@@ -67,7 +67,7 @@ import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
-import { Filter } from '@/types';
+import { Filter, Field } from '@/types';
 import { Header } from '@/components/v-table/types';
 
 export default defineComponent({
@@ -91,7 +91,7 @@ export default defineComponent({
 		},
 		fields: {
 			type: Array as PropType<string[]>,
-			required: true,
+			default: () => [],
 		},
 		disabled: {
 			type: Boolean,
@@ -194,7 +194,7 @@ export default defineComponent({
 			async function fetchCurrent() {
 				loading.value = true;
 
-				let fields = [...props.fields];
+				let fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
 
 				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
 					fields.push(relatedPrimaryKeyField.value.field);
@@ -306,7 +306,7 @@ export default defineComponent({
 			watch(
 				() => props.fields,
 				() => {
-					tableHeaders.value = props.fields
+					tableHeaders.value = (props.fields.length > 0 ? props.fields : getDefaultFields())
 						.map((fieldKey) => {
 							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
 
@@ -516,6 +516,11 @@ export default defineComponent({
 					[relation.value.many_field]: null,
 				},
 			]);
+		}
+
+		function getDefaultFields(): string[] {
+			const fields = fieldsStore.getFieldsForCollection(relatedCollection.value.collection);
+			return fields.slice(0, 3).map((field: Field) => field.field);
 		}
 	},
 });

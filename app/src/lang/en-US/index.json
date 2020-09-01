@@ -19,6 +19,20 @@
 	"public": "Public",
 	"public_description": "Controls what API data is available without authenticating.",
 
+	"not_allowed": "Not Allowed",
+
+	"directus_version": "Directus Version",
+	"node_version": "Node Version",
+	"node_uptime": "Node Uptime",
+	"os_type": "OS Type",
+	"os_version": "OS Version",
+	"os_uptime": "OS Uptime",
+	"os_totalmem": "OS Memory",
+
+	"move_to_trash": "Move to Trash",
+	"move_to_trash_confirm": "Are you sure you want to move this item to the trash?",
+	"move_to_trash_confirm_count": "No Items Selected | Are you sure you want to move this item to the trash? | Are you sure you want to move these {count} items to the trash?",
+
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
 	"markdown": "Markdown",
@@ -986,13 +1000,6 @@
   "description": "Description",
   "dialog_beginning": "Beginning of dialog window.",
   "display_name": "Display Name",
-  "directus_version": "Directus Version",
-  "server_stack": "Server Stack",
-  "operating_system": "Operating System",
-  "installed_on": "Installed On",
-  "database_client": "Database Client",
-  "database_host": "Database Host",
-  "database_port": "Database Port",
   "done": "Done",
   "dont_manage": "Don't Manage",
   "dont_manage_copy": "Privileges, preferences, and settings for this collection will be permanently removed from the system! Are you sure?",

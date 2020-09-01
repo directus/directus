@@ -366,7 +366,7 @@ export default defineComponent({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value.startsWith('-')) {
+				if (sort.value?.startsWith('-')) {
 					return { by: sort.value.substring(1), desc: true };
 				} else {
 					return { by: sort.value, desc: false };

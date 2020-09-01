@@ -7,7 +7,7 @@
 		:tabindex="hasClick ? 0 : null"
 	>
 		<component v-if="customIconName" :is="customIconName" />
-		<i v-else :class="{ outline }">{{ name }}</i>
+		<i v-else :class="{ filled }">{{ name }}</i>
 	</span>
 </template>
 
@@ -30,6 +30,7 @@ import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
 import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
+import CustomIconLogout from './custom-icons/logout.vue';
 
 const customIcons: string[] = [
 	'directus',
@@ -47,6 +48,7 @@ const customIcons: string[] = [
 	'flip_horizontal',
 	'flip_vertical',
 	'folder_move',
+	'logout',
 ];
 
 export default defineComponent({
@@ -66,13 +68,14 @@ export default defineComponent({
 		CustomIconFlipHorizontal,
 		CustomIconFlipVertical,
 		CustomIconFolderMove,
+		CustomIconLogout,
 	},
 	props: {
 		name: {
 			type: String,
 			required: true,
 		},
-		outline: {
+		filled: {
 			type: Boolean,
 			default: false,
 		},
@@ -146,7 +149,7 @@ body {
 		font-weight: normal;
 		font-size: var(--v-icon-size);
 		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-		font-family: 'Material Icons';
+		font-family: 'Material Icons Outline';
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
@@ -155,9 +158,9 @@ body {
 		word-wrap: normal;
 		font-feature-settings: 'liga';
 
-		&.outline {
+		&.filled {
 			/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-			font-family: 'Material Icons Outline';
+			font-family: 'Material Icons';
 		}
 	}
 
