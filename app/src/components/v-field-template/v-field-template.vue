@@ -10,7 +10,9 @@
 						@keydown="onKeyDown"
 						@input="onInput"
 						@click="onClick"
-					/>
+					>
+						<span class="text" />
+					</span>
 				</template>
 
 				<template #append>
@@ -107,12 +109,16 @@ export default defineComponent({
 				event.preventDefault();
 				menuActive.value = true;
 			}
+
+			if (contentEl.value?.innerHTML === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
+			}
 		}
 
 		function onSelect() {
 			if (!contentEl.value) return;
 			const selection = window.getSelection();
-			if (!selection) return;
+			if (!selection || selection.rangeCount <= 0) return;
 			const range = selection.getRangeAt(0);
 			if (!range) return;
 			const start = range.startContainer;
@@ -131,6 +137,7 @@ export default defineComponent({
 						textSpan = child;
 					}
 				}
+
 				if (!textSpan) {
 					textSpan = document.createElement('span');
 					textSpan.classList.add('text');
@@ -157,9 +164,17 @@ export default defineComponent({
 			range.deleteContents();
 
 			const end = splitElements();
-			if (!end) return;
-			contentEl.value.insertBefore(button, end);
-			window.getSelection()?.removeAllRanges();
+
+			if (end) {
+				contentEl.value.insertBefore(button, end);
+				window.getSelection()?.removeAllRanges();
+			} else {
+				contentEl.value.appendChild(button);
+				const span = document.createElement('span');
+				span.classList.add('text');
+				contentEl.value.appendChild(span);
+			}
+
 			onInput();
 		}
 
@@ -173,7 +188,7 @@ export default defineComponent({
 			if (!range) return;
 
 			const textNode = range.startContainer;
-			if (textNode.nodeType != Node.TEXT_NODE) return;
+			if (textNode.nodeType !== Node.TEXT_NODE) return;
 			const start = textNode.parentElement;
 			if (!start || !(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
 

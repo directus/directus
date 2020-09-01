@@ -49,6 +49,7 @@ export default defineComponent({
 		const parts = computed(() =>
 			props.template
 				.split(regex)
+				.filter((p) => p)
 				.map((part) => {
 					if (part.startsWith('{{') === false) return part;
 
@@ -86,8 +87,7 @@ export default defineComponent({
 						type: field.meta?.special /** @todo check what this is used for */,
 					};
 				})
-				.map((p) => p)
-				.filter((p) => p)
+				.map((p) => p || null)
 		);
 
 		return { parts };
