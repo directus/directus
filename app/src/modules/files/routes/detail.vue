@@ -73,6 +73,16 @@
 			</v-dialog>
 
 			<v-button
+				rounded
+				icon
+				@click="downloadFile"
+				class="download"
+				v-tooltip.bottom="$t('download')"
+			>
+				<v-icon name="save_alt" />
+			</v-button>
+
+			<v-button
 				v-if="item && item.type.includes('image')"
 				rounded
 				icon
@@ -81,16 +91,6 @@
 				v-tooltip.bottom="$t('edit')"
 			>
 				<v-icon name="tune" />
-			</v-button>
-
-			<v-button
-				rounded
-				icon
-				@click="downloadFile"
-				class="download"
-				v-tooltip.bottom="$t('download')"
-			>
-				<v-icon name="save_alt" />
 			</v-button>
 
 			<v-button
