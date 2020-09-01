@@ -74,7 +74,7 @@ export default defineComponent({
 		const cacheBuster = ref(nanoid());
 
 		const fileSrc = computed(() => {
-			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster}`;
+			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`;
 		});
 
 		watch(
@@ -115,9 +115,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .file-preview {
 	width: 90%;
+	max-width: initial;
 	height: 90%;
 	margin-bottom: 0;
-	max-width: initial;
 }
 
 .close {
