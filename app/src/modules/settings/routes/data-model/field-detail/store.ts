@@ -108,9 +108,11 @@ function initLocalStore(
 			() => {
 				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
 				state.fieldData.type = field.type;
+				state.relations[0].one_primary = field.field;
 			}
 		);
 
+		// Sync the "auto generate related o2m"
 		watch(
 			() => state.relations[0].one_collection,
 			() => {
