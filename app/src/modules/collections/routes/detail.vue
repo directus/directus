@@ -50,12 +50,12 @@
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete_forever') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 						v-if="collectionInfo.meta.singleton === false"
 					>
-						<v-icon name="delete_forever" outline />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -83,24 +83,24 @@
 						rounded
 						icon
 						class="action-soft-delete"
-						v-tooltip.bottom="softDeleteAllowed ? $t('move_to_trash') : $t('not_allowed')"
+						v-tooltip.bottom="softDeleteAllowed ? $t('archive') : $t('not_allowed')"
 						@click="on"
 						:disabled="item === null || softDeleteAllowed !== true"
 						v-if="collectionInfo.meta.singleton === false"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="archive" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('move_to_trash_confirm') }}</v-card-title>
+					<v-card-title>{{ $t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmSoftDelete = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit(true)" class="action-soft-delete" :loading="softDeleting">
-							{{ $t('move_to_trash') }}
+							{{ $t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>

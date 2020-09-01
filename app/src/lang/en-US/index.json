@@ -29,9 +29,9 @@
 	"os_uptime": "OS Uptime",
 	"os_totalmem": "OS Memory",
 
-	"move_to_trash": "Move to Trash",
-	"move_to_trash_confirm": "Are you sure you want to move this item to the trash?",
-	"move_to_trash_confirm_count": "No Items Selected | Are you sure you want to move this item to the trash? | Are you sure you want to move these {count} items to the trash?",
+	"archive": "Archive",
+	"archive_confirm": "Are you sure you want to archive this item?",
+	"archive_confirm_count": "No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?",
 
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
@@ -989,7 +989,6 @@
   "db_updated": "Database successfully updated",
   "default": "Default",
   "delete": "Delete",
-  "delete_forever": "Delete Forever",
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_bookmark": "Delete Bookmark",
   "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",

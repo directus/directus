@@ -56,7 +56,7 @@
 						@click="on"
 						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
 					>
-						<v-icon name="delete_forever" outline />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -85,21 +85,21 @@
 						icon
 						class="action-soft-delete"
 						@click="on"
-						v-tooltip.bottom="batchEditAllowed ? $t('move_to_trash') : $t('not_allowed')"
+						v-tooltip.bottom="batchEditAllowed ? $t('archive') : $t('not_allowed')"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="archive" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('move_to_trash_confirm_count', selection.length) }}</v-card-title>
+					<v-card-title>{{ $tc('archive_confirm_count', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmSoftDelete = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
 						<v-button @click="batchDelete" class="action-soft-delete" :loading="softDeleting">
-							{{ $t('move_to_trash') }}
+							{{ $t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
