@@ -9,43 +9,45 @@
 			@change="handleChange"
 		>
 			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
-		</draggable>
 
-		<v-menu attached>
-			<template #activator="{ toggle, active }">
-				<v-button
-					@click="toggle"
-					class="add-field"
-					align="left"
-					:dashed="!active"
-					:class="{ active }"
-					outlined
-					large
-					full-width
-				>
-					<v-icon name="add" />
-					{{ $t('create_field') }}
-				</v-button>
+			<template #footer>
+				<v-menu attached>
+					<template #activator="{ toggle, active }">
+						<v-button
+							@click="toggle"
+							class="add-field"
+							align="left"
+							:dashed="!active"
+							:class="{ active }"
+							outlined
+							large
+							full-width
+						>
+							<v-icon name="add" />
+							{{ $t('create_field') }}
+						</v-button>
+					</template>
+
+					<v-list dense>
+						<template v-for="(option, index) in addOptions">
+							<v-divider v-if="option.divider === true" :key="index" />
+							<v-list-item
+								v-else
+								:key="option.type"
+								:to="`/settings/data-model/${collection}/+?type=${option.type}`"
+							>
+								<v-list-item-icon>
+									<v-icon :name="option.icon" />
+								</v-list-item-icon>
+								<v-list-item-content>
+									{{ option.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</template>
+					</v-list>
+				</v-menu>
 			</template>
-
-			<v-list dense>
-				<template v-for="(option, index) in addOptions">
-					<v-divider v-if="option.divider === true" :key="index" />
-					<v-list-item
-						v-else
-						:key="option.type"
-						:to="`/settings/data-model/${collection}/+?type=${option.type}`"
-					>
-						<v-list-item-icon>
-							<v-icon :name="option.icon" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							{{ option.text }}
-						</v-list-item-content>
-					</v-list-item>
-				</template>
-			</v-list>
-		</v-menu>
+		</draggable>
 	</div>
 </template>
 
@@ -209,6 +211,7 @@ export default defineComponent({
 	--v-button-background-color: var(--foreground-subdued);
 	--v-button-background-color-hover: var(--primary);
 
+	grid-column: 1 / span 2;
 	max-width: 50%;
 
 	.v-icon {
