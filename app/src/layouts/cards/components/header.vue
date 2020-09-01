@@ -2,11 +2,11 @@
 	<div class="cards-header">
 		<div class="start">
 			<div class="selected" v-if="_selection.length > 0" @click="_selection = []">
-				<v-icon name="cancel" />
+				<v-icon name="cancel" outline />
 				<span class="label">{{ $tc('n_items_selected', _selection.length) }}</span>
 			</div>
 			<button class="select-all" v-else @click="$emit('select-all')">
-				<v-icon name="check_circle" />
+				<v-icon name="check_circle" outline />
 				<span class="label">{{ $t('select_all') }}</span>
 			</button>
 		</div>

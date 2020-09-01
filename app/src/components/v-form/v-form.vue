@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
@@ -83,6 +83,8 @@ export default defineComponent({
 
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
+		provide('form-values', values);
+
 		return {
 			el,
 			formFields,
@@ -115,7 +117,7 @@ export default defineComponent({
 			const gridClass = computed<string | null>(() => {
 				if (el.value === null) return null;
 
-				if (width.value > 612 && width.value <= 792) {
+				if (width.value > 588 && width.value <= 792) {
 					return 'grid';
 				} else {
 					return 'grid with-fill';
@@ -180,6 +182,8 @@ body {
 </style>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .v-form {
 	&.grid {
 		display: grid;
@@ -196,15 +200,27 @@ body {
 	& > .half,
 	& > .half-left,
 	& > .half-space {
-		grid-column: start / half;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / half;
+		}
 	}
 
 	& > .half-right {
-		grid-column: half / full;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: half / full;
+		}
 	}
 
 	& > .full {
-		grid-column: start / full;
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / full;
+		}
 	}
 
 	& > .fill {

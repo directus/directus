@@ -4,41 +4,48 @@ import logger from '../logger';
 import env from '../env';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+	let payload: any;
+
 	if (err instanceof BaseException) {
 		logger.debug(err);
 
 		res.status(err.status);
 
-		const payload: any = {
-			error: {
-				code: err.code,
-				message: err.message,
-			},
+		payload = {
+			errors: [
+				{
+					message: err.message,
+					extensions: {
+						...err.extensions,
+						code: err.code,
+					}
+				}
+			],
 		};
-
-		if (env.NODE_ENV === 'development') {
-			payload.error.stack = err.stack;
-		}
-
-		return res.json(payload);
 	} else {
 		logger.error(err);
 
 		res.status(500);
 
-		const payload: any = {
-			error: {
-				code: 'INTERNAL_SERVER_ERROR',
-				message: err.message,
-			},
+		payload = {
+			errors: [
+				{
+					message: err.message,
+					extensions: {
+						code: 'INTERNAL_SERVER_ERROR',
+					}
+				}
+			],
 		};
-
-		if (env.NODE_ENV === 'development') {
-			payload.error.stack = err.stack;
-		}
-
-		return res.json(payload);
 	}
+
+	if (env.NODE_ENV === 'development') {
+		payload.errors[0].extensions.exception = {
+			stack: err.stack
+		}
+	}
+
+	return res.json(payload);
 };
 
 export default errorHandler;

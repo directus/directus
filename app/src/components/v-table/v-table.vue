@@ -45,8 +45,8 @@
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || _sort.by !== manualSortKey"
-				@change="onSortChange"
 				:set-data="hideDragImage"
+				@end="onSortChange"
 			>
 				<table-row
 					v-for="item in _items"
@@ -363,25 +363,18 @@ export default defineComponent({
 			}
 		}
 
-		interface VueDraggableChangeEvent extends CustomEvent {
-			moved?: {
-				oldIndex: number;
-				newIndex: number;
-
-				element: Record<string, any>;
-			};
+		interface EndEvent extends CustomEvent {
+			oldIndex: number;
+			newIndex: number;
 		}
 
-		function onSortChange(event: VueDraggableChangeEvent) {
+		function onSortChange(event: EndEvent) {
 			if (props.disabled) return;
 
-			if (event.moved) {
-				emit('manual-sort', {
-					item: event.moved.element,
-					oldIndex: event.moved.oldIndex,
-					newIndex: event.moved.newIndex,
-				});
-			}
+			const item = _items.value[event.oldIndex][props.itemKey];
+			const to = _items.value[event.newIndex][props.itemKey];
+
+			emit('manual-sort', { item, to });
 		}
 	},
 });

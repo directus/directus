@@ -22,6 +22,15 @@ tables:
     display_template:
       type: string
       length: 255
+    sort_field:
+      type: string
+      length: 64
+    soft_delete_field:
+      type: string
+      length: 64
+    soft_delete_value:
+      type: string
+      length: 255
 
   directus_roles:
     id:
@@ -84,6 +93,8 @@ tables:
       type: text
     tags:
       type: json
+    avatar:
+      type: uuid
     timezone:
       type: string
       length: 255
@@ -115,8 +126,6 @@ tables:
       length: 255
     last_login:
       type: timestamp
-    avatar:
-      type: uuid
     last_page:
       type: string
       length: 255
@@ -307,11 +316,13 @@ tables:
       references:
         table: directus_collections
         column: collection
-    operation:
+    action:
       type: string
       length: 10
       nullable: false
     permissions:
+      type: json
+    validation:
       type: json
     presets:
       type: json
@@ -628,6 +639,8 @@ rows:
       - collection: directus_roles
         field: name
         interface: text-input
+        options:
+          placeholder: The unique name for this role...
         locked: true
         sort: 1
         width: half
@@ -799,7 +812,7 @@ rows:
         width: half
       - collection: directus_users
         field: password
-        special: hash
+        special: hash, conceal
         interface: hash
         locked: true
         options:
@@ -1234,7 +1247,9 @@ rows:
         width: half
       - collection: directus_users
         field: tfa_secret
+        interface: tfa-setup
         locked: true
+        special: conceal
         sort: 14
         width: half
       - collection: directus_users
@@ -1780,15 +1795,16 @@ rows:
     defaults:
       role: null
       collection: null
-      operation: null
+      action: null
       permissions: null
+      validation: null
       presets: null
       fields: null
       limit: null
 
     data:
       - collection: directus_settings
-        operation: read
+        action: read
         permissions: {}
         fields: "project_name,project_logo,project_color,public_foreground,public_background,public_note"
 
@@ -1822,7 +1838,7 @@ rows:
         view_type: cards
         view_options:
           cards:
-            icon: person
+            icon: account_circle
             title: '{{ first_name }} {{ last_name }}'
             subtitle: '{{ title }}'
             size: 4

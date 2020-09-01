@@ -7,6 +7,7 @@
 
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { reactive, watch } from '@vue/composition-api';
+import { clone } from 'lodash';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -18,7 +19,7 @@ export { state, initLocalStore, clearLocalStore };
 function initLocalStore(
 	collection: string,
 	field: string,
-	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m'
+	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'
 ) {
 	state = reactive<any>({
 		fieldData: {
@@ -47,7 +48,7 @@ function initLocalStore(
 	const isExisting = field !== '+';
 
 	if (isExisting) {
-		const existingField = fieldsStore.getField(collection, field);
+		const existingField = clone(fieldsStore.getField(collection, field));
 
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;
@@ -222,6 +223,12 @@ function initLocalStore(
 				)?.field;
 			}
 		);
+	}
+
+	if (type === 'presentation') {
+		delete state.fieldData.schema;
+		delete state.fieldData.type;
+		state.fieldData.meta.special = 'alias';
 	}
 }
 

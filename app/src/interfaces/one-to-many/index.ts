@@ -7,5 +7,19 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'arrow_right_alt',
 	component: InterfaceOneToMany,
 	types: ['alias'],
-	options: [],
+	relationship: 'o2m',
+	options: [
+		{
+			field: 'fields',
+			type: 'json',
+			name: i18n.tc('field', 0),
+			meta: {
+				interface: 'tags',
+				width: 'full',
+				options: {
+					placeholder: i18n.t('readable_fields_copy'),
+				},
+			},
+		},
+	],
 }));

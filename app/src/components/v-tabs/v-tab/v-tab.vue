@@ -41,7 +41,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-tab-color: var(--foreground-normal);
+	--v-tab-color: var(--foreground-subdued);
 	--v-tab-background-color: var(--background-page);
 	--v-tab-color-active: var(--foreground-normal);
 	--v-tab-background-color-active: var(--background-page);
@@ -50,12 +50,13 @@ body {
 
 <style lang="scss" scoped>
 .v-tab.horizontal {
+	transition: color var(--fast) var(--transition);
 	color: var(--v-tab-color);
 	font-weight: 500;
-	font-size: 12px;
-	text-transform: uppercase;
+	font-size: 14px;
 	background-color: var(--v-tab-background-color);
 
+	&:hover,
 	&.active {
 		color: var(--v-tab-color-active);
 		background-color: var(--v-tab-background-color-active);

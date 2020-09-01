@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/types';
-import interfaces from '@/interfaces';
+import { getInterfaces } from '@/interfaces';
 
 export default defineComponent({
 	props: {
@@ -65,8 +65,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const interfaces = getInterfaces();
+
 		const interfaceExists = computed(() => {
-			return !!interfaces.find((inter) => inter.id === props.field.meta.interface);
+			return !!interfaces.value.find((inter) => inter.id === props.field.meta.interface);
 		});
 
 		return { interfaceExists };

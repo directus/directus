@@ -216,50 +216,20 @@ export function useItems(collection: Ref<string>, query: Query) {
 	}
 
 	type ManualSortData = {
-		item: Record<string, any>;
-		oldIndex: number;
-		newIndex: number;
+		item: string | number;
+		to: string | number;
 	};
 
-	async function changeManualSort({ item, oldIndex, newIndex }: ManualSortData) {
+	async function changeManualSort({ item, to }: ManualSortData) {
 		const pk = primaryKeyField.value?.field;
 		if (!pk) return;
 
-		const move = newIndex > oldIndex ? 'down' : 'up';
-		const selectionRange = move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
+		const fromIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === item);
+		const toIndex = items.value.findIndex((existing: Record<string, any>) => existing[pk] === to);
 
-		const updates = items.value.slice(...selectionRange).map((toBeUpdatedItem: any) => {
-			const sortValue = getPositionForItem(toBeUpdatedItem);
+		items.value = moveInArray(items.value, fromIndex, toIndex);
 
-			return {
-				[pk]: toBeUpdatedItem[pk],
-				sort: move === 'down' ? sortValue - 1 : sortValue + 1,
-			};
-		});
-
-		const sortOfItemOnNewIndex = newIndex + 1 + limit.value * (page.value - 1);
-
-		updates.push({
-			[pk]: item[pk],
-			sort: sortOfItemOnNewIndex,
-		});
-
-		// Reflect changes in local items array
-		items.value = moveInArray(items.value, oldIndex, newIndex);
-
-		// Save updates to items
-		await api.patch(endpoint.value, updates);
-	}
-
-	// Used as default value for the sort position. This is the index of the given item in the array
-	// of items, offset by the page count and current page
-
-	function getPositionForItem(item: any) {
-		const pk = primaryKeyField.value?.field;
-		if (!pk) return;
-
-		const index = items.value.findIndex((existingItem: any) => existingItem[pk] === item[pk]);
-
-		return index + 1 + limit.value * (page.value - 1);
+		const endpoint = computed(() => `/utils/sort/${collection.value}`);
+		await api.post(endpoint.value, { item, to });
 	}
 }

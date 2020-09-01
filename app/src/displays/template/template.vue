@@ -12,6 +12,9 @@
 				<v-list-item-content>
 					<render-template :template="template" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
+				<v-list-item-icon>
+					<v-icon name="launch" small />
+				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
 	</v-menu>

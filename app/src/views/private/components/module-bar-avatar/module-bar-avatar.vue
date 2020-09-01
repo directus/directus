@@ -27,9 +27,9 @@
 		</v-dialog>
 
 		<router-link :to="userProfileLink">
-			<v-avatar tile large v-tooltip.right="userFullName">
+			<v-avatar tile large v-tooltip.right="userFullName" :class="{ 'no-avatar': !avatarURL }">
 				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
-				<v-icon v-else name="account_circle" />
+				<v-icon v-else name="account_circle" outline />
 			</v-avatar>
 		</router-link>
 	</v-hover>
@@ -75,40 +75,64 @@ export default defineComponent({
 .module-bar-avatar {
 	position: relative;
 
-	.v-avatar {
-		--v-avatar-color: var(--module-background-alt);
-		.avatar-image {
-			opacity: 0.75;
-			transition: opacity var(--fast) var(--transition);
+	.sign-out {
+		--v-button-color: var(--module-icon);
+		--v-button-background-color: var(--module-background);
+		--v-button-background-color-hover: var(--module-background);
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		transition: transform var(--fast) var(--transition);
+
+		&.show {
+			transform: translateY(-100%);
+		}
+
+		&:hover {
+			.v-icon {
+				--v-icon-color: var(--warning);
+			}
 		}
 	}
-}
 
-.sign-out {
-	--v-button-background-color: var(--module-background-alt);
-	--v-button-background-color-hover: var(--warning);
+	.v-avatar {
+		overflow: visible;
+		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
+		--v-avatar-color: var(--module-background);
 
-	position: absolute;
-	top: 0;
-	left: 0;
-	transition: transform var(--fast) var(--transition);
+		.avatar-image {
+			opacity: 0.5;
+			transition: opacity var(--fast) var(--transition);
+		}
 
-	&.show {
-		transform: translateY(-100%);
-	}
+		&.no-avatar {
+			&:after {
+				content: "";
+				position: absolute;
+				left: 8px;
+				right: 8px;
+				top: -1px;
+				height: 2px;
+				background-color: var(--module-icon);
+				opacity: 0.25;
+			}
+		}
 
-	.v-icon {
-		--v-icon-color: var(--white);
-	}
-}
+		.v-icon {
+			--v-icon-color: var(--module-icon);
+		}
 
-.v-avatar:hover {
-	.avatar-image {
-		opacity: 1;
-	}
+		&:hover {
+			.avatar-image {
+				opacity: 1;
+			}
 
-	.v-icon {
-		--v-icon-color: var(--white);
+			.v-icon {
+				--v-icon-color: var(--white);
+			}
+		}
 	}
 }
 </style>

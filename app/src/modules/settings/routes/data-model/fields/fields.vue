@@ -18,7 +18,7 @@
 						@click="on"
 						v-tooltip.bottom="$t('delete_collection')"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -75,10 +75,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_fields'))" />
-			</drawer-detail>
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_fields'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_datamodel_fields'))" />
 			</drawer-detail>
 		</template>
 	</private-view>
@@ -86,9 +83,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import SettingsNavigation from '../../../components/navigation/';
+import SettingsNavigation from '../../../components/navigation.vue';
 import useCollection from '@/composables/use-collection/';
-import FieldsManagement from './components/fields-management';
+import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
 import router from '@/router';

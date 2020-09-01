@@ -6,7 +6,11 @@
 
 		<login-form v-else :sso-error="ssoErrorCode" />
 
-		<template #notice>
+		<template v-if="authenticated" #notice>
+			<v-icon name="lock_open" left />
+			{{ $t('authenticated') }}
+		</template>
+		<template v-else #notice>
 			<v-icon name="lock_outlined" left />
 			{{ $t('not_authenticated') }}
 		</template>

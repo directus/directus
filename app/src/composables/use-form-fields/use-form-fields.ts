@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { computed, Ref } from '@vue/composition-api';
-import { isEmpty } from '@/utils/is-empty';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
-import interfaces from '@/interfaces';
+import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';
 
 export default function useFormFields(fields: Ref<Field[]>) {
+	const interfaces = getInterfaces();
+
 	const formFields = computed(() => {
 		let formFields = [...fields.value];
 
@@ -49,14 +50,14 @@ export default function useFormFields(fields: Ref<Field[]>) {
 				field.meta.width = 'full';
 			}
 
-			let interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
+			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
+			interfaceUsed = interfaces.value.find((int) => int.id === field.meta.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;
@@ -80,7 +81,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
 			const hidden = field.meta?.hidden;
-			const systemFake = field.field.startsWith('$');
+			const systemFake = field.field?.startsWith('$') || false;
 			return hidden !== true && systemFake === false;
 		});
 

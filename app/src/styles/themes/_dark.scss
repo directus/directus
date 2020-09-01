@@ -4,17 +4,21 @@
 @mixin dark {
 	--border-normal: #455a64;
 	--border-normal-alt: #78909c;
-	--border-subdued: #455a64;
+	--border-subdued: #2E3F47;
 
 	--foreground-normal: #cfd8dc;
-	--foreground-subdued: #B0BEC5;
+	--foreground-subdued: #697A83;
 	--foreground-inverted:#263238;
 
-	--background-normal: #37474f;
-	--background-normal-alt: #455a64;
-	--background-subdued: #37474f;
+	--background-normal: #2E3C43; // #37474f
+	--background-normal-alt: #3A4B53; // #455a64
+	--background-subdued: #2D3A41;
+	--background-highlight: #F9FAFB; // ADJUST
 	--background-page: #263238;
+	--background-page-rgb: 38, 50, 56;
 	--background-inverted: #fff;
+
+	--overlay-color: rgba(19, 24, 26, 0.9);
 
 	--primary-190: #EAF2FD;
 	--primary-175: #CBDFFB;

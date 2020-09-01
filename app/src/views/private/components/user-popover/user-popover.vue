@@ -18,7 +18,7 @@
 		<div class="user-box" v-else-if="data">
 			<v-avatar x-large class="avatar">
 				<img v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon name="person" v-else />
+				<v-icon name="person" outline v-else />
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ data.first_name }} {{ data.last_name }}</div>

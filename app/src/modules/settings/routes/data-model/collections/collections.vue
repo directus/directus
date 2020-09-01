@@ -77,27 +77,24 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_collections'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_datamodel_collections'))" />
 			</drawer-detail>
 			<collections-filter v-model="activeTypes" />
-			<drawer-detail icon="help_outline" :title="$t('help_and_docs')">
-				<div class="format-markdown" v-html="marked($t('page_help_settings_datamodel_collections'))" />
-			</drawer-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
-import SettingsNavigation from '../../../components/navigation/';
-import { HeaderRaw } from '../../../../../components/v-table/types';
+import SettingsNavigation from '../../../components/navigation.vue';
+import { HeaderRaw } from '@/components/v-table/types';
 import { i18n } from '@/lang/';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
 import router from '@/router';
 import { sortBy } from 'lodash';
-import CollectionOptions from './components/collection-options';
-import CollectionsFilter from './components/collections-filter';
+import CollectionOptions from './components/collection-options.vue';
+import CollectionsFilter from './components/collections-filter.vue';
 import marked from 'marked';
 
 export default defineComponent({

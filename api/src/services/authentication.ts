@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import { InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
+import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
@@ -51,14 +51,14 @@ export default class AuthenticationService {
 		}
 
 		if (user.tfa_secret && !otp) {
-			throw new InvalidPayloadException(`"otp" is required`);
+			throw new InvalidOTPException(`"otp" is required`);
 		}
 
 		if (user.tfa_secret && otp) {
 			const otpValid = await this.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
-				throw new InvalidPayloadException(`"otp" is invalid`);
+				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
 
@@ -111,29 +111,31 @@ export default class AuthenticationService {
 		}
 
 		const record = await database
-			.select<Session & { email: string }>('directus_sessions.*', 'directus_users.email')
+			.select<Session & { email: string, id: string }>('directus_sessions.*', 'directus_users.email', 'directus_users.id')
 			.from('directus_sessions')
 			.where({ 'directus_sessions.token': refreshToken })
 			.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
 			.first();
 
-		/** @todo
-		 * Check if it's worth checking for ip address and/or user agent. We could make this a little
-		 * more secure by requiring the refresh token to be used from the same device / location as the
-		 * auth session was created in the first place
-		 */
-
 		if (!record || !record.email || record.expires < new Date()) {
 			throw new InvalidCredentialsException();
 		}
 
-		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
-
-		return await this.authenticate({
-			email: record.email,
-			ip: record.ip,
-			userAgent: record.user_agent,
+		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
+			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
+
+		const newRefreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+
+		await this.knex('directus_sessions').update({ token: newRefreshToken, expires: refreshTokenExpiration }).where({ token: refreshToken });
+
+		return {
+			accessToken,
+			refreshToken: newRefreshToken,
+			expires: ms(env.ACCESS_TOKEN_TTL as string) / 1000,
+			id: record.id,
+		};
 	}
 
 	async logout(refreshToken: string) {

@@ -14,7 +14,7 @@
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" @click="toggle" />
+					<v-icon name="add_box" outline @click="toggle" />
 				</template>
 			</v-input>
 		</template>

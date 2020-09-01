@@ -78,7 +78,7 @@
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
 			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
-			:manual-sort-key="sortField && sortField.field"
+			:manual-sort-key="sortField"
 			selection-use-keys
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
@@ -227,7 +227,7 @@ export default defineComponent({
 			page,
 			fields: fieldsWithRelational,
 			filters: _filters,
-			searchQuery,
+			searchQuery: _searchQuery,
 		});
 
 		const {
@@ -304,8 +304,7 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					return _viewQuery.value?.sort || primaryKeyField.value!.field;
+					return _viewQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
 					page.value = 1;
@@ -337,13 +336,15 @@ export default defineComponent({
 						if (typeof _viewQuery.value.fields === 'string') {
 							return (_viewQuery.value.fields as string).split(',');
 						}
+
+						if (Array.isArray(_viewQuery.value.fields)) return _viewQuery.value.fields;
 					}
 
 					const fields =
 						_viewQuery.value?.fields ||
 						availableFields.value
 							.filter((field: Field) => {
-								return field.schema?.is_primary_key === false && field.meta.special !== 'sort';
+								return field.schema?.is_primary_key === false;
 							})
 							.slice(0, 4)
 							.map(({ field }) => field);
@@ -365,7 +366,7 @@ export default defineComponent({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value.startsWith('-')) {
+				if (sort.value?.startsWith('-')) {
 					return { by: sort.value.substring(1), desc: true };
 				} else {
 					return { by: sort.value, desc: false };
@@ -499,6 +500,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .layout-tabular {
 	display: contents;
 	margin: var(--content-padding);
@@ -574,6 +577,11 @@ export default defineComponent({
 	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
+	display: none;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
 }
 
 .fade-enter-active,

@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { schemaInspector } from '../database';
-import { FieldNotFoundException, InvalidPayloadException } from '../exceptions';
+import { FieldNotFoundException, InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
 import { Field } from '../types/field';
 import useCollection from '../middleware/use-collection';
@@ -48,7 +48,7 @@ router.get(
 		const service = new FieldsService({ accountability: req.accountability });
 
 		const exists = await schemaInspector.hasColumn(req.collection, req.params.field);
-		if (exists === false) throw new FieldNotFoundException(req.collection, req.params.field);
+		if (exists === false) throw new ForbiddenException();
 
 		const field = await service.readOne(req.params.collection, req.params.field);
 		return res.json({ data: field || null });
@@ -60,11 +60,11 @@ const newFieldSchema = Joi.object({
 	field: Joi.string().required(),
 	type: Joi.string().valid(...types),
 	schema: Joi.object({
-		comment: Joi.string(),
+		comment: Joi.string().allow(null),
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string()],
 		is_nullable: Joi.bool(),
-	}),
+	}).unknown(),
 	/** @todo base this on default validation */
 	meta: Joi.any(),
 });
@@ -105,7 +105,7 @@ router.patch(
 		let results: any = [];
 
 		for (const field of req.body) {
-			await service.updateField(req.params.collection, field, req.accountability);
+			await service.updateField(req.params.collection, field);
 
 			const updatedField = await service.readOne(req.params.collection, field.field);
 
@@ -120,15 +120,13 @@ router.patch(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	// @todo: validate field
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
-
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 
-		await service.updateField(req.params.collection, fieldData, req.accountability);
+		await service.updateField(req.params.collection, fieldData);
 
 		const updatedField = await service.readOne(req.params.collection, req.params.field);
 
@@ -142,8 +140,7 @@ router.delete(
 	useCollection('directus_fields'),
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
-
-		await service.deleteField(req.params.collection, req.params.field, req.accountability);
+		await service.deleteField(req.params.collection, req.params.field);
 
 		res.status(200).end();
 	})

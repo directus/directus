@@ -16,7 +16,36 @@
 
 	"rename_folder": "Rename Folder",
 
+	"public": "Public",
+	"public_description": "Controls what API data is available without authenticating.",
+
+	"not_allowed": "Not Allowed",
+
+	"move_to_trash": "Move to Trash",
+	"move_to_trash_confirm": "Are you sure you want to move this item to the trash?",
+	"move_to_trash_confirm_count": "No Items Selected | Are you sure you want to move this item to the trash? | Are you sure you want to move these {count} items to the trash?",
+
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
+
+	"markdown": "Markdown",
+	"tabbed": "Tabbed",
+
+	"all_access": "All Access",
+	"no_access": "No Access",
+	"use_custom": "Use Custom",
+	"edit_custom": "Edit Custom",
+
+	"item_permissions": "Item Permissions",
+	"field_permissions": "Field Permissions",
+	"field_validation": "Field Validation",
+	"field_presets": "Field Presets",
+
+	"permissions_for_role": "Items the {role} Role can {action}.",
+	"fields_for_role": "Fields the {role} Role can {action}.",
+	"validation_for_role": "Field {action} rules the {role} Role must obey.",
+	"presets_for_role": "Field value defaults for the {role} Role.",
+
+	"presentation_and_aliases": "Presentation & Aliases",
 
 	"revision_post_update": "Here is what this item looked like after the update...",
 	"changes_made": "These are the specific changes that were made...",
@@ -413,8 +442,14 @@
 
 	"select_an_item": "Select an item...",
 	"edit": "Edit",
+	"preview": "Preview",
 
 	"enabled": "Enabled",
+
+	"enable_tfa": "Enable 2FA",
+	"disable_tfa": "Disable 2FA",
+	"tfa_scan_code": "Scan the code in your authenticator app to finish setting up 2FA",
+	"enter_otp_to_disable_tfa": "Enter the OTP to disable 2FA",
 
 	"use_bold_style": "Use bold style",
 
@@ -423,22 +458,16 @@
 	"auto_format_casing": "Auto-format casing",
 
 	"errors": {
-		"3": "Only super admins have access to this",
-		"4": "Super Admin Token not provided",
-		"11": "Can't Reach Database",
-		"12": "Field has invalid regular expression",
-		"100": "Incorrect Email/Password",
-		"101": "Logged-out from Inactivity",
-		"102": "Logged-out from Inactivity",
-		"103": "User Suspended",
-		"105": "Reset link expired",
-		"106": "Incorrect Email/Password",
-		"107": "User Not Found",
-		"111": "Enter One-Time Password",
-		"112": "Wrong One-Time Password",
-		"114": "Incorrect Email/Password",
-		"115": "SSO is not allowed when 2FA is enabled",
-		"503": "Email couldn't be sent. Please verify the API's configuration",
+		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
+		"FIELD_NOT_FOUND": "Field not found.",
+		"NO_PERMISSION": "Forbidden.",
+		"INVALID_CREDENTIALS": "Wrong username or password.",
+		"INVALID_OTP": "Wrong one-time password.",
+		"INVALID_PAYLOAD": "Invalid payload.",
+		"INVALID_QUERY": "Invalid query.",
+		"ITEM_LIMIT_REACHED": "Item limit reached.",
+		"ITEM_NOT_FOUND": "Item not found.",
+		"ROUTE_NOT_FOUND": "Not found.",
 		"-1": "Couldn't Reach API"
 	},
 
@@ -455,8 +484,8 @@
 
 	"presets": "Presets",
 
-	"unexpected_error": "An unexpected error occured",
-	"unexpected_error_copy": "Something went wrong.. Please try again later.",
+	"unexpected_error": "Unexpected Error",
+	"unexpected_error_copy": "An unexpected error has occured. Please try again later.",
 	"copy_details": "Copy Details",
 
 	"no_app_access": "No App Access",
@@ -760,19 +789,19 @@
 	"keep_editing": "Keep Editing",
 
 	"page_help_collections_overview": "**Collections Overview** — Lists of all collections you have access to.",
-	"page_help_collections_browse": "**Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.<br><br><a href='https://docs.directus.io/guides/user-guide.html#items' target='_blank'>Learn More</a>",
+	"page_help_collections_browse": "**Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_collections_detail": "**Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.",
 	"page_help_activity_browse": "**Browse Activity** — A comprehensive listing of all your user's system and content activity.",
 	"page_help_activity_detail": "**Activity Detail** — Shows accountability info, revision data, and the update message for this activity record.",
 	"page_help_files_browse": "**File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_files_detail": "**File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.",
-	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.<br><br><a href='https://docs.directus.io/guides/admin-guide.html#global-settings' target='_blank'>Learn More</a>",
+	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.",
 	"page_help_settings_datamodel_collections": "**Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.",
 	"page_help_settings_datamodel_fields": "**Data Model: Collection** — A form for managing this collection and its fields.",
 	"page_help_settings_roles_browse": "**Browse Roles** — Lists the Admin, Public and custom User Roles.",
 	"page_help_settings_roles_detail": "**Role Detail** — Manage a role's permissions and other settings.",
 	"page_help_settings_presets_browse": "**Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.",
-	"page_help_settings_presets_detail": "**Preset Detail** — A form for managing bookmarks and default collection presets.<br><br>To create a default preset, choose a role... TK TK",
+	"page_help_settings_presets_detail": "**Preset Detail** — A form for managing bookmarks and default collection presets.",
 	"page_help_settings_webhooks_browse": "**Browse Webhooks** — Lists all webhooks within the project.",
 	"page_help_settings_webhooks_detail": "**Webhook Detail** — A form for creating and managing project webhooks.",
 	"page_help_users_browse": "**User Directory** — Lists all system users within this project.",
@@ -912,7 +941,7 @@
   "connection": "Connection",
   "contains": "Contains",
   "continue": "Continue",
-  "continue_as": "<b>{name}</b> is already authenticated for this project. If you recognize this account, please press continue.",
+  "continue_as": "<b>{name}</b> is already authenticated. If you recognize this account, press continue.",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",
@@ -964,6 +993,12 @@
   "dialog_beginning": "Beginning of dialog window.",
   "display_name": "Display Name",
   "directus_version": "Directus Version",
+  "server_stack": "Server Stack",
+  "operating_system": "Operating System",
+  "installed_on": "Installed On",
+  "database_client": "Database Client",
+  "database_host": "Database Host",
+  "database_port": "Database Port",
   "done": "Done",
   "dont_manage": "Don't Manage",
   "dont_manage_copy": "Privileges, preferences, and settings for this collection will be permanently removed from the system! Are you sure?",
@@ -1102,6 +1137,7 @@
   "no_items_selected": "No items selected",
   "no_related_entries": "Has no related entries",
   "not_authenticated": "Not Authenticated",
+  "authenticated": "Authenticated",
   "not_between": "Not between",
   "not_contains": "Doesn't contain",
   "not_empty": "Is not empty",

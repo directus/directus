@@ -79,7 +79,9 @@ router.patch(
 			return res.json({ data: item || null });
 		}
 
-		throw new RouteNotFoundException(req.path);
+		const primaryKeys = await service.update(req.body);
+		const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+		return res.json({ data: result || null });
 	})
 );
 
@@ -96,7 +98,6 @@ router.patch(
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
 		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
-
 		const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
 
 		res.json({ data: result || null });
