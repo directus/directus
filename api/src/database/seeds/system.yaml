@@ -1418,7 +1418,7 @@ rows:
         options:
           icon: insert_drive_file
           title: File Naming
-          color: '#B0BEC5'
+          color: '#2F80ED'
         special: alias
         sort: 6
         width: full
@@ -1547,7 +1547,7 @@ rows:
         options:
           icon: public
           title: Public Pages
-          color: '#B0BEC5'
+          color: '#2F80ED'
         special: alias
         sort: 5
         width: full
@@ -1584,7 +1584,7 @@ rows:
         options:
           icon: security
           title: Security
-          color: '#B0BEC5'
+          color: '#2F80ED'
         special: alias
         sort: 9
         width: full
@@ -1625,7 +1625,7 @@ rows:
         options:
           icon: storage
           title: Files & Thumbnails
-          color: '#B0BEC5'
+          color: '#2F80ED'
         special: alias
         sort: 13
         width: full
@@ -1709,7 +1709,7 @@ rows:
         options:
           icon: pending
           title: Miscellaneous
-          color: '#B0BEC5'
+          color: '#2F80ED'
         special: alias
         sort: 16
         width: full
