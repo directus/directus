@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
@@ -60,9 +60,18 @@ export default defineComponent({
 		const { tree } = useFieldTree(collection);
 
 		watch(() => props.value, setContent, { immediate: true });
+
 		onMounted(() => {
-			document.onselectionchange = onSelect;
-			setContent();
+			if (contentEl.value) {
+				contentEl.value.addEventListener('selectstart', onSelect);
+				setContent();
+			}
+		});
+
+		onUnmounted(() => {
+			if (contentEl.value) {
+				contentEl.value.removeEventListener('selectstart', onSelect);
+			}
 		});
 
 		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect };
@@ -77,14 +86,16 @@ export default defineComponent({
 		function onClick(event: MouseEvent) {
 			const target = event.target as HTMLElement;
 
-			if (target.tagName.toLowerCase() !== 'label') return;
+			if (target.tagName.toLowerCase() !== 'button') return;
 
 			const field = target.dataset.field;
 			emit('input', props.value.replace(`{{${field}}}`, ''));
 
 			const before = target.previousElementSibling;
 			const after = target.nextElementSibling;
+
 			if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+
 			target.remove();
 			joinElements(before, after);
 			window.getSelection()?.removeAllRanges();
@@ -136,10 +147,10 @@ export default defineComponent({
 			const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 			if (!field) return;
 
-			const label = document.createElement('label');
-			label.dataset.field = fieldKey;
-			label.setAttribute('contenteditable', 'false');
-			label.innerText = String(field.name);
+			const button = document.createElement('button');
+			button.dataset.field = fieldKey;
+			button.setAttribute('contenteditable', 'false');
+			button.innerText = String(field.name);
 
 			const range = window.getSelection()?.getRangeAt(0);
 			if (!range) return;
@@ -147,7 +158,7 @@ export default defineComponent({
 
 			const end = splitElements();
 			if (!end) return;
-			contentEl.value.insertBefore(label, end);
+			contentEl.value.insertBefore(button, end);
 			window.getSelection()?.removeAllRanges();
 			onInput();
 		}
@@ -164,7 +175,7 @@ export default defineComponent({
 			const textNode = range.startContainer;
 			if (textNode.nodeType != Node.TEXT_NODE) return;
 			const start = textNode.parentElement;
-			if (!(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
+			if (!start || !(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
 
 			const startOffset = range.startOffset;
 
@@ -186,10 +197,12 @@ export default defineComponent({
 			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
 				const el = node as HTMLElement;
 				const tag = el.tagName;
+
 				if (tag) {
-					if (tag.toLowerCase() === 'label') return (acc += `{{${el.dataset.field}}}`);
+					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
 					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
 				}
+
 				return (acc += '');
 			}, '');
 		}
@@ -217,12 +230,9 @@ export default defineComponent({
 						const fieldKey = part.replaceAll(/({|})/g, '').trim();
 						const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 
-						// Instead of crashing when the field doesn't exist, we'll render a couple question
-						// marks to indicate it's absence
-						// Not possible anymore because it would mess up the innerHTML
 						if (!field) return '';
 
-						return `<label contenteditable="false" data-field="${field.field}">${field.name}</label>`;
+						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -252,10 +262,11 @@ export default defineComponent({
 		}
 
 		span {
+			min-width: 1ch;
 			min-height: 1em;
 		}
 
-		label {
+		button {
 			margin: 0 4px;
 			padding: 0 4px;
 			color: var(--primary);
