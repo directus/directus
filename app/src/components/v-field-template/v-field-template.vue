@@ -33,8 +33,6 @@ import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
-import { start } from '@popperjs/core';
-import { af } from 'date-fns/locale';
 
 export default defineComponent({
 	components: { FieldListItem },
