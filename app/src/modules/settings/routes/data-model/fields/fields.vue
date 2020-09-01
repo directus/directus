@@ -2,8 +2,8 @@
 	<private-view :title="collectionInfo.name">
 		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="list_alt" />
+			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
+				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
@@ -180,8 +180,10 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .action-delete {
