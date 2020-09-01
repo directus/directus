@@ -33,11 +33,15 @@
 				/>
 			</v-list>
 		</v-menu>
+
+		<v-divider />
+
+		<v-checkbox v-model="archived" :label="$t('show_archived_items')" />
 	</drawer-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, watch, toRefs } from '@vue/composition-api';
 import { Filter, Relation, Field } from '@/types';
 import { useFieldsStore, useRelationsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
@@ -45,6 +49,7 @@ import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
 import { FieldTree } from './types';
 import FieldListItem from './field-list-item.vue';
+import { useCollection } from '@/composables/use-collection';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
@@ -65,6 +70,9 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const { collection } = toRefs(props);
+		const { info: collectionInfo } = useCollection(collection);
 
 		const fieldTree = computed<FieldTree[]>(() => {
 			return fieldsStore
@@ -139,7 +147,38 @@ export default defineComponent({
 			},
 		});
 
-		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter };
+		const showArchiveToggle = computed(() => !!collectionInfo.value?.meta?.soft_delete_field);
+
+		const archived = computed({
+			get() {
+				return (
+					props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
+				);
+			},
+			set(showArchived: boolean) {
+				if (!collectionInfo.value?.meta?.soft_delete_field) return;
+
+				if (showArchived === false) {
+					emit('input', [
+						...filters.value,
+						{
+							key: 'hide-archived',
+							field: collectionInfo.value.meta.soft_delete_field,
+							operator: 'neq',
+							value: collectionInfo.value.meta.soft_delete_value!,
+							locked: true,
+						},
+					]);
+				} else {
+					emit(
+						'input',
+						filters.value.filter((filter) => filter.key !== 'hide-archived')
+					);
+				}
+			},
+		});
+
+		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
 			emit('input', [

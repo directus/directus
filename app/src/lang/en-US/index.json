@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"show_archived_items": "Show Archived Items",
+
 	"create_preset": "Create Preset",
 	"create_role": "Create Role",
 	"create_user": "Create User",
@@ -989,6 +991,7 @@
   "db_updated": "Database successfully updated",
   "default": "Default",
   "delete": "Delete",
+
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_bookmark": "Delete Bookmark",
   "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",
