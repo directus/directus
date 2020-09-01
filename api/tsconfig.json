@@ -11,6 +11,7 @@
 		"lib": [
 			"es2019"
 		],
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
 	}
 }
