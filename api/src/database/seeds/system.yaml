@@ -472,6 +472,7 @@ tables:
     project_color:
       type: string
       length: 10
+      default: '#2F80ED'
     project_logo:
       type: uuid
       references:
