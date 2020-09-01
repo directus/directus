@@ -297,8 +297,3 @@ export default defineComponent({
 	}
 }
 </style>
-<style lang="scss">
-.v-input .input {
-	padding: 0;
-}
-</style>
