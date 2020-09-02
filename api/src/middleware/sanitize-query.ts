@@ -4,9 +4,9 @@
  */
 
 import { RequestHandler } from 'express';
-import { Query, Sort, Filter } from '../types/query';
-import { Meta } from '../types/meta';
+import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
+import { parseFilter } from '../utils/parse-filter';
 
 const sanitizeQuery: RequestHandler = (req, res, next) => {
 	req.sanitizedQuery = {};
@@ -29,7 +29,7 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 	}
 
 	if (req.query.filter) {
-		query.filter = sanitizeFilter(req.query.filter);
+		query.filter = sanitizeFilter(req.query.filter, req.accountability || null);
 	}
 
 	if (req.query.limit == '-1') {
@@ -86,7 +86,7 @@ function sanitizeSort(rawSort: any) {
 	});
 }
 
-function sanitizeFilter(rawFilter: any) {
+function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 	let filters: Filter = rawFilter;
 
 	if (typeof rawFilter === 'string') {
@@ -97,10 +97,7 @@ function sanitizeFilter(rawFilter: any) {
 		}
 	}
 
-	/**
-	 * @todo
-	 * validate filter syntax?
-	 */
+	filters = parseFilter(filters, accountability);
 
 	return filters;
 }

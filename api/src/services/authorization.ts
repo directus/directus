@@ -16,7 +16,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { uniq, merge } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import ItemsService from './items';
-import { deepMap } from '../utils/deep-map';
+import { parseFilter } from '../utils/parse-filter';
 
 export default class AuthorizationService {
 	knex: Knex;
@@ -137,19 +137,15 @@ export default class AuthorizationService {
 					(permission) => permission.collection === collection
 				)!;
 
-				const parsedPermissions = deepMap(permissions.permissions, (val: any) => {
-					if (val === '$NOW') return new Date();
-					if (val === '$CURRENT_USER') return accountability?.user || null;
-					if (val === '$CURRENT_ROLE') return accountability?.role || null;
-
-					return val;
-				});
+				const parsedPermissions = parseFilter(permissions.permissions, accountability);
 
 				ast.query = {
 					...ast.query,
 					filter: {
-						...(ast.query.filter || {}),
-						...parsedPermissions,
+						_and: [
+							(ast.query.filter || {}),
+							parsedPermissions,
+						]
 					},
 				};
 
