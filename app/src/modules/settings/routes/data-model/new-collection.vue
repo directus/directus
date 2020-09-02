@@ -7,7 +7,7 @@
 				</v-card-title>
 
 				<v-card-text>
-					{{ saveError && saveError.response && saveErrors.response.data.error.message }}
+					{{ saveError && saveError.response && saveError.response.data.errors[0].message }}
 				</v-card-text>
 
 				<v-card-actions>
@@ -120,6 +120,10 @@ export default defineComponent({
 
 		const sortField = ref<string>();
 
+		const archiveField = ref<string>();
+		const archiveValue = ref<string>();
+		const unarchiveValue = ref<string>();
+
 		const systemFields = reactive({
 			status: {
 				enabled: false,
@@ -186,6 +190,9 @@ export default defineComponent({
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
 					sort_field: sortField.value,
+					archive_field: archiveField.value,
+					archive_value: archiveValue.value,
+					unarchive_value: unarchiveValue.value,
 				});
 
 				await collectionsStore.hydrate();
@@ -269,31 +276,31 @@ export default defineComponent({
 						width: 'full',
 						required: true,
 						options: {
-							statuses: {
-								published: {
-									name: 'Published',
-									color: 'white',
-									backgroundColor: '#2f80ed',
+							choices: [
+								{
+									value: 'published',
+									text: 'Published',
 								},
-								draft: {
-									name: 'Draft',
-									color: 'white',
-									backgroundColor: '#eceff1',
+								{
+									text: 'Draft',
+									value: 'draft',
 								},
-								deleted: {
-									name: 'Deleted',
-									color: 'white',
-									backgroundColor: '#eb5757',
-									softDelete: true,
+								{
+									text: 'Archived',
+									value: 'archived',
 								},
-							},
+							],
 						},
-						interface: 'status',
+						interface: 'dropdown',
 					},
 					schema: {
 						default_value: 'draft',
 					},
 				});
+
+				archiveField.value = 'status';
+				archiveValue.value = 'archived';
+				unarchiveValue.value = 'draft';
 			}
 
 			// Sort

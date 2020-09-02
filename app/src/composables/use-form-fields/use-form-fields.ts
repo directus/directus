@@ -5,12 +5,13 @@ import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';
+import { clone } from 'lodash';
 
 export default function useFormFields(fields: Ref<Field[]>) {
 	const interfaces = getInterfaces();
 
 	const formFields = computed(() => {
-		let formFields = [...fields.value];
+		let formFields = clone(fields.value);
 
 		// Sort the fields on the sort column value
 		formFields = formFields.sort((a, b) => {
@@ -24,31 +25,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		});
 
 		formFields = formFields.map((field, index) => {
-			if (!field.meta) {
-				field.meta = {
-					id: -1,
-					collection: field.collection,
-					field: field.field,
-					group: null,
-					hidden: false,
-					locked: false,
-					interface: null,
-					options: null,
-					display: null,
-					display_options: null,
-					readonly: false,
-					required: false,
-					sort: null,
-					special: null,
-					translation: null,
-					width: 'full',
-					note: null,
-				};
-			}
-
-			if (!field.meta.width) {
-				field.meta.width = 'full';
-			}
+			if (!field.meta) return field;
 
 			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta.interface);
 			const interfaceExists = interfaceUsed !== undefined;
