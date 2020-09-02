@@ -343,6 +343,7 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
+					schema: {},
 				});
 			}
 
@@ -361,6 +362,7 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
+					schema: {},
 				});
 			}
 
@@ -375,6 +377,7 @@ export default defineComponent({
 						hidden: true,
 						width: 'full',
 					},
+					schema: {},
 				});
 			}
 

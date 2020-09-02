@@ -56,13 +56,6 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.search = req.query.search;
 	}
 
-	if (req.permissions) {
-		query.filter = {
-			...(query.filter || {}),
-			...(req.permissions.permissions || {}),
-		};
-	}
-
 	req.sanitizedQuery = query;
 	return next();
 };
