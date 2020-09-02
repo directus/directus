@@ -670,6 +670,7 @@ rows:
         options:
           collectionField: collection
           allowNone: true
+          placeholder: Choose a field...
         locked: true
         sort: 10
         width: half
@@ -689,6 +690,7 @@ rows:
         options:
           font: monospace
           iconRight: archive
+          placeholder: Value set when archiving...
         locked: true
         sort: 12
         width: half
@@ -699,6 +701,7 @@ rows:
         options:
           font: monospace
           iconRight: unarchive
+          placeholder: Value set when unarchiving...
         locked: true
         sort: 13
         width: half
@@ -719,6 +722,7 @@ rows:
         interface: field
         options:
           collectionField: collection
+          placeholder: Choose a field...
           typeAllowList:
             - float
             - decimal
