@@ -570,7 +570,7 @@ rows:
         special: alias
         interface: divider
         options:
-          icon: public
+          icon: box
           title: Collection Setup
           color: '#2F80ED'
         locked: true
