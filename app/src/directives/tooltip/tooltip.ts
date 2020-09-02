@@ -24,6 +24,10 @@ function unbind(element: HTMLElement) {
 	delete handlers[element.dataset.tooltip as string];
 }
 
+function update(element: HTMLElement, binding: DirectiveBinding) {
+	console.log(element);
+}
+
 const Tooltip: DirectiveOptions = {
 	bind,
 	unbind,
@@ -32,6 +36,9 @@ const Tooltip: DirectiveOptions = {
 			bind(element, binding);
 		} else if (!binding.value && binding.oldValue) {
 			unbind(element);
+		} else {
+			unbind(element);
+			bind(element, binding);
 		}
 	},
 };

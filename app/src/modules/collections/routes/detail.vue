@@ -74,33 +74,33 @@
 			</v-dialog>
 
 			<v-dialog
-				v-if="collectionInfo.meta && collectionInfo.meta.soft_delete_field && !isNew"
-				v-model="confirmSoftDelete"
-				:disabled="softDeleteAllowed === false"
+				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
+				v-model="confirmArchive"
+				:disabled="archiveAllowed === false"
 			>
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
-						class="action-soft-delete"
-						v-tooltip.bottom="softDeleteAllowed ? $t('archive') : $t('not_allowed')"
+						class="action-archive"
+						v-tooltip.bottom="archiveTooltip"
 						@click="on"
-						:disabled="item === null || softDeleteAllowed !== true"
+						:disabled="item === null || archiveAllowed !== true"
 						v-if="collectionInfo.meta.singleton === false"
 					>
-						<v-icon name="archive" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmSoftDelete = false" secondary>
+						<v-button @click="confirmArchive = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit(true)" class="action-soft-delete" :loading="softDeleting">
-							{{ $t('archive') }}
+						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
+							{{ isArchived ? $t('unarchive') : $t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -237,8 +237,9 @@ export default defineComponent({
 			save,
 			remove,
 			deleting,
-			softDelete,
-			softDeleting,
+			archive,
+			archiving,
+			isArchived,
 			saveAsCopy,
 			isBatch,
 			refresh,
@@ -247,7 +248,7 @@ export default defineComponent({
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
-		const confirmSoftDelete = ref(false);
+		const confirmArchive = ref(false);
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
@@ -272,6 +273,12 @@ export default defineComponent({
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
+		const archiveTooltip = computed(() => {
+			if (archiveAllowed.value === false) return i18n.t('not_allowed');
+			if (isArchived.value === true) return i18n.t('unarchive');
+			return i18n.t('archive');
+		});
+
 		useShortcut('mod+s', saveAndStay);
 		useShortcut('mod+shift+s', saveAndAddNew);
 
@@ -287,7 +294,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, softDeleteAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
 
 		return {
 			item,
@@ -302,14 +309,15 @@ export default defineComponent({
 			saveAndQuit,
 			deleteAndQuit,
 			confirmDelete,
-			confirmSoftDelete,
+			confirmArchive,
 			deleting,
-			softDeleting,
+			archiving,
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
 			templateValues,
+			archiveTooltip,
 			breadcrumb,
 			title,
 			revisionsDrawerDetail,
@@ -321,8 +329,10 @@ export default defineComponent({
 			navigationGuard,
 			deleteAllowed,
 			saveAllowed,
-			softDeleteAllowed,
+			archiveAllowed,
+			isArchived,
 			updateAllowed,
+			toggleArchive,
 		};
 
 		function useBreadcrumb() {
@@ -369,14 +379,20 @@ export default defineComponent({
 			router.push(`/collections/${props.collection}/${newPrimaryKey}`);
 		}
 
-		async function deleteAndQuit(soft = false) {
-			if (soft) {
-				await softDelete();
-			} else {
-				await remove();
-			}
+		async function deleteAndQuit() {
+			await remove();
 
 			router.push(`/collections/${props.collection}`);
+		}
+
+		async function toggleArchive() {
+			await archive();
+
+			if (isArchived.value === true) {
+				router.push(`/collections/${props.collection}`);
+			} else {
+				confirmArchive.value = false;
+			}
 		}
 
 		function discardAndLeave() {
@@ -396,15 +412,15 @@ export default defineComponent({
 			});
 			const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
 
-			const softDeleteAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.soft_delete_field) return false;
+			const archiveAllowed = computed(() => {
+				if (!collectionInfo.value?.meta?.archive_field) return false;
 
 				return isAllowed(collection.value, 'update', {
-					[collectionInfo.value.meta.soft_delete_field]: collectionInfo.value.meta.soft_delete_value,
+					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
 				});
 			});
 
-			return { deleteAllowed, saveAllowed, softDeleteAllowed, updateAllowed };
+			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 	},
 });
@@ -420,7 +436,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--danger);
 }
 
-.action-soft-delete {
+.action-archive {
 	--v-button-background-color: var(--warning-25);
 	--v-button-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-50);

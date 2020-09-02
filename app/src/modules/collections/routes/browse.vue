@@ -75,12 +75,12 @@
 			</v-dialog>
 
 			<v-dialog
-				v-model="confirmSoftDelete"
-				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.soft_delete_field"
+				v-model="confirmArchive"
+				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 			>
 				<template #activator="{ on }">
 					<v-button
-						:disabled="batchSoftDeleteAllowed !== true"
+						:disabled="batchArchiveAllowed !== true"
 						rounded
 						icon
 						class="action-soft-delete"
@@ -95,10 +95,10 @@
 					<v-card-title>{{ $tc('archive_confirm_count', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmSoftDelete = false" secondary>
+						<v-button @click="confirmArchive = false" secondary>
 							{{ $t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-soft-delete" :loading="softDeleting">
+						<v-button @click="batchDelete" class="action-soft-delete" :loading="archiving">
 							{{ $t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -279,9 +279,9 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			batchDelete,
-			confirmSoftDelete,
-			softDelete,
-			softDeleting,
+			confirmArchive,
+			archive,
+			archiving,
 			error: deleteError,
 		} = useBatchDelete();
 
@@ -303,7 +303,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		const { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 		return {
 			addNewLink,
@@ -332,11 +332,11 @@ export default defineComponent({
 			breadcrumb,
 			marked,
 			clearFilters,
-			confirmSoftDelete,
-			softDelete,
-			softDeleting,
+			confirmArchive,
+			archive,
+			archiving,
 			batchEditAllowed,
-			batchSoftDeleteAllowed,
+			batchArchiveAllowed,
 			batchDeleteAllowed,
 			deleteError,
 			createAllowed,
@@ -369,12 +369,12 @@ export default defineComponent({
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			const confirmSoftDelete = ref(false);
-			const softDeleting = ref(false);
+			const confirmArchive = ref(false);
+			const archiving = ref(false);
 
 			const error = ref<any>();
 
-			return { confirmDelete, deleting, batchDelete, confirmSoftDelete, softDeleting, softDelete, error };
+			return { confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
 
 			async function batchDelete() {
 				deleting.value = true;
@@ -394,10 +394,10 @@ export default defineComponent({
 				}
 			}
 
-			async function softDelete() {
-				if (!currentCollection.value?.meta?.soft_delete_field) return;
+			async function archive() {
+				if (!currentCollection.value?.meta?.archive_field) return;
 
-				softDeleting.value = true;
+				archiving.value = true;
 
 				const batchPrimaryKeys = selection.value;
 
@@ -406,11 +406,11 @@ export default defineComponent({
 					await layout.value?.refresh?.();
 
 					selection.value = [];
-					confirmSoftDelete.value = false;
+					confirmArchive.value = false;
 				} catch (err) {
 					error.value = err;
 				} finally {
-					softDeleting.value = false;
+					archiving.value = false;
 				}
 			}
 		}
@@ -486,8 +486,8 @@ export default defineComponent({
 				return !!updatePermissions;
 			});
 
-			const batchSoftDeleteAllowed = computed(() => {
-				if (!currentCollection.value?.meta?.soft_delete_field) return false;
+			const batchArchiveAllowed = computed(() => {
+				if (!currentCollection.value?.meta?.archive_field) return false;
 				const admin = userStore.state?.currentUser?.role.admin === true;
 				if (admin) return true;
 
@@ -497,7 +497,7 @@ export default defineComponent({
 				if (!updatePermissions) return false;
 				if (!updatePermissions.fields) return false;
 				if (updatePermissions.fields === '*') return true;
-				return updatePermissions.fields.split(',').includes(currentCollection.value.meta.soft_delete_field);
+				return updatePermissions.fields.split(',').includes(currentCollection.value.meta.archive_field);
 			});
 
 			const batchDeleteAllowed = computed(() => {
@@ -520,7 +520,7 @@ export default defineComponent({
 				return !!createPermissions;
 			});
 
-			return { batchEditAllowed, batchSoftDeleteAllowed, batchDeleteAllowed, createAllowed };
+			return { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed };
 		}
 	},
 });

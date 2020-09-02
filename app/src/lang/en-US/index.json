@@ -35,6 +35,10 @@
 	"archive_confirm": "Are you sure you want to archive this item?",
 	"archive_confirm_count": "No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?",
 
+	"unarchive": "Unarchive",
+	"unarchive_confirm": "Are you sure you want to unarchive this item?",
+	"unarchive_confirm_count": "No Items Selected | Are you sure you want to unarchive this item? | Are you sure you want to unarchive these {count} items?",
+
 	"nested_files_folders_will_be_moved": "Nested files and folders will be moved one level up.",
 
 	"markdown": "Markdown",

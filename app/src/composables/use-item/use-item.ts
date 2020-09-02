@@ -13,11 +13,21 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
-	const softDeleting = ref(false);
+	const archiving = ref(false);
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
+
+	const isArchived = computed(() => {
+		if (!collectionInfo.value?.meta?.archive_field) return null;
+
+		if (collectionInfo.value.meta.archive_value === 'true') {
+			return item.value?.[collectionInfo.value.meta.archive_field] === true;
+		}
+
+		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+	});
 
 	const endpoint = computed(() => {
 		return collection.value.startsWith('directus_')
@@ -45,9 +55,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		save,
 		isNew,
 		remove,
-		softDelete,
 		deleting,
-		softDeleting,
+		archive,
+		isArchived,
+		archiving,
 		saveAsCopy,
 		isBatch,
 		getItem,
@@ -177,20 +188,35 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 	}
 
-	async function softDelete() {
-		if (!collectionInfo.value?.meta?.soft_delete_field) return;
+	async function archive() {
+		if (!collectionInfo.value?.meta?.archive_field) return;
 
-		softDeleting.value = true;
+		archiving.value = true;
 
-		const field = collectionInfo.value.meta.soft_delete_field;
-		const value = collectionInfo.value.meta.soft_delete_value;
+		const field = collectionInfo.value.meta.archive_field;
+
+		let archiveValue: any = collectionInfo.value.meta.archive_value;
+		if (archiveValue === 'true') archiveValue = true;
+		if (archiveValue === 'false') archiveValue = false;
+
+		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
+		if (unarchiveValue === 'true') unarchiveValue = true;
+		if (unarchiveValue === 'false') unarchiveValue = false;
 
 		try {
+			let value: any = item.value[field] === archiveValue ? unarchiveValue : archiveValue;
+
+			if (value === 'true') value = true;
+			if (value === 'false') value = false;
+
+			item.value = {
+				...item.value,
+				[field]: value,
+			};
+
 			await api.patch(itemEndpoint.value, {
 				[field]: value,
 			});
-
-			item.value = null;
 
 			notify({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
@@ -212,7 +238,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			throw err;
 		} finally {
-			softDeleting.value = false;
+			archiving.value = false;
 		}
 	}
 

@@ -147,7 +147,7 @@ export default defineComponent({
 			},
 		});
 
-		const showArchiveToggle = computed(() => !!collectionInfo.value?.meta?.soft_delete_field);
+		const showArchiveToggle = computed(() => !!collectionInfo.value?.meta?.archive_field);
 
 		const archived = computed({
 			get() {
@@ -156,16 +156,16 @@ export default defineComponent({
 				);
 			},
 			set(showArchived: boolean) {
-				if (!collectionInfo.value?.meta?.soft_delete_field) return;
+				if (!collectionInfo.value?.meta?.archive_field) return;
 
 				if (showArchived === false) {
 					emit('input', [
 						...filters.value,
 						{
 							key: 'hide-archived',
-							field: collectionInfo.value.meta.soft_delete_field,
+							field: collectionInfo.value.meta.archive_field,
 							operator: 'neq',
-							value: collectionInfo.value.meta.soft_delete_value!,
+							value: collectionInfo.value.meta.archive_value!,
 							locked: true,
 						},
 					]);

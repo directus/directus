@@ -42,7 +42,7 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: [String, Number, Object, Array],
+			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},
 		type: {
