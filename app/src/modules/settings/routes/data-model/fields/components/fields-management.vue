@@ -165,7 +165,7 @@ export default defineComponent({
 				// If field.sort isn't set yet, base it on the index of the array. That way, the
 				// new sort value will match what's visible on the screen
 				const sortValue =
-					field.meta.sort || fields.findIndex((existingField) => existingField.field === field.field);
+					field.meta?.sort || fields.findIndex((existingField) => existingField.field === field.field);
 
 				return {
 					field: field.field,
@@ -175,7 +175,7 @@ export default defineComponent({
 				};
 			});
 
-			const sortOfItemOnNewIndex = fields[newIndex].meta.sort || newIndex;
+			const sortOfItemOnNewIndex = fields[newIndex].meta?.sort || newIndex;
 
 			updates.push({
 				field: element.field,

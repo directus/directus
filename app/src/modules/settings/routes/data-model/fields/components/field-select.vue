@@ -1,5 +1,5 @@
 <template>
-	<div :class="field.meta.width || 'full'">
+	<div :class="(field.meta && field.meta.width) || 'full'">
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
 				<v-input class="field" :class="{ hidden, active }" readonly @click="openFieldDetail">
@@ -48,17 +48,26 @@
 
 				<v-divider />
 
-				<v-list-item @click="setWidth('half')" :disabled="hidden || field.meta.width === 'half'">
+				<v-list-item
+					@click="setWidth('half')"
+					:disabled="hidden || (field.meta && field.meta.width === 'half')"
+				>
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="setWidth('full')" :disabled="hidden || field.meta.width === 'full'">
+				<v-list-item
+					@click="setWidth('full')"
+					:disabled="hidden || (field.meta && field.meta.width === 'full')"
+				>
 					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.meta.width === 'fill'">
+				<v-list-item
+					@click="setWidth('fill')"
+					:disabled="hidden || (field.meta && field.meta.width === 'fill')"
+				>
 					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>
@@ -132,10 +141,10 @@ export default defineComponent({
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.value.find((inter) => inter.id === props.field.meta.interface)?.name;
+			return interfaces.value.find((inter) => inter.id === props.field.meta?.interface)?.name;
 		});
 
-		const hidden = computed(() => props.field.meta.hidden === true);
+		const hidden = computed(() => props.field.meta?.hidden === true);
 
 		return {
 			interfaceName,
@@ -161,7 +170,7 @@ export default defineComponent({
 
 		function toggleVisibility() {
 			fieldsStore.updateField(props.field.collection, props.field.field, {
-				meta: { hidden: !props.field.meta.hidden },
+				meta: { hidden: !props.field.meta?.hidden },
 			});
 		}
 
@@ -209,8 +218,11 @@ export default defineComponent({
 					collection: duplicateTo.value,
 				};
 
-				delete newField.meta.id;
-				delete newField.meta.sort;
+				if (newField.meta) {
+					delete newField.meta.id;
+					delete newField.meta.sort;
+				}
+
 				delete newField.name;
 
 				duplicating.value = true;

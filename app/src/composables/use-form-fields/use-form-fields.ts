@@ -27,14 +27,14 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
 
-			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta.interface);
+			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.value.find((int) => int.id === field.meta.interface);
+			interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;
@@ -47,7 +47,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			if (index !== 0 && field.meta!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				if (prevField.meta.width === 'half') {
+				if (prevField.meta?.width === 'half') {
 					field.meta.width = 'half-right';
 				}
 			}

@@ -400,10 +400,10 @@ export default defineComponent({
 						value: field.field,
 						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.meta.display,
-							displayOptions: field.meta.display_options,
-							interface: field.meta.interface,
-							interfaceOptions: field.meta.options,
+							display: field.meta?.display,
+							displayOptions: field.meta?.display_options,
+							interface: field.meta?.interface,
+							interfaceOptions: field.meta?.options,
 							type: field.type,
 							field: field.field,
 						},
@@ -487,11 +487,11 @@ export default defineComponent({
 				const field = availableFields.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
-				if (!field.meta.display) return null;
+				if (!field.meta?.display) return null;
 
 				return {
-					display: field.meta.display,
-					options: field.meta.display_options,
+					display: field.meta?.display,
+					options: field.meta?.display_options,
 				};
 			}
 		}
