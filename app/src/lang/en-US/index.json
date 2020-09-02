@@ -413,7 +413,9 @@
 	"checkboxes": "Checkboxes",
 
 	"relationship_not_setup": "The relationship hasn't been configured correctly",
-	"display_template_not_setup": "The display template is misconfigured",
+	"display_template_not_setup": "The display template option is misconfigured",
+	"collection_field_not_setup": "The collection field option is misconfigured",
+	"select_a_collection": "Select a Collection",
 
 	"active": "Active",
 

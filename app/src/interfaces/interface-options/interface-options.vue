@@ -44,7 +44,7 @@ export default defineComponent({
 	setup(props, { parent }) {
 		const interfaces = getInterfaces();
 
-		const values = inject('form-values', ref<Record<string, any>>({}));
+		const values = inject('values', ref<Record<string, any>>({}));
 
 		const selectedInterface = computed(() => {
 			if (!values.value[props.interfaceField]) return;
