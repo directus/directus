@@ -106,6 +106,14 @@
 	"updating_field_field": "Updating Field {field}",
 	"within_collection": "Within {collection}",
 
+	"field_standard": "Standard",
+	"field_presentation": "Presentation & Aliases",
+	"field_file": "Single File",
+	"field_files": "Multiple Files",
+	"field_m2o": "M2O Relationship",
+	"field_o2m": "O2M Relationship",
+	"field_m2m": "M2M Relationship",
+
 	"visible_fields": "Visible Fields",
 	"hidden_fields": "Hidden Fields",
 	"hidden_field": "Hidden Field",
