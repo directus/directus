@@ -40,9 +40,10 @@ export default class FieldsService {
 		if (collection) {
 			fields = (await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
+				limit: -1
 			})) as FieldMeta[];
 		} else {
-			fields = (await nonAuthorizedItemsService.readByQuery({})) as FieldMeta[];
+			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
 		}
 
 		fields = (await this.payloadService.processValues('read', fields)) as FieldMeta[];

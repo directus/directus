@@ -17,7 +17,7 @@ import env from '../env';
 type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (action: Action, value: any, payload: Partial<Item>) => Promise<any>;
+	[type: string]: (action: Action, value: any, payload: Partial<Item>, accountability: Accountability | null) => Promise<any>;
 };
 
 export default class PayloadService {
@@ -93,6 +93,30 @@ export default class PayloadService {
 		async conceal(action, value) {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
+		},
+		async 'user-created'(action, value, payload, accountability) {
+			if (action === 'create') return accountability?.user || null;
+			return value;
+		},
+		async 'user-updated'(action, value, payload, accountability) {
+			if (action === 'update') return accountability?.user || null;
+			return value;
+		},
+		async 'role-created'(action, value, payload, accountability) {
+			if (action === 'create') return accountability?.role || null;
+			return value;
+		},
+		async 'role-updated'(action, value, payload, accountability) {
+			if (action === 'update') return accountability?.role || null;
+			return value;
+		},
+		async 'date-created'(action, value) {
+			if (action === 'create') return new Date();
+			return value;
+		},
+		async 'date-updated'(action, value) {
+			if (action === 'update') return new Date();
+			return value;
 		}
 	};
 
@@ -124,7 +148,7 @@ export default class PayloadService {
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
 					specialFieldsInCollection.map(async (field) => {
-						const newValue = await this.processField(field, record, action);
+						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[field.field] = newValue;
 					})
 				);
@@ -151,7 +175,8 @@ export default class PayloadService {
 	async processField(
 		field: Pick<FieldMeta, 'field' | 'special'>,
 		payload: Partial<Item>,
-		action: Action
+		action: Action,
+		accountability: Accountability | null
 	) {
 		if (!field.special) return payload[field.field];
 
@@ -162,7 +187,7 @@ export default class PayloadService {
 
 		for (const special of fieldSpecials) {
 			if (this.transformers.hasOwnProperty(special)) {
-				value = await this.transformers[special](action, value, payload);
+				value = await this.transformers[special](action, value, payload, accountability);
 			}
 		}
 
