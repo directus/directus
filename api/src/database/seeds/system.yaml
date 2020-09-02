@@ -4,6 +4,14 @@ tables:
     collection:
       type: string
       primary: true
+    icon:
+      type: string
+      length: 30
+    note:
+      type: text
+    display_template:
+      type: string
+      length: 255
     hidden:
       type: boolean
       nullable: false
@@ -12,25 +20,24 @@ tables:
       type: boolean
       nullable: false
       default: false
-    icon:
-      type: string
-      length: 30
-    note:
-      type: text
     translation:
       type: json
-    display_template:
+    archive_field:
+      type: string
+      length: 64
+    archive_app_filter:
+      type: boolean
+      nullable: false
+      default: true
+    archive_value:
+      type: string
+      length: 255
+    unarchive_value:
       type: string
       length: 255
     sort_field:
       type: string
       length: 64
-    soft_delete_field:
-      type: string
-      length: 64
-    soft_delete_value:
-      type: string
-      length: 255
 
   directus_roles:
     id:
@@ -560,58 +567,74 @@ rows:
       note: null
     data:
       - collection: directus_collections
-        field: collection
-        interface: text-input
+        field: collection_divider
+        special: alias
+        interface: divider
+        options:
+          icon: public
+          title: Collection Setup
+          color: '#2F80ED'
         locked: true
+        sort: 1
+        width: full
+      - collection: directus_collections
+        field: collection
+        special:
+        interface: text-input
         options:
           font: monospace
-        readonly: true
-        sort: 1
-        width: half
-      - collection: directus_collections
-        field: icon
-        interface: icon
         locked: true
+        readonly: true
         sort: 2
         width: half
       - collection: directus_collections
-        field: note
-        interface: text-input
+        field: icon
+        special:
+        interface: icon
+        options:
         locked: true
+        sort: 3
+        width: half
+      - collection: directus_collections
+        field: note
+        special:
+        interface: text-input
         options:
           placeholder: A description of this collection...
-        sort: 3
-        width: full
-      - collection: directus_collections
-        field: display_template
-        interface: text-input
         locked: true
-        options:
-          placeholder: 'Reference title for items, eg: {{ first_name }} {{ last_name }}'
         sort: 4
         width: full
       - collection: directus_collections
-        field: hidden
-        interface: toggle
+        field: display_template
+        special:
+        interface: display-template
+        options:
+          collectionField: collection
         locked: true
+        sort: 5
+        width: full
+      - collection: directus_collections
+        field: hidden
+        special: boolean
+        interface: toggle
         options:
           label: Hide within the App
-        sort: 5
-        special: boolean
+        locked: true
+        sort: 6
         width: half
       - collection: directus_collections
         field: singleton
+        special: boolean
         interface: toggle
-        locked: true
         options:
           label: Treat as single object
-        sort: 6
-        special: boolean
+        locked: true
+        sort: 7
         width: half
       - collection: directus_collections
         field: translation
+        special: json
         interface: repeater
-        locked: true
         options:
           template: '{{ locale }}'
           fields:
@@ -627,9 +650,84 @@ rows:
             system:
               interface: text-input
               width: half
-        special: json
-        sort: 7
+        locked: true
+        sort: 8
         width: full
+      - collection: directus_collections
+        field: archive_divider
+        special: alias
+        interface: divider
+        options:
+          icon: archive
+          title: Archive
+          color: '#2F80ED'
+        locked: true
+        sort: 9
+        width: full
+      - collection: directus_collections
+        field: archive_field
+        special:
+        interface: field
+        options:
+          collectionField: collection
+          allowNone: true
+        locked: true
+        sort: 10
+        width: half
+      - collection: directus_collections
+        field: archive_app_filter
+        special:
+        interface: toggle
+        options:
+          label: Enable App Archive Filter
+        locked: true
+        sort: 11
+        width: half
+      - collection: directus_collections
+        field: archive_value
+        special:
+        interface: text-input
+        options:
+          font: monospace
+          iconRight: archive
+        locked: true
+        sort: 12
+        width: half
+      - collection: directus_collections
+        field: unarchive_value
+        special:
+        interface: text-input
+        options:
+          font: monospace
+          iconRight: unarchive
+        locked: true
+        sort: 13
+        width: half
+      - collection: directus_collections
+        field: sort_divider
+        special: alias
+        interface: divider
+        options:
+          icon: sort
+          title: Sort
+          color: '#2F80ED'
+        locked: true
+        sort: 14
+        width: full
+      - collection: directus_collections
+        field: sort_field
+        special: ''
+        interface: field
+        options:
+          collectionField: collection
+          typeAllowList:
+            - float
+            - decimal
+            - integer
+          allowNone: true
+        locked: true
+        sort: 15
+        width: half
 
       - collection: directus_roles
         field: id
