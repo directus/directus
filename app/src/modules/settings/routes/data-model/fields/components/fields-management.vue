@@ -208,8 +208,8 @@ export default defineComponent({
 
 .add-field {
 	--v-button-font-size: 14px;
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-125);
 
 	grid-column: 1 / span 2;
 	max-width: 50%;
