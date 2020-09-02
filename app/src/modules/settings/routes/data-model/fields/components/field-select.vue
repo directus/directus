@@ -10,6 +10,7 @@
 					<template #input>
 						<div class="name">
 							{{ field.name }}
+							<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" />
 							<span class="interface">{{ interfaceName }}</span>
 						</div>
 					</template>
@@ -292,6 +293,11 @@ export default defineComponent({
 .field {
 	.name {
 		flex-grow: 1;
+
+		.hidden-icon {
+			margin-left: 4px;
+			margin-right: 4px;
+		}
 
 		.interface {
 			display: none;
