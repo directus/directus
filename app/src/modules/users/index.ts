@@ -1,12 +1,12 @@
 import { defineModule } from '@/modules/define';
 
-import UsersBrowse from './routes/browse/';
-import UsersDetail from './routes/detail/';
+import UsersBrowse from './routes/browse.vue';
+import UsersDetail from './routes/detail.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'users',
 	name: i18n.tc('user_directory'),
-	icon: 'people',
+	icon: 'people_alt',
 	routes: [
 		{
 			name: 'users-browse-all',
@@ -26,4 +26,14 @@ export default defineModule(({ i18n }) => ({
 			}),
 		},
 	],
+	order: 10,
+	preRegisterCheck(user, permissions) {
+		const admin = user.role.admin;
+		if (admin) return true;
+
+		const permission = permissions.find(
+			(permission) => permission.collection === 'directus_users' && permission.action === 'read'
+		);
+		return !!permission;
+	},
 }));

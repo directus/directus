@@ -83,7 +83,7 @@ export default defineComponent({
 	justify-content: flex-start;
 	width: 100%;
 	height: 65px;
-	margin: 24px 0;
+	margin: 0;
 	padding: 0 12px;
 	background-color: var(--background-page);
 	box-shadow: 0;
@@ -107,23 +107,36 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		align-items: center;
-		max-width: 70%;
+		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-left: 12px;
 
+		@include breakpoint(small) {
+			max-width: 70%;
+		}
+
 		&.full {
-			margin-right: 20px;
-			padding-right: 20px;
+			margin-right: 12px;
+			padding-right: 0;
+
+			@include breakpoint(small) {
+				margin-right: 20px;
+				padding-right: 20px;
+			}
 		}
 
 		.headline {
 			position: absolute;
-			top: 0;
+			top: 2px;
 			left: 0;
 			color: var(--foreground-subdued);
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
+
+			@include breakpoint(small) {
+				top: 0;
+			}
 		}
 
 		.title {
@@ -166,6 +179,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
+		margin: 24px 0;
 		padding: 0 32px;
 	}
 }

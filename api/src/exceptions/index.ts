@@ -5,6 +5,7 @@ export * from './forbidden';
 export * from './hit-rate-limit';
 export * from './invalid-cache-key';
 export * from './invalid-credentials';
+export * from './invalid-otp';
 export * from './invalid-payload';
 export * from './invalid-query';
 export * from './item-limit';

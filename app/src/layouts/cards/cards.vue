@@ -203,7 +203,7 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta.hidden !== true));
+		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta?.hidden !== true));
 
 		const fileFields = computed(() => {
 			return availableFields.value.filter((field) => {
@@ -334,8 +334,8 @@ export default defineComponent({
 			const limit = createViewQueryOption<number>('limit', 25);
 
 			const fields = computed<string[]>(() => {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const fields = [primaryKeyField.value!.field];
+				if (!primaryKeyField.value) return [];
+				const fields = [primaryKeyField.value.field];
 
 				if (imageSource.value) {
 					fields.push(`${imageSource.value}.type`);
@@ -386,6 +386,7 @@ export default defineComponent({
 		}
 
 		function getLinkForItem(item: Record<string, any>) {
+			if (!primaryKeyField.value) return;
 			return `/collections/${props.collection}/${item[primaryKeyField.value!.field]}`;
 		}
 
@@ -401,6 +402,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .layout-cards {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -446,9 +449,14 @@ export default defineComponent({
 
 .item-count {
 	position: relative;
+	display: none;
 	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
 }
 
 .fade-enter-active,

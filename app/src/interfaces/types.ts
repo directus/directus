@@ -12,10 +12,9 @@ export type InterfaceConfig = {
 	relationship?: null | 'm2o' | 'o2m' | 'm2m';
 	hideLabel?: boolean;
 	hideLoader?: boolean;
+	system?: boolean;
 };
 
 export type InterfaceContext = { i18n: VueI18n };
-
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;
-
 export type InterfaceDefineParamGeneric<T> = T | ((context: InterfaceContext) => T);

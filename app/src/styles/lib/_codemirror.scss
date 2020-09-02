@@ -10,7 +10,7 @@
 	color: var(--foreground-normal);
 	font-weight: inherit;
 	font-family: var(--family-monospace);
-	line-height: 18px;
+	line-height: 22px;
 	direction: ltr;
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
@@ -19,7 +19,7 @@
 }
 
 .CodeMirror:hover {
-	border-color: var(--border-normal);
+	border-color: var(--border-normal-alt);
 }
 
 .CodeMirror.CodeMirror-focused {
@@ -37,15 +37,15 @@
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-	background-color: white; /* The little square between H and V scrollbars */
+	background-color: var(--background-page); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: #f7f7f7;
-	border-right: 1px solid #ddd;
+	background-color: var(--background-subdued);
+	border-right: 2px solid var(--border-normal);
 }
 
 .CodeMirror-linenumber {
@@ -180,7 +180,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 .CodeMirror {
 	position: relative;
 	overflow: hidden;
-	background: white;
+	// background: white; // Edited! Was overriding themes
 }
 
 .CodeMirror-scroll {
@@ -348,10 +348,10 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-selected { background: #d9d9d9; }
-.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }
+.CodeMirror-focused .CodeMirror-selected { background: var(--background-normal); }
 .CodeMirror-crosshair { cursor: crosshair; }
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: #d7d4f0; }
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: #d7d4f0; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--background-normal); }
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: var(--background-normal); }
 
 .cm-searching {
 	background-color: #ffa;

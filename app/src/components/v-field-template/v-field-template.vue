@@ -10,11 +10,13 @@
 						@keydown="onKeyDown"
 						@input="onInput"
 						@click="onClick"
-					/>
+					>
+						<span class="text" />
+					</span>
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" @click="toggle" />
+					<v-icon name="add_box" outline @click="toggle" />
 				</template>
 			</v-input>
 		</template>
@@ -26,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
@@ -58,15 +60,26 @@ export default defineComponent({
 		const { tree } = useFieldTree(collection);
 
 		watch(() => props.value, setContent, { immediate: true });
-		onMounted(setContent);
 
-		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive };
+		onMounted(() => {
+			if (contentEl.value) {
+				contentEl.value.addEventListener('selectstart', onSelect);
+				setContent();
+			}
+		});
+
+		onUnmounted(() => {
+			if (contentEl.value) {
+				contentEl.value.removeEventListener('selectstart', onSelect);
+			}
+		});
+
+		return { tree, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect };
 
 		function onInput() {
 			if (!contentEl.value) return;
 
 			const valueString = getInputValue();
-
 			emit('input', valueString);
 		}
 
@@ -78,11 +91,14 @@ export default defineComponent({
 			const field = target.dataset.field;
 			emit('input', props.value.replace(`{{${field}}}`, ''));
 
-			// A button is wrapped in two empty `<span></span>` elements
-			target.previousElementSibling?.remove();
-			target.nextElementSibling?.remove();
-			target.remove();
+			const before = target.previousElementSibling;
+			const after = target.nextElementSibling;
 
+			if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+
+			target.remove();
+			joinElements(before, after);
+			window.getSelection()?.removeAllRanges();
 			onInput();
 		}
 
@@ -90,6 +106,44 @@ export default defineComponent({
 			if (event.key === '{' || event.key === '}') {
 				event.preventDefault();
 				menuActive.value = true;
+			}
+
+			if (contentEl.value?.innerHTML === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
+			}
+		}
+
+		function onSelect() {
+			if (!contentEl.value) return;
+			const selection = window.getSelection();
+			if (!selection || selection.rangeCount <= 0) return;
+			const range = selection.getRangeAt(0);
+			if (!range) return;
+			const start = range.startContainer;
+
+			if (
+				!(start instanceof HTMLElement && start.classList.contains('text')) &&
+				!start.parentElement?.classList.contains('text')
+			) {
+				selection.removeAllRanges();
+				const range = new Range();
+				let textSpan = null;
+
+				for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
+					const child = contentEl.value.children[i];
+					if (child.classList.contains('text')) {
+						textSpan = child;
+					}
+				}
+
+				if (!textSpan) {
+					textSpan = document.createElement('span');
+					textSpan.classList.add('text');
+					contentEl.value.appendChild(textSpan);
+				}
+
+				range.setStart(textSpan, 0);
+				selection.addRange(range);
 			}
 		}
 
@@ -104,22 +158,64 @@ export default defineComponent({
 			button.innerText = String(field.name);
 
 			const range = window.getSelection()?.getRangeAt(0);
-			range?.deleteContents();
-			range?.insertNode(button);
-			window.getSelection()?.removeAllRanges();
+			if (!range) return;
+			range.deleteContents();
+
+			const end = splitElements();
+
+			if (end) {
+				contentEl.value.insertBefore(button, end);
+				window.getSelection()?.removeAllRanges();
+			} else {
+				contentEl.value.appendChild(button);
+				const span = document.createElement('span');
+				span.classList.add('text');
+				contentEl.value.appendChild(span);
+			}
 
 			onInput();
+		}
+
+		function joinElements(first: HTMLElement, second: HTMLElement) {
+			first.innerText += second.innerText;
+			second.remove();
+		}
+
+		function splitElements() {
+			const range = window.getSelection()?.getRangeAt(0);
+			if (!range) return;
+
+			const textNode = range.startContainer;
+			if (textNode.nodeType !== Node.TEXT_NODE) return;
+			const start = textNode.parentElement;
+			if (!start || !(start instanceof HTMLSpanElement) || !start.classList.contains('text')) return;
+
+			const startOffset = range.startOffset;
+
+			const left = start.textContent?.substr(0, startOffset) || '';
+			const right = start.textContent?.substr(startOffset) || '';
+
+			start.innerText = left;
+
+			const nextSpan = document.createElement('span');
+			nextSpan.classList.add('text');
+			nextSpan.innerText = right;
+			contentEl.value?.insertBefore(nextSpan, start.nextSibling);
+			return nextSpan;
 		}
 
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
 			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
-				if (node.nodeType === Node.TEXT_NODE) return (acc += node.textContent);
-
 				const el = node as HTMLElement;
 				const tag = el.tagName;
-				if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+
+				if (tag) {
+					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
+				}
+
 				return (acc += '');
 			}, '');
 		}
@@ -127,30 +223,31 @@ export default defineComponent({
 		function setContent() {
 			if (!contentEl.value) return;
 
-			if (props.value === null) {
-				contentEl.value.innerHTML = '';
+			if (props.value === null || props.value === '') {
+				contentEl.value.innerHTML = '<span class="text"></span>';
 				return;
 			}
 
 			if (props.value !== getInputValue()) {
 				const regex = /({{.*?}})/g;
 
+				const before = null;
+				const after = null;
+
 				const newInnerHTML = props.value
 					.split(regex)
 					.map((part) => {
-						if (part.startsWith('{{') === false) return part;
-
-						const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+						if (part.startsWith('{{') === false) {
+							return `<span class="text">${part}</span>`;
+						}
+						const fieldKey = part.replaceAll(/({|})/g, '').trim();
 						const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 
-						// Instead of crashing when the field doesn't exist, we'll render a couple question
-						// marks to indicate it's absence
-						if (!field) return '???';
+						if (!field) return '';
 
 						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
 					})
 					.join('');
-
 				contentEl.value.innerHTML = newInnerHTML;
 			}
 		}
@@ -169,7 +266,7 @@ export default defineComponent({
 
 	::v-deep {
 		> * {
-			display: inline;
+			display: inline-block;
 			white-space: nowrap;
 		}
 
@@ -177,8 +274,13 @@ export default defineComponent({
 			display: none;
 		}
 
+		span {
+			min-width: 1px;
+			min-height: 1em;
+		}
+
 		button {
-			margin: 0;
+			margin: 0 4px;
 			padding: 0 4px;
 			color: var(--primary);
 			background-color: var(--primary-alt);

@@ -7,7 +7,7 @@ import {
 	FieldAST,
 	Query,
 	Permission,
-	Operation,
+	PermissionsAction,
 	Item,
 	PrimaryKey,
 } from '../types';
@@ -26,13 +26,13 @@ export default class AuthorizationService {
 		this.accountability = options?.accountability || null;
 	}
 
-	async processAST(ast: AST, operation: Operation = 'read'): Promise<AST> {
+	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
 		const permissionsForCollections = await this.knex
 			.select<Permission[]>('*')
 			.from('directus_permissions')
-			.where({ operation, role: this.accountability?.role })
+			.where({ action, role: this.accountability?.role })
 			.whereIn(
 				'collection',
 				collectionsRequested.map(({ collection }) => collection)
@@ -165,18 +165,18 @@ export default class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	processValues(
-		operation: Operation,
+	validatePayload(
+		action: PermissionsAction,
 		collection: string,
 		payloads: Partial<Item>[]
 	): Promise<Partial<Item>[]>;
-	processValues(
-		operation: Operation,
+	validatePayload(
+		action: PermissionsAction,
 		collection: string,
 		payload: Partial<Item>
 	): Promise<Partial<Item>>;
-	async processValues(
-		operation: Operation,
+	async validatePayload(
+		action: PermissionsAction,
 		collection: string,
 		payload: Partial<Item>[] | Partial<Item>
 	): Promise<Partial<Item>[] | Partial<Item>> {
@@ -185,7 +185,7 @@ export default class AuthorizationService {
 		const permission = await this.knex
 			.select<Permission>('*')
 			.from('directus_permissions')
-			.where({ operation, collection, role: this.accountability?.role || null })
+			.where({ action, collection, role: this.accountability?.role || null })
 			.first();
 
 		if (!permission) throw new ForbiddenException();
@@ -200,7 +200,9 @@ export default class AuthorizationService {
 				);
 
 				if (invalidKeys.length > 0) {
-					throw new InvalidPayloadException(`Field "${invalidKeys[0]}" doesn't exist.`);
+					throw new ForbiddenException(
+						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+					);
 				}
 			}
 		}
@@ -209,7 +211,7 @@ export default class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const schema = generateJoi(permission.permissions);
+		const schema = generateJoi(permission.validation);
 
 		for (const payload of payloads) {
 			const { error } = schema.validate(payload);
@@ -226,7 +228,11 @@ export default class AuthorizationService {
 		}
 	}
 
-	async checkAccess(operation: Operation, collection: string, pk: PrimaryKey | PrimaryKey[]) {
+	async checkAccess(
+		action: PermissionsAction,
+		collection: string,
+		pk: PrimaryKey | PrimaryKey[]
+	) {
 		const itemsService = new ItemsService(collection, { accountability: this.accountability });
 
 		try {
@@ -234,12 +240,18 @@ export default class AuthorizationService {
 				fields: ['*'],
 			};
 
-			const result = await itemsService.readByKey(pk as any, query, operation);
+			const result = await itemsService.readByKey(pk as any, query, action);
 
 			if (!result) throw '';
+			if (Array.isArray(pk) && result.length !== pk.length) throw '';
 		} catch {
 			throw new ForbiddenException(
-				`You're not allowed to ${operation} item "${pk}" in collection "${collection}".`
+				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`,
+				{
+					collection,
+					item: pk,
+					action,
+				}
 			);
 		}
 	}

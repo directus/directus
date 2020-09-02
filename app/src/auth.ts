@@ -46,6 +46,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }) 
 		// logged in without any noticable hickups or delays
 		setTimeout(() => refresh(), response.data.data.expires * 1000 - 10 * 1000);
 		appStore.state.authenticated = true;
+
+		return accessToken;
 	} catch (error) {
 		await logout({ navigate, reason: LogoutReason.ERROR_SESSION_EXPIRED });
 	}

@@ -260,6 +260,9 @@ export default defineComponent({
 	height: 100%;
 	background-color: var(--background-page);
 
+	--content-padding: 12px;
+	--content-padding-bottom: 60px;
+
 	.nav-overlay {
 		--v-overlay-z-index: 49;
 

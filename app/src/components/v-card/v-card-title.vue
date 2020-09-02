@@ -8,5 +8,7 @@
 	flex-wrap: wrap;
 	align-items: center;
 	padding: var(--v-card-padding);
+	margin-top: 12px;
+	line-height: 1.6em;
 }
 </style>

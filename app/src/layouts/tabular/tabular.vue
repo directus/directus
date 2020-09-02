@@ -77,7 +77,7 @@
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
-			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
+			:show-manual-sort="sortField !== null"
 			:manual-sort-key="sortField"
 			selection-use-keys
 			@click:row="onRowClick"
@@ -227,7 +227,7 @@ export default defineComponent({
 			page,
 			fields: fieldsWithRelational,
 			filters: _filters,
-			searchQuery,
+			searchQuery: _searchQuery,
 		});
 
 		const {
@@ -304,8 +304,7 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					return _viewQuery.value?.sort || primaryKeyField.value!.field;
+					return _viewQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
 					page.value = 1;
@@ -337,6 +336,8 @@ export default defineComponent({
 						if (typeof _viewQuery.value.fields === 'string') {
 							return (_viewQuery.value.fields as string).split(',');
 						}
+
+						if (Array.isArray(_viewQuery.value.fields)) return _viewQuery.value.fields;
 					}
 
 					const fields =
@@ -365,7 +366,7 @@ export default defineComponent({
 
 		function useTable() {
 			const tableSort = computed(() => {
-				if (sort.value.startsWith('-')) {
+				if (sort.value?.startsWith('-')) {
 					return { by: sort.value.substring(1), desc: true };
 				} else {
 					return { by: sort.value, desc: false };
@@ -399,10 +400,10 @@ export default defineComponent({
 						value: field.field,
 						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.meta.display,
-							displayOptions: field.meta.display_options,
-							interface: field.meta.interface,
-							interfaceOptions: field.meta.options,
+							display: field.meta?.display,
+							displayOptions: field.meta?.display_options,
+							interface: field.meta?.interface,
+							interfaceOptions: field.meta?.options,
 							type: field.type,
 							field: field.field,
 						},
@@ -486,11 +487,11 @@ export default defineComponent({
 				const field = availableFields.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
-				if (!field.meta.display) return null;
+				if (!field.meta?.display) return null;
 
 				return {
-					display: field.meta.display,
-					options: field.meta.display_options,
+					display: field.meta?.display,
+					options: field.meta?.display_options,
 				};
 			}
 		}
@@ -499,6 +500,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .layout-tabular {
 	display: contents;
 	margin: var(--content-padding);
@@ -511,7 +514,7 @@ export default defineComponent({
 	display: contents;
 
 	::v-deep > table {
-		min-width: calc(100% - var(--content-padding));
+		min-width: calc(100% - var(--content-padding)) !important;
 		margin-left: var(--content-padding);
 
 		tr {
@@ -571,9 +574,14 @@ export default defineComponent({
 
 .item-count {
 	position: relative;
+	display: none;
 	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
 }
 
 .fade-enter-active,

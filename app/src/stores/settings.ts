@@ -11,8 +11,10 @@ export const useSettingsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/settings`, { params: { fields: ['*.*'] } });
-			this.state.settings = response.data.data;
+			try {
+				const response = await api.get(`/settings`, { params: { fields: ['*.*'] } });
+				this.state.settings = response.data.data;
+			} catch {}
 		},
 
 		async dehydrate() {

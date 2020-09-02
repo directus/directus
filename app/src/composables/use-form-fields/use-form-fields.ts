@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { computed, Ref } from '@vue/composition-api';
-import { isEmpty } from '@/utils/is-empty';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
-import interfaces from '@/interfaces';
+import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';
+import { clone } from 'lodash';
 
 export default function useFormFields(fields: Ref<Field[]>) {
+	const interfaces = getInterfaces();
+
 	const formFields = computed(() => {
-		let formFields = [...fields.value];
+		let formFields = clone(fields.value);
 
 		// Sort the fields on the sort column value
 		formFields = formFields.sort((a, b) => {
@@ -23,40 +25,16 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		});
 
 		formFields = formFields.map((field, index) => {
-			if (!field.meta) {
-				field.meta = {
-					id: -1,
-					collection: field.collection,
-					field: field.field,
-					group: null,
-					hidden: false,
-					locked: false,
-					interface: null,
-					options: null,
-					display: null,
-					display_options: null,
-					readonly: false,
-					required: false,
-					sort: null,
-					special: null,
-					translation: null,
-					width: 'full',
-					note: null,
-				};
-			}
+			if (!field.meta) return field;
 
-			if (!field.meta.width) {
-				field.meta.width = 'full';
-			}
-
-			let interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
+			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.find((int) => int.id === field.meta.interface);
+			interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;
@@ -69,7 +47,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 			if (index !== 0 && field.meta!.width === 'half') {
 				const prevField = formFields[index - 1];
 
-				if (prevField.meta.width === 'half') {
+				if (prevField.meta?.width === 'half') {
 					field.meta.width = 'half-right';
 				}
 			}
@@ -80,7 +58,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		// Filter out the fields that are marked hidden on detail
 		formFields = formFields.filter((field) => {
 			const hidden = field.meta?.hidden;
-			const systemFake = field.field.startsWith('$');
+			const systemFake = field.field?.startsWith('$') || false;
 			return hidden !== true && systemFake === false;
 		});
 

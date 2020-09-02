@@ -2,8 +2,8 @@
 	<private-view :title="collectionInfo.name">
 		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="list_alt" />
+			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
+				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
@@ -18,7 +18,7 @@
 						@click="on"
 						v-tooltip.bottom="$t('delete_collection')"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
@@ -83,9 +83,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import SettingsNavigation from '../../../components/navigation/';
+import SettingsNavigation from '../../../components/navigation.vue';
 import useCollection from '@/composables/use-collection/';
-import FieldsManagement from './components/fields-management';
+import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
 import router from '@/router';
@@ -180,8 +180,10 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .action-delete {

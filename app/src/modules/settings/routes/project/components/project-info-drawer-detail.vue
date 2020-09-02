@@ -1,33 +1,33 @@
 <template>
 	<drawer-detail icon="info_outline" :title="$t('information')" close>
-		<dl v-if="project">
+		<dl v-if="parsedInfo">
 			<div>
 				<dt>{{ $t('directus_version') }}</dt>
-				<dd>{{ version }}</dd>
+				<dd>{{ parsedInfo.directus.version }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('installed_on') }}</dt>
-				<dd>August 15, 2020</dd>
+				<dt>{{ $t('node_version') }}</dt>
+				<dd>{{ parsedInfo.node.version }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('operating_system') }}</dt>
-				<dd>Ubuntu 8.0</dd>
+				<dt>{{ $t('node_uptime') }}</dt>
+				<dd>{{ parsedInfo.node.uptime }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('server_stack') }}</dt>
-				<dd>Node.js 10.2</dd>
+				<dt>{{ $t('os_type') }}</dt>
+				<dd>{{ parsedInfo.os.type }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('database_client') }}</dt>
-				<dd>MySQL 5.7</dd>
+				<dt>{{ $t('os_version') }}</dt>
+				<dd>{{ parsedInfo.os.version }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('database_host') }}</dt>
-				<dd>Localhost</dd>
+				<dt>{{ $t('os_uptime') }}</dt>
+				<dd>{{ parsedInfo.os.uptime }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('database_port') }}</dt>
-				<dd>3306</dd>
+				<dt>{{ $t('os_totalmem') }}</dt>
+				<dd>{{ parsedInfo.os.totalmem }}</dd>
 			</div>
 		</dl>
 
@@ -38,21 +38,73 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import i18n from '@/lang';
 import marked from 'marked';
 import { version } from '../../../../../../package.json';
-
 import bytes from 'bytes';
+import prettyMS from 'pretty-ms';
+import api from '@/api';
 
-/**
- * @TODO
- * retrieve server info somewhere separate
- */
+type ServerInfo = {
+	directus: {
+		version: string;
+	};
+	node: {
+		version: string;
+		uptime: number;
+	};
+	os: {
+		type: string;
+		version: string;
+		uptime: number;
+		totalmem: number;
+	};
+};
 
 export default defineComponent({
 	setup() {
-		return { version, project: {}, bytes, marked };
+		const info = ref<ServerInfo>();
+		const loading = ref(false);
+		const error = ref<any>();
+
+		const parsedInfo = computed(() => {
+			if (!info.value) return null;
+
+			return {
+				directus: {
+					version: info.value.directus.version,
+				},
+				node: {
+					version: info.value.node.version,
+					uptime: prettyMS(info.value.node.uptime * 1000),
+				},
+				os: {
+					type: info.value.os.type,
+					version: info.value.os.version,
+					uptime: prettyMS(info.value.os.uptime * 1000),
+					totalmem: bytes(info.value.os.totalmem),
+				},
+			};
+		});
+
+		fetchInfo();
+
+		return { parsedInfo, loading, error, marked };
+
+		async function fetchInfo() {
+			loading.value = true;
+			error.value = null;
+
+			try {
+				const response = await api.get('/server/info');
+				info.value = response.data.data;
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+		}
 	},
 });
 </script>

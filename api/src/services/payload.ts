@@ -14,10 +14,15 @@ import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
 
-type Operation = 'create' | 'read' | 'update';
+type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (operation: Operation, value: any, payload: Partial<Item>) => Promise<any>;
+	[type: string]: (
+		action: Action,
+		value: any,
+		payload: Partial<Item>,
+		accountability: Accountability | null
+	) => Promise<any>;
 };
 
 export default class PayloadService {
@@ -41,24 +46,24 @@ export default class PayloadService {
 	 * in order to work
 	 */
 	public transformers: Transformers = {
-		async hash(operation, value) {
+		async hash(action, value) {
 			if (!value) return;
 
-			if (operation === 'create' || operation === 'update') {
+			if (action === 'create' || action === 'update') {
 				return await argon2.hash(String(value));
 			}
 
 			return value;
 		},
-		async uuid(operation, value) {
-			if (operation === 'create' && !value) {
+		async uuid(action, value) {
+			if (action === 'create' && !value) {
 				return uuidv4();
 			}
 
 			return value;
 		},
-		async 'file-links'(operation, value, payload) {
-			if (operation === 'read' && payload && payload.storage && payload.filename_disk) {
+		async 'file-links'(action, value, payload) {
+			if (action === 'read' && payload && payload.storage && payload.filename_disk) {
 				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
 
 				return {
@@ -70,15 +75,15 @@ export default class PayloadService {
 			// This is an non-existing column, so there isn't any data to save
 			return undefined;
 		},
-		async boolean(operation, value) {
-			if (operation === 'read') {
+		async boolean(action, value) {
+			if (action === 'read') {
 				return value === true || value === 1 || value === '1';
 			}
 
 			return value;
 		},
-		async json(operation, value) {
-			if (operation === 'read') {
+		async json(action, value) {
+			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
 						return JSON.parse(value);
@@ -87,13 +92,43 @@ export default class PayloadService {
 					}
 				}
 			}
+
+			return value;
+		},
+		async conceal(action, value) {
+			if (action === 'read') return value ? '**********' : null;
+			return value;
+		},
+		async 'user-created'(action, value, payload, accountability) {
+			if (action === 'create') return accountability?.user || null;
+			return value;
+		},
+		async 'user-updated'(action, value, payload, accountability) {
+			if (action === 'update') return accountability?.user || null;
+			return value;
+		},
+		async 'role-created'(action, value, payload, accountability) {
+			if (action === 'create') return accountability?.role || null;
+			return value;
+		},
+		async 'role-updated'(action, value, payload, accountability) {
+			if (action === 'update') return accountability?.role || null;
+			return value;
+		},
+		async 'date-created'(action, value) {
+			if (action === 'create') return new Date();
+			return value;
+		},
+		async 'date-updated'(action, value) {
+			if (action === 'update') return new Date();
+			return value;
 		},
 	};
 
-	processValues(operation: Operation, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processValues(operation: Operation, payload: Partial<Item>): Promise<Partial<Item>>;
+	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
 	async processValues(
-		operation: Operation,
+		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
@@ -108,7 +143,7 @@ export default class PayloadService {
 			.where({ collection: this.collection })
 			.whereNotNull('special');
 
-		if (operation === 'read') {
+		if (action === 'read') {
 			specialFieldsQuery.whereIn('field', fieldsInPayload);
 		}
 
@@ -118,14 +153,19 @@ export default class PayloadService {
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
 					specialFieldsInCollection.map(async (field) => {
-						const newValue = await this.processField(field, record, operation);
+						const newValue = await this.processField(
+							field,
+							record,
+							action,
+							this.accountability
+						);
 						if (newValue !== undefined) record[field.field] = newValue;
 					})
 				);
 			})
 		);
 
-		if (['create', 'update'].includes(operation)) {
+		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
 					if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
@@ -145,15 +185,22 @@ export default class PayloadService {
 	async processField(
 		field: Pick<FieldMeta, 'field' | 'special'>,
 		payload: Partial<Item>,
-		operation: Operation
+		action: Action,
+		accountability: Accountability | null
 	) {
 		if (!field.special) return payload[field.field];
 
-		if (this.transformers.hasOwnProperty(field.special)) {
-			return await this.transformers[field.special](operation, payload[field.field], payload);
+		const fieldSpecials = field.special.split(',').map((s) => s.trim());
+
+		let value = clone(payload[field.field]);
+
+		for (const special of fieldSpecials) {
+			if (this.transformers.hasOwnProperty(special)) {
+				value = await this.transformers[special](action, value, payload, accountability);
+			}
 		}
 
-		return payload[field.field];
+		return value;
 	}
 
 	/**
@@ -253,12 +300,19 @@ export default class PayloadService {
 				);
 
 				const toBeUpdated = relatedRecords.filter(
-					(record) => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') === false
+					(record) =>
+						record.hasOwnProperty(relation.many_primary) === true &&
+						record.hasOwnProperty('$delete') === false
 				);
 
 				const toBeDeleted = relatedRecords
-					.filter(record => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') && record.$delete === true)
-					.map(record => record[relation.many_primary]);
+					.filter(
+						(record) =>
+							record.hasOwnProperty(relation.many_primary) === true &&
+							record.hasOwnProperty('$delete') &&
+							record.$delete === true
+					)
+					.map((record) => record[relation.many_primary]);
 
 				await itemsService.create(toBeCreated);
 				await itemsService.update(toBeUpdated);
@@ -267,3 +321,4 @@ export default class PayloadService {
 		}
 	}
 }
+0;

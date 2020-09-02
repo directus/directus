@@ -1,7 +1,7 @@
 <template>
 	<div class="v-info" :class="[type, { center }]">
 		<div class="icon">
-			<v-icon large :name="icon" />
+			<v-icon large :name="icon" outline />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>

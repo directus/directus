@@ -3,6 +3,9 @@ import asyncHandler from 'express-async-handler';
 import { nanoid } from 'nanoid';
 import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
+import collectionExists from '../middleware/collection-exists';
+import UtilsService from '../services/utils';
+import Joi from 'joi';
 
 const router = Router();
 
@@ -45,6 +48,25 @@ router.post(
 		const result = await argon2.verify(req.body.hash, req.body.string);
 
 		return res.json({ data: result });
+	})
+);
+
+const SortSchema = Joi.object({
+	item: Joi.alternatives(Joi.string(), Joi.number()).required(),
+	to: Joi.alternatives(Joi.string(), Joi.number()).required(),
+});
+
+router.post(
+	'/sort/:collection',
+	collectionExists,
+	asyncHandler(async (req, res) => {
+		const { error } = SortSchema.validate(req.body);
+		if (error) throw new InvalidPayloadException(error.message);
+
+		const service = new UtilsService({ accountability: req.accountability });
+		await service.sort(req.collection, req.body);
+
+		return res.status(200).end();
 	})
 );
 

@@ -76,6 +76,4 @@ export interface FieldRaw {
 
 export interface Field extends FieldRaw {
 	name: string | TranslateResult;
-	type: typeof types[number];
-	meta: FieldMeta;
 }

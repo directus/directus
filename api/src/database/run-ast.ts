@@ -44,6 +44,11 @@ export default async function runAST(ast: AST, query = ast.query) {
 
 	// Query defaults
 	query.limit = query.limit || 100;
+
+	if (query.limit === -1) {
+		delete query.limit;
+	}
+
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
 	await applyQuery(ast.name, dbQuery, query);
@@ -116,7 +121,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			 */
 			if (batchQuery.limit) {
 				tempLimit = batchQuery.limit;
-				delete batchQuery.limit;
+				batchQuery.limit = -1;
 			}
 		}
 

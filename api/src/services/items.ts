@@ -5,7 +5,7 @@ import getASTFromQuery from '../utils/get-ast-from-query';
 import {
 	Action,
 	Accountability,
-	Operation,
+	PermissionsAction,
 	Item,
 	Query,
 	PrimaryKey,
@@ -69,7 +69,7 @@ export default class ItemsService implements AbstractService {
 			);
 
 			if (this.accountability && this.accountability.admin !== true) {
-				payloads = await authorizationService.processValues(
+				payloads = await authorizationService.validatePayload(
 					'create',
 					this.collection,
 					payloads
@@ -165,12 +165,12 @@ export default class ItemsService implements AbstractService {
 		return records;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, operation?: Operation): Promise<Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, operation?: Operation): Promise<Item>;
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Item[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Item>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
-		operation: Operation = 'read'
+		action: PermissionsAction = 'read'
 	): Promise<Item | Item[]> {
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
@@ -190,14 +190,14 @@ export default class ItemsService implements AbstractService {
 			this.collection,
 			queryWithFilter,
 			this.accountability,
-			operation
+			action
 		);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 			});
-			ast = await authorizationService.processAST(ast, operation);
+			ast = await authorizationService.processAST(ast, action);
 		}
 
 		const records = await runAST(ast);
@@ -226,8 +226,8 @@ export default class ItemsService implements AbstractService {
 					accountability: this.accountability,
 				});
 				await authorizationService.checkAccess('update', this.collection, keys);
-				payload = await authorizationService.processValues(
-					'validate',
+				payload = await authorizationService.validatePayload(
+					'update',
 					this.collection,
 					payload
 				);
@@ -246,7 +246,10 @@ export default class ItemsService implements AbstractService {
 					columns.map(({ column }) => column)
 				);
 
-				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
+				payloadWithoutAliases = await payloadService.processValues(
+					'update',
+					payloadWithoutAliases
+				);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
 					await trx(this.collection)
@@ -331,7 +334,7 @@ export default class ItemsService implements AbstractService {
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
-		if (this.accountability && this.accountability.admin !== false) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 			});

@@ -6,18 +6,28 @@ import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
-	const { info: collectionInfo, primaryKeyField, softDeleteStatus, statusField } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<any>(null);
 	const error = ref(null);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
-	const softDeleting = ref(false);
+	const archiving = ref(false);
 	const edits = ref({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
+
+	const isArchived = computed(() => {
+		if (!collectionInfo.value?.meta?.archive_field) return null;
+
+		if (collectionInfo.value.meta.archive_value === 'true') {
+			return item.value?.[collectionInfo.value.meta.archive_field] === true;
+		}
+
+		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+	});
 
 	const endpoint = computed(() => {
 		return collection.value.startsWith('directus_')
@@ -46,7 +56,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		isNew,
 		remove,
 		deleting,
-		softDeleting,
+		archive,
+		isArchived,
+		archiving,
 		saveAsCopy,
 		isBatch,
 		getItem,
@@ -176,25 +188,65 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 	}
 
-	async function remove(soft = false) {
-		if (soft) {
-			softDeleting.value = true;
-		} else {
-			deleting.value = true;
-		}
+	async function archive() {
+		if (!collectionInfo.value?.meta?.archive_field) return;
+
+		archiving.value = true;
+
+		const field = collectionInfo.value.meta.archive_field;
+
+		let archiveValue: any = collectionInfo.value.meta.archive_value;
+		if (archiveValue === 'true') archiveValue = true;
+		if (archiveValue === 'false') archiveValue = false;
+
+		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
+		if (unarchiveValue === 'true') unarchiveValue = true;
+		if (unarchiveValue === 'false') unarchiveValue = false;
 
 		try {
-			if (soft) {
-				if (!statusField.value || softDeleteStatus.value === null) {
-					throw new Error('[useItem] You cant soft-delete without a status field');
-				}
+			let value: any = item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
-				await api.patch(itemEndpoint.value, {
-					[statusField.value.field]: softDeleteStatus.value,
-				});
-			} else {
-				await api.delete(itemEndpoint.value);
-			}
+			if (value === 'true') value = true;
+			if (value === 'false') value = false;
+
+			item.value = {
+				...item.value,
+				[field]: value,
+			};
+
+			await api.patch(itemEndpoint.value, {
+				[field]: value,
+			});
+
+			notify({
+				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
+					collection: collection.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
+				}),
+				type: 'success',
+			});
+		} catch (err) {
+			notify({
+				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
+				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
+					collection: collection.value,
+					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
+				}),
+				type: 'error',
+			});
+
+			throw err;
+		} finally {
+			archiving.value = false;
+		}
+	}
+
+	async function remove() {
+		deleting.value = true;
+
+		try {
+			await api.delete(itemEndpoint.value);
 
 			item.value = null;
 
@@ -218,11 +270,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			throw err;
 		} finally {
-			if (soft) {
-				softDeleting.value = false;
-			} else {
-				deleting.value = false;
-			}
+			deleting.value = false;
 		}
 	}
 

@@ -8,11 +8,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select
-					:placeholder="$t('select_one')"
-					:items="items"
-					v-model="relations[0].one_collection"
-				/>
+				<v-select :placeholder="$t('select_one')" :items="items" v-model="relations[0].one_collection" />
 			</div>
 			<v-input disabled :value="fieldData.field" />
 			<v-input disabled :value="relatedPrimary" />
@@ -78,10 +74,7 @@ export default defineComponent({
 			const availableCollections = computed(() => {
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
-						return (
-							collection.collection.startsWith('directus_') === false &&
-							collection.collection !== props.collection
-						);
+						return collection.collection.startsWith('directus_') === false;
 					}),
 					['collection'],
 					['asc']
