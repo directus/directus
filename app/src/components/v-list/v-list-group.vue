@@ -8,11 +8,9 @@
 			</v-list-item-icon>
 		</v-list-item>
 
-		<!-- <transition-expand> -->
 		<div class="items" v-show="groupActive">
 			<slot />
 		</div>
-		<!-- </transition-expand> -->
 	</div>
 </template>
 
