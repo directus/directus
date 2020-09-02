@@ -203,7 +203,7 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta.hidden !== true));
+		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta?.hidden !== true));
 
 		const fileFields = computed(() => {
 			return availableFields.value.filter((field) => {

@@ -77,7 +77,7 @@
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
-			:show-manual-sort="_filters && _filters.length === 0 && sortField !== null"
+			:show-manual-sort="sortField !== null"
 			:manual-sort-key="sortField"
 			selection-use-keys
 			@click:row="onRowClick"
