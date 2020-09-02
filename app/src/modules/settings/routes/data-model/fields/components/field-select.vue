@@ -34,20 +34,7 @@
 					</v-list-item-icon>
 					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 				</v-list-item>
-				<v-divider />
-				<v-list-item @click="setWidth('half')" :disabled="hidden || field.meta.width === 'half'">
-					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-list-item @click="setWidth('full')" :disabled="hidden || field.meta.width === 'full'">
-					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.meta.width === 'fill'">
-					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-divider />
+
 				<v-list-item @click="toggleVisibility">
 					<template v-if="hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
@@ -59,7 +46,26 @@
 					</template>
 				</v-list-item>
 
-				<v-list-item @click="deleteActive = true">
+				<v-divider />
+
+				<v-list-item @click="setWidth('half')" :disabled="hidden || field.meta.width === 'half'">
+					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item @click="setWidth('full')" :disabled="hidden || field.meta.width === 'full'">
+					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.meta.width === 'fill'">
+					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-divider />
+
+				<v-list-item @click="deleteActive = true" class="danger">
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_field') }}
@@ -295,5 +301,11 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
 }
 </style>
