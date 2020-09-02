@@ -1,12 +1,15 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
+import { useCollection } from '@/composables/use-collection';
 
 import { Filter, Preset } from '@/types/';
 
 export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
+
+	const { info: collectionInfo } = useCollection(collection);
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
@@ -156,11 +159,28 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			};
 		}
 
-		if (!localPreset.value.view_type)
+		if (!localPreset.value.view_type) {
 			localPreset.value = {
 				...localPreset.value,
 				view_type: 'tabular',
 			};
+		}
+
+		if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
+			localPreset.value = {
+				...localPreset.value,
+				filters: [
+					...(localPreset.value.filters || []),
+					{
+						key: 'hide-archived',
+						field: collectionInfo.value.meta.archive_field,
+						operator: 'neq',
+						value: collectionInfo.value.meta.archive_value!,
+						locked: true,
+					},
+				],
+			};
+		}
 	}
 
 	/**

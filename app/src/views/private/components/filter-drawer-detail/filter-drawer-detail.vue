@@ -34,9 +34,11 @@
 			</v-list>
 		</v-menu>
 
-		<v-divider />
+		<template v-if="showArchiveToggle">
+			<v-divider />
 
-		<v-checkbox v-model="archived" :label="$t('show_archived_items')" />
+			<v-checkbox v-model="archived" :label="$t('show_archived_items')" />
+		</template>
 	</drawer-detail>
 </template>
 
@@ -147,7 +149,9 @@ export default defineComponent({
 			},
 		});
 
-		const showArchiveToggle = computed(() => !!collectionInfo.value?.meta?.archive_field);
+		const showArchiveToggle = computed(
+			() => !!collectionInfo.value?.meta?.archive_field && !!collectionInfo.value?.meta?.archive_app_filter
+		);
 
 		const archived = computed({
 			get() {
