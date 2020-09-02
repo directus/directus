@@ -10,12 +10,12 @@
 					<template #input>
 						<div class="name">
 							{{ field.name }}
-							<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" />
 							<span class="interface">{{ interfaceName }}</span>
 						</div>
 					</template>
 
 					<template #append>
+						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" small />
 						<v-icon @click.stop="toggle" name="more_vert" />
 					</template>
 				</v-input>
@@ -274,6 +274,11 @@ export default defineComponent({
 .v-icon {
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--foreground);
+
+	&.hidden-icon {
+		margin-right: 4px;
+		--v-icon-color-hover: var(--foreground-subdued);
+	}
 }
 
 .drag-handle {
@@ -293,11 +298,6 @@ export default defineComponent({
 .field {
 	.name {
 		flex-grow: 1;
-
-		.hidden-icon {
-			margin-left: 4px;
-			margin-right: 4px;
-		}
 
 		.interface {
 			display: none;
