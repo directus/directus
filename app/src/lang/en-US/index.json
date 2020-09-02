@@ -114,6 +114,8 @@
 	"field_o2m": "O2M Relationship",
 	"field_m2m": "M2M Relationship",
 
+	"reset_page_preferences": "Reset Page Preferences",
+
 	"visible_fields": "Visible Fields",
 	"hidden_fields": "Hidden Fields",
 	"hidden_field": "Hidden Field",

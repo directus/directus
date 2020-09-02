@@ -129,6 +129,8 @@
 
 			<template #append>
 				<v-error :error="error" />
+
+				<v-button @click="resetPreset">{{ $t('reset_page_preferences') }}</v-button>
 			</template>
 		</v-info>
 
@@ -285,7 +287,16 @@ export default defineComponent({
 			hideDragImage,
 			activeFilterCount,
 			refresh,
+			resetPreset,
 		};
+
+		function resetPreset() {
+			_viewQuery.value = {};
+			_filters.value = [];
+			_searchQuery.value = null;
+
+			refresh();
+		}
 
 		function refresh() {
 			getItems();
