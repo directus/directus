@@ -15,7 +15,13 @@
 					</template>
 
 					<template #append>
-						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="$t('hidden_field')" small />
+						<v-icon
+							v-if="hidden"
+							name="visibility_off"
+							class="hidden-icon"
+							v-tooltip="$t('hidden_field')"
+							small
+						/>
 						<v-icon @click.stop="toggle" name="more_vert" />
 					</template>
 				</v-input>
@@ -239,7 +245,11 @@ export default defineComponent({
 			}
 		}
 
-		function openFieldDetail() {
+		async function openFieldDetail() {
+			if (!props.field.meta) {
+				await fieldsStore.updateField(props.field.collection, props.field.field, { meta: {} });
+			}
+
 			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
 		}
 	},
@@ -276,8 +286,9 @@ export default defineComponent({
 	--v-icon-color-hover: var(--foreground);
 
 	&.hidden-icon {
-		margin-right: 4px;
 		--v-icon-color-hover: var(--foreground-subdued);
+
+		margin-right: 4px;
 	}
 }
 
