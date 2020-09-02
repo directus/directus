@@ -6,7 +6,7 @@
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
-			@change="handleChange"
+			@input="setSort"
 		>
 			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
 		</draggable>
@@ -142,56 +142,20 @@ export default defineComponent({
 
 		return {
 			sortedFields,
-			handleChange,
+			setSort,
 			hideDragImage,
 			addOptions,
 		};
 
-		function handleChange(event: DraggableEvent) {
-			if (event.moved !== undefined) {
-				sortInGroup(event.moved);
-			}
-		}
-
-		function sortInGroup(event: Required<DraggableEvent>['moved']) {
-			const { element, newIndex, oldIndex } = event;
-			const move = newIndex > oldIndex ? 'down' : 'up';
-
-			const selectionRange = move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
-
-			const fields = sortedFields.value;
-
-			let updates: DeepPartial<Field>[] = fields.map((field) => {
-				// If field.sort isn't set yet, base it on the index of the array. That way, the
-				// new sort value will match what's visible on the screen
-				const sortValue =
-					field.meta?.sort || fields.findIndex((existingField) => existingField.field === field.field);
-
-				return {
-					field: field.field,
-					meta: {
-						sort: move === 'down' ? sortValue - 1 : sortValue + 1,
-					},
-				};
-			});
-
-			const sortOfItemOnNewIndex = fields[newIndex].meta?.sort || newIndex;
-
-			updates.push({
-				field: element.field,
+		function setSort(fields: Field[]) {
+			const updates = fields.map((field, index) => ({
+				field: field.field,
 				meta: {
-					sort: sortOfItemOnNewIndex,
-				},
-			});
-
-			updates = updates.map((update) => ({
-				...update,
-				meta: {
-					sort: update.meta?.sort !== undefined && update.meta?.sort !== null ? update.meta.sort + 1 : null,
+					sort: index + 1,
 				},
 			}));
 
-			fieldsStore.updateFields(element.collection, updates);
+			fieldsStore.updateFields(collection.value, updates);
 		}
 	},
 });
