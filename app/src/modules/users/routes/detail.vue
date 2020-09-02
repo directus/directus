@@ -39,6 +39,39 @@
 				</v-card>
 			</v-dialog>
 
+			<v-dialog
+				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
+				v-model="confirmArchive"
+				:disabled="archiveAllowed === false"
+			>
+				<template #activator="{ on }">
+					<v-button
+						rounded
+						icon
+						class="action-archive"
+						v-tooltip.bottom="archiveTooltip"
+						@click="on"
+						:disabled="item === null || archiveAllowed !== true"
+						v-if="collectionInfo.meta.singleton === false"
+					>
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button @click="confirmArchive = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
+							{{ isArchived ? $t('unarchive') : $t('archive') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
 			<v-button
 				rounded
 				icon
@@ -142,6 +175,8 @@ import { Field } from '@/types';
 import UserInfoDrawerDetail from '../components/user-info-drawer-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
+import { isAllowed } from '@/utils/is-allowed';
+import useCollection from '@/composables/use-collection';
 
 type Values = {
 	[field: string]: any;
@@ -178,12 +213,26 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
+		const { info: collectionInfo } = useCollection(ref('directus_users'));
+
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
-			ref('directus_users'),
-			primaryKey
-		);
+		const {
+			isNew,
+			edits,
+			item,
+			saving,
+			loading,
+			error,
+			save,
+			remove,
+			deleting,
+			saveAsCopy,
+			isBatch,
+			archive,
+			archiving,
+			isArchived,
+		} = useItem(ref('directus_users'), primaryKey);
 
 		if (props.preset) {
 			edits.value = {
@@ -195,6 +244,7 @@ export default defineComponent({
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
 		const confirmDelete = ref(false);
+		const confirmArchive = ref(false);
 
 		const title = computed(() => {
 			if (loading.value === true) return i18n.t('loading');
@@ -232,6 +282,14 @@ export default defineComponent({
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+
+		const archiveTooltip = computed(() => {
+			if (archiveAllowed.value === false) return i18n.t('not_allowed');
+			if (isArchived.value === true) return i18n.t('unarchive');
+			return i18n.t('archive');
+		});
+
 		useShortcut('mod+s', saveAndStay);
 		useShortcut('mod+shift+s', saveAndAddNew);
 
@@ -261,6 +319,16 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 			formFields,
+			deleteAllowed,
+			saveAllowed,
+			archiveAllowed,
+			isArchived,
+			updateAllowed,
+			toggleArchive,
+			confirmArchive,
+			collectionInfo,
+			archiving,
+			archiveTooltip,
 		};
 
 		function useBreadcrumb() {
@@ -345,6 +413,38 @@ export default defineComponent({
 			edits.value = {};
 			router.push(leaveTo.value);
 		}
+
+		function usePermissions() {
+			const deleteAllowed = computed(() => isAllowed('directus_users', 'delete', item.value));
+			const saveAllowed = computed(() => {
+				if (isNew.value) {
+					return true;
+				}
+
+				return isAllowed('directus_users', 'update', item.value);
+			});
+			const updateAllowed = computed(() => isAllowed('directus_users', 'update', item.value));
+
+			const archiveAllowed = computed(() => {
+				if (!collectionInfo.value?.meta?.archive_field) return false;
+
+				return isAllowed('directus_users', 'update', {
+					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
+				});
+			});
+
+			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
+		}
+
+		async function toggleArchive() {
+			await archive();
+
+			if (isArchived.value === true) {
+				router.push('/users');
+			} else {
+				confirmArchive.value = false;
+			}
+		}
 	},
 });
 </script>
@@ -357,6 +457,13 @@ export default defineComponent({
 	--v-button-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-50);
 	--v-button-color-hover: var(--danger);
+}
+
+.action-archive {
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
 }
 
 .header-icon.secondary {

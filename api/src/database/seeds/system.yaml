@@ -545,6 +545,9 @@ rows:
       - collection: directus_roles
       - collection: directus_settings
       - collection: directus_users
+        archive_field: status
+        archive_value: archived
+        unarchive_value: draft
       - collection: directus_webhooks
 
   directus_fields:
@@ -1367,32 +1370,20 @@ rows:
         width: full
       - collection: directus_users
         field: status
-        interface: status
+        interface: dropdown
         locked: true
-        special: status
         options:
-          statuses:
-            draft:
-              name: Draft
-              color: "#B0BEC5"
-              backgroundColor: "#ECEFF1"
-            invited:
-              name: Invited
-              color: "#FFFFFF"
-              backgroundColor: "#2F80ED"
-            active:
-              name: Active
-              color: "#FFFFFF"
-              backgroundColor: "#27AE60"
-            suspended:
-              name: Suspended
-              color: "#FFFFFF"
-              backgroundColor: "#F2994A"
-            deleted:
-              name: Deleted
-              color: "#FFFFFF"
-              backgroundColor: "#EB5757"
-              softDelete: true
+          choices:
+              - text: Draft
+                value: draft
+              - text: Invited
+                value: invited
+              - text: Active
+                value: active
+              - text: Suspended
+                value: suspended
+              - text: Archived
+                value: archived
         sort: 16
         width: half
       - collection: directus_users
