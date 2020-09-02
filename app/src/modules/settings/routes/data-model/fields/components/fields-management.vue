@@ -161,7 +161,7 @@ export default defineComponent({
 
 			const fields = sortedFields.value;
 
-			let updates: DeepPartial<Field>[] = fields.slice(...selectionRange).map((field) => {
+			let updates: DeepPartial<Field>[] = fields.map((field) => {
 				// If field.sort isn't set yet, base it on the index of the array. That way, the
 				// new sort value will match what's visible on the screen
 				const sortValue =
