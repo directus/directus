@@ -9,45 +9,43 @@
 			@change="handleChange"
 		>
 			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
-
-			<template #footer>
-				<v-menu attached>
-					<template #activator="{ toggle, active }">
-						<v-button
-							@click="toggle"
-							class="add-field"
-							align="left"
-							:dashed="!active"
-							:class="{ active }"
-							outlined
-							large
-							full-width
-						>
-							<v-icon name="add" />
-							{{ $t('create_field') }}
-						</v-button>
-					</template>
-
-					<v-list dense>
-						<template v-for="(option, index) in addOptions">
-							<v-divider v-if="option.divider === true" :key="index" />
-							<v-list-item
-								v-else
-								:key="option.type"
-								:to="`/settings/data-model/${collection}/+?type=${option.type}`"
-							>
-								<v-list-item-icon>
-									<v-icon :name="option.icon" />
-								</v-list-item-icon>
-								<v-list-item-content>
-									{{ option.text }}
-								</v-list-item-content>
-							</v-list-item>
-						</template>
-					</v-list>
-				</v-menu>
-			</template>
 		</draggable>
+
+		<v-menu attached>
+			<template #activator="{ toggle, active }">
+				<v-button
+					@click="toggle"
+					class="add-field"
+					align="left"
+					:dashed="!active"
+					:class="{ active }"
+					outlined
+					large
+					full-width
+				>
+					<v-icon name="add" />
+					{{ $t('create_field') }}
+				</v-button>
+			</template>
+
+			<v-list dense>
+				<template v-for="(option, index) in addOptions">
+					<v-divider v-if="option.divider === true" :key="index" />
+					<v-list-item
+						v-else
+						:key="option.type"
+						:to="`/settings/data-model/${collection}/+?type=${option.type}`"
+					>
+						<v-list-item-icon>
+							<v-icon :name="option.icon" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ option.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+			</v-list>
+		</v-menu>
 	</div>
 </template>
 
@@ -195,15 +193,18 @@ export default defineComponent({
 	margin: 32px 0;
 }
 
+.fields-management {
+	margin-bottom: 24px;
+	padding: 12px;
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+}
+
 .field-grid {
 	position: relative;
 	display: grid;
 	grid-gap: 12px;
 	grid-template-columns: 1fr 1fr;
-	margin-bottom: 24px;
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
 }
 
 .add-field {
@@ -211,8 +212,7 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 
-	grid-column: 1 / span 2;
-	max-width: 50%;
+	margin-top: 12px;
 
 	.v-icon {
 		margin-right: 8px;

@@ -254,6 +254,7 @@ export default defineComponent({
 
 .v-icon {
 	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color-hover: var(--foreground);
 }
 
 .drag-handle {

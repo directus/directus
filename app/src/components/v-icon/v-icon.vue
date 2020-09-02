@@ -129,6 +129,7 @@ export default defineComponent({
 <style>
 body {
 	--v-icon-color: currentColor;
+	--v-icon-color-hover: currentColor;
 	--v-icon-size: 24px;
 }
 </style>
@@ -172,6 +173,11 @@ body {
 
 	&.has-click {
 		cursor: pointer;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--v-icon-color-hover);
+		}
 	}
 
 	&.sup {
