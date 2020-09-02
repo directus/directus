@@ -275,7 +275,7 @@ export default defineComponent({
 		}
 
 		span {
-			min-width: 1ch;
+			min-width: 1px;
 			min-height: 1em;
 		}
 

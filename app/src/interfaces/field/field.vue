@@ -5,7 +5,15 @@
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
 		{{ $t('select_a_collection') }}
 	</v-notice>
-	<v-select v-else @input="$listeners.input" :value="value" :disabled="disabled" :items="selectItems" />
+	<v-select
+		v-else
+		:show-deselect="allowNone"
+		@input="$listeners.input"
+		:value="value"
+		:disabled="disabled"
+		:items="selectItems"
+		:placeholder="placeholder"
+	/>
 </template>
 
 <script lang="ts">
@@ -17,7 +25,7 @@ export default defineComponent({
 	props: {
 		collectionField: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		typeAllowList: {
 			type: Array as PropType<string[]>,
@@ -28,6 +36,14 @@ export default defineComponent({
 			default: null,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
+		allowNone: {
 			type: Boolean,
 			default: false,
 		},
