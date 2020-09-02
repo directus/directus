@@ -10,6 +10,7 @@ import errorHandler from './middleware/error-handler';
 
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
+import responseManager from './middleware/response-manager';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -69,11 +70,9 @@ if (env.NODE_ENV !== 'development') {
 
 app.use('/auth', authRouter)
 
-	.use(authenticate)
-
 	.use('/activity', activityRouter)
 	.use('/assets', assetsRouter)
-	.use('/collections', collectionsRouter)
+	.use('/collections', collectionsRouter, responseManager)
 	.use('/extensions', extensionsRouter)
 	.use('/fields', fieldsRouter)
 	.use('/files', filesRouter)
