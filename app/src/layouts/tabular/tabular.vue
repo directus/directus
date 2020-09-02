@@ -514,7 +514,7 @@ export default defineComponent({
 	display: contents;
 
 	::v-deep > table {
-		min-width: calc(100% - var(--content-padding));
+		min-width: calc(100% - var(--content-padding)) !important;
 		margin-left: var(--content-padding);
 
 		tr {
@@ -574,10 +574,10 @@ export default defineComponent({
 
 .item-count {
 	position: relative;
+	display: none;
 	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
-	display: none;
 
 	@include breakpoint(small) {
 		display: inline;
