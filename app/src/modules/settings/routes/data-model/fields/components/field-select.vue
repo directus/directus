@@ -15,7 +15,7 @@
 					</template>
 
 					<template #append>
-						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" small />
+						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="$t('hidden_field')" small />
 						<v-icon @click.stop="toggle" name="more_vert" />
 					</template>
 				</v-input>
