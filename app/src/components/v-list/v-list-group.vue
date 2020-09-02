@@ -3,7 +3,7 @@
 		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }">
+			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
 				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
 			</v-list-item-icon>
 		</v-list-item>
