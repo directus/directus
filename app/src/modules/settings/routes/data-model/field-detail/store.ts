@@ -108,10 +108,10 @@ function initLocalStore(
 		);
 
 		watch(
-			() => availableInterfaces.value,
+			() => availableDisplays.value,
 			() => {
-				if (availableInterfaces.value.length === 1) {
-					state.fieldData.meta.interface = availableInterfaces.value[0].id;
+				if (availableDisplays.value.length === 1) {
+					state.fieldData.meta.display = availableDisplays.value[0].id;
 				}
 			}
 		);
