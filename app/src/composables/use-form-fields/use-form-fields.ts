@@ -5,7 +5,7 @@ import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';
-import { clone } from 'lodash';
+import { clone, orderBy } from 'lodash';
 
 export default function useFormFields(fields: Ref<Field[]>) {
 	const interfaces = getInterfaces();
@@ -14,15 +14,7 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		let formFields = clone(fields.value);
 
 		// Sort the fields on the sort column value
-		formFields = formFields.sort((a, b) => {
-			const aSort = a.meta?.sort || null;
-			const bSort = b.meta?.sort || null;
-
-			if (aSort === bSort) return 0;
-			if (aSort === null) return 1;
-			if (bSort === null) return -1;
-			return aSort < bSort ? -1 : 1;
-		});
+		formFields = orderBy(formFields, [(o) => o.meta?.sort || null, (o) => o.meta?.id]);
 
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;

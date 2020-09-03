@@ -58,6 +58,7 @@ import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
+import { orderBy } from 'lodash';
 
 type DraggableEvent = {
 	moved?: {
@@ -85,15 +86,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const sortedFields = computed(() => {
-			return fields.value.sort((a, b) => {
-				const aSort = a.meta?.sort || null;
-				const bSort = b.meta?.sort || null;
-
-				if (aSort === bSort) return 0;
-				if (aSort === null) return 1;
-				if (bSort === null) return -1;
-				return aSort < bSort ? -1 : 1;
-			});
+			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]);
 		});
 
 		const addOptions = computed(() => [
