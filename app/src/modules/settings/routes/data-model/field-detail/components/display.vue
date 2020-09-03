@@ -30,6 +30,8 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { getDisplays } from '@/displays';
+import { getInterfaces } from '@/interfaces';
+import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state } from '../store';
 
@@ -42,6 +44,12 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const displays = getDisplays();
+		const interfaces = getInterfaces();
+
+		const selectedInterface = computed(() => {
+			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+		});
+
 		const availableDisplays = computed(() =>
 			displays.value.filter((display) => {
 				const matchesType = display.types.includes(state.fieldData?.type || 'alias');
@@ -50,13 +58,34 @@ export default defineComponent({
 			})
 		);
 
-		const selectItems = computed(() =>
-			availableDisplays.value.map((display) => ({
-				text: display.name,
-				value: display.id,
-				icon: display.icon,
-			}))
-		);
+		const selectItems = computed(() => {
+			const recommended = selectedInterface.value?.recommendedDisplays || [];
+
+			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
+				const item: FancySelectItem = {
+					text: display.name,
+					description: display.description,
+					value: display.id,
+					icon: display.icon,
+				};
+
+				if (recommended.includes(item.value as string)) {
+					item.iconRight = 'star';
+				}
+
+				return item;
+			});
+
+			if (displayItems.length >= 5) {
+				return [
+					...recommended.map((key) => displayItems.find((item) => item.value === key)),
+					{ divider: true },
+					...displayItems.filter((item) => recommended.includes(item.value as string) === false),
+				];
+			} else {
+				return displayItems;
+			}
+		});
 
 		const selectedDisplay = computed(() => {
 			return displays.value.find((display) => display.id === state.fieldData.meta.display);
