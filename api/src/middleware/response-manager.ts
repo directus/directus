@@ -33,7 +33,7 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 
 			const fieldsOut = Object.keys(exportData);
 			const csv = await json2csv.parse(exportData, fieldsOut);
-
+			// will this be ok for larger files?
 			res.setHeader('Content-disposition', 'attachment; filename=export.csv');
 			res.set('Content-Type', 'text/csv');
 			res.status(200).send(csv);

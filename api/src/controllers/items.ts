@@ -29,7 +29,7 @@ router.get(
 	'/:collection',
 	collectionExists,
 	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
@@ -39,10 +39,12 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-		return res.json({
+		res.locals.data = {
 			meta: meta,
 			data: records || null,
-		});
+		};
+
+		return next();
 	})
 );
 
@@ -50,7 +52,7 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -58,10 +60,11 @@ router.get(
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
-
-		return res.json({
+		res.locals.data = {
 			data: result || null,
-		});
+		};
+
+		return next();
 	})
 );
 
