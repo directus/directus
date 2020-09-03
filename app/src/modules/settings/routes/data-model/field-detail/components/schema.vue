@@ -4,7 +4,10 @@
 
 		<div class="form">
 			<div class="field">
-				<div class="label type-label">{{ $t('key') }}</div>
+				<div class="label type-label">
+					{{ $t('key') }}
+					<v-icon class="required" sup name="star" />
+				</div>
 				<v-input
 					:disabled="isExisting"
 					autofocus
@@ -16,7 +19,10 @@
 			</div>
 
 			<div class="field">
-				<div class="label type-label">{{ $t('type') }}</div>
+				<div class="label type-label">
+					{{ $t('type') }}
+					<v-icon class="required" sup name="star" />
+				</div>
 				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
 				<v-select
 					v-else
@@ -217,5 +223,9 @@ export default defineComponent({
 
 .monospace {
 	--v-input-font-family: var(--family-monospace);
+}
+
+.required {
+	--v-icon-color: var(--primary);
 }
 </style>
