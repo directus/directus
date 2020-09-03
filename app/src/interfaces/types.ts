@@ -6,6 +6,7 @@ export type InterfaceConfig = {
 	id: string;
 	icon: string;
 	name: string | VueI18n.TranslateResult;
+	description?: string | VueI18n.TranslateResult;
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
 	types: typeof types[number][];

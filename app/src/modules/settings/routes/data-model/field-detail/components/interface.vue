@@ -35,6 +35,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
+import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state } from '../store';
 
@@ -48,35 +49,76 @@ export default defineComponent({
 	setup(props) {
 		const interfaces = getInterfaces();
 
-		const availableInterfaces = computed(() =>
-			interfaces.value.filter((inter) => {
-				// Filter out all system interfaces
-				if (inter.system !== undefined && inter.system === true) return false;
+		const availableInterfaces = computed(() => {
+			return interfaces.value
+				.filter((inter) => {
+					// Filter out all system interfaces
+					if (inter.system !== undefined && inter.system === true) return false;
 
-				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-				let matchesRelation = false;
+					const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
+					let matchesRelation = false;
 
-				if (props.type === 'standard' || props.type === 'presentation') {
-					matchesRelation = inter.relationship === null || inter.relationship === undefined;
-				} else if (props.type === 'file') {
-					matchesRelation = inter.relationship === 'm2o';
-				} else if (props.type === 'files') {
-					matchesRelation = inter.relationship === 'm2m';
-				} else {
-					matchesRelation = inter.relationship === props.type;
+					if (props.type === 'standard' || props.type === 'presentation') {
+						matchesRelation = inter.relationship === null || inter.relationship === undefined;
+					} else if (props.type === 'file') {
+						matchesRelation = inter.relationship === 'm2o';
+					} else if (props.type === 'files') {
+						matchesRelation = inter.relationship === 'm2m';
+					} else {
+						matchesRelation = inter.relationship === props.type;
+					}
+
+					return matchesType && matchesRelation;
+				})
+				.sort((a, b) => (a.name > b.name ? 1 : -1));
+		});
+
+		const selectItems = computed(() => {
+			const type: string = state.fieldData?.type || 'alias';
+
+			const recommendedInterfacesPerType: { [type: string]: string[] } = {
+				string: ['text-input', 'dropdown'],
+				text: ['wysiwyg'],
+				boolean: ['toggle'],
+				integer: ['numeric'],
+				bigInteger: ['numeric'],
+				float: ['numeric'],
+				decimal: ['numeric'],
+				timestamp: ['datetime'],
+				datetime: ['datetime'],
+				date: ['datetime'],
+				time: ['datetime'],
+				json: ['code'],
+				uuid: ['text-input'],
+			};
+
+			const recommended = recommendedInterfacesPerType[type] || [];
+
+			const interfaceItems: FancySelectItem[] = availableInterfaces.value.map((inter) => {
+				const item: FancySelectItem = {
+					text: inter.name,
+					description: inter.description,
+					value: inter.id,
+					icon: inter.icon,
+				};
+
+				if (recommended.includes(item.value as string)) {
+					item.iconRight = 'star';
 				}
 
-				return matchesType && matchesRelation;
-			})
-		);
+				return item;
+			});
 
-		const selectItems = computed(() =>
-			availableInterfaces.value.map((inter) => ({
-				text: inter.name,
-				value: inter.id,
-				icon: inter.icon,
-			}))
-		);
+			if (interfaceItems.length >= 5) {
+				return [
+					...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
+					{ divider: true },
+					...interfaceItems.filter((item) => recommended.includes(item.value as string) === false),
+				];
+			} else {
+				return interfaceItems;
+			}
+		});
 
 		const selectedInterface = computed(() => {
 			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
