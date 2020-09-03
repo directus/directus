@@ -76,7 +76,7 @@ export default defineComponent({
 				return item;
 			});
 
-			if (displayItems.length >= 5) {
+			if (displayItems.length >= 5 && recommended.length > 0) {
 				return [
 					...recommended.map((key) => displayItems.find((item) => item.value === key)),
 					{ divider: true },

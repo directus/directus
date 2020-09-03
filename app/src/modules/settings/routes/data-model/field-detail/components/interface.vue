@@ -109,7 +109,7 @@ export default defineComponent({
 				return item;
 			});
 
-			if (interfaceItems.length >= 5) {
+			if (interfaceItems.length >= 5 && recommended.length > 0) {
 				return [
 					...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
 					{ divider: true },
