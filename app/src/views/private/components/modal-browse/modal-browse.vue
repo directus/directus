@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
 import { Filter } from '@/types';
-import usePreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
 
 export default defineComponent({
@@ -67,7 +67,7 @@ export default defineComponent({
 		const { viewType, viewOptions, viewQuery } = usePreset(collection);
 
 		// This is a local copy of the viewtype. This means that we can sync it the layout without
-		// having use-collection-preset auto-save the values
+		// having use-preset auto-save the values
 		const layout = ref(viewType.value || 'tabular');
 		const options = ref(viewOptions.value);
 		const query = ref(viewQuery.value);

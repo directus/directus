@@ -47,7 +47,7 @@ import { defineComponent, computed, ref } from '@vue/composition-api';
 import ActivityNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-preset';
 import marked from 'marked';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';

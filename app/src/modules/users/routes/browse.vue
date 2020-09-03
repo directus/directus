@@ -108,7 +108,7 @@ import UsersNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';

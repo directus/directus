@@ -159,6 +159,7 @@
 			:view-query.sync="viewQuery"
 			:filters.sync="filters"
 			:search-query.sync="searchQuery"
+			:reset-preset="resetPreset"
 		>
 			<template #no-results>
 				<v-info :title="$t('no_results')" icon="search" center>
@@ -219,7 +220,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
-import usePreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
@@ -264,6 +265,7 @@ export default defineComponent({
 		const { info: currentCollection } = useCollection(collection);
 		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
+
 		const {
 			viewType,
 			viewOptions,
@@ -274,7 +276,9 @@ export default defineComponent({
 			bookmarkExists,
 			saveCurrentAsBookmark,
 			title: bookmarkName,
+			resetPreset,
 		} = usePreset(collection, bookmarkID);
+
 		const {
 			confirmDelete,
 			deleting,
@@ -340,6 +344,7 @@ export default defineComponent({
 			batchDeleteAllowed,
 			deleteError,
 			createAllowed,
+			resetPreset,
 		};
 
 		function useBreadcrumb() {

@@ -129,6 +129,10 @@
 
 			<template #append>
 				<v-error :error="error" />
+
+				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
+					{{ $t('reset_page_preferences') }}
+				</v-button>
 			</template>
 		</v-info>
 
@@ -200,6 +204,10 @@ export default defineComponent({
 		readonly: {
 			type: Boolean,
 			default: false,
+		},
+		resetPreset: {
+			type: Function as PropType<() => Promise<void>>,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -285,7 +293,13 @@ export default defineComponent({
 			hideDragImage,
 			activeFilterCount,
 			refresh,
+			resetPresetAndRefresh,
 		};
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
 
 		function refresh() {
 			getItems();
@@ -592,5 +606,9 @@ export default defineComponent({
 .fade-enter,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.reset-preset {
+	margin-top: 24px;
 }
 </style>
