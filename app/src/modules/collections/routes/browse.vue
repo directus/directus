@@ -9,7 +9,7 @@
 
 		<template #headline>
 			<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: collectionsLink }]" />
+			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: '/collections' }]" />
 		</template>
 
 		<template #title-outer:append>
@@ -263,7 +263,7 @@ export default defineComponent({
 
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
-		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
+		const { addNewLink, batchLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
 
 		const {
@@ -313,7 +313,7 @@ export default defineComponent({
 			addNewLink,
 			batchDelete,
 			batchLink,
-			collectionsLink,
+
 			confirmDelete,
 			currentCollection,
 			deleting,
@@ -430,15 +430,11 @@ export default defineComponent({
 				return `/collections/${props.collection}/${batchPrimaryKeys}`;
 			});
 
-			const collectionsLink = computed<string>(() => {
-				return `/collections`;
-			});
-
 			const currentCollectionLink = computed<string>(() => {
 				return `/collections/${props.collection}`;
 			});
 
-			return { addNewLink, batchLink, collectionsLink, currentCollectionLink };
+			return { addNewLink, batchLink, currentCollectionLink };
 		}
 
 		function useBookmarks() {

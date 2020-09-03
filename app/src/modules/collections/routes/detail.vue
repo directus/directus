@@ -39,8 +39,12 @@
 			</v-button>
 		</template>
 
-		<template #headline v-if="collectionInfo.meta.singleton === false">
-			<v-breadcrumb :items="breadcrumb" />
+		<template #headline>
+			<v-breadcrumb
+				v-if="collectionInfo.meta.singleton === true"
+				:items="[{ name: $t('collections'), to: '/collections' }]"
+			/>
+			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
 
 		<template #actions>
