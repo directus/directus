@@ -43,6 +43,7 @@
 				:collection="collection"
 				:current.sync="currentTab"
 				:tabs="tabs"
+				:is-existing="field !== '+'"
 				@save="saveField"
 				@cancel="cancelField"
 			/>
