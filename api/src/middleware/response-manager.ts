@@ -1,13 +1,12 @@
-import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
-import { ExportFailedException } from '../exceptions';
-
 /**
- *  middleware to manage actions on responses such as
+ * middleware to manage actions on responses such as
  * export / import and caching
  * @todo move set caching into here.
  *
  */
+import { RequestHandler } from 'express';
+import asyncHandler from 'express-async-handler';
+import { ExportFailedException } from '../exceptions';
 
 const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.query.export) {
