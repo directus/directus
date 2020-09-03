@@ -5,7 +5,7 @@ import { ExportFailedException } from '../exceptions';
 /**
  *  middleware to manage actions on responses such as
  * export / import and caching
- * @todo move caching into here.
+ * @todo move set caching into here.
  *
  */
 

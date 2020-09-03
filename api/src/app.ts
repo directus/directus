@@ -69,6 +69,7 @@ if (env.NODE_ENV !== 'development') {
 }
 
 app.use('/auth', authRouter)
+	.use(authenticate)
 
 	.use('/activity', activityRouter)
 	.use('/assets', assetsRouter)
