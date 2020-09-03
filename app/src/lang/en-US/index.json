@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"db_only_click_to_configure": "Database Only: Click to Configure ",
+
 	"show_archived_items": "Show Archived Items",
 
 	"create_preset": "Create Preset",

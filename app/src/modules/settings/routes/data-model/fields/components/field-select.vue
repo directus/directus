@@ -23,6 +23,12 @@
 								v-tooltip="$t('primary_key')"
 							/>
 							<v-icon
+								v-if="!field.meta"
+								name="report_problem"
+								small
+								v-tooltip="$t('db_only_click_to_configure')"
+							/>
+							<v-icon
 								v-if="hidden"
 								name="visibility_off"
 								class="hidden-icon"
@@ -299,8 +305,6 @@ export default defineComponent({
 
 	&.hidden-icon {
 		--v-icon-color-hover: var(--foreground-subdued);
-
-		margin-right: 4px;
 	}
 }
 
