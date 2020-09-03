@@ -1,5 +1,5 @@
 <template>
-	<div class="field" :key="field.field" :class="field.meta.width">
+	<div class="field" :key="field.field" :class="(field.meta && field.meta.width) || 'full'">
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -33,7 +33,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<small class="note" v-if="field.meta.note" v-html="marked(field.meta.note)" />
+		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 	</div>
 </template>
 
@@ -84,7 +84,7 @@ export default defineComponent({
 	setup(props) {
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
-			if (props.field.meta.readonly) return true;
+			if (props.field?.meta?.readonly === true) return true;
 			if (props.batchMode && props.batchActive === false) return true;
 			return false;
 		});

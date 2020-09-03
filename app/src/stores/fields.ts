@@ -36,33 +36,6 @@ const fakeFilesField: Field = {
 	},
 };
 
-function getMetaDefault(collection: string, field: string): Field['meta'] {
-	/**
-	 * @TODO
-	 *
-	 * Get rid of this. Have it work without any meta
-	 */
-	return {
-		id: -1,
-		collection,
-		field,
-		group: null,
-		hidden: false,
-		interface: null,
-		display: null,
-		display_options: null,
-		locked: false,
-		options: null,
-		readonly: false,
-		required: false,
-		sort: null,
-		special: null,
-		translation: null,
-		width: 'full',
-		note: null,
-	};
-}
-
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
 	state: () => ({
@@ -92,13 +65,11 @@ export const useFieldsStore = createStore({
 		parseField(field: FieldRaw): Field {
 			let name: string | VueI18n.TranslateResult;
 
-			const meta = field.meta === null ? getMetaDefault(field.collection, field.field) : field.meta;
-
 			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
 				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (notEmpty(meta.translation) && meta.translation.length > 0) {
-				for (let i = 0; i < meta.translation.length; i++) {
-					const { locale, translation } = meta.translation[i];
+			} else if (field.meta && notEmpty(field.meta.translation) && field.meta.translation.length > 0) {
+				for (let i = 0; i < field.meta.translation.length; i++) {
+					const { locale, translation } = field.meta.translation[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
@@ -117,7 +88,6 @@ export const useFieldsStore = createStore({
 			return {
 				...field,
 				name,
-				meta,
 			};
 		},
 		async createField(collectionKey: string, newField: Field) {

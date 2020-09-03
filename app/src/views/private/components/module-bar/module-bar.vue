@@ -14,7 +14,7 @@
 				:style="
 					module.color
 						? {
-								'--v-button-background-color-activated': module.color,
+								'--v-button-color-activated': module.color,
 						  }
 						: null
 				"
@@ -29,10 +29,11 @@
 <script lang="ts">
 import { defineComponent, Ref, computed } from '@vue/composition-api';
 
-import { modules } from '@/modules/';
+import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -41,6 +42,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
+		const modules = getModules();
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_listing;
@@ -61,26 +63,39 @@ export default defineComponent({
 				});
 			}
 
-			return modules
-				.map((module) => ({
-					...module,
-					href: module.link || null,
-					to: module.link === undefined ? `/${module.id}/` : null,
-				}))
-				.filter((module) => {
-					if (module.hidden !== undefined) {
-						if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
-							return false;
+			return orderBy(
+				modules.value
+					.map((module) => ({
+						...module,
+						href: module.link || null,
+						to: module.link === undefined ? `/${module.id}/` : null,
+					}))
+					.filter((module) => {
+						if (module.hidden !== undefined) {
+							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
+								return false;
+							}
 						}
-					}
-					return true;
-				});
+						return true;
+					}),
+				['order'],
+				['asc']
+			);
 		});
 
 		return { _modules };
 	},
 });
 </script>
+
+<style>
+body {
+    --module-background: #13181A;
+    --module-background-alt: var(--background-normal);
+    --module-icon: #607D8B;
+    --module-icon-alt: var(--foreground-normal);
+}
+</style>
 
 <style lang="scss" scoped>
 .module-bar {
@@ -98,6 +113,7 @@ export default defineComponent({
 
 	.v-button {
 		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
 		--v-button-color-activated: var(--module-icon-alt);
 		--v-button-background-color: var(--module-background);
 		--v-button-background-color-hover: var(--module-background);

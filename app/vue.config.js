@@ -9,6 +9,7 @@ module.exports = {
 
 	devServer: {
 		allowedHosts: ['localhost', '.gitpod.io'],
+        port: 8080,
 		public: '127.0.0.1:8080',
 		proxy: {
 			'/': {

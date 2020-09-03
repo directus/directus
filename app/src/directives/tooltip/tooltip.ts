@@ -32,6 +32,9 @@ const Tooltip: DirectiveOptions = {
 			bind(element, binding);
 		} else if (!binding.value && binding.oldValue) {
 			unbind(element);
+		} else {
+			unbind(element);
+			bind(element, binding);
 		}
 	},
 };

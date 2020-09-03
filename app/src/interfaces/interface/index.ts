@@ -7,5 +7,6 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'box',
 	component: InterfaceInterface,
 	types: ['string'],
+	system: true,
 	options: [],
 }));

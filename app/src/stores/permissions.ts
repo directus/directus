@@ -1,10 +1,11 @@
 import { createStore } from 'pinia';
 import api from '@/api';
+import { Permission } from '@/types';
 
 export const usePermissionsStore = createStore({
 	id: 'permissionsStore',
 	state: () => ({
-		permissions: [],
+		permissions: [] as Permission[],
 	}),
 	actions: {
 		async hydrate() {

@@ -6,8 +6,7 @@
 				:width="width"
 				:height="height"
 				:style="{
-					'maxWidth': width ? width + 'px' : '100%',
-					'maxHeight': height ? height + 'px' : '100%'
+					'maxWidth': width ? width + 'px' : '100%'
 				}"
 				:alt="title"
 			/>

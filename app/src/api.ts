@@ -53,12 +53,28 @@ export const onError = async (error: RequestError) => {
 	/* istanbul ignore next */
 	const code = error.response?.data?.errors?.[0]?.extensions?.code;
 
-	if (status === 401 && code === 'INVALID_CREDENTIALS' && error.request.responseURL.includes('refresh') === false) {
+	if (
+		status === 401 &&
+		code === 'INVALID_CREDENTIALS' &&
+		error.request.responseURL.includes('refresh') === false &&
+		error.request.responseURL.includes('login') === false
+	) {
+		let newToken: string;
+
 		try {
-			await refresh();
-			return api.request(error.config);
+			newToken = await refresh();
 		} catch {
 			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
+			return Promise.reject();
+		}
+
+		if (newToken) {
+			return api.request({
+				...error.config,
+				headers: {
+					Authorization: `Bearer ${newToken}`,
+				},
+			});
 		}
 	}
 

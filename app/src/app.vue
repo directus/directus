@@ -87,7 +87,7 @@ export default defineComponent({
 
 		const appAccess = computed(() => {
 			if (!userStore.state.currentUser) return true;
-			return userStore.state.currentUser?.role?.app_access;
+			return userStore.state.currentUser?.role?.app_access || false;
 		});
 
 		const error = computed(() => appStore.state.error);

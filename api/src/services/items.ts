@@ -246,7 +246,10 @@ export default class ItemsService implements AbstractService {
 					columns.map(({ column }) => column)
 				);
 
-				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
+				payloadWithoutAliases = await payloadService.processValues(
+					'update',
+					payloadWithoutAliases
+				);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
 					await trx(this.collection)
@@ -331,7 +334,7 @@ export default class ItemsService implements AbstractService {
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 
-		if (this.accountability && this.accountability.admin !== false) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 			});

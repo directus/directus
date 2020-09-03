@@ -1,0 +1,206 @@
+<template>
+	<div class="fields-management">
+		<draggable
+			class="field-grid"
+			:value="sortedFields"
+			handle=".drag-handle"
+			group="fields"
+			:set-data="hideDragImage"
+			@input="setSort"
+		>
+			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
+		</draggable>
+
+		<v-menu attached>
+			<template #activator="{ toggle, active }">
+				<v-button
+					@click="toggle"
+					class="add-field"
+					align="left"
+					:dashed="!active"
+					:class="{ active }"
+					outlined
+					large
+					full-width
+				>
+					<v-icon name="add" />
+					{{ $t('create_field') }}
+				</v-button>
+			</template>
+
+			<v-list dense>
+				<template v-for="(option, index) in addOptions">
+					<v-divider v-if="option.divider === true" :key="index" />
+					<v-list-item
+						v-else
+						:key="option.type"
+						:to="`/settings/data-model/${collection}/+?type=${option.type}`"
+					>
+						<v-list-item-icon>
+							<v-icon :name="option.icon" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ option.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+			</v-list>
+		</v-menu>
+	</div>
+</template>
+
+<script lang="ts">
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import useCollection from '@/composables/use-collection/';
+import Draggable from 'vuedraggable';
+import { Field } from '@/types';
+import { useFieldsStore } from '@/stores/';
+import FieldSelect from './field-select.vue';
+import hideDragImage from '@/utils/hide-drag-image';
+import { i18n } from '@/lang';
+
+type DraggableEvent = {
+	moved?: {
+		element: Field;
+		newIndex: number;
+		oldIndex: number;
+	};
+	added?: {
+		element: Field;
+		newIndex: number;
+	};
+};
+
+export default defineComponent({
+	components: { Draggable, FieldSelect },
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+	},
+	setup(props) {
+		const { collection } = toRefs(props);
+		const { fields } = useCollection(collection);
+		const fieldsStore = useFieldsStore();
+
+		const sortedFields = computed(() => {
+			return fields.value.sort((a, b) => {
+				const aSort = a.meta?.sort || null;
+				const bSort = b.meta?.sort || null;
+
+				if (aSort === bSort) return 0;
+				if (aSort === null) return 1;
+				if (bSort === null) return -1;
+				return aSort < bSort ? -1 : 1;
+			});
+		});
+
+		const addOptions = computed(() => [
+			{
+				type: 'standard',
+				icon: 'create',
+				text: i18n.t('standard_field'),
+			},
+			{
+				type: 'presentation',
+				icon: 'scatter_plot',
+				text: i18n.t('presentation_and_aliases'),
+			},
+			{
+				divider: true,
+			},
+			{
+				type: 'file',
+				icon: 'photo',
+				text: i18n.t('single_file'),
+			},
+			{
+				type: 'files',
+				icon: 'collections',
+				text: i18n.t('multiple_files'),
+			},
+			{
+				divider: true,
+			},
+			{
+				type: 'm2o',
+				icon: 'call_merge',
+				text: i18n.t('m2o_relationship'),
+			},
+			{
+				type: 'o2m',
+				icon: 'call_split',
+				text: i18n.t('o2m_relationship'),
+			},
+			{
+				type: 'm2m',
+				icon: 'import_export',
+				text: i18n.t('m2m_relationship'),
+			},
+		]);
+
+		return {
+			sortedFields,
+			setSort,
+			hideDragImage,
+			addOptions,
+		};
+
+		function setSort(fields: Field[]) {
+			const updates = fields.map((field, index) => ({
+				field: field.field,
+				meta: {
+					sort: index + 1,
+				},
+			}));
+
+			fieldsStore.updateFields(collection.value, updates);
+		}
+	},
+});
+</script>
+
+<style lang="scss" scoped>
+.v-divider {
+	margin: 32px 0;
+}
+
+.fields-management {
+	margin-bottom: 24px;
+	padding: 12px;
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+}
+
+.field-grid {
+	position: relative;
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: 1fr 1fr;
+}
+
+.add-field {
+	--v-button-font-size: 14px;
+	--v-button-background-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-125);
+
+	margin-top: 12px;
+
+	.v-icon {
+		margin-right: 8px;
+	}
+
+	&.active {
+		--v-button-background-color: var(--primary);
+	}
+}
+
+.visible {
+	margin-bottom: 24px;
+}
+
+.list-move {
+	transition: transform 0.5s;
+}
+</style>

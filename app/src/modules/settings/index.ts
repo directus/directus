@@ -1,15 +1,18 @@
 import { defineModule } from '@/modules/define';
-import SettingsProject from './routes/project';
-import { SettingsCollections, SettingsNewCollection, SettingsFields, SettingsFieldDetail } from './routes/data-model/';
-import {
-	SettingsRolesBrowse,
-	SettingsRolesDetail,
-	SettingsRolesPermissionsDetail,
-	SettingsRolesPublicDetail,
-} from './routes/roles';
-import { SettingsWebhooksBrowse, SettingsWebhooksDetail } from './routes/webhooks';
-import { SettingsPresetsBrowse, SettingsPresetsDetail } from './routes/presets';
-import SettingsNotFound from './routes/not-found';
+import SettingsProject from './routes/project/project.vue';
+import SettingsCollections from './routes/data-model/collections/collections.vue';
+import SettingsNewCollection from './routes/data-model/new-collection.vue';
+import SettingsFields from './routes/data-model/fields/fields.vue';
+import SettingsFieldDetail from './routes/data-model/field-detail/field-detail.vue';
+import SettingsRolesBrowse from './routes/roles/browse.vue';
+import SettingsRolesPublicDetail from './routes/roles/public-detail.vue';
+import SettingsRolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
+import SettingsRolesDetail from './routes/roles/detail/detail.vue';
+import SettingsPresetsBrowse from './routes/presets/browse/browse.vue';
+import SettingsPresetsDetail from './routes/presets/detail.vue';
+import SettingsWebhooksBrowse from './routes/webhooks/browse.vue';
+import SettingsWebhooksDetail from './routes/webhooks/detail.vue';
+import SettingsNotFound from './routes/not-found.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'settings',
@@ -119,4 +122,8 @@ export default defineModule(({ i18n }) => ({
 			component: SettingsNotFound,
 		},
 	],
+	preRegisterCheck: (user) => {
+		return user.role.admin === true;
+	},
+	order: Infinity,
 }));

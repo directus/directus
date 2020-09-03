@@ -1,5 +1,6 @@
 /* stylelint-disable */
 
+// Default / Light Mode
 @mixin light {
 	--border-normal: #D6DFE2;
 	--border-normal-alt: #90A4AE;
@@ -16,6 +17,8 @@
 	--background-page: #FFF;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
+
+	--overlay-color: rgba(38, 50, 56, 0.9);
 
 	--primary-10: #EAF2FD;
 	--primary-25: #CBDFFB;

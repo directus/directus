@@ -7,6 +7,7 @@
 
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { reactive, watch } from '@vue/composition-api';
+import { clone } from 'lodash';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -47,7 +48,7 @@ function initLocalStore(
 	const isExisting = field !== '+';
 
 	if (isExisting) {
-		const existingField = fieldsStore.getField(collection, field);
+		const existingField = clone(fieldsStore.getField(collection, field));
 
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;
@@ -107,9 +108,11 @@ function initLocalStore(
 			() => {
 				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
 				state.fieldData.type = field.type;
+				state.relations[0].one_primary = field.field;
 			}
 		);
 
+		// Sync the "auto generate related o2m"
 		watch(
 			() => state.relations[0].one_collection,
 			() => {

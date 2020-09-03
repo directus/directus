@@ -2,6 +2,7 @@
 	<v-modal
 		:active="true"
 		:title="field === '+' ? $t('creating_new_field') : $t('updating_field_field', { field: existingField.name })"
+		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
 	>
 		<template #sidebar>

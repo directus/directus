@@ -1,7 +1,6 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import { uniq } from 'lodash';
-import { Accountability, AbstractServiceOptions, FieldMeta } from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta, Relation } from '../types';
 import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -41,9 +40,10 @@ export default class FieldsService {
 		if (collection) {
 			fields = (await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
+				limit: -1,
 			})) as FieldMeta[];
 		} else {
-			fields = (await nonAuthorizedItemsService.readByQuery({})) as FieldMeta[];
+			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
 		}
 
 		fields = (await this.payloadService.processValues('read', fields)) as FieldMeta[];
@@ -101,12 +101,17 @@ export default class FieldsService {
 		const result = [...columnsWithSystem, ...aliasFieldsAsField];
 
 		// Filter the result so we only return the fields you have read access to
-		if (this.accountability) {
-			const permissions = await this.knex.select('collection', 'fields').from('directus_permissions').where({ role: this.accountability.role, action: 'read' });
+		if (this.accountability && this.accountability.admin !== true) {
+			const permissions = await this.knex
+				.select('collection', 'fields')
+				.from('directus_permissions')
+				.where({ role: this.accountability.role, action: 'read' });
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields.split(',');
+				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(
+					','
+				);
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -114,7 +119,8 @@ export default class FieldsService {
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
+				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false)
+					return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -125,19 +131,20 @@ export default class FieldsService {
 	}
 
 	async readOne(collection: string, field: string) {
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = await this.knex
 				.select('fields')
 				.from('directus_permissions')
 				.where({
 					role: this.accountability.role,
 					collection,
-					action: 'read'
-				}).first();
+					action: 'read',
+				})
+				.first();
 
 			if (!permissions) throw new ForbiddenException();
 			if (permissions.fields !== '*') {
-				const allowedFields = permissions.fields.split(',');
+				const allowedFields = (permissions.fields || '').split(',');
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
 			}
 		}
@@ -172,6 +179,10 @@ export default class FieldsService {
 		field: Partial<Field> & { field: string; type: typeof types[number] },
 		table?: CreateTableBuilder // allows collection creation to
 	) {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException('Only admins can perform this action.');
+		}
+
 		/**
 		 * @todo
 		 * Check if table / directus_fields row already exists
@@ -198,7 +209,11 @@ export default class FieldsService {
 
 	/** @todo research how to make this happen in SQLite / Redshift */
 
-	async updateField(collection: string, field: RawField, accountability?: Accountability) {
+	async updateField(collection: string, field: RawField) {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException('Only admins can perform this action.');
+		}
+
 		if (field.schema) {
 			await this.knex.schema.alterTable(collection, (table) => {
 				let column: ColumnBuilder;
@@ -238,25 +253,62 @@ export default class FieldsService {
 				.from('directus_fields')
 				.where({ collection, field: field.field })
 				.first();
-			if (!record) throw new FieldNotFoundException(collection, field.field);
 
-			await this.itemsService.update({
-				...field.meta,
-				collection: collection,
-				field: field.field,
-			}, record.id);
+			if (record) {
+				await this.itemsService.update(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					record.id
+				);
+			} else {
+				await this.itemsService.create({
+					...field.meta,
+					collection: collection,
+					field: field.field,
+				});
+			}
 		}
 
 		return field.field;
 	}
 
 	/** @todo save accountability */
-	async deleteField(collection: string, field: string, accountability?: Accountability) {
-		await database('directus_fields').delete().where({ collection, field });
+	async deleteField(collection: string, field: string) {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException('Only admins can perform this action.');
+		}
 
-		await database.schema.table(collection, (table) => {
-			table.dropColumn(field);
-		});
+		await this.knex('directus_fields').delete().where({ collection, field });
+
+		if (await schemaInspector.hasColumn(collection, field)) {
+			await this.knex.schema.table(collection, (table) => {
+				table.dropColumn(field);
+			});
+		}
+
+		const relations = await this.knex
+			.select<Relation[]>('*')
+			.from('directus_relations')
+			.where({ many_collection: collection, many_field: field })
+			.orWhere({ one_collection: collection, one_field: field });
+
+		for (const relation of relations) {
+			const isM2O = relation.many_collection === collection && relation.many_field === field;
+
+			if (isM2O) {
+				await this.knex('directus_relations')
+					.delete()
+					.where({ many_collection: collection, many_field: field });
+				await this.deleteField(relation.one_collection, relation.one_field);
+			} else {
+				await this.knex('directus_relations')
+					.update({ one_field: null })
+					.where({ one_collection: collection, one_field: field });
+			}
+		}
 	}
 
 	public addColumnToTable(table: CreateTableBuilder, field: Field) {

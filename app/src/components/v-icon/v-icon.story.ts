@@ -54,7 +54,6 @@ export const interactive = () => ({
 	template: `
 		<v-icon
 			:name="name"
-			:outline="outline"
 			:sup="sup"
 			:style="{'--v-icon-color': color}"
 			:x-small="size === 'xSmall'"
