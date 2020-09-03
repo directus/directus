@@ -8,16 +8,21 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :placeholder="$t('select_one')" :items="items" v-model="relations[0].one_collection" />
+				<v-select
+					:placeholder="$t('select_one')"
+					:items="items"
+					v-model="relations[0].one_collection"
+					:disabled="isExisting"
+				/>
 			</div>
 			<v-input disabled :value="fieldData.field" />
 			<v-input disabled :value="relatedPrimary" />
 			<v-icon name="arrow_back" />
 		</div>
 
-		<v-divider />
+		<v-divider v-if="!isExisting" />
 
-		<div class="grid">
+		<div class="grid" v-if="!isExisting">
 			<div class="field">
 				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
@@ -51,6 +56,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		isExisting: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
@@ -106,7 +115,7 @@ export default defineComponent({
 					if (enabled === true) {
 						state.newFields = [
 							{
-								field: '',
+								field: state.relations[0].one_collection,
 								collection: state.relations[0].one_collection,
 								meta: {
 									special: 'o2m',
