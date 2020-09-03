@@ -27,10 +27,7 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 			// have chosen to export csv
 			const { Parser } = require('json2csv');
 
-			// need to get the actual fields in data
 			const exportData = res.locals.data.data;
-			/** @todo deep object parsing to get all fields
-			 */
 
 			const json2csvParser = new Parser();
 			const csv = await json2csvParser.parse(exportData);
