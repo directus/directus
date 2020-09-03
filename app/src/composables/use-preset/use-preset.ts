@@ -147,6 +147,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	async function resetPreset() {
 		localPreset.value = {
+			...localPreset.value,
 			view_query: null,
 			view_options: null,
 			view_type: 'tabular',
