@@ -29,7 +29,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
-				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" />
+				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" db-safe />
 			</div>
 			<v-icon name="arrow_forward" />
 		</div>
