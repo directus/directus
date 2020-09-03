@@ -30,6 +30,8 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 
 			// need to get the actual fields in data
 			const exportData = res.locals.data;
+			/** @todo deep object parsing to get all fields
+			 */
 
 			const fieldsOut = Object.keys(exportData);
 			const csv = await json2csv.parse(exportData, fieldsOut);
