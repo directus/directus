@@ -13,6 +13,9 @@ import SettingsPresetsDetail from './routes/presets/detail.vue';
 import SettingsWebhooksBrowse from './routes/webhooks/browse.vue';
 import SettingsWebhooksDetail from './routes/webhooks/detail.vue';
 import SettingsNotFound from './routes/not-found.vue';
+import api from '@/api';
+import { useCollection } from '@/composables/use-collection';
+import { ref } from '@vue/composition-api';
 
 export default defineModule(({ i18n }) => ({
 	id: 'settings',
@@ -47,6 +50,15 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-fields',
 			path: '/data-model/:collection',
 			component: SettingsFields,
+			async beforeEnter(to, from, next) {
+				const { info } = useCollection(ref(to.params.collection));
+
+				if (!info.value?.meta) {
+					await api.patch(`/collections/${to.params.collection}`, { meta: {} });
+				}
+
+				next();
+			},
 			props: (route) => ({
 				collection: route.params.collection,
 				field: route.params.field,
