@@ -15,14 +15,22 @@
 					</template>
 
 					<template #append>
-						<v-icon
-							v-if="hidden"
-							name="visibility_off"
-							class="hidden-icon"
-							v-tooltip="$t('hidden_field')"
-							small
-						/>
-						<v-icon @click.stop="toggle" name="more_vert" />
+						<div class="icons">
+							<v-icon
+								v-if="field.schema && field.schema.is_primary_key"
+								name="vpn_key"
+								small
+								v-tooltip="$t('primary_key')"
+							/>
+							<v-icon
+								v-if="hidden"
+								name="visibility_off"
+								class="hidden-icon"
+								v-tooltip="$t('hidden_field')"
+								small
+							/>
+							<v-icon @click.stop="toggle" name="more_vert" />
+						</div>
 					</template>
 				</v-input>
 			</template>
@@ -81,7 +89,11 @@
 
 				<v-divider />
 
-				<v-list-item @click="deleteActive = true" class="danger">
+				<v-list-item
+					@click="deleteActive = true"
+					class="danger"
+					:disabled="field.schema && field.schema.is_primary_key === true"
+				>
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_field') }}
@@ -336,5 +348,11 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
+}
+
+.icons {
+	.v-icon + .v-icon:not(:last-child) {
+		margin-left: 8px;
+	}
 }
 </style>

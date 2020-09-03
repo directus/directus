@@ -71,6 +71,10 @@ body {
 			&.dense:not(.nav) #{$this} .v-icon {
 				--v-icon-color: var(--v-list-item-icon-color);
 			}
+
+			&.disabled #{$this} .v-icon {
+				--v-icon-color: var(--foreground-subdued) !important;
+			}
 		}
 	}
 }
