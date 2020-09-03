@@ -104,7 +104,7 @@
 	"create_field": "Create Field",
 	"update_field": "Update Field",
 
-	"creating_new_field": "Creating New Field",
+	"creating_new_field": "Creating New Field within {collection}",
 	"updating_field_field": "Updating Field {field}",
 	"within_collection": "Within {collection}",
 
