@@ -10,7 +10,10 @@ import { ExportFailedException } from '../exceptions';
  */
 
 const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (!req.query.export) return next();
+	if (!req.query.export) {
+		res.json(res.locals.data);
+		return next();
+	}
 	// only want to export out on get
 	if (req.method == 'GET') {
 		const exportType = req.query.export;
@@ -21,20 +24,16 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		if (exportType == 'csv') {
 			// have chosen to export csv
-			console.log('get here');
-			const { Parser } = require('json2csv');
-			const exportData = res.json;
+			const json2csv = require('json2csv');
 
-			const fields = Object.keys(exportData);
+			const exportData = res.locals.data;
 
-			Parser({ data: exportData }, function (err: any, csvStr: string) {
-				if (err) {
-					throw new ExportFailedException('CSV generation failed');
-				}
-				res.type('text/csv');
-				res.attachment('export-file.csv');
-				res.send(csvStr);
-			});
+			const fieldsOut = Object.keys(exportData);
+			const csv = await json2csv.parse(exportData, fieldsOut);
+
+			res.setHeader('Content-disposition', 'attachment; filename=testing.csv');
+			res.set('Content-Type', 'text/csv');
+			res.status(200).send(csv);
 		}
 	}
 

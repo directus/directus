@@ -23,14 +23,16 @@ router.post(
 router.get(
 	'/',
 	useCollection('directus_collections'),
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
 		const collections = await collectionsService.readByQuery();
 		const meta = await metaService.getMetaForQuery(req.collection, {});
 
-		res.json({ data: collections || null, meta });
+		res.locals.data = { data: collections || null, meta };
+
+		return next();
 	})
 );
 
@@ -38,13 +40,16 @@ router.get(
 	'/:collection',
 	useCollection('directus_collections'),
 	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({ accountability: req.accountability });
 		const collectionKey = req.params.collection.includes(',')
 			? req.params.collection.split(',')
 			: req.params.collection;
 		const collection = await collectionsService.readByKey(collectionKey as any);
-		res.json({ data: collection || null });
+		res.locals.data = { data: collection || null };
+
+		return next();
+		// can't use res.json as this ends the reponse which is not what we want
 	})
 );
 
