@@ -22,9 +22,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	const savePreset = async (preset?: Partial<Preset>) => {
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
-
 		localPreset.value.id = updatedValues.id;
-
 		return updatedValues;
 	};
 
@@ -144,7 +142,20 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		savePreset,
 		saveCurrentAsBookmark,
 		title,
+		resetPreset,
 	};
+
+	async function resetPreset() {
+		localPreset.value = {
+			view_query: null,
+			view_options: null,
+			view_type: 'tabular',
+			filters: null,
+			search_query: null,
+		};
+
+		await savePreset();
+	}
 
 	function initLocalPreset() {
 		if (bookmark.value === null) {
