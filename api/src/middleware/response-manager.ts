@@ -25,15 +25,16 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		if (exportType == 'csv') {
 			// have chosen to export csv
-			const json2csv = require('json2csv');
+			const { Parser } = require('json2csv');
 
 			// need to get the actual fields in data
-			const exportData = res.locals.data;
+			const exportData = res.locals.data.data;
 			/** @todo deep object parsing to get all fields
 			 */
 
-			const fieldsOut = Object.keys(exportData);
-			const csv = await json2csv.parse(exportData, fieldsOut);
+			const json2csvParser = new Parser();
+			const csv = await json2csvParser.parse(exportData);
+
 			// will this be ok for larger files?
 			res.setHeader('Content-disposition', 'attachment; filename=export.csv');
 			res.set('Content-Type', 'text/csv');
