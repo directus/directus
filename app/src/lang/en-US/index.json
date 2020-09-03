@@ -89,6 +89,9 @@
 
 	"preset_colors": "Preset Colors",
 
+	"color_dot": "Color Dot",
+	"default_color": "Default Color",
+
 	"global": "Global",
 
 	"admins_have_all_permissions": "Admins have all permissions",
