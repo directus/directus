@@ -236,6 +236,8 @@ export default defineComponent({
 					},
 				});
 
+				notificationsStore.remove(fileUploadNotificationID);
+
 				emitter.emit(Events.upload);
 
 				notificationsStore.remove(fileUploadNotificationID);
