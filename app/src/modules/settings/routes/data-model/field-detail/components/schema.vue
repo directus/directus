@@ -127,7 +127,7 @@ export default defineComponent({
 				},
 				{
 					text: i18n.t('datetime'),
-					value: 'datetime',
+					value: 'dateTime',
 				},
 				{
 					text: i18n.t('date'),

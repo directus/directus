@@ -33,7 +33,7 @@ import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
-import { state } from '../store';
+import { state, availableDisplays } from '../store';
 
 export default defineComponent({
 	props: {
@@ -49,14 +49,6 @@ export default defineComponent({
 		const selectedInterface = computed(() => {
 			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
 		});
-
-		const availableDisplays = computed(() =>
-			displays.value.filter((display) => {
-				const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-				const matchesRelation = true;
-				return matchesType && matchesRelation;
-			})
-		);
 
 		const selectItems = computed(() => {
 			const recommended = selectedInterface.value?.recommendedDisplays || [];

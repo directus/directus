@@ -33,11 +33,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, watch } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
-import { state } from '../store';
+import { state, availableInterfaces } from '../store';
 
 export default defineComponent({
 	props: {
@@ -48,30 +48,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const interfaces = getInterfaces();
-
-		const availableInterfaces = computed(() => {
-			return interfaces.value
-				.filter((inter) => {
-					// Filter out all system interfaces
-					if (inter.system !== undefined && inter.system === true) return false;
-
-					const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-					let matchesRelation = false;
-
-					if (props.type === 'standard' || props.type === 'presentation') {
-						matchesRelation = inter.relationship === null || inter.relationship === undefined;
-					} else if (props.type === 'file') {
-						matchesRelation = inter.relationship === 'm2o';
-					} else if (props.type === 'files') {
-						matchesRelation = inter.relationship === 'm2m';
-					} else {
-						matchesRelation = inter.relationship === props.type;
-					}
-
-					return matchesType && matchesRelation;
-				})
-				.sort((a, b) => (a.name > b.name ? 1 : -1));
-		});
 
 		const selectItems = computed(() => {
 			const type: string = state.fieldData?.type || 'alias';
