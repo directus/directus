@@ -50,7 +50,13 @@ export default defineComponent({
 			};
 		});
 
-		watch(() => settingsStore.state.settings?.project_color, setFavicon);
+		watch(
+			[() => settingsStore.state.settings?.project_color, () => settingsStore.state.settings?.project_logo],
+			() => {
+				const hasCustomLogo = !!settingsStore.state.settings?.project_logo;
+				setFavicon(settingsStore.state.settings?.project_color || '#2f80ed', hasCustomLogo);
+			}
+		);
 
 		const { width } = useWindowSize();
 
