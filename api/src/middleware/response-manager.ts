@@ -12,7 +12,6 @@ import { ExportFailedException } from '../exceptions';
 const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.query.export) {
 		res.json(res.locals.data);
-		return next();
 	}
 	// only want to export out on get
 	if (req.method == 'GET') {
@@ -20,18 +19,22 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		if (exportType == 'json') {
 			// have chosen to export json
+			res.setHeader('Content-disposition', 'attachment; filename=export.json');
+			res.set('Content-Type', 'text/json');
+			res.status(200).send(res.locals.data);
 		}
 
 		if (exportType == 'csv') {
 			// have chosen to export csv
 			const json2csv = require('json2csv');
 
+			// need to get the actual fields in data
 			const exportData = res.locals.data;
 
 			const fieldsOut = Object.keys(exportData);
 			const csv = await json2csv.parse(exportData, fieldsOut);
 
-			res.setHeader('Content-disposition', 'attachment; filename=testing.csv');
+			res.setHeader('Content-disposition', 'attachment; filename=export.csv');
 			res.set('Content-Type', 'text/csv');
 			res.status(200).send(csv);
 		}
