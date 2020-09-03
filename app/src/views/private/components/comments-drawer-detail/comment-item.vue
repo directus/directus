@@ -105,7 +105,7 @@ export default defineComponent({
 
 	.content {
 		max-height: 300px;
-		overflow-y: hidden;
+		overflow-y: auto;
 
 		::v-deep {
 			a {
