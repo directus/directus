@@ -2,11 +2,12 @@
  * middleware to manage actions on responses such as
  * export / import and caching
  * @todo move set caching into here.
- * @todo error catching for export
+ * @todo error catching for
  *
  */
 import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
+import { ExportFailedException } from '../exceptions';
 
 const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.query.export) {
@@ -30,12 +31,15 @@ const responseManager: RequestHandler = asyncHandler(async (req, res, next) => {
 			const exportData = res.locals.data.data;
 
 			const json2csvParser = new Parser();
-			const csv = await json2csvParser.parse(exportData);
-
-			// will this be ok for larger files?
-			res.setHeader('Content-disposition', 'attachment; filename=export.csv');
-			res.set('Content-Type', 'text/csv');
-			res.status(200).send(csv);
+			try {
+				const csv = await json2csvParser.parse(exportData);
+				// will this be ok for larger files?
+				res.setHeader('Content-disposition', 'attachment; filename=export.csv');
+				res.set('Content-Type', 'text/csv');
+				res.status(200).send(csv);
+			} catch (err) {
+				throw new ExportFailedException('CSV parse failed.');
+			}
 		}
 	}
 
