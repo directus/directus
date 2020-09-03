@@ -9,7 +9,7 @@ import DisplayImage from './image';
 import DisplayMimeType from './mime-type';
 import DisplayRating from './rating';
 import DisplayRaw from './raw';
-import DisplayStatusDot from './status-dot/';
+import DisplayColorDot from './color-dot/';
 import DisplayTags from './tags/';
 import DisplayTemplate from './template';
 import DisplayUser from './user';
@@ -26,7 +26,7 @@ export const displays = [
 	DisplayImage,
 	DisplayMimeType,
 	DisplayRating,
-	DisplayStatusDot,
+	DisplayColorDot,
 	DisplayTags,
 	DisplayTemplate,
 	DisplayUser,
