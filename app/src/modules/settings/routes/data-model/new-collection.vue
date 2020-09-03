@@ -27,7 +27,13 @@
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
 				<div class="type-label">{{ $t('name') }}</div>
-				<v-input class="monospace" v-model="collectionName" db-safe :placeholder="$t('a_unique_table_name')" />
+				<v-input
+					autofocus
+					class="monospace"
+					v-model="collectionName"
+					db-safe
+					:placeholder="$t('a_unique_table_name')"
+				/>
 				<v-divider />
 				<div class="grid">
 					<div>
