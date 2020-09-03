@@ -29,21 +29,21 @@ export const usePresetsStore = createStore({
 				// All user saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[user][eq]': id,
+						'filter[user][_eq]': id,
 					},
 				}),
 				// All role saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[role][eq]': role.id,
-						'filter[user][null]': 1,
+						'filter[role][_eq]': role.id,
+						'filter[user][_null]': true,
 					},
 				}),
 				// All global saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[role][null]': 1,
-						'filter[user][null]': 1,
+						'filter[role][_null]': true,
+						'filter[user][_null]': true,
 					},
 				}),
 			]);
