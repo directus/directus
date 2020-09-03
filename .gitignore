@@ -4,11 +4,3 @@ node_modules
 .env
 npm-debug.log
 lerna-debug.log
-
-# This is always a point of debate, but:
-# * package-lock is auto-generate by lerna, which generates it differently from npm
-# * We actually _want_ people to be on the latests semver versions for local development
-# * package-locks are ignored when publishing to NPM _anyway_, so it doesn't matter for releases
-# * the app is bundled on release, so its package versions are locked by definition
-
-package-lock.json
