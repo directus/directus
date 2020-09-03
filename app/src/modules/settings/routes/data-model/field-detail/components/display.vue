@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import displays from '@/displays';
+import { getDisplays } from '@/displays';
 
 import { state } from '../store';
 
@@ -41,21 +41,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const displays = getDisplays();
 		const availableDisplays = computed(() =>
-			displays.filter((display) => {
+			displays.value.filter((display) => {
 				const matchesType = display.types.includes(state.fieldData?.type || 'alias');
 				const matchesRelation = true;
-
-				// if (props.type === 'standard') {
-				// 	matchesRelation = display.relationship === null || display.relationship === undefined;
-				// } else if (props.type === 'file') {
-				// 	matchesRelation = display.relationship === 'm2o';
-				// } else if (props.type === 'files') {
-				// 	matchesRelation = display.relationship === 'm2m';
-				// } else {
-				// 	matchesRelation = display.relationship === props.type;
-				// }
-
 				return matchesType && matchesRelation;
 			})
 		);
@@ -69,7 +59,7 @@ export default defineComponent({
 		);
 
 		const selectedDisplay = computed(() => {
-			return displays.find((display) => display.id === state.fieldData.meta.display);
+			return displays.value.find((display) => display.id === state.fieldData.meta.display);
 		});
 
 		return { fieldData: state.fieldData, selectItems, selectedDisplay };

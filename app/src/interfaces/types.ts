@@ -14,6 +14,7 @@ export type InterfaceConfig = {
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 	system?: boolean;
+	recommendedDisplays?: string[];
 };
 
 export type InterfaceContext = { i18n: VueI18n };

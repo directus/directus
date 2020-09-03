@@ -1,34 +1,12 @@
-import DisplayBadge from './badge';
-import DisplayCollection from './collection';
-import DisplayDateTime from './datetime';
-import DisplayFile from './file';
-import DisplayFilesize from './filesize';
-import DisplayFormattedValue from './formatted-value';
-import DisplayIcon from './icon/';
-import DisplayImage from './image';
-import DisplayMimeType from './mime-type';
-import DisplayRating from './rating';
-import DisplayRaw from './raw';
-import DisplayColorDot from './color-dot/';
-import DisplayTags from './tags/';
-import DisplayTemplate from './template';
-import DisplayUser from './user';
+import { ref, Ref } from '@vue/composition-api';
+import { DisplayConfig } from './types';
 
-export const displays = [
-	DisplayRaw,
-	DisplayFormattedValue,
-	DisplayBadge,
-	DisplayCollection,
-	DisplayDateTime,
-	DisplayFile,
-	DisplayFilesize,
-	DisplayIcon,
-	DisplayImage,
-	DisplayMimeType,
-	DisplayRating,
-	DisplayColorDot,
-	DisplayTags,
-	DisplayTemplate,
-	DisplayUser,
-];
-export default displays;
+let displays: Ref<DisplayConfig[]>;
+
+export function getDisplays() {
+	if (!displays) {
+		displays = ref([]);
+	}
+
+	return displays;
+}
