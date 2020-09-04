@@ -181,7 +181,9 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.type === 'text') {
+			if (props.type === 'number') {
+				emit('input', Number(value));
+			} else {
 				if (props.trim === true) {
 					value = value.trim();
 				}
@@ -200,8 +202,6 @@ export default defineComponent({
 				}
 
 				emit('input', value);
-			} else if (props.type === 'number') {
-				emit('input', Number(value));
 			}
 		}
 
