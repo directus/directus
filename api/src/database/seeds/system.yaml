@@ -637,15 +637,17 @@ rows:
           template: '{{ locale }}'
           fields:
           - field: locale
+            name: Locale
             type: string
-            system:
+            meta:
               interface: language
               options:
                 limit: true
               width: half
           - field: translation
+            name: Translation
             type: string
-            system:
+            meta:
               interface: text-input
               width: half
         locked: true
