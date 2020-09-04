@@ -19,13 +19,7 @@
 		<template v-if="bookmarks.length > 0">
 			<v-divider />
 
-			<v-list-item exact v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to" class="bookmark">
-				<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
-				<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
-				<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
-					<v-icon :name="bookmark.scope === 'role' ? 'people' : 'public'" />
-				</v-list-item-icon>
-			</v-list-item>
+			<navigation-bookmark v-for="bookmark of bookmarks" :key="bookmark.id" :bookmark="bookmark" />
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
@@ -44,8 +38,10 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
+import NavigationBookmark from './navigation-bookmark.vue';
 
 export default defineComponent({
+	components: { NavigationBookmark },
 	props: {
 		exact: {
 			type: Boolean,
@@ -97,16 +93,5 @@ export default defineComponent({
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}
-}
-
-.bookmark-scope {
-	--v-icon-color: var(--foreground-subdued);
-
-	opacity: 0;
-	transition: opacity var(--fast) var(--transition);
-}
-
-.bookmark:hover .bookmark-scope {
-	opacity: 1;
 }
 </style>
