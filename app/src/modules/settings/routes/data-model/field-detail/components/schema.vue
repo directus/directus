@@ -42,11 +42,7 @@
 			<!-- @todo base default value field type on selected type -->
 			<div class="field" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('default_value') }}</div>
-				<v-input
-					class="monospace"
-					v-model="fieldData.schema.default_value"
-					:placeholder="$t('add_a_default_value')"
-				/>
+				<v-input class="monospace" v-model="default_value" :placeholder="$t('add_a_default_value')" />
 			</div>
 
 			<div class="field" v-if="fieldData.schema">
@@ -167,13 +163,38 @@ export default defineComponent({
 			return i18n.t('choose_a_type');
 		});
 
-		return { fieldData: state.fieldData, typesWithLabels, setType, typeDisabled, typePlaceholder };
+		const default_value = computed({
+			get() {
+				switch (state.fieldData.type) {
+					case 'boolean':
+						return String(state.fieldData.schema.default_value || false);
+					default:
+						return state.fieldData.schema.default_value;
+				}
+			},
+			set(newVal: string) {
+				switch (state.fieldData.type) {
+					case 'boolean':
+						state.fieldData.schema.default_value = Boolean(newVal);
+					default:
+						return state.fieldData.schema.default_value;
+				}
+			},
+		});
+
+		return { fieldData: state.fieldData, typesWithLabels, setType, typeDisabled, typePlaceholder, default_value };
 
 		function setType(value: typeof types[number]) {
-			if (value === 'uuid') {
-				state.fieldData.meta.special = 'uuid';
-			} else {
-				state.fieldData.meta.special = null;
+			switch (value) {
+				case 'uuid':
+					state.fieldData.meta.special = 'uuid';
+					break;
+				case 'boolean':
+					state.fieldData.meta.special = 'boolean';
+					state.fieldData.schema.is_nullable = false;
+					break;
+				default:
+					state.fieldData.meta.special = null;
 			}
 
 			// We'll reset the interface/display as they most likely won't work for the newly selected
