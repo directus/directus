@@ -212,7 +212,7 @@ export default defineComponent({
 
 			input.value.stepUp();
 
-			if (input.value.value) {
+			if (input.value.value != null) {
 				return emit('input', Number(input.value.value));
 			}
 		}

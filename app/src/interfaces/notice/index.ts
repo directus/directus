@@ -19,15 +19,15 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'dropdown',
 				default_value: 'normal',
 				options: {
-					items: [
-						{ itemText: i18n.t('normal'), itemValue: 'normal' },
-						{ itemText: i18n.t('info'), itemValue: 'info' },
-						{ itemText: i18n.t('success'), itemValue: 'success' },
-						{ itemText: i18n.t('warning'), itemValue: 'warning' },
-						{ itemText: i18n.t('danger'), itemValue: 'danger' },
+					choices: [
+						{ text: i18n.t('normal'), value: 'normal' },
+						{ text: i18n.t('info'), value: 'info' },
+						{ text: i18n.t('success'), value: 'success' },
+						{ text: i18n.t('warning'), value: 'warning' },
+						{ text: i18n.t('danger'), value: 'danger' },
 					],
 				},
-			}
+			},
 		},
 		{
 			field: 'icon',
@@ -36,7 +36,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'text',
@@ -45,7 +45,10 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'full',
 				interface: 'textarea',
-			}
+				options: {
+					placeholder: 'Enter notice content here...',
+				},
+			},
 		},
 	],
 }));

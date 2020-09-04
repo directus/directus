@@ -23,6 +23,7 @@ export default defineInterface(({ i18n }) => ({
 							type: 'string',
 							name: i18n.t('text'),
 							meta: {
+								width: 'half',
 								interface: 'text-input',
 							},
 						},
@@ -31,6 +32,7 @@ export default defineInterface(({ i18n }) => ({
 							type: 'string',
 							name: i18n.t('value'),
 							meta: {
+								width: 'half',
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
@@ -49,9 +51,6 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'icon',
 			},
-			schema: {
-				default_value: 'radio_button_checked',
-			},
 		},
 		{
 			field: 'iconOff',
@@ -61,9 +60,6 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'icon',
 			},
-			schema: {
-				default_value: 'radio_button_unchecked',
-			},
 		},
 		{
 			field: 'color',
@@ -72,9 +68,6 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'color',
-			},
-			schema: {
-				default_value: '#2f80ed',
 			},
 		},
 		{
