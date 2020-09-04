@@ -22,7 +22,6 @@ export const usePresetsStore = createStore({
 	actions: {
 		async hydrate() {
 			// Hydrate is only called for logged in users, therefore, currentUser exists
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const { id, role } = useUserStore().state.currentUser!;
 
 			const values = await Promise.all([
@@ -65,6 +64,7 @@ export const usePresetsStore = createStore({
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				const updatedPreset = response.data.data;
+
 				if (preset.id === updatedPreset.id) {
 					return updatedPreset;
 				}
@@ -166,6 +166,19 @@ export const usePresetsStore = createStore({
 				delete preset.id;
 				return await this.update(id, preset);
 			}
+		},
+
+		async saveLocal(updatedPreset: Preset) {
+			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+				if (preset.id === updatedPreset.id) {
+					return {
+						...updatedPreset,
+						$saved: false,
+					};
+				}
+
+				return preset;
+			});
 		},
 	},
 });

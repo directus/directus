@@ -13,30 +13,38 @@
 		</template>
 
 		<template #title-outer:append>
-			<bookmark-add
-				v-if="!bookmark"
-				class="bookmark-add"
-				v-model="bookmarkDialogActive"
-				@save="createBookmark"
-				:saving="creatingBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark_outline" @click="on" />
-				</template>
-			</bookmark-add>
+			<div class="bookmark-controls">
+				<bookmark-add
+					v-if="!bookmark"
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
 
-			<bookmark-edit
-				v-else
-				class="bookmark-edit"
-				v-model="bookmarkDialogActive"
-				:saving="editingBookmark"
-				:name="bookmarkName"
-				@save="editBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark" @click="on" />
+				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
+
+				<template v-else-if="bookmarkIsMine">
+					<v-progress-circular indeterminate small v-if="bookmarkSaving" />
+					<v-icon class="save" v-else @click="savePreset()" name="save" />
 				</template>
-			</bookmark-edit>
+
+				<bookmark-add
+					v-else
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
+			</div>
 		</template>
 
 		<template #actions:prepend>
@@ -277,6 +285,9 @@ export default defineComponent({
 			saveCurrentAsBookmark,
 			title: bookmarkName,
 			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			saving: bookmarkSaving,
 		} = usePreset(collection, bookmarkID);
 
 		const {
@@ -345,6 +356,9 @@ export default defineComponent({
 			deleteError,
 			createAllowed,
 			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			bookmarkSaving,
 		};
 
 		function useBreadcrumb() {
@@ -559,25 +573,31 @@ export default defineComponent({
 	--layout-offset-top: 64px;
 }
 
-.bookmark-add .toggle,
-.bookmark-edit .toggle {
-	margin-left: 8px;
-	transition: color var(--fast) var(--transition);
-}
-
-.bookmark-add {
-	color: var(--foreground-subdued);
-
-	&:hover {
-		color: var(--foreground-normal);
-	}
-}
-
-.bookmark-edit {
-	color: var(--primary);
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.bookmark-controls {
+	.add,
+	.save,
+	.saved,
+	.v-progress-circular {
+		display: inline-block;
+		margin-left: 8px;
+	}
+
+	.add,
+	.save {
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.saved {
+		color: var(--primary);
+	}
 }
 </style>

@@ -143,7 +143,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, PropType, ref, computed, inject, toRefs, Ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from '@vue/composition-api';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
@@ -388,6 +388,13 @@ export default defineComponent({
 			});
 
 			const localWidths = ref<{ [field: string]: number }>({});
+
+			watch(
+				() => _viewOptions.value,
+				() => {
+					localWidths.value = {};
+				}
+			);
 
 			const saveWidthsToViewOptions = debounce(() => {
 				_viewOptions.value = {
