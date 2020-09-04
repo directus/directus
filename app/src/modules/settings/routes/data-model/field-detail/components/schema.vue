@@ -64,6 +64,34 @@
 				<v-checkbox v-model="fieldData.schema.is_nullable" :label="$t('allow_null_label')" block />
 			</div>
 
+			<div class="field full">
+				<div class="label type-label">{{ $t('translation') }}</div>
+				<interface-repeater
+					v-model="fieldData.meta.translation"
+					:template="'{{ locale }}'"
+					:fields="[
+						{
+							field: 'locale',
+							type: 'string',
+							name: $t('language'),
+							meta: {
+								interface: 'system-language',
+								width: 'half',
+							},
+						},
+						{
+							field: 'translation',
+							type: 'string',
+							name: $t('translation'),
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+							},
+						},
+					]"
+				/>
+			</div>
+
 			<!--
 			@todo add unique when the API supports it
 
