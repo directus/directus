@@ -117,8 +117,6 @@ export default defineComponent({
 		});
 
 		function processArray(array: string[]): string[] {
-			if (!Array.isArray(array)) return [];
-
 			array = array.map((val) => (props.lowercase ? val.toLowerCase().trim() : val.trim()));
 
 			if (props.alphabetize) {
