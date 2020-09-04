@@ -581,7 +581,6 @@ rows:
         width: full
       - collection: directus_collections
         field: collection
-        special:
         interface: text-input
         options:
           font: monospace
@@ -591,7 +590,6 @@ rows:
         width: half
       - collection: directus_collections
         field: icon
-        special:
         interface: icon
         options:
         locked: true
@@ -599,7 +597,6 @@ rows:
         width: half
       - collection: directus_collections
         field: note
-        special:
         interface: text-input
         options:
           placeholder: A description of this collection...
@@ -608,7 +605,6 @@ rows:
         width: full
       - collection: directus_collections
         field: display_template
-        special:
         interface: display-template
         options:
           collectionField: collection
@@ -668,7 +664,6 @@ rows:
         width: full
       - collection: directus_collections
         field: archive_field
-        special:
         interface: field
         options:
           collectionField: collection
@@ -679,8 +674,8 @@ rows:
         width: half
       - collection: directus_collections
         field: archive_app_filter
-        special:
         interface: toggle
+        special: boolean
         options:
           label: Enable App Archive Filter
         locked: true
@@ -688,7 +683,6 @@ rows:
         width: half
       - collection: directus_collections
         field: archive_value
-        special:
         interface: text-input
         options:
           font: monospace
@@ -699,7 +693,6 @@ rows:
         width: half
       - collection: directus_collections
         field: unarchive_value
-        special:
         interface: text-input
         options:
           font: monospace
@@ -721,7 +714,6 @@ rows:
         width: full
       - collection: directus_collections
         field: sort_field
-        special: ''
         interface: field
         options:
           collectionField: collection
