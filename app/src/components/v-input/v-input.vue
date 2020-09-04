@@ -121,6 +121,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		trim: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const input = ref<HTMLInputElement | null>(null);
@@ -176,6 +180,10 @@ export default defineComponent({
 
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
+
+			if (props.trim === true) {
+				value = value.trim();
+			}
 
 			if (props.slug === true) {
 				const endsWithSpace = value.endsWith(' ');

@@ -3,9 +3,10 @@
 		:value="value"
 		:placeholder="placeholder"
 		:disabled="disabled"
+		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
-		:maxlength="length"
+		:max="length"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -67,7 +68,7 @@ export default defineComponent({
 			default: 'sans-serif',
 		},
 		length: {
-			type: [Number, String],
+			type: Number,
 			default: null,
 		},
 	},
