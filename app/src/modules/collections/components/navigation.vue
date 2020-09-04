@@ -19,7 +19,7 @@
 		<template v-if="bookmarks.length > 0">
 			<v-divider />
 
-			<v-list-item exact v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to">
+			<v-list-item exact v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to" class="bookmark">
 				<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
 				<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
 				<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
@@ -101,5 +101,12 @@ export default defineComponent({
 
 .bookmark-scope {
 	--v-icon-color: var(--foreground-subdued);
+
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition);
+}
+
+.bookmark:hover .bookmark-scope {
+	opacity: 1;
 }
 </style>
