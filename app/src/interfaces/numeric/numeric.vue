@@ -25,7 +25,7 @@ import { defineComponent, PropType } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
-			type: [Number, String],
+			type: Number,
 			default: null,
 		},
 		disabled: {

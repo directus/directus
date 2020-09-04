@@ -181,24 +181,28 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.trim === true) {
-				value = value.trim();
-			}
+			if (props.type === 'text') {
+				if (props.trim === true) {
+					value = value.trim();
+				}
 
-			if (props.slug === true) {
-				const endsWithSpace = value.endsWith(' ');
-				value = slugify(value, { separator: props.slugSeparator });
-				if (endsWithSpace) value += props.slugSeparator;
-			}
+				if (props.slug === true) {
+					const endsWithSpace = value.endsWith(' ');
+					value = slugify(value, { separator: props.slugSeparator });
+					if (endsWithSpace) value += props.slugSeparator;
+				}
 
-			if (props.dbSafe === true) {
-				value = value.toLowerCase();
-				value = value.replace(/\s/g, '_');
-				// Replace é -> e etc
-				value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-			}
+				if (props.dbSafe === true) {
+					value = value.toLowerCase();
+					value = value.replace(/\s/g, '_');
+					// Replace é -> e etc
+					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				}
 
-			emit('input', value);
+				emit('input', value);
+			} else if (props.type === 'number') {
+				emit('input', Number(value));
+			}
 		}
 
 		function stepUp() {
@@ -209,7 +213,7 @@ export default defineComponent({
 			input.value.stepUp();
 
 			if (input.value.value) {
-				return emit('input', input.value.value);
+				return emit('input', Number(input.value.value));
 			}
 		}
 
@@ -221,7 +225,7 @@ export default defineComponent({
 			input.value.stepDown();
 
 			if (input.value.value) {
-				return emit('input', input.value.value);
+				return emit('input', Number(input.value.value));
 			} else {
 				return emit('input', props.min || 0);
 			}

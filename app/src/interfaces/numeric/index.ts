@@ -34,6 +34,9 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'numeric',
 			},
+			schema: {
+				default_value: 1,
+			},
 		},
 		{
 			field: 'placeholder',

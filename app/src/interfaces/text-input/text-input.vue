@@ -6,7 +6,6 @@
 		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
-		:max="length"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
