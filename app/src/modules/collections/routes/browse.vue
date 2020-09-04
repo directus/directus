@@ -44,6 +44,13 @@
 						<v-icon class="toggle" name="bookmark_outline" @click="on" />
 					</template>
 				</bookmark-add>
+
+				<v-icon
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					name="clear"
+					@click="clearLocalSave"
+					class="clear"
+				/>
 			</div>
 		</template>
 
@@ -287,7 +294,8 @@ export default defineComponent({
 			resetPreset,
 			bookmarkSaved,
 			bookmarkIsMine,
-			saving: bookmarkSaving,
+			busy: bookmarkSaving,
+			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
 
 		const {
@@ -359,6 +367,7 @@ export default defineComponent({
 			bookmarkSaved,
 			bookmarkIsMine,
 			bookmarkSaving,
+			clearLocalSave,
 		};
 
 		function useBreadcrumb() {
@@ -587,7 +596,8 @@ export default defineComponent({
 	}
 
 	.add,
-	.save {
+	.save,
+	.clear {
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 

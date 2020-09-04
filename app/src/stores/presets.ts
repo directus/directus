@@ -168,13 +168,26 @@ export const usePresetsStore = createStore({
 			}
 		},
 
-		async saveLocal(updatedPreset: Preset) {
+		saveLocal(updatedPreset: Preset) {
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				if (preset.id === updatedPreset.id) {
 					return {
 						...updatedPreset,
 						$saved: false,
 					};
+				}
+
+				return preset;
+			});
+		},
+
+		async clearLocalSave(preset: Preset) {
+			const response = await api.get(`/presets/${preset.id}`);
+
+			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+				if (preset.id === response.data.data.id) {
+					console.log('replace');
+					return response.data.data;
 				}
 
 				return preset;

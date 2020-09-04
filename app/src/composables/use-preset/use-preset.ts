@@ -9,7 +9,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
-	const saving = ref(false);
+	const busy = ref(false);
 
 	const { info: collectionInfo } = useCollection(collection);
 
@@ -25,17 +25,24 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
 
 	const savePreset = async (preset?: Partial<Preset>) => {
-		saving.value = true;
+		busy.value = true;
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
 		initLocalPreset();
 		localPreset.value.id = updatedValues.id;
-		saving.value = false;
+		busy.value = false;
 		return updatedValues;
 	};
 
-	const saveLocal = async () => {
+	const saveLocal = () => {
 		presetsStore.saveLocal(localPreset.value);
 		initLocalPreset();
+	};
+
+	const clearLocalSave = async () => {
+		busy.value = true;
+		await presetsStore.clearLocalSave(localPreset.value);
+		initLocalPreset();
+		busy.value = false;
 	};
 
 	const autoSave = debounce(async () => {
@@ -159,7 +166,8 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		resetPreset,
 		bookmarkSaved,
 		bookmarkIsMine,
-		saving,
+		busy,
+		clearLocalSave,
 	};
 
 	async function resetPreset() {
