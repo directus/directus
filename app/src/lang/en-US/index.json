@@ -24,6 +24,11 @@
 	"delete_bookmark": "Delete Bookmark",
 	"delete_bookmark_copy": "Are you sure you want to delete the \"{bookmark}\" bookmark? This action cannot be undone.",
 
+	"logoutReason": {
+		"SIGN_OUT": "Signed out",
+		"SESSION_EXPIRED": "Session expired"
+	},
+
 	"public": "Public",
 	"public_description": "Controls what API data is available without authenticating.",
 
