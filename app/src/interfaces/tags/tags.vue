@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 		value: {
 			type: Array as PropType<string[]>,
-			default: null,
+			default: () => [],
 		},
 		placeholder: {
 			type: String,
@@ -117,6 +117,8 @@ export default defineComponent({
 		});
 
 		function processArray(array: string[]): string[] {
+			if (!Array.isArray(array)) return [];
+
 			array = array.map((val) => (props.lowercase ? val.toLowerCase().trim() : val.trim()));
 
 			if (props.alphabetize) {

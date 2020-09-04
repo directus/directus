@@ -189,6 +189,9 @@ export default defineComponent({
 				case 'uuid':
 					state.fieldData.meta.special = 'uuid';
 					break;
+				case 'json':
+					state.fieldData.meta.special = 'json';
+					break;
 				case 'boolean':
 					state.fieldData.meta.special = 'boolean';
 					state.fieldData.schema.is_nullable = false;
