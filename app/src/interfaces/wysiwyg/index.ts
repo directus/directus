@@ -36,6 +36,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown-multiselect',
 				options: {
+					closeOnContentClick: false,
 					choices: [
 						{
 							value: 'aligncenter',
@@ -224,7 +225,6 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
-				default: 'sans-serif',
 				options: {
 					choices: [
 						{ text: i18n.t('sans_serif'), value: 'sans-serif' },
@@ -232,6 +232,9 @@ export default defineInterface(({ i18n }) => ({
 						{ text: i18n.t('serif'), value: 'serif' },
 					],
 				},
+			},
+			schema: {
+				default_value: 'sans-serif',
 			},
 		},
 		{

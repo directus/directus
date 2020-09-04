@@ -268,7 +268,8 @@ export default defineComponent({
 		};
 
 		function fillTemplate() {
-			emit('input', props.template);
+			const parse = JSON.parse(props.template);
+			emit('input', parse || props.template);
 		}
 	},
 });
