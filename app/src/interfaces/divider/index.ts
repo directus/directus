@@ -17,7 +17,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'color',
-			}
+			},
 		},
 		{
 			field: 'icon',
@@ -26,7 +26,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'title',
@@ -35,7 +35,16 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
-			}
+			},
+		},
+		{
+			field: 'inlineTitle',
+			name: i18n.t('inline_title'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+			},
 		},
 	],
 }));

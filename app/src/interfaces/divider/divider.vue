@@ -7,6 +7,7 @@
 			'--v-divider-label-color': color,
 		}"
 		large
+		:inlineTitle="inlineTitle"
 	>
 		<template v-if="icon" #icon><v-icon :name="icon" /></template>
 		<template v-if="title" #default>{{ title }}</template>
@@ -29,6 +30,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			default: null,
+		},
+		inlineTitle: {
+			type: Boolean,
+			default: false,
 		},
 	},
 });
