@@ -68,15 +68,23 @@ export default defineComponent({
 				return item;
 			});
 
-			if (displayItems.length >= 5 && recommended.length > 0) {
-				return [
-					...recommended.map((key) => displayItems.find((item) => item.value === key)),
-					{ divider: true },
-					...displayItems.filter((item) => recommended.includes(item.value as string) === false),
-				];
-			} else {
-				return displayItems;
+			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+
+			const recommendedList = recommended.map((key) => displayItems.find((item) => item.value === key));
+			if (recommendedList !== undefined && recommendedList.includes(undefined) === false) {
+				recommendedItems.push(...recommendedList);
 			}
+
+			if (displayItems.length >= 5 && recommended.length > 0) {
+				recommendedItems.push({ divider: true });
+			}
+
+			const displayList = displayItems.filter((item) => recommended.includes(item.value as string) === false);
+			if (displayList !== undefined) {
+				recommendedItems.push(...displayList);
+			}
+
+			return recommendedItems;
 		});
 
 		const selectedDisplay = computed(() => {

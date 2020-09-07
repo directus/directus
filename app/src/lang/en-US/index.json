@@ -313,6 +313,7 @@
 	"notice": "Notice",
 	"slug": "Slug",
 	"repeater": "Repeater",
+	"max-amount": "Max Amount",
 
 	"months": {
 		"january": "January",
@@ -707,6 +708,7 @@
 	"role_only": "Role Only",
 	"update": "Update",
 
+	"edit_fields": "Edit Fields",
 	"select_fields": "Select Fields",
 	"readable_fields": "Readable Fields",
 	"writable_fields": "Writable Fields",

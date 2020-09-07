@@ -4,7 +4,7 @@ import InterfaceNotice from './notice.vue';
 export default defineInterface(({ i18n }) => ({
 	id: 'notice',
 	name: i18n.t('notice'),
-	icon: 'remove',
+	icon: 'info',
 	component: InterfaceNotice,
 	hideLabel: true,
 	hideLoader: true,

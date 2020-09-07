@@ -1,9 +1,12 @@
 <template>
 	<div>
-		<p class="type-label">Template</p>
+		<p class="type-label half">{{ $t('template') }}</p>
 		<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
 
-		<p class="type-label">Fields</p>
+		<p class="type-label half">{{ $t('max-amount') }}</p>
+		<v-input class="input" type="number" v-model="limit" />
+
+		<p class="type-label">{{ $t('edit_fields') }}</p>
 		<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
 	</div>
 </template>
@@ -115,6 +118,18 @@ export default defineComponent({
 			},
 		];
 
+		const limit = computed({
+			get() {
+				return props.value?.limit;
+			},
+			set(newLimit: string) {
+				emit('input', {
+					...(props.value || {}),
+					limit: newLimit,
+				});
+			},
+		});
+
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -127,7 +142,7 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, template };
+		return { repeaterValue, repeaterFields, template, limit };
 	},
 });
 </script>

@@ -85,17 +85,22 @@ export default defineComponent({
 				return item;
 			});
 
-			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [
-				...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
-			];
+			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+
+			const recommendedList = recommended.map((key) => interfaceItems.find((item) => item.value === key));
+			if (recommendedList !== undefined && recommendedList.includes(undefined) === false) {
+				recommendedItems.push(...recommendedList);
+			}
 
 			if (interfaceItems.length >= 5 && recommended.length > 0) {
 				recommendedItems.push({ divider: true });
 			}
 
-			recommendedItems.push(
-				...interfaceItems.filter((item) => recommended.includes(item.value as string) === false)
-			);
+			const interfaceList = interfaceItems.filter((item) => recommended.includes(item.value as string) === false);
+			if (interfaceList !== undefined) {
+				recommendedItems.push(...interfaceList);
+			}
+
 			return recommendedItems;
 		});
 

@@ -60,7 +60,7 @@ export default defineComponent({
 			if (props.disabled) return false;
 			if (props.value === null) return true;
 			if (props.limit === null) return true;
-			if (Array.isArray(props.value) && props.value.length <= props.limit) return true;
+			if (Array.isArray(props.value) && props.value.length < props.limit) return true;
 			return false;
 		});
 
