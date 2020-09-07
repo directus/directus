@@ -12,7 +12,9 @@
 			"format-title": "Format Title"
 		},
 		"rating": {
-			"rating": "Rating"
+			"rating": "Rating",
+			"simple": "Simple",
+			"simple_label": "Show stars in a simple format."
 		},
 		"raw": {
 			"raw": "Raw Value"

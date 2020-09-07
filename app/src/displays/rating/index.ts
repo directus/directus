@@ -6,6 +6,19 @@ export default defineDisplay(({ i18n }) => ({
 	name: i18n.t('displays.rating.rating'),
 	icon: 'star',
 	handler: DisplayRating,
-	options: null,
+	options: [
+		{
+			field: 'simple',
+			name: i18n.t('displays.rating.simple'),
+			type: 'boolean',
+			meta: {
+				interface: 'toggle',
+				width: 'half',
+				options: {
+					label: i18n.t('displays.rating.simple_label'),
+				},
+			},
+		},
+	],
 	types: ['integer', 'decimal', 'float'],
 }));

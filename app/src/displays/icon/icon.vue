@@ -1,5 +1,5 @@
 <template>
-	<v-icon small :name="value" :style="style" />
+	<v-icon small :name="value" :style="style" :filled="filled" />
 </template>
 
 <script lang="ts">
@@ -17,11 +17,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		filled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const style = computed(() => {
-			console.log(props.color, isHex(props.color));
-
 			if (isHex(props.color)) return { '--v-icon-color': props.color };
 			else return {};
 		});

@@ -15,7 +15,6 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
-				default_value: false,
 			},
 		},
 	],
