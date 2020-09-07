@@ -55,6 +55,9 @@ export default defineDisplay(({ i18n }) => ({
 					],
 				},
 			},
+			schema: {
+				default_value: 'sans-serif',
+			},
 		},
 	],
 }));

@@ -1,7 +1,9 @@
 {
 	"displays": {
 		"icon": {
-			"icon": "Icon"
+			"icon": "Icon",
+			"filled": "Filled",
+			"use_filled_variant": "Use the filled variant"
 		},
 		"color-dot": {
 			"choices-note": "Set colors relative to the text."

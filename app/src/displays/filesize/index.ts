@@ -6,6 +6,6 @@ export default defineDisplay(({ i18n }) => ({
 	name: i18n.t('filesize'),
 	icon: 'description',
 	handler: handler,
-	options: null,
+	options: [],
 	types: ['integer'],
 }));

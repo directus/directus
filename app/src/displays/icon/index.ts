@@ -8,15 +8,24 @@ export default defineDisplay(({ i18n }) => ({
 	handler: DisplayIcon,
 	options: [
 		{
-			field: 'outline',
-			name: i18n.t('outline'),
+			field: 'filled',
+			name: i18n.t('displays.icon.filled'),
 			type: 'boolean',
 			meta: {
 				interface: 'toggle',
 				width: 'half',
 				options: {
-					label: i18n.t('use_outline_variant'),
+					label: i18n.t('displays.icon.use_filled_variant'),
 				},
+			},
+		},
+		{
+			field: 'color',
+			name: i18n.t('color'),
+			type: 'string',
+			meta: {
+				interface: 'color',
+				width: 'half',
 			},
 		},
 	],
