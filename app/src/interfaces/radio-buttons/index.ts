@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'radio_button_checked',
 	component: InterfaceRadioButtons,
 	types: ['string'],
+	recommendedDisplays: ['badge'],
 	options: [
 		{
 			field: 'choices',

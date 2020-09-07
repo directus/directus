@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
 	types: ['text'],
+	recommendedDisplays: ['formatted-value'],
 	options: [
 		{
 			field: 'toolbar',

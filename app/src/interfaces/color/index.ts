@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'palette',
 	component: InterfaceColor,
 	types: ['string'],
+	recommendedDisplays: ['color-dot'],
 	options: [
 		{
 			field: 'presets',
@@ -25,7 +26,7 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								width: 'half',
-							}
+							},
 						},
 						{
 							field: 'color',
@@ -33,12 +34,12 @@ export default defineInterface(({ i18n }) => ({
 							name: i18n.t('color'),
 							meta: {
 								interface: 'color',
-								width: 'half'
-							}
-						}
-					]
-				}
-			}
+								width: 'half',
+							},
+						},
+					],
+				},
+			},
 		},
 	],
 }));

@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'text_fields',
 	component: InterfaceTextInput,
 	types: ['string', 'uuid'],
+	recommendedDisplays: ['raw'],
 	options: [
 		{
 			field: 'placeholder',

@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'dialpad',
 	component: InterfaceNumeric,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
+	recommendedDisplays: ['raw'],
 	options: [
 		{
 			field: 'min',

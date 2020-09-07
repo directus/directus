@@ -7,6 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'link',
 	component: InterfaceSlug,
 	types: ['string'],
+	recommendedDisplays: ['formatted-value'],
 	options: [
 		{
 			field: 'placeholder',

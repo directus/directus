@@ -9,6 +9,7 @@ export default defineInterface(({ i18n }) => ({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
+	recommendedDisplays: ['raw'],
 	options: [
 		{
 			field: 'color',
