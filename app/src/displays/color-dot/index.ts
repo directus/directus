@@ -25,6 +25,7 @@ export default defineDisplay(({ i18n }) => ({
 			name: i18n.t('choices'),
 			type: 'json',
 			meta: {
+				note: i18n.t('displays.color-dot.choices-note'),
 				interface: 'repeater',
 				options: {
 					template: '{{text}}',

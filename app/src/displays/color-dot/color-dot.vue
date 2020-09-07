@@ -1,13 +1,15 @@
 <template>
-	<div>
+	<div class="color-dot">
 		<value-null v-if="value === null" />
-		<div class="dot" :style="styles">{{ displayValue }}</div>
+		<div class="dot" :style="styles"></div>
+		<span v-if="isHex(value) === false">{{ displayValue }}</span>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import formatTitle from '@directus/format-title';
+import { isHex } from '@/utils/color';
 
 type Choice = {
 	value: string;
@@ -47,24 +49,31 @@ export default defineComponent({
 		});
 
 		const styles = computed(() => {
+			if (isHex(props.value)) {
+				return { backgroundColor: props.value || props.defaultForeground };
+			}
 			return {
 				backgroundColor: currentChoice.value?.color || props.defaultForeground,
 			};
 		});
 
-		return { displayValue, styles };
+		return { displayValue, styles, isHex };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.dot {
-	display: inline-block;
-	flex-shrink: 0;
-	width: 12px;
-	height: 12px;
-	margin: 0 4px;
-	vertical-align: middle;
-	border-radius: 6px;
+.color-dot {
+	display: flex;
+	align-items: center;
+
+	.dot {
+		display: inline-block;
+		flex-shrink: 0;
+		width: 12px;
+		height: 12px;
+		margin: 0 4px;
+		border-radius: 6px;
+	}
 }
 </style>

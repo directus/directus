@@ -3,6 +3,9 @@
 		"icon": {
 			"icon": "Icon"
 		},
+		"color-dot": {
+			"choices-note": "Set colors relative to the text."
+		},
 		"format-title": {
 			"format-title": "Format Title"
 		},
