@@ -268,8 +268,12 @@ export default defineComponent({
 		};
 
 		function fillTemplate() {
-			const parse = JSON.parse(props.template);
-			emit('input', parse || props.template);
+			try {
+				const parse = JSON.parse(props.template);
+				emit('input', parse || props.template);
+			} catch {
+				// We won't stage invalid JSON
+			}
 		}
 	},
 });

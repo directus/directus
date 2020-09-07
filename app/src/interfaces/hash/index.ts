@@ -4,7 +4,7 @@ import { defineInterface } from '@/interfaces/define';
 export default defineInterface(({ i18n }) => ({
 	id: 'hash',
 	name: i18n.t('hash'),
-	icon: 'text_fields',
+	icon: 'fingerprint',
 	component: InterfaceHash,
 	types: ['string'],
 	options: [
@@ -15,7 +15,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
-			}
+			},
 		},
 		{
 			field: 'masked',
@@ -24,7 +24,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
-			}
+			},
 		},
 	],
 }));

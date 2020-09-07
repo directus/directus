@@ -4,7 +4,7 @@ import { defineInterface } from '@/interfaces/define';
 export default defineInterface(({ i18n }) => ({
 	id: 'markdown',
 	name: i18n.t('markdown'),
-	icon: 'text_fields',
+	icon: 'functions',
 	component: InterfaceMarkdown,
 	types: ['text'],
 	options: [

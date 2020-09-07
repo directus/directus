@@ -64,7 +64,7 @@ export default defineComponent({
 				datetime: ['datetime'],
 				date: ['datetime'],
 				time: ['datetime'],
-				json: ['code'],
+				json: ['checkboxes', 'tags'],
 				uuid: ['text-input'],
 			};
 
@@ -85,15 +85,18 @@ export default defineComponent({
 				return item;
 			});
 
+			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [
+				...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
+			];
+
 			if (interfaceItems.length >= 5 && recommended.length > 0) {
-				return [
-					...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
-					{ divider: true },
-					...interfaceItems.filter((item) => recommended.includes(item.value as string) === false),
-				];
-			} else {
-				return interfaceItems;
+				recommendedItems.push({ divider: true });
 			}
+
+			recommendedItems.push(
+				...interfaceItems.filter((item) => recommended.includes(item.value as string) === false)
+			);
+			return recommendedItems;
 		});
 
 		const selectedInterface = computed(() => {
