@@ -143,29 +143,29 @@ export default defineComponent({
 				label: 'sort',
 				icon: 'low_priority',
 			},
-			userCreated: {
-				enabled: false,
-				name: 'user_created',
-				label: 'created_by',
-				icon: 'account_circle',
-			},
-			userUpdated: {
-				enabled: false,
-				name: 'user_updated',
-				label: 'updated_by',
-				icon: 'account_circle',
-			},
 			dateCreated: {
 				enabled: false,
 				name: 'date_created',
 				label: 'created_on',
 				icon: 'access_time',
 			},
+			userCreated: {
+				enabled: false,
+				name: 'user_created',
+				label: 'created_by',
+				icon: 'account_circle',
+			},
 			dateUpdated: {
 				enabled: false,
 				name: 'date_updated',
 				label: 'updated_on',
 				icon: 'access_time',
+			},
+			userUpdated: {
+				enabled: false,
+				name: 'user_updated',
+				label: 'updated_by',
+				icon: 'account_circle',
 			},
 		});
 
