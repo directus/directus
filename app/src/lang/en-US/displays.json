@@ -18,6 +18,11 @@
 		},
 		"raw": {
 			"raw": "Raw Value"
+		},
+		"user": {
+			"avatar": "Avatar",
+			"name": "Name",
+			"both": "Both"
 		}
 	}
 }

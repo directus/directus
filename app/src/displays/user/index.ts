@@ -13,21 +13,24 @@ export default defineDisplay(({ i18n }) => ({
 			name: i18n.t('display'),
 			type: 'string',
 			meta: {
+				width: 'half',
 				interface: 'dropdown',
-				options: [
-					{
-						text: i18n.t('avatar'),
-						value: 'avatar',
-					},
-					{
-						text: i18n.t('name'),
-						value: 'name',
-					},
-					{
-						text: i18n.t('both'),
-						value: 'both',
-					},
-				],
+				options: {
+					choices: [
+						{
+							text: i18n.t('displays.user.avatar'),
+							value: 'avatar',
+						},
+						{
+							text: i18n.t('displays.user.name'),
+							value: 'name',
+						},
+						{
+							text: i18n.t('displays.user.both'),
+							value: 'both',
+						},
+					],
+				},
 			},
 			schema: {
 				default_value: 'both',
@@ -40,7 +43,6 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
-				default_value: false,
 			},
 		},
 	],
