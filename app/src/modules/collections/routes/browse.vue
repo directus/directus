@@ -29,8 +29,7 @@
 				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
 
 				<template v-else-if="bookmarkIsMine">
-					<v-progress-circular indeterminate small v-if="bookmarkSaving" />
-					<v-icon class="save" v-else @click="savePreset()" name="save" />
+					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
 				</template>
 
 				<bookmark-add
@@ -47,9 +46,10 @@
 
 				<v-icon
 					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-					name="clear"
+					name="settings_backup_restore"
 					@click="clearLocalSave"
 					class="clear"
+					v-tooltip.bottom="$t('reset_bookmark')"
 				/>
 			</div>
 		</template>
@@ -590,7 +590,7 @@ export default defineComponent({
 	.add,
 	.save,
 	.saved,
-	.v-progress-circular {
+	.clear {
 		display: inline-block;
 		margin-left: 8px;
 	}
@@ -598,6 +598,7 @@ export default defineComponent({
 	.add,
 	.save,
 	.clear {
+		cursor: pointer;
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
@@ -606,8 +607,25 @@ export default defineComponent({
 		}
 	}
 
+	.save {
+		color: var(--warning);
+
+		&:hover {
+			color: var(--warning-125);
+		}
+	}
+
 	.saved {
 		color: var(--primary);
+	}
+
+	.clear {
+		color: var(--foreground-subdued);
+		margin-left: 4px;
+
+		&:hover {
+			color: var(--warning);
+		}
 	}
 }
 </style>
