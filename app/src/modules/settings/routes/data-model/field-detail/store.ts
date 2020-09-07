@@ -291,6 +291,25 @@ function initLocalStore(
 		delete state.fieldData.type;
 		state.fieldData.meta.special = 'alias';
 	}
+
+	if (type === 'standard') {
+		watch(
+			() => state.fieldData.type,
+			() => {
+				switch (state.fieldData.type) {
+					case 'json':
+						state.fieldData.meta.special = 'json';
+						break;
+					case 'boolean':
+						state.fieldData.meta.special = 'boolean';
+						state.fieldData.schema.is_nullable = false;
+						break;
+					default:
+						state.fieldData.meta.special = null;
+				}
+			}
+		);
+	}
 }
 
 function clearLocalStore() {

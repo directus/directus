@@ -40,9 +40,47 @@
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field" v-if="fieldData.schema">
+			<div class="field" v-if="fieldData.schema" :class="{ full: ['text', 'json'].includes(default_type) }">
 				<div class="label type-label">{{ $t('default_value') }}</div>
-				<v-input class="monospace" v-model="default_value" :placeholder="$t('add_a_default_value')" />
+				<v-input
+					v-if="default_type === 'string'"
+					class="monospace"
+					v-model="default_value"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-textarea
+					v-else-if="default_type === 'text' || default_type === 'json'"
+					class="monospace"
+					v-model="default_value"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-input
+					v-else-if="default_type === 'number'"
+					type="number"
+					class="monospace"
+					v-model="default_value"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-input
+					v-else-if="default_type === 'datetime'"
+					class="monospace"
+					v-model="default_value"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-checkbox
+					v-else-if="default_type === 'boolean'"
+					class="monospace"
+					v-model="default_value"
+					:label="default_value ? $t('true') : $t('false')"
+					block
+				/>
+				<v-input
+					v-else
+					class="monospace"
+					v-model="default_value"
+					disabled
+					:placeholder="$t('add_a_default_value')"
+				/>
 			</div>
 
 			<div class="field" v-if="fieldData.schema">
@@ -165,39 +203,37 @@ export default defineComponent({
 
 		const default_value = computed({
 			get() {
-				switch (state.fieldData.type) {
-					case 'boolean':
-						return String(state.fieldData.schema.default_value || false);
-					default:
-						return state.fieldData.schema.default_value;
-				}
+				return state.fieldData.schema.default_value;
 			},
-			set(newVal: string) {
-				switch (state.fieldData.type) {
-					case 'boolean':
-						state.fieldData.schema.default_value = Boolean(newVal);
-					default:
-						return state.fieldData.schema.default_value;
-				}
+			set(newVal: any) {
+				state.fieldData.schema.default_value = newVal;
 			},
 		});
 
-		return { fieldData: state.fieldData, typesWithLabels, setType, typeDisabled, typePlaceholder, default_value };
+		const default_type = computed(() => {
+			if (['integer', 'bigInteger', 'float', 'decimal'].includes(state.fieldData.type)) return 'number';
+			else if (['string', 'uuid'].includes(state.fieldData.type)) {
+				return 'string';
+			} else if (['timestamp', 'datetime', 'date', 'time'].includes(state.fieldData.type)) {
+				return 'datetime';
+			} else {
+				return state.fieldData.type;
+			}
+		});
+
+		return {
+			fieldData: state.fieldData,
+			typesWithLabels,
+			setType,
+			typeDisabled,
+			typePlaceholder,
+			default_value,
+			default_type,
+		};
 
 		function setType(value: typeof types[number]) {
-			switch (value) {
-				case 'uuid':
-					state.fieldData.meta.special = 'uuid';
-					break;
-				case 'json':
-					state.fieldData.meta.special = 'json';
-					break;
-				case 'boolean':
-					state.fieldData.meta.special = 'boolean';
-					state.fieldData.schema.is_nullable = false;
-					break;
-				default:
-					state.fieldData.meta.special = null;
+			if (value === 'uuid') {
+				state.fieldData.meta.special = 'uuid';
 			}
 
 			// We'll reset the interface/display as they most likely won't work for the newly selected
@@ -206,6 +242,7 @@ export default defineComponent({
 			state.fieldData.meta.options = null;
 			state.fieldData.meta.display = null;
 			state.fieldData.meta.display_options = null;
+			state.fieldData.schema.default_value = undefined;
 			state.fieldData.type = value;
 		}
 	},

@@ -373,6 +373,8 @@
 	"primary_key_field": "Primary Key Field",
 	"type": "Type",
 	"number": "Number",
+	"true": "True",
+	"false": "False",
 	"creating_new_collection": "Creating New Collection",
 	"status": "Status",
 	"sort": "Sort",
