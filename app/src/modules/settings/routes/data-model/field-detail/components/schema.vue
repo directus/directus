@@ -68,7 +68,7 @@
 				<div class="label type-label">{{ $t('translation') }}</div>
 				<interface-repeater
 					v-model="fieldData.meta.translation"
-					:template="'{{ locale }}'"
+					:template="'{{ translation }} ({{ locale }})'"
 					:fields="[
 						{
 							field: 'locale',
@@ -78,6 +78,9 @@
 								interface: 'system-language',
 								width: 'half',
 							},
+							schema: {
+								default_value: 'en-US'
+							},
 						},
 						{
 							field: 'translation',
@@ -86,6 +89,9 @@
 							meta: {
 								interface: 'text-input',
 								width: 'half',
+								options: {
+									placeholder: 'Enter a translation...'
+								},
 							},
 						},
 					]"
