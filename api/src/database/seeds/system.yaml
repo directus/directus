@@ -634,11 +634,13 @@ rows:
         special: json
         interface: repeater
         options:
-          template: '{{ locale }}'
+          template: '{{ translation }} ({{ locale }})'
           fields:
           - field: locale
             name: Language
             type: string
+            schema:
+              default_value: en-US
             meta:
               interface: system-language
               width: half
@@ -648,6 +650,8 @@ rows:
             meta:
               interface: text-input
               width: half
+              options:
+                placeholder: Enter a translation...
         locked: true
         sort: 8
         width: full
