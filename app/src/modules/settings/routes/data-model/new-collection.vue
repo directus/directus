@@ -332,7 +332,7 @@ export default defineComponent({
 						},
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
 					schema: {},
 				});
@@ -347,7 +347,7 @@ export default defineComponent({
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
 					schema: {},
 				});
@@ -366,7 +366,7 @@ export default defineComponent({
 						},
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
 					schema: {},
 				});
@@ -381,7 +381,7 @@ export default defineComponent({
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
 					schema: {},
 				});
