@@ -1,13 +1,23 @@
 <template>
 	<div>
-		<p class="type-label half">{{ $t('template') }}</p>
-		<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
-
-		<p class="type-label half">{{ $t('max-amount') }}</p>
-		<v-input class="input" type="number" v-model="limit" />
-
-		<p class="type-label">{{ $t('edit_fields') }}</p>
-		<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
+		<div class="grid">
+			<div class="grid-element">
+				<p class="type-label">{{ $t('template') }}</p>
+				<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
+			</div>
+			<div class="grid-element">
+				<p class="type-label">{{ $t('max-amount') }}</p>
+				<v-input class="input" type="number" v-model="limit" />
+			</div>
+			<div class="grid-element full">
+				<p class="type-label">{{ $t('edit_fields') }}</p>
+				<repeater
+					v-model="repeaterValue"
+					:template="`{{ field }} — {{ interface }}`"
+					:fields="repeaterFields"
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -148,11 +158,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.type-label {
-	margin-bottom: 4px;
+.grid {
+	display: grid;
+	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
+	gap: var(--form-vertical-gap) var(--form-horizontal-gap);
+
+	&-element {
+		&.full {
+			grid-column: start/full;
+		}
+	}
 }
 
-.input {
-	margin-bottom: 24px;
+.type-label {
+	margin-bottom: 4px;
 }
 </style>
