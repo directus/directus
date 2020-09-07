@@ -314,6 +314,7 @@
 	"slug": "Slug",
 	"repeater": "Repeater",
 	"max-amount": "Max Amount",
+	"select_mode": "Select Mode",
 
 	"months": {
 		"january": "January",

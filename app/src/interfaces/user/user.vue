@@ -102,7 +102,7 @@ export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
-			type: [Number, Object],
+			type: [String, Object],
 			default: null,
 		},
 		template: {
@@ -162,7 +162,7 @@ export default defineComponent({
 				(newValue) => {
 					// When the newly configured value is a primitive, assume it's the primary key
 					// of the item and fetch it from the API to render the preview
-					if (newValue !== null && newValue !== currentUser.value?.id && typeof newValue === 'number') {
+					if (newValue !== null && newValue !== currentUser.value?.id && typeof newValue === 'string') {
 						fetchCurrent();
 					}
 

@@ -7,5 +7,26 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'person',
 	component: InterfaceUser,
 	types: ['uuid'],
-	options: [],
+	options: [
+		{
+			field: 'selectMode',
+			name: i18n.t('select_mode'),
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'dropdown',
+				options: {
+					choices: [
+						{ text: 'Auto', value: 'auto' },
+						{ text: 'Dropdown', value: 'dropdown' },
+						{ text: 'Modal', value: 'modal' },
+					],
+				},
+			},
+			schema: {
+				default_value: 'auto',
+			},
+		},
+	],
+	recommendedDisplays: ['user'],
 }));
