@@ -17,7 +17,12 @@ import env from '../env';
 type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (action: Action, value: any, payload: Partial<Item>, accountability: Accountability | null) => Promise<any>;
+	[type: string]: (
+		action: Action,
+		value: any,
+		payload: Partial<Item>,
+		accountability: Accountability | null
+	) => Promise<any>;
 };
 
 export default class PayloadService {
@@ -117,7 +122,7 @@ export default class PayloadService {
 		async 'date-updated'(action, value) {
 			if (action === 'update') return new Date();
 			return value;
-		}
+		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -148,7 +153,12 @@ export default class PayloadService {
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
 					specialFieldsInCollection.map(async (field) => {
-						const newValue = await this.processField(field, record, action, this.accountability);
+						const newValue = await this.processField(
+							field,
+							record,
+							action,
+							this.accountability
+						);
 						if (newValue !== undefined) record[field.field] = newValue;
 					})
 				);
@@ -180,8 +190,7 @@ export default class PayloadService {
 	) {
 		if (!field.special) return payload[field.field];
 
-		const fieldSpecials = field.special.split(',').map(s => s.trim());
-
+		const fieldSpecials = field.special.split(',').map((s) => s.trim());
 
 		let value = clone(payload[field.field]);
 
@@ -291,12 +300,19 @@ export default class PayloadService {
 				);
 
 				const toBeUpdated = relatedRecords.filter(
-					(record) => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') === false
+					(record) =>
+						record.hasOwnProperty(relation.many_primary) === true &&
+						record.hasOwnProperty('$delete') === false
 				);
 
 				const toBeDeleted = relatedRecords
-					.filter(record => record.hasOwnProperty(relation.many_primary) === true && record.hasOwnProperty('$delete') && record.$delete === true)
-					.map(record => record[relation.many_primary]);
+					.filter(
+						(record) =>
+							record.hasOwnProperty(relation.many_primary) === true &&
+							record.hasOwnProperty('$delete') &&
+							record.$delete === true
+					)
+					.map((record) => record[relation.many_primary]);
 
 				await itemsService.create(toBeCreated);
 				await itemsService.update(toBeUpdated);

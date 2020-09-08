@@ -68,6 +68,6 @@ router.post(
 
 		return res.status(200).end();
 	})
-)
+);
 
 export default router;

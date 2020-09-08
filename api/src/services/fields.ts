@@ -40,7 +40,7 @@ export default class FieldsService {
 		if (collection) {
 			fields = (await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
-				limit: -1
+				limit: -1,
 			})) as FieldMeta[];
 		} else {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
@@ -102,11 +102,16 @@ export default class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex.select('collection', 'fields').from('directus_permissions').where({ role: this.accountability.role, action: 'read' });
+			const permissions = await this.knex
+				.select('collection', 'fields')
+				.from('directus_permissions')
+				.where({ role: this.accountability.role, action: 'read' });
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(',');
+				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(
+					','
+				);
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -114,7 +119,8 @@ export default class FieldsService {
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
+				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false)
+					return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -132,8 +138,9 @@ export default class FieldsService {
 				.where({
 					role: this.accountability.role,
 					collection,
-					action: 'read'
-				}).first();
+					action: 'read',
+				})
+				.first();
 
 			if (!permissions) throw new ForbiddenException();
 			if (permissions.fields !== '*') {
@@ -248,17 +255,20 @@ export default class FieldsService {
 				.first();
 
 			if (record) {
-				await this.itemsService.update({
-					...field.meta,
-					collection: collection,
-					field: field.field,
-				}, record.id);
+				await this.itemsService.update(
+					{
+						...field.meta,
+						collection: collection,
+						field: field.field,
+					},
+					record.id
+				);
 			} else {
 				await this.itemsService.create({
 					...field.meta,
 					collection: collection,
 					field: field.field,
-				})
+				});
 			}
 		}
 
@@ -289,10 +299,14 @@ export default class FieldsService {
 			const isM2O = relation.many_collection === collection && relation.many_field === field;
 
 			if (isM2O) {
-				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: field });
+				await this.knex('directus_relations')
+					.delete()
+					.where({ many_collection: collection, many_field: field });
 				await this.deleteField(relation.one_collection, relation.one_field);
 			} else {
-				await this.knex('directus_relations').update({ one_field: null }).where({ one_collection: collection, one_field: field });
+				await this.knex('directus_relations')
+					.update({ one_field: null })
+					.where({ one_collection: collection, one_field: field });
 			}
 		}
 	}

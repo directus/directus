@@ -18,7 +18,7 @@ const loginSchema = Joi.object({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
-	otp: Joi.string()
+	otp: Joi.string(),
 });
 
 router.post(
@@ -178,7 +178,7 @@ router.post(
 			return res.status(200).end();
 		}
 	})
-)
+);
 
 router.post(
 	'/password/reset',
@@ -201,7 +201,7 @@ router.post(
 		await service.resetPassword(req.body.token, req.body.password);
 		return res.status(200).end();
 	})
-)
+);
 
 router.use(
 	'/sso',

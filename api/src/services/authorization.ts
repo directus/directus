@@ -127,7 +127,7 @@ export default class AuthorizationService {
 
 		function applyFilters(
 			ast: AST | NestedCollectionAST | FieldAST,
-			accountability: Accountability | null,
+			accountability: Accountability | null
 		): AST | NestedCollectionAST | FieldAST {
 			if (ast.type === 'collection') {
 				const collection = ast.name;
@@ -142,10 +142,7 @@ export default class AuthorizationService {
 				ast.query = {
 					...ast.query,
 					filter: {
-						_and: [
-							(ast.query.filter || {}),
-							parsedPermissions,
-						]
+						_and: [ast.query.filter || {}, parsedPermissions],
 					},
 				};
 
@@ -160,7 +157,10 @@ export default class AuthorizationService {
 					ast.query.limit = permissions.limit;
 				}
 
-				ast.children = ast.children.map(child => applyFilters(child, accountability)) as (NestedCollectionAST | FieldAST)[];
+				ast.children = ast.children.map((child) => applyFilters(child, accountability)) as (
+					| NestedCollectionAST
+					| FieldAST
+				)[];
 			}
 
 			return ast;
@@ -207,7 +207,7 @@ export default class AuthorizationService {
 				if (invalidKeys.length > 0) {
 					throw new ForbiddenException(
 						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
-					)
+					);
 				}
 			}
 		}
@@ -233,7 +233,11 @@ export default class AuthorizationService {
 		}
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]) {
+	async checkAccess(
+		action: PermissionsAction,
+		collection: string,
+		pk: PrimaryKey | PrimaryKey[]
+	) {
 		const itemsService = new ItemsService(collection, { accountability: this.accountability });
 
 		try {
@@ -247,8 +251,11 @@ export default class AuthorizationService {
 			if (Array.isArray(pk) && result.length !== pk.length) throw '';
 		} catch {
 			throw new ForbiddenException(
-				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
-					collection, item: pk, action
+				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`,
+				{
+					collection,
+					item: pk,
+					action,
 				}
 			);
 		}

@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, Accountability, PrimaryKey } from "../types";
+import { AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
 import database from '../database';
 import Knex from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
@@ -13,7 +13,7 @@ export default class UtilsService {
 		this.accountability = options?.accountability || null;
 	}
 
-	async sort(collection: string, { item, to }: { item: PrimaryKey, to: PrimaryKey }) {
+	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
 		const schemaInspector = SchemaInspector(this.knex);
 
 		const sortFieldResponse = await this.knex
@@ -25,7 +25,9 @@ export default class UtilsService {
 		const sortField = sortFieldResponse?.sort_field;
 
 		if (!sortField) {
-			throw new InvalidPayloadException(`Collection "${collection}" doesn't have a sort field.`);
+			throw new InvalidPayloadException(
+				`Collection "${collection}" doesn't have a sort field.`
+			);
 		}
 
 		if (this.accountability?.admin !== true) {
@@ -60,10 +62,7 @@ export default class UtilsService {
 			.first();
 
 		if (countResponse?.count && +countResponse.count !== 0) {
-			const lastSortValueResponse = await this.knex
-				.max(sortField)
-				.from(collection)
-				.first();
+			const lastSortValueResponse = await this.knex.max(sortField).from(collection).first();
 
 			const rowsWithoutSortValue = await this.knex
 				.select(primaryKeyField, sortField)
@@ -80,14 +79,24 @@ export default class UtilsService {
 			}
 		}
 
-		const targetSortValueResponse = await this.knex.select(sortField).from(collection).where({ [primaryKeyField]: to }).first();
+		const targetSortValueResponse = await this.knex
+			.select(sortField)
+			.from(collection)
+			.where({ [primaryKeyField]: to })
+			.first();
 		const targetSortValue = targetSortValueResponse[sortField];
 
-		const sourceSortValueResponse = await this.knex.select(sortField).from(collection).where({ [primaryKeyField]: item }).first();
+		const sourceSortValueResponse = await this.knex
+			.select(sortField)
+			.from(collection)
+			.where({ [primaryKeyField]: item })
+			.first();
 		const sourceSortValue = sourceSortValueResponse[sortField];
 
 		// Set the target item to the new sort value
-		await this.knex(collection).update({ [sortField]: targetSortValue }).where({ [primaryKeyField]: item });
+		await this.knex(collection)
+			.update({ [sortField]: targetSortValue })
+			.where({ [primaryKeyField]: item });
 
 		if (sourceSortValue < targetSortValue) {
 			await this.knex(collection)

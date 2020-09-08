@@ -18,8 +18,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 					extensions: {
 						...err.extensions,
 						code: err.code,
-					}
-				}
+					},
+				},
 			],
 		};
 	} else {
@@ -33,16 +33,16 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 					message: err.message,
 					extensions: {
 						code: 'INTERNAL_SERVER_ERROR',
-					}
-				}
+					},
+				},
 			],
 		};
 	}
 
 	if (env.NODE_ENV === 'development') {
 		payload.errors[0].extensions.exception = {
-			stack: err.stack
-		}
+			stack: err.stack,
+		};
 	}
 
 	return res.json(payload);

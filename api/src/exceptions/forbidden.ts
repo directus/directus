@@ -6,7 +6,7 @@ type Extensions = {
 	collection?: string;
 	item?: string | number | (string | number)[];
 	action?: Permission['action'];
-}
+};
 
 export class ForbiddenException extends BaseException {
 	constructor(message = `You don't have permission to access this.`, extensions?: Extensions) {

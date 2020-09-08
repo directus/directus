@@ -49,15 +49,15 @@ router.get(
 		query.filter = {
 			...(query.filter || {}),
 			role: {
-				_eq: req.accountability.role
-			}
-		}
+				_eq: req.accountability.role,
+			},
+		};
 
 		const items = await service.readByQuery(req.sanitizedQuery);
 
 		return res.json({ data: items || null });
 	})
-)
+);
 
 router.get(
 	'/:pk',
