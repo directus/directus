@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
