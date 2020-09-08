@@ -310,7 +310,7 @@ export default defineComponent({
 					field: systemFields.sort.name,
 					type: 'integer',
 					meta: {
-						interface: 'sort',
+						interface: 'numeric',
 						hidden: true,
 					},
 					schema: {},

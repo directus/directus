@@ -30,7 +30,7 @@ export type Filter = {
 
 export type Preset = {
 	id?: number;
-	title: string | null;
+	bookmark: string | null;
 	user: string | null;
 	role: string | null;
 	collection: string;
