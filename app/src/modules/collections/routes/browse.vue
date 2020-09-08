@@ -1,6 +1,6 @@
 <template>
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="bookmark ? bookmarkName : currentCollection.name">
+	<private-view v-else :title="bookmark ? bookmarkTitle : currentCollection.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="currentCollection.icon" />
@@ -9,34 +9,54 @@
 
 		<template #headline>
 			<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: collectionsLink }]" />
+			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: '/collections' }]" />
 		</template>
 
 		<template #title-outer:append>
-			<bookmark-add
-				v-if="!bookmark"
-				class="bookmark-add"
-				v-model="bookmarkDialogActive"
-				@save="createBookmark"
-				:saving="creatingBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark_outline" @click="on" />
-				</template>
-			</bookmark-add>
+			<div class="bookmark-controls">
+				<bookmark-add
+					v-if="!bookmark"
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
 
-			<bookmark-edit
-				v-else
-				class="bookmark-edit"
-				v-model="bookmarkDialogActive"
-				:saving="editingBookmark"
-				:name="bookmarkName"
-				@save="editBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark" @click="on" />
+				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
+
+				<template v-else-if="bookmarkIsMine">
+					<v-icon
+						class="save"
+						@click="savePreset()"
+						name="bookmark_save"
+						v-tooltip.bottom="$t('update_bookmark')"
+					/>
 				</template>
-			</bookmark-edit>
+
+				<bookmark-add
+					v-else
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
+
+				<v-icon
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					name="settings_backup_restore"
+					@click="clearLocalSave"
+					class="clear"
+					v-tooltip.bottom="$t('reset_bookmark')"
+				/>
+			</div>
 		</template>
 
 		<template #actions:prepend>
@@ -151,14 +171,15 @@
 		<component
 			v-else
 			class="layout"
-			ref="layout"
-			:is="`layout-${viewType || 'tabular'}`"
+			ref="layoutRef"
+			:is="`layout-${layout || 'tabular'}`"
 			:collection="collection"
 			:selection.sync="selection"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
 			:filters.sync="filters"
 			:search-query.sync="searchQuery"
+			:reset-preset="resetPreset"
 		>
 			<template #no-results>
 				<v-info :title="$t('no_results')" icon="search" center>
@@ -194,7 +215,7 @@
 					"
 				/>
 			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
 
@@ -219,7 +240,7 @@ import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
-import usePreset from '@/composables/use-collection-preset';
+import usePreset from '@/composables/use-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
@@ -255,26 +276,33 @@ export default defineComponent({
 	setup(props) {
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
-		const layout = ref<LayoutComponent | null>(null);
+		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const { collection } = toRefs(props);
 		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
-		const { addNewLink, batchLink, collectionsLink, currentCollectionLink } = useLinks();
+		const { addNewLink, batchLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
+
 		const {
-			viewType,
-			viewOptions,
-			viewQuery,
+			layout,
+			layoutOptions,
+			layoutQuery,
 			filters,
 			searchQuery,
 			savePreset,
 			bookmarkExists,
 			saveCurrentAsBookmark,
-			title: bookmarkName,
+			bookmarkTitle,
+			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			busy: bookmarkSaving,
+			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
+
 		const {
 			confirmDelete,
 			deleting,
@@ -296,8 +324,8 @@ export default defineComponent({
 		watch(
 			collection,
 			() => {
-				if (viewType.value === null) {
-					viewType.value = 'tabular';
+				if (layout.value === null) {
+					layout.value = 'tabular';
 				}
 			},
 			{ immediate: true }
@@ -309,16 +337,16 @@ export default defineComponent({
 			addNewLink,
 			batchDelete,
 			batchLink,
-			collectionsLink,
+
 			confirmDelete,
 			currentCollection,
 			deleting,
 			filters,
-			layout,
+			layoutRef,
 			selection,
-			viewOptions,
-			viewQuery,
-			viewType,
+			layoutOptions,
+			layoutQuery,
+			layout,
 			searchQuery,
 			savePreset,
 			bookmarkExists,
@@ -326,7 +354,7 @@ export default defineComponent({
 			bookmarkDialogActive,
 			creatingBookmark,
 			createBookmark,
-			bookmarkName,
+			bookmarkTitle,
 			editingBookmark,
 			editBookmark,
 			breadcrumb,
@@ -340,6 +368,11 @@ export default defineComponent({
 			batchDeleteAllowed,
 			deleteError,
 			createAllowed,
+			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			bookmarkSaving,
+			clearLocalSave,
 		};
 
 		function useBreadcrumb() {
@@ -383,7 +416,7 @@ export default defineComponent({
 
 				try {
 					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layout.value?.refresh?.();
+					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -403,7 +436,7 @@ export default defineComponent({
 
 				try {
 					await api.patch(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layout.value?.refresh?.();
+					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
 					confirmArchive.value = false;
@@ -425,15 +458,11 @@ export default defineComponent({
 				return `/collections/${props.collection}/${batchPrimaryKeys}`;
 			});
 
-			const collectionsLink = computed<string>(() => {
-				return `/collections`;
-			});
-
 			const currentCollectionLink = computed<string>(() => {
 				return `/collections/${props.collection}`;
 			});
 
-			return { addNewLink, batchLink, collectionsLink, currentCollectionLink };
+			return { addNewLink, batchLink, currentCollectionLink };
 		}
 
 		function useBookmarks() {
@@ -453,7 +482,7 @@ export default defineComponent({
 				creatingBookmark.value = true;
 
 				try {
-					const newBookmark = await saveCurrentAsBookmark({ title: name });
+					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
 					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -465,7 +494,7 @@ export default defineComponent({
 			}
 
 			async function editBookmark(name: string) {
-				bookmarkName.value = name;
+				bookmarkTitle.value = name;
 				bookmarkDialogActive.value = false;
 			}
 		}
@@ -558,25 +587,53 @@ export default defineComponent({
 	--layout-offset-top: 64px;
 }
 
-.bookmark-add .toggle,
-.bookmark-edit .toggle {
-	margin-left: 8px;
-	transition: color var(--fast) var(--transition);
-}
-
-.bookmark-add {
-	color: var(--foreground-subdued);
-
-	&:hover {
-		color: var(--foreground-normal);
-	}
-}
-
-.bookmark-edit {
-	color: var(--primary);
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.bookmark-controls {
+	.add,
+	.save,
+	.saved,
+	.clear {
+		display: inline-block;
+		margin-left: 8px;
+	}
+
+	.add,
+	.save,
+	.clear {
+		cursor: pointer;
+		transition: color var(--fast) var(--transition);
+	}
+
+	.add {
+		color: var(--foreground-subdued);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.save {
+		color: var(--warning);
+
+		&:hover {
+			color: var(--warning-125);
+		}
+	}
+
+	.clear {
+		margin-left: 4px;
+		color: var(--foreground-subdued);
+
+		&:hover {
+			color: var(--warning);
+		}
+	}
+
+	.saved {
+		color: var(--primary);
+	}
 }
 </style>

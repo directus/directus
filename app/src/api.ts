@@ -59,18 +59,22 @@ export const onError = async (error: RequestError) => {
 		error.request.responseURL.includes('refresh') === false &&
 		error.request.responseURL.includes('login') === false
 	) {
-		try {
-			const newToken = await refresh();
+		let newToken: string;
 
+		try {
+			newToken = await refresh();
+		} catch {
+			logout({ reason: LogoutReason.SESSION_EXPIRED });
+			return Promise.reject();
+		}
+
+		if (newToken) {
 			return api.request({
 				...error.config,
 				headers: {
 					Authorization: `Bearer ${newToken}`,
 				},
 			});
-		} catch {
-			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
-			return Promise.reject();
 		}
 	}
 

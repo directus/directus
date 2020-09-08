@@ -1,19 +1,18 @@
 <template>
 	<div>
 		<value-null v-if="value === null" />
-		<div class="badge" :style="styles">{{ displayValue }}</div>
+		<div class="dot" :style="styles" v-tooltip="displayValue"></div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 import formatTitle from '@directus/format-title';
 
 type Choice = {
 	value: string;
 	text: string;
-	foreground: string | null;
-	background: string | null;
+	color: string | null;
 };
 
 export default defineComponent({
@@ -26,13 +25,9 @@ export default defineComponent({
 			type: Array as PropType<Choice[]>,
 			default: () => [],
 		},
-		defaultBackground: {
+		defaultColor: {
 			type: String,
-			default: '#eceff1',
-		},
-		defaultForeground: {
-			type: String,
-			default: '#263238',
+			default: '#B0BEC5',
 		},
 	},
 	setup(props) {
@@ -43,14 +38,12 @@ export default defineComponent({
 		});
 
 		const displayValue = computed(() => {
-			if (!currentChoice.value) return formatTitle(props.value);
-			return currentChoice.value.text;
+			return formatTitle(props.value);
 		});
 
 		const styles = computed(() => {
 			return {
-				color: currentChoice.value?.foreground || props.defaultForeground,
-				backgroundColor: currentChoice.value?.background || props.defaultBackground,
+				backgroundColor: currentChoice.value?.color || props.defaultColor,
 			};
 		});
 
@@ -60,11 +53,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.badge {
+.dot {
 	display: inline-block;
-	padding: 8px;
-	line-height: 1;
+	flex-shrink: 0;
+	width: 12px;
+	height: 12px;
+	margin: 0 4px;
 	vertical-align: middle;
-	border-radius: var(--border-radius);
+	border-radius: 6px;
 }
 </style>

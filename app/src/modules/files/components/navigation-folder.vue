@@ -70,7 +70,7 @@
 			<v-card>
 				<v-card-title>{{ $t('rename_folder') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="renameValue" />
+					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>

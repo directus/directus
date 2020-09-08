@@ -6,7 +6,7 @@
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
-			@change="handleChange"
+			@input="setSort"
 		>
 			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
 		</draggable>
@@ -58,6 +58,7 @@ import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
+import { orderBy } from 'lodash';
 
 type DraggableEvent = {
 	moved?: {
@@ -85,15 +86,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const sortedFields = computed(() => {
-			return fields.value.sort((a, b) => {
-				const aSort = a.meta?.sort || null;
-				const bSort = b.meta?.sort || null;
-
-				if (aSort === bSort) return 0;
-				if (aSort === null) return 1;
-				if (bSort === null) return -1;
-				return aSort < bSort ? -1 : 1;
-			});
+			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]);
 		});
 
 		const addOptions = computed(() => [
@@ -142,56 +135,20 @@ export default defineComponent({
 
 		return {
 			sortedFields,
-			handleChange,
+			setSort,
 			hideDragImage,
 			addOptions,
 		};
 
-		function handleChange(event: DraggableEvent) {
-			if (event.moved !== undefined) {
-				sortInGroup(event.moved);
-			}
-		}
-
-		function sortInGroup(event: Required<DraggableEvent>['moved']) {
-			const { element, newIndex, oldIndex } = event;
-			const move = newIndex > oldIndex ? 'down' : 'up';
-
-			const selectionRange = move === 'down' ? [oldIndex + 1, newIndex + 1] : [newIndex, oldIndex];
-
-			const fields = sortedFields.value;
-
-			let updates: DeepPartial<Field>[] = fields.map((field) => {
-				// If field.sort isn't set yet, base it on the index of the array. That way, the
-				// new sort value will match what's visible on the screen
-				const sortValue =
-					field.meta?.sort || fields.findIndex((existingField) => existingField.field === field.field);
-
-				return {
-					field: field.field,
-					meta: {
-						sort: move === 'down' ? sortValue - 1 : sortValue + 1,
-					},
-				};
-			});
-
-			const sortOfItemOnNewIndex = fields[newIndex].meta?.sort || newIndex;
-
-			updates.push({
-				field: element.field,
+		function setSort(fields: Field[]) {
+			const updates = fields.map((field, index) => ({
+				field: field.field,
 				meta: {
-					sort: sortOfItemOnNewIndex,
-				},
-			});
-
-			updates = updates.map((update) => ({
-				...update,
-				meta: {
-					sort: update.meta?.sort !== undefined && update.meta?.sort !== null ? update.meta.sort + 1 : null,
+					sort: index + 1,
 				},
 			}));
 
-			fieldsStore.updateFields(element.collection, updates);
+			fieldsStore.updateFields(collection.value, updates);
 		}
 	},
 });

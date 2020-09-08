@@ -523,7 +523,7 @@
   "values": "قيم",
   "version": "إصدار",
   "version_and_updates": "إصدار وتحديثات",
-  "view_type": "معاية كـ...",
+  "layout": "معاية كـ...",
   "visible_all_users": "مرئية لجميع المستخدمين",
   "webhook_count": "لاتوجد روابط ويب | رابط ويب | {count} روابط ويب",
   "weeks": {

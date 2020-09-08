@@ -523,7 +523,7 @@
   "values": "Değerler",
   "version": "Versiyon",
   "version_and_updates": "Versiyon ve Güncellemeler",
-  "view_type": "Şu Şekilde Görüntüle...",
+  "layout": "Şu Şekilde Görüntüle...",
   "visible_all_users": "Tüm kullanıcılar tarafından görüntülenebilir",
   "webhook_count": "Ağ kancası yok | 1 Ağ Kancası | {count} Ağ Kancası",
   "weeks": {

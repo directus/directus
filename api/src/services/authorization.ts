@@ -16,6 +16,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { uniq, merge } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import ItemsService from './items';
+import { parseFilter } from '../utils/parse-filter';
 
 export default class AuthorizationService {
 	knex: Knex;
@@ -64,8 +65,7 @@ export default class AuthorizationService {
 		}
 
 		validateFields(ast);
-
-		applyFilters(ast);
+		applyFilters(ast, this.accountability);
 
 		return ast;
 
@@ -126,7 +126,8 @@ export default class AuthorizationService {
 		}
 
 		function applyFilters(
-			ast: AST | NestedCollectionAST | FieldAST
+			ast: AST | NestedCollectionAST | FieldAST,
+			accountability: Accountability | null
 		): AST | NestedCollectionAST | FieldAST {
 			if (ast.type === 'collection') {
 				const collection = ast.name;
@@ -136,11 +137,12 @@ export default class AuthorizationService {
 					(permission) => permission.collection === collection
 				)!;
 
+				const parsedPermissions = parseFilter(permissions.permissions, accountability);
+
 				ast.query = {
 					...ast.query,
 					filter: {
-						...(ast.query.filter || {}),
-						...permissions.permissions,
+						_and: [ast.query.filter || {}, parsedPermissions],
 					},
 				};
 
@@ -155,7 +157,10 @@ export default class AuthorizationService {
 					ast.query.limit = permissions.limit;
 				}
 
-				ast.children = ast.children.map(applyFilters) as (NestedCollectionAST | FieldAST)[];
+				ast.children = ast.children.map((child) => applyFilters(child, accountability)) as (
+					| NestedCollectionAST
+					| FieldAST
+				)[];
 			}
 
 			return ast;

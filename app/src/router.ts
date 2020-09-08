@@ -20,6 +20,7 @@ export const defaultRoutes: RouteConfig[] = [
 		component: LoginRoute,
 		props: (route) => ({
 			ssoErrorCode: route.query.error ? route.query.code : null,
+			logoutReason: route.query.reason,
 		}),
 		meta: {
 			public: true,

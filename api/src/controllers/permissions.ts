@@ -65,8 +65,7 @@ router.get(
 		const items = await service.readByQuery(req.sanitizedQuery);
 
 		return res.json({ data: items || null });
-	}),
-	setCacheMiddleware
+	})
 );
 
 router.get(

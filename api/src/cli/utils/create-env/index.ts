@@ -15,58 +15,9 @@ const liquidEngine = new Liquid({
 });
 
 const defaults = {
-	general: {
-		PORT: 41201,
-		PUBLIC_URL: '/',
-	},
-	storage: {
-		STORAGE_LOCATIONS: 'local',
-		STORAGE_LOCAL_PUBLIC_URL: '/uploads',
-		STORAGE_LOCAL_DRIVER: 'local',
-		STORAGE_LOCAL_ROOT: './uploads',
-	},
-	redisServer: {
-		REDIS_HOST: '127.0.0.1',
-		REDIS_PORT: '6379',
-		REDIS_PASSWORD: null,
-	},
-	rateLimits: {
-		RATE_LIMIT_TYPE: 'redis',
-		CONSUMED_POINTS_LIMIT: 5,
-		CONSUMED_RESET_DURATION: 1,
-		EXEC_EVENLY: true,
-		BLOCK_POINT_DURATION: 0,
-		INMEMORY_BLOCK_CONSUMED: 200,
-		INMEMEMORY_BLOCK_DURATION: 30,
-	},
-	caching: {
-		CACHE_ENABLED: true,
-		CACHE_DRIVER: 'redis',
-		CACHE_HOST: '127.0.0.1',
-		CACHE_PORT: '6379',
-		CACHE_REDIS_PASSWORD: null,
-		CACHE_TTL: 300,
-		CACHE_CHECK_LIVE: 300,
-	},
 	security: {
 		KEY: uuidv4(),
 		SECRET: nanoid(32),
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
-		REFRESH_TOKEN_COOKIE_SECURE: false,
-		REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
-	},
-	oauth: {
-		OAUTH_PROVIDERS: '',
-	},
-	extensions: {
-		EXTENSIONS_PATH: './extensions',
-	},
-	email: {
-		EMAIL_FROM: 'no-reply@directus.io',
-		EMAIL_TRANSPORT: 'sendmail',
-		EMAIL_SENDMAIL_NEW_LINE: 'unix',
-		EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 	},
 };
 

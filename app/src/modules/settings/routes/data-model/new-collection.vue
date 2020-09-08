@@ -27,7 +27,13 @@
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
 				<div class="type-label">{{ $t('name') }}</div>
-				<v-input class="monospace" v-model="collectionName" db-safe :placeholder="$t('a_unique_table_name')" />
+				<v-input
+					autofocus
+					class="monospace"
+					v-model="collectionName"
+					db-safe
+					:placeholder="$t('a_unique_table_name')"
+				/>
 				<v-divider />
 				<div class="grid">
 					<div>
@@ -137,29 +143,29 @@ export default defineComponent({
 				label: 'sort',
 				icon: 'low_priority',
 			},
-			userCreated: {
-				enabled: false,
-				name: 'user_created',
-				label: 'created_by',
-				icon: 'account_circle',
-			},
-			userUpdated: {
-				enabled: false,
-				name: 'user_updated',
-				label: 'updated_by',
-				icon: 'account_circle',
-			},
 			dateCreated: {
 				enabled: false,
 				name: 'date_created',
 				label: 'created_on',
 				icon: 'access_time',
 			},
+			userCreated: {
+				enabled: false,
+				name: 'user_created',
+				label: 'created_by',
+				icon: 'account_circle',
+			},
 			dateUpdated: {
 				enabled: false,
 				name: 'date_updated',
 				label: 'updated_on',
 				icon: 'access_time',
+			},
+			userUpdated: {
+				enabled: false,
+				name: 'user_updated',
+				label: 'updated_by',
+				icon: 'account_circle',
 			},
 		});
 
@@ -304,7 +310,7 @@ export default defineComponent({
 					field: systemFields.sort.name,
 					type: 'integer',
 					meta: {
-						interface: 'sort',
+						interface: 'numeric',
 						hidden: true,
 					},
 					schema: {},
@@ -326,7 +332,7 @@ export default defineComponent({
 						},
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
 					schema: {},
 				});
@@ -341,8 +347,9 @@ export default defineComponent({
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
+					schema: {},
 				});
 			}
 
@@ -359,8 +366,9 @@ export default defineComponent({
 						},
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
+					schema: {},
 				});
 			}
 
@@ -373,8 +381,9 @@ export default defineComponent({
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
-						width: 'full',
+						width: 'half',
 					},
+					schema: {},
 				});
 			}
 

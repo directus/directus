@@ -4,7 +4,10 @@
 
 		<div class="form">
 			<div class="field">
-				<div class="label type-label">{{ $t('key') }}</div>
+				<div class="label type-label">
+					{{ $t('key') }}
+					<v-icon class="required" sup name="star" />
+				</div>
 				<v-input
 					:disabled="isExisting"
 					autofocus
@@ -16,15 +19,18 @@
 			</div>
 
 			<div class="field">
-				<div class="label type-label">{{ $t('type') }}</div>
+				<div class="label type-label">
+					{{ $t('type') }}
+					<v-icon class="required" sup name="star" />
+				</div>
 				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
 					:value="fieldData.type"
-					@input="setType"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
+					@input="setType"
 				/>
 			</div>
 
@@ -58,6 +64,40 @@
 				<v-checkbox v-model="fieldData.schema.is_nullable" :label="$t('allow_null_label')" block />
 			</div>
 
+			<div class="field full">
+				<div class="label type-label">{{ $t('translation') }}</div>
+				<interface-repeater
+					v-model="fieldData.meta.translation"
+					:template="'{{ translation }} ({{ locale }})'"
+					:fields="[
+						{
+							field: 'locale',
+							type: 'string',
+							name: $t('language'),
+							meta: {
+								interface: 'system-language',
+								width: 'half',
+							},
+							schema: {
+								default_value: 'en-US',
+							},
+						},
+						{
+							field: 'translation',
+							type: 'string',
+							name: $t('translation'),
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+								options: {
+									placeholder: 'Enter a translation...',
+								},
+							},
+						},
+					]"
+				/>
+			</div>
+
 			<!--
 			@todo add unique when the API supports it
 
@@ -88,24 +128,66 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const typesWithLabels = computed(() =>
-			types
-				.filter((type) => {
-					// Only allow primary key types in m2o fields
-					if (props.type === 'm2o') {
-						return ['integer', 'string', 'uuid'].includes(type);
-					}
-
-					// Remove alias and unknown, as those aren't real column types you can use
-					return ['alias', 'unknown'].includes(type) === false;
-				})
-				.map((type) => {
-					return {
-						value: type,
-						text: i18n.t(type),
-					};
-				})
-		);
+		const typesWithLabels = computed(() => {
+			return [
+				{
+					text: i18n.t('string'),
+					value: 'string',
+				},
+				{
+					text: i18n.t('text'),
+					value: 'text',
+				},
+				{ divider: true },
+				{
+					text: i18n.t('boolean'),
+					value: 'boolean',
+				},
+				{ divider: true },
+				{
+					text: i18n.t('integer'),
+					value: 'integer',
+				},
+				{
+					text: i18n.t('bigInteger'),
+					value: 'bigInteger',
+				},
+				{
+					text: i18n.t('float'),
+					value: 'float',
+				},
+				{
+					text: i18n.t('decimal'),
+					value: 'decimal',
+				},
+				{ divider: true },
+				{
+					text: i18n.t('timestamp'),
+					value: 'timestamp',
+				},
+				{
+					text: i18n.t('datetime'),
+					value: 'dateTime',
+				},
+				{
+					text: i18n.t('date'),
+					value: 'date',
+				},
+				{
+					text: i18n.t('time'),
+					value: 'time',
+				},
+				{ divider: true },
+				{
+					text: i18n.t('json'),
+					value: 'json',
+				},
+				{
+					text: i18n.t('uuid'),
+					value: 'uuid',
+				},
+			];
+		});
 
 		const typeDisabled = computed(() => {
 			return ['file', 'files', 'o2m', 'm2m', 'm2o'].includes(props.type);
@@ -175,5 +257,9 @@ export default defineComponent({
 
 .monospace {
 	--v-input-font-family: var(--family-monospace);
+}
+
+.required {
+	--v-icon-color: var(--primary);
 }
 </style>

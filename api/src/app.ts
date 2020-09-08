@@ -3,11 +3,12 @@ import bodyParser from 'body-parser';
 import logger from './logger';
 import expressLogger from 'express-pino-logger';
 import path from 'path';
-import cors from 'cors';
+
+import { validateEnv } from './utils/validate-env';
 import env from './env';
 
 import errorHandler from './middleware/error-handler';
-
+import cors from './middleware/cors';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 import activityRouter from './controllers/activity';
@@ -32,63 +33,62 @@ import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
 
-const app = express().disable('x-powered-by').set('trust proxy', true);
+validateEnv(['KEY', 'SECRET']);
 
-app.use(expressLogger({ logger }))
-	.use(bodyParser.json())
-	.use(extractToken)
-	.use((req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
+const app = express();
+app.disable('x-powered-by');
+app.set('trust proxy', true);
 
-if (env.CORS_ENABLED === 'true') {
-	app.use(
-		cors({
-			origin: env.CORS_ORIGIN || true,
-			methods: env.CORS_METHODS || 'GET,POST,PATCH,DELETE',
-			allowedHeaders: env.CORS_ALLOWED_HEADERS,
-			exposedHeaders: env.CORS_EXPOSED_HEADERS,
-			credentials: env.CORS_CREDENTIALS === 'true' || undefined,
-			maxAge: Number(env.CORS_MAX_AGE) || undefined,
-		})
-	);
+app.use(expressLogger({ logger }));
+app.use(bodyParser.json());
+app.use(extractToken);
+app.use((req, res, next) => {
+	res.setHeader('X-Powered-By', 'Directus');
+	next();
+});
+
+if (env.CORS_ENABLED === true) {
+	app.use(cors);
 }
 
 if (env.NODE_ENV !== 'development') {
 	const adminPath = require.resolve('@directus/app/dist/index.html');
 
-	app.get('/', (req, res) => res.redirect('/admin/'))
-		// the auth endpoints allow you to login/logout etc. It should ignore the authentication check
-		.use('/admin', express.static(path.join(adminPath, '..')))
-		.use('/admin/*', (req, res) => {
-			res.sendFile(adminPath);
-		});
+	app.get('/', (req, res) => res.redirect('/admin/'));
+	app.use('/admin', express.static(path.join(adminPath, '..')));
+	app.use('/admin/*', (req, res) => {
+		res.sendFile(adminPath);
+	});
 }
 
-app.use('/auth', authRouter)
+// use the rate limiter - all routes for now
+if (env.RATE_LIMITER_ENABLED === true) {
+	app.use(rateLimiter);
+}
 
-	.use(authenticate)
+app.use('/auth', authRouter);
+app.use(authenticate);
 
-	.use('/activity', activityRouter)
-	.use('/assets', assetsRouter)
-	.use('/collections', collectionsRouter)
-	.use('/extensions', extensionsRouter)
-	.use('/fields', fieldsRouter)
-	.use('/files', filesRouter)
-	.use('/folders', foldersRouter)
-	.use('/items', itemsRouter)
-	.use('/permissions', permissionsRouter)
-	.use('/presets', presetsRouter)
-	.use('/relations', relationsRouter)
-	.use('/revisions', revisionsRouter)
-	.use('/roles', rolesRouter)
-	.use('/server/', serverRouter)
-	.use('/settings', settingsRouter)
-	.use('/users', usersRouter)
-	.use('/utils', utilsRouter)
-	.use('/webhooks', webhooksRouter);
+app.use('/activity', activityRouter);
+app.use('/assets', assetsRouter);
+app.use('/collections', collectionsRouter);
+app.use('/extensions', extensionsRouter);
+app.use('/fields', fieldsRouter);
+app.use('/files', filesRouter);
+app.use('/folders', foldersRouter);
+app.use('/items', itemsRouter);
+app.use('/permissions', permissionsRouter);
+app.use('/presets', presetsRouter);
+app.use('/relations', relationsRouter);
+app.use('/revisions', revisionsRouter);
+app.use('/roles', rolesRouter);
+app.use('/server/', serverRouter);
+app.use('/settings', settingsRouter);
+app.use('/users', usersRouter);
+app.use('/utils', utilsRouter);
+app.use('/webhooks', webhooksRouter);
 
-app.use(notFoundHandler).use(errorHandler);
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

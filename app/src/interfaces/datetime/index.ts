@@ -20,4 +20,5 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
+	recommendedDisplays: ['datetime'],
 }));

@@ -523,7 +523,7 @@
   "values": "Verdier",
   "version": "Versjon",
   "version_and_updates": "Versjon og oppdateringer",
-  "view_type": "Vis som...",
+  "layout": "Vis som...",
   "visible_all_users": "Synlig for alle brukere",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

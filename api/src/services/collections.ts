@@ -199,12 +199,27 @@ export default class CollectionsService {
 			const payload = data as Partial<Collection>;
 
 			if (!payload.meta) {
-				throw new InvalidPayloadException(`"system" key is required`);
+				throw new InvalidPayloadException(`"meta" key is required`);
 			}
 
-			return (await collectionItemsService.update(payload.meta!, key as any)) as
-				| string
-				| string[];
+			const keys = Array.isArray(key) ? key : [key];
+
+			for (const key of keys) {
+				const exists =
+					(await this.knex
+						.select('collection')
+						.from('directus_collections')
+						.where({ collection: key })
+						.first()) !== undefined;
+
+				if (exists) {
+					await collectionItemsService.update(payload.meta, key);
+				} else {
+					await collectionItemsService.create({ ...payload.meta, collection: key });
+				}
+			}
+
+			return key;
 		}
 
 		const payloads = Array.isArray(data) ? data : [data];

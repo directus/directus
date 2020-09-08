@@ -10,5 +10,5 @@ export * from './invalid-payload';
 export * from './invalid-query';
 export * from './item-limit';
 export * from './item-not-found';
-export * from './redis-not-found';
 export * from './route-not-found';
+export * from './service-unavailable';

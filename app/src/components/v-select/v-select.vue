@@ -42,24 +42,28 @@
 				<v-divider />
 			</template>
 
-			<v-list-item
-				v-for="item in _items"
-				:key="item.text + item.value"
-				:active="multiple ? (value || []).includes(item.value) : value === item.value"
-				:disabled="item.disabled"
-				@click="multiple ? null : $emit('input', item.value)"
-			>
-				<v-list-item-content>
-					<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
-					<v-checkbox
-						v-else
-						:inputValue="value || []"
-						:label="item.text"
-						:value="item.value"
-						@change="$emit('input', $event.length > 0 ? $event : null)"
-					/>
-				</v-list-item-content>
-			</v-list-item>
+			<template v-for="(item, index) in _items">
+				<v-divider :key="index" v-if="item.divider === true" />
+
+				<v-list-item
+					v-else
+					:key="item.text + item.value"
+					:active="multiple ? (value || []).includes(item.value) : value === item.value"
+					:disabled="item.disabled"
+					@click="multiple ? null : $emit('input', item.value)"
+				>
+					<v-list-item-content>
+						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
+						<v-checkbox
+							v-else
+							:inputValue="value || []"
+							:label="item.text"
+							:value="item.value"
+							@change="$emit('input', $event.length > 0 ? $event : null)"
+						/>
+					</v-list-item-content>
+				</v-list-item>
+			</template>
 
 			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
 				<v-list-item-content>
@@ -205,6 +209,8 @@ export default defineComponent({
 							value: item,
 						};
 					}
+
+					if (item.divider === true) return { divider: true };
 
 					return {
 						text: item[props.itemText],

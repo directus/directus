@@ -8,12 +8,17 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select :placeholder="$t('select_one')" :items="items" v-model="collectionMany" />
+				<v-select
+					:placeholder="$t('select_one')"
+					:items="items"
+					v-model="collectionMany"
+					:disabled="isExisting"
+				/>
 			</div>
 			<v-input disabled :value="currentCollectionPrimaryKey.field" />
 			<v-select
 				v-model="relations[0].many_field"
-				:disabled="!relations[0].many_collection"
+				:disabled="!relations[0].many_collection || isExisting"
 				:items="fields"
 				:placeholder="!relations[0].many_collection ? $t('select_one') : $t('select_one')"
 			/>
@@ -41,6 +46,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		isExisting: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
