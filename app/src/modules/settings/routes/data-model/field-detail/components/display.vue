@@ -53,6 +53,8 @@ export default defineComponent({
 		const selectItems = computed(() => {
 			const recommended = selectedInterface.value?.recommendedDisplays || [];
 
+			recommended.push('raw', 'formatted-value');
+
 			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
 				const item: FancySelectItem = {
 					text: display.name,
