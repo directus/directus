@@ -138,14 +138,14 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
-	const title = computed<string | null>({
+	const bookmarkTitle = computed<string | null>({
 		get() {
-			return localPreset.value?.title || null;
+			return localPreset.value?.bookmark || null;
 		},
 		set(newTitle: string | null) {
 			localPreset.value = {
 				...localPreset.value,
-				title: newTitle,
+				bookmark: newTitle,
 			};
 
 			// This'll save immediately
@@ -162,7 +162,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		searchQuery,
 		savePreset,
 		saveCurrentAsBookmark,
-		title,
+		bookmarkTitle,
 		resetPreset,
 		bookmarkSaved,
 		bookmarkIsMine,

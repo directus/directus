@@ -58,7 +58,7 @@ export default defineComponent({
 			return orderBy(
 				presetsStore.state.collectionPresets
 					.filter((preset) => {
-						return preset.title !== null && preset.collection.startsWith('directus_') === false;
+						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
 					.map((preset) => {
 						let scope = 'global';
@@ -71,7 +71,7 @@ export default defineComponent({
 							scope,
 						};
 					}),
-				['title'],
+				['bookmark'],
 				['asc']
 			);
 		});

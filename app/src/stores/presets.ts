@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/';
 import api from '@/api';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
-	title: null,
+	bookmark: null,
 	role: null,
 	user: null,
 	search_query: null,
@@ -106,7 +106,7 @@ export const usePresetsStore = createStore({
 				const collectionMatches = preset.collection === collection;
 
 				// Filter out all bookmarks
-				if (preset.title) return false;
+				if (preset.bookmark) return false;
 
 				if (userMatches && collectionMatches) return true;
 				if (roleMatches && collectionMatches) return true;

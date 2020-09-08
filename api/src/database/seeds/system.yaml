@@ -342,7 +342,7 @@ tables:
   directus_presets:
     id:
       increments: true
-    title:
+    bookmark:
       type: string
       length: 255
     user:
@@ -1899,7 +1899,7 @@ rows:
 
   directus_presets:
     defaults:
-      title: null
+      bookmark: null
       user: null
       role: null
       collection: null

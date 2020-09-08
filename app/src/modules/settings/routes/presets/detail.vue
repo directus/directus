@@ -177,8 +177,8 @@ export default defineComponent({
 
 				const editsParsed: Partial<Preset> = {};
 
-				if (edits.value.name) editsParsed.title = edits.value.name;
-				if (edits.value.name?.length === 0) editsParsed.title = null;
+				if (edits.value.name) editsParsed.bookmark = edits.value.name;
+				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
 				if (edits.value.collection) editsParsed.collection = edits.value.collection;
 				if (edits.value.layout) editsParsed.layout = edits.value.layout;
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
@@ -254,7 +254,7 @@ export default defineComponent({
 					id: preset.value.id!,
 					collection: preset.value.collection,
 					layout: preset.value.layout,
-					name: preset.value.title,
+					name: preset.value.bookmark,
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
