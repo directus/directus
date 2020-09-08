@@ -90,7 +90,7 @@ export default defineComponent({
 					...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
 					{ divider: true },
 					...interfaceItems.filter((item) => recommended.includes(item.value as string) === false),
-				];
+				].filter((i) => i);
 			} else {
 				return interfaceItems;
 			}

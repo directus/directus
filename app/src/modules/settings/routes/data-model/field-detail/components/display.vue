@@ -32,6 +32,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { clone } from 'lodash';
 
 import { state, availableDisplays } from '../store';
 
@@ -51,7 +52,7 @@ export default defineComponent({
 		});
 
 		const selectItems = computed(() => {
-			const recommended = selectedInterface.value?.recommendedDisplays || [];
+			const recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
 
 			recommended.push('raw', 'formatted-value');
 
@@ -75,7 +76,7 @@ export default defineComponent({
 					...recommended.map((key) => displayItems.find((item) => item.value === key)),
 					{ divider: true },
 					...displayItems.filter((item) => recommended.includes(item.value as string) === false),
-				];
+				].filter((i) => i);
 			} else {
 				return displayItems;
 			}
