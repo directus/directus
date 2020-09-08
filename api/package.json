@@ -112,13 +112,13 @@
     "uuid-validate": "0.0.3"
   },
   "optionalDependencies": {
+    "ioredis": "^4.17.3",
     "memcached": "^2.2.2",
     "mssql": "^6.2.0",
     "mysql": "^2.18.1",
     "oracledb": "^5.0.0",
-    "sqlite3": "^5.0.0",
     "pg": "^8.3.3",
-    "ioredis": "^4.17.3"
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "@types/atob": "^2.1.2",
