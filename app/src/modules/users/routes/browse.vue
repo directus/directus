@@ -60,12 +60,12 @@
 
 		<component
 			class="layout"
-			ref="layout"
-			:is="`layout-${viewType}`"
+			ref="layoutRef"
+			:is="`layout-${layout}`"
 			collection="directus_users"
 			:selection.sync="selection"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
@@ -95,7 +95,7 @@
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_users_browse'))" />
 			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
 	</private-view>
@@ -129,11 +129,11 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { roles } = useNavigation();
-		const layout = ref<LayoutComponent | null>(null);
+		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const selection = ref<Item[]>([]);
 
-		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_users'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb, title } = useBreadcrumb();
@@ -167,11 +167,11 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			filters,
-			layout,
+			layoutRef,
 			selection,
-			viewOptions,
-			viewQuery,
-			viewType,
+			layoutOptions,
+			layoutQuery,
+			layout,
 			searchQuery,
 			marked,
 			clearFilters,
@@ -192,7 +192,7 @@ export default defineComponent({
 
 				await api.delete(`/users/${batchPrimaryKeys}`);
 
-				await layout.value?.refresh();
+				await layoutRef.value?.refresh();
 
 				selection.value = [];
 				deleting.value = false;

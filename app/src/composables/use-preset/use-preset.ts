@@ -57,19 +57,19 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		initLocalPreset();
 	});
 
-	const viewOptions = computed<Record<string, any>>({
+	const layoutOptions = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.view_type) return null;
-			return localPreset.value.view_options?.[localPreset.value.view_type] || null;
+			if (!localPreset.value.layout) return null;
+			return localPreset.value.layout_options?.[localPreset.value.layout] || null;
 		},
 		set(val) {
-			if (!localPreset.value.view_type) return null;
+			if (!localPreset.value.layout) return null;
 
 			localPreset.value = {
 				...localPreset.value,
-				view_options: {
-					...localPreset.value.view_options,
-					[localPreset.value.view_type]: val,
+				layout_options: {
+					...localPreset.value.layout_options,
+					[localPreset.value.layout]: val,
 				},
 			};
 
@@ -77,18 +77,18 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
-	const viewQuery = computed<Record<string, any>>({
+	const layoutQuery = computed<Record<string, any>>({
 		get() {
-			if (!localPreset.value.view_type) return null;
-			return localPreset.value.view_query?.[localPreset.value.view_type] || null;
+			if (!localPreset.value.layout) return null;
+			return localPreset.value.layout_query?.[localPreset.value.layout] || null;
 		},
 		set(val) {
-			if (!localPreset.value.view_type) return null;
+			if (!localPreset.value.layout) return null;
 			localPreset.value = {
 				...localPreset.value,
-				view_query: {
-					...localPreset.value.view_query,
-					[localPreset.value.view_type]: val,
+				layout_query: {
+					...localPreset.value.layout_query,
+					[localPreset.value.layout]: val,
 				},
 			};
 
@@ -96,14 +96,14 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
-	const viewType = computed<string | null>({
+	const layout = computed<string | null>({
 		get() {
-			return localPreset.value.view_type || 'tabular';
+			return localPreset.value.layout || 'tabular';
 		},
 		set(val) {
 			localPreset.value = {
 				...localPreset.value,
-				view_type: val,
+				layout: val,
 			};
 
 			autoSave();
@@ -155,9 +155,9 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	return {
 		bookmarkExists,
-		viewType,
-		viewOptions,
-		viewQuery,
+		layout,
+		layoutOptions,
+		layoutQuery,
 		filters,
 		searchQuery,
 		savePreset,
@@ -173,9 +173,9 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	async function resetPreset() {
 		localPreset.value = {
 			...localPreset.value,
-			view_query: null,
-			view_options: null,
-			view_type: 'tabular',
+			layout_query: null,
+			layout_options: null,
+			layout: 'tabular',
 			filters: null,
 			search_query: null,
 		};
@@ -196,10 +196,10 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			};
 		}
 
-		if (!localPreset.value.view_type) {
+		if (!localPreset.value.layout) {
 			localPreset.value = {
 				...localPreset.value,
-				view_type: 'tabular',
+				layout: 'tabular',
 			};
 		}
 

@@ -523,7 +523,7 @@
   "values": "Valores",
   "version": "Versão",
   "version_and_updates": "Versão e alterações",
-  "view_type": "Ver como...",
+  "layout": "Ver como...",
   "visible_all_users": "Visível para todos os usuários",
   "webhook_count": "Sem webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

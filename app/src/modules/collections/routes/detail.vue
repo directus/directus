@@ -372,7 +372,12 @@ export default defineComponent({
 			if (saveAllowed.value === false || hasEdits.value === false) return;
 
 			await save();
-			router.push(`/collections/${props.collection}/+`);
+
+			if (isNew.value === true) {
+				refresh();
+			} else {
+				router.push(`/collections/${props.collection}/+`);
+			}
 		}
 
 		async function saveAsCopyAndNavigate() {

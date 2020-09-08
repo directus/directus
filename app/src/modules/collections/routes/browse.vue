@@ -29,7 +29,12 @@
 				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
 
 				<template v-else-if="bookmarkIsMine">
-					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
+					<v-icon
+						class="save"
+						@click="savePreset()"
+						name="bookmark_save"
+						v-tooltip.bottom="$t('update_bookmark')"
+					/>
 				</template>
 
 				<bookmark-add
@@ -166,12 +171,12 @@
 		<component
 			v-else
 			class="layout"
-			ref="layout"
-			:is="`layout-${viewType || 'tabular'}`"
+			ref="layoutRef"
+			:is="`layout-${layout || 'tabular'}`"
 			:collection="collection"
 			:selection.sync="selection"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
 			:filters.sync="filters"
 			:search-query.sync="searchQuery"
 			:reset-preset="resetPreset"
@@ -210,7 +215,7 @@
 					"
 				/>
 			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
 
@@ -271,7 +276,7 @@ export default defineComponent({
 	setup(props) {
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
-		const layout = ref<LayoutComponent | null>(null);
+		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const { collection } = toRefs(props);
 		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
@@ -282,9 +287,9 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 
 		const {
-			viewType,
-			viewOptions,
-			viewQuery,
+			layout,
+			layoutOptions,
+			layoutQuery,
 			filters,
 			searchQuery,
 			savePreset,
@@ -319,8 +324,8 @@ export default defineComponent({
 		watch(
 			collection,
 			() => {
-				if (viewType.value === null) {
-					viewType.value = 'tabular';
+				if (layout.value === null) {
+					layout.value = 'tabular';
 				}
 			},
 			{ immediate: true }
@@ -337,11 +342,11 @@ export default defineComponent({
 			currentCollection,
 			deleting,
 			filters,
-			layout,
+			layoutRef,
 			selection,
-			viewOptions,
-			viewQuery,
-			viewType,
+			layoutOptions,
+			layoutQuery,
+			layout,
 			searchQuery,
 			savePreset,
 			bookmarkExists,
@@ -411,7 +416,7 @@ export default defineComponent({
 
 				try {
 					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layout.value?.refresh?.();
+					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -431,7 +436,7 @@ export default defineComponent({
 
 				try {
 					await api.patch(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layout.value?.refresh?.();
+					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
 					confirmArchive.value = false;
@@ -599,8 +604,11 @@ export default defineComponent({
 	.save,
 	.clear {
 		cursor: pointer;
-		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
+	}
+
+	.add {
+		color: var(--foreground-subdued);
 
 		&:hover {
 			color: var(--foreground-normal);
@@ -615,17 +623,17 @@ export default defineComponent({
 		}
 	}
 
-	.saved {
-		color: var(--primary);
-	}
-
 	.clear {
-		color: var(--foreground-subdued);
 		margin-left: 4px;
+		color: var(--foreground-subdued);
 
 		&:hover {
 			color: var(--warning);
 		}
+	}
+
+	.saved {
+		color: var(--primary);
 	}
 }
 </style>

@@ -523,7 +523,7 @@
   "values": "値",
   "version": "バージョン",
   "version_and_updates": "バージョンおよび更新",
-  "view_type": "View As...",
+  "layout": "View As...",
   "visible_all_users": "全ユーザーで閲覧可能",
   "webhook_count": "Webhook 無し | 1つのWebhook | {count} 個のWebhook",
   "weeks": {

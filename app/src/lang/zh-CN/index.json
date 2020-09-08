@@ -523,7 +523,7 @@
   "values": "值",
   "version": "版本",
   "version_and_updates": "版本与升级",
-  "view_type": "查看为...",
+  "layout": "查看为...",
   "visible_all_users": "所有用户可见",
   "webhook_count": "没有Webhook | 1个Webhook | {count} 个Webhook",
   "weeks": {

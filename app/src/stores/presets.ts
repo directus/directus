@@ -9,9 +9,9 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	user: null,
 	search_query: null,
 	filters: null,
-	view_type: null,
-	view_query: null,
-	view_options: null,
+	layout: null,
+	layout_query: null,
+	layout_options: null,
 };
 
 export const usePresetsStore = createStore({
@@ -186,7 +186,6 @@ export const usePresetsStore = createStore({
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				if (preset.id === response.data.data.id) {
-					console.log('replace');
 					return response.data.data;
 				}
 
