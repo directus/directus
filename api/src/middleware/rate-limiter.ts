@@ -8,7 +8,7 @@ import { RequestHandler } from 'express';
 import asyncHandler from 'express-async-handler';
 import { HitRateLimitException } from '../exceptions';
 import { RedisNotFoundException } from '../exceptions';
-import rateLimiterConfig from '../get-rate-limiter-config';
+import rateLimiterConfig from '../rate-limiter';
 
 const rateLimiter: RequestHandler = asyncHandler(async (req, res, next) => {
 	try {
