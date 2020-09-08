@@ -93,6 +93,7 @@
 		"joi": "^17.1.1",
 		"js-yaml": "^3.14.0",
 		"jsonwebtoken": "^8.5.1",
+		"keyv": "^4.0.1",
 		"knex": "^0.21.4",
 		"knex-schema-inspector": "0.0.11",
 		"liquidjs": "^9.14.1",
@@ -112,7 +113,9 @@
 		"uuid-validate": "0.0.3"
 	},
 	"optionalDependencies": {
+		"@keyv/redis": "^2.1.2",
 		"ioredis": "^4.17.3",
+		"keyv-memcache": "^0.8.0",
 		"memcached": "^2.2.2",
 		"mssql": "^6.2.0",
 		"mysql": "^2.18.1",
@@ -134,6 +137,7 @@
 		"@types/joi": "^14.3.4",
 		"@types/js-yaml": "^3.12.5",
 		"@types/jsonwebtoken": "^8.5.0",
+		"@types/keyv": "^3.1.1",
 		"@types/lodash": "^4.14.159",
 		"@types/ms": "^0.7.31",
 		"@types/nodemailer": "^6.4.0",

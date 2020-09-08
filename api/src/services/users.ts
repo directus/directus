@@ -8,6 +8,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
 import Knex from 'knex';
 import env from '../env';
+import cache from '../cache';
 
 export default class UsersService extends ItemsService {
 	knex: Knex;
@@ -40,6 +41,10 @@ export default class UsersService extends ItemsService {
 			if (payload.hasOwnProperty('tfa_secret')) {
 				throw new InvalidPayloadException(`You can't change the tfa_secret manually.`);
 			}
+		}
+
+		if (cache) {
+			await cache.clear();
 		}
 
 		return this.service.update(data, key as any);
@@ -78,6 +83,10 @@ export default class UsersService extends ItemsService {
 		await this.knex('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
+
+		if (cache) {
+			await cache.clear();
+		}
 	}
 
 	async requestPasswordReset(email: string) {
@@ -114,6 +123,10 @@ export default class UsersService extends ItemsService {
 		await this.knex('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
+
+		if (cache) {
+			await cache.clear();
+		}
 	}
 
 	async enableTFA(pk: string) {

@@ -9,9 +9,11 @@ import env from './env';
 
 import errorHandler from './middleware/error-handler';
 import cors from './middleware/cors';
+import rateLimiter from './middleware/rate-limiter';
+import { respond } from './middleware/respond';
+import cache from './middleware/cache';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
-import rateLimiter from './middleware/rate-limiter';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -33,6 +35,7 @@ import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
+import sanitizeQuery from './middleware/sanitize-query';
 
 validateEnv(['KEY', 'SECRET']);
 
@@ -70,6 +73,8 @@ if (env.RATE_LIMITER_ENABLED === true) {
 app.use('/auth', authRouter);
 app.use(authenticate);
 
+app.use(sanitizeQuery);
+app.use(cache);
 app.use('/activity', activityRouter);
 app.use('/assets', assetsRouter);
 app.use('/collections', collectionsRouter);
@@ -88,6 +93,8 @@ app.use('/settings', settingsRouter);
 app.use('/users', usersRouter);
 app.use('/utils', utilsRouter);
 app.use('/webhooks', webhooksRouter);
+
+app.use(respond);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

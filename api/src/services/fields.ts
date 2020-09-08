@@ -5,10 +5,11 @@ import ItemsService from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
-import { FieldNotFoundException, ForbiddenException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
 import PayloadService from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
+import cache from '../cache';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -205,6 +206,10 @@ export default class FieldsService {
 				field: field.field,
 			});
 		}
+
+		if (cache) {
+			await cache.clear();
+		}
 	}
 
 	/** @todo research how to make this happen in SQLite / Redshift */
@@ -272,6 +277,10 @@ export default class FieldsService {
 			}
 		}
 
+		if (cache) {
+			await cache.clear();
+		}
+
 		return field.field;
 	}
 
@@ -308,6 +317,10 @@ export default class FieldsService {
 					.update({ one_field: null })
 					.where({ one_collection: collection, one_field: field });
 			}
+		}
+
+		if (cache) {
+			await cache.clear();
 		}
 	}
 
