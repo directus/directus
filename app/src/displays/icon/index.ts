@@ -3,7 +3,8 @@ import DisplayIcon from './icon.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'icon',
-	name: i18n.t('icon'),
+	name: i18n.t('displays.icon.icon'),
+	description: i18n.t('displays.icon.description'),
 	icon: 'thumb_up',
 	handler: DisplayIcon,
 	options: [
@@ -15,7 +16,7 @@ export default defineDisplay(({ i18n }) => ({
 				interface: 'toggle',
 				width: 'half',
 				options: {
-					label: i18n.t('displays.icon.use_filled_variant'),
+					label: i18n.t('displays.icon.filled_label'),
 				},
 			},
 		},

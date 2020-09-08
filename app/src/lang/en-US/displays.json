@@ -1,28 +1,83 @@
 {
 	"displays": {
-		"icon": {
-			"icon": "Icon",
-			"filled": "Filled",
-			"use_filled_variant": "Use the filled variant"
+		"collection": {
+			"collection": "Collection",
+			"description": "Display a collection.",
+			"icon_label": "Show the collection's icon"
 		},
 		"color-dot": {
-			"choices-note": "Set colors relative to the text."
+			"color-dot": "Color Dot",
+			"description": "Display a colored dot.",
+			"default_color": "Default Color",
+			"choices_note": "Set colors relative to the text."
 		},
-		"format-title": {
-			"format-title": "Format Title"
+		"datetime": {
+			"datetime": "Datetime",
+			"description": "Display values related to time.",
+			"relative": "Relative",
+			"relative_label": "Show relative time, eg: 5 minutes ago"
+		},
+		"file": {
+			"file": "File",
+			"description": "Display files."
+		},
+		"file-size": {
+			"file-size": "File Size",
+			"description": "Display the size of a file."
+		},
+		"formatted-value": {
+			"formatted-value": "Formatted Value",
+			"description": "Display a formatted version of the text.",
+			"format_title": "Format Title",
+			"format_title_label": "Auto-format casing",
+			"bold_label": "Use bold style"
+		},
+		"icon": {
+			"icon": "Icon",
+			"description": "Display an icon.",
+			"filled": "Filled",
+			"filled_label": "Use the filled variant"
+		},
+		"image": {
+			"image": "Image",
+			"description": "Display a tiny image preview.",
+			"circle": "Circle",
+			"circle_label": "Display as a circle"
+		},
+		"labels": {
+			"labels": "Labels",
+			"description": "Display either a single or a list of labels.",
+			"default_foreground": "Default Foreground",
+			"default_background": "Default Background",
+			"format_label": "Format each label"
+
+		},
+		"mime-type": {
+			"mime-type": "MIME Type",
+			"description": "Show the MIME-Type of a file.",
+			"extension_only": "Extension Only",
+			"extension_only_label": "Only show the file extension"
 		},
 		"rating": {
 			"rating": "Rating",
+			"description": "Visualize a number as stars relative to the max-value.",
 			"simple": "Simple",
 			"simple_label": "Show stars in a simple format."
 		},
 		"raw": {
 			"raw": "Raw Value"
 		},
+		"related-values": {
+			"related-values": "Related Values",
+			"description": "Display relative values."
+		},
 		"user": {
+			"user": "User",
+			"description": "Display a directus user.",
 			"avatar": "Avatar",
 			"name": "Name",
-			"both": "Both"
+			"both": "Both",
+			"circle_label": "Show user in a circle"
 		}
 	}
 }

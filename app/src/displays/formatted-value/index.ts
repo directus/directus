@@ -3,19 +3,20 @@ import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'formatted-value',
-	name: i18n.t('formatted_value'),
+	name: i18n.t('displays.formatted-value.formatted-value'),
+	description: i18n.t('displays.formatted-value.description'),
 	types: ['string', 'text'],
 	icon: 'text_format',
 	handler: DisplayFormattedValue,
 	options: [
 		{
 			field: 'formatTitle',
-			name: i18n.t('format_title'),
+			name: i18n.t('displays.formatted-value.format_title'),
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('auto_format_casing'),
+					label: i18n.t('displays.formatted-value.format_title_label'),
 				},
 			},
 			schema: {
@@ -29,7 +30,7 @@ export default defineDisplay(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('use_bold_style'),
+					label: i18n.t('displays.formatted-value.bold_label'),
 				},
 			},
 		},

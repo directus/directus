@@ -3,7 +3,8 @@ import DisplayUser from './user.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'user',
-	name: i18n.t('user'),
+	name: i18n.t('displays.user.user'),
+	description: i18n.t('displays.user.description'),
 	types: ['uuid'],
 	icon: 'person',
 	handler: DisplayUser,
@@ -43,6 +44,9 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
+				options: {
+					label: i18n.t('displays.user.circle_label'),
+				},
 			},
 		},
 	],

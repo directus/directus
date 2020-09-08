@@ -3,14 +3,15 @@ import DisplayLabels from './labels.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'labels',
-	name: i18n.t('labels'),
+	name: i18n.t('displays.labels.labels'),
+	description: i18n.t('displays.labels.description'),
 	types: ['string', 'json'],
 	icon: 'flag',
 	handler: DisplayLabels,
 	options: [
 		{
 			field: 'defaultForeground',
-			name: i18n.t('default_foreground'),
+			name: i18n.t('displays.labels.default_foreground'),
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -22,7 +23,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'defaultBackground',
-			name: i18n.t('default_background'),
+			name: i18n.t('displays.labels.default_background'),
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -39,6 +40,9 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				width: 'half-left',
 				interface: 'toggle',
+				options: {
+					label: i18n.t('displays.labels.format_label'),
+				},
 			},
 			schema: {
 				default_value: true,
