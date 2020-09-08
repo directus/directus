@@ -1,25 +1,13 @@
 import { defineDisplay } from '@/displays/define';
-import DisplayBadge from './badge.vue';
+import DisplayLabels from './labels.vue';
 
 export default defineDisplay(({ i18n }) => ({
-	id: 'badge',
-	name: i18n.t('badge'),
+	id: 'labels',
+	name: i18n.t('labels'),
 	types: ['string', 'json'],
 	icon: 'flag',
-	handler: DisplayBadge,
+	handler: DisplayLabels,
 	options: [
-		{
-			field: 'format',
-			name: i18n.t('format_text'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-			},
-			schema: {
-				default_value: true,
-			},
-		},
 		{
 			field: 'defaultForeground',
 			name: i18n.t('default_foreground'),
@@ -42,6 +30,18 @@ export default defineDisplay(({ i18n }) => ({
 			},
 			schema: {
 				default_value: '#eceff1',
+			},
+		},
+		{
+			field: 'format',
+			name: i18n.t('format_text'),
+			type: 'boolean',
+			meta: {
+				width: 'half-left',
+				interface: 'toggle',
+			},
+			schema: {
+				default_value: true,
 			},
 		},
 		{
