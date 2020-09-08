@@ -110,7 +110,7 @@ type PresetRaw = {
 	user: null | { first_name: string; last_name: string };
 	role: null | { name: string };
 	collection: string;
-	view_type: string;
+	layout: string;
 };
 
 type Preset = {
@@ -176,7 +176,7 @@ export default defineComponent({
 					}
 
 					const collection = collectionsStore.getCollection(preset.collection)?.name;
-					const layout = layouts.find((l) => l.id === preset.view_type)?.name;
+					const layout = layouts.find((l) => l.id === preset.layout)?.name;
 
 					return {
 						id: preset.id,
@@ -203,7 +203,7 @@ export default defineComponent({
 								'user.last_name',
 								'role.name',
 								'collection',
-								'view_type',
+								'layout',
 							],
 							limit: -1,
 						},

@@ -133,7 +133,7 @@ import { clone } from 'lodash';
 
 type Item = Record<string, any>;
 
-type ViewOptions = {
+type layoutOptions = {
 	size?: number;
 	icon?: string;
 	imageSource?: string;
@@ -142,7 +142,7 @@ type ViewOptions = {
 	imageFit?: 'crop' | 'contain';
 };
 
-type ViewQuery = {
+type layoutQuery = {
 	fields?: string[];
 	sort?: string;
 	limit?: number;
@@ -159,12 +159,12 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			default: undefined,
 		},
-		viewOptions: {
-			type: Object as PropType<ViewOptions>,
+		layoutOptions: {
+			type: Object as PropType<layoutOptions>,
 			default: null,
 		},
-		viewQuery: {
-			type: Object as PropType<ViewQuery>,
+		layoutQuery: {
+			type: Object as PropType<layoutQuery>,
 			default: null,
 		},
 		filters: {
@@ -195,8 +195,8 @@ export default defineComponent({
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
-		const _viewOptions = useSync(props, 'viewOptions', emit);
-		const _viewQuery = useSync(props, 'viewQuery', emit);
+		const _layoutOptions = useSync(props, 'layoutOptions', emit);
+		const _layoutQuery = useSync(props, 'layoutQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
@@ -221,8 +221,8 @@ export default defineComponent({
 			});
 		});
 
-		const { size, icon, imageSource, title, subtitle, imageFit } = useViewOptions();
-		const { sort, limit, page, fields } = useViewQuery();
+		const { size, icon, imageSource, title, subtitle, imageFit } = uselayoutOptions();
+		const { sort, limit, page, fields } = uselayoutQuery();
 
 		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
 			sort,
@@ -230,7 +230,7 @@ export default defineComponent({
 			page,
 			fields: fields,
 			filters: _filters,
-			searchQuery,
+			searchQuery: _searchQuery,
 		});
 
 		const newLink = computed(() => {
@@ -302,7 +302,7 @@ export default defineComponent({
 			});
 		}
 
-		function useViewOptions() {
+		function uselayoutOptions() {
 			const size = createViewOption<number>('size', 4);
 			const icon = createViewOption('icon', 'box');
 			const title = createViewOption<string>('title', null);
@@ -312,14 +312,14 @@ export default defineComponent({
 
 			return { size, icon, imageSource, title, subtitle, imageFit };
 
-			function createViewOption<T>(key: keyof ViewOptions, defaultValue: any) {
+			function createViewOption<T>(key: keyof layoutOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
-						return _viewOptions.value?.[key] !== undefined ? _viewOptions.value?.[key] : defaultValue;
+						return _layoutOptions.value?.[key] !== undefined ? _layoutOptions.value?.[key] : defaultValue;
 					},
 					set(newValue: T) {
-						_viewOptions.value = {
-							..._viewOptions.value,
+						_layoutOptions.value = {
+							..._layoutOptions.value,
 							[key]: newValue,
 						};
 					},
@@ -327,11 +327,11 @@ export default defineComponent({
 			}
 		}
 
-		function useViewQuery() {
+		function uselayoutQuery() {
 			const page = ref(1);
 
-			const sort = createViewQueryOption<string>('sort', availableFields.value[0].field);
-			const limit = createViewQueryOption<number>('limit', 25);
+			const sort = createlayoutQueryOption<string>('sort', availableFields.value[0].field);
+			const limit = createlayoutQueryOption<number>('limit', 25);
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value) return [];
@@ -369,15 +369,15 @@ export default defineComponent({
 
 			return { sort, limit, page, fields };
 
-			function createViewQueryOption<T>(key: keyof ViewQuery, defaultValue: any) {
+			function createlayoutQueryOption<T>(key: keyof layoutQuery, defaultValue: any) {
 				return computed<T>({
 					get() {
-						return _viewQuery.value?.[key] || defaultValue;
+						return _layoutQuery.value?.[key] || defaultValue;
 					},
 					set(newValue: T) {
 						page.value = 1;
-						_viewQuery.value = {
-							..._viewQuery.value,
+						_layoutQuery.value = {
+							..._layoutQuery.value,
 							[key]: newValue,
 						};
 					},

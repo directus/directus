@@ -14,8 +14,8 @@ export type Preset = {
 	title: string | null;
 	user: number | null;
 
-	view_options: Record<string, any>;
+	layout_options: Record<string, any>;
 
-	view_query: Record<string, any>;
-	view_type: string | null;
+	layout_query: Record<string, any>;
+	layout: string | null;
 };

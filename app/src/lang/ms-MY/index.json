@@ -523,7 +523,7 @@
   "values": "Nilai-nilai",
   "version": "Versi",
   "version_and_updates": "Versi dan Kemaskini",
-  "view_type": "Lihat Sebagai...",
+  "layout": "Lihat Sebagai...",
   "visible_all_users": "Dilihat untuk semua pengguna",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

@@ -1,12 +1,12 @@
 <template>
 	<v-modal v-model="_active" :title="$t('select_item')" no-padding>
 		<component
-			:is="`layout-${layout}`"
+			:is="`layout-${localLayout}`"
 			:collection="collection"
 			:selection="_selection"
 			:filters="filters"
-			:view-query.sync="query"
-			:view-options.sync="options"
+			:layout-query.sync="localQuery"
+			:layout-options.sync="localOptions"
 			@update:selection="onSelect"
 			select-mode
 			class="layout"
@@ -64,15 +64,15 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { viewType, viewOptions, viewQuery } = usePreset(collection);
+		const { layout, layoutOptions, layoutQuery } = usePreset(collection);
 
-		// This is a local copy of the viewtype. This means that we can sync it the layout without
+		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
-		const layout = ref(viewType.value || 'tabular');
-		const options = ref(viewOptions.value);
-		const query = ref(viewQuery.value);
+		const localLayout = ref(layout.value || 'tabular');
+		const localOptions = ref(layoutOptions.value);
+		const localQuery = ref(layoutQuery.value);
 
-		return { save, cancel, _active, _selection, onSelect, layout, options, query, collectionInfo };
+		return { save, cancel, _active, _selection, onSelect, localLayout, localOptions, localQuery, collectionInfo };
 
 		function useActiveState() {
 			const localActive = ref(false);

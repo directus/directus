@@ -523,7 +523,7 @@
   "values": "Values",
   "version": "版本",
   "version_and_updates": "版本更新",
-  "view_type": "檢視",
+  "layout": "檢視",
   "visible_all_users": "所有使用者皆可檢視",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

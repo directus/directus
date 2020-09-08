@@ -366,13 +366,13 @@ tables:
       length: 100
     filters:
       type: json
-    view_type:
+    layout:
       type: string
       length: 100
       default: tabular
-    view_query:
+    layout_query:
       type: json
-    view_options:
+    layout_options:
       type: json
 
   directus_relations:
@@ -1560,12 +1560,12 @@ rows:
         locked: true
         special: json
       - collection: directus_presets
-        field: view_query
+        field: layout_query
         hidden: true
         locked: true
         special: json
       - collection: directus_presets
-        field: view_options
+        field: layout_options
         hidden: true
         locked: true
         special: json
@@ -1905,17 +1905,17 @@ rows:
       collection: null
       search: null
       filters: '[]'
-      view_type: tabular
-      view_query: null
-      view_options: null
+      layout: tabular
+      layout_query: null
+      layout_options: null
 
     data:
       - collection: directus_files
-        view_type: cards
-        view_query:
+        layout: cards
+        layout_query:
           cards:
             sort: -uploaded_on
-        view_options:
+        layout_options:
           cards:
             icon: insert_drive_file
             title: '{{ title }}'
@@ -1924,8 +1924,8 @@ rows:
             imageFit: crop
 
       - collection: directus_users
-        view_type: cards
-        view_options:
+        layout: cards
+        layout_options:
           cards:
             icon: account_circle
             title: '{{ first_name }} {{ last_name }}'
@@ -1933,8 +1933,8 @@ rows:
             size: 4
 
       - collection: directus_activity
-        view_type: tabular
-        view_query:
+        layout: tabular
+        layout_query:
           tabular:
             sort: -action_on
             fields:
@@ -1942,7 +1942,7 @@ rows:
               - collection
               - action_on
               - action_by
-        view_options:
+        layout_options:
           tabular:
             widths:
               action: 100
