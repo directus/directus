@@ -11,7 +11,7 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 		dbQuery.orderBy(query.sort);
 	}
 
-	if (query.limit && !query.offset) {
+	if (typeof query.limit === 'number' && !query.offset) {
 		dbQuery.limit(query.limit);
 	}
 
@@ -109,14 +109,14 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 			}
 
 			if (operator === '_empty') {
-				dbQuery.andWhere(query => {
+				dbQuery.andWhere((query) => {
 					query.whereNull(key);
 					query.orWhere(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty') {
-				dbQuery.andWhere(query => {
+				dbQuery.andWhere((query) => {
 					query.whereNotNull(key);
 					query.orWhere(key, '!=', '');
 				});
