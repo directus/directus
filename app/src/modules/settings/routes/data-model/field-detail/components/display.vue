@@ -52,9 +52,10 @@ export default defineComponent({
 		});
 
 		const selectItems = computed(() => {
-			const recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
+			let recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
 
 			recommended.push('raw', 'formatted-value');
+			recommended = [...new Set(recommended)];
 
 			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
 				const item: FancySelectItem = {
