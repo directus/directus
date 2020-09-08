@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<value-null v-if="value === null" />
-		<div class="dot" :style="styles">{{ displayValue }}</div>
+		<div class="dot" :style="styles" v-tooltip="displayValue"></div>
 	</div>
 </template>
 
@@ -25,13 +25,9 @@ export default defineComponent({
 			type: Array as PropType<Choice[]>,
 			default: () => [],
 		},
-		defaultBackground: {
+		defaultColor: {
 			type: String,
-			default: '#eceff1',
-		},
-		defaultForeground: {
-			type: String,
-			default: '#263238',
+			default: '#B0BEC5',
 		},
 	},
 	setup(props) {
@@ -42,13 +38,12 @@ export default defineComponent({
 		});
 
 		const displayValue = computed(() => {
-			if (!currentChoice.value) return formatTitle(props.value);
-			return currentChoice.value.text;
+			return formatTitle(props.value);
 		});
 
 		const styles = computed(() => {
 			return {
-				backgroundColor: currentChoice.value?.color || props.defaultForeground,
+				backgroundColor: currentChoice.value?.color || props.defaultColor,
 			};
 		});
 
