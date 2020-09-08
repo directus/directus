@@ -38,7 +38,7 @@
 			<v-list dense>
 				<template v-if="file">
 					<v-list-item :download="file.filename_download" :href="assetURL">
-						<v-list-item-icon><v-icon name="file_download" /></v-list-item-icon>
+						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
@@ -286,7 +286,7 @@ export default defineComponent({
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow( 0px 0px 8px rgba(0, 0, 0, .25));
+			filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
 		}
 	}
 }
