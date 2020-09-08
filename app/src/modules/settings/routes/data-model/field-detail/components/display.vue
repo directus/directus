@@ -11,7 +11,7 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.display && selectedDisplay">
-			<v-notice v-if="!selectedDisplay.options">
+			<v-notice v-if="!selectedDisplay.options || selectedDisplay.options.length === 0">
 				{{ $t('no_options_available') }}
 			</v-notice>
 

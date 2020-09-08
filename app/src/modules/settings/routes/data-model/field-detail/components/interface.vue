@@ -11,7 +11,7 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
-			<v-notice v-if="!selectedInterface.options">
+			<v-notice v-if="!selectedInterface.options || selectedInterface.options.length === 0">
 				{{ $t('no_options_available') }}
 			</v-notice>
 
