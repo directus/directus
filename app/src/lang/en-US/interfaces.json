@@ -1,5 +1,16 @@
 {
 	"interfaces": {
-
+		"checkboxes": {
+			"checkboxes": "Checkboxes",
+			"description": "Choose between multiple options via checkboxes.",
+			"allow_other": "Allow Other",
+			"enable_custom_values": "Enable custom values"
+		},
+		"code": {
+			"code": "Code",
+			"description": "Write or share code snippets.",
+			"line_number": "Line Number",
+			"placeholder": "Enter code here..."
+		}
 	}
 }

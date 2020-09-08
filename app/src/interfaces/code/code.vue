@@ -19,6 +19,7 @@ import 'codemirror/addon/search/matchesonscrollbar.js';
 import 'codemirror/addon/scroll/annotatescrollbar.js';
 import 'codemirror/addon/lint/lint.js';
 import 'codemirror/addon/search/search.js';
+import 'codemirror/addon/display/placeholder.js';
 
 import 'codemirror/addon/comment/comment.js';
 import 'codemirror/addon/dialog/dialog.js';
@@ -47,6 +48,10 @@ export default defineComponent({
 		lineNumber: {
 			type: Boolean,
 			default: true,
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		language: {
 			type: String,
@@ -235,6 +240,7 @@ export default defineComponent({
 					lineNumbers: props.lineNumber,
 					readOnly: props.disabled ? 'nocursor' : false,
 					mode: props.language,
+					placeholder: props.placeholder,
 				},
 				props.altOptions ? props.altOptions : {}
 			);
@@ -294,6 +300,12 @@ export default defineComponent({
 	bottom: -20px;
 	font-style: italic;
 	text-align: right;
+}
+
+::v-deep .CodeMirror {
+	.CodeMirror-placeholder {
+		color: var(--foreground-subdued);
+	}
 }
 
 .v-button {

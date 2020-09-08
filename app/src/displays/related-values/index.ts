@@ -13,7 +13,7 @@ type Options = {
 export default defineDisplay(({ i18n }) => ({
 	id: 'related-values',
 	name: i18n.t('related_values'),
-	icon: 'text_fields',
+	icon: 'settings_ethernet',
 	handler: DisplayRelatedValues,
 	options: [
 		/** @todo make this a component so we have dynamic collection for display template component */
