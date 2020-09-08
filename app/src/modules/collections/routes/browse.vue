@@ -13,30 +13,45 @@
 		</template>
 
 		<template #title-outer:append>
-			<bookmark-add
-				v-if="!bookmark"
-				class="bookmark-add"
-				v-model="bookmarkDialogActive"
-				@save="createBookmark"
-				:saving="creatingBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark_outline" @click="on" />
-				</template>
-			</bookmark-add>
+			<div class="bookmark-controls">
+				<bookmark-add
+					v-if="!bookmark"
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
 
-			<bookmark-edit
-				v-else
-				class="bookmark-edit"
-				v-model="bookmarkDialogActive"
-				:saving="editingBookmark"
-				:name="bookmarkName"
-				@save="editBookmark"
-			>
-				<template #activator="{ on }">
-					<v-icon class="toggle" name="bookmark" @click="on" />
+				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
+
+				<template v-else-if="bookmarkIsMine">
+					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
 				</template>
-			</bookmark-edit>
+
+				<bookmark-add
+					v-else
+					class="add"
+					v-model="bookmarkDialogActive"
+					@save="createBookmark"
+					:saving="creatingBookmark"
+				>
+					<template #activator="{ on }">
+						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+					</template>
+				</bookmark-add>
+
+				<v-icon
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					name="settings_backup_restore"
+					@click="clearLocalSave"
+					class="clear"
+					v-tooltip.bottom="$t('reset_bookmark')"
+				/>
+			</div>
 		</template>
 
 		<template #actions:prepend>
@@ -277,6 +292,10 @@ export default defineComponent({
 			saveCurrentAsBookmark,
 			title: bookmarkName,
 			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			busy: bookmarkSaving,
+			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
 
 		const {
@@ -345,6 +364,10 @@ export default defineComponent({
 			deleteError,
 			createAllowed,
 			resetPreset,
+			bookmarkSaved,
+			bookmarkIsMine,
+			bookmarkSaving,
+			clearLocalSave,
 		};
 
 		function useBreadcrumb() {
@@ -559,25 +582,50 @@ export default defineComponent({
 	--layout-offset-top: 64px;
 }
 
-.bookmark-add .toggle,
-.bookmark-edit .toggle {
-	margin-left: 8px;
-	transition: color var(--fast) var(--transition);
-}
-
-.bookmark-add {
-	color: var(--foreground-subdued);
-
-	&:hover {
-		color: var(--foreground-normal);
-	}
-}
-
-.bookmark-edit {
-	color: var(--primary);
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.bookmark-controls {
+	.add,
+	.save,
+	.saved,
+	.clear {
+		display: inline-block;
+		margin-left: 8px;
+	}
+
+	.add,
+	.save,
+	.clear {
+		cursor: pointer;
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+	}
+
+	.save {
+		color: var(--warning);
+
+		&:hover {
+			color: var(--warning-125);
+		}
+	}
+
+	.saved {
+		color: var(--primary);
+	}
+
+	.clear {
+		color: var(--foreground-subdued);
+		margin-left: 4px;
+
+		&:hover {
+			color: var(--warning);
+		}
+	}
 }
 </style>

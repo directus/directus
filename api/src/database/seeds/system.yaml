@@ -634,22 +634,24 @@ rows:
         special: json
         interface: repeater
         options:
-          template: '{{ locale }}'
+          template: '{{ translation }} ({{ locale }})'
           fields:
           - field: locale
-            name: Locale
+            name: Language
             type: string
+            schema:
+              default_value: en-US
             meta:
-              interface: language
-              options:
-                limit: true
+              interface: system-language
               width: half
           - field: translation
             name: Translation
             type: string
             meta:
-              interface: text-input
+              interface: system-language
               width: half
+              options:
+                placeholder: Enter a translation...
         locked: true
         sort: 8
         width: full

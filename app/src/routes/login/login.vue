@@ -12,21 +12,31 @@
 		</template>
 		<template v-else #notice>
 			<v-icon name="lock_outlined" left />
-			{{ $t('not_authenticated') }}
+			{{
+				logoutReason && $te(`logoutReason.${logoutReason}`)
+					? $t(`logoutReason.${logoutReason}`)
+					: $t('not_authenticated')
+			}}
 		</template>
 	</public-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
 import { useAppStore, useSettingsStore } from '@/stores';
+
+import { LogoutReason } from '@/auth';
 
 export default defineComponent({
 	props: {
 		ssoErrorCode: {
 			type: String,
+			default: null,
+		},
+		logoutReason: {
+			type: String as PropType<LogoutReason>,
 			default: null,
 		},
 	},

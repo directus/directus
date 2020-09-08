@@ -19,10 +19,7 @@
 		<template v-if="bookmarks.length > 0">
 			<v-divider />
 
-			<v-list-item exact v-for="bookmark in bookmarks" :key="bookmark.id" :to="bookmark.to">
-				<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
-				<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
-			</v-list-item>
+			<navigation-bookmark v-for="bookmark of bookmarks" :key="bookmark.id" :bookmark="bookmark" />
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
@@ -33,17 +30,18 @@
 				{{ $t('no_collections_copy') }}
 			</template>
 		</div>
-
 	</v-list>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
-import { usePresetsStore } from '@/stores/';
-import { useUserStore } from '@/stores';
+import { usePresetsStore, useUserStore } from '@/stores/';
+import { orderBy } from 'lodash';
+import NavigationBookmark from './navigation-bookmark.vue';
 
 export default defineComponent({
+	components: { NavigationBookmark },
 	props: {
 		exact: {
 			type: Boolean,
@@ -57,16 +55,25 @@ export default defineComponent({
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin === true);
 
 		const bookmarks = computed(() => {
-			return presetsStore.state.collectionPresets
-				.filter((preset) => {
-					return preset.title !== null && preset.collection.startsWith('directus_') === false;
-				})
-				.map((preset) => {
-					return {
-						...preset,
-						to: `/collections/${preset.collection}?bookmark=${preset.id}`,
-					};
-				});
+			return orderBy(
+				presetsStore.state.collectionPresets
+					.filter((preset) => {
+						return preset.title !== null && preset.collection.startsWith('directus_') === false;
+					})
+					.map((preset) => {
+						let scope = 'global';
+						if (!!preset.role) scope = 'role';
+						if (!!preset.user) scope = 'user';
+
+						return {
+							...preset,
+							to: `/collections/${preset.collection}?bookmark=${preset.id}`,
+							scope,
+						};
+					}),
+				['title'],
+				['asc']
+			);
 		});
 
 		return { navItems, bookmarks, customNavItems, isAdmin };
