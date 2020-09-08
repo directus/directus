@@ -17,5 +17,7 @@
   "devDependencies": {
     "lerna": "^3.22.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express-rate-limit": "^5.1.3"
+  }
 }
