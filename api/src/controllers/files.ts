@@ -67,9 +67,13 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			storage: payload.storage || disk,
 		};
 
-		const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
-		savedFiles.push(primaryKey);
-		tryDone();
+		try {
+			const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
+			savedFiles.push(primaryKey);
+			tryDone();
+		} catch (error) {
+			busboy.emit('error', error);
+		}
 	});
 
 	busboy.on('error', (error: Error) => {
