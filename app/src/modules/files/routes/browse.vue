@@ -250,7 +250,7 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			filters,
-			layout,
+			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
