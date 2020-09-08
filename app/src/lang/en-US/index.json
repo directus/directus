@@ -120,8 +120,8 @@
 	"create_field": "Create Field",
 	"update_field": "Update Field",
 
-	"creating_new_field": "Creating New Field within {collection}",
-	"updating_field_field": "Updating Field {field}",
+	"creating_new_field": "{collection}: New Field",
+	"updating_field_field": "{collection}: \"{field}\" Field",
 	"within_collection": "Within {collection}",
 
 	"field_standard": "Standard",
