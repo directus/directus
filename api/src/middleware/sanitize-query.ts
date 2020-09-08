@@ -131,4 +131,6 @@ function sanitizeMeta(rawMeta: any) {
 	if (Array.isArray(rawMeta)) {
 		return rawMeta;
 	}
+
+	return [rawMeta];
 }
