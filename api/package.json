@@ -118,7 +118,7 @@
     "oracledb": "^5.0.0",
     "sqlite3": "^5.0.0",
     "pg": "^8.3.3",
-    "redis": "^3.0.2"
+    "ioredis": "^4.17.3"
   },
   "devDependencies": {
     "@types/atob": "^2.1.2",
