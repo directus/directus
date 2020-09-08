@@ -1,5 +1,11 @@
+/**
+ * @NOTE
+ * See example.env for all possible keys
+ */
+
+
 import dotenv from 'dotenv';
-import logger from './logger';
+import { clone } from 'lodash';
 
 dotenv.config();
 
@@ -12,18 +18,13 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
-	RATE_LIMIT_ENABLED: true,
-	RATE_LIMIT_DRIVER: 'memory',
-	RATE_LIMIT_HOST: '127.0.0.1',
-	RATE_LIMIT_PORT: '6379',
-	RATE_LIMIT_REDIS_PASSWORD: null,
+	RATE_LIMITER_ENABLED: true,
+	RATE_LIMITER_DRIVER: 'memory',
+	RATE_LIMITER_POINTS: 25,
+	RATE_LIMITER_DURATION: 1,
+
 	CONSUMED_POINTS_LIMIT: 100,
 	CONSUMED_RESET_DURATION: 5,
-	REDIS_POINTS: 100,
-	REDIS_EXEC_EVENLY: true,
-	REDIS_BLOCK_DURATION: 0,
-	REDIS_INMEMORY_BLOCK_ON_CONSUMED: 200,
-	REDIS_INMEMEMORY_BLOCK_DURATION: 30,
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
@@ -42,35 +43,23 @@ const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 };
 
-const env: Record<string, any> = {
+let env: Record<string, any> = {
 	...defaults,
 	...process.env,
 };
 
+env = processValues(env);
+
 export default env;
 
-export function validateEnv() {
-	const requiredKeys = ['DB_CLIENT', 'KEY', 'SECRET'];
+function processValues(env: Record<string, any>) {
+	env = clone(env);
 
-	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
-		requiredKeys.push('DB_FILENAME');
-	} else {
-		if (env.DB_CLIENT === 'pg') {
-			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
-		} else {
-			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
-		}
+	for(const [key, value] of Object.entries(env)) {
+		if (value === 'true') env[key] = true;
+		if (value === 'false') env[key] = false;
+		if (value === 'null') env[key] = null;
 	}
 
-	for (const requiredKey of requiredKeys) {
-		if (env.hasOwnProperty(requiredKey) === false) {
-			logger.fatal(`Environment is missing the ${requiredKey} key.`);
-			process.exit(1);
-		}
-	}
+	return env;
 }
-
-/**
- * @NOTE
- * See example.env for all possible keys
- */
