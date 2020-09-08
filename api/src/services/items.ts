@@ -13,6 +13,7 @@ import {
 	AbstractServiceOptions,
 } from '../types';
 import Knex from 'knex';
+import cache from '../cache';
 
 import PayloadService from './payload';
 import AuthorizationService from './authorization';
@@ -145,6 +146,10 @@ export default class ItemsService implements AbstractService {
 				await trx.insert(revisionRecords).into('directus_revisions');
 			}
 
+			if (cache) {
+				await cache.clear();
+			}
+
 			return primaryKeys;
 		});
 
@@ -172,6 +177,7 @@ export default class ItemsService implements AbstractService {
 		query: Query = {},
 		action: PermissionsAction = 'read'
 	): Promise<Item | Item[]> {
+		query = clone(query);
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 		const keys = Array.isArray(key) ? key : [key];
@@ -301,6 +307,10 @@ export default class ItemsService implements AbstractService {
 				}
 			});
 
+			if (cache) {
+				await cache.clear();
+			}
+
 			return key;
 		}
 
@@ -359,10 +369,15 @@ export default class ItemsService implements AbstractService {
 			}
 		});
 
+		if (cache) {
+			await cache.clear();
+		}
+
 		return key;
 	}
 
 	async readSingleton(query: Query) {
+		query = clone(query);
 		const schemaInspector = SchemaInspector(this.knex);
 		query.limit = 1;
 

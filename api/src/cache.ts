@@ -6,7 +6,7 @@ let cache: Keyv | null = null;
 
 if (env.CACHE_ENABLED === true) {
 	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = new Keyv({ namespace: process.env.CACHE_NAMESPACE });
+	cache = new Keyv({ namespace: env.CACHE_NAMESPACE, ttl: env.CACHE_TTL });
 }
 
 export default cache;

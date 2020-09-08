@@ -13,8 +13,6 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	const key = getCacheKey(req);
 	const cachedData = await cache.get(key);
 
-	console.log(key);
-
 	if (cachedData) {
 		return res.json(cachedData);
 	} else {

@@ -51,6 +51,7 @@ router.get(
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
+		if (req.path.endsWith('me')) return next();
 		const service = new UsersService({ accountability: req.accountability });
 		const items = await service.readByKey(req.params.pk, req.sanitizedQuery);
 		res.locals.payload = { data: items || null };

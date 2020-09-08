@@ -12,6 +12,7 @@ import {
 	Accountability,
 } from '../types';
 import database from '../database';
+import { clone } from 'lodash';
 
 export default async function getASTFromQuery(
 	collection: string,
@@ -19,6 +20,7 @@ export default async function getASTFromQuery(
 	accountability?: Accountability | null,
 	action?: PermissionsAction
 ): Promise<AST> {
+	query = clone(query);
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose

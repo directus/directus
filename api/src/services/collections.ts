@@ -6,6 +6,7 @@ import SchemaInspector from 'knex-schema-inspector';
 import FieldsService from '../services/fields';
 import { omit } from 'lodash';
 import ItemsService from '../services/items';
+import cache from '../cache';
 
 export default class CollectionsService {
 	knex: Knex;
@@ -84,6 +85,10 @@ export default class CollectionsService {
 				createdCollections.push(payload.collection);
 			}
 		});
+
+		if (cache) {
+			await cache.clear();
+		}
 
 		return Array.isArray(data) ? createdCollections : createdCollections[0];
 	}
@@ -233,6 +238,10 @@ export default class CollectionsService {
 
 		await collectionItemsService.update(collectionUpdates);
 
+		if (cache) {
+			await cache.clear();
+		}
+
 		return key!;
 	}
 
@@ -294,6 +303,10 @@ export default class CollectionsService {
 
 		for (const collectionKey of collectionKeys) {
 			await this.knex.schema.dropTable(collectionKey);
+		}
+
+		if (cache) {
+			await cache.clear();
 		}
 
 		return collection;

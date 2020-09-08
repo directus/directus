@@ -57,6 +57,7 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 	}
 
 	req.sanitizedQuery = query;
+	Object.freeze(req.sanitizedQuery);
 	return next();
 };
 

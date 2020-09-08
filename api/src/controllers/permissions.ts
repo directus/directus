@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import PermissionsService from '../services/permissions';
 import MetaService from '../services/meta';
+import { clone } from 'lodash';
 import { InvalidCredentialsException } from '../exceptions';
 
 const router = express.Router();
@@ -40,7 +41,7 @@ router.get(
 		}
 
 		const service = new PermissionsService();
-		const query = req.sanitizedQuery || {};
+		const query = clone(req.sanitizedQuery || {});
 
 		query.filter = {
 			...(query.filter || {}),
@@ -59,6 +60,7 @@ router.get(
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
+		if (req.path.endsWith('me')) return next();
 		const service = new PermissionsService({ accountability: req.accountability });
 		const record = await service.readByKey(Number(req.params.pk), req.sanitizedQuery);
 
