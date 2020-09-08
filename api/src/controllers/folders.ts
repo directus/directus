@@ -2,7 +2,6 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
-
 import FoldersService from '../services/folders';
 import MetaService from '../services/meta';
 

@@ -1,12 +1,8 @@
 import express from 'express';
-import redis from 'redis';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import PermissionsService from '../services/permissions';
 import useCollection from '../middleware/use-collection';
-import checkCacheMiddleware from '../middleware/check-cache';
-import delCacheMiddleware from '../middleware/delete-cache';
-import setCacheMiddleware from '../middleware/set-cache';
 import MetaService from '../services/meta';
 import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
@@ -17,7 +13,6 @@ router.use(useCollection('directus_permissions'));
 
 router.post(
 	'/',
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
@@ -30,7 +25,6 @@ router.post(
 router.get(
 	'/',
 	sanitizeQuery,
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -40,13 +34,11 @@ router.get(
 
 		return res.json({ data: item || null, meta });
 	}),
-	setCacheMiddleware
 );
 
 router.get(
 	'/me',
 	sanitizeQuery,
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		if (!req.accountability?.user || !req.accountability?.role) {
 			throw new InvalidCredentialsException();
@@ -71,19 +63,16 @@ router.get(
 router.get(
 	'/:pk',
 	sanitizeQuery,
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const record = await service.readByKey(Number(req.params.pk), req.sanitizedQuery);
 
 		return res.json({ data: record || null });
 	}),
-	setCacheMiddleware
 );
 
 router.patch(
 	'/:pk',
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const primaryKey = await service.update(req.body, Number(req.params.pk));
@@ -96,7 +85,6 @@ router.patch(
 
 router.delete(
 	'/:pk',
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		await service.delete(Number(req.params.pk));

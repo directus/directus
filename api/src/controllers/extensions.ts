@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import checkCacheMiddleware from '../middleware/check-cache';
 import * as ExtensionsService from '../services/extensions';
 import { RouteNotFoundException } from '../exceptions';
 
@@ -8,7 +7,6 @@ const router = Router();
 
 router.get(
 	'/:type',
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const typeAllowList = ['interfaces', 'layouts', 'displays', 'modules'];
 

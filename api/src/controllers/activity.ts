@@ -1,11 +1,7 @@
 import express from 'express';
-import redis from 'redis';
 import asyncHandler from 'express-async-handler';
 import sanitizeQuery from '../middleware/sanitize-query';
 import useCollection from '../middleware/use-collection';
-import checkCacheMiddleware from '../middleware/check-cache';
-import setCacheMiddleware from '../middleware/set-cache';
-import delCacheMiddleware from '../middleware/delete-cache';
 import ActivityService from '../services/activity';
 import MetaService from '../services/meta';
 import { Action } from '../types';
@@ -16,7 +12,6 @@ router.get(
 	'/',
 	useCollection('directus_activity'),
 	sanitizeQuery,
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -29,14 +24,12 @@ router.get(
 			meta,
 		});
 	}),
-	setCacheMiddleware
 );
 
 router.get(
 	'/:pk',
 	useCollection('directus_activity'),
 	sanitizeQuery,
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
@@ -45,14 +38,12 @@ router.get(
 			data: record || null,
 		});
 	}),
-	setCacheMiddleware
 );
 
 router.post(
 	'/comment',
 	useCollection('directus_activity'),
 	sanitizeQuery,
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 
@@ -76,7 +67,6 @@ router.patch(
 	'/comment/:pk',
 	useCollection('directus_activity'),
 	sanitizeQuery,
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const primaryKey = await service.update(req.body, req.params.pk);
@@ -91,7 +81,6 @@ router.patch(
 router.delete(
 	'/comment/:pk',
 	useCollection('directus_activity'),
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		await service.delete(req.params.pk);

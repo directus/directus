@@ -2,58 +2,42 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import FieldsService from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
-import checkCacheMiddleware from '../middleware/check-cache';
-import setCacheMiddleware from '../middleware/set-cache';
-import delCacheMiddleware from '../middleware/delete-cache';
 import { schemaInspector } from '../database';
-import { FieldNotFoundException, InvalidPayloadException, ForbiddenException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
 import { Field } from '../types/field';
 import useCollection from '../middleware/use-collection';
-import { Accountability, types } from '../types';
+import { types } from '../types';
 
 const router = Router();
-
-/**
- * @TODO
- *
- * Add accountability / permissions handling to fields
- */
 
 router.get(
 	'/',
 	useCollection('directus_fields'),
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
-
 		const fields = await service.readAll();
 
 		return res.json({ data: fields || null });
 	}),
-	setCacheMiddleware
 );
 
 router.get(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
-
 		const fields = await service.readAll(req.params.collection);
 
 		return res.json({ data: fields || null });
 	}),
-	setCacheMiddleware
 );
 
 router.get(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	checkCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -64,7 +48,6 @@ router.get(
 
 		return res.json({ data: field || null });
 	}),
-	setCacheMiddleware
 );
 
 const newFieldSchema = Joi.object({
@@ -85,7 +68,6 @@ router.post(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -109,7 +91,6 @@ router.patch(
 	'/:collection',
 	validateCollection,
 	useCollection('directus_fields'),
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
@@ -134,7 +115,6 @@ router.patch(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	delCacheMiddleware,
 	// @todo: validate field
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
@@ -154,7 +134,6 @@ router.delete(
 	'/:collection/:field',
 	validateCollection,
 	useCollection('directus_fields'),
-	delCacheMiddleware,
 	asyncHandler(async (req, res) => {
 		const service = new FieldsService({ accountability: req.accountability });
 		await service.deleteField(req.params.collection, req.params.field);
