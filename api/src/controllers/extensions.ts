@@ -7,7 +7,7 @@ const router = Router();
 
 router.get(
 	'/:type',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const typeAllowList = ['interfaces', 'layouts', 'displays', 'modules'];
 
 		if (typeAllowList.includes(req.params.type) === false) {
@@ -16,10 +16,12 @@ router.get(
 
 		const interfaces = await ExtensionsService.listExtensions(req.params.type);
 
-		return res.json({
+		res.locals.payload = {
 			data: interfaces,
-		});
-	})
+		};
+
+		return next();
+	}),
 );
 
 export default router;
