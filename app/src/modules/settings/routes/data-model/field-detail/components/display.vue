@@ -95,4 +95,14 @@ export default defineComponent({
 .select {
 	margin-bottom: 32px;
 }
+
+.not-found {
+	.spacer {
+		flex-grow: 1;
+	}
+
+	button {
+		text-decoration: underline;
+	}
+}
 </style>
