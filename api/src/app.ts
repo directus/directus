@@ -55,7 +55,7 @@ if (env.CORS_ENABLED === true) {
 if (env.NODE_ENV !== 'development') {
 	const adminPath = require.resolve('@directus/app/dist/index.html');
 
-	app.get('/', (req, res) => res.redirect('/admin/'))
+	app.get('/', (req, res) => res.redirect('/admin/'));
 	app.use('/admin', express.static(path.join(adminPath, '..')));
 	app.use('/admin/*', (req, res) => {
 		res.sendFile(adminPath);

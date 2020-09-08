@@ -246,7 +246,10 @@ export default class ItemsService implements AbstractService {
 					columns.map(({ column }) => column)
 				);
 
-				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
+				payloadWithoutAliases = await payloadService.processValues(
+					'update',
+					payloadWithoutAliases
+				);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
 					await trx(this.collection)

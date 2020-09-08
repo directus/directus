@@ -18,7 +18,7 @@ const defaults = {
 	security: {
 		KEY: uuidv4(),
 		SECRET: nanoid(32),
-	}
+	},
 };
 
 export default async function createEnv(

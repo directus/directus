@@ -3,7 +3,6 @@
  * See example.env for all possible keys
  */
 
-
 import dotenv from 'dotenv';
 import { clone } from 'lodash';
 
@@ -52,7 +51,7 @@ export default env;
 function processValues(env: Record<string, any>) {
 	env = clone(env);
 
-	for(const [key, value] of Object.entries(env)) {
+	for (const [key, value] of Object.entries(env)) {
 		if (value === 'true') env[key] = true;
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;

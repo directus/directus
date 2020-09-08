@@ -68,7 +68,11 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		};
 
 		try {
-			const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
+			const primaryKey = await service.upload(
+				fileStream,
+				payloadWithRequiredFields,
+				existingPrimaryKey
+			);
 			savedFiles.push(primaryKey);
 			tryDone();
 		} catch (error) {
@@ -116,7 +120,7 @@ router.post(
 );
 
 const importSchema = Joi.object({
-	url: Joi.string().required()
+	url: Joi.string().required(),
 });
 
 router.post(
@@ -132,7 +136,7 @@ router.post(
 		const service = new FilesService({ accountability: req.accountability });
 
 		const fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
-			responseType: 'stream'
+			responseType: 'stream',
 		});
 
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
@@ -143,7 +147,7 @@ router.post(
 			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
-			...req.body
+			...req.body,
 		};
 
 		delete payload.url;
@@ -152,7 +156,7 @@ router.post(
 		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 		return res.json({ data: record || null });
 	})
-)
+);
 
 router.get(
 	'/',

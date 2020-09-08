@@ -22,7 +22,7 @@ export default storage;
 
 function getStorageConfig(): StorageManagerConfig {
 	const config: StorageManagerConfig = {
-		disks: {}
+		disks: {},
 	};
 
 	const locations = env.STORAGE_LOCATIONS.split(',');
