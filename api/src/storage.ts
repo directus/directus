@@ -4,13 +4,15 @@ import {
 	StorageManagerConfig,
 	Storage,
 } from '@slynova/flydrive';
-import parseEnv from './utils/parse-env';
 import env from './env';
+import { validateEnv } from './utils/validate-env';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
+/** @todo dynamically load these storage adapters */
 import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
 import { GoogleCloudStorage } from '@slynova/flydrive-gcs';
 
-/** @todo dynamically load storage adapters here */
+validateEnv(['STORAGE_LOCATIONS']);
 
 const storage = new StorageManager(getStorageConfig());
 
@@ -19,7 +21,25 @@ registerDrivers(storage);
 export default storage;
 
 function getStorageConfig(): StorageManagerConfig {
-	const config = parseEnv(1, 'storage');
+	const config: StorageManagerConfig = {
+		disks: {}
+	};
+
+	const locations = env.STORAGE_LOCATIONS.split(',');
+
+	locations.forEach((location: string) => {
+		location = location.trim();
+
+		const diskConfig = {
+			driver: env[`STORAGE_${location.toUpperCase()}_DRIVER`],
+			config: getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`),
+		};
+
+		delete diskConfig.config.publicUrl;
+		delete diskConfig.config.driver;
+
+		config.disks![location] = diskConfig;
+	});
 
 	return config;
 }
@@ -34,6 +54,7 @@ function registerDrivers(storage: StorageManager) {
 
 	usedDrivers.forEach((driver) => {
 		const storageDriver = getStorageDriver(driver);
+
 		if (storageDriver) {
 			storage.registerDriver<Storage>(driver, storageDriver);
 		}
