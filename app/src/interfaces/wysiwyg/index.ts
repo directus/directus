@@ -3,7 +3,8 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'wysiwyg',
-	name: i18n.t('wysiwyg'),
+	name: i18n.t('interfaces.wysiwyg.wysiwyg'),
+	description: i18n.t('interfaces.wysiwyg.description'),
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
 	types: ['text'],
@@ -11,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'toolbar',
-			name: i18n.t('toolbar'),
+			name: i18n.t('interfaces.wysiwyg.toolbar'),
 			type: 'json',
 			schema: {
 				default_value: [
@@ -240,7 +241,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'customFormats',
-			name: i18n.t('custom_formats'),
+			name: i18n.t('interfaces.wysiwyg.custom_formats'),
 			type: 'json',
 			meta: {
 				interface: 'code',
@@ -262,7 +263,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'tinymceOverrides',
-			name: i18n.t('options_override'),
+			name: i18n.t('interfaces.wysiwyg.options_override'),
 			type: 'json',
 			meta: {
 				interface: 'code',

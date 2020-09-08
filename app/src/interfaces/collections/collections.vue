@@ -16,7 +16,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		includeMeta: {
+		includeSystem: {
 			type: Boolean,
 			default: false,
 		},
@@ -25,7 +25,7 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeMeta) return collectionsStore.state.collections;
+			if (props.includeSystem) return collectionsStore.state.collections;
 
 			return collectionsStore.state.collections.filter(
 				(collection) => collection.collection.startsWith('directus_') === false

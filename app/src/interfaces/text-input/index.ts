@@ -3,7 +3,8 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'text-input',
-	name: i18n.t('text_input'),
+	name: i18n.t('interfaces.text-input.text-input'),
+	description: i18n.t('interfaces.text-input.description'),
 	icon: 'text_fields',
 	component: InterfaceTextInput,
 	types: ['string', 'uuid'],
@@ -16,7 +17,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('text_shown_when_no_value'),
+					placeholder: i18n.t('enter_a_placeholder'),
 				},
 			},
 		},
@@ -59,11 +60,14 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'trim',
-			name: i18n.t('trimed'),
+			name: i18n.t('interfaces.text-input.trim'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
+				options: {
+					label: i18n.t('interfaces.text-input.trim_label'),
+				},
 			},
 			schema: {
 				default_value: false,
@@ -71,11 +75,14 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'mask',
-			name: i18n.t('masked'),
+			name: i18n.t('interfaces.text-input.mask'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
+				options: {
+					label: i18n.t('interfaces.text-input.mask_label'),
+				},
 			},
 			schema: {
 				default_value: false,

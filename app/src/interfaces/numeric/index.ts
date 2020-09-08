@@ -3,7 +3,8 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'numeric',
-	name: i18n.t('numeric'),
+	name: i18n.t('interfaces.numeric.numeric'),
+	description: i18n.t('interfaces.numeric.description'),
 	icon: 'dialpad',
 	component: InterfaceNumeric,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
@@ -11,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'min',
-			name: i18n.t('minimum_value'),
+			name: i18n.t('interfaces.numeric.minimum_value'),
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -20,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'max',
-			name: i18n.t('maximum_value'),
+			name: i18n.t('interfaces.numeric.maximum_value'),
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -29,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'step',
-			name: i18n.t('step_interval'),
+			name: i18n.t('interfaces.numeric.step_interval'),
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -46,6 +47,9 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
+				options: {
+					placeholder: i18n.t('enter_a_placeholder'),
+				},
 			},
 		},
 		{
@@ -80,6 +84,9 @@ export default defineInterface(({ i18n }) => ({
 						{ text: i18n.t('serif'), value: 'serif' },
 					],
 				},
+			},
+			schema: {
+				default_value: 'sans-serif',
 			},
 		},
 	],

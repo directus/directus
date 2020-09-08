@@ -3,7 +3,8 @@ import InterfaceSlug from './slug.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'slug',
-	name: i18n.t('slug'),
+	name: i18n.t('interfaces.slug.slug'),
+	description: i18n.t('interfaces.slug.description'),
 	icon: 'link',
 	component: InterfaceSlug,
 	types: ['string'],
@@ -16,7 +17,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('text_shown_when_no_value'),
+					placeholder: i18n.t('enter_a_placeholder'),
 				},
 			},
 		},

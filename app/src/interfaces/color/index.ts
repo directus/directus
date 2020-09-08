@@ -3,7 +3,8 @@ import InterfaceColor from './color.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'color',
-	name: i18n.t('color'),
+	name: i18n.t('interfaces.color.color'),
+	description: i18n.t('interfaces.color.description'),
 	icon: 'palette',
 	component: InterfaceColor,
 	types: ['string'],
@@ -11,12 +12,13 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'presets',
-			name: i18n.t('preset_colors'),
+			name: i18n.t('interfaces.color.preset_colors'),
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
+					placeholder: i18n.t('interfaces.color.preset_colors_placeholder'),
 					template: '{{ name }} - {{ color }}',
 					fields: [
 						{

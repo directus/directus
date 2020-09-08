@@ -3,7 +3,8 @@ import InterfaceRadioButtons from './radio-buttons.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'radio-buttons',
-	name: i18n.t('radio_buttons'),
+	name: i18n.t('interfaces.radio-buttons.radio-buttons'),
+	description: i18n.t('interfaces.radio-buttons.description'),
 	icon: 'radio_button_checked',
 	component: InterfaceRadioButtons,
 	types: ['string'],
@@ -73,13 +74,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('allow_other'),
+			name: i18n.t('interfaces.dropdown.allow_other'),
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('enable_custom_values'),
+					label: i18n.t('interfaces.dropdown.allow_other_label'),
 				},
 			},
 			schema: {

@@ -1,7 +1,7 @@
 <template>
 	<div class="interface-tags">
 		<v-input
-			:placeholder="placeholder || $t('add_tags')"
+			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
 			@keydown="onInput"
 			:disabled="disabled"
 			v-if="allowCustom"

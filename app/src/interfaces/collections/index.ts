@@ -3,7 +3,8 @@ import InterfaceCollections from './collections.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'collections',
-	name: i18n.t('collections'),
+	name: i18n.t('interfaces.collections.collections'),
+	description: i18n.t('interfaces.collections.description'),
 	icon: 'featured_play_list',
 	component: InterfaceCollections,
 	types: ['string'],
@@ -16,7 +17,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('include_system_collections'),
+					label: i18n.t('interfaces.collections.include_system_collections'),
 				},
 			},
 			schema: {

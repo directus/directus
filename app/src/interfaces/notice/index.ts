@@ -3,7 +3,8 @@ import InterfaceNotice from './notice.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'notice',
-	name: i18n.t('notice'),
+	name: i18n.t('interfaces.notice.notice'),
+	description: i18n.t('interfaces.notice.description'),
 	icon: 'info',
 	component: InterfaceNotice,
 	hideLabel: true,
@@ -29,6 +30,9 @@ export default defineInterface(({ i18n }) => ({
 					],
 				},
 			},
+			schema: {
+				default_value: 'normal',
+			},
 		},
 		{
 			field: 'icon',
@@ -47,7 +51,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'full',
 				interface: 'textarea',
 				options: {
-					placeholder: 'Enter notice content here...',
+					placeholder: i18n.t('interfaces.notice.text'),
 				},
 			},
 		},

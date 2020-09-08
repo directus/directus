@@ -3,7 +3,8 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'slider',
-	name: i18n.t('slider'),
+	name: i18n.t('interfaces.slider.slider'),
+	description: i18n.t('interfaces.slider.description'),
 	icon: 'linear_scale',
 	component: InterfaceSlider,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
@@ -11,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'minValue',
-			name: i18n.t('minimum_value'),
+			name: i18n.t('interfaces.numeric.minimum_value'),
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -20,7 +21,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'maxValue',
-			name: i18n.t('maximum_value'),
+			name: i18n.t('interfaces.numeric.maximum_value'),
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -29,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'stepInterval',
-			name: i18n.t('step_interval'),
+			name: i18n.t('interfaces.numeric.step_interval'),
 			type: 'integer',
 			meta: {
 				width: 'half',

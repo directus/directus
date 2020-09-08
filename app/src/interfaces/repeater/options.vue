@@ -6,11 +6,17 @@
 				<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
 			</div>
 			<div class="grid-element">
-				<p class="type-label">{{ $t('max-amount') }}</p>
-				<v-input class="input" type="number" v-model="limit" />
+				<p class="type-label">{{ $t('interfaces.repeater.max_amount') }}</p>
+				<v-input
+					class="input"
+					type="number"
+					v-model="limit"
+					:min="1"
+					:placeholder="$t('interfaces.repeater.max_amount_placeholder')"
+				/>
 			</div>
 			<div class="grid-element full">
-				<p class="type-label">{{ $t('edit_fields') }}</p>
+				<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
 				<repeater
 					v-model="repeaterValue"
 					:template="`{{ field }} — {{ interface }}`"
