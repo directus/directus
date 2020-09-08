@@ -523,7 +523,7 @@
   "values": "Hodnoty",
   "version": "Verze",
   "version_and_updates": "Verze a aktualizace",
-  "view_type": "Zobrazit jako...",
+  "layout": "Zobrazit jako...",
   "visible_all_users": "Zobrazit pro všechny uživatele",
   "webhook_count": "Žádné webhooky | 1 Webhook | {count} Webhooků",
   "weeks": {

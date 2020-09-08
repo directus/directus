@@ -9,4 +9,5 @@ export default defineInterface(({ i18n }) => ({
 	relationship: 'm2m',
 	types: ['alias'],
 	options: [],
+	recommendedDisplays: ['related-values'],
 }));

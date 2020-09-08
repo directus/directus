@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -71,6 +71,10 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+
+			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="$t('download')">
+				<v-icon name="save_alt" />
+			</v-button>
 
 			<v-button
 				v-if="item && item.type.includes('image')"
@@ -314,6 +318,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			downloadFile,
 			moveToDialogActive,
 			moveToFolder,
 			moving,
@@ -378,6 +383,11 @@ export default defineComponent({
 			router.push(leaveTo.value);
 		}
 
+		function downloadFile() {
+			const filePath = getRootPath() + `assets/${props.primaryKey}`;
+			window.open(filePath, '_blank');
+		}
+
 		function useMovetoFolder() {
 			const moveToDialogActive = ref(false);
 			const moving = ref(false);
@@ -422,7 +432,8 @@ export default defineComponent({
 }
 
 .edit,
-.folder {
+.folder,
+.download {
 	--v-button-background-color: var(--primary-25);
 	--v-button-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-50);

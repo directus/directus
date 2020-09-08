@@ -525,7 +525,7 @@
   "values": "Waardes",
   "version": "Versie",
   "version_and_updates": "Versie en Updates",
-  "view_type": "Bekijk als...",
+  "layout": "Bekijk als...",
   "visible_all_users": "Zichtbaar voor alle gebruikers",
   "webhook_count": "Geen webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

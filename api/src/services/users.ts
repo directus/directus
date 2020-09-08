@@ -1,10 +1,10 @@
 import AuthService from './authentication';
 import ItemsService from './items';
 import jwt from 'jsonwebtoken';
-import { sendInviteMail } from '../mail';
+import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
 import Knex from 'knex';
 import env from '../env';
@@ -48,7 +48,7 @@ export default class UsersService extends ItemsService {
 	async inviteUser(email: string, role: string) {
 		await this.service.create({ email, role, status: 'invited' });
 
-		const payload = { email };
+		const payload = { email, scope: 'invite' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
 		const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
 
@@ -56,9 +56,14 @@ export default class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string) {
-		const { email } = jwt.verify(token, env.SECRET as string) as { email: string };
+		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+			email: string;
+			scope: string;
+		};
 
-		const user = await database
+		if (scope !== 'invite') throw new ForbiddenException();
+
+		const user = await this.knex
 			.select('id', 'status')
 			.from('directus_users')
 			.where({ email })
@@ -70,13 +75,53 @@ export default class UsersService extends ItemsService {
 
 		const passwordHashed = await argon2.hash(password);
 
-		await database('directus_users')
+		await this.knex('directus_users')
+			.update({ password: passwordHashed, status: 'active' })
+			.where({ id: user.id });
+	}
+
+	async requestPasswordReset(email: string) {
+		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
+		if (!user) throw new ForbiddenException();
+
+		const payload = { email, scope: 'password-reset' };
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
+
+		await sendPasswordResetMail(email, acceptURL);
+	}
+
+	async resetPassword(token: string, password: string) {
+		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+			email: string;
+			scope: string;
+		};
+
+		if (scope !== 'password-reset') throw new ForbiddenException();
+
+		const user = await this.knex
+			.select('id', 'status')
+			.from('directus_users')
+			.where({ email })
+			.first();
+
+		if (!user || user.status !== 'active') {
+			throw new ForbiddenException();
+		}
+
+		const passwordHashed = await argon2.hash(password);
+
+		await this.knex('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
 	}
 
 	async enableTFA(pk: string) {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+		const user = await this.knex
+			.select('tfa_secret')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');

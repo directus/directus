@@ -11,7 +11,7 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.display && selectedDisplay">
-			<v-notice v-if="!selectedDisplay.options">
+			<v-notice v-if="!selectedDisplay.options || selectedDisplay.options.length === 0">
 				{{ $t('no_options_available') }}
 			</v-notice>
 
@@ -29,9 +29,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import displays from '@/displays';
+import { getDisplays } from '@/displays';
+import { getInterfaces } from '@/interfaces';
+import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { clone } from 'lodash';
 
-import { state } from '../store';
+import { state, availableDisplays } from '../store';
 
 export default defineComponent({
 	props: {
@@ -41,35 +44,46 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const availableDisplays = computed(() =>
-			displays.filter((display) => {
-				const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-				const matchesRelation = true;
+		const displays = getDisplays();
+		const interfaces = getInterfaces();
 
-				// if (props.type === 'standard') {
-				// 	matchesRelation = display.relationship === null || display.relationship === undefined;
-				// } else if (props.type === 'file') {
-				// 	matchesRelation = display.relationship === 'm2o';
-				// } else if (props.type === 'files') {
-				// 	matchesRelation = display.relationship === 'm2m';
-				// } else {
-				// 	matchesRelation = display.relationship === props.type;
-				// }
+		const selectedInterface = computed(() => {
+			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+		});
 
-				return matchesType && matchesRelation;
-			})
-		);
+		const selectItems = computed(() => {
+			const recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
 
-		const selectItems = computed(() =>
-			availableDisplays.value.map((display) => ({
-				text: display.name,
-				value: display.id,
-				icon: display.icon,
-			}))
-		);
+			recommended.push('raw', 'formatted-value');
+
+			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
+				const item: FancySelectItem = {
+					text: display.name,
+					description: display.description,
+					value: display.id,
+					icon: display.icon,
+				};
+
+				if (recommended.includes(item.value as string)) {
+					item.iconRight = 'star';
+				}
+
+				return item;
+			});
+
+			if (displayItems.length >= 5 && recommended.length > 0) {
+				return [
+					...recommended.map((key) => displayItems.find((item) => item.value === key)),
+					{ divider: true },
+					...displayItems.filter((item) => recommended.includes(item.value as string) === false),
+				].filter((i) => i);
+			} else {
+				return displayItems;
+			}
+		});
 
 		const selectedDisplay = computed(() => {
-			return displays.find((display) => display.id === state.fieldData.meta.display);
+			return displays.value.find((display) => display.id === state.fieldData.meta.display);
 		});
 
 		return { fieldData: state.fieldData, selectItems, selectedDisplay };
@@ -81,5 +95,15 @@ export default defineComponent({
 .type-title,
 .select {
 	margin-bottom: 32px;
+}
+
+.not-found {
+	.spacer {
+		flex-grow: 1;
+	}
+
+	button {
+		text-decoration: underline;
+	}
 }
 </style>

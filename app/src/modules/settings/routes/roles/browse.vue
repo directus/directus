@@ -181,5 +181,6 @@ export default defineComponent({
 
 .public {
 	color: var(--primary);
+	--v-icon-color: var(--primary);
 }
 </style>

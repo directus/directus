@@ -1,8 +1,8 @@
 <template>
-	<div :class="field.meta.width || 'full'">
+	<div :class="(field.meta && field.meta.width) || 'full'">
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
-				<v-input class="field" :class="{ hidden, active }" readonly @click="toggle">
+				<v-input class="field" :class="{ hidden, active }" readonly @click="openFieldDetail">
 					<template #prepend>
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 					</template>
@@ -15,7 +15,28 @@
 					</template>
 
 					<template #append>
-						<v-icon name="expand_more" />
+						<div class="icons">
+							<v-icon
+								v-if="field.schema && field.schema.is_primary_key"
+								name="vpn_key"
+								small
+								v-tooltip="$t('primary_key')"
+							/>
+							<v-icon
+								v-if="!field.meta"
+								name="report_problem"
+								small
+								v-tooltip="$t('db_only_click_to_configure')"
+							/>
+							<v-icon
+								v-if="hidden"
+								name="visibility_off"
+								class="hidden-icon"
+								v-tooltip="$t('hidden_field')"
+								small
+							/>
+							<v-icon @click.stop="toggle" name="more_vert" />
+						</div>
 					</template>
 				</v-input>
 			</template>
@@ -34,22 +55,9 @@
 					</v-list-item-icon>
 					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 				</v-list-item>
-				<v-divider />
-				<v-list-item @click="setWidth('half')" :disabled="hidden || field.meta.width === 'half'">
-					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-list-item @click="setWidth('full')" :disabled="hidden || field.meta.width === 'full'">
-					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-list-item @click="setWidth('fill')" :disabled="hidden || field.meta.width === 'fill'">
-					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
-				</v-list-item>
-				<v-divider />
-				<v-list-item @click="$emit('toggle-visibility', field)">
-					<template v-if="field.hidden === false">
+
+				<v-list-item @click="toggleVisibility">
+					<template v-if="hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
 						<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
 					</template>
@@ -59,7 +67,30 @@
 					</template>
 				</v-list-item>
 
-				<v-list-item @click="deleteActive = true">
+				<v-divider />
+
+				<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
+					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
+					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
+					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+				</v-list-item>
+
+				<v-divider />
+
+				<v-list-item
+					@click="deleteActive = true"
+					class="danger"
+					:disabled="field.schema && field.schema.is_primary_key === true"
+				>
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_field') }}
@@ -106,16 +137,13 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
-		},
-		hidden: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	setup(props) {
@@ -129,8 +157,10 @@ export default defineComponent({
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.value.find((inter) => inter.id === props.field.meta.interface)?.name;
+			return interfaces.value.find((inter) => inter.id === props.field.meta?.interface)?.name;
 		});
+
+		const hidden = computed(() => props.field.meta?.hidden === true);
 
 		return {
 			interfaceName,
@@ -145,10 +175,19 @@ export default defineComponent({
 			duplicateTo,
 			saveDuplicate,
 			duplicating,
+			openFieldDetail,
+			hidden,
+			toggleVisibility,
 		};
 
 		function setWidth(width: string) {
 			fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
+		}
+
+		function toggleVisibility() {
+			fieldsStore.updateField(props.field.collection, props.field.field, {
+				meta: { hidden: !props.field.meta?.hidden },
+			});
 		}
 
 		function useDeleteField() {
@@ -195,8 +234,11 @@ export default defineComponent({
 					collection: duplicateTo.value,
 				};
 
-				delete newField.meta.id;
-				delete newField.meta.sort;
+				if (newField.meta) {
+					delete newField.meta.id;
+					delete newField.meta.sort;
+				}
+
 				delete newField.name;
 
 				duplicating.value = true;
@@ -210,6 +252,14 @@ export default defineComponent({
 					duplicating.value = false;
 				}
 			}
+		}
+
+		async function openFieldDetail() {
+			if (!props.field.meta) {
+				await fieldsStore.updateField(props.field.collection, props.field.field, { meta: {} });
+			}
+
+			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
 		}
 	},
 });
@@ -242,6 +292,11 @@ export default defineComponent({
 
 .v-icon {
 	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color-hover: var(--foreground);
+
+	&.hidden-icon {
+		--v-icon-color-hover: var(--foreground-subdued);
+	}
 }
 
 .drag-handle {
@@ -281,6 +336,18 @@ export default defineComponent({
 				opacity: 1;
 			}
 		}
+	}
+}
+
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+
+.icons {
+	.v-icon + .v-icon:not(:last-child) {
+		margin-left: 8px;
 	}
 }
 </style>

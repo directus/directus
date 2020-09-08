@@ -1,7 +1,17 @@
 <template>
-	<relationship-m2o :collection="collection" :type="type" v-if="type === 'm2o' || type === 'file'" />
-	<relationship-o2m :collection="collection" :type="type" v-else-if="type === 'o2m'" />
-	<relationship-m2m :collection="collection" :type="type" v-else-if="type === 'm2m' || type === 'files'" />
+	<relationship-m2o
+		:collection="collection"
+		:is-existing="isExisting"
+		:type="type"
+		v-if="type === 'm2o' || type === 'file'"
+	/>
+	<relationship-o2m :collection="collection" :is-existing="isExisting" :type="type" v-else-if="type === 'o2m'" />
+	<relationship-m2m
+		:collection="collection"
+		:is-existing="isExisting"
+		:type="type"
+		v-else-if="type === 'm2m' || type === 'files'"
+	/>
 </template>
 
 <script lang="ts">
@@ -27,6 +37,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		isExisting: {
+			type: Boolean,
+			default: false,
 		},
 	},
 });

@@ -12,8 +12,7 @@
 			"custom-properties",
 			"declarations",
 			"at-variables",
-			"rules",
-			"at-rules"
+			"rules"
 		],
 		"at-rule-no-unknown": null,
 		"scss/at-rule-no-unknown": true,

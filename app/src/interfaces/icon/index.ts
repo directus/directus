@@ -8,4 +8,5 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceIcon,
 	types: ['string'],
 	options: [],
+	recommendedDisplays: ['icon'],
 }));

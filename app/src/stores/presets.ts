@@ -4,14 +4,14 @@ import { useUserStore } from '@/stores/';
 import api from '@/api';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
-	title: null,
+	bookmark: null,
 	role: null,
 	user: null,
 	search_query: null,
 	filters: null,
-	view_type: null,
-	view_query: null,
-	view_options: null,
+	layout: null,
+	layout_query: null,
+	layout_options: null,
 };
 
 export const usePresetsStore = createStore({
@@ -22,28 +22,27 @@ export const usePresetsStore = createStore({
 	actions: {
 		async hydrate() {
 			// Hydrate is only called for logged in users, therefore, currentUser exists
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const { id, role } = useUserStore().state.currentUser!;
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[user][eq]': id,
+						'filter[user][_eq]': id,
 					},
 				}),
 				// All role saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[role][eq]': role.id,
-						'filter[user][null]': 1,
+						'filter[role][_eq]': role.id,
+						'filter[user][_null]': true,
 					},
 				}),
 				// All global saved bookmarks and presets
 				api.get(`/presets`, {
 					params: {
-						'filter[role][null]': 1,
-						'filter[user][null]': 1,
+						'filter[role][_null]': true,
+						'filter[user][_null]': true,
 					},
 				}),
 			]);
@@ -65,6 +64,7 @@ export const usePresetsStore = createStore({
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				const updatedPreset = response.data.data;
+
 				if (preset.id === updatedPreset.id) {
 					return updatedPreset;
 				}
@@ -106,7 +106,7 @@ export const usePresetsStore = createStore({
 				const collectionMatches = preset.collection === collection;
 
 				// Filter out all bookmarks
-				if (preset.title) return false;
+				if (preset.bookmark) return false;
 
 				if (userMatches && collectionMatches) return true;
 				if (roleMatches && collectionMatches) return true;
@@ -166,6 +166,31 @@ export const usePresetsStore = createStore({
 				delete preset.id;
 				return await this.update(id, preset);
 			}
+		},
+
+		saveLocal(updatedPreset: Preset) {
+			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+				if (preset.id === updatedPreset.id) {
+					return {
+						...updatedPreset,
+						$saved: false,
+					};
+				}
+
+				return preset;
+			});
+		},
+
+		async clearLocalSave(preset: Preset) {
+			const response = await api.get(`/presets/${preset.id}`);
+
+			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+				if (preset.id === response.data.data.id) {
+					return response.data.data;
+				}
+
+				return preset;
+			});
 		},
 	},
 });

@@ -3,17 +3,7 @@ import { nanoid } from 'nanoid';
 
 type EmitFunction = (event: string, ...args: any[]) => void;
 
-type Items = Readonly<
-	Ref<
-		| readonly {
-				text: string;
-				value: string | boolean | number;
-		  }[]
-		| null
-	>
->;
-
-export function useCustomSelection(currentValue: Ref<string>, items: Items, emit: EmitFunction) {
+export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>, emit: EmitFunction) {
 	const localOtherValue = ref('');
 
 	const otherValue = computed({
@@ -46,7 +36,7 @@ export function useCustomSelection(currentValue: Ref<string>, items: Items, emit
 	return { otherValue, usesOtherValue };
 }
 
-export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: Items, emit: EmitFunction) {
+export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: Ref<any[]>, emit: EmitFunction) {
 	type OtherValue = {
 		key: string;
 		value: string;

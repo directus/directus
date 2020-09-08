@@ -9,11 +9,13 @@
 
 		<component
 			v-if="interfaceExists"
-			:is="`interface-${field.meta.interface}`"
-			v-bind="field.meta.options"
+			:is="
+				field.meta ? `interface-${field.meta.interface}` : `interface-${getDefaultInterfaceForType(field.type)}`
+			"
+			v-bind="(field.meta && field.meta.options) || {}"
 			:disabled="disabled"
 			:value="value === undefined ? field.schema.default_value : value"
-			:width="field.meta.width"
+			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
@@ -23,7 +25,7 @@
 		/>
 
 		<v-notice v-else type="warning">
-			{{ $t('interface_not_found', { interface: field.meta.interface }) }}
+			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>
@@ -32,6 +34,7 @@
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
 	props: {
@@ -68,10 +71,10 @@ export default defineComponent({
 		const interfaces = getInterfaces();
 
 		const interfaceExists = computed(() => {
-			return !!interfaces.value.find((inter) => inter.id === props.field.meta.interface);
+			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');
 		});
 
-		return { interfaceExists };
+		return { interfaceExists, getDefaultInterfaceForType };
 	},
 });
 </script>

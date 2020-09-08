@@ -132,6 +132,7 @@ body {
 
 		.subtitle {
 			color: var(--foreground-subdued);
+			font-size: 16px;
 		}
 
 		.menu-toggle {

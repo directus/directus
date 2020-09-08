@@ -66,8 +66,8 @@
 					v-if="values.layout && values.collection"
 					:is="`layout-${values.layout}`"
 					:collection="values.collection"
-					:view-options.sync="viewOptions"
-					:view-query.sync="viewQuery"
+					:layout-options.sync="layoutOptions"
+					:layout-query.sync="layoutQuery"
 					:filters="values.filters || []"
 					@update:filters="edits.filters = $event"
 					readonly
@@ -116,9 +116,9 @@ type FormattedPreset = {
 	layout: string | null;
 	name: string | null;
 
-	view_query: Record<string, any> | null;
+	layout_query: Record<string, any> | null;
 
-	view_options: Record<string, any> | null;
+	layout_options: Record<string, any> | null;
 	filters: readonly Filter[] | null;
 };
 
@@ -141,7 +141,7 @@ export default defineComponent({
 		const { loading: rolesLoading, roles } = useRoles();
 		const { loading: presetLoading, error, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, viewQuery, viewOptions } = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
@@ -158,8 +158,8 @@ export default defineComponent({
 			initialValues,
 			saving,
 			save,
-			viewQuery,
-			viewOptions,
+			layoutQuery,
+			layoutOptions,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
@@ -177,12 +177,12 @@ export default defineComponent({
 
 				const editsParsed: Partial<Preset> = {};
 
-				if (edits.value.name) editsParsed.title = edits.value.name;
-				if (edits.value.name?.length === 0) editsParsed.title = null;
+				if (edits.value.name) editsParsed.bookmark = edits.value.name;
+				if (edits.value.name?.length === 0) editsParsed.bookmark = null;
 				if (edits.value.collection) editsParsed.collection = edits.value.collection;
-				if (edits.value.layout) editsParsed.view_type = edits.value.layout;
-				if (edits.value.view_query) editsParsed.view_query = edits.value.view_query;
-				if (edits.value.view_options) editsParsed.view_options = edits.value.view_options;
+				if (edits.value.layout) editsParsed.layout = edits.value.layout;
+				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
+				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
 				if (edits.value.filters) editsParsed.filters = edits.value.filters;
 
 				if (edits.value.scope) {
@@ -253,11 +253,11 @@ export default defineComponent({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					id: preset.value.id!,
 					collection: preset.value.collection,
-					layout: preset.value.view_type,
-					name: preset.value.title,
+					layout: preset.value.layout,
+					name: preset.value.bookmark,
 					scope: scope,
-					view_query: preset.value.view_query,
-					view_options: preset.value.view_options,
+					layout_query: preset.value.layout_query,
+					layout_options: preset.value.layout_options,
 					filters: preset.value.filters,
 				};
 
@@ -271,43 +271,43 @@ export default defineComponent({
 				};
 			});
 
-			const viewQuery = computed({
+			const layoutQuery = computed({
 				get() {
-					if (!values.value.view_query) return null;
+					if (!values.value.layout_query) return null;
 					if (!values.value.layout) return null;
 
-					return values.value.view_query[values.value.layout];
+					return values.value.layout_query[values.value.layout];
 				},
 				set(newQuery) {
 					edits.value = {
 						...edits.value,
-						view_query: {
-							...edits.value.view_query,
+						layout_query: {
+							...edits.value.layout_query,
 							[values.value.layout]: newQuery,
 						},
 					};
 				},
 			});
 
-			const viewOptions = computed({
+			const layoutOptions = computed({
 				get() {
-					if (!values.value.view_options) return null;
+					if (!values.value.layout_options) return null;
 					if (!values.value.layout) return null;
 
-					return values.value.view_options[values.value.layout];
+					return values.value.layout_options[values.value.layout];
 				},
 				set(newOptions) {
 					edits.value = {
 						...edits.value,
-						view_options: {
-							...edits.value.view_options,
+						layout_options: {
+							...edits.value.layout_options,
 							[values.value.layout]: newOptions,
 						},
 					};
 				},
 			});
 
-			return { edits, initialValues, values, viewQuery, viewOptions, hasEdits };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits };
 		}
 
 		function usePreset() {

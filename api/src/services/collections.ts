@@ -199,12 +199,27 @@ export default class CollectionsService {
 			const payload = data as Partial<Collection>;
 
 			if (!payload.meta) {
-				throw new InvalidPayloadException(`"system" key is required`);
+				throw new InvalidPayloadException(`"meta" key is required`);
 			}
 
-			return (await collectionItemsService.update(payload.meta!, key as any)) as
-				| string
-				| string[];
+			const keys = Array.isArray(key) ? key : [key];
+
+			for (const key of keys) {
+				const exists =
+					(await this.knex
+						.select('collection')
+						.from('directus_collections')
+						.where({ collection: key })
+						.first()) !== undefined;
+
+				if (exists) {
+					await collectionItemsService.update(payload.meta, key);
+				} else {
+					await collectionItemsService.create({ ...payload.meta, collection: key });
+				}
+			}
+
+			return key;
 		}
 
 		const payloads = Array.isArray(data) ? data : [data];
@@ -228,7 +243,10 @@ export default class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
-		const fieldsService = new FieldsService({ knex: this.knex, accountability: this.accountability });
+		const fieldsService = new FieldsService({
+			knex: this.knex,
+			accountability: this.accountability,
+		});
 
 		const tablesInDatabase = await schemaInspector.tables();
 
@@ -256,10 +274,14 @@ export default class CollectionsService {
 			const isM2O = relation.many_collection === collection;
 
 			if (isM2O) {
-				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: relation.many_field });
+				await this.knex('directus_relations')
+					.delete()
+					.where({ many_collection: collection, many_field: relation.many_field });
 				await fieldsService.deleteField(relation.one_collection, relation.one_field);
 			} else {
-				await this.knex('directus_relations').update({ one_field: null }).where({ one_collection: collection, field: relation.one_field });
+				await this.knex('directus_relations')
+					.update({ one_field: null })
+					.where({ one_collection: collection, field: relation.one_field });
 				await fieldsService.deleteField(relation.many_collection, relation.many_field);
 			}
 		}

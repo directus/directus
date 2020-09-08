@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import displays from '@/displays';
+import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
@@ -42,7 +42,7 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: [String, Number, Object, Array],
+			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},
 		type: {
@@ -59,7 +59,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayInfo = computed(() => displays.find((display) => display.id === props.display) || null);
+		const displays = getDisplays();
+		const displayInfo = computed(() => displays.value.find((display) => display.id === props.display) || null);
 		return { displayInfo };
 	},
 });

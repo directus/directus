@@ -1,6 +1,6 @@
 {
   "name": "directus",
-  "version": "9.0.0-alpha.25",
+  "version": "9.0.0-alpha.33",
   "license": "GPL-3.0-only",
   "homepage": "https://github.com/directus/next#readme",
   "description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -64,7 +64,7 @@
     "example.env"
   ],
   "dependencies": {
-    "@directus/app": "^9.0.0-alpha.25",
+    "@directus/app": "^9.0.0-alpha.33",
     "@directus/format-title": "^3.2.0",
     "@slynova/flydrive": "^1.0.2",
     "@slynova/flydrive-gcs": "^1.0.2",
@@ -94,9 +94,10 @@
     "js-yaml": "^3.14.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.4",
-    "knex-schema-inspector": "0.0.9",
+    "knex-schema-inspector": "0.0.11",
     "liquidjs": "^9.14.1",
     "lodash": "^4.17.19",
+    "macos-release": "^2.4.1",
     "ms": "^2.1.2",
     "nanoid": "^3.1.12",
     "nodemailer": "^6.4.11",
@@ -116,7 +117,7 @@
     "mysql": "^2.18.1",
     "oracledb": "^5.0.0",
     "sqlite3": "^5.0.0",
-    "pg": "^8.3.2",
+    "pg": "^8.3.3",
     "redis": "^3.0.2"
   },
   "devDependencies": {
@@ -164,5 +165,5 @@
       "prettier --write"
     ]
   },
-  "gitHead": "c22537b6d0dd7dc6cc651a9200a68f6b060353d4"
+  "gitHead": "a7d3952ec3b812ee1eec2f1c7b9f44186cbe0498"
 }

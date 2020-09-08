@@ -16,6 +16,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
+import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
@@ -34,6 +35,7 @@ import CustomIconLogout from './custom-icons/logout.vue';
 
 const customIcons: string[] = [
 	'directus',
+	'bookmark_save',
 	'box',
 	'commit_node',
 	'grid_1',
@@ -54,6 +56,7 @@ const customIcons: string[] = [
 export default defineComponent({
 	components: {
 		CustomIconDirectus,
+		CustomIconBookmarkSave,
 		CustomIconBox,
 		CustomIconCommitNode,
 		CustomIconGrid1,
@@ -129,6 +132,7 @@ export default defineComponent({
 <style>
 body {
 	--v-icon-color: currentColor;
+	--v-icon-color-hover: currentColor;
 	--v-icon-size: 24px;
 }
 </style>
@@ -172,6 +176,11 @@ body {
 
 	&.has-click {
 		cursor: pointer;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--v-icon-color-hover);
+		}
 	}
 
 	&.sup {

@@ -83,7 +83,7 @@ export default defineComponent({
 
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
-		provide('form-values', values);
+		provide('values', values);
 
 		return {
 			el,
@@ -132,7 +132,7 @@ export default defineComponent({
 				return (
 					props.loading ||
 					props.disabled === true ||
-					field.meta.readonly === true ||
+					field.meta?.readonly === true ||
 					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 				);
 			}

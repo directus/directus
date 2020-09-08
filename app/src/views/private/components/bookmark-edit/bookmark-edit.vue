@@ -8,7 +8,12 @@
 			<v-card-title>{{ $t('edit_bookmark') }}</v-card-title>
 
 			<v-card-text>
-				<v-input v-model="bookmarkName" :placeholder="$t('bookmark_name')" />
+				<v-input
+					autofocus
+					@keyup.enter="$emit('save', bookmarkName)"
+					v-model="bookmarkName"
+					:placeholder="$t('bookmark_name')"
+				/>
 			</v-card-text>
 
 			<v-card-actions>

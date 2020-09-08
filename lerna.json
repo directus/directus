@@ -4,5 +4,12 @@
     "app",
     "packages/*"
   ],
-  "version": "9.0.0-alpha.25"
+  "version": "9.0.0-alpha.33",
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
+    }
+  }
 }

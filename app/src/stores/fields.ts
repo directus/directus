@@ -8,6 +8,7 @@ import notify from '@/utils/notify';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';
+import { nanoid } from 'nanoid';
 
 const fakeFilesField: Field = {
 	collection: 'directus_files',
@@ -36,32 +37,14 @@ const fakeFilesField: Field = {
 	},
 };
 
-function getMetaDefault(collection: string, field: string): Field['meta'] {
-	/**
-	 * @TODO
-	 *
-	 * Get rid of this. Have it work without any meta
-	 */
-	return {
-		id: -1,
-		collection,
-		field,
-		group: null,
-		hidden: false,
-		interface: null,
-		display: null,
-		display_options: null,
-		locked: false,
-		options: null,
-		readonly: false,
-		required: false,
-		sort: null,
-		special: null,
-		translation: null,
-		width: 'full',
-		note: null,
-	};
-}
+/**
+ * @NOTE
+ * This keeps track of what update is the last one that's in progress. After every update, the store
+ * gets flushed with the updated values, which means that you can have racing conditions if you do
+ * multiple updates at the same time. By keeping track which one is the last one that's fired, we
+ * can ensure that only the last update gets used to flush the store with.
+ */
+let currentUpdate: string;
 
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
@@ -92,13 +75,11 @@ export const useFieldsStore = createStore({
 		parseField(field: FieldRaw): Field {
 			let name: string | VueI18n.TranslateResult;
 
-			const meta = field.meta === null ? getMetaDefault(field.collection, field.field) : field.meta;
-
 			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
 				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (notEmpty(meta.translation) && meta.translation.length > 0) {
-				for (let i = 0; i < meta.translation.length; i++) {
-					const { locale, translation } = meta.translation[i];
+			} else if (field.meta && notEmpty(field.meta.translation) && field.meta.translation.length > 0) {
+				for (let i = 0; i < field.meta.translation.length; i++) {
+					const { locale, translation } = field.meta.translation[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {
@@ -117,7 +98,6 @@ export const useFieldsStore = createStore({
 			return {
 				...field,
 				name,
-				meta,
 			};
 		},
 		async createField(collectionKey: string, newField: Field) {
@@ -195,7 +175,10 @@ export const useFieldsStore = createStore({
 			}
 		},
 		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
+			const updateID = nanoid();
 			const stateClone = [...this.state.fields];
+
+			currentUpdate = updateID;
 
 			// Update locally first, so the changes are visible immediately
 			this.state.fields = this.state.fields.map((field) => {
@@ -215,16 +198,18 @@ export const useFieldsStore = createStore({
 				// API
 				const response = await api.patch(`/fields/${collectionKey}`, updates);
 
-				this.state.fields = this.state.fields.map((field) => {
-					if (field.collection === collectionKey) {
-						const newDataForField = response.data.data.find(
-							(update: Field) => update.field === field.field
-						);
-						if (newDataForField) return this.parseField(newDataForField);
-					}
+				if (currentUpdate === updateID) {
+					this.state.fields = this.state.fields.map((field) => {
+						if (field.collection === collectionKey) {
+							const newDataForField = response.data.data.find(
+								(update: Field) => update.field === field.field
+							);
+							if (newDataForField) return this.parseField(newDataForField);
+						}
 
-					return field;
-				});
+						return field;
+					});
+				}
 
 				notify({
 					title: i18n.t('fields_update_success'),

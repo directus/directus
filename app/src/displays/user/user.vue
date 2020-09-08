@@ -22,16 +22,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { getRootPath } from '@/utils/get-root-path';
 
 type User = {
 	id: number;
 	avatar: {
-		data: {
-			thumbnails: {
-				key: string;
-				url: string;
-			}[];
-		};
+		id: string;
 	};
 	first_name: string;
 	last_name: string;
@@ -55,9 +51,10 @@ export default defineComponent({
 	setup(props) {
 		const src = computed(() => {
 			if (props.value === null) return null;
-			return (
-				props.value?.avatar?.data?.thumbnails?.find((thumb) => thumb.key === 'system-small-crop')?.url || null
-			);
+
+			if (props.value.avatar?.id) {
+				return `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
+			}
 		});
 
 		return { src };

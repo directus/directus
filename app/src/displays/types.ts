@@ -25,6 +25,7 @@ export type DisplayConfig = {
 	id: string;
 	icon: string;
 	name: string | VueI18n.TranslateResult;
+	description?: string | VueI18n.TranslateResult;
 
 	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;

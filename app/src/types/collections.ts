@@ -15,8 +15,10 @@ export interface CollectionRaw {
 		translation: Translation[] | null;
 		display_template: string | null;
 		sort_field: string | null;
-		soft_delete_field: string | null;
-		soft_delete_value: string | null;
+		archive_field: string | null;
+		archive_value: string | null;
+		unarchive_value: string | null;
+		archive_app_filter: boolean;
 	} | null;
 	schema: Record<string, any>;
 }

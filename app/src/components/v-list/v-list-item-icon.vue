@@ -17,6 +17,12 @@ export default defineComponent({
 });
 </script>
 
+<style>
+body {
+	--v-list-item-icon-color: var(--foreground-subdued);
+}
+</style>
+
 <style lang="scss" scoped>
 .v-list-item-icon {
 	$this: &;
@@ -62,8 +68,12 @@ export default defineComponent({
 				}
 			}
 
-			&.dense:not(.nav) #{$this} {
-				color: var(--foreground-subdued);
+			&.dense:not(.nav) #{$this} .v-icon {
+				--v-icon-color: var(--v-list-item-icon-color);
+			}
+
+			&.disabled #{$this} .v-icon {
+				--v-icon-color: var(--foreground-subdued) !important;
 			}
 		}
 	}

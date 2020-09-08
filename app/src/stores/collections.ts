@@ -27,20 +27,20 @@ export const useCollectionsStore = createStore({
 
 			this.state.collections = collections.map((collection: CollectionRaw) => {
 				let name: string | VueI18n.TranslateResult;
-				const icon = collection.meta?.icon || 'box';
+				const icon = collection.meta?.icon || 'label';
 
 				if (collection.meta && notEmpty(collection.meta.translation)) {
 					for (let i = 0; i < collection.meta.translation.length; i++) {
 						const { locale, translation } = collection.meta.translation[i];
 
 						i18n.mergeLocaleMessage(locale, {
-							collections: {
+							collection_names: {
 								[collection.collection]: translation,
 							},
 						});
 					}
 
-					name = i18n.t(`collections.${collection.collection}`);
+					name = i18n.t(`collection_names.${collection.collection}`);
 				} else {
 					name = formatTitle(collection.collection);
 				}

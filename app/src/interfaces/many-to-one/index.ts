@@ -16,7 +16,8 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
-			}
+			},
 		},
 	],
+	recommendedDisplays: ['related-values'],
 }));

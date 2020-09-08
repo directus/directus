@@ -13,7 +13,7 @@ device.
 		<v-tab><v-icon name="help" left /> Help</v-tab>
 	</v-tabs>
 
-	<v-tabs-items>
+	<v-tabs-items v-model="selection">
 		<v-tab-item>I'm the content for Home!</v-tab-item>
 		<v-tab-item>I'm the content for News!</v-tab-item>
 		<v-tab-item>I'm the content for Help!</v-tab-item>

@@ -523,7 +523,7 @@
   "values": "Значения",
   "version": "Версия",
   "version_and_updates": "Версия и Обновления",
-  "view_type": "Посмотреть как...",
+  "layout": "Посмотреть как...",
   "visible_all_users": "Видно всем пользователям",
   "webhook_count": "Нет вебхуков | 1 вебхук | {count} вебхуков",
   "weeks": {

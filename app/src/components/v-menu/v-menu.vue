@@ -351,7 +351,7 @@ body {
 }
 
 .v-menu-content {
-	max-height: 30vh;
+	// max-height: 30vh;
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;

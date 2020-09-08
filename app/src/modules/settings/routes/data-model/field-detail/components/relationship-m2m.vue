@@ -12,12 +12,13 @@
 					:items="collectionItems"
 					v-model="junctionCollection"
 					:placeholder="$t('select_one')"
+					:disabled="isExisting"
 				/>
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
 				<v-select
-					:disabled="type === 'files'"
+					:disabled="type === 'files' || isExisting"
 					:items="collectionItems"
 					v-model="relations[1].one_collection"
 					:placeholder="$t('select_one')"
@@ -25,7 +26,7 @@
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
 			<v-select
-				:disabled="!junctionCollection"
+				:disabled="!junctionCollection || isExisting"
 				:items="junctionFields"
 				v-model="relations[0].many_field"
 				:placeholder="$t('select_one')"
@@ -33,7 +34,7 @@
 			<div class="spacer" />
 			<div class="spacer" />
 			<v-select
-				:disabled="!junctionCollection"
+				:disabled="!junctionCollection || isExisting"
 				:items="junctionFields"
 				v-model="relations[1].many_field"
 				:placeholder="$t('select_one')"
@@ -62,6 +63,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		isExisting: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
