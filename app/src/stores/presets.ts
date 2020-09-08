@@ -4,14 +4,14 @@ import { useUserStore } from '@/stores/';
 import api from '@/api';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
-	title: null,
+	bookmark: null,
 	role: null,
 	user: null,
 	search_query: null,
 	filters: null,
-	view_type: null,
-	view_query: null,
-	view_options: null,
+	layout: null,
+	layout_query: null,
+	layout_options: null,
 };
 
 export const usePresetsStore = createStore({
@@ -106,7 +106,7 @@ export const usePresetsStore = createStore({
 				const collectionMatches = preset.collection === collection;
 
 				// Filter out all bookmarks
-				if (preset.title) return false;
+				if (preset.bookmark) return false;
 
 				if (userMatches && collectionMatches) return true;
 				if (roleMatches && collectionMatches) return true;
@@ -186,7 +186,6 @@ export const usePresetsStore = createStore({
 
 			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
 				if (preset.id === response.data.data.id) {
-					console.log('replace');
 					return response.data.data;
 				}
 

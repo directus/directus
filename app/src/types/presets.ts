@@ -30,15 +30,15 @@ export type Filter = {
 
 export type Preset = {
 	id?: number;
-	title: string | null;
+	bookmark: string | null;
 	user: string | null;
 	role: string | null;
 	collection: string;
 	search_query: string | null;
 	filters: readonly Filter[] | null;
-	view_type: string | null;
-	view_query: { [view_type: string]: any } | null;
-	view_options: { [view_type: string]: any } | null;
+	layout: string | null;
+	layout_query: { [layout: string]: any } | null;
+	layout_options: { [layout: string]: any } | null;
 
 	// App flag to indicate that the local copy hasn't been saved to the API yet
 	$saved?: false;

@@ -8,6 +8,7 @@ import notify from '@/utils/notify';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';
+import { nanoid } from 'nanoid';
 
 const fakeFilesField: Field = {
 	collection: 'directus_files',
@@ -35,6 +36,15 @@ const fakeFilesField: Field = {
 		note: null,
 	},
 };
+
+/**
+ * @NOTE
+ * This keeps track of what update is the last one that's in progress. After every update, the store
+ * gets flushed with the updated values, which means that you can have racing conditions if you do
+ * multiple updates at the same time. By keeping track which one is the last one that's fired, we
+ * can ensure that only the last update gets used to flush the store with.
+ */
+let currentUpdate: string;
 
 export const useFieldsStore = createStore({
 	id: 'fieldsStore',
@@ -165,7 +175,10 @@ export const useFieldsStore = createStore({
 			}
 		},
 		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
+			const updateID = nanoid();
 			const stateClone = [...this.state.fields];
+
+			currentUpdate = updateID;
 
 			// Update locally first, so the changes are visible immediately
 			this.state.fields = this.state.fields.map((field) => {
@@ -185,16 +198,18 @@ export const useFieldsStore = createStore({
 				// API
 				const response = await api.patch(`/fields/${collectionKey}`, updates);
 
-				this.state.fields = this.state.fields.map((field) => {
-					if (field.collection === collectionKey) {
-						const newDataForField = response.data.data.find(
-							(update: Field) => update.field === field.field
-						);
-						if (newDataForField) return this.parseField(newDataForField);
-					}
+				if (currentUpdate === updateID) {
+					this.state.fields = this.state.fields.map((field) => {
+						if (field.collection === collectionKey) {
+							const newDataForField = response.data.data.find(
+								(update: Field) => update.field === field.field
+							);
+							if (newDataForField) return this.parseField(newDataForField);
+						}
 
-					return field;
-				});
+						return field;
+					});
+				}
 
 				notify({
 					title: i18n.t('fields_update_success'),

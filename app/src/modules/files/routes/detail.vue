@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -72,13 +72,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button
-				rounded
-				icon
-				@click="downloadFile"
-				class="download"
-				v-tooltip.bottom="$t('download')"
-			>
+			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="$t('download')">
 				<v-icon name="save_alt" />
 			</v-button>
 
@@ -391,7 +385,7 @@ export default defineComponent({
 
 		function downloadFile() {
 			const filePath = getRootPath() + `assets/${props.primaryKey}`;
-			window.open(filePath, "_blank");
+			window.open(filePath, '_blank');
 		}
 
 		function useMovetoFolder() {

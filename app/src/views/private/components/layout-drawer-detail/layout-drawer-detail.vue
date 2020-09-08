@@ -1,7 +1,7 @@
 <template>
 	<drawer-detail icon="layers" :title="$t('layout_options')">
 		<div class="option-label">{{ $t('layout') }}</div>
-		<v-select :items="layouts" item-text="name" item-value="id" v-model="viewType" />
+		<v-select :items="layouts" item-text="name" item-value="id" v-model="layout" />
 		<portal-target name="layout-options" class="layout-options" />
 	</drawer-detail>
 </template>
@@ -28,7 +28,7 @@ export default defineComponent({
 			return layout;
 		});
 
-		const viewType = computed({
+		const layout = computed({
 			get() {
 				return props.value;
 			},
@@ -37,7 +37,7 @@ export default defineComponent({
 			},
 		});
 
-		return { currentLayout, layouts, viewType };
+		return { currentLayout, layouts, layout };
 	},
 });
 </script>

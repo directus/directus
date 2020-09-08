@@ -523,7 +523,7 @@
   "values": "Värden",
   "version": "Version",
   "version_and_updates": "Version och uppdateringar",
-  "view_type": "Visa som...",
+  "layout": "Visa som...",
   "visible_all_users": "Synlig för alla användare",
   "webhook_count": "No Webhooks | 1 Webhook | {count} Webhooks",
   "weeks": {

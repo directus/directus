@@ -11,7 +11,7 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
-			<v-notice v-if="!selectedInterface.options">
+			<v-notice v-if="!selectedInterface.options || selectedInterface.options.length === 0">
 				{{ $t('no_options_available') }}
 			</v-notice>
 
@@ -88,8 +88,8 @@ export default defineComponent({
 			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
 
 			const recommendedList = recommended.map((key) => interfaceItems.find((item) => item.value === key));
-			if (recommendedList !== undefined && recommendedList.includes(undefined) === false) {
-				recommendedItems.push(...recommendedList);
+			if (recommendedList !== undefined) {
+				recommendedItems.push(...recommendedList.filter((i) => i));
 			}
 
 			if (interfaceItems.length >= 5 && recommended.length > 0) {
@@ -98,7 +98,7 @@ export default defineComponent({
 
 			const interfaceList = interfaceItems.filter((item) => recommended.includes(item.value as string) === false);
 			if (interfaceList !== undefined) {
-				recommendedItems.push(...interfaceList);
+				recommendedItems.push(...interfaceList.filter((i) => i));
 			}
 
 			return recommendedItems;

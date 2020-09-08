@@ -1,7 +1,7 @@
 <template>
 	<v-list-item exact :to="bookmark.to" class="bookmark" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
 		<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
-		<v-list-item-content>{{ bookmark.title }}</v-list-item-content>
+		<v-list-item-content>{{ bookmark.bookmark }}</v-list-item-content>
 		<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
 			<v-icon :name="bookmark.scope === 'role' ? 'people' : 'public'" />
 		</v-list-item-icon>
@@ -42,7 +42,7 @@
 
 		<v-dialog v-model="deleteActive" persistent>
 			<v-card>
-				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.title }) }}</v-card-title>
+				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
 					<v-button @click="deleteSave" :loading="deleteSaving" class="action-delete">
@@ -91,7 +91,7 @@ export default defineComponent({
 
 		function useRenameBookmark() {
 			const renameActive = ref(false);
-			const renameValue = ref(props.bookmark.title);
+			const renameValue = ref(props.bookmark.bookmark);
 			const renameSaving = ref(false);
 
 			return { renameActive, renameValue, renameSave, renameSaving };
@@ -102,7 +102,7 @@ export default defineComponent({
 				try {
 					await presetsStore.savePreset({
 						...props.bookmark,
-						title: renameValue.value,
+						bookmark: renameValue.value,
 					});
 
 					renameActive.value = false;
@@ -116,7 +116,7 @@ export default defineComponent({
 
 		function useDeleteBookmark() {
 			const deleteActive = ref(false);
-			const deleteValue = ref(props.bookmark.title);
+			const deleteValue = ref(props.bookmark.bookmark);
 			const deleteSaving = ref(false);
 
 			return { deleteActive, deleteValue, deleteSave, deleteSaving };

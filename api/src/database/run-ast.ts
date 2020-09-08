@@ -43,7 +43,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 	let dbQuery = database.select([...toplevelFields, ...tempFields]).from(ast.name);
 
 	// Query defaults
-	query.limit = query.limit || 100;
+	query.limit = typeof query.limit === 'number' ? query.limit : 100;
 
 	if (query.limit === -1) {
 		delete query.limit;
@@ -119,7 +119,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			 * `n` items in total. This limit will then be re-applied in the stitching process
 			 * down below
 			 */
-			if (batchQuery.limit) {
+			if (typeof batchQuery.limit === 'number') {
 				tempLimit = batchQuery.limit;
 				batchQuery.limit = -1;
 			}
@@ -168,7 +168,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 				});
 
 			// Reapply LIMIT query on a per-record basis
-			if (tempLimit) {
+			if (typeof tempLimit === 'number') {
 				resultsForCurrentRecord = resultsForCurrentRecord.slice(0, tempLimit);
 			}
 

@@ -69,26 +69,17 @@
 
 				<v-divider />
 
-				<v-list-item
-					@click="setWidth('half')"
-					:disabled="hidden || (field.meta && field.meta.width === 'half')"
-				>
+				<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item
-					@click="setWidth('full')"
-					:disabled="hidden || (field.meta && field.meta.width === 'full')"
-				>
+				<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item
-					@click="setWidth('fill')"
-					:disabled="hidden || (field.meta && field.meta.width === 'fill')"
-				>
+				<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>

@@ -11,7 +11,7 @@
 		</v-notice>
 
 		<template v-if="fieldData.meta.display && selectedDisplay">
-			<v-notice v-if="!selectedDisplay.options">
+			<v-notice v-if="!selectedDisplay.options || selectedDisplay.options.length === 0">
 				{{ $t('no_options_available') }}
 			</v-notice>
 
@@ -32,6 +32,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { clone } from 'lodash';
 
 import { state, availableDisplays } from '../store';
 
@@ -51,7 +52,9 @@ export default defineComponent({
 		});
 
 		const selectItems = computed(() => {
-			const recommended = selectedInterface.value?.recommendedDisplays || [];
+			const recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
+
+			recommended.push('raw', 'formatted-value');
 
 			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
 				const item: FancySelectItem = {
@@ -71,8 +74,8 @@ export default defineComponent({
 			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
 
 			const recommendedList = recommended.map((key) => displayItems.find((item) => item.value === key));
-			if (recommendedList !== undefined && recommendedList.includes(undefined) === false) {
-				recommendedItems.push(...recommendedList);
+			if (recommendedList !== undefined) {
+				recommendedItems.push(...recommendedList.filter((i) => i));
 			}
 
 			if (displayItems.length >= 5 && recommended.length > 0) {
@@ -81,7 +84,7 @@ export default defineComponent({
 
 			const displayList = displayItems.filter((item) => recommended.includes(item.value as string) === false);
 			if (displayList !== undefined) {
-				recommendedItems.push(...displayList);
+				recommendedItems.push(...displayList.filter((i) => i));
 			}
 
 			return recommendedItems;
@@ -100,5 +103,15 @@ export default defineComponent({
 .type-title,
 .select {
 	margin-bottom: 32px;
+}
+
+.not-found {
+	.spacer {
+		flex-grow: 1;
+	}
+
+	button {
+		text-decoration: underline;
+	}
 }
 </style>

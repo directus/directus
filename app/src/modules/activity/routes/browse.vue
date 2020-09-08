@@ -20,11 +20,10 @@
 
 		<component
 			class="layout"
-			ref="layout"
-			:is="`layout-${viewType}`"
+			:is="`layout-${layout}`"
 			collection="directus_activity"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
 			:filters="_filters"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
@@ -36,7 +35,7 @@
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_activity_browse'))" />
 			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
 	</private-view>
@@ -46,7 +45,6 @@
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import ActivityNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
-import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import marked from 'marked';
 import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
@@ -72,9 +70,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const layout = ref<LayoutComponent | null>(null);
-
-		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
 		const _filters = computed(() => {
@@ -97,11 +93,10 @@ export default defineComponent({
 
 		return {
 			breadcrumb,
-			layout,
 			marked,
-			viewType,
-			viewOptions,
-			viewQuery,
+			layout,
+			layoutOptions,
+			layoutQuery,
 			filters,
 			searchQuery,
 			_filters,
