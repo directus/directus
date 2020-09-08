@@ -6,7 +6,6 @@ import {
 	RateLimiterMemcache,
 	IRateLimiterOptions,
 	IRateLimiterStoreOptions,
-	RateLimiterStoreAbstract,
 } from 'rate-limiter-flexible';
 import env from '../env';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
