@@ -4,7 +4,7 @@
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })
-				: $t('updating_field_field', { field: existingField.name })
+				: $t('updating_field_field', { field: existingField.name, collection: collectionInfo.name })
 		"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
