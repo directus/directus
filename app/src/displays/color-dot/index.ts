@@ -18,7 +18,7 @@ export default defineDisplay(({ i18n }) => ({
 				width: 'half',
 			},
 			schema: {
-				default_value: '#eceff1',
+				default_value: '#B0BEC5',
 			},
 		},
 		{
