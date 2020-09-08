@@ -9,6 +9,7 @@ import env from './env';
 
 import errorHandler from './middleware/error-handler';
 import cors from './middleware/cors';
+import rateLimiter from './middleware/rate-limiter';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
 import activityRouter from './controllers/activity';
