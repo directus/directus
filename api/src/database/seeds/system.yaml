@@ -648,7 +648,7 @@ rows:
               name: Translation
               type: string
               meta:
-                interface: system-language
+                interface: text-input
                 width: half
                 options:
                   placeholder: Enter a translation...
