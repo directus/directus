@@ -11,15 +11,12 @@ export default defineInterface(({ i18n }) => ({
 	system: true,
 	options: [
 		{
-			field: 'collection',
-			name: i18n.t('collection'),
+			field: 'collectionField',
+			name: i18n.t('interfaces.display-template.collection_field'),
 			type: 'string',
 			meta: {
-				width: 'half',
-				interface: 'collections',
-				options: {
-					includeSystem: true,
-				},
+				width: 'full',
+				interface: 'text-input'
 			},
 			schema: {
 				default_value: null,

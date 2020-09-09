@@ -33,6 +33,7 @@
 		"display-template": {
 			"display-template": "Display Template",
 			"description": "Mix text with field values.",
+			"collection_field": "Collection field",
 			"collection_field_not_setup": "The collection field option is misconfigured",
 			"select_a_collection": "Select a Collection"
 		},

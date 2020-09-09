@@ -40,7 +40,7 @@
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field" v-if="fieldData.schema" :class="{ full: ['text', 'json'].includes(default_type) }">
+			<div class="field" v-if="fieldData.schema" :class="{ full: ['text', 'json'].includes(fieldData.type) }">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
