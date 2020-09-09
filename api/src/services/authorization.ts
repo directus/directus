@@ -12,7 +12,7 @@ import {
 	PrimaryKey,
 } from '../types';
 import Knex from 'knex';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import ItemsService from './items';
@@ -219,10 +219,10 @@ export default class AuthorizationService {
 		const schema = generateJoi(permission.validation);
 
 		for (const payload of payloads) {
-			const { error } = schema.validate(payload);
+			const { error } = schema.validate(payload, { abortEarly: false });
 
 			if (error) {
-				throw new InvalidPayloadException(error.message);
+				throw error.details.map((details) => new FailedValidationException(details));
 			}
 		}
 
