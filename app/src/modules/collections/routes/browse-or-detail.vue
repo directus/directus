@@ -1,5 +1,10 @@
 <template>
-	<component ref="component" :is="isSingle ? 'collections-detail' : 'collections-browse'" :collection="collection" />
+	<component
+		ref="component"
+		:bookmark="bookmark"
+		:is="isSingle ? 'collections-detail' : 'collections-browse'"
+		:collection="collection"
+	/>
 </template>
 
 <script lang="ts">
@@ -18,6 +23,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		bookmark: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {

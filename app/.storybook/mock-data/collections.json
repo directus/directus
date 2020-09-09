@@ -188,14 +188,14 @@
 					"hidden_browse": false,
 					"required": false,
 					"options": {
-						"viewType": "cards",
-						"viewOptions": {
+						"layout": "cards",
+						"layoutOptions": {
 							"title": "title",
 							"subtitle": "type",
 							"content": "description",
 							"src": "data"
 						},
-						"viewQuery": [],
+						"layoutQuery": [],
 						"filters": []
 					},
 					"locked": 0,
@@ -316,14 +316,14 @@
 					"hidden_browse": false,
 					"required": false,
 					"options": {
-						"viewType": "cards",
-						"viewOptions": {
+						"layout": "cards",
+						"layoutOptions": {
 							"title": "title",
 							"subtitle": "type",
 							"content": "description",
 							"src": "data"
 						},
-						"viewQuery": [],
+						"layoutQuery": [],
 						"filters": []
 					},
 					"locked": 0,
@@ -4183,14 +4183,14 @@
 					"hidden_browse": false,
 					"required": false,
 					"options": {
-						"viewType": "cards",
-						"viewOptions": {
+						"layout": "cards",
+						"layoutOptions": {
 							"title": "title",
 							"subtitle": "type",
 							"content": "description",
 							"src": "data"
 						},
-						"viewQuery": [],
+						"layoutQuery": [],
 						"filters": []
 					},
 					"locked": 0,
@@ -6128,9 +6128,9 @@
 					"group": null,
 					"length": null
 				},
-				"view_type": {
+				"layout": {
 					"collection": "directus_collection_presets",
-					"field": "view_type",
+					"field": "layout",
 					"datatype": "VARCHAR",
 					"unique": false,
 					"primary_key": false,
@@ -6156,9 +6156,9 @@
 					"group": null,
 					"length": "100"
 				},
-				"view_query": {
+				"layout_query": {
 					"collection": "directus_collection_presets",
-					"field": "view_query",
+					"field": "layout_query",
 					"datatype": "TEXT",
 					"unique": false,
 					"primary_key": false,
@@ -6184,9 +6184,9 @@
 					"group": null,
 					"length": null
 				},
-				"view_options": {
+				"layout_options": {
 					"collection": "directus_collection_presets",
-					"field": "view_options",
+					"field": "layout_options",
 					"datatype": "TEXT",
 					"unique": false,
 					"primary_key": false,

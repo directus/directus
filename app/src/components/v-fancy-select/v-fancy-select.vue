@@ -1,27 +1,35 @@
 <template>
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
-			<div
-				v-for="(item, index) in visibleItems"
-				:key="item.value"
-				class="v-fancy-select-option"
-				:class="{ active: item.value === value, disabled }"
-				:style="{
-					'--index': index,
-				}"
-				@click="toggle(item)"
-			>
-				<div class="icon">
-					<v-icon :name="item.icon" />
-				</div>
+			<template v-for="(item, index) in visibleItems">
+				<v-divider :key="index" v-if="item.divider === true" />
+				<div
+					v-else
+					:key="item.value"
+					class="v-fancy-select-option"
+					:class="{ active: item.value === value, disabled }"
+					:style="{
+						'--index': index,
+					}"
+					@click="toggle(item)"
+				>
+					<div class="icon">
+						<v-icon :name="item.icon" />
+					</div>
 
-				<div class="content">
-					<div class="text">{{ item.text }}</div>
-					<div class="description">{{ item.description }}</div>
-				</div>
+					<div class="content">
+						<div class="text">{{ item.text }}</div>
+						<div class="description">{{ item.description }}</div>
+					</div>
 
-				<v-icon v-if="value === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
-			</div>
+					<v-icon
+						v-if="value === item.value && disabled === false"
+						name="cancel"
+						@click.stop="toggle(item)"
+					/>
+					<v-icon class="icon-right" v-else-if="item.iconRight" :name="item.iconRight" />
+				</div>
+			</template>
 		</transition-group>
 	</div>
 </template>
@@ -146,5 +154,13 @@ export default defineComponent({
 .option-enter,
 .option-leave-to {
 	opacity: 0;
+}
+
+.icon-right {
+	--v-icon-color: var(--foreground-subdued);
+}
+
+.v-divider {
+	margin: 24px 0;
 }
 </style>

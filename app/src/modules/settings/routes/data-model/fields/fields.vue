@@ -89,7 +89,7 @@ import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
 import router from '@/router';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
 import marked from 'marked';
 
 export default defineComponent({
@@ -114,6 +114,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { info: collectionInfo, fields } = useCollection(collection);
 		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
 
 		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
 			ref('directus_collections'),
@@ -147,12 +148,15 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
+			await collectionsStore.hydrate();
+			await fieldsStore.hydrate();
 			router.push(`/settings/data-model`);
 		}
 
 		async function saveAndQuit() {
 			await save();
 			await collectionsStore.hydrate();
+			await fieldsStore.hydrate();
 			router.push(`/settings/data-model`);
 		}
 	},

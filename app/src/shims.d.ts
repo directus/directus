@@ -18,11 +18,6 @@ declare module '*.json' {
 	export default value;
 }
 
-declare module 'vuedraggable' {
-	import Vue from 'vue';
-	export default Vue;
-}
-
 declare module 'jsonlint-mod' {
 	const x: any;
 	export default x;

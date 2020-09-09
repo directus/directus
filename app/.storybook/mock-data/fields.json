@@ -186,14 +186,14 @@
 			"hidden_browse": false,
 			"required": false,
 			"options": {
-				"viewType": "cards",
-				"viewOptions": {
+				"layout": "cards",
+				"layoutOptions": {
 					"title": "title",
 					"subtitle": "type",
 					"content": "description",
 					"src": "data"
 				},
-				"viewQuery": [],
+				"layoutQuery": [],
 				"filters": []
 			},
 			"locked": 0,
@@ -317,14 +317,14 @@
 			"hidden_browse": false,
 			"required": false,
 			"options": {
-				"viewType": "cards",
-				"viewOptions": {
+				"layout": "cards",
+				"layoutOptions": {
 					"title": "title",
 					"subtitle": "type",
 					"content": "description",
 					"src": "data"
 				},
-				"viewQuery": [],
+				"layoutQuery": [],
 				"filters": []
 			},
 			"locked": 0,
@@ -2078,7 +2078,7 @@
 		},
 		{
 			"collection": "directus_collection_presets",
-			"field": "view_type",
+			"field": "layout",
 			"datatype": "VARCHAR",
 			"unique": false,
 			"primary_key": false,
@@ -2107,7 +2107,7 @@
 		},
 		{
 			"collection": "directus_collection_presets",
-			"field": "view_query",
+			"field": "layout_query",
 			"datatype": "TEXT",
 			"unique": false,
 			"primary_key": false,
@@ -2136,7 +2136,7 @@
 		},
 		{
 			"collection": "directus_collection_presets",
-			"field": "view_options",
+			"field": "layout_options",
 			"datatype": "TEXT",
 			"unique": false,
 			"primary_key": false,
@@ -9473,14 +9473,14 @@
 			"hidden_browse": false,
 			"required": false,
 			"options": {
-				"viewType": "cards",
-				"viewOptions": {
+				"layout": "cards",
+				"layoutOptions": {
 					"title": "title",
 					"subtitle": "type",
 					"content": "description",
 					"src": "data"
 				},
-				"viewQuery": [],
+				"layoutQuery": [],
 				"filters": []
 			},
 			"locked": 0,

@@ -143,7 +143,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, PropType, ref, computed, inject, toRefs, Ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from '@vue/composition-api';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
@@ -157,7 +157,7 @@ import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
 
-type ViewOptions = {
+type layoutOptions = {
 	widths?: {
 		[field: string]: number;
 	};
@@ -165,7 +165,7 @@ type ViewOptions = {
 	spacing?: 'comfortable' | 'cozy' | 'compact';
 };
 
-type ViewQuery = {
+type layoutQuery = {
 	fields?: string[];
 	sort?: string;
 };
@@ -181,12 +181,12 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			default: undefined,
 		},
-		viewOptions: {
-			type: Object as PropType<ViewOptions>,
+		layoutOptions: {
+			type: Object as PropType<layoutOptions>,
 			default: () => ({}),
 		},
-		viewQuery: {
-			type: Object as PropType<ViewQuery>,
+		layoutQuery: {
+			type: Object as PropType<layoutQuery>,
 			default: () => ({}),
 		},
 		filters: {
@@ -215,8 +215,8 @@ export default defineComponent({
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
-		const _viewOptions: Ref<any> = useSync(props, 'viewOptions', emit);
-		const _viewQuery: Ref<any> = useSync(props, 'viewQuery', emit);
+		const _layoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
+		const _layoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
@@ -318,12 +318,12 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					return _viewQuery.value?.sort || primaryKeyField.value?.field;
+					return _layoutQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
 					page.value = 1;
-					_viewQuery.value = {
-						...(_viewQuery.value || {}),
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
 						sort: newSort,
 					};
 				},
@@ -331,12 +331,12 @@ export default defineComponent({
 
 			const limit = computed({
 				get() {
-					return _viewOptions.value?.limit || 25;
+					return _layoutOptions.value?.limit || 25;
 				},
 				set(newLimit: number) {
 					page.value = 1;
-					_viewOptions.value = {
-						...(_viewOptions.value || {}),
+					_layoutOptions.value = {
+						...(_layoutOptions.value || {}),
 						limit: newLimit,
 					};
 				},
@@ -344,18 +344,18 @@ export default defineComponent({
 
 			const fields = computed({
 				get() {
-					if (_viewQuery.value?.fields) {
+					if (_layoutQuery.value?.fields) {
 						// This shouldn't be the case, but double check just in case it's stored
 						// differently in the DB from previous versions
-						if (typeof _viewQuery.value.fields === 'string') {
-							return (_viewQuery.value.fields as string).split(',');
+						if (typeof _layoutQuery.value.fields === 'string') {
+							return (_layoutQuery.value.fields as string).split(',');
 						}
 
-						if (Array.isArray(_viewQuery.value.fields)) return _viewQuery.value.fields;
+						if (Array.isArray(_layoutQuery.value.fields)) return _layoutQuery.value.fields;
 					}
 
 					const fields =
-						_viewQuery.value?.fields ||
+						_layoutQuery.value?.fields ||
 						availableFields.value
 							.filter((field: Field) => {
 								return field.schema?.is_primary_key === false;
@@ -366,8 +366,8 @@ export default defineComponent({
 					return fields;
 				},
 				set(newFields: string[]) {
-					_viewQuery.value = {
-						...(_viewQuery.value || {}),
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
 						fields: newFields,
 					};
 				},
@@ -389,9 +389,16 @@ export default defineComponent({
 
 			const localWidths = ref<{ [field: string]: number }>({});
 
-			const saveWidthsToViewOptions = debounce(() => {
-				_viewOptions.value = {
-					...(_viewOptions.value || {}),
+			watch(
+				() => _layoutOptions.value,
+				() => {
+					localWidths.value = {};
+				}
+			);
+
+			const saveWidthsTolayoutOptions = debounce(() => {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
 					widths: localWidths.value,
 				};
 			}, 350);
@@ -412,7 +419,7 @@ export default defineComponent({
 					return activeFields.value.map((field) => ({
 						text: field.name,
 						value: field.field,
-						width: localWidths.value[field.field] || _viewOptions.value?.widths?.[field.field] || null,
+						width: localWidths.value[field.field] || _layoutOptions.value?.widths?.[field.field] || null,
 						field: {
 							display: field.meta?.display,
 							displayOptions: field.meta?.display_options,
@@ -434,17 +441,17 @@ export default defineComponent({
 
 					localWidths.value = widths;
 
-					saveWidthsToViewOptions();
+					saveWidthsTolayoutOptions();
 				},
 			});
 
 			const tableSpacing = computed({
 				get() {
-					return _viewOptions.value?.spacing || 'cozy';
+					return _layoutOptions.value?.spacing || 'cozy';
 				},
 				set(newSpacing: 'compact' | 'cozy' | 'comfortable') {
-					_viewOptions.value = {
-						...(_viewOptions.value || {}),
+					_layoutOptions.value = {
+						...(_layoutOptions.value || {}),
 						spacing: newSpacing,
 					};
 				},

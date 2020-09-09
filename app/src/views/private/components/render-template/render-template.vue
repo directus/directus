@@ -22,7 +22,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
 import { Field } from '@/types';
-import displays from '@/displays';
+import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
@@ -43,6 +43,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
+		const displays = getDisplays();
 
 		const regex = /({{.*?}})/g;
 
@@ -67,7 +68,7 @@ export default defineComponent({
 					// If no display is configured, we can render the raw value
 					if (field.meta?.display === null) return value;
 
-					const displayInfo = displays.find((display) => display.id === field.meta?.display);
+					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;

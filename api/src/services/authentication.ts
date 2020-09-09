@@ -3,7 +3,11 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
+import {
+	InvalidCredentialsException,
+	InvalidPayloadException,
+	InvalidOTPException,
+} from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import ActivityService from '../services/activity';
@@ -111,7 +115,11 @@ export default class AuthenticationService {
 		}
 
 		const record = await database
-			.select<Session & { email: string, id: string }>('directus_sessions.*', 'directus_users.email', 'directus_users.id')
+			.select<Session & { email: string; id: string }>(
+				'directus_sessions.*',
+				'directus_users.email',
+				'directus_users.id'
+			)
 			.from('directus_sessions')
 			.where({ 'directus_sessions.token': refreshToken })
 			.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
@@ -128,7 +136,9 @@ export default class AuthenticationService {
 		const newRefreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
-		await this.knex('directus_sessions').update({ token: newRefreshToken, expires: refreshTokenExpiration }).where({ token: refreshToken });
+		await this.knex('directus_sessions')
+			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
+			.where({ token: refreshToken });
 
 		return {
 			accessToken,
@@ -148,13 +158,21 @@ export default class AuthenticationService {
 	}
 
 	async generateOTPAuthURL(pk: string, secret: string) {
-		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
+		const user = await this.knex
+			.select('first_name', 'last_name')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
 		const name = `${user.first_name} ${user.last_name}`;
 		return authenticator.keyuri(name, 'Directus', secret);
 	}
 
 	async verifyOTP(pk: string, otp: string): Promise<boolean> {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+		const user = await this.knex
+			.select('tfa_secret')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
 
 		if (!user.tfa_secret) {
 			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);

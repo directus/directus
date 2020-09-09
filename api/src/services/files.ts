@@ -7,6 +7,7 @@ import parseIPTC from '../utils/parse-iptc';
 import path from 'path';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
+import cache from '../cache';
 
 export default class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -77,6 +78,10 @@ export default class FilesService extends ItemsService {
 		const sudoService = new ItemsService('directus_files');
 		await sudoService.update(payload, primaryKey);
 
+		if (cache) {
+			await cache.clear();
+		}
+
 		return primaryKey;
 	}
 
@@ -96,6 +101,10 @@ export default class FilesService extends ItemsService {
 		}
 
 		await super.delete(keys);
+
+		if (cache) {
+			await cache.clear();
+		}
 
 		return key;
 	}

@@ -158,6 +158,7 @@ body {
 			position: absolute;
 			top: 0;
 			left: 0;
+			z-index: 2;
 			flex-basis: 220px;
 			flex-shrink: 0;
 			width: 220px;
@@ -165,7 +166,6 @@ body {
 			background-color: var(--background-normal);
 			transform: translateX(-100%);
 			transition: transform var(--slow) var(--transition-out);
-			z-index: 2;
 
 			&.active {
 				transform: translateX(0);
@@ -183,6 +183,7 @@ body {
 
 			@include breakpoint(medium) {
 				--v-overlay-z-index: none;
+
 				display: none;
 			}
 		}

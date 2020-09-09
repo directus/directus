@@ -9,4 +9,5 @@ export default defineInterface(({ i18n }) => ({
 	types: ['uuid'],
 	relationship: 'm2o',
 	options: [],
+	recommendedDisplays: ['file'],
 }));

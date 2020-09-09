@@ -1,5 +1,5 @@
 import { defineDisplay } from '@/displays/define';
-import DisplayTemplate from './template.vue';
+import DisplayRelatedValues from './related-values.vue';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import getRelatedCollection from '@/utils/get-related-collection';
@@ -11,10 +11,10 @@ type Options = {
 };
 
 export default defineDisplay(({ i18n }) => ({
-	id: 'template',
-	name: i18n.t('template'),
+	id: 'related-values',
+	name: i18n.t('related_values'),
 	icon: 'text_fields',
-	handler: DisplayTemplate,
+	handler: DisplayRelatedValues,
 	options: [
 		/** @todo make this a component so we have dynamic collection for display template component */
 		{

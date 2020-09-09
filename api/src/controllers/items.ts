@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
-import sanitizeQuery from '../middleware/sanitize-query';
 import collectionExists from '../middleware/collection-exists';
 import MetaService from '../services/meta';
 import { RouteNotFoundException } from '../exceptions';
@@ -11,8 +10,7 @@ const router = express.Router();
 router.post(
 	'/:collection',
 	collectionExists,
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -21,14 +19,14 @@ router.post(
 		const primaryKey = await service.create(req.body);
 		const result = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.json({ data: result || null });
-	})
+		res.locals.payload = { data: result || null };
+		return next();
+	}),
 );
 
 router.get(
 	'/:collection',
 	collectionExists,
-	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
@@ -39,19 +37,17 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-		res.locals.data = {
+		res.locals.payload = {
 			meta: meta,
 			data: records || null,
 		};
-
 		return next();
-	})
+	}),
 );
 
 router.get(
 	'/:collection/:pk',
 	collectionExists,
-	sanitizeQuery,
 	asyncHandler(async (req, res, next) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
@@ -60,39 +56,39 @@ router.get(
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
-		res.locals.data = {
+
+		res.locals.payload = {
 			data: result || null,
 		};
-
 		return next();
-	})
+	}),
 );
 
 router.patch(
 	'/:collection',
 	collectionExists,
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 
 		if (req.singleton === true) {
 			await service.upsertSingleton(req.body);
 			const item = await service.readSingleton(req.sanitizedQuery);
 
-			return res.json({ data: item || null });
+			res.locals.payload = { data: item || null };
+			return next();
 		}
 
 		const primaryKeys = await service.update(req.body);
 		const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-		return res.json({ data: result || null });
-	})
+		res.locals.payload = { data: result || null };
+		return next();
+	}),
 );
 
 router.patch(
 	'/:collection/:pk',
 	collectionExists,
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -103,20 +99,20 @@ router.patch(
 		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
 		const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
 
-		res.json({ data: result || null });
-	})
+		res.locals.payload = { data: result || null };
+		return next();
+	}),
 );
 
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
-
-		return res.status(200).end();
-	})
+		return next();
+	}),
 );
 
 export default router;

@@ -4,13 +4,15 @@ import {
 	StorageManagerConfig,
 	Storage,
 } from '@slynova/flydrive';
-import camelcase from 'camelcase';
 import env from './env';
+import { validateEnv } from './utils/validate-env';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
+/** @todo dynamically load these storage adapters */
 import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
 import { GoogleCloudStorage } from '@slynova/flydrive-gcs';
 
-/** @todo dynamically load storage adapters here */
+validateEnv(['STORAGE_LOCATIONS']);
 
 const storage = new StorageManager(getStorageConfig());
 
@@ -19,26 +21,25 @@ registerDrivers(storage);
 export default storage;
 
 function getStorageConfig(): StorageManagerConfig {
-	const config: any = { disks: {} };
+	const config: StorageManagerConfig = {
+		disks: {},
+	};
 
-	for (const [key, value] of Object.entries(env)) {
-		if (key.startsWith('STORAGE') === false) continue;
-		if (key === 'STORAGE_LOCATIONS') continue;
-		if (key.endsWith('PUBLIC_URL')) continue;
+	const locations = env.STORAGE_LOCATIONS.split(',');
 
-		const disk = key.split('_')[1].toLowerCase();
-		if (!config.disks[disk]) config.disks[disk] = { config: {} };
+	locations.forEach((location: string) => {
+		location = location.trim();
 
-		if (key.endsWith('DRIVER')) {
-			config.disks[disk].driver = value;
-			continue;
-		}
+		const diskConfig = {
+			driver: env[`STORAGE_${location.toUpperCase()}_DRIVER`],
+			config: getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`),
+		};
 
-		const configKey = camelcase(
-			key.split('_').filter((_, index) => [0, 1].includes(index) === false)
-		);
-		config.disks[disk].config[configKey] = value;
-	}
+		delete diskConfig.config.publicUrl;
+		delete diskConfig.config.driver;
+
+		config.disks![location] = diskConfig;
+	});
 
 	return config;
 }
@@ -53,6 +54,7 @@ function registerDrivers(storage: StorageManager) {
 
 	usedDrivers.forEach((driver) => {
 		const storageDriver = getStorageDriver(driver);
+
 		if (storageDriver) {
 			storage.registerDriver<Storage>(driver, storageDriver);
 		}

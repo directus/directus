@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"db_only_click_to_configure": "Database Only: Click to Configure ",
+
 	"show_archived_items": "Show Archived Items",
 
 	"create_preset": "Create Preset",
@@ -17,6 +19,17 @@
 	"create_user": "Create User",
 
 	"rename_folder": "Rename Folder",
+	"delete_folder": "Delete Folder",
+	"reset_bookmark": "Reset Bookmark",
+	"rename_bookmark": "Rename Bookmark",
+	"update_bookmark": "Update Bookmark",
+	"delete_bookmark": "Delete Bookmark",
+	"delete_bookmark_copy": "Are you sure you want to delete the \"{bookmark}\" bookmark? This action cannot be undone.",
+
+	"logoutReason": {
+		"SIGN_OUT": "Signed out",
+		"SESSION_EXPIRED": "Session expired"
+	},
 
 	"public": "Public",
 	"public_description": "Controls what API data is available without authenticating.",
@@ -87,6 +100,11 @@
 
 	"preset_colors": "Preset Colors",
 
+	"color_dot": "Color Dot",
+	"default_color": "Default Color",
+
+	"labels": "Labels",
+
 	"global": "Global",
 
 	"admins_have_all_permissions": "Admins have all permissions",
@@ -102,8 +120,8 @@
 	"create_field": "Create Field",
 	"update_field": "Update Field",
 
-	"creating_new_field": "Creating New Field",
-	"updating_field_field": "Updating Field {field}",
+	"creating_new_field": "{collection}: New Field",
+	"updating_field_field": "{collection}: \"{field}\" Field",
 	"within_collection": "Within {collection}",
 
 	"field_standard": "Standard",
@@ -256,6 +274,8 @@
 	"this_collection": "This Collection",
 	"related_collection": "Related Collection",
 
+	"related_values": "Related Values",
+
 	"last_page": "Last Page",
 	"last_login": "Last Login",
 
@@ -273,7 +293,6 @@
 	"submit": "Submit",
 
 	"move_to_folder": "Move to Folder",
-	"delete_folder": "Delete Folder",
 	"select_folder": "Select Folder",
 	"move": "Move",
 
@@ -1010,8 +1029,6 @@
   "delete": "Delete",
 
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
-  "delete_bookmark": "Delete Bookmark",
-  "delete_bookmark_body": "Are you sure you want to delete this bookmark? This action cannot be undone.",
   "delete_confirmation": "Delete Confirmation",
   "delete_field_are_you_sure": "Are you sure you want to delete the field \"{field}\"? This action can not be undone.",
   "delete_role_are_you_sure": "Are you sure to delete the role \"{name}\"? This action cannot be undone.",

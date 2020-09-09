@@ -4,7 +4,7 @@
 			{{ $t('cancel') }}
 		</v-button>
 		<div class="spacer" />
-		<v-button v-if="currentTabIndex < tabs.length - 1" @click="nextTab" :disabled="nextDisabled">
+		<v-button v-if="!isExisting && currentTabIndex < tabs.length - 1" @click="nextTab" :disabled="nextDisabled">
 			{{ $t('next') }}
 		</v-button>
 		<v-button v-else @click="$emit('save')" :loading="saving">
@@ -38,6 +38,10 @@ export default defineComponent({
 			required: true,
 		},
 		saving: {
+			type: Boolean,
+			default: false,
+		},
+		isExisting: {
 			type: Boolean,
 			default: false,
 		},

@@ -6,6 +6,7 @@ import SchemaInspector from 'knex-schema-inspector';
 import FieldsService from '../services/fields';
 import { omit } from 'lodash';
 import ItemsService from '../services/items';
+import cache from '../cache';
 
 export default class CollectionsService {
 	knex: Knex;
@@ -84,6 +85,10 @@ export default class CollectionsService {
 				createdCollections.push(payload.collection);
 			}
 		});
+
+		if (cache) {
+			await cache.clear();
+		}
 
 		return Array.isArray(data) ? createdCollections : createdCollections[0];
 	}
@@ -199,12 +204,27 @@ export default class CollectionsService {
 			const payload = data as Partial<Collection>;
 
 			if (!payload.meta) {
-				throw new InvalidPayloadException(`"system" key is required`);
+				throw new InvalidPayloadException(`"meta" key is required`);
 			}
 
-			return (await collectionItemsService.update(payload.meta!, key as any)) as
-				| string
-				| string[];
+			const keys = Array.isArray(key) ? key : [key];
+
+			for (const key of keys) {
+				const exists =
+					(await this.knex
+						.select('collection')
+						.from('directus_collections')
+						.where({ collection: key })
+						.first()) !== undefined;
+
+				if (exists) {
+					await collectionItemsService.update(payload.meta, key);
+				} else {
+					await collectionItemsService.create({ ...payload.meta, collection: key });
+				}
+			}
+
+			return key;
 		}
 
 		const payloads = Array.isArray(data) ? data : [data];
@@ -217,6 +237,10 @@ export default class CollectionsService {
 		});
 
 		await collectionItemsService.update(collectionUpdates);
+
+		if (cache) {
+			await cache.clear();
+		}
 
 		return key!;
 	}
@@ -279,6 +303,10 @@ export default class CollectionsService {
 
 		for (const collectionKey of collectionKeys) {
 			await this.knex.schema.dropTable(collectionKey);
+		}
+
+		if (cache) {
+			await cache.clear();
 		}
 
 		return collection;

@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="breadcrumb[0].to">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -169,7 +169,7 @@ import CommentsDrawerDetail from '@/views/private/components/comments-drawer-det
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore, useUserStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoDrawerDetail from '../components/user-info-drawer-detail.vue';
@@ -209,6 +209,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
+		const userStore = useUserStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -344,6 +345,7 @@ export default defineComponent({
 
 		async function saveAndQuit() {
 			await save();
+			await refreshCurrentUser();
 			router.push(`/users`);
 		}
 
@@ -361,6 +363,7 @@ export default defineComponent({
 
 		async function saveAndAddNew() {
 			await save();
+			await refreshCurrentUser();
 			router.push(`/users/+`);
 		}
 
@@ -372,6 +375,12 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			await remove();
 			router.push(`/users`);
+		}
+
+		async function refreshCurrentUser() {
+			if (userStore.state.currentUser!.id === item.value.id) {
+				await userStore.hydrate();
+			}
 		}
 
 		function useUserPreview() {

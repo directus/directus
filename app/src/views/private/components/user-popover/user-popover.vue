@@ -32,15 +32,14 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composition-api';
 import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 type User = {
 	first_name: string;
 	last_name: string;
 	email: string;
 	avatar: {
-		data: {
-			thumbnails: any[];
-		};
+		id: string;
 	};
 };
 
@@ -59,8 +58,9 @@ export default defineComponent({
 		const avatarSrc = computed(() => {
 			if (data.value === null) return null;
 
-			return data.value.avatar?.data?.thumbnails?.find((thumbnail) => thumbnail.key === 'system-medium-crop')
-				?.url;
+			if (data.value.avatar?.id) {
+				return `${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`;
+			}
 		});
 
 		const active = ref(false);

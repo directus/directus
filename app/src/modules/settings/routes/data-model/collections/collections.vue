@@ -68,6 +68,13 @@
 				</template>
 
 				<template #item-append="{ item }">
+					<v-icon
+						small
+						class="no-meta"
+						name="report_problem"
+						v-if="!item.meta"
+						v-tooltip="$t('db_only_click_to_configure')"
+					/>
 					<collection-options :collection="item" />
 				</template>
 			</v-table>
@@ -237,5 +244,11 @@ export default defineComponent({
 .header-icon {
 	--v-button-color-disabled: var(--warning);
 	--v-button-background-color-disabled: var(--warning-25);
+}
+
+.no-meta {
+	--v-icon-color: var(--foreground-subdued);
+
+	margin-right: 4px;
 }
 </style>

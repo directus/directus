@@ -15,14 +15,28 @@
 					</template>
 
 					<template #append>
-						<v-icon
-							v-if="hidden"
-							name="visibility_off"
-							class="hidden-icon"
-							v-tooltip="$t('hidden_field')"
-							small
-						/>
-						<v-icon @click.stop="toggle" name="more_vert" />
+						<div class="icons">
+							<v-icon
+								v-if="field.schema && field.schema.is_primary_key"
+								name="vpn_key"
+								small
+								v-tooltip="$t('primary_key')"
+							/>
+							<v-icon
+								v-if="!field.meta"
+								name="report_problem"
+								small
+								v-tooltip="$t('db_only_click_to_configure')"
+							/>
+							<v-icon
+								v-if="hidden"
+								name="visibility_off"
+								class="hidden-icon"
+								v-tooltip="$t('hidden_field')"
+								small
+							/>
+							<v-icon @click.stop="toggle" name="more_vert" />
+						</div>
 					</template>
 				</v-input>
 			</template>
@@ -55,33 +69,28 @@
 
 				<v-divider />
 
-				<v-list-item
-					@click="setWidth('half')"
-					:disabled="hidden || (field.meta && field.meta.width === 'half')"
-				>
+				<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item
-					@click="setWidth('full')"
-					:disabled="hidden || (field.meta && field.meta.width === 'full')"
-				>
+				<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item
-					@click="setWidth('fill')"
-					:disabled="hidden || (field.meta && field.meta.width === 'fill')"
-				>
+				<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 				</v-list-item>
 
 				<v-divider />
 
-				<v-list-item @click="deleteActive = true" class="danger">
+				<v-list-item
+					@click="deleteActive = true"
+					class="danger"
+					:disabled="field.schema && field.schema.is_primary_key === true"
+				>
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t('delete_field') }}
@@ -287,8 +296,6 @@ export default defineComponent({
 
 	&.hidden-icon {
 		--v-icon-color-hover: var(--foreground-subdued);
-
-		margin-right: 4px;
 	}
 }
 
@@ -336,5 +343,11 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
+}
+
+.icons {
+	.v-icon + .v-icon:not(:last-child) {
+		margin-left: 8px;
+	}
 }
 </style>

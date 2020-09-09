@@ -42,7 +42,7 @@
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
-		<notifications-group v-if="drawerOpen === false" :dense="drawerOpen === false" />
+		<notifications-group :dense="drawerOpen === false" />
 
 		<template v-if="showDropEffect">
 			<div class="drop-border top" />
@@ -236,6 +236,8 @@ export default defineComponent({
 					},
 				});
 
+				notificationsStore.remove(fileUploadNotificationID);
+
 				emitter.emit(Events.upload);
 
 				notificationsStore.remove(fileUploadNotificationID);
@@ -255,13 +257,13 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 
 .private-view {
+	--content-padding: 12px;
+	--content-padding-bottom: 60px;
+
 	display: flex;
 	width: 100%;
 	height: 100%;
 	background-color: var(--background-page);
-
-	--content-padding: 12px;
-	--content-padding-bottom: 60px;
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;

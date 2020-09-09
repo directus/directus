@@ -5,4 +5,6 @@ export type FancySelectItem = {
 	value: string | number;
 	text: string | TranslateResult;
 	description?: string | TranslateResult;
+	divider?: boolean;
+	iconRight?: string;
 };

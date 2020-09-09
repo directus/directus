@@ -64,7 +64,7 @@ export const onError = async (error: RequestError) => {
 		try {
 			newToken = await refresh();
 		} catch {
-			logout({ reason: LogoutReason.ERROR_SESSION_EXPIRED });
+			logout({ reason: LogoutReason.SESSION_EXPIRED });
 			return Promise.reject();
 		}
 

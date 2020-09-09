@@ -34,13 +34,13 @@ export const useCollectionsStore = createStore({
 						const { locale, translation } = collection.meta.translation[i];
 
 						i18n.mergeLocaleMessage(locale, {
-							collections: {
+							collection_names: {
 								[collection.collection]: translation,
 							},
 						});
 					}
 
-					name = i18n.t(`collections.${collection.collection}`);
+					name = i18n.t(`collection_names.${collection.collection}`);
 				} else {
 					name = formatTitle(collection.collection);
 				}

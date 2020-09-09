@@ -22,7 +22,7 @@
 					:download="image.filename_download"
 					v-tooltip="$t('download')"
 				>
-					<v-icon name="file_download" />
+					<v-icon name="get_app" />
 				</v-button>
 				<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
 					<v-icon name="crop_rotate" />
@@ -97,7 +97,9 @@ export default defineComponent({
 			}
 
 			if (image.value.type.includes('image')) {
-				return getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+				return (
+					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
+				);
 			}
 
 			return null;

@@ -1,9 +1,10 @@
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types/';
-import displays from '@/displays';
+import { getDisplays } from '@/displays';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string) {
 	const fieldsStore = useFieldsStore();
+	const displays = getDisplays();
 
 	const adjustedFields: string[] = fields
 		.map((fieldKey) => {
@@ -12,7 +13,7 @@ export default function adjustFieldsForDisplays(fields: readonly string[], paren
 			if (!field) return fieldKey;
 			if (field.meta?.display === null) return fieldKey;
 
-			const display = displays.find((d) => d.id === field.meta?.display);
+			const display = displays.value.find((d) => d.id === field.meta?.display);
 
 			if (!display) return fieldKey;
 			if (!display?.fields) return fieldKey;

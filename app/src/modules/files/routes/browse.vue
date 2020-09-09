@@ -93,12 +93,12 @@
 
 		<component
 			class="layout"
-			ref="layout"
-			:is="`layout-${viewType}`"
+			ref="layoutRef"
+			:is="`layout-${layout}`"
 			collection="directus_files"
 			:selection.sync="selection"
-			:view-options.sync="viewOptions"
-			:view-query.sync="viewQuery"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
 			@update:filters="filters = $event"
@@ -130,7 +130,7 @@
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_files_browse'))" />
 			</drawer-detail>
-			<layout-drawer-detail @input="viewType = $event" :value="viewType" />
+			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
 	</private-view>
@@ -175,12 +175,12 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { folders } = useFolders();
-		const layout = ref<LayoutComponent | null>(null);
+		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
 		const userStore = useUserStore();
 
-		const { viewType, viewOptions, viewQuery, filters, searchQuery } = usePreset(ref('directus_files'));
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb, title } = useBreadcrumb();
@@ -250,11 +250,11 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			filters,
-			layout,
+			layoutRef,
 			selection,
-			viewOptions,
-			viewQuery,
-			viewType,
+			layoutOptions,
+			layoutQuery,
+			layout,
 			filtersWithFolderAndType,
 			searchQuery,
 			marked,
@@ -281,7 +281,7 @@ export default defineComponent({
 
 				await api.delete(`/files/${batchPrimaryKeys}`);
 
-				await layout.value?.refresh();
+				await layoutRef.value?.refresh();
 
 				selection.value = [];
 				deleting.value = false;
@@ -371,7 +371,7 @@ export default defineComponent({
 		}
 
 		function refresh() {
-			layout.value?.refresh();
+			layoutRef.value?.refresh();
 		}
 
 		function clearFilters() {
