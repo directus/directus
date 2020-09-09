@@ -43,41 +43,41 @@
 			<div class="field" v-if="fieldData.schema" :class="{ full: ['text', 'json'].includes(default_type) }">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
-					v-if="default_type === 'string'"
+					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
-					v-model="default_value"
+					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
 				<v-textarea
-					v-else-if="default_type === 'text' || default_type === 'json'"
+					v-else-if="['text', 'json'].includes(fieldData.type)"
 					class="monospace"
-					v-model="default_value"
+					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
 				<v-input
-					v-else-if="default_type === 'number'"
+					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(fieldData.type)"
 					type="number"
 					class="monospace"
-					v-model="default_value"
+					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
 				<v-input
-					v-else-if="default_type === 'datetime'"
+					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
 					class="monospace"
-					v-model="default_value"
+					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
 				<v-checkbox
-					v-else-if="default_type === 'boolean'"
+					v-else-if="fieldData.type === 'boolean'"
 					class="monospace"
-					v-model="default_value"
-					:label="default_value ? $t('true') : $t('false')"
+					v-model="defaultValue"
+					:label="defaultValue ? $t('true') : $t('false')"
 					block
 				/>
 				<v-input
 					v-else
 					class="monospace"
-					v-model="default_value"
+					v-model="defaultValue"
 					disabled
 					:placeholder="$t('add_a_default_value')"
 				/>
@@ -235,7 +235,7 @@ export default defineComponent({
 			return i18n.t('choose_a_type');
 		});
 
-		const default_value = computed({
+		const defaultValue = computed({
 			get() {
 				return state.fieldData.schema.default_value;
 			},
@@ -244,32 +244,16 @@ export default defineComponent({
 			},
 		});
 
-		const default_type = computed(() => {
-			if (['integer', 'bigInteger', 'float', 'decimal'].includes(state.fieldData.type)) return 'number';
-			else if (['string', 'uuid'].includes(state.fieldData.type)) {
-				return 'string';
-			} else if (['timestamp', 'datetime', 'date', 'time'].includes(state.fieldData.type)) {
-				return 'datetime';
-			} else {
-				return state.fieldData.type;
-			}
-		});
-
 		return {
 			fieldData: state.fieldData,
 			typesWithLabels,
 			setType,
 			typeDisabled,
 			typePlaceholder,
-			default_value,
-			default_type,
+			defaultValue,
 		};
 
 		function setType(value: typeof types[number]) {
-			if (value === 'uuid') {
-				state.fieldData.meta.special = 'uuid';
-			}
-
 			// We'll reset the interface/display as they most likely won't work for the newly selected
 			// type
 			state.fieldData.meta.interface = null;

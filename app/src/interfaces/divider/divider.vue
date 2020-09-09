@@ -1,13 +1,12 @@
 <template>
 	<v-divider
-		:inline-title="false"
 		:class="{ margin: icon || title }"
 		:style="{
 			'--v-divider-color': color,
 			'--v-divider-label-color': color,
 		}"
 		large
-		:inlineTitle="inlineTitle"
+		:inline-title="inlineTitle"
 	>
 		<template v-if="icon" #icon><v-icon :name="icon" /></template>
 		<template v-if="title" #default>{{ title }}</template>

@@ -297,6 +297,9 @@ function initLocalStore(
 			() => state.fieldData.type,
 			() => {
 				switch (state.fieldData.type) {
+					case 'uuid':
+						state.fieldData.meta.special = 'uuid';
+						break;
 					case 'json':
 						state.fieldData.meta.special = 'json';
 						break;

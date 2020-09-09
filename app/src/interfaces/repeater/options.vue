@@ -1,19 +1,9 @@
 <template>
 	<div>
 		<div class="grid">
-			<div class="grid-element">
+			<div class="grid-element full">
 				<p class="type-label">{{ $t('template') }}</p>
 				<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
-			</div>
-			<div class="grid-element">
-				<p class="type-label">{{ $t('interfaces.repeater.max_amount') }}</p>
-				<v-input
-					class="input"
-					type="number"
-					v-model="limit"
-					:min="1"
-					:placeholder="$t('interfaces.repeater.max_amount_placeholder')"
-				/>
 			</div>
 			<div class="grid-element full">
 				<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
@@ -134,18 +124,6 @@ export default defineComponent({
 			},
 		];
 
-		const limit = computed({
-			get() {
-				return props.value?.limit;
-			},
-			set(newLimit: string) {
-				emit('input', {
-					...(props.value || {}),
-					limit: newLimit,
-				});
-			},
-		});
-
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -158,7 +136,7 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, template, limit };
+		return { repeaterValue, repeaterFields, template };
 	},
 });
 </script>

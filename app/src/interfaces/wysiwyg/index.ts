@@ -8,7 +8,6 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG,
 	types: ['text'],
-	recommendedDisplays: ['formatted-value'],
 	options: [
 		{
 			field: 'toolbar',
@@ -38,7 +37,6 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown-multiselect',
 				options: {
-					closeOnContentClick: false,
 					choices: [
 						{
 							value: 'aligncenter',

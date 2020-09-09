@@ -102,7 +102,7 @@ export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
-			type: [String, Object],
+			type: String,
 			default: null,
 		},
 		template: {
@@ -178,16 +178,8 @@ export default defineComponent({
 			const currentPrimaryKey = computed<string | number>(() => {
 				if (!currentUser.value) return '+';
 				if (!props.value) return '+';
-
-				if (typeof props.value === 'number' || typeof props.value === 'string') {
-					return props.value;
-				}
-
-				if (typeof props.value === 'object' && props.value.hasOwnProperty('id')) {
-					return props.value.id;
-				}
-
-				return '+';
+				
+				return props.value;
 			});
 
 			return { setCurrent, currentUser, loading, currentPrimaryKey };
@@ -312,15 +304,7 @@ export default defineComponent({
 			const selection = computed<(number | string)[]>(() => {
 				if (!props.value) return [];
 
-				if (typeof props.value === 'object' && props.value.hasOwnProperty('id')) {
-					return [props.value.id];
-				}
-
-				if (typeof props.value === 'string' || typeof props.value === 'number') {
-					return [props.value];
-				}
-
-				return [];
+				return [props.value];
 			});
 
 			return { selection, stageSelection, selectModalActive };

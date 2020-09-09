@@ -8,7 +8,6 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'text_fields',
 	component: InterfaceTextInput,
 	types: ['string', 'uuid'],
-	recommendedDisplays: ['raw'],
 	options: [
 		{
 			field: 'placeholder',
@@ -74,7 +73,7 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'mask',
+			field: 'masked',
 			name: i18n.t('interfaces.text-input.mask'),
 			type: 'boolean',
 			meta: {

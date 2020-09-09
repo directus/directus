@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 		value: {
 			type: Array as PropType<string[]>,
-			default: () => [],
+			default: null,
 		},
 		placeholder: {
 			type: String,

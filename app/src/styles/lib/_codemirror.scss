@@ -18,6 +18,10 @@
 	transition: all var(--fast) var(--transition);
 }
 
+.CodeMirror .CodeMirror-placeholder{
+	color: var(--foreground-subdued);
+}
+
 .CodeMirror:hover {
 	border-color: var(--border-normal-alt);
 }

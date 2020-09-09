@@ -10,5 +10,4 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceRepeater,
 	types: ['json'],
 	options: RepeaterOptions,
-	recommendedDisplays: ['related-values'],
 }));

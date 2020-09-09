@@ -14,7 +14,7 @@
 		</draggable>
 		<button @click="addNew" class="add-new" v-if="showAddNew">
 			<v-icon name="add" />
-			{{ placeholder }}
+			{{ createItemText }}
 		</button>
 	</v-item-group>
 </template>
@@ -42,7 +42,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		placeholder: {
+		createItemText: {
 			type: String,
 			default: i18n.t('add_a_new_item'),
 		},

@@ -275,10 +275,9 @@ export default defineComponent({
 
 		function fillTemplate() {
 			try {
-				const parse = JSON.parse(props.template);
-				emit('input', parse || props.template);
+				emit('input', JSON.parse(props.template));
 			} catch {
-				// We won't stage invalid JSON
+				emit('input', props.template);
 			}
 		}
 	},
@@ -300,12 +299,6 @@ export default defineComponent({
 	bottom: -20px;
 	font-style: italic;
 	text-align: right;
-}
-
-::v-deep .CodeMirror {
-	.CodeMirror-placeholder {
-		color: var(--foreground-subdued);
-	}
 }
 
 .v-button {

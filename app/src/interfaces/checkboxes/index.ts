@@ -77,6 +77,9 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'icon',
 			},
+			schema: {
+				default_value: 'check_box'
+			}
 		},
 		{
 			field: 'iconOff',
@@ -86,6 +89,9 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'icon',
 			},
+			schema: {
+				default_value: 'check_box_outline_blank'
+			}
 		},
 	],
 	recommendedDisplays: ['tags'],

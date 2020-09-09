@@ -8,13 +8,12 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'link',
 	component: InterfaceSlug,
 	types: ['string'],
-	recommendedDisplays: ['formatted-value'],
 	options: [
 		{
 			field: 'placeholder',
 			name: i18n.t('placeholder'),
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'text-input',
 				options: {
 					placeholder: i18n.t('enter_a_placeholder'),
