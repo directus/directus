@@ -31,7 +31,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			if (env.NODE_ENV === 'development') {
 				err.extensions = {
 					...(err.extensions || {}),
-					// stack: err.stack
+					stack: err.stack,
 				};
 			}
 

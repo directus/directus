@@ -1,5 +1,5 @@
 <template>
-	<div class="field" :key="field.field" :class="(field.meta && field.meta.width) || 'full'">
+	<div class="field" :key="field.field" :class="[(field.meta && field.meta.width) || 'full', { 'invalid': validationError }]">
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -34,6 +34,8 @@
 		/>
 
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
+
+		<small class="validation-error" v-if="validationError">{{ $t(`validationError.${validationError.type}`, validationError) }}</small>
 	</div>
 </template>
 
@@ -44,6 +46,7 @@ import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
+import { ValidationError } from './types';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -80,6 +83,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		validationError: {
+			type: Object as PropType<ValidationError>,
+			default: null,
+		}
 	},
 	setup(props) {
 		const isDisabled = computed(() => {
@@ -101,10 +108,31 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.field {
+	position: relative;
+}
+
 .note {
 	display: block;
 	margin-top: 4px;
 	color: var(--foreground-subdued);
+	font-style: italic;
+}
+
+.invalid {
+	transition: var(--medium) var(--transition);
+	transition-property: background-color, padding, margin;
+
+	background-color: var(--danger-alt);
+	padding: 12px;
+	margin: -12px;
+	border-radius: var(--border-radius);
+}
+
+.validation-error {
+	display: block;
+	color: var(--danger);
+	margin-top: 4px;
 	font-style: italic;
 }
 </style>
