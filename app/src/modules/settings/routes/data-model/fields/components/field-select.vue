@@ -103,11 +103,15 @@
 			<v-card class="duplicate">
 				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 				<v-card-text>
-					<span class="type-label">{{ $tc('collection', 0) }}</span>
-					<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+					<div class="duplicate-field">
+						<span class="type-label">{{ $tc('collection', 0) }}</span>
+						<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+					</div>
 
-					<span class="type-label">{{ $tc('field', 0) }}</span>
-					<v-input class="monospace" v-model="duplicateName" />
+					<div class="duplicate-field">
+						<span class="type-label">{{ $tc('field', 0) }}</span>
+						<v-input class="monospace" v-model="duplicateName" />
+					</div>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="duplicateActive = false">
@@ -138,6 +142,8 @@ import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import router from '@/router';
+import notify from '@/utils/notify';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -245,6 +251,12 @@ export default defineComponent({
 
 				try {
 					await fieldsStore.createField(duplicateTo.value, newField);
+
+					notify({
+						title: i18n.t('field_create_success', { field: newField.name }),
+						type: 'success',
+					});
+
 					duplicateActive.value = false;
 				} catch (error) {
 					console.log(error);
@@ -304,11 +316,11 @@ export default defineComponent({
 }
 
 .duplicate {
-	.text-label {
+	.type-label {
 		margin-bottom: 4px;
 	}
 
-	.v-select {
+	.duplicate-field + .duplicate-field {
 		margin-bottom: 32px;
 	}
 }

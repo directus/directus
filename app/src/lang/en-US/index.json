@@ -26,6 +26,8 @@
 	"delete_bookmark": "Delete Bookmark",
 	"delete_bookmark_copy": "Are you sure you want to delete the \"{bookmark}\" bookmark? This action cannot be undone.",
 
+	"field_order_updated": "Fields Reordered",
+
 	"logoutReason": {
 		"SIGN_OUT": "Signed out",
 		"SESSION_EXPIRED": "Session expired"
@@ -83,12 +85,12 @@
 	"show_field_on_detail": "Show Field on Detail",
 	"delete_field": "Delete Field",
 	"fields_and_layout": "Fields & Layout",
-	"field_create_success": "Field '{field}' created",
-	"field_update_success": "Field '{field}' updated",
-	"field_delete_success": "Field '{field}' deleted",
-	"field_create_failure": "Could not create '{field}'",
-	"field_update_failure": "Could not update '{field}'",
-	"field_delete_failure": "Could not delete '{field}'",
+	"field_create_success": "Field \"{field}\" created",
+	"field_update_success": "Field \"{field}\" updated",
+	"field_delete_success": "Field \"{field}\" deleted",
+	"field_create_failure": "Could not create \"{field}\"",
+	"field_update_failure": "Could not update \"{field}\"",
+	"field_delete_failure": "Could not delete \"{field}\"",
 	"fields_update_success": "Fields updated",
 	"fields_update_failure": "Could not update fields",
 	"duplicate_where_to": "Where would you like to duplicate this field to?",

@@ -4,7 +4,6 @@ import VueI18n from 'vue-i18n';
 import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
-import notify from '@/utils/notify';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';
@@ -111,24 +110,18 @@ export const useFieldsStore = createStore({
 			try {
 				const response = await api.post(`/fields/${collectionKey}`, newField);
 
+				const field = this.parseField(response.data.data);
+
 				this.state.fields = this.state.fields.map((field) => {
 					if (field.collection === collectionKey && field.field === newField.field) {
-						return this.parseField(response.data.data);
+						return field;
 					}
 
 					return field;
 				});
 
-				notify({
-					title: i18n.t('field_create_success', { field: newField.field }),
-					type: 'success',
-				});
+				return field;
 			} catch (error) {
-				notify({
-					title: i18n.t('field_create_failure', { field: newField.field }),
-					type: 'error',
-				});
-
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
 				throw error;
@@ -158,17 +151,7 @@ export const useFieldsStore = createStore({
 
 					return field;
 				});
-
-				notify({
-					title: i18n.t('field_update_success', { field: fieldKey }),
-					type: 'success',
-				});
 			} catch (error) {
-				notify({
-					title: i18n.t('field_update_failure', { field: fieldKey }),
-					type: 'error',
-				});
-
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
 				throw error;
@@ -210,18 +193,7 @@ export const useFieldsStore = createStore({
 						return field;
 					});
 				}
-
-				notify({
-					title: i18n.t('fields_update_success'),
-					text: updates.map(({ field }) => field).join(', '),
-					type: 'success',
-				});
 			} catch (error) {
-				notify({
-					title: i18n.t('fields_update_failed'),
-					text: updates.map(({ field }) => field).join(', '),
-					type: 'error',
-				});
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
 				throw error;
@@ -237,16 +209,7 @@ export const useFieldsStore = createStore({
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
-
-				notify({
-					title: i18n.t('field_delete_success', { field: fieldKey }),
-					type: 'success',
-				});
 			} catch (error) {
-				notify({
-					title: i18n.t('field_delete_failure', { field: fieldKey }),
-					type: 'error',
-				});
 				this.state.fields = stateClone;
 				throw error;
 			}
