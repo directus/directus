@@ -34,7 +34,7 @@ export default defineComponent({
 <style>
 body {
 	--v-overlay-color: var(--overlay-color);
-	--v-overlay-z-index: 500;
+	--v-overlay-z-index: 600;
 }
 </style>
 
