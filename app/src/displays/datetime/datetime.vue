@@ -16,9 +16,9 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'datetime' | 'time' | 'date' | 'timestamp'>,
+			type: String as PropType<'dateTime' | 'time' | 'date' | 'timestamp'>,
 			required: true,
-			validator: (val: string) => ['datetime', 'date', 'time', 'timestamp'].includes(val),
+			validator: (val: string) => ['dateTime', 'date', 'time', 'timestamp'].includes(val),
 		},
 		relative: {
 			type: Boolean,
