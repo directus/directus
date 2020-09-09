@@ -8,8 +8,8 @@
 					</template>
 
 					<template #input>
-						<div class="name">
-							{{ field.name }}
+						<div class="label">
+							<span class="name" v-tooltip="field.name">{{ field.field }}</span>
 							<span class="interface">{{ interfaceName }}</span>
 						</div>
 					</template>
@@ -314,8 +314,12 @@ export default defineComponent({
 }
 
 .field {
-	.name {
+	.label {
 		flex-grow: 1;
+
+		.name {
+			font-family: var(--family-monospace);
+		}
 
 		.interface {
 			display: none;
@@ -331,7 +335,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-		.name {
+		.label {
 			.interface {
 				opacity: 1;
 			}

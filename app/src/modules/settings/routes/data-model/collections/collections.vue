@@ -56,8 +56,9 @@
 							meta: item.collection.startsWith('directus_'),
 							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
 						}"
+						v-tooltip="item.name"
 					>
-						{{ item.name }}
+						{{ item.collection }}
 					</span>
 				</template>
 
@@ -216,6 +217,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .icon ::v-deep i {
 	vertical-align: baseline;
+}
+
+.collection {
+	font-family: var(--family-monospace);
 }
 
 .hidden {
