@@ -21,8 +21,8 @@
 			"file": "File",
 			"description": "Display files."
 		},
-		"file-size": {
-			"file-size": "File Size",
+		"filesize": {
+			"filesize": "File Size",
 			"description": "Display the size of a file."
 		},
 		"formatted-value": {

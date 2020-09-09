@@ -32,6 +32,9 @@ export default defineInterface(({ i18n }) => ({
 					label: i18n.t('interfaces.markdown.tabbed_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 	recommendedDisplays: ['raw'],

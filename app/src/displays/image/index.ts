@@ -20,6 +20,9 @@ export default defineDisplay(({ i18n }) => ({
 					label: i18n.t('displays.image.circle_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 	fields: ['id', 'type', 'title'],

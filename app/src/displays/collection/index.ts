@@ -19,6 +19,9 @@ export default defineDisplay(({ i18n }) => ({
 					label: i18n.t('displays.collection.icon_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 }));
