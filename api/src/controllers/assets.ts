@@ -113,7 +113,7 @@ router.get(
 
 		const { stream, file } = await service.getAsset(req.params.pk, transformation);
 
-		res.setHeader('Content-Disposition', 'attachment; filename=' + file.filename_download);
+		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 
 		stream.pipe(res);
