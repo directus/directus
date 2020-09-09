@@ -274,9 +274,11 @@ export default defineComponent({
 		};
 
 		function fillTemplate() {
-			try {
-				emit('input', JSON.parse(props.template));
-			} catch {
+			if(props.type === 'json') {
+				try {
+					emit('input', JSON.parse(props.template));
+				} catch {}
+			} else {
 				emit('input', props.template);
 			}
 		}
