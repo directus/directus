@@ -1,7 +1,7 @@
 import { Filter } from '../types';
 import BaseJoi, { AnySchema } from 'joi';
 
-const Joi = BaseJoi.extend({
+const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
 	base: BaseJoi.string(),
 	messages: {
@@ -72,10 +72,12 @@ export default function generateJoi(filter: Filter | null) {
 			}
 
 			if (operator === '_contains') {
+				// @ts-ignore
 				schema[key] = Joi.string().contains(Object.values(value)[0]);
 			}
 
 			if (operator === '_ncontains') {
+				// @ts-ignore
 				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
 			}
 
