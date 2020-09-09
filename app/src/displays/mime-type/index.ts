@@ -18,6 +18,9 @@ export default defineDisplay(({ i18n }) => ({
 					label: i18n.t('displays.mime-type.extension_only_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 	types: ['string'],

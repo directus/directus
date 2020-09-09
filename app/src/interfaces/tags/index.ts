@@ -29,6 +29,9 @@ export default defineInterface(({ i18n }) => ({
 					label: i18n.t('interfaces.tags.alphabetize_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 		{
 			field: 'lowercase',
@@ -40,6 +43,9 @@ export default defineInterface(({ i18n }) => ({
 				options: {
 					label: i18n.t('interfaces.tags.lowercase_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
@@ -64,6 +70,9 @@ export default defineInterface(({ i18n }) => ({
 				options: {
 					label: i18n.t('interfaces.dropdown.allow_other_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{

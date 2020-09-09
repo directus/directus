@@ -12,6 +12,7 @@ export default defineDisplay(({ i18n }) => ({
 		{
 			field: 'formatTitle',
 			name: i18n.t('displays.formatted-value.format_title'),
+			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
@@ -26,12 +27,16 @@ export default defineDisplay(({ i18n }) => ({
 		{
 			field: 'bold',
 			name: i18n.t('bold'),
+			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
 					label: i18n.t('displays.formatted-value.bold_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{

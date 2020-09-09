@@ -53,6 +53,9 @@ export default defineInterface(({ i18n }) => ({
 					label: i18n.t('interfaces.divider.inline_title_label'),
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 }));
