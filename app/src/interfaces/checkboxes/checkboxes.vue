@@ -23,25 +23,11 @@
 			@change="$emit('input', $event)"
 		/>
 		<v-detail 
-			v-if="hideChoices"
+			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="$t(`interfaces.checkboxes.show_${showAll? 'less':'more'}`, {count: choicesHidden.length})"
-			@toggle="showAll = $event"
+			:label="$t(`interfaces.checkboxes.show_more`, {count: hiddenCount})"
+			@toggle="showAll = true"
 		>
-			<div class="checkboxes" :class="gridClass">
-				<v-checkbox
-					block
-					v-for="item in choicesHidden"
-					:key="item.value"
-					:value="item.value"
-					:label="item.text"
-					:disabled="disabled"
-					:icon-on="iconOn"
-					:icon-off="iconOff"
-					:input-value="value || []"
-					@change="$emit('input', $event)"
-				/>
-			</div>
 		</v-detail>
 
 		<template v-if="allowOther">
@@ -128,22 +114,16 @@ export default defineComponent({
 		const { choices, value } = toRefs(props);
 		const showAll = ref(false);
 
-		const hideChoices = computed(() => props.choices.length > props.itemsShown - Number(props.allowOther))
+		const hideChoices = computed(() => props.choices.length > props.itemsShown)
 
 		const choicesDisplayed = computed(() => {
-			if(hideChoices.value === false) {
+			if(showAll.value || hideChoices.value === false) {
 				return props.choices
 			}
-			return props.choices.slice(0, props.itemsShown - Number(props.allowOther))
-
+			return props.choices.slice(0, props.itemsShown)
 		})
 
-		const choicesHidden = computed(() => {
-			if(hideChoices.value === false) {
-				return []
-			}
-			return props.choices.slice(props.itemsShown - Number(props.allowOther))
-		})
+		const hiddenCount = computed(() => props.choices.length - props.itemsShown)
 
 		const gridClass = computed(() => {
 			if (choices.value === null) return null;
@@ -166,11 +146,7 @@ export default defineComponent({
 
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
 
-		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, choicesHidden, hideChoices, toggleAll, showAll };
-
-		function toggleAll() {
-			showAll.value = !showAll.value
-		}
+		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, hideChoices, showAll, hiddenCount };
 	},
 });
 </script>

@@ -6,7 +6,6 @@
 			"allow_other": "Allow Other",
 			"enable_custom_values": "Enable custom values",
 			"show_more": "Show {count} more",
-			"show_less": "Show {count} less",
 			"items_shown": "Items Shown"
 		},
 		"code": {
