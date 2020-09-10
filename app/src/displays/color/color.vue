@@ -1,14 +1,15 @@
 <template>
 	<div class="color-dot">
 		<value-null v-if="value === null" />
-		<div class="dot" :style="{'background-color':styles}"></div>
+		<div class="dot" :style="styles"></div>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import formatTitle from '@directus/format-title';
-import { isHex } from '@/utils/color'
+import Color from 'color';
+import colorString from 'color-string';
 
 export default defineComponent({
 	props: {
@@ -19,21 +20,33 @@ export default defineComponent({
 		defaultColor: {
 			type: String,
 			default: '#B0BEC5',
-			validator: (value: string) => isHex(value),
+			validator: (value: string) => colorString.get.rgb(value) !== null,
 		},
 	},
 	setup(props) {
-
 		const displayValue = computed(() => {
 			return props.value;
 		});
 
 		const styles = computed(() => {
-			if(isHex(props.value)) return props.value
-			else return props.defaultColor
+			const style: Record<string, any> = { 'background-color': props.defaultColor };
+
+			if (Color(props.value) !== undefined) style['background-color'] = props.value;
+
+			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page');
+
+			const pageColorRGB = colorString.get.rgb(pageColorString) || colorString.get.rgb('#FFF');
+			const colorRGB = colorString.get.rgb(props.value) || colorString.get.rgb(props.defaultColor);
+
+			if (pageColorRGB == null || colorRGB == null) return {};
+
+			if (Color.rgb(...colorRGB.slice(0.3)).contrast(Color.rgb(...pageColorRGB.slice(0, 3))) < 3)
+				style['border'] = '1px solid var(--background-inverted)';
+
+			return style;
 		});
 
-		return { displayValue, styles, isHex };
+		return { displayValue, styles };
 	},
 });
 </script>
