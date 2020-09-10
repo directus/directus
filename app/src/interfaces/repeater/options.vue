@@ -154,7 +154,7 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, addLabel };
+		return { repeaterValue, repeaterFields, template, addLabel };
 	},
 });
 </script>
