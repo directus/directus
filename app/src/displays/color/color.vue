@@ -19,6 +19,7 @@ export default defineComponent({
 		defaultColor: {
 			type: String,
 			default: '#B0BEC5',
+			validator: (value: string) => isHex(value),
 		},
 	},
 	setup(props) {
