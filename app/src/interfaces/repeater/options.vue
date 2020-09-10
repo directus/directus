@@ -5,6 +5,7 @@
 				<p class="type-label">{{ $t('template') }}</p>
 				<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
 			</div>
+
 			<div class="grid-element full">
 				<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
 				<repeater
@@ -12,6 +13,11 @@
 					:template="`{{ field }} — {{ interface }}`"
 					:fields="repeaterFields"
 				/>
+			</div>
+
+			<div class="grid-element full">
+				<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
+				<v-input class="input" v-model="addLabel" :placeholder="$t('add_a_new_item')" />
 			</div>
 		</div>
 	</div>
@@ -136,7 +142,19 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, template };
+		const addLabel = computed({
+			get() {
+				return props.value?.addLabel;
+			},
+			set(newAddLabel: string) {
+				emit('input', {
+					...(props.value || {}),
+					addLabel: newAddLabel,
+				});
+			},
+		});
+
+		return { repeaterValue, repeaterFields, addLabel };
 	},
 });
 </script>
