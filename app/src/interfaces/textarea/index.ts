@@ -14,7 +14,7 @@ export default defineInterface(({ i18n }) => ({
 			name: i18n.t('placeholder'),
 			type: 'string',
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'text-input',
 				options: {
 					placeholder: i18n.t('enter_a_placeholder'),
