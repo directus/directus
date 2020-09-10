@@ -15,35 +15,9 @@ const liquidEngine = new Liquid({
 });
 
 const defaults = {
-	general: {
-		PORT: 41201,
-		PUBLIC_URL: '/',
-	},
-	storage: {
-		STORAGE_LOCATIONS: 'local',
-		STORAGE_LOCAL_PUBLIC_URL: '/uploads',
-		STORAGE_LOCAL_DRIVER: 'local',
-		STORAGE_LOCAL_ROOT: './uploads',
-	},
 	security: {
 		KEY: uuidv4(),
 		SECRET: nanoid(32),
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
-		REFRESH_TOKEN_COOKIE_SECURE: false,
-		REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
-	},
-	oauth: {
-		OAUTH_PROVIDERS: '',
-	},
-	extensions: {
-		EXTENSIONS_PATH: './extensions',
-	},
-	email: {
-		EMAIL_FROM: 'no-reply@directus.io',
-		EMAIL_TRANSPORT: 'sendmail',
-		EMAIL_SENDMAIL_NEW_LINE: 'unix',
-		EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 	},
 };
 

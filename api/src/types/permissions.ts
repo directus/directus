@@ -1,10 +1,4 @@
-export type PermissionsAction =
-	| 'create'
-	| 'read'
-	| 'update'
-	| 'delete'
-	| 'comment'
-	| 'explain';
+export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain';
 
 export type Permission = {
 	id: number;

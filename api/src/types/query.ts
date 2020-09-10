@@ -10,6 +10,7 @@ export type Query = {
 	single?: boolean;
 	meta?: Meta[];
 	search?: string;
+	export?: 'json' | 'csv';
 };
 
 export type Sort = {
@@ -21,4 +22,18 @@ export type Filter = {
 	[keyOrOperator: string]: Filter | any;
 };
 
-export type FilterOperator = 'eq' | 'neq' | 'in' | 'nin' | 'null' | 'nnull';
+export type FilterOperator =
+	| 'eq'
+	| 'neq'
+	| 'contains'
+	| 'ncontains'
+	| 'in'
+	| 'nin'
+	| 'gt'
+	| 'gte'
+	| 'lt'
+	| 'lte'
+	| 'null'
+	| 'nnull'
+	| 'empty'
+	| 'nempty';

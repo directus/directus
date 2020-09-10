@@ -113,7 +113,7 @@
 								width: 'half',
 							},
 							schema: {
-								default_value: 'en-US'
+								default_value: 'en-US',
 							},
 						},
 						{
@@ -124,7 +124,7 @@
 								interface: 'text-input',
 								width: 'half',
 								options: {
-									placeholder: 'Enter a translation...'
+									placeholder: 'Enter a translation...',
 								},
 							},
 						},

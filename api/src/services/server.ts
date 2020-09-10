@@ -22,7 +22,10 @@ export default class ServerService {
 		}
 
 		const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
-		const osVersion = osType === 'macOS' ? `${macosRelease().name} (${macosRelease().version})` : os.release();
+		const osVersion =
+			osType === 'macOS'
+				? `${macosRelease().name} (${macosRelease().version})`
+				: os.release();
 
 		return {
 			directus: {
@@ -37,7 +40,7 @@ export default class ServerService {
 				version: osVersion,
 				uptime: Math.round(os.uptime()),
 				totalmem: os.totalmem(),
-			}
-		}
+			},
+		};
 	}
 }

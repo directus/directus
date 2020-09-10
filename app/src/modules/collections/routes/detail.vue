@@ -143,6 +143,7 @@
 			:collection="collection"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey || '+'"
+			:validation-errors="validationErrors"
 			v-model="edits"
 		/>
 
@@ -247,6 +248,7 @@ export default defineComponent({
 			saveAsCopy,
 			isBatch,
 			refresh,
+			validationErrors,
 		} = useItem(collection, primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
@@ -334,6 +336,7 @@ export default defineComponent({
 			isArchived,
 			updateAllowed,
 			toggleArchive,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {

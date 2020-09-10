@@ -11,14 +11,10 @@ export type FilterOperator =
 	| 'nnull'
 	| 'contains'
 	| 'ncontains'
-	| 'rlike'
-	| 'nrlike'
 	| 'between'
 	| 'nbetween'
 	| 'empty'
-	| 'nempty'
-	| 'all'
-	| 'has';
+	| 'nempty';
 
 export type Filter = {
 	key: string;

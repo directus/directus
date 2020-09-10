@@ -4,12 +4,14 @@ import notify from '@/utils/notify';
 import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
+import { APIError } from '@/types';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<any>(null);
 	const error = ref(null);
+	const validationErrors = ref([]);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
@@ -62,6 +64,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saveAsCopy,
 		isBatch,
 		getItem,
+		validationErrors,
 	};
 
 	async function getItem() {
@@ -80,6 +83,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	async function save() {
 		saving.value = true;
+		validationErrors.value = [];
 
 		try {
 			let response;
@@ -140,7 +144,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				});
 			}
 
-			throw err;
+			if (err?.response?.data?.errors) {
+				validationErrors.value = err.response.data.errors.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION').map((err: APIError) => {
+					return err.extensions;
+				});
+			} else {
+				throw err;
+			}
 		} finally {
 			saving.value = false;
 		}
@@ -148,6 +158,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 	async function saveAsCopy() {
 		saving.value = true;
+		validationErrors.value = [];
 
 		const newItem: { [field: string]: any } = {
 			...(item.value || {}),
@@ -182,7 +193,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'error',
 			});
 
-			throw err;
+			if (err?.response?.data?.errors) {
+				validationErrors.value = err.response.data.errors.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION').map((err: APIError) => {
+					return err.extensions;
+				});
+			} else {
+				throw err;
+			}
 		} finally {
 			saving.value = false;
 		}

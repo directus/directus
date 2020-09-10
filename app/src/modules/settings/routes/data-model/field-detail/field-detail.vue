@@ -71,6 +71,7 @@ import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
+import notify from '@/utils/notify';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 
@@ -241,6 +242,19 @@ export default defineComponent({
 
 				await fieldsStore.hydrate();
 				await relationsStore.hydrate();
+
+				if (props.field !== '+') {
+					notify({
+						title: i18n.t('field_update_success', { field: props.field }),
+						type: 'success',
+					});
+				} else {
+					notify({
+						title: i18n.t('field_create_success', { field: state.fieldData.field }),
+						type: 'success',
+					});
+				}
+
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
 			} catch (error) {

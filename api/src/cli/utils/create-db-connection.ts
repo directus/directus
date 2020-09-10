@@ -8,6 +8,7 @@ export type Credentials = {
 	database?: string;
 	user?: string;
 	password?: string;
+	ssl?: boolean;
 };
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
@@ -22,15 +23,28 @@ export default function createDBConnection(
 			filename: filename as string,
 		};
 	} else {
-		const { host, port, database, user, password } = credentials as Credentials;
+		if (client !== 'pg') {
+			const { host, port, database, user, password } = credentials as Credentials;
 
-		connection = {
-			host: host,
-			port: port,
-			database: database,
-			user: user,
-			password: password,
-		};
+			connection = {
+				host: host,
+				port: port,
+				database: database,
+				user: user,
+				password: password,
+			};
+		} else {
+			const { host, port, database, user, password, ssl } = credentials as Credentials;
+
+			connection = {
+				host: host,
+				port: port,
+				database: database,
+				user: user,
+				password: password,
+				ssl: ssl,
+			};
+		}
 	}
 
 	const knexConfig: Config = {

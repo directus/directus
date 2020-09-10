@@ -43,10 +43,9 @@ Pull requests are more than welcome and always appreciated. Seeing this is in ac
 
 Directus is a GPLv3-licensed open source project with development made possible by support from our core team, contributors, and sponsors. It's not easy building premium open-source software; if you would like to help ensure Directus stays free, please consider becoming a sponsor.
 
-* [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
-* [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
+-   [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
+-   [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
 
 ## 📄 License
 
 Directus is released under [the GPLv3 license](./license). Monospace Inc. owns all Directus trademarks and logos on behalf of our project's community. Copyright © 2006-2020, Monospace Inc.
-

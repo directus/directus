@@ -137,8 +137,9 @@ export default defineComponent({
 					const { year, month, date, hours, minutes, seconds, period } = newValue;
 
 					const asDate = new Date(year, month, date, period === 'am' ? hours : hours + 12, minutes, seconds);
-
-					emit('input', formatISO(asDate));
+					
+					if(valueAsDate.value?.getTime() != asDate.getTime())
+						emit('input', formatISO(asDate));
 				}
 			},
 			{

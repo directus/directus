@@ -1,4 +1,4 @@
-import { Filter, Accountability } from "../types";
+import { Filter, Accountability } from '../types';
 import { deepMap } from './deep-map';
 
 export function parseFilter(filter: Filter, accountability: Accountability | null) {

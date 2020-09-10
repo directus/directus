@@ -8,6 +8,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
 import Knex from 'knex';
 import env from '../env';
+import cache from '../cache';
 
 export default class UsersService extends ItemsService {
 	knex: Knex;
@@ -42,6 +43,10 @@ export default class UsersService extends ItemsService {
 			}
 		}
 
+		if (cache) {
+			await cache.clear();
+		}
+
 		return this.service.update(data, key as any);
 	}
 
@@ -56,7 +61,10 @@ export default class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string) {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as { email: string, scope: string };
+		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+			email: string;
+			scope: string;
+		};
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
@@ -75,6 +83,10 @@ export default class UsersService extends ItemsService {
 		await this.knex('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
+
+		if (cache) {
+			await cache.clear();
+		}
 	}
 
 	async requestPasswordReset(email: string) {
@@ -82,14 +94,17 @@ export default class UsersService extends ItemsService {
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d', });
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
 		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
 
 		await sendPasswordResetMail(email, acceptURL);
 	}
 
 	async resetPassword(token: string, password: string) {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as { email: string, scope: string };
+		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+			email: string;
+			scope: string;
+		};
 
 		if (scope !== 'password-reset') throw new ForbiddenException();
 
@@ -108,10 +123,18 @@ export default class UsersService extends ItemsService {
 		await this.knex('directus_users')
 			.update({ password: passwordHashed, status: 'active' })
 			.where({ id: user.id });
+
+		if (cache) {
+			await cache.clear();
+		}
 	}
 
 	async enableTFA(pk: string) {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+		const user = await this.knex
+			.select('tfa_secret')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');

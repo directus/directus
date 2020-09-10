@@ -11,6 +11,7 @@
 			:batch-active="batchActiveFields.includes(field.field)"
 			:primary-key="primaryKey"
 			:loading="loading"
+			:validation-error="validationErrors.find((err) => err.field === field.field)"
 			@input="setValue(field, $event)"
 			@unset="unsetValue(field)"
 			@toggle-batch="toggleBatchField(field)"
@@ -21,12 +22,13 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field, FilterOperator } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { clone } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
+import { ValidationError } from './types';
 
 type FieldValues = {
 	[field: string]: any;
@@ -69,6 +71,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		validationErrors: {
+			type: Array as PropType<ValidationError[]>,
+			default: () => [],
 		},
 	},
 	setup(props, { emit }) {

@@ -9,6 +9,19 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceManyToMany,
 	relationship: 'm2m',
 	types: ['alias'],
-	options: [],
+	options: [
+		{
+			field: 'fields',
+			type: 'json',
+			name: i18n.tc('field', 0),
+			meta: {
+				interface: 'tags',
+				width: 'full',
+				options: {
+					placeholder: i18n.t('readable_fields_copy'),
+				},
+			},
+		},
+	],
 	recommendedDisplays: ['related-values'],
 }));

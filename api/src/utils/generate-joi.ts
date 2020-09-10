@@ -1,10 +1,56 @@
 import { Filter } from '../types';
-import Joi, { AnySchema } from 'joi';
+import BaseJoi, { AnySchema } from 'joi';
 
-/**
- * @TODO
- * This is copy pasted between app and api. Make this a reusable module.
- */
+const Joi: typeof BaseJoi = BaseJoi.extend({
+	type: 'string',
+	base: BaseJoi.string(),
+	messages: {
+		'string.contains': '{{#label}} must contain [{{#substring}}]',
+		'string.ncontains': "{{#label}} can't contain [{{#substring}}]",
+	},
+	rules: {
+		contains: {
+			args: [
+				{
+					name: 'substring',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(substring) {
+				return this.$_addRule({ name: 'contains', args: { substring } });
+			},
+			validate(value, helpers, { substring }, options) {
+				if (value.includes(substring) === false) {
+					return helpers.error('string.contains', { substring });
+				}
+
+				return value;
+			},
+		},
+		ncontains: {
+			args: [
+				{
+					name: 'substring',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(substring) {
+				return this.$_addRule({ name: 'ncontains', args: { substring } });
+			},
+			validate(value, helpers, { substring }, options) {
+				if (value.includes(substring) === true) {
+					return helpers.error('string.ncontains', { substring });
+				}
+
+				return value;
+			},
+		},
+	},
+});
 
 export default function generateJoi(filter: Filter | null) {
 	filter = filter || {};
@@ -26,27 +72,13 @@ export default function generateJoi(filter: Filter | null) {
 			}
 
 			if (operator === '_contains') {
-				schema[key] = Joi.string().custom((value, helpers) => {
-					const contains = value.includes(Object.values(value)[0]);
-
-					if (contains === false) {
-						return helpers.error(`"${key}" must include "${Object.values(value)[0]}"`);
-					}
-
-					return value;
-				});
+				// @ts-ignore
+				schema[key] = Joi.string().contains(Object.values(value)[0]);
 			}
 
 			if (operator === '_ncontains') {
-				schema[key] = Joi.string().custom((value, helpers) => {
-					const contains = value.includes(Object.values(value)[0]);
-
-					if (contains === true) {
-						return helpers.error(`"${key}" can't include "${Object.values(value)[0]}"`);
-					}
-
-					return value;
-				});
+				// @ts-ignore
+				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
 			}
 
 			if (operator === '_in') {

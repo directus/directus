@@ -140,7 +140,7 @@ export default defineComponent({
 			addOptions,
 		};
 
-		function setSort(fields: Field[]) {
+		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({
 				field: field.field,
 				meta: {
@@ -148,7 +148,7 @@ export default defineComponent({
 				},
 			}));
 
-			fieldsStore.updateFields(collection.value, updates);
+			await fieldsStore.updateFields(collection.value, updates);
 		}
 	},
 });

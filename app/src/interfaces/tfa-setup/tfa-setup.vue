@@ -26,7 +26,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog persistent v-model="disableActive">
+		<v-dialog v-model="disableActive">
 			<v-card>
 				<v-card-title>
 					{{ $t('enter_otp_to_disable_tfa') }}

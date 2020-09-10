@@ -110,7 +110,9 @@ export default defineComponent({
 				text: field.field,
 				value: field.field,
 				disabled:
-					state.relations[0].many_field === field.field || state.relations[1].many_field === field.field,
+					state.relations[0].many_field === field.field ||
+					field.schema?.is_primary_key || 
+					state.relations[1].many_field === field.field,
 			}));
 		});
 

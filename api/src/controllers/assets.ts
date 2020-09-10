@@ -5,7 +5,7 @@ import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constant
 import { InvalidQueryException, ForbiddenException } from '../exceptions';
 import AssetsService from '../services/assets';
 import validate from 'uuid-validate';
-import { pick, merge } from 'lodash';
+import { pick } from 'lodash';
 import { Transformation } from '../types/assets';
 import storage from '../storage';
 import PayloadService from '../services/payload';
@@ -113,7 +113,7 @@ router.get(
 
 		const { stream, file } = await service.getAsset(req.params.pk, transformation);
 
-		res.setHeader('Content-Disposition', 'attachment; filename=' + file.filename_download);
+		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 
 		stream.pipe(res);

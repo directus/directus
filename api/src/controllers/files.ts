@@ -1,10 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
-import sanitizeQuery from '../middleware/sanitize-query';
 import FilesService from '../services/files';
 import MetaService from '../services/meta';
-import useCollection from '../middleware/use-collection';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
@@ -15,8 +13,6 @@ import url from 'url';
 import path from 'path';
 
 const router = express.Router();
-
-router.use(useCollection('directus_files'));
 
 const multipartHandler = asyncHandler(async (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
@@ -67,9 +63,17 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			storage: payload.storage || disk,
 		};
 
-		const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
-		savedFiles.push(primaryKey);
-		tryDone();
+		try {
+			const primaryKey = await service.upload(
+				fileStream,
+				payloadWithRequiredFields,
+				existingPrimaryKey
+			);
+			savedFiles.push(primaryKey);
+			tryDone();
+		} catch (error) {
+			busboy.emit('error', error);
+		}
 	});
 
 	busboy.on('error', (error: Error) => {
@@ -92,9 +96,8 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 router.post(
 	'/',
-	sanitizeQuery,
 	multipartHandler,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({ accountability: req.accountability });
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
@@ -107,18 +110,18 @@ router.post(
 
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
 
-		return res.json({ data: res.locals.savedFiles.length === 1 ? record[0] : record || null });
+		res.locals.payload = { data: res.locals.savedFiles.length === 1 ? record[0] : record || null };
+		return next();
 	})
 );
 
 const importSchema = Joi.object({
-	url: Joi.string().required()
+	url: Joi.string().required(),
 });
 
 router.post(
 	'/import',
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const { error } = importSchema.validate(req.body);
 
 		if (error) {
@@ -128,7 +131,7 @@ router.post(
 		const service = new FilesService({ accountability: req.accountability });
 
 		const fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
-			responseType: 'stream'
+			responseType: 'stream',
 		});
 
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
@@ -139,47 +142,47 @@ router.post(
 			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
-			...req.body
+			...req.body,
 		};
 
 		delete payload.url;
 
 		const primaryKey = await service.upload(fileResponse.data, payload);
 		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
-		return res.json({ data: record || null });
+		res.locals.payload = { data: record || null };
+		return next();
 	})
-)
+);
 
 router.get(
 	'/',
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({ accountability: req.accountability });
 		const metaService = new MetaService({ accountability: req.accountability });
 
 		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+		const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
 
-		return res.json({ data: records || null, meta });
+		res.locals.payload = { data: records || null, meta };
+		return next();
 	})
 );
 
 router.get(
 	'/:pk',
-	sanitizeQuery,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({ accountability: req.accountability });
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
-		return res.json({ data: record || null });
+		res.locals.payload = { data: record || null };
+		return next();
 	})
 );
 
 router.patch(
 	'/:pk',
-	sanitizeQuery,
 	multipartHandler,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({ accountability: req.accountability });
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
@@ -191,17 +194,18 @@ router.patch(
 		}
 
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
-		return res.json({ data: record || null });
+		res.locals.payload = { data: record || null };
+		return next();
 	})
 );
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({ accountability: req.accountability });
 		await service.delete(keys as any);
-		return res.status(200).end();
+		return next();
 	})
 );
 
