@@ -4,7 +4,9 @@
 			"checkboxes": "Checkboxes",
 			"description": "Choose between multiple options via checkboxes.",
 			"allow_other": "Allow Other",
-			"enable_custom_values": "Enable custom values"
+			"enable_custom_values": "Enable custom values",
+			"show_all": "Show all",
+			"show_less": "Show less"
 		},
 		"code": {
 			"code": "Code",

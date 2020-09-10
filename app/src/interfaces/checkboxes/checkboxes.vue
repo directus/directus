@@ -52,7 +52,7 @@
 				{{ $t('other') }}
 			</button>
 		</template>
-		<v-button v-if="hideChoices" large @click="toggleAll">{{showAll ? 'Show less': 'Show all'}}</v-button>
+		<v-button v-if="hideChoices" large @click="toggleAll">{{$t(`interfaces.checkboxes.show_${showAll ? 'less' : 'all'}`) }}</v-button>
 	</div>
 </template>
 
