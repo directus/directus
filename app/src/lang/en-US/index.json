@@ -17,6 +17,7 @@
 	"create_preset": "Create Preset",
 	"create_role": "Create Role",
 	"create_user": "Create User",
+	"create_webhook": "Create Webhook",
 
 	"rename_folder": "Rename Folder",
 	"delete_folder": "Delete Folder",
@@ -458,6 +459,9 @@
 
 	"user_count": "No Users | One User | {count} Users",
 	"no_users_copy": "There are no users in this role yet.",
+
+	"webhooks_count": "No Webhooks | One Webhook | {count} Webhooks",
+	"no_webhooks_copy": "There are no webhooks yet.",
 
 	"all_items": "All Items",
 

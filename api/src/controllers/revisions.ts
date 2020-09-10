@@ -16,17 +16,18 @@ router.get(
 
 		res.locals.payload = { data: records || null, meta };
 		return next();
-	}),
+	})
 );
 
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new RevisionsService({ accountability: req.accountability });
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const record = await service.readByKey(pk as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
-	}),
+	})
 );
 
 export default router;

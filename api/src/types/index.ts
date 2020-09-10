@@ -12,3 +12,4 @@ export * from './query';
 export * from './relation';
 export * from './services';
 export * from './sessions';
+export * from './webhooks';

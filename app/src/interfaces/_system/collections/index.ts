@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.collections.description'),
 	icon: 'featured_play_list',
 	component: InterfaceCollections,
-	types: ['string'],
+	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'includeSystem',
@@ -25,5 +25,6 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-	recommendedDisplays: ['collection'],
+	system: true,
+	recommendedDisplays: ['labels'],
 }));

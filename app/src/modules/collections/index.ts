@@ -32,6 +32,14 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_webhooks') {
+		if (to.params.primaryKey) {
+			return next(`/settings/webhooks/${to.params.primaryKey}`);
+		} else {
+			return next('/settings/webhooks');
+		}
+	}
+
 	return next();
 };
 

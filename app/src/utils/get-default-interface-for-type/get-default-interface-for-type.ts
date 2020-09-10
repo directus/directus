@@ -17,6 +17,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	timestamp: 'datetime',
 	uuid: 'text-input',
 	unknown: 'text-input',
+	csv: 'tags'
 };
 
 /**

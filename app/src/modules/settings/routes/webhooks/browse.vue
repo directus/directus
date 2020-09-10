@@ -12,9 +12,78 @@
 			<settings-navigation />
 		</template>
 
-		<div class="content">
-			<v-notice>Pre-Release: Feature not yet available</v-notice>
-		</div>
+		<template #actions>
+			<search-input v-model="searchQuery" />
+
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
+				<template #activator="{ on }">
+					<v-button rounded icon class="action-delete" @click="on">
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+
+					<v-card-actions>
+						<v-button @click="confirmDelete = false" secondary>
+							{{ $t('cancel') }}
+						</v-button>
+						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
+							{{ $t('delete') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-button
+				rounded
+				icon
+				class="action-batch"
+				v-if="selection.length > 1"
+				:to="batchLink"
+				v-tooltip.bottom="$t('edit')"
+			>
+				<v-icon name="edit" outline />
+			</v-button>
+
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_webhook')">
+				<v-icon name="add" />
+			</v-button>
+		</template>
+
+		<component
+			class="layout"
+			ref="layoutRef"
+			:is="`layout-${layout}`"
+			collection="directus_webhooks"
+			:selection.sync="selection"
+			:layout-options.sync="layoutOptions"
+			:layout-query.sync="layoutQuery"
+			:filters="filters"
+			:search-query="searchQuery"
+			@update:filters="filters = $event"
+		>
+			<template #no-results>
+				<v-info :title="$t('no_results')" icon="search" center>
+					{{ $t('no_results_copy') }}
+
+					<template #append>
+						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+
+			<template #no-items>
+				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="warning">
+					{{ $t('no_webhooks_copy') }}
+
+					<template #append>
+						<v-button :to="{ path: '/settings/webhooks/+' }">{{ $t('create_webhook') }}</v-button>
+					</template>
+				</v-info>
+			</template>
+		</component>
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
@@ -27,10 +96,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation.vue';
-
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import marked from 'marked';
+import { LayoutComponent } from '@/layouts/types';
+import { usePreset } from '@/composables/use-preset';
+import { i18n } from '@/lang';
+import api from '@/api';
+import SearchInput from '@/views/private/components/search-input';
 
 type Item = {
 	[field: string]: any;
@@ -38,7 +112,74 @@ type Item = {
 
 export default defineComponent({
 	name: 'webhooks-browse',
-	components: { SettingsNavigation, LayoutDrawerDetail },
+	components: { SettingsNavigation, LayoutDrawerDetail, SearchInput },
+	setup(props) {
+		const layoutRef = ref<LayoutComponent | null>(null);
+
+		const selection = ref<Item[]>([]);
+
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_webhooks'));
+		const { addNewLink, batchLink } = useLinks();
+		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+
+		return {
+			addNewLink,
+			batchDelete,
+			batchLink,
+			confirmDelete,
+			deleting,
+			filters,
+			layoutRef,
+			selection,
+			layoutOptions,
+			layoutQuery,
+			layout,
+			searchQuery,
+			marked,
+			clearFilters,
+		};
+
+		function useBatchDelete() {
+			const confirmDelete = ref(false);
+			const deleting = ref(false);
+
+			return { confirmDelete, deleting, batchDelete };
+
+			async function batchDelete() {
+				deleting.value = true;
+
+				confirmDelete.value = false;
+
+				const batchPrimaryKeys = selection.value;
+
+				await api.delete(`/webhooks/${batchPrimaryKeys}`);
+
+				await layoutRef.value?.refresh();
+
+				selection.value = [];
+				deleting.value = false;
+				confirmDelete.value = false;
+			}
+		}
+
+		function useLinks() {
+			const addNewLink = computed<string>(() => {
+				return `/settings/webhooks/+`;
+			});
+
+			const batchLink = computed<string>(() => {
+				const batchPrimaryKeys = selection.value;
+				return `/settings/webhooks/${batchPrimaryKeys}`;
+			});
+
+			return { addNewLink, batchLink };
+		}
+
+		function clearFilters() {
+			filters.value = [];
+			searchQuery.value = null;
+		}
+	}
 });
 </script>
 
@@ -48,7 +189,21 @@ export default defineComponent({
 	--v-button-background-color-disabled: var(--warning-25);
 }
 
-.content {
-	padding: var(--content-padding);
+.action-delete {
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
+}
+
+.action-batch {
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
+}
+
+.layout {
+	--layout-offset-top: 64px;
 }
 </style>

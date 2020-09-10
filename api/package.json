@@ -80,6 +80,7 @@
 		"cookie-parser": "^1.4.5",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
+		"eventemitter2": "^6.4.3",
 		"execa": "^4.0.3",
 		"exif-reader": "^1.0.3",
 		"express": "^4.17.1",

@@ -36,10 +36,12 @@ import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
+import WebhooksService from './services/webhooks';
 
 validateEnv(['KEY', 'SECRET']);
 
 const app = express();
+
 app.disable('x-powered-by');
 app.set('trust proxy', true);
 
@@ -98,5 +100,9 @@ app.use(respond);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+// Register all webhooks
+const webhooksService = new WebhooksService();
+webhooksService.register();
 
 export default app;
