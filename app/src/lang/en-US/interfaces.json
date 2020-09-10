@@ -19,7 +19,7 @@
 		},
 		"color": {
 			"color": "Color",
-			"description": "Enter color values",
+			"description": "Enter or select a color value",
 			"placeholder": "Choose a color...",
 			"preset_colors": "Preset Colors",
 			"preset_colors_placeholder": "Add a new color..."
@@ -32,17 +32,17 @@
 		},
 		"display-template": {
 			"display-template": "Display Template",
-			"description": "Mix text with field values",
+			"description": "Mix static text and dynamic field values",
 			"collection_field": "Collection field",
 			"collection_field_not_setup": "The collection field option is misconfigured",
 			"select_a_collection": "Select a Collection"
 		},
 		"divider": {
 			"divider": "Divider",
-			"description": "Divide fields into seperate sections",
+			"description": "Label and divide fields into sections",
 			"title_placeholder": "Enter a title...",
 			"inline_title": "Inline Title",
-			"inline_title_label": "Show title inside line."
+			"inline_title_label": "Show title inside line"
 		},
 		"dropdown": {
 			"dropdown": "Dropdown",
@@ -55,7 +55,7 @@
 		},
 		"dropdown-multiselect": {
 			"dropdown-multiselect": "Dropdown (Multiple)",
-			"description": "Select multiple values of a dropdown"
+			"description": "Select multiple values from a dropdown"
 		},
 		"file": {
 			"file": "File",
@@ -67,7 +67,7 @@
 		},
 		"hash": {
 			"hash": "Hash",
-			"description": "Enter a hash",
+			"description": "Enter a value to be hashed",
 			"masked": "Masked",
 			"masked_label": "Hide the true values"
 		},
@@ -90,7 +90,7 @@
 		},
 		"many-to-many": {
 			"many-to-many": "Many to Many",
-			"description": "Select related items"
+			"description": "Select multiple related junction items"
 		},
 		"many-to-one": {
 			"many-to-one": "Many to One",
@@ -119,7 +119,7 @@
 		},
 		"one-to-many": {
 			"one-to-many": "One to Many",
-			"description": "Select related items",
+			"description": "Select multiple related items",
 			"readable_fields_copy": "Select the fields that the user can view"
 		},
 		"radio-buttons": {
@@ -128,7 +128,7 @@
 		},
 		"repeater": {
 			"repeater": "Repeater",
-			"description": "Have multiple entires of the same structure",
+			"description": "Create multiple entries of the same structure",
 			"max_amount": "Maximum Amount",
 			"max_amount_placeholder": "Maximum amount of items...",
 			"edit_fields": "Edit Fields",
@@ -161,11 +161,11 @@
 		},
 		"textarea": {
 			"textarea": "Textarea",
-			"description": "Enter multiline text"
+			"description": "Enter multiline plain-text"
 		},
 		"toggle": {
 			"toggle": "Toggle",
-			"description": "Switch between an on and off state",
+			"description": "Switch between on and off",
 			"label_placeholder": "Enter a label..."
 		},
 		"user": {
@@ -180,7 +180,7 @@
 		},
 		"wysiwyg": {
 			"wysiwyg": "WYSIWYG",
-			"description": "A text editor for writing complex text",
+			"description": "A rich-text editor writing HTML content",
 			"toolbar": "Toolbar",
 			"custom_formats": "Custom Formats",
 			"options_override": "Options Override"
