@@ -41,7 +41,7 @@ export default defineComponent({
 			if (pageColorRGB == null || colorRGB == null) return {};
 
 			if (Color.rgb(...colorRGB.slice(0.3)).contrast(Color.rgb(...pageColorRGB.slice(0, 3))) < 3)
-				style['border'] = '1px solid var(--background-inverted)';
+				style['border'] = '1px solid var(--border-normal-alt)';
 
 			return style;
 		});
