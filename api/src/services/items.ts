@@ -14,6 +14,7 @@ import {
 } from '../types';
 import Knex from 'knex';
 import cache from '../cache';
+import emitter from '../emitter';
 
 import PayloadService from './payload';
 import AuthorizationService from './authorization';
@@ -149,6 +150,13 @@ export default class ItemsService implements AbstractService {
 			if (cache) {
 				await cache.clear();
 			}
+
+			emitter.emitAsync(`item.create.${this.collection}`, {
+				collection: this.collection,
+				item: primaryKeys,
+				action: 'create',
+				payload: payloads,
+			});
 
 			return primaryKeys;
 		});
@@ -311,6 +319,13 @@ export default class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
+			emitter.emitAsync(`item.update.${this.collection}`, {
+				collection: this.collection,
+				item: key,
+				action: 'update',
+				payload,
+			});
+
 			return key;
 		}
 
@@ -372,6 +387,12 @@ export default class ItemsService implements AbstractService {
 		if (cache) {
 			await cache.clear();
 		}
+
+		emitter.emitAsync(`item.delete.${this.collection}`, {
+			collection: this.collection,
+			item: key,
+			action: 'delete',
+		});
 
 		return key;
 	}
