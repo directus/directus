@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@/interfaces/define';
 import InterfaceInterface from './interface.vue';
 
 export default defineInterface(({ i18n }) => ({

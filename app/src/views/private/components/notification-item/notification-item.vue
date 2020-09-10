@@ -84,7 +84,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	min-height: 64px;
+	min-height: 44px;
 	margin-top: 4px;
 	padding: 12px;
 	color: var(--white);
