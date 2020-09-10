@@ -44,8 +44,9 @@ export default defineComponent({
 
 		const styles = computed(() => {
 			if (isHex(props.value)) {
-				return { backgroundColor: props.value || props.defaultForeground };
+				return { backgroundColor: props.value || props.defaultColor };
 			}
+
 			return {
 				backgroundColor: currentChoice.value?.color || props.defaultColor,
 			};
