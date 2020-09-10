@@ -3,7 +3,8 @@ import InterfaceManyToOne from './many-to-one.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'many-to-one',
-	name: i18n.t('many_to_one'),
+	name: i18n.t('interfaces.many-to-one.many-to-one'),
+	description: i18n.t('interfaces.many-to-one.description'),
 	icon: 'arrow_right_alt',
 	component: InterfaceManyToOne,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
@@ -11,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'template',
-			name: i18n.t('display_template'),
+			name: i18n.t('interfaces.many-to-one.display_template'),
 			type: 'string',
 			meta: {
 				width: 'half',

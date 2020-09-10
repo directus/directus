@@ -40,15 +40,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-input-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--family-monospace);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--family-serif);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--family-sans-serif);
 	}
 }
 </style>

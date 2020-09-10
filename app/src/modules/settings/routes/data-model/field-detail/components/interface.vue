@@ -64,7 +64,7 @@ export default defineComponent({
 				datetime: ['datetime'],
 				date: ['datetime'],
 				time: ['datetime'],
-				json: ['code'],
+				json: ['checkboxes', 'tags'],
 				uuid: ['text-input'],
 			};
 
@@ -85,15 +85,23 @@ export default defineComponent({
 				return item;
 			});
 
-			if (interfaceItems.length >= 5 && recommended.length > 0) {
-				return [
-					...recommended.map((key) => interfaceItems.find((item) => item.value === key)),
-					{ divider: true },
-					...interfaceItems.filter((item) => recommended.includes(item.value as string) === false),
-				].filter((i) => i);
-			} else {
-				return interfaceItems;
+			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+
+			const recommendedList = recommended.map((key) => interfaceItems.find((item) => item.value === key));
+			if (recommendedList !== undefined) {
+				recommendedItems.push(...recommendedList.filter((i) => i));
 			}
+
+			if (interfaceItems.length >= 5 && recommended.length > 0) {
+				recommendedItems.push({ divider: true });
+			}
+
+			const interfaceList = interfaceItems.filter((item) => recommended.includes(item.value as string) === false);
+			if (interfaceList !== undefined) {
+				recommendedItems.push(...interfaceList.filter((i) => i));
+			}
+
+			return recommendedItems;
 		});
 
 		const selectedInterface = computed(() => {

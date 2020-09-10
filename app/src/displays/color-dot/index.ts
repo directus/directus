@@ -3,14 +3,15 @@ import DisplayColorDot from './color-dot.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'color-dot',
-	name: i18n.t('color_dot'),
+	name: i18n.t('displays.color-dot.color-dot'),
+	description: i18n.t('displays.color-dot.description'),
 	types: ['string'],
 	icon: 'flag',
 	handler: DisplayColorDot,
 	options: [
 		{
 			field: 'defaultColor',
-			name: i18n.t('default_color'),
+			name: i18n.t('displays.color-dot.default_color'),
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -25,6 +26,7 @@ export default defineDisplay(({ i18n }) => ({
 			name: i18n.t('choices'),
 			type: 'json',
 			meta: {
+				note: i18n.t('displays.color-dot.choices_note'),
 				interface: 'repeater',
 				options: {
 					template: '{{text}}',

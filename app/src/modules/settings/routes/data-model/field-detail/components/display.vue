@@ -52,9 +52,10 @@ export default defineComponent({
 		});
 
 		const selectItems = computed(() => {
-			const recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
+			let recommended = clone(selectedInterface.value?.recommendedDisplays) || [];
 
 			recommended.push('raw', 'formatted-value');
+			recommended = [...new Set(recommended)];
 
 			const displayItems: FancySelectItem[] = availableDisplays.value.map((display) => {
 				const item: FancySelectItem = {
@@ -71,15 +72,23 @@ export default defineComponent({
 				return item;
 			});
 
-			if (displayItems.length >= 5 && recommended.length > 0) {
-				return [
-					...recommended.map((key) => displayItems.find((item) => item.value === key)),
-					{ divider: true },
-					...displayItems.filter((item) => recommended.includes(item.value as string) === false),
-				].filter((i) => i);
-			} else {
-				return displayItems;
+			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+
+			const recommendedList = recommended.map((key) => displayItems.find((item) => item.value === key));
+			if (recommendedList !== undefined) {
+				recommendedItems.push(...recommendedList.filter((i) => i));
 			}
+
+			if (displayItems.length >= 5 && recommended.length > 0) {
+				recommendedItems.push({ divider: true });
+			}
+
+			const displayList = displayItems.filter((item) => recommended.includes(item.value as string) === false);
+			if (displayList !== undefined) {
+				recommendedItems.push(...displayList.filter((i) => i));
+			}
+
+			return recommendedItems;
 		});
 
 		const selectedDisplay = computed(() => {

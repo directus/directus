@@ -3,7 +3,8 @@ import InterfaceDivider from './divider.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'divider',
-	name: i18n.t('divider'),
+	name: i18n.t('interfaces.divider.divider'),
+	description: i18n.t('interfaces.divider.description'),
 	icon: 'remove',
 	component: InterfaceDivider,
 	hideLabel: true,
@@ -17,7 +18,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'color',
-			}
+			},
 		},
 		{
 			field: 'icon',
@@ -26,7 +27,7 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			}
+			},
 		},
 		{
 			field: 'title',
@@ -35,7 +36,25 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
-			}
+				options: {
+					placeholder: i18n.t('interfaces.divider.title_placeholder'),
+				},
+			},
+		},
+		{
+			field: 'inlineTitle',
+			name: i18n.t('interfaces.divider.inline_title'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('interfaces.divider.inline_title_label'),
+				},
+			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 }));

@@ -3,9 +3,10 @@ import InterfaceCheckboxes from './checkboxes.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'checkboxes',
-	name: i18n.t('checkboxes'),
+	name: i18n.t('interfaces.checkboxes.checkboxes'),
 	icon: 'check_box',
 	component: InterfaceCheckboxes,
+	description: i18n.t('interfaces.checkboxes.description'),
 	types: ['json'],
 	options: [
 		{
@@ -43,7 +44,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('allow_other'),
+			name: i18n.t('interfaces.checkboxes.allow_other'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -77,8 +78,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'check_box',
-			},
+				default_value: 'check_box'
+			}
 		},
 		{
 			field: 'iconOff',
@@ -89,8 +90,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'check_box_outline_blank',
-			},
+				default_value: 'check_box_outline_blank'
+			}
 		},
 	],
 	recommendedDisplays: ['tags'],

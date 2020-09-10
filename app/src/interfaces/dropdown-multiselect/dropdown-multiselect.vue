@@ -12,6 +12,7 @@
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
+		:close-on-content-click="false"
 	>
 		<template #prepend v-if="icon">
 			<v-icon :name="icon" />

@@ -50,7 +50,7 @@
 
 		<v-divider />
 
-		<button class="to-now" @click="setToNow">{{ $t('set_to_now') }}</button>
+		<button class="to-now" @click="setToNow">{{ $t('interfaces.datetime.set_to_now') }}</button>
 	</v-menu>
 </template>
 

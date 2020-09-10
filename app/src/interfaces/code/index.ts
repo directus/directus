@@ -12,7 +12,8 @@ choices.push({ text: 'JSON', value: 'JSON' });
 
 export default defineInterface(({ i18n }) => ({
 	id: 'code',
-	name: i18n.t('code'),
+	name: i18n.t('interfaces.code.code'),
+	description: i18n.t('interfaces.code.description'),
 	icon: 'code',
 	component: InterfaceCode,
 	types: ['string', 'json', 'text'],
@@ -29,7 +30,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'lineNumber',
-			name: i18n.t('line_number'),
+			name: i18n.t('interfaces.code.line_number'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -47,6 +48,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'full',
 				interface: 'code',
 				options: {
+					placeholder: i18n.t('interfaces.code.placeholder'),
 					language: 'text/plain',
 				},
 			},

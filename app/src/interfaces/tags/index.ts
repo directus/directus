@@ -3,7 +3,8 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'tags',
-	name: i18n.t('tags'),
+	name: i18n.t('interfaces.tags.tags'),
+	description: i18n.t('interfaces.tags.description'),
 	icon: 'local_offer',
 	component: InterfaceTags,
 	types: ['json'],
@@ -19,26 +20,32 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'alphabetize',
-			name: i18n.t('alphabetize'),
+			name: i18n.t('interfaces.tags.alphabetize'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('force_alphabetical_order'),
+					label: i18n.t('interfaces.tags.alphabetize_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
 			field: 'lowercase',
-			name: i18n.t('lowercase'),
+			name: i18n.t('interfaces.tags.lowercase'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('force_lowercase'),
+					label: i18n.t('interfaces.tags.lowercase_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
@@ -48,18 +55,24 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
+				options: {
+					placeholder: i18n.t('enter_a_placeholder'),
+				},
 			},
 		},
 		{
 			field: 'allowCustom',
-			name: i18n.t('allow_other'),
+			name: i18n.t('interfaces.dropdown.allow_other'),
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('enable_custom_values'),
+					label: i18n.t('interfaces.dropdown.allow_other_label'),
 				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{

@@ -1,5 +1,5 @@
 <template>
-	<span v-if="false" class="rating simple">
+	<span v-if="simple" class="rating simple">
 		<v-icon small name="star" />
 		{{ value }}
 	</span>
@@ -17,7 +17,9 @@
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 
 type InterfaceOptions = {
-	maxStars: number;
+	minValue: number;
+	maxValue: number;
+	stepInterval: number;
 };
 
 export default defineComponent({
@@ -25,6 +27,10 @@ export default defineComponent({
 		value: {
 			type: Number,
 			default: null,
+		},
+		simple: {
+			type: Boolean,
+			default: false,
 		},
 		interfaceOptions: {
 			type: Object as PropType<InterfaceOptions>,
@@ -35,7 +41,7 @@ export default defineComponent({
 		const starCount = computed(() => {
 			if (props.interfaceOptions === null) return 5;
 
-			return props.interfaceOptions.maxStars;
+			return Math.ceil(props.interfaceOptions.maxValue);
 		});
 
 		const ratingPercentage = computed(() => ({

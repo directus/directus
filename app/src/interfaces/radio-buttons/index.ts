@@ -3,10 +3,12 @@ import InterfaceRadioButtons from './radio-buttons.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'radio-buttons',
-	name: i18n.t('radio_buttons'),
+	name: i18n.t('interfaces.radio-buttons.radio-buttons'),
+	description: i18n.t('interfaces.radio-buttons.description'),
 	icon: 'radio_button_checked',
 	component: InterfaceRadioButtons,
 	types: ['string'],
+	recommendedDisplays: ['badge'],
 	options: [
 		{
 			field: 'choices',
@@ -23,6 +25,7 @@ export default defineInterface(({ i18n }) => ({
 							type: 'string',
 							name: i18n.t('text'),
 							meta: {
+								width: 'half',
 								interface: 'text-input',
 							},
 						},
@@ -31,6 +34,7 @@ export default defineInterface(({ i18n }) => ({
 							type: 'string',
 							name: i18n.t('value'),
 							meta: {
+								width: 'half',
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
@@ -50,8 +54,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'radio_button_checked',
-			},
+				default_value: 'radio_button_checked'
+			}
 		},
 		{
 			field: 'iconOff',
@@ -62,8 +66,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'radio_button_unchecked',
-			},
+				default_value: 'radio_button_unchecked'
+			}
 		},
 		{
 			field: 'color',
@@ -73,19 +77,16 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'color',
 			},
-			schema: {
-				default_value: '#2f80ed',
-			},
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('allow_other'),
+			name: i18n.t('interfaces.dropdown.allow_other'),
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('enable_custom_values'),
+					label: i18n.t('interfaces.dropdown.allow_other_label'),
 				},
 			},
 			schema: {

@@ -3,10 +3,10 @@
 		<template #activator="{ active, activate }">
 			<v-input
 				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : $t('search_for_icon')"
+				:placeholder="value ? formatTitle(value) : $t('interfaces.icon.search_for_icon')"
 				v-model="searchQuery"
 				@focus="activate"
-				:class="{ 'has-value' : value}"
+				:class="{ 'has-value': value }"
 			>
 				<template #prepend>
 					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />

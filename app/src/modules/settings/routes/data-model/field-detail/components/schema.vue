@@ -30,7 +30,7 @@
 					:value="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@input="setType"
+					@input="fieldData.type = $event"
 				/>
 			</div>
 
@@ -40,11 +40,45 @@
 			</div>
 
 			<!-- @todo base default value field type on selected type -->
-			<div class="field" v-if="fieldData.schema">
+			<div class="field" v-if="fieldData.schema" :class="{ full: ['text', 'json'].includes(fieldData.type) }">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
+					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
-					v-model="fieldData.schema.default_value"
+					v-model="defaultValue"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-textarea
+					v-else-if="['text', 'json'].includes(fieldData.type)"
+					class="monospace"
+					v-model="defaultValue"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-input
+					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(fieldData.type)"
+					type="number"
+					class="monospace"
+					v-model="defaultValue"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-input
+					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
+					class="monospace"
+					v-model="defaultValue"
+					:placeholder="$t('add_a_default_value')"
+				/>
+				<v-checkbox
+					v-else-if="fieldData.type === 'boolean'"
+					class="monospace"
+					v-model="defaultValue"
+					:label="defaultValue ? $t('true') : $t('false')"
+					block
+				/>
+				<v-input
+					v-else
+					class="monospace"
+					v-model="defaultValue"
+					disabled
 					:placeholder="$t('add_a_default_value')"
 				/>
 			</div>
@@ -201,23 +235,22 @@ export default defineComponent({
 			return i18n.t('choose_a_type');
 		});
 
-		return { fieldData: state.fieldData, typesWithLabels, setType, typeDisabled, typePlaceholder };
+		const defaultValue = computed({
+			get() {
+				return state.fieldData.schema.default_value;
+			},
+			set(newVal: any) {
+				state.fieldData.schema.default_value = newVal;
+			},
+		});
 
-		function setType(value: typeof types[number]) {
-			if (value === 'uuid') {
-				state.fieldData.meta.special = 'uuid';
-			} else {
-				state.fieldData.meta.special = null;
-			}
-
-			// We'll reset the interface/display as they most likely won't work for the newly selected
-			// type
-			state.fieldData.meta.interface = null;
-			state.fieldData.meta.options = null;
-			state.fieldData.meta.display = null;
-			state.fieldData.meta.display_options = null;
-			state.fieldData.type = value;
-		}
+		return {
+			fieldData: state.fieldData,
+			typesWithLabels,
+			typeDisabled,
+			typePlaceholder,
+			defaultValue,
+		};
 	},
 });
 </script>

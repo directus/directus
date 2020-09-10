@@ -291,6 +291,34 @@ function initLocalStore(
 		delete state.fieldData.type;
 		state.fieldData.meta.special = 'alias';
 	}
+
+	if (type === 'standard') {
+		watch(
+			() => state.fieldData.type,
+			() => {
+				state.fieldData.meta.interface = null;
+				state.fieldData.meta.options = null;
+				state.fieldData.meta.display = null;
+				state.fieldData.meta.display_options = null;
+				state.fieldData.meta.special = null;
+				state.fieldData.schema.default_value = undefined;
+
+				switch (state.fieldData.type) {
+					case 'uuid':
+						state.fieldData.meta.special = 'uuid';
+						break;
+					case 'json':
+						state.fieldData.meta.special = 'json';
+						break;
+					case 'boolean':
+						state.fieldData.meta.special = 'boolean';
+						state.fieldData.schema.is_nullable = false;
+						state.fieldData.schema.default_value = false;
+						break;
+				}
+			}
+		);
+	}
 }
 
 function clearLocalStore() {

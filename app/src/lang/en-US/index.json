@@ -223,6 +223,7 @@
 	"translations": "Translations",
 	"note": "Note",
 	"enter_a_value": "Enter a value...",
+	"enter_a_placeholder": "Enter a placeholder...",
 	"length": "Length",
 	"required": "Required",
 	"readonly": "Readonly",
@@ -344,6 +345,8 @@
 	"notice": "Notice",
 	"slug": "Slug",
 	"repeater": "Repeater",
+	"max-amount": "Max Amount",
+	"select_mode": "Select Mode",
 
 	"months": {
 		"january": "January",
@@ -404,6 +407,8 @@
 	"primary_key_field": "Primary Key Field",
 	"type": "Type",
 	"number": "Number",
+	"true": "True",
+	"false": "False",
 	"creating_new_collection": "Creating New Collection",
 	"status": "Status",
 	"sort": "Sort",
@@ -520,6 +525,7 @@
 
 	"formatted_value": "Formatted Value",
 	"format_title": "Format Title",
+	"inline_title": "Inline Title",
 	"auto_format_casing": "Auto-format casing",
 
 	"errors": {
@@ -623,6 +629,7 @@
 	"step_interval": "Step Interval",
 	"icon_left": "Icon Left",
 	"icon_right": "Icon Right",
+	"trimed": "Trimed",
 	"font_family": "Font Family",
 	"font": "Font",
 	"numeric": "Numeric",
@@ -734,6 +741,7 @@
 	"role_only": "Role Only",
 	"update": "Update",
 
+	"edit_fields": "Edit Fields",
 	"select_fields": "Select Fields",
 	"readable_fields": "Readable Fields",
 	"writable_fields": "Writable Fields",
@@ -744,9 +752,6 @@
 	"status_badge": "Status (Badge)",
 	"tags": "Tags",
 	"format_text": "Format Text",
-
-	"outline": "Outline",
-	"use_outline_variant": "Use the outline variant",
 
 	"bold": "Bold",
 	"subdued": "Subdued",
