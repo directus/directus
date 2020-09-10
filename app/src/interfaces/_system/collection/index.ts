@@ -25,5 +25,6 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
+	system: true,
 	recommendedDisplays: ['collection'],
 }));
