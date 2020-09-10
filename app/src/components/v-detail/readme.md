@@ -10,9 +10,10 @@ Allows for collapsable content
 
 ## Props
 
-| Prop     | Description         | Default |
-|----------|---------------------|---------|
-| `active` | Used with `v-model` | `false` |
+| Prop     | Description         | Default        |
+|----------|---------------------|----------------|
+| `active` | Used with `v-model` | `false`        |
+| `label`  | Label of detail     | `$t('toggle')` |
 
 ## Events
 | Event    | Description                 | Value     |

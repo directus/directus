@@ -22,6 +22,27 @@
 			:input-value="value || []"
 			@change="$emit('input', $event)"
 		/>
+		<v-detail 
+			v-if="hideChoices"
+			:class="gridClass"
+			:label="$t(`interfaces.checkboxes.show_${showAll? 'less':'more'}`, {count: choicesHidden.length})"
+			@toggle="showAll = $event"
+		>
+			<div class="checkboxes" :class="gridClass">
+				<v-checkbox
+					block
+					v-for="item in choicesHidden"
+					:key="item.value"
+					:value="item.value"
+					:label="item.text"
+					:disabled="disabled"
+					:icon-on="iconOn"
+					:icon-off="iconOff"
+					:input-value="value || []"
+					@change="$emit('input', $event)"
+				/>
+			</div>
+		</v-detail>
 
 		<template v-if="allowOther">
 			<v-checkbox
@@ -52,7 +73,6 @@
 				{{ $t('other') }}
 			</button>
 		</template>
-		<v-button v-if="hideChoices" large @click="toggleAll">{{$t(`interfaces.checkboxes.show_${showAll ? 'less' : 'all'}`) }}</v-button>
 	</div>
 </template>
 
@@ -99,19 +119,30 @@ export default defineComponent({
 			type: String,
 			default: 'var(--primary)',
 		},
+		itemsShown: {
+			type: Number,
+			default: 8
+		}		
 	},
 	setup(props, { emit }) {
 		const { choices, value } = toRefs(props);
 		const showAll = ref(false);
 
-		const hideChoices = computed(() => props.choices.length >= 8 - Number(props.allowOther))
+		const hideChoices = computed(() => props.choices.length > props.itemsShown - Number(props.allowOther))
 
 		const choicesDisplayed = computed(() => {
-			if(showAll.value || hideChoices.value === false) {
+			if(hideChoices.value === false) {
 				return props.choices
 			}
-			return props.choices.slice(0, 7 - Number(props.allowOther))
+			return props.choices.slice(0, props.itemsShown - Number(props.allowOther))
 
+		})
+
+		const choicesHidden = computed(() => {
+			if(hideChoices.value === false) {
+				return []
+			}
+			return props.choices.slice(props.itemsShown - Number(props.allowOther))
 		})
 
 		const gridClass = computed(() => {
@@ -135,7 +166,7 @@ export default defineComponent({
 
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
 
-		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, hideChoices, toggleAll, showAll };
+		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, choicesHidden, hideChoices, toggleAll, showAll };
 
 		function toggleAll() {
 			showAll.value = !showAll.value
@@ -149,25 +180,47 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 12px 32px;
 
+	&.grid-1 {
+		grid-template-columns: repeat(1, 1fr);
+	}
+
+	&.grid-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	&.grid-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	&.grid-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
 	.v-button {
 		--v-button-width: 100%;
 	}
 }
 
-.grid-1 {
-	grid-template-columns: repeat(1, 1fr);
-}
+.v-detail {
+	margin-top: 0;
+	margin-bottom: 0;
 
-.grid-2 {
-	grid-template-columns: repeat(2, 1fr);
-}
+	&.grid-1 {
+		grid-column: span 1;
+	}
 
-.grid-3 {
-	grid-template-columns: repeat(3, 1fr);
-}
+	&.grid-2 {
+		grid-column: span 2;
+	}
 
-.grid-4 {
-	grid-template-columns: repeat(4, 1fr);
+	&.grid-3 {
+		grid-column: span 3;
+	}
+
+	&.grid-4 {
+		grid-column: span 4;
+	}
+	
 }
 
 .add-new {
