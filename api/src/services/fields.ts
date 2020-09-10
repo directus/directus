@@ -66,7 +66,7 @@ export default class FieldsService {
 			const data = {
 				collection: column.table,
 				field: column.name,
-				type: column ? getLocalType(column.type) : 'alias',
+				type: column ? getLocalType(column.type, field?.special) : 'alias',
 				schema: column,
 				meta: field || null,
 			};
@@ -167,7 +167,7 @@ export default class FieldsService {
 		const data = {
 			collection,
 			field,
-			type: column ? getLocalType(column.type) : 'alias',
+			type: column ? getLocalType(column.type, fieldInfo?.special) : 'alias',
 			meta: fieldInfo || null,
 			schema: column || null,
 		};
@@ -335,6 +335,8 @@ export default class FieldsService {
 			const type = field.type as 'float' | 'decimal';
 			/** @todo add precision and scale support */
 			column = table[type](field.field /* precision, scale */);
+		} else if (field.type === 'csv') {
+			column = table.string(field.field);
 		} else {
 			column = table[field.type](field.field);
 		}
