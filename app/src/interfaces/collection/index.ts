@@ -1,13 +1,13 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceCollections from './collections.vue';
+import InterfaceCollection from './collection.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'collections',
-	name: i18n.t('interfaces.collections.collections'),
-	description: i18n.t('interfaces.collections.description'),
+	name: i18n.t('interfaces.collection.collection'),
+	description: i18n.t('interfaces.collection.description'),
 	icon: 'featured_play_list',
-	component: InterfaceCollections,
-	types: ['json', 'csv'],
+	component: InterfaceCollection,
+	types: ['string'],
 	options: [
 		{
 			field: 'includeSystem',
@@ -17,7 +17,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.collections.include_system_collections'),
+					label: i18n.t('interfaces.collection.include_system_collections'),
 				},
 			},
 			schema: {
@@ -25,5 +25,5 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-	recommendedDisplays: ['labels'],
+	recommendedDisplays: ['collection'],
 }));

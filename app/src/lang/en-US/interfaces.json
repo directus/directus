@@ -14,6 +14,11 @@
 			"line_number": "Line Number",
 			"placeholder": "Enter code here..."
 		},
+		"collection": {
+			"collection": "Collection",
+			"description": "Select between existing collections",
+			"include_system_collections": "Include System Collections"
+		},
 		"collections": {
 			"collections": "Collections",
 			"description": "Select between existing collections",

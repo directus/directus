@@ -1,5 +1,5 @@
 <template>
-	<interface-checkboxes :choices="items" @input="$listeners.input" :value="value" :disabled="disabled" />
+	<v-select :value="value" :disabled="disabled" :items="items" @input="$emit('input', $event)" />
 </template>
 
 <script lang="ts">
@@ -9,7 +9,7 @@ import { useCollectionsStore } from '@/stores/';
 export default defineComponent({
 	props: {
 		value: {
-			type: Array,
+			type: String,
 			default: null,
 		},
 		disabled: {

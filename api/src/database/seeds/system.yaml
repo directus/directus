@@ -901,7 +901,7 @@ rows:
                       field: collection
                       type: string
                       system:
-                        interface: collections
+                        interface: collection
                         width: full
         special: json
         sort: 10
