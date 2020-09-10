@@ -215,7 +215,7 @@ export default defineComponent({
 			// values if it needs to. This allows the user to manually resize the columns for example
 			const tableHeaders = ref<TableHeader[]>([]);
 
-			watch(() => props.fields, setHeaders);
+			watch(() => props.fields, setHeaders, { immediate: true });
 
 			return { tableHeaders };
 

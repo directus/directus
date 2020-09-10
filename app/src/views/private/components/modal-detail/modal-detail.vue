@@ -10,7 +10,7 @@
 				@input="setJunctionEdits"
 			/>
 
-			<v-divider />
+			<v-divider v-if="showDivider" />
 		</template>
 
 		<v-form
@@ -35,7 +35,7 @@ import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
 import i18n from '@/lang';
-import { Relation } from '@/types';
+import { Relation, Field } from '@/types';
 
 export default defineComponent({
 	model: {
@@ -75,7 +75,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 
 		const { _active } = useActiveState();
-		const { junctionFieldInfo, junctionRelatedCollection, setJunctionEdits } = useJunction();
+		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } = useJunction();
 		const { _edits, loading, error, item } = useItem();
 		const { save, cancel } = useActions();
 
@@ -85,10 +85,14 @@ export default defineComponent({
 
 		const title = computed(() => {
 			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', { collection: collectionInfo.value?.name });
+				return i18n.t('creating_in', { collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name });
 			}
 
-			return i18n.t('editing_in', { collection: collectionInfo.value?.name });
+			return i18n.t('editing_in', { collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name });
+		});
+
+		const showDivider = computed(() => {
+			return fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true).length > 0;
 		});
 
 		return {
@@ -103,6 +107,7 @@ export default defineComponent({
 			junctionFieldInfo,
 			junctionRelatedCollection,
 			setJunctionEdits,
+			showDivider,
 		};
 
 		function useActiveState() {
@@ -230,7 +235,13 @@ export default defineComponent({
 				);
 			});
 
-			return { junctionFieldInfo, junctionRelatedCollection, setJunctionEdits };
+			const junctionRelatedCollectionInfo = computed(() => {
+				if (!junctionRelatedCollection.value) return null;
+				const { info } = useCollection(junctionRelatedCollection.value);
+				return info.value;
+			});
+
+			return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
 
 			function setJunctionEdits(edits: any) {
 				if (!props.junctionField) return;
