@@ -30,7 +30,7 @@
 					:value="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@input="setType"
+					@input="fieldData.type = $event"
 				/>
 			</div>
 
@@ -247,22 +247,10 @@ export default defineComponent({
 		return {
 			fieldData: state.fieldData,
 			typesWithLabels,
-			setType,
 			typeDisabled,
 			typePlaceholder,
 			defaultValue,
 		};
-
-		function setType(value: typeof types[number]) {
-			// We'll reset the interface/display as they most likely won't work for the newly selected
-			// type
-			state.fieldData.meta.interface = null;
-			state.fieldData.meta.options = null;
-			state.fieldData.meta.display = null;
-			state.fieldData.meta.display_options = null;
-			state.fieldData.schema.default_value = undefined;
-			state.fieldData.type = value;
-		}
 	},
 });
 </script>
