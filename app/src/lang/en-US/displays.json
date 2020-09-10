@@ -79,6 +79,7 @@
 		"raw": {
 			"raw": "Raw Value"
 		},
+<<<<<<< HEAD
 		"related-values": {
 			"related-values": "Related Values",
 			"description": "Display relative values"
@@ -90,6 +91,11 @@
 			"name": "Name",
 			"both": "Both",
 			"circle_label": "Show user in a circle"
+=======
+		"labels": {
+			"labels": "Labels",
+			"show_as_dot": "Show as dot"
+>>>>>>> change color-dot to color and add show-as-dot option to labels
 		}
 	}
 }
