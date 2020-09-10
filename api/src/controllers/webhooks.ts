@@ -13,7 +13,8 @@ router.post(
 		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		res.locals.payload = { data: item || null };
-	}),
+		return next();
+	})
 );
 
 router.get(
@@ -26,7 +27,8 @@ router.get(
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
 		res.locals.payload = { data: records || null, meta };
-	}),
+		return next();
+	})
 );
 
 router.get(
@@ -36,7 +38,8 @@ router.get(
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
-	}),
+		return next();
+	})
 );
 
 router.patch(
@@ -47,7 +50,8 @@ router.patch(
 		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		res.locals.payload = { data: item || null };
-	}),
+		return next();
+	})
 );
 
 router.delete(
@@ -57,7 +61,7 @@ router.delete(
 		await service.delete(req.params.pk);
 
 		return next();
-	}),
+	})
 );
 
 export default router;

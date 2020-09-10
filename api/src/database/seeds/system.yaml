@@ -520,7 +520,27 @@ tables:
   directus_webhooks:
     id:
       increments: true
-    # TBD
+    name:
+      type: string
+      length: 255
+    method:
+      type: string
+      length: 10
+    url:
+      type: string
+      length: 255
+    status:
+      type: string
+      length: 10
+    data:
+      type: boolean
+      default: false
+    actions:
+      type: string
+      length: 100
+    collections:
+      type: string
+      length: 255
 
 rows:
   directus_collections:
