@@ -72,10 +72,11 @@ if (env.RATE_LIMITER_ENABLED === true) {
 	app.use(rateLimiter);
 }
 
-app.use('/auth', authRouter);
-app.use(authenticate);
-
 app.use(sanitizeQuery);
+
+app.use('/auth', authRouter);
+
+app.use(authenticate);
 app.use(cache);
 app.use('/activity', activityRouter);
 app.use('/assets', assetsRouter);

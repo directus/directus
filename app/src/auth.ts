@@ -31,6 +31,8 @@ export async function login(credentials: LoginCredentials) {
 	await hydrate();
 }
 
+let refreshTimeout: number;
+
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }) {
 	const appStore = useAppStore();
 
@@ -44,7 +46,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }) 
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any noticable hickups or delays
-		setTimeout(() => refresh(), response.data.data.expires * 1000 - 10 * 1000);
+		if (refreshTimeout) clearTimeout(refreshTimeout);
+		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		appStore.state.authenticated = true;
 
 		return accessToken;

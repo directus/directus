@@ -11,6 +11,7 @@ import ms from 'ms';
 import cookieParser from 'cookie-parser';
 import env from '../env';
 import UsersService from '../services/users';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -74,7 +75,7 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	}),
+	})
 );
 
 router.post(
@@ -125,7 +126,7 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	}),
+	})
 );
 
 router.post(
@@ -152,7 +153,7 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 		return next();
-	}),
+	})
 );
 
 router.post(
@@ -178,7 +179,7 @@ router.post(
 		} finally {
 			return next();
 		}
-	}),
+	})
 );
 
 router.post(
@@ -201,7 +202,7 @@ router.post(
 		const service = new UsersService({ accountability });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
-	}),
+	})
 );
 
 router.use(
@@ -229,7 +230,7 @@ router.get(
 
 		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);
 
-		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate(
 			email
 		);
 
@@ -238,7 +239,9 @@ router.get(
 		};
 
 		return next();
-	}),
+	})
 );
+
+router.use(respond);
 
 export default router;

@@ -104,7 +104,7 @@ export default class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string) / 1000,
+			expires: ms(env.ACCESS_TOKEN_TTL as string),
 			id: user.id,
 		};
 	}
@@ -143,7 +143,7 @@ export default class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string) / 1000,
+			expires: ms(env.ACCESS_TOKEN_TTL as string),
 			id: record.id,
 		};
 	}
