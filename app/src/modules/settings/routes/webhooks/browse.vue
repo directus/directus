@@ -75,7 +75,7 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center>
+				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="warning">
 					{{ $t('no_webhooks_copy') }}
 
 					<template #append>
@@ -164,12 +164,12 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/webhooks/+`;
+				return `/settings/webhooks/+`;
 			});
 
 			const batchLink = computed<string>(() => {
 				const batchPrimaryKeys = selection.value;
-				return `/webhooks/${batchPrimaryKeys}`;
+				return `/settings/webhooks/${batchPrimaryKeys}`;
 			});
 
 			return { addNewLink, batchLink };
@@ -189,7 +189,21 @@ export default defineComponent({
 	--v-button-background-color-disabled: var(--warning-25);
 }
 
-.content {
-	padding: var(--content-padding);
+.action-delete {
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--danger);
+}
+
+.action-batch {
+	--v-button-background-color: var(--warning-25);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-50);
+	--v-button-color-hover: var(--warning);
+}
+
+.layout {
+	--layout-offset-top: 64px;
 }
 </style>

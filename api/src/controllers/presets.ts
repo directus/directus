@@ -35,7 +35,8 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new PresetsService({ accountability: req.accountability });
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const record = await service.readByKey(pk as any, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
 		return next();
@@ -46,7 +47,8 @@ router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new PresetsService({ accountability: req.accountability });
-		const primaryKey = await service.update(req.body, req.params.pk);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		const primaryKey = await service.update(req.body, pk as any);
 		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
@@ -58,7 +60,8 @@ router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new PresetsService({ accountability: req.accountability });
-		await service.delete(req.params.pk);
+		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+		await service.delete(pk as any);
 		return next();
 	})
 );
