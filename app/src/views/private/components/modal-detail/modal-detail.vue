@@ -1,15 +1,6 @@
 <template>
 	<v-modal v-model="_active" :title="title" persistent form-width>
-		<v-form
-			:loading="loading"
-			:initial-values="item"
-			:collection="collection"
-			:primary-key="primaryKey"
-			v-model="_edits"
-		/>
-
 		<template v-if="junctionField">
-			<v-divider large>{{ junctionFieldInfo.name }}</v-divider>
 			<v-form
 				:loading="loading"
 				:initial-values="item && item[junctionField]"
@@ -18,7 +9,17 @@
 				:edits="_edits[junctionField]"
 				@input="setJunctionEdits"
 			/>
+
+			<v-divider />
 		</template>
+
+		<v-form
+			:loading="loading"
+			:initial-values="item"
+			:collection="collection"
+			:primary-key="primaryKey"
+			v-model="_edits"
+		/>
 
 		<template #footer>
 			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
