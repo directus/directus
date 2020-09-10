@@ -459,6 +459,9 @@
 	"user_count": "No Users | One User | {count} Users",
 	"no_users_copy": "There are no users in this role yet.",
 
+	"webhooks_count": "No Webhooks | One Webhook | {count} Webhooks",
+	"no_webhooks_copy": "There are no webhooks yet.",
+
 	"all_items": "All Items",
 
 	"no_collections": "No Collections",
