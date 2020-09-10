@@ -109,7 +109,7 @@ body {
 	width: calc(100% - 16px);
 	max-width: var(--v-modal-max-width);
 	height: calc(100% - 16px);
-	max-height: 760px;
+	max-height: 800px;
 	background-color: var(--background-page);
 	border-radius: 4px;
 
