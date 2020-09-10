@@ -2,7 +2,7 @@ import { defineInterface } from '@/interfaces/define';
 import InterfaceCollection from './collection.vue';
 
 export default defineInterface(({ i18n }) => ({
-	id: 'collections',
+	id: 'collection',
 	name: i18n.t('interfaces.collection.collection'),
 	description: i18n.t('interfaces.collection.description'),
 	icon: 'featured_play_list',

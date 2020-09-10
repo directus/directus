@@ -75,11 +75,11 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('webhooks_count', 0)" icon="people_alt" center>
+				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center>
 					{{ $t('no_webhooks_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/settings/webhooks/+', query: queryFilters }">{{ $t('create_webhook') }}</v-button>
+						<v-button :to="{ path: '/settings/webhooks/+' }">{{ $t('create_webhook') }}</v-button>
 					</template>
 				</v-info>
 			</template>

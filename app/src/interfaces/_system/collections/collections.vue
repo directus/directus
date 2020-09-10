@@ -1,5 +1,8 @@
 <template>
-	<interface-checkboxes :choices="items" @input="$listeners.input" :value="value" :disabled="disabled" />
+	<v-notice v-if="items.length === 0">
+		{{ $t('no_collections') }}
+	</v-notice>
+	<interface-checkboxes v-else :choices="items" @input="$listeners.input" :value="value" :disabled="disabled" />
 </template>
 
 <script lang="ts">

@@ -17,6 +17,7 @@
 	"create_preset": "Create Preset",
 	"create_role": "Create Role",
 	"create_user": "Create User",
+	"create_webhook": "Create Webhook",
 
 	"rename_folder": "Rename Folder",
 	"delete_folder": "Delete Folder",
