@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached :disabled="disabled" v-model="menuActive">
+	<v-menu attached :disabled="disabled" v-model="menuActive" :close-on-content-click="false">
 		<template #activator>
 			<v-input
 				:disabled="disabled"
