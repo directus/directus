@@ -12,7 +12,7 @@
 	>
 		<v-checkbox
 			block
-			v-for="item in choices"
+			v-for="item in choicesDisplayed"
 			:key="item.value"
 			:value="item.value"
 			:label="item.text"
@@ -22,22 +22,15 @@
 			:input-value="value || []"
 			@change="$emit('input', $event)"
 		/>
+		<v-detail 
+			v-if="hideChoices && showAll === false"
+			:class="gridClass"
+			:label="$t(`interfaces.checkboxes.show_more`, {count: hiddenCount})"
+			@toggle="showAll = true"
+		>
+		</v-detail>
 
 		<template v-if="allowOther">
-			<button
-				:disabled="disabled"
-				v-if="allowOther"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
-			>
-				<v-icon name="add" />
-				{{ $t('other') }}
-			</button>
-
 			<v-checkbox
 				block
 				custom-value
@@ -51,12 +44,26 @@
 				@update:value="setOtherValue(otherValue.key, $event)"
 				@change="$emit('input', $event)"
 			/>
+
+			<button
+				:disabled="disabled"
+				v-if="allowOther"
+				class="add-new custom"
+				align="left"
+				outlined
+				dashed
+				secondary
+				@click="addOtherValue()"
+			>
+				<v-icon name="add" />
+				{{ $t('other') }}
+			</button>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, PropType, ref } from '@vue/composition-api';
 import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 type Option = {
@@ -98,9 +105,25 @@ export default defineComponent({
 			type: String,
 			default: 'var(--primary)',
 		},
+		itemsShown: {
+			type: Number,
+			default: 8
+		}		
 	},
 	setup(props, { emit }) {
 		const { choices, value } = toRefs(props);
+		const showAll = ref(false);
+
+		const hideChoices = computed(() => props.choices.length > props.itemsShown)
+
+		const choicesDisplayed = computed(() => {
+			if(showAll.value || hideChoices.value === false) {
+				return props.choices
+			}
+			return props.choices.slice(0, props.itemsShown)
+		})
+
+		const hiddenCount = computed(() => props.choices.length - props.itemsShown)
 
 		const gridClass = computed(() => {
 			if (choices.value === null) return null;
@@ -123,7 +146,7 @@ export default defineComponent({
 
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
 
-		return { gridClass, otherValues, addOtherValue, setOtherValue };
+		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, hideChoices, showAll, hiddenCount };
 	},
 });
 </script>
@@ -132,22 +155,48 @@ export default defineComponent({
 .checkboxes {
 	display: grid;
 	grid-gap: 12px 32px;
+
+	&.grid-1 {
+		grid-template-columns: repeat(1, 1fr);
+	}
+
+	&.grid-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	&.grid-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	&.grid-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.v-button {
+		--v-button-width: 100%;
+	}
 }
 
-.grid-1 {
-	grid-template-columns: repeat(1, 1fr);
-}
+.v-detail {
+	margin-top: 0;
+	margin-bottom: 0;
 
-.grid-2 {
-	grid-template-columns: repeat(2, 1fr);
-}
+	&.grid-1 {
+		grid-column: span 1;
+	}
 
-.grid-3 {
-	grid-template-columns: repeat(3, 1fr);
-}
+	&.grid-2 {
+		grid-column: span 2;
+	}
 
-.grid-4 {
-	grid-template-columns: repeat(4, 1fr);
+	&.grid-3 {
+		grid-column: span 3;
+	}
+
+	&.grid-4 {
+		grid-column: span 4;
+	}
+	
 }
 
 .add-new {
