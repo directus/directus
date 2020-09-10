@@ -12,7 +12,7 @@
 	>
 		<v-checkbox
 			block
-			v-for="item in choices"
+			v-for="item in choicesDisplayed"
 			:key="item.value"
 			:value="item.value"
 			:label="item.text"
@@ -24,20 +24,6 @@
 		/>
 
 		<template v-if="allowOther">
-			<button
-				:disabled="disabled"
-				v-if="allowOther"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
-			>
-				<v-icon name="add" />
-				{{ $t('other') }}
-			</button>
-
 			<v-checkbox
 				block
 				custom-value
@@ -51,12 +37,27 @@
 				@update:value="setOtherValue(otherValue.key, $event)"
 				@change="$emit('input', $event)"
 			/>
+
+			<button
+				:disabled="disabled"
+				v-if="allowOther"
+				class="add-new custom"
+				align="left"
+				outlined
+				dashed
+				secondary
+				@click="addOtherValue()"
+			>
+				<v-icon name="add" />
+				{{ $t('other') }}
+			</button>
 		</template>
+		<v-button v-if="hideChoices" large @click="toggleAll">{{showAll ? 'Show less': 'Show all'}}</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, PropType, ref } from '@vue/composition-api';
 import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 type Option = {
@@ -101,6 +102,17 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const { choices, value } = toRefs(props);
+		const showAll = ref(false);
+
+		const hideChoices = computed(() => props.choices.length >= 8 - Number(props.allowOther))
+
+		const choicesDisplayed = computed(() => {
+			if(showAll.value || hideChoices.value === false) {
+				return props.choices
+			}
+			return props.choices.slice(0, 7 - Number(props.allowOther))
+
+		})
 
 		const gridClass = computed(() => {
 			if (choices.value === null) return null;
@@ -123,7 +135,11 @@ export default defineComponent({
 
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
 
-		return { gridClass, otherValues, addOtherValue, setOtherValue };
+		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, hideChoices, toggleAll, showAll };
+
+		function toggleAll() {
+			showAll.value = !showAll.value
+		}
 	},
 });
 </script>
@@ -132,6 +148,10 @@ export default defineComponent({
 .checkboxes {
 	display: grid;
 	grid-gap: 12px 32px;
+
+	.v-button {
+		--v-button-width: 100%;
+	}
 }
 
 .grid-1 {
