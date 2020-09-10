@@ -78,8 +78,20 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	float8: { type: 'float' },
 };
 
-export default function getLocalType(databaseType: string): typeof types[number] | 'unknown' {
+export default function getLocalType(
+	databaseType: string,
+	special?: string | null
+): typeof types[number] | 'unknown' {
 	const type = localTypeMap[databaseType.toLowerCase().split('(')[0]];
+
+	switch (special) {
+		case 'json':
+			return 'json';
+		case 'csv':
+			return 'csv';
+		case 'uuid':
+			return 'uuid';
+	}
 
 	if (type) {
 		return type.type;

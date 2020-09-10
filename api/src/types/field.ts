@@ -15,6 +15,7 @@ export const types = [
 	'timestamp',
 	'binary',
 	'uuid',
+	'csv',
 ] as const;
 
 export type FieldMeta = {
