@@ -83,7 +83,33 @@ export default class WebhooksService extends ItemsService {
 	async create(data: Partial<Item>): Promise<PrimaryKey>;
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const result = await super.create(data);
+
 		await this.register();
+
+		return result;
+	}
+
+	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
+	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async update(
+		data: Partial<Item> | Partial<Item>[],
+		key?: PrimaryKey | PrimaryKey[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
+		const result = await super.update(data, key as any);
+
+		await this.register();
+
+		return result;
+	}
+
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const result = await super.delete(key as any);
+
+		await this.register();
+
 		return result;
 	}
 }
