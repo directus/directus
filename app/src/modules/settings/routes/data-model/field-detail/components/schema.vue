@@ -217,6 +217,10 @@ export default defineComponent({
 					value: 'json',
 				},
 				{
+					text: i18n.t('csv'),
+					value: 'csv',
+				},
+				{
 					text: i18n.t('uuid'),
 					value: 'uuid',
 				},

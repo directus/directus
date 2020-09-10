@@ -310,6 +310,9 @@ function initLocalStore(
 					case 'json':
 						state.fieldData.meta.special = 'json';
 						break;
+					case 'csv':
+						state.fieldData.meta.special = 'csv';
+						break;
 					case 'boolean':
 						state.fieldData.meta.special = 'boolean';
 						state.fieldData.schema.is_nullable = false;

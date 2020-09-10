@@ -465,6 +465,8 @@
 
 	"all_items": "All Items",
 
+	"csv": "CSV",
+
 	"no_collections": "No Collections",
 	"create_collection": "Create Collection",
 	"no_collections_copy_admin": "You don’t have any Collections yet. Click the button below to get started.",
