@@ -17,14 +17,14 @@ export default class DatabaseBackupService {
 	}
 
 	exportDb() {
-		let fileName = `./backup/dump.sql`;
+		let backup = './backup/dump.sql';
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
-				fileName = `./backup/dump.db`;
+				backup = './backup/dump.db';
 				const fs = require('fs');
 
-				fs.copyFile(env.DB_FILENAME, fileName, (err: string) => {
+				fs.copyFile(env.DB_FILENAME, backup, (err: string) => {
 					if (err) {
 						throw new DatabaseNotFoundException(err);
 					}
@@ -38,7 +38,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
-					.dumpToFile(fileName);
+					.dumpToFile(backup);
 				break;
 
 			case 'mysql':
@@ -47,7 +47,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
-					.dumpToFile(fileName);
+					.dumpToFile(backup);
 
 				break;
 
@@ -59,17 +59,17 @@ export default class DatabaseBackupService {
 			case 'mssql':
 				// need to use SQL for this
 
-				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${env.STORAGE_LOCAL_ROOT}/dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
-				this.knex.raw(backup);
-				fileName = `./backup/dump.bak`;
+				const backupSQL = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${env.STORAGE_LOCAL_ROOT}/dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
+				this.knex.raw(backupSQL);
+				backup = './backup/dump.bak';
 				break;
 
 			default:
-				fileName = 'none';
+				backup = 'none';
 				break;
 		}
 
-		return fileName;
+		return backup;
 	}
 
 	async cleanUp(fileName: string) {
