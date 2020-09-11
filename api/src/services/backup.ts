@@ -17,7 +17,7 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		let fileName = 'dump.sql';
+		let fileName = `${env.STORAGE_LOCAL_ROOT}dump.sql`;
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
@@ -52,7 +52,7 @@ export default class DatabaseBackupService {
 			case 'mssql':
 				// need to use SQL for this
 
-				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
+				const backup = `BACKUP DATABASE [${env.STORAGE_LOCAL_ROOT}${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
 				this.knex.raw(backup);
 				fileName = 'dump.bak';
 				break;
