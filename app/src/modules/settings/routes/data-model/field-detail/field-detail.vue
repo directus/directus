@@ -204,7 +204,8 @@ export default defineComponent({
 						isEmpty(state.relations[0].one_field) ||
 						isEmpty(state.relations[1].many_collection) ||
 						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection)
+						isEmpty(state.relations[1].one_collection) ||
+						isEmpty(state.relations[1].one_primary)
 					);
 				}
 
@@ -229,13 +230,15 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newCollections.map((newCollection: Partial<Collection>) => {
+					state.newCollections.map((newCollection: Partial<Collection> & { $type: string }) => {
+						delete newCollection.$type;
 						return api.post(`/collections`, newCollection);
 					})
 				);
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field>) => {
+					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
+						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);

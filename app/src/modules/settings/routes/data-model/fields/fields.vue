@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="collectionInfo.name">
+	<private-view :title="collectionInfo && collectionInfo.name">
 		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">

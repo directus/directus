@@ -316,16 +316,13 @@ function initLocalStore(
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
-		const syncNewCollectionsM2M = throttle((
-			[junctionCollection, manyCurrent, manyRelated, relatedCollection],
-			[oldJunctionCollection, oldManyCurrent, oldManyRelated, oldRelatedCollection]
-		) => {
-			state.newCollections = state.newCollections.filter((col: any) => [junctionCollection, relatedCollection, oldJunctionCollection, oldRelatedCollection].includes(col.collection) === false);
-			state.newFields = state.newFields
-				.filter((field: Partial<Field>) => [manyCurrent, manyRelated, relatedCollection, oldManyCurrent, oldManyRelated, oldRelatedCollection].includes(field.field) === false);
+		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
+			state.newCollections = state.newCollections.filter((col: any) => ['junction', 'related'].includes(col.$type) === false);
+			state.newFields = state.newFields.filter((field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false);
 
 			if (collectionExists(junctionCollection) === false) {
 				state.newCollections.push({
+					$type: 'junction',
 					collection: junctionCollection,
 					fields: [
 						{
@@ -344,24 +341,33 @@ function initLocalStore(
 
 			if (fieldExists(junctionCollection, manyCurrent) === false) {
 				state.newFields.push({
+					$type: 'manyCurrent',
 					collection: junctionCollection,
 					field: manyCurrent,
-					type: fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type,
+					type: collectionExists(junctionCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type : 'integer',
 					schema: {},
+					meta: {
+						hidden: true,
+					}
 				});
 			}
 
 			if (fieldExists(junctionCollection, manyRelated) === false) {
 				state.newFields.push({
+					$type: 'manyRelated',
 					collection: junctionCollection,
 					field: manyRelated,
 					type: collectionExists(relatedCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type : 'integer',
 					schema: {},
+					meta: {
+						hidden: true,
+					}
 				});
 			}
 
 			if (collectionExists(relatedCollection) === false) {
 				state.newCollections.push({
+					$type: 'related',
 					collection: relatedCollection,
 					fields: [
 						{
@@ -377,6 +383,8 @@ function initLocalStore(
 					]
 				})
 			}
+
+			console.log(state.newCollections, state.newFields);
 		}, 50);
 
 		if (!isExisting) {
