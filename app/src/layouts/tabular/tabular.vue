@@ -2,6 +2,11 @@
 	<div class="layout-tabular">
 		<portal to="layout-options">
 			<div class="layout-option">
+				<div class="option-label">Test</div>
+				<v-field-select :collection="collection" v-model="selectedFields" />
+			</div>
+
+			<div class="layout-option">
 				<div class="option-label">{{ $t('layouts.tabular.spacing') }}</div>
 				<v-select
 					v-model="tableSpacing"
@@ -211,6 +216,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const selectedFields = ref(['title']);
 		const table = ref<Vue | null>(null);
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
@@ -290,6 +296,7 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
+			selectedFields,
 		};
 
 		async function resetPresetAndRefresh() {
