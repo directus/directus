@@ -13,6 +13,7 @@ router.get(
 		const fileName = await dbService.exportDb();
 		const fs = require('fs');
 		res.attachment(fileName);
+		//should probably compress this file?
 		res.set('Content-Type', 'application/sql');
 
 		const stream = fs.createReadStream(fileName);
