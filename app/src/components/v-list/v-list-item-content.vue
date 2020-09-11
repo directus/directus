@@ -7,6 +7,7 @@
 <style>
 body {
 	--v-list-item-content-padding: 9px 0;
+	--v-list-item-content-font-family: var(--family-sans-serif);
 }
 </style>
 
@@ -21,6 +22,7 @@ body {
 	align-self: center;
 	padding: var(--v-list-item-content-padding);
 	overflow: hidden;
+	font-family: var(--v-list-item-content-font-family);
 
 	.v-list.three-line &,
 	.v-list-item.three-line & {
