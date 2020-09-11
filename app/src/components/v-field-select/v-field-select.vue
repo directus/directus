@@ -8,7 +8,14 @@
 		>
 			{{ field.name }}
 		</v-chip>
-		<v-menu showArrow v-model="menuActive" v-show="selectableFields.length > 0" slot="footer" class="add">
+		<v-menu
+			showArrow
+			v-model="menuActive"
+			v-show="selectableFields.length > 0"
+			slot="footer"
+			class="add"
+			placement="bottom-end"
+		>
 			<template #activator="{ toggle }">
 				<v-chip class="field" @click="toggle">
 					<v-icon name="add" />
