@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceOneToMany from './one-to-many.vue';
+import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'one-to-many',
@@ -9,19 +10,6 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceOneToMany,
 	types: ['alias'],
 	relationship: 'o2m',
-	options: [
-		{
-			field: 'fields',
-			type: 'json',
-			name: i18n.tc('field', 0),
-			meta: {
-				interface: 'tags',
-				width: 'full',
-				options: {
-					placeholder: i18n.t('interfaces.one-to-many.readable_fields_copy'),
-				},
-			},
-		},
-	],
+	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

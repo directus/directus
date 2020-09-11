@@ -1,31 +1,25 @@
 <template>
-	<div class="v-field-select">
-		<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
-			<div
-				v-for="(field, index) in activeFields"
-				:key="index"
-				:value="field.field"
-				:label="field.name"
-				class="field"
-			>
-				<v-icon @click.stop="removeField(field.field)" name="close" />
-				<span class="name">{{ field.name }}</span>
-				<v-icon @click.stop name="drag_handle" class="drag-handle" />
-			</div>
-		</draggable>
-		<v-menu attached v-model="menuActive" v-show="selectableFields.length > 0">
+	<draggable v-model="activeFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+		<v-chip
+			v-for="(field, index) in activeFields"
+			:key="index"
+			class="field draggable"
+			@click.stop="removeField(field.field)"
+		>
+			{{ field.name }}
+		</v-chip>
+		<v-menu showArrow v-model="menuActive" v-show="selectableFields.length > 0" slot="footer" class="add">
 			<template #activator="{ toggle }">
-				<div class="field" @click="toggle">
+				<v-chip class="field" @click="toggle">
 					<v-icon name="add" />
-					<span class="name">Add field</span>
-				</div>
+				</v-chip>
 			</template>
 
 			<v-list dense>
 				<field-list-item @add="addField" v-for="field in selectableFields" :key="field.field" :field="field" />
 			</v-list>
 		</v-menu>
-	</div>
+	</draggable>
 </template>
 
 <script lang="ts">
@@ -66,7 +60,7 @@ export default defineComponent({
 
 		const _value = computed({
 			get() {
-				return props.value;
+				return props.value || [];
 			},
 			set(newVal: string[]) {
 				emit('input', newVal);
@@ -122,17 +116,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.field {
+.v-field-select {
 	display: flex;
-	justify-content: space-between;
+	flex-wrap: wrap;
+}
 
-	.name {
-		flex: 1;
-		padding: 0 5px;
-	}
-
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-	}
+.v-chip.field {
+	margin-right: 5px;
 }
 </style>
