@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import DatabaseBackupService from '../services/backup';
-import { PassThrough } from 'stream';
 
 const router = Router();
 
