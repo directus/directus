@@ -22,7 +22,7 @@
 		</template>
 
 		<v-list dense>
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" />
+			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
 		</v-list>
 	</v-menu>
 </template>
@@ -48,6 +48,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		depth: {
+			type: Number,
+			default: 10,
 		},
 	},
 	setup(props, { emit }) {
