@@ -12,6 +12,7 @@
 			:key="childField.field"
 			:parent="`${parent ? parent + '.' : ''}${field.field}`"
 			:field="childField"
+			:depth="depth - 1"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
@@ -34,6 +35,7 @@ export default defineComponent({
 		},
 		depth: {
 			type: Number,
+			default: 10,
 		},
 	},
 });
