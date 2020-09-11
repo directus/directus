@@ -232,6 +232,7 @@
 	"hide_on_browse": "Hide on Browse",
 	"unique": "Unique",
 	"primary_key": "Primary Key",
+	"foreign_key": "Foreign Key",
 	"validation_regex": "Validation RegEx",
 	"validation_message": "Validation Message",
 	"directus_type": "Directus Type",

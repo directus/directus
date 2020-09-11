@@ -8,16 +8,32 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select
-					:placeholder="$t('select_one')"
-					:items="items"
-					v-model="relations[0].one_collection"
-					:disabled="isExisting"
-				/>
+				<v-input db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection')">
+					<template #append>
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+							</template>
+
+							<v-list dense class="monospace">
+								<v-list-item
+									v-for="item in items"
+									:key="item.value"
+									:active="relations[0].one_collection === item.value"
+									@click="relations[0].one_collection = item.value"
+								>
+									<v-list-item-content>
+										{{ item.text }}
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+				</v-input>
 			</div>
-			<v-input disabled :value="fieldData.field" />
-			<v-input disabled :value="relatedPrimary" />
-			<v-icon name="arrow_back" />
+			<v-input disabled :value="relations[0].many_field" />
+			<v-input db-safe :disabled="isNewCollection === false" v-model="relations[0].one_primary" :placeholder="$t('primary_key')" />
+			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
 		<v-divider v-if="!isExisting" />
@@ -31,7 +47,7 @@
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
 				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" db-safe />
 			</div>
-			<v-icon name="arrow_forward" />
+			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 	</div>
 </template>
@@ -66,17 +82,21 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items, relatedPrimary } = useRelation();
+		const { items } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
+
+		const isNewCollection = computed(() => {
+			return collectionsStore.getCollection(state.relations[0].one_collection) === null;
+		});
 
 		return {
 			relations: state.relations,
 			items,
-			relatedPrimary,
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
 			fieldData: state.fieldData,
+			isNewCollection,
 		};
 
 		function useRelation() {
@@ -97,13 +117,7 @@ export default defineComponent({
 				}))
 			);
 
-			const relatedPrimary = computed(() => {
-				return state.relations[0].one_collection
-					? fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection)?.field
-					: null;
-			});
-
-			return { items, relatedPrimary };
+			return { items };
 		}
 
 		function useCorresponding() {
@@ -175,7 +189,7 @@ export default defineComponent({
 	gap: 20px 32px;
 	margin-top: 48px;
 
-	.v-icon {
+	.arrow {
 		--v-icon-color: var(--foreground-subdued);
 
 		position: absolute;
@@ -183,6 +197,10 @@ export default defineComponent({
 		left: 50%;
 		transform: translateX(-50%);
 	}
+}
+
+.v-list {
+	--v-list-item-content-font-family: var(--family-monospace);
 }
 
 .v-divider {

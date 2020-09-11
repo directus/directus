@@ -66,8 +66,8 @@ import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
 import { isEmpty } from 'lodash';
 import api from '@/api';
-import { Relation } from '@/types';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Relation, Collection } from '@/types';
+import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
@@ -99,6 +99,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -190,7 +191,8 @@ export default defineComponent({
 						state.relations.length === 0 ||
 						isEmpty(state.relations[0].many_collection) ||
 						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_collection)
+						isEmpty(state.relations[0].one_collection) ||
+						isEmpty(state.relations[0].one_primary)
 					);
 				}
 
@@ -202,7 +204,8 @@ export default defineComponent({
 						isEmpty(state.relations[0].one_field) ||
 						isEmpty(state.relations[1].many_collection) ||
 						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection)
+						isEmpty(state.relations[1].one_collection) ||
+						isEmpty(state.relations[1].one_primary)
 					);
 				}
 
@@ -217,6 +220,8 @@ export default defineComponent({
 		async function saveField() {
 			saving.value = true;
 
+			console.log(state);
+
 			try {
 				if (props.field !== '+') {
 					await api.patch(`/fields/${props.collection}/${props.field}`, state.fieldData);
@@ -225,7 +230,15 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field>) => {
+					state.newCollections.map((newCollection: Partial<Collection> & { $type: string }) => {
+						delete newCollection.$type;
+						return api.post(`/collections`, newCollection);
+					})
+				);
+
+				await Promise.all(
+					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
+						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
@@ -240,6 +253,7 @@ export default defineComponent({
 					})
 				);
 
+				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 				await relationsStore.hydrate();
 

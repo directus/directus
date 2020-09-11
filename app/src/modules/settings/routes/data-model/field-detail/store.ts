@@ -5,16 +5,18 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { reactive, watch, computed, ComputedRef } from '@vue/composition-api';
-import { clone } from 'lodash';
+import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
+import { Field } from '@/types';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+const collectionsStore = useCollectionsStore();
 
 let state: any;
 let availableInterfaces: ComputedRef<InterfaceConfig[]>;
@@ -51,6 +53,7 @@ function initLocalStore(
 			},
 		},
 		relations: [],
+		newCollections: [],
 		newFields: [],
 	});
 
@@ -141,7 +144,33 @@ function initLocalStore(
 	}
 
 	if (type === 'm2o') {
-		if (!isExisting) {
+		const syncNewCollectionsM2O = throttle(() => {
+			const collectionName = state.relations[0].one_collection;
+
+			if (collectionExists(collectionName)) {
+				state.newCollections = [];
+			} else {
+				state.newCollections = [
+					{
+						collection: collectionName,
+						fields: [
+							{
+								field: state.relations[0].one_primary,
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								system: {
+									hidden: true,
+								}
+							}
+						]
+					}
+				];
+			}
+		}, 50);
+
+		if (isExisting === false) {
 			state.relations = [
 				{
 					many_collection: collection,
@@ -165,9 +194,13 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].one_collection,
 			() => {
-				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
-				state.fieldData.type = field.type;
-				state.relations[0].one_primary = field.field;
+				if (collectionExists(state.relations[0].one_collection)) {
+					const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
+					state.fieldData.type = field.type;
+					state.relations[0].one_primary = field.field;
+				} else {
+					state.fieldData.type = 'integer';
+				}
 			}
 		);
 
@@ -180,11 +213,64 @@ function initLocalStore(
 				}
 			}
 		);
+
+		watch([() => state.relations[0].one_collection, () => state.relations[0].one_primary], syncNewCollectionsM2O);
 	}
 
 	if (type === 'o2m') {
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
+
+		const syncNewCollectionsO2M = throttle(() => {
+			const collectionName = state.relations[0].many_collection;
+			const fieldName = state.relations[0].many_field;
+
+			if (collectionExists(collectionName)) {
+				state.newCollections = [];
+			} else {
+				state.newCollections = [
+					{
+						collection: collectionName,
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								system: {
+									hidden: true,
+								}
+							}
+						]
+					}
+				];
+			}
+
+			if (collectionExists(collectionName)) {
+				if (fieldExists(collectionName, fieldName)) {
+					state.newFields = [];
+				} else {
+					state.newFields = [
+						{
+							collection: collectionName,
+							field: fieldName,
+							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
+							schema: {},
+						}
+					]
+				}
+			} else {
+				state.newFields = [
+					{
+						collection: collectionName,
+						field: fieldName,
+						type: 'integer',
+						schema: {},
+					}
+				]
+			}
+		}, 50);
 
 		if (!isExisting) {
 			state.fieldData.meta.special = 'o2m';
@@ -212,16 +298,94 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].many_collection,
 			() => {
-				state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-					state.relations[0].many_collection
-				).field;
+				if (collectionExists(state.relations[0].many_collection)) {
+					state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+						state.relations[0].many_collection
+					).field;
+				}
 			}
 		);
+
+		watch(
+			[() => state.relations[0].many_collection, () => state.relations[0].many_field],
+			syncNewCollectionsO2M
+		)
 	}
 
 	if (type === 'm2m' || type === 'files') {
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
+
+		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
+			state.newCollections = state.newCollections.filter((col: any) => ['junction', 'related'].includes(col.$type) === false);
+			state.newFields = state.newFields.filter((field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false);
+
+			if (collectionExists(junctionCollection) === false) {
+				state.newCollections.push({
+					$type: 'junction',
+					collection: junctionCollection,
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+							},
+							meta: {
+								hidden: true,
+							}
+						}
+					]
+				});
+			}
+
+			if (fieldExists(junctionCollection, manyCurrent) === false) {
+				state.newFields.push({
+					$type: 'manyCurrent',
+					collection: junctionCollection,
+					field: manyCurrent,
+					type: collectionExists(junctionCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type : 'integer',
+					schema: {},
+					meta: {
+						hidden: true,
+					}
+				});
+			}
+
+			if (fieldExists(junctionCollection, manyRelated) === false) {
+				state.newFields.push({
+					$type: 'manyRelated',
+					collection: junctionCollection,
+					field: manyRelated,
+					type: collectionExists(relatedCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type : 'integer',
+					schema: {},
+					meta: {
+						hidden: true,
+					}
+				});
+			}
+
+			if (collectionExists(relatedCollection) === false) {
+				state.newCollections.push({
+					$type: 'related',
+					collection: relatedCollection,
+					fields: [
+						{
+							field: state.relations[1].one_primary,
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+							},
+							meta: {
+								hidden: true,
+							}
+						}
+					]
+				})
+			}
+
+			console.log(state.newCollections, state.newFields);
+		}, 50);
 
 		if (!isExisting) {
 			state.fieldData.meta.special = 'm2m';
@@ -256,9 +420,11 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].many_collection,
 			() => {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-				state.relations[0].many_primary = pkField;
-				state.relations[1].many_primary = pkField;
+				if (collectionExists(state.relations[0].many_collection)) {
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
+					state.relations[0].many_primary = pkField;
+					state.relations[1].many_primary = pkField;
+				}
 			}
 		);
 
@@ -279,11 +445,23 @@ function initLocalStore(
 		watch(
 			() => state.relations[1].one_collection,
 			() => {
-				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-					state.relations[1].one_collection
-				)?.field;
+				if (collectionExists(state.relations[1].one_collection)) {
+					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+						state.relations[1].one_collection
+					)?.field;
+				}
 			}
 		);
+
+		watch(
+			[
+				() => state.relations[0].many_collection,
+				() => state.relations[0].many_field,
+				() => state.relations[1].many_field,
+				() => state.relations[1].one_collection,
+			],
+			syncNewCollectionsM2M
+		)
 	}
 
 	if (type === 'presentation') {
@@ -321,6 +499,14 @@ function initLocalStore(
 				}
 			}
 		);
+	}
+
+	function collectionExists(collection: string) {
+		return collectionsStore.getCollection(collection) !== null;
+	}
+
+	function fieldExists(collection: string, field: string) {
+		return collectionExists(collection) && fieldsStore.getField(collection, field) !== null;
 	}
 }
 

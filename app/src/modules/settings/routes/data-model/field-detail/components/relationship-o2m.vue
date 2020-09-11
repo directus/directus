@@ -8,21 +8,64 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select
-					:placeholder="$t('select_one')"
-					:items="items"
-					v-model="collectionMany"
+				<v-input
+					db-safe
+					:placeholder="$t('collection')"
+					v-model="relations[0].many_collection"
 					:disabled="isExisting"
-				/>
+				>
+					<template #append>
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+							</template>
+
+							<v-list dense class="monospace">
+								<v-list-item
+									v-for="item in items"
+									:key="item.value"
+									:active="relations[0].many_collection === item.value"
+									@click="relations[0].many_collection = item.value"
+								>
+									<v-list-item-content>
+										{{ item.text }}
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+				</v-input>
 			</div>
 			<v-input disabled :value="currentCollectionPrimaryKey.field" />
-			<v-select
+			<v-input
+				db-safe
 				v-model="relations[0].many_field"
-				:disabled="!relations[0].many_collection || isExisting"
-				:items="fields"
-				:placeholder="!relations[0].many_collection ? $t('select_one') : $t('select_one')"
-			/>
-			<v-icon name="arrow_forward" />
+				:disabled="isExisting"
+				:placeholder="$t('foreign_key')"
+			>
+				<template #append v-if="fields && fields.length > 0">
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+						</template>
+
+						<v-list dense class="monospace">
+							<v-list-item
+								v-for="field in fields"
+								:key="field.value"
+								:active="relations[0].many_field === field.value"
+								@click="relations[0].many_field = field.value"
+								:disabled="field.disabled"
+							>
+								<v-list-item-content>
+									{{ field.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-input>
+			<v-icon class="arrow" name="arrow_forward" />
 		</div>
 	</div>
 </template>
@@ -118,13 +161,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .grid {
+	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--family-monospace);
+
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 20px 32px;
 	margin-top: 48px;
 
-	.v-icon {
+	.v-icon.arrow {
 		--v-icon-color: var(--foreground-subdued);
 
 		position: absolute;
@@ -132,6 +178,10 @@ export default defineComponent({
 		left: 50%;
 		transform: translateX(-50%);
 	}
+}
+
+.v-list {
+	--v-list-item-content-font-family: var(--family-monospace);
 }
 
 .type-label {
