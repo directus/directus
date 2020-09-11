@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"role_name": "Role Name",
+
 	"db_only_click_to_configure": "Database Only: Click to Configure ",
 
 	"show_archived_items": "Show Archived Items",
@@ -412,6 +414,7 @@
 	"true": "True",
 	"false": "False",
 	"creating_new_collection": "Creating New Collection",
+	"creating_new_role": "Creating New Role",
 	"status": "Status",
 	"sort": "Sort",
 	"created_by": "Created By",

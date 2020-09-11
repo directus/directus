@@ -1,13 +1,5 @@
 <template>
-	<private-view
-		:title="
-			loading
-				? $t('loading')
-				: isNew === false
-				? $t('editing_role', { role: item && item.name })
-				: $t('creating_role')
-		"
-	>
+	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
 		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -85,8 +77,8 @@
 		</div>
 
 		<template #drawer>
-			<role-info-drawer-detail :is-new="isNew" :role="item" />
-			<revisions-drawer-detail v-if="isNew === false" collection="directus_roles" :primary-key="primaryKey" />
+			<role-info-drawer-detail :role="item" />
+			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 	</private-view>
 </template>
@@ -125,7 +117,7 @@ export default defineComponent({
 
 		const { primaryKey } = toRefs(props);
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
+		const { edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
@@ -147,7 +139,6 @@ export default defineComponent({
 			item,
 			loading,
 			error,
-			isNew,
 			edits,
 			hasEdits,
 			saving,
