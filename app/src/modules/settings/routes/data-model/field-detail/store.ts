@@ -12,6 +12,7 @@ import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
+import { Field } from '@/types';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -160,7 +161,7 @@ function initLocalStore(
 									has_auto_increment: true,
 								},
 								system: {
-									interface: 'text-input',
+									hidden: true,
 								}
 							}
 						]
@@ -238,7 +239,7 @@ function initLocalStore(
 									has_auto_increment: true,
 								},
 								system: {
-									interface: 'text-input',
+									hidden: true,
 								}
 							}
 						]
@@ -315,6 +316,69 @@ function initLocalStore(
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
+		const syncNewCollectionsM2M = throttle((
+			[junctionCollection, manyCurrent, manyRelated, relatedCollection],
+			[oldJunctionCollection, oldManyCurrent, oldManyRelated, oldRelatedCollection]
+		) => {
+			state.newCollections = state.newCollections.filter((col: any) => [junctionCollection, relatedCollection, oldJunctionCollection, oldRelatedCollection].includes(col.collection) === false);
+			state.newFields = state.newFields
+				.filter((field: Partial<Field>) => [manyCurrent, manyRelated, relatedCollection, oldManyCurrent, oldManyRelated, oldRelatedCollection].includes(field.field) === false);
+
+			if (collectionExists(junctionCollection) === false) {
+				state.newCollections.push({
+					collection: junctionCollection,
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+							},
+							meta: {
+								hidden: true,
+							}
+						}
+					]
+				});
+			}
+
+			if (fieldExists(junctionCollection, manyCurrent) === false) {
+				state.newFields.push({
+					collection: junctionCollection,
+					field: manyCurrent,
+					type: fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type,
+					schema: {},
+				});
+			}
+
+			if (fieldExists(junctionCollection, manyRelated) === false) {
+				state.newFields.push({
+					collection: junctionCollection,
+					field: manyRelated,
+					type: collectionExists(relatedCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type : 'integer',
+					schema: {},
+				});
+			}
+
+			if (collectionExists(relatedCollection) === false) {
+				state.newCollections.push({
+					collection: relatedCollection,
+					fields: [
+						{
+							field: state.relations[1].one_primary,
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+							},
+							meta: {
+								hidden: true,
+							}
+						}
+					]
+				})
+			}
+		}, 50);
+
 		if (!isExisting) {
 			state.fieldData.meta.special = 'm2m';
 
@@ -348,9 +412,11 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].many_collection,
 			() => {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-				state.relations[0].many_primary = pkField;
-				state.relations[1].many_primary = pkField;
+				if (collectionExists(state.relations[0].many_collection)) {
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
+					state.relations[0].many_primary = pkField;
+					state.relations[1].many_primary = pkField;
+				}
 			}
 		);
 
@@ -371,11 +437,23 @@ function initLocalStore(
 		watch(
 			() => state.relations[1].one_collection,
 			() => {
-				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-					state.relations[1].one_collection
-				)?.field;
+				if (collectionExists(state.relations[1].one_collection)) {
+					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+						state.relations[1].one_collection
+					)?.field;
+				}
 			}
 		);
+
+		watch(
+			[
+				() => state.relations[0].many_collection,
+				() => state.relations[0].many_field,
+				() => state.relations[1].many_field,
+				() => state.relations[1].one_collection,
+			],
+			syncNewCollectionsM2M
+		)
 	}
 
 	if (type === 'presentation') {
@@ -420,7 +498,7 @@ function initLocalStore(
 	}
 
 	function fieldExists(collection: string, field: string) {
-		return fieldsStore.getField(collection, field) !== null;
+		return collectionExists(collection) && fieldsStore.getField(collection, field) !== null;
 	}
 }
 
