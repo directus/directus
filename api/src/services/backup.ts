@@ -58,6 +58,7 @@ export default class DatabaseBackupService {
 				break;
 
 			default:
+				fileName = 'none';
 				break;
 		}
 
