@@ -17,12 +17,12 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		let fileName = `${env.STORAGE_LOCAL_ROOT}dump.sql`;
+		let fileName = `${env.STORAGE_LOCAL_ROOT}/dump.sql`;
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
-				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile('dump.sql');
+				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile(fileName);
 				break;
 
 			case 'pg':
@@ -31,7 +31,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
-					.dumpToFile('dump.sql');
+					.dumpToFile(fileName);
 				break;
 
 			case 'mysql':
@@ -40,7 +40,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
-					.dumpToFile('dump.sql');
+					.dumpToFile(fileName);
 
 				break;
 
@@ -52,9 +52,9 @@ export default class DatabaseBackupService {
 			case 'mssql':
 				// need to use SQL for this
 
-				const backup = `BACKUP DATABASE [${env.STORAGE_LOCAL_ROOT}${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
+				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${env.STORAGE_LOCAL_ROOT}/dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
 				this.knex.raw(backup);
-				fileName = 'dump.bak';
+				fileName = `${env.STORAGE_LOCAL_ROOT}/dump.bak`;
 				break;
 
 			default:
