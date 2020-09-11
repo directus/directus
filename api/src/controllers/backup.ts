@@ -18,6 +18,7 @@ router.get(
 		archive.finalize();
 		res.attachment('backup.zip');
 		archive.pipe(res);
+		await dbService.cleanUp();
 
 		return next();
 	})

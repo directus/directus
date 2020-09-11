@@ -35,4 +35,16 @@ export default class DatabaseBackupService {
 				return 'backup.back';
 		}
 	}
+
+	async cleanUp() {
+		//this is needed as lots of exports only support export to local
+		const fs = require('fs');
+		const delFile = 'backup.back';
+
+		try {
+			fs.unlinkSync(delFile);
+		} catch (err) {
+			throw new DatabaseNotFoundException('Cleanup failed');
+		}
+	}
 }
