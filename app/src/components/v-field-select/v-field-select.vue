@@ -17,7 +17,7 @@
 			placement="bottom-end"
 		>
 			<template #activator="{ toggle }">
-				<v-chip class="field" @click="toggle">
+				<v-chip @click="toggle">
 					<v-icon name="add" />
 				</v-chip>
 			</template>
@@ -130,5 +130,10 @@ export default defineComponent({
 
 .v-chip.field {
 	margin-right: 5px;
+
+	&:hover {
+		background-color: var(--danger);
+		border-color: var(--danger);
+	}
 }
 </style>
