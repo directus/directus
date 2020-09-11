@@ -10,21 +10,27 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
 		const fileName = await dbService.exportDb();
+
+		const path = require('path');
 		if (fileName === 'none') {
 			throw new DatabaseNotFoundException('Database not defined in env file');
 		}
 
 		const fs = require('fs');
-		res.attachment(fileName);
+		res.attachment(path.basename(fileName));
 		//should probably compress this file?
-		res.set('Content-Type', 'application/sql');
+		res.set('Content-Type', 'application/octet-stream');
 
 		const stream = fs.createReadStream(fileName);
 
-		stream.pipe(res);
+		stream.on('end', () => {
+			stream.pipe(res);
+		});
+		stream.on('error', function (err: string) {
+			throw new DatabaseNotFoundException('Database path not found');
+		});
 
-		//this is needed because backup /dump methods only support local
-
+		dbService.cleanUp(fileName);
 		return next();
 	})
 );
