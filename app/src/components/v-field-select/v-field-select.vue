@@ -23,7 +23,13 @@
 			</template>
 
 			<v-list dense>
-				<field-list-item @add="addField" v-for="field in selectableFields" :key="field.field" :field="field" />
+				<field-list-item
+					@add="addField"
+					v-for="field in selectableFields"
+					:key="field.field"
+					:field="field"
+					:depth="depth"
+				/>
 			</v-list>
 		</v-menu>
 	</draggable>
@@ -31,7 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType, computed } from '@vue/composition-api';
-import FieldListItem from './field-list-item.vue';
+import FieldListItem from '../v-field-template/field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import Draggable from 'vuedraggable';
@@ -54,6 +60,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		depth: {
+			type: Number,
+			default: 1,
 		},
 	},
 	setup(props, { emit }) {
