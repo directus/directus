@@ -1,10 +1,12 @@
 <template>
-	<v-notice type="warning" v-if="collection == null">
-		{{ $t('interfaces.one-to-many.no_collection') }}
-	</v-notice>
-	<div v-else>
-		<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
-		<v-field-template :collection="collection" v-model="template" :depth="0"></v-field-template>
+	<div class="grid">
+		<v-notice type="warning" v-if="collection == null">
+			{{ $t('interfaces.one-to-many.no_collection') }}
+		</v-notice>
+		<div v-else class="full">
+			<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
+			<v-field-template :collection="collection" v-model="template" :depth="0"></v-field-template>
+		</div>
 	</div>
 </template>
 
@@ -50,7 +52,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.type-label {
-	margin-bottom: 4px;
+@import '@/styles/mixins/form-grid';
+
+.grid {
+	@include form-grid;
 }
 </style>
