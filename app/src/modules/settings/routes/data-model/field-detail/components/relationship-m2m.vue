@@ -13,6 +13,7 @@
 					v-model="junctionCollection"
 					:placeholder="$t('select_one')"
 					:disabled="isExisting"
+					allow-other
 				/>
 			</div>
 			<div class="field">
@@ -111,7 +112,7 @@ export default defineComponent({
 				value: field.field,
 				disabled:
 					state.relations[0].many_field === field.field ||
-					field.schema?.is_primary_key || 
+					field.schema?.is_primary_key ||
 					state.relations[1].many_field === field.field,
 			}));
 		});

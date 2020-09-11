@@ -5,9 +5,9 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { reactive, watch, computed, ComputedRef } from '@vue/composition-api';
-import { clone } from 'lodash';
+import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
@@ -27,6 +27,7 @@ function initLocalStore(
 	field: string,
 	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'
 ) {
+	const collectionsStore = useCollectionsStore();
 	const interfaces = getInterfaces();
 	const displays = getDisplays();
 
@@ -51,6 +52,7 @@ function initLocalStore(
 			},
 		},
 		relations: [],
+		newCollections: [],
 		newFields: [],
 	});
 
@@ -141,7 +143,33 @@ function initLocalStore(
 	}
 
 	if (type === 'm2o') {
-		if (!isExisting) {
+		const syncNewCollectionsM2O = throttle(() => {
+			const collectionName = state.relations[0].one_collection;
+
+			if (collectionExists(collectionName)) {
+				state.newCollections = [];
+			} else {
+				state.newCollections = [
+					{
+						collection: collectionName,
+						fields: [
+							{
+								field: state.relations[0].one_primary,
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								system: {
+									interface: 'text-input',
+								}
+							}
+						]
+					}
+				];
+			}
+		}, 50);
+
+		if (isExisting === false) {
 			state.relations = [
 				{
 					many_collection: collection,
@@ -165,9 +193,13 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].one_collection,
 			() => {
-				const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
-				state.fieldData.type = field.type;
-				state.relations[0].one_primary = field.field;
+				if (collectionExists(state.relations[0].one_collection)) {
+					const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
+					state.fieldData.type = field.type;
+					state.relations[0].one_primary = field.field;
+				} else {
+					state.fieldData.type = 'integer';
+				}
 			}
 		);
 
@@ -180,6 +212,8 @@ function initLocalStore(
 				}
 			}
 		);
+
+		watch([() => state.relations[0].one_collection, () => state.relations[0].one_primary], syncNewCollectionsM2O);
 	}
 
 	if (type === 'o2m') {
@@ -321,6 +355,10 @@ function initLocalStore(
 				}
 			}
 		);
+	}
+
+	function collectionExists(collection: string) {
+		return collectionsStore.getCollection(collection) !== null;
 	}
 }
 
