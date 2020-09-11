@@ -1,6 +1,6 @@
 import database from '../database';
 import { Accountability, AbstractServiceOptions } from '../types';
-import { DatabaseNotFoundException } from '../exceptions';
+import { DatabaseNotFoundException, ForbiddenException } from '../exceptions';
 import env from '../env';
 
 export default class DatabaseBackupService {
@@ -11,7 +11,9 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		//need to put check for admin user
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenException();
+		}
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
