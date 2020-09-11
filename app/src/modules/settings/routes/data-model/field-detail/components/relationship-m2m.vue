@@ -8,7 +8,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
-				<v-input v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="isExisting" db-safe>
+				<v-input :class="{ matches: junctionCollectionExists }" v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
@@ -33,7 +33,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
+				<v-input :class="{ matches: relatedCollectionExists }" v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
