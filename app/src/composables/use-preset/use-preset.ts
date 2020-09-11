@@ -206,8 +206,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
 			localPreset.value = {
 				...localPreset.value,
-				filters: [
-					...(localPreset.value.filters || []),
+				filters: localPreset.value.filters || [
 					{
 						key: 'hide-archived',
 						field: collectionInfo.value.meta.archive_field,

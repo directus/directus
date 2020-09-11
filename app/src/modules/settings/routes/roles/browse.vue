@@ -52,6 +52,7 @@
 				</template>
 			</v-table>
 		</div>
+		<router-view name="add" />
 	</private-view>
 </template>
 

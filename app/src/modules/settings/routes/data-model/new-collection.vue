@@ -279,8 +279,8 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									value: 'published',
 									text: 'Published',
+									value: 'published',
 								},
 								{
 									text: 'Draft',
@@ -293,6 +293,23 @@ export default defineComponent({
 							],
 						},
 						interface: 'dropdown',
+						display: 'color-dot',
+						display_options: {
+							choices: [
+								{
+									color: '#2F80ED',
+									value: 'published',
+								},
+								{
+									color: '#ECEFF1',
+									value: 'draft',
+								},
+								{
+									color: '#F2994A',
+									value: 'archived',
+								},
+							],
+						}
 					},
 					schema: {
 						default_value: 'draft',
