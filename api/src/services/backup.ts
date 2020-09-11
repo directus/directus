@@ -1,13 +1,19 @@
+import Knex from 'knex';
 import database from '../database';
 import { Accountability, AbstractServiceOptions } from '../types';
 import { DatabaseNotFoundException, ForbiddenException } from '../exceptions';
 import env from '../env';
 
+//can't use knex for most of this dbbackups are bashtools and cannot
+// call from .raw
+
 export default class DatabaseBackupService {
 	accountability: Accountability | null;
+	knex: Knex;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.accountability = options?.accountability || null;
+		this.knex = options?.knex || database;
 	}
 
 	async exportDb() {
@@ -19,6 +25,7 @@ export default class DatabaseBackupService {
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
 				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile('dump.sql');
+				return 'dump.sql';
 
 			case 'pg':
 				const { PostgreSql } = require('@shagital/db-dumper');
@@ -27,6 +34,7 @@ export default class DatabaseBackupService {
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
 					.dumpToFile('dump.sql');
+				return 'dump.sql';
 
 			case 'mysql':
 				const { MySql } = require('@shagital/db-dumper');
@@ -35,22 +43,33 @@ export default class DatabaseBackupService {
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
 					.dumpToFile('dump.sql');
+				return 'dump.sql';
+
+			case 'oracledb':
+
+			case 'mssql':
+				const mssql = require('mssql');
+				// need to use SQL for this
+
+				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
+				this.knex.raw(backup);
+
+				return 'dump.bak';
 
 			default:
-				return 'nope.sql';
+				return 'dump.sql';
 		}
 	}
 
-	async cleanUp() {
-		//this is needed as lots of exports only support export to local
+	async cleanUp(fileName: string) {
+		//this is needed as lots of exports only support export to local disk and then need to stream
 		const fs = require('fs');
-		const delFile = 'dump.sql';
 
 		try {
-			if (fs.existsSync(delFile)) {
+			if (fs.existsSync(fileName)) {
 				//file exists
 
-				fs.unlinkSync(delFile);
+				fs.unlinkSync(fileName);
 			}
 		} catch (err) {
 			throw new DatabaseNotFoundException('Cleanup failed');
