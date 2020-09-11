@@ -16,7 +16,7 @@ export default class DatabaseBackupService {
 		this.knex = options?.knex || database;
 	}
 
-	async exportDb() {
+	exportDb() {
 		let fileName = `./backup/dump.sql`;
 
 		switch (env.DB_CLIENT) {
