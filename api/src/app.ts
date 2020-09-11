@@ -17,6 +17,7 @@ import authenticate from './middleware/authenticate';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
+import backupRouter from './controllers/backup';
 import collectionsRouter from './controllers/collections';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
@@ -36,12 +37,10 @@ import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
-import WebhooksService from './services/webhooks';
 
 validateEnv(['KEY', 'SECRET']);
 
 const app = express();
-
 app.disable('x-powered-by');
 app.set('trust proxy', true);
 
@@ -72,14 +71,14 @@ if (env.RATE_LIMITER_ENABLED === true) {
 	app.use(rateLimiter);
 }
 
-app.use(sanitizeQuery);
-
 app.use('/auth', authRouter);
-
 app.use(authenticate);
+
+app.use(sanitizeQuery);
 app.use(cache);
 app.use('/activity', activityRouter);
 app.use('/assets', assetsRouter);
+app.use('/backup', backupRouter);
 app.use('/collections', collectionsRouter);
 app.use('/extensions', extensionsRouter);
 app.use('/fields', fieldsRouter);
@@ -101,9 +100,5 @@ app.use(respond);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
-
-// Register all webhooks
-const webhooksService = new WebhooksService();
-webhooksService.register();
 
 export default app;
