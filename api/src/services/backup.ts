@@ -17,15 +17,13 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenException();
-		}
+		let fileName = 'dump.sql';
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
 				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile('dump.sql');
-				return 'dump.sql';
+				break;
 
 			case 'pg':
 				const { PostgreSql } = require('@shagital/db-dumper');
@@ -34,7 +32,7 @@ export default class DatabaseBackupService {
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
 					.dumpToFile('dump.sql');
-				return 'dump.sql';
+				break;
 
 			case 'mysql':
 				const { MySql } = require('@shagital/db-dumper');
@@ -43,22 +41,27 @@ export default class DatabaseBackupService {
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
 					.dumpToFile('dump.sql');
-				return 'dump.sql';
+
+				break;
 
 			case 'oracledb':
-			//need to do - thinking of best way
+				//need to do - thinking of best way
+				const oracle = require('oracledb');
+				break;
 
 			case 'mssql':
 				// need to use SQL for this
 
 				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
 				this.knex.raw(backup);
-
-				return 'dump.bak';
+				fileName = 'dump.bak';
+				break;
 
 			default:
-				return 'dump.sql';
+				break;
 		}
+
+		return fileName;
 	}
 
 	async cleanUp(fileName: string) {

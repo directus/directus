@@ -20,7 +20,6 @@ router.get(
 		stream.pipe(res);
 
 		//this is needed because backup /dump methods only support local
-		await dbService.cleanUp(fileName);
 
 		return next();
 	})
