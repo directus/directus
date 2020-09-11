@@ -26,7 +26,7 @@
 			</v-input>
 		</template>
 
-		<v-list dense>
+		<v-list dense class="list">
 			<template v-if="showDeselect">
 				<v-list-item @click="$emit('input', null)" :disabled="value === null">
 					<v-list-item-icon v-if="multiple === true">
@@ -266,6 +266,10 @@ body {
 </style>
 
 <style lang="scss" scoped>
+.list {
+	--v-list-min-width: 0;
+}
+
 .item-text {
 	font-family: var(--v-select-font-family);
 }
