@@ -49,7 +49,6 @@ export default class DatabaseBackupService {
 			//need to do - thinking of best way
 
 			case 'mssql':
-				const mssql = require('mssql');
 				// need to use SQL for this
 
 				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
