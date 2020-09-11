@@ -8,11 +8,11 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
-				<v-input v-model="junctionCollection" :placeholder="$t('collection')" :disabled="isExisting" db-safe>
+				<v-input v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -33,11 +33,11 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input v-model="relations[1].one_collection" :placeholder="$t('collection')" :disabled="type === 'files' || isExisting" db-safe>
+				<v-input v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -57,11 +57,11 @@
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
-			<v-input v-model="relations[0].many_field" :placeholder="$t('foreign_key')" :disabled="isExisting" db-safe>
+			<v-input v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list dense class="monospace">
@@ -81,11 +81,11 @@
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-input v-model="relations[1].many_field" :placeholder="$t('foreign_key')" :disabled="isExisting" db-safe>
+			<v-input v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list dense class="monospace">
@@ -103,7 +103,7 @@
 					</v-menu>
 				</template>
 			</v-input>
-			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[1].one_primary" :placeholder="$t('primary_key')" />
+			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[1].one_primary" :placeholder="$t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
@@ -201,24 +201,24 @@ export default defineComponent({
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 20px;
+	gap: 12px 28px;
 	margin-top: 48px;
 
 	.v-icon.arrow {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--primary);
 
 		position: absolute;
 		transform: translateX(-50%);
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 85px;
-			left: 32.8%;
+			bottom: 78px;
+			left: 32.7%;
 		}
 
 		&:last-of-type {
 			bottom: 14px;
-			left: 67%;
+			left: 67.5%;
 		}
 	}
 }
