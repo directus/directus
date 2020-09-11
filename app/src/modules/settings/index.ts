@@ -26,7 +26,7 @@ export default defineModule(({ i18n }) => ({
 	routes: [
 		{
 			path: '/',
-			redirect: '/project',
+			redirect: '/data-model',
 		},
 		{
 			name: 'settings-project',
