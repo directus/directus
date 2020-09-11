@@ -40,9 +40,9 @@
 					<v-icon
 						class="icon"
 						:class="{
-							hidden: item.hidden,
-							meta: item.collection.startsWith('directus_'),
-							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
+							hidden: item.meta && item.meta.hidden || false,
+							system: item.collection.startsWith('directus_'),
+							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
 						:name="item.icon"
 					/>
@@ -52,9 +52,9 @@
 					<span
 						class="collection"
 						:class="{
-							hidden: item.hidden,
-							meta: item.collection.startsWith('directus_'),
-							unmanaged: item.managed === false && item.collection.startsWith('directus_') === false,
+							hidden: item.meta && item.meta.hidden || false,
+							system: item.collection.startsWith('directus_'),
+							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
 						v-tooltip="item.name"
 					>
@@ -63,8 +63,11 @@
 				</template>
 
 				<template #item.note="{ item }">
-					<span class="note" :class="{ hidden: item.hidden }">
-						{{ item.note }}
+					<span v-if="item.meta === null" class="note">
+						{{ $t('db_only_click_to_configure') }}
+					</span>
+					<span v-else class="note">
+						{{ item.meta.note }}
 					</span>
 				</template>
 
@@ -122,11 +125,12 @@ export default defineComponent({
 			{
 				text: i18n.t('name'),
 				value: 'name',
-				width: 300,
+				width: 240,
 			},
 			{
 				text: i18n.t('note'),
 				value: 'note',
+				width: 360,
 			},
 		]);
 
@@ -168,7 +172,7 @@ export default defineComponent({
 				);
 			});
 
-			const meta = computed(() => {
+			const system = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === true)
@@ -181,7 +185,8 @@ export default defineComponent({
 				return sortBy(
 					collectionsStore.state.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.meta === null),
+						.filter((collection) => collection.meta === null)
+						.map((collection) => ({ ...collection, icon: 'dns' })),
 					'collection'
 				);
 			});
@@ -193,16 +198,16 @@ export default defineComponent({
 					items.push(visible.value);
 				}
 
-				if (activeTypes.value.includes('hidden')) {
-					items.push(hidden.value);
-				}
-
 				if (activeTypes.value.includes('unmanaged')) {
 					items.push(unmanaged.value);
 				}
 
-				if (activeTypes.value.includes('meta')) {
-					items.push(meta.value);
+				if (activeTypes.value.includes('hidden')) {
+					items.push(hidden.value);
+				}
+
+				if (activeTypes.value.includes('system')) {
+					items.push(system.value);
 				}
 
 				return items.flat();
@@ -219,6 +224,18 @@ export default defineComponent({
 	vertical-align: baseline;
 }
 
+.icon.hidden ::v-deep i {
+	color: var(--foreground-subdued);
+}
+
+.icon.system ::v-deep i {
+	color: var(--primary);
+}
+
+// .icon.unmanaged ::v-deep i {
+// 	color: var(--warning);
+// }
+
 .collection {
 	font-family: var(--family-monospace);
 }
@@ -227,12 +244,16 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 }
 
-.meta {
+.system {
 	color: var(--primary);
 }
 
-.unmanaged {
-	color: var(--warning);
+// .unmanaged {
+// 	color: var(--warning);
+// }
+
+.note {
+	color: var(--foreground-subdued);
 }
 
 .padding-box {
@@ -252,7 +273,7 @@ export default defineComponent({
 }
 
 .no-meta {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--warning);
 
 	margin-right: 4px;
 }

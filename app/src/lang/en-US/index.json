@@ -623,7 +623,7 @@
 	"collections_shown": "Collections Shown",
 	"visible_collections": "Visible Collections",
 	"hidden_collections": "Hidden Collections",
-	"unmanaged_collections": "Unmanaged Collections",
+	"unmanaged_collections": "Unconfigured Collections",
 	"system_collections": "System Collections",
 
 	"slider": "Slider",

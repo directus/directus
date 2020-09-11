@@ -10,7 +10,8 @@
 					<template #input>
 						<div class="label">
 							<span class="name" v-tooltip="field.name">{{ field.field }}</span>
-							<span class="interface">{{ interfaceName }}</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
 						</div>
 					</template>
 
@@ -25,6 +26,7 @@
 							<v-icon
 								v-if="!field.meta"
 								name="report_problem"
+								class="unmanaged"
 								small
 								v-tooltip="$t('db_only_click_to_configure')"
 							/>
@@ -308,6 +310,11 @@ export default defineComponent({
 
 	&.hidden-icon {
 		--v-icon-color-hover: var(--foreground-subdued);
+	}
+
+	&.unmanaged {
+		--v-icon-color: var(--warning);
+		--v-icon-color-hover: var(--warning);
 	}
 }
 
