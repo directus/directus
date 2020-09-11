@@ -188,49 +188,9 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .v-form {
-	&.grid {
-		display: grid;
-		grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
-		gap: var(--v-form-vertical-gap) var(--v-form-horizontal-gap);
-
-		&.with-fill {
-			grid-template-columns:
-				[start] minmax(0, var(--v-form-column-max-width)) [half] minmax(0, var(--v-form-column-max-width))
-				[full] 1fr [fill];
-		}
-	}
-
-	& > .half,
-	& > .half-left,
-	& > .half-space {
-		grid-column: start / fill;
-
-		@include breakpoint(medium) {
-			grid-column: start / half;
-		}
-	}
-
-	& > .half-right {
-		grid-column: start / fill;
-
-		@include breakpoint(medium) {
-			grid-column: half / full;
-		}
-	}
-
-	& > .full {
-		grid-column: start / fill;
-
-		@include breakpoint(medium) {
-			grid-column: start / full;
-		}
-	}
-
-	& > .fill {
-		grid-column: start / fill;
-	}
+	@include form-grid;
 }
 </style>
