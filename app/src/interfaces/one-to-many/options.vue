@@ -2,9 +2,11 @@
 	<v-notice type="warning" v-if="collection == null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
-	<div v-else>
-		<p class="type-label">{{ $t('select_fields') }}</p>
-		<v-field-select :collection="collection" v-model="fields"></v-field-select>
+	<div v-else class="grid">
+		<div class="full">
+			<p class="type-label">{{ $t('select_fields') }}</p>
+			<v-field-select :collection="collection" v-model="fields"></v-field-select>
+		</div>
 	</div>
 </template>
 
@@ -54,7 +56,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.type-label {
-	margin-bottom: 4px;
+@import '@/styles/mixins/form-grid.scss';
+
+.grid {
+	@include form-grid;
 }
 </style>
