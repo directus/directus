@@ -13,11 +13,11 @@ router.get(
 		if (fileName === 'none') {
 			throw new DatabaseNotFoundException('Database not defined in env file');
 		}
-		await dbService.cleanUp(fileName);
+
 		const fs = require('fs');
 		res.attachment(fileName);
 		//should probably compress this file?
-		res.set('Content-Type', 'application/octet-stream');
+		res.set('Content-Type', 'application/sql');
 
 		const stream = fs.createReadStream(fileName);
 

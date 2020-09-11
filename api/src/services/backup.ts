@@ -17,9 +17,13 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		let fileName = `${env.STORAGE_LOCAL_ROOT}/dump.sql`;
+		const os = require('os');
+		const osType = os.platform();
+
+		let fileName = `./backup/dump.sql`;
 
 		switch (env.DB_CLIENT) {
+			//need to rewrite as creates empty file
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
 				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile(fileName);
@@ -54,7 +58,7 @@ export default class DatabaseBackupService {
 
 				const backup = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${env.STORAGE_LOCAL_ROOT}/dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
 				this.knex.raw(backup);
-				fileName = `${env.STORAGE_LOCAL_ROOT}/dump.bak`;
+				fileName = `./backup/dump.bak`;
 				break;
 
 			default:
