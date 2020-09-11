@@ -157,7 +157,9 @@ export default class FieldsService {
 			.where({ collection, field })
 			.first();
 
-		fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
+		if (fieldInfo) {
+			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
+		}
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);

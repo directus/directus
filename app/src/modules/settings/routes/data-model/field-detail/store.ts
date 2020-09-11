@@ -15,6 +15,7 @@ import { DisplayConfig } from '@/displays/types';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+const collectionsStore = useCollectionsStore();
 
 let state: any;
 let availableInterfaces: ComputedRef<InterfaceConfig[]>;
@@ -27,7 +28,6 @@ function initLocalStore(
 	field: string,
 	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'
 ) {
-	const collectionsStore = useCollectionsStore();
 	const interfaces = getInterfaces();
 	const displays = getDisplays();
 
@@ -220,6 +220,57 @@ function initLocalStore(
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
+		const syncNewCollectionsO2M = throttle(() => {
+			const collectionName = state.relations[0].many_collection;
+			const fieldName = state.relations[0].many_field;
+
+			if (collectionExists(collectionName)) {
+				state.newCollections = [];
+			} else {
+				state.newCollections = [
+					{
+						collection: collectionName,
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								system: {
+									interface: 'text-input',
+								}
+							}
+						]
+					}
+				];
+			}
+
+			if (collectionExists(collectionName)) {
+				if (fieldExists(collectionName, fieldName)) {
+					state.newFields = [];
+				} else {
+					state.newFields = [
+						{
+							collection: collectionName,
+							field: fieldName,
+							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
+							schema: {},
+						}
+					]
+				}
+			} else {
+				state.newFields = [
+					{
+						collection: collectionName,
+						field: fieldName,
+						type: 'integer',
+						schema: {},
+					}
+				]
+			}
+		}, 50);
+
 		if (!isExisting) {
 			state.fieldData.meta.special = 'o2m';
 
@@ -246,11 +297,18 @@ function initLocalStore(
 		watch(
 			() => state.relations[0].many_collection,
 			() => {
-				state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-					state.relations[0].many_collection
-				).field;
+				if (collectionExists(state.relations[0].many_collection)) {
+					state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
+						state.relations[0].many_collection
+					).field;
+				}
 			}
 		);
+
+		watch(
+			[() => state.relations[0].many_collection, () => state.relations[0].many_field],
+			syncNewCollectionsO2M
+		)
 	}
 
 	if (type === 'm2m' || type === 'files') {
@@ -359,6 +417,10 @@ function initLocalStore(
 
 	function collectionExists(collection: string) {
 		return collectionsStore.getCollection(collection) !== null;
+	}
+
+	function fieldExists(collection: string, field: string) {
+		return fieldsStore.getField(collection, field) !== null;
 	}
 }
 

@@ -219,6 +219,8 @@ export default defineComponent({
 		async function saveField() {
 			saving.value = true;
 
+			console.log(state);
+
 			try {
 				if (props.field !== '+') {
 					await api.patch(`/fields/${props.collection}/${props.field}`, state.fieldData);
