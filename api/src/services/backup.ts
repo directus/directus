@@ -20,29 +20,33 @@ export default class DatabaseBackupService {
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
-				const sqlite3 = require('sqlite3');
-				const db = new sqlite3.Database(env.DB_FILENAME);
-				const backup = db.backup('backup.back');
+				const { Sqlite } = require('@shagital/db-dumper');
+				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile('dump.sql');
 
-				if (backup.completed) {
-					return 'backup.back';
-				}
-				if (backup.failed) {
-					throw new DatabaseNotFoundException('Database backup failed');
-				}
+			case 'pg':
+				const { PostgreSql } = require('@shagital/db-dumper');
+				PostgreSql.create()
+					.setDbName(env.DB_NAME)
+					.setUserName(env.DB_USERNAME)
+					.setPassword(env.DB_PASSWORD)
+					.dumpToFile('dump.sql');
 
 			default:
-				return 'backup.back';
+				return 'dump.sql';
 		}
 	}
 
 	async cleanUp() {
 		//this is needed as lots of exports only support export to local
 		const fs = require('fs');
-		const delFile = 'backup.back';
+		const delFile = 'dump.sql';
 
 		try {
-			fs.unlinkSync(delFile);
+			if (fs.existsSync(delFile)) {
+				//file exists
+
+				fs.unlinkSync(delFile);
+			}
 		} catch (err) {
 			throw new DatabaseNotFoundException('Cleanup failed');
 		}
