@@ -2,6 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import DatabaseBackupService from '../services/backup';
 import { DatabaseNotFoundException } from '../exceptions';
+import { PassThrough } from 'stream';
 
 const router = Router();
 
@@ -20,17 +21,15 @@ router.get(
 		res.attachment(path.basename(fileName));
 		//should probably compress this file?
 		res.set('Content-Type', 'application/octet-stream');
-
 		const stream = fs.createReadStream(fileName);
 
 		stream.on('end', () => {
 			stream.pipe(res);
 		});
 		stream.on('error', function (err: string) {
-			throw new DatabaseNotFoundException('Database path not found');
+			throw new DatabaseNotFoundException(err);
 		});
 
-		dbService.cleanUp(fileName);
 		return next();
 	})
 );

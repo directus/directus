@@ -70,7 +70,6 @@
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
 		"@slynova/flydrive-s3": "^1.0.2",
-		"@types/archiver": "^3.1.0",
 		"@types/node": "^14.10.0",
 		"argon2": "^0.26.2",
 		"atob": "^2.1.2",

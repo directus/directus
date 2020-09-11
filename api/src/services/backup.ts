@@ -26,7 +26,7 @@ export default class DatabaseBackupService {
 
 				fs.copyFile(env.DB_FILENAME, fileName, (err: string) => {
 					if (err) {
-						throw new DatabaseNotFoundException('Could not copy database');
+						throw new DatabaseNotFoundException(err);
 					}
 				});
 				break;
