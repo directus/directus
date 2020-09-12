@@ -204,6 +204,10 @@ export default defineComponent({
 	gap: 12px 28px;
 	margin-top: 48px;
 
+	.v-input.matches {
+		--v-input-color: var(--primary);
+	}
+
 	.v-icon.arrow {
 		--v-icon-color: var(--primary);
 

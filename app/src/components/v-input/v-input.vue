@@ -245,6 +245,7 @@ body {
 .v-input {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
+	--v-input-color: var(--foreground-normal);
 	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
@@ -262,7 +263,7 @@ body {
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
-		color: var(--foreground-normal);
+		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--background-page);
 		border: var(--border-width) solid var(--border-normal);
@@ -305,7 +306,7 @@ body {
 		&:hover {
 			--arrow-color: var(--border-normal-alt);
 
-			color: var(--foreground-normal);
+			color: var(--v-input-color);
 			background-color: var(--background-page);
 			border-color: var(--border-normal-alt);
 		}
@@ -314,7 +315,7 @@ body {
 		&.active {
 			--arrow-color: var(--border-normal-alt);
 
-			color: var(--foreground-normal);
+			color: var(--v-input-color);
 			background-color: var(--background-page);
 			border-color: var(--v-input-border-color-focus);
 		}

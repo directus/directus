@@ -10,14 +10,15 @@
 				<div class="type-label">{{ $t('related_collection') }}</div>
 				<v-input
 					db-safe
-					:placeholder="$t('collection')"
+					:placeholder="$t('collection') + '...'"
 					v-model="relations[0].many_collection"
 					:disabled="isExisting"
+					:class="{ matches: isExisting }"
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -41,12 +42,12 @@
 				db-safe
 				v-model="relations[0].many_field"
 				:disabled="isExisting"
-				:placeholder="$t('foreign_key')"
+				:placeholder="$t('foreign_key') + '...'"
 			>
 				<template #append v-if="fields && fields.length > 0">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list dense class="monospace">
@@ -167,11 +168,15 @@ export default defineComponent({
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 20px 32px;
+	gap: 12px 32px;
 	margin-top: 48px;
 
+	.v-input.matches {
+		--v-input-color: var(--primary);
+	}
+
 	.v-icon.arrow {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--primary);
 
 		position: absolute;
 		bottom: 14px;

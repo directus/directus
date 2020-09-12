@@ -8,11 +8,11 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection')">
+				<v-input :class="{ matches: isNewCollection === false }" db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection') + '...'">
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="box" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -32,7 +32,7 @@
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].many_field" />
-			<v-input db-safe :disabled="isNewCollection === false" v-model="relations[0].one_primary" :placeholder="$t('primary_key')" />
+			<v-input db-safe :disabled="isNewCollection === false" v-model="relations[0].one_primary" :placeholder="$t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
@@ -45,7 +45,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
-				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" db-safe />
+				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" :placeholder="$t('field_name') + '...'" db-safe />
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
@@ -186,11 +186,15 @@ export default defineComponent({
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 20px 32px;
+	gap: 12px 32px;
 	margin-top: 48px;
 
+	.v-input.matches {
+		--v-input-color: var(--primary);
+	}
+
 	.arrow {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--primary);
 
 		position: absolute;
 		bottom: 14px;
