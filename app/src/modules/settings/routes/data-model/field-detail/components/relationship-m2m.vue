@@ -57,7 +57,7 @@
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
-			<v-input v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
+			<v-input :class="{ matches: junctionFieldExists(relations[0].many_field)}" v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
@@ -81,7 +81,7 @@
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-input v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
+			<v-input :class="{ matches: junctionFieldExists(relations[1].many_field)}" v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
@@ -196,7 +196,12 @@ export default defineComponent({
 			}));
 		});
 
-		return { relations: state.relations, autoFill, collectionItems, junctionCollection, junctionFields, junctionCollectionExists, relatedCollectionExists };
+		return { relations: state.relations, autoFill, collectionItems, junctionCollection, junctionFields, junctionCollectionExists, relatedCollectionExists, junctionFieldExists };
+
+		function junctionFieldExists(fieldKey: string) {
+			if (!junctionCollection.value) return false;
+			return !!fieldsStore.getField(junctionCollection.value, fieldKey);
+		}
 	},
 });
 </script>
