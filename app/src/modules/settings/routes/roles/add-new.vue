@@ -5,10 +5,10 @@
 				{{ $t('create_role') }}
 			</v-card-title>
 			<v-card-text>
-				<v-input v-model="roleName" autofocus :placeholder="$t('role_name') + '...'" />
+				<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="$t('role_name') + '...'" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button to="/settings/roles">{{ $t('cancel') }}</v-button>
+				<v-button to="/settings/roles" secondary>{{ $t('cancel') }}</v-button>
 				<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
@@ -51,3 +51,4 @@ export default defineComponent({
 	}
 });
 </script>
+
