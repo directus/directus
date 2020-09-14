@@ -1,0 +1,14 @@
+- title: Getting Started
+  emoji: '🐰'
+  icon: launch
+  children:
+    - title: Introduction
+      link: '/getting-started/01-introduction'
+    - title: Installation
+      link: '/getting-started/02-installation'
+- title: Guides
+  emoji: '📖'
+  icon: article
+  children:
+    - title: White-Labeling
+      link: '/guides/01-white-labeling'
