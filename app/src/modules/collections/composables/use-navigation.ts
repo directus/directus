@@ -13,6 +13,7 @@ export type NavItem = {
 
 export type NavItemGroup = {
 	name: string;
+	accordion: string;
 	items: NavItem[];
 };
 
