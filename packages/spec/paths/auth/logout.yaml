@@ -1,8 +1,0 @@
-post:
-  description: Log out of directus.
-  tags:
-    - Authentication
-  operationId: logout
-  responses:
-    '200':
-      description: Request successful
