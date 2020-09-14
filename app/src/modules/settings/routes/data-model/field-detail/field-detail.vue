@@ -220,8 +220,6 @@ export default defineComponent({
 		async function saveField() {
 			saving.value = true;
 
-			console.log(state);
-
 			try {
 				if (props.field !== '+') {
 					await api.patch(`/fields/${props.collection}/${props.field}`, state.fieldData);
@@ -240,6 +238,13 @@ export default defineComponent({
 					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
 						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
+					})
+				);
+
+				await Promise.all(
+					state.updateFields.map((updateField: Partial<Field> & { $type: string }) => {
+						delete updateField.$type;
+						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})
 				);
 
@@ -300,6 +305,10 @@ export default defineComponent({
 			}
 
 			if (relations.length === 2) {
+				const relationForCurrent = relations.find((relation: Relation) => (relation.many_collection === collection && relation.many_field === field) || (relation.one_collection === collection && relation.one_field === field));
+
+				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field) return 'm2o';
+
 				if (
 					relations[0].one_collection === 'directus_files' ||
 					relations[1].one_collection === 'directus_files'

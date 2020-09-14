@@ -6,7 +6,7 @@
  */
 
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef } from '@vue/composition-api';
+import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
 import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
@@ -55,6 +55,9 @@ function initLocalStore(
 		relations: [],
 		newCollections: [],
 		newFields: [],
+		updateFields: [],
+
+		autoFillJunctionRelation: true,
 	});
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
@@ -245,6 +248,8 @@ function initLocalStore(
 						]
 					}
 				];
+
+				state.relations[0].many_primary = 'id';
 			}
 
 			if (collectionExists(collectionName)) {
@@ -253,6 +258,7 @@ function initLocalStore(
 				} else {
 					state.newFields = [
 						{
+							$type: 'manyRelated',
 							collection: collectionName,
 							field: fieldName,
 							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
@@ -263,6 +269,7 @@ function initLocalStore(
 			} else {
 				state.newFields = [
 					{
+						$type: 'manyRelated',
 						collection: collectionName,
 						field: fieldName,
 						type: 'integer',
@@ -270,6 +277,8 @@ function initLocalStore(
 					}
 				]
 			}
+
+			console.log(state.newFields);
 		}, 50);
 
 		if (!isExisting) {
@@ -324,6 +333,10 @@ function initLocalStore(
 				state.newCollections.push({
 					$type: 'junction',
 					collection: junctionCollection,
+					meta: {
+						hidden: true,
+						icon: 'import_export',
+					},
 					fields: [
 						{
 							field: 'id',
@@ -337,6 +350,9 @@ function initLocalStore(
 						}
 					]
 				});
+
+				state.relations[0].many_primary = 'id';
+				state.relations[1].many_primary = 'id';
 			}
 
 			if (fieldExists(junctionCollection, manyCurrent) === false) {
@@ -383,8 +399,6 @@ function initLocalStore(
 					]
 				})
 			}
-
-			console.log(state.newCollections, state.newFields);
 		}, 50);
 
 		if (!isExisting) {
@@ -414,6 +428,19 @@ function initLocalStore(
 			() => state.fieldData.field,
 			() => {
 				state.relations[0].one_field = state.fieldData.field;
+
+				if (collectionExists(state.fieldData.field)) {
+					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					state.relations[1].one_collection = state.fieldData.field;
+					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
+					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+
+					if (state.relations[0].many_field === state.relations[1].many_field) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
+					}
+				}
 			}
 		);
 
@@ -462,6 +489,30 @@ function initLocalStore(
 			],
 			syncNewCollectionsM2M
 		)
+
+		let stop: WatchStopHandle;
+
+		watch(() => state.autoFillJunctionRelation, (startWatching) => {
+			if (startWatching) {
+				stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
+					if (newRelatedCollection) {
+						state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+						state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+						state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					}
+
+					if (newRelatedPrimary) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+					}
+
+					if (state.relations[0].many_field === state.relations[1].many_field) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
+					}
+				});
+			} else {
+				stop?.();
+			}
+		}, { immediate: true });
 	}
 
 	if (type === 'presentation') {

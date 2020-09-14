@@ -538,6 +538,10 @@
 	"inline_title": "Inline Title",
 	"auto_format_casing": "Auto-format casing",
 
+	"auto_fill": "Auto Fill",
+
+	"corresponding_field": "Corresponding Field",
+
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",

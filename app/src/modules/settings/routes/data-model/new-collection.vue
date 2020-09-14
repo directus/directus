@@ -204,7 +204,7 @@ export default defineComponent({
 					type: 'success',
 				});
 
-				router.push('/settings/data-model');
+				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {
 				console.log(error);
 				saveError.value = error;

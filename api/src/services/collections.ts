@@ -73,8 +73,10 @@ export default class CollectionsService {
 					}
 				});
 
-				const collectionInfo = omit(payload, 'fields');
-				await collectionItemsService.create(collectionInfo);
+				await collectionItemsService.create({
+					...(payload.meta || {}),
+					collection: payload.collection,
+				});
 
 				const fieldPayloads = payload
 					.fields!.filter((field) => field.meta)

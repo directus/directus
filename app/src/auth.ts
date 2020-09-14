@@ -31,7 +31,7 @@ export async function login(credentials: LoginCredentials) {
 	await hydrate();
 }
 
-let refreshTimeout: number;
+let refreshTimeout: any;
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }) {
 	const appStore = useAppStore();
