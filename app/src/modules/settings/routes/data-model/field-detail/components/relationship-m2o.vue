@@ -8,7 +8,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input :class="{ matches: isNewCollection === false }" db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection') + '...'">
+				<v-input :class="{ matches: relatedCollectionExists }" db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection') + '...'">
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
@@ -33,7 +33,7 @@
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].many_field" />
-			<v-input db-safe :disabled="isNewCollection === false" v-model="relations[0].one_primary" :placeholder="$t('primary_key') + '...'" />
+			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[0].one_primary" :placeholder="$t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
@@ -86,8 +86,8 @@ export default defineComponent({
 		const { items } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
-		const isNewCollection = computed(() => {
-			return collectionsStore.getCollection(state.relations[0].one_collection) === null;
+		const relatedCollectionExists = computed(() => {
+			return !!collectionsStore.getCollection(state.relations[0].one_collection);
 		});
 
 		return {
@@ -97,7 +97,7 @@ export default defineComponent({
 			correspondingField,
 			correspondingLabel,
 			fieldData: state.fieldData,
-			isNewCollection,
+			relatedCollectionExists,
 		};
 
 		function useRelation() {
