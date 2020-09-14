@@ -121,7 +121,6 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 8px;
 	grid-template-columns: repeat(auto-fit, 24px);
-	justify-content: center;
 	padding: 20px 0;
 	color: var(--foreground-subdued);
 }

@@ -66,6 +66,7 @@ export default defineComponent({
 				time: ['datetime'],
 				json: ['checkboxes', 'tags'],
 				uuid: ['text-input'],
+				csv: ['tags'],
 			};
 
 			const recommended = recommendedInterfacesPerType[type] || [];
