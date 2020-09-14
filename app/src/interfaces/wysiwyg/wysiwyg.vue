@@ -1,5 +1,11 @@
 <template>
-	<Editor ref="editorElement" :init="editorOptions" v-model="_value" />
+	<Editor
+		ref="editorElement"
+		:init="editorOptions"
+		v-model="_value"
+		@onFocusIn="setFocus(true)"
+		@onFocusOut="setFocus(false)"
+	/>
 </template>
 
 <script lang="ts">
@@ -78,11 +84,11 @@ export default defineComponent({
 		},
 		disabled: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {
-		const editorElement = ref<any>(null);
+		const editorElement = ref<Vue | null>(null);
 
 		const _value = computed({
 			get() {
@@ -127,7 +133,19 @@ export default defineComponent({
 			};
 		});
 
-		return { editorElement, editorOptions, _value };
+		return { editorElement, editorOptions, _value, setFocus };
+
+		function setFocus(val: boolean) {
+			if (editorElement.value == null) return;
+			const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
+
+			if (body == null) return;
+			if (val) {
+				body.classList.add('focus');
+			} else {
+				body.classList.remove('focus');
+			}
+		}
 	},
 });
 </script>
