@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'check_box',
 	component: InterfaceCheckboxes,
 	description: i18n.t('interfaces.checkboxes.description'),
-	types: ['json'],
+	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'choices',
@@ -78,8 +78,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'check_box'
-			}
+				default_value: 'check_box',
+			},
 		},
 		{
 			field: 'iconOff',
@@ -90,8 +90,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'check_box_outline_blank'
-			}
+				default_value: 'check_box_outline_blank',
+			},
 		},
 		{
 			field: 'itemsShown',
@@ -99,11 +99,11 @@ export default defineInterface(({ i18n }) => ({
 			type: 'integer',
 			meta: {
 				width: 'half',
-				interface: 'numeric'
+				interface: 'numeric',
 			},
 			schema: {
-				default_value: 8
-			}
+				default_value: 8,
+			},
 		},
 	],
 	recommendedDisplays: ['tags'],

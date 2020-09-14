@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.tags.description'),
 	icon: 'local_offer',
 	component: InterfaceTags,
-	types: ['json'],
+	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'presets',
