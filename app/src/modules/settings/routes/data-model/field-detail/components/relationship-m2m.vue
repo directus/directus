@@ -8,7 +8,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
-				<v-input :class="{ matches: junctionCollectionExists }" v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="isExisting" db-safe>
+				<v-input :class="{ matches: junctionCollectionExists }" v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="autoFill || isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
@@ -33,7 +33,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input :class="{ matches: relatedCollectionExists }" v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
+				<v-input :autofocus="autoFill" :class="{ matches: relatedCollectionExists }" v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
@@ -57,7 +57,7 @@
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
-			<v-input v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="isExisting" db-safe>
+			<v-input v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
@@ -81,7 +81,7 @@
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-input v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="isExisting" db-safe>
+			<v-input v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
@@ -104,6 +104,8 @@
 				</template>
 			</v-input>
 			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[1].one_primary" :placeholder="$t('primary_key') + '...'" />
+			<div class="spacer" />
+			<v-checkbox block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
@@ -111,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
@@ -136,6 +138,15 @@ export default defineComponent({
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+
+		const autoFill = computed({
+			get() {
+				return state.autoFillJunctionRelation;
+			},
+			set(newAuto: boolean) {
+				state.autoFillJunctionRelation = newAuto;
+			}
+		})
 
 		const availableCollections = computed(() => {
 			return orderBy(
@@ -188,7 +199,7 @@ export default defineComponent({
 			}));
 		});
 
-		return { relations: state.relations, collectionItems, junctionCollection, junctionFields, junctionCollectionExists, relatedCollectionExists };
+		return { relations: state.relations, autoFill, collectionItems, junctionCollection, junctionFields, junctionCollectionExists, relatedCollectionExists };
 	},
 });
 </script>
@@ -216,13 +227,13 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 78px;
-			left: 32.7%;
+			bottom: 141px;
+   			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 14px;
-			left: 67.5%;
+			bottom: 76px;
+    		left: 67.4%;
 		}
 	}
 }

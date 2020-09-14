@@ -6,7 +6,7 @@
  */
 
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef } from '@vue/composition-api';
+import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
 import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
@@ -55,6 +55,8 @@ function initLocalStore(
 		relations: [],
 		newCollections: [],
 		newFields: [],
+
+		autoFillJunctionRelation: true,
 	});
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
@@ -383,8 +385,6 @@ function initLocalStore(
 					]
 				})
 			}
-
-			console.log(state.newCollections, state.newFields);
 		}, 50);
 
 		if (!isExisting) {
@@ -462,6 +462,25 @@ function initLocalStore(
 			],
 			syncNewCollectionsM2M
 		)
+
+		let stop: WatchStopHandle;
+
+		watch(() => state.autoFillJunctionRelation, (startWatching) => {
+			if (startWatching) {
+				stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
+					if (newRelatedCollection) {
+						state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+						state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					}
+
+					if (newRelatedPrimary) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+					}
+				});
+			} else {
+				stop?.();
+			}
+		}, { immediate: true });
 	}
 
 	if (type === 'presentation') {
