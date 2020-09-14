@@ -1,0 +1,52 @@
+post:
+  description: Send an email
+  operationId: sendMail
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            to:
+              description: User ID, email address, or object in the format { email, name }. You can send an email to multiple people at the same time by passing an array here.
+              type: array
+              example: ["user@example.com", "admin@example.com"]
+              items:
+                type: string
+                format: email
+            body:
+              description: Body of the email.
+              type: string
+              example: "Hello <b>{{name}}</b>, this is your new password: {{password}}."
+            data:
+              description: Key value pairs of variables that can be used in the body.
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                password:
+                  type: string
+                  example: secret
+            subject:
+              description: Email subject.
+              type: string
+              example: New Password
+            type:
+              description: HTML or plain text
+              example: html
+              type: string
+              enum: [html, text]
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: string
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Mail

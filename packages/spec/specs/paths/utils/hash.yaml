@@ -1,0 +1,26 @@
+post:
+  description: Create a hash for a given string.
+  operationId: hash
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            string:
+              description: String you want to hash.        
+              type: string
+              example: Directus
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: string
+                example: $argon2i$v=19$m=4096,t=3,p=1$DbHhm1nACWQHG2tkjm+zXQ$cHl7ISy9xlGWZr35zBteK8PdvBi6FiEEEBv236Wgha0
+            type: object
+      description: Successful request
+  tags:
+  - Utilities

@@ -1,0 +1,70 @@
+type: object
+properties:
+  collection:
+    description: What collection this permission applies to.
+    example: customers
+    type: string
+  comment:
+    description: If the user can post comments.
+    example: update
+    type: string
+    enum: [none, create, update, full]
+  create:
+    description: If the user can create items.
+    example: full
+    type: string
+    enum: [none, full]
+  delete:
+    description: If the user can update items.
+    example: none
+    type: string
+    enum: [none, mine, role, full]
+  explain:
+    description: If the user is required to leave a comment explaining what was changed.
+    example: none
+    type: string
+    enum: [none, create, update, always]
+  id:
+    description: Unique identifier for the permission.
+    example: 1
+    type: integer
+  read:
+    description: If the user can read items.
+    example: mine
+    type: string
+    enum: [none, mine, role, full]
+  read_field_blacklist:
+    description: Explicitly denies read access for specific fields.
+    example: []
+    type: array
+    items:
+      type: string
+  role:
+    description: Unique identifier of the role this permission applies to.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    nullable: true # Should this be nullable?
+  status:
+    description: What status this permission applies to.
+    example: null
+    type: string
+    nullable: true
+  status_blacklist:
+    description: Explicitly denies specific statuses to be used.
+    example: []
+    oneOf:
+      - type: array
+        nullable: true
+        items:
+          type: string
+  update:
+    description: If the user can update items.
+    example: none
+    type: string
+    enum: [none, mine, role, full]
+  write_field_blacklist:
+    description: Explicitly denies write access for specific fields.
+    example: []
+    type: array
+    items:
+      type: string

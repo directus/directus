@@ -1,0 +1,51 @@
+type: object
+properties:
+  activity:
+    description: Unique identifier for the [activity](/api/activity) record.
+    example: 2
+    type: integer
+  collection:
+    description: Collection of the updated item.
+    example: articles
+    type: string
+  data:
+    description: Copy of item state at time of update.
+    example:
+      author: 1
+      body: This is my first post
+      featured_image: 15
+      id: '168'
+      title: Hello, World!
+    type: object
+    nullable: true # Should this be nullable?
+  delta:
+    description: Changes between the previous and the current revision.
+    example:
+      title: Hello, World!
+    oneOf:
+      - type: object
+  id:
+    description: Unique identifier for the revision.
+    example: 1
+    type: integer
+  item:
+    description: Primary key of updated item.
+    example: '168'
+    type: string
+  parent_changed:
+    description: If the current item was updated relationally, this shows if the parent
+      item was updated as well.
+    example: false
+    type: boolean
+  parent_collection:
+    description: If the current item was updated relationally, this is the collection
+      of the parent item.
+    example: null
+    type: string
+    nullable: true
+  parent_item:
+    description: If the current item was updated relationally, this is the unique
+      identifier of the parent item.
+    example: null
+    type: string
+    nullable: true

@@ -1,0 +1,76 @@
+type: object
+properties:
+  tfa_secret:
+    description: The 2FA secret string that's used to generate one time passwords.
+    example: null
+    type: string
+    nullable: true
+  avatar:
+    description: The user's avatar.
+    example: null
+    oneOf:
+      - type: integer
+        nullable: true
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/File'
+    nullable: true
+  email:
+    description: Unique email address for the user.
+    example: admin@example.com
+    type: string
+    format: email
+  external_id:
+    description: ID used for SCIM.
+    example: null
+    type: string
+    nullable: true
+  first_name:
+    description: First name of the user.
+    example: Admin
+    type: string
+  id:
+    description: Unique identifier for the user.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+  last_login:
+    description: When this user logged in last.
+    example: '2020-05-31 14:32:37'
+    type: string
+    nullable: true
+    format: date-time
+  last_name:
+    description: First name of the user.
+    example: User
+    type: string
+  last_page:
+    description: Last page that the user was on.
+    example: /my-project/settings/collections/a
+    type: string
+    nullable: true
+  language:
+    description: The user's language used in Directus.
+    example: en-US
+    type: string
+  role:
+    description: Unique identifier of the role of this user.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+  status:
+    description: Status of the user.
+    example: active
+    type: string
+    enum: [active, invited, draft, suspended, deleted]
+  theme:
+    description: What theme the user is using.
+    example: auto
+    type: string
+    enum: [light, dark, auto]
+  timezone:
+    description: The user's timezone.
+    example: America/New_York
+    type: string
+  title:
+    description: The user's title.
+    example: null
+    type: string
+    nullable: true

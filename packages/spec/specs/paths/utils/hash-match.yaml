@@ -1,0 +1,27 @@
+post:
+  description: Check if a hash is valid for a given string.
+  operationId: checkHash
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            hash:
+              description: The hash you want to verify.
+              type: string
+            string:
+              description: String you want to hash.
+              type: string
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: boolean
+  tags:
+  - Utilities

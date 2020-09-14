@@ -1,0 +1,120 @@
+get:
+  description: Returns a list of the fields available in the given collection.
+  operationId: getCollectionFields
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Field'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Fields
+post:
+  description: Create a new field in a given collection.
+  operationId: createField
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: [ field, datatype, type, length ]
+          properties:
+            field:
+              description: Unique name of the field. Field name is unique within the collection.
+              type: string
+            datatype:
+              description: SQL datatype of the column that corresponds to this field.
+              type: string
+            type:
+              description: Directus specific data type. Used to cast values in the API.
+              type: string
+            auto_increment:
+              description: If the value in this field is auto incremented. Only applies to integer type fields.
+              type: boolean
+            group:
+              description: What field group this field is part of.
+              type: string
+            hidden_browse:
+              description: If this field should be hidden from the item browse (listing) page.
+              type: boolean
+            hidden_detail:
+              description: If this field should be hidden from the item detail (edit) page.
+              type: boolean
+            interface:
+              description: What interface is used in the admin app to edit the value for this field.
+              type: string
+            locked:
+              description: If the field can be altered by the end user. Directus system fields have this value set to `true`.
+              type: boolean
+            note:
+              description: A user provided note for the field. Will be rendered alongside the interface on the edit page.
+              type: string
+            options:
+              description: Options for the interface that's used. This format is based on the individual interface.
+              type: object
+            primary_key:
+              description: If this field is the primary key of the collection.
+              type: boolean
+            readonly:
+              description: Prevents the user from editing the value in the field.
+              type: boolean
+            required:
+              description: If this field requires a value.
+              type: boolean
+            signed:
+              description: If the value is signed or not. Only applies to integer type fields.
+              type: boolean
+            sort:
+              description: Sort order of this field on the edit page of the admin app.
+              type: integer
+            translation:
+              description: 'Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.'
+              type: object
+            unique:
+              description: If the value of this field should be unique within the collection.
+              type: boolean
+            validation:
+              description: User provided regex that will be used in the API to validate incoming values.
+              type: string
+            width:
+              description: Width of the field on the edit form.
+              type: string
+              enum: [half, half-left, half-right, full, fill]
+            length:
+              description: Length of the field. Will be used in SQL to set the length property of the colummn. Requirement of this attribute depends on the provided datatype.
+              type: integer
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Field'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Fields
+parameters:
+  - description: Unique identifier of the collection the item resides in.
+    in: path
+    name: collection
+    required: true
+    schema:
+      type: string

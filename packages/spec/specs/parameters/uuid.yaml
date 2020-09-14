@@ -1,0 +1,7 @@
+description: Unique identifier for the object.
+name: id
+in: path
+required: true
+schema:
+  example: 8cbb43fe-4cdf-4991-8352-c461779cec02
+  type: string
