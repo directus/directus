@@ -298,6 +298,10 @@ export default defineComponent({
 			}
 
 			if (relations.length === 2) {
+				const relationForCurrent = relations.find((relation: Relation) => (relation.many_collection === collection && relation.many_field === field) || (relation.one_collection === collection && relation.one_field === field));
+
+				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field) return 'm2o';
+
 				if (
 					relations[0].one_collection === 'directus_files' ||
 					relations[1].one_collection === 'directus_files'

@@ -247,6 +247,8 @@ function initLocalStore(
 						]
 					}
 				];
+
+				state.relations[0].many_primary = 'id';
 			}
 
 			if (collectionExists(collectionName)) {
@@ -342,6 +344,9 @@ function initLocalStore(
 						}
 					]
 				});
+
+				state.relations[0].many_primary = 'id';
+				state.relations[1].many_primary = 'id';
 			}
 
 			if (fieldExists(junctionCollection, manyCurrent) === false) {
