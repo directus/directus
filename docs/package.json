@@ -1,12 +1,12 @@
 {
   "name": "@directus/docs",
   "private": false,
-  "version": "9.0.0-alpha.36",
+  "version": "9.0.0-alpha.37",
   "description": "",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "gitHead": "e5b97930dacc0f14d93146a63fc7e1ce37aebbe5"
+  "gitHead": "f2cfa9d188aefaaf1d5dd2b5de551f3575378f7f"
 }
