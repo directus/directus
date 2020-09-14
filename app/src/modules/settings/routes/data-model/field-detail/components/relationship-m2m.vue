@@ -151,10 +151,7 @@ export default defineComponent({
 		const availableCollections = computed(() => {
 			return orderBy(
 				collectionsStore.state.collections.filter((collection) => {
-					return (
-						collection.collection.startsWith('directus_') === false &&
-						collection.collection !== props.collection
-					);
+					return (collection.collection.startsWith('directus_') === false);
 				}),
 				['collection'],
 				['asc']

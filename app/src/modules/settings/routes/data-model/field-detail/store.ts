@@ -417,6 +417,19 @@ function initLocalStore(
 			() => state.fieldData.field,
 			() => {
 				state.relations[0].one_field = state.fieldData.field;
+
+				if (collectionExists(state.fieldData.field)) {
+					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					state.relations[1].one_collection = state.fieldData.field;
+					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
+					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+
+					if (state.relations[0].many_field === state.relations[1].many_field) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
+					}
+				}
 			}
 		);
 
@@ -479,6 +492,10 @@ function initLocalStore(
 
 					if (newRelatedPrimary) {
 						state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+					}
+
+					if (state.relations[0].many_field === state.relations[1].many_field) {
+						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
 					}
 				});
 			} else {
