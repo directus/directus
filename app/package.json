@@ -1,6 +1,6 @@
 {
   "name": "@directus/app",
-  "version": "9.0.0-alpha.34",
+  "version": "9.0.0-alpha.35",
   "private": false,
   "description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
   "author": "Rijk van Zanten <rijk@rngr.org>",
@@ -159,5 +159,5 @@
       "stylelint --fix"
     ]
   },
-  "gitHead": "a7d3952ec3b812ee1eec2f1c7b9f44186cbe0498"
+  "gitHead": "e4f1e921598eda5d8ed380f91d0328ce97a8fd04"
 }

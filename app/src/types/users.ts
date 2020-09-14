@@ -6,6 +6,7 @@ export type Role = {
 		| null
 		| {
 				group_name: string;
+				accordion: string;
 				collections: {
 					collection: string;
 				}[];
