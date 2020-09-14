@@ -2,7 +2,7 @@ export type Role = {
 	id: string;
 	name: string;
 	description: string;
-	collection_listing:
+	collection_list:
 		| null
 		| {
 				group_name: string;
@@ -10,7 +10,7 @@ export type Role = {
 					collection: string;
 				}[];
 		  }[];
-	module_listing:
+	module_list:
 		| null
 		| {
 				link: string;

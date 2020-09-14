@@ -23,11 +23,12 @@ export default function useNavigation() {
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
 		if (!userStore.state.currentUser) return null;
-		if (!userStore.state.currentUser.role.collection_listing) return null;
+		if (!userStore.state.currentUser.role.collection_list) return null;
 
-		return userStore.state.currentUser?.role.collection_listing.map((groupRaw) => {
+		return userStore.state.currentUser?.role.collection_list.map((groupRaw) => {
 			const group: NavItemGroup = {
 				name: groupRaw.group_name,
+				accordion: groupRaw.accordion,
 				items: groupRaw.collections
 					.map(({ collection }) => {
 						const collectionInfo = collectionsStore.getCollection(collection);

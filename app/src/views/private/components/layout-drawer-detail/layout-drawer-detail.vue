@@ -42,7 +42,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .layout-options {
 	.layout-option {
 		margin-top: 24px;

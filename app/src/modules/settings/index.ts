@@ -148,4 +148,5 @@ export default defineModule(({ i18n }) => ({
 		return user.role.admin === true;
 	},
 	order: Infinity,
+	persistent: true,
 }));
