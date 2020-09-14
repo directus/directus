@@ -326,6 +326,9 @@ function initLocalStore(
 				state.newCollections.push({
 					$type: 'junction',
 					collection: junctionCollection,
+					meta: {
+						hidden: true,
+					},
 					fields: [
 						{
 							field: 'id',
@@ -470,6 +473,7 @@ function initLocalStore(
 				stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
 					if (newRelatedCollection) {
 						state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+						state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
 						state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
 					}
 
