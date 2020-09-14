@@ -2,7 +2,7 @@
 	<div class="v-detail" :class="{ _active }">
 		<v-divider @click.native="_active = !_active">
 			<slot name="title">{{ label }}</slot>
-			<v-icon name="unfold_more" small />
+			<v-icon :name="_active ? 'unfold_less' : 'unfold_more'" small />
 		</v-divider>
 		<transition-expand>
 			<div v-if="_active">
@@ -29,8 +29,8 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.t('toggle')
-		}
+			default: i18n.t('toggle'),
+		},
 	},
 
 	setup(props, { emit }) {
