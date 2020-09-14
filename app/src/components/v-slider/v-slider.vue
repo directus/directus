@@ -51,13 +51,17 @@ export default defineComponent({
 		},
 		value: {
 			type: Number,
-			default: 50,
+			default: 0,
 		},
 	},
 	setup(props, { emit }) {
-		const styles = computed(() => ({
-			'--_v-slider-percentage': ((props.value - props.min) / (props.max - props.min)) * 100,
-		}));
+		const styles = computed(() => {
+			if (props.value === null) return { '--_v-slider-percentage': 50 };
+
+			let percentage = ((props.value - props.min) / (props.max - props.min)) * 100;
+			if (percentage === NaN) percentage = 0;
+			return { '--_v-slider-percentage': percentage };
+		});
 
 		return {
 			styles,
