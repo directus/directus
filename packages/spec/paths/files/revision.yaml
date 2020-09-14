@@ -1,0 +1,25 @@
+get:
+  description: Retrieve a single revision of the file by offset.
+  tags:
+    - Files
+  operationId: getFileRevision
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+    - name: offset
+      in: path
+      description: offset or revision
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Revision'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

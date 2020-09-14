@@ -1,0 +1,58 @@
+get:
+  description: List the SCIM users
+  operationId: getSCIMUsers
+  parameters:
+    - description: The 1-based index of the first result in the current set of list results.
+      in: query
+      name: startIndex
+      required: false
+      schema:
+        type: integer
+    - description: Specifies the desired maximum number of query results per page.
+      in: query
+      name: count
+      required: false
+      schema:
+        type: integer
+    - description: Filter by `id`, `userName`, `emails.value` and `externalId` attributes   
+        are supported. Only the `eq` operator is supported. Uses format `?filter=id eq      
+        15`
+      in: query
+      name: filter
+      required: false
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+post:
+  description: Create a new SCIM User.
+  operationId: createSCIMUser
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM

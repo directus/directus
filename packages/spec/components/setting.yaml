@@ -1,0 +1,7 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the setting.
+    example: 1
+    type: integer
+additionalProperties: true

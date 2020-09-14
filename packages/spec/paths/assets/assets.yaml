@@ -1,0 +1,51 @@
+get:
+  tags:
+    - Assets
+  operationId: getAsset
+  description: Image typed files can be dynamically resized and transformed to fit any need.
+  security: 
+    - Auth: []
+  parameters:
+    - name: key
+      in: path
+      description: private_hash of the file
+      required: true
+      schema:
+        type: string
+    - name: key
+      in: query
+      description: The key of the asset size configured in settings.
+      schema:
+        type: string
+    - name: w
+      in: query
+      description: Width of the file in pixels.
+      schema:
+        type: integer
+    - name: h
+      in: query
+      description: Height of the file in pixels.
+      schema:
+        type: integer
+    - name: f
+      in: query
+      description: Fit of the file
+      schema:
+        type: string
+        enum: [crop, contain]
+    - name: q
+      in: query
+      description: Quality of compression.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+  responses:
+    '200':
+      description: Successful request
+      content:
+        text/plain:
+          schema:
+            type: string
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

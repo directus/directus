@@ -1,0 +1,114 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the field in the `directus_fields` collection.
+    example: 167
+    type: integer
+    nullable: true
+  collection:
+    description: Unique name of the collection this field is in.
+    example: about_us
+    type: string
+  field:
+    description: Unique name of the field. Field name is unique within the collection.
+    example: id
+    type: string
+  auto_increment:
+    description: If the value in this field is auto incremented. Only applies to integer
+      type fields.
+    example: true
+    type: boolean
+  datatype:
+    description: SQL datatype of the column that corresponds to this field.
+    example: INT
+    type: string
+    nullable: true
+  group:
+    description: What field group this field is part of.
+    example: null
+    type: integer
+    nullable: true
+  hidden_browse:
+    description: If this field should be hidden from the item browse (listing) page.
+    example: true
+    type: boolean
+  hidden_detail:
+    description: If this field should be hidden from the item detail (edit) page.
+    example: true
+    type: boolean
+  interface:
+    description: What interface is used in the admin app to edit the value for this
+      field.
+    example: primary-key
+    type: string
+    nullable: true
+  length:
+    description: Length of the field. Will be used in SQL to set the `length` property
+      of the colummn.
+    example: '10'
+    type: string
+    nullable: true
+  locked:
+    description: If the field can be altered by the end user. Directus system fields
+      have this value set to `true`.
+    example: true
+    type: boolean
+  note:
+    description: A user provided note for the field. Will be rendered alongside the
+      interface on the edit page.
+    example: ''
+    type: string
+    nullable: true
+  options:
+    description: Options for the interface that's used. This format is based on the
+      individual interface.
+    example: null
+    type: object
+    nullable: true
+  primary_key:
+    description: If this field is the primary key of the collection.
+    example: true
+    type: boolean
+  readonly:
+    description: Prevents the user from editing the value in the field.
+    example: false
+    type: boolean
+  required:
+    description: If this field requires a value.
+    example: true
+    type: boolean
+  signed:
+    description: If the value is signed or not. Only applies to integer type fields.
+    example: false
+    type: boolean
+  sort:
+    description: Sort order of this field on the edit page of the admin app.
+    example: 1
+    type: integer
+    nullable: true
+  translation:
+    description: 'Key value pair of `<locale>: <translation>` that allows the user
+      to change the displayed name of the field in the admin app.'
+    example: null
+    type: object
+    nullable: true
+  type:
+    description: Directus specific data type. Used to cast values in the API.
+    example: integer
+    type: string
+  unique:
+    description: If the value of this field should be unique within the collection.
+    example: false
+    type: boolean
+  validation:
+    description: User provided regex that will be used in the API to validate incoming
+      values. It uses the PHP flavor of RegEX.
+    example: null
+    type: string
+    nullable: true
+  width:
+    description: Width of the field on the edit form.
+    example: null
+    type: string
+    nullable: true
+    enum: [half, half-left, half-right, full, fill, null]

@@ -1,0 +1,303 @@
+openapi: 3.0.1
+info:
+  title: Directus SDK
+  description: Template for generating any kind of SDK.
+  contact:
+    email: contact@directus.io
+  license:
+    name: GPL-3.0
+    url: 'https://www.gnu.org/licenses/gpl-3.0.de.html'
+  version: 1.0.0
+externalDocs:
+  description: Directus Docs
+  url: 'https://docs.directus.io'
+servers:
+  - url: 'https://demo.directus.io/'
+  - url: '/'
+tags:
+  - name: Activity
+    description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+  - name: Assets
+    description: Image typed files can be dynamically resized and transformed to fit any need.
+  - name: Authentication
+    description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+  - name: Collection presets
+    description: Collection presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
+  - name: Collections
+    description: Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database.
+  - name: Extensions
+    description: Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.
+  - name: Fields
+    description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
+  - name: Files
+    description: Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate thumbnails for images on the fly.
+  - name: Folders
+    description: Folders don't do anything yet, but will be used in the (near) future to be able to group files.
+  - name: Items
+    description: Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+  - name: Mail
+    description: Send electronic mail through the electronic post.
+  - name: Permissions
+    description: Permissions control who has access to what and when.
+  - name: Projects
+    description: Projects are the individual tenants of the platform. Each project has its own database and data.
+  - name: Relations
+    description: What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of.
+  - name: Revisions
+    description: Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will.
+  - name: Roles
+    description: Roles are groups of users that share permissions.
+  - name: SCIM
+    description: Directus partially supports Version 2 of System for Cross-domain Identity Management (SCIM). It is an open standard that allows for the exchange of user information between systems, therefore allowing users to be externally managed using the endpoints described below.
+  - name: Server
+    description: Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with.
+  - name: Settings
+    description: Settings control the way the platform works and acts.
+  - name: Users
+    description: Users are what gives you access to the data.
+  - name: Utilities
+    description: Directus comes with various utility endpoints you can use to simplify your development flow.
+  - name: Webhooks
+    description: Webhooks.
+paths:
+
+  # Activity
+  /activity:
+    $ref: './paths/activity/activitys.yaml'
+  /activity/comment:
+    $ref: './paths/activity/activity-comments.yaml'
+  /activity/{id}:
+    $ref: './paths/activity/activity.yaml'
+  /activity/comment/{id}:
+    $ref: './paths/activity/activity-comment.yaml'
+
+  # Assets
+  /assets/{key}:
+    $ref: './paths/assets/assets.yaml'
+
+  # Authentication
+  /auth/login:
+    $ref: './paths/auth/login.yaml'
+  /auth/refresh:
+    $ref: './paths/auth/refresh.yaml'
+  /auth/logout:
+    $ref: './paths/auth/logout.yaml'
+  /auth/password/request:
+    $ref: './paths/auth/password-request.yaml'
+  /auth/password/reset:
+    $ref: './paths/auth/password-reset.yaml'
+  /auth/sso:
+    $ref: './paths/auth/sso.yaml'
+  /auth/sso/{provider}:
+    $ref: './paths/auth/sso-provider.yaml'
+
+  # Items
+  /items/{collection}:
+    $ref: './paths/items/items.yaml'
+  /items/{collection}/{id}:
+    $ref: './paths/items/item.yaml'
+
+  # Presets
+  /presets:
+    $ref: './paths/presets/presets.yaml'
+  /presets/{id}:
+    $ref: './paths/presets/preset.yaml'
+
+  # Collections
+  /collections:
+    $ref: './paths/collections/collections.yaml'
+  /collections/{collection}:
+    $ref: './paths/collections/collection.yaml'
+  
+  # Extensions
+  /interfaces:
+    $ref: './paths/extensions/interfaces.yaml'
+  /layouts:
+    $ref: './paths/extensions/layouts.yaml'
+  /modules:
+    $ref: './paths/extensions/modules.yaml'
+
+  # Fields
+  /fields:
+    $ref: './paths/fields/fields.yaml'
+  /fields/{collection}:
+    $ref: './paths/fields/collection-fields.yaml'
+  /fields/{collection}/{field}:
+    $ref: './paths/fields/collection-field.yaml'
+
+  # Files
+  /files:
+    $ref: './paths/files/files.yaml'
+  /files/{id}:
+    $ref: './paths/files/file.yaml'
+  /files/{id}/revisions:
+    $ref: './paths/files/revisions.yaml'
+  /files/{id}/revisions/{offset}:
+    $ref: './paths/files/revision.yaml'
+
+  # Folders
+  /folders:
+    $ref: './paths/folders/folders.yaml'
+  /folders/{id}:
+    $ref: './paths/folders/folder.yaml'
+
+  # Mail
+  /mail:
+    $ref: './paths/mail/mail.yaml'
+
+  # Permissions
+  /permissions:
+    $ref: './paths/permissions/permissions.yaml'
+  /permissions/me:
+    $ref: './paths/permissions/permissions-me.yaml'
+  /permissions/{id}:
+    $ref: './paths/permissions/permission.yaml'
+  /permissions/me/{collection}:
+    $ref: './paths/permissions/permissions-me-collection.yaml'
+
+  # Relations
+  /relations:
+    $ref: './paths/relations/relations.yaml'
+  /relations/{id}:
+    $ref: './paths/relations/relation.yaml'
+
+  # Revisions
+  /revisions:
+    $ref: './paths/revisions/revisions.yaml'
+  /revisions/{id}:
+    $ref: './paths/revisions/revision.yaml'
+
+  # Revisions
+  /roles:
+    $ref: './paths/roles/roles.yaml'
+  /roles/{id}:
+    $ref: './paths/roles/role.yaml'
+
+  # SCIM
+  /scim/v2/Users:
+    $ref: './paths/scim/users.yaml'
+  /scim/v2/Users/{id}:
+    $ref: './paths/scim/user.yaml'
+  /scim/v2/Groups:
+    $ref: './paths/scim/groups.yaml'
+  /scim/v2/Groups/{id}:
+    $ref: './paths/scim/group.yaml'
+  
+  # Server
+  /server/info:
+    $ref: './paths/server/info.yaml'
+    servers:
+      - url: 'https://demo.directus.io/'
+  /server/ping:
+    $ref: './paths/server/ping.yaml'
+    servers:
+      - url: 'https://demo.directus.io/'
+
+  # Settings
+  /settings:
+    $ref: './paths/settings/settings.yaml'
+
+  # Users
+  /users:
+    $ref: './paths/users/users.yaml'
+  /users/me:
+    $ref: './paths/users/me.yaml'
+  /users/invite:
+    $ref: './paths/users/user-invite.yaml'
+  /users/{id}:
+    $ref: './paths/users/user.yaml'
+  /users/invite/{token}:
+    $ref: './paths/users/user-invite-token.yaml'
+  /users/{id}/track/page:
+    $ref: './paths/users/user-tracking.yaml'
+
+  # Utilities
+  /utils/hash:
+    $ref: './paths/utils/hash.yaml'
+  /utils/hash/verify:
+    $ref: './paths/utils/hash-match.yaml'
+  /utils/random/string:
+    $ref: './paths/utils/random.yaml'
+
+  # Webhooks
+  /webhooks:
+    $ref: './paths/webhooks/webhooks.yaml'
+
+components:
+  schemas:
+    Activity:
+      $ref: './components/activity.yaml'
+    Preset:
+      $ref: './components/preset.yaml'
+    Collection:
+      $ref: './components/collection.yaml'
+    Field:
+      $ref: './components/field.yaml'
+    File:
+      $ref: './components/file.yaml'
+    Folder:
+      $ref: './components/folder.yaml'
+    Item:
+      $ref: './components/item.yaml'
+    Permissions:
+      $ref: './components/permissions.yaml'
+    Relation:
+      $ref: './components/relation.yaml'
+    Revision:
+      $ref: './components/revision.yaml'
+    Role:
+      $ref: './components/role.yaml'
+    Setting:
+      $ref: './components/setting.yaml'
+    User:
+      $ref: './components/user.yaml'
+    Webhook:
+      $ref: './components/webhook.yaml'
+  parameters:
+    # All path parameters 
+    Id:
+      $ref: './parameters/id.yaml'
+    UUId:
+      $ref: './parameters/uuid.yaml'
+    Collection:
+      $ref: './parameters/collection.yaml'
+    # All query parameters
+    q:
+      $ref: './parameters/q.yaml'
+    Page:
+      $ref: './parameters/page.yaml'
+    Offset:
+      $ref: './parameters/offset.yaml'
+    Single:
+      $ref: './parameters/single.yaml'
+    Sort:
+      $ref: './parameters/sort.yaml'
+    Meta:
+      $ref: './parameters/meta.yaml'
+    Limit:
+      $ref: './parameters/limit.yaml'
+    Filter:
+      $ref: './parameters/filter.yaml'
+    Fields:
+      $ref: './parameters/fields.yaml'
+    Mode:
+      $ref: './parameters/mode.yaml'
+  responses:
+    NotFoundError:
+      $ref: './responses/notFoundError.yaml'
+    UnauthorizedError:
+      $ref: './responses/unauthorizedError.yaml'
+  securitySchemes:
+    KeyAuth:
+      type: apiKey
+      in: query
+      name: access_token
+      description: Use the key 'admin' to authenticate to the public api.
+    Auth:
+      type: apiKey
+      in: header
+      name: 'Authorization'
+      description: To authenticate, use the "/auth/authenticate" endpoint with the credentials "admin@example.com" | "password". Use the api key here like so "Bearer \<key\>".
+security: 
+  - Auth: []
+  - KeyAuth: []

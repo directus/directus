@@ -1,0 +1,78 @@
+get:
+  description: Returns a list of the collections available in the project.
+  operationId: getCollections
+  parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/Offset'
+  - $ref: '../../openapi.yaml#/components/parameters/Single'
+  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Collection'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Collections
+post:
+  description: Create a new collection in Directus.
+  operationId: createCollection
+  parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [ collection, fields ]
+          properties:
+            collection:
+              type: string
+              description: Unique name of the collection.
+              example: my_collection
+            fields:
+              type: object
+              description: The fields contained in this collection. See the fields reference for more information. Each individual field requires field, type, and interface to be provided.
+            note:
+              type: string
+              description: A note describing the collection.
+            hidden:
+              type: string
+              description: Whether or not the collection is hidden from the navigation in the admin app.
+            single:
+              type: string
+              description: Whether or not the collection is treated as a single record.
+            managed:
+              type: string
+              description: If Directus is tracking and managing this collection currently.
+            icon:
+              type: string
+              description: Name of a Google Material Design Icon that's assigned to this collection.
+            translation:
+              type: string
+              description: Key value pairs of how to show this collection's name in different languages in the admin app.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Collection'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Collections

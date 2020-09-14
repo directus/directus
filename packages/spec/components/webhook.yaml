@@ -1,0 +1,6 @@
+type: object
+properties:
+  id:
+    description: The index of the webhook.
+    type: integer
+    example: 1
