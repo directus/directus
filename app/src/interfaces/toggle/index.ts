@@ -39,7 +39,7 @@ export default defineInterface(({ i18n }) => ({
 				},
 			},
 			schema: {
-				default_value: i18n.t('active'),
+				default_value: i18n.t('interfaces.toggle.label_default'),
 			},
 		},
 		{
