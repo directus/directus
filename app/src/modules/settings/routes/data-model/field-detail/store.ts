@@ -55,6 +55,7 @@ function initLocalStore(
 		relations: [],
 		newCollections: [],
 		newFields: [],
+		updateFields: [],
 
 		autoFillJunctionRelation: true,
 	});
@@ -257,6 +258,7 @@ function initLocalStore(
 				} else {
 					state.newFields = [
 						{
+							$type: 'manyRelated',
 							collection: collectionName,
 							field: fieldName,
 							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
@@ -267,6 +269,7 @@ function initLocalStore(
 			} else {
 				state.newFields = [
 					{
+						$type: 'manyRelated',
 						collection: collectionName,
 						field: fieldName,
 						type: 'integer',
@@ -274,6 +277,8 @@ function initLocalStore(
 					}
 				]
 			}
+
+			console.log(state.newFields);
 		}, 50);
 
 		if (!isExisting) {
@@ -330,6 +335,7 @@ function initLocalStore(
 					collection: junctionCollection,
 					meta: {
 						hidden: true,
+						icon: 'import_export',
 					},
 					fields: [
 						{

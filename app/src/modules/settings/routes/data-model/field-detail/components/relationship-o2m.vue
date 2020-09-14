@@ -13,7 +13,7 @@
 					:placeholder="$t('collection') + '...'"
 					v-model="relations[0].many_collection"
 					:disabled="isExisting"
-					:class="{ matches: isExisting }"
+					:class="{ matches: relatedCollectionExists }"
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
@@ -44,6 +44,7 @@
 				v-model="relations[0].many_field"
 				:disabled="isExisting"
 				:placeholder="$t('foreign_key') + '...'"
+				:class="{ matches: relatedFieldExists }"
 			>
 				<template #append v-if="fields && fields.length > 0">
 					<v-menu show-arrow placement="bottom-end">
@@ -68,6 +69,20 @@
 				</template>
 			</v-input>
 			<v-icon class="arrow" name="arrow_forward" />
+		</div>
+
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
+
+		<div class="corresponding" v-if="!isExisting">
+			<div class="field">
+				<div class="type-label">{{ $t('create_field') }}</div>
+				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
+			</div>
+			<div class="field">
+				<div class="type-label">{{ $t('field_name') }}</div>
+				<v-input disabled v-model="relations[0].many_field" :placeholder="$t('field_name') + '...'" db-safe />
+			</div>
+			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 	</div>
 </template>
@@ -102,8 +117,18 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { items, fields, currentCollectionPrimaryKey, collectionMany } = useRelation();
+		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
-		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany };
+		const relatedCollectionExists = computed(() => {
+			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
+		});
+
+		const relatedFieldExists = computed(() => {
+			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].many_field) return false;
+			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
+		});
+
+		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany, hasCorresponding, correspondingLabel, relatedCollectionExists, relatedFieldExists };
 
 		function useRelation() {
 			const availableCollections = computed(() => {
@@ -157,6 +182,74 @@ export default defineComponent({
 
 			return { availableCollections, items, fields, currentCollectionPrimaryKey, collectionMany };
 		}
+
+		function useCorresponding() {
+			const hasCorresponding = computed({
+				get() {
+					if (!state?.relations?.[0]?.many_collection || !state?.relations?.[0]?.many_field) return false;
+
+					if (relatedFieldExists.value === true) {
+						return state.updateFields.find((updateField: any) => updateField.field === state.relations[0].many_field)?.meta?.interface === 'many-to-one' || fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)?.meta?.interface === 'many-to-one';
+					} else {
+						return state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta?.interface === 'many-to-one';
+					}
+				},
+				set(enabled: boolean) {
+					if (!state?.relations?.[0]?.many_field) return;
+
+					if (relatedFieldExists.value === true) {
+						if (enabled === true) {
+							state.updateFields = [
+								{
+									collection: state.relations[0].one_collection,
+									field: state.relations[0].many_field,
+									meta: {
+										interface: 'many-to-one',
+										special: 'm2o',
+									}
+								}
+							]
+						} else {
+							state.updateFields = [
+								{
+									collection: state.relations[0].one_collection,
+									field: state.relations[0].many_field,
+									meta: {
+										interface: null,
+										special: null,
+									}
+								}
+							]
+						}
+					} else {
+						state.newFields = state.newFields.map((newField: any) => {
+							if (newField.$type === 'manyRelated') {
+								if (!newField.meta) newField.meta = {};
+								if (enabled === true) {
+									newField.meta.interface = 'many-to-one';
+									newField.meta.special = 'many-to-one';
+								} else {
+									newField.meta.interface = null;
+									newField.meta.special = null;
+								}
+							}
+
+							return newField;
+						})
+					}
+				},
+			});
+
+			const correspondingLabel = computed(() => {
+				if (state.relations[0].many_collection) {
+					return i18n.t('add_m2o_to_collection', { collection: state.relations[0].many_collection });
+				}
+
+				return i18n.t('add_field_related');
+			});
+
+			return { hasCorresponding, correspondingLabel };
+		}
 	},
 });
 </script>
@@ -192,5 +285,26 @@ export default defineComponent({
 
 .type-label {
 	margin-bottom: 8px;
+}
+
+.v-divider {
+	margin: 48px 0;
+}
+
+.corresponding {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px 32px;
+	margin-top: 48px;
+
+	.arrow {
+		--v-icon-color: var(--primary);
+
+		position: absolute;
+		bottom: 14px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
 }
 </style>

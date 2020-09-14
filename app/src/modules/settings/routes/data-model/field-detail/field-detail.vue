@@ -242,6 +242,13 @@ export default defineComponent({
 				);
 
 				await Promise.all(
+					state.updateFields.map((updateField: Partial<Field> & { $type: string }) => {
+						delete updateField.$type;
+						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
+					})
+				);
+
+				await Promise.all(
 					state.relations.map((relation: Partial<Relation>) => {
 						if (relation.id) {
 							return api.patch(`/relations/${relation.id}`, relation);

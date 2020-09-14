@@ -128,40 +128,38 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
-						state.newFields = [
-							{
-								field: state.relations[0].one_collection,
-								collection: state.relations[0].one_collection,
-								meta: {
-									special: 'o2m',
-									interface: 'one-to-many',
-								},
+						state.newFields.push({
+							$type: 'corresponding',
+							field: state.relations[0].one_collection,
+							collection: state.relations[0].one_collection,
+							meta: {
+								special: 'o2m',
+								interface: 'one-to-many',
 							},
-						];
+						});
 					} else {
-						state.newFields = [];
+						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}
 				},
 			});
 
 			const correspondingField = computed({
 				get() {
-					return state.newFields?.[0]?.field || null;
+					return state.newFields?.find((field: any) => field.$type === 'corresponding')?.field || null;
 				},
 				set(field: string | null) {
-					state.newFields = [
-						{
-							...(state.newFields[0] || {}),
-							field: field || '',
-						},
-					];
+					state.newFields = state.newFields.map((newField: any) => {
+						if (newField.$type === 'corresponding') {
+							return {
+								...newField,
+								field
+							}
+						}
 
-					state.relations = [
-						{
-							...state.relations[0],
-							one_field: field,
-						},
-					];
+						return newField;
+					});
+
+					state.relations[0].one_field = field;
 				},
 			});
 
