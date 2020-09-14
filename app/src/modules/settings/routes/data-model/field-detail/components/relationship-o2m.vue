@@ -18,7 +18,7 @@
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -26,6 +26,7 @@
 									v-for="item in items"
 									:key="item.value"
 									:active="relations[0].many_collection === item.value"
+									:disabled="item.disabled"
 									@click="relations[0].many_collection = item.value"
 								>
 									<v-list-item-content>

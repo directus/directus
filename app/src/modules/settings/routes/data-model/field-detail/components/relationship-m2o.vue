@@ -12,7 +12,7 @@
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
 							<v-list dense class="monospace">
@@ -20,6 +20,7 @@
 									v-for="item in items"
 									:key="item.value"
 									:active="relations[0].one_collection === item.value"
+									:disabled="item.disabled"
 									@click="relations[0].one_collection = item.value"
 								>
 									<v-list-item-content>
@@ -36,15 +37,15 @@
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider v-if="!isExisting" />
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
 
 		<div class="grid" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
+				<div class="type-label">{{ $t('create_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
+				<div class="type-label">{{ $t('field_name') }}</div>
 				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" :placeholder="$t('field_name') + '...'" db-safe />
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />

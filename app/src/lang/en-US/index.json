@@ -540,6 +540,8 @@
 
 	"auto_fill": "Auto Fill",
 
+	"corresponding_field": "Corresponding Field",
+
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",
