@@ -173,7 +173,8 @@
 		"toggle": {
 			"toggle": "Toggle",
 			"description": "Switch between on and off",
-			"label_placeholder": "Enter a label..."
+			"label_placeholder": "Enter a label...",
+			"label_default": "Enabled"
 		},
 		"user": {
 			"user": "User",
