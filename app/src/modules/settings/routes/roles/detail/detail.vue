@@ -44,15 +44,6 @@
 				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						:disabled="hasEdits === false"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-					/>
-				</template>
 			</v-button>
 		</template>
 
@@ -90,7 +81,6 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
 import { useUserStore } from '@/stores/';
 import RoleInfoDrawerDetail from './components/role-info-drawer-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
@@ -101,7 +91,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-detail',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, RoleInfoDrawerDetail, PermissionsOverview },
+	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoDrawerDetail, PermissionsOverview },
 	props: {
 		primaryKey: {
 			type: String,
@@ -117,7 +107,7 @@ export default defineComponent({
 
 		const { primaryKey } = toRefs(props);
 
-		const { edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
+		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
@@ -146,9 +136,6 @@ export default defineComponent({
 			deleteAndQuit,
 			confirmDelete,
 			deleting,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
 			isBatch,
 			adminEnabled,
 		};
@@ -164,22 +151,6 @@ export default defineComponent({
 			await save();
 			await userStore.hydrate();
 			router.push(`/settings/roles`);
-		}
-
-		async function saveAndStay() {
-			await save();
-			await userStore.hydrate();
-		}
-
-		async function saveAndAddNew() {
-			await save();
-			await userStore.hydrate();
-			router.push(`/settings/roles/+`);
-		}
-
-		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			router.push(`/settings/roles/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
