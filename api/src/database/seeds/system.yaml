@@ -834,13 +834,13 @@ rows:
             - name: Icon
               field: icon
               type: string
-              system:
+              meta:
                 interface: icon
                 width: half
             - name: Name
               field: name
               type: string
-              system:
+              meta:
                 interface: text-input
                 width: half
                 options:
@@ -849,7 +849,7 @@ rows:
             - name: Link
               field: link
               type: string
-              system:
+              meta:
                 interface: text-input
                 width: full
                 options:
@@ -869,7 +869,7 @@ rows:
             - name: Group Name
               field: group_name
               type: string
-              system:
+              meta:
                 width: half
                 interface: text-input
                 options:
@@ -878,9 +878,9 @@ rows:
             - name: Accordion
               field: accordion
               type: string
-              database:
+              schema:
                 default_value: always_open
-              system:
+              meta:
                 width: half
                 interface: dropdown
                 options:
@@ -894,7 +894,7 @@ rows:
             - name: Collections
               field: collections
               type: JSON
-              system:
+              meta:
                 interface: repeater
                 options:
                   createItemText: Add Collection
@@ -903,7 +903,7 @@ rows:
                     - name: Collection
                       field: collection
                       type: string
-                      system:
+                      meta:
                         interface: collection
                         width: full
         special: json
@@ -1750,7 +1750,7 @@ rows:
             - field: key
               name: Key
               type: string
-              system:
+              meta:
                 interface: slug
                 options:
                   onlyOnCreate: false
@@ -1759,7 +1759,7 @@ rows:
             - field: fit
               name: Fit
               type: string
-              system:
+              meta:
                 interface: dropdown
                 options:
                   choices:
@@ -1772,23 +1772,23 @@ rows:
             - field: width
               name: Width
               type: integer
-              system:
+              meta:
                 interface: numeric
                 required: true
                 width: half
             - field: height
               name: Height
               type: integer
-              system:
+              meta:
                 interface: numeric
                 required: true
                 width: half
             - field: quality
               type: integer
               name: Quality
-              database:
+              schema:
                 default_value: 80
-              system:
+              meta:
                 interface: slider
                 options:
                   max: 100
