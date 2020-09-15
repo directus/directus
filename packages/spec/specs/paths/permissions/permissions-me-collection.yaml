@@ -1,0 +1,23 @@
+get:
+  description: List the permissions that apply to the current user for the given collection
+  operationId: Enter text here
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Collection'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Permissions'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - Permissions

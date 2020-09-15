@@ -1,0 +1,43 @@
+type: object
+properties:
+  collection:
+    description: The collection name.
+    example: customers
+    type: string
+  meta:
+    description: Metadata of the collection.
+    type: object
+    nullable: true
+    properties:
+      collection:
+        description: The collection name again!
+        type: string
+      hidden:
+        type: boolean
+      singleton:
+        type: boolean
+      icon:
+        type: string
+        nullable: true
+      note:
+        type: string
+        nullable: true
+      translation:
+        type: string
+        nullable: true
+      display_template:
+        type: string
+        nullable: true
+  schema:
+    type: object
+    properties:
+      name:
+        type: string
+      schema:
+        type: string
+      comment:
+        type: string
+      collation:
+        type: string
+      engine:
+        type: string

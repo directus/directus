@@ -1,0 +1,43 @@
+type: object
+properties:
+  collection_listing:
+    description: Custom override for the admin app collection navigation.
+    example: null
+    type: object
+    nullable: true
+  description:
+    description: Description of the role.
+    example: Admins have access to all managed data within the system by default
+    type: string
+    nullable: true
+  enforce_tfa:
+    description: Whether or not this role enforces the use of 2FA.
+    example: false
+    type: boolean
+  external_id:
+    description: ID used with external services in SCIM.
+    example: null
+    type: string
+    nullable: true
+  id:
+    description: Unique identifier for the role.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+  ip_whitelist:
+    description: Array of IP addresses that are allowed to connect to the API as a
+      user of this role.
+    example: []
+    type: array
+    items:
+      type: string
+  module_listing:
+    description: Custom override for the admin app module bar navigation.
+    example: null
+    type: array
+    items:
+      type: object
+    nullable: true
+  name:
+    description: Name of the role.
+    example: Administrator
+    type: string

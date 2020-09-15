@@ -1,0 +1,73 @@
+get:
+  description: Retrieve a single SCIM user by unique identifier.
+  operationId: getSCIMUser
+  parameters:
+    - description: The `external_id` saved in `directus_users`. Corresponds to the `id`
+        in the SCIM Users endpoint result.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+patch:
+  description: Update an existing SCIM User
+  operationId: updateSCIMUser
+  parameters:
+  - description: The `external_id` saved in `directus_users`. Corresponds to the `id`
+      in the SCIM Users endpoint result.
+    in: path
+    name: id
+    required: true
+    schema:
+      type: integer
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+delete:
+  description: Delete an existing SCIM User
+  operationId: deleteSCIMUser
+  parameters:
+  - description: The `external_id` saved in `directus_users`. Corresponds to the `id`
+      in the SCIM Users endpoint result.
+    in: path
+    name: id
+    required: true
+    schema:
+      type: integer
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM

@@ -1,0 +1,30 @@
+{
+	"name": "@directus/specs",
+	"version": "1.0.0",
+	"description": "Specification of the Directus Api",
+	"scripts": {
+		"dev": "swagger-ui-watcher specs/openapi.yaml",
+		"validate": "swagger-cli validate specs/openapi.yaml",
+		"build": "swagger-cli bundle specs/openapi.yaml -o dist/openapi.json",
+		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/next.git"
+	},
+	"author": "Nils Twelker",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/directus/next/issues"
+	},
+	"homepage": "https://github.com/directus/next#readme",
+	"devDependencies": {
+		"@apidevtools/swagger-cli": "^4.0.4",
+		"swagger-ui-watcher": "^2.1.11"
+	},
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	]
+}

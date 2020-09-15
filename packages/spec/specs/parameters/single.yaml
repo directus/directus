@@ -1,0 +1,6 @@
+description: Return the result as if it was a single item. Useful for selecting a single item based on filters and search queries.
+in: query
+name: single
+required: false
+schema:
+  type: integer
