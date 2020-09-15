@@ -39,7 +39,7 @@
 		/>
 
 		<v-modal :active="showRawModal" :title="$t('edit_raw_value')" :subtitle="$t(`js_types.${type}`)">
-			<v-textarea v-model="rawString" :placeholder="$t('enter_raw_value')"></v-textarea>
+			<v-textarea v-model="rawString" :placeholder="$t('enter_raw_value')" />
 			<template #footer>
 				<v-button secondary @click="undoRaw">
 					{{ $t('cancel') }}
@@ -131,9 +131,7 @@ export default defineComponent({
 			const rawString = ref('');
 
 			const type = computed(() => {
-				let type = typeof props.value || props.initialValue;
-				if (type == 'undefined') type = parseTypes(props.field.type);
-				return type;
+				return parseTypes(props.field.type);
 			});
 
 			const raw = computed({
