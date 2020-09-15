@@ -155,12 +155,17 @@ export default defineComponent({
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
-					{
+				];
+
+				const field: Field | undefined = fieldsStore.getField(props.collection, props.field);
+
+				if ((field?.type || '') != 'alias' && props.type != 'presentation') {
+					tabs.push({
 						text: i18n.t('display'),
 						value: 'display',
 						disabled: interfaceDisplayDisabled(),
-					},
-				];
+					});
+				}
 
 				if (['o2m', 'm2o', 'm2m', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
@@ -305,9 +310,14 @@ export default defineComponent({
 			}
 
 			if (relations.length === 2) {
-				const relationForCurrent = relations.find((relation: Relation) => (relation.many_collection === collection && relation.many_field === field) || (relation.one_collection === collection && relation.one_field === field));
+				const relationForCurrent = relations.find(
+					(relation: Relation) =>
+						(relation.many_collection === collection && relation.many_field === field) ||
+						(relation.one_collection === collection && relation.one_field === field)
+				);
 
-				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field) return 'm2o';
+				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field)
+					return 'm2o';
 
 				if (
 					relations[0].one_collection === 'directus_files' ||
