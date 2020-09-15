@@ -41,6 +41,9 @@ export default defineDisplay(({ i18n }) => ({
 				interface: 'icon',
 				width: 'half',
 			},
+			schema: {
+				default_value: 'check',
+			},
 		},
 		{
 			field: 'iconOff',
@@ -49,6 +52,9 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				interface: 'icon',
 				width: 'half',
+			},
+			schema: {
+				default_value: 'close',
 			},
 		},
 		{
@@ -59,6 +65,9 @@ export default defineDisplay(({ i18n }) => ({
 				interface: 'color',
 				width: 'half',
 			},
+			schema: {
+				default_value: '#2F80ED',
+			},
 		},
 		{
 			field: 'colorOff',
@@ -67,6 +76,9 @@ export default defineDisplay(({ i18n }) => ({
 			meta: {
 				interface: 'color',
 				width: 'half',
+			},
+			schema: {
+				default_value: '#B0BEC5',
 			},
 		},
 	],

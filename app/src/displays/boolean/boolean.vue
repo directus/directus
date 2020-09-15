@@ -1,8 +1,8 @@
 <template>
 	<div class="boolean" :style="styles">
 		<value-null v-if="value === null" />
-		<v-icon v-if="iconOn != null && iconOff != null" :name="value ? iconOn : iconOff"></v-icon>
-		<span v-if="labelOn != null && labelOff != null">{{ value ? labelOn : labelOff }}</span>
+		<v-icon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></v-icon>
+		<span v-if="labelOn !== null && labelOff !== null">{{ value ? labelOn : labelOff }}</span>
 	</div>
 </template>
 
@@ -39,11 +39,11 @@ export default defineComponent({
 		},
 		colorOn: {
 			type: String,
-			default: null,
+			default: '#2F80ED',
 		},
 		colorOff: {
 			type: String,
-			default: null,
+			default: '#B0BEC5',
 		},
 	},
 	setup(props) {
