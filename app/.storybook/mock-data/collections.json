@@ -6072,9 +6072,9 @@
 					"group": null,
 					"length": "64"
 				},
-				"search_query": {
+				"search": {
 					"collection": "directus_collection_presets",
-					"field": "search_query",
+					"field": "search",
 					"datatype": "VARCHAR",
 					"unique": false,
 					"primary_key": false,

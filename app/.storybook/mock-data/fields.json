@@ -2020,7 +2020,7 @@
 		},
 		{
 			"collection": "directus_collection_presets",
-			"field": "search_query",
+			"field": "search",
 			"datatype": "VARCHAR",
 			"unique": false,
 			"primary_key": false,
