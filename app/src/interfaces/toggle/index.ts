@@ -8,6 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'check_box',
 	component: InterfaceToggle,
 	types: ['boolean'],
+	recommendedDisplays: ['boolean'],
 	options: [
 		{
 			field: 'iconOff',
