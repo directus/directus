@@ -304,6 +304,12 @@
 	"translations_collection": "Translations Collection",
 	"languages_collection": "Languages Collection",
 
+	"export_data": "Export Data",
+	"format": "Format",
+	"use_current_filters_settings": "Use Current Filters & Settings",
+
+	"export_collection": "Export {collection}",
+
 	"related_values": "Related Values",
 
 	"last_page": "Last Page",

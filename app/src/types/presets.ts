@@ -30,7 +30,7 @@ export type Preset = {
 	user: string | null;
 	role: string | null;
 	collection: string;
-	search_query: string | null;
+	search: string | null;
 	filters: readonly Filter[] | null;
 	layout: string | null;
 	layout_query: { [layout: string]: any } | null;

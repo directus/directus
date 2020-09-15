@@ -10,7 +10,7 @@ export type Preset = {
 	collection: string;
 	filters: null | Filter[];
 	role: number | null;
-	search_query: string | null;
+	search: string | null;
 	title: string | null;
 	user: number | null;
 
