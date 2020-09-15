@@ -45,22 +45,28 @@ import './components/register';
 import './views/register';
 import './modules/register';
 import './layouts/register';
-import './interfaces/register';
+import { registerInterfaces } from './interfaces/register';
 import './displays/register';
 
 import App from './app.vue';
 
-Vue.config.productionTip = false;
+async function init() {
+	await registerInterfaces();
 
-new Vue({
-	render: (h) => h(App),
-	router,
-	i18n,
-}).$mount('#app');
+	Vue.config.productionTip = false;
 
-console.timeEnd('🕓 Application Loaded');
+	new Vue({
+		render: (h) => h(App),
+		router,
+		i18n,
+	}).$mount('#app');
 
-console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
-console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
-console.info(`%cEnvironment: ${process.env.NODE_ENV}`, 'color:DodgerBlue');
-console.groupEnd();
+	console.timeEnd('🕓 Application Loaded');
+
+	console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
+	console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
+	console.info(`%cEnvironment: ${process.env.NODE_ENV}`, 'color:DodgerBlue');
+	console.groupEnd();
+}
+
+init();
