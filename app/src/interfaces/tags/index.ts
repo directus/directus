@@ -68,7 +68,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					showDeselect: true,
+					allowNone: true,
 					choices: [
 						{ text: i18n.t('interfaces.tags.hyphen'), value: '-' },
 						{ text: i18n.t('interfaces.tags.underscore'), value: '_' },
@@ -85,7 +85,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					showDeselect: true,
+					allowNone: true,
 					choices: [
 						{ text: i18n.t('interfaces.tags.uppercase'), value: 'uppercase' },
 						{ text: i18n.t('interfaces.tags.lowercase'), value: 'lowercase' },
