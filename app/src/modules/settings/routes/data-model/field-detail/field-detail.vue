@@ -157,9 +157,7 @@ export default defineComponent({
 					},
 				];
 
-				const field: Field | undefined = fieldsStore.getField(props.collection, props.field);
-
-				if ((field?.type || '') != 'alias' && props.type != 'presentation') {
+				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
 					tabs.push({
 						text: i18n.t('display'),
 						value: 'display',
