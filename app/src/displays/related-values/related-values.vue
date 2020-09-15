@@ -1,6 +1,6 @@
 <template>
 	<value-null v-if="!relatedCollection" />
-	<v-menu v-else-if="type.toLowerCase() === 'o2m'" show-arrow :disabled="value.length === 0">
+	<v-menu v-else-if="type.toLowerCase() === 'o2m' || type.toLowerCase() === 'm2m'" show-arrow :disabled="value.length === 0">
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
 				<span class="label">{{ $tc('item_count', value.length) }}</span>

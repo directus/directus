@@ -39,7 +39,6 @@
 				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
 			</div>
 
-			<!-- @todo base default value field type on selected type -->
 			<div class="field full" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
@@ -228,7 +227,7 @@ export default defineComponent({
 		});
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2o'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2o', 'translations'].includes(props.type);
 		});
 
 		const typePlaceholder = computed(() => {

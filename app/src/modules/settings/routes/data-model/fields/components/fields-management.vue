@@ -131,6 +131,14 @@ export default defineComponent({
 				icon: 'import_export',
 				text: i18n.t('m2m_relationship'),
 			},
+			{
+				divider: true,
+			},
+			{
+				type: 'translations',
+				icon: 'translate',
+				text: i18n.t('translations')
+			}
 		]);
 
 		return {

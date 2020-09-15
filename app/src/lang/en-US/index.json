@@ -153,6 +153,8 @@
 	"field_m2o": "M2O Relationship",
 	"field_o2m": "O2M Relationship",
 	"field_m2m": "M2M Relationship",
+	"field_translations": "Translations",
+	"languages": "Languages",
 
 	"reset_page_preferences": "Reset Page Preferences",
 
@@ -185,6 +187,8 @@
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",
+	"configure_translations": "Configure your Translations...",
+	"configure_languages": "Configure your Languages...",
 
 	"add_m2o_to_collection": "Add Many-to-One to \"{collection}\"",
 	"add_o2m_to_collection": "Add One-to-Many to \"{collection}\"",
@@ -297,6 +301,8 @@
 	"item_in": "Item {primaryKey} in {collection} | Items {primaryKey} in {collection}",
 	"this_collection": "This Collection",
 	"related_collection": "Related Collection",
+	"translations_collection": "Translations Collection",
+	"languages_collection": "Languages Collection",
 
 	"related_values": "Related Values",
 

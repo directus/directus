@@ -27,7 +27,7 @@ export { state, availableInterfaces, availableDisplays, initLocalStore, clearLoc
 function initLocalStore(
 	collection: string,
 	field: string,
-	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'
+	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
 ) {
 	const interfaces = getInterfaces();
 	const displays = getDisplays();
@@ -75,6 +75,8 @@ function initLocalStore(
 					matchesRelation = inter.relationship === 'm2o';
 				} else if (type === 'files') {
 					matchesRelation = inter.relationship === 'm2m';
+				} else if (type === 'translations') {
+					matchesRelation = inter.relationship === 'translations';
 				} else {
 					matchesRelation = inter.relationship === type;
 				}
@@ -277,8 +279,6 @@ function initLocalStore(
 					}
 				]
 			}
-
-			console.log(state.newFields);
 		}, 50);
 
 		if (!isExisting) {
@@ -321,7 +321,7 @@ function initLocalStore(
 		)
 	}
 
-	if (type === 'm2m' || type === 'files') {
+	if (type === 'm2m' || type === 'files' || type === 'translations') {
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
@@ -425,26 +425,6 @@ function initLocalStore(
 		}
 
 		watch(
-			() => state.fieldData.field,
-			() => {
-				state.relations[0].one_field = state.fieldData.field;
-
-				if (collectionExists(state.fieldData.field)) {
-					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-					state.relations[1].one_collection = state.fieldData.field;
-					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
-					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-
-					if (state.relations[0].many_field === state.relations[1].many_field) {
-						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
-					}
-				}
-			}
-		);
-
-		watch(
 			() => state.relations[0].many_collection,
 			() => {
 				if (collectionExists(state.relations[0].many_collection)) {
@@ -490,34 +470,75 @@ function initLocalStore(
 			syncNewCollectionsM2M
 		)
 
-		let stop: WatchStopHandle;
+		watch(
+			() => state.fieldData.field,
+			() => {
+				state.relations[0].one_field = state.fieldData.field;
 
-		watch(() => state.autoFillJunctionRelation, (startWatching) => {
-			if (startWatching) {
-				stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
-					if (newRelatedCollection) {
-						state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-						state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-						state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-					}
-
-					if (newRelatedPrimary) {
-						state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-					}
+				if (collectionExists(state.fieldData.field) && type !== 'translations') {
+					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					state.relations[1].one_collection = state.fieldData.field;
+					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
+					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
 
 					if (state.relations[0].many_field === state.relations[1].many_field) {
 						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
 					}
-				});
-			} else {
-				stop?.();
+				}
 			}
-		}, { immediate: true });
+		);
+
+		if (type !== 'translations') {
+			let stop: WatchStopHandle;
+
+			watch(() => state.autoFillJunctionRelation, (startWatching) => {
+				if (startWatching) {
+					stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
+						if (newRelatedCollection) {
+							state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+							state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+							state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+						}
+
+						if (newRelatedPrimary) {
+							state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+						}
+
+						if (state.relations[0].many_field === state.relations[1].many_field) {
+							state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
+						}
+					});
+				} else {
+					stop?.();
+				}
+			}, { immediate: true });
+		}
+
+		if (type === 'translations') {
+			watch(() => state.relations[0].many_collection, (newManyCollection: string) => {
+				state.relations[1].many_collection = newManyCollection;
+			}, { immediate: true });
+
+			state.relations[0].many_collection = `${collection}_translations`;
+			state.relations[0].many_field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+			state.relations[1].one_collection = 'languages';
+
+			if (collectionExists('languages')) {
+				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection('languages')?.field;
+			} else {
+				state.relations[1].one_primary = 'id';
+			}
+
+			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+		}
 	}
 
 	if (type === 'presentation') {
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
+
 		state.fieldData.meta.special = 'alias';
 	}
 
