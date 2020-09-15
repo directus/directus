@@ -227,7 +227,7 @@ export default defineComponent({
 								if (!newField.meta) newField.meta = {};
 								if (enabled === true) {
 									newField.meta.interface = 'many-to-one';
-									newField.meta.special = 'many-to-one';
+									newField.meta.special = ['m2o'];
 								} else {
 									newField.meta.interface = null;
 									newField.meta.special = null;

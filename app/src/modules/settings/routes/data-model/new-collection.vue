@@ -235,7 +235,7 @@ export default defineComponent({
 					meta: {
 						...field.meta,
 						interface: 'text-input',
-						special: 'uuid',
+						special: ['uuid'],
 					},
 					schema: {
 						...field.schema,
@@ -341,7 +341,7 @@ export default defineComponent({
 					field: systemFields.userCreated.name,
 					type: 'uuid',
 					meta: {
-						special: 'user-created',
+						special: ['user-created'],
 						interface: 'user',
 						options: {
 							template: '{{first_name}} {{last_name}}',
@@ -360,7 +360,7 @@ export default defineComponent({
 					field: systemFields.dateCreated.name,
 					type: 'timestamp',
 					meta: {
-						special: 'date-created',
+						special: ['date-created'],
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
@@ -375,7 +375,7 @@ export default defineComponent({
 					field: systemFields.userUpdated.name,
 					type: 'uuid',
 					meta: {
-						special: 'user-updated',
+						special: ['user-updated'],
 						interface: 'user',
 						options: {
 							template: '{{first_name}} {{last_name}}',
@@ -394,7 +394,7 @@ export default defineComponent({
 					field: systemFields.dateUpdated.name,
 					type: 'timestamp',
 					meta: {
-						special: 'date-updated',
+						special: ['date-updated'],
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,

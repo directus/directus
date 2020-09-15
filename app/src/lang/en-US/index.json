@@ -1027,6 +1027,12 @@
 	}
   },
 
+  "do_nothing": "Do Nothing",
+  "generate_and_save_uuid": "Generate and Save UUID",
+  "save_current_user_id": "Save Current User ID",
+  "save_current_user_role": "Save Current User Role",
+  "save_current_datetime": "Save Current Date/Time",
+
   "modules": {},
 
   "coming_soon": "Coming Soon",

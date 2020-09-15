@@ -125,6 +125,7 @@ export default class PayloadService {
 		},
 		async csv(action, value) {
 			if (!value) return;
+			// if (Array.isArray(value) && action === 'read') return value;
 			if (action === 'read') return value.split(',');
 
 			if (Array.isArray(value)) return value.join(',');
@@ -146,7 +147,7 @@ export default class PayloadService {
 
 		const specialFieldsQuery = this.knex
 			.select('field', 'special')
-			.from<FieldMeta>('directus_fields')
+			.from('directus_fields')
 			.where({ collection: this.collection })
 			.whereNotNull('special');
 
@@ -190,13 +191,12 @@ export default class PayloadService {
 	}
 
 	async processField(
-		field: Pick<FieldMeta, 'field' | 'special'>,
+		field: { field: string; special: string },
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
 	) {
 		if (!field.special) return payload[field.field];
-
 		const fieldSpecials = field.special.split(',').map((s) => s.trim());
 
 		let value = clone(payload[field.field]);

@@ -56,6 +56,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 					{
 						message: err.message,
 						extensions: {
+							...err.extensions,
 							code: 'INTERNAL_SERVER_ERROR',
 						},
 					},

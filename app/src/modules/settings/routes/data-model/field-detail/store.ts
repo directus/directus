@@ -282,7 +282,7 @@ function initLocalStore(
 		}, 50);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = 'o2m';
+			state.fieldData.meta.special = ['o2m'];
 
 			state.relations = [
 				{
@@ -402,7 +402,7 @@ function initLocalStore(
 		}, 50);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = 'm2m';
+			state.fieldData.meta.special = ['m2m'];
 
 			state.relations = [
 				{
@@ -539,7 +539,7 @@ function initLocalStore(
 		delete state.fieldData.schema;
 		delete state.fieldData.type;
 
-		state.fieldData.meta.special = 'alias';
+		state.fieldData.meta.special = ['alias'];
 	}
 
 	if (type === 'standard') {
@@ -555,16 +555,16 @@ function initLocalStore(
 
 				switch (state.fieldData.type) {
 					case 'uuid':
-						state.fieldData.meta.special = 'uuid';
+						state.fieldData.meta.special = ['uuid'];
 						break;
 					case 'json':
-						state.fieldData.meta.special = 'json';
+						state.fieldData.meta.special = ['json'];
 						break;
 					case 'csv':
-						state.fieldData.meta.special = 'csv';
+						state.fieldData.meta.special = ['csv'];
 						break;
 					case 'boolean':
-						state.fieldData.meta.special = 'boolean';
+						state.fieldData.meta.special = ['boolean'];
 						state.fieldData.schema.is_nullable = false;
 						state.fieldData.schema.default_value = false;
 						break;
