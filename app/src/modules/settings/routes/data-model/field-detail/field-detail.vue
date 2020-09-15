@@ -27,6 +27,20 @@
 			:type="localType"
 		/>
 
+		<setup-translations
+			v-if="currentTab[0] === 'translations'"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
+		/>
+
+		<setup-languages
+			v-if="currentTab[0] === 'languages'"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
+		/>
+
 		<setup-interface
 			v-if="currentTab[0] === 'interface'"
 			:is-existing="field !== '+'"
@@ -61,6 +75,8 @@ import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
 import SetupRelationship from './components/relationship.vue';
+import SetupTranslations from './components/translations.vue';
+import SetupLanguages from './components/languages.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
@@ -81,6 +97,8 @@ export default defineComponent({
 		SetupActions,
 		SetupSchema,
 		SetupRelationship,
+		SetupTranslations,
+		SetupLanguages,
 		SetupInterface,
 		SetupDisplay,
 	},
@@ -94,7 +112,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'>,
+			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'>,
 			default: null,
 		},
 	},
@@ -116,7 +134,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' = 'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -173,6 +191,21 @@ export default defineComponent({
 					});
 				}
 
+				if (localType.value === 'translations') {
+					tabs.splice(1, 0, ...[
+						{
+							text: i18n.t('translations'),
+							value: 'translations',
+							disabled: translationsDisabled(),
+						},
+						{
+							text: i18n.t('languages'),
+							value: 'languages',
+							disabled: languagesDisabled(),
+						}
+					])
+				}
+
 				return tabs;
 			});
 
@@ -181,10 +214,20 @@ export default defineComponent({
 			return { tabs, currentTab };
 
 			function relationshipDisabled() {
-				return (
-					isEmpty(state.fieldData.field) ||
-					(['o2m', 'm2m', 'files', 'm2o'].includes(localType.value) === false &&
-						isEmpty(state.fieldData.type))
+				return isEmpty(state.fieldData.field);
+			}
+
+			function translationsDisabled() {
+				return isEmpty(state.fieldData.field);
+			}
+
+			function languagesDisabled() {
+				return isEmpty(state.fieldData.field) || (
+					state.relations.length === 0 ||
+					isEmpty(state.relations[0].many_collection) ||
+					isEmpty(state.relations[0].many_field) ||
+					isEmpty(state.relations[0].one_collection) ||
+					isEmpty(state.relations[0].one_primary)
 				);
 			}
 
@@ -199,7 +242,7 @@ export default defineComponent({
 					);
 				}
 
-				if (['m2m', 'files'].includes(localType.value)) {
+				if (['m2m', 'files', 'translations'].includes(localType.value)) {
 					return (
 						state.relations.length !== 2 ||
 						isEmpty(state.relations[0].many_collection) ||
@@ -294,11 +337,14 @@ export default defineComponent({
 		function getLocalTypeForField(
 			collection: string,
 			field: string
-		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' {
+		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' {
 			const fieldInfo = fieldsStore.getField(collection, field);
 			const relations = relationsStore.getRelationsForField(collection, field);
 
-			if (relations.length === 0) return 'standard';
+			if (relations.length === 0) {
+				if (fieldInfo.type === 'alias') return 'presentation';
+				return 'standard';
+			}
 
 			if (relations.length === 1) {
 				const relation = relations[0];
