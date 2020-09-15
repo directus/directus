@@ -124,7 +124,7 @@ tables:
       default: draft
     role:
       type: uuid
-      nullable: false
+      nullable: true
       references:
         table: directus_roles
         column: id
