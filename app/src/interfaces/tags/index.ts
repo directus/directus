@@ -78,8 +78,8 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'case',
-			name: i18n.t('interfaces.tags.case'),
+			field: 'capitalization',
+			name: i18n.t('interfaces.tags.capitalization'),
 			type: 'string',
 			meta: {
 				width: 'half',

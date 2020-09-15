@@ -63,7 +63,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		case: {
+		capitalization: {
 			type: String as PropType<'uppercase' | 'lowercase' | 'auto-format'>,
 			default: null,
 		},
@@ -124,12 +124,12 @@ export default defineComponent({
 		function processArray(array: string[]): string[] {
 			array = array.map((val) => {
 				val = val.trim();
-				if (props.case === 'uppercase') val = val.toUpperCase();
-				if (props.case === 'lowercase') val = val.toLowerCase();
+				if (props.capitalization === 'uppercase') val = val.toUpperCase();
+				if (props.capitalization === 'lowercase') val = val.toLowerCase();
 
 				const spaceReplace = props.spaceReplace === null ? ' ' : props.spaceReplace;
 
-				if (props.case === 'auto-format') val = formatTitle(val, new RegExp(spaceReplace));
+				if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(spaceReplace));
 
 				val = val.replaceAll(/ +/g, spaceReplace);
 
