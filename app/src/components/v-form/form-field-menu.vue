@@ -1,9 +1,5 @@
 <template>
 	<v-list dense>
-		<v-list-item @click="$emit('edit-raw')">
-			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('edit_raw') }}</v-list-item-content>
-		</v-list-item>
 		<v-list-item :disabled="value === null" @click="$emit('input', null)">
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
@@ -23,6 +19,10 @@
 				<v-icon name="undo" />
 			</v-list-item-icon>
 			<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
+		</v-list-item>
+		<v-list-item @click="$emit('edit-raw')">
+			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('edit_raw') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>

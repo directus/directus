@@ -1166,6 +1166,14 @@
     "user_updated": "System field to track the user who updated an item, used by revisions",
     "uuid": "A Universally Unique Identifier"
   },
+  "js_types": {
+	"object": "Object",
+	"array": "Array",
+	"string": "String",
+	"number": "Number",
+	"boolean": "Boolean",
+	"undefined": "Undefined"
+  },
   "file": "File",
   "file_library": "File Library",
   "file_type_not_accepted": "{filename} can't be uploaded. It is not a valid file type for this field.",
