@@ -152,8 +152,14 @@
 		"tags": {
 			"tags": "Tags",
 			"description": "Select or add tags",
-			"lowercase": "Lowercase",
-			"lowercase_label": "Force Lowercase",
+			"space_replace": "Replace Space",
+			"hyphen": "Replace with hyphen",
+			"underscore": "Replace with underscore",
+			"remove": "Remove space",
+			"case": "Case",
+			"uppercase": "Convert Uppercase",
+			"lowercase": "Convert Lowercase",
+			"auto_formatter": "Use Title Auto-Formatter",
 			"alphabetize": "Alphabetize",
 			"alphabetize_label": "Force Alphabetical Order",
 			"add_tags": "Add tags..."

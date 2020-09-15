@@ -19,6 +19,18 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
+			field: 'placeholder',
+			name: i18n.t('placeholder'),
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'text-input',
+				options: {
+					placeholder: i18n.t('enter_a_placeholder'),
+				},
+			},
+		},
+		{
 			field: 'alphabetize',
 			name: i18n.t('interfaces.tags.alphabetize'),
 			type: 'boolean',
@@ -34,33 +46,6 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'lowercase',
-			name: i18n.t('interfaces.tags.lowercase'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-				options: {
-					label: i18n.t('interfaces.tags.lowercase_label'),
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'placeholder',
-			name: i18n.t('placeholder'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'text-input',
-				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
-				},
-			},
-		},
-		{
 			field: 'allowCustom',
 			name: i18n.t('interfaces.dropdown.allow_other'),
 			type: 'boolean',
@@ -73,6 +58,40 @@ export default defineInterface(({ i18n }) => ({
 			},
 			schema: {
 				default_value: false,
+			},
+		},
+		{
+			field: 'spaceReplace',
+			name: i18n.t('interfaces.tags.space_replace'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'dropdown',
+				options: {
+					showDeselect: true,
+					choices: [
+						{ text: i18n.t('interfaces.tags.hyphen'), value: '-' },
+						{ text: i18n.t('interfaces.tags.underscore'), value: '_' },
+						{ text: i18n.t('interfaces.tags.remove'), value: '' },
+					],
+				},
+			},
+		},
+		{
+			field: 'case',
+			name: i18n.t('interfaces.tags.case'),
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'dropdown',
+				options: {
+					showDeselect: true,
+					choices: [
+						{ text: i18n.t('interfaces.tags.uppercase'), value: 'uppercase' },
+						{ text: i18n.t('interfaces.tags.lowercase'), value: 'lowercase' },
+						{ text: i18n.t('interfaces.tags.auto_formatter'), value: 'auto-format' },
+					],
+				},
 			},
 		},
 		{
