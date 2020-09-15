@@ -1,38 +1,29 @@
 {
 	"name": "@directus/specs",
 	"version": "1.0.0",
-	"description": "API testing and SDK generation for Directus",
-	"bin": {
-		"directus-spec": "./dist/cli/directus.js"
-	},
+	"description": "Specification of the Directus Api",
 	"scripts": {
-		"generate-docs": "openapi-generator generate -i dist/min-openapi.json -g html2 -o docs",
-		"js-sdk": "openapi-generator generate -i dist/min-openapi.json -g javascript -o sdks/js",
-		"ts-sdk": "openapi-generator generate -i dist/min-openapi.json -g typescript-axios -o sdks/ts",
-		"java-sdk": "openapi-generator generate -i dist/min-openapi.json -g java -o sdks/java",
-		"python-sdk": "openapi-generator generate -i dist/min-openapi.json -g python -o sdks/py",
 		"dev": "swagger-ui-watcher data/specs/openapi.yaml",
-		"merge": "swagger-cli bundle data/specs/openapi.yaml -o dist/min-openapi.json",
-		"merge:deref": "swagger-cli bundle data/specs/openapi.yaml -o dist/openapi.json --dereference",
-		"validate": "swagger-cli validate data/specs/openapi.yaml"
+		"validate": "swagger-cli validate data/specs/openapi.yaml",
+		"build": "swagger-cli bundle data/specs/openapi.yaml -o dist/openapi.json",
+		"build:deref": "swagger-cli bundle data/specs/openapi.yaml -o dist/openapi-deref.json --dereference"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/specs.git"
+		"url": "git+https://github.com/directus/next.git"
 	},
 	"author": "Nils Twelker",
 	"license": "GPL-3.0",
 	"bugs": {
-		"url": "https://github.com/directus/specs/issues"
+		"url": "https://github.com/directus/next/issues"
 	},
-	"homepage": "https://github.com/directus/specs#readme",
+	"homepage": "https://github.com/directus/next#readme",
 	"devDependencies": {
 		"@apidevtools/swagger-cli": "^4.0.4",
-		"@openapitools/openapi-generator-cli": "^1.0.10-4.3.1",
 		"swagger-ui-watcher": "^2.1.11"
 	},
 	"files": [
-		"specs",
+		"dist",
 		"LICENSE",
 		"README.md"
 	]

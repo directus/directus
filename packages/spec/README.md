@@ -17,16 +17,6 @@ Run
 npm run dev
 ```
 
-## Build the files into an useable SDK
-
-```
-npx openapi-generator generate -i data/openapi.yaml -g javascript -o sdks/js
-```
-
-`-i` The input file
-`-g` The language of the SDK
-`-o` The output directory
-
 ## ✨ Updating
 
 TODO
