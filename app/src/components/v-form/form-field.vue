@@ -39,7 +39,7 @@
 		/>
 
 		<v-modal :active="showRawModal" :title="$t('edit_raw_value')" :subtitle="type">
-			<v-textarea v-model="rawString" placeholder="$t('enter_raw_value')"></v-textarea>
+			<v-textarea v-model="rawString" :placeholder="$t('enter_raw_value')"></v-textarea>
 			<template #footer>
 				<v-button secondary @click="undoRaw">
 					{{ $t('cancel') }}
@@ -67,6 +67,7 @@ import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
+import { capitalizeFirst } from '@/utils/capitalize-first';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -183,7 +184,7 @@ export default defineComponent({
 				raw.value = rawString.value;
 			}
 
-			return { showRawModal, rawString, editRaw, saveRaw, undoRaw, type };
+			return { showRawModal, rawString, editRaw, saveRaw, undoRaw, type: capitalizeFirst(type.value) };
 		}
 	},
 });
