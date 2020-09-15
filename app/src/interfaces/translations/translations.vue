@@ -12,7 +12,7 @@
 			#default="{ active, toggle }"
 		>
 			<div class="header" @click="toggle">
-				<render-template :template="template" :collection="languagesCollection" :item="item" />
+				<render-template :template="rowTemplate" :collection="languagesCollection" :item="item" />
 			</div>
 			<transition-expand>
 				<div v-if="active">
@@ -20,10 +20,10 @@
 						<v-divider />
 						<v-form
 							:initial-values="existing[index]"
-							:collection="relatedCollection.collection"
-							:primary-key="existing[index][relatedPrimaryKeyField.field] || '+'"
+							:collection="translationsCollection"
+							:primary-key="existing[index][translationsPrimaryKeyField.field] || '+'"
 							:edits="edits[index]"
-							@input="emitValue($event, existing[index][relatedPrimaryKeyField.field])"
+							@input="emitValue($event, existing[index][translationsPrimaryKeyField.field])"
 						/>
 					</div>
 				</div>
@@ -34,25 +34,14 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { Relation } from '@/types';
 
 export default defineComponent({
 	props: {
-		languagesCollection: {
-			type: String,
-			required: true,
-		},
-		languageField: {
-			type: String,
-			required: true,
-		},
-		template: {
-			type: String,
-			required: true,
-		},
 		collection: {
 			type: String,
 			required: true,
@@ -65,6 +54,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		template: {
+			type: String,
+			default: null,
+		},
 		value: {
 			type: Array as PropType<Record<string, any>[]>,
 			default: () => [],
@@ -72,7 +65,10 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const { relations, translationsCollection, languagesCollection, languageField, translationsPrimaryKeyField } = useRelation();
 
 		const {
 			languages,
@@ -81,16 +77,20 @@ export default defineComponent({
 			primaryKeyField: languagesPrimaryKeyField,
 		} = useLanguages();
 
-		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-
 		const { items, loading: itemsLoading, error: itemsError } = useCurrent();
-
 		const { existing, edits, emitValue } = useValues();
 
+		const rowTemplate = computed(() => {
+			const { info, primaryKeyField } = useCollection(languagesCollection);
+			const defaultTemplate = info.value?.meta?.display_template;
+
+			return defaultTemplate || props.template || `{{ $${primaryKeyField.value.field} }}`;
+		});
+
 		return {
-			relation,
-			relatedCollection,
-			relatedPrimaryKeyField,
+			relations,
+			translationsCollection,
+			languagesCollection,
 			languages,
 			languagesLoading,
 			languagesError,
@@ -101,20 +101,51 @@ export default defineComponent({
 			existing,
 			edits,
 			emitValue,
+			rowTemplate,
+			translationsPrimaryKeyField,
 		};
 
 		function useRelation() {
-			const relation = computed(() => {
-				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
+			const relations = computed(() => {
+				return relationsStore.getRelationsForField(props.collection, props.field);
 			});
 
-			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.many_collection)!;
+			const translationsRelation = computed(() => {
+				if (!relations.value || relations.value.length === 0) return null;
+
+				return relations.value.find((relation: Relation) => {
+					return relation.one_collection === props.collection && relation.one_field === props.field;
+				}) || null;
+			})
+
+			const translationsCollection = computed(() => {
+				if (!translationsRelation.value) return null;
+				return translationsRelation.value.many_collection;
 			});
 
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
+			const translationsPrimaryKeyField = computed(() => {
+				return fieldsStore.getPrimaryKeyFieldForCollection(translationsCollection.value);
+			});
 
-			return { relation, relatedCollection, relatedPrimaryKeyField };
+			const languagesRelation = computed(() => {
+				if (!relations.value || relations.value.length === 0) return null;
+
+				return relations.value.find((relation: Relation) => {
+					return relation.one_collection !== props.collection && relation.one_field !== props.field;
+				}) || null;
+			});
+
+			const languagesCollection = computed(() => {
+				if (!languagesRelation.value) return null;
+				return languagesRelation.value.one_collection;
+			});
+
+			const languageField = computed(() => {
+				if (!languagesRelation.value) return null;
+				return languagesRelation.value.many_field;
+			})
+
+			return { relations, translationsCollection, languagesCollection, languageField, translationsPrimaryKeyField };
 		}
 
 		function useLanguages() {
@@ -122,25 +153,24 @@ export default defineComponent({
 			const loading = ref(false);
 			const error = ref(null);
 
-			const { languagesCollection } = toRefs(props);
-
 			const { primaryKeyField } = useCollection(languagesCollection);
 
-			watch(() => props.languagesCollection, fetchLanguages);
+			watch(languagesCollection, fetchLanguages, { immediate: true });
 
 			return { languages, loading, error, primaryKeyField };
 
 			async function fetchLanguages() {
 				loading.value = true;
 
-				const fields = getFieldsFromTemplate(props.template);
+				// const fields = getFieldsFromTemplate(props.template);
+				const fields = ['*'];
 
 				if (fields.includes(primaryKeyField.value.field) === false) {
 					fields.push(primaryKeyField.value.field);
 				}
 
 				try {
-					const response = await api.get(`/items/${props.languagesCollection}`, {
+					const response = await api.get(`/items/${languagesCollection.value}`, {
 						params: {
 							fields: fields,
 							limit: -1,
@@ -167,6 +197,9 @@ export default defineComponent({
 					if (newKey !== null && newKey !== '+') {
 						fetchCurrent();
 					}
+				},
+				{
+					immediate: true,
 				}
 			);
 
@@ -198,7 +231,7 @@ export default defineComponent({
 				return languages.value.map((language: any) => {
 					const existing =
 						items.value.find(
-							(item) => item[props.languageField] === language[languagesPrimaryKeyField.value.field]
+							(item) => item[languageField.value] === language[languagesPrimaryKeyField.value.field]
 						) || {};
 
 					return existing;
@@ -211,10 +244,10 @@ export default defineComponent({
 				return languages.value.map((language: any) => {
 					const edits =
 						(props.value || []).find(
-							(edit) => edit[props.languageField] === language[languagesPrimaryKeyField.value.field]
+							(edit) => edit[languageField.value] === language[languagesPrimaryKeyField.value.field]
 						) || {};
 
-					edits[props.languageField] = language[languagesPrimaryKeyField.value.field];
+					edits[languageField.value] = language[languagesPrimaryKeyField.value.field];
 
 					return edits;
 				});
@@ -228,15 +261,15 @@ export default defineComponent({
 				if (existingPrimaryKey) {
 					newEdit = {
 						...newEdit,
-						[relatedPrimaryKeyField.value.field]: existingPrimaryKey,
+						[translationsPrimaryKeyField.value.field]: existingPrimaryKey,
 					};
 				}
 
-				if (currentEdits.some((edit) => edit[props.languageField] === newEdit[props.languageField])) {
+				if (currentEdits.some((edit) => edit[languageField.value] === newEdit[languageField.value])) {
 					emit(
 						'input',
 						currentEdits.map((edit) => {
-							if (edit[props.languageField] === newEdit[props.languageField]) {
+							if (edit[languageField.value] === newEdit[languageField.value]) {
 								return newEdit;
 							}
 
