@@ -245,6 +245,8 @@
 	"database_type": "Database Datatype",
 	"finish_setup": "Finish Setup",
 	"dismiss": "Dismiss",
+	"edit_raw": "Edit raw",
+	"edit_raw_value": "Edit raw value",
 	"clear_value": "Clear value",
 	"reset_to_default": "Reset to default",
 	"undo_changes": "Undo changes",

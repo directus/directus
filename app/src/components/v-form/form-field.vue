@@ -1,5 +1,9 @@
 <template>
-	<div class="field" :key="field.field" :class="[(field.meta && field.meta.width) || 'full', { 'invalid': validationError }]">
+	<div
+		class="field"
+		:key="field.field"
+		:class="[(field.meta && field.meta.width) || 'full', { invalid: validationError }]"
+	>
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -19,6 +23,7 @@
 				:initial-value="initialValue"
 				@input="$emit('input', $event)"
 				@unset="$emit('unset', $event)"
+				@edit-raw="editRaw"
 			/>
 		</v-menu>
 
@@ -33,15 +38,30 @@
 			@input="$emit('input', $event)"
 		/>
 
+		<v-modal :active="showRawModal" :title="$t('edit_raw_value')" :subtitle="type">
+			<v-textarea v-model="rawString" placeholder="$t('enter_raw_value')"></v-textarea>
+			<template #footer>
+				<v-button secondary @click="undoRaw">
+					{{ $t('cancel') }}
+				</v-button>
+				<div class="spacer" />
+				<v-button @click="saveRaw">
+					{{ $t('save') }}
+				</v-button>
+			</template>
+		</v-modal>
+
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 
-		<small class="validation-error" v-if="validationError">{{ $t(`validationError.${validationError.type}`, validationError) }}</small>
+		<small class="validation-error" v-if="validationError">
+			{{ $t(`validationError.${validationError.type}`, validationError) }}
+		</small>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '@/types/';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { Field, parseTypes } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
@@ -86,9 +106,9 @@ export default defineComponent({
 		validationError: {
 			type: Object as PropType<ValidationError>,
 			default: null,
-		}
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
 			if (props.field?.meta?.readonly === true) return true;
@@ -102,7 +122,69 @@ export default defineComponent({
 			return props.field.schema?.default_value;
 		});
 
-		return { isDisabled, marked, _value };
+		const { showRawModal, rawString, editRaw, saveRaw, undoRaw, type } = useRaw();
+
+		return { isDisabled, marked, _value, editRaw, saveRaw, undoRaw, showRawModal, rawString, type };
+
+		function useRaw() {
+			const showRawModal = ref(false);
+			const rawString = ref('');
+
+			const type = computed(() => {
+				let type = typeof props.value || props.initialValue;
+				if (type == 'undefined') type = parseTypes(props.field.type);
+				return type;
+			});
+
+			const raw = computed({
+				get() {
+					const value = props.value || props.initialValue;
+
+					if (type.value == 'string') return value;
+					else if (['object', 'array'].includes(type.value)) return JSON.stringify(value, null, 4);
+					else return String(value);
+				},
+				set(rawValue: string) {
+					switch (type.value) {
+						case 'string':
+							emit('input', rawValue);
+							break;
+						case 'number':
+							emit('input', Number(rawValue));
+							break;
+						case 'boolean':
+							emit('input', rawValue == 'true');
+							break;
+						case 'object':
+							if (Array.isArray(props.value)) {
+								emit('input', Object.values(JSON.parse(rawValue)));
+							} else {
+								emit('input', JSON.parse(rawValue));
+							}
+							break;
+						default:
+							break;
+					}
+				},
+			});
+
+			function editRaw() {
+				showRawModal.value = true;
+				rawString.value = raw.value;
+			}
+
+			function undoRaw() {
+				showRawModal.value = false;
+				rawString.value = raw.value;
+			}
+
+			function saveRaw(rawValue: any) {
+				showRawModal.value = false;
+				raw.value = rawString.value;
+			}
+
+			return { showRawModal, rawString, editRaw, saveRaw, undoRaw, type };
+		}
 	},
 });
 </script>
@@ -120,19 +202,23 @@ export default defineComponent({
 }
 
 .invalid {
+	margin: -12px;
+	padding: 12px;
+	background-color: var(--danger-alt);
+	border-radius: var(--border-radius);
 	transition: var(--medium) var(--transition);
 	transition-property: background-color, padding, margin;
-
-	background-color: var(--danger-alt);
-	padding: 12px;
-	margin: -12px;
-	border-radius: var(--border-radius);
 }
 
 .validation-error {
 	display: block;
-	color: var(--danger);
 	margin-top: 4px;
+	color: var(--danger);
 	font-style: italic;
+}
+
+.v-modal .v-textarea {
+	height: 100%;
+	max-height: unset;
 }
 </style>

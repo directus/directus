@@ -4,6 +4,10 @@
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
+		<v-list-item @click="$emit('edit-raw')">
+			<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('edit_raw') }}</v-list-item-content>
+		</v-list-item>
 		<v-list-item @click="$emit('input', defaultValue)">
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
@@ -24,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types';
 
 export default defineComponent({
