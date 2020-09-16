@@ -17,13 +17,13 @@ export default class DatabaseBackupService {
 	}
 
 	exportDb() {
-		let backup = './backup/dump.sql';
+		let backup = env.DB_BACKUP;
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
 				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile(backup);
-				backup = './backup/dump.db';
+
 				break;
 
 			case 'pg':
