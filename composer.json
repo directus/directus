@@ -19,6 +19,7 @@
     "league/oauth2-github": "^2.0",
     "league/oauth2-facebook": "^2.0",
     "league/oauth1-client": "^1.7",
+    "thenetworg/oauth2-azure": "^1.4",
     "intervention/image": "^2.4",
     "directus/oauth2-okta": "dev-master",
     "directus/proxy-detection": "^0.5.1",

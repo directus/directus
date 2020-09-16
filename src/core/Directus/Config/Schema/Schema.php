@@ -156,6 +156,10 @@ class Schema
                         new Value('identifier', Types::STRING, ''),
                         new Value('secret', Types::STRING, ''),
                     ]),
+                    new Group('azure?', [
+                        new Value('client_id', Types::STRING, ''),
+                        new Value('client_secret', Types::STRING, ''),
+                    ]),
                 ]),
             ]),
             new Value('ext?', Types::ARRAY, []),
