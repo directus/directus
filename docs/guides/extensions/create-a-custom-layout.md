@@ -1,5 +1,7 @@
 # Create a Custom layout
 
+> TK
+
 ## 1. Setup the Boilerplate
 
 Every layout is a standalone "package" that contains at least a metadata file, and a Vue component. I recommend you use the following file structure:
