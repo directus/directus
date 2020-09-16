@@ -95,20 +95,4 @@ export default class DatabaseBackupService {
 			throw new DatabaseNotFoundException('Cleanup failed');
 		}
 	}
-
-	async runit(cmd: string, timeout: number) {
-		return new Promise(function (resolve, reject) {
-			const exec = require('child_process').exec;
-			const ch = exec(cmd, function (error: string, stdout: string, stderr: string) {
-				if (error) {
-					reject(error);
-				} else {
-					resolve('program exited without an error');
-				}
-			});
-			setTimeout(function () {
-				resolve('program still running');
-			}, timeout);
-		});
-	}
 }
