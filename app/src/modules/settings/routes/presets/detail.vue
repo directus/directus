@@ -95,7 +95,7 @@ import { Preset, Filter } from '@/types';
 import api from '@/api';
 import i18n from '@/lang';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
-import layouts from '@/layouts';
+import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
 
@@ -133,6 +133,7 @@ export default defineComponent({
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
+		const layouts = getLayouts();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');
@@ -467,7 +468,7 @@ export default defineComponent({
 					meta: {
 						interface: 'dropdown',
 						options: {
-							choices: layouts.map((layout) => ({
+							choices: layouts.value.map((layout) => ({
 								text: layout.name,
 								value: layout.id,
 							})),

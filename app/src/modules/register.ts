@@ -2,22 +2,44 @@ import { RouteConfig } from 'vue-router';
 import { replaceRoutes } from '@/router';
 import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
+import api from '@/api';
 
 const modules = getModules();
+let loadedModules: any = [];
 
-const context = require.context('.', true, /^.*index\.ts$/);
+export async function loadModules() {
+	const context = require.context('.', true, /^.*index\.ts$/);
 
-const loadedModules = context
-	.keys()
-	.map((key) => context(key))
-	.map((mod) => mod.default)
-	.filter((m) => m);
+	loadedModules = context
+		.keys()
+		.map((key) => context(key))
+		.map((mod) => mod.default)
+		.filter((m) => m);
 
-export function register() {
+	try {
+		const customResponse = await api.get('/extensions/modules');
+
+		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
+			for (const customKey of customResponse.data.data) {
+				try {
+					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);
+					loadedModules.push(module.default);
+				} catch (err) {
+					console.error(`Couldn't load custom module "${customKey}"`);
+					console.error(err);
+				}
+			}
+		}
+	} catch {
+		console.error(`Couldn't load custom modules`);
+	}
+}
+
+export async function register() {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
-	const registeredModules = loadedModules.filter((mod) => {
+	const registeredModules = loadedModules.filter((mod: any) => {
 		if (!userStore.state.currentUser) return false;
 
 		if (mod.preRegisterCheck) {
@@ -28,8 +50,8 @@ export function register() {
 	});
 
 	const moduleRoutes = registeredModules
-		.map((module) => module.routes)
-		.filter((r) => r)
+		.map((module: any) => module.routes)
+		.filter((r: any) => r)
 		.flat() as RouteConfig[];
 
 	replaceRoutes((routes) => insertBeforeProjectWildcard(routes, moduleRoutes));

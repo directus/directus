@@ -3,6 +3,7 @@ node_modules
 .env
 .DS_Store
 uploads
+extensions
 debug.db
 test
 dist
