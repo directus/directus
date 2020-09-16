@@ -25,10 +25,10 @@ export default class DatabaseBackupService {
 				try {
 					Sqlite.create()
 						.setDbName(env.DB_NAME)
-						.dumpBinaryPath(env.DB_BINARY)
+						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
-					throw new DatabaseNotFoundException('Backup failed');
+					throw new DatabaseNotFoundException(error.message);
 				}
 
 				break;
@@ -41,7 +41,7 @@ export default class DatabaseBackupService {
 						.setDbName(env.DB_NAME)
 						.setUserName(env.DB_USER)
 						.setPassword(env.DB_PASSWORD)
-						.dumpBinaryPath(env.DB_BINARY)
+						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
 					throw new DatabaseNotFoundException('Backup failed');
@@ -55,7 +55,7 @@ export default class DatabaseBackupService {
 						.setDbName(env.DB_NAME)
 						.setUserName(env.DB_USER)
 						.setPassword(env.DB_PASSWORD)
-						.dumpBinaryPath(env.DB_BINARY)
+						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
 					throw new DatabaseNotFoundException('Backup failed');
