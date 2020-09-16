@@ -43,15 +43,21 @@ import './styles/main.scss';
 import './directives/register';
 import './components/register';
 import './views/register';
-import './modules/register';
-import './layouts/register';
+
 import { registerInterfaces } from './interfaces/register';
-import './displays/register';
+import { loadModules } from './modules/register';
+import { registerLayouts } from './layouts/register';
+import { registerDisplays } from './displays/register';
 
 import App from './app.vue';
 
 async function init() {
-	await registerInterfaces();
+	await Promise.all([
+		registerInterfaces(),
+		registerDisplays(),
+		registerLayouts(),
+		loadModules(),
+	]);
 
 	Vue.config.productionTip = false;
 

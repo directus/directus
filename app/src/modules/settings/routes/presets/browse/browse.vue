@@ -98,7 +98,7 @@ import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import i18n from '@/lang';
 import { useCollectionsStore } from '@/stores/';
-import layouts from '@/layouts';
+import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
@@ -124,6 +124,7 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoDrawerDetail },
 	setup() {
+		const layouts = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
 		const selection = ref<Preset[]>([]);
@@ -176,7 +177,7 @@ export default defineComponent({
 					}
 
 					const collection = collectionsStore.getCollection(preset.collection)?.name;
-					const layout = layouts.find((l) => l.id === preset.layout)?.name;
+					const layout = layouts.value.find((l) => l.id === preset.layout)?.name;
 
 					return {
 						id: preset.id,

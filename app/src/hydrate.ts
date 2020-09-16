@@ -61,7 +61,7 @@ export async function hydrate(stores = useStores()) {
 
 		await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
 
-		registerModules();
+		await registerModules();
 	} catch (error) {
 		appStore.state.error = error;
 	} finally {
