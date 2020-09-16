@@ -843,7 +843,7 @@
 	"allow_none": "Allow None",
 	"choices": "Choices",
 	"use_double_colon_for_key": "Use double colon for dedicated keys, eg: `value_saved::Option Displayed`",
-	"choices_option_configured_incorrectly": "Choices option configured incorrectly",
+	"choices_option_configured_incorrectly": "Choices configured incorrectly",
 	"deselect": "Deselect",
 	"deselect_all": "Deselect All",
 
@@ -851,7 +851,7 @@
 
 	"adding_user": "Adding User",
 
-	"statuses_not_configured": "Status mapping option configured incorrectly",
+	"statuses_not_configured": "Status mapping configured incorrectly",
 	"status_mapping": "Status Mapping",
 
 	"creating_in": "Creating Item in {collection}",
