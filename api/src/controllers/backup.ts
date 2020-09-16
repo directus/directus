@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import DatabaseBackupService from '../services/backup';
-import { DatabaseNotFoundException } from '../exceptions';
+import { DatabaseNotFoundException, InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 
 const router = Router();
@@ -9,6 +9,9 @@ const router = Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user || !req.accountability?.role) {
+			throw new InvalidCredentialsException();
+		}
 		let backup = env.DB_BACKUP;
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
 		const path = require('path');
@@ -20,7 +23,6 @@ router.get(
 		await dbService.exportDb();
 
 		res.attachment(path.basename(backup));
-		//should probably compress this file?
 		res.set('Content-Type', 'application/octet-stream');
 
 		console.log(resolveBackup);
