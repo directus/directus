@@ -21,14 +21,9 @@ export default class DatabaseBackupService {
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
+				const { Sqlite } = require('@shagital/db-dumper');
+				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile(backup);
 				backup = './backup/dump.db';
-				const fs = require('fs');
-
-				fs.copyFile(env.DB_FILENAME, backup, (err: string) => {
-					if (err) {
-						throw new DatabaseNotFoundException(err);
-					}
-				});
 				break;
 
 			case 'pg':
