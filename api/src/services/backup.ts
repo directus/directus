@@ -16,7 +16,7 @@ export default class DatabaseBackupService {
 		this.knex = options?.knex || database;
 	}
 
-	exportDb() {
+	async exportDb() {
 		let backup = env.DB_BACKUP;
 
 		switch (env.DB_CLIENT) {
@@ -24,7 +24,7 @@ export default class DatabaseBackupService {
 				const { Sqlite } = require('@shagital/db-dumper');
 				try {
 					Sqlite.create()
-						.setDbName(env.DB_NAME)
+						.setDbName(env.DB_FILENAME)
 						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
@@ -44,7 +44,7 @@ export default class DatabaseBackupService {
 						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
-					throw new DatabaseNotFoundException('Backup failed');
+					throw new DatabaseNotFoundException(error.message);
 				}
 				break;
 
@@ -58,7 +58,7 @@ export default class DatabaseBackupService {
 						.setDumpBinaryPath(env.DB_BINARY)
 						.dumpToFile(backup);
 				} catch (error) {
-					throw new DatabaseNotFoundException('Backup failed');
+					throw new DatabaseNotFoundException(error.message);
 				}
 				break;
 
@@ -79,8 +79,6 @@ export default class DatabaseBackupService {
 				backup = 'none';
 				break;
 		}
-
-		return backup;
 	}
 
 	async cleanUp(fileName: string) {

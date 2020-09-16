@@ -2,35 +2,36 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import DatabaseBackupService from '../services/backup';
 import { DatabaseNotFoundException } from '../exceptions';
+import env from '../env';
 
 const router = Router();
 
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		let backup = env.DB_BACKUP;
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
-		const fileName = await dbService.exportDb();
-
 		const path = require('path');
-		if (fileName === 'none') {
-			throw new DatabaseNotFoundException('Database not defined in env file');
-		}
+		const fs = require('fs');
 
-		if (fileName === 'error') {
-			throw new DatabaseNotFoundException('Error generating backup');
-		}
+		const resolveBackup = path.resolve(backup);
 
-		res.attachment(path.basename(fileName));
+		await dbService.cleanUp(backup);
+		await dbService.exportDb();
+
+		res.attachment(path.basename(backup));
 		//should probably compress this file?
 		res.set('Content-Type', 'application/octet-stream');
-		const fs = require('fs');
-		const stream = fs.createReadStream(fileName);
 
-		stream.on('finish', () => {
-			stream.pipe(res);
-		});
+		console.log(resolveBackup);
+		const stream = fs.createReadStream(resolveBackup);
+
 		stream.on('error', function (err: string) {
 			throw new DatabaseNotFoundException(err);
+		});
+
+		stream.on('end', () => {
+			stream.pipe(res);
 		});
 
 		return next();
