@@ -16,6 +16,10 @@ router.get(
 			throw new DatabaseNotFoundException('Database not defined in env file');
 		}
 
+		if (fileName === 'error') {
+			throw new DatabaseNotFoundException('Error generating backup');
+		}
+
 		res.attachment(path.basename(fileName));
 		//should probably compress this file?
 		res.set('Content-Type', 'application/octet-stream');

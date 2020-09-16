@@ -16,7 +16,8 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:41201/uploads',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
-	DB_BACKUP: './backup/dump.sql',
+	DB_BACKUP: './backup/backup.sql',
+	DB_BINARY: 'C:sqlite',
 
 	RATE_LIMITER_ENABLED: true,
 	RATE_LIMITER_POINTS: 25,

@@ -22,7 +22,14 @@ export default class DatabaseBackupService {
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
 				const { Sqlite } = require('@shagital/db-dumper');
-				Sqlite.create().setDbName(env.DB_FILENAME).dumpToFile(backup);
+				try {
+					Sqlite.create()
+						.setDbName(env.DB_NAME)
+						.dumpBinaryPath(env.DB_BINARY)
+						.dumpToFile(backup);
+				} catch (error) {
+					throw new DatabaseNotFoundException('Backup failed');
+				}
 
 				break;
 
@@ -33,6 +40,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
+					.dumpBinaryPath(env.DB_BINARY)
 					.dumpToFile(backup);
 				break;
 
@@ -42,6 +50,7 @@ export default class DatabaseBackupService {
 					.setDbName(env.DB_NAME)
 					.setUserName(env.DB_USER)
 					.setPassword(env.DB_PASSWORD)
+					.dumpBinaryPath(env.DB_BINARY)
 					.dumpToFile(backup);
 
 				break;
@@ -80,5 +89,21 @@ export default class DatabaseBackupService {
 		} catch (err) {
 			throw new DatabaseNotFoundException('Cleanup failed');
 		}
+	}
+
+	async runit(cmd: string, timeout: number) {
+		return new Promise(function (resolve, reject) {
+			const exec = require('child_process').exec;
+			const ch = exec(cmd, function (error: string, stdout: string, stderr: string) {
+				if (error) {
+					reject(error);
+				} else {
+					resolve('program exited without an error');
+				}
+			});
+			setTimeout(function () {
+				resolve('program still running');
+			}, timeout);
+		});
 	}
 }

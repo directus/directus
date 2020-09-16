@@ -119,6 +119,7 @@
 		"uuid-validate": "0.0.3"
 	},
 	"optionalDependencies": {
+		"cross-spawn": "^7.0.3",
 		"@keyv/redis": "^2.1.2",
 		"ioredis": "^4.17.3",
 		"keyv-memcache": "^0.8.0",
