@@ -36,23 +36,30 @@ export default class DatabaseBackupService {
 			case 'pg':
 				//need to rewrite as creates empty file
 				const { PostgreSql } = require('@shagital/db-dumper');
-				PostgreSql.create()
-					.setDbName(env.DB_NAME)
-					.setUserName(env.DB_USER)
-					.setPassword(env.DB_PASSWORD)
-					.dumpBinaryPath(env.DB_BINARY)
-					.dumpToFile(backup);
+				try {
+					PostgreSql.create()
+						.setDbName(env.DB_NAME)
+						.setUserName(env.DB_USER)
+						.setPassword(env.DB_PASSWORD)
+						.dumpBinaryPath(env.DB_BINARY)
+						.dumpToFile(backup);
+				} catch (error) {
+					throw new DatabaseNotFoundException('Backup failed');
+				}
 				break;
 
 			case 'mysql':
 				const { MySql } = require('@shagital/db-dumper');
-				MySql.create()
-					.setDbName(env.DB_NAME)
-					.setUserName(env.DB_USER)
-					.setPassword(env.DB_PASSWORD)
-					.dumpBinaryPath(env.DB_BINARY)
-					.dumpToFile(backup);
-
+				try {
+					MySql.create()
+						.setDbName(env.DB_NAME)
+						.setUserName(env.DB_USER)
+						.setPassword(env.DB_PASSWORD)
+						.dumpBinaryPath(env.DB_BINARY)
+						.dumpToFile(backup);
+				} catch (error) {
+					throw new DatabaseNotFoundException('Backup failed');
+				}
 				break;
 
 			case 'oracledb':
