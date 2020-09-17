@@ -25,7 +25,7 @@ export default class DatabaseBackupService {
 	async exportDb() {
 		let backup = `${env.DB_BACKUP_PATH}/${env.DB_BACKUP_NAME}`;
 		const { GzipCompressor } = require('@shagital/db-dumper');
-		this.cleanUp(backup);
+		await this.cleanUp(`${backup}.gz`);
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':

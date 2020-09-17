@@ -24,7 +24,7 @@ router.get(
 
 		const fullPath = path.join(process.cwd(), backupPath);
 		const backUp = path.join(fullPath, backupName)
-
+		await dbService.cleanUp(backUp);
 		// zip the files in the dir 
 		zipper.sync.zip(fullPath).compress().save(backUp);
 
@@ -43,7 +43,7 @@ router.get(
 			throw new DatabaseNotFoundException(error.message);
 		});
 
-		await dbService.cleanUp(backUp);
+	
 
 		return next();
 	})
