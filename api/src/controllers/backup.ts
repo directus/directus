@@ -9,16 +9,13 @@ const router = Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) {
-			throw new InvalidCredentialsException();
-		}
 		const backupPath = env.DB_BACKUP_PATH;
 		const backupName = env.DB_BACKUP_NAME;
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
 		const path = require('path');
 		const fs = require('fs');
 
-		const resolveBackup = path.normalize(path.resolve(backupPath + backupName));
+		const resolveBackup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
 		await dbService.exportDb();
 
 		res.attachment(backupName);
