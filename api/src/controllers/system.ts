@@ -11,9 +11,7 @@ const router = Router();
 router.get(
 	'/backup',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) {
-			throw new InvalidCredentialsException();
-		}
+	
 
 		const backupPath = env.DB_BACKUP_PATH;
 		const backupName= 'backup.zip'
@@ -25,20 +23,19 @@ router.get(
 		await dbService.exportDb();
 
 		const fullPath = path.join(process.cwd(), backupPath);
+		const backUp = path.join(fullPath, backupName)
 
-		// zip the files
-		zipper.sync.zip(fullPath).compress().save("backup.zip");
+		// zip the files in the dir 
+		zipper.sync.zip(fullPath).compress().save(backUp);
 
-		const backup = path.join(fullPath, backupName)
-		const stats = fs.statSync(backup);
+		const stats = fs.statSync(backUp);
 	
-		res.attachment('backup.');
-
 		res.set('Content-Type', 'application/zip');
 		res.set('content-length', `${stats.size}`);
-		const stream = fs.createReadStream(backup, 'utf8');
+		res.attachment(backupName);
+		const stream = fs.createReadStream(backUp, 'utf8');
 
-		stream.on('open', () => {
+		stream.on('end', () => {
 			stream.pipe(res);
 		});
 
@@ -46,7 +43,9 @@ router.get(
 			throw new DatabaseNotFoundException(error.message);
 		});
 
-		await dbService.cleanUp(backup);
+		await dbService.cleanUp(backUp);
+
+		return next();
 	})
 );
 
