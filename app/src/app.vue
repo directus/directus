@@ -30,14 +30,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch, computed } from '@vue/composition-api';
-import { useAppStore, useUserStore, useSettingsStore } from '@/stores';
+import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
+import * as stores from '@/stores';
+import api from '@/api';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
+		const { useAppStore, useUserStore, useSettingsStore } = stores;
+
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const settingsStore = useSettingsStore();
@@ -97,6 +100,11 @@ export default defineComponent({
 		});
 
 		const error = computed(() => appStore.state.error);
+
+		provide('system', {
+			...stores,
+			api,
+		});
 
 		return { hydrating, brandStyle, appAccess, error };
 	},
