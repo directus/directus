@@ -38,7 +38,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<v-modal :active="showRawModal" :title="$t('edit_raw_value')" :subtitle="$t(`js_types.${type}`)">
+		<v-modal v-model="showRawModal" :title="$t('edit_raw_value')" :subtitle="$t(field.type)">
 			<v-textarea v-model="rawString" :placeholder="$t('enter_raw_value')" />
 			<template #footer>
 				<v-button secondary @click="undoRaw">
@@ -61,12 +61,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { Field, parseTypes } from '@/types/';
+import { Field } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
+import { getJSType } from '@/utils/get-js-type';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -131,7 +132,7 @@ export default defineComponent({
 			const rawString = ref('');
 
 			const type = computed(() => {
-				return parseTypes(props.field.type);
+				return getJSType(props.field.type);
 			});
 
 			const raw = computed({
