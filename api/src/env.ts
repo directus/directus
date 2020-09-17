@@ -17,7 +17,7 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 	DB_BACKUP_PATH: './backup',
-	DB_BACKUP_NAME: 'backup.sql',
+	DB_BACKUP_NAME: 'backup.sql', //ms sql should have .bak and oracle should have .dmp. Everything else .sql
 	DB_BINARY: 'C:/sqlite',
 
 	RATE_LIMITER_ENABLED: true,
