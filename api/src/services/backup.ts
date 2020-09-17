@@ -106,7 +106,10 @@ export default class DatabaseBackupService {
 		// https://oracle-base.com/articles/10g/oracle-data-pump-10g
 		// function only recommended for smallish oracle databases
 		// if the db is large should use RMAN
-		// user should have  DBA privilege, or EXP_FULL_DATABASE role. if not EXP-00023 error message will be displayed
+		// user should have  DBA privilege, or EXP_FULL_DATABASE role . if not EXP-00023 error message will be displayed
+		// also DBA must give user permission to directory like
+		//  CREATE DIRECTORY  exp_schema  AS  ‘path\to\export’;
+
 		const spawn = require('cross-spawn');
 
 		const backupDB = `expdp ${env.DB_USER}/${env.DB_PASSWORD} full=Y directory=${env.DB_BACKUP_PATH} dumpfile=${env.DB_BACKUP_NAME}`;
