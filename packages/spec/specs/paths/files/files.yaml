@@ -1,0 +1,44 @@
+get:
+  description: List the files.
+  tags:
+    - Files
+  operationId: getFiles
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/File'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+post:
+  description: Create a new file.
+  tags:
+    - Files
+  operationId: createFile
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: string
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/File'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

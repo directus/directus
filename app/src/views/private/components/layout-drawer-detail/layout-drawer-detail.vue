@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import layouts from '@/layouts';
+import { getLayouts } from '@/layouts';
 
 export default defineComponent({
 	props: {
@@ -18,11 +18,13 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const layouts = getLayouts();
+
 		const currentLayout = computed(() => {
-			const layout = layouts.find((layout) => layout.id === props.value);
+			const layout = layouts.value.find((layout) => layout.id === props.value);
 
 			if (layout === undefined) {
-				return layouts.find((layout) => layout.id === 'tabular');
+				return layouts.value.find((layout) => layout.id === 'tabular');
 			}
 
 			return layout;
@@ -42,7 +44,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .layout-options {
 	.layout-option {
 		margin-top: 24px;

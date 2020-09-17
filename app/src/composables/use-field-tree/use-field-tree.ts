@@ -10,7 +10,7 @@ export default function useFieldTree(collection: Ref<string>) {
 	const tree = computed<FieldTree[]>(() => {
 		return fieldsStore
 			.getFieldsForCollection(collection.value)
-			.filter((field: Field) => field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias')
+			.filter((field: Field) => field.meta?.hidden === false && field.meta?.special?.includes('alias') === false)
 			.map((field: Field) => parseField(field, []));
 
 		function parseField(field: Field, parents: Field[]) {
@@ -39,7 +39,7 @@ export default function useFieldTree(collection: Ref<string>) {
 							.getFieldsForCollection(relatedCollection)
 							.filter(
 								(field: Field) =>
-									field.meta?.hidden === false && field.meta?.special?.toLowerCase() !== 'alias'
+									field.meta?.hidden === false && field.meta?.special?.includes('alias') === false
 							);
 					})
 					.flat()

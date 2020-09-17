@@ -39,7 +39,6 @@
 				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
 			</div>
 
-			<!-- @todo base default value field type on selected type -->
 			<div class="field full" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
@@ -82,6 +81,18 @@
 					:placeholder="$t('add_a_default_value')"
 				/>
 			</div>
+
+			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
+				<div class="field">
+					<div class="label type-label">{{ $t('on_create') }}</div>
+					<v-select :items="onCreateOptions" v-model="onCreateValue" />
+				</div>
+
+				<div class="field">
+					<div class="label type-label">{{ $t('on_update') }}</div>
+					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
+				</div>
+			</template>
 
 			<div class="field" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('length') }}</div>
@@ -228,7 +239,7 @@ export default defineComponent({
 		});
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2o'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2o', 'translations'].includes(props.type);
 		});
 
 		const typePlaceholder = computed(() => {
@@ -248,13 +259,148 @@ export default defineComponent({
 			},
 		});
 
+		const { onCreateOptions, onCreateValue } = useOnCreate();
+		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
+
 		return {
 			fieldData: state.fieldData,
 			typesWithLabels,
 			typeDisabled,
 			typePlaceholder,
 			defaultValue,
+			onCreateOptions,
+			onCreateValue,
+			onUpdateOptions,
+			onUpdateValue
 		};
+
+		function useOnCreate() {
+			const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];
+
+			const onCreateOptions = computed(() => {
+				if (state.fieldData.type === 'uuid') {
+					return [
+						{
+							text: i18n.t('do_nothing'),
+							value: null,
+						},
+						{
+							text: i18n.t('generate_and_save_uuid'),
+							value: 'uuid',
+						},
+						{
+							text: i18n.t('save_current_user_id'),
+							value: 'user-created'
+						},
+						{
+							text: i18n.t('save_current_user_role'),
+							value: 'role-created'
+						},
+					]
+				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+					return [
+						{
+							text: i18n.t('do_nothing'),
+							value: null,
+						},
+						{
+							text: i18n.t('save_current_datetime'),
+							value: 'date-created'
+						},
+					]
+				}
+
+				return [];
+			});
+
+			const onCreateValue = computed({
+				get() {
+					const specials = state.fieldData.meta.special || [];
+
+					for (const special of onCreateSpecials) {
+						if (specials.includes(special)) {
+							return special;
+						}
+					}
+
+					return null;
+				},
+				set(newOption: string | null) {
+					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter((special: string) => onCreateSpecials.includes(special) === false);
+
+					if (newOption) {
+						state.fieldData.meta.special = [
+							...(state.fieldData.meta.special || []),
+							newOption
+						];
+					}
+				}
+			})
+
+			return { onCreateSpecials, onCreateOptions, onCreateValue };
+		}
+
+		function useOnUpdate() {
+			const onUpdateSpecials = ['user-updated', 'role-updated', 'date-updated'];
+
+			const onUpdateOptions = computed(() => {
+				if (state.fieldData.type === 'uuid') {
+					return [
+						{
+							text: i18n.t('do_nothing'),
+							value: null,
+						},
+						{
+							text: i18n.t('save_current_user_id'),
+							value: 'user-updated'
+						},
+						{
+							text: i18n.t('save_current_user_role'),
+							value: 'role-updated'
+						},
+					]
+				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+					return [
+						{
+							text: i18n.t('do_nothing'),
+							value: null,
+						},
+						{
+							text: i18n.t('save_current_datetime'),
+							value: 'date-updated'
+						},
+					]
+				}
+
+				return [];
+			});
+
+			const onUpdateValue = computed({
+				get() {
+					const specials = state.fieldData.meta.special || [];
+
+					for (const special of onUpdateSpecials) {
+						if (specials.includes(special)) {
+							return special;
+						}
+					}
+
+					return null;
+				},
+				set(newOption: string | null) {
+					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter((special: string) => onUpdateSpecials.includes(special) === false);
+
+					if (newOption) {
+						state.fieldData.meta.special = [
+							...(state.fieldData.meta.special || []),
+							newOption
+						];
+					}
+				}
+			})
+
+			return { onUpdateSpecials, onUpdateOptions, onUpdateValue };
+		}
 	},
 });
 </script>

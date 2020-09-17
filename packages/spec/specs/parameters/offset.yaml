@@ -1,0 +1,6 @@
+description: How many items to skip when fetching data.
+in: query
+name: offset
+required: false
+schema:
+  type: integer

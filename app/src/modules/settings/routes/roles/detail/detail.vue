@@ -1,13 +1,5 @@
 <template>
-	<private-view
-		:title="
-			loading
-				? $t('loading')
-				: isNew === false
-				? $t('editing_role', { role: item && item.name })
-				: $t('creating_role')
-		"
-	>
+	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
 		<template #headline>{{ $t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -52,15 +44,6 @@
 				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						:disabled="hasEdits === false"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-					/>
-				</template>
 			</v-button>
 		</template>
 
@@ -85,8 +68,8 @@
 		</div>
 
 		<template #drawer>
-			<role-info-drawer-detail :is-new="isNew" :role="item" />
-			<revisions-drawer-detail v-if="isNew === false" collection="directus_roles" :primary-key="primaryKey" />
+			<role-info-drawer-detail :role="item" />
+			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 	</private-view>
 </template>
@@ -98,7 +81,6 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
 import { useUserStore } from '@/stores/';
 import RoleInfoDrawerDetail from './components/role-info-drawer-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
@@ -109,7 +91,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-detail',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions, RoleInfoDrawerDetail, PermissionsOverview },
+	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoDrawerDetail, PermissionsOverview },
 	props: {
 		primaryKey: {
 			type: String,
@@ -125,7 +107,7 @@ export default defineComponent({
 
 		const { primaryKey } = toRefs(props);
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
+		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
 			primaryKey
 		);
@@ -147,7 +129,6 @@ export default defineComponent({
 			item,
 			loading,
 			error,
-			isNew,
 			edits,
 			hasEdits,
 			saving,
@@ -155,9 +136,6 @@ export default defineComponent({
 			deleteAndQuit,
 			confirmDelete,
 			deleting,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
 			isBatch,
 			adminEnabled,
 		};
@@ -173,22 +151,6 @@ export default defineComponent({
 			await save();
 			await userStore.hydrate();
 			router.push(`/settings/roles`);
-		}
-
-		async function saveAndStay() {
-			await save();
-			await userStore.hydrate();
-		}
-
-		async function saveAndAddNew() {
-			await save();
-			await userStore.hydrate();
-			router.push(`/settings/roles/+`);
-		}
-
-		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			router.push(`/settings/roles/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {

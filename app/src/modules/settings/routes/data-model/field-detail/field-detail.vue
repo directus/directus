@@ -27,6 +27,20 @@
 			:type="localType"
 		/>
 
+		<setup-translations
+			v-if="currentTab[0] === 'translations'"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
+		/>
+
+		<setup-languages
+			v-if="currentTab[0] === 'languages'"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
+		/>
+
 		<setup-interface
 			v-if="currentTab[0] === 'interface'"
 			:is-existing="field !== '+'"
@@ -61,13 +75,15 @@ import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
 import SetupRelationship from './components/relationship.vue';
+import SetupTranslations from './components/translations.vue';
+import SetupLanguages from './components/languages.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
 import { isEmpty } from 'lodash';
 import api from '@/api';
-import { Relation } from '@/types';
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Relation, Collection } from '@/types';
+import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
@@ -81,6 +97,8 @@ export default defineComponent({
 		SetupActions,
 		SetupSchema,
 		SetupRelationship,
+		SetupTranslations,
+		SetupLanguages,
 		SetupInterface,
 		SetupDisplay,
 	},
@@ -94,11 +112,12 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation'>,
+			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'>,
 			default: null,
 		},
 	},
 	setup(props) {
+		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -115,7 +134,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' = 'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -154,12 +173,15 @@ export default defineComponent({
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
-					{
+				];
+
+				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
+					tabs.push({
 						text: i18n.t('display'),
 						value: 'display',
 						disabled: interfaceDisplayDisabled(),
-					},
-				];
+					});
+				}
 
 				if (['o2m', 'm2o', 'm2m', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
@@ -167,6 +189,21 @@ export default defineComponent({
 						value: 'relationship',
 						disabled: relationshipDisabled(),
 					});
+				}
+
+				if (localType.value === 'translations') {
+					tabs.splice(1, 0, ...[
+						{
+							text: i18n.t('translations'),
+							value: 'translations',
+							disabled: translationsDisabled(),
+						},
+						{
+							text: i18n.t('languages'),
+							value: 'languages',
+							disabled: languagesDisabled(),
+						}
+					])
 				}
 
 				return tabs;
@@ -177,10 +214,20 @@ export default defineComponent({
 			return { tabs, currentTab };
 
 			function relationshipDisabled() {
-				return (
-					isEmpty(state.fieldData.field) ||
-					(['o2m', 'm2m', 'files', 'm2o'].includes(localType.value) === false &&
-						isEmpty(state.fieldData.type))
+				return isEmpty(state.fieldData.field);
+			}
+
+			function translationsDisabled() {
+				return isEmpty(state.fieldData.field);
+			}
+
+			function languagesDisabled() {
+				return isEmpty(state.fieldData.field) || (
+					state.relations.length === 0 ||
+					isEmpty(state.relations[0].many_collection) ||
+					isEmpty(state.relations[0].many_field) ||
+					isEmpty(state.relations[0].one_collection) ||
+					isEmpty(state.relations[0].one_primary)
 				);
 			}
 
@@ -190,11 +237,12 @@ export default defineComponent({
 						state.relations.length === 0 ||
 						isEmpty(state.relations[0].many_collection) ||
 						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_collection)
+						isEmpty(state.relations[0].one_collection) ||
+						isEmpty(state.relations[0].one_primary)
 					);
 				}
 
-				if (['m2m', 'files'].includes(localType.value)) {
+				if (['m2m', 'files', 'translations'].includes(localType.value)) {
 					return (
 						state.relations.length !== 2 ||
 						isEmpty(state.relations[0].many_collection) ||
@@ -202,7 +250,8 @@ export default defineComponent({
 						isEmpty(state.relations[0].one_field) ||
 						isEmpty(state.relations[1].many_collection) ||
 						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection)
+						isEmpty(state.relations[1].one_collection) ||
+						isEmpty(state.relations[1].one_primary)
 					);
 				}
 
@@ -225,8 +274,23 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field>) => {
+					state.newCollections.map((newCollection: Partial<Collection> & { $type: string }) => {
+						delete newCollection.$type;
+						return api.post(`/collections`, newCollection);
+					})
+				);
+
+				await Promise.all(
+					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
+						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
+					})
+				);
+
+				await Promise.all(
+					state.updateFields.map((updateField: Partial<Field> & { $type: string }) => {
+						delete updateField.$type;
+						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})
 				);
 
@@ -240,6 +304,7 @@ export default defineComponent({
 					})
 				);
 
+				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 				await relationsStore.hydrate();
 
@@ -272,11 +337,14 @@ export default defineComponent({
 		function getLocalTypeForField(
 			collection: string,
 			field: string
-		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' {
+		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' {
 			const fieldInfo = fieldsStore.getField(collection, field);
 			const relations = relationsStore.getRelationsForField(collection, field);
 
-			if (relations.length === 0) return 'standard';
+			if (relations.length === 0) {
+				if (fieldInfo.type === 'alias') return 'presentation';
+				return 'standard';
+			}
 
 			if (relations.length === 1) {
 				const relation = relations[0];
@@ -286,6 +354,15 @@ export default defineComponent({
 			}
 
 			if (relations.length === 2) {
+				const relationForCurrent = relations.find(
+					(relation: Relation) =>
+						(relation.many_collection === collection && relation.many_field === field) ||
+						(relation.one_collection === collection && relation.one_field === field)
+				);
+
+				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field)
+					return 'm2o';
+
 				if (
 					relations[0].one_collection === 'directus_files' ||
 					relations[1].one_collection === 'directus_files'

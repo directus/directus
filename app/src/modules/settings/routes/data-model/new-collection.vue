@@ -204,7 +204,7 @@ export default defineComponent({
 					type: 'success',
 				});
 
-				router.push('/settings/data-model');
+				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {
 				console.log(error);
 				saveError.value = error;
@@ -235,7 +235,7 @@ export default defineComponent({
 					meta: {
 						...field.meta,
 						interface: 'text-input',
-						special: 'uuid',
+						special: ['uuid'],
 					},
 					schema: {
 						...field.schema,
@@ -279,8 +279,8 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									value: 'published',
 									text: 'Published',
+									value: 'published',
 								},
 								{
 									text: 'Draft',
@@ -293,6 +293,23 @@ export default defineComponent({
 							],
 						},
 						interface: 'dropdown',
+						display: 'color-dot',
+						display_options: {
+							choices: [
+								{
+									color: '#2F80ED',
+									value: 'published',
+								},
+								{
+									color: '#ECEFF1',
+									value: 'draft',
+								},
+								{
+									color: '#F2994A',
+									value: 'archived',
+								},
+							],
+						}
 					},
 					schema: {
 						default_value: 'draft',
@@ -324,7 +341,7 @@ export default defineComponent({
 					field: systemFields.userCreated.name,
 					type: 'uuid',
 					meta: {
-						special: 'user-created',
+						special: ['user-created'],
 						interface: 'user',
 						options: {
 							template: '{{first_name}} {{last_name}}',
@@ -343,7 +360,7 @@ export default defineComponent({
 					field: systemFields.dateCreated.name,
 					type: 'timestamp',
 					meta: {
-						special: 'date-created',
+						special: ['date-created'],
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,
@@ -358,7 +375,7 @@ export default defineComponent({
 					field: systemFields.userUpdated.name,
 					type: 'uuid',
 					meta: {
-						special: 'user-updated',
+						special: ['user-updated'],
 						interface: 'user',
 						options: {
 							template: '{{first_name}} {{last_name}}',
@@ -377,7 +394,7 @@ export default defineComponent({
 					field: systemFields.dateUpdated.name,
 					type: 'timestamp',
 					meta: {
-						special: 'date-updated',
+						special: ['date-updated'],
 						interface: 'datetime',
 						readonly: true,
 						hidden: true,

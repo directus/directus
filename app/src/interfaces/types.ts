@@ -10,7 +10,7 @@ export type InterfaceConfig = {
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
 	types: typeof types[number][];
-	relationship?: null | 'm2o' | 'o2m' | 'm2m';
+	relationship?: null | 'm2o' | 'o2m' | 'm2m' | 'translations';
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 	system?: boolean;

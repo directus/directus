@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'icon',
 	name: i18n.t('displays.icon.icon'),
 	description: i18n.t('displays.icon.description'),
-	icon: 'thumb_up',
+	icon: 'insert_emoticon',
 	handler: DisplayIcon,
 	options: [
 		{

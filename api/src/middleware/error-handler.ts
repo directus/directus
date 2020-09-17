@@ -27,14 +27,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	}
 
 	for (const err of errors) {
-		if (err instanceof BaseException) {
-			if (env.NODE_ENV === 'development') {
-				err.extensions = {
-					...(err.extensions || {}),
-					stack: err.stack,
-				};
-			}
+		if (env.NODE_ENV === 'development') {
+			err.extensions = {
+				...(err.extensions || {}),
+				stack: err.stack,
+			};
+		}
 
+		if (err instanceof BaseException) {
 			logger.debug(err);
 
 			res.status(err.status);
@@ -56,6 +56,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 					{
 						message: err.message,
 						extensions: {
+							...err.extensions,
 							code: 'INTERNAL_SERVER_ERROR',
 						},
 					},

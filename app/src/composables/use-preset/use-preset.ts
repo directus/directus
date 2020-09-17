@@ -126,12 +126,12 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	const searchQuery = computed<string | null>({
 		get() {
-			return localPreset.value.search_query || null;
+			return localPreset.value.search || null;
 		},
 		set(val) {
 			localPreset.value = {
 				...localPreset.value,
-				search_query: val,
+				search: val,
 			};
 
 			autoSave();
@@ -177,7 +177,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout_options: null,
 			layout: 'tabular',
 			filters: null,
-			search_query: null,
+			search: null,
 		};
 
 		await savePreset();
@@ -206,8 +206,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		if (collectionInfo.value?.meta?.archive_field && collectionInfo.value?.meta?.archive_app_filter === true) {
 			localPreset.value = {
 				...localPreset.value,
-				filters: [
-					...(localPreset.value.filters || []),
+				filters: localPreset.value.filters || [
 					{
 						key: 'hide-archived',
 						field: collectionInfo.value.meta.archive_field,

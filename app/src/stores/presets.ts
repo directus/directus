@@ -7,7 +7,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
 	role: null,
 	user: null,
-	search_query: null,
+	search: null,
 	filters: null,
 	layout: null,
 	layout_query: null,

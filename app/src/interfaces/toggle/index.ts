@@ -8,6 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'check_box',
 	component: InterfaceToggle,
 	types: ['boolean'],
+	recommendedDisplays: ['boolean'],
 	options: [
 		{
 			field: 'iconOff',
@@ -39,7 +40,7 @@ export default defineInterface(({ i18n }) => ({
 				},
 			},
 			schema: {
-				default_value: i18n.t('active'),
+				default_value: i18n.t('interfaces.toggle.label_default'),
 			},
 		},
 		{

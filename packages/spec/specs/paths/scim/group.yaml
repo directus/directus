@@ -1,0 +1,51 @@
+get:
+  description: Retrieve a single SCIM Group by unique identifier.
+  operationId: getSCIMGroup
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+patch:
+  description: Update an existing SCIM Group
+  operationId: updateSCIMGroup
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+delete:
+  description: Delete an existing SCIM Group
+  operationId: deleteSCIMGroup
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+  - SCIM
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/Id'

@@ -45,25 +45,9 @@ export default defineComponent({
 		const modules = getModules();
 
 		const _modules = computed(() => {
-			const customModuleListing = userStore.state.currentUser?.role.module_listing;
+			const customModuleListing = userStore.state.currentUser?.role.module_list;
 
-			if (customModuleListing && Array.isArray(customModuleListing) && customModuleListing.length > 0) {
-				return customModuleListing.map((custom) => {
-					if (custom.link.startsWith('http') || custom.link.startsWith('//')) {
-						return {
-							...custom,
-							href: custom.link,
-						};
-					} else {
-						return {
-							...custom,
-							to: custom.link,
-						};
-					}
-				});
-			}
-
-			return orderBy(
+			const registeredModules = orderBy(
 				modules.value
 					.map((module) => ({
 						...module,
@@ -81,6 +65,27 @@ export default defineComponent({
 				['order'],
 				['asc']
 			);
+
+			if (customModuleListing && Array.isArray(customModuleListing) && customModuleListing.length > 0) {
+				return [
+					...customModuleListing.map((custom) => {
+						if (custom.link?.startsWith('http') || custom.link?.startsWith('//')) {
+							return {
+								...custom,
+								href: custom.link,
+							};
+						} else {
+							return {
+								...custom,
+								to: custom.link,
+							};
+						}
+					}),
+					...registeredModules.filter((module) => module.persistent === true)
+				]
+			}
+
+			return registeredModules;
 		});
 
 		return { _modules };

@@ -217,6 +217,7 @@
 			</drawer-detail>
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
+			<export-drawer-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -242,6 +243,7 @@ import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import ExportDrawerDetail from '@/views/private/components/export-drawer-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -259,6 +261,7 @@ export default defineComponent({
 		CollectionsNavigation,
 		CollectionsNotFound,
 		LayoutDrawerDetail,
+		ExportDrawerDetail,
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,

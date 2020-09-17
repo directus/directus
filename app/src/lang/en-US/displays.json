@@ -1,5 +1,17 @@
 {
 	"displays": {
+		"boolean": {
+			"boolean": "Boolean",
+			"description": "Display on and off states",
+			"label_on": "Label On",
+			"label_on_placeholder": "Enter an on label...",
+			"label_off": "Label Off",
+			"label_off_placeholder": "Enter an off label...",
+			"icon_on": "Icon On",
+			"icon_off": "Icon Off",
+			"color_on": "Color On",
+			"color_off": "Color Off"
+		},
 		"collection": {
 			"collection": "Collection",
 			"description": "Display a collection",

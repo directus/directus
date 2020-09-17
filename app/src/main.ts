@@ -43,24 +43,36 @@ import './styles/main.scss';
 import './directives/register';
 import './components/register';
 import './views/register';
-import './modules/register';
-import './layouts/register';
-import './interfaces/register';
-import './displays/register';
+
+import { registerInterfaces } from './interfaces/register';
+import { loadModules } from './modules/register';
+import { registerLayouts } from './layouts/register';
+import { registerDisplays } from './displays/register';
 
 import App from './app.vue';
 
-Vue.config.productionTip = false;
+async function init() {
+	await Promise.all([
+		registerInterfaces(),
+		registerDisplays(),
+		registerLayouts(),
+		loadModules(),
+	]);
 
-new Vue({
-	render: (h) => h(App),
-	router,
-	i18n,
-}).$mount('#app');
+	Vue.config.productionTip = false;
 
-console.timeEnd('🕓 Application Loaded');
+	new Vue({
+		render: (h) => h(App),
+		router,
+		i18n,
+	}).$mount('#app');
 
-console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
-console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
-console.info(`%cEnvironment: ${process.env.NODE_ENV}`, 'color:DodgerBlue');
-console.groupEnd();
+	console.timeEnd('🕓 Application Loaded');
+
+	console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
+	console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
+	console.info(`%cEnvironment: ${process.env.NODE_ENV}`, 'color:DodgerBlue');
+	console.groupEnd();
+}
+
+init();

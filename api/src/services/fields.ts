@@ -47,8 +47,6 @@ export default class FieldsService {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
 		}
 
-		fields = (await this.payloadService.processValues('read', fields)) as FieldMeta[];
-
 		let columns = await schemaInspector.columnInfo(collection);
 
 		columns = columns.map((column) => {
@@ -157,7 +155,9 @@ export default class FieldsService {
 			.where({ collection, field })
 			.first();
 
-		fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
+		if (fieldInfo) {
+			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
+		}
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);

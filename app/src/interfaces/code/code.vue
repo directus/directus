@@ -34,7 +34,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Object],
+			type: [String, Object, Array],
 			default: null,
 		},
 		altOptions: {
@@ -274,7 +274,7 @@ export default defineComponent({
 		};
 
 		function fillTemplate() {
-			if(props.type === 'json') {
+			if (props.type === 'json') {
 				try {
 					emit('input', JSON.parse(props.template));
 				} catch {}

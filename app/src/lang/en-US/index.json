@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"role_name": "Role Name",
+
 	"db_only_click_to_configure": "Database Only: Click to Configure ",
 
 	"show_archived_items": "Show Archived Items",
@@ -151,6 +153,8 @@
 	"field_m2o": "M2O Relationship",
 	"field_o2m": "O2M Relationship",
 	"field_m2m": "M2M Relationship",
+	"field_translations": "Translations",
+	"languages": "Languages",
 
 	"reset_page_preferences": "Reset Page Preferences",
 
@@ -183,6 +187,8 @@
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",
+	"configure_translations": "Configure your Translations...",
+	"configure_languages": "Configure your Languages...",
 
 	"add_m2o_to_collection": "Add Many-to-One to \"{collection}\"",
 	"add_o2m_to_collection": "Add One-to-Many to \"{collection}\"",
@@ -232,6 +238,7 @@
 	"hide_on_browse": "Hide on Browse",
 	"unique": "Unique",
 	"primary_key": "Primary Key",
+	"foreign_key": "Foreign Key",
 	"validation_regex": "Validation RegEx",
 	"validation_message": "Validation Message",
 	"directus_type": "Directus Type",
@@ -294,6 +301,14 @@
 	"item_in": "Item {primaryKey} in {collection} | Items {primaryKey} in {collection}",
 	"this_collection": "This Collection",
 	"related_collection": "Related Collection",
+	"translations_collection": "Translations Collection",
+	"languages_collection": "Languages Collection",
+
+	"export_data": "Export Data",
+	"format": "Format",
+	"use_current_filters_settings": "Use Current Filters & Settings",
+
+	"export_collection": "Export {collection}",
 
 	"related_values": "Related Values",
 
@@ -411,6 +426,7 @@
 	"true": "True",
 	"false": "False",
 	"creating_new_collection": "Creating New Collection",
+	"creating_new_role": "Creating New Role",
 	"status": "Status",
 	"sort": "Sort",
 	"created_by": "Created By",
@@ -534,6 +550,10 @@
 	"inline_title": "Inline Title",
 	"auto_format_casing": "Auto-format casing",
 
+	"auto_fill": "Auto Fill",
+
+	"corresponding_field": "Corresponding Field",
+
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",
@@ -623,7 +643,7 @@
 	"collections_shown": "Collections Shown",
 	"visible_collections": "Visible Collections",
 	"hidden_collections": "Hidden Collections",
-	"unmanaged_collections": "Unmanaged Collections",
+	"unmanaged_collections": "Unconfigured Collections",
 	"system_collections": "System Collections",
 
 	"slider": "Slider",
@@ -823,7 +843,7 @@
 	"allow_none": "Allow None",
 	"choices": "Choices",
 	"use_double_colon_for_key": "Use double colon for dedicated keys, eg: `value_saved::Option Displayed`",
-	"choices_option_configured_incorrectly": "Choices option configured incorrectly",
+	"choices_option_configured_incorrectly": "Choices configured incorrectly",
 	"deselect": "Deselect",
 	"deselect_all": "Deselect All",
 
@@ -831,7 +851,7 @@
 
 	"adding_user": "Adding User",
 
-	"statuses_not_configured": "Status mapping option configured incorrectly",
+	"statuses_not_configured": "Status mapping configured incorrectly",
 	"status_mapping": "Status Mapping",
 
 	"creating_in": "Creating Item in {collection}",
@@ -1006,6 +1026,12 @@
 		"collection_list": "Collections Navigation"
 	}
   },
+
+  "do_nothing": "Do Nothing",
+  "generate_and_save_uuid": "Generate and Save UUID",
+  "save_current_user_id": "Save Current User ID",
+  "save_current_user_role": "Save Current User Role",
+  "save_current_datetime": "Save Current Date/Time",
 
   "modules": {},
 

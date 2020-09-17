@@ -73,8 +73,10 @@ export default class CollectionsService {
 					}
 				});
 
-				const collectionInfo = omit(payload, 'fields');
-				await collectionItemsService.create(collectionInfo);
+				await collectionItemsService.create({
+					...(payload.meta || {}),
+					collection: payload.collection,
+				});
 
 				const fieldPayloads = payload
 					.fields!.filter((field) => field.meta)
@@ -290,7 +292,7 @@ export default class CollectionsService {
 			} else {
 				await this.knex('directus_relations')
 					.update({ one_field: null })
-					.where({ one_collection: collection, field: relation.one_field });
+					.where({ one_collection: collection, one_field: relation.one_field });
 				await fieldsService.deleteField(relation.many_collection, relation.many_field);
 			}
 		}

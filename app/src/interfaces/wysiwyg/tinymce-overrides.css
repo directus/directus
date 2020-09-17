@@ -1,7 +1,8 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 
 .tox .tox-tbtn {
-	margin: 2px 0 4px 0;
+	margin: 2px 2px 4px 0;
+	color: var(--foreground-normal);
 }
 
 .tox .tox-tbtn svg {
@@ -81,8 +82,8 @@
 	border-color: var(--border-normal-alt);
 }
 
-.tox-tinymce:focus {
-	border-color: var(--primary);
+.tox-tinymce.focus {
+	border-color: var(--primary) !important;
 }
 
 .tox .tox-toolbar,
@@ -106,11 +107,6 @@ body.dark .tox .tox-toolbar__overflow {
 		background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
 			left 0 top 0 var(--background-subdued);
 	}
-}
-
-.tox .tox-tbtn {
-	margin-right: 2px;
-	color: var(--foreground-normal);
 }
 
 .tox .tox-tbtn--enabled,

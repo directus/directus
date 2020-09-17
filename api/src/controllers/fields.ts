@@ -18,7 +18,7 @@ router.get(
 
 		res.locals.payload = { data: fields || null };
 		return next();
-	}),
+	})
 );
 
 router.get(
@@ -30,7 +30,7 @@ router.get(
 
 		res.locals.payload = { data: fields || null };
 		return next();
-	}),
+	})
 );
 
 router.get(
@@ -46,7 +46,7 @@ router.get(
 
 		res.locals.payload = { data: field || null };
 		return next();
-	}),
+	})
 );
 
 const newFieldSchema = Joi.object({
@@ -67,6 +67,9 @@ router.post(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
+		if (!req.body.schema && !req.body.meta)
+			throw new InvalidPayloadException(`"schema" or "meta" is required`);
+
 		const service = new FieldsService({ accountability: req.accountability });
 
 		const { error } = newFieldSchema.validate(req.body);
@@ -83,7 +86,7 @@ router.post(
 
 		res.locals.payload = { data: createdField || null };
 		return next();
-	}),
+	})
 );
 
 router.patch(
@@ -107,7 +110,7 @@ router.patch(
 
 		res.locals.payload = { data: results || null };
 		return next();
-	}),
+	})
 );
 
 router.patch(
@@ -126,7 +129,7 @@ router.patch(
 
 		res.locals.payload = { data: updatedField || null };
 		return next();
-	}),
+	})
 );
 
 router.delete(
@@ -136,7 +139,7 @@ router.delete(
 		const service = new FieldsService({ accountability: req.accountability });
 		await service.deleteField(req.params.collection, req.params.field);
 		return next();
-	}),
+	})
 );
 
 export default router;

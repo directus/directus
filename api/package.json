@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-alpha.33",
+	"version": "9.0.0-alpha.38",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/next#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -64,7 +64,7 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "^9.0.0-alpha.33",
+		"@directus/app": "^9.0.0-alpha.38",
 		"@directus/format-title": "^3.2.0",
 		"@shagital/db-dumper": "^1.0.2",
 		"@slynova/flydrive": "^1.0.2",
@@ -176,5 +176,5 @@
 			"prettier --write"
 		]
 	},
-	"gitHead": "a7d3952ec3b812ee1eec2f1c7b9f44186cbe0498"
+	"gitHead": "62e32d86c5994aa51fd30ca370d1b675dffa58dc"
 }

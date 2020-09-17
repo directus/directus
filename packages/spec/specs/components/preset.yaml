@@ -1,0 +1,73 @@
+type: object
+properties:
+  collection:
+    description: What collection this collection preset is used for.
+    example: articles
+    type: string
+  filters:
+    description: The filters that the user applied.
+    example:
+      field: title
+      operator: contains
+      value: Hello
+    type: array
+    nullable: true
+    items:
+      type: object
+  id:
+    description: Unique identifier for this single collection preset.
+    example: '155'
+    type: integer
+  role:
+    description: The unique identifier of a role in the platform. If `user` is null,
+      this will be used to apply the collection preset or bookmark for all users in
+      the role.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    nullable: true
+    type: string
+  search_query:
+    description: What the user searched for in search/filter in the header bar.
+    example: null
+    type: string
+    nullable: true
+  title:
+    description: Name for the bookmark. If this is set, the collection preset will
+      be considered to be a bookmark.
+    example: null
+    type: string
+    nullable: true
+  translation:
+    description: Key value pair of language-translation. Can be used to translate
+      the bookmark title in multiple languages.
+    example: null
+    type: object
+    nullable: true
+  user:
+    description: The unique identifier of the user to whom this collection preset
+      applies.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    nullable: true
+    type: string
+  view_options:
+    description: Options of the views. The properties in here are controlled by the
+      layout.
+    example:
+      timeline:
+        color: action
+        content: excerpt
+        date: published_on
+        title: '{{ title }} ({{ author.first_name }} {{ author.last_name }})'
+    type: object
+    nullable: true
+  view_query:
+    description: View query that's saved per view type. Controls what data is fetched
+      on load. These follow the same format as the JS SDK parameters.
+    example:
+      timeline:
+        sort: -published_on
+    type: object
+    nullable: true
+  view_type:
+    description: Name of the view type that is used.
+    example: timeline
+    type: string

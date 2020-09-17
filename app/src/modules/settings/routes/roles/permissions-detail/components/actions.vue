@@ -1,6 +1,5 @@
 <template>
 	<div class="actions">
-		<v-button secondary :to="`/settings/roles/${roleKey || 'public'}`">{{ $t('cancel') }}</v-button>
 		<v-button @click="save" :loading="loading">{{ $t('save') }}</v-button>
 	</div>
 </template>

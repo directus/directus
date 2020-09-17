@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.dropdown-multiselect.description'),
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDropdownMultiselect,
-	types: ['json'],
+	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'choices',

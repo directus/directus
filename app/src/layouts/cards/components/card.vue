@@ -228,6 +228,7 @@ export default defineComponent({
 
 			.selector {
 				--v-icon-color: var(--white);
+				--v-icon-color-hover: var(--white);
 
 				margin: 8px;
 				opacity: 0.5;

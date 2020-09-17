@@ -2,9 +2,10 @@
   "packages": [
     "api",
     "app",
+    "docs",
     "packages/*"
   ],
-  "version": "9.0.0-alpha.33",
+  "version": "9.0.0-alpha.38",
   "command": {
     "bootstrap": {
       "npmClientArgs": [

@@ -1,8 +1,8 @@
 <template>
-	<div class="v-detail" :class="{ _active }">
+	<div class="v-detail" :class="{ disabled }">
 		<v-divider @click.native="_active = !_active">
+			<v-icon v-if="!disabled" :name="_active ? 'unfold_less' : 'unfold_more'" small />
 			<slot name="title">{{ label }}</slot>
-			<v-icon name="unfold_more" small />
 		</v-divider>
 		<transition-expand>
 			<div v-if="_active">
@@ -29,12 +29,20 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.t('toggle')
+			default: i18n.t('toggle'),
+		},
+		startOpen: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		}
 	},
 
 	setup(props, { emit }) {
-		const localActive = ref(false);
+		const localActive = ref(props.startOpen);
 		const _active = computed({
 			get() {
 				if (props.active !== undefined) {
@@ -57,13 +65,14 @@ export default defineComponent({
 .v-divider {
 	margin-bottom: 12px;
 	cursor: pointer;
+}
 
-	&:hover {
-		--v-divider-label-color: var(--foreground-normal);
-	}
+.v-detail:not(.disabled) .v-divider:hover {
+	--v-divider-label-color: var(--foreground-normal);
+	cursor: pointer;
 }
 
 .v-icon {
-	margin-left: 4px;
+	margin-right: 4px;
 }
 </style>

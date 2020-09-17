@@ -49,6 +49,8 @@ export default async function runSeed(knex: Knex, seed: string) {
 							column = table.string(columnName, columnInfo.length);
 						} else if (columnInfo.increments) {
 							column = table.increments();
+						} else if (columnInfo.type === 'csv') {
+							column = table.string(columnName);
 						} else {
 							column = table[columnInfo.type!](columnName);
 						}

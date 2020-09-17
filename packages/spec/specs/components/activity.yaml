@@ -1,0 +1,47 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the object.
+    example: 2
+    type: integer
+  action:
+    description: Action that was performed.
+    example: update
+    type: string
+    enum: [authenticate, comment, upload, create, update, delete, soft-delete, revert, invalid-credentials]
+  action_by:
+    description: Unique identifier of the user account who caused this action.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+    nullable: true # States the SQL structure
+  action_on:
+    description: When the action happened.
+    example: '2019-12-05 22:52:09'
+    type: string
+    format: date-time
+  ip:
+    description: The IP address of the user at the time the action took place.
+    example: 160.72.72.58
+    oneOf:
+      - type: string
+        format: ipv4
+      - type: string
+        enum: [localhost]
+  user_agent:
+    description: User agent string of the browser the user used when the action took place.
+    example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108 Safari/537.36
+    type: string
+  collection:
+    description: Collection identifier in which the item resides.
+    example: movies
+    type: string
+  item:
+    description: Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
+    example: '328'
+    type: string
+  comment:
+    description: User comment. This will store the comments that show up in the right
+      sidebar of the item edit page in the admin app.
+    example: null
+    type: string
+    nullable: true

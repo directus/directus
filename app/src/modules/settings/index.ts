@@ -12,6 +12,7 @@ import SettingsPresetsBrowse from './routes/presets/browse/browse.vue';
 import SettingsPresetsDetail from './routes/presets/detail.vue';
 import SettingsWebhooksBrowse from './routes/webhooks/browse.vue';
 import SettingsWebhooksDetail from './routes/webhooks/detail.vue';
+import SettingsNewRole from './routes/roles/add-new.vue';
 import SettingsNotFound from './routes/not-found.vue';
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
@@ -25,7 +26,7 @@ export default defineModule(({ i18n }) => ({
 	routes: [
 		{
 			path: '/',
-			redirect: '/project',
+			redirect: '/data-model',
 		},
 		{
 			name: 'settings-project',
@@ -78,6 +79,15 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-roles-browse',
 			path: '/roles',
 			component: SettingsRolesBrowse,
+			children: [
+				{
+					path: '+',
+					name: 'settings-add-new-role',
+					components: {
+						add: SettingsNewRole,
+					},
+				}
+			]
 		},
 		{
 			path: '/roles/public',
@@ -138,4 +148,5 @@ export default defineModule(({ i18n }) => ({
 		return user.role.admin === true;
 	},
 	order: Infinity,
+	persistent: true,
 }));

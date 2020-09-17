@@ -8,30 +8,47 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-select
-					:placeholder="$t('select_one')"
-					:items="items"
-					v-model="relations[0].one_collection"
-					:disabled="isExisting"
-				/>
+				<v-input :class="{ matches: relatedCollectionExists }" db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection') + '...'">
+					<template #append>
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+							</template>
+
+							<v-list dense class="monospace">
+								<v-list-item
+									v-for="item in items"
+									:key="item.value"
+									:active="relations[0].one_collection === item.value"
+									:disabled="item.disabled"
+									@click="relations[0].one_collection = item.value"
+								>
+									<v-list-item-content>
+										{{ item.text }}
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+				</v-input>
 			</div>
-			<v-input disabled :value="fieldData.field" />
-			<v-input disabled :value="relatedPrimary" />
-			<v-icon name="arrow_back" />
+			<v-input disabled :value="relations[0].many_field" />
+			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[0].one_primary" :placeholder="$t('primary_key') + '...'" />
+			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider v-if="!isExisting" />
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
 
 		<div class="grid" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_corresponding_field') }}</div>
+				<div class="type-label">{{ $t('create_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('corresponding_field_name') }}</div>
-				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" db-safe />
+				<div class="type-label">{{ $t('field_name') }}</div>
+				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" :placeholder="$t('field_name') + '...'" db-safe />
 			</div>
-			<v-icon name="arrow_forward" />
+			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 	</div>
 </template>
@@ -66,17 +83,21 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items, relatedPrimary } = useRelation();
+		const { items } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
+
+		const relatedCollectionExists = computed(() => {
+			return !!collectionsStore.getCollection(state.relations[0].one_collection);
+		});
 
 		return {
 			relations: state.relations,
 			items,
-			relatedPrimary,
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
 			fieldData: state.fieldData,
+			relatedCollectionExists,
 		};
 
 		function useRelation() {
@@ -97,13 +118,7 @@ export default defineComponent({
 				}))
 			);
 
-			const relatedPrimary = computed(() => {
-				return state.relations[0].one_collection
-					? fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection)?.field
-					: null;
-			});
-
-			return { items, relatedPrimary };
+			return { items };
 		}
 
 		function useCorresponding() {
@@ -113,40 +128,38 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
-						state.newFields = [
-							{
-								field: state.relations[0].one_collection,
-								collection: state.relations[0].one_collection,
-								meta: {
-									special: 'o2m',
-									interface: 'one-to-many',
-								},
+						state.newFields.push({
+							$type: 'corresponding',
+							field: state.relations[0].one_collection,
+							collection: state.relations[0].one_collection,
+							meta: {
+								special: 'o2m',
+								interface: 'one-to-many',
 							},
-						];
+						});
 					} else {
-						state.newFields = [];
+						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}
 				},
 			});
 
 			const correspondingField = computed({
 				get() {
-					return state.newFields?.[0]?.field || null;
+					return state.newFields?.find((field: any) => field.$type === 'corresponding')?.field || null;
 				},
 				set(field: string | null) {
-					state.newFields = [
-						{
-							...(state.newFields[0] || {}),
-							field: field || '',
-						},
-					];
+					state.newFields = state.newFields.map((newField: any) => {
+						if (newField.$type === 'corresponding') {
+							return {
+								...newField,
+								field
+							}
+						}
 
-					state.relations = [
-						{
-							...state.relations[0],
-							one_field: field,
-						},
-					];
+						return newField;
+					});
+
+					state.relations[0].one_field = field;
 				},
 			});
 
@@ -172,17 +185,25 @@ export default defineComponent({
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 20px 32px;
+	gap: 12px 32px;
 	margin-top: 48px;
 
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
+	.v-input.matches {
+		--v-input-color: var(--primary);
+	}
+
+	.arrow {
+		--v-icon-color: var(--primary);
 
 		position: absolute;
 		bottom: 14px;
 		left: 50%;
 		transform: translateX(-50%);
 	}
+}
+
+.v-list {
+	--v-list-item-content-font-family: var(--family-monospace);
 }
 
 .v-divider {

@@ -10,7 +10,8 @@
 					<template #input>
 						<div class="label">
 							<span class="name" v-tooltip="field.name">{{ field.field }}</span>
-							<span class="interface">{{ interfaceName }}</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
 						</div>
 					</template>
 
@@ -25,6 +26,7 @@
 							<v-icon
 								v-if="!field.meta"
 								name="report_problem"
+								class="unmanaged"
 								small
 								v-tooltip="$t('db_only_click_to_configure')"
 							/>
@@ -89,7 +91,7 @@
 				<v-list-item
 					@click="deleteActive = true"
 					class="danger"
-					:disabled="field.schema && field.schema.is_primary_key === true"
+					:disabled="field.schema && field.schema.is_primary_key === true || false"
 				>
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
@@ -126,10 +128,10 @@
 
 		<v-dialog v-model="deleteActive">
 			<v-card>
-				<v-card-title>Are you sure you want to delete this field?</v-card-title>
+				<v-card-title>{{ $t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 				<v-card-actions>
-					<v-button @click="deleteActive = false" secondary>Cancel</v-button>
-					<v-button :loading="deleting" @click="deleteField">Delete</v-button>
+					<v-button @click="deleteActive = false" secondary>{{ $t('cancel') }}</v-button>
+					<v-button :loading="deleting" @click="deleteField">{{ $t('delete') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -308,6 +310,11 @@ export default defineComponent({
 
 	&.hidden-icon {
 		--v-icon-color-hover: var(--foreground-subdued);
+	}
+
+	&.unmanaged {
+		--v-icon-color: var(--warning);
+		--v-icon-color-hover: var(--warning);
 	}
 }
 
