@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import DatabaseBackupService from '../services/backup';
+import DatabaseBackupService from '../services/dbbackup';
 import { DatabaseNotFoundException, InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 
@@ -9,7 +9,6 @@ const router = Router();
 router.get(
 	'/backup',
 	asyncHandler(async (req, res, next) => {
-		// retrict use
 		if (!req.accountability?.user || !req.accountability?.role) {
 			throw new InvalidCredentialsException();
 		}
