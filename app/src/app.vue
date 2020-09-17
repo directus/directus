@@ -33,6 +33,7 @@
 import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
 import * as stores from '@/stores';
 import api from '@/api';
+import axios from 'axios';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
@@ -101,9 +102,13 @@ export default defineComponent({
 
 		const error = computed(() => appStore.state.error);
 
+		/**
+		 * This allows custom extensions to use the apps internals
+		 */
 		provide('system', {
 			...stores,
 			api,
+			axios,
 		});
 
 		return { hydrating, brandStyle, appAccess, error };
