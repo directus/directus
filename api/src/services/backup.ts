@@ -4,6 +4,7 @@
  * MySQL =  mysqldump should be installed.
  * PG =  pg_dump should be installed.
  * SQLlite =  sqlite3 should be installed.
+ * Oracle = Oracle database utilties should be installed
  * the path of the tool must be specified in DB_BINARY
  */
 import Knex from 'knex';
