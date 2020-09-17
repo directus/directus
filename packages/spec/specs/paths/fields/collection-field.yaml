@@ -2,7 +2,7 @@ get:
   description: Retrieves the details of a single field in a given collection.
   operationId: getCollectionField
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -10,13 +10,13 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Field'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/Field"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Fields
+    - Fields
 patch:
   description: Update an existing field.
   operationId: updateField
@@ -68,7 +68,7 @@ patch:
               description: Sort order of this field on the edit page of the admin app.
               type: integer
             translation:
-              description: 'Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.'
+              description: "Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app."
               type: object
             unique:
               description: If the value of this field should be unique within the collection.
@@ -85,7 +85,7 @@ patch:
               type: integer
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -93,26 +93,26 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Field'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/Field"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Fields
+    - Fields
 
 delete:
   description: Delete an existing field.
   operationId: deleteField
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Fields
+    - Fields
 parameters:
   - name: collection
     in: path

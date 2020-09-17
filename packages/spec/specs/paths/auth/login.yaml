@@ -8,7 +8,7 @@ post:
       application/json:
         schema:
           type: object
-          required: [ email, password ]
+          required: [email, password]
           properties:
             email:
               type: string
@@ -28,19 +28,19 @@ post:
               type: string
               description: If 2FA is enabled, you need to pass the one time password.
   responses:
-    '200':
+    "200":
       description: Successful authentification
       content:
         application/json:
           schema:
             type: object
             properties:
-              public:
-                type: boolean
               data:
                 type: object
                 properties:
-                  token:
+                  access_token:
                     type: string
-                  user:
-                    $ref: '../../openapi.yaml#/components/schemas/User'
+                    example: eyJhbGciOiJI...
+                  expires:
+                    type: integer
+                    example: 900

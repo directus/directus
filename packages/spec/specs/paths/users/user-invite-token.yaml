@@ -9,7 +9,7 @@ post:
       schema:
         type: integer
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -17,10 +17,10 @@ post:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/User'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/User"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Users
+    - Users

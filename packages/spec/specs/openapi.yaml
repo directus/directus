@@ -6,14 +6,14 @@ info:
     email: contact@directus.io
   license:
     name: GPL-3.0
-    url: 'https://www.gnu.org/licenses/gpl-3.0.de.html'
+    url: "https://www.gnu.org/licenses/gpl-3.0.de.html"
   version: 1.0.0
 externalDocs:
   description: Directus Docs
-  url: 'https://docs.directus.io'
+  url: "https://docs.directus.io"
 servers:
-  - url: 'https://demo.directus.io/'
-  - url: '/'
+  - url: "https://demo.directus.io/"
+  - url: "/"
 tags:
   - name: Activity
     description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
@@ -60,233 +60,232 @@ tags:
   - name: Webhooks
     description: Webhooks.
 paths:
-
   # Activity
   /activity:
-    $ref: './paths/activity/activitys.yaml'
+    $ref: "./paths/activity/activities.yaml"
   /activity/comment:
-    $ref: './paths/activity/activity-comments.yaml'
+    $ref: "./paths/activity/activity-comments.yaml"
   /activity/{id}:
-    $ref: './paths/activity/activity.yaml'
+    $ref: "./paths/activity/activity.yaml"
   /activity/comment/{id}:
-    $ref: './paths/activity/activity-comment.yaml'
+    $ref: "./paths/activity/activity-comment.yaml"
 
   # Assets
   /assets/{key}:
-    $ref: './paths/assets/assets.yaml'
+    $ref: "./paths/assets/assets.yaml"
 
   # Authentication
   /auth/login:
-    $ref: './paths/auth/login.yaml'
+    $ref: "./paths/auth/login.yaml"
   /auth/refresh:
-    $ref: './paths/auth/refresh.yaml'
+    $ref: "./paths/auth/refresh.yaml"
   /auth/logout:
-    $ref: './paths/auth/logout.yaml'
+    $ref: "./paths/auth/logout.yaml"
   /auth/password/request:
-    $ref: './paths/auth/password-request.yaml'
+    $ref: "./paths/auth/password-request.yaml"
   /auth/password/reset:
-    $ref: './paths/auth/password-reset.yaml'
+    $ref: "./paths/auth/password-reset.yaml"
   /auth/sso:
-    $ref: './paths/auth/sso.yaml'
+    $ref: "./paths/auth/sso.yaml"
   /auth/sso/{provider}:
-    $ref: './paths/auth/sso-provider.yaml'
+    $ref: "./paths/auth/sso-provider.yaml"
 
   # Items
   /items/{collection}:
-    $ref: './paths/items/items.yaml'
+    $ref: "./paths/items/items.yaml"
   /items/{collection}/{id}:
-    $ref: './paths/items/item.yaml'
+    $ref: "./paths/items/item.yaml"
 
   # Presets
   /presets:
-    $ref: './paths/presets/presets.yaml'
+    $ref: "./paths/presets/presets.yaml"
   /presets/{id}:
-    $ref: './paths/presets/preset.yaml'
+    $ref: "./paths/presets/preset.yaml"
 
   # Collections
   /collections:
-    $ref: './paths/collections/collections.yaml'
+    $ref: "./paths/collections/collections.yaml"
   /collections/{collection}:
-    $ref: './paths/collections/collection.yaml'
-  
+    $ref: "./paths/collections/collection.yaml"
+
   # Extensions
   /interfaces:
-    $ref: './paths/extensions/interfaces.yaml'
+    $ref: "./paths/extensions/interfaces.yaml"
   /layouts:
-    $ref: './paths/extensions/layouts.yaml'
+    $ref: "./paths/extensions/layouts.yaml"
   /modules:
-    $ref: './paths/extensions/modules.yaml'
+    $ref: "./paths/extensions/modules.yaml"
 
   # Fields
   /fields:
-    $ref: './paths/fields/fields.yaml'
+    $ref: "./paths/fields/fields.yaml"
   /fields/{collection}:
-    $ref: './paths/fields/collection-fields.yaml'
+    $ref: "./paths/fields/collection-fields.yaml"
   /fields/{collection}/{field}:
-    $ref: './paths/fields/collection-field.yaml'
+    $ref: "./paths/fields/collection-field.yaml"
 
   # Files
   /files:
-    $ref: './paths/files/files.yaml'
+    $ref: "./paths/files/files.yaml"
   /files/{id}:
-    $ref: './paths/files/file.yaml'
+    $ref: "./paths/files/file.yaml"
   /files/{id}/revisions:
-    $ref: './paths/files/revisions.yaml'
+    $ref: "./paths/files/revisions.yaml"
   /files/{id}/revisions/{offset}:
-    $ref: './paths/files/revision.yaml'
+    $ref: "./paths/files/revision.yaml"
 
   # Folders
   /folders:
-    $ref: './paths/folders/folders.yaml'
+    $ref: "./paths/folders/folders.yaml"
   /folders/{id}:
-    $ref: './paths/folders/folder.yaml'
+    $ref: "./paths/folders/folder.yaml"
 
   # Mail
   /mail:
-    $ref: './paths/mail/mail.yaml'
+    $ref: "./paths/mail/mail.yaml"
 
   # Permissions
   /permissions:
-    $ref: './paths/permissions/permissions.yaml'
+    $ref: "./paths/permissions/permissions.yaml"
   /permissions/me:
-    $ref: './paths/permissions/permissions-me.yaml'
+    $ref: "./paths/permissions/permissions-me.yaml"
   /permissions/{id}:
-    $ref: './paths/permissions/permission.yaml'
+    $ref: "./paths/permissions/permission.yaml"
   /permissions/me/{collection}:
-    $ref: './paths/permissions/permissions-me-collection.yaml'
+    $ref: "./paths/permissions/permissions-me-collection.yaml"
 
   # Relations
   /relations:
-    $ref: './paths/relations/relations.yaml'
+    $ref: "./paths/relations/relations.yaml"
   /relations/{id}:
-    $ref: './paths/relations/relation.yaml'
+    $ref: "./paths/relations/relation.yaml"
 
   # Revisions
   /revisions:
-    $ref: './paths/revisions/revisions.yaml'
+    $ref: "./paths/revisions/revisions.yaml"
   /revisions/{id}:
-    $ref: './paths/revisions/revision.yaml'
+    $ref: "./paths/revisions/revision.yaml"
 
   # Revisions
   /roles:
-    $ref: './paths/roles/roles.yaml'
+    $ref: "./paths/roles/roles.yaml"
   /roles/{id}:
-    $ref: './paths/roles/role.yaml'
+    $ref: "./paths/roles/role.yaml"
 
   # SCIM
   /scim/v2/Users:
-    $ref: './paths/scim/users.yaml'
+    $ref: "./paths/scim/users.yaml"
   /scim/v2/Users/{id}:
-    $ref: './paths/scim/user.yaml'
+    $ref: "./paths/scim/user.yaml"
   /scim/v2/Groups:
-    $ref: './paths/scim/groups.yaml'
+    $ref: "./paths/scim/groups.yaml"
   /scim/v2/Groups/{id}:
-    $ref: './paths/scim/group.yaml'
-  
+    $ref: "./paths/scim/group.yaml"
+
   # Server
   /server/info:
-    $ref: './paths/server/info.yaml'
+    $ref: "./paths/server/info.yaml"
     servers:
-      - url: 'https://demo.directus.io/'
+      - url: "https://demo.directus.io/"
   /server/ping:
-    $ref: './paths/server/ping.yaml'
+    $ref: "./paths/server/ping.yaml"
     servers:
-      - url: 'https://demo.directus.io/'
+      - url: "https://demo.directus.io/"
 
   # Settings
   /settings:
-    $ref: './paths/settings/settings.yaml'
+    $ref: "./paths/settings/settings.yaml"
 
   # Users
   /users:
-    $ref: './paths/users/users.yaml'
+    $ref: "./paths/users/users.yaml"
   /users/me:
-    $ref: './paths/users/me.yaml'
+    $ref: "./paths/users/me.yaml"
   /users/invite:
-    $ref: './paths/users/user-invite.yaml'
+    $ref: "./paths/users/user-invite.yaml"
   /users/{id}:
-    $ref: './paths/users/user.yaml'
+    $ref: "./paths/users/user.yaml"
   /users/invite/{token}:
-    $ref: './paths/users/user-invite-token.yaml'
+    $ref: "./paths/users/user-invite-token.yaml"
   /users/{id}/track/page:
-    $ref: './paths/users/user-tracking.yaml'
+    $ref: "./paths/users/user-tracking.yaml"
 
   # Utilities
   /utils/hash:
-    $ref: './paths/utils/hash.yaml'
+    $ref: "./paths/utils/hash.yaml"
   /utils/hash/verify:
-    $ref: './paths/utils/hash-match.yaml'
+    $ref: "./paths/utils/hash-match.yaml"
   /utils/random/string:
-    $ref: './paths/utils/random.yaml'
+    $ref: "./paths/utils/random.yaml"
 
   # Webhooks
   /webhooks:
-    $ref: './paths/webhooks/webhooks.yaml'
+    $ref: "./paths/webhooks/webhooks.yaml"
 
 components:
   schemas:
     Activity:
-      $ref: './components/activity.yaml'
+      $ref: "./components/activity.yaml"
     Preset:
-      $ref: './components/preset.yaml'
+      $ref: "./components/preset.yaml"
     Collection:
-      $ref: './components/collection.yaml'
+      $ref: "./components/collection.yaml"
     Field:
-      $ref: './components/field.yaml'
+      $ref: "./components/field.yaml"
     File:
-      $ref: './components/file.yaml'
+      $ref: "./components/file.yaml"
     Folder:
-      $ref: './components/folder.yaml'
+      $ref: "./components/folder.yaml"
     Item:
-      $ref: './components/item.yaml'
+      $ref: "./components/item.yaml"
     Permissions:
-      $ref: './components/permissions.yaml'
+      $ref: "./components/permissions.yaml"
     Relation:
-      $ref: './components/relation.yaml'
+      $ref: "./components/relation.yaml"
     Revision:
-      $ref: './components/revision.yaml'
+      $ref: "./components/revision.yaml"
     Role:
-      $ref: './components/role.yaml'
+      $ref: "./components/role.yaml"
     Setting:
-      $ref: './components/setting.yaml'
+      $ref: "./components/setting.yaml"
     User:
-      $ref: './components/user.yaml'
+      $ref: "./components/user.yaml"
     Webhook:
-      $ref: './components/webhook.yaml'
+      $ref: "./components/webhook.yaml"
   parameters:
-    # All path parameters 
+    # All path parameters
     Id:
-      $ref: './parameters/id.yaml'
+      $ref: "./parameters/id.yaml"
     UUId:
-      $ref: './parameters/uuid.yaml'
+      $ref: "./parameters/uuid.yaml"
     Collection:
-      $ref: './parameters/collection.yaml'
+      $ref: "./parameters/collection.yaml"
     # All query parameters
     q:
-      $ref: './parameters/q.yaml'
+      $ref: "./parameters/q.yaml"
     Page:
-      $ref: './parameters/page.yaml'
+      $ref: "./parameters/page.yaml"
     Offset:
-      $ref: './parameters/offset.yaml'
+      $ref: "./parameters/offset.yaml"
     Single:
-      $ref: './parameters/single.yaml'
+      $ref: "./parameters/single.yaml"
     Sort:
-      $ref: './parameters/sort.yaml'
+      $ref: "./parameters/sort.yaml"
     Meta:
-      $ref: './parameters/meta.yaml'
+      $ref: "./parameters/meta.yaml"
     Limit:
-      $ref: './parameters/limit.yaml'
+      $ref: "./parameters/limit.yaml"
     Filter:
-      $ref: './parameters/filter.yaml'
+      $ref: "./parameters/filter.yaml"
     Fields:
-      $ref: './parameters/fields.yaml'
+      $ref: "./parameters/fields.yaml"
     Mode:
-      $ref: './parameters/mode.yaml'
+      $ref: "./parameters/mode.yaml"
   responses:
     NotFoundError:
-      $ref: './responses/notFoundError.yaml'
+      $ref: "./responses/notFoundError.yaml"
     UnauthorizedError:
-      $ref: './responses/unauthorizedError.yaml'
+      $ref: "./responses/unauthorizedError.yaml"
   securitySchemes:
     KeyAuth:
       type: apiKey
@@ -296,8 +295,8 @@ components:
     Auth:
       type: apiKey
       in: header
-      name: 'Authorization'
+      name: "Authorization"
       description: To authenticate, use the "/auth/authenticate" endpoint with the credentials "admin@example.com" | "password". Use the api key here like so "Bearer \<key\>".
-security: 
+security:
   - Auth: []
   - KeyAuth: []

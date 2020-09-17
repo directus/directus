@@ -2,7 +2,8 @@ patch:
   description: Update the content of an existing comment.
   operationId: updateComment
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Id"
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -13,32 +14,32 @@ patch:
               type: string
               example: My updated comment
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Activity'
+                $ref: "#/components/schemas/Activity"
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Activity
+    - Activity
 delete:
   description: Delete an existing comment. Deleted comments can not be retrieved.
   operationId: deleteComment
+  parameters:
+    - $ref: "#/components/parameters/Id"
   responses:
-    '203':
+    "203":
       description: Deleted succsessfully
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Activity
-parameters:
-- $ref: '../../openapi.yaml#/components/parameters/Id'
+    - Activity

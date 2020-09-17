@@ -3,17 +3,17 @@ get:
   tags:
     - Items
   operationId: getItems
-  security: 
+  security:
     - Auth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Single'
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
-    - $ref: '../../openapi.yaml#/components/parameters/Filter'
-    - $ref: '../../openapi.yaml#/components/parameters/q'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Limit"
+    - $ref: "#/components/parameters/Meta"
+    - $ref: "#/components/parameters/Offset"
+    - $ref: "#/components/parameters/Single"
+    - $ref: "#/components/parameters/Sort"
+    - $ref: "#/components/parameters/Filter"
+    - $ref: "#/components/parameters/q"
     - name: status
       in: query
       description: Filter items by the given status
@@ -23,7 +23,7 @@ get:
         items:
           type: string
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -34,28 +34,28 @@ get:
                 type: array
                 items:
                   type: object
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
 post:
   description: Create a new item.
   tags:
     - Items
   operationId: createItem
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
           schema:
             type: object
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Collection'
+  - $ref: "#/components/parameters/Collection"

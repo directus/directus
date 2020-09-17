@@ -3,20 +3,20 @@ get:
     - Presets
   operationId: getPresets
   description: List the presets.
-  security: 
+  security:
     - Auth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Limit'
-    - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Page'
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
-    - $ref: '../../openapi.yaml#/components/parameters/Single'
-    - $ref: '../../openapi.yaml#/components/parameters/Filter'
-    - $ref: '../../openapi.yaml#/components/parameters/q'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Limit"
+    - $ref: "#/components/parameters/Offset"
+    - $ref: "#/components/parameters/Page"
+    - $ref: "#/components/parameters/Sort"
+    - $ref: "#/components/parameters/Single"
+    - $ref: "#/components/parameters/Filter"
+    - $ref: "#/components/parameters/q"
+    - $ref: "#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -26,23 +26,23 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Preset'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                  $ref: "#/components/schemas/Preset"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
 post:
   tags:
     - Presets
   operationId: createPreset
   description: Create a new preset.
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
           type: object
-          required: [ collection ]
+          required: [collection]
           properties:
             collection:
               type: string
@@ -69,7 +69,7 @@ post:
                   operator:
                     type: string
                     example: gte
-                  value: 
+                  value:
                     type: integer
                     example: 4.5
             view_type:
@@ -85,7 +85,7 @@ post:
               type: object
               description: Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages.
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -93,6 +93,6 @@ post:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Preset'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "#/components/schemas/Preset"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"

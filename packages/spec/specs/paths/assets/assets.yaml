@@ -3,7 +3,7 @@ get:
     - Assets
   operationId: getAsset
   description: Image typed files can be dynamically resized and transformed to fit any need.
-  security: 
+  security:
     - Auth: []
   parameters:
     - name: key
@@ -41,11 +41,11 @@ get:
         minimum: 1
         maximum: 100
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         text/plain:
           schema:
             type: string
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "404":
+      $ref: "#/components/responses/NotFoundError"

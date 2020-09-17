@@ -14,8 +14,9 @@ get:
       required: false
       schema:
         type: integer
-    - description: Filter by `id`, `userName`, `emails.value` and `externalId` attributes   
-        are supported. Only the `eq` operator is supported. Uses format `?filter=id eq      
+    - description:
+        Filter by `id`, `userName`, `emails.value` and `externalId` attributes
+        are supported. Only the `eq` operator is supported. Uses format `?filter=id eq
         15`
       in: query
       name: filter
@@ -23,18 +24,18 @@ get:
       schema:
         type: integer
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
           schema:
             type: object
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - SCIM
+    - SCIM
 post:
   description: Create a new SCIM User.
   operationId: createSCIMUser
@@ -44,15 +45,15 @@ post:
         schema:
           type: object
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - SCIM
+    - SCIM

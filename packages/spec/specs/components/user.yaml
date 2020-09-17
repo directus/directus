@@ -1,5 +1,31 @@
 type: object
 properties:
+  id:
+    description: Unique identifier for the user.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+  first_name:
+    description: First name of the user.
+    example: Admin
+    type: string
+  last_name:
+    description: First name of the user.
+    example: User
+    type: string
+  email:
+    description: Unique email address for the user.
+    example: admin@example.com
+    type: string
+    format: email
+  password:
+    description: Password of the user.
+    example: "*********"
+    type: string
+  location:
+    description: Location of the user.
+    example: null
+    type: string
+    nullable: true
   tfa_secret:
     description: The 2FA secret string that's used to generate one time passwords.
     example: null
@@ -12,36 +38,19 @@ properties:
       - type: integer
         nullable: true
       - type: string
-      - $ref: '../openapi.yaml#/components/schemas/File'
+      - $ref: "../openapi.yaml#/components/schemas/File"
     nullable: true
-  email:
-    description: Unique email address for the user.
-    example: admin@example.com
-    type: string
-    format: email
   external_id:
     description: ID used for SCIM.
     example: null
     type: string
     nullable: true
-  first_name:
-    description: First name of the user.
-    example: Admin
-    type: string
-  id:
-    description: Unique identifier for the user.
-    example: 63716273-0f29-4648-8a2a-2af2948f6f78
-    type: string
   last_login:
     description: When this user logged in last.
-    example: '2020-05-31 14:32:37'
+    example: "2020-05-31 14:32:37"
     type: string
     nullable: true
     format: date-time
-  last_name:
-    description: First name of the user.
-    example: User
-    type: string
   last_page:
     description: Last page that the user was on.
     example: /my-project/settings/collections/a

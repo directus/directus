@@ -2,7 +2,7 @@ get:
   description: Get all webhooks.
   operationId: getWebhooks
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -10,10 +10,10 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Webhook'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/Webhook"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Webhooks
+    - Webhooks

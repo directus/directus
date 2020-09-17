@@ -2,28 +2,28 @@ get:
   description: Retrieves the details of a single collection.
   operationId: getCollection
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Collection'
+                $ref: "#/components/schemas/Collection"
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Collections
+    - Collections
 patch:
   description: Update an existing collection.
   operationId: updateCollection
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -49,33 +49,33 @@ patch:
               type: object
               description: Key value pairs of how to show this collection's name in different languages in the admin app.
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Collection'
+                $ref: "#/components/schemas/Collection"
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Collections
+    - Collections
 delete:
   description: "Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution."
   operationId: deleteCollection
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Collections
+    - Collections
 parameters:
   - name: collection
     in: path

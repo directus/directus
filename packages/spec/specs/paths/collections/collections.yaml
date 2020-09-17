@@ -2,11 +2,11 @@ get:
   description: Returns a list of the collections available in the project.
   operationId: getCollections
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Offset'
-  - $ref: '../../openapi.yaml#/components/parameters/Single'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Offset"
+    - $ref: "#/components/parameters/Single"
+    - $ref: "#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -16,24 +16,24 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Collection'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                  $ref: "#/components/schemas/Collection"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Collections
+    - Collections
 post:
   description: Create a new collection in Directus.
   operationId: createCollection
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
           type: object
-          required: [ collection, fields ]
+          required: [collection, fields]
           properties:
             collection:
               type: string
@@ -61,18 +61,18 @@ post:
               type: string
               description: Key value pairs of how to show this collection's name in different languages in the admin app.
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Collection'
+                $ref: "#/components/schemas/Collection"
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Collections
+    - Collections

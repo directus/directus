@@ -2,9 +2,9 @@ get:
   description: Returns a list of the fields available in the given collection.
   operationId: getCollectionFields
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: "#/components/parameters/Sort"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -14,13 +14,13 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Field'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                  $ref: "#/components/schemas/Field"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Fields
+    - Fields
 post:
   description: Create a new field in a given collection.
   operationId: createField
@@ -28,7 +28,7 @@ post:
     content:
       application/json:
         schema:
-          required: [ field, datatype, type, length ]
+          required: [field, datatype, type, length]
           properties:
             field:
               description: Unique name of the field. Field name is unique within the collection.
@@ -79,7 +79,7 @@ post:
               description: Sort order of this field on the edit page of the admin app.
               type: integer
             translation:
-              description: 'Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.'
+              description: "Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app."
               type: object
             unique:
               description: If the value of this field should be unique within the collection.
@@ -96,21 +96,21 @@ post:
               type: integer
           type: object
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Field'
+                $ref: "#/components/schemas/Field"
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Fields
+    - Fields
 parameters:
   - description: Unique identifier of the collection the item resides in.
     in: path

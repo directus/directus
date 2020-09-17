@@ -38,15 +38,15 @@ post:
               type: string
               enum: [html, text]
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
             type: string
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Mail
+    - Mail
