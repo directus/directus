@@ -53,6 +53,12 @@ type FieldSeed = {
 }
 
 export default async function runSeed(database: Knex) {
+	const exists = await database.schema.hasTable('directus_collections');
+
+	if (exists) {
+		throw new Error('Database is already installed');
+	}
+
 	await createTables(database);
 	await insertRows(database);
 	await insertFields(database);
