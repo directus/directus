@@ -15,14 +15,14 @@ router.get(
 		const path = require('path');
 		const fs = require('fs');
 
-		const resolveBackup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
+		const backup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
 		const stat = fs.statSync(resolveBackup);
 		await dbService.exportDb();
 		res.attachment(backupName);
 
 		res.set('Content-Type', 'application/octet-stream');
 		res.set('content-length', stat.size);
-		const stream = fs.createReadStream(resolveBackup, 'utf8');
+		const stream = fs.createReadStream(backup, 'utf8');
 
 		stream.on('open', () => {
 			stream.pipe(res);
@@ -33,7 +33,7 @@ router.get(
 			return next();
 		});
 
-		//await dbService.cleanUp(resolveBackup);
+		await dbService.cleanUp(backup);
 	})
 );
 
