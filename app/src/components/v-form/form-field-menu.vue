@@ -22,7 +22,7 @@
 		</v-list-item>
 		<v-list-item @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('edit_raw') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('raw_value') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
