@@ -7,7 +7,7 @@ import env from '../env';
 const router = Router();
 
 router.get(
-	'/',
+	'/backup',
 	asyncHandler(async (req, res, next) => {
 		// retrict use
 		if (!req.accountability?.user || !req.accountability?.role) {
@@ -20,7 +20,7 @@ router.get(
 		const path = require('path');
 		const fs = require('fs');
 
-		const backup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
+		const backup = path.normalize(path.resolve(`${backupPath}/${backupName}.gz`));
 		const stat = fs.statSync(backup);
 		await dbService.exportDb();
 		res.attachment(backupName);

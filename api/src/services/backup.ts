@@ -24,7 +24,7 @@ export default class DatabaseBackupService {
 
 	async exportDb() {
 		let backup = `${env.DB_BACKUP_PATH}/${env.DB_BACKUP_NAME}`;
-
+		const { GzipCompressor } = require('@shagital/db-dumper');
 		this.cleanUp(backup);
 
 		switch (env.DB_CLIENT) {
@@ -34,7 +34,8 @@ export default class DatabaseBackupService {
 					Sqlite.create()
 						.setDbName(env.DB_FILENAME)
 						.setDumpBinaryPath(env.DB_BINARY)
-						.dumpToFile(backup);
+						.useCompressor(new GzipCompressor())
+						.dumpToFile(`${backup}.gz`);
 				} catch (error) {
 					throw new DatabaseNotFoundException(error.message);
 				}
@@ -49,7 +50,8 @@ export default class DatabaseBackupService {
 						.setUserName(env.DB_USER)
 						.setPassword(env.DB_PASSWORD)
 						.setDumpBinaryPath(env.DB_BINARY)
-						.dumpToFile(backup);
+						.useCompressor(new GzipCompressor())
+						.dumpToFile(`${backup}.gz`);
 				} catch (error) {
 					throw new DatabaseNotFoundException(error.message);
 				}
@@ -63,7 +65,8 @@ export default class DatabaseBackupService {
 						.setUserName(env.DB_USER)
 						.setPassword(env.DB_PASSWORD)
 						.setDumpBinaryPath(env.DB_BINARY)
-						.dumpToFile(backup);
+						.useCompressor(new GzipCompressor())
+						.dumpToFile(`${backup}.gz`);
 				} catch (error) {
 					throw new DatabaseNotFoundException(error.message);
 				}
