@@ -34,7 +34,6 @@ router.get(
 
 		stream.on('error', (error: Error) => {
 			throw new DatabaseNotFoundException(error.message);
-			return next();
 		});
 
 		await dbService.cleanUp(backup);
