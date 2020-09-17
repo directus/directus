@@ -9,7 +9,11 @@
 import Knex from 'knex';
 import database from '../database';
 import { Accountability, AbstractServiceOptions } from '../types';
-import { DatabaseNotFoundException, ForbiddenException } from '../exceptions';
+import {
+	DatabaseNotFoundException,
+	ForbiddenException,
+	InvalidCredentialsException,
+} from '../exceptions';
 import env from '../env';
 
 export default class DatabaseBackupService {
@@ -25,7 +29,7 @@ export default class DatabaseBackupService {
 		if (!req.accountability?.user || !req.accountability?.role) {
 			throw new InvalidCredentialsException();
 		}
-		let backup = env.DB_BACKUP;
+		let backup = `${env.DB_BACKUP_PATH}/${env.DB_BACKUP_NAME}`;
 
 		this.cleanUp(backup);
 
@@ -44,7 +48,6 @@ export default class DatabaseBackupService {
 				break;
 
 			case 'pg':
-				//need to rewrite as creates empty file
 				const { PostgreSql } = require('@shagital/db-dumper');
 				try {
 					PostgreSql.create()
@@ -73,20 +76,18 @@ export default class DatabaseBackupService {
 				break;
 
 			case 'oracledb':
-				//need to do - thinking of best way
-				const oracle = require('oracledb');
+				await this.oracleExport();
+
 				break;
 
 			case 'mssql':
 				// need to use SQL for this
 
-				const backupSQL = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${env.STORAGE_LOCAL_ROOT}/dump.bak' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
+				const backupSQL = `BACKUP DATABASE [${env.DB_DATABASE}] TO DISK = N'${backup}' WITH NOFORMAT, NOINIT, NAME = N'SQLTestDB-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10 GO`;
 				this.knex.raw(backupSQL);
-				backup = './backup/dump.bak';
 				break;
 
 			default:
-				backup = 'none';
 				break;
 		}
 	}
@@ -104,5 +105,30 @@ export default class DatabaseBackupService {
 		} catch (err) {
 			throw new DatabaseNotFoundException('Cleanup failed');
 		}
+	}
+
+	private async oracleExport() {
+		// uses tool Oracle database utilities
+		// https://oracle-base.com/articles/10g/oracle-data-pump-10g
+		// function only recommended for smallish oracle databases
+		// if the db is large should use RMAN
+		// user should have  DBA privilege, or EXP_FULL_DATABASE role. if not EXP-00023 error message will be displayed
+		const oracle = require('oracledb');
+		const spawn = require('cross-spawn');
+
+		const backupDB = `expdp ${env.DB_USER}/${env.DB_PASSWORD} full=Y directory=${env.DB_BACKUP_PATH} dumpfile=${env.DB_BACKUP_NAME}`;
+
+		const dir = await spawn('cd', [env.DB_BINARY], (error: Error, stderr: string) => {
+			if (error) throw new DatabaseNotFoundException(error.message);
+			if (stderr) throw new DatabaseNotFoundException(stderr);
+		});
+
+		const backupCmd = await spawn(backupDB, (error: Error, stderr: string) => {
+			if (error) throw new DatabaseNotFoundException(error.message);
+			if (stderr) throw new DatabaseNotFoundException(stderr);
+		});
+
+		dir.stdout.pipe(backupCmd.stdin);
+		backupCmd.stdout.pipe(process.stdout);
 	}
 }
