@@ -23,7 +23,7 @@
 				:initial-value="initialValue"
 				@input="$emit('input', $event)"
 				@unset="$emit('unset', $event)"
-				@edit-raw="editRaw"
+				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
 
@@ -38,18 +38,17 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<v-modal v-model="showRawModal" :title="$t('edit_raw_value')" :subtitle="$t(field.type)">
-			<v-textarea v-model="rawString" :placeholder="$t('enter_raw_value')" />
-			<template #footer>
-				<v-button secondary @click="undoRaw">
-					{{ $t('cancel') }}
-				</v-button>
-				<div class="spacer" />
-				<v-button @click="saveRaw">
-					{{ $t('save') }}
-				</v-button>
-			</template>
-		</v-modal>
+		<v-dialog v-model="showRaw">
+			<v-card>
+				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
+				<v-card-text>
+					<v-textarea class="raw-value" v-model="rawValue" :placeholder="$t('enter_raw_value')" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="showRaw = false">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 
@@ -123,66 +122,43 @@ export default defineComponent({
 			return props.field.schema?.default_value;
 		});
 
-		const { showRawModal, rawString, editRaw, saveRaw, undoRaw, type } = useRaw();
+		const { showRaw, rawValue } = useRaw();
 
-		return { isDisabled, marked, _value, editRaw, saveRaw, undoRaw, showRawModal, rawString, type };
+		return { isDisabled, marked, _value, showRaw, rawValue };
 
 		function useRaw() {
-			const showRawModal = ref(false);
-			const rawString = ref('');
+			const showRaw = ref(false);
 
 			const type = computed(() => {
 				return getJSType(props.field.type);
 			});
 
-			const raw = computed({
+			const rawValue = computed({
 				get() {
-					const value = props.value || props.initialValue;
-
-					if (type.value == 'string') return value;
-					else if (['object', 'array'].includes(type.value)) return JSON.stringify(value, null, 4);
-					else return String(value);
+					return _value.value;
 				},
-				set(rawValue: string) {
+				set(newRawValue: string) {
 					switch (type.value) {
 						case 'string':
-							emit('input', rawValue);
+							emit('input', newRawValue);
 							break;
 						case 'number':
-							emit('input', Number(rawValue));
+							emit('input', Number(newRawValue));
 							break;
 						case 'boolean':
-							emit('input', rawValue == 'true');
+							emit('input', newRawValue === 'true');
 							break;
 						case 'object':
-							if (Array.isArray(props.value)) {
-								emit('input', Object.values(JSON.parse(rawValue)));
-							} else {
-								emit('input', JSON.parse(rawValue));
-							}
+							emit('input', JSON.parse(newRawValue));
 							break;
 						default:
+							emit('input', newRawValue);
 							break;
 					}
 				},
 			});
 
-			function editRaw() {
-				showRawModal.value = true;
-				rawString.value = raw.value;
-			}
-
-			function undoRaw() {
-				showRawModal.value = false;
-				rawString.value = raw.value;
-			}
-
-			function saveRaw(rawValue: any) {
-				showRawModal.value = false;
-				raw.value = rawString.value;
-			}
-
-			return { showRawModal, rawString, editRaw, saveRaw, undoRaw, type };
+			return { showRaw, rawValue };
 		}
 	},
 });
@@ -216,10 +192,7 @@ export default defineComponent({
 	font-style: italic;
 }
 
-.v-modal .v-textarea {
+.raw-value {
 	--v-textarea-font-family: var(--family-monospace);
-
-	height: 100%;
-	max-height: unset;
 }
 </style>
