@@ -1,18 +1,29 @@
 <template>
 	<div class="display-tags">
-		<v-chip
-			v-for="item in items"
-			:key="item.value"
-			:style="{
-				'--v-chip-color': item.foreground,
-				'--v-chip-background-color': item.background,
-			}"
-			small
-			disabled
-			label
-		>
-			{{ item.text }}
-		</v-chip>
+		<template v-if="!showAsDot">
+			<v-chip
+				v-for="item in items"
+				:key="item.value"
+				:style="{
+					'--v-chip-color': item.foreground,
+					'--v-chip-background-color': item.background,
+				}"
+				small
+				disabled
+				label
+			>
+				{{ item.text }}
+			</v-chip>
+		</template>
+		<template v-else>
+			<display-color
+				v-for="item in items"
+				:key="item.value"
+				:value="item.background"
+				:default-color="defaultBackground"
+				v-tooltip="item.text"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -37,6 +48,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		showAsDot: {
+			type: Boolean,
+			default: false
+		},
 		choices: {
 			type: Array as PropType<Choice[]>,
 			default: () => [],
@@ -51,7 +66,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
-			validator: (val: string) => ['json', 'string'].includes(val),
+			validator: (val: string) => ['text', 'string'].includes(val),
 		},
 	},
 	setup(props) {
@@ -90,7 +105,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-tags {
-	display: inline-block;
+	display: flex;
 }
 
 .v-chip + .v-chip {
