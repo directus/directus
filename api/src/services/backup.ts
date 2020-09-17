@@ -106,7 +106,6 @@ export default class DatabaseBackupService {
 		// function only recommended for smallish oracle databases
 		// if the db is large should use RMAN
 		// user should have  DBA privilege, or EXP_FULL_DATABASE role. if not EXP-00023 error message will be displayed
-		const oracle = require('oracledb');
 		const spawn = require('cross-spawn');
 
 		const backupDB = `expdp ${env.DB_USER}/${env.DB_PASSWORD} full=Y directory=${env.DB_BACKUP_PATH} dumpfile=${env.DB_BACKUP_NAME}`;
