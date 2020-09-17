@@ -2,9 +2,15 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import DatabaseBackupService from '../services/dbbackup';
 import { DatabaseNotFoundException, InvalidCredentialsException } from '../exceptions';
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+
 import env from '../env';
 
 const router = Router();
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat)
 
 router.get(
 	'/backup',
@@ -14,18 +20,26 @@ router.get(
 		}
 
 		const backupPath = env.DB_BACKUP_PATH;
-		const backupName = env.DB_BACKUP_NAME;
+		const backupName= 'backup.zip'
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
-		const path = require('path');
-		const fs = require('fs');
+		const zipper = require('zip-local');
 
-		const backup = path.normalize(path.resolve(`${backupPath}/${backupName}.gz`));
-		const stat = fs.statSync(backup);
+		// export the database 
+
 		await dbService.exportDb();
-		res.attachment(backupName);
 
-		res.set('Content-Type', 'application/octet-stream');
-		res.set('content-length', stat.size);
+		const fullPath = path.join(process.cwd(), backupPath);
+
+		// zip the files
+		zipper.sync.zip(fullPath).compress().save("backup.zip");
+
+		const backup = path.join(fullPath, backupName)
+		const stats = fs.statSync(backup);
+	
+		res.attachment('backup.');
+
+		res.set('Content-Type', 'application/zip');
+		res.set('content-length', `${stats.size}`);
 		const stream = fs.createReadStream(backup, 'utf8');
 
 		stream.on('open', () => {
@@ -39,5 +53,6 @@ router.get(
 		await dbService.cleanUp(backup);
 	})
 );
+
 
 export default router;
