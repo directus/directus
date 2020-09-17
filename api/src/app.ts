@@ -6,6 +6,7 @@ import path from 'path';
 
 import { validateEnv } from './utils/validate-env';
 import env from './env';
+import { track } from './utils/track';
 
 import errorHandler from './middleware/error-handler';
 import cors from './middleware/cors';
@@ -17,7 +18,6 @@ import authenticate from './middleware/authenticate';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
-import backupRouter from './controllers/backup';
 import collectionsRouter from './controllers/collections';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
@@ -31,6 +31,7 @@ import revisionsRouter from './controllers/revisions';
 import rolesRouter from './controllers/roles';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
+import systemRouter from './controllers/system';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
@@ -78,7 +79,6 @@ app.use(sanitizeQuery);
 app.use(cache);
 app.use('/activity', activityRouter);
 app.use('/assets', assetsRouter);
-app.use('/backup', backupRouter);
 app.use('/collections', collectionsRouter);
 app.use('/extensions', extensionsRouter);
 app.use('/fields', fieldsRouter);
@@ -92,6 +92,7 @@ app.use('/revisions', revisionsRouter);
 app.use('/roles', rolesRouter);
 app.use('/server/', serverRouter);
 app.use('/settings', settingsRouter);
+app.use('/system', systemRouter);
 app.use('/users', usersRouter);
 app.use('/utils', utilsRouter);
 app.use('/webhooks', webhooksRouter);
@@ -100,5 +101,7 @@ app.use(respond);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+track('serverStarted');
 
 export default app;

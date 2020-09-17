@@ -33,7 +33,7 @@ const defaults: Record<string, any> = {
 	CORS_ENABLED: false,
 
 	CACHE_ENABLED: false,
-	CACHE_STORE: false,
+	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
 
@@ -45,6 +45,8 @@ const defaults: Record<string, any> = {
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
+
+	TELEMETRY: true,
 };
 
 let env: Record<string, any> = {

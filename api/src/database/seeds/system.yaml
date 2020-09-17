@@ -513,9 +513,6 @@ tables:
       default: all
     storage_asset_presets:
       type: json
-    telemetry:
-      type: boolean
-      default: true
 
   directus_webhooks:
     id:
@@ -1830,15 +1827,6 @@ rows:
         special: alias
         sort: 16
         width: full
-      - collection: directus_settings
-        field: telemetry
-        interface: toggle
-        locked: true
-        options:
-          label: Send Anonymous Diagnostics
-        special: boolean
-        sort: 17
-        width: half
       - collection: directus_settings
         field: id
         hidden: true

@@ -106,6 +106,7 @@
 		"ms": "^2.1.2",
 		"mysqldump": "^3.2.0",
 		"nanoid": "^3.1.12",
+		"node-machine-id": "^1.1.12",
 		"nodemailer": "^6.4.11",
 		"ora": "^4.1.1",
 		"otplib": "^12.0.1",
