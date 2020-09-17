@@ -1,0 +1,17 @@
+table: directus_permissions
+
+defaults:
+  role: null
+  collection: null
+  action: null
+  permissions: null
+  validation: null
+  presets: null
+  fields: null
+  limit: null
+
+data:
+  - collection: directus_settings
+    action: read
+    permissions: {}
+    fields: 'project_name,project_logo,project_color,public_foreground,public_background,public_note'

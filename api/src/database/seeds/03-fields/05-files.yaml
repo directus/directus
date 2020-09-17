@@ -1,0 +1,93 @@
+table: directus_files
+
+fields:
+  - collection: directus_files
+    field: id
+    hidden: true
+    interface: text-input
+    locked: true
+    special: uuid
+  - collection: directus_files
+    field: title
+    interface: text-input
+    locked: true
+    options:
+      iconRight: title
+      placeholder: A unique title...
+    sort: 1
+    width: full
+  - collection: directus_files
+    field: description
+    interface: textarea
+    locked: true
+    sort: 2
+    width: full
+    options:
+      placeholder: An optional description...
+  - collection: directus_files
+    field: tags
+    interface: tags
+    locked: true
+    options:
+      iconRight: local_offer
+    special: json
+    sort: 3
+    width: full
+  - collection: directus_files
+    field: location
+    interface: text-input
+    locked: true
+    options:
+      iconRight: place
+      placeholder: An optional location...
+    sort: 4
+    width: half
+  - collection: directus_files
+    field: storage
+    interface: text-input
+    locked: true
+    options:
+      iconRight: storage
+    sort: 5
+    width: half
+    readonly: true
+  - collection: directus_files
+    field: storage_divider
+    interface: divider
+    locked: true
+    options:
+      icon: insert_drive_file
+      title: File Naming
+      color: '#2F80ED'
+    special: alias
+    sort: 6
+    width: full
+  - collection: directus_files
+    field: filename_disk
+    interface: text-input
+    locked: true
+    options:
+      iconRight: publish
+      placeholder: Name on disk storage...
+    sort: 7
+    width: half
+  - collection: directus_files
+    field: filename_download
+    interface: text-input
+    locked: true
+    options:
+      iconRight: get_app
+      placeholder: Name when downloading...
+    sort: 8
+    width: half
+  - collection: directus_files
+    field: metadata
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_files
+    field: type
+    display: mime-type
+  - collection: directus_files
+    field: filesize
+    display: filesize

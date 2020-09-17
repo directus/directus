@@ -1,0 +1,33 @@
+table: directus_revisions
+
+columns:
+  id:
+    increments: true
+  activity:
+    type: integer
+    unsigned: true
+    nullable: false
+    references:
+      table: directus_activity
+      column: id
+  collection:
+    type: string
+    length: 64
+    nullable: false
+    references:
+      table: directus_collections
+      column: collection
+  item:
+    type: string
+    length: 255
+    nullable: false
+  data:
+    type: json
+  delta:
+    type: json
+  parent:
+    type: integer
+    unsigned: true
+    references:
+      table: directus_revisions
+      column: id

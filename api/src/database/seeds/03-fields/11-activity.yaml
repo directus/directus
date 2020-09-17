@@ -1,0 +1,64 @@
+table: directus_activity
+
+fields:
+  - collection: directus_activity
+    field: action
+    display: badge
+    display_options:
+      defaultForeground: '#263238'
+      defaultBackground: '#eceff1'
+      choices:
+        - text: Create
+          value: create
+          foreground: '#27ae60'
+          background: '#c9ebd7'
+        - text: Update
+          value: update
+          foreground: '#2f80ed'
+          background: '#cbdffb'
+        - text: Delete
+          value: delete
+          foreground: '#eb5757'
+          background: '#fad5d5'
+        - text: Login
+          value: authenticate
+          foreground: '#9b51e0'
+          background: '#e6d3f7'
+  - collection: directus_activity
+    field: collection
+    display: collection
+    display_options:
+      icon: true
+  - collection: directus_activity
+    field: action_on
+    display: datetime
+    options:
+      relative: true
+  - collection: directus_activity
+    field: action_by
+    display: user
+  - collection: directus_activity
+    field: comment
+    display: formatted-text
+    display_options:
+      subdued: true
+  - collection: directus_activity
+    field: user_agent
+    display: formatted-text
+    display_options:
+      font: monospace
+  - collection: directus_activity
+    field: ip
+    display: formatted-text
+    display_options:
+      font: monospace
+  - collection: directus_activity
+    field: revisions
+    interface: one-to-many
+    locked: true
+    special: o2m
+    options:
+      fields:
+        - collection
+        - item
+    width: full

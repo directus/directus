@@ -1,0 +1,53 @@
+table: directus_presets
+
+defaults:
+  bookmark: null
+  user: null
+  role: null
+  collection: null
+  search: null
+  filters: '[]'
+  layout: tabular
+  layout_query: null
+  layout_options: null
+
+data:
+  - collection: directus_files
+    layout: cards
+    layout_query:
+      cards:
+        sort: -uploaded_on
+    layout_options:
+      cards:
+        icon: insert_drive_file
+        title: '{{ title }}'
+        subtitle: '{{ type }} • {{ filesize }}'
+        size: 4
+        imageFit: crop
+
+  - collection: directus_users
+    layout: cards
+    layout_options:
+      cards:
+        icon: account_circle
+        title: '{{ first_name }} {{ last_name }}'
+        subtitle: '{{ title }}'
+        size: 4
+
+  - collection: directus_activity
+    layout: tabular
+    layout_query:
+      tabular:
+        sort: -action_on
+        fields:
+          - action
+          - collection
+          - action_on
+          - action_by
+    layout_options:
+      tabular:
+        widths:
+          action: 100
+          collection: 210
+          action_on: 240
+          action_by: 240

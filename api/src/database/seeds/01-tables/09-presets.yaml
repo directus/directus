@@ -1,0 +1,37 @@
+table: directus_presets
+
+columns:
+  id:
+    increments: true
+  bookmark:
+    type: string
+    length: 255
+  user:
+    type: uuid
+    references:
+      table: directus_users
+      column: id
+  role:
+    type: uuid
+    references:
+      table: directus_roles
+      column: id
+  collection:
+    type: string
+    length: 64
+    references:
+      table: directus_collections
+      column: collection
+  search:
+    type: string
+    length: 100
+  filters:
+    type: json
+  layout:
+    type: string
+    length: 100
+    default: tabular
+  layout_query:
+    type: json
+  layout_options:
+    type: json

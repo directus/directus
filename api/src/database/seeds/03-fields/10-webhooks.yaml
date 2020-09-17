@@ -1,0 +1,82 @@
+table: directus_webhooks
+
+fields:
+  - collection: directus_webhooks
+    field: id
+    hidden: true
+    locked: true
+  - collection: directus_webhooks
+    field: name
+    interface: text-input
+    locked: true
+    sort: 1
+    width: full
+  - collection: directus_webhooks
+    field: method
+    interface: dropdown
+    locked: true
+    options:
+      choices:
+        - GET
+        - POST
+    sort: 2
+    width: half
+  - collection: directus_webhooks
+    field: url
+    interface: text-input
+    locked: true
+    options:
+      iconRight: link
+    sort: 3
+    width: half
+  - collection: directus_webhooks
+    field: status
+    interface: dropdown
+    locked: true
+    options:
+      choices:
+        - text: Active
+          value: active
+        - text: Inactive
+          value: inactive
+    sort: 4
+    width: half
+  - collection: directus_webhooks
+    field: data
+    interface: toggle
+    locked: true
+    options:
+      choices:
+        label: Include item data in request
+    sort: 5
+    width: half
+  - collection: directus_webhooks
+    field: triggers_divider
+    interface: divider
+    options:
+      icon: api
+      title: Triggers
+      color: '#2F80ED'
+    special: alias
+    sort: 6
+    width: full
+  - collection: directus_webhooks
+    field: actions
+    interface: checkboxes
+    options:
+      choices:
+        - text: Create
+          value: create
+        - text: Update
+          value: update
+        - text: Delete
+          value: delete
+    special: csv
+    sort: 7
+    width: full
+  - collection: directus_webhooks
+    field: collections
+    interface: collections
+    special: csv
+    sort: 8
+    width: full
