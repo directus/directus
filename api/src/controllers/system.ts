@@ -4,13 +4,9 @@ import DatabaseBackupService from '../services/dbbackup';
 import { DatabaseNotFoundException, InvalidCredentialsException } from '../exceptions';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-
 import env from '../env';
 
 const router = Router();
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat)
 
 router.get(
 	'/backup',
