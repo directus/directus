@@ -16,7 +16,7 @@ router.get(
 		const fs = require('fs');
 
 		const backup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
-		const stat = fs.statSync(resolveBackup);
+		const stat = fs.statSync(backup);
 		await dbService.exportDb();
 		res.attachment(backupName);
 
