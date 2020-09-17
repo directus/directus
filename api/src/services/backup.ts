@@ -9,11 +9,7 @@
 import Knex from 'knex';
 import database from '../database';
 import { Accountability, AbstractServiceOptions } from '../types';
-import {
-	DatabaseNotFoundException,
-	ForbiddenException,
-	InvalidCredentialsException,
-} from '../exceptions';
+import { DatabaseNotFoundException, ForbiddenException } from '../exceptions';
 import env from '../env';
 
 export default class DatabaseBackupService {
@@ -26,9 +22,6 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
-		if (!req.accountability?.user || !req.accountability?.role) {
-			throw new InvalidCredentialsException();
-		}
 		let backup = `${env.DB_BACKUP_PATH}/${env.DB_BACKUP_NAME}`;
 
 		this.cleanUp(backup);
