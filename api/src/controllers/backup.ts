@@ -16,24 +16,24 @@ router.get(
 		const fs = require('fs');
 
 		const resolveBackup = path.normalize(path.resolve(`${backupPath}/${backupName}`));
+		const stat = fs.statSync(resolveBackup);
 		await dbService.exportDb();
-
 		res.attachment(backupName);
 
 		res.set('Content-Type', 'application/octet-stream');
+		res.set('content-length', stat.size);
 		const stream = fs.createReadStream(resolveBackup, 'utf8');
 
-		stream.on('error', (error: Error) => {
-			throw new DatabaseNotFoundException(error.message);
-		});
-
-		stream.on('end', () => {
+		stream.on('open', () => {
 			stream.pipe(res);
 		});
 
-		await dbService.cleanUp(resolveBackup);
+		stream.on('error', (error: Error) => {
+			throw new DatabaseNotFoundException(error.message);
+			return next();
+		});
 
-		return next();
+		//await dbService.cleanUp(resolveBackup);
 	})
 );
 
