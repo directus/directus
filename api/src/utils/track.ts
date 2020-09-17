@@ -10,13 +10,15 @@ import env from '../env';
 import { version } from '../../package.json';
 
 export async function track(event: string) {
-	const info = await getEnvInfo(event);
+	if (env.TELEMETRY !== false) {
+		const info = await getEnvInfo(event);
 
-	try {
-		await axios.post('https://telemetry.directus.io/', info);
-	} catch (err) {
-		if (process.env.NODE_ENV === 'development') {
-			logger.error(err);
+		try {
+			await axios.post('https://telemetry.directus.io/', info);
+		} catch (err) {
+			if (process.env.NODE_ENV === 'development') {
+				logger.error(err);
+			}
 		}
 	}
 }

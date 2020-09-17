@@ -42,6 +42,8 @@ const defaults: Record<string, any> = {
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
+
+	TELEMETRY: true,
 };
 
 let env: Record<string, any> = {
