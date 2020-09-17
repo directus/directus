@@ -5,7 +5,7 @@
     "docs",
     "packages/*"
   ],
-  "version": "9.0.0-alpha.38",
+  "version": "9.0.0-alpha.39",
   "command": {
     "bootstrap": {
       "npmClientArgs": [
