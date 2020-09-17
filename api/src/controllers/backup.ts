@@ -9,32 +9,38 @@ const router = Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) {
-			throw new InvalidCredentialsException();
-		}
 		let backup = env.DB_BACKUP;
 		const dbService = new DatabaseBackupService({ accountability: req.accountability });
 		const path = require('path');
 		const fs = require('fs');
 
-		const resolveBackup = path.resolve(backup);
-
-		await dbService.cleanUp(backup);
+		const resolveBackup = path.normalize(path.resolve(backup));
 		await dbService.exportDb();
 
 		res.attachment(path.basename(backup));
+
+		try {
+			fs.accessSync(resolveBackup, fs.constants.R_OK | fs.constants.W_OK);
+			console.log('can read/write');
+		} catch (err) {
+			console.error('no access!');
+		}
+
 		res.set('Content-Type', 'application/octet-stream');
 
+		console.log(process.cwd());
 		console.log(resolveBackup);
-		const stream = fs.createReadStream(resolveBackup);
+		const stream = fs.createReadStream(resolveBackup, 'utf8');
 
-		stream.on('error', function (err: string) {
-			throw new DatabaseNotFoundException(err);
+		stream.on('error', (error: string) => {
+			throw new DatabaseNotFoundException(error);
 		});
 
 		stream.on('end', () => {
 			stream.pipe(res);
 		});
+
+		await dbService.cleanUp(backup);
 
 		return next();
 	})

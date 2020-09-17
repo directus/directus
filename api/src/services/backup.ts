@@ -1,11 +1,16 @@
+/**
+ * Drivers needed to be installed on server
+ * as most db exports use cmd line tools
+ * MySQL =  mysqldump should be installed.
+ * PG =  pg_dump should be installed.
+ * SQLlite =  sqlite3 should be installed.
+ * the path of the tool must be specified in DB_BINARY
+ */
 import Knex from 'knex';
 import database from '../database';
 import { Accountability, AbstractServiceOptions } from '../types';
 import { DatabaseNotFoundException, ForbiddenException } from '../exceptions';
 import env from '../env';
-
-//can't use knex for most of this dbbackups are bashtools and cannot
-// call from .raw
 
 export default class DatabaseBackupService {
 	accountability: Accountability | null;
@@ -17,7 +22,12 @@ export default class DatabaseBackupService {
 	}
 
 	async exportDb() {
+		if (!req.accountability?.user || !req.accountability?.role) {
+			throw new InvalidCredentialsException();
+		}
 		let backup = env.DB_BACKUP;
+
+		this.cleanUp(backup);
 
 		switch (env.DB_CLIENT) {
 			case 'sqlite3':
