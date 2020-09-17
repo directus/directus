@@ -6,6 +6,7 @@ import path from 'path';
 
 import { validateEnv } from './utils/validate-env';
 import env from './env';
+import { track } from './utils/track';
 
 import errorHandler from './middleware/error-handler';
 import cors from './middleware/cors';
@@ -105,5 +106,7 @@ app.use(errorHandler);
 // Register all webhooks
 const webhooksService = new WebhooksService();
 webhooksService.register();
+
+track('serverStarted');
 
 export default app;
