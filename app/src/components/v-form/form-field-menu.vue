@@ -20,11 +20,15 @@
 			</v-list-item-icon>
 			<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
 		</v-list-item>
+		<v-list-item @click="$emit('edit-raw')">
+			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
+			<v-list-item-content>{{ $t('raw_value') }}</v-list-item-content>
+		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types';
 
 export default defineComponent({

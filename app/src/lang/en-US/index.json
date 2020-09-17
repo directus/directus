@@ -245,6 +245,9 @@
 	"database_type": "Database Datatype",
 	"finish_setup": "Finish Setup",
 	"dismiss": "Dismiss",
+	"raw_value": "Raw value",
+	"edit_raw_value": "Edit Raw Value",
+	"enter_raw_value": "Enter raw value...",
 	"clear_value": "Clear value",
 	"reset_to_default": "Reset to default",
 	"undo_changes": "Undo changes",
@@ -1162,6 +1165,14 @@
     "owner": "System field to track the user who created an item, used by revisions",
     "user_updated": "System field to track the user who updated an item, used by revisions",
     "uuid": "A Universally Unique Identifier"
+  },
+  "js_types": {
+	"object": "Object",
+	"array": "Array",
+	"string": "String",
+	"number": "Number",
+	"boolean": "Boolean",
+	"undefined": "Undefined"
   },
   "file": "File",
   "file_library": "File Library",
