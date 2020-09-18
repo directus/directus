@@ -17,7 +17,7 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
-	RATE_LIMITER_ENABLED: true,
+	RATE_LIMITER_ENABLED: false,
 	RATE_LIMITER_POINTS: 25,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
