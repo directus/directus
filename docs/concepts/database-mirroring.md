@@ -12,6 +12,16 @@ The principle is akin to a database client (eg: _phpMyAdmin_), but includes far 
 * Direct database access and the full power of raw/complex SQL queries
 * Allows importing existing databases, unaltered and without any migrations
 
+## Projects & Environments
+
+A Project is a complete instance of Directus. Each project primarily represents a database, but also includes a configuration file and any related asset storage. This modular approach means you can also create different environments (eg: Dev, Staging, Prod) by simply creating additional project instances.
+
+::: tip Migrating Environments
+Directus includes [Export](#), [Import](#), [Backup](#), and [Restore](#) features to assist with custom migration workflows between environments. You can also roll your own process by copying the database and assets between environments, either manually or via an automated script.
+
+@TODO Reference Schema Revisions
+:::
+
 ## Collections
 
 A Collection is a grouping of similar Items. Each collection represents a table in your database. Directus automatically uses a built-in [title formatter](#) to display your database table names prettified, and you can use [translations](#) to completely rename them if needed.
