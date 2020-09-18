@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		v-if="field.children === undefined || depth == 0"
+		v-if="field.children === undefined || depth === 0"
 		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
 	>
 		<v-list-item-content>{{ field.name }}</v-list-item-content>
@@ -35,7 +35,7 @@ export default defineComponent({
 		},
 		depth: {
 			type: Number,
-			default: 10,
+			default: 2,
 		},
 	},
 });

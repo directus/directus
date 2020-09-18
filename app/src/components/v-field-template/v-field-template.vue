@@ -51,7 +51,7 @@ export default defineComponent({
 		},
 		depth: {
 			type: Number,
-			default: 10,
+			default: 2,
 		},
 	},
 	setup(props, { emit }) {

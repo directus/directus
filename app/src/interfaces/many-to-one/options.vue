@@ -5,7 +5,7 @@
 		</v-notice>
 		<div v-else class="full">
 			<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
-			<v-field-template :collection="collection" v-model="template" :depth="0"></v-field-template>
+			<v-field-template :collection="collection" v-model="template" :depth="1"></v-field-template>
 		</div>
 	</div>
 </template>
@@ -14,6 +14,7 @@
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
+import { Relation } from '@/types/relations';
 export default defineComponent({
 	props: {
 		fieldData: {
@@ -39,12 +40,13 @@ export default defineComponent({
 			},
 		});
 		const collection = computed(() => {
-			if (props.fieldData.field == null || props.fieldData.meta?.collection == null) return null;
-			const relationData = relationsStore.getRelationsForField(
-				props.fieldData.meta.collection,
+			if (props.fieldData.field === null || props.fieldData.meta?.collection === null) return null;
+			const relationData: Relation[] = relationsStore.getRelationsForField(
+				props.fieldData.meta?.collection,
 				props.fieldData.field
-			)?.[0];
-			return relationData.one_collection;
+			);
+
+			return relationData[0]?.one_collection;
 		});
 		return { template, collection };
 	},
