@@ -45,53 +45,7 @@
 			/>
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
-		<template v-else>
-			<v-upload @upload="setImage" />
-			<v-menu showArrow placement="bottom-end">
-				<template #activator="{ toggle }">
-					<v-icon @click="toggle" class="options" name="more_vert" />
-				</template>
-				<v-list>
-					<v-list-item @click="activeDialog = 'choose'">
-						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ $t('choose_from_library') }}
-						</v-list-item-content>
-					</v-list-item>
-
-					<v-list-item @click="activeDialog = 'url'">
-						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ $t('import_from_url') }}
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-
-			<modal-browse
-				collection="directus_files"
-				:active="activeDialog === 'choose'"
-				@update:active="activeDialog = null"
-				@input="setSelection"
-			/>
-
-			<v-dialog :active="activeDialog === 'url'" @toggle="activeDialog = null" :persistent="urlLoading">
-				<v-card>
-					<v-card-title>{{ $t('import_from_url') }}</v-card-title>
-					<v-card-text>
-						<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
-							{{ $t('cancel') }}
-						</v-button>
-						<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-							{{ $t('import') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</template>
+		<v-upload v-else @upload="setImage" fromLibrary fromUrl />
 	</div>
 </template>
 
@@ -102,7 +56,7 @@ import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
-import ModalBrowse from '@/views/private/components/modal-browse';
+
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
 
@@ -116,7 +70,7 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { FileLightbox, ImageEditor, ModalBrowse },
+	components: { FileLightbox, ImageEditor },
 	props: {
 		value: {
 			type: String,
@@ -128,7 +82,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const activeDialog = ref<'choose' | 'url' | null>(null);
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const error = ref(null);
@@ -180,8 +133,6 @@ export default defineComponent({
 			}
 		);
 
-		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
-
 		return {
 			loading,
 			image,
@@ -194,12 +145,6 @@ export default defineComponent({
 			setImage,
 			deselect,
 			downloadSrc,
-			activeDialog,
-			setSelection,
-			url,
-			isValidURL,
-			urlLoading,
-			importFromURL,
 		};
 
 		async function fetchImage() {
@@ -237,51 +182,6 @@ export default defineComponent({
 			error.value = null;
 			lightboxActive.value = false;
 			editorActive.value = false;
-		}
-
-		function setSelection(selection: number[]) {
-			if (selection[0]) {
-				emit('input', selection[0]);
-			} else {
-				emit('input', null);
-			}
-		}
-
-		function useURLImport() {
-			const url = ref('');
-			const loading = ref(false);
-			const error = ref(null);
-
-			const isValidURL = computed(() => {
-				try {
-					new URL(url.value);
-					return true;
-				} catch {
-					return false;
-				}
-			});
-
-			return { url, loading, error, isValidURL, importFromURL };
-
-			async function importFromURL() {
-				loading.value = true;
-
-				try {
-					const response = await api.post(`/files/import`, {
-						url: url.value,
-					});
-
-					image.value = response.data.data;
-
-					activeDialog.value = null;
-					url.value = '';
-					emit('input', image.value?.id);
-				} catch (err) {
-					error.value = err;
-				} finally {
-					loading.value = false;
-				}
-			}
 		}
 	},
 });
@@ -401,18 +301,5 @@ img {
 
 .disabled-placeholder {
 	height: var(--input-height-tall);
-}
-
-.options {
-	position: absolute;
-	top: 13px;
-	right: 13px;
-	color: var(--foreground-subdued);
-	cursor: pointer;
-	transition: color var(--medium) var(--transition);
-}
-
-.image:hover .options {
-	color: var(--primary);
 }
 </style>
