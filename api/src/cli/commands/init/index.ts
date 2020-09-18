@@ -69,7 +69,7 @@ export default async function init(options: Record<string, any>) {
 		id: roleID,
 		name: 'Administrator',
 		icon: 'verified_user',
-		admin: true,
+		admin_access: true,
 		description: 'Initial administrative role with unrestricted App/API access',
 	});
 
