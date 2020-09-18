@@ -152,7 +152,7 @@
 		"tags": {
 			"tags": "Tags",
 			"description": "Select or add tags",
-			"space_replace": "Whitespace",
+			"whitespace": "Whitespace",
 			"hyphen": "Replace with hyphen",
 			"underscore": "Replace with underscore",
 			"remove": "Remove whitespace",

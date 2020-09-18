@@ -61,8 +61,8 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'spaceReplace',
-			name: i18n.t('interfaces.tags.space_replace'),
+			field: 'whitespace',
+			name: i18n.t('interfaces.tags.whitespace'),
 			type: 'string',
 			meta: {
 				width: 'half',

@@ -59,7 +59,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		spaceReplace: {
+		whitespace: {
 			type: String,
 			default: null,
 		},
@@ -127,11 +127,11 @@ export default defineComponent({
 				if (props.capitalization === 'uppercase') val = val.toUpperCase();
 				if (props.capitalization === 'lowercase') val = val.toLowerCase();
 
-				const spaceReplace = props.spaceReplace === null ? ' ' : props.spaceReplace;
+				const whitespace = props.whitespace === null ? ' ' : props.whitespace;
 
-				if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(spaceReplace));
+				if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(whitespace));
 
-				val = val.replaceAll(/ +/g, spaceReplace);
+				val = val.replaceAll(/ +/g, whitespace);
 
 				return val;
 			});
