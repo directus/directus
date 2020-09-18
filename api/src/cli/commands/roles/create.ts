@@ -8,7 +8,7 @@ export default async function rolesCreate({ name, admin }: any) {
 	}
 
 	const service = new RolesService();
-	const id = await service.create({ name, admin, status: 'active' });
+	const id = await service.create({ name, admin });
 	console.log(id);
 	database.destroy();
 }

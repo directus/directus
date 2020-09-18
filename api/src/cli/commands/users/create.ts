@@ -8,7 +8,7 @@ export default async function usersCreate({ email, password, role }: any) {
 	}
 
 	const service = new UsersService();
-	const id = await service.create({ email, password, role });
+	const id = await service.create({ email, password, role, status: 'active' });
 	console.log(id);
 	database.destroy();
 }
