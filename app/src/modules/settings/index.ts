@@ -86,8 +86,8 @@ export default defineModule(({ i18n }) => ({
 					components: {
 						add: SettingsNewRole,
 					},
-				}
-			]
+				},
+			],
 		},
 		{
 			path: '/roles/public',
@@ -145,7 +145,7 @@ export default defineModule(({ i18n }) => ({
 		},
 	],
 	preRegisterCheck: (user) => {
-		return user.role.admin === true;
+		return user.role.admin_access === true;
 	},
 	order: Infinity,
 	persistent: true,

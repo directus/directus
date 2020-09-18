@@ -22,7 +22,7 @@ export type Role = {
 	external_id: null | string;
 	ip_whitelist: string[];
 	app_access: boolean;
-	admin: boolean;
+	admin_access: boolean;
 };
 
 export type Avatar = {

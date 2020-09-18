@@ -7,7 +7,12 @@
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="$t('role_name') + '...'" />
+						<v-input
+							v-model="roleName"
+							autofocus
+							@keyup.enter="save"
+							:placeholder="$t('role_name') + '...'"
+						/>
 					</div>
 
 					<div class="field half">
@@ -16,7 +21,7 @@
 					</div>
 
 					<div class="field half">
-						<p class="type-label">{{ $t('fields.directus_roles.admin') }}</p>
+						<p class="type-label">{{ $t('fields.directus_roles.admin_access') }}</p>
 						<v-checkbox block v-model="admin" :label="$t('enabled')" />
 					</div>
 				</div>
@@ -33,7 +38,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
-import { permissions } from './app-required-permissions'
+import { permissions } from './app-required-permissions';
 
 export default defineComponent({
 	setup() {
@@ -56,13 +61,20 @@ export default defineComponent({
 				error.value = null;
 
 				try {
-					const roleResponse = await api.post('/roles', { name: roleName.value, admin: admin.value, app_access: appAccess.value });
+					const roleResponse = await api.post('/roles', {
+						name: roleName.value,
+						admin: admin.value,
+						app_access: appAccess.value,
+					});
 
 					if (appAccess.value === true && admin.value === false) {
-						await api.post('/permissions', permissions.map(permission => ({
-							...permission,
-							role: roleResponse.data.data.id,
-						})));
+						await api.post(
+							'/permissions',
+							permissions.map((permission) => ({
+								...permission,
+								role: roleResponse.data.data.id,
+							}))
+						);
 					}
 
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
@@ -73,7 +85,7 @@ export default defineComponent({
 				}
 			}
 		}
-	}
+	},
 });
 </script>
 

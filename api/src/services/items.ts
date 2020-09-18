@@ -170,7 +170,7 @@ export default class ItemsService implements AbstractService {
 		});
 		let ast = await getASTFromQuery(this.collection, query, { accountability: this.accountability, knex: this.knex });
 
-		if (this.accountability && this.accountability.admin === false) {
+		if (this.accountability && this.accountability.admin !== true) {
 			ast = await authorizationService.processAST(ast);
 		}
 

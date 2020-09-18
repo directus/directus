@@ -217,7 +217,11 @@
 			</drawer-detail>
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
-			<export-drawer-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
+			<export-drawer-detail
+				:layout-query="layoutQuery"
+				:search-query="searchQuery"
+				:collection="currentCollection"
+			/>
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -509,7 +513,7 @@ export default defineComponent({
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin === true;
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const updatePermissions = permissionsStore.state.permissions.find(
@@ -520,7 +524,7 @@ export default defineComponent({
 
 			const batchArchiveAllowed = computed(() => {
 				if (!currentCollection.value?.meta?.archive_field) return false;
-				const admin = userStore.state?.currentUser?.role.admin === true;
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const updatePermissions = permissionsStore.state.permissions.find(
@@ -533,7 +537,7 @@ export default defineComponent({
 			});
 
 			const batchDeleteAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin === true;
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const deletePermissions = permissionsStore.state.permissions.find(
@@ -543,7 +547,7 @@ export default defineComponent({
 			});
 
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin === true;
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const createPermissions = permissionsStore.state.permissions.find(

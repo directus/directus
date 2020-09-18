@@ -17,7 +17,7 @@ export const useUserStore = createStore({
 			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
 		},
 		isAdmin(state) {
-			return state.currentUser?.role.admin === true || false;
+			return state.currentUser?.role.admin_access === true || false;
 		},
 	},
 	actions: {

@@ -25,7 +25,7 @@ columns:
     type: json
   collection_list:
     type: json
-  admin:
+  admin_access:
     type: boolean
     nullable: false
     default: false

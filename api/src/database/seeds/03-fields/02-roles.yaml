@@ -37,7 +37,7 @@ fields:
     sort: 4
     width: half
   - collection: directus_roles
-    field: admin
+    field: admin_access
     interface: toggle
     locked: true
     special: boolean

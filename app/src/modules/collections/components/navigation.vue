@@ -1,7 +1,14 @@
 <template>
 	<v-list nav>
 		<template v-if="customNavItems && customNavItems.length > 0">
-			<v-detail :active="group.accordion === 'always_open' || undefined" :disabled="group.accordion === 'always_open'" :start-open="group.accordion === 'start_open'" :label="group.name" :key="group.name" v-for="(group, index) in customNavItems">
+			<v-detail
+				:active="group.accordion === 'always_open' || undefined"
+				:disabled="group.accordion === 'always_open'"
+				:start-open="group.accordion === 'start_open'"
+				:label="group.name"
+				:key="group.name"
+				v-for="group in customNavItems"
+			>
 				<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 					<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 					<v-list-item-content>{{ navItem.name }}</v-list-item-content>
@@ -50,7 +57,7 @@ export default defineComponent({
 		const presetsStore = usePresetsStore();
 		const { customNavItems, navItems } = useNavigation();
 		const userStore = useUserStore();
-		const isAdmin = computed(() => userStore.state.currentUser?.role.admin === true);
+		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
 
 		const bookmarks = computed(() => {
 			return orderBy(
