@@ -1,11 +1,23 @@
 import { AST, NestedCollectionAST } from '../types/ast';
 import { clone, uniq, pick } from 'lodash';
-import database, { schemaInspector } from './index';
+import database from './index';
+import SchemaInspector from 'knex-schema-inspector';
 import { Query, Item } from '../types';
 import PayloadService from '../services/payload';
 import applyQuery from '../utils/apply-query';
+import Knex from 'knex';
 
-export default async function runAST(ast: AST, query = ast.query) {
+type RunASTOptions = {
+	query?: AST['query'],
+	knex?: Knex
+}
+
+export default async function runAST(ast: AST, options?: RunASTOptions) {
+	const query = options?.query || ast.query;
+	const knex = options?.knex || database;
+
+	const schemaInspector = SchemaInspector(knex);
+
 	const toplevelFields: string[] = [];
 	const tempFields: string[] = [];
 	const nestedCollections: NestedCollectionAST[] = [];
@@ -14,7 +26,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 		({ column }) => column
 	);
 
-	const payloadService = new PayloadService(ast.name);
+	const payloadService = new PayloadService(ast.name, { knex });
 
 	for (const child of ast.children) {
 		if (child.type === 'field') {
@@ -40,7 +52,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 		tempFields.push(primaryKeyField);
 	}
 
-	let dbQuery = database.select([...toplevelFields, ...tempFields]).from(ast.name);
+	let dbQuery = knex.select([...toplevelFields, ...tempFields]).from(ast.name);
 
 	// Query defaults
 	query.limit = typeof query.limit === 'number' ? query.limit : 100;
@@ -125,7 +137,7 @@ export default async function runAST(ast: AST, query = ast.query) {
 			}
 		}
 
-		const nestedResults = await runAST(batch, batchQuery);
+		const nestedResults = await runAST(batch, { query: batchQuery, knex });
 
 		results = results.map((record) => {
 			if (m2o) {

@@ -168,7 +168,7 @@ export default class ItemsService implements AbstractService {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
-		let ast = await getASTFromQuery(this.collection, query, this.accountability);
+		let ast = await getASTFromQuery(this.collection, query, { accountability: this.accountability, knex: this.knex });
 
 		if (this.accountability && this.accountability.admin === false) {
 			ast = await authorizationService.processAST(ast);
@@ -204,19 +204,24 @@ export default class ItemsService implements AbstractService {
 		let ast = await getASTFromQuery(
 			this.collection,
 			queryWithFilter,
-			this.accountability,
-			action
+			{
+				accountability: this.accountability,
+				action,
+				knex: this.knex,
+			}
 		);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
+				knex: this.knex,
 			});
 			ast = await authorizationService.processAST(ast, action);
 		}
 
-		const records = await runAST(ast);
+		const records = await runAST(ast, { knex: this.knex });
 		return Array.isArray(key) ? records : records[0];
+		return [] as Item;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -301,7 +306,6 @@ export default class ItemsService implements AbstractService {
 					}
 
 					const itemsService = new ItemsService(this.collection, { knex: trx });
-
 					const snapshots = await itemsService.readByKey(keys);
 
 					const revisionRecords = activityPrimaryKeys.map((key, index) => ({

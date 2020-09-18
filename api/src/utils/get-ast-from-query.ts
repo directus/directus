@@ -13,26 +13,39 @@ import {
 } from '../types';
 import database from '../database';
 import { clone } from 'lodash';
+import Knex from 'knex';
+
+type GetASTOptions = {
+	accountability?: Accountability | null;
+	action?: PermissionsAction;
+	knex?: Knex;
+}
 
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	accountability?: Accountability | null,
-	action?: PermissionsAction
+	options?: GetASTOptions
+	// accountability?: Accountability | null,
+	// action?: PermissionsAction
 ): Promise<AST> {
 	query = clone(query);
+
+	const accountability = options?.accountability;
+	const action = options?.action || 'read';
+	const knex = options?.knex || database;
+
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const relations = await database.select<Relation[]>('*').from('directus_relations');
+	const relations = await knex.select<Relation[]>('*').from('directus_relations');
 
 	const permissions =
 		accountability && accountability.admin !== true
-			? await database
+			? await knex
 					.select<{ collection: string; fields: string }[]>('collection', 'fields')
 					.from('directus_permissions')
-					.where({ role: accountability.role, action: action || 'read' })
+					.where({ role: accountability.role, action: action })
 			: null;
 
 	const ast: AST = {
