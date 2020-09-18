@@ -177,8 +177,6 @@ export default defineComponent({
 		}
 
 		function removeTag(tag: string) {
-			console.log(tag);
-
 			selectedValsLocal.value = selectedValsLocal.value.filter((savedTag) => savedTag !== tag);
 			emitValue();
 		}
