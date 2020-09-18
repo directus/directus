@@ -46,6 +46,12 @@ async function create(directory) {
 	await fse.mkdir(path.join(rootPath, 'uploads'));
 	await fse.mkdir(path.join(rootPath, 'extensions'));
 
+	const extensionFolders = ['interfaces', 'displays', 'layouts', 'modules'];
+
+	for (const folderName of extensionFolders) {
+		await fse.mkdir(path.join(rootPath, 'extensions', folderName));
+	}
+
 	const spinner = ora('Installing Directus').start();
 
 	await execa('npm', ['init', '-y'], {
