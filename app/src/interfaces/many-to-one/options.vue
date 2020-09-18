@@ -40,7 +40,7 @@ export default defineComponent({
 			},
 		});
 		const collection = computed(() => {
-			if (props.fieldData.field === null || props.fieldData.meta?.collection === null) return null;
+			if (props.fieldData.field === null || props.fieldData.meta?.collection === undefined) return null;
 			const relationData: Relation[] = relationsStore.getRelationsForField(
 				props.fieldData.meta?.collection,
 				props.fieldData.field
