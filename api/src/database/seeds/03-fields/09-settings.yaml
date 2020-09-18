@@ -108,20 +108,12 @@ fields:
     sort: 10
     width: half
   - collection: directus_settings
-    field: auth_idle_timeout
-    interface: numeric
-    locked: true
-    options:
-      iconRight: timer
-    sort: 11
-    width: half
-  - collection: directus_settings
     field: auth_login_attempts
     interface: numeric
     locked: true
     options:
       iconRight: lock
-    sort: 12
+    sort: 11
     width: half
   - collection: directus_settings
     field: files_divider
@@ -132,7 +124,7 @@ fields:
       title: Files & Thumbnails
       color: '#2F80ED'
     special: alias
-    sort: 13
+    sort: 12
     width: full
   - collection: directus_settings
     field: storage_asset_presets
@@ -191,7 +183,7 @@ fields:
             width: full
       template: '{{key}}'
     special: json
-    sort: 14
+    sort: 13
     width: full
   - collection: directus_settings
     field: storage_asset_transform
@@ -205,7 +197,7 @@ fields:
           text: None
         - value: presets
           text: Presets Only
-    sort: 15
+    sort: 14
     width: half
   - collection: directus_settings
     field: misc_divider
@@ -216,7 +208,7 @@ fields:
       title: Miscellaneous
       color: '#2F80ED'
     special: alias
-    sort: 16
+    sort: 15
     width: full
   - collection: directus_settings
     field: id

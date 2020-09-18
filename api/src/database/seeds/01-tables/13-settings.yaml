@@ -31,10 +31,6 @@ columns:
       column: id
   public_note:
     type: text
-  auth_idle_timeout:
-    type: integer
-    unsigned: true
-    default: 10080
   auth_login_attempts:
     type: integer
     default: 25
