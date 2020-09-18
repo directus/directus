@@ -56,9 +56,9 @@
 			"description": "Select a value from a dropdown",
 			"choices_placeholder": "Add a new choice",
 			"allow_other": "Allow Other",
-			"allow_other_label": "Allow other values",
+			"allow_other_label": "Allow Other Values",
 			"allow_none": "Allow None",
-			"allow_none_label": "Allow no selection"
+			"allow_none_label": "Allow No Selection"
 		},
 		"dropdown-multiselect": {
 			"dropdown-multiselect": "Dropdown (Multiple)",
@@ -152,8 +152,14 @@
 		"tags": {
 			"tags": "Tags",
 			"description": "Select or add tags",
-			"lowercase": "Lowercase",
-			"lowercase_label": "Force Lowercase",
+			"whitespace": "Whitespace",
+			"hyphen": "Replace with hyphen",
+			"underscore": "Replace with underscore",
+			"remove": "Remove whitespace",
+			"capitalization": "Capitalization",
+			"uppercase": "Convert Uppercase",
+			"lowercase": "Convert Lowercase",
+			"auto_formatter": "Use Title Auto-Formatter",
 			"alphabetize": "Alphabetize",
 			"alphabetize_label": "Force Alphabetical Order",
 			"add_tags": "Add tags..."

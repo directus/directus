@@ -43,6 +43,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -58,9 +59,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		lowercase: {
-			type: Boolean,
-			default: false,
+		whitespace: {
+			type: String,
+			default: null,
+		},
+		capitalization: {
+			type: String as PropType<'uppercase' | 'lowercase' | 'auto-format'>,
+			default: null,
 		},
 		alphabetize: {
 			type: Boolean,
@@ -117,7 +122,19 @@ export default defineComponent({
 		});
 
 		function processArray(array: string[]): string[] {
-			array = array.map((val) => (props.lowercase ? val.toLowerCase().trim() : val.trim()));
+			array = array.map((val) => {
+				val = val.trim();
+				if (props.capitalization === 'uppercase') val = val.toUpperCase();
+				if (props.capitalization === 'lowercase') val = val.toLowerCase();
+
+				const whitespace = props.whitespace === null ? ' ' : props.whitespace;
+
+				if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(whitespace));
+
+				val = val.replaceAll(/ +/g, whitespace);
+
+				return val;
+			});
 
 			if (props.alphabetize) {
 				array = array.concat().sort();
@@ -160,9 +177,7 @@ export default defineComponent({
 		}
 
 		function removeTag(tag: string) {
-			selectedValsLocal.value = selectedValsLocal.value.filter(
-				(savedTag) => (props.lowercase ? savedTag.toLowerCase() : savedTag) !== tag
-			);
+			selectedValsLocal.value = selectedValsLocal.value.filter((savedTag) => savedTag !== tag);
 			emitValue();
 		}
 
