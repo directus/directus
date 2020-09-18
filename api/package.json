@@ -97,7 +97,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"keyv": "^4.0.1",
 		"knex": "^0.21.4",
-		"knex-schema-inspector": "0.0.11",
+		"knex-schema-inspector": "0.0.12",
 		"liquidjs": "^9.14.1",
 		"lodash": "^4.17.19",
 		"macos-release": "^2.4.1",
