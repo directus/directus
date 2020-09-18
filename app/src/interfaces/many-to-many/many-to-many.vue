@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, watch, PropType, toRefs, computed } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ModalBrowse from '@/views/private/components/modal-browse';
@@ -75,6 +75,7 @@ import useRelation from './use-relation';
 import useSelection from './use-selection';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
+import { Field } from '@/types';
 
 /**
  * Hi there!
@@ -120,13 +121,13 @@ export default defineComponent({
 		},
 		fields: {
 			type: Array as PropType<string[]>,
-			required: true,
+			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 
-		const { collection, field, value, primaryKey, fields } = toRefs(props);
+		const { collection, field, value, primaryKey } = toRefs(props);
 
 		const {
 			relations,
@@ -137,6 +138,14 @@ export default defineComponent({
 			relatedCollectionPrimaryKeyField,
 			relatedCollection,
 		} = useRelation({ collection, field });
+
+		const fields = computed(() => {
+			if (!junctionCollection) return [];
+			return (
+				props.fields ||
+				fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => field.field)
+			);
+		});
 
 		const { tableHeaders } = useTable();
 
@@ -215,14 +224,12 @@ export default defineComponent({
 			// values if it needs to. This allows the user to manually resize the columns for example
 			const tableHeaders = ref<TableHeader[]>([]);
 
-			watch(() => props.fields, setHeaders, { immediate: true });
+			watch(fields, setHeaders, { immediate: true });
 
 			return { tableHeaders };
 
 			function setHeaders() {
-				if (!props.fields) return;
-
-				tableHeaders.value = props.fields.map(
+				tableHeaders.value = fields.value.map(
 					(fieldKey): TableHeader => {
 						const field = fieldsStore.getField(junctionCollection.value, fieldKey);
 
