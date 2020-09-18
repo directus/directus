@@ -8,7 +8,8 @@ import start from './commands/start';
 import init from './commands/init';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
-import userCreate from './commands/user/create';
+import usersCreate from './commands/users/create';
+import rolesCreate from './commands/roles/create';
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -22,13 +23,23 @@ dbCommand.command('migrate:latest').description('Upgrade the database').action((
 dbCommand.command('migrate:up').description('Upgrade the database').action(() => dbMigrate('up'));
 dbCommand.command('migrate:down').description('Downgrade the database').action(() => dbMigrate('down'));
 
-const userCommand = program.command('user');
-
-userCommand
+const usersCommand = program.command('users');
+usersCommand
 	.command('create')
 	.description('Create a new user')
-	.option('-e, --email <email>', `user's email`)
-	.option('-p, --password <password>', `user's password`)
-	.action(userCreate);
+	.option('--email <value>', `user's email`)
+	.option('--password <value>', `user's password`)
+	.option('--role <value>', `user's role`)
+	.action(usersCreate);
+
+const rolesCommand = program.command('roles');
+rolesCommand
+.command('create')
+	.storeOptionsAsProperties(false)
+	.passCommandToAction(false)
+	.description('Create a new role')
+	.option('--name <value>', `name for the role`)
+	.option('--admin', `whether or not the role has admin access`)
+	.action(rolesCreate);
 
 program.parse(process.argv);
