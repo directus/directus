@@ -1,0 +1,8 @@
+table: directus_folders
+
+fields:
+  - collection: directus_folders
+    field: id
+    interface: text-input
+    locked: true
+    special: uuid

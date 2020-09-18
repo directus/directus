@@ -1,5 +1,9 @@
 <template>
-	<div class="field" :key="field.field" :class="[(field.meta && field.meta.width) || 'full', { 'invalid': validationError }]">
+	<div
+		class="field"
+		:key="field.field"
+		:class="[(field.meta && field.meta.width) || 'full', { invalid: validationError }]"
+	>
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -19,6 +23,7 @@
 				:initial-value="initialValue"
 				@input="$emit('input', $event)"
 				@unset="$emit('unset', $event)"
+				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
 
@@ -33,20 +38,35 @@
 			@input="$emit('input', $event)"
 		/>
 
+		<v-dialog v-model="showRaw">
+			<v-card>
+				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
+				<v-card-text>
+					<v-textarea class="raw-value" v-model="rawValue" :placeholder="$t('enter_raw_value')" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="showRaw = false">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 
-		<small class="validation-error" v-if="validationError">{{ $t(`validationError.${validationError.type}`, validationError) }}</small>
+		<small class="validation-error" v-if="validationError">
+			{{ $t(`validationError.${validationError.type}`, validationError) }}
+		</small>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
+import { getJSType } from '@/utils/get-js-type';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -86,9 +106,9 @@ export default defineComponent({
 		validationError: {
 			type: Object as PropType<ValidationError>,
 			default: null,
-		}
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
 			if (props.field?.meta?.readonly === true) return true;
@@ -102,7 +122,44 @@ export default defineComponent({
 			return props.field.schema?.default_value;
 		});
 
-		return { isDisabled, marked, _value };
+		const { showRaw, rawValue } = useRaw();
+
+		return { isDisabled, marked, _value, showRaw, rawValue };
+
+		function useRaw() {
+			const showRaw = ref(false);
+
+			const type = computed(() => {
+				return getJSType(props.field.type);
+			});
+
+			const rawValue = computed({
+				get() {
+					return _value.value;
+				},
+				set(newRawValue: string) {
+					switch (type.value) {
+						case 'string':
+							emit('input', newRawValue);
+							break;
+						case 'number':
+							emit('input', Number(newRawValue));
+							break;
+						case 'boolean':
+							emit('input', newRawValue === 'true');
+							break;
+						case 'object':
+							emit('input', JSON.parse(newRawValue));
+							break;
+						default:
+							emit('input', newRawValue);
+							break;
+					}
+				},
+			});
+
+			return { showRaw, rawValue };
+		}
 	},
 });
 </script>
@@ -120,19 +177,22 @@ export default defineComponent({
 }
 
 .invalid {
+	margin: -12px;
+	padding: 12px;
+	background-color: var(--danger-alt);
+	border-radius: var(--border-radius);
 	transition: var(--medium) var(--transition);
 	transition-property: background-color, padding, margin;
-
-	background-color: var(--danger-alt);
-	padding: 12px;
-	margin: -12px;
-	border-radius: var(--border-radius);
 }
 
 .validation-error {
 	display: block;
-	color: var(--danger);
 	margin-top: 4px;
+	color: var(--danger);
 	font-style: italic;
+}
+
+.raw-value {
+	--v-textarea-font-family: var(--family-monospace);
 }
 </style>

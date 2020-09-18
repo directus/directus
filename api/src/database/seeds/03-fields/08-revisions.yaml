@@ -1,0 +1,14 @@
+table: directus_revisions
+
+fields:
+  # directus_revisions isn't surfaced in the app
+  - collection: directus_revisions
+    field: data
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_revisions
+    field: delta
+    hidden: true
+    locked: true
+    special: json

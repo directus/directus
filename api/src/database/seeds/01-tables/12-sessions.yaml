@@ -1,0 +1,23 @@
+table: directus_sessions
+
+columns:
+  token:
+    type: string
+    length: 64
+    primary: true
+    nullable: false
+  user:
+    type: uuid
+    nullable: false
+    references:
+      table: directus_users
+      column: id
+  expires:
+    type: timestamp
+    nullable: false
+  ip:
+    type: string
+    length: 255
+  user_agent:
+    type: string
+    length: 255

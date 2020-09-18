@@ -1,0 +1,19 @@
+table: directus_presets
+
+fields:
+  # directus_presets isn't surfaced in the app
+  - collection: directus_presets
+    field: filters
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_presets
+    field: layout_query
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_presets
+    field: layout_options
+    hidden: true
+    locked: true
+    special: json

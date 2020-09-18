@@ -174,6 +174,7 @@ body {
 
 			@include breakpoint(medium) {
 				position: relative;
+				height: auto;
 				transform: translateX(0);
 			}
 		}

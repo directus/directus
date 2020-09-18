@@ -90,6 +90,10 @@
 			"name": "Name",
 			"both": "Both",
 			"circle_label": "Show user in a circle"
+		},
+		"labels": {
+			"labels": "Labels",
+			"show_as_dot": "Show as dot"
 		}
 	}
 }

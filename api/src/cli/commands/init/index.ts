@@ -9,7 +9,7 @@ import ora from 'ora';
 
 import argon2 from 'argon2';
 
-import runSeed from '../../../database/run-seed';
+import runSeed from '../../../database/seeds/run';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 
@@ -39,7 +39,7 @@ export default async function init(options: Record<string, any>) {
 
 	const db = createDBConnection(dbClient, credentials);
 
-	await runSeed(db, 'system');
+	await runSeed(db);
 
 	await createEnv(dbClient, credentials, rootPath);
 

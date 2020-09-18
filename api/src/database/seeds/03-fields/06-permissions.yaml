@@ -1,0 +1,14 @@
+# directus_permissions isn't surfaced in the app
+table: directus_permissions
+
+fields:
+  - collection: directus_permissions
+    field: permissions
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_permissions
+    field: presets
+    hidden: true
+    locked: true
+    special: json

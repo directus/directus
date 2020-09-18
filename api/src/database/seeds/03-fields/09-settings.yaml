@@ -1,0 +1,224 @@
+table: directus_settings
+
+fields:
+  - collection: directus_settings
+    field: project_name
+    interface: text-input
+    locked: true
+    options:
+      iconRight: title
+      placeholder: My project...
+    sort: 1
+    translation:
+      locale: en-US
+      translation: Name
+    width: half
+  - collection: directus_settings
+    field: project_url
+    interface: text-input
+    locked: true
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    sort: 2
+    translation:
+      locale: en-US
+      translation: Website
+    width: half
+  - collection: directus_settings
+    field: project_color
+    interface: color
+    locked: true
+    note: Login & Logo Background
+    sort: 3
+    translation:
+      locale: en-US
+      translation: Brand Color
+    width: half
+  - collection: directus_settings
+    field: project_logo
+    interface: file
+    locked: true
+    note: White 40x40 SVG/PNG
+    sort: 4
+    translation:
+      locale: en-US
+      translation: Brand Logo
+    width: half
+  - collection: directus_settings
+    field: public_divider
+    interface: divider
+    locked: true
+    options:
+      icon: public
+      title: Public Pages
+      color: '#2F80ED'
+    special: alias
+    sort: 5
+    width: full
+  - collection: directus_settings
+    field: public_foreground
+    interface: file
+    locked: true
+    sort: 6
+    translation:
+      locale: en-US
+      translation: Login Foreground
+    width: half
+  - collection: directus_settings
+    field: public_background
+    interface: file
+    locked: true
+    sort: 7
+    translation:
+      locale: en-US
+      translation: Login Background
+    width: half
+  - collection: directus_settings
+    field: public_note
+    interface: textarea
+    locked: true
+    options:
+      placeholder: A short, public message that supports markdown formatting...
+    sort: 8
+    width: full
+  - collection: directus_settings
+    field: security_divider
+    interface: divider
+    locked: true
+    options:
+      icon: security
+      title: Security
+      color: '#2F80ED'
+    special: alias
+    sort: 9
+    width: full
+  - collection: directus_settings
+    field: auth_password_policy
+    interface: dropdown
+    locked: true
+    options:
+      choices:
+        - value: null
+          text: None – Not Recommended
+        - value: '/^.{8,}$/'
+          text: Weak – Minimum 8 Characters
+        - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
+          text: Strong – Upper / Lowercase / Numbers / Special
+    sort: 10
+    width: half
+  - collection: directus_settings
+    field: auth_idle_timeout
+    interface: numeric
+    locked: true
+    options:
+      iconRight: timer
+    sort: 11
+    width: half
+  - collection: directus_settings
+    field: auth_login_attempts
+    interface: numeric
+    locked: true
+    options:
+      iconRight: lock
+    sort: 12
+    width: half
+  - collection: directus_settings
+    field: files_divider
+    interface: divider
+    locked: true
+    options:
+      icon: storage
+      title: Files & Thumbnails
+      color: '#2F80ED'
+    special: alias
+    sort: 13
+    width: full
+  - collection: directus_settings
+    field: storage_asset_presets
+    interface: repeater
+    locked: true
+    options:
+      fields:
+        - field: key
+          name: Key
+          type: string
+          meta:
+            interface: slug
+            options:
+              onlyOnCreate: false
+            required: true
+            width: half
+        - field: fit
+          name: Fit
+          type: string
+          meta:
+            interface: dropdown
+            options:
+              choices:
+                - value: contain
+                  text: Contain (preserve aspect ratio)
+                - value: cover
+                  text: Cover (forces exact size)
+            required: true
+            width: half
+        - field: width
+          name: Width
+          type: integer
+          meta:
+            interface: numeric
+            required: true
+            width: half
+        - field: height
+          name: Height
+          type: integer
+          meta:
+            interface: numeric
+            required: true
+            width: half
+        - field: quality
+          type: integer
+          name: Quality
+          schema:
+            default_value: 80
+          meta:
+            interface: slider
+            options:
+              max: 100
+              min: 0
+              step: 1
+            required: true
+            width: full
+      template: '{{key}}'
+    special: json
+    sort: 14
+    width: full
+  - collection: directus_settings
+    field: storage_asset_transform
+    interface: dropdown
+    locked: true
+    options:
+      choices:
+        - value: all
+          text: All
+        - value: none
+          text: None
+        - value: presets
+          text: Presets Only
+    sort: 15
+    width: half
+  - collection: directus_settings
+    field: misc_divider
+    interface: divider
+    locked: true
+    options:
+      icon: pending
+      title: Miscellaneous
+      color: '#2F80ED'
+    special: alias
+    sort: 16
+    width: full
+  - collection: directus_settings
+    field: id
+    hidden: true
+    locked: true

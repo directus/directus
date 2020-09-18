@@ -1,0 +1,165 @@
+table: directus_collections
+
+fields:
+  - collection: directus_collections
+    field: collection_divider
+    special: alias
+    interface: divider
+    options:
+      icon: box
+      title: Collection Setup
+      color: '#2F80ED'
+    locked: true
+    sort: 1
+    width: full
+  - collection: directus_collections
+    field: collection
+    interface: text-input
+    options:
+      font: monospace
+    locked: true
+    readonly: true
+    sort: 2
+    width: half
+  - collection: directus_collections
+    field: icon
+    interface: icon
+    options:
+    locked: true
+    sort: 3
+    width: half
+  - collection: directus_collections
+    field: note
+    interface: text-input
+    options:
+      placeholder: A description of this collection...
+    locked: true
+    sort: 4
+    width: full
+  - collection: directus_collections
+    field: display_template
+    interface: display-template
+    options:
+      collectionField: collection
+    locked: true
+    sort: 5
+    width: full
+  - collection: directus_collections
+    field: hidden
+    special: boolean
+    interface: toggle
+    options:
+      label: Hide within the App
+    locked: true
+    sort: 6
+    width: half
+  - collection: directus_collections
+    field: singleton
+    special: boolean
+    interface: toggle
+    options:
+      label: Treat as single object
+    locked: true
+    sort: 7
+    width: half
+  - collection: directus_collections
+    field: translation
+    special: json
+    interface: repeater
+    options:
+      template: '{{ translation }} ({{ locale }})'
+      fields:
+        - field: locale
+          name: Language
+          type: string
+          schema:
+            default_value: en-US
+          meta:
+            interface: system-language
+            width: half
+        - field: translation
+          name: Translation
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+    locked: true
+    sort: 8
+    width: full
+  - collection: directus_collections
+    field: archive_divider
+    special: alias
+    interface: divider
+    options:
+      icon: archive
+      title: Archive
+      color: '#2F80ED'
+    locked: true
+    sort: 9
+    width: full
+  - collection: directus_collections
+    field: archive_field
+    interface: field
+    options:
+      collectionField: collection
+      allowNone: true
+      placeholder: Choose a field...
+    locked: true
+    sort: 10
+    width: half
+  - collection: directus_collections
+    field: archive_app_filter
+    interface: toggle
+    special: boolean
+    options:
+      label: Enable App Archive Filter
+    locked: true
+    sort: 11
+    width: half
+  - collection: directus_collections
+    field: archive_value
+    interface: text-input
+    options:
+      font: monospace
+      iconRight: archive
+      placeholder: Value set when archiving...
+    locked: true
+    sort: 12
+    width: half
+  - collection: directus_collections
+    field: unarchive_value
+    interface: text-input
+    options:
+      font: monospace
+      iconRight: unarchive
+      placeholder: Value set when unarchiving...
+    locked: true
+    sort: 13
+    width: half
+  - collection: directus_collections
+    field: sort_divider
+    special: alias
+    interface: divider
+    options:
+      icon: sort
+      title: Sort
+      color: '#2F80ED'
+    locked: true
+    sort: 14
+    width: full
+  - collection: directus_collections
+    field: sort_field
+    interface: field
+    options:
+      collectionField: collection
+      placeholder: Choose a field...
+      typeAllowList:
+        - float
+        - decimal
+        - integer
+      allowNone: true
+    locked: true
+    sort: 15
+    width: half

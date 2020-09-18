@@ -1,0 +1,29 @@
+table: directus_collections
+
+defaults:
+  collection: null
+  hidden: false
+  singleton: false
+  icon: null
+  note: null
+  translation: null
+  display_template: null
+
+data:
+  - collection: directus_activity
+  - collection: directus_collections
+  - collection: directus_fields
+  - collection: directus_files
+  - collection: directus_folders
+  - collection: directus_permissions
+  - collection: directus_presets
+  - collection: directus_relations
+  - collection: directus_revisions
+  - collection: directus_roles
+  - collection: directus_sessions
+  - collection: directus_settings
+  - collection: directus_users
+    archive_field: status
+    archive_value: archived
+    unarchive_value: draft
+  - collection: directus_webhooks

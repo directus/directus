@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "1.0.0",
+	"version": "9.0.0-alpha.40",
 	"description": "Specification of the Directus Api",
 	"scripts": {
 		"dev": "swagger-ui-watcher specs/openapi.yaml",
@@ -26,5 +26,6 @@
 		"dist",
 		"LICENSE",
 		"README.md"
-	]
+	],
+	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
 }

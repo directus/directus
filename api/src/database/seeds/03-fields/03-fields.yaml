@@ -1,0 +1,39 @@
+# directus_fields isn't surfaced in the app
+table: directus_fields
+
+fields:
+  - collection: directus_fields
+    field: options
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_fields
+    field: display_options
+    hidden: true
+    locked: true
+    special: json
+  - collection: directus_fields
+    field: locked
+    hidden: true
+    locked: true
+    special: boolean
+  - collection: directus_fields
+    field: readonly
+    hidden: true
+    locked: true
+    special: boolean
+  - collection: directus_fields
+    field: hidden
+    hidden: true
+    locked: true
+    special: boolean
+  - collection: directus_fields
+    field: special
+    hidden: true
+    locked: true
+    special: csv
+  - collection: directus_fields
+    field: translation
+    hidden: true
+    locked: true
+    special: json
