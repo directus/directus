@@ -149,14 +149,14 @@ async function insertRows(database: Knex) {
 async function insertFields(database: Knex) {
 	const fieldSeeds = await fse.readdir(path.resolve(__dirname, './03-fields/'));
 
-	let defaults: Record<string, any> = {};
+	const defaultsYaml = await fse.readFile(path.resolve(__dirname, './03-fields/_defaults.yaml'), 'utf8');
+	const defaults = yaml.safeLoad(defaultsYaml) as FieldSeed;
 
 	for (const fieldSeedFile of fieldSeeds) {
 		const yamlRaw = await fse.readFile(path.resolve(__dirname, './03-fields', fieldSeedFile), 'utf8');
 		const seedData = yaml.safeLoad(yamlRaw) as FieldSeed;
 
 		if (fieldSeedFile === '_defaults.yaml') {
-			defaults = seedData;
 			continue;
 		}
 
