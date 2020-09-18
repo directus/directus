@@ -125,8 +125,7 @@ export default defineComponent({
 				deleteSaving.value = true;
 
 				try {
-					await presetsStore.savePreset(props.bookmark.id);
-
+					await presetsStore.delete(props.bookmark.id);
 					deleteActive.value = false;
 				} catch (error) {
 					console.error(error);
