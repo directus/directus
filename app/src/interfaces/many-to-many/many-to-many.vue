@@ -16,13 +16,13 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="get(item, header.value)"
+					:value="item[header.value]"
 					:display="header.field.display"
-					:options="header.field.display_options"
+					:options="header.field.displayOptions"
 					:interface="header.field.interface"
-					:interface-options="header.field.options"
+					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="header.field.collection"
+					:collection="relatedCollection.collection"
 					:field="header.field.field"
 				/>
 			</template>
@@ -224,15 +224,22 @@ export default defineComponent({
 
 				tableHeaders.value = props.fields.map(
 					(fieldKey): TableHeader => {
-						const fieldInfo = fieldsStore.getField(junctionCollection.value, fieldKey);
+						const field = fieldsStore.getField(junctionCollection.value, fieldKey);
 
 						return {
-							text: fieldInfo.name,
+							text: field.name,
 							value: fieldKey,
 							align: 'left',
 							sortable: true,
 							width: null,
-							field: fieldInfo,
+							field: {
+								display: field.meta?.display,
+								displayOptions: field.meta?.display_options,
+								interface: field.meta?.interface,
+								interfaceOptions: field.meta?.options,
+								type: field.type,
+								field: field.field,
+							},
 						};
 					}
 				);
