@@ -31,4 +31,14 @@ Update any relevant docs with an PRs
 ---
 ## Prerequisites
 ## Development Workflow
+
+1) Clone the repo
+2) Run `npx lerna bootstrap`
+
+In case of unexpected weirdness, reinstall the dependencies by running
+
+```
+npx lerna clean -y && npx lerna bootstrap
+```
+
 ## Before Submitting a Pull-Request
