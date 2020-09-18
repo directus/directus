@@ -175,7 +175,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			items.value = fetchedItems;
 			itemCount.value = response.data.data.length;
 
-			if (response.data.data.length === limit.value) {
+			if (response.data.data.length === limit.value || page.value > 1) {
 				getItemCount();
 			}
 		} catch (err) {
