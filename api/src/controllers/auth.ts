@@ -242,6 +242,4 @@ router.get(
 	})
 );
 
-router.use(respond);
-
 export default router;

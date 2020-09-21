@@ -49,6 +49,7 @@ app.set('trust proxy', true);
 app.use(expressLogger({ logger }));
 app.use(bodyParser.json());
 app.use(extractToken);
+
 app.use((req, res, next) => {
 	res.setHeader('X-Powered-By', 'Directus');
 	next();
@@ -75,31 +76,29 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 app.use(sanitizeQuery);
 
-app.use('/auth', authRouter);
+app.use('/auth', authRouter, respond);
 
 app.use(authenticate);
 app.use(cache);
-app.use('/activity', activityRouter);
-app.use('/assets', assetsRouter);
-app.use('/collections', collectionsRouter);
-app.use('/extensions', extensionsRouter);
-app.use('/fields', fieldsRouter);
-app.use('/files', filesRouter);
-app.use('/folders', foldersRouter);
-app.use('/items', itemsRouter);
-app.use('/permissions', permissionsRouter);
-app.use('/presets', presetsRouter);
-app.use('/relations', relationsRouter);
-app.use('/revisions', revisionsRouter);
-app.use('/roles', rolesRouter);
-app.use('/server/', serverRouter);
-app.use('/settings', settingsRouter);
-app.use('/users', usersRouter);
-app.use('/utils', utilsRouter);
-app.use('/webhooks', webhooksRouter);
 
-app.use(respond);
-
+app.use('/activity', activityRouter, respond);
+app.use('/assets', assetsRouter, respond);
+app.use('/collections', collectionsRouter, respond);
+app.use('/extensions', extensionsRouter, respond);
+app.use('/fields', fieldsRouter, respond);
+app.use('/files', filesRouter, respond);
+app.use('/folders', foldersRouter, respond);
+app.use('/items', itemsRouter, respond);
+app.use('/permissions', permissionsRouter, respond);
+app.use('/presets', presetsRouter, respond);
+app.use('/relations', relationsRouter, respond);
+app.use('/revisions', revisionsRouter, respond);
+app.use('/roles', rolesRouter, respond);
+app.use('/server/', serverRouter, respond);
+app.use('/settings', settingsRouter, respond);
+app.use('/users', usersRouter, respond);
+app.use('/utils', utilsRouter, respond);
+app.use('/webhooks', webhooksRouter, respond);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
