@@ -3,6 +3,7 @@ table: directus_collections
 columns:
   collection:
     type: string
+    length: 64
     primary: true
   icon:
     type: string
