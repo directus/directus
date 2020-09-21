@@ -22,7 +22,7 @@
 
 					<div class="field half">
 						<p class="type-label">{{ $t('fields.directus_roles.admin_access') }}</p>
-						<v-checkbox block v-model="admin" :label="$t('enabled')" />
+						<v-checkbox block v-model="adminAccess" :label="$t('enabled')" />
 					</div>
 				</div>
 			</v-card-text>
@@ -44,11 +44,11 @@ export default defineComponent({
 	setup() {
 		const roleName = ref<string>();
 		const appAccess = ref(true);
-		const admin = ref(false);
+		const adminAccess = ref(false);
 
 		const { saving, error, save } = useSave();
 
-		return { roleName, saving, error, save, appAccess, admin };
+		return { roleName, saving, error, save, appAccess, adminAccess };
 
 		function useSave() {
 			const saving = ref(false);
@@ -63,11 +63,11 @@ export default defineComponent({
 				try {
 					const roleResponse = await api.post('/roles', {
 						name: roleName.value,
-						admin: admin.value,
+						admin_access: adminAccess.value,
 						app_access: appAccess.value,
 					});
 
-					if (appAccess.value === true && admin.value === false) {
+					if (appAccess.value === true && adminAccess.value === false) {
 						await api.post(
 							'/permissions',
 							permissions.map((permission) => ({
