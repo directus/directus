@@ -4,20 +4,20 @@
 			<v-input
 				:disabled="disabled"
 				:placeholder="$t('interfaces.color.placeholder')"
-				v-model="hexValue"
+				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="7"
 				@focus="menuActive = true"
 			>
 				<template #prepend>
-					<v-input type="color" class="html-color-select" v-model="hexValue" ref="htmlColorInput" />
+					<v-input type="color" class="html-color-select" v-model="hex" ref="htmlColorInput" />
 					<v-button
 						@click="activateColorPicker"
 						class="swatch"
 						:icon="true"
 						:style="{
-							'--v-button-background-color': isValidColor ? hexValue : 'transparent',
+							'--v-button-background-color': isValidColor ? hex : 'transparent',
 							border: isValidColor ? 'none' : 'var(--border-width) solid var(--border-normal)',
 						}"
 					>
@@ -36,28 +36,11 @@
 			</div>
 			<template v-if="colorType === 'RGB'">
 				<v-input
-					:value="rgb.r"
-					@input="rgb = { ...rgb, r: $event }"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="255"
-					:step="1"
-					maxlength="3"
-				/>
-				<v-input
-					:value="rgb.g"
-					@input="rgb = { ...rgb, g: $event }"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="255"
-					:step="1"
-					maxlength="3"
-				/>
-				<v-input
-					:value="rgb.b"
-					@input="rgb = { ...rgb, b: $event }"
+					type="number"
+					v-for="(val, i) in rgb"
+					:key="i"
+					:value="val"
+					@input="setValue('rgb', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
@@ -68,32 +51,15 @@
 			</template>
 			<template v-if="colorType === 'HSL'">
 				<v-input
-					:value="hsl.h"
-					@input="hsl = { ...hsl, h: $event }"
+					type="number"
+					v-for="(val, i) in hsl"
+					:key="i"
+					:value="val"
+					@input="setValue('hsl', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="360"
-					:step="1"
-					maxlength="3"
-				/>
-				<v-input
-					:value="hsl.s"
-					@input="hsl = { ...hsl, s: $event }"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="100"
-					:step="1"
-					maxlength="3"
-				/>
-				<v-input
-					:value="hsl.l"
-					@input="hsl = { ...hsl, l: $event }"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="100"
+					:max="i === 1 ? 360 : 100"
 					:step="1"
 					maxlength="3"
 				/>
@@ -108,14 +74,15 @@
 				icon
 				:style="{ '--v-button-background-color': preset.color }"
 				v-tooltip="preset.name"
-				@click="() => (hexValue = preset.color)"
+				@click="() => (hex = preset.color)"
 			/>
 		</div>
 	</v-menu>
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch } from '@vue/composition-api';
-import color, { RGB, HSL } from '@/utils/color';
+import { isHex } from '@/utils/color';
+import Color from 'color';
 
 export default defineComponent({
 	props: {
@@ -126,7 +93,7 @@ export default defineComponent({
 		value: {
 			type: String,
 			default: null,
-			validator: (val: string) => val === null || val === '' || color.isHex(val),
+			validator: (val: string) => val === null || val === '' || isHex(val),
 		},
 		presets: {
 			type: Array as PropType<string[]>,
@@ -185,9 +152,9 @@ export default defineComponent({
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
 
-		const isValidColor = computed<boolean>(() => hexValue.value != null && color.isHex(hexValue.value as string));
+		const isValidColor = computed<boolean>(() => rgb.value != null);
 
-		const { rgb, hsl, hexValue } = useColor();
+		const { hsl, rgb, hex } = useColor();
 
 		const menuActive = ref(false);
 
@@ -196,58 +163,78 @@ export default defineComponent({
 			colorType,
 			rgb,
 			hsl,
-			hexValue,
+			hex,
 			htmlColorInput,
 			activateColorPicker,
 			isValidColor,
 			menuActive,
+			Color,
+			setValue,
 		};
 
+		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
+			if (type === 'rgb') {
+				const newArray = [...rgb.value];
+				newArray[i] = val;
+				rgb.value = newArray;
+			} else {
+				const newArray = [...hsl.value];
+				newArray[i] = val;
+				hsl.value = newArray;
+			}
+		}
+
 		function useColor() {
-			const hexValue = ref<string | null>(props.value);
+			const _rgb = ref<Color | null>(null);
 
-			watch(hexValue, (newHex) => {
-				if (newHex === props.value) return;
+			watch(_rgb, (newColor) => {
+				if (newColor === null) return emit('input', null);
 
-				if (!newHex) emit('input', null);
-				else if (newHex.length === 0) emit('input', null);
-				else if (newHex.length === 7) emit('input', newHex);
+				const hex = newColor.hex();
+
+				if (hex.length === 0) emit('input', null);
+				else emit('input', hex);
 			});
 
 			watch(
 				() => props.value,
 				(newValue) => {
-					if (newValue === hexValue.value) return;
-
-					if (newValue !== null && color.isHex(newValue)) {
-						hexValue.value = props.value;
-					}
-
-					if (newValue === null) {
-						hexValue.value = null;
-					}
+					if (newValue === null) return;
+					const newColor = Color(newValue);
+					if (newColor === null || newColor === _rgb.value) return;
+					_rgb.value = newColor;
 				}
 			);
 
-			const hsl = computed<HSL<string | null>>({
+			const rgb = computed<number[]>({
 				get() {
-					return color.hexToHsl(hexValue.value);
-				},
-				set(newHSL) {
-					hexValue.value = color.hslToHex(newHSL);
-				},
-			});
-
-			const rgb = computed<RGB<string | null>>({
-				get() {
-					return color.hexToRgb(hexValue.value);
+					return _rgb.value !== null ? _rgb.value.rgb().array() : [0, 0, 0];
 				},
 				set(newRGB) {
-					hexValue.value = color.rgbToHex(newRGB);
+					_rgb.value = Color.rgb(newRGB);
 				},
 			});
 
-			return { rgb, hsl, hexValue };
+			const hsl = computed<number[]>({
+				get() {
+					return _rgb.value !== null ? _rgb.value.hsl().array() : [0, 0, 0];
+				},
+				set(newHSL) {
+					_rgb.value = Color.hsl(newHSL);
+				},
+			});
+
+			const hex = computed<string | null>({
+				get() {
+					return _rgb.value !== null ? _rgb.value.hex() : null;
+				},
+				set(newHex) {
+					if (newHex === null || isHex(newHex) === false) return;
+					_rgb.value = Color(newHex);
+				},
+			});
+
+			return { rgb, hsl, hex };
 		}
 	},
 });
