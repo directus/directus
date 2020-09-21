@@ -38,6 +38,7 @@ import webhooksRouter from './controllers/webhooks';
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
 import WebhooksService from './services/webhooks';
+import { InvalidPayloadException } from './exceptions';
 
 validateEnv(['KEY', 'SECRET']);
 
@@ -47,6 +48,17 @@ app.disable('x-powered-by');
 app.set('trust proxy', true);
 
 app.use(expressLogger({ logger }));
+
+app.use((req, res, next) => {
+    bodyParser.json()(req, res, err => {
+        if (err) {
+			return next(new InvalidPayloadException(err.message));
+        }
+
+        return next();
+    });
+});
+
 app.use(bodyParser.json());
 app.use(extractToken);
 
