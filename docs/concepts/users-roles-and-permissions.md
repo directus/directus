@@ -30,7 +30,7 @@ Each user is assigned to one Role, which determines their permissions within the
 
 ### Public Role
 
-Public is not technically a role, and can't be found in the `directus_roels` table. Instead, it represents the _lack_ of a role, providing a place to configure permissions for unauthenticated users. This role can not be deleted, and has no permissions by default.
+Public is not technically a role, and can't be found in the `directus_roles` table. Instead, it represents the _lack_ of a role, providing a place to configure permissions for unauthenticated users. This role can not be deleted, and has no permissions by default.
 
 ### Administrators Role
 
