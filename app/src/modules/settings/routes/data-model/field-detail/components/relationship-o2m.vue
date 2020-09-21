@@ -18,7 +18,12 @@
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="isExisting"
+								/>
 							</template>
 
 							<v-list dense class="monospace">
@@ -120,7 +125,9 @@ export default defineComponent({
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
-			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
+			return collectionsStore.state.collections.find(
+				(col) => col.collection === state.relations?.[0].many_collection
+			);
 		});
 
 		const relatedFieldExists = computed(() => {
@@ -128,7 +135,17 @@ export default defineComponent({
 			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
 		});
 
-		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany, hasCorresponding, correspondingLabel, relatedCollectionExists, relatedFieldExists };
+		return {
+			relations: state.relations,
+			items,
+			fields,
+			currentCollectionPrimaryKey,
+			collectionMany,
+			hasCorresponding,
+			correspondingLabel,
+			relatedCollectionExists,
+			relatedFieldExists,
+		};
 
 		function useRelation() {
 			const availableCollections = computed(() => {
@@ -189,9 +206,18 @@ export default defineComponent({
 					if (!state?.relations?.[0]?.many_collection || !state?.relations?.[0]?.many_field) return false;
 
 					if (relatedFieldExists.value === true) {
-						return state.updateFields.find((updateField: any) => updateField.field === state.relations[0].many_field)?.meta?.interface === 'many-to-one' || fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)?.meta?.interface === 'many-to-one';
+						return (
+							state.updateFields.find(
+								(updateField: any) => updateField.field === state.relations[0].many_field
+							)?.meta?.interface === 'many-to-one' ||
+							fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)
+								?.meta?.interface === 'many-to-one'
+						);
 					} else {
-						return state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta?.interface === 'many-to-one';
+						return (
+							state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta
+								?.interface === 'many-to-one'
+						);
 					}
 				},
 				set(enabled: boolean) {
@@ -206,9 +232,9 @@ export default defineComponent({
 									meta: {
 										interface: 'many-to-one',
 										special: 'm2o',
-									}
-								}
-							]
+									},
+								},
+							];
 						} else {
 							state.updateFields = [
 								{
@@ -217,25 +243,44 @@ export default defineComponent({
 									meta: {
 										interface: null,
 										special: null,
-									}
-								}
-							]
+									},
+								},
+							];
 						}
 					} else {
-						state.newFields = state.newFields.map((newField: any) => {
-							if (newField.$type === 'manyRelated') {
-								if (!newField.meta) newField.meta = {};
-								if (enabled === true) {
-									newField.meta.interface = 'many-to-one';
-									newField.meta.special = ['m2o'];
-								} else {
-									newField.meta.interface = null;
-									newField.meta.special = null;
-								}
-							}
+						const newFieldCreated = !!state.newFields.find(
+							(newField: any) => newField.$type === 'manyRelated'
+						);
 
-							return newField;
-						})
+						if (newFieldCreated === false) {
+							state.newFields = [
+								...state.newFields,
+								{
+									$type: 'manyRelated',
+									collection: state.relations[0].one_collection,
+									field: state.relations[0].many_field,
+									meta: {
+										interface: 'many-to-one',
+										special: 'm2o',
+									},
+								},
+							];
+						} else {
+							state.newFields = state.newFields.map((newField: any) => {
+								if (newField.$type === 'manyRelated') {
+									if (!newField.meta) newField.meta = {};
+									if (enabled === true) {
+										newField.meta.interface = 'many-to-one';
+										newField.meta.special = ['m2o'];
+									} else {
+										newField.meta.interface = null;
+										newField.meta.special = null;
+									}
+								}
+
+								return newField;
+							});
+						}
 					}
 				},
 			});
