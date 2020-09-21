@@ -117,6 +117,7 @@ router.post(
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
+	data: Joi.object()
 });
 
 router.post(
@@ -142,10 +143,8 @@ router.post(
 			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
-			...req.body,
+			...(req.body.data || {}),
 		};
-
-		delete payload.url;
 
 		const primaryKey = await service.upload(fileResponse.data, payload);
 		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
