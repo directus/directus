@@ -1,8 +1,16 @@
-# Managing Roles & Permissions
+# Managing Users, Roles & Permissions
 
 > TK
 
-## Creating Custom Roles
+## Creating a User
+
+* Draft
+* Invited
+* Active
+* Suspended
+* Archived
+
+## Creating a Role
 
 ### Customizing the Module Navigation
 

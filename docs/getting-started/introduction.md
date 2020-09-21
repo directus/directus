@@ -43,6 +43,11 @@ Dedicated hardware, custom limits, full white-labeling, uptime SLAs, and more ar
 
 The online version of our platform's most recent documentation, all written in publicly managed markdown files so the community can help!
 
+* Getting Started
+* Concepts: Learning Oriented. For understanding the platofm.
+* Guides: Problem Oriented. Follow along with steps while working.
+* Reference: Information Oriented. Look up info and specs while working.
+
 ### Online Demo
 
 [Our online demo](https://demo.directus.io) (`admin@example.com` + `password`) is a quick way to try things out in an isolated sandbox. This entire instance resets each hour.
