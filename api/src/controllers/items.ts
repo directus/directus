@@ -28,6 +28,8 @@ router.post(
 
 			throw error;
 		}
+
+		return next();
 	}),
 );
 
