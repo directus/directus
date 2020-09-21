@@ -351,8 +351,8 @@ export default defineComponent({
 				if (props.selectMode === 'dropdown') return true;
 
 				// auto
-				if (totalCount.value && totalCount.value > 100) return false;
-				return true;
+				if (totalCount.value !== null && totalCount.value <= 100) return true;
+				return false;
 			});
 
 			return { menuActive, usesMenu };
