@@ -1022,7 +1022,7 @@
 		"description": "Description",
 		"ip_access": "IP Access",
 		"app_access": "App Access",
-		"admin": "Admin Access",
+		"admin_access": "Admin Access",
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
