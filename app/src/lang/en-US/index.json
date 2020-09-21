@@ -16,6 +16,9 @@
 
 	"show_archived_items": "Show Archived Items",
 
+	"required": "Required",
+	"requires_value": "Requires value",
+
 	"create_preset": "Create Preset",
 	"create_role": "Create Role",
 	"create_user": "Create User",
@@ -164,6 +167,8 @@
 
 	"hidden_on_detail": "Hidden on Detail",
 
+	"disabled_editing_value": "Disable editing value",
+
 	"key": "Key",
 
 	"alias": "Alias",
@@ -234,7 +239,6 @@
 	"enter_a_value": "Enter a value...",
 	"enter_a_placeholder": "Enter a placeholder...",
 	"length": "Length",
-	"required": "Required",
 	"readonly": "Readonly",
 	"hide_on_detail": "Hide on Detail",
 	"hide_on_browse": "Hide on Browse",
