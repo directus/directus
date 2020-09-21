@@ -195,7 +195,7 @@
 				<v-info :title="$tc('item_count', 0)" :icon="currentCollection.icon" center>
 					{{ $t('no_items_copy') }}
 
-					<template #append>
+					<template #append v-if="createAllowed">
 						<v-button :to="`/collections/${collection}/+`">{{ $t('create_item') }}</v-button>
 					</template>
 				</v-info>
