@@ -40,7 +40,7 @@
 				</draggable>
 
 				<v-checkbox
-					v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
+					v-for="field in fieldsInCollection.filter((field) => fields.includes(field.field) === false)"
 					v-model="fields"
 					:key="field.field"
 					:value="field.field"
@@ -223,10 +223,6 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
-		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.meta?.hidden === false)
-		);
-
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
 		const { items, loading, error, totalPages, itemCount, changeManualSort, getItems } = useItems(collection, {
@@ -279,7 +275,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
-			availableFields,
+			fieldsInCollection,
 			fields,
 			limit,
 			activeFields,
@@ -356,7 +352,7 @@ export default defineComponent({
 
 					const fields =
 						_layoutQuery.value?.fields ||
-						availableFields.value
+						fieldsInCollection.value
 							.filter((field: Field) => {
 								return field.schema?.is_primary_key === false;
 							})
@@ -406,7 +402,7 @@ export default defineComponent({
 			const activeFields = computed<Field[]>({
 				get() {
 					return fields.value
-						.map((key) => availableFields.value.find((field) => field.field === key))
+						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
 						.filter((f) => f) as Field[];
 				},
 				set(val) {
@@ -505,7 +501,7 @@ export default defineComponent({
 			}
 
 			function getFieldDisplay(fieldKey: string) {
-				const field = availableFields.value.find((field) => field.field === fieldKey);
+				const field = fieldsInCollection.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
 				if (!field.meta?.display) return null;

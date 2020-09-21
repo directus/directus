@@ -57,7 +57,7 @@
 		<template v-if="loading || itemCount > 0">
 			<cards-header
 				@select-all="selectAll"
-				:fields="availableFields"
+				:fields="fieldsInCollection"
 				:size.sync="size"
 				:selection.sync="_selection"
 				:sort.sync="sort"
@@ -203,10 +203,8 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta?.hidden !== true));
-
 		const fileFields = computed(() => {
-			return availableFields.value.filter((field) => {
+			return fieldsInCollection.value.filter((field) => {
 				if (field.field === '$file') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
@@ -265,7 +263,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
-			availableFields,
+			fieldsInCollection,
 			limit,
 			size,
 			primaryKeyField,
@@ -277,7 +275,6 @@ export default defineComponent({
 			getLinkForItem,
 			imageFit,
 			sort,
-			fieldsInCollection,
 			_filters,
 			newLink,
 			info,
@@ -330,7 +327,7 @@ export default defineComponent({
 		function uselayoutQuery() {
 			const page = ref(1);
 
-			const sort = createlayoutQueryOption<string>('sort', availableFields.value[0].field);
+			const sort = createlayoutQueryOption<string>('sort', fieldsInCollection.value[0].field);
 			const limit = createlayoutQueryOption<number>('limit', 25);
 
 			const fields = computed<string[]>(() => {
