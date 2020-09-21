@@ -9,8 +9,11 @@ import { pick } from 'lodash';
 import { Transformation } from '../types/assets';
 import storage from '../storage';
 import PayloadService from '../services/payload';
+import useCollection from '../middleware/use-collection';
 
 const router = Router();
+
+router.use(useCollection('directus_Files'));
 
 router.get(
 	'/:pk',

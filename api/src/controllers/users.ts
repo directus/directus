@@ -5,8 +5,11 @@ import { InvalidPayloadException, InvalidCredentialsException, ForbiddenExceptio
 import UsersService from '../services/users';
 import MetaService from '../services/meta';
 import AuthService from '../services/authentication';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_users'));
 
 router.post(
 	'/',

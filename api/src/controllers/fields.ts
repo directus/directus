@@ -7,8 +7,11 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
 import { Field } from '../types/field';
 import { types } from '../types';
+import useCollection from '../middleware/use-collection';
 
 const router = Router();
+
+router.use(useCollection('directus_fields'));
 
 router.get(
 	'/',
