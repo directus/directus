@@ -111,10 +111,6 @@ export default defineComponent({
 					color: '#F2C94C',
 				},
 				{
-					name: 'Teal',
-					color: '#6FCF97',
-				},
-				{
 					name: 'Green',
 					color: '#27AE60',
 				},
@@ -131,12 +127,12 @@ export default defineComponent({
 					color: '#9B51E0',
 				},
 				{
-					name: 'Pink',
-					color: '#BB6BD9',
-				},
-				{
 					name: 'Gray',
 					color: '#607D8B',
+				},
+				{
+					name: 'Light Gray',
+					color: '#ECEFF1',
 				},
 			],
 		},
