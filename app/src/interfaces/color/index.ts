@@ -8,7 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'palette',
 	component: InterfaceColor,
 	types: ['string'],
-	recommendedDisplays: ['color-dot'],
+	recommendedDisplays: ['color'],
 	options: [
 		{
 			field: 'presets',

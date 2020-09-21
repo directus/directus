@@ -6,17 +6,13 @@
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
-			<repeater
-				v-model="repeaterValue"
-				:template="`{{ field }} — {{ interface }}`"
-				:fields="repeaterFields"
-			/>
+			<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
+			<v-input class="input" v-model="addLabel" :placeholder="$t('add_a_new_item')" />
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="$t('add_a_new_item')" />
+			<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
+			<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
 		</div>
 	</div>
 </template>

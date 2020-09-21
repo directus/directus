@@ -17,8 +17,8 @@
 			"description": "Display a collection",
 			"icon_label": "Show the collection's icon"
 		},
-		"color-dot": {
-			"color-dot": "Color Dot",
+		"color": {
+			"color": "Color",
 			"description": "Display a colored dot",
 			"default_color": "Default Color",
 			"choices_note": "Set colors relative to the text"
