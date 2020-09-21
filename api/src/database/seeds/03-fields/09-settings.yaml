@@ -200,17 +200,6 @@ fields:
     sort: 14
     width: half
   - collection: directus_settings
-    field: misc_divider
-    interface: divider
-    locked: true
-    options:
-      icon: pending
-      title: Miscellaneous
-      color: '#2F80ED'
-    special: alias
-    sort: 15
-    width: full
-  - collection: directus_settings
     field: id
     hidden: true
     locked: true
