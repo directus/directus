@@ -8,7 +8,7 @@ import formatTitle from '@directus/format-title';
 import env from '../env';
 import axios from 'axios';
 import Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import url from 'url';
 import path from 'path';
 
@@ -108,9 +108,17 @@ router.post(
 			keys = await service.create(req.body);
 		}
 
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+		try {
+			const record = await service.readByKey(keys as any, req.sanitizedQuery);
+			res.locals.payload = { data: res.locals.savedFiles.length === 1 ? record[0] : record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
 
-		res.locals.payload = { data: res.locals.savedFiles.length === 1 ? record[0] : record || null };
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -147,8 +155,18 @@ router.post(
 		};
 
 		const primaryKey = await service.upload(fileResponse.data, payload);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -192,8 +210,17 @@ router.patch(
 			await service.update(req.body, keys as any);
 		}
 
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(keys as any, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );

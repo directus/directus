@@ -1,7 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
-import { InvalidPayloadException, InvalidCredentialsException } from '../exceptions';
+import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import UsersService from '../services/users';
 import MetaService from '../services/meta';
 import AuthService from '../services/authentication';
@@ -13,8 +13,18 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
-		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
-		res.locals.payload = { data: item || null };
+
+		try {
+			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: item || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -101,9 +111,17 @@ router.patch(
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
 
-		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+		try {
+			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: item || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
 
-		res.locals.payload = { data: item || null };
+			throw error;
+		}
+
 		return next();
 	})
 );

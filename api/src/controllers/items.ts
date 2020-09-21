@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import ItemsService from '../services/items';
 import collectionExists from '../middleware/collection-exists';
 import MetaService from '../services/meta';
-import { RouteNotFoundException } from '../exceptions';
+import { RouteNotFoundException, ForbiddenException } from '../exceptions';
 
 const router = express.Router();
 
@@ -17,10 +17,17 @@ router.post(
 
 		const service = new ItemsService(req.collection, { accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
-		const result = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: result || null };
-		return next();
+		try {
+			const result = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: result || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
 	}),
 );
 
@@ -79,8 +86,18 @@ router.patch(
 		}
 
 		const primaryKeys = await service.update(req.body);
-		const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-		res.locals.payload = { data: result || null };
+
+		try {
+			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+			res.locals.payload = { data: result || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 );
@@ -97,9 +114,18 @@ router.patch(
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
 		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
-		const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: result || null };
+		try {
+			const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: result || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 );

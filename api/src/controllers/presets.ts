@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import PresetsService from '../services/presets';
 import MetaService from '../services/meta';
+import { ForbiddenException } from '../exceptions';
 
 const router = express.Router();
 
@@ -10,9 +11,18 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new PresetsService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -49,9 +59,18 @@ router.patch(
 		const service = new PresetsService({ accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );

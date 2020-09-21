@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import ActivityService from '../services/activity';
 import MetaService from '../services/meta';
 import { Action } from '../types';
+import { ForbiddenException } from '../exceptions';
 
 const router = express.Router();
 
@@ -51,11 +52,19 @@ router.post(
 			user_agent: req.get('user-agent'),
 		});
 
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = {
-			data: record || null,
-		};
+			res.locals.payload = {
+				data: record || null,
+			};
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
 
 		return next();
 	}),
@@ -66,11 +75,20 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const service = new ActivityService({ accountability: req.accountability });
 		const primaryKey = await service.update(req.body, req.params.pk);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = {
-			data: record || null,
-		};
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+
+			res.locals.payload = {
+				data: record || null,
+			};
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
 
 		return next();
 	}),

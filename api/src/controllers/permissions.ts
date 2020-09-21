@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import PermissionsService from '../services/permissions';
 import MetaService from '../services/meta';
 import { clone } from 'lodash';
-import { InvalidCredentialsException } from '../exceptions';
+import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 
 const router = express.Router();
 
@@ -12,9 +12,17 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new PermissionsService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
-		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: item || null };
+		try {
+			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: item || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
 		return next();
 	})
 );
@@ -76,9 +84,18 @@ router.patch(
 		const service = new PermissionsService({ accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
-		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: item || null };
+		try {
+			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: item || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );

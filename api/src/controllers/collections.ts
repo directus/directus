@@ -2,6 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import CollectionsService from '../services/collections'
 import MetaService from '../services/meta';
+import { ForbiddenException } from '../exceptions';
 
 const router = Router();
 
@@ -39,9 +40,18 @@ router.get(
 		const collectionKey = req.params.collection.includes(',')
 			? req.params.collection.split(',')
 			: req.params.collection;
-		const collection = await collectionsService.readByKey(collectionKey as any);
 
-		res.locals.payload = { data: collection || null };
+		try {
+			const collection = await collectionsService.readByKey(collectionKey as any);
+			res.locals.payload = { data: collection || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -54,8 +64,18 @@ router.patch(
 			? req.params.collection.split(',')
 			: req.params.collection;
 		await collectionsService.update(req.body, collectionKey as any);
-		const collection = await collectionsService.readByKey(collectionKey as any);
-		res.locals.payload = { data: collection || null };
+
+		try {
+			const collection = await collectionsService.readByKey(collectionKey as any);
+			res.locals.payload = { data: collection || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );

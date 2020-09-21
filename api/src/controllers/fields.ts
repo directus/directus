@@ -82,9 +82,17 @@ router.post(
 
 		await service.createField(req.params.collection, field);
 
-		const createdField = await service.readOne(req.params.collection, field.field);
+		try {
+			const createdField = await service.readOne(req.params.collection, field.field);
+			res.locals.payload = { data: createdField || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
 
-		res.locals.payload = { data: createdField || null };
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -95,20 +103,29 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({ accountability: req.accountability });
 
-		if (Array.isArray(req.body) === false)
+		if (Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException('Submitted body has to be an array.');
-
-		let results: any = [];
+		}
 
 		for (const field of req.body) {
 			await service.updateField(req.params.collection, field);
-
-			const updatedField = await service.readOne(req.params.collection, field.field);
-
-			results.push(updatedField);
 		}
 
-		res.locals.payload = { data: results || null };
+		try {
+			let results: any = [];
+			for (const field of req.body) {
+				const updatedField = await service.readOne(req.params.collection, field.field);
+				results.push(updatedField);
+				res.locals.payload = { data: results || null };
+			}
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	})
 );
@@ -125,9 +142,17 @@ router.patch(
 
 		await service.updateField(req.params.collection, fieldData);
 
-		const updatedField = await service.readOne(req.params.collection, req.params.field);
+		try {
+			const updatedField = await service.readOne(req.params.collection, req.params.field);
+			res.locals.payload = { data: updatedField || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
 
-		res.locals.payload = { data: updatedField || null };
+			throw error;
+		}
+
 		return next();
 	})
 );

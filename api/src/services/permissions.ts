@@ -1,4 +1,4 @@
-import { AbstractServiceOptions } from '../types';
+import { AbstractServiceOptions, PermissionsAction } from '../types';
 import ItemsService from '../services/items';
 
 export default class PermissionsService extends ItemsService {
