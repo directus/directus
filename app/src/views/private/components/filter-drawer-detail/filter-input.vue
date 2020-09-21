@@ -7,6 +7,7 @@
 				@input="setCSV(0, $event)"
 				:disabled="disabled"
 				:placeholder="$t('lower_limit')"
+				autofocus
 			>
 				<template #append>
 					<v-icon name="vertical_align_top" />
@@ -33,6 +34,7 @@
 				@input="setCSV(index, $event)"
 				:disabled="disabled"
 				:placeholder="$t('enter_a_value')"
+				autofocus
 			>
 				<template #append>
 					<v-icon v-if="csvValue.length > 1" name="close" @click="removeCSV(val)" />
@@ -45,7 +47,14 @@
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
 			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
-			<v-input :disabled="disabled" v-else v-model="_value" :type="type" :placeholder="$t('enter_a_value')" />
+			<v-input
+				:disabled="disabled"
+				v-else
+				autofocus
+				v-model="_value"
+				:type="type"
+				:placeholder="$t('enter_a_value')"
+			/>
 		</template>
 	</div>
 </template>

@@ -25,7 +25,7 @@ export function useCollection(collectionKey: string | Ref<string>) {
 	});
 
 	const userCreatedField = computed(() => {
-		return fields.value?.find((field) => field.meta?.special?.includes('user_created')) || null;
+		return fields.value?.find((field) => (field.meta?.special || []).includes('user_created')) || null;
 	});
 
 	const sortField = computed(() => {
