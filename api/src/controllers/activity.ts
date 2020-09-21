@@ -4,8 +4,11 @@ import ActivityService from '../services/activity';
 import MetaService from '../services/meta';
 import { Action } from '../types';
 import { ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_activity'));
 
 router.get(
 	'/',

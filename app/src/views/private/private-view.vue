@@ -35,14 +35,14 @@
 
 				<div class="spacer" />
 
-				<notifications-preview :drawer-open="drawerOpen" />
+				<notifications-preview v-model="notificationsPreviewActive" :drawer-open="drawerOpen" />
 			</div>
 		</aside>
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
-		<notifications-group :dense="drawerOpen === false" />
+		<notifications-group v-if="notificationsPreviewActive === false" :dense="drawerOpen === false" />
 
 		<template v-if="showDropEffect">
 			<div class="drop-border top" />
@@ -93,6 +93,8 @@ export default defineComponent({
 		const notificationsStore = useNotificationsStore();
 		const appStore = useAppStore();
 
+		const notificationsPreviewActive = ref(false);
+
 		const { drawerOpen } = toRefs(appStore.state);
 
 		const theme = computed(() => {
@@ -119,6 +121,7 @@ export default defineComponent({
 			dragging,
 			drawerOpen,
 			openDrawer,
+			notificationsPreviewActive,
 		};
 
 		function useFileUpload() {
@@ -237,10 +240,7 @@ export default defineComponent({
 				});
 
 				notificationsStore.remove(fileUploadNotificationID);
-
 				emitter.emit(Events.upload);
-
-				notificationsStore.remove(fileUploadNotificationID);
 			}
 		}
 

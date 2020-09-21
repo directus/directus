@@ -4,8 +4,11 @@ import PermissionsService from '../services/permissions';
 import MetaService from '../services/meta';
 import { clone } from 'lodash';
 import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_permissions'));
 
 router.post(
 	'/',

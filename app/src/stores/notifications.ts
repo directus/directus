@@ -31,13 +31,18 @@ export const useNotificationsStore = createStore({
 
 			return id;
 		},
+		hide(id: string) {
+			const toBeHidden = this.state.queue.find((n) => n.id === id);
+			if (!toBeHidden) return;
+
+			this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			this.state.previous = [...this.state.previous, toBeHidden];
+		},
 		remove(id: string) {
 			const toBeRemoved = this.state.queue.find((n) => n.id === id);
-
 			if (!toBeRemoved) return;
 
 			this.state.queue = this.state.queue.filter((n) => n.id !== id);
-			this.state.previous = [...this.state.previous, toBeRemoved];
 		},
 		update(id: string, updates: Partial<Notification>) {
 			this.state.queue = this.state.queue.map(updateIfNeeded);

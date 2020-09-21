@@ -11,8 +11,11 @@ import Joi from 'joi';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import url from 'url';
 import path from 'path';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_files'));
 
 const multipartHandler = asyncHandler(async (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();

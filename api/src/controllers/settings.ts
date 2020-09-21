@@ -2,8 +2,11 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import SettingsService from '../services/settings';
 import { ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_settings'));
 
 router.get(
 	'/',

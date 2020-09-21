@@ -3,8 +3,11 @@ import asyncHandler from 'express-async-handler';
 import RelationsService from '../services/relations';
 import MetaService from '../services/meta';
 import { ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
+
+router.use(useCollection('directus_relations'));
 
 router.post(
 	'/',
