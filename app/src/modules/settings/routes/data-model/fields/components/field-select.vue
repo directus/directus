@@ -91,7 +91,7 @@
 				<v-list-item
 					@click="deleteActive = true"
 					class="danger"
-					:disabled="field.schema && field.schema.is_primary_key === true || false"
+					:disabled="(field.schema && field.schema.is_primary_key === true) || false"
 				>
 					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 					<v-list-item-content>
