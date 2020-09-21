@@ -12,18 +12,26 @@ defaults:
 data:
   - collection: directus_activity
   - collection: directus_collections
+    icon: list_alt
   - collection: directus_fields
+    icon: input
   - collection: directus_files
+    icon: folder
   - collection: directus_folders
   - collection: directus_permissions
+    icon: admin_panel_settings
   - collection: directus_presets
+    icon: bookmark_border
   - collection: directus_relations
+    icon: merge_type
   - collection: directus_revisions
   - collection: directus_roles
+    icon: supervised_user_circle
   - collection: directus_sessions
   - collection: directus_settings
   - collection: directus_users
     archive_field: status
     archive_value: archived
     unarchive_value: draft
+    icon: people_alt
   - collection: directus_webhooks
