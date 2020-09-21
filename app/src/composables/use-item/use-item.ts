@@ -93,12 +93,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 				notify({
 					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
-					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-						collection: collection.value,
-						primaryKey: isBatch.value
-							? (primaryKey.value as string).split(',').join(', ')
-							: primaryKey.value,
-					}),
 					type: 'success',
 				});
 			} else {
@@ -106,12 +100,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 				notify({
 					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
-					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-						collection: collection.value,
-						primaryKey: isBatch.value
-							? (primaryKey.value as string).split(',').join(', ')
-							: primaryKey.value,
-					}),
 					type: 'success',
 				});
 			}
@@ -145,9 +133,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			}
 
 			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION').map((err: APIError) => {
-					return err.extensions;
-				});
+				validationErrors.value = err.response.data.errors
+					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.map((err: APIError) => {
+						return err.extensions;
+					});
 			} else {
 				throw err;
 			}
@@ -175,10 +165,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.t('item_create_success'),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
 				type: 'success',
 			});
 
@@ -194,9 +180,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			});
 
 			if (err?.response?.data?.errors) {
-				validationErrors.value = err.response.data.errors.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION').map((err: APIError) => {
-					return err.extensions;
-				});
+				validationErrors.value = err.response.data.errors
+					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.map((err: APIError) => {
+						return err.extensions;
+					});
 			} else {
 				throw err;
 			}
@@ -237,10 +225,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
 				type: 'success',
 			});
 		} catch (err) {
@@ -269,10 +253,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			notify({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
 				type: 'success',
 			});
 		} catch (err) {

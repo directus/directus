@@ -62,7 +62,6 @@ export const useCollectionsStore = createStore({
 				notify({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
-					text: collection,
 				});
 			} catch (error) {
 				notify({
@@ -80,7 +79,6 @@ export const useCollectionsStore = createStore({
 				notify({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
-					text: collection,
 				});
 			} catch (error) {
 				notify({
