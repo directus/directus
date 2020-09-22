@@ -1,5 +1,10 @@
 <template>
-	<v-select :items="items" @input="$listeners.input" :value="value" />
+	<v-select
+		:items="items"
+		@input="$listeners.input"
+		:value="value"
+		:placeholder="$t('interfaces.interface.placeholder')"
+	/>
 </template>
 
 <script lang="ts">
