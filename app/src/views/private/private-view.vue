@@ -157,17 +157,15 @@ export default defineComponent({
 			}
 
 			function onDragEnter(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
 				event.preventDefault();
 				dragCounter.value++;
 
 				const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
 
-				if (
-					dragCounter.value === 1 &&
-					event.dataTransfer?.types.indexOf('Files') !== -1 &&
-					showDropEffect.value === false &&
-					isDropzone === false
-				) {
+				if (dragCounter.value === 1 && showDropEffect.value === false && isDropzone === false) {
 					enableDropEffect();
 				}
 
@@ -178,10 +176,16 @@ export default defineComponent({
 			}
 
 			function onDragOver(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
 				event.preventDefault();
 			}
 
 			function onDragLeave(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
 				event.preventDefault();
 				dragCounter.value--;
 
@@ -196,13 +200,13 @@ export default defineComponent({
 			}
 
 			async function onDrop(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
 				event.preventDefault();
 				showDropEffect.value = false;
 
 				dragCounter.value = 0;
-
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
 
 				if (dragNotificationID) {
 					notificationsStore.remove(dragNotificationID);
