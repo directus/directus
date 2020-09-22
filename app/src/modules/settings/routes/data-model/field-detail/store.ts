@@ -64,7 +64,7 @@ function initLocalStore(
 		return interfaces.value
 			.filter((inter) => {
 				// Filter out all system interfaces
-				if (inter.system !== undefined && inter.system === true) return false;
+				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				let matchesRelation = false;
@@ -80,6 +80,8 @@ function initLocalStore(
 				} else {
 					matchesRelation = inter.relationship === type;
 				}
+
+				console.log(inter.id, matchesType, matchesRelation);
 
 				return matchesType && matchesRelation;
 			})
@@ -223,8 +225,8 @@ function initLocalStore(
 	}
 
 	if (type === 'o2m') {
-		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.schema = null;
+		state.fieldData.type = null;
 
 		const syncNewCollectionsO2M = throttle(() => {
 			const collectionName = state.relations[0].many_collection;
@@ -319,8 +321,8 @@ function initLocalStore(
 	}
 
 	if (type === 'm2m' || type === 'files' || type === 'translations') {
-		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.schema = null;
+		state.fieldData.type = null;
 
 		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
 			state.newCollections = state.newCollections.filter(
@@ -556,8 +558,8 @@ function initLocalStore(
 	}
 
 	if (type === 'presentation') {
-		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.schema = null;
+		state.fieldData.type = null;
 
 		state.fieldData.meta.special = ['alias'];
 	}
