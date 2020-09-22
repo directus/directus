@@ -2,7 +2,6 @@ export * from './activity';
 export * from './assets';
 export * from './authentication';
 export * from './collections';
-export * from './extensions';
 export * from './fields';
 export * from './files';
 export * from './folders';

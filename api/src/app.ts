@@ -38,8 +38,10 @@ import webhooksRouter from './controllers/webhooks';
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
 import { WebhooksService } from './services/webhooks';
-import { ExtensionsService } from './services/extensions';
 import { InvalidPayloadException } from './exceptions';
+
+import { registerExtensions } from './extensions';
+import emitter from './emitter';
 
 validateEnv(['KEY', 'SECRET']);
 
@@ -123,9 +125,11 @@ const webhooksService = new WebhooksService();
 webhooksService.register();
 
 // Register custom hooks / endpoints
-const extensionsService = new ExtensionsService();
-extensionsService.register(customRouter);
+registerExtensions(customRouter);
 
 track('serverStarted');
+
+emitter.emitAsync('server.started')
+	.catch((err) => logger.warn(err));
 
 export default app;
