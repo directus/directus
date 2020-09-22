@@ -2,18 +2,18 @@
 
 // Default / Light Mode
 @mixin light {
-	--border-normal: #D6DFE2;
-	--border-normal-alt: #90A4AE;
-	--border-subdued: #ECEFF1;
+	--border-normal: #D3DAE4;
+	--border-normal-alt: #A2B5CD;
+	--border-subdued: #F0F4F9;
 
-	--foreground-normal: #263238;
-	--foreground-subdued: #B0BEC5;
+	--foreground-normal: #182B44;
+	--foreground-subdued: #A2B5CD;
 	--foreground-inverted:#FFF;
 
-	--background-normal: #ECEFF1;
-	--background-normal-alt: #DDE3E6;
-	--background-subdued: #F5F7F8;
-	--background-highlight: #F9FAFB;
+	--background-normal: #F0F4F9;
+	--background-normal-alt: #E4EAF1;
+	--background-subdued: #F7FAFC;
+	--background-highlight: #F7F9FD;
 	--background-page: #FFFFFF;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;

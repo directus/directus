@@ -54,7 +54,7 @@ export default defineComponent({
 
 .info .icon {
 	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--background-normal);
 }
 
 .success .icon {
