@@ -60,6 +60,7 @@ export default defineComponent({
 					sort: 1,
 					options: {
 						font: 'monospace',
+						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
 					},
 				},
 				schema: null,
@@ -106,6 +107,9 @@ export default defineComponent({
 					interface: 'text-input',
 					width: 'half',
 					sort: 4,
+					options: {
+						placeholder: i18n.t('interfaces.repeater.field_note_placeholder'),
+					},
 				},
 				schema: null,
 			},

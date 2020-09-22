@@ -29,7 +29,8 @@
 			"description": "Enter or select a color value",
 			"placeholder": "Choose a color...",
 			"preset_colors": "Preset Colors",
-			"preset_colors_placeholder": "Add a new color..."
+			"preset_colors_add_label": "Add new color...",
+			"name_placeholder": "Enter color name..."
 		},
 		"datetime": {
 			"datetime": "Datetime",
@@ -58,7 +59,9 @@
 			"allow_other": "Allow Other",
 			"allow_other_label": "Allow Other Values",
 			"allow_none": "Allow None",
-			"allow_none_label": "Allow No Selection"
+			"allow_none_label": "Allow No Selection",
+			"choices_name_placeholder": "Enter a name...",
+			"choices_value_placeholder": "Enter a value..."
 		},
 		"dropdown-multiselect": {
 			"dropdown-multiselect": "Dropdown (Multiple)",
@@ -89,7 +92,8 @@
 		},
 		"interface": {
 			"interface": "Interface",
-			"description": "Select an existing interface"
+			"description": "Select an existing interface",
+			"placeholder": "Select an interface..."
 		},
 		"interface-options": {
 			"interface-options": "Interface Options",
@@ -139,7 +143,9 @@
 			"max_amount": "Maximum Amount",
 			"max_amount_placeholder": "Maximum amount of items...",
 			"edit_fields": "Edit Fields",
-			"add_label": "\"Add New Row\" Label"
+			"add_label": "\"Add New Row\" Label",
+			"field_name_placeholder": "Enter field name...",
+			"field_note_placeholder": "Enter field note..."
 		},
 		"slider": {
 			"slider": "Slider",

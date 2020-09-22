@@ -27,6 +27,9 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								width: 'half',
+								options: {
+									placeholder: i18n.t('interfaces.dropdown.choices_name_placeholder'),
+								},
 							},
 						},
 						{
@@ -37,6 +40,7 @@ export default defineInterface(({ i18n }) => ({
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
+									placeholder: i18n.t('interfaces.dropdown.choices_value_placeholder'),
 								},
 								width: 'half',
 							},

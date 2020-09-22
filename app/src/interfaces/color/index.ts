@@ -18,7 +18,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					placeholder: i18n.t('interfaces.color.preset_colors_placeholder'),
+					addLabel: i18n.t('interfaces.color.preset_colors_add_label'),
 					template: '{{ name }} - {{ color }}',
 					fields: [
 						{
@@ -28,6 +28,9 @@ export default defineInterface(({ i18n }) => ({
 							meta: {
 								interface: 'text-input',
 								width: 'half',
+								options: {
+									placeholder: i18n.t('interfaces.color.name_placeholder'),
+								},
 							},
 						},
 						{

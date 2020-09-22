@@ -70,6 +70,18 @@ export default defineDisplay(({ i18n }) => ({
 					template: '{{text}}',
 					fields: [
 						{
+							field: 'text',
+							name: i18n.t('text'),
+							type: 'string',
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+								options: {
+									placeholder: i18n.t('displays.labels.choices_text_placeholder'),
+								},
+							},
+						},
+						{
 							field: 'value',
 							name: i18n.t('value'),
 							type: 'string',
@@ -77,16 +89,8 @@ export default defineDisplay(({ i18n }) => ({
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
+									placeholder: i18n.t('displays.labels.choices_value_placeholder'),
 								},
-								width: 'half',
-							},
-						},
-						{
-							field: 'text',
-							name: i18n.t('text'),
-							type: 'string',
-							meta: {
-								interface: 'text-input',
 								width: 'half',
 							},
 						},
