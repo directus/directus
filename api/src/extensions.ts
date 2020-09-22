@@ -47,8 +47,6 @@ export async function registerExtensions(router: Router) {
 	} catch (err) {
 		logger.warn(err);
 	}
-
-	console.log(hooks, endpoints);
 }
 
 function registerHooks(hooks: string[]) {
