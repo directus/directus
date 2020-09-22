@@ -1,8 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import ItemsService from '../services/items';
 import collectionExists from '../middleware/collection-exists';
-import MetaService from '../services/meta';
+import { ItemsService, MetaService} from '../services';
 import { RouteNotFoundException, ForbiddenException } from '../exceptions';
 
 const router = express.Router();

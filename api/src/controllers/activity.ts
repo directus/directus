@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import ActivityService from '../services/activity';
-import MetaService from '../services/meta';
+import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';

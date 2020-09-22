@@ -16,14 +16,14 @@ import Knex from 'knex';
 import cache from '../cache';
 import emitter from '../emitter';
 
-import PayloadService from './payload';
-import AuthorizationService from './authorization';
+import { PayloadService } from './payload';
+import { AuthorizationService } from './authorization';
 
 import { pick, clone } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 
-export default class ItemsService implements AbstractService {
+export class ItemsService implements AbstractService {
 	collection: string;
 	knex: Knex;
 	accountability: Accountability | null;

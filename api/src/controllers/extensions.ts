@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { RouteNotFoundException } from '../exceptions';
-import ExtensionsService from '../services/extensions';
+import { ExtensionsService } from '../services/extensions';
 import env from '../env';
 
 const router = Router();

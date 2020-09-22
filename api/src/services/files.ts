@@ -1,4 +1,4 @@
-import ItemsService from './items';
+import { ItemsService } from './items';
 import storage from '../storage';
 import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
@@ -9,7 +9,7 @@ import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
 
-export default class FilesService extends ItemsService {
+export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
 		super('directus_files', options);
 	}

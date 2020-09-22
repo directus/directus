@@ -4,7 +4,7 @@ import { AbstractServiceOptions, Accountability } from '../types';
 import Knex from 'knex';
 import { applyFilter } from '../utils/apply-query';
 
-export default class MetaService {
+export class MetaService {
 	knex: Knex;
 	accountability: Accountability | null;
 

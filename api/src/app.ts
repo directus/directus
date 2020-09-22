@@ -37,12 +37,15 @@ import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
-import WebhooksService from './services/webhooks';
+import { WebhooksService } from './services/webhooks';
+import { ExtensionsService } from './services/extensions';
 import { InvalidPayloadException } from './exceptions';
 
 validateEnv(['KEY', 'SECRET']);
 
 const app = express();
+
+const customRouter = express.Router();
 
 app.disable('x-powered-by');
 app.set('trust proxy', true);
@@ -111,12 +114,17 @@ app.use('/settings', settingsRouter, respond);
 app.use('/users', usersRouter, respond);
 app.use('/utils', utilsRouter, respond);
 app.use('/webhooks', webhooksRouter, respond);
+app.use('/custom', customRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Register all webhooks
 const webhooksService = new WebhooksService();
 webhooksService.register();
+
+// Register custom hooks / endpoints
+const extensionsService = new ExtensionsService();
+extensionsService.register(customRouter);
 
 track('serverStarted');
 

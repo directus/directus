@@ -1,10 +1,10 @@
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { AbstractServiceOptions, PrimaryKey } from '../types';
-import PermissionsService from './permissions';
-import UsersService from './users';
-import PresetsService from './presets';
+import { PermissionsService } from './permissions';
+import { UsersService } from './users';
+import { PresetsService } from './presets';
 
-export default class RolesService extends ItemsService {
+export class RolesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
 		super('directus_roles', options);
 	}

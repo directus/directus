@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
 import collectionExists from '../middleware/collection-exists';
-import UtilsService from '../services/utils';
+import { UtilsService } from '../services';
 import Joi from 'joi';
 
 const router = Router();

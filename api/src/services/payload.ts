@@ -3,13 +3,12 @@
  * handled correctly.
  */
 
-import { FieldMeta } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
 import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
@@ -25,7 +24,7 @@ type Transformers = {
 	) => Promise<any>;
 };
 
-export default class PayloadService {
+export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
 	collection: string;

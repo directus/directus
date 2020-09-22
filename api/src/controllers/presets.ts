@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import PresetsService from '../services/presets';
-import MetaService from '../services/meta';
+import { PresetsService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

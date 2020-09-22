@@ -4,7 +4,7 @@ import Knex from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import SchemaInspector from 'knex-schema-inspector';
 
-export default class UtilsService {
+export class UtilsService {
 	knex: Knex;
 	accountability: Accountability | null;
 

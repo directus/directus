@@ -3,7 +3,7 @@ import { clone, uniq, pick } from 'lodash';
 import database from './index';
 import SchemaInspector from 'knex-schema-inspector';
 import { Query, Item } from '../types';
-import PayloadService from '../services/payload';
+import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
 import Knex from 'knex';
 

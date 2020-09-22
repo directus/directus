@@ -2,9 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
-import UsersService from '../services/users';
-import MetaService from '../services/meta';
-import AuthService from '../services/authentication';
+import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();
@@ -200,7 +198,7 @@ router.post(
 		}
 
 		const service = new UsersService({ accountability: req.accountability });
-		const authService = new AuthService({ accountability: req.accountability });
+		const authService = new AuthenticationService({ accountability: req.accountability });
 
 		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
 
