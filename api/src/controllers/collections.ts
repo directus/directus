@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import CollectionsService from '../services/collections'
-import MetaService from '../services/meta';
+import { CollectionsService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 
 const router = Router();

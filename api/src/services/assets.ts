@@ -1,12 +1,11 @@
-import { Transformation } from '../types/assets';
 import storage from '../storage';
 import sharp, { ResizeOptions } from 'sharp';
 import database from '../database';
 import path from 'path';
 import Knex from 'knex';
-import { Accountability, AbstractServiceOptions } from '../types';
+import { Accountability, AbstractServiceOptions, Transformation } from '../types';
 
-export default class AssetsService {
+export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 

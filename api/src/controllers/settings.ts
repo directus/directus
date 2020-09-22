@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import SettingsService from '../services/settings';
+import { SettingsService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

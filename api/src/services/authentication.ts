@@ -10,7 +10,7 @@ import {
 } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
-import ActivityService from '../services/activity';
+import { ActivityService } from '../services/activity';
 import env from '../env';
 import { authenticator } from 'otplib';
 
@@ -22,7 +22,7 @@ type AuthenticateOptions = {
 	otp?: string;
 };
 
-export default class AuthenticationService {
+export class AuthenticationService {
 	knex: Knex;
 	accountability: Accountability | null;
 	activityService: ActivityService;

@@ -1,4 +1,4 @@
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { Item, PrimaryKey, AbstractServiceOptions } from '../types';
 import emitter from '../emitter';
 import { ListenerFn } from 'eventemitter2';
@@ -8,7 +8,7 @@ import logger from '../logger';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 
-export default class WebhooksService extends ItemsService {
+export class WebhooksService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
 		super('directus_webhooks', options);
 	}

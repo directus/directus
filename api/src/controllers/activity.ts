@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import ActivityService from '../services/activity';
-import MetaService from '../services/meta';
+import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
@@ -25,7 +24,7 @@ router.get(
 		};
 
 		return next();
-	}),
+	})
 );
 
 router.get(
@@ -39,7 +38,7 @@ router.get(
 		};
 
 		return next();
-	}),
+	})
 );
 
 router.post(
@@ -70,7 +69,7 @@ router.post(
 		}
 
 		return next();
-	}),
+	})
 );
 
 router.patch(
@@ -94,7 +93,7 @@ router.patch(
 		}
 
 		return next();
-	}),
+	})
 );
 
 router.delete(
@@ -104,7 +103,7 @@ router.delete(
 		await service.delete(req.params.pk);
 
 		return next();
-	}),
+	})
 );
 
 export default router;

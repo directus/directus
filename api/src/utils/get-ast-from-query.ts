@@ -19,7 +19,7 @@ type GetASTOptions = {
 	accountability?: Accountability | null;
 	action?: PermissionsAction;
 	knex?: Knex;
-}
+};
 
 export default async function getASTFromQuery(
 	collection: string,

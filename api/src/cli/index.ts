@@ -19,9 +19,18 @@ program.command('init').description('Create a new Directus Project').action(init
 
 const dbCommand = program.command('database');
 dbCommand.command('install').description('Install the database').action(dbInstall);
-dbCommand.command('migrate:latest').description('Upgrade the database').action(() => dbMigrate('latest'));
-dbCommand.command('migrate:up').description('Upgrade the database').action(() => dbMigrate('up'));
-dbCommand.command('migrate:down').description('Downgrade the database').action(() => dbMigrate('down'));
+dbCommand
+	.command('migrate:latest')
+	.description('Upgrade the database')
+	.action(() => dbMigrate('latest'));
+dbCommand
+	.command('migrate:up')
+	.description('Upgrade the database')
+	.action(() => dbMigrate('up'));
+dbCommand
+	.command('migrate:down')
+	.description('Downgrade the database')
+	.action(() => dbMigrate('down'));
 
 const usersCommand = program.command('users');
 usersCommand
@@ -34,7 +43,7 @@ usersCommand
 
 const rolesCommand = program.command('roles');
 rolesCommand
-.command('create')
+	.command('create')
 	.storeOptionsAsProperties(false)
 	.passCommandToAction(false)
 	.description('Create a new role')

@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import WebhooksService from '../services/webhooks';
-import MetaService from '../services/meta';
+import { WebhooksService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

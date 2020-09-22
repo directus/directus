@@ -37,12 +37,17 @@ import webhooksRouter from './controllers/webhooks';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
-import WebhooksService from './services/webhooks';
+import { WebhooksService } from './services/webhooks';
 import { InvalidPayloadException } from './exceptions';
+
+import { registerExtensions } from './extensions';
+import emitter from './emitter';
 
 validateEnv(['KEY', 'SECRET']);
 
 const app = express();
+
+const customRouter = express.Router();
 
 app.disable('x-powered-by');
 app.set('trust proxy', true);
@@ -50,13 +55,13 @@ app.set('trust proxy', true);
 app.use(expressLogger({ logger }));
 
 app.use((req, res, next) => {
-    bodyParser.json()(req, res, err => {
-        if (err) {
+	bodyParser.json()(req, res, (err) => {
+		if (err) {
 			return next(new InvalidPayloadException(err.message));
-        }
+		}
 
-        return next();
-    });
+		return next();
+	});
 });
 
 app.use(bodyParser.json());
@@ -111,6 +116,7 @@ app.use('/settings', settingsRouter, respond);
 app.use('/users', usersRouter, respond);
 app.use('/utils', utilsRouter, respond);
 app.use('/webhooks', webhooksRouter, respond);
+app.use('/custom', customRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
@@ -118,6 +124,11 @@ app.use(errorHandler);
 const webhooksService = new WebhooksService();
 webhooksService.register();
 
+// Register custom hooks / endpoints
+registerExtensions(customRouter);
+
 track('serverStarted');
+
+emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;

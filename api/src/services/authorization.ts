@@ -15,10 +15,10 @@ import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge } from 'lodash';
 import generateJoi from '../utils/generate-joi';
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { parseFilter } from '../utils/parse-filter';
 
-export default class AuthorizationService {
+export class AuthorizationService {
 	knex: Knex;
 	accountability: Accountability | null;
 

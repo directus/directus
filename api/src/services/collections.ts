@@ -3,12 +3,11 @@ import { AbstractServiceOptions, Accountability, Collection, Relation } from '..
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import SchemaInspector from 'knex-schema-inspector';
-import FieldsService from '../services/fields';
-import { omit } from 'lodash';
-import ItemsService from '../services/items';
+import { FieldsService } from '../services/fields';
+import { ItemsService } from '../services/items';
 import cache from '../cache';
 
-export default class CollectionsService {
+export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
 

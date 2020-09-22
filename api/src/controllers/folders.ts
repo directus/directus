@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import FoldersService from '../services/folders';
-import MetaService from '../services/meta';
+import { FoldersService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

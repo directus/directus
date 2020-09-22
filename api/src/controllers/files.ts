@@ -1,8 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
-import FilesService from '../services/files';
-import MetaService from '../services/meta';
+import { MetaService, FilesService } from '../services';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
@@ -113,7 +112,9 @@ router.post(
 
 		try {
 			const record = await service.readByKey(keys as any, req.sanitizedQuery);
-			res.locals.payload = { data: res.locals.savedFiles.length === 1 ? record[0] : record || null };
+			res.locals.payload = {
+				data: res.locals.savedFiles.length === 1 ? record[0] : record || null,
+			};
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -128,7 +129,7 @@ router.post(
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
-	data: Joi.object()
+	data: Joi.object(),
 });
 
 router.post(

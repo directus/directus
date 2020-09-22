@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import FieldsService from '../services/fields';
+import { FieldsService } from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { schemaInspector } from '../database';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
-import { Field } from '../types/field';
-import { types } from '../types';
+import { types, Field } from '../types';
 import useCollection from '../middleware/use-collection';
 
 const router = Router();

@@ -56,7 +56,11 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 		query.search = req.query.search;
 	}
 
-	if (req.query.export && typeof req.query.export === 'string' && ['json', 'csv'].includes(req.query.export)) {
+	if (
+		req.query.export &&
+		typeof req.query.export === 'string' &&
+		['json', 'csv'].includes(req.query.export)
+	) {
 		query.export = req.query.export as 'json' | 'csv';
 	}
 

@@ -3,13 +3,12 @@
  * handled correctly.
  */
 
-import { FieldMeta } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject } from 'lodash';
 import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
@@ -25,7 +24,7 @@ type Transformers = {
 	) => Promise<any>;
 };
 
-export default class PayloadService {
+export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
 	collection: string;
@@ -176,7 +175,12 @@ export default class PayloadService {
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && (value instanceof Date) !== true && value !== null)) {
+					if (
+						Array.isArray(value) ||
+						(typeof value === 'object' &&
+							value instanceof Date !== true &&
+							value !== null)
+					) {
 						record[key] = JSON.stringify(value);
 					}
 				}

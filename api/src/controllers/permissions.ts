@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import PermissionsService from '../services/permissions';
-import MetaService from '../services/meta';
+import { PermissionsService, MetaService } from '../services';
 import { clone } from 'lodash';
 import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';

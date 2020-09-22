@@ -1,13 +1,13 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { Accountability, AbstractServiceOptions, FieldMeta, Relation } from '../types';
-import ItemsService from '../services/items';
+import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { ForbiddenException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
-import PayloadService from '../services/payload';
+import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
 
@@ -21,7 +21,7 @@ type RawField = Partial<Field> & { field: string; type: typeof types[number] };
  * - Don't use items service, as this is a different case than regular collections
  */
 
-export default class FieldsService {
+export class FieldsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	itemsService: ItemsService;

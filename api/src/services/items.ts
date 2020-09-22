@@ -15,15 +15,16 @@ import {
 import Knex from 'knex';
 import cache from '../cache';
 import emitter from '../emitter';
+import logger from '../logger';
 
-import PayloadService from './payload';
-import AuthorizationService from './authorization';
+import { PayloadService } from './payload';
+import { AuthorizationService } from './authorization';
 
 import { pick, clone } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 
-export default class ItemsService implements AbstractService {
+export class ItemsService implements AbstractService {
 	collection: string;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -51,10 +52,35 @@ export default class ItemsService implements AbstractService {
 				knex: trx,
 			});
 
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: trx,
-			});
+			if (this.collection.startsWith('directus_') === false) {
+				const customProcessed = await emitter.emitAsync(
+					`item.create.${this.collection}.before`,
+					payloads,
+					{
+						event: `item.create.${this.collection}.before`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: null,
+						action: 'create',
+						payload: payloads,
+					}
+				);
+
+				payloads = customProcessed[customProcessed.length - 1];
+			}
+
+			if (this.accountability && this.accountability.admin !== true) {
+				const authorizationService = new AuthorizationService({
+					accountability: this.accountability,
+					knex: trx,
+				});
+
+				payloads = await authorizationService.validatePayload(
+					'create',
+					this.collection,
+					payloads
+				);
+			}
 
 			payloads = await payloadService.processM2O(payloads);
 
@@ -69,14 +95,6 @@ export default class ItemsService implements AbstractService {
 				'create',
 				payloadsWithoutAliases
 			);
-
-			if (this.accountability && this.accountability.admin !== true) {
-				payloads = await authorizationService.validatePayload(
-					'create',
-					this.collection,
-					payloads
-				);
-			}
 
 			const primaryKeys: PrimaryKey[] = [];
 
@@ -151,12 +169,18 @@ export default class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
-			emitter.emitAsync(`item.create.${this.collection}`, {
-				collection: this.collection,
-				item: primaryKeys,
-				action: 'create',
-				payload: payloads,
-			});
+			if (this.collection.startsWith('directus_') === false) {
+				emitter
+					.emitAsync(`item.create.${this.collection}`, {
+						event: `item.create.${this.collection}`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: primaryKeys,
+						action: 'create',
+						payload: payloads,
+					})
+					.catch((err) => logger.warn(err));
+			}
 
 			return primaryKeys;
 		});
@@ -168,7 +192,10 @@ export default class ItemsService implements AbstractService {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
-		let ast = await getASTFromQuery(this.collection, query, { accountability: this.accountability, knex: this.knex });
+		let ast = await getASTFromQuery(this.collection, query, {
+			accountability: this.accountability,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			ast = await authorizationService.processAST(ast);
@@ -201,15 +228,11 @@ export default class ItemsService implements AbstractService {
 			},
 		};
 
-		let ast = await getASTFromQuery(
-			this.collection,
-			queryWithFilter,
-			{
-				accountability: this.accountability,
-				action,
-				knex: this.knex,
-			}
-		);
+		let ast = await getASTFromQuery(this.collection, queryWithFilter, {
+			accountability: this.accountability,
+			action,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -221,7 +244,6 @@ export default class ItemsService implements AbstractService {
 
 		const records = await runAST(ast, { knex: this.knex });
 		return Array.isArray(key) ? records : records[0];
-		return [] as Item;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -240,6 +262,23 @@ export default class ItemsService implements AbstractService {
 			const keys = Array.isArray(key) ? key : [key];
 
 			let payload = clone(data);
+
+			if (this.collection.startsWith('directus_') === false) {
+				const customProcessed = await emitter.emitAsync(
+					`item.update.${this.collection}.before`,
+					payload,
+					{
+						event: `item.update.${this.collection}.before`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: null,
+						action: 'update',
+						payload,
+					}
+				);
+
+				payload = customProcessed[customProcessed.length - 1];
+			}
 
 			if (this.accountability && this.accountability.admin !== true) {
 				const authorizationService = new AuthorizationService({
@@ -324,12 +363,16 @@ export default class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
-			emitter.emitAsync(`item.update.${this.collection}`, {
-				collection: this.collection,
-				item: key,
-				action: 'update',
-				payload,
-			});
+			emitter
+				.emitAsync(`item.update.${this.collection}`, {
+					event: `item.update.${this.collection}`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: key,
+					action: 'update',
+					payload,
+				})
+				.catch((err) => logger.warn(err));
 
 			return key;
 		}
@@ -347,9 +390,13 @@ export default class ItemsService implements AbstractService {
 			for (const single of payloads as Partial<Item>[]) {
 				let payload = clone(single);
 				const key = payload[primaryKeyField];
-				if (!key)
+
+				if (!key) {
 					throw new InvalidPayloadException('Primary key is missing in update payload.');
+				}
+
 				keys.push(key);
+
 				await itemsService.update(payload, key);
 			}
 		});
@@ -372,6 +419,15 @@ export default class ItemsService implements AbstractService {
 			await authorizationService.checkAccess('delete', this.collection, key);
 		}
 
+		await emitter.emitAsync(`item.delete.${this.collection}.before`, {
+			event: `item.update.${this.collection}`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'delete',
+			payload: null,
+		});
+
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
@@ -393,11 +449,16 @@ export default class ItemsService implements AbstractService {
 			await cache.clear();
 		}
 
-		emitter.emitAsync(`item.delete.${this.collection}`, {
-			collection: this.collection,
-			item: key,
-			action: 'delete',
-		});
+		emitter
+			.emitAsync(`item.delete.${this.collection}`, {
+				event: `item.delete.${this.collection}`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'delete',
+				payload: null,
+			})
+			.catch((err) => logger.warn(err));
 
 		return key;
 	}
