@@ -8,9 +8,9 @@ import applyQuery from '../utils/apply-query';
 import Knex from 'knex';
 
 type RunASTOptions = {
-	query?: AST['query'],
-	knex?: Knex
-}
+	query?: AST['query'];
+	knex?: Knex;
+};
 
 export default async function runAST(ast: AST, options?: RunASTOptions) {
 	const query = options?.query || ast.query;

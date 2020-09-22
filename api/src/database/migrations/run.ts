@@ -7,13 +7,16 @@ type Migration = {
 	version: string;
 	name: string;
 	timestamp: Date;
-}
+};
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest') {
 	let migrationFiles = await fse.readdir(__dirname);
 	migrationFiles = migrationFiles.filter((file: string) => file !== 'run.ts');
 
-	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
+	const completedMigrations = await database
+		.select<Migration[]>('*')
+		.from('directus_migrations')
+		.orderBy('version');
 
 	const migrations = migrationFiles.map((migrationFile) => {
 		const version = migrationFile.split('-')[0];
@@ -24,7 +27,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			file: migrationFile,
 			version,
 			name,
-			completed
+			completed,
 		};
 	});
 
@@ -51,7 +54,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = require(path.join(__dirname, nextVersion.file));
 		await up(database);
-		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
+		await database
+			.insert({ version: nextVersion.version, name: nextVersion.name })
+			.into('directus_migrations');
 	}
 
 	async function down() {
@@ -61,7 +66,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw Error('Nothing to downgrade');
 		}
 
-		const migration = migrations.find((migration) => migration.version === currentVersion.version);
+		const migration = migrations.find(
+			(migration) => migration.version === currentVersion.version
+		);
 
 		if (!migration) {
 			throw new Error('Couldnt find migration');
@@ -77,7 +84,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				const { up } = require(path.join(__dirname, migration.file));
 				await up(database);
-				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
+				await database
+					.insert({ version: migration.version, name: migration.name })
+					.into('directus_migrations');
 			}
 		}
 	}

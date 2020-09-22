@@ -55,13 +55,13 @@ app.set('trust proxy', true);
 app.use(expressLogger({ logger }));
 
 app.use((req, res, next) => {
-    bodyParser.json()(req, res, err => {
-        if (err) {
+	bodyParser.json()(req, res, (err) => {
+		if (err) {
 			return next(new InvalidPayloadException(err.message));
-        }
+		}
 
-        return next();
-    });
+		return next();
+	});
 });
 
 app.use(bodyParser.json());
@@ -129,7 +129,6 @@ registerExtensions(customRouter);
 
 track('serverStarted');
 
-emitter.emitAsync('server.started')
-	.catch((err) => logger.warn(err));
+emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;

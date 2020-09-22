@@ -175,7 +175,12 @@ export class PayloadService {
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && (value instanceof Date) !== true && value !== null)) {
+					if (
+						Array.isArray(value) ||
+						(typeof value === 'object' &&
+							value instanceof Date !== true &&
+							value !== null)
+					) {
 						record[key] = JSON.stringify(value);
 					}
 				}

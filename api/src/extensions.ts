@@ -19,9 +19,12 @@ export async function listExtensions(type: string) {
 		return await listFolders(location);
 	} catch (err) {
 		if (err.code === 'ENOENT') {
-			throw new ServiceUnavailableException(`Extension folder "extensions/${type}" couldn't be opened`, {
-				service: 'extensions',
-			});
+			throw new ServiceUnavailableException(
+				`Extension folder "extensions/${type}" couldn't be opened`,
+				{
+					service: 'extensions',
+				}
+			);
 		}
 		throw err;
 	}

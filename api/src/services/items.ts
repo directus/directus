@@ -53,14 +53,18 @@ export class ItemsService implements AbstractService {
 			});
 
 			if (this.collection.startsWith('directus_') === false) {
-				const customProcessed = await emitter.emitAsync(`item.create.${this.collection}.before`, payloads, {
-					event: `item.create.${this.collection}.before`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: null,
-					action: 'create',
-					payload: payloads,
-				});
+				const customProcessed = await emitter.emitAsync(
+					`item.create.${this.collection}.before`,
+					payloads,
+					{
+						event: `item.create.${this.collection}.before`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: null,
+						action: 'create',
+						payload: payloads,
+					}
+				);
 
 				payloads = customProcessed[customProcessed.length - 1];
 			}
@@ -166,14 +170,16 @@ export class ItemsService implements AbstractService {
 			}
 
 			if (this.collection.startsWith('directus_') === false) {
-				emitter.emitAsync(`item.create.${this.collection}`, {
-					event: `item.create.${this.collection}`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: primaryKeys,
-					action: 'create',
-					payload: payloads,
-				}).catch(err => logger.warn(err));
+				emitter
+					.emitAsync(`item.create.${this.collection}`, {
+						event: `item.create.${this.collection}`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: primaryKeys,
+						action: 'create',
+						payload: payloads,
+					})
+					.catch((err) => logger.warn(err));
 			}
 
 			return primaryKeys;
@@ -186,7 +192,10 @@ export class ItemsService implements AbstractService {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
-		let ast = await getASTFromQuery(this.collection, query, { accountability: this.accountability, knex: this.knex });
+		let ast = await getASTFromQuery(this.collection, query, {
+			accountability: this.accountability,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			ast = await authorizationService.processAST(ast);
@@ -219,15 +228,11 @@ export class ItemsService implements AbstractService {
 			},
 		};
 
-		let ast = await getASTFromQuery(
-			this.collection,
-			queryWithFilter,
-			{
-				accountability: this.accountability,
-				action,
-				knex: this.knex,
-			}
-		);
+		let ast = await getASTFromQuery(this.collection, queryWithFilter, {
+			accountability: this.accountability,
+			action,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -259,14 +264,18 @@ export class ItemsService implements AbstractService {
 			let payload = clone(data);
 
 			if (this.collection.startsWith('directus_') === false) {
-				const customProcessed = await emitter.emitAsync(`item.update.${this.collection}.before`, payload, {
-					event: `item.update.${this.collection}.before`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: null,
-					action: 'update',
+				const customProcessed = await emitter.emitAsync(
+					`item.update.${this.collection}.before`,
 					payload,
-				});
+					{
+						event: `item.update.${this.collection}.before`,
+						accountability: this.accountability,
+						collection: this.collection,
+						item: null,
+						action: 'update',
+						payload,
+					}
+				);
 
 				payload = customProcessed[customProcessed.length - 1];
 			}
@@ -354,14 +363,16 @@ export class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
-			emitter.emitAsync(`item.update.${this.collection}`, {
-				event: `item.update.${this.collection}`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: key,
-				action: 'update',
-				payload,
-			}).catch(err => logger.warn(err));
+			emitter
+				.emitAsync(`item.update.${this.collection}`, {
+					event: `item.update.${this.collection}`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: key,
+					action: 'update',
+					payload,
+				})
+				.catch((err) => logger.warn(err));
 
 			return key;
 		}
@@ -438,14 +449,16 @@ export class ItemsService implements AbstractService {
 			await cache.clear();
 		}
 
-		emitter.emitAsync(`item.delete.${this.collection}`, {
-			event: `item.delete.${this.collection}`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'delete',
-			payload: null,
-		}).catch(err => logger.warn(err));
+		emitter
+			.emitAsync(`item.delete.${this.collection}`, {
+				event: `item.delete.${this.collection}`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'delete',
+				payload: null,
+			})
+			.catch((err) => logger.warn(err));
 
 		return key;
 	}

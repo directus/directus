@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { RevisionsService, MetaService} from '../services';
+import { RevisionsService, MetaService } from '../services';
 import useCollection from '../middleware/use-collection';
 
 const router = express.Router();

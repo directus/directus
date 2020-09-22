@@ -1,7 +1,11 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
-import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
+import {
+	InvalidPayloadException,
+	InvalidCredentialsException,
+	ForbiddenException,
+} from '../exceptions';
 import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
 

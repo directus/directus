@@ -24,7 +24,7 @@ router.get(
 		};
 
 		return next();
-	}),
+	})
 );
 
 router.get(
@@ -38,7 +38,7 @@ router.get(
 		};
 
 		return next();
-	}),
+	})
 );
 
 router.post(
@@ -69,7 +69,7 @@ router.post(
 		}
 
 		return next();
-	}),
+	})
 );
 
 router.patch(
@@ -93,7 +93,7 @@ router.patch(
 		}
 
 		return next();
-	}),
+	})
 );
 
 router.delete(
@@ -103,7 +103,7 @@ router.delete(
 		await service.delete(req.params.pk);
 
 		return next();
-	}),
+	})
 );
 
 export default router;

@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { RolesService, MetaService} from '../services';
+import { RolesService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 

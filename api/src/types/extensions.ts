@@ -6,10 +6,10 @@ import Knex from 'knex';
 import { Router } from 'express';
 
 type ExtensionContext = {
-	services: typeof services,
-	exceptions: typeof exceptions,
-	database: Knex,
-	env: typeof env,
+	services: typeof services;
+	exceptions: typeof exceptions;
+	database: Knex;
+	env: typeof env;
 };
 
 export type HookRegisterFunction = (context: ExtensionContext) => Record<string, ListenerFn>;
