@@ -218,6 +218,10 @@ export class ItemsService implements AbstractService {
 		const primaryKeyField = await schemaInspector.primary(this.collection);
 		const keys = Array.isArray(key) ? key : [key];
 
+		if (keys.length === 1) {
+			query.single = true;
+		}
+
 		const queryWithFilter = {
 			...query,
 			filter: {
@@ -242,8 +246,8 @@ export class ItemsService implements AbstractService {
 			ast = await authorizationService.processAST(ast, action);
 		}
 
-		const records = await runAST(ast, { knex: this.knex });
-		return Array.isArray(key) ? records : records[0];
+		const result = await runAST(ast, { knex: this.knex });
+		return result;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;

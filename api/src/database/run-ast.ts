@@ -13,7 +13,7 @@ type RunASTOptions = {
 	child?: boolean;
 };
 
-export default async function runAST(originalAST: AST, options?: RunASTOptions) {
+export default async function runAST(originalAST: AST, options?: RunASTOptions): Promise<Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
 	const query = options?.query || ast.query;
@@ -25,7 +25,7 @@ export default async function runAST(originalAST: AST, options?: RunASTOptions) 
 	// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 	const dbQuery = await getDBQuery(knex, ast.name, columnsToSelect, query, primaryKeyField);
 
-	const rawItems: Item[] = await dbQuery;
+	const rawItems: Item | Item[] = await dbQuery;
 
 	// Run the items through the special transforms
 	const payloadService = new PayloadService(ast.name, { knex });
@@ -120,7 +120,9 @@ async function getDBQuery(knex: Knex, table: string, columns: string[], query: Q
 	return dbQuery;
 }
 
-function applyParentFilters(nestedCollectionASTs: NestedCollectionAST[], parentItems: Item[]) {
+function applyParentFilters(nestedCollectionASTs: NestedCollectionAST[], parentItem: Item | Item[]) {
+	const parentItems = Array.isArray(parentItem) ? parentItem : [parentItem];
+
 	for (const nestedAST of nestedCollectionASTs) {
 		if (!nestedAST.relation) continue;
 
@@ -160,8 +162,9 @@ function applyParentFilters(nestedCollectionASTs: NestedCollectionAST[], parentI
 	return nestedCollectionASTs;
 }
 
-function mergeWithParentItems(nestedItems: Item[], parentItems: Item[], nestedAST: NestedCollectionAST, o2mLimit?: number | null) {
-	parentItems = clone(parentItems);
+function mergeWithParentItems(nestedItem: Item | Item[], parentItem: Item | Item[], nestedAST: NestedCollectionAST, o2mLimit?: number | null) {
+	const nestedItems = Array.isArray(nestedItem) ? nestedItem : [nestedItem];
+	const parentItems = clone(Array.isArray(parentItem) ? parentItem : [parentItem]);
 
 	if (isM2O(nestedAST)) {
 		for (const parentItem of parentItems) {
@@ -188,10 +191,12 @@ function mergeWithParentItems(nestedItems: Item[], parentItems: Item[], nestedAS
 		}
 	}
 
-	return parentItems;
+	return Array.isArray(parentItem) ? parentItems : parentItems[0];
 }
 
-function removeTemporaryFields(rawItems: Item[], ast: AST | NestedCollectionAST): Item[] {
+function removeTemporaryFields(rawItem: Item | Item[], ast: AST | NestedCollectionAST): Item | Item[] {
+	const rawItems: Item[] = Array.isArray(rawItem) ? rawItem : [rawItem];
+
 	const items: Item[] = [];
 
 	const fields = ast.children.filter((child) => child.type === 'field').map((child) => child.name);
@@ -211,7 +216,7 @@ function removeTemporaryFields(rawItems: Item[], ast: AST | NestedCollectionAST)
 		items.push(item);
 	}
 
-	return items;
+	return Array.isArray(rawItem) ? items : items[0];
 }
 
 function isM2O(child: NestedCollectionAST) {
