@@ -73,7 +73,7 @@ The output that's read by the app has to be a single bundled index.js file. In o
 
 I recommend you use Rollup for this purpose.
 
-Run `npm init -y` to setup a package.json file. Then run `npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue vue-template-compiler` to install the dev dependencies needed for the buildchain.
+Run `npm init -y` to setup a package.json file. Then run `npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler` to install the dev dependencies needed for the buildchain.
 
 Use the following Rollup config:
 
