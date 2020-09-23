@@ -26,14 +26,16 @@ RUN cat package.json
 FROM node:14-alpine
 
 ARG VERSION
+ARG REPOSITORY=directus/directus
 
 LABEL directus.version="${VERSION}"
+LABEL org.opencontainers.image.source https://github.com/${REPOSITORY}
 
 ENV \
-  PORT=41201 \
+  PORT="41201" \
   PUBLIC_URL="/" \
   DB_CLIENT="sqlite3" \
-  DB_FILENAME="/directus/database/data.db" \
+  DB_FILENAME="/directus/database/database.sqlite" \
   RATE_LIMITER_ENABLED="false" \
   RATE_LIMITER_STORE="memory" \
   RATE_LIMITER_POINTS="25" \

@@ -2,7 +2,7 @@ name: build-images
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   build:
@@ -14,6 +14,9 @@ jobs:
       - name: Build
         uses: ./.github/actions/build-images
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          version: ${{ github.ref }}
+          registry: "ghcr.io"
+          repository: "${{ github.repository }}"
+          username: "${{ secrets.REGISTRY_USERNAME }}"
+          password: "${{ secrets.REGISTRY_PASSWORD }}"
+          version: "${{ github.ref }}"
+          push: "true"

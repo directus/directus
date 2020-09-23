@@ -4,11 +4,18 @@ branding:
   icon: archive
   color: gray-dark
 inputs:
+  repository:
+    description: "Repository name"
+    required: true
+  registry:
+    description: "Registry"
+    required: false
+    default: ghcr.io
   username:
-    description: "Repository user"
+    description: "Registry user"
     required: true
   password:
-    description: "Repository password"
+    description: "Registry password"
     required: true
   version:
     description: "Version"
@@ -21,6 +28,10 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
+    - --registry
+    - ${{ inputs.registry }}
+    - --repository
+    - ${{ inputs.repository }}
     - --username
     - ${{ inputs.username }}
     - --password

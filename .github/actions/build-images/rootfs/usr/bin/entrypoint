@@ -66,8 +66,12 @@ function main() {
   push=$(argument push "false")
   latest=$(argument latest "false")
 
-  repository=$(argument repository "ghcr.io")
-  image=$(argument image "directus/directus")
+  registry=$(argument registry "ghcr.io")
+  registry=$(echo "${registry}" | tr '[:upper:]' '[:lower:]')
+
+  repository=$(argument repository "directus/next")
+  repository=$(echo "${repository}" | tr '[:upper:]' '[:lower:]')
+
   version=$(argument version "")
   context=$(argument context ".")
 
@@ -85,29 +89,42 @@ function main() {
   tags=$(make_tags ${version})
   echo "Tags = ${tags}"
 
-  # login into registry
-  docker login -u "${username}" -p "${password}" "${repository}"
+  # build image
   docker build \
     -t directus:main \
     --build-arg VERSION=${version} \
+    --build-arg REPOSITORY=${repository} \
     /directus/images/main
 
+  # login into registry
+  docker login -u "${username}" -p "${password}" "${registry}"
+
+  # Push latest
+  # TODO: check if it's really the latest
   if [ "${latest}" == "true" ]; then
-    docker tag directus:main "${repository}/${image}:latest"
+    fqin="${registry}/${repository}:latest"
+    echo "Tagging ${fqin}"
+    docker tag directus:main ${fqin}
     if [ "${push}" == "true" ]; then
-      #docker push ${image}
-      echo "should push"
+      echo "Pushing tag ${fqin}"
+      docker push "${fqin}"
     fi
   fi
 
+  # Push tags
   for tag in $tags
   do
-    docker tag directus:main "${repository}/${image}:${tag}"
+    tag=$(echo "${tag}" | tr '[:upper:]' '[:lower:]')
+    fqin="${registry}/${repository}:latest"
+    echo "Tagging ${fqin}"
+    docker tag directus:main "${registry}/${repository}:${tag}"
     if [ "${push}" == "true" ]; then
-      #docker push ${image}
-      echo "should push"
+      echo "Pushing tag ${fqin}"
+      docker push "${registry}/${repository}:${tag}"
     fi
   done
+
+  echo "Finished."
 
   exit $?
 }
