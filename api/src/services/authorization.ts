@@ -139,12 +139,17 @@ export class AuthorizationService {
 
 				const parsedPermissions = parseFilter(permissions.permissions, accountability);
 
-				ast.query = {
-					...ast.query,
-					filter: {
-						_and: [ast.query.filter || {}, parsedPermissions],
-					},
-				};
+				if (!ast.query.filter || Object.keys(ast.query.filter).length === 0) {
+					ast.query.filter = { _and: [] };
+				} else {
+					ast.query.filter = { _and: [ast.query.filter] };
+				}
+
+				if (parsedPermissions && Object.keys(parsedPermissions).length > 0) {
+					ast.query.filter._and.push(parsedPermissions);
+				}
+
+				if (ast.query.filter._and.length === 0) delete ast.query.filter._and;
 
 				if (permissions.limit && ast.query.limit && ast.query.limit > permissions.limit) {
 					throw new ForbiddenException(
