@@ -1,5 +1,5 @@
 <template>
-	<div class="v-dialog">
+	<div class="v-dialog" ref="dialog">
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { nanoid } from 'nanoid';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	model: {
@@ -31,6 +32,17 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const dialog = ref<HTMLElement | null>(null);
+		useShortcut(
+			'esc',
+			() => {
+				console.log('A', dialog.value);
+
+				emit('toggle', false);
+			},
+			ref(document.body)
+		);
+
 		const localActive = ref(false);
 
 		const className = ref<string | null>(null);

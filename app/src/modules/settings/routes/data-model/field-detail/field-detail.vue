@@ -1,6 +1,6 @@
 <template>
 	<v-modal
-		:active="true"
+		:active="active"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })
@@ -112,11 +112,14 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'>,
+			type: String as PropType<
+				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
+			>,
 			default: null,
 		},
 	},
 	setup(props) {
+		const active = ref(true);
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -134,7 +137,8 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' =
+				'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -158,6 +162,7 @@ export default defineComponent({
 			localType,
 			existingField,
 			collectionInfo,
+			active,
 		};
 
 		function useTabs() {
@@ -192,18 +197,22 @@ export default defineComponent({
 				}
 
 				if (localType.value === 'translations') {
-					tabs.splice(1, 0, ...[
-						{
-							text: i18n.t('translations'),
-							value: 'translations',
-							disabled: translationsDisabled(),
-						},
-						{
-							text: i18n.t('languages'),
-							value: 'languages',
-							disabled: languagesDisabled(),
-						}
-					])
+					tabs.splice(
+						1,
+						0,
+						...[
+							{
+								text: i18n.t('translations'),
+								value: 'translations',
+								disabled: translationsDisabled(),
+							},
+							{
+								text: i18n.t('languages'),
+								value: 'languages',
+								disabled: languagesDisabled(),
+							},
+						]
+					);
 				}
 
 				return tabs;
@@ -222,7 +231,8 @@ export default defineComponent({
 			}
 
 			function languagesDisabled() {
-				return isEmpty(state.fieldData.field) || (
+				return (
+					isEmpty(state.fieldData.field) ||
 					state.relations.length === 0 ||
 					isEmpty(state.relations[0].many_collection) ||
 					isEmpty(state.relations[0].many_field) ||
