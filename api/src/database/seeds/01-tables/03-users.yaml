@@ -14,6 +14,7 @@ columns:
     type: string
     length: 128
     nullable: false
+    unique: true
   password:
     type: string
     length: 255
