@@ -184,7 +184,7 @@ function mergeWithParentItems(nestedItems: Item[], parentItems: Item[], nestedAS
 				nestedAST.query.limit = o2mLimit;
 			}
 
-			parentItem[nestedAST.fieldKey] = itemChildren;
+			parentItem[nestedAST.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
 		}
 	}
 
@@ -204,7 +204,7 @@ function removeTemporaryFields(rawItems: Item[], ast: AST | NestedCollectionAST)
 			item[nestedCollection.fieldKey] = removeTemporaryFields(rawItem[nestedCollection.fieldKey], nestedCollection);
 
 			if (isM2O(nestedCollection)) {
-				item[nestedCollection.fieldKey] = item[nestedCollection.fieldKey][0];
+				item[nestedCollection.fieldKey] = item[nestedCollection.fieldKey][0] || null;
 			}
 		}
 
