@@ -1,5 +1,5 @@
 <template>
-	<div class="v-table" :class="{ loading, inline, disabled }">
+	<div class="v-table" :class="{ loading, inline, disabled }" ref="table">
 		<table
 			:summary="_headers.map((header) => header.text).join(', ')"
 			:style="{
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType, onMounted, watch } from '@vue/composition-api';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -185,6 +185,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit, listeners, slots }) {
+		const table = ref<HTMLElement | null>(null);
+
 		const _headers = computed({
 			get: () => {
 				return props.headers
@@ -292,9 +294,13 @@ export default defineComponent({
 			return gridTemplateColumns;
 		});
 
-		useShortcut('mod+a', () => {
-			onToggleSelectAll(!allItemsSelected.value);
-		});
+		useShortcut(
+			'mod+a',
+			() => {
+				onToggleSelectAll(!allItemsSelected.value);
+			},
+			table
+		);
 
 		return {
 			_headers,
@@ -311,6 +317,7 @@ export default defineComponent({
 			columnStyle,
 			hasItemAppendSlot,
 			hideDragImage,
+			table,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {

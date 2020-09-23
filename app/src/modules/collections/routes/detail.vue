@@ -137,6 +137,7 @@
 		</template>
 
 		<v-form
+			ref="form"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
@@ -182,6 +183,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
 import router from '@/router';
@@ -223,6 +225,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const form = ref<Vue | null>(null);
 		const userStore = useUserStore();
 
 		const { collection, primaryKey } = toRefs(props);
@@ -283,8 +286,8 @@ export default defineComponent({
 			return i18n.t('archive');
 		});
 
-		useShortcut('mod+s', saveAndStay);
-		useShortcut('mod+shift+s', saveAndAddNew);
+		useShortcut('mod+s', saveAndStay, form);
+		useShortcut('mod+shift+s', saveAndAddNew, form);
 
 		const navigationGuard: NavigationGuard = (to, from, next) => {
 			const hasEdits = Object.keys(edits.value).length > 0;
@@ -337,6 +340,7 @@ export default defineComponent({
 			updateAllowed,
 			toggleArchive,
 			validationErrors,
+			form,
 		};
 
 		function useBreadcrumb() {

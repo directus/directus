@@ -35,7 +35,6 @@
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			data-disable-mousetrap
 			@input="$emit('input', $event)"
 		/>
 

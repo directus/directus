@@ -1,5 +1,11 @@
 <template>
-	<v-textarea class="new-comment" :placeholder="$t('leave_comment')" v-model="newCommentContent" expand-on-focus>
+	<v-textarea
+		class="new-comment"
+		:placeholder="$t('leave_comment')"
+		v-model="newCommentContent"
+		expand-on-focus
+		ref="textarea"
+	>
 		<template #append>
 			<v-icon name="alternate_email" class="add-mention" />
 			<v-icon name="insert_emoticon" class="add-emoji" />
@@ -40,11 +46,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		useShortcut('mod+enter', postComment);
+		const textarea = ref<HTMLElement | null>(null);
+		useShortcut('mod+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 
-		return { newCommentContent, postComment, saving };
+		return { newCommentContent, postComment, saving, textarea };
 
 		async function postComment() {
 			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
