@@ -28,16 +28,31 @@
 
 							<v-list dense class="monospace">
 								<v-list-item
-									v-for="item in collectionItems"
-									:key="item.value"
-									:active="relations[0].many_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].many_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].many_collection === collection.collection"
+									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].many_collection === collection.collection"
+										@click="relations[0].many_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
@@ -66,16 +81,31 @@
 
 							<v-list dense class="monospace">
 								<v-list-item
-									v-for="item in collectionItems"
-									:key="item.value"
-									:active="relations[1].one_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[1].one_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[1].one_collection === collection.collection"
+									@click="relations[1].one_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[1].one_collection === collection.collection"
+										@click="relations[1].one_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
@@ -232,12 +262,15 @@ export default defineComponent({
 			);
 		});
 
-		const collectionItems = computed(() =>
-			availableCollections.value.map((collection) => ({
-				text: collection.collection,
-				value: collection.collection,
-			}))
-		);
+		const systemCollections = computed(() => {
+			return orderBy(
+				collectionsStore.state.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === true;
+				}),
+				['collection'],
+				['asc']
+			);
+		});
 
 		const junctionCollection = computed({
 			get() {
@@ -275,7 +308,8 @@ export default defineComponent({
 		return {
 			relations: state.relations,
 			autoFill,
-			collectionItems,
+			availableCollections,
+			systemCollections,
 			junctionCollection,
 			junctionFields,
 			junctionCollectionExists,
