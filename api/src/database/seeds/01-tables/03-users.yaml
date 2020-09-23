@@ -59,7 +59,7 @@ columns:
   token:
     type: string
     length: 255
-  last_login:
+  last_access:
     type: timestamp
   last_page:
     type: string
