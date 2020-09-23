@@ -201,7 +201,7 @@ function removeTemporaryFields(rawItems: Item[], ast: AST | NestedCollectionAST)
 		const item = fields.includes('*') ? rawItem : pick(rawItem, fields);
 
 		for (const nestedCollection of nestedCollections) {
-			item[nestedCollection.fieldKey] = removeTemporaryFields(rawItem[nestedCollection.fieldKey], nestedCollection);
+			item[nestedCollection.fieldKey] = removeTemporaryFields(Array.isArray(rawItem[nestedCollection.fieldKey]) ? rawItem[nestedCollection.fieldKey] : [rawItem[nestedCollection.fieldKey]], nestedCollection);
 
 			if (isM2O(nestedCollection)) {
 				item[nestedCollection.fieldKey] = item[nestedCollection.fieldKey][0] || null;
