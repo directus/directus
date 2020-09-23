@@ -60,6 +60,10 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`The "collection" key is required.`);
 				}
 
+				if (payload.collection.startsWith('directus_')) {
+					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
+				}
+
 				if (await schemaInspector.hasTable(payload.collection)) {
 					throw new InvalidPayloadException(
 						`Collection "${payload.collection}" already exists.`
