@@ -49,13 +49,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 			throw new InvalidCredentialsException();
 		}
 
-		/** @TODO verify user status */
-
 		req.accountability.user = payload.id;
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
-
-		return next();
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
@@ -77,13 +73,10 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 	}
 
-	/**
-	 * @TODO
-	 * Implement static tokens
-	 *
-	 * @NOTE
-	 * We'll silently ignore wrong tokens. This makes sure we prevent brute-forcing static tokens
-	 */
+	if (req.accountability?.user) {
+		await database('directus_users').update({ last_access: new Date() }).where({ id: req.accountability.user });
+	}
+
 	return next();
 });
 
