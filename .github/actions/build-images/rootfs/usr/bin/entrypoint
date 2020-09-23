@@ -83,6 +83,7 @@ function main() {
   fi
 
   tags=$(make_tags ${version})
+  echo "Tags = ${tags}"
 
   # login into registry
   docker login -u "${username}" -p "${password}" "${repository}"

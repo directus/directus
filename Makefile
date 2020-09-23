@@ -3,11 +3,14 @@ SHELL=bash
 version=v9.0.0-beta.1
 tag=$(version)
 cmd=
+user=directus
 
 .PHONY: build
 
-action-test:
-	act release -a directus
+action:
+	act release \
+		--actor $(user) \
+		--secret-file .secrets
 
 build-image:
 	docker build --build-arg VERSION=$(version) -t directus:temp -f ./containers/Dockerfile ./containers
