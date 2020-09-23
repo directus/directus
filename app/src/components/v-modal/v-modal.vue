@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from '@vue/composition-api';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	model: {
@@ -72,6 +73,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		useShortcut('esc', () => {
+			console.log('A');
+
+			_active.value = false;
+		});
 		const sidebarActive = ref(false);
 		const localActive = ref(false);
 

@@ -22,6 +22,7 @@ import { defineComponent, ref, PropType } from '@vue/composition-api';
 import notify from '@/utils/notify';
 import api from '@/api';
 import i18n from '@/lang';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	props: {
@@ -39,12 +40,14 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const newCommentContent = ref(null);
+		useShortcut('mod+enter', postComment);
+		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 
 		return { newCommentContent, postComment, saving };
 
 		async function postComment() {
+			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
 			saving.value = true;
 
 			try {

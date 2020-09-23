@@ -4,7 +4,7 @@ import Mousetrap from 'mousetrap';
 const mousetrap = new Mousetrap();
 mousetrap.stopCallback = function (e: Event, element: Element) {
 	// if the element has the class "mousetrap" then no need to stop
-	if (element.hasAttribute('data-disable-mousetrap')) {
+	if (element.hasAttribute('data-disable-mousetrap') || element.closest('*[data-disable-mousetrap]') !== null) {
 		return true;
 	}
 
