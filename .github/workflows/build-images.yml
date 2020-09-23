@@ -1,0 +1,19 @@
+name: build-images
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: ./.github/actions/build-images
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          version: ${{ github.ref }}

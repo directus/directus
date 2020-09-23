@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+set -e
+
+root=$(dirname ${0})
+source ${root}/lib/argsf
+
+#
+# Makes a set of tags
+#
+function make_tags() {
+  local prefix=""
+  local version=${1}
+
+  semver get major ${version} > /dev/null 2>&1
+  if [ "$?" != "0" ]; then
+    echo "${version}"
+  else
+    if [ "${version:0:1}" == "v" ]; then
+      prefix="v"
+    fi
+
+    major="$(semver get major ${version})"
+    minor="${major}.$(semver get minor ${version})"
+    patch="${minor}.$(semver get patch ${version})"
+
+    prerel="$(semver get prerel ${version})"
+    if [ "${prerel}" == "" ]; then
+      is_prerel=false
+    else
+      is_prerel=true
+    fi
+
+    build="$(semver get build ${version})"
+    if [ "${build}" == "" ]; then
+      is_build=false
+    else
+      is_build=true
+    fi
+
+    if [ "${is_prerel}" == "true" ]; then
+      echo "${prefix}${major}-${prerel}"
+      echo "${prefix}${minor}-${prerel}"
+      echo "${prefix}${patch}-${prerel}"
+      if [ "${is_build}" == "true" ]; then
+        echo "${prefix}${major}-${prerel}-${build}"
+      fi
+    else
+      echo "${prefix}${major}"
+      echo "${prefix}${minor}"
+      echo "${prefix}${patch}"
+      if [ "${is_build}" == "true" ]; then
+        echo "${prefix}${patch}-${build}"
+      fi
+    fi
+  fi
+}
+
+#
+# Build script
+#
+function main() {
+  username=$(argument username)
+  password=$(argument password)
+
+  push=$(argument push "false")
+  latest=$(argument latest "false")
+
+  repository=$(argument repository "ghcr.io")
+  image=$(argument image "directus/directus")
+  version=$(argument version "")
+  context=$(argument context ".")
+
+  # Normalize tag
+  if [ "${version}" == "" ]; then
+    version=${GITHUB_REF##*/}
+  else
+    version=${version##*/}
+  fi
+
+  if [ "${version}" == "" ]; then
+    version=$(echo ${GITHUB_SHA:-"000000000000"} | cut -c1-12)
+  fi
+
+  tags=$(make_tags ${version})
+
+  # login into registry
+  docker login -u "${username}" -p "${password}" "${repository}"
+  docker build \
+    -t directus:main \
+    --build-arg VERSION=${version} \
+    /directus/images/main
+
+  if [ "${latest}" == "true" ]; then
+    docker tag directus:main "${repository}/${image}:latest"
+    if [ "${push}" == "true" ]; then
+      #docker push ${image}
+      echo "should push"
+    fi
+  fi
+
+  for tag in $tags
+  do
+    docker tag directus:main "${repository}/${image}:${tag}"
+    if [ "${push}" == "true" ]; then
+      #docker push ${image}
+      echo "should push"
+    fi
+  done
+
+  exit $?
+}
+
+main
+exit $?
