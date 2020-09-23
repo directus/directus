@@ -5,30 +5,25 @@ import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import Knex, { CreateTableBuilder } from 'knex';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
+import SchemaInspector from 'knex-schema-inspector';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
-
-/**
- * @todo
- *
- * - Only allow admins to create/update/delete
- * - Only return fields you have permission to read (based on permissions)
- * - Don't use items service, as this is a different case than regular collections
- */
 
 export class FieldsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
+	schemaInspector: typeof schemaInspector;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
+		this.schemaInspector = options?.knex ? SchemaInspector(options.knex) : schemaInspector;
 		this.accountability = options?.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields');
@@ -184,10 +179,11 @@ export class FieldsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
-		/**
-		 * @todo
-		 * Check if table / directus_fields row already exists
-		 */
+		if (await this.schemaInspector.hasColumn(collection, field.field)) {
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+		} else if (!!await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()) {
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+		}
 
 		if (field.schema) {
 			if (table) {
@@ -216,7 +212,7 @@ export class FieldsService {
 
 	async updateField(collection: string, field: RawField) {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException('Only admins can perform this action');
 		}
 
 		if (field.schema) {
