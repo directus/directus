@@ -1,15 +1,16 @@
 <template>
-	<draggable v-model="activeFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+	<draggable v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
 		<v-chip
-			v-for="(field, index) in activeFields"
+			v-for="(field, index) in selectedFields"
 			:key="index"
 			class="field draggable"
+			v-tooltip="field.field"
 			@click.stop="removeField(field.field)"
 		>
 			{{ field.name }}
 		</v-chip>
 		<v-menu
-			showArrow
+			show-arrow
 			v-model="menuActive"
 			v-show="selectableFields.length > 0"
 			slot="footer"
@@ -70,10 +71,10 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const menuActive = ref(false);
-
 		const { collection } = toRefs(props);
-		const { tree } = useFieldTree(collection);
+
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
+		const { tree } = useFieldTree(collection, true);
 
 		const _value = computed({
 			get() {
@@ -84,40 +85,53 @@ export default defineComponent({
 			},
 		});
 
-		const treeFlattened = computed(() => {
-			const fields: FieldTree[] = [];
-			const stack: FieldTree[] = tree.value;
-
-			while (stack.length > 0) {
-				const field = stack.shift();
-				if (field === undefined) continue;
-				fields.push(field);
-				if (field.children === undefined) continue;
-				stack.push(...field.children);
-			}
-			return fields;
-		});
-
-		const activeFields = computed({
+		const selectedFields = computed({
 			get() {
-				const list = _value.value.map((field) => fieldsInCollection.value.find((f) => f.field === field));
-				const filteredList: Field[] = [];
-				list.forEach((field) => {
-					if (field !== undefined) filteredList.push(field);
-				});
-
-				return filteredList;
+				return props.value.map((field) => ({
+					field,
+					name: findTree(tree.value, field.split('.'))?.name as string,
+				}));
 			},
-			set(newVal: Field[]) {
+			set(newVal: { field: string; name: string }[]) {
 				_value.value = newVal.map((field) => field.field);
 			},
 		});
 
 		const selectableFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => _value.value.includes(field.field) === false);
+			return filterTree(tree.value, (field, prefix) => props.value.includes(prefix + field.field) === false);
 		});
 
-		return { tree, menuActive, addField, activeFields, removeField, selectableFields, hideDragImage };
+		return { menuActive, addField, removeField, selectableFields, selectedFields, hideDragImage, tree };
+
+		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
+			if (tree === undefined) return undefined;
+
+			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+
+			if (fieldObject === undefined) return undefined;
+			if (fieldSections.length === 1) return fieldObject;
+			return findTree(fieldObject.children, fieldSections.slice(1));
+		}
+
+		function filterTree(
+			tree: FieldTree[] | undefined,
+			f: (field: FieldTree, prefix: string) => boolean,
+			prefix = ''
+		) {
+			if (tree === undefined) return undefined;
+
+			const newTree: FieldTree[] = [];
+			tree.forEach((field) => {
+				if (f(field, prefix)) {
+					newTree.push({
+						field: field.field,
+						name: field.name,
+						children: filterTree(field.children, f, prefix + field.field + '.'),
+					});
+				}
+			});
+			return newTree.length === 0 ? undefined : newTree;
+		}
 
 		function removeField(field: string) {
 			_value.value = _value.value.filter((f) => f !== field);
@@ -126,7 +140,7 @@ export default defineComponent({
 		function addField(field: string) {
 			const newArray = _value.value;
 			newArray.push(field);
-			_value.value = newArray;
+			_value.value = [...new Set(newArray)];
 		}
 	},
 });

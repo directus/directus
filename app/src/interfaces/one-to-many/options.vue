@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { Field } from '@/types';
+import { Field, Relation } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 
@@ -42,12 +42,14 @@ export default defineComponent({
 		});
 
 		const collection = computed(() => {
-			if (props.fieldData.field == null || props.fieldData.meta?.collection == null) return null;
-			const relationData = relationsStore.getRelationsForField(
-				props.fieldData.meta.collection,
-				props.fieldData.field
-			)?.[0];
-			return relationData.many_collection;
+			const collection = props.fieldData.meta?.collection;
+			const field = props.fieldData.field;
+
+			if (collection == null || field == null) return null;
+
+			const relationData: Relation[] = relationsStore.getRelationsForField(collection, field);
+
+			return relationData.find((r) => r.one_collection === collection && r.one_field === field)?.many_collection;
 		});
 
 		return { fields, collection };
