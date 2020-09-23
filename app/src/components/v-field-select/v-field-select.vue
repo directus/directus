@@ -42,7 +42,7 @@ import FieldListItem from '../v-field-template/field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import Draggable from 'vuedraggable';
-import useFieldTree from '@/composables/use-field-tree';
+import useFieldTree, { findTree, filterTree } from '@/composables/use-field-tree';
 import useCollection from '@/composables/use-collection';
 import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
@@ -102,36 +102,6 @@ export default defineComponent({
 		});
 
 		return { menuActive, addField, removeField, selectableFields, selectedFields, hideDragImage, tree };
-
-		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
-			if (tree === undefined) return undefined;
-
-			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
-
-			if (fieldObject === undefined) return undefined;
-			if (fieldSections.length === 1) return fieldObject;
-			return findTree(fieldObject.children, fieldSections.slice(1));
-		}
-
-		function filterTree(
-			tree: FieldTree[] | undefined,
-			f: (field: FieldTree, prefix: string) => boolean,
-			prefix = ''
-		) {
-			if (tree === undefined) return undefined;
-
-			const newTree: FieldTree[] = [];
-			tree.forEach((field) => {
-				if (f(field, prefix)) {
-					newTree.push({
-						field: field.field,
-						name: field.name,
-						children: filterTree(field.children, f, prefix + field.field + '.'),
-					});
-				}
-			});
-			return newTree.length === 0 ? undefined : newTree;
-		}
 
 		function removeField(field: string) {
 			_value.value = _value.value.filter((f) => f !== field);

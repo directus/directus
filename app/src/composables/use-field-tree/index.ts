@@ -1,4 +1,4 @@
-import useFieldTree from './use-field-tree';
+import useFieldTree, { filterTree, findTree } from './use-field-tree';
 
 export default useFieldTree;
-export { useFieldTree };
+export { useFieldTree, filterTree, findTree };

@@ -3,6 +3,36 @@ import { FieldTree } from './types';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 
+export function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
+	if (tree === undefined) return undefined;
+
+	const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+
+	if (fieldObject === undefined) return undefined;
+	if (fieldSections.length === 1) return fieldObject;
+	return findTree(fieldObject.children, fieldSections.slice(1));
+}
+
+export function filterTree(
+	tree: FieldTree[] | undefined,
+	f: (field: FieldTree, prefix: string) => boolean,
+	prefix = ''
+) {
+	if (tree === undefined) return undefined;
+
+	const newTree: FieldTree[] = [];
+	tree.forEach((field) => {
+		if (f(field, prefix)) {
+			newTree.push({
+				field: field.field,
+				name: field.name,
+				children: filterTree(field.children, f, prefix + field.field + '.'),
+			});
+		}
+	});
+	return newTree.length === 0 ? undefined : newTree;
+}
+
 export default function useFieldTree(collection: Ref<string>, showHidden = false) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();

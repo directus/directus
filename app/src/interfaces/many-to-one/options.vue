@@ -40,13 +40,13 @@ export default defineComponent({
 			},
 		});
 		const collection = computed(() => {
-			if (props.fieldData.field === null || props.fieldData.meta?.collection === undefined) return null;
-			const relationData: Relation[] = relationsStore.getRelationsForField(
-				props.fieldData.meta?.collection,
-				props.fieldData.field
-			);
+			const collection = props.fieldData.meta?.collection;
+			const field = props.fieldData.field;
 
-			return relationData[0]?.one_collection;
+			if (collection === null || field === undefined) return null;
+			const relationData: Relation[] = relationsStore.getRelationsForField(collection, field);
+
+			return relationData.find((r) => r.many_collection === collection && r.many_field === field)?.one_collection;
 		});
 		return { template, collection };
 	},

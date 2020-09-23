@@ -32,7 +32,7 @@ import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vu
 import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
-import useFieldTree from '@/composables/use-field-tree';
+import useFieldTree, { findTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -152,14 +152,22 @@ export default defineComponent({
 		}
 
 		function addField(fieldKey: string) {
+			console.log(fieldKey);
+
 			if (!contentEl.value) return;
-			const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+			const field = findTree(tree.value, fieldKey.split('.'));
 			if (!field) return;
 
 			const button = document.createElement('button');
 			button.dataset.field = fieldKey;
 			button.setAttribute('contenteditable', 'false');
 			button.innerText = String(field.name);
+
+			if (window.getSelection()?.rangeCount == 0) {
+				const range = document.createRange();
+				range.selectNodeContents(contentEl.value.children[0]);
+				window.getSelection()?.addRange(range);
+			}
 
 			const range = window.getSelection()?.getRangeAt(0);
 			if (!range) return;
@@ -245,7 +253,7 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replaceAll(/({|})/g, '').trim();
-						const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+						const field = findTree(tree.value, fieldKey.split('.'));
 
 						if (!field) return '';
 
