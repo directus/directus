@@ -41,8 +41,8 @@ export default async function runAST(originalAST: AST, options?: RunASTOptions) 
 		// all nested items for all parent items at once. Because of this, we can't limit that query
 		// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
 		// that there's _n_ items, which are then divided on the parent items. (no good)
-		if (isO2M(nestedAST) && typeof query.limit === 'number') {
-			tempLimit = query.limit;
+		if (isO2M(nestedAST) && typeof nestedAST.query.limit === 'number') {
+			tempLimit = nestedAST.query.limit;
 			nestedAST.query.limit = -1;
 		}
 
