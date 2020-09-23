@@ -14,6 +14,7 @@ import {
 import database from '../database';
 import { clone } from 'lodash';
 import Knex from 'knex';
+import SchemaInspector from 'knex-schema-inspector';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -25,14 +26,13 @@ export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
 	options?: GetASTOptions
-	// accountability?: Accountability | null,
-	// action?: PermissionsAction
 ): Promise<AST> {
 	query = clone(query);
 
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
 	const knex = options?.knex || database;
+	const schemaInspector = SchemaInspector(knex);
 
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
@@ -56,11 +56,13 @@ export default async function getASTFromQuery(
 	};
 
 	const fields = query.fields || ['*'];
+	const deep = query.deep || {};
 
-	// Prevent fields from showing up in the query object
+	// Prevent fields/deep from showing up in the query object in further use
 	delete query.fields;
+	delete query.deep;
 
-	ast.children = parseFields(collection, fields).filter(filterEmptyChildCollections);
+	ast.children = (await parseFields(collection, fields, deep)).filter(filterEmptyChildCollections);
 
 	return ast;
 
@@ -120,7 +122,7 @@ export default async function getASTFromQuery(
 		return fields;
 	}
 
-	function parseFields(parentCollection: string, fields: string[]) {
+	async function parseFields(parentCollection: string, fields: string[], deep?: Record<string, Query>) {
 		fields = convertWildcards(parentCollection, fields);
 
 		if (!fields) return [];
@@ -157,10 +159,10 @@ export default async function getASTFromQuery(
 				type: 'collection',
 				name: relatedCollection,
 				fieldKey: relationalField,
-				parentKey: 'id' /** @todo this needs to come from somewhere real */,
+				parentKey: await schemaInspector.primary(parentCollection),
 				relation: relation,
-				query: {} /** @todo inject nested query here: ?deep[foo]=bar */,
-				children: parseFields(relatedCollection, nestedFields).filter(
+				query: deep?.[relationalField] || {},
+				children: (await parseFields(relatedCollection, nestedFields)).filter(
 					filterEmptyChildCollections
 				),
 			};

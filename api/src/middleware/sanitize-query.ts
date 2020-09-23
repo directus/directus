@@ -12,62 +12,84 @@ const sanitizeQuery: RequestHandler = (req, res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 
-	const query: Query = {
-		fields: sanitizeFields(req.query.fields) || ['*'],
-	};
+	req.sanitizedQuery = sanitize(
+		{
+			fields: req.query.fields || '*',
+			...req.query
+		},
+		req.accountability || null
+	);
 
-	if (req.query.limit !== undefined) {
-		const limit = sanitizeLimit(req.query.limit);
+	Object.freeze(req.sanitizedQuery);
+
+	return next();
+};
+
+function sanitize(rawQuery: Record<string, any>, accountability: Accountability | null) {
+	const query: Query = {};
+
+	if (rawQuery.limit !== undefined) {
+		const limit = sanitizeLimit(rawQuery.limit);
 
 		if (typeof limit === 'number') {
 			query.limit = limit;
 		}
 	}
 
-	if (req.query.sort) {
-		query.sort = sanitizeSort(req.query.sort);
+	if (rawQuery.fields) {
+		query.fields = sanitizeFields(rawQuery.fields);
 	}
 
-	if (req.query.filter) {
-		query.filter = sanitizeFilter(req.query.filter, req.accountability || null);
+	if (rawQuery.sort) {
+		query.sort = sanitizeSort(rawQuery.sort);
 	}
 
-	if (req.query.limit == '-1') {
+	if (rawQuery.filter) {
+		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
+	}
+
+	if (rawQuery.limit == '-1') {
 		delete query.limit;
 	}
 
-	if (req.query.offset) {
-		query.offset = sanitizeOffset(req.query.offset);
+	if (rawQuery.offset) {
+		query.offset = sanitizeOffset(rawQuery.offset);
 	}
 
-	if (req.query.page) {
-		query.page = sanitizePage(req.query.page);
+	if (rawQuery.page) {
+		query.page = sanitizePage(rawQuery.page);
 	}
 
-	if (req.query.single) {
-		query.single = sanitizeSingle(req.query.single);
+	if (rawQuery.single) {
+		query.single = sanitizeSingle(rawQuery.single);
 	}
 
-	if (req.query.meta) {
-		query.meta = sanitizeMeta(req.query.meta);
+	if (rawQuery.meta) {
+		query.meta = sanitizeMeta(rawQuery.meta);
 	}
 
-	if (req.query.search && typeof req.query.search === 'string') {
-		query.search = req.query.search;
+	if (rawQuery.search && typeof rawQuery.search === 'string') {
+		query.search = rawQuery.search;
 	}
 
 	if (
-		req.query.export &&
-		typeof req.query.export === 'string' &&
-		['json', 'csv'].includes(req.query.export)
+		rawQuery.export &&
+		typeof rawQuery.export === 'string' &&
+		['json', 'csv'].includes(rawQuery.export)
 	) {
-		query.export = req.query.export as 'json' | 'csv';
+		query.export = rawQuery.export as 'json' | 'csv';
 	}
 
-	req.sanitizedQuery = query;
-	Object.freeze(req.sanitizedQuery);
-	return next();
-};
+	if (rawQuery.deep as Record<string, any>) {
+		if (!query.deep) query.deep = {};
+
+		for (const [field, deepRawQuery] of Object.entries(rawQuery.deep)) {
+			query.deep[field] = sanitize(deepRawQuery as any, accountability);
+		}
+	}
+
+	return query;
+}
 
 export default sanitizeQuery;
 
