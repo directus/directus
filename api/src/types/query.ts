@@ -11,6 +11,7 @@ export type Query = {
 	meta?: Meta[];
 	search?: string;
 	export?: 'json' | 'csv';
+	deep?: Record<string, Query>;
 };
 
 export type Sort = {
