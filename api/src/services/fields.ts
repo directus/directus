@@ -179,6 +179,7 @@ export class FieldsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		// Check if field already exists, either as a column, or as a row in directus_fields
 		if (await this.schemaInspector.hasColumn(collection, field.field)) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (!!await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()) {
