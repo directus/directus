@@ -3,7 +3,7 @@ import { FieldTree } from './types';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 
-export default function useFieldTree(collection: Ref<string>) {
+export default function useFieldTree(collection: Ref<string>, showHidden = false) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -12,7 +12,8 @@ export default function useFieldTree(collection: Ref<string>) {
 			.getFieldsForCollection(collection.value)
 			.filter(
 				(field: Field) =>
-					field.meta?.hidden === false && (field.meta?.special || []).includes('alias') === false
+					showHidden ||
+					(field.meta?.hidden === false && (field.meta?.special || []).includes('alias') === false)
 			)
 			.map((field: Field) => parseField(field, []));
 

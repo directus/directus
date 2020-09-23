@@ -12,6 +12,7 @@
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
+import { Relation } from '@/types';
 
 export default defineComponent({
 	props: {
@@ -31,27 +32,26 @@ export default defineComponent({
 			get() {
 				return props.value?.fields;
 			},
-			set(newTemplate: string) {
+			set(newFields: string) {
 				emit('input', {
 					...(props.value || {}),
-					fields: newTemplate,
+					fields: newFields,
 				});
 			},
 		});
 
 		const collection = computed(() => {
 			if (props.fieldData.field == null || props.fieldData.meta?.collection == null) return null;
-			const junction = relationsStore.getRelationsForField(
-				props.fieldData.meta.collection,
-				props.fieldData.field
-			)?.[0];
 
-			const relationData = relationsStore.getRelationsForField(
-				junction.many_collection,
-				junction.junction_field
-			)?.[0];
+			const collection = props.fieldData.meta.collection;
+			const field = props.fieldData.field;
 
-			return relationData.one_collection;
+			const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
+
+			const junction = relations.find((r) => r.one_collection === collection && r.one_field === field);
+			if (junction === undefined) return null;
+
+			return junction.many_collection;
 		});
 
 		return { fields, collection };
