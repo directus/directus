@@ -71,7 +71,7 @@
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @upload="onUpload" fromUrl />
+					<v-upload @upload="onUpload" from-url />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="activeDialog = null" secondary>{{ $t('cancel') }}</v-button>

@@ -45,7 +45,7 @@
 			/>
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
-		<v-upload v-else @upload="setImage" fromLibrary fromUrl />
+		<v-upload v-else @upload="setImage" from-library from-url />
 	</div>
 </template>
 
