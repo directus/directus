@@ -225,7 +225,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const form = ref<Vue | null>(null);
+		const form = ref(null);
 		const userStore = useUserStore();
 
 		const { collection, primaryKey } = toRefs(props);
@@ -286,8 +286,8 @@ export default defineComponent({
 			return i18n.t('archive');
 		});
 
-		useShortcut('mod+s', saveAndStay, form);
-		useShortcut('mod+shift+s', saveAndAddNew, form);
+		useShortcut(saveAndStay, form, 'meta+s');
+		useShortcut(saveAndAddNew, form, 'meta+shift+s');
 
 		const navigationGuard: NavigationGuard = (to, from, next) => {
 			const hasEdits = Object.keys(edits.value).length > 0;

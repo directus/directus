@@ -293,7 +293,7 @@ export default defineComponent({
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
-		useShortcut('mod+s', saveAndStay, form);
+		useShortcut(saveAndStay, form, 'meta+s');
 
 		return {
 			item,

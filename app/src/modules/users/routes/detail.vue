@@ -293,8 +293,8 @@ export default defineComponent({
 			return i18n.t('archive');
 		});
 
-		useShortcut('mod+s', saveAndStay, form);
-		useShortcut('mod+shift+s', saveAndAddNew, form);
+		useShortcut(saveAndStay, form, 'meta+s');
+		useShortcut(saveAndAddNew, form, 'meta+shift+s');
 
 		return {
 			title,

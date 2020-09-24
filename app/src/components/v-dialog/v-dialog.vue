@@ -34,13 +34,14 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const dialog = ref<HTMLElement | null>(null);
 		useShortcut(
-			'esc',
 			() => {
-				console.log('A', dialog.value);
-
-				emit('toggle', false);
+				if (_active.value) {
+					emitToggle();
+					return true;
+				}
 			},
-			ref(document.body)
+			ref(document.body),
+			'escape'
 		);
 
 		const localActive = ref(false);

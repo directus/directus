@@ -1,19 +1,22 @@
 import { onMounted, onUnmounted, Ref } from '@vue/composition-api';
 import Vue from 'vue';
 
-type ShortcutHandler = () => void;
+type ShortcutHandler = (event: KeyboardEvent) => void | any | boolean;
 
-let keysdown: string[] = [];
+const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
-	console.log(event.CAPTURING_PHASE);
-	keysdown.push(mapKeys(event.key));
-	callHandlers();
+	if (event.repeat) return;
+
+	keysdown.add(mapKeys(event.key));
+	callHandlers(event);
 });
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
-	keysdown = keysdown.filter((key) => key === mapKeys(event.key));
+	const key = mapKeys(event.key);
+	keysdown.delete(key.toLowerCase());
+	keysdown.delete(key.toUpperCase());
 });
 
 function mapKeys(key: string) {
@@ -21,31 +24,31 @@ function mapKeys(key: string) {
 		Control: 'meta',
 		Command: 'meta',
 	};
-	return map.hasOwnProperty(key) ? map[key] : key;
-}
+	key = map.hasOwnProperty(key) ? map[key] : key;
 
-function callHandlers() {
-	Object.entries(handlers).forEach(([key, value]) => {
-		const rest = key.split('+').filter((keySegment) => keysdown.includes(keySegment) === false);
-		// strg+A   strg+shift+aaaa
-
-		if (rest.length > 0) return;
-		value.forEach((f) => f());
-	});
-}
-
-function filterShortcut(shortcut: string) {
-	let sections = shortcut.split('+');
-	if (sections.find((s) => s.match(/^[A-Z]$/) !== null)) {
-		const filtered = sections.filter((s) => s.toLowerCase() === 'shift');
-		if (filtered.length % 2 === 0) {
-			sections.unshift('shift');
-		} else {
-			sections = sections.filter((s) => s.toLowerCase() !== 'shift');
-		}
-		return sections.join('+').toLowerCase();
+	if (key.match(/^[a-z]$/) !== null) {
+		if (keysdown.has('shift')) key = key.toUpperCase();
+	} else if (key.match(/^[A-Z]$/) !== null) {
+		if (keysdown.has('shift')) key = key.toLowerCase();
+	} else {
+		key = key.toLowerCase();
 	}
-	return shortcut.toLowerCase();
+
+	return key;
+}
+
+function callHandlers(event: KeyboardEvent) {
+	Object.entries(handlers).forEach(([key, value]) => {
+		const rest = key.split('+').filter((keySegment) => keysdown.has(keySegment) === false);
+		if (rest.length > 0) return;
+		event.preventDefault();
+		for (let i = 0; i < value.length; i++) {
+			const cancel = value[i](event);
+
+			// if the return value is true discontinue going through the queue.
+			if (typeof cancel === 'boolean' && cancel === true) break;
+		}
+	});
 }
 
 export default function useShortcut(
@@ -53,7 +56,7 @@ export default function useShortcut(
 	reference: Ref<HTMLElement | null> | Ref<Vue | null>,
 	...shortcuts: string[]
 ) {
-	const callback: ShortcutHandler = () => {
+	const callback: ShortcutHandler = (event) => {
 		if (reference.value === null) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
@@ -62,24 +65,26 @@ export default function useShortcut(
 			ref.contains(document.activeElement) ||
 			document.activeElement === document.body
 		) {
-			handler();
+			return handler(event);
 		}
+		return false;
 	};
 	onMounted(() => {
 		shortcuts.forEach((shortcut) => {
-			const s = filterShortcut(shortcut);
-			if (handlers.hasOwnProperty(s)) {
-				handlers[s].unshift(callback);
+			if (handlers.hasOwnProperty(shortcut)) {
+				handlers[shortcut].unshift(callback);
 			} else {
-				handlers[s] = [callback];
+				handlers[shortcut] = [callback];
 			}
 		});
 	});
 	onUnmounted(() => {
 		shortcuts.forEach((shortcut) => {
-			const s = filterShortcut(shortcut);
-			if (handlers.hasOwnProperty(s)) {
-				handlers[s] = handlers[s].filter((f) => f !== callback);
+			if (handlers.hasOwnProperty(shortcut)) {
+				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
+				if (handlers[shortcut].length === 0) {
+					delete handlers[shortcut];
+				}
 			}
 		});
 	});

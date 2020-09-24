@@ -1,6 +1,7 @@
 <template>
 	<v-modal
 		:active="active"
+		@toggle="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })

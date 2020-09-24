@@ -295,11 +295,11 @@ export default defineComponent({
 		});
 
 		useShortcut(
-			'mod+a',
 			() => {
 				onToggleSelectAll(!allItemsSelected.value);
 			},
-			table
+			table,
+			'meta+a'
 		);
 
 		return {
