@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="collection == null">
+	<v-notice type="warning" v-if="collection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else>
