@@ -294,11 +294,20 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
-				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
-					(record: Partial<Item>) => ({
-						...record,
-						[relation.many_field]: parent || payload[relation.one_primary],
-					})
+				const relatedRecords: Partial<Item>[] = payload[relation.one_field]
+					.map(
+						(record: string | number | Partial<Item>) => {
+							if (typeof record === 'string' || typeof record === 'number') {
+								record = {
+									[relation.many_primary]: record
+								};
+							}
+
+							return {
+								...record,
+								[relation.many_field]: parent || payload[relation.one_primary],
+							}
+						}
 				);
 
 				const itemsService = new ItemsService(relation.many_collection, {

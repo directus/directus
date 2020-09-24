@@ -164,8 +164,9 @@ function initLocalStore(
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
+									is_primary_key: true,
 								},
-								system: {
+								meta: {
 									hidden: true,
 								},
 							},
@@ -242,8 +243,9 @@ function initLocalStore(
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
+									is_primary_key: true,
 								},
-								system: {
+								meta: {
 									hidden: true,
 								},
 							},
