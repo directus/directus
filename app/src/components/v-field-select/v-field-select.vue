@@ -8,28 +8,31 @@
 			:key="index"
 			class="field draggable"
 			v-tooltip="field.field"
-			@click.stop="removeField(field.field)"
+			@click="removeField(field.field)"
 		>
 			{{ field.name }}
 		</v-chip>
-		<v-menu show-arrow v-model="menuActive" slot="footer" class="add" placement="bottom">
-			<template #activator="{ toggle }">
-				<v-button @click="toggle" small>
-					{{ $t('add_field') }}
-					<v-icon small name="add" />
-				</v-button>
-			</template>
 
-			<v-list dense>
-				<field-list-item
-					v-for="field in availableFields"
-					:key="field.collection + field.field"
-					:field="field"
-					:depth="depth"
-					@add="addField"
-				/>
-			</v-list>
-		</v-menu>
+		<template #footer>
+			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
+				<template #activator="{ toggle }">
+					<v-button @click="toggle" small>
+						{{ $t('add_field') }}
+						<v-icon small name="add" />
+					</v-button>
+				</template>
+
+				<v-list dense>
+					<field-list-item
+						v-for="field in availableFields"
+						:key="field.collection + field.field"
+						:field="field"
+						:depth="depth"
+						@add="addField"
+					/>
+				</v-list>
+			</v-menu>
+		</template>
 	</draggable>
 </template>
 
