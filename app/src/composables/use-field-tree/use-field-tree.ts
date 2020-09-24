@@ -3,17 +3,22 @@ import { FieldTree } from './types';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 
-export default function useFieldTree(collection: Ref<string>) {
+export default function useFieldTree(collection: Ref<string>, showHidden = false) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
 	const tree = computed<FieldTree[]>(() => {
 		return fieldsStore
 			.getFieldsForCollection(collection.value)
-			.filter(
-				(field: Field) =>
-					field.meta?.hidden === false && (field.meta?.special || []).includes('alias') === false
-			)
+			.filter((field: Field) => {
+				let shown = (field.meta?.special || []).includes('alias') === false;
+
+				if (showHidden === false && field.meta?.hidden === false) {
+					shown = false;
+				}
+
+				return shown;
+			})
 			.map((field: Field) => parseField(field, []));
 
 		function parseField(field: Field, parents: Field[]) {
