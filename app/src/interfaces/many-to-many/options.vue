@@ -1,10 +1,12 @@
 <template>
-	<v-notice type="warning" v-if="collection == null">
+	<v-notice type="warning" v-if="junctionCollection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
-	<div v-else>
-		<p class="type-label">{{ $t('select_fields') }}</p>
-		<v-field-select :collection="collection" v-model="fields"></v-field-select>
+	<div v-else class="form-grid">
+		<div class="field full">
+			<p class="type-label">{{ $t('select_fields') }}</p>
+			<v-field-select :collection="junctionCollection" v-model="fields" />
+		</div>
 	</div>
 </template>
 
@@ -16,9 +18,17 @@ import { Relation } from '@/types';
 
 export default defineComponent({
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		fieldData: {
 			type: Object as PropType<Field>,
 			default: null,
+		},
+		relations: {
+			type: Array as PropType<Relation[]>,
+			default: () => [],
 		},
 		value: {
 			type: Object as PropType<any>,
@@ -40,27 +50,24 @@ export default defineComponent({
 			},
 		});
 
-		const collection = computed(() => {
-			if (props.fieldData.field == null || props.fieldData.meta?.collection == null) return null;
-
-			const collection = props.fieldData.meta.collection;
-			const field = props.fieldData.field;
-
-			const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
-
-			const junction = relations.find((r) => r.one_collection === collection && r.one_field === field);
-			if (junction === undefined) return null;
-
-			return junction.many_collection;
+		const junctionCollection = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			const { field } = props.fieldData;
+			const junctionRelation = props.relations.find(
+				(relation) => relation.one_collection === props.collection && relation.one_field === field
+			);
+			return junctionRelation?.many_collection || null;
 		});
 
-		return { fields, collection };
+		return { fields, junctionCollection };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.type-label {
-	margin-bottom: 4px;
+@import '@/styles/mixins/form-grid';
+
+.form-grid {
+	@include form-grid;
 }
 </style>

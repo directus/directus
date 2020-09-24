@@ -1,38 +1,38 @@
 <template>
-	<draggable v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+	<v-notice v-if="!availableFields || availableFields.length === 0">
+		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
+	</v-notice>
+	<draggable v-else v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
 		<v-chip
 			v-for="(field, index) in selectedFields"
 			:key="index"
 			class="field draggable"
 			v-tooltip="field.field"
-			@click.stop="removeField(field.field)"
+			@click="removeField(field.field)"
 		>
 			{{ field.name }}
 		</v-chip>
-		<v-menu
-			show-arrow
-			v-model="menuActive"
-			v-show="selectableFields.length > 0"
-			slot="footer"
-			class="add"
-			placement="bottom-end"
-		>
-			<template #activator="{ toggle }">
-				<v-chip @click="toggle">
-					<v-icon name="add" />
-				</v-chip>
-			</template>
 
-			<v-list dense>
-				<field-list-item
-					@add="addField"
-					v-for="field in selectableFields"
-					:key="field.field"
-					:field="field"
-					:depth="depth"
-				/>
-			</v-list>
-		</v-menu>
+		<template #footer>
+			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
+				<template #activator="{ toggle }">
+					<v-button @click="toggle" small>
+						{{ $t('add_field') }}
+						<v-icon small name="add" />
+					</v-button>
+				</template>
+
+				<v-list dense>
+					<field-list-item
+						v-for="field in availableFields"
+						:key="field.field"
+						:field="field"
+						:depth="depth"
+						@add="addField"
+					/>
+				</v-list>
+			</v-menu>
+		</template>
 	</draggable>
 </template>
 
@@ -42,7 +42,7 @@ import FieldListItem from '../v-field-template/field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import Draggable from 'vuedraggable';
-import useFieldTree, { findTree, filterTree } from '@/composables/use-field-tree';
+import useFieldTree from '@/composables/use-field-tree';
 import useCollection from '@/composables/use-collection';
 import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
@@ -87,7 +87,7 @@ export default defineComponent({
 
 		const selectedFields = computed({
 			get() {
-				return props.value.map((field) => ({
+				return _value.value.map((field) => ({
 					field,
 					name: findTree(tree.value, field.split('.'))?.name as string,
 				}));
@@ -97,11 +97,45 @@ export default defineComponent({
 			},
 		});
 
-		const selectableFields = computed(() => {
-			return filterTree(tree.value, (field, prefix) => props.value.includes(prefix + field.field) === false);
+		const availableFields = computed(() => {
+			return filterTree(tree.value);
 		});
 
-		return { menuActive, addField, removeField, selectableFields, selectedFields, hideDragImage, tree };
+		return {
+			menuActive,
+			addField,
+			removeField,
+			availableFields,
+			selectedFields,
+			hideDragImage,
+			tree,
+			collectionInfo: info,
+		};
+
+		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
+			if (tree === undefined) return undefined;
+
+			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+
+			if (fieldObject === undefined) return undefined;
+			if (fieldSections.length === 1) return fieldObject;
+			return findTree(fieldObject.children, fieldSections.slice(1));
+		}
+
+		function filterTree(tree: FieldTree[] | undefined, prefix = '') {
+			if (tree === undefined) return undefined;
+
+			const newTree: FieldTree[] = tree.map((field) => {
+				return {
+					name: field.name,
+					field: field.field,
+					disabled: _value.value.includes(prefix + field.field),
+					children: filterTree(field.children, prefix + field.field + '.'),
+				};
+			});
+
+			return newTree.length === 0 ? undefined : newTree;
+		}
 
 		function removeField(field: string) {
 			_value.value = _value.value.filter((f) => f !== field);

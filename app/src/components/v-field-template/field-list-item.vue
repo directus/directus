@@ -1,6 +1,7 @@
 <template>
 	<v-list-item
-		v-if="field.children === undefined || depth === 0"
+		v-if="field.children === undefined"
+		:disabled="field.disabled"
 		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
 	>
 		<v-list-item-content>{{ field.name }}</v-list-item-content>

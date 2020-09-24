@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"add_field": "Add Field",
+
 	"role_name": "Role Name",
 
 	"db_only_click_to_configure": "Database Only: Click to Configure ",
@@ -1035,6 +1037,8 @@
 		"collection_list": "Collections Navigation"
 	}
   },
+
+  "no_fields_in_collection": "There are no fields in \"{collection}\" yet",
 
   "do_nothing": "Do Nothing",
   "generate_and_save_uuid": "Generate and Save UUID",
