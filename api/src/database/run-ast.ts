@@ -172,17 +172,22 @@ function mergeWithParentItems(nestedItem: Item | Item[], parentItem: Item | Item
 
 	if (isM2O(nestedAST)) {
 		for (const parentItem of parentItems) {
-			const itemChildren = nestedItems.filter((nestedItem) => {
+			const itemChild = nestedItems.find((nestedItem) => {
 				return nestedItem[nestedAST.relation.one_primary] === parentItem[nestedAST.fieldKey];
 			});
 
-			parentItem[nestedAST.fieldKey] = itemChildren;
+			parentItem[nestedAST.fieldKey] = itemChild || null;
 		}
 	} else {
 		for (const parentItem of parentItems) {
 			let itemChildren = nestedItems.filter((nestedItem) => {
+				if (nestedItem === null) return false;
 				if (Array.isArray(nestedItem[nestedAST.relation.many_field])) return true;
-				return nestedItem[nestedAST.relation.many_field] === parentItem[nestedAST.relation.one_primary];
+
+				return (
+					nestedItem[nestedAST.relation.many_field] === parentItem[nestedAST.relation.one_primary] ||
+					nestedItem[nestedAST.relation.many_field]?.[nestedAST.relation.many_primary] === parentItem[nestedAST.relation.one_primary]
+				);
 			});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
@@ -210,10 +215,8 @@ function removeTemporaryFields(rawItem: Item | Item[], ast: AST | NestedCollecti
 		const item = fields.includes('*') ? rawItem : pick(rawItem, fields);
 
 		for (const nestedCollection of nestedCollections) {
-			item[nestedCollection.fieldKey] = removeTemporaryFields(Array.isArray(rawItem[nestedCollection.fieldKey]) ? rawItem[nestedCollection.fieldKey] : [rawItem[nestedCollection.fieldKey]], nestedCollection);
-
-			if (isM2O(nestedCollection)) {
-				item[nestedCollection.fieldKey] = item[nestedCollection.fieldKey][0] || null;
+			if (item[nestedCollection.fieldKey] !== null) {
+				item[nestedCollection.fieldKey] = removeTemporaryFields(Array.isArray(rawItem[nestedCollection.fieldKey]) ? rawItem[nestedCollection.fieldKey] : [rawItem[nestedCollection.fieldKey]], nestedCollection);
 			}
 		}
 
