@@ -69,8 +69,7 @@ export default defineComponent({
 		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection };
 
 		function updateValues(index: number, updatedValues: any) {
-			emit(
-				'input',
+			emitValue(
 				props.value.map((item, i) => {
 					if (i === index) {
 						return updatedValues;
@@ -82,18 +81,15 @@ export default defineComponent({
 		}
 
 		function onSort(sortedItems: any[]) {
-			emit('input', sortedItems);
+			emitValue(sortedItems);
 		}
 
 		function removeItem(row: any) {
 			selection.value = [];
 			if (props.value) {
-				emit(
-					'input',
-					props.value.filter((existingItem) => existingItem !== row)
-				);
+				emitValue(props.value.filter((existingItem) => existingItem !== row));
 			} else {
-				emit('input', null);
+				emitValue(null);
 			}
 		}
 
@@ -109,10 +105,18 @@ export default defineComponent({
 			selection.value = [props.value?.length || 0];
 
 			if (props.value !== null) {
-				emit('input', [...props.value, newDefaults]);
+				emitValue([...props.value, newDefaults]);
 			} else {
-				emit('input', [newDefaults]);
+				emitValue([newDefaults]);
 			}
+		}
+
+		function emitValue(value: null | any[]) {
+			if (value === null || value.length === 0) {
+				return emit('input', null);
+			}
+
+			return emit('input', value);
 		}
 	},
 });
