@@ -41,7 +41,6 @@ function callHandlers(event: KeyboardEvent) {
 	Object.entries(handlers).forEach(([key, value]) => {
 		const rest = key.split('+').filter((keySegment) => keysdown.has(keySegment) === false);
 		if (rest.length > 0) return;
-		event.preventDefault();
 		for (let i = 0; i < value.length; i++) {
 			const cancel = value[i](event);
 
@@ -65,6 +64,7 @@ export default function useShortcut(
 			ref.contains(document.activeElement) ||
 			document.activeElement === document.body
 		) {
+			event.preventDefault();
 			return handler(event);
 		}
 		return false;
