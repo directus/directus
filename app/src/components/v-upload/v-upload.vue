@@ -29,15 +29,66 @@
 			<p class="type-label">{{ $t('drag_file_here') }}</p>
 			<p class="type-text">{{ $t('click_to_browse') }}</p>
 			<input class="browse" type="file" @input="onBrowseSelect" />
+
+			<template v-if="fromUrl !== false || fromLibrary !== false">
+				<v-menu showArrow placement="bottom-end">
+					<template #activator="{ toggle }">
+						<v-icon @click="toggle" class="options" name="more_vert" />
+					</template>
+					<v-list>
+						<v-list-item @click="activeDialog = 'choose'" v-if="fromLibrary">
+							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
+							<v-list-item-content>
+								{{ $t('choose_from_library') }}
+							</v-list-item-content>
+						</v-list-item>
+
+						<v-list-item @click="activeDialog = 'url'" v-if="fromUrl">
+							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
+							<v-list-item-content>
+								{{ $t('import_from_url') }}
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+
+				<modal-browse
+					collection="directus_files"
+					:active="activeDialog === 'choose'"
+					@update:active="activeDialog = null"
+					@input="setSelection"
+				/>
+
+				<v-dialog :active="activeDialog === 'url'" @toggle="activeDialog = null" :persistent="urlLoading">
+					<v-card>
+						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+						<v-card-text>
+							<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
+								{{ $t('cancel') }}
+							</v-button>
+							<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
+								{{ $t('import') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</template>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import uploadFiles from '@/utils/upload-files';
+import ModalBrowse from '@/views/private/components/modal-browse';
+import api from '@/api';
+import useItem from '@/composables/use-item';
 
 export default defineComponent({
+	components: { ModalBrowse },
 	props: {
 		multiple: {
 			type: Boolean,
@@ -47,10 +98,21 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
+		fromUrl: {
+			type: Boolean,
+			default: false,
+		},
+		fromLibrary: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
+		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
+		const { setSelection } = useSelection();
+		const activeDialog = ref<'choose' | 'url' | null>(null);
 
 		return {
 			uploading,
@@ -63,6 +125,12 @@ export default defineComponent({
 			onBrowseSelect,
 			done,
 			numberOfFiles,
+			activeDialog,
+			url,
+			isValidURL,
+			urlLoading,
+			importFromURL,
+			setSelection,
 		};
 
 		function useUpload() {
@@ -146,6 +214,67 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function useSelection() {
+			const collection = ref('directus_files');
+			const image = ref<string | null>(null);
+			const { item, error, loading } = useItem(collection, image);
+
+			function setSelection(selection: string[]) {
+				if (selection[0]) {
+					image.value = selection[0];
+				} else {
+					image.value = null;
+					emit('upload', null);
+				}
+			}
+
+			watch(
+				() => item.value,
+				(id) => {
+					if (error.value === null && loading.value === false) {
+						emit('upload', item.value);
+					}
+				}
+			);
+
+			return { setSelection };
+		}
+
+		function useURLImport() {
+			const url = ref('');
+			const loading = ref(false);
+			const error = ref(null);
+
+			const isValidURL = computed(() => {
+				try {
+					new URL(url.value);
+					return true;
+				} catch {
+					return false;
+				}
+			});
+
+			return { url, loading, error, isValidURL, importFromURL };
+
+			async function importFromURL() {
+				loading.value = true;
+
+				try {
+					const response = await api.post(`/files/import`, {
+						url: url.value,
+					});
+
+					emit('upload', response.data.data);
+					activeDialog.value = null;
+					url.value = '';
+				} catch (err) {
+					error.value = err;
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -213,5 +342,18 @@ export default defineComponent({
 		left: 32px;
 		width: calc(100% - 64px);
 	}
+}
+
+.options {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	color: var(--foreground-subdued);
+	cursor: pointer;
+	transition: color var(--medium) var(--transition);
+}
+
+.v-upload:hover .options {
+	color: var(--primary);
 }
 </style>
