@@ -132,16 +132,16 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const meta: any[] = await collectionItemsService.readByQuery({
+		const meta = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		});
+		}) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
 		for (const table of tables) {
 			const collection: Collection = {
 				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
 				schema: table,
 			};
 
@@ -170,16 +170,16 @@ export class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-		const meta: any[] = await collectionItemsService.readByQuery({
+		const meta = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		});
+		}) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
 				schema: table,
 			};
 

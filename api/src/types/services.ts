@@ -16,7 +16,7 @@ export interface AbstractService {
 	create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	create(data: Partial<Item>): Promise<PrimaryKey>;
 
-	readByQuery(query: Query): Promise<Item[]>;
+	readByQuery(query: Query): Promise<Item | Item[]>;
 
 	readByKey(keys: PrimaryKey[], query: Query, action: PermissionsAction): Promise<Item[]>;
 	readByKey(key: PrimaryKey, query: Query, action: PermissionsAction): Promise<Item>;
