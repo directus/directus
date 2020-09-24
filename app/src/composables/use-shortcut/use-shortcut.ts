@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted } from '@vue/composition-api';
-import Mousetrap from 'mousetrap';
+import Mousetrap, { ExtendedKeyboardEvent } from 'mousetrap';
 
 const mousetrap = new Mousetrap();
 mousetrap.stopCallback = function (e: Event, element: Element) {
