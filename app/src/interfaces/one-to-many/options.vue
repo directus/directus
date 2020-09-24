@@ -2,8 +2,8 @@
 	<v-notice type="warning" v-if="relatedCollection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
-	<div v-else class="grid">
-		<div class="full">
+	<div v-else class="form-grid">
+		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
 			<v-field-select :collection="relatedCollection" v-model="fields" />
 		</div>
@@ -66,7 +66,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid.scss';
 
-.grid {
+.form-grid {
 	@include form-grid;
 }
 </style>
