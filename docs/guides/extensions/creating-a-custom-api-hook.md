@@ -16,58 +16,52 @@ Custom hooks are dynamically loaded from within your extensions folder. By defau
 /extensions/bundles/<bundle-id>/hooks/<hook-id>.js
 ```
 
-## 2. Define the Event's Scope
+## 2. Define the Event
 
-Next, you will want to define your event scope. You can trigger your custom hook with any of the platform's many API events. Each event is referenced with the following format:
+Next, you will want to define your event. You can trigger your custom hook with any of the platform's many API events. Each event is referenced with the following format:
 
 ```
-<context>.<action>.<collection>.<before>
-// eg: items.update.articles.before
+<scope>.<action>(.<before>)
+// eg: items.create
+// eg: files.update.before
 ```
 
-### Context
+### Scope
 
-The context determines the API endpoint that is triggered.
+The scope determines the API endpoint that is triggered. The `*` wildcard can also be used to include all scopes.
 
 ### Actions
 
-Defines the triggering operation within the specified context. The `*` wildcard can also be used to include all actions available to the context.
-
-### Collection
-
-The `items`, `activity`, `fields`, and `presets` contexts also accept being scoped to one or more specific tables. The `*` wildcard can also be used to include all project collections.
+Defines the triggering operation within the specified context (see chart below). The `*` wildcard can also be used to include all actions available to the scope.
 
 ### Before
 
-Most contexts (all except `server` and `auth`) support an optional `.before` suffix for running a _blocking_ hook prior to the event being fired.
-
-:::tip Blocking Hook Filters
-The `.before` flag allows you to check and/or modify the event's payload before it is processed.
+Many scopes (see chart below) support an optional `.before` suffix for running a _blocking_ hook prior to the event being fired. This allows you to check and/or modify the event's payload before it is processed.
 
 * `items.create.<collection>` (Non Blocking)
 * `items.create.<collection>.before` (Blocking)
-:::
 
 ### Event Scope Options
 
-| Context       | Actions                        | Collection | Before   |
-|---------------|--------------------------------|-------------------|----------|
-| `items`       | `create`, `update` and `delete` | Required   | Optional |
-| `activity`    | `create`, `update` and `delete` | Optional   | Optional |
-| `collections` | `create`, `update` and `delete` | No         | Optional |
-| `fields`      | `create`, `update` and `delete` | Optional   | Optional |
-| `files`       | `create`, `update` and `delete` | No         | Optional |
-| `folders`     | `create`, `update` and `delete` | No         | Optional |
-| `permissions` | `create`, `update` and `delete` | No         | Optional |
-| `presets`     | `create`, `update` and `delete` | Optional   | Optional |
-| `relations`   | `create`, `update` and `delete` | No         | Optional |
-| `revisions`   | `create`, `update` and `delete` | No         | Optional |
-| `roles`       | `create`, `update` and `delete` | No         | Optional |
-| `settings`    | `create`, `update` and `delete` | No         | Optional |
-| `users`       | `create`, `update` and `delete` | No         | Optional |
-| `webhooks`    | `create`, `update` and `delete` | No         | Optional |
-| `server`      | `start` and `error`             | No         | No       |
-| `auth`        | `success`, `fail` and `refresh` | No         | No       |
+| Scope         | Actions                           | Before   |
+|---------------|-----------------------------------|----------|
+| `items`       | `create`, `update` and `delete`    | Optional |
+| `activity`    | `create`, `update` and `delete`    | Optional |
+| `collections` | `create`, `update` and `delete`    | Optional |
+| `fields`      | `create`, `update` and `delete`    | Optional |
+| `files`       | `create`, `update` and `delete`    | Optional |
+| `folders`     | `create`, `update` and `delete`    | Optional |
+| `permissions` | `create`, `update` and `delete`    | Optional |
+| `presets`     | `create`, `update` and `delete`    | Optional |
+| `relations`   | `create`, `update` and `delete`    | Optional |
+| `revisions`   | `create`, `update` and `delete`    | Optional |
+| `roles`       | `create`, `update` and `delete`    | Optional |
+| `settings`    | `create`, `update` and `delete`    | Optional |
+| `users`       | `create`, `update` and `delete`    | Optional |
+| `webhooks`    | `create`, `update` and `delete`    | Optional |
+| `server`      | `start` and `error`                | No       |
+| `auth`        | `success`, `fail` and `refresh`    | No       |
+| `request`     | `get`, `patch` `post` and `delete` | No       |
 
 ## 3. Register your Hook
 
@@ -83,24 +77,27 @@ module.exports = function registerHook() {
 }
 ```
 
-Register functions return an object with key = event, value = handler function.
+### Register Function
 
-The `registerHook` function receives the `context` parameter, which holds the following properties:
+The register function (eg: `module.exports = function registerHook()`) must return an object where the key is the event, and the value is the handler function itself.
 
-* `services` — All API interal services
-* `exceptions` — API exception objects that can be used for throwing "proper" errors
-* `database` — Knex instance that is connected to the current database
-* `env` — Parsed environment variables
+The `registerHook` function receives a context parameter with the following properties:
 
-Each handler function gets a `context` parameter with the following properties:
+* `services` — All API interal services [Learn More](#)
+* `exceptions` — API exception objects that can be used for throwing "proper" errors [Learn More](#)
+* `database` — Knex instance that is connected to the current database [Learn More](#)
+* `env` — Parsed environment variables [Learn More](#)
 
-* `event` — Full event string
-* `accountability` — Information about the current user
-    * `admin` — TK
-* `collection` — Collection that is being modified
-* `item` — Primary key(s) of the item(s) being modified
-* `action` — Action that is performed
-* `payload` — Payload of the request
+### Event Handler Function
+
+The event handler function (eg: `'item.create.articles': function()`) recieves a context parameter with the following properties:
+
+* `event` — Full event string [Learn More](#)
+* `accountability` — Information about the current user [Learn More](#)
+* `collection` — Collection that is being modified [Learn More](#)
+* `item` — Primary key(s) of the item(s) being modified [Learn More](#)
+* `action` — Action that is performed [Learn More](#)
+* `payload` — Payload of the request [Learn More](#)
 
 ---
 
