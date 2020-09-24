@@ -113,7 +113,7 @@ router.post(
 		try {
 			const record = await service.readByKey(keys as any, req.sanitizedQuery);
 			res.locals.payload = {
-				data: res.locals.savedFiles.length === 1 ? record[0] : record || null,
+				data: res.locals.savedFiles.length === 1 ? record![0] : record || null,
 			};
 		} catch (error) {
 			if (error instanceof ForbiddenException) {

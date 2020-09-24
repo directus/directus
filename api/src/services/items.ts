@@ -188,10 +188,11 @@ export class ItemsService implements AbstractService {
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<Item | Item[]> {
+	async readByQuery(query: Query): Promise<null | Item | Item[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
+
 		let ast = await getASTFromQuery(this.collection, query, {
 			accountability: this.accountability,
 			knex: this.knex,
@@ -205,13 +206,13 @@ export class ItemsService implements AbstractService {
 		return records;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Item>;
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Item[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
 		action: PermissionsAction = 'read'
-	): Promise<Item | Item[]> {
+	): Promise<null | Item | Item[]> {
 		query = clone(query);
 		const schemaInspector = SchemaInspector(this.knex);
 		const primaryKeyField = await schemaInspector.primary(this.collection);
@@ -354,7 +355,7 @@ export class ItemsService implements AbstractService {
 						activity: key,
 						collection: this.collection,
 						item: keys[index],
-						data: JSON.stringify(snapshots[index]),
+						data: JSON.stringify(snapshots?.[index]),
 						delta: JSON.stringify(payloadWithoutAliases),
 					}));
 
