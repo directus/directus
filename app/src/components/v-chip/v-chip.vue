@@ -75,8 +75,8 @@ export default defineComponent({
 
 <style>
 body {
-	--v-chip-color: var(--white);
-	--v-chip-background-color: var(--primary);
+	--v-chip-color: var(--black);
+	--v-chip-background-color: var(--background-normal-alt);
 	--v-chip-color-hover: var(--white);
 	--v-chip-background-color-hover: var(--primary-125);
 	--v-chip-close-color: var(--danger);
@@ -89,7 +89,7 @@ body {
 .v-chip {
 	display: inline-flex;
 	align-items: center;
-	height: 32px;
+	height: 36px;
 	padding: 0 8px;
 	color: var(--v-chip-color);
 	font-weight: var(--weight-normal);
