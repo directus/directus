@@ -30,7 +30,11 @@ Next, you will want to define your event. You can trigger your custom hook with 
 
 The scope determines the API endpoint that is triggered. The `*` wildcard can also be used to include all scopes.
 
-### Actions
+:::tip System Scope
+Currently all system tables are available as event scopes except for `directus_migrations` and `directus_sessions`, which don't have relevant endpoints or services.
+:::
+
+### Action
 
 Defines the triggering operation within the specified context (see chart below). The `*` wildcard can also be used to include all actions available to the scope.
 
