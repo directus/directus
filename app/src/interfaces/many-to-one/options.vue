@@ -1,11 +1,11 @@
 <template>
-	<div class="grid">
-		<v-notice type="warning" v-if="collection == null">
-			{{ $t('interfaces.one-to-many.no_collection') }}
-		</v-notice>
-		<div v-else class="full">
+	<v-notice class="full" type="warning" v-if="collection === null">
+		{{ $t('interfaces.one-to-many.no_collection') }}
+	</v-notice>
+	<div v-else class="form-grid">
+		<div class="field full">
 			<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
-			<v-field-template :collection="collection" v-model="template" :depth="1"></v-field-template>
+			<v-field-template :collection="relatedCollection" v-model="template" :depth="2"></v-field-template>
 		</div>
 	</div>
 </template>
@@ -17,9 +17,17 @@ import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 export default defineComponent({
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		fieldData: {
 			type: Object as PropType<Field>,
 			default: null,
+		},
+		relations: {
+			type: Array as PropType<Relation[]>,
+			default: () => [],
 		},
 		value: {
 			type: Object as PropType<any>,
@@ -39,16 +47,17 @@ export default defineComponent({
 				});
 			},
 		});
-		const collection = computed(() => {
-			const collection = props.fieldData.meta?.collection;
-			const field = props.fieldData.field;
 
-			if (collection === null || field === undefined) return null;
-			const relationData: Relation[] = relationsStore.getRelationsForField(collection, field);
-
-			return relationData.find((r) => r.many_collection === collection && r.many_field === field)?.one_collection;
+		const relatedCollection = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			const { field } = props.fieldData;
+			const relation = props.relations.find(
+				(relation) => relation.many_collection === props.collection && relation.many_field === field
+			);
+			return relation?.one_collection || null;
 		});
-		return { template, collection };
+
+		return { template, relatedCollection };
 	},
 });
 </script>
@@ -56,7 +65,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.grid {
+.form-grid {
 	@include form-grid;
 }
 </style>

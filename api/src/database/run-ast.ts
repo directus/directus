@@ -27,7 +27,7 @@ export default async function runAST(originalAST: AST, options?: RunASTOptions):
 
 	const rawItems: Item | Item[] = await dbQuery;
 
-	if (!rawItems || (Array.isArray(rawItems) && rawItems.length === 0)) return null;
+	if (!rawItems) return null;
 
 	// Run the items through the special transforms
 	const payloadService = new PayloadService(ast.name, { knex });

@@ -13,7 +13,7 @@ export default function useFieldTree(collection: Ref<string>, showHidden = false
 			.filter((field: Field) => {
 				let shown = (field.meta?.special || []).includes('alias') === false;
 
-				if (showHidden === false && field.meta?.hidden === false) {
+				if (showHidden === false && field.meta?.hidden === true) {
 					shown = false;
 				}
 

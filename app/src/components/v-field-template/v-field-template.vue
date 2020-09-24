@@ -32,7 +32,8 @@ import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vu
 import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
-import useFieldTree, { findTree } from '@/composables/use-field-tree';
+import useFieldTree from '@/composables/use-field-tree';
+import { FieldTree } from './types';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -152,10 +153,10 @@ export default defineComponent({
 		}
 
 		function addField(fieldKey: string) {
-			console.log(fieldKey);
-
 			if (!contentEl.value) return;
+
 			const field = findTree(tree.value, fieldKey.split('.'));
+
 			if (!field) return;
 
 			const button = document.createElement('button');
@@ -186,6 +187,16 @@ export default defineComponent({
 			}
 
 			onInput();
+		}
+
+		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
+			if (tree === undefined) return undefined;
+
+			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+
+			if (fieldObject === undefined) return undefined;
+			if (fieldSections.length === 1) return fieldObject;
+			return findTree(fieldObject.children, fieldSections.slice(1));
 		}
 
 		function joinElements(first: HTMLElement, second: HTMLElement) {
