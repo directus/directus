@@ -25,7 +25,7 @@
 				<v-list dense>
 					<field-list-item
 						v-for="field in availableFields"
-						:key="field.collection + field.field"
+						:key="field.field"
 						:field="field"
 						:depth="depth"
 						@add="addField"

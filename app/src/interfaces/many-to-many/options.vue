@@ -5,7 +5,7 @@
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select :collection="junctionCollection" v-model="fields"></v-field-select>
+			<v-field-select :collection="junctionCollection" v-model="fields" />
 		</div>
 	</div>
 </template>

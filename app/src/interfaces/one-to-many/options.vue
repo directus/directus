@@ -1,11 +1,11 @@
 <template>
-	<v-notice type="warning" v-if="collection == null">
+	<v-notice type="warning" v-if="relatedCollection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else class="grid">
 		<div class="full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select :collection="collection" v-model="fields"></v-field-select>
+			<v-field-select :collection="relatedCollection" v-model="fields" />
 		</div>
 	</div>
 </template>
@@ -17,9 +17,17 @@ import { useRelationsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
 		fieldData: {
 			type: Object as PropType<Field>,
 			default: null,
+		},
+		relations: {
+			type: Array as PropType<Relation[]>,
+			default: () => [],
 		},
 		value: {
 			type: Object as PropType<any>,
@@ -33,26 +41,24 @@ export default defineComponent({
 			get() {
 				return props.value?.fields;
 			},
-			set(newTemplate: string) {
+			set(newFields: string) {
 				emit('input', {
 					...(props.value || {}),
-					fields: newTemplate,
+					fields: newFields,
 				});
 			},
 		});
 
-		const collection = computed(() => {
-			const collection = props.fieldData.meta?.collection;
-			const field = props.fieldData.field;
-
-			if (collection == null || field == null) return null;
-
-			const relationData: Relation[] = relationsStore.getRelationsForField(collection, field);
-
-			return relationData.find((r) => r.one_collection === collection && r.one_field === field)?.many_collection;
+		const relatedCollection = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			const { field } = props.fieldData;
+			const relatedRelation = props.relations.find(
+				(relation) => relation.one_collection === props.collection && relation.one_field === field
+			);
+			return relatedRelation?.many_collection || null;
 		});
 
-		return { fields, collection };
+		return { fields, relatedCollection };
 	},
 });
 </script>
