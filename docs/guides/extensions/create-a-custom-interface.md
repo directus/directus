@@ -96,7 +96,7 @@ export default {
 }
 ```
 
-## 3. Build your Custom Interface
+## 3. Develop your Custom Interface
 
 The interface itself is simply a Vue component, which provides an blank canvas for creating anything you need.
 
@@ -108,4 +108,4 @@ To build the interface for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your interface's `dist` folder into your API's `/extensions/interfaces` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your interface's `dist` folder into your project's `/extensions/interfaces` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

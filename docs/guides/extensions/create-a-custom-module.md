@@ -92,7 +92,7 @@ export default {
 }
 ```
 
-## 3. Build Your Custom Module
+## 3. Develop Your Custom Module
 
 The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
 
@@ -104,4 +104,4 @@ To build the module for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your module's `dist` folder into your API's `/extensions/modules` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your module's `dist` folder into your project's `/extensions/modules` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

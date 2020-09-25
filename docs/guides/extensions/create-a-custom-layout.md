@@ -90,7 +90,7 @@ export default {
 }
 ```
 
-## 3. Build Your Custom Layout
+## 3. Develop Your Custom Layout
 
 The layout itself is simply a Vue component, which provides an blank canvas for creating anything you need.
 
@@ -102,4 +102,4 @@ To build the layout for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your layout's `dist` folder into your API's `/extensions/layouts` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your layout's `dist` folder into your project's `/extensions/layouts` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
