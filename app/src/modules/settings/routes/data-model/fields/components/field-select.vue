@@ -448,11 +448,8 @@ export default defineComponent({
 
 .group {
 	position: relative;
-	top: -8px;
 	left: -8px;
 	width: calc(100% + 16px);
-	height: calc(100% + 16px);
-	margin: 8px 0;
 	padding: 8px;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
