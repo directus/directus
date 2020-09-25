@@ -508,10 +508,6 @@ function initLocalStore(
 					one_primary: type === 'files' ? 'id' : '',
 				},
 			];
-
-			if (type === 'translations') {
-				state.fieldData.field = 'translations';
-			}
 		}
 
 		watch(
@@ -638,6 +634,9 @@ function initLocalStore(
 			}
 
 			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+
+			state.fieldData.field = 'translations';
+			state.relations[0].one_field = 'translations';
 		}
 	}
 
