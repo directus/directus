@@ -410,7 +410,7 @@ function initLocalStore(
 		}, 50);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = ['m2m'];
+			state.fieldData.meta.special = [type];
 
 			state.relations = [
 				{

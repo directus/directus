@@ -34,13 +34,6 @@
 			:type="localType"
 		/>
 
-		<setup-languages
-			v-if="currentTab[0] === 'languages'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
-
 		<setup-interface
 			v-if="currentTab[0] === 'interface'"
 			:is-existing="field !== '+'"
@@ -76,7 +69,6 @@ import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
 import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
-import SetupLanguages from './components/languages.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
@@ -98,7 +90,6 @@ export default defineComponent({
 		SetupSchema,
 		SetupRelationship,
 		SetupTranslations,
-		SetupLanguages,
 		SetupInterface,
 		SetupDisplay,
 	},
@@ -112,7 +103,9 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'>,
+			type: String as PropType<
+				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
+			>,
 			default: null,
 		},
 	},
@@ -134,7 +127,8 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' =
+				'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -192,18 +186,17 @@ export default defineComponent({
 				}
 
 				if (localType.value === 'translations') {
-					tabs.splice(1, 0, ...[
-						{
-							text: i18n.t('translations'),
-							value: 'translations',
-							disabled: translationsDisabled(),
-						},
-						{
-							text: i18n.t('languages'),
-							value: 'languages',
-							disabled: languagesDisabled(),
-						}
-					])
+					tabs.splice(
+						1,
+						0,
+						...[
+							{
+								text: i18n.t('translations'),
+								value: 'translations',
+								disabled: translationsDisabled(),
+							},
+						]
+					);
 				}
 
 				return tabs;
@@ -219,16 +212,6 @@ export default defineComponent({
 
 			function translationsDisabled() {
 				return isEmpty(state.fieldData.field);
-			}
-
-			function languagesDisabled() {
-				return isEmpty(state.fieldData.field) || (
-					state.relations.length === 0 ||
-					isEmpty(state.relations[0].many_collection) ||
-					isEmpty(state.relations[0].many_field) ||
-					isEmpty(state.relations[0].one_collection) ||
-					isEmpty(state.relations[0].one_primary)
-				);
 			}
 
 			function interfaceDisplayDisabled() {
@@ -354,6 +337,10 @@ export default defineComponent({
 			}
 
 			if (relations.length === 2) {
+				if ((fieldInfo.meta?.special || []).includes('translations')) {
+					return 'translations';
+				}
+
 				const relationForCurrent = relations.find(
 					(relation: Relation) =>
 						(relation.many_collection === collection && relation.many_field === field) ||
