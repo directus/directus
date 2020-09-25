@@ -1,10 +1,11 @@
 import { QueryBuilder } from 'knex';
 import { Query, Filter } from '../types';
-import { schemaInspector } from '../database';
+import database, { schemaInspector } from '../database';
+import { nanoid } from 'nanoid';
 
 export default async function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query) {
 	if (query.filter) {
-		applyFilter(dbQuery, query.filter);
+		await applyFilter(dbQuery, query.filter, collection);
 	}
 
 	if (query.sort) {
@@ -45,8 +46,13 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 	}
 }
 
-export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
-	for (const [key, value] of Object.entries(filter)) {
+export async function applyFilter(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+	for (let [key, value] of Object.entries(filter)) {
+		// Nested relational filter
+		if (key.includes('.')) {
+			key = await applyJoins(dbQuery, key, collection);
+		}
+
 		if (key.startsWith('_') === false) {
 			let operator = Object.keys(value)[0];
 
@@ -139,14 +145,55 @@ export function applyFilter(dbQuery: QueryBuilder, filter: Filter) {
 
 		if (key === '_or') {
 			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.orWhere((subQuery) => applyFilter(subQuery, subFilter));
+				dbQuery.orWhere((subQuery) => applyFilter(subQuery, subFilter, collection));
 			});
 		}
 
 		if (key === '_and') {
 			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.andWhere((subQuery) => applyFilter(subQuery, subFilter));
+				dbQuery.andWhere((subQuery) => applyFilter(subQuery, subFilter, collection));
 			});
+		}
+	}
+}
+
+async function applyJoins(dbQuery: QueryBuilder, path: string, collection: string) {
+	const pathParts = path.split('.');
+
+	let keyName = '';
+
+	await addJoins(pathParts);
+
+	return keyName;
+
+	async function addJoins(pathParts: string[], parentCollection: string = collection) {
+		const relation = await database
+			.select('*')
+			.from('directus_relations')
+			.where({ one_collection: parentCollection, one_field: pathParts[0] })
+			.orWhere({ many_collection: parentCollection, many_field: pathParts[0] })
+			.first();
+
+		if (!relation) return;
+
+		const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+
+		if (isM2O) {
+			dbQuery.leftJoin(relation.one_collection, `${parentCollection}.${relation.many_field}`, `${relation.one_collection}.${relation.one_primary}`);
+		} else {
+			dbQuery.leftJoin(relation.many_collection, `${relation.one_collection}.${relation.one_primary}`, `${relation.many_collection}.${relation.many_field}`);
+		}
+
+		pathParts.shift();
+
+		const parent = isM2O ? relation.one_collection : relation.many_collection;
+
+		if (pathParts.length === 1) {
+			keyName = `${parent}.${pathParts[0]}`;
+		}
+
+		if (pathParts.length) {
+			await addJoins(pathParts, parent);
 		}
 	}
 }
