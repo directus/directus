@@ -508,6 +508,10 @@ function initLocalStore(
 					one_primary: type === 'files' ? 'id' : '',
 				},
 			];
+
+			if (type === 'translations') {
+				state.fieldData.field = 'translations';
+			}
 		}
 
 		watch(

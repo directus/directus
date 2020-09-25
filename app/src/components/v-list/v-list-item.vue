@@ -164,7 +164,9 @@ body {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-subdued);
+		--v-list-item-color: var(--foreground-subdued) !important;
+
+		cursor: not-allowed;
 	}
 
 	@at-root {

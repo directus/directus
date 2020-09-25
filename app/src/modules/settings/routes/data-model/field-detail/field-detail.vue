@@ -1,5 +1,9 @@
 <template>
-	<v-dialog persistent :active="true" v-if="localType === 'translations' && translationsManual === false">
+	<v-dialog
+		persistent
+		:active="true"
+		v-if="localType === 'translations' && translationsManual === false && field === '+'"
+	>
 		<v-card class="auto-translations">
 			<v-card-title>{{ $t('create_translations') }}</v-card-title>
 			<v-card-text>
@@ -105,6 +109,7 @@ import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import notify from '@/utils/notify';
+import { getLocalTypeForField } from '../get-local-type';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 
@@ -351,58 +356,16 @@ export default defineComponent({
 			router.push(`/settings/data-model/${props.collection}`);
 			clearLocalStore();
 		}
-
-		function getLocalTypeForField(
-			collection: string,
-			field: string
-		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' {
-			const fieldInfo = fieldsStore.getField(collection, field);
-			const relations = relationsStore.getRelationsForField(collection, field);
-
-			if (relations.length === 0) {
-				if (fieldInfo.type === 'alias') return 'presentation';
-				return 'standard';
-			}
-
-			if (relations.length === 1) {
-				const relation = relations[0];
-				if (relation.one_collection === 'directus_files') return 'file';
-				if (relation.many_collection === collection) return 'm2o';
-				return 'o2m';
-			}
-
-			if (relations.length === 2) {
-				if ((fieldInfo.meta?.special || []).includes('translations')) {
-					return 'translations';
-				}
-
-				const relationForCurrent = relations.find(
-					(relation: Relation) =>
-						(relation.many_collection === collection && relation.many_field === field) ||
-						(relation.one_collection === collection && relation.one_field === field)
-				);
-
-				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field)
-					return 'm2o';
-
-				if (
-					relations[0].one_collection === 'directus_files' ||
-					relations[1].one_collection === 'directus_files'
-				) {
-					return 'files';
-				} else {
-					return 'm2m';
-				}
-			}
-
-			return 'standard';
-		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .auto-translations {
+	.v-input {
+		--v-input-font-family: var(--family-monospace);
+	}
+
 	.v-notice {
 		margin-top: 12px;
 	}
