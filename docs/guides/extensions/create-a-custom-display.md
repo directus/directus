@@ -1,10 +1,10 @@
 # Create a Custom Display
 
-> TK
+> Custom displays allow you to create new ways of viewing field values inline throughout the App.
 
 ## 1. Setup the Boilerplate
 
-Every display is a standalone "package" that contains at least a metadata file, and a Vue component. I recommend you use the following file structure:
+Every display is a standalone "package" that contains at least a metadata file and a Vue component. We recommend using the following file structure:
 
 ```
 src/
@@ -13,8 +13,6 @@ src/
 ```
 
 ### src/index.js
-
-_See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/displays/types.ts#L24-L34) for more info on what can go into this object_
 
 ```js
 import DisplayComponent from './display.vue';
@@ -28,6 +26,13 @@ export default {
     types: ['string'],
 }
 ```
+
+* `id` — The unique key for this display. It is good practice to scope proprietary displays with an author prefix.
+* `name` — The human-readable name for this display.
+* `description` — A short description (<80 characters) of this display shown in the App and Marketplace.
+* `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+* `handler` — A function, or reference to your Vue component.
+* `types` — A CSV of supported [types](#). See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18) for a full list of possible options.
 
 ### src/display.vue
 
@@ -43,12 +48,12 @@ export default {}
 
 The props you can use in an display are:
 
-* `interface` - The interface that is configured for this field
-* `interface-options` - The configured options for this field's interface
-* `value` - The current value of this field
-* `type` - The type of the field
-* `collection` - The collection the field is in
-* `field` - The current field
+* `value` — The value of the parent field.
+* `interface` - The interface of the parent field.
+* `interface-options` - The options for the parent field's interface.
+* `type` — The type of the parent field.
+* `collection` — The collection name of the parent field.
+* `field` — The key of the parent field.
 
 ---
 
@@ -67,19 +72,23 @@ export default {
 }
 ```
 
-## 2. Install Dependencies & Setup Buildchain
+## 2. Install Dependencies and Configure the Buildchain
 
-The output that's read by the app has to be a single bundled index.js file. In order to bundle the Vue component into the index.js file, you need a bundler.
+Set up a package.json file by running:
 
-I recommend you use Rollup for this purpose.
+```bash
+npm init -y
+```
 
-Run `npm init -y` to setup a package.json file. Then run `npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler` to install the dev dependencies needed for the buildchain.
+To be read by the Admin App, your custom display's Vue component must first be bundled into a single `index.js` file. We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
-Use the following Rollup config:
+```bash
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+```
+
+You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
-// rollup.config.js
-
 import { terser } from 'rollup-plugin-terser';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs'
@@ -100,10 +109,16 @@ export default {
 }
 ```
 
-## 3. Build Your Custom display
+## 3. Build Your Custom Display
 
-The display itself is a Vue component, which allows you to do whatever you need.
+The display itself is simply a function or a Vue component, providing a blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 
-Run `npx rollup -c` to build the display for use in Directus. Move the `dist` folder into the `extensions` folder you've configured in the API under `displays`.
+To build the display for use within Directus, run:
+
+```bash
+npx rollup -c
+```
+
+Finally, move the output from your display's `dist` folder into your API's `/extensions/displays` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
