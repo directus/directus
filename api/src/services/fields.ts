@@ -77,7 +77,7 @@ export class FieldsService {
 
 		let aliasFields = await aliasQuery;
 
-		const aliasTypes = ['alias', 'o2m', 'm2m', 'translations'];
+		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
 
 		aliasFields = aliasFields.filter((field) => {
 			const specials = (field.special || '').split(',');

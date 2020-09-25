@@ -287,6 +287,13 @@ export default defineComponent({
 					})
 				);
 
+				await Promise.all(
+					Object.keys(state.newRows).map((collection) => {
+						const rows = state.newRows[collection];
+						return api.post(`/items/${collection}`, rows);
+					})
+				);
+
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 				await relationsStore.hydrate();
