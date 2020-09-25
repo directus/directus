@@ -81,6 +81,8 @@ module.exports = function registerHook() {
 }
 ```
 
+## 4. Develop your Custom Hook
+
 ### Register Function
 
 The register function (eg: `module.exports = function registerHook()`) must return an object where the key is the event, and the value is the handler function itself.
@@ -102,6 +104,14 @@ The event handler function (eg: `'item.create.articles': function()`) recieves a
 * `item` — Primary key(s) of the item(s) being modified [Learn More](#)
 * `action` — Action that is performed [Learn More](#)
 * `payload` — Payload of the request [Learn More](#)
+
+## 5. Restart the API
+
+To deploy your hook, simply restart the API by running:
+
+```bash
+npx directus start
+```
 
 ---
 
