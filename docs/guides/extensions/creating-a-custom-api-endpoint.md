@@ -46,7 +46,7 @@ npx directus start
 
 ---
 
-## Full example:
+## Full Example:
 
 ```js
 // extensions/endpoints/recipes/index.js

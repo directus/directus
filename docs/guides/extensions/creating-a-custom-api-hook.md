@@ -115,7 +115,7 @@ npx directus start
 
 ---
 
-## Full example:
+## Full Example:
 
 ```js
 // extensions/hooks/sync-with-external/index.js
