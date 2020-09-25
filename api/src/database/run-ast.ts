@@ -216,7 +216,7 @@ function removeTemporaryFields(rawItem: Item | Item[], ast: AST | NestedCollecti
 
 		for (const nestedCollection of nestedCollections) {
 			if (item[nestedCollection.fieldKey] !== null) {
-				item[nestedCollection.fieldKey] = removeTemporaryFields(Array.isArray(rawItem[nestedCollection.fieldKey]) ? rawItem[nestedCollection.fieldKey] : [rawItem[nestedCollection.fieldKey]], nestedCollection);
+				item[nestedCollection.fieldKey] = removeTemporaryFields(rawItem[nestedCollection.fieldKey], nestedCollection);
 			}
 		}
 
