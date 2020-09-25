@@ -1,5 +1,30 @@
 <template>
+	<v-dialog persistent :active="true" v-if="localType === 'translations' && translationsManual === false">
+		<v-card class="auto-translations">
+			<v-card-title>{{ $t('create_translations') }}</v-card-title>
+			<v-card-text>
+				<v-input v-model="fieldData.field" :placeholder="$t('field_name') + '...'" />
+				<v-notice>
+					<div>
+						{{ $t('this_will_auto_setup_fields_relations') }}
+						<br />
+						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
+						{{ $t('to_manually_setup_translations') }}
+					</div>
+				</v-notice>
+			</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="cancelField">{{ $t('cancel') }}</v-button>
+				<div class="spacer" />
+				<v-button :disabled="!fieldData.field" :loading="saving" @click="saveField">
+					{{ $t('auto_generate') }}
+				</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+
 	<v-modal
+		v-else
 		:active="true"
 		:title="
 			field === '+'
@@ -114,6 +139,8 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
+		const translationsManual = ref(false);
+
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
 
@@ -152,6 +179,7 @@ export default defineComponent({
 			localType,
 			existingField,
 			collectionInfo,
+			translationsManual,
 		};
 
 		function useTabs() {
@@ -372,3 +400,19 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.auto-translations {
+	.v-notice {
+		margin-top: 12px;
+	}
+
+	.spacer {
+		flex-grow: 1;
+	}
+
+	.manual-toggle {
+		color: var(--primary);
+	}
+}
+</style>

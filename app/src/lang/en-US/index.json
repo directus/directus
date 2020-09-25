@@ -193,6 +193,13 @@
 
 	"not_available_for_type": "Not Available for this Type",
 
+	"create_translations": "Create Translations",
+
+	"auto_generate": "Auto-Generate",
+	"this_will_auto_setup_fields_relations": "This will automatically setup all required fields and relations.",
+	"click_here": "Click here",
+	"to_manually_setup_translations": "to manually setup translations.",
+
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",

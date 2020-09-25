@@ -395,6 +395,9 @@ function initLocalStore(
 					state.newCollections.push({
 						$type: 'related',
 						collection: relatedCollection,
+						meta: {
+							icon: 'translate',
+						},
 						fields: [
 							{
 								field: state.relations[1].one_primary,
