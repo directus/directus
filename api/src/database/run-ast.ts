@@ -33,6 +33,8 @@ export default async function runAST(originalAST: AST, options?: RunASTOptions):
 	const payloadService = new PayloadService(ast.name, { knex });
 	let items = await payloadService.processValues('read', rawItems);
 
+	if (!items || items.length === 0) return items;
+
 	// Apply the `_in` filters to the nested collection batches
 	const nestedASTs = applyParentFilters(nestedCollectionASTs, items);
 
@@ -108,7 +110,7 @@ async function parseCurrentLevel(ast: AST, knex: Knex) {
 }
 
 async function getDBQuery(knex: Knex, table: string, columns: string[], query: Query, primaryKeyField: string): Promise<QueryBuilder> {
-	let dbQuery = knex.select(columns).from(table);
+	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
 
@@ -121,6 +123,7 @@ async function getDBQuery(knex: Knex, table: string, columns: string[], query: Q
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
 	await applyQuery(table, dbQuery, queryCopy);
+
 	return dbQuery;
 }
 
