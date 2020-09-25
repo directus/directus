@@ -78,4 +78,4 @@ In addition to managing multilingual content, the Directus Admin App itself can 
 
 ### Marketplace
 
-Coming in 2021. A library of free and paid Directus extensions created by our core team and community members.
+Coming soon. A library of free and paid Directus extensions created by our core team and community members.
