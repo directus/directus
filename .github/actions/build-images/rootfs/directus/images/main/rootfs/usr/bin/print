@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+// Workarounds?
+process.env.NODE_PATH = "/usr/local/lib/node_modules";
+require("module").Module._initPaths();
+
+/**
+ * Read lines from stdin
+ */
+async function readlines() {
+  const chunks = [];
+  for await (const chunk of process.stdin) {
+    chunks.push(chunk);
+  }
+
+  const lines = chunks.join("").split("\n");
+  lines.pop();
+  return lines;
+}
+
+(async function () {
+  // Logger
+  const yargs = require("yargs");
+  const logger = require("pino")({
+    prettyPrint: process.env.LOG_STYLE !== "raw",
+    prettifier: require("pino-colada"),
+    level: process.env.LOG_LEVEL || "info",
+  });
+
+  function write(...message) {
+    if (level in logger) {
+      logger[level](...message);
+    } else {
+      logger.info(...message);
+    }
+  }
+
+  const args = yargs.argv;
+  const level = args.level || "info";
+  const stdin = args.stdin || false;
+
+  if (stdin) {
+    const lines = await readlines();
+    lines.forEach((line) => write(line));
+  } else {
+    write(...args._);
+  }
+})();

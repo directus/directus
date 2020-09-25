@@ -1,0 +1,22 @@
+name: build-images
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: ./.github/actions/build-images
+        with:
+          registry: "ghcr.io"
+          repository: "${{ github.repository }}"
+          username: "${{ secrets.REGISTRY_USERNAME }}"
+          password: "${{ secrets.REGISTRY_PASSWORD }}"
+          version: "${{ github.ref }}"
+          push: "true"
