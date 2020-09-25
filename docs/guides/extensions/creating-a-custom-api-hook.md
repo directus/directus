@@ -63,9 +63,11 @@ Many scopes (see chart below) support an optional `.before` suffix for running a
 | `settings`    | `create`, `update` and `delete`    | Optional |
 | `users`       | `create`, `update` and `delete`    | Optional |
 | `webhooks`    | `create`, `update` and `delete`    | Optional |
-| `server`      | `start` and `error`                | No       |
-| `auth`        | `success`, `fail` and `refresh`    | No       |
-| `request`     | `get`, `patch` `post` and `delete` | No       |
+| `server`      | `start` and `error*`                | No       |
+| `auth`        | `success*`, `fail*` and `refresh*`    | No       |
+| `request`     | `get*`, `patch*` `post*` and `delete*` | No       |
+
+\* TBD
 
 ## 3. Register your Hook
 
