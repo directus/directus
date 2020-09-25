@@ -32,7 +32,11 @@ export default {
 * `description` — A short description (<80 characters) of this display shown in the App.
 * `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 * `handler` — A function, or reference to your Vue component.
-* `types` — A CSV of supported [types](#). See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18) for a full list of possible options.
+* `types` — A CSV of supported [types](#).
+
+:::tip
+See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/displays/types.ts#L24-L34) for more info on what can go into this object.
+:::
 
 ### src/display.vue
 
