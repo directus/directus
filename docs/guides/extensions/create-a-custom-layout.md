@@ -1,10 +1,10 @@
-# Create a Custom layout
+# Create a Custom Layout
 
-> TK
+> Custom layouts allow you to create new ways of browsing or viewing data on the Item Browse page.
 
 ## 1. Setup the Boilerplate
 
-Every layout is a standalone "package" that contains at least a metadata file, and a Vue component. I recommend you use the following file structure:
+Every layout is a standalone "package" that contains at least a metadata file and a Vue component. We recommend using the following file structure:
 
 ```
 src/
@@ -13,8 +13,6 @@ src/
 ```
 
 ### src/index.js
-
-_See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/layouts/types.ts#L4-L9) for more info on what can go into this object_
 
 ```js
 import LayoutComponent from './layout.vue';
@@ -26,11 +24,15 @@ export default {
 }
 ```
 
+* `id` — The unique key for this layout. It is good practice to scope proprietary layouts with an author prefix.
+* `name` — The human-readable name for this layout.
+* `component` — A reference to your Vue component.
+
 ### src/layout.vue
 
 ```vue
 <template>
-    <div>My Custom layout</div>
+    <div>My Custom Layout</div>
 </template>
 
 <script>
@@ -40,26 +42,30 @@ export default {}
 
 The props you can use in an layout are:
 
-* `collection` - The current collection
-* `selection` (sync) - The currently selected items
-* `layout-options` (sync) - The saved options for the current layout
-* `layout-query` (sync) - The saved query for the current layout
-* `filters` (sync) - The currently used filters
-* `search-query` (sync) - The currently used search query
+* `collection` — The current collection's name.
+* `selection` (sync) - Any currently selected items.
+* `layout-options` (sync) - The user's current saved layout options.
+* `layout-query` (sync) - The user's layout query parameters. (eg: sort, limit, etc)
+* `filters` (sync) - The user's currently active filters.
+* `search-query` (sync) - The user's current search query.
 
-## 2. Install Dependencies & Setup Buildchain
+## 2. Install Dependencies and Configure the Buildchain
 
-The output that's read by the app has to be a single bundled index.js file. In order to bundle the Vue component into the index.js file, you need a bundler.
+Set up a package.json file by running:
 
-I recommend you use Rollup for this purpose.
+```bash
+npm init -y
+```
 
-Run `npm init -y` to setup a package.json file. Then run `npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler` to install the dev dependencies needed for the buildchain.
+To be read by the Admin App, your custom layouts's Vue component must first be bundled into a single `index.js` file. We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
-Use the following Rollup config:
+```bash
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+```
+
+You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
-// rollup.config.js
-
 import { terser } from 'rollup-plugin-terser';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs'
@@ -80,10 +86,16 @@ export default {
 }
 ```
 
-## 3. Build Your Custom layout
+## 3. Build Your Custom Layout
 
-The layout itself is a Vue component, which allows you to do whatever you need.
+The layout itself is simply a Vue component, which provides an blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 
-Run `npx rollup -c` to build the layout for use in Directus. Move the `dist` folder into the `extensions` folder you've configured in the API under `layouts`.
+To build the layout for use within Directus, run:
+
+```bash
+npx rollup -c
+```
+
+Finally, move the output from your layout's `dist` folder into your API's `/extensions/layouts` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
