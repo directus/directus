@@ -202,6 +202,8 @@
 
 	"click_to_manage_translated_fields": "There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage it. | There are {count} translated fields. Click here to manage them.",
 
+	"fields_group": "Fields Group",
+
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",

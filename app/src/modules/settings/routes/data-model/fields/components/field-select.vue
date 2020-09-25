@@ -3,11 +3,13 @@
 		<div v-if="localType === 'translations'" class="group">
 			<div class="header">
 				<v-icon class="drag-handle" name="drag_indicator" />
-				<v-menu show-arrow>
+				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
+				<div class="spacer" />
+				<v-icon small name="group_work" v-tooltip="$t('fields_group')" />
+				<v-menu show-arrow placement="bottom-end">
 					<template #activator="{ toggle }">
 						<span class="group-options" @click="toggle">
-							<span class="name" v-tooltip="field.field">{{ field.name }}</span>
-							<v-icon name="expand_more" />
+							<v-icon name="more_vert" />
 						</span>
 					</template>
 
@@ -40,106 +42,106 @@
 			</router-link>
 		</div>
 
-		<v-menu v-else attached>
-			<template #activator="{ toggle, active }">
-				<v-input class="field" :class="{ hidden, active }" readonly @click="openFieldDetail">
-					<template #prepend>
-						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-					</template>
-
-					<template #input>
-						<div class="label">
-							<span class="name" v-tooltip="field.name">{{ field.field }}</span>
-							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-							<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
-						</div>
-					</template>
-
-					<template #append>
-						<div class="icons">
-							<v-icon
-								v-if="field.schema && field.schema.is_primary_key"
-								name="vpn_key"
-								small
-								v-tooltip="$t('primary_key')"
-							/>
-							<v-icon
-								v-if="!field.meta"
-								name="report_problem"
-								class="unmanaged"
-								small
-								v-tooltip="$t('db_only_click_to_configure')"
-							/>
-							<v-icon
-								v-if="hidden"
-								name="visibility_off"
-								class="hidden-icon"
-								v-tooltip="$t('hidden_field')"
-								small
-							/>
-							<v-icon @click.stop="toggle" name="more_vert" />
-						</div>
-					</template>
-				</v-input>
+		<v-input v-else class="field" :class="{ hidden }" readonly @click="openFieldDetail">
+			<template #prepend>
+				<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 			</template>
 
-			<v-list dense>
-				<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-					<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
-					<v-list-item-content>
-						{{ $t('edit_field') }}
-					</v-list-item-content>
-				</v-list-item>
+			<template #input>
+				<div class="label">
+					<span class="name" v-tooltip="field.name">{{ field.field }}</span>
+					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
+				</div>
+			</template>
 
-				<v-list-item @click="duplicateActive = true">
-					<v-list-item-icon>
-						<v-icon name="content_copy" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
-				</v-list-item>
+			<template #append>
+				<div class="icons">
+					<v-icon
+						v-if="field.schema && field.schema.is_primary_key"
+						name="vpn_key"
+						small
+						v-tooltip="$t('primary_key')"
+					/>
+					<v-icon
+						v-if="!field.meta"
+						name="report_problem"
+						class="unmanaged"
+						small
+						v-tooltip="$t('db_only_click_to_configure')"
+					/>
+					<v-icon
+						v-if="hidden"
+						name="visibility_off"
+						class="hidden-icon"
+						v-tooltip="$t('hidden_field')"
+						small
+					/>
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon @click.stop="toggle" name="more_vert" />
+						</template>
 
-				<v-list-item @click="toggleVisibility">
-					<template v-if="hidden === false">
-						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
-					</template>
-					<template v-else>
-						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
-					</template>
-				</v-list-item>
+						<v-list dense>
+							<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
+								<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
+								<v-list-item-content>
+									{{ $t('edit_field') }}
+								</v-list-item-content>
+							</v-list-item>
 
-				<v-divider />
+							<v-list-item @click="duplicateActive = true">
+								<v-list-item-icon>
+									<v-icon name="content_copy" />
+								</v-list-item-icon>
+								<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+							</v-list-item>
 
-				<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
-					<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
-				</v-list-item>
+							<v-list-item @click="toggleVisibility">
+								<template v-if="hidden === false">
+									<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
+									<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
+								</template>
+								<template v-else>
+									<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
+									<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
+								</template>
+							</v-list-item>
 
-				<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
-					<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
-				</v-list-item>
+							<v-divider />
 
-				<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
-					<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
-				</v-list-item>
+							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
+								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
+								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+							</v-list-item>
 
-				<v-divider />
+							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
+								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
+								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+							</v-list-item>
 
-				<v-list-item
-					@click="deleteActive = true"
-					class="danger"
-					:disabled="(field.schema && field.schema.is_primary_key === true) || false"
-				>
-					<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-					<v-list-item-content>
-						{{ $t('delete_field') }}
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
+								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+							</v-list-item>
+
+							<v-divider />
+
+							<v-list-item
+								@click="deleteActive = true"
+								class="danger"
+								:disabled="(field.schema && field.schema.is_primary_key === true) || false"
+							>
+								<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
+								<v-list-item-content>
+									{{ $t('delete_field') }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</div>
+			</template>
+		</v-input>
 
 		<v-dialog v-model="duplicateActive">
 			<v-card class="duplicate">
@@ -448,18 +450,28 @@ export default defineComponent({
 
 .group {
 	position: relative;
-	left: -8px;
-	width: calc(100% + 16px);
-	padding: 8px;
+	padding: var(--input-padding);
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
+	border: 2px solid var(--border-normal);
 
 	.header {
-		margin-bottom: 8px;
+		margin-bottom: var(--input-padding);
+		display: flex;
+		align-items: center;
+	}
+
+	.name {
+		font-family: var(--family-monospace);
 	}
 
 	.drag-handle {
-		margin-right: 4px;
+		margin-right: 8px;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground);
+		}
 	}
 
 	.group-options {
