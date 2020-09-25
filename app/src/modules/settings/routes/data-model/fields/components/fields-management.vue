@@ -137,8 +137,8 @@ export default defineComponent({
 			{
 				type: 'translations',
 				icon: 'translate',
-				text: i18n.t('translations')
-			}
+				text: i18n.t('translations'),
+			},
 		]);
 
 		return {
@@ -169,9 +169,6 @@ export default defineComponent({
 
 .fields-management {
 	margin-bottom: 24px;
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
 }
 
 .field-grid {

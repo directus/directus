@@ -68,15 +68,26 @@ export class FieldsService {
 		});
 
 		const aliasQuery = this.knex
-			.select<FieldMeta[]>('*')
-			.from('directus_fields')
-			.whereIn('special', ['alias', 'o2m', 'm2m']);
+			.select<any[]>('*')
+			.from('directus_fields');
 
 		if (collection) {
 			aliasQuery.andWhere('collection', collection);
 		}
 
 		let aliasFields = await aliasQuery;
+
+		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
+
+		aliasFields = aliasFields.filter((field) => {
+			const specials = (field.special || '').split(',');
+
+			for (const type of aliasTypes) {
+				if (specials.includes(type)) return true;
+			}
+
+			return false;
+		});
 
 		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as FieldMeta[];
 

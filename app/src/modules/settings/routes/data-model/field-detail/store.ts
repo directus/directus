@@ -56,6 +56,7 @@ function initLocalStore(
 		newCollections: [],
 		newFields: [],
 		updateFields: [],
+		newRows: {},
 
 		autoFillJunctionRelation: true,
 	});
@@ -390,27 +391,104 @@ function initLocalStore(
 			}
 
 			if (collectionExists(relatedCollection) === false) {
-				state.newCollections.push({
-					$type: 'related',
-					collection: relatedCollection,
-					fields: [
-						{
-							field: state.relations[1].one_primary,
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
-							},
-							meta: {
-								hidden: true,
-							},
+				if (type === 'translations') {
+					state.newCollections.push({
+						$type: 'related',
+						collection: relatedCollection,
+						meta: {
+							icon: 'translate',
 						},
-					],
-				});
+						fields: [
+							{
+								field: state.relations[1].one_primary,
+								type: 'string',
+								schema: {
+									is_primary_key: true,
+								},
+								meta: {
+									interface: 'text-input',
+									options: {
+										iconLeft: 'vpn_key',
+									},
+									width: 'half',
+								},
+							},
+							{
+								field: 'name',
+								type: 'string',
+								schema: {},
+								meta: {
+									interface: 'text-input',
+									options: {
+										iconLeft: 'translate',
+									},
+									width: 'half',
+								},
+							},
+						],
+					});
+				} else {
+					state.newCollections.push({
+						$type: 'related',
+						collection: relatedCollection,
+						fields: [
+							{
+								field: state.relations[1].one_primary,
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								meta: {
+									hidden: true,
+								},
+							},
+						],
+					});
+				}
+			}
+
+			if (type === 'translations') {
+				if (collectionExists(relatedCollection) === false) {
+					state.newRows = {
+						[relatedCollection]: [
+							{
+								code: 'en-US',
+								name: 'English',
+							},
+							{
+								code: 'de-DE',
+								name: 'German',
+							},
+							{
+								code: 'fr-Fr',
+								name: 'French',
+							},
+							{
+								code: 'ru-RU',
+								name: 'Russian',
+							},
+							{
+								code: 'es-ES',
+								name: 'Spanish',
+							},
+							{
+								code: 'it-IT',
+								name: 'Italian',
+							},
+							{
+								code: 'pt-BR',
+								name: 'Portuguese',
+							},
+						],
+					};
+				} else {
+					state.newRows = {};
+				}
 			}
 		}, 50);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = ['m2m'];
+			state.fieldData.meta.special = [type];
 
 			state.relations = [
 				{
@@ -430,6 +508,10 @@ function initLocalStore(
 					one_primary: type === 'files' ? 'id' : '',
 				},
 			];
+
+			if (type === 'translations') {
+				state.fieldData.field = 'translations';
+			}
 		}
 
 		watch(
@@ -542,15 +624,17 @@ function initLocalStore(
 			);
 
 			state.relations[0].many_collection = `${collection}_translations`;
+
 			state.relations[0].many_field = `${collection}_${
 				fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field
 			}`;
+
 			state.relations[1].one_collection = 'languages';
 
 			if (collectionExists('languages')) {
 				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection('languages')?.field;
 			} else {
-				state.relations[1].one_primary = 'id';
+				state.relations[1].one_primary = 'code';
 			}
 
 			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
