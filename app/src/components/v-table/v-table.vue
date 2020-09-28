@@ -1,5 +1,5 @@
 <template>
-	<div class="v-table" :class="{ loading, inline, disabled }" ref="table">
+	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table
 			:summary="_headers.map((header) => header.text).join(', ')"
 			:style="{
@@ -86,7 +86,6 @@ import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
-import useShortcut from '@/composables/use-shortcut';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -185,8 +184,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit, listeners, slots }) {
-		const table = ref<HTMLElement | null>(null);
-
 		const _headers = computed({
 			get: () => {
 				return props.headers
@@ -294,14 +291,6 @@ export default defineComponent({
 			return gridTemplateColumns;
 		});
 
-		useShortcut(
-			'meta+a',
-			() => {
-				onToggleSelectAll(!allItemsSelected.value);
-			},
-			table
-		);
-
 		return {
 			_headers,
 			_items,
@@ -317,7 +306,6 @@ export default defineComponent({
 			columnStyle,
 			hasItemAppendSlot,
 			hideDragImage,
-			table,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {
