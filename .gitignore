@@ -6,3 +6,4 @@ node_modules
 npm-debug.log
 lerna-debug.log
 .nova
+*.code-workspace
