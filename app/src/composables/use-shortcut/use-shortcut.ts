@@ -1,7 +1,11 @@
 import { onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
-type ShortcutHandler = (event: KeyboardEvent) => void | any | boolean;
+type ShortcutHandler = (event: CancelableKeyboardEvent) => void | any | boolean;
+
+interface CancelableKeyboardEvent extends KeyboardEvent {
+	cancelNext: () => void;
+}
 
 const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
@@ -42,10 +46,14 @@ function callHandlers(event: KeyboardEvent) {
 		const rest = key.split('+').filter((keySegment) => keysdown.has(keySegment) === false);
 		if (rest.length > 0) return;
 		for (let i = 0; i < value.length; i++) {
-			const cancel = value[i](event);
+			let cancel = false;
+			(event as CancelableKeyboardEvent).cancelNext = () => {
+				cancel = true;
+			};
+			value[i](event as CancelableKeyboardEvent);
 
-			// if the return value is true discontinue going through the queue.
-			if (typeof cancel === 'boolean' && cancel === true) break;
+			// if cancelNext is called, discontinue going through the queue.
+			if (typeof cancel === 'boolean' && cancel) break;
 		}
 	});
 }
