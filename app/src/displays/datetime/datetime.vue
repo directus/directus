@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType } from '@vue/composition-api';
+import { defineComponent, ref, watch, PropType, computed } from '@vue/composition-api';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
 import i18n from '@/lang';
-import parseISO from 'date-fns/parseISO';
+import { parseISO, parse } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -26,20 +26,34 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const localValue = computed(() => {
+			if (!props.value) return null;
+
+			if (props.type === 'timestamp') {
+				return parseISO(props.value);
+			} else if (props.type === 'dateTime') {
+				return parse(props.value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+			} else if (props.type === 'date') {
+				return parse(props.value, 'yyyy-MM-dd', new Date());
+			} else if (props.type === 'time') {
+				return parse(props.value, 'HH:mm:ss', new Date());
+			}
+
+			return null;
+		});
+
 		const displayValue = ref<string | null>(null);
 
 		watch(
-			() => props.value,
+			localValue,
 			async (newValue) => {
 				if (newValue === null) {
 					displayValue.value = null;
 					return;
 				}
 
-				const date = parseISO(props.value);
-
 				if (props.relative) {
-					displayValue.value = await localizedFormatDistance(date, new Date(), {
+					displayValue.value = await localizedFormatDistance(newValue, new Date(), {
 						addSuffix: true,
 					});
 				} else {
@@ -47,7 +61,7 @@ export default defineComponent({
 					if (props.type === 'date') format = String(i18n.t('date-fns_date'));
 					if (props.type === 'time') format = String(i18n.t('date-fns_time'));
 
-					displayValue.value = await localizedFormat(date, format);
+					displayValue.value = await localizedFormat(newValue, format);
 				}
 			},
 			{ immediate: true }
