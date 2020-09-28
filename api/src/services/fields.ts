@@ -347,6 +347,8 @@ export class FieldsService {
 			column = table[type](field.field /* precision, scale */);
 		} else if (field.type === 'csv') {
 			column = table.string(field.field);
+		} else if (field.type === 'dateTime') {
+			column = table.dateTime(field.field, { useTz: false });
 		} else {
 			column = table[field.type](field.field);
 		}
