@@ -545,6 +545,8 @@
 	"user_directory": "User Directory",
 	"help_and_docs": "Help & Docs",
 
+	"documentation": "Documentation",
+
 	"card_size": "Card Size",
 	"sort_field": "Sort Field",
 
@@ -687,6 +689,8 @@
 	"divider": "Divider",
 	"color": "Color",
 	"circle": "Circle",
+
+
 
 	"empty_item": "Empty Item",
 
