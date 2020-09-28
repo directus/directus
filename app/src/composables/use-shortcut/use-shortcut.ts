@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, Ref } from '@vue/composition-api';
+import { onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent) => void | any | boolean;
@@ -51,9 +51,9 @@ function callHandlers(event: KeyboardEvent) {
 }
 
 export default function useShortcut(
+	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | null> | Ref<Vue | null>,
-	...shortcuts: string[]
+	reference: Ref<HTMLElement | null> | Ref<Vue | null> = ref(document.body)
 ) {
 	const callback: ShortcutHandler = (event) => {
 		if (reference.value === null) return;
@@ -70,7 +70,7 @@ export default function useShortcut(
 		return false;
 	};
 	onMounted(() => {
-		shortcuts.forEach((shortcut) => {
+		[shortcuts].flat().forEach((shortcut) => {
 			if (handlers.hasOwnProperty(shortcut)) {
 				handlers[shortcut].unshift(callback);
 			} else {
@@ -79,7 +79,7 @@ export default function useShortcut(
 		});
 	});
 	onUnmounted(() => {
-		shortcuts.forEach((shortcut) => {
+		[shortcuts].flat().forEach((shortcut) => {
 			if (handlers.hasOwnProperty(shortcut)) {
 				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
 				if (handlers[shortcut].length === 0) {

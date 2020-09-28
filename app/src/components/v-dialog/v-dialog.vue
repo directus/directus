@@ -1,5 +1,5 @@
 <template>
-	<div class="v-dialog" ref="dialog">
+	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
@@ -33,16 +33,12 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const dialog = ref<HTMLElement | null>(null);
-		useShortcut(
-			() => {
-				if (_active.value) {
-					emitToggle();
-					return true;
-				}
-			},
-			ref(document.body),
-			'escape'
-		);
+		useShortcut('escape', () => {
+			if (_active.value) {
+				emitToggle();
+				return true;
+			}
+		});
 
 		const localActive = ref(false);
 

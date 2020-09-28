@@ -286,8 +286,8 @@ export default defineComponent({
 			return i18n.t('archive');
 		});
 
-		useShortcut(saveAndStay, form, 'meta+s');
-		useShortcut(saveAndAddNew, form, 'meta+shift+s');
+		useShortcut('meta+s', saveAndStay, form);
+		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		const navigationGuard: NavigationGuard = (to, from, next) => {
 			const hasEdits = Object.keys(edits.value).length > 0;

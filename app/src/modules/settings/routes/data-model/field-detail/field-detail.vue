@@ -1,6 +1,6 @@
 <template>
 	<v-modal
-		:active="active"
+		:active="true"
 		@toggle="cancelField"
 		:title="
 			field === '+'
@@ -120,7 +120,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const active = ref(true);
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -163,7 +162,6 @@ export default defineComponent({
 			localType,
 			existingField,
 			collectionInfo,
-			active,
 		};
 
 		function useTabs() {
