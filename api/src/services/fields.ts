@@ -29,7 +29,7 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields');
 	}
 
-	async readAll(collection?: string) {
+	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', { knex: this.knex });
 
@@ -357,7 +357,7 @@ export class FieldsService {
 			column.defaultTo(field.schema.default_value);
 		}
 
-		if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
+		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
 			column.notNullable();
 		} else {
 			column.nullable();

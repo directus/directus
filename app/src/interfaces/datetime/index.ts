@@ -21,6 +21,18 @@ export default defineInterface(({ i18n }) => ({
 				default_value: false,
 			},
 		},
+		{
+			field: 'use24',
+			name: i18n.t('interfaces.datetime.use_24'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 	recommendedDisplays: ['datetime'],
 }));
