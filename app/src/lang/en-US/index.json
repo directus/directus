@@ -690,6 +690,8 @@
 
 	"empty_item": "Empty Item",
 
+	"log_in_with": "Log In with {provider}",
+
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",
 	"operators": {
