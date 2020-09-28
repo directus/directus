@@ -79,6 +79,7 @@
 		"commander": "^5.1.0",
 		"cookie-parser": "^1.4.5",
 		"cors": "^2.8.5",
+		"date-fns": "^2.16.1",
 		"dotenv": "^8.2.0",
 		"eventemitter2": "^6.4.3",
 		"execa": "^4.0.3",

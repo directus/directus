@@ -17,13 +17,13 @@
 
 		<div class="date-selects" v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'">
 			<div class="month">
-				<v-select :placeholder="$t('month')" :items="months" v-model="localValue.month" />
+				<v-select :placeholder="$t('month')" :items="monthItems" v-model="month" />
 			</div>
 			<div class="date">
-				<v-select :placeholder="$t('date')" :items="dates" v-model="localValue.date" />
+				<v-select :placeholder="$t('date')" :items="dateItems" v-model="date" />
 			</div>
 			<div class="year">
-				<v-select :placeholder="$t('year')" :items="years" v-model="localValue.year" allow-other />
+				<v-select :placeholder="$t('year')" :items="yearItems" v-model="year" allow-other />
 			</div>
 		</div>
 
@@ -32,19 +32,19 @@
 		<div
 			class="time-selects"
 			v-if="type === 'timestamp' || type === 'dateTime' || type === 'time'"
-			:class="{ seconds: includeSeconds }"
+			:class="{ seconds: includeSeconds, 'use-24': use24 }"
 		>
 			<div class="hour">
-				<v-select :items="hours" v-model="localValue.hours" />
+				<v-select :items="hourItems" v-model="hours" />
 			</div>
 			<div class="minutes">
-				<v-select :items="minutesSeconds" v-model="localValue.minutes" />
+				<v-select :items="minutesSecondItems" v-model="minutes" />
 			</div>
 			<div v-if="includeSeconds" class="seconds">
-				<v-select :items="minutesSeconds" v-model="localValue.seconds" />
+				<v-select :items="minutesSecondItems" v-model="seconds" />
 			</div>
-			<div class="period">
-				<v-select :items="['am', 'pm']" v-model="localValue.period" />
+			<div class="period" v-if="use24 === false">
+				<v-select :items="['am', 'pm']" v-model="period" />
 			</div>
 		</div>
 
@@ -58,7 +58,7 @@
 import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
 import formatLocalized from '@/utils/localized-format';
 import { i18n } from '@/lang';
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO, parseISO, format, parse } from 'date-fns';
 
 type LocalValue = {
 	month: null | number;
@@ -67,7 +67,6 @@ type LocalValue = {
 	hours: null | number;
 	minutes: null | number;
 	seconds: null | number;
-	period: 'am' | 'pm';
 };
 
 export default defineComponent({
@@ -89,121 +88,209 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		use24: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
-		const valueAsDate = computed(() => {
-			if (props.value === null) return null;
-			return parseISO(props.value);
-		});
-
-		const displayValue = ref<string | null>(null);
-
-		syncDisplayValue();
-
-		const localValue = reactive({
-			month: null,
-			date: null,
-			year: null,
-			hours: 9,
-			minutes: 0,
-			seconds: 0,
-			period: 'am',
-		} as LocalValue);
-
-		syncLocalValue();
-
-		watch(
-			() => props.value,
-			(newValue, oldValue) => {
-				if (newValue !== oldValue && newValue !== null && newValue.length !== 0) {
-					syncLocalValue();
-					syncDisplayValue();
-				}
-			}
-		);
-
-		watch(
-			() => localValue,
-			(newValue) => {
-				if (
-					newValue.year !== null &&
-					String(newValue.year).length === 4 &&
-					newValue.month !== null &&
-					newValue.date !== null &&
-					newValue.hours !== null &&
-					newValue.minutes !== null &&
-					newValue.seconds !== null
-				) {
-					const { year, month, date, hours, minutes, seconds, period } = newValue;
-
-					const asDate = new Date(year, month, date, period === 'am' ? hours : hours + 12, minutes, seconds);
-					
-					if(valueAsDate.value?.getTime() != asDate.getTime())
-						emit('input', formatISO(asDate));
-				}
-			},
-			{
-				deep: true,
-			}
-		);
-
-		const { months, dates, years, hours, minutesSeconds } = useOptions();
+		const { _value, year, month, date, hours, minutes, seconds, period } = useLocalValue();
+		const { yearItems, monthItems, dateItems, hourItems, minutesSecondItems } = useOptions();
+		const { displayValue } = useDisplayValue();
 
 		return {
-			displayValue,
-			months,
-			dates,
-			years,
+			year,
+			month,
+			date,
 			hours,
-			minutesSeconds,
+			minutes,
+			seconds,
+			period,
 			setToNow,
-			localValue,
-			onAMPMInput,
+			yearItems,
+			monthItems,
+			dateItems,
+			hourItems,
+			minutesSecondItems,
+			displayValue,
 		};
 
+		function useLocalValue() {
+			const _value = computed({
+				get() {
+					if (!props.value) return null;
+
+					if (props.type === 'timestamp') {
+						return parseISO(props.value);
+					} else if (props.type === 'dateTime') {
+						return parse(props.value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+					} else if (props.type === 'date') {
+						return parse(props.value, 'yyyy-MM-dd', new Date());
+					} else if (props.type === 'time') {
+						return parse(props.value, 'HH:mm:ss', new Date());
+					}
+
+					return null;
+				},
+				set(newValue: Date | null) {
+					if (newValue === null) return emit('input', null);
+
+					if (props.type === 'timestamp') {
+						emit('input', formatISO(newValue));
+					} else if (props.type === 'dateTime') {
+						emit('input', format(newValue, "yyyy-MM-dd'T'HH:mm:ss"));
+					} else if (props.type === 'date') {
+						emit('input', format(newValue, 'yyyy-MM-dd'));
+					} else if (props.type === 'time') {
+						emit('input', format(newValue, 'HH:mm:ss'));
+					}
+				},
+			});
+
+			const year = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getFullYear();
+				},
+				set(newYear: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setFullYear(newYear || 0);
+					_value.value = newValue;
+				},
+			});
+
+			const month = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getMonth();
+				},
+				set(newMonth: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setMonth(newMonth || 0);
+					_value.value = newValue;
+				},
+			});
+
+			const date = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getDate();
+				},
+				set(newDate: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setDate(newDate || 1);
+					_value.value = newValue;
+				},
+			});
+
+			const hours = computed({
+				get() {
+					if (!_value.value) return null;
+					const hours = _value.value.getHours();
+
+					if (props.use24 === false) {
+						return hours % 12;
+					}
+
+					return hours;
+				},
+				set(newHours: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setHours(newHours || 0);
+					_value.value = newValue;
+				},
+			});
+
+			const minutes = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getMinutes();
+				},
+				set(newMinutes: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setMinutes(newMinutes || 0);
+					_value.value = newValue;
+				},
+			});
+
+			const seconds = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getSeconds();
+				},
+				set(newSeconds: number | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					newValue.setSeconds(newSeconds || 0);
+					_value.value = newValue;
+				},
+			});
+
+			const period = computed({
+				get() {
+					if (!_value.value) return null;
+					return _value.value.getHours() >= 12 ? 'pm' : 'am';
+				},
+				set(newAMPM: 'am' | 'pm' | null) {
+					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const current = newValue.getHours() >= 12 ? 'pm' : 'am';
+
+					if (current !== newAMPM) {
+						if (newAMPM === 'am') {
+							newValue.setHours(newValue.getHours() - 12);
+						} else {
+							newValue.setHours(newValue.getHours() + 12);
+						}
+					}
+
+					_value.value = newValue;
+				},
+			});
+
+			return { _value, year, month, date, hours, minutes, seconds, period };
+		}
+
 		function setToNow() {
-			const date = new Date();
-
-			localValue.month = date.getMonth();
-			localValue.date = date.getDate();
-			localValue.year = date.getFullYear();
-			localValue.hours = date.getHours();
-			localValue.minutes = date.getMinutes();
-			localValue.seconds = date.getSeconds();
+			_value.value = new Date();
 		}
 
-		function syncLocalValue() {
-			if (!valueAsDate.value) return;
-			localValue.month = valueAsDate.value.getMonth();
-			localValue.date = valueAsDate.value.getDate();
-			localValue.year = valueAsDate.value?.getFullYear();
-			localValue.hours = valueAsDate.value?.getHours() % 12;
-			localValue.minutes = valueAsDate.value?.getMinutes();
-			localValue.seconds = valueAsDate.value?.getSeconds();
-		}
+		function useDisplayValue() {
+			const displayValue = ref<string | null>(null);
 
-		async function syncDisplayValue() {
-			if (valueAsDate.value === null) return null;
-			let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
+			watch(_value, setDisplayValue);
 
-			if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-			if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+			return { displayValue };
 
-			displayValue.value = await formatLocalized(valueAsDate.value as Date, format);
-		}
+			async function setDisplayValue() {
+				if (!props.value || !_value.value) {
+					displayValue.value = null;
+					return;
+				}
 
-		function onAMPMInput(newValue: 'PM' | 'AM') {
-			if (!localValue.hours) return;
+				let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
 
-			if (newValue === 'AM') {
-				localValue.hours = localValue.hours - 12;
-			} else {
-				localValue.hours = localValue.hours + 12;
+				if (props.type === 'date') format = String(i18n.t('date-fns_date'));
+				if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+
+				displayValue.value = await formatLocalized(_value.value, format);
 			}
 		}
 
 		function useOptions() {
-			const months = computed(() =>
+			const yearItems = computed(() => {
+				const current = _value.value?.getFullYear() || new Date().getFullYear();
+				const years = [];
+
+				for (let i = current - 5; i <= current + 5; i++) {
+					years.push({
+						text: String(i),
+						value: i,
+					});
+				}
+
+				return years;
+			});
+
+			const monthItems = computed(() =>
 				[
 					i18n.t('months.january'),
 					i18n.t('months.february'),
@@ -223,7 +310,7 @@ export default defineComponent({
 				}))
 			);
 
-			const dates = computed(() => {
+			const dateItems = computed(() => {
 				const dates = [];
 
 				for (let i = 1; i <= 31; i++) {
@@ -233,24 +320,15 @@ export default defineComponent({
 				return dates;
 			});
 
-			const years = computed(() => {
-				const current = valueAsDate.value?.getFullYear() || new Date().getFullYear();
-				const years = [];
-				for (let i = current - 5; i <= current + 5; i++) {
-					years.push({
-						text: String(i),
-						value: i,
-					});
-				}
-				return years;
-			});
-
-			const hours = computed(() => {
+			const hourItems = computed(() => {
 				const hours = [];
 
-				for (let i = 1; i <= 12; i++) {
+				const hoursInADay = props.use24 ? 24 : 12;
+
+				for (let i = 1; i <= hoursInADay; i++) {
 					let hour = String(i);
 					if (hour.length === 1) hour = '0' + hour;
+
 					hours.push({
 						text: hour,
 						value: i,
@@ -260,7 +338,7 @@ export default defineComponent({
 				return hours;
 			});
 
-			const minutesSeconds = computed(() => {
+			const minutesSecondItems = computed(() => {
 				const values = [];
 
 				for (let i = 0; i < 60; i++) {
@@ -275,7 +353,7 @@ export default defineComponent({
 				return values;
 			});
 
-			return { dates, years, months, hours, minutesSeconds };
+			return { yearItems, monthItems, dateItems, hourItems, minutesSecondItems };
 		}
 	},
 });
@@ -299,6 +377,14 @@ export default defineComponent({
 
 	&.seconds {
 		grid-template-columns: repeat(4, 1fr);
+	}
+
+	&.use-24 {
+		grid-template-columns: repeat(2, 1fr);
+
+		&.seconds {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 }
 

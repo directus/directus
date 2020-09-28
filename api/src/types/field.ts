@@ -41,6 +41,6 @@ export type Field = {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-	schema: Column;
+	schema: Column | null;
 	meta: FieldMeta | null;
 };
