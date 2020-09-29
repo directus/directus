@@ -33,10 +33,10 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const dialog = ref<HTMLElement | null>(null);
-		useShortcut('escape', (event) => {
+		useShortcut('escape', (event, cancelNext) => {
 			if (_active.value) {
 				emitToggle();
-				event.cancelNext();
+				cancelNext();
 			}
 		});
 
