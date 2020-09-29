@@ -1073,7 +1073,7 @@
   "connection": "Connection",
   "contains": "Contains",
   "continue": "Continue",
-  "continue_as": "<b>{name}</b> is already authenticated. If you recognize this account, press continue.",
+  "continue_as": "<b>{name}</b> is currently authenticated. If you recognize this account, press continue.",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",
