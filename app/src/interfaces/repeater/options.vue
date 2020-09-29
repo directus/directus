@@ -39,6 +39,7 @@ export default defineComponent({
 			set(newVal: FieldMeta[]) {
 				const fields = newVal.map((meta) => ({
 					field: meta.field,
+					name: meta.field,
 					meta,
 				}));
 
