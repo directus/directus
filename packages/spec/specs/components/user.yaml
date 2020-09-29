@@ -46,7 +46,6 @@ properties:
     example: null
     oneOf:
       - type: integer
-        nullable: true
       - type: string
       - $ref: "../openapi.yaml#/components/schemas/File"
     nullable: true

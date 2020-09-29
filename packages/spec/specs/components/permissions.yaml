@@ -52,11 +52,10 @@ properties:
   status_blacklist:
     description: Explicitly denies specific statuses to be used.
     example: []
-    oneOf:
-      - type: array
-        nullable: true
-        items:
-          type: string
+    type: array
+    nullable: true
+    items:
+      type: string
   update:
     description: If the user can update items.
     example: none

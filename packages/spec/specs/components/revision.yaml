@@ -32,8 +32,7 @@ properties:
     description: Changes between the previous and the current revision.
     example:
       title: Hello, World!
-    oneOf:
-      - type: object
+    type: object
   parent:
     description:
       If the current item was updated relationally, this is the collection
