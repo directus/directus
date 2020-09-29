@@ -148,7 +148,7 @@ export default defineComponent({
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
 
-		const isValidColor = computed<boolean>(() => rgb.value != null);
+		const isValidColor = computed<boolean>(() => rgb.value !== null);
 
 		const { hsl, rgb, hex } = useColor();
 
@@ -199,7 +199,8 @@ export default defineComponent({
 					const newColor = Color(newValue);
 					if (newColor === null || newColor === _rgb.value) return;
 					_rgb.value = newColor;
-				}
+				},
+				{ immediate: true }
 			);
 
 			const rgb = computed<number[]>({
