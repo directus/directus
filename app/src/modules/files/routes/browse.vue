@@ -279,13 +279,16 @@ export default defineComponent({
 
 				const batchPrimaryKeys = selection.value;
 
-				await api.delete(`/files/${batchPrimaryKeys}`);
-
-				await layoutRef.value?.refresh();
-
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
+				try {
+					await api.delete(`/files/${batchPrimaryKeys}`);
+					confirmDelete.value = false;
+					selection.value = [];
+					await layoutRef.value?.refresh();
+				} catch (err) {
+					console.error(err);
+				} finally {
+					deleting.value = false;
+				}
 			}
 		}
 

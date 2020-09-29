@@ -91,11 +91,13 @@ export class FilesService extends ItemsService {
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = Array.isArray(key) ? key : [key];
-		const files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
 
 		if (!files) {
 			throw new ItemNotFoundException(key, 'directus_files');
 		}
+
+		files = Array.isArray(files) ? files : [files];
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);
