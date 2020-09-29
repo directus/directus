@@ -16,8 +16,6 @@ export class FailedValidationException extends BaseException {
 			field: error.path[0] as string,
 		};
 
-		console.log(error);
-
 		const joiType = error.type;
 
 		// eq | in | null | empty
