@@ -4,7 +4,7 @@ import { FilterOperator } from '../types';
 
 type FailedValidationExtensions = {
 	field: string;
-	type: FilterOperator;
+	type: FilterOperator | 'required';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
@@ -90,6 +90,11 @@ export class FailedValidationException extends BaseException {
 		if (joiType.endsWith('ncontains')) {
 			extensions.type = 'ncontains';
 			extensions.substring = error.context?.substring;
+		}
+
+		// required
+		if (joiType.endsWith('required')) {
+			extensions.type = 'required';
 		}
 
 		super(error.message, 400, 'FAILED_VALIDATION', extensions);

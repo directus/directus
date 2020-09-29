@@ -1,5 +1,5 @@
 import { Filter } from '../types';
-import BaseJoi, { AnySchema } from 'joi';
+import BaseJoi, { AlternativesSchema, ObjectSchema, AnySchema } from 'joi';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
@@ -52,86 +52,97 @@ const Joi: typeof BaseJoi = BaseJoi.extend({
 	},
 });
 
-export default function generateJoi(filter: Filter | null) {
+export default function generateJoi(filter: Filter | null): AnySchema {
 	filter = filter || {};
 
-	const schema: Record<string, AnySchema> = {};
+	if (Object.keys(filter).length === 0) return Joi.any();
+
+	let schema: any;
 
 	for (const [key, value] of Object.entries(filter)) {
-		const isField = key.startsWith('_') === false;
+		if (key.startsWith('_') === false) {
+			if (!schema) schema = {};
 
-		if (isField) {
 			const operator = Object.keys(value)[0];
+			const val = Object.keys(value)[1];
 
-			if (operator === '_eq') {
-				schema[key] = Joi.any().equal(Object.values(value)[0]);
-			}
-
-			if (operator === '_neq') {
-				schema[key] = Joi.any().not(Object.values(value)[0]);
-			}
-
-			if (operator === '_contains') {
-				// @ts-ignore
-				schema[key] = Joi.string().contains(Object.values(value)[0]);
-			}
-
-			if (operator === '_ncontains') {
-				// @ts-ignore
-				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
-			}
-
-			if (operator === '_in') {
-				schema[key] = Joi.any().equal(...(Object.values(value)[0] as (string | number)[]));
-			}
-
-			if (operator === '_nin') {
-				schema[key] = Joi.any().not(...(Object.values(value)[0] as (string | number)[]));
-			}
-
-			if (operator === '_gt') {
-				schema[key] = Joi.number().greater(Number(Object.values(value)[0]));
-			}
-
-			if (operator === '_gte') {
-				schema[key] = Joi.number().min(Number(Object.values(value)[0]));
-			}
-
-			if (operator === '_lt') {
-				schema[key] = Joi.number().less(Number(Object.values(value)[0]));
-			}
-
-			if (operator === '_lte') {
-				schema[key] = Joi.number().max(Number(Object.values(value)[0]));
-			}
-
-			if (operator === '_null') {
-				schema[key] = Joi.any().valid(null);
-			}
-
-			if (operator === '_nnull') {
-				schema[key] = Joi.any().invalid(null);
-			}
-
-			if (operator === '_empty') {
-				schema[key] = Joi.any().valid('');
-			}
-
-			if (operator === '_nempty') {
-				schema[key] = Joi.any().invalid('');
-			}
-
-			if (operator === '_between') {
-				const values = Object.values(value)[0] as number[];
-				schema[key] = Joi.number().greater(values[0]).less(values[1]);
-			}
-
-			if (operator === '_nbetween') {
-				const values = Object.values(value)[0] as number[];
-				schema[key] = Joi.number().less(values[0]).greater(values[1]);
-			}
+			schema[key] = getJoi(operator, val);
 		}
 	}
 
 	return Joi.object(schema).unknown();
+}
+
+function getJoi(operator: string, value: any) {
+	if (operator === '_eq') {
+		return Joi.any().equal(Object.values(value)[0]);
+	}
+
+	if (operator === '_neq') {
+		return Joi.any().not(Object.values(value)[0]);
+	}
+
+	if (operator === '_contains') {
+		// @ts-ignore
+		return Joi.string().contains(Object.values(value)[0]);
+	}
+
+	if (operator === '_ncontains') {
+		// @ts-ignore
+		return Joi.string().ncontains(Object.values(value)[0]);
+	}
+
+	if (operator === '_in') {
+		return Joi.any().equal(...(Object.values(value)[0] as (string | number)[]));
+	}
+
+	if (operator === '_nin') {
+		return Joi.any().not(...(Object.values(value)[0] as (string | number)[]));
+	}
+
+	if (operator === '_gt') {
+		return Joi.number().greater(Number(Object.values(value)[0]));
+	}
+
+	if (operator === '_gte') {
+		return Joi.number().min(Number(Object.values(value)[0]));
+	}
+
+	if (operator === '_lt') {
+		return Joi.number().less(Number(Object.values(value)[0]));
+	}
+
+	if (operator === '_lte') {
+		return Joi.number().max(Number(Object.values(value)[0]));
+	}
+
+	if (operator === '_null') {
+		return Joi.any().valid(null);
+	}
+
+	if (operator === '_nnull') {
+		return Joi.any().invalid(null);
+	}
+
+	if (operator === '_empty') {
+		return Joi.any().valid('');
+	}
+
+	if (operator === '_nempty') {
+		return Joi.any().invalid('');
+	}
+
+	if (operator === '_between') {
+		const values = Object.values(value)[0] as number[];
+		return Joi.number().greater(values[0]).less(values[1]);
+	}
+
+	if (operator === '_nbetween') {
+		const values = Object.values(value)[0] as number[];
+		return Joi.number().less(values[0]).greater(values[1]);
+	}
+
+	if (operator === '_required') {
+		return Joi.required();
+	}
 }

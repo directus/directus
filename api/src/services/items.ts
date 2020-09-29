@@ -71,7 +71,7 @@ export class ItemsService implements AbstractService {
 				payloads = customProcessed[customProcessed.length - 1];
 			}
 
-			if (this.accountability && this.accountability.admin !== true) {
+			if (this.accountability) {
 				const authorizationService = new AuthorizationService({
 					accountability: this.accountability,
 					knex: trx,
@@ -284,11 +284,13 @@ export class ItemsService implements AbstractService {
 				payload = customProcessed[customProcessed.length - 1];
 			}
 
-			if (this.accountability && this.accountability.admin !== true) {
+			if (this.accountability) {
 				const authorizationService = new AuthorizationService({
 					accountability: this.accountability,
 				});
+
 				await authorizationService.checkAccess('update', this.collection, keys);
+
 				payload = await authorizationService.validatePayload(
 					'update',
 					this.collection,
