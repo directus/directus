@@ -15,7 +15,9 @@
 			1
 		</v-button>
 
-		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > (totalVisible + 1)" class="gap">...</span>
+		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1" class="gap">
+			...
+		</span>
 
 		<v-button
 			v-for="page in visiblePages"
@@ -30,7 +32,10 @@
 			{{ page }}
 		</v-button>
 
-		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > (totalVisible + 1)" class="gap">
+		<span
+			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
+			class="gap"
+		>
 			...
 		</span>
 
@@ -139,9 +144,9 @@ body {
 	display: flex;
 
 	.gap {
+		display: none;
 		margin: 0 4px;
 		color: var(--foreground-subdued);
-		display: none;
 		line-height: 2em;
 
 		@include breakpoint(small) {

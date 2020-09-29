@@ -17,7 +17,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 
 export default defineComponent({
 	setup(props) {
-		useShortcut('mod+s', save);
+		useShortcut('meta+s', save);
 
 		function save() {
 			// ...

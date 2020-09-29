@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType, onMounted, watch } from '@vue/composition-api';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -86,7 +86,6 @@ import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
-import useShortcut from '@/composables/use-shortcut';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -290,10 +289,6 @@ export default defineComponent({
 			if (hasItemAppendSlot.value) gridTemplateColumns += ' auto';
 
 			return gridTemplateColumns;
-		});
-
-		useShortcut('mod+a', () => {
-			onToggleSelectAll(!allItemsSelected.value);
 		});
 
 		return {

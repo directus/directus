@@ -149,13 +149,14 @@ import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
 import router from '@/router';
 import useSync from '@/composables/use-sync';
-import { debounce } from 'lodash';
+import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
+import useShortcut from '@/composables/use-shortcut';
 
 type layoutOptions = {
 	widths?: {
@@ -211,7 +212,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const table = ref<Vue | null>(null);
+		const table = ref<Vue>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
@@ -259,6 +260,14 @@ export default defineComponent({
 
 			return count;
 		});
+
+		useShortcut(
+			'meta+a',
+			() => {
+				_selection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
+			},
+			table
+		);
 
 		return {
 			_selection,

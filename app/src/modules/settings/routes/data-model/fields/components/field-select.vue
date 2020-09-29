@@ -110,17 +110,26 @@
 
 							<v-divider />
 
-							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
+							<v-list-item
+								@click="setWidth('half')"
+								:disabled="field.meta && field.meta.width === 'half'"
+							>
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
+							<v-list-item
+								@click="setWidth('full')"
+								:disabled="field.meta && field.meta.width === 'full'"
+							>
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
+							<v-list-item
+								@click="setWidth('fill')"
+								:disabled="field.meta && field.meta.width === 'fill'"
+							>
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 							</v-list-item>
@@ -402,6 +411,41 @@ export default defineComponent({
 	}
 }
 
+.group {
+	position: relative;
+	padding: var(--input-padding);
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+
+	.header {
+		display: flex;
+		align-items: center;
+		margin-bottom: var(--input-padding);
+	}
+
+	.name {
+		font-family: var(--family-monospace);
+	}
+
+	.drag-handle {
+		margin-right: 8px;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground);
+		}
+	}
+
+	.group-options {
+		cursor: pointer;
+	}
+
+	.v-notice {
+		cursor: pointer;
+	}
+}
+
 .field {
 	.label {
 		flex-grow: 1;
@@ -446,40 +490,5 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
-}
-
-.group {
-	position: relative;
-	padding: var(--input-padding);
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
-	border: 2px solid var(--border-normal);
-
-	.header {
-		margin-bottom: var(--input-padding);
-		display: flex;
-		align-items: center;
-	}
-
-	.name {
-		font-family: var(--family-monospace);
-	}
-
-	.drag-handle {
-		margin-right: 8px;
-		transition: color var(--fast) var(--transition);
-
-		&:hover {
-			color: var(--foreground);
-		}
-	}
-
-	.group-options {
-		cursor: pointer;
-	}
-
-	.v-notice {
-		cursor: pointer;
-	}
 }
 </style>

@@ -41,7 +41,7 @@
 
 		<modal-detail
 			v-if="!disabled"
-			:active="showDetailModal"
+			:active.sync="showDetailModal"
 			:collection="junctionCollection"
 			:primary-key="junctionRowPrimaryKey"
 			:edits="editsAtStart"
