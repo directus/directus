@@ -345,10 +345,12 @@ export default defineComponent({
 					fields.push('type');
 				}
 
-				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
+				if (sort.value) {
+					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
 
-				if (fields.includes(sortField) === false) {
-					fields.push(sortField);
+					if (fields.includes(sortField) === false) {
+						fields.push(sortField);
+					}
 				}
 
 				const titleSubtitleFields: string[] = [];

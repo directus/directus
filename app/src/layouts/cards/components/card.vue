@@ -85,13 +85,13 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const type = computed(() => {
-			if (props.file === null) return null;
+			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image')) return null;
 			return props.file.type.split('/')[1];
 		});
 
 		const imageSource = computed(() => {
-			if (props.file === null) return null;
+			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg')) return null;
 
@@ -105,7 +105,7 @@ export default defineComponent({
 		});
 
 		const svgSource = computed(() => {
-			if (props.file === null) return null;
+			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg') === false) return null;
 
@@ -137,6 +137,7 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				router.push(props.to, () => {});
 			}
 		}
