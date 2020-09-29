@@ -1,11 +1,11 @@
 <template>
 	<div class="v-pagination">
-		<v-button v-if="value !== 1" class="previous" :disabled="disabled" secondary icon small @click="toPrev">
+		<v-button class="previous" :disabled="disabled || value === 1" secondary icon small @click="toPrev">
 			<v-icon name="chevron_left" />
 		</v-button>
 
 		<v-button
-			v-if="showFirstLast && value > Math.ceil(totalVisible / 2)"
+			v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
 			class="page"
 			@click="toPage(1)"
 			secondary
@@ -15,7 +15,9 @@
 			1
 		</v-button>
 
-		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1" class="gap">...</span>
+		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1" class="gap">
+			...
+		</span>
 
 		<v-button
 			v-for="page in visiblePages"
@@ -30,12 +32,15 @@
 			{{ page }}
 		</v-button>
 
-		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2)" class="gap">
+		<span
+			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
+			class="gap"
+		>
 			...
 		</span>
 
 		<v-button
-			v-if="showFirstLast && value <= length - Math.ceil(totalVisible / 2)"
+			v-if="showFirstLast && value <= length - Math.ceil(totalVisible / 2) && length > totalVisible"
 			:class="{ active: value === length }"
 			class="page"
 			@click="toPage(length)"
@@ -46,7 +51,7 @@
 			{{ length }}
 		</v-button>
 
-		<v-button v-if="value !== length" class="next" :disabled="disabled" secondary icon small @click="toNext">
+		<v-button class="next" :disabled="disabled || value === length" secondary icon small @click="toNext">
 			<v-icon name="chevron_right" />
 		</v-button>
 	</div>
@@ -139,9 +144,9 @@ body {
 	display: flex;
 
 	.gap {
+		display: none;
 		margin: 0 4px;
 		color: var(--foreground-subdued);
-		display: none;
 		line-height: 2em;
 
 		@include breakpoint(small) {

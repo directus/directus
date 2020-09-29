@@ -1,6 +1,6 @@
 export default async function usersCreate({ email, password, role }: any) {
 	const database = require('../../../database/index').default;
-	const UsersService = require('../../../services/users').default;
+	const { UsersService } = require('../../../services/users');
 
 	if (!email || !password || !role) {
 		console.error('Email, password, role are required');

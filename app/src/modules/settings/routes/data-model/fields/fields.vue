@@ -2,7 +2,7 @@
 	<private-view :title="collectionInfo && collectionInfo.name">
 		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
+			<v-button class="header-icon" rounded icon exact @click="$router.go(-1)">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -175,6 +175,7 @@ export default defineComponent({
 
 .collections-detail {
 	padding: var(--content-padding);
+	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);
 }
 

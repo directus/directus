@@ -1,84 +1,206 @@
 <template>
 	<div>
-		<h2 class="type-title">{{ $t('configure_translations') }}</h2>
+		<h2 class="type-title">{{ $t('configure_m2m') }}</h2>
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="collection" />
+				<v-input disabled :value="relations[0].one_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('translations_collection') }}</div>
 				<v-input
-					db-safe
+					:class="{ matches: junctionCollectionExists }"
+					v-model="junctionCollection"
 					:placeholder="$t('collection') + '...'"
-					v-model="relations[0].many_collection"
-					:disabled="isExisting"
-					:class="{ matches: translationsCollectionExists }"
+					:disabled="autoFill || isExisting"
+					db-safe
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="autoFill || isExisting"
+								/>
 							</template>
 
 							<v-list dense class="monospace">
 								<v-list-item
-									v-for="item in items"
-									:key="item.value"
-									:active="relations[0].many_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].many_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].many_collection === collection.collection"
+									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].many_collection === collection.collection"
+										@click="relations[0].many_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="currentCollectionPrimaryKey.field" />
+			<div class="field">
+				<div class="type-label">{{ $t('languages_collection') }}</div>
+				<v-input
+					:autofocus="autoFill"
+					:class="{ matches: relatedCollectionExists }"
+					v-model="relations[1].one_collection"
+					:placeholder="$t('collection') + '...'"
+					:disabled="type === 'files' || isExisting"
+					db-safe
+				>
+					<template #append>
+						<v-menu show-arrow placement="bottom-end">
+							<template #activator="{ toggle }">
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="type === 'files' || isExisting"
+								/>
+							</template>
+
+							<v-list dense class="monospace">
+								<v-list-item
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[1].one_collection === collection.collection"
+									@click="relations[1].one_collection = collection.collection"
+								>
+									<v-list-item-content>
+										{{ collection.collection }}
+									</v-list-item-content>
+								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[1].one_collection === collection.collection"
+										@click="relations[1].one_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
+							</v-list>
+						</v-menu>
+					</template>
+				</v-input>
+			</div>
+			<v-input disabled :value="relations[0].one_primary" />
 			<v-input
-				db-safe
+				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
-				:disabled="isExisting"
 				:placeholder="$t('foreign_key') + '...'"
-				:class="{ matches: translationsFieldExists }"
+				:disabled="autoFill || isExisting"
+				db-safe
 			>
-				<template #append v-if="fields && fields.length > 0">
+				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon
+								name="list_alt"
+								@click="toggle"
+								v-tooltip="$t('select_existing')"
+								:disabled="autoFill || isExisting"
+							/>
 						</template>
 
 						<v-list dense class="monospace">
 							<v-list-item
-								v-for="field in fields"
-								:key="field.value"
-								:active="relations[0].many_field === field.value"
-								@click="relations[0].many_field = field.value"
-								:disabled="field.disabled"
+								v-for="item in junctionFields"
+								:key="item.value"
+								:active="relations[0].many_field === item.value"
+								:disabled="item.disabled"
+								@click="relations[0].many_field = item.value"
 							>
 								<v-list-item-content>
-									{{ field.text }}
+									{{ item.text }}
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
 					</v-menu>
 				</template>
 			</v-input>
+			<div class="spacer" />
+			<div class="spacer" />
+			<v-input
+				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
+				v-model="relations[1].many_field"
+				:placeholder="$t('foreign_key') + '...'"
+				:disabled="autoFill || isExisting"
+				db-safe
+			>
+				<template #append v-if="junctionCollectionExists">
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon
+								name="list_alt"
+								@click="toggle"
+								v-tooltip="$t('select_existing')"
+								:disabled="autoFill || isExisting"
+							/>
+						</template>
+
+						<v-list dense class="monospace">
+							<v-list-item
+								v-for="item in junctionFields"
+								:key="item.value"
+								:active="relations[1].many_field === item.value"
+								:disabled="item.disabled"
+								@click="relations[1].many_field = item.value"
+							>
+								<v-list-item-content>
+									{{ item.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-input>
+			<v-input
+				db-safe
+				:disabled="relatedCollectionExists"
+				v-model="relations[1].one_primary"
+				:placeholder="$t('primary_key') + '...'"
+			/>
+			<div class="spacer" />
+			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
+			<v-icon class="arrow" name="arrow_backward" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Relation, Field } from '@/types';
-import useSync from '@/composables/use-sync';
-import { useFieldsStore, useCollectionsStore } from '@/stores';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { orderBy } from 'lodash';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import i18n from '@/lang';
 
 import { state } from '../store';
@@ -98,74 +220,85 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items, fields, currentCollectionPrimaryKey, collectionMany } = useRelation();
-
-		const translationsCollectionExists = computed(() => {
-			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
+		const autoFill = computed({
+			get() {
+				return state.autoFillJunctionRelation;
+			},
+			set(newAuto: boolean) {
+				state.autoFillJunctionRelation = newAuto;
+			},
 		});
 
-		const translationsFieldExists = computed(() => {
-			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].many_field) return false;
-			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
+		const availableCollections = computed(() => {
+			return orderBy(
+				collectionsStore.state.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === false;
+				}),
+				['collection'],
+				['asc']
+			);
 		});
 
-		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany, translationsCollectionExists, translationsFieldExists };
-
-		function useRelation() {
-			const availableCollections = computed(() => {
-				return orderBy(
-					collectionsStore.state.collections.filter((collection) => {
-						return (
-							collection.collection.startsWith('directus_') === false &&
-							collection.collection !== props.collection
-						);
-					}),
-					['collection'],
-					['asc']
-				);
-			});
-
-			const items = computed(() =>
-				availableCollections.value.map((collection) => ({
-					text: collection.collection,
-					value: collection.collection,
-				}))
+		const systemCollections = computed(() => {
+			return orderBy(
+				collectionsStore.state.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === true;
+				}),
+				['collection'],
+				['asc']
 			);
+		});
 
-			const currentCollectionPrimaryKey = computed(() =>
-				fieldsStore.getPrimaryKeyFieldForCollection(props.collection)
-			);
+		const junctionCollection = computed({
+			get() {
+				return state.relations[0].many_collection;
+			},
+			set(collection: string) {
+				state.relations[0].many_collection = collection;
+				state.relations[1].many_collection = collection;
+			},
+		});
 
-			const fields = computed(() => {
-				if (!state.relations[0].many_collection) return [];
+		const junctionCollectionExists = computed(() => {
+			return collectionsStore.getCollection(junctionCollection.value) !== null;
+		});
 
-				return fieldsStore.state.fields
-					.filter((field) => field.collection === state.relations[0].many_collection)
-					.map((field) => ({
-						text: field.field,
-						value: field.field,
-						disabled:
-							!field.schema ||
-							field.schema?.is_primary_key ||
-							field.type !== currentCollectionPrimaryKey.value.type,
-					}));
-			});
+		const relatedCollectionExists = computed(() => {
+			return collectionsStore.getCollection(state.relations[1].one_collection) !== null;
+		});
 
-			const collectionMany = computed({
-				get() {
-					return state.relations[0].many_collection!;
-				},
-				set(collection: string) {
-					state.relations[0].many_collection = collection;
-					state.relations[0].many_field = '';
-				},
-			});
+		const junctionFields = computed(() => {
+			if (!junctionCollection.value) return [];
 
-			return { availableCollections, items, fields, currentCollectionPrimaryKey, collectionMany };
+			return fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => ({
+				text: field.field,
+				value: field.field,
+				disabled:
+					state.relations[0].many_field === field.field ||
+					field.schema?.is_primary_key ||
+					state.relations[1].many_field === field.field,
+			}));
+		});
+
+		return {
+			relations: state.relations,
+			autoFill,
+			availableCollections,
+			systemCollections,
+			junctionCollection,
+			junctionFields,
+			junctionCollectionExists,
+			relatedCollectionExists,
+			junctionFieldExists,
+		};
+
+		function junctionFieldExists(fieldKey: string) {
+			if (!junctionCollection.value) return false;
+			return !!fieldsStore.getField(junctionCollection.value, fieldKey);
 		}
 	},
 });
@@ -178,8 +311,8 @@ export default defineComponent({
 
 	position: relative;
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 12px 32px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px 28px;
 	margin-top: 48px;
 
 	.v-input.matches {
@@ -190,14 +323,19 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
-		left: 50%;
 		transform: translateX(-50%);
-	}
-}
+		pointer-events: none;
 
-.v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+		&:first-of-type {
+			bottom: 141px;
+			left: 32.5%;
+		}
+
+		&:last-of-type {
+			bottom: 76px;
+			left: 67.4%;
+		}
+	}
 }
 
 .type-label {
@@ -208,20 +346,7 @@ export default defineComponent({
 	margin: 48px 0;
 }
 
-.corresponding {
-	position: relative;
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 12px 32px;
-	margin-top: 48px;
-
-	.arrow {
-		--v-icon-color: var(--primary);
-
-		position: absolute;
-		bottom: 14px;
-		left: 50%;
-		transform: translateX(-50%);
-	}
+.v-list {
+	--v-list-item-content-font-family: var(--family-monospace);
 }
 </style>

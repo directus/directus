@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"add_field": "Add Field",
+
 	"role_name": "Role Name",
 
 	"db_only_click_to_configure": "Database Only: Click to Configure ",
@@ -79,7 +81,8 @@
 		"empty": "Value has to be empty",
 		"nempty": "Value can't be empty",
 		"null": "Value has to be null",
-		"nnull": "Value can't be null"
+		"nnull": "Value can't be null",
+		"required": "Value is required"
 	},
 
 	"all_access": "All Access",
@@ -190,6 +193,17 @@
 	"unknown": "Unknown",
 
 	"not_available_for_type": "Not Available for this Type",
+
+	"create_translations": "Create Translations",
+
+	"auto_generate": "Auto-Generate",
+	"this_will_auto_setup_fields_relations": "This will automatically setup all required fields and relations.",
+	"click_here": "Click here",
+	"to_manually_setup_translations": "to manually setup translations.",
+
+	"click_to_manage_translated_fields": "There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage it. | There are {count} translated fields. Click here to manage them.",
+
+	"fields_group": "Fields Group",
 
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
@@ -532,6 +546,8 @@
 	"user_directory": "User Directory",
 	"help_and_docs": "Help & Docs",
 
+	"documentation": "Documentation",
+
 	"card_size": "Card Size",
 	"sort_field": "Sort Field",
 
@@ -675,7 +691,11 @@
 	"color": "Color",
 	"circle": "Circle",
 
+
+
 	"empty_item": "Empty Item",
+
+	"log_in_with": "Log In with {provider}",
 
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",
@@ -1036,6 +1056,8 @@
 	}
   },
 
+  "no_fields_in_collection": "There are no fields in \"{collection}\" yet",
+
   "do_nothing": "Do Nothing",
   "generate_and_save_uuid": "Generate and Save UUID",
   "save_current_user_id": "Save Current User ID",
@@ -1052,7 +1074,7 @@
   "connection": "Connection",
   "contains": "Contains",
   "continue": "Continue",
-  "continue_as": "<b>{name}</b> is already authenticated. If you recognize this account, press continue.",
+  "continue_as": "<b>{name}</b> is currently authenticated. If you recognize this account, press continue.",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",

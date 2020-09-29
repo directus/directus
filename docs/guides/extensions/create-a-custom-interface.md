@@ -1,10 +1,10 @@
 # Create a Custom Interface
 
-> TK
+> Custom interfaces allow you to create new ways of viewing or interacting with data on the Item Detail page.
 
 ## 1. Setup the Boilerplate
 
-Every interface is a standalone "package" that contains at least a metadata file, and a Vue component. I recommend you use the following file structure:
+Every interface is a standalone "package" that contains at least a metadata file and a Vue component. We recommend using the following file structure:
 
 ```
 src/
@@ -13,8 +13,6 @@ src/
 ```
 
 ### src/index.js
-
-_See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18) for more info on what can go into this object_
 
 ```js
 import InterfaceComponent from './interface.vue';
@@ -29,6 +27,17 @@ export default {
 }
 ```
 
+* `id` — The unique key for this interface. It is good practice to scope proprietary interfaces with an author prefix.
+* `name` — The human-readable name for this interface.
+* `description` — A short description (<80 characters) of this interface shown in the App.
+* `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+* `component` — A reference to your Vue component.
+* `types` — A CSV of supported [types](#).
+
+:::tip
+See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18) for more info on what can go into this object.
+:::
+
 ### src/interface.vue
 
 ```vue
@@ -41,28 +50,32 @@ export default {}
 </script>
 ```
 
-The props you can use in an interface are:
+#### Available Props
 
-* `value` - Current value of the field
-* `width` - The current width within the form, one of `half`, `half-left`, `half-right`, `full`, `fill`
-* `type` - The type of the field
-* `collection` - The current collection the field is in
-* `field` - The key of the field
-* `primary-key` - The primary key of the current item
+* `value` — The value of the parent field.
+* `width` — The layout width of the parent field. Either `half`, `half-left`, `half-right`, `full`, or `fill`.
+* `type` — The type of the parent field.
+* `collection` — The collection name of the parent field.
+* `field` — The key of the parent field.
+* `primary-key` — The current item's primary key.
 
-## 2. Install Dependencies & Setup Buildchain
+## 2. Install Dependencies and Configure the Buildchain
 
-The output that's read by the app has to be a single bundled index.js file. In order to bundle the Vue component into the index.js file, you need a bundler.
+Set up a package.json file by running:
 
-I recommend you use Rollup for this purpose.
+```bash
+npm init -y
+```
 
-Run `npm init -y` to setup a package.json file. Then run `npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler` to install the dev dependencies needed for the buildchain.
+To be read by the Admin App, your custom interface's Vue component must first be bundled into a single `index.js` file. We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
-Use the following Rollup config:
+```bash
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+```
+
+You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
-// rollup.config.js
-
 import { terser } from 'rollup-plugin-terser';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs'
@@ -83,10 +96,16 @@ export default {
 }
 ```
 
-## 3. Build Your Custom Interface
+## 3. Develop your Custom Interface
 
-The interface itself is a Vue component, which allows you to do whatever you need.
+The interface itself is simply a Vue component, which provides an blank canvas for creating anything you need.
 
 ## 4. Build and Deploy
 
-Run `npx rollup -c` to build the interface for use in Directus. Move the `dist` folder into the `extensions` folder you've configured in the API under `interfaces`.
+To build the interface for use within Directus, run:
+
+```bash
+npx rollup -c
+```
+
+Finally, move the output from your interface's `dist` folder into your project's `/extensions/interfaces` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

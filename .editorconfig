@@ -11,3 +11,11 @@ trim_trailing_whitespace = true
 [{package.json,*.yml,*.yaml}]
 indent_style = space
 indent_size = 2
+
+[Dockerfile]
+indent_size = 2
+indent_style = tab
+
+[Makefile]
+indent_size = 2
+indent_style = tab

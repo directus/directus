@@ -85,7 +85,7 @@ export default defineComponent({
 						value: value,
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
-						type: field.meta?.special /** @todo check what this is used for */,
+						type: field.type,
 					};
 				})
 				.map((p) => p || null)

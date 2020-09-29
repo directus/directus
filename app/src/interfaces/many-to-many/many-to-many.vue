@@ -22,7 +22,7 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="relatedCollection.collection"
+					:collection="junctionCollection"
 					:field="header.field.field"
 				/>
 			</template>

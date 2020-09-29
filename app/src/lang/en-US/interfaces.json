@@ -131,7 +131,8 @@
 		"one-to-many": {
 			"one-to-many": "One to Many",
 			"description": "Select multiple related items",
-			"readable_fields_copy": "Select the fields that the user can view"
+			"readable_fields_copy": "Select the fields that the user can view",
+			"no_collection": "The collection could not be found"
 		},
 		"radio-buttons": {
 			"radio-buttons": "Radio Buttons",

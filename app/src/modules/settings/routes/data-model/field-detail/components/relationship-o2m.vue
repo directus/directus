@@ -28,16 +28,31 @@
 
 							<v-list dense class="monospace">
 								<v-list-item
-									v-for="item in items"
-									:key="item.value"
-									:active="relations[0].many_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].many_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].many_collection === collection.collection"
+									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].many_collection === collection.collection"
+										@click="relations[0].many_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
@@ -121,7 +136,13 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items, fields, currentCollectionPrimaryKey, collectionMany } = useRelation();
+		const {
+			availableCollections,
+			systemCollections,
+			fields,
+			currentCollectionPrimaryKey,
+			collectionMany,
+		} = useRelation();
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
@@ -137,7 +158,8 @@ export default defineComponent({
 
 		return {
 			relations: state.relations,
-			items,
+			availableCollections,
+			systemCollections,
 			fields,
 			currentCollectionPrimaryKey,
 			collectionMany,
@@ -161,12 +183,18 @@ export default defineComponent({
 				);
 			});
 
-			const items = computed(() =>
-				availableCollections.value.map((collection) => ({
-					text: collection.collection,
-					value: collection.collection,
-				}))
-			);
+			const systemCollections = computed(() => {
+				return orderBy(
+					collectionsStore.state.collections.filter((collection) => {
+						return (
+							collection.collection.startsWith('directus_') === true &&
+							collection.collection !== props.collection
+						);
+					}),
+					['collection'],
+					['asc']
+				);
+			});
 
 			const currentCollectionPrimaryKey = computed(() =>
 				fieldsStore.getPrimaryKeyFieldForCollection(props.collection)
@@ -197,7 +225,7 @@ export default defineComponent({
 				},
 			});
 
-			return { availableCollections, items, fields, currentCollectionPrimaryKey, collectionMany };
+			return { availableCollections, systemCollections, fields, currentCollectionPrimaryKey, collectionMany };
 		}
 
 		function useCorresponding() {

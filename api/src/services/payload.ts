@@ -12,6 +12,9 @@ import { ItemsService } from './items';
 import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
+import SchemaInspector from 'knex-schema-inspector';
+import getLocalType from '../utils/get-local-type';
+import { format, formatISO } from 'date-fns';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -138,7 +141,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
+		let processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
 
 		if (processedPayload.length === 0) return [];
 
@@ -171,6 +174,10 @@ export class PayloadService {
 				);
 			})
 		);
+
+		if (action === 'read') {
+			await this.processDates(processedPayload);
+		}
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -212,6 +219,51 @@ export class PayloadService {
 		}
 
 		return value;
+	}
+
+	/**
+	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
+	 * shouldn't return with time / timezone info respectively
+	 */
+	async processDates(payloads: Partial<Record<string, any>>[]) {
+		const schemaInspector = SchemaInspector(this.knex);
+		const columnsInCollection = await schemaInspector.columnInfo(this.collection);
+
+		const columnsWithType = columnsInCollection.map((column) => ({
+			name: column.name,
+			type: getLocalType(column.type),
+		}));
+
+		const dateColumns = columnsWithType.filter((column) => ['dateTime', 'date', 'timestamp'].includes(column.type));
+
+		if (dateColumns.length === 0) return payloads;
+
+		for (const dateColumn of dateColumns) {
+			for (const payload of payloads) {
+				const value: Date = payload[dateColumn.name];
+
+				if (value) {
+					if (dateColumn.type === 'timestamp') {
+						const newValue = formatISO(value);
+						payload[dateColumn.name] = newValue;
+					}
+
+					if (dateColumn.type === 'dateTime') {
+						// Strip off the Z at the end of a non-timezone datetime value
+						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
+						payload[dateColumn.name] = newValue;
+					}
+
+					if (dateColumn.type === 'date') {
+						// Strip off the time / timezone information from a date-only value
+						const newValue = format(value, 'yyyy-MM-dd');
+						payload[dateColumn.name] = newValue;
+					}
+				}
+			}
+		}
+
+		return payloads;
 	}
 
 	/**
@@ -294,11 +346,20 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
-				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
-					(record: Partial<Item>) => ({
-						...record,
-						[relation.many_field]: parent || payload[relation.one_primary],
-					})
+				const relatedRecords: Partial<Item>[] = payload[relation.one_field]
+					.map(
+						(record: string | number | Partial<Item>) => {
+							if (typeof record === 'string' || typeof record === 'number') {
+								record = {
+									[relation.many_primary]: record
+								};
+							}
+
+							return {
+								...record,
+								[relation.many_field]: parent || payload[relation.one_primary],
+							}
+						}
 				);
 
 				const itemsService = new ItemsService(relation.many_collection, {

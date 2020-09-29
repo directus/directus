@@ -5,6 +5,4 @@ export type Accountability = {
 
 	ip?: string;
 	userAgent?: string;
-
-	parent?: number;
 };

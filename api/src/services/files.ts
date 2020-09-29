@@ -8,6 +8,8 @@ import path from 'path';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
+import notFound from '../controllers/not-found';
+import { ItemNotFoundException } from '../exceptions';
 
 export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -89,7 +91,13 @@ export class FilesService extends ItemsService {
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = Array.isArray(key) ? key : [key];
-		const files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+
+		if (!files) {
+			throw new ItemNotFoundException(key, 'directus_files');
+		}
+
+		files = Array.isArray(files) ? files : [files];
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);

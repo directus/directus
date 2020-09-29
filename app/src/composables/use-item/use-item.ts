@@ -111,12 +111,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (isNew.value) {
 				notify({
 					title: i18n.tc('item_create_failed', isBatch.value ? 2 : 1),
-					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-						collection: collection.value,
-						primaryKey: isBatch.value
-							? (primaryKey.value as string).split(',').join(', ')
-							: primaryKey.value,
-					}),
 					type: 'error',
 				});
 			} else {
@@ -138,9 +132,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					.map((err: APIError) => {
 						return err.extensions;
 					});
-			} else {
-				throw err;
 			}
+
+			throw err;
 		} finally {
 			saving.value = false;
 		}

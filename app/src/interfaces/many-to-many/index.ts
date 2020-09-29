@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceManyToMany from './many-to-many.vue';
+import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'many-to-many',
@@ -9,19 +10,6 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceManyToMany,
 	relationship: 'm2m',
 	types: ['alias'],
-	options: [
-		{
-			field: 'fields',
-			type: 'json',
-			name: i18n.tc('field', 0),
-			meta: {
-				interface: 'tags',
-				width: 'full',
-				options: {
-					placeholder: i18n.t('readable_fields_copy'),
-				},
-			},
-		},
-	],
+	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

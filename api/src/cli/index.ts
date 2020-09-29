@@ -10,6 +10,7 @@ import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
 import usersCreate from './commands/users/create';
 import rolesCreate from './commands/roles/create';
+import count from './commands/count';
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -50,5 +51,10 @@ rolesCommand
 	.option('--name <value>', `name for the role`)
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
+
+program
+	.command('count <collection>')
+	.description('Count the amount of items in a given collection')
+	.action(count);
 
 program.parse(process.argv);

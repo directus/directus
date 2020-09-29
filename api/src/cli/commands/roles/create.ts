@@ -1,6 +1,6 @@
 export default async function rolesCreate({ name, admin }: any) {
 	const database = require('../../../database/index').default;
-	const RolesService = require('../../../services/roles').default;
+	const { RolesService } = require('../../../services/roles');
 
 	if (!name) {
 		console.error('Name is required');

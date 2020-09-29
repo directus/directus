@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceManyToOne from './many-to-one.vue';
+import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'many-to-one',
@@ -9,16 +10,6 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceManyToOne,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
 	relationship: 'm2o',
-	options: [
-		{
-			field: 'template',
-			name: i18n.t('interfaces.many-to-one.display_template'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'text-input',
-			},
-		},
-	],
+	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

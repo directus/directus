@@ -22,7 +22,7 @@ export class RolesService extends ItemsService {
 		const permissionsForRole = await permissionsService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		});
+		}) as { id: number }[];
 		const permissionIDs = permissionsForRole.map((permission) => permission.id);
 		await permissionsService.delete(permissionIDs);
 
@@ -34,7 +34,7 @@ export class RolesService extends ItemsService {
 		const presetsForRole = await presetsService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		});
+		}) as { id: string }[];
 		const presetIDs = presetsForRole.map((preset) => preset.id);
 		await presetsService.delete(presetIDs);
 
@@ -46,7 +46,7 @@ export class RolesService extends ItemsService {
 		const usersInRole = await usersService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		});
+		}) as { id: string }[];
 		const userIDs = usersInRole.map((user) => user.id);
 		await usersService.update({ status: 'suspended', role: null }, userIDs);
 

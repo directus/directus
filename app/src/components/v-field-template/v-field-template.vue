@@ -22,7 +22,7 @@
 		</template>
 
 		<v-list dense>
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" />
+			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
 		</v-list>
 	</v-menu>
 </template>
@@ -33,6 +33,7 @@ import FieldListItem from './field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
+import { FieldTree } from './types';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -48,6 +49,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			required: true,
+		},
+		depth: {
+			type: Number,
+			default: 2,
 		},
 	},
 	setup(props, { emit }) {
@@ -149,13 +154,21 @@ export default defineComponent({
 
 		function addField(fieldKey: string) {
 			if (!contentEl.value) return;
-			const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+
+			const field = findTree(tree.value, fieldKey.split('.'));
+
 			if (!field) return;
 
 			const button = document.createElement('button');
 			button.dataset.field = fieldKey;
 			button.setAttribute('contenteditable', 'false');
 			button.innerText = String(field.name);
+
+			if (window.getSelection()?.rangeCount == 0) {
+				const range = document.createRange();
+				range.selectNodeContents(contentEl.value.children[0]);
+				window.getSelection()?.addRange(range);
+			}
 
 			const range = window.getSelection()?.getRangeAt(0);
 			if (!range) return;
@@ -174,6 +187,16 @@ export default defineComponent({
 			}
 
 			onInput();
+		}
+
+		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
+			if (tree === undefined) return undefined;
+
+			const fieldObject = tree.find((f) => f.field === fieldSections[0]);
+
+			if (fieldObject === undefined) return undefined;
+			if (fieldSections.length === 1) return fieldObject;
+			return findTree(fieldObject.children, fieldSections.slice(1));
 		}
 
 		function joinElements(first: HTMLElement, second: HTMLElement) {
@@ -241,7 +264,7 @@ export default defineComponent({
 							return `<span class="text">${part}</span>`;
 						}
 						const fieldKey = part.replaceAll(/({|})/g, '').trim();
-						const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+						const field = findTree(tree.value, fieldKey.split('.'));
 
 						if (!field) return '';
 

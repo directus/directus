@@ -2,6 +2,8 @@
 node_modules
 .vs_code
 .env
+.secrets
 npm-debug.log
 lerna-debug.log
 .nova
+*.code-workspace

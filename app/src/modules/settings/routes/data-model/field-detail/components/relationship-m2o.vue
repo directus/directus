@@ -8,32 +8,64 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input :class="{ matches: relatedCollectionExists }" db-safe key="related-collection" v-model="relations[0].one_collection" :disabled="isExisting" :placeholder="$t('collection') + '...'">
+				<v-input
+					:class="{ matches: relatedCollectionExists }"
+					db-safe
+					key="related-collection"
+					v-model="relations[0].one_collection"
+					:disabled="isExisting"
+					:placeholder="$t('collection') + '...'"
+				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="isExisting"
+								/>
 							</template>
 
 							<v-list dense class="monospace">
 								<v-list-item
-									v-for="item in items"
-									:key="item.value"
-									:active="relations[0].one_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].one_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].one_collection === collection.collection"
+									@click="relations[0].one_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].one_collection === collection.collection"
+										@click="relations[0].one_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].many_field" />
-			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[0].one_primary" :placeholder="$t('primary_key') + '...'" />
+			<v-input
+				db-safe
+				:disabled="relatedCollectionExists"
+				v-model="relations[0].one_primary"
+				:placeholder="$t('primary_key') + '...'"
+			/>
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
@@ -46,7 +78,12 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>
-				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" :placeholder="$t('field_name') + '...'" db-safe />
+				<v-input
+					:disabled="hasCorresponding === false"
+					v-model="correspondingField"
+					:placeholder="$t('field_name') + '...'"
+					db-safe
+				/>
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
@@ -83,7 +120,7 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items } = useRelation();
+		const { availableCollections, systemCollections } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
@@ -92,7 +129,8 @@ export default defineComponent({
 
 		return {
 			relations: state.relations,
-			items,
+			availableCollections,
+			systemCollections,
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
@@ -111,14 +149,17 @@ export default defineComponent({
 				);
 			});
 
-			const items = computed(() =>
-				availableCollections.value.map((collection) => ({
-					text: collection.collection,
-					value: collection.collection,
-				}))
-			);
+			const systemCollections = computed(() => {
+				return orderBy(
+					collectionsStore.state.collections.filter((collection) => {
+						return collection.collection.startsWith('directus_') === true;
+					}),
+					['collection'],
+					['asc']
+				);
+			});
 
-			return { items };
+			return { availableCollections, systemCollections };
 		}
 
 		function useCorresponding() {
@@ -152,8 +193,8 @@ export default defineComponent({
 						if (newField.$type === 'corresponding') {
 							return {
 								...newField,
-								field
-							}
+								field,
+							};
 						}
 
 						return newField;

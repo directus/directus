@@ -1,0 +1,98 @@
+#
+# Arguments and Flags (argsf)
+# This is meant to work with bash shell
+# To use, source this file into your bash scripts
+#
+# Implemented by João Biondo <wolfulus@gmail.com>
+# https://github.com/WoLfulus/argsf
+#
+
+declare _ARGCOUNT=$#
+declare _ARGDATA=("$@")
+declare -A _ARGMAP
+declare -A _FLAGMAP
+
+for ((_arg_index_key=1;_arg_index_key<=$#;_arg_index_key++))
+do
+  _arg_index_value=$(expr $_arg_index_key + 1)
+  _arg_key=${!_arg_index_key}
+  _arg_value=${!_arg_index_value}
+  if [[ $_arg_key == *"--"* ]]; then
+    if [[ $_arg_key == *" "* ]]; then
+      continue
+    fi
+    _arg_name="${_arg_key:2}"
+    _FLAGMAP[${_arg_name}]=1
+    if [[ $_arg_value != *"--"* ]] || [[ $_arg_value == *" "* ]] ; then
+      _ARGMAP[${_arg_name}]="$_arg_value"
+    else
+      _ARGMAP[${_arg_name}]=""
+    fi
+  fi
+done
+
+function _argument() {
+  if test "${_ARGMAP[${ARG_NAME}]+isset}" ; then
+    echo ${_ARGMAP[${ARG_NAME}]}
+  else
+    if [ ${ARG_DEFAULT} -eq 0 ]; then
+      echo "Error: required argument '--${ARG_NAME}' not specified" 1>&2
+      exit 1
+    else
+      echo ${ARG_DEFAULT_VALUE}
+    fi
+  fi
+}
+
+function argument() {
+  if [ $# -eq 1 ]; then
+    ARG_NAME="$1" ARG_DEFAULT=0 ARG_DEFAULT_VALUE= _argument "${_ARGUMENT_DATA}"
+  elif [ $# -eq 2 ]; then
+    ARG_NAME="$1" ARG_DEFAULT=1 ARG_DEFAULT_VALUE="$2" _argument "${_ARGUMENT_DATA}"
+  else
+    echo "argument: invalid number of arguments" 1>&2
+    return 1
+  fi
+  return 0
+}
+
+function flage() {
+  if [ $# -eq 1 ]; then
+    if [[ ${_FLAGMAP[$1]} ]] ; then
+      echo "true"
+      return 0
+    elif [[ ${_FLAGMAP[no-$1]} ]] ; then
+      echo "false"
+      return 0
+    else
+      echo "true"
+      return 0
+    fi
+  else
+    echo "flag: invalid number of arguments" 1>&2
+    return 1
+  fi
+}
+
+function flagd() {
+  if [ $# -eq 1 ]; then
+    if [[ ${_FLAGMAP[$1]} ]] ; then
+      echo "true"
+      return 0
+    elif [[ ${_FLAGMAP[no-$1]} ]] ; then
+      echo "false"
+      return 0
+    else
+      echo "false"
+      return 0
+    fi
+  else
+    echo "flag: invalid number of arguments" 1>&2
+    return 1
+  fi
+}
+
+function flag() {
+  flagd $1
+  return $?
+}
