@@ -225,7 +225,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const form = ref(null);
+		const form = ref<HTMLElement>();
 		const userStore = useUserStore();
 
 		const { collection, primaryKey } = toRefs(props);

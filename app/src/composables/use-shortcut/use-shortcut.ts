@@ -61,10 +61,10 @@ function callHandlers(event: KeyboardEvent) {
 export default function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | null> | Ref<Vue | null> = ref(document.body)
+	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
 ) {
 	const callback: ShortcutHandler = (event) => {
-		if (reference.value === null) return;
+		if (!reference.value) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
 		if (

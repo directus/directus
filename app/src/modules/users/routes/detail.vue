@@ -209,7 +209,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const form = ref<HTMLElement | null>(null);
+		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
 

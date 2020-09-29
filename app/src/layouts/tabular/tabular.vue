@@ -212,7 +212,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const table = ref<Vue | null>(null);
+		const table = ref<Vue>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);

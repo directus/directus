@@ -232,7 +232,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const form = ref<HTMLElement | null>(null);
+		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();

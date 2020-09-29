@@ -46,7 +46,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const textarea = ref<HTMLElement | null>(null);
+		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
