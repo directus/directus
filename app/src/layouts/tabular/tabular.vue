@@ -1,8 +1,8 @@
 <template>
 	<div class="layout-tabular">
 		<portal to="layout-options">
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.tabular.spacing') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
 				<v-select
 					v-model="tableSpacing"
 					:items="[
@@ -22,8 +22,8 @@
 				/>
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.tabular.fields') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
 				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
 					<v-checkbox
 						v-for="field in activeFields"
