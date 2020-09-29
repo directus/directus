@@ -376,18 +376,33 @@ function initLocalStore(
 			}
 
 			if (fieldExists(junctionCollection, manyRelated) === false) {
-				state.newFields.push({
-					$type: 'manyRelated',
-					collection: junctionCollection,
-					field: manyRelated,
-					type: collectionExists(relatedCollection)
-						? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
-						: 'integer',
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
+				if (type === 'translations') {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						type: collectionExists(relatedCollection)
+							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+							: 'string',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				} else {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						type: collectionExists(relatedCollection)
+							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+							: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 			}
 
 			if (collectionExists(relatedCollection) === false) {
