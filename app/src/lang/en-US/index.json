@@ -81,7 +81,8 @@
 		"empty": "Value has to be empty",
 		"nempty": "Value can't be empty",
 		"null": "Value has to be null",
-		"nnull": "Value can't be null"
+		"nnull": "Value can't be null",
+		"required": "Value is required"
 	},
 
 	"all_access": "All Access",

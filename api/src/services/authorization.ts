@@ -11,6 +11,7 @@ import {
 	Item,
 	PrimaryKey,
 } from '../types';
+import SchemaInspector from 'knex-schema-inspector';
 import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge } from 'lodash';
@@ -190,29 +191,39 @@ export class AuthorizationService {
 		collection: string,
 		payload: Partial<Item>[] | Partial<Item>
 	): Promise<Partial<Item>[] | Partial<Item>> {
+		const validationErrors: FailedValidationException[] = [];
+
 		let payloads = Array.isArray(payload) ? payload : [payload];
 
-		const permission = await this.knex
-			.select<Permission>('*')
-			.from('directus_permissions')
-			.where({ action, collection, role: this.accountability?.role || null })
-			.first();
+		let permission: Permission | undefined;
 
-		if (!permission) throw new ForbiddenException();
+		if (this.accountability?.admin === true) {
+			permission = { id: 0, role: this.accountability?.role, collection, action, permissions: {}, validation: {}, limit: null, fields: '*', presets: {}, }
+		} else {
+			permission = await this.knex
+				.select<Permission>('*')
+				.from('directus_permissions')
+				.where({ action, collection, role: this.accountability?.role || null })
+				.first();
 
-		const allowedFields = permission.fields?.split(',') || [];
+			// Check if you have permission to access the fields you're trying to acces
 
-		if (allowedFields.includes('*') === false) {
-			for (const payload of payloads) {
-				const keysInData = Object.keys(payload);
-				const invalidKeys = keysInData.filter(
-					(fieldKey) => allowedFields.includes(fieldKey) === false
-				);
+			if (!permission) throw new ForbiddenException();
 
-				if (invalidKeys.length > 0) {
-					throw new ForbiddenException(
-						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+			const allowedFields = permission.fields?.split(',') || [];
+
+			if (allowedFields.includes('*') === false) {
+				for (const payload of payloads) {
+					const keysInData = Object.keys(payload);
+					const invalidKeys = keysInData.filter(
+						(fieldKey) => allowedFields.includes(fieldKey) === false
 					);
+
+					if (invalidKeys.length > 0) {
+						throw new ForbiddenException(
+							`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+						);
+					}
 				}
 			}
 		}
@@ -221,15 +232,36 @@ export class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const schema = generateJoi(permission.validation);
+		const schemaInspector = SchemaInspector(this.knex);
+		const columns = await schemaInspector.columnInfo(collection);
+		const requiredColumns = columns.filter((column) => column.is_nullable === false && column.has_auto_increment === false && column.default_value === null);
 
-		for (const payload of payloads) {
-			const { error } = schema.validate(payload, { abortEarly: false });
+		if (requiredColumns.length > 0) {
+			permission.validation = {
+				_and: [
+					permission.validation,
+					{}
+				]
+			}
 
-			if (error) {
-				throw error.details.map((details) => new FailedValidationException(details));
+			if (action === 'create') {
+				for (const { name } of requiredColumns) {
+					permission.validation._and[1][name] = {
+						_required: true
+					}
+				}
+			} else {
+				for (const { name } of requiredColumns) {
+					permission.validation._and[1][name] = {
+						_nnull: true
+					}
+				}
 			}
 		}
+
+		validationErrors.push(...this.validateJoi(permission.validation, payloads));
+
+		if (validationErrors.length > 0) throw validationErrors;
 
 		if (Array.isArray(payload)) {
 			return payloads;
@@ -238,11 +270,49 @@ export class AuthorizationService {
 		}
 	}
 
+	validateJoi(validation: Record<string, any>, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
+		const errors: FailedValidationException[] = [];
+
+		/**
+		 * Note there can only be a single _and / _or per level
+		 */
+
+		if (Object.keys(validation)[0] === '_and') {
+			const subValidation = Object.values(validation)[0];
+			const nestedErrors = subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)).flat().filter((err?: FailedValidationException) => err);
+			errors.push(...nestedErrors);
+		}
+
+		if (Object.keys(validation)[0] === '_or') {
+			const subValidation = Object.values(validation)[0];
+			const nestedErrors = subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)).flat();
+			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
+
+			if (allErrored) {
+				errors.push(...nestedErrors);
+			}
+		}
+
+		const schema = generateJoi(validation);
+
+		for (const payload of payloads) {
+			const { error } = schema.validate(payload, { abortEarly: false });
+
+			if (error) {
+				errors.push(...error.details.map((details) => new FailedValidationException(details)));
+			}
+		}
+
+		return errors;
+	}
+
 	async checkAccess(
 		action: PermissionsAction,
 		collection: string,
 		pk: PrimaryKey | PrimaryKey[]
 	) {
+		if (this.accountability?.admin === true) return;
+
 		const itemsService = new ItemsService(collection, { accountability: this.accountability });
 
 		try {
