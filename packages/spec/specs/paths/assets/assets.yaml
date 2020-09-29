@@ -6,9 +6,9 @@ get:
   security:
     - Auth: []
   parameters:
-    - name: key
+    - name: id
       in: path
-      description: private_hash of the file
+      description: The id of the file.
       required: true
       schema:
         type: string

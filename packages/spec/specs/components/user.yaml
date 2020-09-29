@@ -35,12 +35,14 @@ properties:
     description: The user's description.
     example: null
     type: string
-    nullable:
+    nullable: true
   tags:
     description: The user's tags.
     example: null
     type: array
     nullable: true
+    items:
+      type: string
   avatar:
     description: The user's avatar.
     example: null

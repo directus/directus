@@ -25,7 +25,7 @@ properties:
         example: null
         nullable: true
       display_template:
-        description:
+        description: Text representation of how items from this collection are shown across the system.
         type: string
         example: null
         nullable: true

@@ -21,8 +21,10 @@ properties:
         invalid-credentials,
       ]
   action_by:
-    $ref: "./user.yaml"
     description: The user who caused this action.
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/User"
     nullable: true # States the SQL structure
   action_on:
     description: When the action happened.

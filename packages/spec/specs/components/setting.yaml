@@ -52,12 +52,12 @@ properties:
     example: null
     nullable: true
   storage_asset_transform:
-    description:
+    description: ""
     type: string
     example: "all"
     nullable: true
   storage_asset_presets:
-    description:
+    description: ""
     type: string
     example: null
     nullable: true
