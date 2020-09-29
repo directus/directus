@@ -143,6 +143,6 @@ function getJoi(operator: string, value: any) {
 	}
 
 	if (operator === '_required') {
-		return Joi.required();
+		return Joi.invalid(null).required();
 	}
 }
