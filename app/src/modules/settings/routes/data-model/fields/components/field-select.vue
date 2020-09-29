@@ -156,14 +156,16 @@
 			<v-card class="duplicate">
 				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 				<v-card-text>
-					<div class="duplicate-field">
-						<span class="type-label">{{ $tc('collection', 0) }}</span>
-						<v-select class="monospace" :items="collections" v-model="duplicateTo" />
-					</div>
+					<div class="form-grid">
+						<div class="field">
+							<span class="type-label">{{ $tc('collection', 0) }}</span>
+							<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+						</div>
 
-					<div class="duplicate-field">
-						<span class="type-label">{{ $tc('field', 0) }}</span>
-						<v-input class="monospace" v-model="duplicateName" />
+						<div class="field">
+							<span class="type-label">{{ $tc('field', 0) }}</span>
+							<v-input class="monospace" v-model="duplicateName" />
+						</div>
 					</div>
 				</v-card-text>
 				<v-card-actions>
@@ -365,6 +367,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .full,
 .fill {
@@ -490,5 +493,11 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
+}
+
+.form-grid {
+	--v-form-vertical-gap: 24px;
+
+	@include form-grid;
 }
 </style>
