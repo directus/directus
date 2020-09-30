@@ -12,7 +12,7 @@ Every [item](#) in a relational database has a unique "key" that identifies it w
 
 To link items together relationally, you simply save a reference of an item's PK in a different field. That _reference_ is called a Foreign Key (FK).
 
-::: tip Compound Keys
+::: Compound Keys
 We've ignored compound keys in this explanation to help keep things as simple as possible.
 :::
 
@@ -51,11 +51,11 @@ cities ("Many" Collection)
 - country (stores the FK to a country)
 ```
 
-::: tip Manual Reordering
+::: Manual Reordering
 To enable manual reordering for a O2M, simply add a field with the `sort` type to the "many" side (`cities` in the above example).
 :::
 
-::: tip Translations
+::: Translations
 The Translations interface allows [creating multilingual content](#) relationally. It is a standard O2M relatinship, but also includes an additional field on the "many" collection to hold the language key
 :::
 
@@ -87,11 +87,11 @@ Notice that the example above also has a `quantity` field on the junction table.
 An M2M is technically two relationships viewed as one. Each side has a O2M to the Junction Table that sits in the middle. In that sense, there really is no "M2M".
 :::
 
-::: tip Manual Reordering
+::: Manual Reordering
 To enable manual reordering for a M2M, simply add a numeric field to the junction table and set it as the [Collection Sort](#).
 :::
 
-::: tip Self-Referencing
+::: Self-Referencing
 You can also have a M2M relationship that connects items within the _same_ collection. A common example of this is "Related Articles", where each article might relate to many other articles.
 :::
 

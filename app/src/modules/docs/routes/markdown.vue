@@ -50,8 +50,7 @@ export default defineComponent({
 }
 
 .docs {
-	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding: 0 var(--content-padding) var(--content-padding-bottom);
 
 	.md {
 		max-width: 740px;
@@ -94,6 +93,7 @@ export default defineComponent({
 			}
 
 			h2 {
+				margin-top: 60px;
 				margin-bottom: 20px;
 				padding-bottom: 12px;
 				font-size: 26px;
@@ -269,6 +269,7 @@ export default defineComponent({
 			}
 
 			blockquote {
+				font-size: 18px;
 				padding: 0 20px;
 				color: var(--foreground-subdued);
 				border-left: 2px solid var(--background-normal);
@@ -339,9 +340,9 @@ export default defineComponent({
 			}
 
 			hr {
-				margin: 20px auto;
+				margin: 40px auto;
 				border: none;
-				border-top: 1px solid var(--background-normal);
+				border-top: 2px solid var(--background-normal);
 			}
 
 			b,
@@ -351,7 +352,7 @@ export default defineComponent({
 
 			.hint {
 				display: inline-block;
-				margin: 40px 0;
+				margin: 20px 0;
 				padding: 0 20px;
 				background-color: var(--background-subdued);
 				border-left: 2px solid var(--primary);
