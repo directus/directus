@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-beta.3",
+	"version": "9.0.0-beta.4",
 	"description": "Specification of the Directus Api",
 	"scripts": {
 		"dev": "swagger-ui-watcher specs/openapi.yaml",
