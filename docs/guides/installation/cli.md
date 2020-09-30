@@ -17,7 +17,7 @@ Directus currently supports the following databases, with our minimum version be
 | OracleDB      | TBD     |
 | MariaDB       | 10.1    |
 
-:::tip Variants
+::: Variants
 In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).
 :::
 

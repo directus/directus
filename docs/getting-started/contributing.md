@@ -8,7 +8,7 @@ Our Node.js repository is located at `directus/directus` and houses the Admin Ap
 
 To contribute to the project, please follow the instructions located within our GitHub repoitory's [contributing.md file](#).
 
-:::tip PHP API Port
+::: PHP API Port
 While the Node.js version of Directus defines the official specification and is our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary codebase is located in a separate git repository at [`directus/php`](#).
 :::
 
@@ -78,7 +78,7 @@ git checkout -b YOUR-BRANCH-NAME
 npx lerna bootstrap
 ```
 
-:::tip Reinstalling Dependencies
+::: Reinstalling Dependencies
 To clear existing dependencies and reinstall them, you can run the following command:
 ```bash
 npx lerna clean -y && npx lerna bootstrap

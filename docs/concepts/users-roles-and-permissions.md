@@ -8,11 +8,11 @@ To use the App or API, you'll need a valid Directus User. Each user is assigned 
 
 All Directus users are aggregated and shown on the [User Directory](#) page of the App
 
-:::tip Extending Directus Users
+::: Extending Directus Users
 While the included fields within Directus Users are required/locked, you can still _extend_ this collection with additional custom fields as needed. You can do this via the normal [Create a new Field](#) process from within the system collection.
 :::
 
-:::tip System vs Custom Users
+::: System vs Custom Users
 If your project requires a users, members, customers, etc., we recommend creating your own collection to manage these instead of trying to repurpose the Directus Users system.
 :::
 
