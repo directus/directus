@@ -25,8 +25,11 @@ export default defineComponent({
 			}
 
 			let htmlString = slots.default()[0].text!;
-
 			const hintRegex = /:::(.*?) (.*?)\r?\n((\s|.)*?):::/gm;
+
+			htmlString = marked(htmlString, {
+				highlight: (code) => highlight.highlightAuto(code).value,
+			});
 
 			htmlString = htmlString.replaceAll(
 				hintRegex,
@@ -34,10 +37,6 @@ export default defineComponent({
 					return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
 				}
 			);
-
-			htmlString = marked(htmlString, {
-				highlight: (code) => highlight.highlightAuto(code).value,
-			});
 
 			html.value = htmlString;
 		}
@@ -71,8 +70,8 @@ export default defineComponent({
 			}
 
 			a {
-				text-decoration: none;
 				color: var(--primary);
+				text-decoration: none;
 			}
 
 			h1,
@@ -103,9 +102,9 @@ export default defineComponent({
 			}
 
 			h3 {
+				margin-bottom: 0px;
 				font-size: 19px;
 				line-height: 24px;
-				margin-bottom: 0px;
 			}
 
 			h4 {
@@ -135,11 +134,11 @@ export default defineComponent({
 			tt {
 				margin: 0 2px;
 				padding: 0 5px;
+				font-family: var(--family-monospace);
 				white-space: nowrap;
 				background-color: var(--background-page);
 				border: 1px solid var(--background-normal);
 				border-radius: var(--border-radius);
-				font-family: var(--family-monospace);
 			}
 
 			pre code {
