@@ -688,6 +688,8 @@ function initLocalStore(
 						state.fieldData.schema.is_nullable = false;
 						state.fieldData.schema.default_value = false;
 						break;
+					default:
+						state.fieldData.schema.default_value = undefined;
 				}
 			}
 		);

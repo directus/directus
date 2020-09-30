@@ -214,54 +214,50 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeyField() {
-			const field: DeepPartial<Field> = {
-				field: primaryKeyFieldName.value,
-				type: 'integer',
-				meta: {
-					hidden: true,
-					interface: 'numeric',
-					readonly: true,
-				},
-				schema: {
-					has_auto_increment: true,
-					is_primary_key: true,
-				},
-			};
-
 			if (primaryKeyFieldType.value === 'uuid') {
 				return {
-					...field,
+					field: primaryKeyFieldName.value,
 					type: 'uuid',
 					meta: {
-						...field.meta,
+						hidden: true,
+						readonly: true,
 						interface: 'text-input',
 						special: ['uuid'],
 					},
 					schema: {
-						...field.schema,
+						is_primary_key: true,
 						length: 36,
 						has_auto_increment: false,
 					},
 				};
 			} else if (primaryKeyFieldType.value === 'manual') {
 				return {
-					...field,
+					field: primaryKeyFieldName.value,
 					type: 'string',
 					meta: {
-						...field.meta,
 						interface: 'text-input',
 						readonly: false,
 						hidden: false,
 					},
 					schema: {
-						...field.schema,
+						is_primary_key: true,
 						length: 255,
-						auto_increment: false,
+						has_auto_increment: false,
 					},
 				};
 			} else {
-				// auto_int
-				return field;
+				return {
+					field: primaryKeyFieldName.value,
+					type: 'integer',
+					meta: {
+						hidden: true,
+						interface: 'numeric',
+						readonly: true,
+					},
+					schema: {
+						has_auto_increment: true,
+					},
+				};
 			}
 		}
 
@@ -309,7 +305,7 @@ export default defineComponent({
 									value: 'archived',
 								},
 							],
-						}
+						},
 					},
 					schema: {
 						default_value: 'draft',
