@@ -40,20 +40,20 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
-				name: 'Activity & Versions',
-				to: '/docs/concepts/activity-and-versions',
+				name: 'Database Mirroring',
+				to: '/docs/concepts/database-mirroring',
+			},
+			{
+				name: 'App Overview',
+				to: '/docs/concepts/app-overview',
 			},
 			{
 				name: 'App Components',
 				to: '/docs/concepts/app-components',
 			},
 			{
-				name: 'App Pages',
-				to: '/docs/concepts/app-pages',
-			},
-			{
-				name: 'Database Mirroring',
-				to: '/docs/concepts/database-mirroring',
+				name: 'Activity & Versions',
+				to: '/docs/concepts/activity-and-versions',
 			},
 			{
 				name: 'Files & Thumbnails',

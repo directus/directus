@@ -1,10 +1,6 @@
 # App Components
 
-> Directus has been architected as completely modular and extensible. Below are some of the keystone components you should understand.
-
-## Overview
-
-@TODO Add SVG of position
+> Directus has been architected as completely modular and extensible. There are four keystone component types within the App. Out-of-the-box components are configurable, or altogether new components can be created as extensions.
 
 ## Modules
 
@@ -25,7 +21,7 @@ In addition to these core modules, custom modules offer a _blank canvas_ for cre
 
 ## Layouts
 
-Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown on Item Browse pages and contextual modals for item selection. Directus includes several Layout options out-of-the-box:
+Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown on Item Browse pages and contextual modals for item selection. Directus includes several Layout options out-of-the-box, each with different features and configuration options.
 
 ### Table
 

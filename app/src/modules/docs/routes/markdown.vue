@@ -256,16 +256,11 @@ export default defineComponent({
 					margin: 8px 0;
 					line-height: 24px;
 				}
-			}
 
-			ul :first-child,
-			ol :first-child {
-				margin-top: 0;
-			}
-
-			ul :last-child,
-			ol :last-child {
-				margin-bottom: 0;
+				ul,
+				ol {
+					margin: 4px 0;
+				}
 			}
 
 			blockquote {
@@ -327,6 +322,20 @@ export default defineComponent({
 
 			img {
 				max-width: 100%;
+				margin: 20px 0;
+
+				&.no-margin {
+					margin: 0;
+				}
+
+				&.full {
+					width: 100%;
+				}
+
+				&.shadow {
+					box-shadow: 0px 5px 10px 0px rgba(23,41,64,0.1),
+								0px 2px 40px 0px rgba(23,41,64,0.05);
+				}
 			}
 
 			.highlight pre {
