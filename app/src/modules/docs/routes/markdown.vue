@@ -25,7 +25,7 @@ export default defineComponent({
 			}
 
 			let htmlString = slots.default()[0].text!;
-			const hintRegex = /:::(.*?) (.*?)\r?\n((\s|.)*?):::/gm;
+			const hintRegex = /<p>:::(.*?) (.*?)\r?\n((\s|.)*?):::<\/p>/gm;
 
 			htmlString = marked(htmlString, {
 				highlight: (code) => highlight.highlightAuto(code).value,
