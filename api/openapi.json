@@ -1,0 +1,6146 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Directus SDK",
+    "description": "Template for generating any kind of SDK.",
+    "contact": {
+      "email": "contact@directus.io"
+    },
+    "license": {
+      "name": "GPL-3.0",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.de.html"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Directus Docs",
+    "url": "https://docs.directus.io"
+  },
+  "servers": [
+    {
+      "url": "https://demo.directus.io/"
+    },
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Activity",
+      "description": "All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens."
+    },
+    {
+      "name": "Assets",
+      "description": "Image typed files can be dynamically resized and transformed to fit any need."
+    },
+    {
+      "name": "Authentication",
+      "description": "All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens."
+    },
+    {
+      "name": "Collection presets",
+      "description": "Collection presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app."
+    },
+    {
+      "name": "Collections",
+      "description": "Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database."
+    },
+    {
+      "name": "Extensions",
+      "description": "Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules."
+    },
+    {
+      "name": "Fields",
+      "description": "Fields are individual pieces of content within an item. They are mapped to columns in the database."
+    },
+    {
+      "name": "Files",
+      "description": "Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate thumbnails for images on the fly."
+    },
+    {
+      "name": "Folders",
+      "description": "Folders don't do anything yet, but will be used in the (near) future to be able to group files."
+    },
+    {
+      "name": "Items",
+      "description": "Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks."
+    },
+    {
+      "name": "Mail",
+      "description": "Send electronic mail through the electronic post."
+    },
+    {
+      "name": "Permissions",
+      "description": "Permissions control who has access to what and when."
+    },
+    {
+      "name": "Projects",
+      "description": "Projects are the individual tenants of the platform. Each project has its own database and data."
+    },
+    {
+      "name": "Relations",
+      "description": "What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of."
+    },
+    {
+      "name": "Revisions",
+      "description": "Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will."
+    },
+    {
+      "name": "Roles",
+      "description": "Roles are groups of users that share permissions."
+    },
+    {
+      "name": "SCIM",
+      "description": "Directus partially supports Version 2 of System for Cross-domain Identity Management (SCIM). It is an open standard that allows for the exchange of user information between systems, therefore allowing users to be externally managed using the endpoints described below."
+    },
+    {
+      "name": "Server",
+      "description": "Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with."
+    },
+    {
+      "name": "Settings",
+      "description": "Settings control the way the platform works and acts."
+    },
+    {
+      "name": "Users",
+      "description": "Users are what gives you access to the data."
+    },
+    {
+      "name": "Utilities",
+      "description": "Directus comes with various utility endpoints you can use to simplify your development flow."
+    },
+    {
+      "name": "Webhooks",
+      "description": "Webhooks."
+    }
+  ],
+  "paths": {
+    "/activity": {
+      "get": {
+        "operationId": "getActivitys",
+        "description": "Returns a list of activity actions.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Activity"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      }
+    },
+    "/activity/comment": {
+      "post": {
+        "description": "Creates a new comment.",
+        "operationId": "createComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection",
+                  "item",
+                  "comment"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "example": "projects"
+                  },
+                  "item": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "comment": {
+                    "type": "string",
+                    "example": "A new comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Activity"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      }
+    },
+    "/activity/{id}": {
+      "get": {
+        "description": "Retrieves the details of an existing activity action. Provide the primary key of the activity action and Directus will return the corresponding information.",
+        "operationId": "getActivity",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Activity"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      }
+    },
+    "/activity/comment/{id}": {
+      "patch": {
+        "description": "Update the content of an existing comment.",
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "example": "My updated comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Activity"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing comment. Deleted comments can not be retrieved.",
+        "operationId": "deleteComment",
+        "responses": {
+          "203": {
+            "description": "Deleted succsessfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/assets/{key}": {
+      "get": {
+        "tags": [
+          "Assets"
+        ],
+        "operationId": "getAsset",
+        "description": "Image typed files can be dynamically resized and transformed to fit any need.",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "private_hash of the file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "The key of the asset size configured in settings.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "w",
+            "in": "query",
+            "description": "Width of the file in pixels.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "h",
+            "in": "query",
+            "description": "Height of the file in pixels.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "f",
+            "in": "query",
+            "description": "Fit of the file",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "crop",
+                "contain"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Quality of compression.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "Retrieve a Temporary Access Token.",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "admin@example.com",
+                    "description": "Email address of the user you're retrieving the access token for."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the user.",
+                    "format": "password",
+                    "example": "password"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "jwt",
+                      "cookie"
+                    ],
+                    "default": "jwt",
+                    "description": "Choose between retrieving the token as a string, or setting it as a cookie."
+                  },
+                  "otp": {
+                    "type": "string",
+                    "description": "If 2FA is enabled, you need to pass the one time password."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "public": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        },
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "description": "Refresh a Temporary Access Token.",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "refresh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token"
+                ],
+                "properties": {
+                  "refresh_token": {
+                    "type": "string",
+                    "example": "eyJ0eXAiOiJKV...",
+                    "description": "JWT access token you want to refresh. This token can't be expired."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "public": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Log out of directus.",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          }
+        }
+      }
+    },
+    "/auth/password/request": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "passwordRequest",
+        "description": "Request a reset password email to be send.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "admin@example.com",
+                    "description": "Email address of the user you're requesting a reset for."
+                  },
+                  "reset_url": {
+                    "type": "string",
+                    "example": "https://mydomain.com/passwordreset",
+                    "description": "Provide a custom reset url which the link in the Email will lead to. The reset token will be passed as a parameter."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/auth/password/reset": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "passwordReset",
+        "description": "The request a password reset endpoint sends an email with a link to the admin app which in turn uses this endpoint to allow the user to reset their password.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "password"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "example": "eyJ0eXAiOiJKV1Qi...",
+                    "description": "One-time use JWT token that is used to verify the user."
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password",
+                    "format": "password",
+                    "description": "New password for the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/auth/sso": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "sso",
+        "description": "List the SSO providers.",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "public": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "example": [
+                        "github",
+                        "facebook"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/auth/sso/{provider}": {
+      "get": {
+        "description": "List the SSO providers.",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "ssoProvider",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "description": "Key of the activated SSO provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Mode"
+          },
+          {
+            "name": "redirect_url",
+            "in": "query",
+            "required": true,
+            "description": "Where to redirect on successful login.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "public": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/items/{collection}": {
+      "get": {
+        "description": "List the items.",
+        "tags": [
+          "Items"
+        ],
+        "operationId": "getItems",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter items by the given status",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new item.",
+        "tags": [
+          "Items"
+        ],
+        "operationId": "createItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Collection"
+        }
+      ]
+    },
+    "/items/{collection}/{id}": {
+      "get": {
+        "description": "Retrieve a single item by unique identifier.",
+        "tags": [
+          "Items"
+        ],
+        "operationId": "getItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update an existing item.",
+        "tags": [
+          "Items"
+        ],
+        "operationId": "updateItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an existing item.",
+        "tags": [
+          "Items"
+        ],
+        "operationId": "deleteItem",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Collection"
+        },
+        {
+          "name": "id",
+          "description": "Index of the item.",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "description": "Incremental index of the item.",
+                "example": 1
+              },
+              {
+                "type": "string",
+                "description": "Unique identifier of the item.",
+                "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "/presets": {
+      "get": {
+        "tags": [
+          "Presets"
+        ],
+        "operationId": "getPresets",
+        "description": "List the presets.",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Preset"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Presets"
+        ],
+        "operationId": "createPreset",
+        "description": "Create a new preset.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "description": "What collection this collection preset is used for.",
+                    "example": "articles"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.",
+                    "example": "Highly rated articles"
+                  },
+                  "role": {
+                    "type": "integer",
+                    "description": "The unique identifier of a role in the platform. If user is null, this will be used to apply the collection preset or bookmark for all users in the role."
+                  },
+                  "search_query": {
+                    "type": "string",
+                    "description": "What the user searched for in search/filter in the header bar."
+                  },
+                  "filters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "example": "rating"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "example": "gte"
+                        },
+                        "value": {
+                          "type": "integer",
+                          "example": 4.5
+                        }
+                      }
+                    }
+                  },
+                  "view_type": {
+                    "type": "string",
+                    "description": "Name of the view type that is used. Defaults to tabular."
+                  },
+                  "view_query": {
+                    "type": "string",
+                    "description": "View query that's saved per view type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters."
+                  },
+                  "view_options": {
+                    "type": "string",
+                    "description": "Options of the views. The properties in here are controlled by the layout."
+                  },
+                  "translation": {
+                    "type": "object",
+                    "description": "Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Preset"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/presets/{id}": {
+      "get": {
+        "tags": [
+          "Presets"
+        ],
+        "operationId": "getPreset",
+        "description": "Retrieve a single preset by unique identifier.",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Preset"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Presets"
+        ],
+        "operationId": "updatePreset",
+        "description": "Update an existing preset.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "description": "What collection this collection preset is used for.",
+                    "example": "articles"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.",
+                    "example": "Highly rated articles"
+                  },
+                  "role": {
+                    "type": "integer",
+                    "description": "The unique identifier of a role in the platform. If user is null, this will be used to apply the collection preset or bookmark for all users in the role."
+                  },
+                  "search_query": {
+                    "type": "string",
+                    "description": "What the user searched for in search/filter in the header bar."
+                  },
+                  "filters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "example": "rating"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "example": "gte"
+                        },
+                        "value": {
+                          "type": "integer",
+                          "example": 4.5
+                        }
+                      }
+                    }
+                  },
+                  "view_type": {
+                    "type": "string",
+                    "description": "Name of the view type that is used. Defaults to tabular."
+                  },
+                  "view_query": {
+                    "type": "string",
+                    "description": "View query that's saved per view type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters."
+                  },
+                  "view_options": {
+                    "type": "string",
+                    "description": "Options of the views. The properties in here are controlled by the layout."
+                  },
+                  "translation": {
+                    "type": "object",
+                    "description": "Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Preset"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Presets"
+        ],
+        "operationId": "deletePreset",
+        "description": "Delete an existing preset.",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/collections": {
+      "get": {
+        "description": "Returns a list of the collections available in the project.",
+        "operationId": "getCollections",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Collection"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "post": {
+        "description": "Create a new collection in Directus.",
+        "operationId": "createCollection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection",
+                  "fields"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "description": "Unique name of the collection.",
+                    "example": "my_collection"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields contained in this collection. See the fields reference for more information. Each individual field requires field, type, and interface to be provided."
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "A note describing the collection."
+                  },
+                  "hidden": {
+                    "type": "string",
+                    "description": "Whether or not the collection is hidden from the navigation in the admin app."
+                  },
+                  "single": {
+                    "type": "string",
+                    "description": "Whether or not the collection is treated as a single record."
+                  },
+                  "managed": {
+                    "type": "string",
+                    "description": "If Directus is tracking and managing this collection currently."
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Name of a Google Material Design Icon that's assigned to this collection."
+                  },
+                  "translation": {
+                    "type": "string",
+                    "description": "Key value pairs of how to show this collection's name in different languages in the admin app."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Collection"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      }
+    },
+    "/collections/{collection}": {
+      "get": {
+        "description": "Retrieves the details of a single collection.",
+        "operationId": "getCollection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Collection"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing collection.",
+        "operationId": "updateCollection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "description": "A note describing the collection."
+                  },
+                  "hidden": {
+                    "type": "boolean",
+                    "description": "Whether or not the collection is hidden from the navigation in the admin app."
+                  },
+                  "single": {
+                    "type": "string",
+                    "description": "Whether or not the collection is treated as a single record."
+                  },
+                  "managed": {
+                    "type": "string",
+                    "description": "If Directus is tracking and managing this collection currently."
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Name of a Google Material Design Icon that's assigned to this collection."
+                  },
+                  "translation": {
+                    "type": "object",
+                    "description": "Key value pairs of how to show this collection's name in different languages in the admin app."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Collection"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution.",
+        "operationId": "deleteCollection",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "collection",
+          "in": "path",
+          "required": true,
+          "description": "The unique name of the collection.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/interfaces": {
+      "get": {
+        "description": "List all installed custom interfaces.",
+        "operationId": "getInterfaces",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/layouts": {
+      "get": {
+        "description": "List all installed custom layouts.",
+        "operationId": "getLayouts",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/modules": {
+      "get": {
+        "description": "List all installed custom modules.",
+        "operationId": "getModules",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/fields": {
+      "get": {
+        "description": "Returns a list of the fields available in the project.",
+        "operationId": "getFields",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Field"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      }
+    },
+    "/fields/{collection}": {
+      "get": {
+        "description": "Returns a list of the fields available in the given collection.",
+        "operationId": "getCollectionFields",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Field"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      },
+      "post": {
+        "description": "Create a new field in a given collection.",
+        "operationId": "createField",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "field",
+                  "datatype",
+                  "type",
+                  "length"
+                ],
+                "properties": {
+                  "field": {
+                    "description": "Unique name of the field. Field name is unique within the collection.",
+                    "type": "string"
+                  },
+                  "datatype": {
+                    "description": "SQL datatype of the column that corresponds to this field.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Directus specific data type. Used to cast values in the API.",
+                    "type": "string"
+                  },
+                  "auto_increment": {
+                    "description": "If the value in this field is auto incremented. Only applies to integer type fields.",
+                    "type": "boolean"
+                  },
+                  "group": {
+                    "description": "What field group this field is part of.",
+                    "type": "string"
+                  },
+                  "hidden_browse": {
+                    "description": "If this field should be hidden from the item browse (listing) page.",
+                    "type": "boolean"
+                  },
+                  "hidden_detail": {
+                    "description": "If this field should be hidden from the item detail (edit) page.",
+                    "type": "boolean"
+                  },
+                  "interface": {
+                    "description": "What interface is used in the admin app to edit the value for this field.",
+                    "type": "string"
+                  },
+                  "locked": {
+                    "description": "If the field can be altered by the end user. Directus system fields have this value set to `true`.",
+                    "type": "boolean"
+                  },
+                  "note": {
+                    "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+                    "type": "string"
+                  },
+                  "options": {
+                    "description": "Options for the interface that's used. This format is based on the individual interface.",
+                    "type": "object"
+                  },
+                  "primary_key": {
+                    "description": "If this field is the primary key of the collection.",
+                    "type": "boolean"
+                  },
+                  "readonly": {
+                    "description": "Prevents the user from editing the value in the field.",
+                    "type": "boolean"
+                  },
+                  "required": {
+                    "description": "If this field requires a value.",
+                    "type": "boolean"
+                  },
+                  "signed": {
+                    "description": "If the value is signed or not. Only applies to integer type fields.",
+                    "type": "boolean"
+                  },
+                  "sort": {
+                    "description": "Sort order of this field on the edit page of the admin app.",
+                    "type": "integer"
+                  },
+                  "translation": {
+                    "description": "Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
+                    "type": "object"
+                  },
+                  "unique": {
+                    "description": "If the value of this field should be unique within the collection.",
+                    "type": "boolean"
+                  },
+                  "validation": {
+                    "description": "User provided regex that will be used in the API to validate incoming values.",
+                    "type": "string"
+                  },
+                  "width": {
+                    "description": "Width of the field on the edit form.",
+                    "type": "string",
+                    "enum": [
+                      "half",
+                      "half-left",
+                      "half-right",
+                      "full",
+                      "fill"
+                    ]
+                  },
+                  "length": {
+                    "description": "Length of the field. Will be used in SQL to set the length property of the colummn. Requirement of this attribute depends on the provided datatype.",
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Field"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Unique identifier of the collection the item resides in.",
+          "in": "path",
+          "name": "collection",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/fields/{collection}/{field}": {
+      "get": {
+        "description": "Retrieves the details of a single field in a given collection.",
+        "operationId": "getCollectionField",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Field"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing field.",
+        "operationId": "updateField",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "datatype": {
+                    "description": "SQL datatype of the column that corresponds to this field.",
+                    "type": "string"
+                  },
+                  "auto_increment": {
+                    "description": "If the value in this field is auto incremented. Only applies to integer type fields.",
+                    "type": "boolean"
+                  },
+                  "group": {
+                    "description": "What field group this field is part of.",
+                    "type": "string"
+                  },
+                  "hidden_browse": {
+                    "description": "If this field should be hidden from the item browse (listing) page.",
+                    "type": "boolean"
+                  },
+                  "hidden_detail": {
+                    "description": "If this field should be hidden from the item detail (edit) page.",
+                    "type": "boolean"
+                  },
+                  "interface": {
+                    "description": "What interface is used in the admin app to edit the value for this field.",
+                    "type": "string"
+                  },
+                  "locked": {
+                    "description": "If the field can be altered by the end user. Directus system fields have this value set to `true`.",
+                    "type": "boolean"
+                  },
+                  "note": {
+                    "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+                    "type": "string"
+                  },
+                  "options": {
+                    "description": "Options for the interface that's used. This format is based on the individual interface.",
+                    "type": "object"
+                  },
+                  "primary_key": {
+                    "description": "If this field is the primary key of the collection.",
+                    "type": "boolean"
+                  },
+                  "readonly": {
+                    "description": "Prevents the user from editing the value in the field.",
+                    "type": "boolean"
+                  },
+                  "required": {
+                    "description": "If this field requires a value.",
+                    "type": "boolean"
+                  },
+                  "signed": {
+                    "description": "If the value is signed or not. Only applies to integer type fields.",
+                    "type": "boolean"
+                  },
+                  "sort": {
+                    "description": "Sort order of this field on the edit page of the admin app.",
+                    "type": "integer"
+                  },
+                  "translation": {
+                    "description": "Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
+                    "type": "object"
+                  },
+                  "unique": {
+                    "description": "If the value of this field should be unique within the collection.",
+                    "type": "boolean"
+                  },
+                  "validation": {
+                    "description": "User provided regex that will be used in the API to validate incoming values.",
+                    "type": "string"
+                  },
+                  "width": {
+                    "description": "Width of the field on the edit form.",
+                    "type": "string",
+                    "enum": [
+                      "half",
+                      "half-left",
+                      "half-right",
+                      "full",
+                      "fill"
+                    ]
+                  },
+                  "length": {
+                    "description": "Length of the field. Will be used in SQL to set the length property of the colummn. Requirement of this attribute depends on the provided datatype.",
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Field"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing field.",
+        "operationId": "deleteField",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "collection",
+          "in": "path",
+          "description": "Unique identifier of the collection the item resides in.",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        },
+        {
+          "name": "field",
+          "in": "path",
+          "description": "The unique name of the field.",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+      ]
+    },
+    "/files": {
+      "get": {
+        "description": "List the files.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "getFiles",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/File"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new file.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "createFile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/File"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/files/{id}": {
+      "get": {
+        "description": "Retrieve a single file by unique identifier.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "getFile",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/File"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update an existing file.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "updateFile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/File"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an existing file.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "deleteFile",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/files/{id}/revisions": {
+      "get": {
+        "description": "List the revisions made to the given file.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "getFileRevisions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Revision"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/files/{id}/revisions/{offset}": {
+      "get": {
+        "description": "Retrieve a single revision of the file by offset.",
+        "tags": [
+          "Files"
+        ],
+        "operationId": "getFileRevision",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          },
+          {
+            "name": "offset",
+            "in": "path",
+            "description": "offset or revision",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Revision"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/folders": {
+      "get": {
+        "description": "List the folders.",
+        "operationId": "getFolders",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Folder"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Folders"
+        ]
+      },
+      "post": {
+        "description": "Create a new folder.",
+        "operationId": "createFolder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Amsterdam",
+                    "description": "Name of the folder."
+                  },
+                  "parent_folder": {
+                    "description": "Unique identifier of the parent folder. This allows for nested folders.",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Folder"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Folders"
+        ]
+      }
+    },
+    "/folders/{id}": {
+      "get": {
+        "description": "Retrieve a single folder by unique identifier.",
+        "operationId": "getFolder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Folder"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Folders"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing folder",
+        "operationId": "updateFolder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the folder. Can't be null or empty."
+                  },
+                  "parent_folder": {
+                    "type": "integer",
+                    "example": 3,
+                    "description": "Unique identifier of the parent folder. This allows for nested folders."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Folder"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Folders"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing folder",
+        "operationId": "deleteFolder",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Folders"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/UUId"
+        }
+      ]
+    },
+    "/mail": {
+      "post": {
+        "description": "Send an email",
+        "operationId": "sendMail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "description": "User ID, email address, or object in the format { email, name }. You can send an email to multiple people at the same time by passing an array here.",
+                    "type": "array",
+                    "example": [
+                      "user@example.com",
+                      "admin@example.com"
+                    ],
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "body": {
+                    "description": "Body of the email.",
+                    "type": "string",
+                    "example": "Hello <b>{{name}}</b>, this is your new password: {{password}}."
+                  },
+                  "data": {
+                    "description": "Key value pairs of variables that can be used in the body.",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "password": {
+                        "type": "string",
+                        "example": "secret"
+                      }
+                    }
+                  },
+                  "subject": {
+                    "description": "Email subject.",
+                    "type": "string",
+                    "example": "New Password"
+                  },
+                  "type": {
+                    "description": "HTML or plain text",
+                    "example": "html",
+                    "type": "string",
+                    "enum": [
+                      "html",
+                      "text"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Mail"
+        ]
+      }
+    },
+    "/permissions": {
+      "get": {
+        "description": "List all permissions.",
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Permissions"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      },
+      "post": {
+        "description": "Create a new permission.",
+        "operationId": "createPermission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection": {
+                    "description": "What collection this permission applies to.",
+                    "type": "string",
+                    "example": "customers"
+                  },
+                  "comment": {
+                    "description": "If the user can post comments.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "full"
+                    ]
+                  },
+                  "create": {
+                    "description": "If the user can create items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "full"
+                    ]
+                  },
+                  "delete": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "explain": {
+                    "description": "If the user is required to leave a comment explaining what was changed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "always"
+                    ]
+                  },
+                  "read": {
+                    "description": "If the user can read items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "role": {
+                    "description": "Unique identifier of the role this permission applies to.",
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "read_field_blacklist": {
+                    "description": "Explicitly denies read access for specific fields.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "featured_image"
+                    ]
+                  },
+                  "status": {
+                    "description": "What status this permission applies to.",
+                    "type": "string"
+                  },
+                  "status_blacklist": {
+                    "description": "Explicitly denies specific statuses to be used.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "write_field_blacklist": {
+                    "description": "Explicitly denies write access for specific fields.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      }
+    },
+    "/permissions/me": {
+      "get": {
+        "description": "List the permissions that apply to the current user.",
+        "operationId": "getMyPermissions",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Permissions"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      }
+    },
+    "/permissions/{id}": {
+      "get": {
+        "description": "Retrieve a single permissions object by unique identifier.",
+        "operationId": "getPermission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing permission",
+        "operationId": "updatePermission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection": {
+                    "description": "What collection this permission applies to.",
+                    "type": "object"
+                  },
+                  "comment": {
+                    "description": "If the user can post comments. `full`.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update"
+                    ]
+                  },
+                  "create": {
+                    "description": "If the user can create items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "full"
+                    ]
+                  },
+                  "delete": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "explain": {
+                    "description": "If the user is required to leave a comment explaining what was changed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "always"
+                    ]
+                  },
+                  "read": {
+                    "description": "If the user can read items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "read_field_blacklist": {
+                    "description": "Explicitly denies read access for specific fields.",
+                    "type": "object"
+                  },
+                  "role": {
+                    "description": "Unique identifier of the role this permission applies to.",
+                    "type": "object"
+                  },
+                  "status": {
+                    "description": "What status this permission applies to.",
+                    "type": "object"
+                  },
+                  "status_blacklist": {
+                    "description": "Explicitly denies specific statuses to be used.",
+                    "type": "object"
+                  },
+                  "update": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "write_field_blacklist": {
+                    "description": "Explicitly denies write access for specific fields.",
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing permission",
+        "operationId": "deletePermission",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/permissions/me/{collection}": {
+      "get": {
+        "description": "List the permissions that apply to the current user for the given collection",
+        "operationId": "Enter text here",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Collection"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Permissions"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      }
+    },
+    "/relations": {
+      "get": {
+        "description": "List the relations.",
+        "operationId": "getRelations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Relation"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      },
+      "post": {
+        "description": "Create a new relation.",
+        "operationId": "createRelation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_many": {
+                    "description": "Collection that has the field that holds the foreign key.",
+                    "type": "string",
+                    "example": "articles"
+                  },
+                  "collection_one": {
+                    "description": "Collection on the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "authors"
+                  },
+                  "field_many": {
+                    "description": "Foreign key. Field that holds the primary key of the related collection.",
+                    "type": "string",
+                    "example": "author"
+                  },
+                  "field_one": {
+                    "description": "Alias column that serves as the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "books"
+                  },
+                  "junction_field": {
+                    "description": "Field on the junction table that holds the primary key of the related collection.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Relation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      }
+    },
+    "/relations/{id}": {
+      "get": {
+        "description": "Retrieve a single relation by unique identifier.",
+        "operationId": "getRelation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Relation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing relation",
+        "operationId": "updateRelation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_many": {
+                    "description": "Collection that has the field that holds the foreign key.",
+                    "type": "string"
+                  },
+                  "collection_one": {
+                    "description": "Collection on the _one_ side of the relationship.",
+                    "type": "string"
+                  },
+                  "field_many": {
+                    "description": "Foreign key. Field that holds the primary key of the related collection.",
+                    "type": "string"
+                  },
+                  "field_one": {
+                    "description": "Alias column that serves as the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "books"
+                  },
+                  "junction_field": {
+                    "description": "Field on the junction table that holds the primary key of the related collection.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Relation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing relation.",
+        "operationId": "deleteRelation",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/revisions": {
+      "get": {
+        "description": "List the revisions.",
+        "operationId": "getRevisions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Revision"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Revisions"
+        ]
+      }
+    },
+    "/revisions/{id}": {
+      "get": {
+        "description": "Retrieve a single revision by unique identifier.",
+        "operationId": "getRevision",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Revision"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Revisions"
+        ]
+      }
+    },
+    "/roles": {
+      "get": {
+        "description": "List the roles.",
+        "operationId": "getRoles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Role"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "post": {
+        "description": "Create a new role.",
+        "operationId": "createRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_listing": {
+                    "description": "Custom override for the admin app collection navigation.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Description of the role.",
+                    "type": "string"
+                  },
+                  "enforce_2fa": {
+                    "description": "Whether or not this role enforces the use of 2FA.",
+                    "type": "boolean"
+                  },
+                  "external_id": {
+                    "description": "ID used with external services in SCIM.",
+                    "type": "string"
+                  },
+                  "ip_whitelist": {
+                    "description": "Array of IP addresses that are allowed to connect to the API as a user of this role.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "module_listing": {
+                    "description": "Custom override for the admin app module bar navigation.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name of the role.",
+                    "type": "string",
+                    "example": "Interns"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "description": "Retrieve a single role by unique identifier.",
+        "operationId": "getRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing role",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_listing": {
+                    "description": "Custom override for the admin app collection navigation.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Description of the role.",
+                    "type": "string"
+                  },
+                  "enforce_2fa": {
+                    "description": "Whether or not this role enforces the use of 2FA.",
+                    "type": "boolean"
+                  },
+                  "external_id": {
+                    "description": "ID used with external services in SCIM.",
+                    "type": "string"
+                  },
+                  "ip_whitelist": {
+                    "description": "Array of IP addresses that are allowed to connect to the API as a user of this role.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "module_listing": {
+                    "description": "Custom override for the admin app module bar navigation.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name of the role.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing role",
+        "operationId": "deleteRole",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/UUId"
+        }
+      ]
+    },
+    "/scim/v2/Users": {
+      "get": {
+        "description": "List the SCIM users",
+        "operationId": "getSCIMUsers",
+        "parameters": [
+          {
+            "description": "The 1-based index of the first result in the current set of list results.",
+            "in": "query",
+            "name": "startIndex",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Specifies the desired maximum number of query results per page.",
+            "in": "query",
+            "name": "count",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by `id`, `userName`, `emails.value` and `externalId` attributes are supported. Only the `eq` operator is supported. Uses format `?filter=id eq 15`",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "post": {
+        "description": "Create a new SCIM User.",
+        "operationId": "createSCIMUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      }
+    },
+    "/scim/v2/Users/{id}": {
+      "get": {
+        "description": "Retrieve a single SCIM user by unique identifier.",
+        "operationId": "getSCIMUser",
+        "parameters": [
+          {
+            "description": "The `external_id` saved in `directus_users`. Corresponds to the `id` in the SCIM Users endpoint result.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing SCIM User",
+        "operationId": "updateSCIMUser",
+        "parameters": [
+          {
+            "description": "The `external_id` saved in `directus_users`. Corresponds to the `id` in the SCIM Users endpoint result.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing SCIM User",
+        "operationId": "deleteSCIMUser",
+        "parameters": [
+          {
+            "description": "The `external_id` saved in `directus_users`. Corresponds to the `id` in the SCIM Users endpoint result.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      }
+    },
+    "/scim/v2/Groups": {
+      "get": {
+        "description": "List the SCIM Groups.",
+        "operationId": "getSCIMGroups",
+        "parameters": [
+          {
+            "description": "The 1-based index of the first result in the current set of list results.",
+            "in": "query",
+            "name": "startIndex",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Specifies the desired maximum number of query results per page.",
+            "in": "query",
+            "name": "count",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by `id`, `userName`, `emails.value` and `externalId` attributes are supported. Only the `eq` operator is supported. Uses format `?filter=id eq 15`",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "post": {
+        "description": "Create a new SCIM Group.",
+        "operationId": "createSCIMGroup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      }
+    },
+    "/scim/v2/Groups/{id}": {
+      "get": {
+        "description": "Retrieve a single SCIM Group by unique identifier.",
+        "operationId": "getSCIMGroup",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing SCIM Group",
+        "operationId": "updateSCIMGroup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing SCIM Group",
+        "operationId": "deleteSCIMGroup",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "SCIM"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ]
+    },
+    "/server/info": {
+      "servers": [
+        {
+          "url": "https://demo.directus.io/"
+        }
+      ],
+      "get": {
+        "description": "Perform a system status check and return the options.",
+        "operationId": "serverInfo",
+        "parameters": [
+          {
+            "description": "The first time you create a project, the provided token will be saved and required for subsequent project installs. It can also be found and configured in `/config/__api.json` on your server.",
+            "in": "query",
+            "name": "super_admin_token",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Server"
+        ]
+      }
+    },
+    "/server/ping": {
+      "servers": [
+        {
+          "url": "https://demo.directus.io/"
+        }
+      ],
+      "get": {
+        "description": "Ping, pong. Ping.. pong.",
+        "operationId": "ping",
+        "responses": {
+          "200": {
+            "content": {
+              "application/text": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "pong",
+                  "example": "pong"
+                }
+              }
+            },
+            "description": "Successful request"
+          }
+        },
+        "tags": [
+          "Server"
+        ]
+      }
+    },
+    "/settings": {
+      "get": {
+        "description": "List the settings.",
+        "operationId": "getSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Setting"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing setting",
+        "operationId": "updateSetting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Setting"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "List the users.",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Single"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/q"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "post": {
+        "description": "Create a new user.",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "description": "Retrieve the currently authenticated user.",
+        "operationId": "me",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "description": "Invites one or more users to this project. It creates a user with an invited status, and then sends an email to the user with instructions on how to activate their account.",
+        "operationId": "invite",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Email address or array of email addresses of the to-be-invited user(s).",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "description": "Retrieve a single user by unique identifier.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "description": "Update an existing user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "description": "Delete an existing user",
+        "operationId": "deleteUser",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/UUId"
+        }
+      ]
+    },
+    "/users/invite/{token}": {
+      "post": {
+        "description": "Accepts and enables an invited user using a JWT invitation token.",
+        "operationId": "acceptInvite",
+        "parameters": [
+          {
+            "description": "JWT token that was sent in the email.",
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}/track/page": {
+      "patch": {
+        "description": "Updates the last used page field of the user. This is used internally to be able to open the Directus admin app from the last page you used.",
+        "operationId": "updateLastUsedPage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "last_page": {
+                    "description": "Path of the page you used last.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/utils/hash": {
+      "post": {
+        "description": "Create a hash for a given string.",
+        "operationId": "hash",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "string": {
+                    "description": "String you want to hash.",
+                    "type": "string",
+                    "example": "Directus"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "string",
+                      "example": "$argon2i$v=19$m=4096,t=3,p=1$DbHhm1nACWQHG2tkjm+zXQ$cHl7ISy9xlGWZr35zBteK8PdvBi6FiEEEBv236Wgha0"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          }
+        },
+        "tags": [
+          "Utilities"
+        ]
+      }
+    },
+    "/utils/hash/verify": {
+      "post": {
+        "description": "Check if a hash is valid for a given string.",
+        "operationId": "checkHash",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "hash": {
+                    "description": "The hash you want to verify.",
+                    "type": "string"
+                  },
+                  "string": {
+                    "description": "String you want to hash.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Utilities"
+        ]
+      }
+    },
+    "/utils/random/string": {
+      "get": {
+        "description": "Returns a random string of given length.",
+        "operationId": "random",
+        "parameters": [
+          {
+            "description": "Length of the random string.",
+            "in": "query",
+            "name": "length",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "string",
+                      "example": "1>M3+4oh.S"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful request"
+          }
+        },
+        "tags": [
+          "Utilities"
+        ]
+      }
+    },
+    "/webhooks": {
+      "get": {
+        "description": "Get all webhooks.",
+        "operationId": "getWebhooks",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Webhook"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Activity": {
+        "type": "object",
+        "x-tag": "Activity",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the object.",
+            "example": 2,
+            "type": "integer"
+          },
+          "action": {
+            "description": "Action that was performed.",
+            "example": "update",
+            "type": "string",
+            "enum": [
+              "authenticate",
+              "comment",
+              "upload",
+              "create",
+              "update",
+              "delete",
+              "soft-delete",
+              "revert",
+              "invalid-credentials"
+            ]
+          },
+          "action_by": {
+            "description": "Unique identifier of the user account who caused this action.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "type": "string",
+            "nullable": true
+          },
+          "action_on": {
+            "description": "When the action happened.",
+            "example": "2019-12-05 22:52:09",
+            "type": "string",
+            "format": "date-time"
+          },
+          "ip": {
+            "description": "The IP address of the user at the time the action took place.",
+            "example": "160.72.72.58",
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "ipv4"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "localhost"
+                ]
+              }
+            ]
+          },
+          "user_agent": {
+            "description": "User agent string of the browser the user used when the action took place.",
+            "example": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+            "type": "string"
+          },
+          "collection": {
+            "description": "Collection identifier in which the item resides.",
+            "example": "movies",
+            "type": "string"
+          },
+          "item": {
+            "description": "Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.",
+            "example": "328",
+            "type": "string"
+          },
+          "comment": {
+            "description": "User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Preset": {
+        "type": "object",
+        "x-tag": "Collection presets",
+        "properties": {
+          "collection": {
+            "description": "What collection this collection preset is used for.",
+            "example": "articles",
+            "type": "string"
+          },
+          "filters": {
+            "description": "The filters that the user applied.",
+            "example": {
+              "field": "title",
+              "operator": "contains",
+              "value": "Hello"
+            },
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object"
+            }
+          },
+          "id": {
+            "description": "Unique identifier for this single collection preset.",
+            "example": "155",
+            "type": "integer"
+          },
+          "role": {
+            "description": "The unique identifier of a role in the platform. If `user` is null, this will be used to apply the collection preset or bookmark for all users in the role.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "nullable": true,
+            "type": "string"
+          },
+          "search_query": {
+            "description": "What the user searched for in search/filter in the header bar.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "description": "Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "translation": {
+            "description": "Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages.",
+            "example": null,
+            "type": "object",
+            "nullable": true
+          },
+          "user": {
+            "description": "The unique identifier of the user to whom this collection preset applies.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "nullable": true,
+            "type": "string"
+          },
+          "view_options": {
+            "description": "Options of the views. The properties in here are controlled by the layout.",
+            "example": {
+              "timeline": {
+                "color": "action",
+                "content": "excerpt",
+                "date": "published_on",
+                "title": "{{ title }} ({{ author.first_name }} {{ author.last_name }})"
+              }
+            },
+            "type": "object",
+            "nullable": true
+          },
+          "view_query": {
+            "description": "View query that's saved per view type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters.",
+            "example": {
+              "timeline": {
+                "sort": "-published_on"
+              }
+            },
+            "type": "object",
+            "nullable": true
+          },
+          "view_type": {
+            "description": "Name of the view type that is used.",
+            "example": "timeline",
+            "type": "string"
+          }
+        }
+      },
+      "Collection": {
+        "type": "object",
+        "x-tag": "Collections",
+        "properties": {
+          "collection": {
+            "description": "The collection name.",
+            "example": "customers",
+            "type": "string"
+          },
+          "meta": {
+            "description": "Metadata of the collection.",
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "collection": {
+                "description": "The collection name again!",
+                "type": "string"
+              },
+              "hidden": {
+                "type": "boolean"
+              },
+              "singleton": {
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "nullable": true
+              },
+              "note": {
+                "type": "string",
+                "nullable": true
+              },
+              "translation": {
+                "type": "string",
+                "nullable": true
+              },
+              "display_template": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "schema": {
+                "type": "string"
+              },
+              "comment": {
+                "type": "string"
+              },
+              "collation": {
+                "type": "string"
+              },
+              "engine": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Field": {
+        "type": "object",
+        "x-tag": "Fields",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the field in the `directus_fields` collection.",
+            "example": 167,
+            "type": "integer",
+            "nullable": true
+          },
+          "collection": {
+            "description": "Unique name of the collection this field is in.",
+            "example": "about_us",
+            "type": "string"
+          },
+          "field": {
+            "description": "Unique name of the field. Field name is unique within the collection.",
+            "example": "id",
+            "type": "string"
+          },
+          "auto_increment": {
+            "description": "If the value in this field is auto incremented. Only applies to integer type fields.",
+            "example": true,
+            "type": "boolean"
+          },
+          "datatype": {
+            "description": "SQL datatype of the column that corresponds to this field.",
+            "example": "INT",
+            "type": "string",
+            "nullable": true
+          },
+          "group": {
+            "description": "What field group this field is part of.",
+            "example": null,
+            "type": "integer",
+            "nullable": true
+          },
+          "hidden_browse": {
+            "description": "If this field should be hidden from the item browse (listing) page.",
+            "example": true,
+            "type": "boolean"
+          },
+          "hidden_detail": {
+            "description": "If this field should be hidden from the item detail (edit) page.",
+            "example": true,
+            "type": "boolean"
+          },
+          "interface": {
+            "description": "What interface is used in the admin app to edit the value for this field.",
+            "example": "primary-key",
+            "type": "string",
+            "nullable": true
+          },
+          "length": {
+            "description": "Length of the field. Will be used in SQL to set the `length` property of the colummn.",
+            "example": "10",
+            "type": "string",
+            "nullable": true
+          },
+          "locked": {
+            "description": "If the field can be altered by the end user. Directus system fields have this value set to `true`.",
+            "example": true,
+            "type": "boolean"
+          },
+          "note": {
+            "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+            "example": "",
+            "type": "string",
+            "nullable": true
+          },
+          "options": {
+            "description": "Options for the interface that's used. This format is based on the individual interface.",
+            "example": null,
+            "type": "object",
+            "nullable": true
+          },
+          "primary_key": {
+            "description": "If this field is the primary key of the collection.",
+            "example": true,
+            "type": "boolean"
+          },
+          "readonly": {
+            "description": "Prevents the user from editing the value in the field.",
+            "example": false,
+            "type": "boolean"
+          },
+          "required": {
+            "description": "If this field requires a value.",
+            "example": true,
+            "type": "boolean"
+          },
+          "signed": {
+            "description": "If the value is signed or not. Only applies to integer type fields.",
+            "example": false,
+            "type": "boolean"
+          },
+          "sort": {
+            "description": "Sort order of this field on the edit page of the admin app.",
+            "example": 1,
+            "type": "integer",
+            "nullable": true
+          },
+          "translation": {
+            "description": "Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
+            "example": null,
+            "type": "object",
+            "nullable": true
+          },
+          "type": {
+            "description": "Directus specific data type. Used to cast values in the API.",
+            "example": "integer",
+            "type": "string"
+          },
+          "unique": {
+            "description": "If the value of this field should be unique within the collection.",
+            "example": false,
+            "type": "boolean"
+          },
+          "validation": {
+            "description": "User provided regex that will be used in the API to validate incoming values. It uses the PHP flavor of RegEX.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "width": {
+            "description": "Width of the field on the edit form.",
+            "example": null,
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "half",
+              "half-left",
+              "half-right",
+              "full",
+              "fill",
+              null
+            ]
+          }
+        }
+      },
+      "File": {
+        "type": "object",
+        "x-tag": "Files",
+        "properties": {
+          "charset": {
+            "description": "Character set of the file.",
+            "example": "binary",
+            "type": "string",
+            "nullable": true
+          },
+          "checksum": {
+            "description": "Represents the sum of the correct digits of the file, can be used to detect errors in and duplicates of the file later.",
+            "example": "d41d8cd98f00b204e9800998ecf8427e",
+            "type": "string"
+          },
+          "data": {
+            "example": {
+              "embed": null,
+              "full_url": "https://demo.directus.io/uploads/thumper/originals/a88c3b72-ac58-5436-a4ec-b2858531333a.jpg",
+              "thumbnails": {
+                "dimension": "64x64",
+                "height": 64,
+                "relative_url": "/thumper/assets/pnw7s9lqy68048g0?key=directus-small-crop",
+                "url": "https://demo.directus.io/thumper/assets/pnw7s9lqy68048g0?key=directus-small-crop",
+                "width": 64
+              },
+              "url": "/uploads/thumper/originals/a88c3b72-ac58-5436-a4ec-b2858531333a.jpg"
+            },
+            "properties": {
+              "full_url": {
+                "description": "Full URL to the original file.",
+                "type": "string"
+              },
+              "thumbnails": {
+                "description": "List of all available asset sizes with links.",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "dimension": {
+                      "description": "Width x height of the thumbnail.",
+                      "type": "string"
+                    },
+                    "height": {
+                      "description": "Height of the thumbnail in pixels.",
+                      "type": "integer"
+                    },
+                    "relative_url": {
+                      "description": "Relative URL to the thumbnail.",
+                      "type": "string"
+                    },
+                    "url": {
+                      "description": "Full URL to the thumbnail.",
+                      "type": "string"
+                    },
+                    "width": {
+                      "description": "Width of the thumbnail in pixels.",
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "url": {
+                "description": "Relative URL to the original file.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "description": {
+            "description": "Description for the file.",
+            "example": "",
+            "type": "string",
+            "nullable": true
+          },
+          "duration": {
+            "description": "Duration of the file in seconds. Only applies to audio and video.",
+            "example": 0,
+            "type": "integer",
+            "nullable": true
+          },
+          "embed": {
+            "description": "Where the file was embedded from.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "filename_disk": {
+            "description": "Name of the file on disk. By default, Directus uses a random hash for the filename.",
+            "example": "a88c3b72-ac58-5436-a4ec-b2858531333a.jpg",
+            "type": "string"
+          },
+          "filename_download": {
+            "description": "How you want to the file to be named when it's being downloaded.",
+            "example": "avatar.jpg",
+            "type": "string"
+          },
+          "filesize": {
+            "description": "Size of the file in bytes.",
+            "example": 137862,
+            "type": "integer"
+          },
+          "folder": {
+            "description": "Virtual folder where this file resides in.",
+            "example": null,
+            "$ref": "#/components/schemas/Folder",
+            "nullable": true
+          },
+          "height": {
+            "description": "Height of the file in pixels. Only applies to images.",
+            "example": 838,
+            "type": "integer",
+            "nullable": true
+          },
+          "id": {
+            "description": "Unique identifier for the file.",
+            "example": "8cbb43fe-4cdf-4991-8352-c461779cec02",
+            "type": "string"
+          },
+          "location": {
+            "description": "Where the file was created. Is automatically populated based on EXIF data for images.",
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "description": "User provided miscellaneous key value pairs that serve as additional metadata for the file.",
+            "example": null,
+            "type": "object",
+            "nullable": true
+          },
+          "private_hash": {
+            "description": "Random hash used to access the file privately. This can be rotated to prevent unauthorized access to the file.",
+            "example": "pnw7s9lqy68048g0",
+            "type": "string"
+          },
+          "storage": {
+            "description": "Where the file is stored. Either `local` for the local filesystem or the name of the storage adapter (for example `s3`).",
+            "example": "local",
+            "type": "string"
+          },
+          "tags": {
+            "description": "Tags for the file. Is automatically populated based on EXIF data for images.",
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "description": "Title for the file. Is extracted from the filename on upload, but can be edited by the user.",
+            "example": "User Avatar",
+            "type": "string"
+          },
+          "type": {
+            "description": "MIME type of the file.",
+            "example": "image/jpeg",
+            "type": "string"
+          },
+          "uploaded_by": {
+            "description": "Who uploaded the file.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "type": "string"
+          },
+          "uploaded_on": {
+            "description": "When the file was uploaded.",
+            "example": "2019-12-03T00:10:15+00:00",
+            "type": "string",
+            "format": "date-time"
+          },
+          "width": {
+            "description": "Width of the file in pixels. Only applies to images.",
+            "example": 800,
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "x-tag": "Folders",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the folder.",
+            "example": "0cf0e03d-4364-45df-b77b-ca61f61869d2",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the folder.",
+            "example": "New York",
+            "type": "string"
+          },
+          "parent_folder": {
+            "description": "Unique identifier of the parent folder. This allows for nested folders.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "x-tag": "Items",
+        "properties": {}
+      },
+      "Permissions": {
+        "type": "object",
+        "x-tag": "Permissions",
+        "properties": {
+          "collection": {
+            "description": "What collection this permission applies to.",
+            "example": "customers",
+            "type": "string"
+          },
+          "comment": {
+            "description": "If the user can post comments.",
+            "example": "update",
+            "type": "string",
+            "enum": [
+              "none",
+              "create",
+              "update",
+              "full"
+            ]
+          },
+          "create": {
+            "description": "If the user can create items.",
+            "example": "full",
+            "type": "string",
+            "enum": [
+              "none",
+              "full"
+            ]
+          },
+          "delete": {
+            "description": "If the user can update items.",
+            "example": "none",
+            "type": "string",
+            "enum": [
+              "none",
+              "mine",
+              "role",
+              "full"
+            ]
+          },
+          "explain": {
+            "description": "If the user is required to leave a comment explaining what was changed.",
+            "example": "none",
+            "type": "string",
+            "enum": [
+              "none",
+              "create",
+              "update",
+              "always"
+            ]
+          },
+          "id": {
+            "description": "Unique identifier for the permission.",
+            "example": 1,
+            "type": "integer"
+          },
+          "read": {
+            "description": "If the user can read items.",
+            "example": "mine",
+            "type": "string",
+            "enum": [
+              "none",
+              "mine",
+              "role",
+              "full"
+            ]
+          },
+          "read_field_blacklist": {
+            "description": "Explicitly denies read access for specific fields.",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "role": {
+            "description": "Unique identifier of the role this permission applies to.",
+            "example": "2f24211d-d928-469a-aea3-3c8f53d4e426",
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "description": "What status this permission applies to.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "status_blacklist": {
+            "description": "Explicitly denies specific statuses to be used.",
+            "example": [],
+            "oneOf": [
+              {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "update": {
+            "description": "If the user can update items.",
+            "example": "none",
+            "type": "string",
+            "enum": [
+              "none",
+              "mine",
+              "role",
+              "full"
+            ]
+          },
+          "write_field_blacklist": {
+            "description": "Explicitly denies write access for specific fields.",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Relation": {
+        "type": "object",
+        "x-tag": "Relations",
+        "properties": {
+          "many_collection": {
+            "description": "Collection that has the field that holds the foreign key.",
+            "example": "directus_activity",
+            "type": "string"
+          },
+          "many_field": {
+            "description": "Foreign key. Field that holds the primary key of the related collection.",
+            "example": "action_by",
+            "type": "string"
+          },
+          "many_primary": {
+            "description": "The primary field.",
+            "example": "id",
+            "type": "string"
+          },
+          "one_collection": {
+            "description": "Collection on the _one_ side of the relationship.",
+            "example": "directus_users",
+            "type": "string"
+          },
+          "one_field": {
+            "description": "Alias column that serves as the _one_ side of the relationship.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "one_primary": {
+            "description": "The primary field.",
+            "example": "id",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier for the relation.",
+            "example": 1,
+            "type": "integer"
+          },
+          "junction_field": {
+            "description": "Field on the junction table that holds the primary key of the related collection.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Revision": {
+        "type": "object",
+        "x-tag": "Revisions",
+        "properties": {
+          "activity": {
+            "description": "Unique identifier for the [activity](/api/activity) record.",
+            "example": 2,
+            "type": "integer"
+          },
+          "collection": {
+            "description": "Collection of the updated item.",
+            "example": "articles",
+            "type": "string"
+          },
+          "data": {
+            "description": "Copy of item state at time of update.",
+            "example": {
+              "author": 1,
+              "body": "This is my first post",
+              "featured_image": 15,
+              "id": "168",
+              "title": "Hello, World!"
+            },
+            "type": "object",
+            "nullable": true
+          },
+          "delta": {
+            "description": "Changes between the previous and the current revision.",
+            "example": {
+              "title": "Hello, World!"
+            },
+            "oneOf": [
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "id": {
+            "description": "Unique identifier for the revision.",
+            "example": 1,
+            "type": "integer"
+          },
+          "item": {
+            "description": "Primary key of updated item.",
+            "example": "168",
+            "type": "string"
+          },
+          "parent_changed": {
+            "description": "If the current item was updated relationally, this shows if the parent item was updated as well.",
+            "example": false,
+            "type": "boolean"
+          },
+          "parent_collection": {
+            "description": "If the current item was updated relationally, this is the collection of the parent item.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "parent_item": {
+            "description": "If the current item was updated relationally, this is the unique identifier of the parent item.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "x-tag": "Roles",
+        "properties": {
+          "collection_listing": {
+            "description": "Custom override for the admin app collection navigation.",
+            "example": null,
+            "type": "object",
+            "nullable": true
+          },
+          "description": {
+            "description": "Description of the role.",
+            "example": "Admins have access to all managed data within the system by default",
+            "type": "string",
+            "nullable": true
+          },
+          "enforce_tfa": {
+            "description": "Whether or not this role enforces the use of 2FA.",
+            "example": false,
+            "type": "boolean"
+          },
+          "external_id": {
+            "description": "ID used with external services in SCIM.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "description": "Unique identifier for the role.",
+            "example": "2f24211d-d928-469a-aea3-3c8f53d4e426",
+            "type": "string"
+          },
+          "ip_whitelist": {
+            "description": "Array of IP addresses that are allowed to connect to the API as a user of this role.",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "module_listing": {
+            "description": "Custom override for the admin app module bar navigation.",
+            "example": null,
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "nullable": true
+          },
+          "name": {
+            "description": "Name of the role.",
+            "example": "Administrator",
+            "type": "string"
+          }
+        }
+      },
+      "Setting": {
+        "type": "object",
+        "x-tag": "Settings",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the setting.",
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "additionalProperties": true
+      },
+      "User": {
+        "type": "object",
+        "x-tag": "Users",
+        "properties": {
+          "tfa_secret": {
+            "description": "The 2FA secret string that's used to generate one time passwords.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "avatar": {
+            "description": "The user's avatar.",
+            "example": null,
+            "oneOf": [
+              {
+                "type": "integer",
+                "nullable": true
+              },
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/File"
+              }
+            ],
+            "nullable": true
+          },
+          "email": {
+            "description": "Unique email address for the user.",
+            "example": "admin@example.com",
+            "type": "string",
+            "format": "email"
+          },
+          "external_id": {
+            "description": "ID used for SCIM.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          },
+          "first_name": {
+            "description": "First name of the user.",
+            "example": "Admin",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier for the user.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "type": "string"
+          },
+          "last_login": {
+            "description": "When this user logged in last.",
+            "example": "2020-05-31 14:32:37",
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "last_name": {
+            "description": "First name of the user.",
+            "example": "User",
+            "type": "string"
+          },
+          "last_page": {
+            "description": "Last page that the user was on.",
+            "example": "/my-project/settings/collections/a",
+            "type": "string",
+            "nullable": true
+          },
+          "language": {
+            "description": "The user's language used in Directus.",
+            "example": "en-US",
+            "type": "string"
+          },
+          "role": {
+            "description": "Unique identifier of the role of this user.",
+            "example": "2f24211d-d928-469a-aea3-3c8f53d4e426",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of the user.",
+            "example": "active",
+            "type": "string",
+            "enum": [
+              "active",
+              "invited",
+              "draft",
+              "suspended",
+              "deleted"
+            ]
+          },
+          "theme": {
+            "description": "What theme the user is using.",
+            "example": "auto",
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "timezone": {
+            "description": "The user's timezone.",
+            "example": "America/New_York",
+            "type": "string"
+          },
+          "title": {
+            "description": "The user's title.",
+            "example": null,
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Webhook": {
+        "type": "object",
+        "x-tag": "Webhooks",
+        "properties": {
+          "id": {
+            "description": "The index of the webhook.",
+            "type": "integer",
+            "example": 1
+          }
+        }
+      }
+    },
+    "parameters": {
+      "Id": {
+        "description": "Index of the file.",
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "UUId": {
+        "description": "Unique identifier for the object.",
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "example": "8cbb43fe-4cdf-4991-8352-c461779cec02",
+          "type": "string"
+        }
+      },
+      "Collection": {
+        "description": "Collection of which you want to retrieve the permissions.",
+        "name": "collection",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "q": {
+        "description": "Filter by items that contain the given search query in one of their fields.",
+        "in": "query",
+        "name": "q",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Page": {
+        "description": "Cursor for use in pagination. Often used in combination with limit.",
+        "in": "query",
+        "name": "page",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Offset": {
+        "description": "How many items to skip when fetching data.",
+        "in": "query",
+        "name": "offset",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Single": {
+        "description": "Return the result as if it was a single item. Useful for selecting a single item based on filters and search queries.",
+        "in": "query",
+        "name": "single",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Sort": {
+        "description": "How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.\n",
+        "in": "query",
+        "name": "sort",
+        "required": false,
+        "explode": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "Meta": {
+        "description": "What metadata to return in the response.",
+        "in": "query",
+        "name": "meta",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Limit": {
+        "description": "A limit on the number of objects that are returned.",
+        "in": "query",
+        "name": "limit",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Filter": {
+        "description": "Select items in collection by given conditions.",
+        "in": "query",
+        "name": "filter",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(\\[[^\\[\\]]*?\\]){1}(\\[(=|eq|<>|!=|neq|<|lt|<=|lte|>|gt|>=|gte|in|nin|null|nnull|contains|like|ncontains|nlike|rlike|nrlike|between|nbetween|empty|nempty|all|has)\\])?=.*?$"
+          }
+        }
+      },
+      "Fields": {
+        "description": "Control what fields are being returned in the object.",
+        "in": "query",
+        "name": "fields",
+        "required": false,
+        "explode": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "Mode": {
+        "description": "Controls if the API sets a cookie or returns a JWT on successful login.",
+        "in": "query",
+        "name": "mode",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "jwt",
+            "cookie"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "NotFoundError": {
+        "description": "Error: Not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Error: Unauthorized request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "KeyAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "access_token",
+        "description": "Use the key 'admin' to authenticate to the public api."
+      },
+      "Auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "To authenticate, use the \"/auth/authenticate\" endpoint with the credentials \"admin@example.com\" | \"password\". Use the api key here like so \"Bearer \\<key\\>\"."
+      }
+    }
+  },
+  "security": [
+    {
+      "Auth": []
+    },
+    {
+      "KeyAuth": []
+    }
+  ]
+}

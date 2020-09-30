@@ -2,13 +2,17 @@ import { AbstractServiceOptions, Accountability, Collection } from '../types';
 import { CollectionsService } from './collections'
 import { FieldsService } from './fields'
 import formatTitle from '@directus/format-title'
+import { merge } from 'lodash'
 // @ts-ignore
 import { version } from '../../package.json';
+// @ts-ignore
+import openapi from '../../openapi.json'
 
 const internalCollections = [
     'directus_activity',
+    //'directus_collections' // Is this possible with meta and schema?
     'directus_presets',
-    'directus_fields',
+    //'directus_fields', // Is this possible with meta and schema?
     'directus_files',
     'directus_folders',
     'directus_permissions',
@@ -18,6 +22,70 @@ const internalCollections = [
     'directus_settings',
     'directus_users',
 ]
+
+const fieldTypes = {
+    bigInteger: {
+        type: 'integer',
+        format: 'int64'
+    },
+    boolean: {
+        type: 'boolean'
+    },
+    date: {
+        type: 'string',
+        format: 'date'
+    },
+    dateTime: {
+        type: 'string',
+        format: 'date-time'
+    },
+    decimal: {
+        type: 'number'
+    },
+    float: {
+        type: 'number',
+        format: 'float'
+    },
+    integer: {
+        type: 'integer'
+    },
+    json: {
+        type: 'array',
+        items: {
+            type: 'string'
+        }
+    },
+    string: {
+        type: 'string'
+    },
+    text: {
+        type: 'string'
+    },
+    time: {
+        type: 'string',
+        format: 'time'
+    },
+    timestamp: {
+        type: 'string',
+        format: 'timestamp'
+    },
+    binary: {
+        type: 'string',
+        format: 'binary'
+    },
+    uuid: {
+        type: 'string',
+        format: 'uuid'
+    },
+    csv: {
+        type: 'array',
+        items: {
+            type: 'string'
+        }
+    }
+
+
+}
 
 export class SpecificationService {
     accountability: Accountability | null;
@@ -37,21 +105,12 @@ export class SpecificationService {
             collection.collection.startsWith('directus_') === false || internalCollections.includes(collection.collection)
         )
 
-        const openapi = {
+        const dynOpenapi = {
             openapi: '3.0.1',
             info: {
                 title: 'Dynamic Api Specification',
                 description: 'This is a dynamicly generated api specification for all endpoints existing on the api.',
-                version: version,
-                contact: {
-                    name: 'Contact Directus',
-                    url: 'https://directus.io/contact',
-                    email: 'contact@directus.io'
-                },
-                license: {
-                    name: 'GPL-3.0',
-                    url: 'https://www.gnu.org/licenses/gpl-3.0.de.html'
-                }
+                version: version
             },
             tags: await this.generateTags(collections),
             paths: await this.generatePaths(collections),
@@ -60,27 +119,30 @@ export class SpecificationService {
             }
         }
 
-        return openapi
+        return merge(openapi, dynOpenapi)
     }
 
     async generateTags(collections: Collection[]) {
         const tags: {name: string, description?: string}[] = []
-        collections.forEach(collection => {
-            if(collection.collection.startsWith('directus_')) return
+
+        for(const collection of collections) {
+            if(collection.collection.startsWith('directus_')) continue
             const name = formatTitle(collection.collection)
             tags.push({ name, description: collection.meta?.note || undefined })
-        })
+        }
+
         return tags
     }
 
     async generatePaths(collections: Collection[]) {
         const paths: Record<string, object> = {}
 
-        collections.forEach(collection => {
+        for (const collection of collections) {
+            if(collection.collection.startsWith('directus_')) continue
             const tagName = formatTitle(collection.collection)
             const name = tagName.replace(' ','')
             const path = "/items/" + collection.collection
-            const objectRef = `#/components/schemas/${name}`
+            const objectRef = `#/components/schemas/${name}Item`
 
             const objectSingle = {
                 content: {
@@ -201,12 +263,41 @@ export class SpecificationService {
                     }
                 }
             }
-        })
+        }
 
         return paths
     }
 
     async generateSchemas(collections: Collection[]) {
+        const schemas: Record<string, any> = {}
 
+        for(const collection of collections) {
+            const isInternal = collection.collection.startsWith('directus_')
+
+            let name = collection.collection
+            name = isInternal ? name.replace('directus_','').replace(/s$/,'') : name+"Item"
+            name = formatTitle(name).replace(/ /g,'')
+            const tag = formatTitle(collection.collection.replace('directus_',''))
+
+            const fields = await this.fieldsService?.readAll(collection.collection)
+            if(fields === undefined) continue
+
+            schemas[name] = {
+                type: 'object',
+                'x-tag': tag,
+                properties: {},
+            }
+
+            for(const field of fields) {
+                schemas[name].properties[field.field] = {
+                    ...fieldTypes[field.type],
+                    nullable: field.schema?.is_nullable === true,
+                    description: field.meta?.note || undefined
+
+                }
+            }
+        }
+
+        return schemas
     }
 }
