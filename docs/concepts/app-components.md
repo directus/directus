@@ -1,6 +1,6 @@
 # App Components
 
-> TK
+> Directus has been architected as completely modular and extensible. Below are some of the keystone components you should understand.
 
 ## Overview
 

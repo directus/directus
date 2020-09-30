@@ -6,7 +6,7 @@
 
 **Directus is an open-source platform that provides a real-time API and intuitive Admin App for your custom database.** Built on node.js and vue.js 3, it allows both administrators and non-technical users to view and manage the content/data stored within pure SQL databases. It can be used as a headless CMS for managing project content, a database client for modeling and viewing raw data, or as a standalone customizable WebApp.
 
-:::tip What's in a name?
+::: What's in a name?
 Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight, arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and intuitive way.
 :::
 
