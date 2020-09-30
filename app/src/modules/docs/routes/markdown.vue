@@ -23,9 +23,9 @@ export default defineComponent({
 				html.value = '';
 				return;
 			}
-			
-			let htmlString = slots.default()[0].text!
-			
+
+			let htmlString = slots.default()[0].text!;
+
 			const hintRegex = /:::(.*?) (.*?)\r?\n((\s|.)*?):::/gm;
 
 			htmlString = htmlString.replaceAll(
@@ -35,7 +35,7 @@ export default defineComponent({
 				}
 			);
 
-			let htmlString = marked(htmlString, {
+			htmlString = marked(htmlString, {
 				highlight: (code) => highlight.highlightAuto(code).value,
 			});
 
@@ -89,12 +89,34 @@ export default defineComponent({
 
 			h1 {
 				margin-bottom: 40px;
+				font-size: 35px;
+				line-height: 44px;
 			}
 
 			h2 {
 				margin-bottom: 20px;
-				border-bottom: 2px solid var(--border-subdued);
 				padding-bottom: 12px;
+				font-size: 26px;
+				line-height: 33px;
+				border-bottom: 2px solid var(--border-subdued);
+			}
+
+			h3 {
+				font-size: 19px;
+				line-height: 24px;
+			}
+
+			h4 {
+				font-size: 16px;
+			}
+
+			h5 {
+				font-size: 14px;
+			}
+
+			h6 {
+				color: var(--foreground-normal);
+				font-size: 14px;
 			}
 
 			pre {
@@ -160,34 +182,6 @@ export default defineComponent({
 				font-size: inherit;
 			}
 
-			h1 {
-				font-size: 35px;
-				line-height: 44px;
-			}
-
-			h2 {
-				font-size: 26px;
-				line-height: 33px;
-			}
-
-			h3 {
-				font-size: 19px;
-				line-height: 24px;
-			}
-
-			h4 {
-				font-size: 16px;
-			}
-
-			h5 {
-				font-size: 14px;
-			}
-
-			h6 {
-				color: var(--foreground-normal);
-				font-size: 14px;
-			}
-
 			p,
 			blockquote,
 			ul,
@@ -201,9 +195,9 @@ export default defineComponent({
 
 			p {
 				margin-block-start: 1em;
-			    margin-block-end: 1em;
-			    margin-inline-start: 0px;
-			    margin-inline-end: 0px;
+				margin-block-end: 1em;
+				margin-inline-start: 0px;
+				margin-inline-end: 0px;
 			}
 
 			& > h2:first-child {
@@ -348,8 +342,8 @@ export default defineComponent({
 			}
 
 			.hint {
-				margin: 40px 0;
 				display: inline-block;
+				margin: 40px 0;
 				padding: 0 20px;
 				background-color: var(--background-subdued);
 				border-left: 2px solid var(--primary);
@@ -363,13 +357,13 @@ export default defineComponent({
 				}
 
 				&.warning {
-					border-left: 2px solid var(--warning);
 					background-color: var(--warning-10);
+					border-left: 2px solid var(--warning);
 				}
 
 				&.danger {
-					border-left: 2px solid var(--danger);
 					background-color: var(--danger-10);
+					border-left: 2px solid var(--danger);
 				}
 			}
 		}
