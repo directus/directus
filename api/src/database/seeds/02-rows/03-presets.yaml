@@ -51,3 +51,19 @@ data:
           collection: 210
           action_on: 240
           action_by: 240
+
+  - collection: directus_webhooks
+    layout: tabular
+    layout_query:
+      tabular:
+        fields:
+          - status
+          - name
+          - method
+          - url
+    layout_options:
+      tabular:
+        widths:
+          status: 36
+          name: 300
+
