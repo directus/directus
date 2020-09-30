@@ -294,7 +294,6 @@ export class SpecificationService {
 
         for(const collection of collections) {
             const isInternal = collection.collection.startsWith('directus_')
-            const collectionRelations = relations.filter(relation => relation.many_collection === collection.collection || relation.one_collection === collection.collection)
 
             let name = collection.collection
             name = isInternal ? name.replace('directus_','').replace(/s$/,'') : name+"Item"
@@ -310,16 +309,25 @@ export class SpecificationService {
                 relations
             }
 
-            // for(const field of fields[collection.collection]) {
-            //     const fieldRelations = 
+            for(const field of fields[collection.collection]) {
+                const fieldRelations = relations.filter(relation => 
+                    (relation.many_collection === collection.collection && relation.many_field === field.field) ||
+                    (relation.one_collection === collection.collection && relation.one_field === field.field)
+                )
 
-            //     schemas[name].properties[field.field] = {
-            //         ...types,
-            //         nullable: field.schema?.is_nullable === true,
-            //         description: field.meta?.note || undefined
+                if(fieldRelations.length !== 0) {
 
-            //     }
-            // }
+                } else {
+                    
+                }
+                schemas[name].properties[field.field] = {
+                    ...fieldTypes[field.type],
+                    nullable: field.schema?.is_nullable === true,
+                    description: field.meta?.note || undefined
+
+                }
+                
+            }
         }
 
         return schemas
