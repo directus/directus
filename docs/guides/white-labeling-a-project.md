@@ -1,4 +1,4 @@
-# White-labeling a Project
+# White-Labeling a Project
 
 > TK
 
