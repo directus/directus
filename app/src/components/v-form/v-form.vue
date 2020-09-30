@@ -118,6 +118,21 @@ export default defineComponent({
 
 			const { formFields } = useFormFields(fields);
 
+			const formFieldsParsed = computed(() => {
+				if (props.primaryKey === '+') return formFields.value;
+
+				return formFields.value.map((field: Field) => {
+					if (field.schema?.is_primary_key === true) {
+						const fieldClone = clone(field) as any;
+						if (!fieldClone.meta) fieldClone.meta = {};
+						fieldClone.meta.readonly = true;
+						return fieldClone;
+					}
+
+					return field;
+				});
+			});
+
 			const { width } = useElementSize(el);
 
 			const gridClass = computed<string | null>(() => {
@@ -132,7 +147,7 @@ export default defineComponent({
 				return null;
 			});
 
-			return { formFields, gridClass, isDisabled };
+			return { formFields: formFieldsParsed, gridClass, isDisabled };
 
 			function isDisabled(field: Field) {
 				return (
