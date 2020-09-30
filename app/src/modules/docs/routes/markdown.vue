@@ -28,7 +28,7 @@ export default defineComponent({
 				highlight: (code) => highlight.highlightAuto(code).value,
 			});
 
-			const hintRegex = /:::(.*?) (.*?)\n((\s|.)*?):::/gm;
+			const hintRegex = /<p>:::(.*?) (.*?)\n((\s|.)*?):::<\/p>/gm;
 
 			htmlString = htmlString.replaceAll(
 				hintRegex,
