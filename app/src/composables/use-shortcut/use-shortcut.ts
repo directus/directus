@@ -14,6 +14,8 @@ document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 });
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
+	if (event.repeat || !event.key) return;
+
 	const key = mapKeys(event.key);
 	keysdown.delete(key.toLowerCase());
 	keysdown.delete(key.toUpperCase());
