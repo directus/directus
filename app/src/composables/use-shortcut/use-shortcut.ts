@@ -7,7 +7,7 @@ const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
-	if (event.repeat) return;
+	if (event.repeat || !event.key) return;
 
 	keysdown.add(mapKeys(event.key));
 	callHandlers(event);
