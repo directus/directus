@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, Accountability, Collection, Field } from '../types';
+import { AbstractServiceOptions, Accountability, Collection, Field, Relation } from '../types';
 import { CollectionsService } from './collections'
 import { FieldsService } from './fields'
 import formatTitle from '@directus/format-title'
@@ -8,6 +8,7 @@ import { merge } from 'lodash'
 import { version } from '../../package.json';
 // @ts-ignore
 import openapi from '../../openapi.json'
+import { RelationsService } from './relations';
 
 const internalCollections = [
     'directus_activity',
@@ -92,11 +93,13 @@ export class SpecificationService {
     accountability: Accountability | null;
     fieldsService: FieldsService | null;
     collectionsService: CollectionsService | null;
+    relationsService: RelationsService | null
 
 	constructor(options?: AbstractServiceOptions) {
         this.accountability = options?.accountability || null;
         this.fieldsService = new FieldsService(options)
         this.collectionsService = new CollectionsService(options)
+        this.relationsService = new RelationsService(options)
     }
     
     async generateOAS() {
@@ -119,9 +122,9 @@ export class SpecificationService {
             }
         })
 
-        const tags = await this.generateTags(collections);
-        const paths = await this.generatePaths(collections);
-        const schemas = await this.generateSchemas(collections, fields)
+        let relations = await this.relationsService?.readByQuery({})
+        if(relations === undefined || relations === null) return {}
+        if(Array.isArray(relations) === false) relations = [relations]
 
         const dynOpenapi = {
             openapi: '3.0.1',
@@ -130,10 +133,10 @@ export class SpecificationService {
                 description: 'This is a dynamicly generated api specification for all endpoints existing on the api.',
                 version: version
             },
-            tags,
-            paths,
+            tags: this.generateTags(collections),
+            paths: this.generatePaths(collections),
             components: {
-                schemas
+                schemas: this.generateSchemas(collections, fields, relations as Relation[])
             }
         }
 
@@ -286,11 +289,12 @@ export class SpecificationService {
         return paths
     }
 
-    generateSchemas(collections: Collection[], fields: Record<string, Field[]>) {
+    generateSchemas(collections: Collection[], fields: Record<string, Field[]>, relations: Relation[]) {
         const schemas: Record<string, any> = {}
 
         for(const collection of collections) {
             const isInternal = collection.collection.startsWith('directus_')
+            const collectionRelations = relations.filter(relation => relation.many_collection === collection.collection || relation.one_collection === collection.collection)
 
             let name = collection.collection
             name = isInternal ? name.replace('directus_','').replace(/s$/,'') : name+"Item"
@@ -303,16 +307,19 @@ export class SpecificationService {
                 type: 'object',
                 'x-tag': tag,
                 properties: {},
+                relations
             }
 
-            for(const field of fields[collection.collection]) {
-                schemas[name].properties[field.field] = {
-                    ...fieldTypes[field.type],
-                    nullable: field.schema?.is_nullable === true,
-                    description: field.meta?.note || undefined
+            // for(const field of fields[collection.collection]) {
+            //     const fieldRelations = 
 
-                }
-            }
+            //     schemas[name].properties[field.field] = {
+            //         ...types,
+            //         nullable: field.schema?.is_nullable === true,
+            //         description: field.meta?.note || undefined
+
+            //     }
+            // }
         }
 
         return schemas
