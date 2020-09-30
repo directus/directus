@@ -23,12 +23,10 @@ export default defineComponent({
 				html.value = '';
 				return;
 			}
-
-			let htmlString = marked(slots.default()[0].text!, {
-				highlight: (code) => highlight.highlightAuto(code).value,
-			});
-
-			const hintRegex = /:::(.*?) (.*?)\n((\s|.)*?):::/gm;
+			
+			let htmlString = slots.default()[0].text!
+			
+			const hintRegex = /:::(.*?) (.*?)\r?\n((\s|.)*?):::/gm;
 
 			htmlString = htmlString.replaceAll(
 				hintRegex,
@@ -36,6 +34,10 @@ export default defineComponent({
 					return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
 				}
 			);
+
+			let htmlString = marked(htmlString, {
+				highlight: (code) => highlight.highlightAuto(code).value,
+			});
 
 			html.value = htmlString;
 		}
