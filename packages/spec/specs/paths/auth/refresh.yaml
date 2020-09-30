@@ -31,5 +31,8 @@ post:
                   expires:
                     type: integer
                     example: 900
+                  refresh_token:
+                    type: string
+                    example: Gy-caJMpmGTA...
     "401":
       $ref: "#/components/responses/UnauthorizedError"

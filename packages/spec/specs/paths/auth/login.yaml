@@ -21,8 +21,8 @@ post:
               example: password
             mode:
               type: string
-              enum: [jwt, cookie]
-              default: jwt
+              enum: ["json", cookie]
+              default: "json"
               description: Choose between retrieving the token as a string, or setting it as a cookie.
             otp:
               type: string
@@ -44,3 +44,6 @@ post:
                   expires:
                     type: integer
                     example: 900
+                  refresh_token:
+                    type: string
+                    example: yuOJkjdPXMd...

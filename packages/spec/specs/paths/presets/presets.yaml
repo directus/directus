@@ -53,9 +53,10 @@ post:
               description: Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.
               example: Highly rated articles
             role:
-              type: integer
+              type: string
               description: The unique identifier of a role in the platform. If user is null, this will be used to apply the collection preset or bookmark for all users in the role.
-            search_query:
+              example: null
+            search:
               type: string
               description: What the user searched for in search/filter in the header bar.
             filters:
@@ -63,6 +64,9 @@ post:
               items:
                 type: object
                 properties:
+                  key:
+                    type: string
+                    example: aHKLAakdVghzD
                   field:
                     type: string
                     example: rating
@@ -72,18 +76,15 @@ post:
                   value:
                     type: integer
                     example: 4.5
-            view_type:
+            layout:
               type: string
-              description: Name of the view type that is used. Defaults to tabular.
-            view_query:
+              description: Name of the view type that is used.
+            layout_query:
               type: string
-              description: View query that's saved per view type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters.
-            view_options:
+              description: Layout query that's saved per layout type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters.
+            layout_options:
               type: string
               description: Options of the views. The properties in here are controlled by the layout.
-            translation:
-              type: object
-              description: Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages.
   responses:
     "200":
       description: Successful request

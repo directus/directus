@@ -1,17 +1,18 @@
 openapi: 3.0.1
 info:
-  title: Directus SDK
+  title: Directus API
   description: Template for generating any kind of SDK.
   contact:
     email: contact@directus.io
   license:
     name: GPL-3.0
     url: "https://www.gnu.org/licenses/gpl-3.0.de.html"
-  version: 1.0.0
+  version: 9.0.0
 externalDocs:
   description: Directus Docs
   url: "https://docs.directus.io"
 servers:
+  - url: "http://localhost:41201/"
   - url: "https://demo.directus.io/"
   - url: "/"
 tags:
@@ -21,8 +22,8 @@ tags:
     description: Image typed files can be dynamically resized and transformed to fit any need.
   - name: Authentication
     description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
-  - name: Collection presets
-    description: Collection presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
+  - name: Presets
+    description: Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
   - name: Collections
     description: Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database.
   - name: Extensions
@@ -71,7 +72,7 @@ paths:
     $ref: "./paths/activity/activity-comment.yaml"
 
   # Assets
-  /assets/{key}:
+  /assets/{id}:
     $ref: "./paths/assets/assets.yaml"
 
   # Authentication
@@ -171,16 +172,6 @@ paths:
     $ref: "./paths/roles/roles.yaml"
   /roles/{id}:
     $ref: "./paths/roles/role.yaml"
-
-  # SCIM
-  /scim/v2/Users:
-    $ref: "./paths/scim/users.yaml"
-  /scim/v2/Users/{id}:
-    $ref: "./paths/scim/user.yaml"
-  /scim/v2/Groups:
-    $ref: "./paths/scim/groups.yaml"
-  /scim/v2/Groups/{id}:
-    $ref: "./paths/scim/group.yaml"
 
   # Server
   /server/info:
