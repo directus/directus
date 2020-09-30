@@ -1,6 +1,5 @@
 import { ref, Ref } from '@vue/composition-api';
 import { Field, Relation } from '@/types';
-import isNew from './is-new';
 import { set } from 'lodash';
 
 type EditParam = {
@@ -28,6 +27,7 @@ export default function useEdit({
 	const junctionRowPrimaryKey = ref<number | string>('+');
 	const relatedRowPrimaryKey = ref<number | string>('+');
 	const initialValues = ref<any>(null);
+	const isNew = ref(false);
 
 	return {
 		showDetailModal,
@@ -47,6 +47,7 @@ export default function useEdit({
 		junctionRowPrimaryKey.value = '+';
 		relatedRowPrimaryKey.value = '+';
 		initialValues.value = null;
+		isNew.value = true;
 	}
 
 	// The row here is the item in previewItems that's passed to the table
@@ -54,13 +55,9 @@ export default function useEdit({
 		if (!relationCurrentToJunction.value) return;
 		if (!relationCurrentToJunction.value.junction_field) return;
 
-		if (
-			isNew(item, {
-				relationCurrentToJunction,
-				junctionCollectionPrimaryKeyField,
-				relatedCollectionPrimaryKeyField,
-			})
-		) {
+		if (item.$new === true) isNew.value = true;
+
+		if (isNew.value === true) {
 			editsAtStart.value = item;
 			junctionRowPrimaryKey.value = '+';
 			showDetailModal.value = true;
@@ -81,7 +78,7 @@ export default function useEdit({
 
 		junctionRowPrimaryKey.value = item[junctionPrimaryKey] || '+';
 		relatedRowPrimaryKey.value = item[junctionField]?.[relatedPrimaryKey] || '+';
-		editsAtStart.value = item['$stagedEdits'] || null;
+		editsAtStart.value = item.$stagedEdits || null;
 		showDetailModal.value = true;
 	}
 
@@ -98,6 +95,10 @@ export default function useEdit({
 		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
 		const junctionField = relationCurrentToJunction.value.junction_field;
 		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
+
+		if (isNew.value) {
+			edits.$new = true;
+		}
 
 		const currentValue = [...(value.value || [])];
 
@@ -134,6 +135,7 @@ export default function useEdit({
 			showDetailModal.value = true;
 			junctionRowPrimaryKey.value = '+';
 			relatedRowPrimaryKey.value = '+';
+			isNew.value = false;
 		}
 	}
 }
