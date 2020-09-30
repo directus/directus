@@ -14,7 +14,7 @@ import {
 import SchemaInspector from 'knex-schema-inspector';
 import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
-import { uniq, merge } from 'lodash';
+import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { parseFilter } from '../utils/parse-filter';
@@ -291,13 +291,13 @@ export class AuthorizationService {
 
 		if (Object.keys(validation)[0] === '_and') {
 			const subValidation = Object.values(validation)[0];
-			const nestedErrors = subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)).flat().filter((err?: FailedValidationException) => err);
+			const nestedErrors = flatten<FailedValidationException>(subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
 		}
 
 		if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
-			const nestedErrors = subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)).flat();
+			const nestedErrors = flatten<FailedValidationException>(subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)));
 			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
 
 			if (allErrored) {
