@@ -71,7 +71,8 @@ export default defineComponent({
 			}
 
 			a {
-				text-decoration: underline;
+				text-decoration: none;
+				color: var(--primary);
 			}
 
 			h1,
@@ -104,6 +105,7 @@ export default defineComponent({
 			h3 {
 				font-size: 19px;
 				line-height: 24px;
+				margin-bottom: 0px;
 			}
 
 			h4 {
@@ -137,6 +139,7 @@ export default defineComponent({
 				background-color: var(--background-page);
 				border: 1px solid var(--background-normal);
 				border-radius: var(--border-radius);
+				font-family: var(--family-monospace);
 			}
 
 			pre code {
@@ -200,6 +203,10 @@ export default defineComponent({
 				margin-inline-end: 0px;
 			}
 
+			h3 + p {
+				margin-block-start: 0.5em;
+			}
+
 			& > h2:first-child {
 				margin-top: 0;
 				padding-top: 0;
@@ -243,10 +250,12 @@ export default defineComponent({
 
 			ul,
 			ol {
+				margin: 20px 0;
 				padding-left: 20px;
 
 				li {
-					margin: 0;
+					margin: 8px 0;
+					line-height: 24px;
 				}
 			}
 

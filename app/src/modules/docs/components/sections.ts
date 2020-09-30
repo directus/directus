@@ -11,7 +11,7 @@ export type Section = {
 
 const sections: Section[] = [
 	{
-		icon: 'bubble_chart',
+		icon: 'play_arrow',
 		name: 'Getting Started',
 		to: '/docs/getting-started',
 		children: [
@@ -20,30 +20,16 @@ const sections: Section[] = [
 				to: '/docs/getting-started/introduction',
 			},
 			{
+				name: 'Troubleshooting',
+				to: '/docs/getting-started/troubleshooting',
+			},
+			{
 				name: 'Contributing',
 				to: '/docs/getting-started/contributing',
 			},
 			{
 				name: 'Supporting Directus',
 				to: '/docs/getting-started/supporting-directus',
-			},
-			{
-				name: 'Troubleshooting',
-				to: '/docs/getting-started/troubleshooting',
-			},
-			{
-				name: 'Troubleshooting',
-				to: '/docs/getting-started/trouble',
-				children: [
-					{
-						name: 'Technical Support',
-						to: '/docs/getting-started/trouble/tech-support',
-					},
-					{
-						name: 'Premium Support',
-						to: '/docs/getting-started/trouble/prem-support',
-					},
-				],
 			},
 		],
 	},
@@ -55,83 +41,155 @@ const sections: Section[] = [
 		children: [
 			{
 				name: 'Activity & Versions',
-				to: '/docs/getting-started/activity-and-versions',
+				to: '/docs/concepts/activity-and-versions',
 			},
 			{
 				name: 'App Components',
-				to: '/docs/getting-started/app-components',
+				to: '/docs/concepts/app-components',
 			},
 			{
 				name: 'App Pages',
-				to: '/docs/getting-started/app-pages',
+				to: '/docs/concepts/app-pages',
 			},
 			{
 				name: 'Database Mirroring',
-				to: '/docs/getting-started/database-mirroring',
+				to: '/docs/concepts/database-mirroring',
 			},
 			{
 				name: 'Files & Thumbnails',
-				to: '/docs/getting-started/files-and-thumbnails',
+				to: '/docs/concepts/files-and-thumbnails',
 			},
 			{
 				name: 'Internationalization',
-				to: '/docs/getting-started/internationalization',
+				to: '/docs/concepts/internationalization',
 			},
 			{
 				name: 'Relationships',
-				to: '/docs/getting-started/relationships',
+				to: '/docs/concepts/relationships',
 			},
 			{
 				name: 'Users, Roles & Permissions',
-				to: '/docs/getting-started/users-roles-and-permissions',
+				to: '/docs/concepts/users-roles-and-permissions',
 			},
 		],
 	},
 	{
-		icon: 'format_list_numbered',
+		icon: 'article',
 		name: 'Guides',
 		to: '/docs/guides',
 		default: 'readme',
 		children: [
 			{
 				name: 'Data Model',
-				to: '/docs/getting-started/activity-and-versions',
+				to: '/docs/guides/fields',
+				children: [
+					{
+						name: 'Standard Field',
+						to: '/docs/guides/fields/creating-a-standard-field',
+					},
+					{
+						name: 'Presentation Field',
+						to: '/docs/guides/fields/creating-a-presentation-field',
+					},
+					{
+						name: 'Many-to-One Field',
+						to: '/docs/guides/fields/creating-a-many-to-one-field',
+					},
+					{
+						name: 'One-to-Many Field',
+						to: '/docs/guides/fields/creating-a-one-to-many-field',
+					},
+					{
+						name: 'Many-to-Many Field',
+						to: '/docs/guides/fields/creating-a-many-to-many-field',
+					},
+					{
+						name: 'Many-to-Any Field',
+						to: '/docs/guides/fields/creating-a-many-to-any-field',
+					},
+					{
+						name: 'Translated Fields',
+						to: '/docs/guides/fields/creating-translated-fields',
+					},
+				],
 			},
 			{
 				name: 'Extensions',
-				to: '/docs/getting-started/app-components',
+				to: '/docs/guides/extensions',
+				children: [
+					{
+						name: 'Custom Displays',
+						to: '/docs/guides/extensions/creating-a-custom-display',
+					},
+					{
+						name: 'Custom Interfaces',
+						to: '/docs/guides/extensions/creating-a-custom-interface',
+					},
+					{
+						name: 'Custom Layouts',
+						to: '/docs/guides/extensions/creating-a-custom-layout',
+					},
+					{
+						name: 'Custom Modules',
+						to: '/docs/guides/extensions/creating-a-custom-module',
+					},
+					{
+						name: 'Custom API Endpoints',
+						to: '/docs/guides/extensions/creating-a-custom-api-endpoint',
+					},
+					{
+						name: 'Custom API Hooks',
+						to: '/docs/guides/extensions/creating-a-custom-api-hook',
+					},
+					{
+						name: 'Custom Email Templates',
+						to: '/docs/guides/extensions/creating-a-custom-email-template',
+					},
+					{
+						name: 'Custom Storage Adapters',
+						to: '/docs/guides/extensions/creating-a-custom-storage-adapter',
+					},
+					{
+						name: 'Accessing Data',
+						to: '/docs/guides/extensions/accessing-data',
+					},
+				],
 			},
 			{
-				name: 'Configuring Project Settings',
-				to: '/docs/getting-started/configuring-project-settings',
+				name: 'Collections',
+				to: '/docs/guides/creating-a-collection',
 			},
 			{
-				name: 'Configuring the API',
-				to: '/docs/getting-started/configuring-the-api',
+				name: 'Presets & Bookmarks',
+				to: '/docs/guides/managing-presets-and-bookmarks',
+			},
+			{
+				name: 'Roles & Permissions',
+				to: '/docs/guides/managing-roles-and-permissions',
+			},
+			{
+				name: 'Webhooks',
+				to: '/docs/guides/managing-webhooks',
 			},
 			{
 				name: 'Creating a Project',
-				to: '/docs/getting-started/creating-a-project',
+				to: '/docs/guides/creating-a-project',
 			},
 			{
-				name: 'Managing Presets & Bookmarks',
-				to: '/docs/getting-started/managing-presets-and-bookmarks',
+				name: 'Configuring a Project',
+				to: '/docs/guides/configuring-the-api',
 			},
 			{
-				name: 'Managing Roles & Permissions',
-				to: '/docs/getting-started/managing-roles-and-permissions',
-			},
-			{
-				name: 'Managing Webhooks',
-				to: '/docs/getting-started/managing-webhooks',
-			},
-			{
-				name: 'Upgrading a Project',
-				to: '/docs/getting-started/upgrading-a-project',
+				name: 'Setting up a Project',
+				to: '/docs/guides/configuring-project-settings',
 			},
 			{
 				name: 'White-Labeling a Project',
-				to: '/docs/getting-started/white-labeling-a-project',
+				to: '/docs/guides/white-labeling-a-project',
+			},
+			{
+				name: 'Upgrading a Project',
+				to: '/docs/guides/upgrading-a-project',
 			},
 		],
 	},
@@ -143,15 +201,15 @@ const sections: Section[] = [
 		children: [
 			{
 				name: 'Command Line Interface',
-				to: '/docs/getting-started/command-line-interface',
+				to: '/docs/reference/command-line-interface',
 			},
 			{
 				name: 'Error Codes',
-				to: '/docs/getting-started/error-codes',
+				to: '/docs/reference/error-codes',
 			},
 			{
-				name: 'Project Environment Variables',
-				to: '/docs/getting-started/project-environment-variables',
+				name: 'Project Env Variables',
+				to: '/docs/reference/project-environment-variables',
 			},
 		],
 	},
