@@ -234,7 +234,19 @@ export class AuthorizationService {
 
 		const schemaInspector = SchemaInspector(this.knex);
 		const columns = await schemaInspector.columnInfo(collection);
-		const requiredColumns = columns.filter((column) => column.is_nullable === false && column.has_auto_increment === false && column.default_value === null);
+
+		let requiredColumns: string[] = [];
+
+		for (const column of columns) {
+			const field = await this.knex.select<{ special: string }>('special').from('directus_fields').where({ collection, field: column.name }).first();
+			const specials = (field?.special || '').split(',');
+			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) => specials.includes(name));
+			const isRequired = column.is_nullable === false && column.has_auto_increment === false && column.default_value === null && hasGenerateSpecial === false;
+
+			if (isRequired) {
+				requiredColumns.push(column.name);
+			}
+		}
 
 		if (requiredColumns.length > 0) {
 			permission.validation = {
@@ -245,13 +257,13 @@ export class AuthorizationService {
 			}
 
 			if (action === 'create') {
-				for (const { name } of requiredColumns) {
+				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
 						_required: true
 					}
 				}
 			} else {
-				for (const { name } of requiredColumns) {
+				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
 						_nnull: true
 					}
