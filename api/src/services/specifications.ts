@@ -1,7 +1,8 @@
-import { AbstractServiceOptions, Accountability, Collection } from '../types';
+import { AbstractServiceOptions, Accountability, Collection, Field } from '../types';
 import { CollectionsService } from './collections'
 import { FieldsService } from './fields'
 import formatTitle from '@directus/format-title'
+import {performance} from 'perf_hooks'
 import { merge } from 'lodash'
 // @ts-ignore
 import { version } from '../../package.json';
@@ -104,6 +105,23 @@ export class SpecificationService {
         collections = collections.filter(collection => 
             collection.collection.startsWith('directus_') === false || internalCollections.includes(collection.collection)
         )
+        
+        const allFields = await this.fieldsService?.readAll()
+        const fields: Record<string, Field[]> = {}
+        if(allFields === undefined) return {}
+        allFields.forEach(field => {
+            if(field.collection.startsWith('directus_') === false || internalCollections.includes(field.collection)) {
+                if(field.collection in fields) {
+                    fields[field.collection].push(field)
+                } else {
+                    fields[field.collection] = [field]
+                }
+            }
+        })
+
+        const tags = await this.generateTags(collections);
+        const paths = await this.generatePaths(collections);
+        const schemas = await this.generateSchemas(collections, fields)
 
         const dynOpenapi = {
             openapi: '3.0.1',
@@ -112,17 +130,17 @@ export class SpecificationService {
                 description: 'This is a dynamicly generated api specification for all endpoints existing on the api.',
                 version: version
             },
-            tags: await this.generateTags(collections),
-            paths: await this.generatePaths(collections),
+            tags,
+            paths,
             components: {
-                schemas: await this.generateSchemas(collections)
+                schemas
             }
         }
 
         return merge(openapi, dynOpenapi)
     }
 
-    async generateTags(collections: Collection[]) {
+    generateTags(collections: Collection[]) {
         const tags: {name: string, description?: string}[] = []
 
         for(const collection of collections) {
@@ -134,7 +152,7 @@ export class SpecificationService {
         return tags
     }
 
-    async generatePaths(collections: Collection[]) {
+    generatePaths(collections: Collection[]) {
         const paths: Record<string, object> = {}
 
         for (const collection of collections) {
@@ -268,7 +286,7 @@ export class SpecificationService {
         return paths
     }
 
-    async generateSchemas(collections: Collection[]) {
+    generateSchemas(collections: Collection[], fields: Record<string, Field[]>) {
         const schemas: Record<string, any> = {}
 
         for(const collection of collections) {
@@ -279,8 +297,7 @@ export class SpecificationService {
             name = formatTitle(name).replace(/ /g,'')
             const tag = formatTitle(collection.collection.replace('directus_',''))
 
-            const fields = await this.fieldsService?.readAll(collection.collection)
-            if(fields === undefined) continue
+            if(fields === undefined) return
 
             schemas[name] = {
                 type: 'object',
@@ -288,7 +305,7 @@ export class SpecificationService {
                 properties: {},
             }
 
-            for(const field of fields) {
+            for(const field of fields[collection.collection]) {
                 schemas[name].properties[field.field] = {
                     ...fieldTypes[field.type],
                     nullable: field.schema?.is_nullable === true,
