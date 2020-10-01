@@ -85,9 +85,9 @@ const fieldTypes = {
             type: 'string'
         }
     }
-
-
 }
+
+type RelationTree = Record<string, Record<string, Relation[]>>
 
 export class SpecificationService {
     accountability: Accountability | null;
@@ -126,6 +126,19 @@ export class SpecificationService {
         if(relations === undefined || relations === null) return {}
         if(Array.isArray(relations) === false) relations = [relations]
 
+        let relationsTree: RelationTree = {};
+        (relations as Relation[]).forEach((relation: Relation) => {
+            if(relation.many_collection in relationsTree === false) relationsTree[relation.many_collection] = {};
+            if(relation.one_collection in relationsTree === false) relationsTree[relation.one_collection] = {};
+
+            if(relation.many_field in relationsTree[relation.many_collection] === false) relationsTree[relation.many_collection][relation.many_field] = []
+            if(relation.one_field in relationsTree[relation.one_collection] === false) relationsTree[relation.one_collection][relation.one_field] = []
+
+            relationsTree[relation.many_collection][relation.many_field].push(relation)
+            relationsTree[relation.one_collection][relation.one_field].push(relation)
+        })
+        
+
         const dynOpenapi = {
             openapi: '3.0.1',
             info: {
@@ -136,7 +149,7 @@ export class SpecificationService {
             tags: this.generateTags(collections),
             paths: this.generatePaths(collections),
             components: {
-                schemas: this.generateSchemas(collections, fields, relations as Relation[])
+                schemas: this.generateSchemas(collections, fields, relationsTree)
             }
         }
 
@@ -289,15 +302,16 @@ export class SpecificationService {
         return paths
     }
 
-    generateSchemas(collections: Collection[], fields: Record<string, Field[]>, relations: Relation[]) {
+    generateSchemas(collections: Collection[], fields: Record<string, Field[]>, relations: RelationTree) {
         const schemas: Record<string, any> = {}
 
-        for(const collection of collections) {
-            const isInternal = collection.collection.startsWith('directus_')
+        const getSchemaName = function(collection: string) {
+            const name = collection.startsWith('directus_') ? collection.replace('directus_','').replace(/s$/,'') : collection+"Item"
+            return formatTitle(name).replace(/ /g,'')
+        }
 
-            let name = collection.collection
-            name = isInternal ? name.replace('directus_','').replace(/s$/,'') : name+"Item"
-            name = formatTitle(name).replace(/ /g,'')
+        for(const collection of collections) {
+            let name = getSchemaName(collection.collection)
             const tag = formatTitle(collection.collection.replace('directus_',''))
 
             if(fields === undefined) return
@@ -305,31 +319,52 @@ export class SpecificationService {
             schemas[name] = {
                 type: 'object',
                 'x-tag': tag,
-                properties: {},
-                relations
+                properties: {}
             }
 
             for(const field of fields[collection.collection]) {
-                const fieldRelations = relations.filter(relation => 
-                    (relation.many_collection === collection.collection && relation.many_field === field.field) ||
-                    (relation.one_collection === collection.collection && relation.one_field === field.field)
-                )
+                const fieldRelations = field.collection in relations && field.field in relations[field.collection] ? relations[field.collection][field.field] : []
 
                 if(fieldRelations.length !== 0) {
+                    const relation = fieldRelations[0]
+                    const isManySide = relation.many_collection === field.collection
+
+                    let relatedCollection = isManySide ? relation.one_collection : relation.many_collection
+                    const relatedPrimaryField = fields[relatedCollection].find(field => field.schema?.is_primary_key)
+
+                    if(relatedPrimaryField?.type === undefined) return;
+
+                    const relatedType = fieldTypes[relatedPrimaryField?.type]
+            
+                    const relatedSchema = getSchemaName(relatedCollection)
+
+                    const type = isManySide ? {
+                        oneOf: [{
+                            ...relatedType,
+                            nullable: field.schema?.is_nullable === true,
+                        }, {$ref: `#/components/schemas/${relatedSchema}`}]
+                    } : {
+                        type: 'array',
+                        items: {$ref: `#/components/schemas/${relatedSchema}`},
+                        nullable: field.schema?.is_nullable === true
+                    }
+
+                    schemas[name].properties[field.field] = {
+                        ...type,
+                        description: field.meta?.note || undefined
+    
+                    }
+
 
                 } else {
-                    
+                    schemas[name].properties[field.field] = {
+                        ...fieldTypes[field.type],
+                        nullable: field.schema?.is_nullable === true,
+                        description: field.meta?.note || undefined
+                    }
                 }
-                schemas[name].properties[field.field] = {
-                    ...fieldTypes[field.type],
-                    nullable: field.schema?.is_nullable === true,
-                    description: field.meta?.note || undefined
-
-                }
-                
             }
         }
-
         return schemas
     }
 }
