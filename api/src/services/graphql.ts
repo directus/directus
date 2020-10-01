@@ -1,14 +1,25 @@
 import Knex from 'knex';
 import database from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query } from '../types';
+import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, AbstractService } from '../types';
 import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode } from 'graphql';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
-import { cloneDeep, flatten } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { sanitizeQuery } from '../utils/sanitize-query';
+
+import { ActivityService } from './activity';
+import { CollectionsService } from './collections';
+import { FieldsService } from './fields';
+import { FilesService } from './files';
+import { FoldersService } from './folders';
+import { PermissionsService } from './permissions';
+import { PresetsService } from './presets';
+import { RevisionsService } from './revisions';
+import { RolesService } from './roles';
+import { SettingsService } from './settings';
+import { UsersService } from './users';
+import { WebhooksService } from './webhooks';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -215,8 +226,43 @@ export class GraphQLService {
 
 		query.fields = parseFields(selections.filter((selection) => selection.kind === 'Field') as FieldNode[]);
 
-		const service = new ItemsService(collection, { knex: this.knex, accountability: this.accountability });
-		const result = await service.readByQuery(query);
+		let service: ItemsService;
+
+		switch (collection) {
+			case 'directus_activity':
+				service = new ActivityService({ knex: this.knex, accountability: this.accountability });
+			// case 'directus_collections':
+			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
+			// case 'directus_fields':
+			// 	service = new FieldsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_files':
+				service = new FilesService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_folders':
+				service = new FoldersService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_folders':
+				service = new FoldersService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_permissions':
+				service = new PermissionsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_presets':
+				service = new PresetsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_relations':
+				service = new RelationsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_revisions':
+				service = new RevisionsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_roles':
+				service = new RolesService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_settings':
+				service = new SettingsService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_users':
+				service = new UsersService({ knex: this.knex, accountability: this.accountability });
+			case 'directus_webhooks':
+				service = new WebhooksService({ knex: this.knex, accountability: this.accountability });
+			default:
+				service = new ItemsService(collection, { knex: this.knex, accountability: this.accountability });
+		}
+
+		const collectionInfo = await this.knex.select('singleton').from('directus_collections').where({ collection: collection }).first();
+		const result = collectionInfo?.singleton === true ? await service.readSingleton(query) : await service.readByQuery(query);
 
 		return result;
 	}
