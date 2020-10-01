@@ -132,9 +132,10 @@ export default defineComponent({
 
 			code,
 			tt {
-				margin: 0 2px;
-				padding: 0 5px;
+				margin: 0 1px;
+				padding: 0 4px;
 				font-family: var(--family-monospace);
+				font-size: 15px;
 				white-space: nowrap;
 				background-color: var(--background-page);
 				border: 1px solid var(--background-normal);
