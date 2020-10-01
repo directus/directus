@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query } from '../types';
-import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, } from 'graphql';
+import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode } from 'graphql';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -58,12 +58,15 @@ export class GraphQLService {
 	}
 
 	getGraphQLSchema(collections: Collection[], fields: Field[], relations: Relation[]) {
-		const schema: any = {};
+		const schema: any = { items: {} };
 
 		for (const collection of collections) {
-			schema[collection.collection] = {
+			const systemCollection = collection.collection.startsWith('directus_');
+
+			const schemaSection: any = {
 				type: new GraphQLObjectType({
 					name: collection.collection,
+					description: collection.meta?.note,
 					fields: () => {
 						const fieldsObject: GraphQLFieldConfigMap<any, any> = {};
 						const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
@@ -78,12 +81,18 @@ export class GraphQLService {
 								const isM2O = relationForField.many_collection === collection.collection && relationForField.many_field === field.field;
 
 								if (isM2O) {
+									const relatedIsSystem = relationForField.one_collection.startsWith('directus_');
+									const relatedType = relatedIsSystem ? schema[relationForField.one_collection.substring(9)].type : schema.items[relationForField.one_collection].type;
+
 									fieldsObject[field.field] = {
-										type: schema[relationForField.one_collection].type,
+										type: relatedType,
 									}
 								} else {
+									const relatedIsSystem = relationForField.many_collection.startsWith('directus_');
+									const relatedType = relatedIsSystem ? schema[relationForField.many_collection.substring(9)].type : schema.items[relationForField.many_collection].type;
+
 									fieldsObject[field.field] = {
-										type: new GraphQLList(schema[relationForField.many_collection].type),
+										type: new GraphQLList(relatedType),
 										args: this.args,
 									}
 								}
@@ -92,13 +101,21 @@ export class GraphQLService {
 									type: field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type),
 								}
 							}
+
+							fieldsObject[field.field].description = field.meta?.note;
 						}
 
 						return fieldsObject;
 					},
 				}),
 				args: this.args,
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info, args)
+			};
+
+			if (systemCollection) {
+				schemaSection.resolve = (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info)
+				schema[collection.collection.substring(9)] = schemaSection;
+			} else {
+				schema.items[collection.collection] = schemaSection;
 			}
 		}
 
@@ -106,9 +123,23 @@ export class GraphQLService {
 
 		for (const collection of collections) {
 			if (collection.meta?.singleton !== true) {
-				schemaWithLists[collection.collection].type = new GraphQLList(schemaWithLists[collection.collection].type);
+				const systemCollection = collection.collection.startsWith('directus_');
+
+				if (systemCollection) {
+					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(schemaWithLists[collection.collection.substring(9)].type);
+				} else {
+					schemaWithLists.items[collection.collection].type = new GraphQLList(schemaWithLists.items[collection.collection].type);
+				}
 			}
 		}
+
+		schemaWithLists.items = {
+			type: new GraphQLObjectType({
+				name: 'items',
+				fields: schemaWithLists.items,
+			}),
+			resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info),
+		};
 
 		return new GraphQLSchema({
 			query: new GraphQLObjectType({
@@ -118,12 +149,41 @@ export class GraphQLService {
 		});
 	}
 
-	async resolve(info: GraphQLResolveInfo, args: Record<string, any>) {
-		const collection = info.fieldName;
-		const query: Query = sanitizeQuery(args, this.accountability);
+	async resolve(info: GraphQLResolveInfo) {
+		if (info.fieldName === 'items') {
+			const data: Record<string, any> = {};
 
-		const selections = info.fieldNodes[0]?.selectionSet?.selections;
-		if (!selections) return null;
+			const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
+			if (!selections) return null;
+
+			for (const collectionSelection of selections) {
+				const collection = collectionSelection.name.value;
+				const selections = collectionSelection.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
+				if (!selections) continue;
+
+				data[collection] = await this.getData(collection, selections, collectionSelection.arguments);
+			}
+
+			return data;
+		} else {
+			const collection = `directus_${info.fieldName}`;
+			const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
+			if (!selections) return null;
+
+			return await this.getData(collection, selections, info.fieldNodes[0].arguments);
+		}
+	}
+
+	async getData(collection: string, selections: FieldNode[], argsArray?: readonly ArgumentNode[]) {
+		const args: Record<string, any> = {};
+
+		if (argsArray) {
+			for (const argument of argsArray) {
+				args[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
+			}
+		}
+
+		const query: Query = sanitizeQuery(args, this.accountability);
 
 		const parseFields = (selections: FieldNode[], parent?: string): string[] => {
 			const fields: string[] = [];
