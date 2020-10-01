@@ -1,13 +1,14 @@
 import Knex from 'knex';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query } from '../types';
-import { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLScalarType, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLObjectTypeConfig } from 'graphql';
+import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, } from 'graphql';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
-import { clone, cloneDeep, flatten } from 'lodash';
+import { cloneDeep, flatten } from 'lodash';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -22,6 +23,28 @@ export class GraphQLService {
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService({ knex: this.knex });
+	}
+
+	args = {
+		sort: {
+			type: GraphQLString
+		},
+		limit: {
+			type: GraphQLInt,
+		},
+		// filter: {
+		// 	type: GraphQL,
+		// },
+		// @TODO research "any object input" arg type
+		offset: {
+			type: GraphQLInt,
+		},
+		page: {
+			type: GraphQLInt,
+		},
+		search: {
+			type: GraphQLString,
+		}
 	}
 
 	async getSchema() {
@@ -61,6 +84,7 @@ export class GraphQLService {
 								} else {
 									fieldsObject[field.field] = {
 										type: new GraphQLList(schema[relationForField.many_collection].type),
+										args: this.args,
 									}
 								}
 							} else {
@@ -73,14 +97,15 @@ export class GraphQLService {
 						return fieldsObject;
 					},
 				}),
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info)
+				args: this.args,
+				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info, args)
 			}
 		}
 
 		const schemaWithLists = cloneDeep(schema);
 
 		for (const collection of collections) {
-			if (collection.meta?.single !== true) {
+			if (collection.meta?.singleton !== true) {
 				schemaWithLists[collection.collection].type = new GraphQLList(schemaWithLists[collection.collection].type);
 			}
 		}
@@ -93,32 +118,46 @@ export class GraphQLService {
 		});
 	}
 
-	async resolve(info: GraphQLResolveInfo) {
+	async resolve(info: GraphQLResolveInfo, args: Record<string, any>) {
 		const collection = info.fieldName;
-		const query: Query = {};
+		const query: Query = sanitizeQuery(args, this.accountability);
 
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 		if (!selections) return null;
 
-		query.fields = getFields(selections.filter((selection) => selection.kind === 'Field') as FieldNode[]);
+		const parseFields = (selections: FieldNode[], parent?: string): string[] => {
+			const fields: string[] = [];
+
+			for (const selection of selections) {
+				const current = parent ? `${parent}.${selection.name.value}` : selection.name.value;
+
+				if (selection.selectionSet === undefined) {
+					fields.push(current);
+				} else {
+					const children = parseFields(selection.selectionSet.selections.filter((selection) => selection.kind === 'Field') as FieldNode[], current);
+					fields.push(...children);
+				}
+
+				if (selection.arguments && selection.arguments.length > 0) {
+					if (!query.deep) query.deep = {};
+					const args: Record<string, any> = {};
+
+					for (const argument of selection.arguments) {
+						args[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
+					}
+
+					query.deep[current] = sanitizeQuery(args, this.accountability);
+				}
+			}
+
+			return fields;
+		}
+
+		query.fields = parseFields(selections.filter((selection) => selection.kind === 'Field') as FieldNode[]);
 
 		const service = new ItemsService(collection, { knex: this.knex, accountability: this.accountability });
 		const result = await service.readByQuery(query);
 
 		return result;
-
-		function getFields(selections: FieldNode[], parent?: string): string[] {
-			return flatten(selections!
-				.map((selection) => {
-					const current = parent ? `${parent}.${selection.name.value}` : selection.name.value;
-
-					if (selection.selectionSet === undefined) {
-						return current;
-					} else {
-						const children = getFields(selection.selectionSet.selections.filter((selection) => selection.kind === 'Field') as FieldNode[], current);
-						return children;
-					}
-				}));
-		}
 	}
 }
