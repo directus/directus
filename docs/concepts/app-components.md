@@ -64,7 +64,7 @@ In addition to these core layouts, custom layouts allow for creating more tailor
 Interfaces provide a multitude of ways to view or interact with field data on [Item Detail](#) page forms. Every interface supports a specific subset of field [types](#) (eg: String), which determines how the data will be stored. For example, the _Text Input_ interface can manage most types of data, but might not be ideal for dates, where a _Calendar_ interface excels. Directus includes many Interfaces out-of-the-box:
 
 * Text Input
-@TODO List all core interfaces, or link to a exhaustive reference?
+* @TODO List all core interfaces, or link to a exhaustive reference?
 
 In addition to these core interfaces, custom interfaces allow for creating more tailored or propreitary ways to view or manage field data, such as bespoke layout builders, skeuomorphic knobs, or relational views for third-party data (eg: Stripe Credit Card UI).
 
@@ -78,7 +78,7 @@ Displays are the smaller, read-only counterpart to Interfaces, defining how a fi
 
 * Raw
 * Formatted Value
-@TODO List all core interfaces, or link to a exhaustive reference?
+* @TODO List all core interfaces, or link to a exhaustive reference?
 
 In addition to these core displays, custom displays allow for creating customized ways to view or represent field data, such as progress indicators, relational data tooltips, or specific formatting options.
 
@@ -90,7 +90,9 @@ In addition to these core displays, custom displays allow for creating customize
 
 Directus uses [Database Mirroring](#) to create its underlying data model based on your custom schema. Therefore the App needs a reliable way of converting any raw table name, field name, or other technical value into a prettified format that is human-readable. At its core, the Title Formatter converts any string into title-case with proper whitespace. It also covers acronyms, initialisms, common proper nouns, so each is output properly. Some example conversion include:
 
-* `snowWhiteAndTheSevenDwarfs` -> "Snow White and the Seven Dwarfs"
-* `NewcastleUponTyne` -> "Newcastle upon Tyne"
-* `brighton_on_sea` -> "Brighton on Sea"
-* `new_ipad_ftp_app` -> "New iPad FTP App"
+| Original String | Formatted Title |
+|-----------------|-----------------|
+| `snowWhiteAndTheSevenDwarfs` | `Snow White and the Seven Dwarfs` |
+| `NewcastleUponTyne` | `Newcastle upon Tyne` |
+| `brighton_by_the_sea` | `Brighton by the Sea` |
+| `new_ipad_ftp_app` | `New iPad FTP App` |

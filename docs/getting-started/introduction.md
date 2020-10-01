@@ -41,12 +41,16 @@ Dedicated hardware, custom limits, full white-labeling, uptime SLAs, and more ar
 
 ### Documentation
 
-The online version of our platform's most recent documentation, all written in publicly managed markdown files so the community can help!
+[Our online documentation](#) describes the most version of our platform. They are written in publicly managed markdown files so the community can help keep them clean and up-to-date!
 
-* Getting Started
-* Concepts: Learning Oriented. For understanding the platofm.
+* Getting Started: Novice Oriented. For a platform intro and installation.
+* Concepts: Learning Oriented. For understanding the platfom.
 * Guides: Problem Oriented. Follow along with steps while working.
 * Reference: Information Oriented. Look up info and specs while working.
+
+::: Versioned Docs
+Docs for specific versions of Directus 9+ are available within the individual Project's App Documentation module.
+:::
 
 ### Online Demo
 

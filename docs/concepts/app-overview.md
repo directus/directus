@@ -77,9 +77,7 @@ A module includes a comprehensive listing of all system users within your projec
 
 ### User Detail
 
-Similar to other [Item Detail](#) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](#).
-
-Directus ships with a full-featured user system, with the following fields:
+Similar to other [Item Detail](#) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](#). Directus ships with a full-featured user system, with the following fields:
 
 * First Name
 * Last Name
@@ -114,9 +112,7 @@ This module aggregates all files within the project into one consolidated librar
 
 ### File Detail
 
-Similar to other [Item Detail](#) pages, this page provides a custom form for viewing assets and embeds.
-
-Directus ships with a full-featured system for digital asset management, with the following fields:
+Similar to other [Item Detail](#) pages, this page provides a custom form for viewing assets and embeds. Directus ships with a full-featured system for digital asset management, with the following fields:
 
 * Title
 * Description
@@ -140,10 +136,41 @@ The sidebar's info component also includes the following readonly details:
 While the fields included out-of-the-box are locked from schema changes, you can extend Directus Files to include additional proprietary fields within [Settings > Data Model](#).
 :::
 
+## Documentation
+
+This module is an internal set of guides, concepts, and reference docs for your project's specific version of Directus. It also includes a dynamic [API Reference](#) that is dynamically tailored to your custom schema. The docs are organized into four distinct sections:
+
+* [Getting Started](#) — Novice Oriented. For a platform intro and installation.
+* [Concepts](#) — Learning Oriented. For understanding the platfom.
+* [Guides](#) — Problem Oriented. Follow along with steps while working.
+* [Reference](#) — Information Oriented. Look up info and specs while working.
+
+::: Updating the Docs
+Our docs are written in markdown (with some additional VuePress styling like this hint box), and available for editing/fixing via [GitHub](*).
+:::
+
 ## Actvity History
+
+This module provides a collective timeline of all actions taken within the project. This is a great way to audit user activity or enforce accountability. This is the only system module that is not in the module bar by default — instead being located within the notifications tray of the page sidebar. This page has the same features and configuration as [Item Browse](#).
 
 ### Activity Detail
 
+Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a modal window with the following fields:
+
+* User
+* Action
+* Date
+* IP Address
+* User Agent
+* Collection
+* Item
+
 # Settings
 
-@TODO ToC style to Configuration Guides...
+This module is only available to users within [admin roles](#). This is where your project is configured, and the first place to go after installation. It includes the following sections:
+
+* Project Settings
+* Data Model
+* Roles & Permissions
+* Presets & Bookmarks
+* Webhooks

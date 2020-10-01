@@ -279,6 +279,7 @@ export default defineComponent({
 			}
 
 			table {
+				margin: 40px 0;
 				padding: 0;
 				border-collapse: collapse;
 				border-spacing: 0;
@@ -365,6 +366,7 @@ export default defineComponent({
 				padding: 0 20px;
 				background-color: var(--background-subdued);
 				border-left: 2px solid var(--primary);
+				width: 100%;
 
 				&-title {
 					font-weight: bold;
