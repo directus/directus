@@ -66,7 +66,7 @@ function main() {
   push=$(argument push "false")
   latest=$(argument latest "false")
 
-  registry=$(argument registry "ghcr.io")
+  registry=$(argument registry "")
   registry=$(echo "${registry}" | tr '[:upper:]' '[:lower:]')
 
   repository=$(argument repository "directus/next")
@@ -74,6 +74,11 @@ function main() {
 
   version=$(argument version "")
   context=$(argument context ".")
+
+  image="${repository}"
+  if [ "${registry}" != "" ]; then
+    image="${registry}/${image}"
+  fi
 
   # Normalize tag
   if [ "${version}" == "" ]; then
@@ -102,7 +107,7 @@ function main() {
   # Push latest
   # TODO: check if it's really the latest
   if [ "${latest}" == "true" ]; then
-    fqin="${registry}/${repository}:latest"
+    fqin="${image}:latest"
     echo "Tagging ${fqin}"
     docker tag directus:main ${fqin}
     if [ "${push}" == "true" ]; then
@@ -115,12 +120,12 @@ function main() {
   for tag in $tags
   do
     tag=$(echo "${tag}" | tr '[:upper:]' '[:lower:]')
-    fqin="${registry}/${repository}:latest"
+    fqin="${image}:${tag}"
     echo "Tagging ${fqin}"
-    docker tag directus:main "${registry}/${repository}:${tag}"
+    docker tag directus:main "${fqin}"
     if [ "${push}" == "true" ]; then
       echo "Pushing tag ${fqin}"
-      docker push "${registry}/${repository}:${tag}"
+      docker push "${fqin}"
     fi
   done
 
