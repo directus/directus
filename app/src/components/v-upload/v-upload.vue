@@ -159,7 +159,7 @@ export default defineComponent({
 					});
 
 					if (uploadedFiles) {
-						emit('upload', props.multiple ? uploadedFiles : uploadedFiles[0]);
+						emit('input', props.multiple ? uploadedFiles : uploadedFiles[0]);
 					}
 				} catch (err) {
 					console.error(err);
@@ -216,29 +216,17 @@ export default defineComponent({
 		}
 
 		function useSelection() {
-			const collection = ref('directus_files');
-			const image = ref<string | null>(null);
-			const { item, error, loading } = useItem(collection, image);
+			return { setSelection };
 
-			function setSelection(selection: string[]) {
+			async function setSelection(selection: string[]) {
 				if (selection[0]) {
-					image.value = selection[0];
+					const id = selection[0];
+					const fileResponse = await api.get(`/files/${id}`);
+					emit('input', fileResponse.data.data);
 				} else {
-					image.value = null;
-					emit('upload', null);
+					emit('input', null);
 				}
 			}
-
-			watch(
-				() => item.value,
-				(id) => {
-					if (error.value === null && loading.value === false) {
-						emit('upload', item.value);
-					}
-				}
-			);
-
-			return { setSelection };
 		}
 
 		function useURLImport() {
@@ -265,7 +253,7 @@ export default defineComponent({
 						url: url.value,
 					});
 
-					emit('upload', response.data.data);
+					emit('input', response.data.data);
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {
