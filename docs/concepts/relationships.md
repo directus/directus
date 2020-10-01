@@ -6,7 +6,7 @@
 
 While it may seem complex at first, relational data is actually quite straightforward once you understand what's happeneing behind the confusing terminology. Before diving into the details of each type, let's first cover a few basics that will help you better visualize each in your mind's eye.
 
-### PKs and FKs
+### PKs vs FKs
 
 Every [item](#) in a relational database has a unique "key" that identifies it within its [collection](#). Because it's required, the key is the first [field](#) created within a collection, typically storing an "auto-increment" number, an automatically generated unique hash, or a manually entered value. They are often abbreviated to "PK" (Primary Key), "ID" (Identifier), "UID" (Unique Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value they store. After it's created, the value of an item's PK should _never_ change.
 
@@ -18,7 +18,7 @@ We've ignored compound keys in this explanation to help keep things as simple as
 
 ### Perspective Matters
 
-Relationships and keys are relative to their "parent" collection. Looking at the same relationship/key from the perspective of a different collection may change or reverse its type.
+Just like primary and foreign keys are directional, relationships are always relative to their "parent" collection. Looking at the same relationship/key from the perspective of a different collection may change or reverse its type.
 
 ## Many-to-One (M2O)
 

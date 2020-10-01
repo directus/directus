@@ -12,14 +12,19 @@ Storage adapters allow project files to be stored in different locations or serv
 
 ## Files
 
-Directus allows you to manage all your files in one place, including documents, images, videos, and even third-party embedded resources (eg: YouTube). Files can be uploaded to the [File Library](#) in general, or directly to an item via a [Single File](#) or [Multiple Files](#) field.
+Directus allows you to manage all your files in one place, including documents, images, videos, and more. Files can be uploaded to the [File Library](#) in general, or directly to an item via a [Single File](#) or [Multiple Files](#) field.
 
 @TODO private files
 
 ### Relevant Guides
 
+* [Uploading a File](#)
 * [Requesting an Original File](#)
 * [Requesting a Private File](#)
+
+## Embedded Assets
+
+Directus also supports ingesting third-party embedded assets, such as YouTube or Vimeo videos. These are managed the same as normal files, however the resource itself is stored on the external service, and referenced via its proprietary UID.
 
 ## Crop & Transform Images
 
