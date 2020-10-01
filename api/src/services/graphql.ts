@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, AbstractService } from '../types';
-import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode } from 'graphql';
+import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLInputObjectType, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode, GraphQLScalarType } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
@@ -20,6 +20,22 @@ import { RolesService } from './roles';
 import { SettingsService } from './settings';
 import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
+
+const GraphQLAny = new GraphQLScalarType({
+	name: 'Any',
+	description: 'Any object',
+	serialize(x) {
+		return JSON.stringify(x);
+	},
+	parseValue(x) {
+		return JSON.parse(x);
+	},
+	parseLiteral(ast: any) {
+		let obj: any = {};
+		ast.fields.forEach((x: any) => obj[x.name.value] = x.value.value);
+		return obj;
+	}
+});
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -43,10 +59,9 @@ export class GraphQLService {
 		limit: {
 			type: GraphQLInt,
 		},
-		// filter: {
-		// 	type: GraphQL,
-		// },
-		// @TODO research "any object input" arg type
+		filter: {
+			type: GraphQLAny,
+		},
 		offset: {
 			type: GraphQLInt,
 		},
@@ -193,6 +208,8 @@ export class GraphQLService {
 				args[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
 			}
 		}
+
+		console.log(args);
 
 		const query: Query = sanitizeQuery(args, this.accountability);
 

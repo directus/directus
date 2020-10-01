@@ -92,6 +92,7 @@
 		"fs-extra": "^9.0.1",
 		"grant": "^5.3.0",
 		"graphql": "^15.3.0",
+		"graphql-type-json": "^0.3.2",
 		"icc": "^2.0.0",
 		"inquirer": "^7.3.3",
 		"joi": "^17.1.1",
