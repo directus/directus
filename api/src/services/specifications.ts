@@ -156,13 +156,24 @@ export class SpecificationService {
         return merge(openapi, dynOpenapi)
     }
 
+    getNameFormats(collection: string) {
+        const isInternal = collection.startsWith('directus_')
+        const schema = formatTitle(isInternal ? collection.replace('directus_','').replace(/s$/,'') : collection + 'Item').replace(/ /g,'')
+        const tag = formatTitle(isInternal ?collection.replace('directus_',''): collection + ' Collection')
+        const path = isInternal ? collection : '/items/' + collection
+        const objectRef = `#/components/schemas/${schema}`
+        return {
+            schema, tag, path, objectRef
+        }
+    }
+
     generateTags(collections: Collection[]) {
         const tags: {name: string, description?: string}[] = []
 
         for(const collection of collections) {
             if(collection.collection.startsWith('directus_')) continue
-            const name = formatTitle(collection.collection)
-            tags.push({ name, description: collection.meta?.note || undefined })
+            const { tag } = this.getNameFormats(collection.collection)
+            tags.push({ name: tag, description: collection.meta?.note || undefined })
         }
 
         return tags
@@ -173,10 +184,7 @@ export class SpecificationService {
 
         for (const collection of collections) {
             if(collection.collection.startsWith('directus_')) continue
-            const tagName = formatTitle(collection.collection)
-            const name = tagName.replace(' ','')
-            const path = "/items/" + collection.collection
-            const objectRef = `#/components/schemas/${name}Item`
+            const {tag, schema, objectRef, path} = this.getNameFormats(collection.collection)
 
             const objectSingle = {
                 content: {
@@ -190,9 +198,9 @@ export class SpecificationService {
             
             paths[path] = {
                 get: {
-                    operationId: `get${name}Items`,
-                    description: `List all items from the ${tagName} collection`,
-                    tags: [tagName],
+                    operationId: `get${schema}s`,
+                    description: `List all items from the ${tag}`,
+                    tags: [tag],
                     parameters: [
                         { "$ref": "#/components/parameters/Fields" },
                         { "$ref": "#/components/parameters/Limit" },
@@ -228,12 +236,12 @@ export class SpecificationService {
                     }
                 },
                 post: {
-                    operationId: `create${name}Item`,
-                    description: `Create a new item in the ${tagName} collection`,
-                    tags: [tagName],
+                    operationId: `create${schema}`,
+                    description: `Create a new item in the ${tag}`,
+                    tags: [tag],
                     parameter: [{"$ref": "#/components/parameters/Meta"}],
                     requestBody: objectSingle,
-                    response: {
+                    responses: {
                         '200': objectSingle,
                         '401': {
                             $ref: '#/components/responses/UnauthorizedError'
@@ -244,14 +252,14 @@ export class SpecificationService {
             paths[path + '/{id}'] = {
                 parameters: [ { $ref: '#/components/parameters/Id' } ],
                 get: {
-                    operationId: `get${name}Item`,
-                    description: `Get a singe item from the ${tagName} collection`,
-                    tags: [tagName],
+                    operationId: `get${schema}`,
+                    description: `Get a singe item from the ${tag}`,
+                    tags: [tag],
                     parameters: [
                         { "$ref": "#/components/parameters/Fields" },
                         { "$ref": "#/components/parameters/Meta" },
                     ],
-                    response: {
+                    responses: {
                         '200': objectSingle,
                         '401': {
                             $ref: '#/components/responses/UnauthorizedError'
@@ -262,15 +270,15 @@ export class SpecificationService {
                     }
                 },
                 patch: {
-                    operationId: `update${name}Item`,
-                    description: `Update an item from the ${tagName} collection`,
-                    tags: [tagName],
+                    operationId: `update${schema}`,
+                    description: `Update an item from the ${tag}`,
+                    tags: [tag],
                     parameters: [
                         { "$ref": "#/components/parameters/Fields" },
                         { "$ref": "#/components/parameters/Meta" },
                     ],
                     requestBody: objectSingle,
-                    response: {
+                    responses: {
                         '200': objectSingle,
                         '401': {
                             $ref: '#/components/responses/UnauthorizedError'
@@ -281,10 +289,10 @@ export class SpecificationService {
                     }
                 },
                 delete: {
-                    operationId: `delete${name}Item`,
-                    description: `Delete an item from the ${tagName} collection`,
-                    tags: [tagName],
-                    response: {
+                    operationId: `delete${schema}`,
+                    description: `Delete an item from the ${tag}`,
+                    tags: [tag],
+                    responses: {
                         '200': {
                             description: 'Successful request'
                         },
@@ -305,18 +313,12 @@ export class SpecificationService {
     generateSchemas(collections: Collection[], fields: Record<string, Field[]>, relations: RelationTree) {
         const schemas: Record<string, any> = {}
 
-        const getSchemaName = function(collection: string) {
-            const name = collection.startsWith('directus_') ? collection.replace('directus_','').replace(/s$/,'') : collection+"Item"
-            return formatTitle(name).replace(/ /g,'')
-        }
-
         for(const collection of collections) {
-            let name = getSchemaName(collection.collection)
-            const tag = formatTitle(collection.collection.replace('directus_',''))
+            const { schema, tag } = this.getNameFormats(collection.collection)
 
             if(fields === undefined) return
 
-            schemas[name] = {
+            schemas[schema] = {
                 type: 'object',
                 'x-tag': tag,
                 properties: {}
@@ -336,20 +338,20 @@ export class SpecificationService {
 
                     const relatedType = fieldTypes[relatedPrimaryField?.type]
             
-                    const relatedSchema = getSchemaName(relatedCollection)
+                    const {objectRef} = this.getNameFormats(relatedCollection)
 
                     const type = isManySide ? {
                         oneOf: [{
                             ...relatedType,
                             nullable: field.schema?.is_nullable === true,
-                        }, {$ref: `#/components/schemas/${relatedSchema}`}]
+                        }, {$ref: objectRef}]
                     } : {
                         type: 'array',
-                        items: {$ref: `#/components/schemas/${relatedSchema}`},
+                        items: {$ref: objectRef},
                         nullable: field.schema?.is_nullable === true
                     }
 
-                    schemas[name].properties[field.field] = {
+                    schemas[schema].properties[field.field] = {
                         ...type,
                         description: field.meta?.note || undefined
     
@@ -357,7 +359,7 @@ export class SpecificationService {
 
 
                 } else {
-                    schemas[name].properties[field.field] = {
+                    schemas[schema].properties[field.field] = {
                         ...fieldTypes[field.type],
                         nullable: field.schema?.is_nullable === true,
                         description: field.meta?.note || undefined
