@@ -12,14 +12,22 @@ Storage adapters allow project files to be stored in different locations or serv
 
 ## Files
 
+Directus allows you to manage all your files in one place, including documents, images, videos, and even third-party embedded resources (eg: YouTube). Files can be uploaded to the [File Library](#) in general, or directly to an item via a [Single File](#) or [Multiple Files](#) field.
+
+@TODO private files
+
 ### Relevant Guides
 
 * [Requesting an Original File](#)
 * [Requesting a Private File](#)
 
-## Thumbnails
+## Crop & Transform Images
+
+Our file middleware also allows for cropping and transforming image assets on the fly. This means you can simply request an image, include any desired transformation parameters, and you'll be served the new asset as a response. This is very useful for automatically generating many different thumbnails/versions of an original file.
+
+To impede malicious users from consuming your storage by requesting a multitude of random sizes, Directus includes a [Thumbnail Allow-List](#) to limit what transformations are possible.
 
 ### Relevant Guides
 
-* [Allow-Listing Thumbnails](#)
 * [Requesting a Thumbnail](#)
+* [Allow-Listing Thumbnails](#)
