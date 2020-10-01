@@ -2,8 +2,7 @@ import { AbstractServiceOptions, Accountability, Collection, Field, Relation } f
 import { CollectionsService } from './collections'
 import { FieldsService } from './fields'
 import formatTitle from '@directus/format-title'
-import {performance} from 'perf_hooks'
-import { merge } from 'lodash'
+import { mergeWith } from 'lodash'
 // @ts-ignore
 import { version } from '../../package.json';
 // @ts-ignore
@@ -153,7 +152,9 @@ export class SpecificationService {
             }
         }
 
-        return merge(openapi, dynOpenapi)
+        return mergeWith(openapi, dynOpenapi, (obj, src) => {
+            if(Array.isArray(obj)) return obj.concat(src)
+        })
     }
 
     getNameFormats(collection: string) {
