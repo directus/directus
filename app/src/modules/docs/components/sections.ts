@@ -4,16 +4,20 @@ export type Section = {
 	description?: string;
 	icon?: string;
 	sectionIcon?: string;
+	sectionName?: string;
 	children?: Section[];
 	default?: string;
 	flat?: boolean;
 };
+
+export const defaultSection = '/docs/getting-started/introduction';
 
 const sections: Section[] = [
 	{
 		icon: 'play_arrow',
 		name: 'Getting Started',
 		to: '/docs/getting-started',
+		default: '',
 		children: [
 			{
 				name: 'Introduction',
