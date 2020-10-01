@@ -1,12 +1,14 @@
 {
 	"name": "@directus/specs",
 	"version": "9.0.0-beta.4",
-	"description": "Specification of the Directus Api",
+  "description": "Specification of the Directus Api",
+  "main": "index.js",
 	"scripts": {
 		"dev": "swagger-ui-watcher specs/openapi.yaml",
 		"validate": "swagger-cli validate specs/openapi.yaml",
 		"build": "swagger-cli bundle specs/openapi.yaml -o dist/openapi.json",
-		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference"
+    "build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference",
+    "prepublishOnly": "npm run build && npm run build:deref"
 	},
 	"repository": {
 		"type": "git",
