@@ -21,22 +21,6 @@ import { SettingsService } from './settings';
 import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
-const GraphQLAny = new GraphQLScalarType({
-	name: 'Any',
-	description: 'Any object',
-	serialize(x) {
-		return JSON.stringify(x);
-	},
-	parseValue(x) {
-		return JSON.parse(x);
-	},
-	parseLiteral(ast: any) {
-		let obj: any = {};
-		ast.fields.forEach((x: any) => obj[x.name.value] = x.value.value);
-		return obj;
-	}
-});
-
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -59,9 +43,9 @@ export class GraphQLService {
 		limit: {
 			type: GraphQLInt,
 		},
-		filter: {
-			type: GraphQLAny,
-		},
+		// filter: {
+		// 	type: GraphQLAny,
+		// },
 		offset: {
 			type: GraphQLInt,
 		},
@@ -283,4 +267,34 @@ export class GraphQLService {
 
 		return result;
 	}
+
+	// getFiltersForCollection(collection: Collection, fields: Field[]) {
+	// 	const FilterType: GraphQLInputObjectType = new GraphQLInputObjectType({
+	// 		name: `${collection}Filter`,
+	// 		fields: () => {
+	// 			return {
+	// 				_and: {
+	// 					type: FilterType,
+	// 				},
+	// 				_or: {
+	// 					type: FilterType,
+	// 				},
+	// 				...getFilterFields()
+	// 			}
+	// 		}
+	// 	});
+
+	// 	return FilterType;
+
+	// 	function getFilterFields() {
+	// 		const filterFields = {};
+
+	// 		for (const field of fields) {
+	// 			filterFields[field.field] = getFilterField(field);
+	// 		}
+
+	// 		return filterFields;
+	// 	}
+	// }
 }
+
