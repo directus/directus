@@ -34,7 +34,9 @@ export class ItemsService implements AbstractService {
 		this.collection = collection;
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
-		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
+		this.eventScope = this.collection.startsWith('directus_')
+			? this.collection.substring(9)
+			: 'items';
 
 		return this;
 	}
@@ -206,7 +208,11 @@ export class ItemsService implements AbstractService {
 		return records;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Item[]>;
+	readByKey(
+		keys: PrimaryKey[],
+		query?: Query,
+		action?: PermissionsAction
+	): Promise<null | Item[]>;
 	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
@@ -341,11 +347,13 @@ export class ItemsService implements AbstractService {
 					for (const activityRecord of activityRecords) {
 						await trx.insert(activityRecord).into('directus_activity');
 						let primaryKey;
+
 						const result = await trx
 							.select('id')
 							.from('directus_activity')
 							.orderBy('id', 'desc')
 							.first();
+
 						primaryKey = result.id;
 						activityPrimaryKeys.push(primaryKey);
 					}
@@ -357,7 +365,10 @@ export class ItemsService implements AbstractService {
 						activity: key,
 						collection: this.collection,
 						item: keys[index],
-						data: JSON.stringify(snapshots?.[index]),
+						data:
+							snapshots && Array.isArray(snapshots)
+								? JSON.stringify(snapshots?.[index])
+								: snapshots,
 						delta: JSON.stringify(payloadWithoutAliases),
 					}));
 
@@ -474,7 +485,7 @@ export class ItemsService implements AbstractService {
 		const schemaInspector = SchemaInspector(this.knex);
 		query.single = true;
 
-		const record = await this.readByQuery(query) as Item;
+		const record = (await this.readByQuery(query)) as Item;
 
 		if (!record) {
 			const columns = await schemaInspector.columnInfo(this.collection);

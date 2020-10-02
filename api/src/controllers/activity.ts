@@ -4,6 +4,7 @@ import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -24,7 +25,8 @@ router.get(
 		};
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -38,7 +40,8 @@ router.get(
 		};
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -69,7 +72,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -93,7 +97,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -103,7 +108,8 @@ router.delete(
 		await service.delete(req.params.pk);
 
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;
