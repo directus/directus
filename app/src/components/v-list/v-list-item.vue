@@ -14,6 +14,7 @@
 			'one-line': lines === 1,
 			disabled,
 			dashed,
+			subdued,
 		}"
 		:href="href"
 		:download="download"
@@ -31,6 +32,10 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		dense: {
+			type: Boolean,
+			default: false,
+		},
+		subdued: {
 			type: Boolean,
 			default: false,
 		},
@@ -147,18 +152,18 @@ body {
 		transition-property: background-color, color;
 		user-select: none;
 
-		&:not(.disabled):hover {
+		&:not(.disabled):not(.subdued):hover {
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
-		&:not(.disabled):active {
+		&:not(.disabled):not(.subdued):active {
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
 	}
 
-	&.active {
+	&:not(.subdued).active {
 		color: var(--v-list-item-color-active);
 		background-color: var(--v-list-item-background-color-active);
 	}
@@ -167,6 +172,19 @@ body {
 		--v-list-item-color: var(--foreground-subdued) !important;
 
 		cursor: not-allowed;
+	}
+
+	&.subdued {
+		::v-deep .v-list-item-title {
+			color: var(--foreground-subdued);
+		}
+
+		&:hover,
+		&.active {
+			::v-deep .v-list-item-title {
+				color: var(--primary);
+			}
+		}
 	}
 
 	@at-root {
@@ -204,7 +222,7 @@ body {
 		}
 
 		.v-list.nav {
-			& #{$this} {
+			#{$this} {
 				--v-list-item-padding: 0 8px;
 				--v-list-item-border-radius: 4px;
 				&:not(:last-child):not(:only-child) {
@@ -213,8 +231,21 @@ body {
 			}
 			&.dense #{$this},
 			#{$this}.dense {
+				--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
+
+				margin: var(--v-list-item-margin-dense);
+				padding: var(--v-list-item-padding-dense);
 				&:not(:last-child):not(:only-child) {
 					--v-list-item-margin-bottom: 4px;
+				}
+				&.one-line {
+					--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
+				}
+				&.two-line {
+					--v-list-item-min-height: var(--v-list-item-two-line-min-height-dense);
+				}
+				&.three-line {
+					--v-list-item-min-height: var(--v-list-item-three-line-min-height-dense);
 				}
 			}
 		}
