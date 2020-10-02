@@ -19,14 +19,17 @@
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
 				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="system">{{ $t('optional_system_fields') }}</v-tab>
+				<v-tab value="system" :disabled="!collectionName">{{ $t('optional_system_fields') }}</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items v-model="currentTab">
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
-				<div class="type-label">{{ $t('name') }}</div>
+				<div class="type-label">
+					{{ $t('name') }}
+					<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
+				</div>
 				<v-input
 					autofocus
 					class="monospace"
@@ -437,5 +440,9 @@ export default defineComponent({
 
 .v-input.monospace {
 	--v-input-font-family: var(--family-monospace);
+}
+
+.required {
+	color: var(--primary);
 }
 </style>
