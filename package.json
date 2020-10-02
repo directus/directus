@@ -4,7 +4,8 @@
   "scripts": {
     "clean": "lerna clean -y",
     "bootstrap": "lerna bootstrap",
-    "dev": "lerna run dev --stream --parallel"
+    "dev": "lerna run dev --stream --parallel",
+    "release": "lerna publish --force-publish"
   },
   "repository": {
     "type": "git",
