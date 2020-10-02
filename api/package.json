@@ -48,7 +48,7 @@
 	],
 	"main": "dist/app.js",
 	"bin": {
-		"directus": "dist/cli/index.js"
+		"directus": "cli.js"
 	},
 	"scripts": {
 		"start": "cross-env NODE_ENV=production node dist/server.js",
