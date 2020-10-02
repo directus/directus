@@ -54,7 +54,7 @@ export default defineComponent({
 				}
 			},
 			{
-				mandatory: ref(false),
+				mandatory: ref(true),
 				multiple
 			}
 		);

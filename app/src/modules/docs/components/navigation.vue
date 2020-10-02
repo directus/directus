@@ -1,11 +1,12 @@
 <template>
-	<v-list nav :multiple="false" v-model="rootSelection">
-		<navigation-item v-for="item in sections" :key="item.to" :section="item" v-model="childSelection"></navigation-item>
+	<v-list nav :multiple="false" v-model="selection">
+		<navigation-item v-for="item in sections" :key="item.to" :section="item"></navigation-item>
 	</v-list>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api';
+import { spread } from 'lodash';
 import NavigationItem from './navigation-item.vue';
 import sections, {Section} from './sections';
 
@@ -18,34 +19,44 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const active = ref<string[]>(props.section.to.replace('/docs/','').split('/'))
+		const _selection = ref<string[]>(spreadPath(props.section.to))
 
 		watch(props.section, (newSection) => {
 			if(newSection !== null)
-				active.value = newSection.to.replace('/docs/','').split('/')
+				_selection.value = spreadPath(newSection.to)
 		})
 
-		const rootSelection = computed({
+		const selection = computed({
 			get() {
-				if(active.value.length === 0) return []
-				return [active.value[0]]
+				return _selection.value
 			},
-			set(newVal: string[]) {
-				active.value = newVal
+			set(newSelection: string[]) {
+				if(newSelection.length === 0) {
+					_selection.value =  []
+				} else {
+					if(_selection.value.includes(newSelection[0])) {
+						_selection.value = _selection.value.filter(s => s !== newSelection[0])
+					} else {
+						_selection.value = spreadPath(newSelection[0])
+					}
+					
+				}
 			}
 		})
 
-		const childSelection = computed({
-			get() {
-				if(active.value.length < 2) return []
-				return active.value.slice(1)
-			},
-			set(newVal: string[]) {
-				active.value = [active.value[0], ...newVal]
-			}
-		})
+		function spreadPath(path: string) {
+			const sections = path.substr(1).split('/')
+			if(sections.length === 0) return []
 
-		return { sections, active, childSelection, rootSelection };
+			const paths: string[] = ['/'+sections[0]]
+
+			for(let i = 1; i < sections.length; i++) {
+				paths.push(paths[i - 1] + '/' + sections[i])
+			}
+			return paths
+		}
+
+		return { sections, selection };
 	},
 });
 </script>

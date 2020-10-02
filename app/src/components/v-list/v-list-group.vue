@@ -19,10 +19,6 @@ import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/co
 import { useGroupableParent, useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
-	model: {
-		prop: 'activeItems',
-		event: 'input'
-	},
 	props: {
 		multiple: {
 			type: Boolean,
@@ -31,10 +27,6 @@ export default defineComponent({
 		to: {
 			type: String,
 			default: null,
-		},
-		activeItems: {
-			type: Array as PropType<(number | string)[]>,
-			default: null
 		},
 		active: {
 			type: Boolean,
@@ -62,7 +54,7 @@ export default defineComponent({
 		}
 	},
 	setup(props, { listeners, emit }) {
-		const {activeItems, multiple} = toRefs(props)
+		const {multiple} = toRefs(props)
 
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
@@ -71,12 +63,7 @@ export default defineComponent({
 
 		if (props.disableGroupableParent !== true) {
 			useGroupableParent(
-				{
-					selection: activeItems,
-					onSelectionChange: (newSelection) => {
-						emit('input', newSelection)
-					}
-				},
+				{},
 				{
 					multiple
 				}
