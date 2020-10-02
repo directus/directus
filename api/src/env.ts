@@ -9,11 +9,11 @@ import { clone } from 'lodash';
 dotenv.config();
 
 const defaults: Record<string, any> = {
-	PORT: 41201,
-	PUBLIC_URL: 'http://localhost:41201',
+	PORT: 8805,
+	PUBLIC_URL: 'http://localhost:8805',
 
 	STORAGE_LOCATIONS: 'local',
-	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:41201/uploads',
+	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:8805/uploads',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
