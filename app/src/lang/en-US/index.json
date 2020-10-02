@@ -1057,7 +1057,7 @@
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections Navigation"
+		"collection_list": "Collection Navigation"
 	}
   },
 
