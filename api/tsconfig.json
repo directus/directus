@@ -1,4 +1,5 @@
 {
+	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"module": "commonjs",
 		"esModuleInterop": true,
@@ -10,5 +11,8 @@
 		"strict": true,
 		"lib": ["es2019"],
 		"skipLibCheck": true
-	}
+	},
+	"exclude": [
+		"node_modules"
+	]
 }

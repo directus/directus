@@ -52,7 +52,7 @@
 	},
 	"scripts": {
 		"start": "cross-env NODE_ENV=production node dist/server.js",
-		"build": "rm -rf dist && tsc -b && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+		"build": "rm -rf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
 		"cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
@@ -131,7 +131,9 @@
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
+		"copyfiles": "^2.4.0",
 		"cross-env": "^7.0.2",
-		"ts-node-dev": "^1.0.0-pre.63"
+		"ts-node-dev": "^1.0.0-pre.63",
+		"typescript": "^4.0.3"
 	}
 }
