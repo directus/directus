@@ -75,27 +75,19 @@ git checkout -b YOUR-BRANCH-NAME
 ### 4. Install the dependencies
 
 ```bash
-npx lerna bootstrap
+npm run bootstrap
 ```
 
 ::: Reinstalling Dependencies
 To clear existing dependencies and reinstall them, you can run the following command:
 ```bash
-npx lerna clean -y && npx lerna bootstrap
+npm run clean && npm run bootstrap
 ```
 :::
 
-### 5. Start the API development server
+### 5. Start the development server
 
 ```bash
-cd directus/api
-npm run dev
-```
-
-### 6. Start the App development server
-
-```bash
-cd directus/app
 npm run dev
 ```
 
