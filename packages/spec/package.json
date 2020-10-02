@@ -4,7 +4,7 @@
 	"description": "Specification of the Directus Api",
 	"main": "index.js",
 	"scripts": {
-		"dev": "swagger-ui-watcher specs/openapi.yaml",
+		"ui:watch": "swagger-ui-watcher specs/openapi.yaml",
 		"validate": "swagger-cli validate specs/openapi.yaml",
 		"build": "swagger-cli bundle specs/openapi.yaml -o dist/openapi.json",
 		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference",
