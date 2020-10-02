@@ -1,4 +1,5 @@
 import express from 'express';
+import argon2 from 'argon2';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 import {
@@ -193,7 +194,15 @@ router.post(
 			throw new InvalidCredentialsException();
 		}
 
+		if (!req.body.password) {
+			throw new InvalidPayloadException(`"password" is required`);
+		}
+
 		const service = new UsersService({ accountability: req.accountability });
+
+		const authService = new AuthenticationService({ accountability: req.accountability });
+		await authService.verifyPassword(req.accountability.user, req.body.password);
+
 		const { url, secret } = await service.enableTFA(req.accountability.user);
 
 		res.locals.payload = { data: { secret, otpauth_url: url } };

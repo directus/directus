@@ -181,4 +181,22 @@ export class AuthenticationService {
 		const secret = user.tfa_secret;
 		return authenticator.check(otp, secret);
 	}
+
+	async verifyPassword(pk: string, password: string) {
+		const userRecord = await this.knex
+			.select('password')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
+
+		if (!userRecord || !userRecord.password) {
+			throw new InvalidCredentialsException();
+		}
+
+		if ((await argon2.verify(userRecord.password, password)) === false) {
+			throw new InvalidCredentialsException();
+		}
+
+		return true;
+	}
 }
