@@ -1,6 +1,6 @@
 # Collections
 
-> TK
+> You can manage your collections within the Data Model section of the App's Settings, via the [API Collections Endpoint](#), or directly within the database. If you're unfamiliar with Directus Collections, please start by reading our [Understanding Collections](#) docs.
 
 ## Creating a Collection
 

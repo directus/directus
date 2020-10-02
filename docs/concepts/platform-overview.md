@@ -1,16 +1,34 @@
-# Database Mirroring
+# Platform Overview
 
-> Instead of using a predefined "one-size-fits-all" data model to store your content, Directus "mirrors" your actual SQL database in real-time.
+> The Directus platform is primarily comprised of an API and App, working in concert to manage the content of your SQL database.
 
-## Advantages
+## Database Mirroring
 
-The principle is akin to a database client (eg: _phpMyAdmin_), but includes far mor advanced tools, and is safe and intutive enough for non-technical users. This approach has many unique advantages:
+Instead of using a predefined "one-size-fits-all" data model to store your content, Directus "mirrors" your actual SQL database in real-time. The principle is akin to a database client (eg: _phpMyAdmin_), but includes far mor advanced tools, and is safe and intutive enough for non-technical users. This approach has many unique advantages:
 
 * A custom SQL database schema, tailored to your exact requirements
 * Significant performance improvements through optimizations and indexing
 * Complete transparency, portability, and security for your data
 * Direct database access and the full power of raw/complex SQL queries
 * Allows importing existing databases, unaltered and without any migrations
+
+## Directus API
+
+The Directus API uses _Database Mirroring_ to dynamically generate REST endpoints and a GraphQL schema based on the connected database's architecture. It is written in [Node.js](#) and uses database abstraction to support most [SQL database vendors](#).
+
+### Relevant Docs
+
+* [API Reference](#)
+* [API Extensions](#)
+
+## Directus App
+
+The Directus App is decoupled from, and powered by, the Directus API. It provides a way for both technical admins and non-technical users to view and manage content of the connected database. It is written in [Vue.js](#) v3, is completely modular, and is highly customizable.
+
+### Relevant Docs
+
+* [App Overview](#)
+* [App Extensions](#)
 
 ## Projects & Environments
 

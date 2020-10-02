@@ -26,6 +26,10 @@ Keep in mind that Directus Fields are just a database columns. Therefore you can
 2. Click the **More Options** icon for the field you want to delete
 3. Click the **Duplicate Field** option
 
+:::warning Relational and Primary Key Fields
+It is not currently possible to duplicate relational fields or a collection's primary key.
+:::
+
 ## Adjusting Field Layout
 
 The layout of the collection's form is determined by the following field options.
