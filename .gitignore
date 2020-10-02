@@ -7,5 +7,7 @@ npm-debug.log
 lerna-debug.log
 .nova
 *.code-workspace
-package-lock.json
+api/package-lock.json
+app/package-lock.json
+packages/**/package-lock.json
 

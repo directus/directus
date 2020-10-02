@@ -2,8 +2,6 @@
   "name": "directus-monorepo",
   "private": true,
   "scripts": {
-    "clean": "lerna clean -y",
-    "bootstrap": "lerna bootstrap",
     "dev": "lerna run dev --stream --parallel",
     "release": "lerna publish --force-publish"
   },
