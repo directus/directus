@@ -37,10 +37,12 @@ All project configuration is handled by the `.env` file within the `/api` direct
 
 ## Deleting a Project
 
-1. Optional: Backup any local files stored within the project's root directory
-2. Optional: Backup any custom code or extensions within the project's root directory
-3. Optional: Backup your entire database, only system tables, or only project tables
-4. Delete the project's root directory from the server
-5. Delete all Directus system tables (`directus_*`) from the database
+1. Optional: **Backup any local files** stored within the project's root directory
+2. Optional: **Backup any custom code and extensions** within the project's root directory
+3. Optional: **Backup your entire database**, only system tables, or only project tables
+4. **Delete the project's root directory** from the server
+5. **Delete all Directus system tables** (`directus_*`) from the database
 
-After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever installed. Any external services connecting to your database's project tables directly (eg: pure SQL queries) should continue working normally.
+::: Pure SQL
+After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever installed. Any external services connecting to your database's project tables directly (eg: SQL queries) should continue working normally.
+:::
