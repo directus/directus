@@ -34,7 +34,7 @@ export class ItemsService implements AbstractService {
 		this.collection = collection;
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
-		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'item';
+		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 
 		return this;
 	}
