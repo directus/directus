@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "clean": "lerna clean -y",
+    "bootstrap": "lerna bootstrap",
     "dev": "lerna run dev --stream --parallel"
   },
   "repository": {
