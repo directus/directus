@@ -135,7 +135,15 @@ export default defineComponent({
 
 			const rawValue = computed({
 				get() {
-					return _value.value;
+					switch (type.value) {
+						case 'object':
+							return JSON.stringify(_value.value, null, '\t');
+						case 'string':
+						case 'number':
+						case 'boolean':
+						default:
+							return _value.value;
+					}
 				},
 				set(newRawValue: string) {
 					switch (type.value) {
