@@ -24,6 +24,7 @@ jobs:
       - name: Build Docker Hub
         uses: ./.github/actions/build-images
         with:
+          registry: "docker.io"
           repository: "${{ github.repository }}"
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_PASSWORD }}"
