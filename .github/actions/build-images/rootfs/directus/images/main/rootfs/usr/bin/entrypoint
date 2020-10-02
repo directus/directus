@@ -80,7 +80,7 @@ WARN
   should_seed=false
 
   set +e
-  npx directus database install 2>&1 /dev/null
+  npx directus database install &>/dev/null
   if [ "$?" == "0" ] ; then
     print --level=info "Database installed"
     should_seed=true
