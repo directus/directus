@@ -109,6 +109,9 @@
     "@vue/cli-service": "^4.5.6",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.1.0",
-    "@vue/test-utils": "^1.1.0"
+    "@vue/test-utils": "^1.1.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "stylelint": "^13.7.2"
   }
 }

@@ -142,6 +142,9 @@
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
 		"cross-env": "^7.0.2",
+		"husky": "^4.3.0",
+		"lint-staged": "^10.4.0",
+		"prettier": "^2.1.2",
 		"ts-node-dev": "^1.0.0-pre.63"
 	}
 }
