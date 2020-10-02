@@ -32,7 +32,7 @@ LABEL directus.version="${VERSION}"
 LABEL org.opencontainers.image.source https://github.com/${REPOSITORY}
 
 ENV \
-  PORT="8805" \
+  PORT="8055" \
   PUBLIC_URL="/" \
   DB_CLIENT="sqlite3" \
   DB_FILENAME="/directus/database/database.sqlite" \
@@ -85,7 +85,7 @@ RUN \
   mkdir -p database && \
   mkdir -p uploads
 
-EXPOSE 8805
+EXPOSE 8055
 VOLUME \
   /directus/database \
   /directus/extensions \

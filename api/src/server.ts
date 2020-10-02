@@ -6,7 +6,7 @@ import { validateDBConnection } from './database';
 export default async function start() {
 	await validateDBConnection();
 
-	const port = env.NODE_ENV === 'development' ? 8805 : env.PORT;
+	const port = env.NODE_ENV === 'development' ? 8055 : env.PORT;
 
 	app.listen(port, () => {
 		logger.info(`Server started at port ${port}`);
