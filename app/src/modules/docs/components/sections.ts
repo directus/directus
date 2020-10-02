@@ -84,6 +84,34 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
+				name: 'Projects',
+				to: '/docs/guides/projects',
+			},
+			{
+				name: 'Collections',
+				to: '/docs/guides/collections',
+			},
+			{
+				name: 'Fields',
+				to: '/docs/guides/fields',
+			},
+			{
+				name: 'Users & Roles',
+				to: '/docs/guides/users-and-roles',
+			},
+			{
+				name: 'Presets & Bookmarks',
+				to: '/docs/guides/presets',
+			},
+			{
+				name: 'Webhooks',
+				to: '/docs/guides/webhooks',
+			},
+			{
+				name: 'White-Labeling',
+				to: '/docs/guides/white-labeling',
+			},
+			{
 				name: 'Extensions',
 				to: '/docs/guides/extensions',
 				children: [
@@ -125,46 +153,6 @@ const sections: Section[] = [
 					},
 				],
 			},
-			{
-				name: 'Collections',
-				to: '/docs/guides/collections',
-			},
-			{
-				name: 'Fields',
-				to: '/docs/guides/fields',
-			},
-			{
-				name: 'Presets & Bookmarks',
-				to: '/docs/guides/managing-presets-and-bookmarks',
-			},
-			{
-				name: 'Roles & Permissions',
-				to: '/docs/guides/managing-roles-and-permissions',
-			},
-			{
-				name: 'Webhooks',
-				to: '/docs/guides/managing-webhooks',
-			},
-			{
-				name: 'Creating a Project',
-				to: '/docs/guides/creating-a-project',
-			},
-			{
-				name: 'Configuring a Project',
-				to: '/docs/guides/configuring-the-api',
-			},
-			{
-				name: 'Setting up a Project',
-				to: '/docs/guides/configuring-project-settings',
-			},
-			{
-				name: 'White-Labeling a Project',
-				to: '/docs/guides/white-labeling-a-project',
-			},
-			{
-				name: 'Upgrading a Project',
-				to: '/docs/guides/upgrading-a-project',
-			},
 		],
 	},
 	{
@@ -174,16 +162,16 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
+				name: 'Environment Variables',
+				to: '/docs/reference/environment-variables',
+			},
+			{
 				name: 'Command Line Interface',
 				to: '/docs/reference/command-line-interface',
 			},
 			{
 				name: 'Error Codes',
 				to: '/docs/reference/error-codes',
-			},
-			{
-				name: 'Project Env Variables',
-				to: '/docs/reference/project-environment-variables',
 			},
 		],
 	},

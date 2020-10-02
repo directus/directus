@@ -1,6 +1,6 @@
 # Fields
 
-> TK
+> You can manage your fields within the Data Model section of the App's Settings, via the [API Fields Endpoint](#), or directly within the database. If you're unfamiliar with Directus Fields, please start by reading our [Understanding Fields](#) docs.
 
 ## Creating a Field
 

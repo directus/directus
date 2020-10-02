@@ -84,7 +84,7 @@ npm install
 npm run dev
 ```
 
-### 7. Make your fixes/changes
+### 6. Make your fixes/changes
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through our docs on [submitting a pull-request](#Submitting-a-Pull-Request).
 
