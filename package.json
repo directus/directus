@@ -121,5 +121,22 @@
     "@directus/specs": "file:packages/spec",
     "create-directus-project": "file:packages/create-directus-project",
     "directus": "file:api"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "stylelint --fix"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "stylelint --fix"
+    ]
   }
 }

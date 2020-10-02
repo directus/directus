@@ -129,22 +129,9 @@
 		"pg": "^8.3.3",
 		"sqlite3": "^5.0.0"
 	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npx lint-staged"
-		}
-	},
-	"lint-staged": {
-		"*.{js,ts}": [
-			"prettier --write"
-		]
-	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
 		"cross-env": "^7.0.2",
-		"husky": "^4.3.0",
-		"lint-staged": "^10.4.0",
-		"prettier": "^2.1.2",
 		"ts-node-dev": "^1.0.0-pre.63"
 	}
 }
