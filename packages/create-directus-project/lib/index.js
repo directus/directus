@@ -14,11 +14,11 @@ const checkRequirements = require('./check-requirements');
 const program = new commander.Command(pkg.name);
 
 program
-    .version(pkg.version)
-    .arguments('<directory>')
-    .description('Create a new Directus project')
-    .action(create)
-    .parse(process.argv);
+	.version(pkg.version)
+	.arguments('<directory>')
+	.description('Create a new Directus project')
+	.action(create)
+	.parse(process.argv);
 
 async function create(directory) {
 	checkRequirements();
@@ -29,14 +29,18 @@ async function create(directory) {
 		const stat = await fse.stat(rootPath);
 
 		if (stat.isDirectory() === false) {
-			console.log(`Destination ${chalk.red(directory)} already exists and is not a directory.`);
+			console.log(
+				`Destination ${chalk.red(directory)} already exists and is not a directory.`
+			);
 			process.exit(1);
 		}
 
 		const files = await fse.readdir(rootPath);
 
 		if (files.length > 0) {
-			console.log(`Destination ${chalk.red(directory)} already exists and is not an empty directory.`);
+			console.log(
+				`Destination ${chalk.red(directory)} already exists and is not an empty directory.`
+			);
 			process.exit(1);
 		}
 	} else {
@@ -68,7 +72,7 @@ async function create(directory) {
 
 	await execa('npx', ['directus', 'init'], {
 		cwd: rootPath,
-		stdio: 'inherit'
+		stdio: 'inherit',
 	});
 
 	process.exit(0);
