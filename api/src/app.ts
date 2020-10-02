@@ -34,6 +34,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
+import graphqlRouter from './controllers/graphql';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
@@ -97,6 +98,8 @@ app.use('/auth', authRouter, respond);
 
 app.use(authenticate);
 app.use(cache);
+
+app.use('/graphql', graphqlRouter);
 
 app.use('/activity', activityRouter, respond);
 app.use('/assets', assetsRouter, respond);
