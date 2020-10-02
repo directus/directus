@@ -193,10 +193,12 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
-					sort_field: sortField.value,
-					archive_field: archiveField.value,
-					archive_value: archiveValue.value,
-					unarchive_value: unarchiveValue.value,
+					meta: {
+						sort_field: sortField.value,
+						archive_field: archiveField.value,
+						archive_value: archiveValue.value,
+						unarchive_value: unarchiveValue.value,
+					},
 				});
 
 				await collectionsStore.hydrate();
