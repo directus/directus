@@ -14,7 +14,7 @@
 			dense
 		/>
 	</div>
-	<v-list-group v-else>
+	<v-list-group v-else accordion>
 		<template #activator>
 			<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 			<v-list-item-content>

@@ -1,5 +1,5 @@
 <template>
-	<div class="v-list-group">
+	<div class="v-list-group" v-click-outside="{handler: onClickOutside, events: ['pointerup']}">
 		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
 			<slot name="activator" :active="groupActive" />
 
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, nextTick, toRefs, watch } from '@vue/composition-api';
 import { useGroupableParent, useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -52,8 +52,12 @@ export default defineComponent({
 			type: [String, Number],
 			default: undefined,
 		},
+		accordion: {
+			type: Boolean,
+			default: false
+		}
 	},
-	setup(props, { listeners, emit }) {
+	setup(props, { listeners, emit, root }) {
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
 			value: props.value,
@@ -68,7 +72,7 @@ export default defineComponent({
 			);
 		}
 
-		return { groupActive, toggle, onClick };
+		return { groupActive, toggle, onClick, onClickOutside };
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
@@ -76,6 +80,10 @@ export default defineComponent({
 
 			event.stopPropagation();
 			toggle();
+		}
+
+		function onClickOutside() {
+			if(props.accordion) deactivate()
 		}
 	},
 });
