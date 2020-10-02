@@ -1,5 +1,5 @@
 <template>
-	<div class="v-list-group" v-click-outside="{handler: onClickOutside, events: ['pointerup']}">
+	<div class="v-list-group">
 		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
 			<slot name="activator" :active="groupActive" />
 
@@ -15,10 +15,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
 import { useGroupableParent, useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
+	model: {
+		prop: 'activeItems',
+		event: 'input'
+	},
 	props: {
 		multiple: {
 			type: Boolean,
@@ -27,6 +31,10 @@ export default defineComponent({
 		to: {
 			type: String,
 			default: null,
+		},
+		activeItems: {
+			type: Array as PropType<(number | string)[]>,
+			default: null
 		},
 		active: {
 			type: Boolean,
@@ -51,13 +59,11 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: undefined,
-		},
-		accordion: {
-			type: Boolean,
-			default: false
 		}
 	},
-	setup(props, { listeners, emit, root }) {
+	setup(props, { listeners, emit }) {
+		const {activeItems, multiple} = toRefs(props)
+
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
 			value: props.value,
@@ -65,14 +71,21 @@ export default defineComponent({
 
 		if (props.disableGroupableParent !== true) {
 			useGroupableParent(
-				{},
 				{
-					multiple: toRefs(props).multiple,
+					selection: activeItems,
+					onSelectionChange: (newSelection) => {
+						emit('input', newSelection)
+					}
+				},
+				{
+					multiple
 				}
 			);
+
+			
 		}
 
-		return { groupActive, toggle, onClick, onClickOutside };
+		return { groupActive, toggle, onClick };
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
@@ -80,10 +93,6 @@ export default defineComponent({
 
 			event.stopPropagation();
 			toggle();
-		}
-
-		function onClickOutside() {
-			if(props.accordion) deactivate()
 		}
 	},
 });

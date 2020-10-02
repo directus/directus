@@ -9,7 +9,7 @@
 		</template>
 
 		<template #navigation>
-			<docs-navigation />
+			<docs-navigation :section="section" />
 		</template>
 
 		<div v-if="notFound" class="not-found">
