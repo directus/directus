@@ -33,7 +33,7 @@ data:
     one_collection: directus_users
     one_primary: id
   - many_collection: directus_folders
-    many_field: parent_folder
+    many_field: parent
     many_primary: id
     one_collection: directus_folders
     one_primary: id
@@ -54,7 +54,7 @@ data:
     one_field: fields
     one_primary: id
   - many_collection: directus_activity
-    many_field: action_by
+    many_field: user
     many_primary: id
     one_collection: directus_users
     one_primary: id

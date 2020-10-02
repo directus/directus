@@ -52,7 +52,7 @@ router.post(
 		const primaryKey = await service.create({
 			...req.body,
 			action: Action.COMMENT,
-			action_by: req.accountability?.user,
+			user: req.accountability?.user,
 			ip: req.ip,
 			user_agent: req.get('user-agent'),
 		});

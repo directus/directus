@@ -79,7 +79,7 @@ export default defineComponent({
 			const shouldBeOpen: string[] = [];
 			const folder = folders.value.find((folder) => folder.id === props.currentFolder);
 
-			if (folder && folder.parent_folder) parseFolder(folder.parent_folder);
+			if (folder && folder.parent) parseFolder(folder.parent);
 
 			const newOpenFolders = [...openFolders.value];
 
@@ -99,8 +99,8 @@ export default defineComponent({
 
 				const folder = folders.value.find((folder) => folder.id === id);
 
-				if (folder && folder.parent_folder) {
-					parseFolder(folder.parent_folder);
+				if (folder && folder.parent) {
+					parseFolder(folder.parent);
 				}
 			}
 		}

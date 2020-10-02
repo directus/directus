@@ -9,7 +9,7 @@ columns:
     type: string
     length: 255
     nullable: false
-  parent_folder:
+  parent:
     type: uuid
     references:
       table: directus_folders

@@ -133,7 +133,7 @@ export class ItemsService implements AbstractService {
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
 					action: Action.CREATE,
-					action_by: this.accountability!.user,
+					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
@@ -335,7 +335,7 @@ export class ItemsService implements AbstractService {
 				if (this.accountability) {
 					const activityRecords = keys.map((key) => ({
 						action: Action.UPDATE,
-						action_by: this.accountability!.user,
+						user: this.accountability!.user,
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
@@ -451,7 +451,7 @@ export class ItemsService implements AbstractService {
 			if (this.accountability) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.DELETE,
-					action_by: this.accountability!.user,
+					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,

@@ -6,7 +6,7 @@ defaults:
   singleton: false
   icon: null
   note: null
-  translation: null
+  translations: null
   display_template: null
 
 data:

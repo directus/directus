@@ -93,7 +93,7 @@ export class AuthenticationService {
 		if (this.accountability) {
 			await this.activityService.create({
 				action: Action.AUTHENTICATE,
-				action_by: user.id,
+				user: user.id,
 				ip: this.accountability.ip,
 				user_agent: this.accountability.userAgent,
 				collection: 'directus_users',
