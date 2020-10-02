@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, AbstractService } from '../types';
-import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLInputObjectType, GraphQLID, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode, GraphQLScalarType } from 'graphql';
+import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLInputObjectType, ObjectFieldNode, GraphQLID, ValueNode, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode, GraphQLScalarType, GraphQLBoolean, ObjectValueNode } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
@@ -43,9 +43,6 @@ export class GraphQLService {
 		limit: {
 			type: GraphQLInt,
 		},
-		// filter: {
-		// 	type: GraphQLAny,
-		// },
 		offset: {
 			type: GraphQLInt,
 		},
@@ -68,6 +65,7 @@ export class GraphQLService {
 	}
 
 	getGraphQLSchema(collections: Collection[], fields: Field[], relations: Relation[]) {
+		const filterTypes = this.getFilterArgs(collections, fields, relations);
 		const schema: any = { items: {} };
 
 		for (const collection of collections) {
@@ -103,7 +101,12 @@ export class GraphQLService {
 
 									fieldsObject[field.field] = {
 										type: new GraphQLList(relatedType),
-										args: this.args,
+										args: {
+											...this.args,
+											filter: {
+												type: filterTypes[relationForField.many_collection],
+											}
+										},
 									}
 								}
 							} else {
@@ -118,11 +121,17 @@ export class GraphQLService {
 						return fieldsObject;
 					},
 				}),
-				args: this.args,
+				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info),
+				args: {
+					...this.args,
+					filter: {
+						name: `${collection.collection}_filter`,
+						type: filterTypes[collection.collection],
+					}
+				}
 			};
 
 			if (systemCollection) {
-				schemaSection.resolve = (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info)
 				schema[collection.collection.substring(9)] = schemaSection;
 			} else {
 				schema.items[collection.collection] = schemaSection;
@@ -148,7 +157,7 @@ export class GraphQLService {
 				name: 'items',
 				fields: schemaWithLists.items,
 			}),
-			resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info),
+			resolve: () => ({}),
 		};
 
 		return new GraphQLSchema({
@@ -159,41 +168,122 @@ export class GraphQLService {
 		});
 	}
 
-	async resolve(info: GraphQLResolveInfo) {
-		if (info.fieldName === 'items') {
-			const data: Record<string, any> = {};
+	getFilterArgs(collections: Collection[], fields: Field[], relations: Relation[]) {
+		const filterTypes: any = {};
 
-			const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
-			if (!selections) return null;
+		for (const collection of collections) {
+			filterTypes[collection.collection] = new GraphQLInputObjectType({
+				name: `${collection.collection}_filter`,
+				fields: () => {
+					const filterFields: any = {
+						_and: {
+							type: new GraphQLList(filterTypes[collection.collection])
+						},
+						_or: {
+							type: new GraphQLList(filterTypes[collection.collection])
+						},
+					};
 
-			for (const collectionSelection of selections) {
-				const collection = collectionSelection.name.value;
-				const selections = collectionSelection.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
-				if (!selections) continue;
+					const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
 
-				data[collection] = await this.getData(collection, selections, collectionSelection.arguments);
-			}
+					for (const field of fieldsInCollection) {
+						const relationForField = relations.find((relation) => {
+							return relation.many_collection === collection.collection && relation.many_field === field.field ||
+								relation.one_collection === collection.collection && relation.one_field === field.field;
+						});
 
-			return data;
-		} else {
-			const collection = `directus_${info.fieldName}`;
-			const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
-			if (!selections) return null;
+						if (relationForField) {
+							const isM2O = relationForField.many_collection === collection.collection && relationForField.many_field === field.field;
 
-			return await this.getData(collection, selections, info.fieldNodes[0].arguments);
+							if (isM2O) {
+								const relatedType = filterTypes[relationForField.one_collection];
+
+								filterFields[field.field] = {
+									type: relatedType,
+								}
+							} else {
+								const relatedType = filterTypes[relationForField.many_collection];
+
+								filterFields[field.field] = {
+									type: relatedType
+								}
+							}
+						} else {
+							const fieldType = field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type);
+
+							filterFields[field.field] = {
+								type: new GraphQLInputObjectType({
+									name: `${collection.collection}_${field.field}_filter_operators`,
+									fields: {
+										/* @todo make this a little smarter by only including filters that work with current type */
+										_eq: {
+											type: fieldType,
+										},
+										_neq: {
+											type: fieldType
+										},
+										_contains: {
+											type: fieldType,
+										},
+										_ncontains: {
+											type: fieldType,
+										},
+										_in: {
+											type: new GraphQLList(fieldType),
+										},
+										_nin: {
+											type: new GraphQLList(fieldType),
+										},
+										_gt: {
+											type: fieldType,
+										},
+										_gte: {
+											type: fieldType,
+										},
+										_lt: {
+											type: fieldType,
+										},
+										_lte: {
+											type: fieldType,
+										},
+										_null: {
+											type: GraphQLBoolean,
+										},
+										_nnull: {
+											type: GraphQLBoolean,
+										},
+										_empty: {
+											type: GraphQLBoolean,
+										},
+										_nempty: {
+											type: GraphQLBoolean,
+										}
+									}
+								}),
+							}
+						}
+					}
+
+					return filterFields;
+				},
+			});
 		}
+
+		return filterTypes
+	}
+
+	async resolve(info: GraphQLResolveInfo) {
+		const systemField = info.path.prev?.key !== 'items';
+
+		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
+		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
+		if (!selections) return null;
+
+		return await this.getData(collection, selections, info.fieldNodes[0].arguments);
 	}
 
 	async getData(collection: string, selections: FieldNode[], argsArray?: readonly ArgumentNode[]) {
-		const args: Record<string, any> = {};
-
-		if (argsArray) {
-			for (const argument of argsArray) {
-				args[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
-			}
-		}
-
-		console.log(args);
+		const args: Record<string, any> = this.parseArgs(argsArray);
 
 		const query: Query = sanitizeQuery(args, this.accountability);
 
@@ -212,12 +302,8 @@ export class GraphQLService {
 
 				if (selection.arguments && selection.arguments.length > 0) {
 					if (!query.deep) query.deep = {};
-					const args: Record<string, any> = {};
 
-					for (const argument of selection.arguments) {
-						args[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
-					}
-
+					const args: Record<string, any> = this.parseArgs(selection.arguments);
 					query.deep[current] = sanitizeQuery(args, this.accountability);
 				}
 			}
@@ -268,33 +354,36 @@ export class GraphQLService {
 		return result;
 	}
 
-	// getFiltersForCollection(collection: Collection, fields: Field[]) {
-	// 	const FilterType: GraphQLInputObjectType = new GraphQLInputObjectType({
-	// 		name: `${collection}Filter`,
-	// 		fields: () => {
-	// 			return {
-	// 				_and: {
-	// 					type: FilterType,
-	// 				},
-	// 				_or: {
-	// 					type: FilterType,
-	// 				},
-	// 				...getFilterFields()
-	// 			}
-	// 		}
-	// 	});
+	parseArgs(args?: readonly ArgumentNode[] | readonly ObjectFieldNode[]): Record<string, any> {
+		if (!args) return {};
 
-	// 	return FilterType;
+		const parseObjectValue = (arg: ObjectValueNode) => {
+			return this.parseArgs(arg.fields);
+		}
 
-	// 	function getFilterFields() {
-	// 		const filterFields = {};
+		const argsObject: any = {};
 
-	// 		for (const field of fields) {
-	// 			filterFields[field.field] = getFilterField(field);
-	// 		}
+		for (const argument of args) {
+			if (argument.value.kind === 'ObjectValue') {
+				argsObject[argument.name.value] = parseObjectValue(argument.value);
+			} else if (argument.value.kind === 'ListValue') {
+				const values: any = [];
 
-	// 		return filterFields;
-	// 	}
-	// }
+				for (const valueNode of argument.value.values) {
+					if (valueNode.kind === 'ObjectValue') {
+						values.push(this.parseArgs(valueNode.fields));
+					} else {
+						values.push((valueNode as any).value);
+					}
+				}
+
+				argsObject[argument.name.value] = values;
+			} else {
+				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
+			}
+		}
+
+		return argsObject;
+	}
 }
 
