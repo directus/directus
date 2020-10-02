@@ -11,6 +11,7 @@ import env from '../env';
 import { UsersService, AuthenticationService } from '../services';
 import grantConfig from '../grant';
 import { RouteNotFoundException } from '../exceptions';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -74,7 +75,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -125,7 +127,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -152,7 +155,8 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -178,7 +182,8 @@ router.post(
 		} finally {
 			return next();
 		}
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -201,7 +206,8 @@ router.post(
 		const service = new UsersService({ accountability });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -210,7 +216,8 @@ router.get(
 		const providers = env.OAUTH_PROVIDERS.split(',').filter((p: string) => p);
 		res.locals.payload = { data: providers.length > 0 ? providers : null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.use(
@@ -235,7 +242,8 @@ router.get(
 		}
 
 		next();
-	})
+	}),
+	respond
 );
 
 router.use(grant.express()(grantConfig));
@@ -283,7 +291,8 @@ router.get(
 
 			return next();
 		}
-	})
+	}),
+	respond
 );
 
 export default router;

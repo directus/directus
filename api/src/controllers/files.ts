@@ -11,6 +11,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import url from 'url';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -124,7 +125,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 const importSchema = Joi.object({
@@ -172,7 +174,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -186,7 +189,8 @@ router.get(
 
 		res.locals.payload = { data: records || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -226,7 +230,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -236,7 +241,8 @@ router.delete(
 		const service = new FilesService({ accountability: req.accountability });
 		await service.delete(keys as any);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

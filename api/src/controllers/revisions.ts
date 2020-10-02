@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { RevisionsService, MetaService } from '../services';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -18,7 +19,8 @@ router.get(
 
 		res.locals.payload = { data: records || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -29,7 +31,8 @@ router.get(
 		const record = await service.readByKey(pk as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

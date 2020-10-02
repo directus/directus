@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import { SettingsService } from '../services';
 import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -15,7 +16,8 @@ router.get(
 		const records = await service.readSingleton(req.sanitizedQuery);
 		res.locals.payload = { data: records || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -36,7 +38,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;
