@@ -20,10 +20,6 @@
 		"url": "https://github.com/directus/next/issues"
 	},
 	"homepage": "https://github.com/directus/next#readme",
-	"devDependencies": {
-		"@apidevtools/swagger-cli": "^4.0.4",
-		"swagger-ui-watcher": "^2.1.11"
-	},
 	"files": [
 		"dist",
 		"LICENSE",
