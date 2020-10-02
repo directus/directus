@@ -75,15 +75,8 @@ git checkout -b YOUR-BRANCH-NAME
 ### 4. Install the dependencies
 
 ```bash
-npm run bootstrap
+npm install
 ```
-
-::: Reinstalling Dependencies
-To clear existing dependencies and reinstall them, you can run the following command:
-```bash
-npm run clean && npm run bootstrap
-```
-:::
 
 ### 5. Start the development server
 
