@@ -261,6 +261,11 @@ export default defineComponent({
 				ul,
 				ol {
 					margin: 4px 0;
+
+					li {
+						margin: 4px 0;
+						line-height: 24px;
+					}
 				}
 			}
 

@@ -8,12 +8,12 @@ Custom hooks are dynamically loaded from within your extensions folder. By defau
 
 ### Default Standalone Hook Location
 ```
-/extensions/hooks/<hook-id>.js
+/extensions/hooks/<hook-id>/index.js
 ```
 
 ### Default Bundled Hook Location
 ```
-/extensions/bundles/<bundle-id>/hooks/<hook-id>.js
+/extensions/bundles/<bundle-id>/hooks/<hook-id>/index.js
 ```
 
 ## 2. Define the Event
