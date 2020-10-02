@@ -84,40 +84,6 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
-				name: 'Data Model',
-				to: '/docs/guides/fields',
-				children: [
-					{
-						name: 'Standard Field',
-						to: '/docs/guides/fields/creating-a-standard-field',
-					},
-					{
-						name: 'Presentation Field',
-						to: '/docs/guides/fields/creating-a-presentation-field',
-					},
-					{
-						name: 'Many-to-One Field',
-						to: '/docs/guides/fields/creating-a-many-to-one-field',
-					},
-					{
-						name: 'One-to-Many Field',
-						to: '/docs/guides/fields/creating-a-one-to-many-field',
-					},
-					{
-						name: 'Many-to-Many Field',
-						to: '/docs/guides/fields/creating-a-many-to-many-field',
-					},
-					{
-						name: 'Many-to-Any Field',
-						to: '/docs/guides/fields/creating-a-many-to-any-field',
-					},
-					{
-						name: 'Translated Fields',
-						to: '/docs/guides/fields/creating-translated-fields',
-					},
-				],
-			},
-			{
 				name: 'Extensions',
 				to: '/docs/guides/extensions',
 				children: [
@@ -161,7 +127,11 @@ const sections: Section[] = [
 			},
 			{
 				name: 'Collections',
-				to: '/docs/guides/creating-a-collection',
+				to: '/docs/guides/collections',
+			},
+			{
+				name: 'Fields',
+				to: '/docs/guides/fields',
 			},
 			{
 				name: 'Presets & Bookmarks',
