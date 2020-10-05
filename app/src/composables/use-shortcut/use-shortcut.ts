@@ -15,15 +15,7 @@ document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
-	const key = mapKeys(event.key);
-
-	// This is a fix for mac not emitting a keyUp event on letters when meta is pressed: https://stackoverflow.com/questions/11818637
-	if (key === 'meta') {
-		keysdown.clear();
-	}
-
-	keysdown.delete(key.toLowerCase());
-	keysdown.delete(key.toUpperCase());
+	keysdown.clear();
 });
 
 export default function useShortcut(
