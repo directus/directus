@@ -104,13 +104,13 @@ paths:
     $ref: "./paths/collections/collection.yaml"
 
   # Extensions
-  /interfaces:
+  /extensions/interfaces:
     $ref: "./paths/extensions/interfaces.yaml"
-  /layouts:
+  /extensions/layouts:
     $ref: "./paths/extensions/layouts.yaml"
-  /displays:
+  /extensions/displays:
     $ref: "./paths/extensions/displays.yaml"
-  /modules:
+  /extensions/modules:
     $ref: "./paths/extensions/modules.yaml"
 
   # Fields
