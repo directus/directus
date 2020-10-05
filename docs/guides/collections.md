@@ -1,11 +1,11 @@
 # Collections
 
-> TK
+> You can manage your collections within the Data Model section of the App's Settings, via the [API Collections Endpoint](#), or directly within the database. If you're unfamiliar with Directus Collections, please start by reading our [Understanding Collections](#) docs.
 
 ## Creating a Collection
 
 1. Navigate to **Settings > Data Model**
-2. Click the **Create Collection** ("+") action button in the header
+2. Click the **Create Collection** action button in the header
 3. Enter a unique **Collection Name**, keeping in mind that this is entered as a _key_ that determines the database table name, and is then presented in the App using the [Title Formatter](#).
 4. Optional: Configure the collection's **Primary Key** name and type.
     * Auto-Incremented Integer
@@ -52,11 +52,33 @@ Keep in mind that Directus Collections are just a database tables. Therefore you
 
 The archive feature allows you to enable the collection with a custom soft-delete option. Soft-delete allows users to remove items from the App, but maintains the actual database record for easy recovery.
 
-* **Archive Field** — The field that will determine the
-* **Archive App Filter** —
-* **Archive Value** —
-* **Unarchive Value** —
+* **Archive Field** — The field that holds the archive value
+* **Archive App Filter** — Allows users to view archived items
+* **Archive Value** — The value saved in the Archive Field when archived
+* **Unarchive Value** — The value saved in the Archive Field when unarchived
+
+:::warning API Responses
+Items that have been archived are still returned normally via the API. It is up to you to filter them out as needed.
+:::
+
+::: Status Field
+When creating a new Collection, you have the option of creating an optional "Status" field. If you choose to include this field, the collection's archive settings will automatically be configured for you.
+:::
 
 ### Sort
 
+The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the [Item Browse](#) page/modal, and can also be used for sorting items within a [Junction Table](#).
+
+::: Sort Field
+When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this field, the collection's sort settings will automatically be configured for you.
+:::
+
 ## Deleting a Collection
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Click the red **Delete Collection** action button in the header
+3. Confirm this decision by clicking **Delete** in the dialog
+
+:::danger Irreversible Change
+This action is permanent and can not be undone. Please proceed with caution.
+:::

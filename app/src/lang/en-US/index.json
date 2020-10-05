@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"enter_password_to_enable_tfa": "Enter your password to enable Two-Factor Authentication",
+
 	"add_field": "Add Field",
 
 	"role_name": "Role Name",
@@ -980,8 +982,8 @@
       "action": "Action",
       "collection": "Collection",
       "item": "Item Primary Key",
-      "action_by": "Action By",
-      "action_on": "Action On",
+      "user": "Action By",
+      "timestamp": "Action On",
       "edited_on": "Edited On",
       "comment_deleted_on": "Comment Deleted On",
       "ip": "IP Address",
@@ -1055,7 +1057,7 @@
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections Navigation"
+		"collection_list": "Collection Navigation"
 	}
   },
 

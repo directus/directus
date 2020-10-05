@@ -11,15 +11,15 @@
 		<template v-else>
 			<!-- @TODO add final design -->
 			<p class="type-label">User:</p>
-			<user-popover v-if="item.action_by" :user="item.action_by.id">
-				{{ item.action_by.first_name }} {{ item.action_by.last_name }}
+			<user-popover v-if="item.user" :user="item.user.id">
+				{{ item.user.first_name }} {{ item.user.last_name }}
 			</user-popover>
 
 			<p class="type-label">Action:</p>
 			<p>{{ item.action }}</p>
 
 			<p class="type-label">Date:</p>
-			<p>{{ item.action_on }}</p>
+			<p>{{ item.timestamp }}</p>
 
 			<p class="type-label">IP Address:</p>
 			<p>{{ item.ip }}</p>
@@ -56,12 +56,12 @@ type Values = {
 };
 
 type ActivityRecord = {
-	action_by: {
+	user: {
 		first_name: string;
 		last_name: string;
 	} | null;
 	action: string;
-	action_on: string;
+	timestamp: string;
 	ip: string;
 	user_agent: string;
 	collection: string;
@@ -105,11 +105,11 @@ export default defineComponent({
 				const response = await api.get(`/activity/${props.primaryKey}`, {
 					params: {
 						fields: [
-							'action_by.id',
-							'action_by.first_name',
-							'action_by.last_name',
+							'user.id',
+							'user.first_name',
+							'user.last_name',
 							'action',
-							'action_on',
+							'timestamp',
 							'ip',
 							'user_agent',
 							'collection',

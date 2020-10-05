@@ -34,7 +34,7 @@ export type FieldMeta = {
 	width: string | null;
 	group: number | null;
 	note: string | null;
-	translation: null;
+	translations: null;
 };
 
 export type Field = {

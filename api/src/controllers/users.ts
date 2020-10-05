@@ -1,4 +1,5 @@
 import express from 'express';
+import argon2 from 'argon2';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 import {
@@ -8,6 +9,7 @@ import {
 } from '../exceptions';
 import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -31,7 +33,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -45,7 +48,8 @@ router.get(
 
 		res.locals.payload = { data: item || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -60,7 +64,8 @@ router.get(
 
 		res.locals.payload = { data: item || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -72,7 +77,8 @@ router.get(
 		const items = await service.readByKey(pk as any, req.sanitizedQuery);
 		res.locals.payload = { data: items || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -88,7 +94,8 @@ router.patch(
 
 		res.locals.payload = { data: item || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -106,7 +113,8 @@ router.patch(
 		await service.update({ last_page: req.body.last_page }, req.accountability.user);
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -128,7 +136,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -139,7 +148,8 @@ router.delete(
 		await service.delete(pk as any);
 
 		return next();
-	})
+	}),
+	respond
 );
 
 const inviteSchema = Joi.object({
@@ -156,7 +166,8 @@ router.post(
 		const service = new UsersService({ accountability: req.accountability });
 		await service.inviteUser(req.body.email, req.body.role);
 		return next();
-	})
+	}),
+	respond
 );
 
 const acceptInviteSchema = Joi.object({
@@ -172,7 +183,8 @@ router.post(
 		const service = new UsersService({ accountability: req.accountability });
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -182,12 +194,21 @@ router.post(
 			throw new InvalidCredentialsException();
 		}
 
+		if (!req.body.password) {
+			throw new InvalidPayloadException(`"password" is required`);
+		}
+
 		const service = new UsersService({ accountability: req.accountability });
+
+		const authService = new AuthenticationService({ accountability: req.accountability });
+		await authService.verifyPassword(req.accountability.user, req.body.password);
+
 		const { url, secret } = await service.enableTFA(req.accountability.user);
 
 		res.locals.payload = { data: { secret, otpauth_url: url } };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -212,7 +233,8 @@ router.post(
 
 		await service.disableTFA(req.accountability.user);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

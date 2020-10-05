@@ -79,28 +79,28 @@ A module includes a comprehensive listing of all system users within your projec
 
 Similar to other [Item Detail](#) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](#). Directus ships with a full-featured user system, with the following fields:
 
-* First Name
-* Last Name
-* Email
-* Password
-* Avatar
-* Location
-* Title
-* Description
-* Tags
-* Timezone (User Preference)
-* Language (User Preference)
-* Theme (User Preference)
-* Two-Factor Auth (User Preference)
-* Status (Admin Only)
-* Role (Admin Only)
-* Token (Admin Only)
+* **First Name** — The user's given name
+* **Last Name** — The user's family name
+* **Email** — The user's email address used for login/authenticating and email updates
+* **Password** — The private string used for login/authenticating (stored as a secure hash)
+* **Avatar** — An image displayed throughout the App that represents the user
+* **Location** — Can be used for the user's city, country, office name, etc
+* **Title** — The name of the position the user holds at their company or organization
+* **Description** — A description or bio of the user
+* **Tags** — A set of keywords useful when searching within the User Directory
+* **Timezone** — (User Preference) The timezone of the user
+* **Language** — (User Preference) The language to use for this user's App locale
+* **Theme** — (User Preference) Light, Dark, or Auto (based on the user's OS preferences)
+* **Two-Factor Auth** — (User Preference) Enables authenticating with 2FA
+* **Status** — (Admin Only) Determines if the user is active within the App/API
+* **Role** — (Admin Only) The user's role determines their permissions and access
+* **Token** — (Admin Only) A static string used for authenticating within the API
 
 The sidebar's info component also includes the following readonly details:
 
-* User Key
-* Last Access
-* Last Page
+* **User Key** — The primary key of the user
+* **Last Access** — The timestamp of the user's last App or API action
+* **Last Page** — The last App page accessed by the user
 
 ::: Extending Users
 While the fields included out-of-the-box are locked from schema changes, you can extend Directus Users to include additional proprietary fields within [Settings > Data Model](#).
@@ -114,23 +114,23 @@ This module aggregates all files within the project into one consolidated librar
 
 Similar to other [Item Detail](#) pages, this page provides a custom form for viewing assets and embeds. Directus ships with a full-featured system for digital asset management, with the following fields:
 
-* Title
-* Description
-* Tags
-* Location
-* Storage
-* Filename Disk
-* Filename Download
+* **Title** — Pulled from @TODO, falls back to a formatted version of the filename
+* **Description** — Pulled from @TODO
+* **Tags** — Pulled from @TODO
+* **Location** — Pulled from @TODO
+* **Storage** — The storage adapter where the asset is saved (readonly)
+* **Filename Disk** — The actual name of the file within the storage adapter
+* **Filename Download** — The name used when downloading the file via _Content-Disposition_
 
 The sidebar's info component also includes the following readonly details:
 
-* Type
-* Dimensions
-* Size
-* Created
-* Owner
-* Folder
-* [Metadata](#)
+* **Type** — The MIME type of the file, displayed in the App as a formatted media type
+* **Dimensions** — (Images Only) The width and height of the image in pixels
+* **Size** — The file-size the asset takes up within the storage adapter
+* **Created** — The timestamp of when the file was uploaded to the project
+* **Owner** — The Directus user that uploaded the file to the project
+* **Folder** — The current parent folder that contains the file
+* **Metadata** — [Metadata](#) @TODO
 
 ::: Extending Files
 While the fields included out-of-the-box are locked from schema changes, you can extend Directus Files to include additional proprietary fields within [Settings > Data Model](#).
@@ -140,10 +140,10 @@ While the fields included out-of-the-box are locked from schema changes, you can
 
 This module is an internal set of guides, concepts, and reference docs for your project's specific version of Directus. It also includes a dynamic [API Reference](#) that is dynamically tailored to your custom schema. The docs are organized into four distinct sections:
 
-* [Getting Started](#) — Novice Oriented. For a platform intro and installation.
-* [Concepts](#) — Learning Oriented. For understanding the platfom.
-* [Guides](#) — Problem Oriented. Follow along with steps while working.
-* [Reference](#) — Information Oriented. Look up info and specs while working.
+* [Getting Started](#)** — Novice Oriented. For a platform intro and installation.
+* [Concepts](#)** — Learning Oriented. For understanding the platfom.
+* [Guides](#)** — Problem Oriented. Follow along with steps while working.
+* [Reference](#)** — Information Oriented. Look up info and specs while working.
 
 ::: Updating the Docs
 Our docs are written in markdown (with some additional VuePress styling like this hint box), and available for editing/fixing via [GitHub](*).
@@ -157,20 +157,20 @@ This module provides a collective timeline of all actions taken within the proje
 
 Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a modal window with the following fields:
 
-* User
-* Action
-* Date
-* IP Address
-* User Agent
-* Collection
-* Item
+* **User** — The Directus user that performed the action
+* **Action** — The specific action taken, eg: Create, Update, Delete, Authenticate, etc
+* **Date** — The timestamp of when the action was performed
+* **IP Address** — The IP address of the device from which the action was performed
+* **User Agent** — The description of the browser that was used to perform the action
+* **Collection** — The collection affected by the action
+* **Item** — The item (within the above Collection) affected by the action
 
 # Settings
 
 This module is only available to users within [admin roles](#). This is where your project is configured, and the first place to go after installation. It includes the following sections:
 
-* Project Settings
-* Data Model
-* Roles & Permissions
-* Presets & Bookmarks
-* Webhooks
+* [Project Settings](#)
+* [Data Model](#)
+* [Roles & Permissions](#)
+* [Presets & Bookmarks](#)
+* [Webhooks](#)

@@ -1,6 +1,6 @@
 import { TranslateResult } from 'vue-i18n';
 
-type Translation = {
+type Translations = {
 	locale: string;
 	translation: string;
 };
@@ -61,7 +61,7 @@ export type FieldMeta = {
 	required: boolean;
 	sort: number | null;
 	special: string[] | null;
-	translation: null | Translation[];
+	translations: null | Translations[];
 	width: Width | null;
 	note: string | TranslateResult | null;
 };

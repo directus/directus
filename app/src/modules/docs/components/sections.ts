@@ -44,16 +44,16 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
-				name: 'Database Mirroring',
-				to: '/docs/concepts/database-mirroring',
+				name: 'Platform Overview',
+				to: '/docs/concepts/platform-overview',
 			},
 			{
 				name: 'App Overview',
 				to: '/docs/concepts/app-overview',
 			},
 			{
-				name: 'App Components',
-				to: '/docs/concepts/app-components',
+				name: 'App Extensions',
+				to: '/docs/concepts/app-extensions',
 			},
 			{
 				name: 'Activity & Versions',
@@ -84,38 +84,32 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
-				name: 'Data Model',
+				name: 'Projects',
+				to: '/docs/guides/projects',
+			},
+			{
+				name: 'Collections',
+				to: '/docs/guides/collections',
+			},
+			{
+				name: 'Fields',
 				to: '/docs/guides/fields',
-				children: [
-					{
-						name: 'Standard Field',
-						to: '/docs/guides/fields/creating-a-standard-field',
-					},
-					{
-						name: 'Presentation Field',
-						to: '/docs/guides/fields/creating-a-presentation-field',
-					},
-					{
-						name: 'Many-to-One Field',
-						to: '/docs/guides/fields/creating-a-many-to-one-field',
-					},
-					{
-						name: 'One-to-Many Field',
-						to: '/docs/guides/fields/creating-a-one-to-many-field',
-					},
-					{
-						name: 'Many-to-Many Field',
-						to: '/docs/guides/fields/creating-a-many-to-many-field',
-					},
-					{
-						name: 'Many-to-Any Field',
-						to: '/docs/guides/fields/creating-a-many-to-any-field',
-					},
-					{
-						name: 'Translated Fields',
-						to: '/docs/guides/fields/creating-translated-fields',
-					},
-				],
+			},
+			{
+				name: 'Users & Roles',
+				to: '/docs/guides/users-and-roles',
+			},
+			{
+				name: 'Presets & Bookmarks',
+				to: '/docs/guides/presets',
+			},
+			{
+				name: 'Webhooks',
+				to: '/docs/guides/webhooks',
+			},
+			{
+				name: 'White-Labeling',
+				to: '/docs/guides/white-labeling',
 			},
 			{
 				name: 'Extensions',
@@ -159,42 +153,6 @@ const sections: Section[] = [
 					},
 				],
 			},
-			{
-				name: 'Collections',
-				to: '/docs/guides/creating-a-collection',
-			},
-			{
-				name: 'Presets & Bookmarks',
-				to: '/docs/guides/managing-presets-and-bookmarks',
-			},
-			{
-				name: 'Roles & Permissions',
-				to: '/docs/guides/managing-roles-and-permissions',
-			},
-			{
-				name: 'Webhooks',
-				to: '/docs/guides/managing-webhooks',
-			},
-			{
-				name: 'Creating a Project',
-				to: '/docs/guides/creating-a-project',
-			},
-			{
-				name: 'Configuring a Project',
-				to: '/docs/guides/configuring-the-api',
-			},
-			{
-				name: 'Setting up a Project',
-				to: '/docs/guides/configuring-project-settings',
-			},
-			{
-				name: 'White-Labeling a Project',
-				to: '/docs/guides/white-labeling-a-project',
-			},
-			{
-				name: 'Upgrading a Project',
-				to: '/docs/guides/upgrading-a-project',
-			},
 		],
 	},
 	{
@@ -204,16 +162,16 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
+				name: 'Environment Variables',
+				to: '/docs/reference/environment-variables',
+			},
+			{
 				name: 'Command Line Interface',
 				to: '/docs/reference/command-line-interface',
 			},
 			{
 				name: 'Error Codes',
 				to: '/docs/reference/error-codes',
-			},
-			{
-				name: 'Project Env Variables',
-				to: '/docs/reference/project-environment-variables',
 			},
 		],
 	},

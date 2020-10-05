@@ -11,6 +11,7 @@ export * from './meta';
 export * from './permissions';
 export * from './query';
 export * from './relation';
+export * from './revision';
 export * from './services';
 export * from './sessions';
 export * from './webhooks';

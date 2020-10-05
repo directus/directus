@@ -75,27 +75,20 @@ git checkout -b YOUR-BRANCH-NAME
 ### 4. Install the dependencies
 
 ```bash
-npx lerna bootstrap
+npm install
 ```
 
-::: Reinstalling Dependencies
-To clear existing dependencies and reinstall them, you can run the following command:
-```bash
-npx lerna clean -y && npx lerna bootstrap
-```
-:::
+### 5. Setup the Database & Env File
 
-### 5. Start the API development server
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you.
 
 ```bash
-cd directus/api
-npm run dev
+@TODO
 ```
 
-### 6. Start the App development server
+### 6. Start the development server
 
 ```bash
-cd directus/app
 npm run dev
 ```
 

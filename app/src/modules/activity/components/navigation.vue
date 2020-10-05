@@ -9,7 +9,7 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item :to="`/activity?action_by=${currentUserID}`" exact>
+		<v-list-item :to="`/activity?user=${currentUserID}`" exact>
 			<v-list-item-icon>
 				<v-icon name="face" />
 			</v-list-item-icon>

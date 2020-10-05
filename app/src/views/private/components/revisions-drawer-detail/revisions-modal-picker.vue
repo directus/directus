@@ -58,8 +58,8 @@ export default defineComponent({
 					const date = await getFormattedDate(revision);
 					let user = i18n.t('private_user');
 
-					if (typeof revision.activity.action_by === 'object') {
-						const { first_name, last_name } = revision.activity.action_by;
+					if (typeof revision.activity.user === 'object') {
+						const { first_name, last_name } = revision.activity.user;
 						user = `${first_name} ${last_name}`;
 					}
 
@@ -80,8 +80,8 @@ export default defineComponent({
 		return { _current, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_date')));
-			const time = await localizedFormat(new Date(revision!.activity.action_on), String(i18n.t('date-fns_time')));
+			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_date')));
+			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_time')));
 
 			return `${date} (${time})`;
 		}

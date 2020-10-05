@@ -9,8 +9,7 @@ inputs:
     required: true
   registry:
     description: "Registry"
-    required: false
-    default: ghcr.io
+    required: true
   username:
     description: "Registry user"
     required: true

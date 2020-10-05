@@ -2,6 +2,7 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { CollectionsService, MetaService } from '../services';
 import { ForbiddenException } from '../exceptions';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -15,7 +16,8 @@ router.post(
 
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -29,7 +31,8 @@ router.get(
 
 		res.locals.payload = { data: collections || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -52,7 +55,8 @@ router.get(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -76,7 +80,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -89,7 +94,8 @@ router.delete(
 		await collectionsService.delete(collectionKey as any);
 
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

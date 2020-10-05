@@ -29,9 +29,9 @@ export const useCollectionsStore = createStore({
 				let name: string | VueI18n.TranslateResult;
 				const icon = collection.meta?.icon || 'label';
 
-				if (collection.meta && notEmpty(collection.meta.translation)) {
-					for (let i = 0; i < collection.meta.translation.length; i++) {
-						const { locale, translation } = collection.meta.translation[i];
+				if (collection.meta && notEmpty(collection.meta.translations)) {
+					for (let i = 0; i < collection.meta.translations.length; i++) {
+						const { locale, translation } = collection.meta.translations[i];
 
 						i18n.mergeLocaleMessage(locale, {
 							collection_names: {

@@ -79,11 +79,11 @@ export default defineComponent({
 							fields: [
 								'id',
 								'action',
-								'action_on',
-								'action_by.id',
-								'action_by.first_name',
-								'action_by.last_name',
-								'action_by.avatar.id',
+								'timestamp',
+								'user.id',
+								'user.first_name',
+								'user.last_name',
+								'user.avatar.id',
 								'revisions.id',
 								'comment',
 							],
@@ -93,8 +93,8 @@ export default defineComponent({
 					count.value = response.data.data.length;
 
 					const activityByDate = groupBy(response.data.data, (activity: Activity) => {
-						// activity's action_on date is in iso-8601
-						const date = new Date(new Date(activity.action_on).toDateString());
+						// activity's timestamp date is in iso-8601
+						const date = new Date(new Date(activity.timestamp).toDateString());
 						return date;
 					});
 

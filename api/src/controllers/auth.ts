@@ -11,6 +11,7 @@ import env from '../env';
 import { UsersService, AuthenticationService } from '../services';
 import grantConfig from '../grant';
 import { RouteNotFoundException } from '../exceptions';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -74,7 +75,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -125,7 +127,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -152,7 +155,8 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -178,7 +182,8 @@ router.post(
 		} finally {
 			return next();
 		}
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -201,36 +206,45 @@ router.post(
 		const service = new UsersService({ accountability });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
-	})
+	}),
+	respond
 );
 
-router.get('/oauth', asyncHandler(async (req, res, next) => {
-	const providers = env.OAUTH_PROVIDERS.split(',');
-	res.locals.payload = { data: providers };
-	return next();
-}));
+router.get(
+	'/oauth',
+	asyncHandler(async (req, res, next) => {
+		const providers = env.OAUTH_PROVIDERS.split(',').filter((p: string) => p);
+		res.locals.payload = { data: providers.length > 0 ? providers : null };
+		return next();
+	}),
+	respond
+);
 
 router.use(
 	'/oauth',
 	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
 );
 
-router.get('/oauth/:provider', asyncHandler(async(req, res, next) => {
-	const config = { ...grantConfig };
-	delete config.defaults;
+router.get(
+	'/oauth/:provider',
+	asyncHandler(async (req, res, next) => {
+		const config = { ...grantConfig };
+		delete config.defaults;
 
-	const availableProviders = Object.keys(config);
+		const availableProviders = Object.keys(config);
 
-	if (availableProviders.includes(req.params.provider) === false) {
-		throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
-	}
+		if (availableProviders.includes(req.params.provider) === false) {
+			throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
+		}
 
-	if (req.query?.redirect && req.session) {
-		req.session.redirect = req.query.redirect;
-	}
+		if (req.query?.redirect && req.session) {
+			req.session.redirect = req.query.redirect;
+		}
 
-	next();
-}));
+		next();
+	}),
+	respond
+);
 
 router.use(grant.express()(grantConfig));
 
@@ -249,11 +263,16 @@ router.get(
 			accountability: accountability,
 		});
 
-		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response?.profile);
+		const email = getEmailFromProfile(
+			req.params.provider,
+			req.session!.grant.response?.profile
+		);
 
-		req.session?.destroy(() => { });
+		req.session?.destroy(() => {});
 
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({ email });
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			email,
+		});
 
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {
@@ -272,7 +291,8 @@ router.get(
 
 			return next();
 		}
-	})
+	}),
+	respond
 );
 
 export default router;

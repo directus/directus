@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
 import { RouteNotFoundException, ForbiddenException } from '../exceptions';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -29,7 +30,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -50,7 +52,8 @@ router.get(
 			data: records || null,
 		};
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -69,7 +72,8 @@ router.get(
 			data: result || null,
 		};
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -100,7 +104,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -128,7 +133,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -139,7 +145,8 @@ router.delete(
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

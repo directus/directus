@@ -50,7 +50,7 @@ export default defineComponent({
 			try {
 				const newFolder = await api.post(`/folders`, {
 					name: newFolderName.value,
-					parent_folder: props.parent === 'root' ? null : props.parent,
+					parent: props.parent === 'root' ? null : props.parent,
 				});
 
 				await fetchFolders();

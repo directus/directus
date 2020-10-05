@@ -376,6 +376,11 @@ export default defineComponent({
 
 				&-title {
 					font-weight: bold;
+					margin-bottom: 0.5em;
+				}
+
+				&-body {
+					margin-top: 0.5em;
 				}
 
 				&.tip {

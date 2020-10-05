@@ -118,12 +118,8 @@ export default defineComponent({
 				if (!currentRevision.value) return;
 
 				try {
-					const endpoint = currentRevision.value.collection.startsWith('directus_')
-						? `/${currentRevision.value.collection.substring(9)}/${currentRevision.value.item}/revert/${
-								currentRevision.value.id
-						  }`
-						: `/items/${currentRevision.value.collection}/${currentRevision.value.item}/revert/${currentRevision.value.id}`;
-					await api.patch(endpoint);
+					const endpoint = `/utils/revert/${currentRevision.value.id}`;
+					await api.post(endpoint);
 					confirmRevert.value = false;
 					_active.value = false;
 					emit('revert');

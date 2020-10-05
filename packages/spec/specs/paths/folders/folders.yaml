@@ -44,7 +44,7 @@ post:
               type: string
               example: Amsterdam
               description: Name of the folder.
-            parent_folder:
+            parent:
               description: Unique identifier of the parent folder. This allows for nested folders.
               type: integer
           required: [name]

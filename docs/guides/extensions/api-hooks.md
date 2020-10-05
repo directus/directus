@@ -28,7 +28,7 @@ Next, you will want to define your event. You can trigger your custom hook with 
 // eg: users.update.before
 ```
 
-While _item_ hooks also require the collection to be defined:
+While hooks for _items_ also require the collection to be defined:
 
 ```
 <scope>.<action>.<collection>(.<before>)
@@ -92,7 +92,7 @@ Each custom hook is registered to its event scope using a function with the foll
 ```js
 module.exports = function registerHook() {
 	return {
-		'item.create.articles': function() {
+		'items.create.articles': function() {
 			axios.post('http://example.com/webhook');
 		}
 	}
@@ -114,7 +114,7 @@ The `registerHook` function receives a context parameter with the following prop
 
 ### Event Handler Function
 
-The event handler function (eg: `'item.create.articles': function()`) recieves a context parameter with the following properties:
+The event handler function (eg: `'items.create.articles': function()`) recieves a context parameter with the following properties:
 
 * `event` — Full event string [Learn More](#)
 * `accountability` — Information about the current user [Learn More](#)
@@ -143,11 +143,11 @@ module.exports = function registerHook({ services, exceptions }) {
 
 	return {
 		// Force everything to be admin-only at all times
-		'item.*.*': async function({ item, accountability }) {
+		'items.*.*': async function({ item, accountability }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure
-		'item.recipes.create.before': async function(input) {
+		'items.recipes.create.before': async function(input) {
 			try {
 				await axios.post('https://example.com/recipes', input);
 			} catch (error) {

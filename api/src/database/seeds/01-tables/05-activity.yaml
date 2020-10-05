@@ -7,9 +7,9 @@ columns:
     type: string
     length: 45
     nullable: false
-  action_by:
+  user:
     type: uuid
-  action_on:
+  timestamp:
     type: timestamp
     nullable: false
     default: '$now'
