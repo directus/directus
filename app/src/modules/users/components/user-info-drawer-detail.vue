@@ -11,9 +11,9 @@
 					<router-link :to="user.last_page">{{ user.last_page }}</router-link>
 				</dd>
 			</div>
-			<div v-if="user.last_login">
-				<dt>{{ $t('last_login') }}</dt>
-				<dd>{{ user.last_login }}</dd>
+			<div v-if="user.last_access">
+				<dt>{{ $t('last_access') }}</dt>
+				<dd>{{ lastAccessDate }}</dd>
 			</div>
 			<div v-if="user.created_on">
 				<dt>{{ $t('created_on') }}</dt>
@@ -36,8 +36,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import marked from 'marked';
+import localizedFormat from '../../../utils/localized-format';
+import i18n from '../../../lang';
 
 export default defineComponent({
 	props: {
@@ -51,7 +53,21 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		return { marked };
+		const lastAccessDate = ref('');
+
+		watch(
+			props,
+			async () => {
+				if (!props.user) return;
+				lastAccessDate.value = await localizedFormat(
+					new Date(props.user.last_access),
+					String(i18n.t('date-fns_date_short'))
+				);
+			},
+			{ immediate: true }
+		);
+
+		return { marked, lastAccessDate };
 	},
 });
 </script>

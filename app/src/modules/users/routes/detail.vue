@@ -270,11 +270,11 @@ export default defineComponent({
 			'id',
 			'external_id',
 			'last_page',
-			'last_login',
 			'created_on',
 			'created_by',
 			'modified_by',
 			'modified_on',
+			'last_access',
 		];
 
 		const fieldsFiltered = computed(() => {
