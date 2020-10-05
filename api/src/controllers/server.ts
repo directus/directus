@@ -8,7 +8,8 @@ const router = Router();
 router.get('/specs/oas', asyncHandler(async (req, res, next) => {
 	const url = req.protocol + '://' + req.get('host') + '/'
 	const service = new SpecificationService(url, {accountability: req.accountability})
-	res.json(await service.generateOAS())
+	res.locals.payload = await service.generateOAS();
+	return next()
 }));
 
 router.get('/ping', (req, res) => res.send('pong'));
