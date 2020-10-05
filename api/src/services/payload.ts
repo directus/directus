@@ -246,7 +246,9 @@ export class PayloadService {
 
 		for (const dateColumn of dateColumns) {
 			for (const payload of payloads) {
-				const value: Date = payload[dateColumn.name];
+				let value: string | Date = payload[dateColumn.name];
+
+				if (typeof value === 'string') value = new Date(value);
 
 				if (value) {
 					if (dateColumn.type === 'timestamp') {
