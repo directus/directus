@@ -15,8 +15,16 @@ document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
-
 	const key = mapKeys(event.key);
+
+	// This is a fix for mac not emitting a keyUp event on letters when meta is pressed: https://stackoverflow.com/questions/11818637
+	if(key === 'meta') {
+		for(let i = 0; i < 26; i++) {
+			const letter = (i + 10).toString(36)
+			keysdown.delete(letter)
+			keysdown.delete(letter.toUpperCase())
+		}
+	}
 	keysdown.delete(key.toLowerCase());
 	keysdown.delete(key.toUpperCase());
 });
