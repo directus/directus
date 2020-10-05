@@ -1,0 +1,12 @@
+post:
+  description: Enables two-factor authentication for the currently authenticated user.
+  operationId: meTfaEnable
+  responses:
+    "200":
+      description: Successful request
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
+  tags:
+    - Users

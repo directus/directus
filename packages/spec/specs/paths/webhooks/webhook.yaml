@@ -1,6 +1,6 @@
 get:
-  description: Get all webhooks.
-  operationId: getWebhooks
+  description: Retrieve a single webhook by unique identifier.
+  operationId: getWebhook
   responses:
     "200":
       description: Successful request
@@ -17,9 +17,9 @@ get:
       $ref: "#/components/responses/NotFoundError"
   tags:
     - Webhooks
-post:
-  description: Create a new webhook.
-  operationId: createWebhook
+patch:
+  description: Update an existing webhook
+  operationId: updateWebhook
   parameters:
     - $ref: "#/components/parameters/Fields"
     - $ref: "#/components/parameters/Meta"
@@ -71,3 +71,17 @@ post:
       $ref: "#/components/responses/NotFoundError"
   tags:
     - Webhooks
+delete:
+  description: Delete an existing webhook
+  operationId: deleteWebhook
+  responses:
+    "200":
+      description: Successful request
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
+  tags:
+    - Webhooks
+parameters:
+  - $ref: "#/components/parameters/UUId"

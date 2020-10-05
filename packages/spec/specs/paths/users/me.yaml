@@ -20,3 +20,22 @@ get:
       $ref: "#/components/responses/NotFoundError"
   tags:
     - Users
+patch:
+  description: Update the currently authenticated user.
+  operationId: me
+  responses:
+    "200":
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/components/schemas/User"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
+  tags:
+    - Users

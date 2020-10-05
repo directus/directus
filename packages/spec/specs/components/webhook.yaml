@@ -19,7 +19,7 @@ properties:
     nullable: true
   status:
     description: The status of the webhook.
-    type: boolean
+    type: string
     example: inactive
   data:
     description: If yes, send the content of what was done
@@ -27,9 +27,15 @@ properties:
     example: true
   actions:
     description: The actions that triggers this webhook.
+    type: array
+    items:
+      type: string
     example: null
     nullable: true
   collections:
     description: The collections that triggers this webhook.
+    type: array
+    items:
+      type: string
     example: null
     nullable: true

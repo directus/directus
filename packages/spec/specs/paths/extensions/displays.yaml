@@ -1,11 +1,8 @@
 get:
-  description: List the permissions that apply to the current user for the given collection
-  operationId: Enter text here
-  parameters:
-    - $ref: "#/components/parameters/Collection"
+  description: List all installed custom displays.
+  operationId: getDisplays
   responses:
     "200":
-      description: Successful request
       content:
         application/json:
           schema:
@@ -14,10 +11,11 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Permissions"
+                  type: object
+      description: Successful request
     "401":
       $ref: "#/components/responses/UnauthorizedError"
     "404":
       $ref: "#/components/responses/NotFoundError"
   tags:
-    - Permissions
+    - Extensions

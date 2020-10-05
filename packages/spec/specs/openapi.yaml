@@ -36,20 +36,14 @@ tags:
     description: Folders don't do anything yet, but will be used in the (near) future to be able to group files.
   - name: Items
     description: Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
-  - name: Mail
-    description: Send electronic mail through the electronic post.
   - name: Permissions
     description: Permissions control who has access to what and when.
-  - name: Projects
-    description: Projects are the individual tenants of the platform. Each project has its own database and data.
   - name: Relations
     description: What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of.
   - name: Revisions
     description: Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will.
   - name: Roles
     description: Roles are groups of users that share permissions.
-  - name: SCIM
-    description: Directus partially supports Version 2 of System for Cross-domain Identity Management (SCIM). It is an open standard that allows for the exchange of user information between systems, therefore allowing users to be externally managed using the endpoints described below.
   - name: Server
     description: Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with.
   - name: Settings
@@ -106,7 +100,7 @@ paths:
   # Collections
   /collections:
     $ref: "./paths/collections/collections.yaml"
-  /collections/{collection}:
+  /collections/{id}:
     $ref: "./paths/collections/collection.yaml"
 
   # Extensions
@@ -114,6 +108,8 @@ paths:
     $ref: "./paths/extensions/interfaces.yaml"
   /layouts:
     $ref: "./paths/extensions/layouts.yaml"
+  /displays:
+    $ref: "./paths/extensions/displays.yaml"
   /modules:
     $ref: "./paths/extensions/modules.yaml"
 
@@ -122,7 +118,7 @@ paths:
     $ref: "./paths/fields/fields.yaml"
   /fields/{collection}:
     $ref: "./paths/fields/collection-fields.yaml"
-  /fields/{collection}/{field}:
+  /fields/{collection}/{id}:
     $ref: "./paths/fields/collection-field.yaml"
 
   # Files
@@ -141,10 +137,6 @@ paths:
   /folders/{id}:
     $ref: "./paths/folders/folder.yaml"
 
-  # Mail
-  /mail:
-    $ref: "./paths/mail/mail.yaml"
-
   # Permissions
   /permissions:
     $ref: "./paths/permissions/permissions.yaml"
@@ -152,8 +144,6 @@ paths:
     $ref: "./paths/permissions/permissions-me.yaml"
   /permissions/{id}:
     $ref: "./paths/permissions/permission.yaml"
-  /permissions/me/{collection}:
-    $ref: "./paths/permissions/permissions-me-collection.yaml"
 
   # Relations
   /relations:
@@ -167,7 +157,7 @@ paths:
   /revisions/{id}:
     $ref: "./paths/revisions/revision.yaml"
 
-  # Revisions
+  # Roles
   /roles:
     $ref: "./paths/roles/roles.yaml"
   /roles/{id}:
@@ -190,16 +180,22 @@ paths:
   # Users
   /users:
     $ref: "./paths/users/users.yaml"
-  /users/me:
-    $ref: "./paths/users/me.yaml"
-  /users/invite:
-    $ref: "./paths/users/user-invite.yaml"
   /users/{id}:
     $ref: "./paths/users/user.yaml"
-  /users/invite/{token}:
-    $ref: "./paths/users/user-invite-token.yaml"
   /users/{id}/track/page:
     $ref: "./paths/users/user-tracking.yaml"
+  /users/invite:
+    $ref: "./paths/users/user-invite.yaml"
+  /users/invite/accept:
+    $ref: "./paths/users/user-invite-accept.yaml"
+  /users/me:
+    $ref: "./paths/users/me.yaml"
+  /users/me/track/page:
+    $ref: "./paths/users/me-tracking.yaml"
+  /users/me/tfa/enable:
+    $ref: "./paths/users/me-tfa-enable.yaml"
+  /users/me/tfa/disable:
+    $ref: "./paths/users/me-tfa-disable.yaml"
 
   # Utilities
   /utils/hash:
@@ -208,10 +204,14 @@ paths:
     $ref: "./paths/utils/hash-match.yaml"
   /utils/random/string:
     $ref: "./paths/utils/random.yaml"
+  /utils/sort/{collection}:
+    $ref: "./paths/utils/sort.yaml"
 
   # Webhooks
   /webhooks:
     $ref: "./paths/webhooks/webhooks.yaml"
+  /webhooks/{id}:
+    $ref: "./paths/webhooks/webhook.yaml"
 
 components:
   schemas:
