@@ -62,7 +62,7 @@ const newFieldSchema = Joi.object({
 	schema: Joi.object({
 		comment: Joi.string().allow(null),
 		default_value: Joi.any(),
-		max_length: [Joi.number(), Joi.string()],
+		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
 	}).unknown(),
 	/** @todo base this on default validation */
