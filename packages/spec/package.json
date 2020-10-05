@@ -1,12 +1,14 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-beta.2",
+	"version": "9.0.0-beta.8",
 	"description": "Specification of the Directus Api",
+	"main": "index.js",
 	"scripts": {
-		"dev": "swagger-ui-watcher specs/openapi.yaml",
+		"ui:watch": "swagger-ui-watcher specs/openapi.yaml",
 		"validate": "swagger-cli validate specs/openapi.yaml",
 		"build": "swagger-cli bundle specs/openapi.yaml -o dist/openapi.json",
-		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference"
+		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference",
+		"prepublishOnly": "npm run build && npm run build:deref"
 	},
 	"repository": {
 		"type": "git",
@@ -18,10 +20,6 @@
 		"url": "https://github.com/directus/next/issues"
 	},
 	"homepage": "https://github.com/directus/next#readme",
-	"devDependencies": {
-		"@apidevtools/swagger-cli": "^4.0.4",
-		"swagger-ui-watcher": "^2.1.11"
-	},
 	"files": [
 		"dist",
 		"LICENSE",

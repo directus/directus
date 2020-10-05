@@ -9,12 +9,12 @@ properties:
     example: update
     type: string
     enum: [authenticate, comment, upload, create, update, delete, soft-delete, revert, invalid-credentials]
-  action_by:
+  user:
     description: Unique identifier of the user account who caused this action.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     type: string
     nullable: true # States the SQL structure
-  action_on:
+  timestamp:
     description: When the action happened.
     example: '2019-12-05 22:52:09'
     type: string

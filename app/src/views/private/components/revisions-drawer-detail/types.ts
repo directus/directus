@@ -8,8 +8,8 @@ export type Revision = {
 		action: string;
 		ip: string;
 		user_agent: string;
-		action_on: string;
-		action_by:
+		timestamp: string;
+		user:
 			| number
 			| {
 					id: number;

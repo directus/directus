@@ -40,7 +40,7 @@ import FolderPickerListItem from './folder-picker-list-item.vue';
 type FolderRaw = {
 	id: string;
 	name: string;
-	parent_folder: null | string;
+	parent: null | string;
 };
 
 type Folder = {
@@ -67,7 +67,7 @@ export default defineComponent({
 		const error = ref<any>(null);
 		const tree = computed<Folder[]>(() => {
 			return folders.value
-				.filter((folder) => folder.parent_folder === null)
+				.filter((folder) => folder.parent === null)
 				.map((folder) => {
 					return {
 						...folder,
@@ -78,7 +78,7 @@ export default defineComponent({
 			function getChildFolders(folder: FolderRaw): Folder[] {
 				return folders.value
 					.filter((childFolder) => {
-						return childFolder.parent_folder === folder.id;
+						return childFolder.parent === folder.id;
 					})
 					.map((childFolder) => {
 						return {
@@ -92,7 +92,7 @@ export default defineComponent({
 		const shouldBeOpen: string[] = [];
 		const folder = folders.value.find((folder) => folder.id === props.value);
 
-		if (folder && folder.parent_folder) parseFolder(folder.parent_folder);
+		if (folder && folder.parent) parseFolder(folder.parent);
 
 		const startOpenFolders = ['root'];
 
@@ -137,8 +137,8 @@ export default defineComponent({
 
 			const folder = folders.value.find((folder) => folder.id === id);
 
-			if (folder && folder.parent_folder) {
-				parseFolder(folder.parent_folder);
+			if (folder && folder.parent) {
+				parseFolder(folder.parent);
 			}
 		}
 	},

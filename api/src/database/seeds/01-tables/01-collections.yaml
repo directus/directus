@@ -21,7 +21,7 @@ columns:
     type: boolean
     nullable: false
     default: false
-  translation:
+  translations:
     type: json
   archive_field:
     type: string

@@ -1,45 +1,47 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
 		<portal to="layout-options">
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.image_source') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
 				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.title') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.title') }}</div>
 				<v-field-template :collection="collection" v-model="title" />
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.subtitle') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.subtitle') }}</div>
 				<v-field-template :collection="collection" v-model="subtitle" />
 			</div>
 
-			<v-detail>
+			<v-detail class="field">
 				<template #title>{{ $t('layout_setup') }}</template>
 
-				<div class="layout-option">
-					<div class="option-label">{{ $t('layouts.cards.image_fit') }}</div>
-					<v-select
-						v-model="imageFit"
-						:disabled="imageSource === null"
-						:items="[
-							{
-								text: $t('layouts.cards.crop'),
-								value: 'crop',
-							},
-							{
-								text: $t('layouts.cards.contain'),
-								value: 'contain',
-							},
-						]"
-					/>
-				</div>
+				<div class="nested-options">
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.cards.image_fit') }}</div>
+						<v-select
+							v-model="imageFit"
+							:disabled="imageSource === null"
+							:items="[
+								{
+									text: $t('layouts.cards.crop'),
+									value: 'crop',
+								},
+								{
+									text: $t('layouts.cards.contain'),
+									value: 'contain',
+								},
+							]"
+						/>
+					</div>
 
-				<div class="layout-option">
-					<div class="option-label">{{ $t('fallback_icon') }}</div>
-					<interface-icon v-model="icon" />
+					<div class="field">
+						<div class="type-label">{{ $t('fallback_icon') }}</div>
+						<interface-icon v-model="icon" />
+					</div>
 				</div>
 			</v-detail>
 		</portal>
@@ -402,6 +404,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .layout-cards {
 	padding: var(--content-padding);
@@ -466,5 +469,9 @@ export default defineComponent({
 .fade-enter,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.nested-options {
+	@include form-grid;
 }
 </style>

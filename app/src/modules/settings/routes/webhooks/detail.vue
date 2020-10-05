@@ -54,6 +54,7 @@
 			collection="directus_webhooks"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey"
+			:validation-errors="validationErrors"
 			v-model="edits"
 		/>
 
@@ -93,10 +94,20 @@ export default defineComponent({
 	setup(props) {
 		const { primaryKey } = toRefs(props);
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
-			ref('directus_webhooks'),
-			primaryKey
-		);
+		const {
+			isNew,
+			edits,
+			item,
+			saving,
+			loading,
+			error,
+			save,
+			remove,
+			deleting,
+			saveAsCopy,
+			isBatch,
+			validationErrors,
+		} = useItem(ref('directus_webhooks'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
@@ -125,6 +136,7 @@ export default defineComponent({
 			isBatch,
 			marked,
 			title,
+			validationErrors,
 		};
 
 		async function saveAndQuit() {

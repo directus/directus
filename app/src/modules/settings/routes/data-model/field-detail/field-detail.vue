@@ -30,6 +30,7 @@
 	<v-modal
 		v-else
 		:active="true"
+		@toggle="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })

@@ -47,7 +47,7 @@ type FieldSeed = {
 		sort: number | null;
 		width: string | null;
 		group: number | null;
-		translation: Record<string, any> | null;
+		translations: Record<string, any> | null;
 		note: string | null;
 	}[];
 };

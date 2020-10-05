@@ -1,3 +1,0 @@
-# Configuring Project Settings
-
-> TK

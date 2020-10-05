@@ -50,7 +50,7 @@ export default defineComponent({
 		},
 		showAsDot: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		choices: {
 			type: Array as PropType<Choice[]>,
@@ -78,7 +78,7 @@ export default defineComponent({
 			else items = props.value as string[];
 
 			return items.map((item) => {
-				const choice = props.choices.find((choice) => choice.value === item);
+				const choice = (props.choices || []).find((choice) => choice.value === item);
 
 				if (choice === undefined) {
 					return {

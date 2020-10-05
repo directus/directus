@@ -119,6 +119,7 @@
 			</div>
 
 			<v-form
+				ref="form"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
@@ -208,6 +209,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
 
@@ -291,8 +293,8 @@ export default defineComponent({
 			return i18n.t('archive');
 		});
 
-		useShortcut('mod+s', saveAndStay);
-		useShortcut('mod+shift+s', saveAndAddNew);
+		useShortcut('meta+s', saveAndStay, form);
+		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		return {
 			title,
@@ -330,6 +332,7 @@ export default defineComponent({
 			collectionInfo,
 			archiving,
 			archiveTooltip,
+			form,
 		};
 
 		function useBreadcrumb() {

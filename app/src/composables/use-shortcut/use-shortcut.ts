@@ -1,27 +1,106 @@
-import { onMounted, onUnmounted } from '@vue/composition-api';
-import Mousetrap, { ExtendedKeyboardEvent } from 'mousetrap';
+import { onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
+import Vue from 'vue';
 
-const mousetrap = new Mousetrap();
-mousetrap.stopCallback = function (e: Event, element: Element) {
-	// if the element has the class "mousetrap" then no need to stop
-	if (element.hasAttribute('data-disable-mousetrap')) {
-		return true;
-	}
+type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
-	return false;
-};
+const keysdown: Set<string> = new Set([]);
+const handlers: Record<string, ShortcutHandler[]> = {};
+
+document.body.addEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.repeat || !event.key) return;
+
+	keysdown.add(mapKeys(event.key));
+	callHandlers(event);
+});
+
+document.body.addEventListener('keyup', (event: KeyboardEvent) => {
+	if (event.repeat || !event.key) return;
+
+	const key = mapKeys(event.key);
+	keysdown.delete(key.toLowerCase());
+	keysdown.delete(key.toUpperCase());
+});
 
 export default function useShortcut(
-	shortcut: string | string[],
-	handler: (evt?: ExtendedKeyboardEvent, combo?: string) => void
+	shortcuts: string | string[],
+	handler: ShortcutHandler,
+	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
 ) {
+	const callback: ShortcutHandler = (event, cancelNext) => {
+		if (!reference.value) return;
+		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
+
+		if (
+			document.activeElement === ref ||
+			ref.contains(document.activeElement) ||
+			document.activeElement === document.body
+		) {
+			event.preventDefault();
+			return handler(event, cancelNext);
+		}
+
+		return false;
+	};
+
 	onMounted(() => {
-		mousetrap.bind(shortcut, (e, combo) => {
-			e.preventDefault();
-			handler(e, combo);
+		[shortcuts].flat().forEach((shortcut) => {
+			if (handlers.hasOwnProperty(shortcut)) {
+				handlers[shortcut].unshift(callback);
+			} else {
+				handlers[shortcut] = [callback];
+			}
 		});
 	});
+
 	onUnmounted(() => {
-		mousetrap.unbind(shortcut);
+		[shortcuts].flat().forEach((shortcut) => {
+			if (handlers.hasOwnProperty(shortcut)) {
+				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
+
+				if (handlers[shortcut].length === 0) {
+					delete handlers[shortcut];
+				}
+			}
+		});
+	});
+}
+
+function mapKeys(key: string) {
+	const map: Record<string, string> = {
+		Control: 'meta',
+		Command: 'meta',
+	};
+
+	key = map.hasOwnProperty(key) ? map[key] : key;
+
+	if (key.match(/^[a-z]$/) !== null) {
+		if (keysdown.has('shift')) key = key.toUpperCase();
+	} else if (key.match(/^[A-Z]$/) !== null) {
+		if (keysdown.has('shift')) key = key.toLowerCase();
+	} else {
+		key = key.toLowerCase();
+	}
+
+	return key;
+}
+
+function callHandlers(event: KeyboardEvent) {
+	Object.entries(handlers).forEach(([key, value]) => {
+		const rest = key.split('+').filter((keySegment) => keysdown.has(keySegment) === false);
+
+		if (rest.length > 0) return;
+
+		for (let i = 0; i < value.length; i++) {
+			let cancel = false;
+
+			value[i](event, cancelNext);
+
+			// if cancelNext is called, discontinue going through the queue.
+			if (typeof cancel === 'boolean' && cancel) break;
+
+			function cancelNext() {
+				cancel = true;
+			}
+		}
 	});
 }

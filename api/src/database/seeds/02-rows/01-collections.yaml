@@ -6,7 +6,7 @@ defaults:
   singleton: false
   icon: null
   note: null
-  translation: null
+  translations: null
   display_template: null
 
 data:
@@ -29,6 +29,7 @@ data:
     icon: supervised_user_circle
   - collection: directus_sessions
   - collection: directus_settings
+    singleton: true
   - collection: directus_users
     archive_field: status
     archive_value: archived

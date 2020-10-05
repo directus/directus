@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import env from '../env';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -25,7 +26,8 @@ router.get(
 		};
 
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

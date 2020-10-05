@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"enter_password_to_enable_tfa": "Enter your password to enable Two-Factor Authentication",
+
 	"add_field": "Add Field",
 
 	"role_name": "Role Name",
@@ -58,6 +60,9 @@
 	"archive_confirm": "Are you sure you want to archive this item?",
 	"archive_confirm_count": "No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?",
 
+	"reset_system_permissions": "Reset System Permissions",
+	"reset_system_permissions_copy": "Reset all all system permissions to their defaults",
+
 	"unarchive": "Unarchive",
 	"unarchive_confirm": "Are you sure you want to unarchive this item?",
 	"unarchive_confirm_count": "No Items Selected | Are you sure you want to unarchive this item? | Are you sure you want to unarchive these {count} items?",
@@ -81,7 +86,8 @@
 		"empty": "Value has to be empty",
 		"nempty": "Value can't be empty",
 		"null": "Value has to be null",
-		"nnull": "Value can't be null"
+		"nnull": "Value can't be null",
+		"required": "Value is required"
 	},
 
 	"all_access": "All Access",
@@ -976,8 +982,8 @@
       "action": "Action",
       "collection": "Collection",
       "item": "Item Primary Key",
-      "action_by": "Action By",
-      "action_on": "Action On",
+      "user": "Action By",
+      "timestamp": "Action On",
       "edited_on": "Edited On",
       "comment_deleted_on": "Comment Deleted On",
       "ip": "IP Address",
@@ -1051,7 +1057,7 @@
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections Navigation"
+		"collection_list": "Collection Navigation"
 	}
   },
 
@@ -1073,7 +1079,7 @@
   "connection": "Connection",
   "contains": "Contains",
   "continue": "Continue",
-  "continue_as": "<b>{name}</b> is already authenticated. If you recognize this account, press continue.",
+  "continue_as": "<b>{name}</b> is currently authenticated. If you recognize this account, press continue.",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",

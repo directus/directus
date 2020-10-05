@@ -5,6 +5,7 @@ export * from './collections';
 export * from './fields';
 export * from './files';
 export * from './folders';
+export * from './graphql';
 export * from './items';
 export * from './meta';
 export * from './payload';

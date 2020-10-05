@@ -198,7 +198,7 @@ export default defineComponent({
 					if (existing.value === dragHeader.value?.value) {
 						return {
 							...existing,
-							width: Math.max(50, newWidth),
+							width: Math.max(32, newWidth),
 						};
 					}
 

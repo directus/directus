@@ -34,7 +34,7 @@ export default {
 * `handler` — A function, or reference to your Vue component.
 * `types` — A CSV of supported [types](#).
 
-:::tip
+:::
 See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/displays/types.ts#L24-L34) for more info on what can go into this object.
 :::
 

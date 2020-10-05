@@ -132,6 +132,7 @@
 			/>
 
 			<v-form
+				ref="form"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
@@ -231,6 +232,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
@@ -291,7 +293,7 @@ export default defineComponent({
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
-		useShortcut('mod+s', saveAndStay);
+		useShortcut('meta+s', saveAndStay, form);
 
 		return {
 			item,
@@ -324,6 +326,7 @@ export default defineComponent({
 			moving,
 			selectedFolder,
 			fileSrc,
+			form,
 		};
 
 		function changeCacheBuster() {

@@ -10,7 +10,7 @@ Directus supports internationalization across its entire Admin App. Many languag
 
 Directus uses [database mirroring](#) to dynamically pull in your schema's tables and columns, however this only covers one language. Therefore our platform supports schema translations for these names, allowing you to properly support different locales for your Collection and Field names.
 
-::: tip Overriding Technical Names
+::: Overriding Technical Names
 If your project requires more _technical_ table/column names (eg: `cust` or `f_name`), you can also use schema translations to override those defaults (eg: `Customers` or `First Name`) in the primary language.
 :::
 
@@ -18,6 +18,6 @@ If your project requires more _technical_ table/column names (eg: `cust` or `f_n
 
 One of the most important features in Directus is the ability to author and manage multilingual content. While you can accomplish this by creating _standard_ fields in the parent collection for each language, it is more extensible to use our relational translation fields to dynamically manage content in as many languages as is required. Mixing standard and translated fields also allows language-agnostic data (such as dates or toggles) to remain within the parent collection.
 
-::: tip Custom Interfaces
+::: Custom Interfaces
 For more advanced use-cases, such as connecting to a third-party translation service, you can read our extension guide on [creating a custom interface](#).
 :::

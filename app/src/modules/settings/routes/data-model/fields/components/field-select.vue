@@ -110,17 +110,26 @@
 
 							<v-divider />
 
-							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
+							<v-list-item
+								@click="setWidth('half')"
+								:disabled="field.meta && field.meta.width === 'half'"
+							>
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
+							<v-list-item
+								@click="setWidth('full')"
+								:disabled="field.meta && field.meta.width === 'full'"
+							>
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
+							<v-list-item
+								@click="setWidth('fill')"
+								:disabled="field.meta && field.meta.width === 'fill'"
+							>
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 							</v-list-item>
@@ -147,14 +156,16 @@
 			<v-card class="duplicate">
 				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 				<v-card-text>
-					<div class="duplicate-field">
-						<span class="type-label">{{ $tc('collection', 0) }}</span>
-						<v-select class="monospace" :items="collections" v-model="duplicateTo" />
-					</div>
+					<div class="form-grid">
+						<div class="field">
+							<span class="type-label">{{ $tc('collection', 0) }}</span>
+							<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+						</div>
 
-					<div class="duplicate-field">
-						<span class="type-label">{{ $tc('field', 0) }}</span>
-						<v-input class="monospace" v-model="duplicateName" />
+						<div class="field">
+							<span class="type-label">{{ $tc('field', 0) }}</span>
+							<v-input class="monospace" v-model="duplicateName" />
+						</div>
 					</div>
 				</v-card-text>
 				<v-card-actions>
@@ -356,6 +367,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .full,
 .fill {
@@ -399,6 +411,41 @@ export default defineComponent({
 
 	.duplicate-field + .duplicate-field {
 		margin-bottom: 32px;
+	}
+}
+
+.group {
+	position: relative;
+	padding: var(--input-padding);
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+
+	.header {
+		display: flex;
+		align-items: center;
+		margin-bottom: var(--input-padding);
+	}
+
+	.name {
+		font-family: var(--family-monospace);
+	}
+
+	.drag-handle {
+		margin-right: 8px;
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground);
+		}
+	}
+
+	.group-options {
+		cursor: pointer;
+	}
+
+	.v-notice {
+		cursor: pointer;
 	}
 }
 
@@ -448,38 +495,9 @@ export default defineComponent({
 	flex-grow: 1;
 }
 
-.group {
-	position: relative;
-	padding: var(--input-padding);
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
-	border: 2px solid var(--border-normal);
+.form-grid {
+	--v-form-vertical-gap: 24px;
 
-	.header {
-		margin-bottom: var(--input-padding);
-		display: flex;
-		align-items: center;
-	}
-
-	.name {
-		font-family: var(--family-monospace);
-	}
-
-	.drag-handle {
-		margin-right: 8px;
-		transition: color var(--fast) var(--transition);
-
-		&:hover {
-			color: var(--foreground);
-		}
-	}
-
-	.group-options {
-		cursor: pointer;
-	}
-
-	.v-notice {
-		cursor: pointer;
-	}
+	@include form-grid;
 }
 </style>

@@ -8,7 +8,7 @@ Our Node.js repository is located at `directus/directus` and houses the Admin Ap
 
 To contribute to the project, please follow the instructions located within our GitHub repoitory's [contributing.md file](#).
 
-:::tip PHP API Port
+::: PHP API Port
 While the Node.js version of Directus defines the official specification and is our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary codebase is located in a separate git repository at [`directus/php`](#).
 :::
 
@@ -35,7 +35,7 @@ Reporting any bugs you come across is an invaluable part of helping keep Directu
 * You have followed the issue template, with stack details and steps to reproduce
 * You have already tried the following troubleshooting steps:
     * You are on the latest version of Directus
-    * You have stopped (CTRL+C) and restarted the server
+    * You have stopped (`CTRL+C`) and restarted the server
     * You have confirmed the issue is not related to your own custom code
     * Dev Only: You have cleared and reinstalled all dependencies
 
@@ -51,8 +51,6 @@ We value the members of the independent security research community who find sec
 ## Code of Conduct
 
 The Directus [Code of Conduct](https://github.com/directus/next/blob/main/code_of_conduct.md) is one of the ways we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.
-
----
 
 ## Development Workflow
 
@@ -77,27 +75,20 @@ git checkout -b YOUR-BRANCH-NAME
 ### 4. Install the dependencies
 
 ```bash
-npx lerna bootstrap
+npm install
 ```
 
-:::tip Reinstalling Dependencies
-To clear existing dependencies and reinstall them, you can run the following command:
-```bash
-npx lerna clean -y && npx lerna bootstrap
-```
-:::
+### 5. Setup the Database & Env File
 
-### 5. Start the API development server
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you.
 
 ```bash
-cd directus/api
-npm run dev
+@TODO
 ```
 
-### 6. Start the App development server
+### 6. Start the development server
 
 ```bash
-cd directus/app
 npm run dev
 ```
 

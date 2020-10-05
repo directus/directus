@@ -9,11 +9,18 @@ fields:
     field: name
     interface: text-input
     locked: true
+    options:
+      iconRight: title
     sort: 1
     width: full
   - collection: directus_webhooks
     field: method
     interface: dropdown
+    display: labels
+    display_options:
+      defaultBackground: "#ECEFF1"
+      choices: null
+      format: false
     locked: true
     options:
       choices:
@@ -32,6 +39,20 @@ fields:
   - collection: directus_webhooks
     field: status
     interface: dropdown
+    display: labels
+    display_options:
+      defaultColor: "#B0BEC5"
+      defaultBackground: "#ECEFF1"
+      showAsDot: true
+      choices:
+      - text: Active
+        value: active
+        foreground: "#607D8B"
+        background: "#2F80ED"
+      - text: Inactive
+        value: inactive
+        foreground: "#607D8B"
+        background: "#ECEFF1"
     locked: true
     options:
       choices:
@@ -46,8 +67,7 @@ fields:
     interface: toggle
     locked: true
     options:
-      choices:
-        label: Include item data in request
+      label: Send Event Data
     sort: 5
     width: half
   - collection: directus_webhooks

@@ -24,11 +24,12 @@ export default defineComponent({
 				return;
 			}
 
-			let htmlString = marked(slots.default()[0].text!, {
+			let htmlString = slots.default()[0].text!;
+			const hintRegex = /<p>:::(.*?) (.*?)\r?\n((\s|.)*?):::<\/p>/gm;
+
+			htmlString = marked(htmlString, {
 				highlight: (code) => highlight.highlightAuto(code).value,
 			});
-
-			const hintRegex = /:::(.*?) (.*?)\n((\s|.)*?):::/gm;
 
 			htmlString = htmlString.replaceAll(
 				hintRegex,
@@ -49,15 +50,15 @@ export default defineComponent({
 }
 
 .docs {
-	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding: 0 var(--content-padding) var(--content-padding-bottom);
 
 	.md {
 		max-width: 740px;
 
 		::v-deep {
-			font-weight: 500;
-			font-size: 14px;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 27px;
 
 			& > *:first-child {
 				margin-top: 0;
@@ -68,7 +69,8 @@ export default defineComponent({
 			}
 
 			a {
-				text-decoration: underline;
+				color: var(--primary);
+				text-decoration: none;
 			}
 
 			h1,
@@ -78,14 +80,48 @@ export default defineComponent({
 			h5,
 			h6 {
 				position: relative;
-				margin: 20px 0 10px;
+				margin: 40px 0 8px;
 				padding: 0;
 				font-weight: 600;
 				cursor: text;
 			}
 
+			h1 {
+				margin-bottom: 40px;
+				font-size: 35px;
+				line-height: 44px;
+			}
+
+			h2 {
+				margin-top: 60px;
+				margin-bottom: 20px;
+				padding-bottom: 12px;
+				font-size: 26px;
+				line-height: 33px;
+				border-bottom: 2px solid var(--border-subdued);
+			}
+
+			h3 {
+				margin-bottom: 0px;
+				font-size: 19px;
+				line-height: 24px;
+			}
+
+			h4 {
+				font-size: 16px;
+			}
+
+			h5 {
+				font-size: 14px;
+			}
+
+			h6 {
+				color: var(--foreground-normal);
+				font-size: 14px;
+			}
+
 			pre {
-				padding: 6px 10px;
+				padding: 16px 20px;
 				overflow: auto;
 				font-size: 13px;
 				line-height: 19px;
@@ -96,8 +132,10 @@ export default defineComponent({
 
 			code,
 			tt {
-				margin: 0 2px;
-				padding: 0 5px;
+				margin: 0 1px;
+				padding: 0 4px;
+				font-family: var(--family-monospace);
+				font-size: 15px;
 				white-space: nowrap;
 				background-color: var(--background-page);
 				border: 1px solid var(--background-normal);
@@ -147,31 +185,6 @@ export default defineComponent({
 				font-size: inherit;
 			}
 
-			h1 {
-				font-size: 28px;
-			}
-
-			h2 {
-				font-size: 24px;
-			}
-
-			h3 {
-				font-size: 18px;
-			}
-
-			h4 {
-				font-size: 16px;
-			}
-
-			h5 {
-				font-size: 14px;
-			}
-
-			h6 {
-				color: var(--foreground-normal);
-				font-size: 14px;
-			}
-
 			p,
 			blockquote,
 			ul,
@@ -180,7 +193,18 @@ export default defineComponent({
 			li,
 			table,
 			pre {
-				margin: 15px 0;
+				margin: 8px 0;
+			}
+
+			p {
+				margin-block-start: 1em;
+				margin-block-end: 1em;
+				margin-inline-start: 0px;
+				margin-inline-end: 0px;
+			}
+
+			h3 + p {
+				margin-block-start: 0.5em;
 			}
 
 			& > h2:first-child {
@@ -226,27 +250,30 @@ export default defineComponent({
 
 			ul,
 			ol {
-				padding-left: 30px;
+				margin: 20px 0;
+				padding-left: 20px;
 
 				li {
-					margin: 0;
+					margin: 8px 0;
+					line-height: 24px;
+				}
+
+				ul,
+				ol {
+					margin: 4px 0;
+
+					li {
+						margin: 4px 0;
+						line-height: 24px;
+					}
 				}
 			}
 
-			ul :first-child,
-			ol :first-child {
-				margin-top: 0;
-			}
-
-			ul :last-child,
-			ol :last-child {
-				margin-bottom: 0;
-			}
-
 			blockquote {
-				padding: 0 15px;
-				color: var(--foreground-normal);
-				border-left: 4px solid var(--background-normal);
+				font-size: 18px;
+				padding: 0 20px;
+				color: var(--foreground-subdued);
+				border-left: 2px solid var(--background-normal);
 			}
 
 			blockquote > :first-child {
@@ -258,6 +285,7 @@ export default defineComponent({
 			}
 
 			table {
+				margin: 40px 0;
 				padding: 0;
 				border-collapse: collapse;
 				border-spacing: 0;
@@ -276,7 +304,7 @@ export default defineComponent({
 
 			table tr th {
 				margin: 0;
-				padding: 6px 13px;
+				padding: 8px 20px;
 				font-weight: bold;
 				text-align: left;
 				border: 1px solid var(--background-normal);
@@ -284,7 +312,7 @@ export default defineComponent({
 
 			table tr td {
 				margin: 0;
-				padding: 6px 13px;
+				padding: 8px 20px;
 				text-align: left;
 				border: 1px solid var(--background-normal);
 			}
@@ -301,10 +329,24 @@ export default defineComponent({
 
 			img {
 				max-width: 100%;
+				margin: 20px 0;
+
+				&.no-margin {
+					margin: 0;
+				}
+
+				&.full {
+					width: 100%;
+				}
+
+				&.shadow {
+					box-shadow: 0px 5px 10px 0px rgba(23,41,64,0.1),
+								0px 2px 40px 0px rgba(23,41,64,0.05);
+				}
 			}
 
 			.highlight pre {
-				padding: 6px 10px;
+				padding: 8px 20px;
 				overflow: auto;
 				font-size: 13px;
 				line-height: 19px;
@@ -314,9 +356,9 @@ export default defineComponent({
 			}
 
 			hr {
-				margin: 20px auto;
+				margin: 40px auto;
 				border: none;
-				border-top: 1px solid var(--background-normal);
+				border-top: 2px solid var(--background-normal);
 			}
 
 			b,
@@ -326,24 +368,33 @@ export default defineComponent({
 
 			.hint {
 				display: inline-block;
-				padding: 0 16px;
+				margin: 20px 0;
+				padding: 0 20px;
 				background-color: var(--background-subdued);
-				border-left: 8px solid var(--primary);
+				border-left: 2px solid var(--primary);
+				width: 100%;
 
 				&-title {
 					font-weight: bold;
+					margin-bottom: 0.5em;
+				}
+
+				&-body {
+					margin-top: 0.5em;
 				}
 
 				&.tip {
-					border-left: 8px solid var(--success);
+					border-left: 2px solid var(--success);
 				}
 
 				&.warning {
-					border-left: 8px solid var(--warning);
+					background-color: var(--warning-10);
+					border-left: 2px solid var(--warning);
 				}
 
 				&.danger {
-					border-left: 8px solid var(--danger);
+					background-color: var(--danger-10);
+					border-left: 2px solid var(--danger);
 				}
 			}
 		}

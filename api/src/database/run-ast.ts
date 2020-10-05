@@ -215,6 +215,7 @@ function removeTemporaryFields(rawItem: Item | Item[], ast: AST | NestedCollecti
 	const nestedCollections = ast.children.filter((child) => child.type === 'collection') as NestedCollectionAST[];
 
 	for (const rawItem of rawItems) {
+		if (rawItem === null) return rawItem;
 		const item = fields.includes('*') ? rawItem : pick(rawItem, fields);
 
 		for (const nestedCollection of nestedCollections) {

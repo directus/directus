@@ -6,23 +6,21 @@ Directus can be installed in many different ways, on several different stacks. C
 * [Docker](/guides/installation/docker.md)
 * [Manually](/guides/installation/manual.md)
 
-:::tip Development Environment
+::: Development Environment
 Developers looking to work on the project's source code should follow our [Contributing Guide](#).
 :::
 
----
-
 ## Deployment Guides
 
-* Amazon AWS
-* DigitalOcean Droplet
+* [Amazon AWS](#)
+* [DigitalOcean Droplet](#)
 * [DigitalOcean One-Click](/guides/installation/digitalocean-one-click.md)
-* Google App Engine
+* [Google App Engine](#)
 * [Heroku](/guides/installation/heroku.md)
-* Microsoft Azure
+* [Microsoft Azure](#)
 
 ## Optional Setup Guides
 
-* Caddy
-* Nginx
-* HAProxy
+* [Caddy](#)
+* [Nginx](#)
+* [HAProxy](#)

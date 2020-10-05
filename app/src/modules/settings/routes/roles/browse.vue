@@ -141,7 +141,7 @@ export default defineComponent({
 					...response.data.data.map((role: any) => {
 						return {
 							...role,
-							count: role.users.length,
+							count: (role.users || []).length,
 						};
 					}),
 				];

@@ -123,7 +123,7 @@
 		{
 			"id": 53,
 			"collection_many": "directus_activity",
-			"field_many": "action_by",
+			"field_many": "user",
 			"collection_one": "directus_users",
 			"field_one": null,
 			"junction_field": null
@@ -155,7 +155,7 @@
 		{
 			"id": 59,
 			"collection_many": "directus_folders",
-			"field_many": "parent_folder",
+			"field_many": "parent",
 			"collection_one": "directus_folders",
 			"field_one": null,
 			"junction_field": null

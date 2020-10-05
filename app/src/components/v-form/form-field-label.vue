@@ -8,7 +8,7 @@
 		/>
 		<span @click="toggle">
 			{{ field.name }}
-			<v-icon class="required" sup name="star" v-if="field.required" />
+			<v-icon class="required" sup name="star" v-if="field.schema && field.schema.is_nullable === false" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
 	</div>

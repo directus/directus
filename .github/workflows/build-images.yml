@@ -11,12 +11,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build
+      - name: Build GitHub Container Registry
         uses: ./.github/actions/build-images
         with:
           registry: "ghcr.io"
           repository: "${{ github.repository }}"
           username: "${{ secrets.REGISTRY_USERNAME }}"
           password: "${{ secrets.REGISTRY_PASSWORD }}"
+          version: "${{ github.ref }}"
+          push: "true"
+
+      - name: Build Docker Hub
+        uses: ./.github/actions/build-images
+        with:
+          registry: "docker.io"
+          repository: "${{ github.repository }}"
+          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_PASSWORD }}"
           version: "${{ github.ref }}"
           push: "true"

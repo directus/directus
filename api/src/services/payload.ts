@@ -301,11 +301,10 @@ export class PayloadService {
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
 
-				let relatedPrimaryKey: PrimaryKey;
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
+				const exists = hasPrimaryKey && !!(await itemsService.readByKey(relatedPrimaryKey));
 
-				if (hasPrimaryKey) {
-					relatedPrimaryKey = relatedRecord[relation.one_primary];
-
+				if (exists) {
 					if (relatedRecord.hasOwnProperty('$delete') && relatedRecord.$delete) {
 						await itemsService.delete(relatedPrimaryKey);
 					} else {
