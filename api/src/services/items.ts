@@ -368,7 +368,7 @@ export class ItemsService implements AbstractService {
 						data:
 							snapshots && Array.isArray(snapshots)
 								? JSON.stringify(snapshots?.[index])
-								: snapshots,
+								: JSON.stringify(snapshots),
 						delta: JSON.stringify(payloadWithoutAliases),
 					}));
 
