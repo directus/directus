@@ -12,7 +12,6 @@
 			:key="index"
 			:section="childSection"
 			dense
-			subdued
 		/>
 	</div>
 	<v-list-group v-else>
@@ -27,7 +26,6 @@
 			:key="index"
 			:section="childSection"
 			dense
-			subdued
 		/>
 	</v-list-group>
 </template>
