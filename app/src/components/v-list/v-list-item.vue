@@ -130,6 +130,7 @@ body {
 	overflow: hidden;
 	color: var(--v-list-item-color);
 	text-decoration: none;
+	border-radius: var(--v-list-item-border-radius);
 
 	&.dashed {
 		&::after {
@@ -211,7 +212,6 @@ body {
 
 				margin: var(--v-list-item-margin-large);
 				padding: var(--v-list-item-padding-large);
-				border-radius: var(--v-list-item-border-radius);
 
 				&:not(:last-child):not(:only-child) {
 					margin-bottom: 4px;
