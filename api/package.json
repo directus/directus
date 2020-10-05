@@ -66,6 +66,7 @@
 	"dependencies": {
 		"@directus/app": "^9.0.0-beta.2",
 		"@directus/format-title": "^3.2.0",
+		"@directus/specs": "^9.0.0-beta.8",
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
 		"@slynova/flydrive-s3": "^1.0.2",

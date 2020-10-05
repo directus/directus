@@ -6,7 +6,7 @@ import { mergeWith } from 'lodash'
 // @ts-ignore
 import { version } from '../../package.json';
 // @ts-ignore
-import openapi from '../../openapi.json'
+import openapi from '@directus/specs/dist/openapi.json'
 import { RelationsService } from './relations';
 
 const internalCollections = [
