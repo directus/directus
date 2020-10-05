@@ -2,7 +2,7 @@ import { AbstractServiceOptions, Accountability, Collection, Field, Relation } f
 import { CollectionsService } from './collections'
 import { FieldsService } from './fields'
 import formatTitle from '@directus/format-title'
-import { mergeWith } from 'lodash'
+import { cloneDeep, mergeWith } from 'lodash'
 // @ts-ignore
 import { version } from '../../package.json';
 // @ts-ignore
@@ -160,7 +160,7 @@ export class SpecificationService {
             }
         }
 
-        return mergeWith(openapi, dynOpenapi, (obj, src) => {
+        return mergeWith(cloneDeep(openapi), dynOpenapi, (obj, src) => {
             if(Array.isArray(obj)) return obj.concat(src)
         })
     }
