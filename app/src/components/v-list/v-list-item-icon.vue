@@ -46,6 +46,7 @@ body {
 			#{$this} {
 				margin-top: 4px;
 				margin-bottom: 4px;
+				--v-icon-color: var(--v-list-item-icon-color);
 				&:not(:only-child) {
 					&:first-child {
 						margin-right: 8px;
@@ -68,8 +69,8 @@ body {
 				}
 			}
 
-			&:not(.large) #{$this} .v-icon {
-				--v-icon-color: var(--v-list-item-icon-color);
+			&.large #{$this} .v-icon {
+				--v-icon-color: none;
 			}
 
 			&.disabled #{$this} .v-icon {
