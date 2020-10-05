@@ -96,7 +96,7 @@ body {
 	--v-list-item-three-line-min-height: 52px;
 	--v-list-item-padding-large: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 2px 0;
+	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
 	--v-list-item-min-height: var(--v-list-item-one-line-min-height);
@@ -125,6 +125,7 @@ body {
 	max-width: var(--v-list-item-max-width);
 	min-height: var(--v-list-item-min-height);
 	max-height: var(--v-list-item-max-height);
+	margin: var(--v-list-item-margin);
 	margin-bottom: var(--v-list-item-margin-bottom);
 	padding: var(--v-list-item-padding);
 	overflow: hidden;
@@ -204,7 +205,7 @@ body {
 		}
 
 		.v-list.large {
-			#{$this} {
+			#{$this}:not(.dense) {
 				--v-list-item-min-height: var(--v-list-item-one-line-min-height-large);
 
 				--v-list-item-padding-large: 0 8px;
