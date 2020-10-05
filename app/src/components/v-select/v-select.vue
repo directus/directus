@@ -52,6 +52,9 @@
 					:disabled="item.disabled"
 					@click="multiple ? null : $emit('input', item.value)"
 				>
+					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
+						<v-icon :name="item.icon" />
+					</v-list-item-icon>
 					<v-list-item-content>
 						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
 						<v-checkbox
@@ -142,6 +145,10 @@ export default defineComponent({
 			type: String,
 			default: 'value',
 		},
+		itemIcon: {
+			type: String,
+			default: null,
+		},
 		value: {
 			type: [Array, String, Number] as PropType<InputValue>,
 			default: null,
@@ -215,6 +222,7 @@ export default defineComponent({
 					return {
 						text: item[props.itemText],
 						value: item[props.itemValue],
+						icon: item[props.itemIcon],
 						disabled: item.disabled,
 					};
 				});
