@@ -114,10 +114,10 @@ This module aggregates all files within the project into one consolidated librar
 
 Similar to other [Item Detail](#) pages, this page provides a custom form for viewing assets and embeds. Directus ships with a full-featured system for digital asset management, with the following fields:
 
-* **Title** — Pulled from @TODO, falls back to a formatted version of the filename
-* **Description** — Pulled from @TODO
-* **Tags** — Pulled from @TODO
-* **Location** — Pulled from @TODO
+* **Title** — Pulled from the file metadata if available, falls back to a formatted version of the filename
+* **Description** — Pulled from the file metadata if available
+* **Tags** — Pulled from the file metadata if available
+* **Location** — Pulled from the file metadata if available
 * **Storage** — The storage adapter where the asset is saved (readonly)
 * **Filename Disk** — The actual name of the file within the storage adapter
 * **Filename Download** — The name used when downloading the file via _Content-Disposition_
@@ -130,7 +130,7 @@ The sidebar's info component also includes the following readonly details:
 * **Created** — The timestamp of when the file was uploaded to the project
 * **Owner** — The Directus user that uploaded the file to the project
 * **Folder** — The current parent folder that contains the file
-* **Metadata** — [Metadata](#) @TODO
+* **Metadata** — [Metadata](#) JSON dump of the file's EXIF, IPTC, and ICC information
 
 ::: Extending Files
 While the fields included out-of-the-box are locked from schema changes, you can extend Directus Files to include additional proprietary fields within [Settings > Data Model](#).
