@@ -160,7 +160,7 @@ export class SpecificationService {
             }
         }
 
-        return mergeWith(cloneDeep(openapi), dynOpenapi, (obj, src) => {
+        return mergeWith(cloneDeep(openapi), cloneDeep(dynOpenapi), (obj, src) => {
             if(Array.isArray(obj)) return obj.concat(src)
         })
     }
