@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-beta.8",
+	"version": "9.0.0-beta.9",
 	"description": "Specification of the Directus Api",
 	"main": "index.js",
 	"scripts": {
@@ -24,7 +24,7 @@
 		"dist",
 		"LICENSE",
 		"README.md",
-    "index.js"
+		"index.js"
 	],
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
 }
