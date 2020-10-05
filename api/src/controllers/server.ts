@@ -6,7 +6,8 @@ import asyncHandler from 'express-async-handler';
 const router = Router();
 
 router.get('/specs/oas', asyncHandler(async (req, res, next) => {
-	const service = new SpecificationService({accountability: req.accountability})
+	const url = req.protocol + '://' + req.get('host') + '/'
+	const service = new SpecificationService(url, {accountability: req.accountability})
 	res.json(await service.generateOAS())
 }));
 

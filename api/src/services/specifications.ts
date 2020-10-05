@@ -92,13 +92,15 @@ export class SpecificationService {
     accountability: Accountability | null;
     fieldsService: FieldsService | null;
     collectionsService: CollectionsService | null;
-    relationsService: RelationsService | null
+    relationsService: RelationsService | null;
+    url: string | null;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(url: string, options?: AbstractServiceOptions) {
         this.accountability = options?.accountability || null;
         this.fieldsService = new FieldsService(options)
         this.collectionsService = new CollectionsService(options)
         this.relationsService = new RelationsService(options)
+        this.url = url;
     }
     
     async generateOAS() {
@@ -145,6 +147,12 @@ export class SpecificationService {
                 description: 'This is a dynamicly generated api specification for all endpoints existing on the api.',
                 version: version
             },
+            servers: [
+                {
+                    url: this.url,
+                    description: 'Your current api server.'
+                }
+            ],
             tags: this.generateTags(collections),
             paths: this.generatePaths(collections),
             components: {
