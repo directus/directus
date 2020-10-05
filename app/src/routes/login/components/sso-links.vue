@@ -1,6 +1,6 @@
 <template>
 	<div class="sso-links">
-		<template v-if="providers.length > 0">
+		<template v-if="providers && providers.length > 0">
 			<v-divider />
 
 			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
