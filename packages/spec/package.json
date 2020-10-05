@@ -23,7 +23,8 @@
 	"files": [
 		"dist",
 		"LICENSE",
-		"README.md"
+		"README.md",
+    "index.js"
 	],
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
 }
