@@ -33,7 +33,7 @@
 					</div>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<v-list-item @click="$emit('edit')">
 						<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>

@@ -7,7 +7,7 @@
 			</span>
 		</template>
 
-		<v-list class="menu" dense>
+		<v-list class="menu">
 			<v-list-item
 				v-for="option in options"
 				:key="option.value"

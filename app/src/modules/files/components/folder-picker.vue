@@ -1,7 +1,7 @@
 <template>
 	<v-skeleton-loader v-if="loading" />
 	<div class="folder-picker" v-else>
-		<v-list dense>
+		<v-list>
 			<v-item-group scope="folder-picker" multiple v-model="openFolders">
 				<v-list-group
 					disable-groupable-parent

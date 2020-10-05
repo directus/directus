@@ -54,7 +54,7 @@
 						/>
 					</template>
 
-					<v-list dense>
+					<v-list>
 						<v-list-item @click="aspectRatio = 16 / 9" :active="aspectRatio === 16 / 9">
 							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
 							<v-list-item-content>16:9</v-list-item-content>

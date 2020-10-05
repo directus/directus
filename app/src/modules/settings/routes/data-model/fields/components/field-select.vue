@@ -13,7 +13,7 @@
 						</span>
 					</template>
 
-					<v-list dense>
+					<v-list>
 						<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 							<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 							<v-list-item-content>
@@ -82,7 +82,7 @@
 							<v-icon @click.stop="toggle" name="more_vert" />
 						</template>
 
-						<v-list dense>
+						<v-list>
 							<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 								<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 								<v-list-item-content>

@@ -4,7 +4,7 @@
 			<v-icon :class="{ disabled }" name="more_vert" @click="toggle" />
 		</template>
 
-		<v-list dense>
+		<v-list>
 			<v-list-item :disabled="disabled" @click="$emit('save-and-stay')">
 				<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('save_and_stay') }}</v-list-item-content>

@@ -7,7 +7,7 @@
 		</v-list-item-icon>
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
-			<v-list dense>
+			<v-list>
 				<v-list-item @click="renameActive = true" :disabled="isMine === false">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />

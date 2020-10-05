@@ -4,7 +4,7 @@
 			<template #activator="{ toggle }">
 				<v-icon name="more_vert" @click="toggle" class="ctx-toggle" />
 			</template>
-			<v-list dense>
+			<v-list>
 				<v-list-item @click="deleteActive = true" class="danger">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />

@@ -2,8 +2,7 @@
 	<ul
 		class="v-list"
 		:class="{
-			dense,
-			nav,
+			large,
 			'three-line': lines === 3,
 			'two-line': lines === 2,
 			'one-line': lines === 1,
@@ -19,11 +18,7 @@ import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		nav: {
+		large: {
 			type: Boolean,
 			default: false,
 		},
@@ -79,7 +74,7 @@ body {
 	line-height: 22px;
 	border-radius: var(--border-radius);
 
-	&.nav {
+	&.large {
 		--v-list-padding: 12px;
 	}
 

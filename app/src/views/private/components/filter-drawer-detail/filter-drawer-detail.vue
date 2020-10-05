@@ -24,7 +24,7 @@
 				</v-input>
 			</template>
 
-			<v-list dense>
+			<v-list>
 				<field-list-item
 					@add="addFilterForField"
 					v-for="field in fieldTree"

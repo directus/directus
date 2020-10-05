@@ -1,5 +1,5 @@
 <template>
-	<v-list nav>
+	<v-list large>
 		<v-list-item to="/activity" exact>
 			<v-list-item-icon>
 				<v-icon name="access_time" />
