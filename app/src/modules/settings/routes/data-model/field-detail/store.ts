@@ -659,7 +659,7 @@ function initLocalStore(
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
-		state.fieldData.meta.special = ['alias'];
+		state.fieldData.meta.special = ['alias', 'no-data'];
 	}
 
 	if (type === 'standard') {
