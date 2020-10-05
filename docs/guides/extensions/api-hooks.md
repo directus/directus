@@ -134,8 +134,8 @@ module.exports = function registerHook({ services, exceptions }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure
-		'items.create.before': async function(input) {
-			if (input.collection !== 'recipes') return input;
+		'items.create.before': async function(input, { collection }) {
+			if (collection !== 'recipes') return input;
 
 			try {
 				await axios.post('https://example.com/recipes', input);
