@@ -50,25 +50,25 @@ Many scopes (see chart below) support an optional `.before` suffix for running a
 
 ### Event Format Options
 
-| Scope         | Actions                                | Before   |
-|---------------|----------------------------------------|----------|
-| `items`       | `create`, `update` and `delete`        | Optional |
-| `activity`    | `create`, `update` and `delete`        | Optional |
-| `collections` | `create`, `update` and `delete`        | Optional |
-| `fields`      | `create`, `update` and `delete`        | Optional |
-| `files`       | `create`, `update` and `delete`        | Optional |
-| `folders`     | `create`, `update` and `delete`        | Optional |
-| `permissions` | `create`, `update` and `delete`        | Optional |
-| `presets`     | `create`, `update` and `delete`        | Optional |
-| `relations`   | `create`, `update` and `delete`        | Optional |
-| `revisions`   | `create`, `update` and `delete`        | Optional |
-| `roles`       | `create`, `update` and `delete`        | Optional |
-| `settings`    | `create`, `update` and `delete`        | Optional |
-| `users`       | `create`, `update` and `delete`        | Optional |
-| `webhooks`    | `create`, `update` and `delete`        | Optional |
-| `server`      | `start` and `error`†                   | No       |
-| `auth`        | `success`†, `fail`† and `refresh`†     | No       |
-| `request`     | `get`†, `patch`† `post`† and `delete`† | No       |
+| Scope         | Actions                            | Before   |
+|---------------|------------------------------------|----------|
+| `items`       | `create`, `update` and `delete`    | Optional |
+| `activity`    | `create`, `update` and `delete`    | Optional |
+| `collections` | `create`, `update` and `delete`    | Optional |
+| `fields`      | `create`, `update` and `delete`    | Optional |
+| `files`       | `create`, `update` and `delete`    | Optional |
+| `folders`     | `create`, `update` and `delete`    | Optional |
+| `permissions` | `create`, `update` and `delete`    | Optional |
+| `presets`     | `create`, `update` and `delete`    | Optional |
+| `relations`   | `create`, `update` and `delete`    | Optional |
+| `revisions`   | `create`, `update` and `delete`    | Optional |
+| `roles`       | `create`, `update` and `delete`    | Optional |
+| `settings`    | `create`, `update` and `delete`    | Optional |
+| `users`       | `create`, `update` and `delete`    | Optional |
+| `webhooks`    | `create`, `update` and `delete`    | Optional |
+| `server`      | `start` and `error`†               | No       |
+| `response`    |                                    | No†      |
+| `auth`        | `success`†, `fail`† and `refresh`† | No       |
 
 † TBD
 
