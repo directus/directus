@@ -20,15 +20,7 @@ import VIcon from './v-icon/';
 import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
-import VList, {
-	VListGroup,
-	VListItem,
-	VListItemContent,
-	VListItemHint,
-	VListItemIcon,
-	VListItemSubtitle,
-	VListItemText,
-} from './v-list/';
+import VList, { VListGroup, VListItem, VListItemContent, VListItemHint, VListItemIcon, VListItemText } from './v-list/';
 import VMenu from './v-menu/';
 import VModal from './v-modal/';
 import VModalHeading from './v-modal/v-modal-heading.vue';
