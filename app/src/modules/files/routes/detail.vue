@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
+			<v-button class="header-icon" rounded icon secondary exact :to="to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -286,6 +286,11 @@ export default defineComponent({
 				.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
+		const to = computed(() => {
+			if(item.value?.folder !== undefined) return `/files?folder=${item.value.folder}`
+			else return '/files'
+		})
+
 		const { formFields } = useFormFields(fieldsFiltered);
 
 		const confirmLeave = ref(false);
@@ -327,6 +332,7 @@ export default defineComponent({
 			selectedFolder,
 			fileSrc,
 			form,
+			to
 		};
 
 		function changeCacheBuster() {

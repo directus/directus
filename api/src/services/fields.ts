@@ -67,9 +67,7 @@ export class FieldsService {
 			return data as Field;
 		});
 
-		const aliasQuery = this.knex
-			.select<any[]>('*')
-			.from('directus_fields');
+		const aliasQuery = this.knex.select<any[]>('*').from('directus_fields');
 
 		if (collection) {
 			aliasQuery.andWhere('collection', collection);
@@ -95,7 +93,7 @@ export class FieldsService {
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: field.special,
+				type: field.special[0],
 				schema: null,
 				meta: field,
 			};
@@ -192,9 +190,19 @@ export class FieldsService {
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
 		if (await this.schemaInspector.hasColumn(collection, field.field)) {
-			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
-		} else if (!!await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()) {
-			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+			throw new InvalidPayloadException(
+				`Field "${field.field}" already exists in collection "${collection}"`
+			);
+		} else if (
+			!!(await this.knex
+				.select('id')
+				.from('directus_fields')
+				.where({ collection, field: field.field })
+				.first())
+		) {
+			throw new InvalidPayloadException(
+				`Field "${field.field}" already exists in collection "${collection}"`
+			);
 		}
 
 		if (field.schema) {

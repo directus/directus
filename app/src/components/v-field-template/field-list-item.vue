@@ -4,10 +4,10 @@
 		:disabled="field.disabled"
 		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
 	>
-		<v-list-item-content>{{ field.name }}</v-list-item-content>
+		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
 	</v-list-item>
 	<v-list-group v-else>
-		<template #activator>{{ field.name }}</template>
+		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
 		<field-list-item
 			v-for="childField in field.children"
 			:key="childField.field"
@@ -22,6 +22,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
 import { FieldTree } from './types';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'field-list-item',
@@ -38,6 +39,9 @@ export default defineComponent({
 			type: Number,
 			default: 2,
 		},
+	},
+	setup() {
+		return { formatTitle };
 	},
 });
 </script>

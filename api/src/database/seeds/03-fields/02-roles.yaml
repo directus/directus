@@ -18,6 +18,7 @@ fields:
   - collection: directus_roles
     field: icon
     interface: icon
+    display: icon
     locked: true
     sort: 2
     width: half

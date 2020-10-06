@@ -27,6 +27,8 @@
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
+				:new-fields="newFields"
+				:new-collections="newCollections"
 				:is="`interface-options-${selectedInterface.id}`"
 				v-else
 			/>
@@ -115,9 +117,9 @@ export default defineComponent({
 			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
 		});
 
-		const { fieldData, relations } = toRefs(state);
+		const { fieldData, relations, newCollections, newFields } = toRefs(state);
 
-		return { fieldData, relations, selectItems, selectedInterface };
+		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

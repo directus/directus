@@ -5,7 +5,13 @@
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select :collection="junctionCollection" v-model="fields" />
+			<v-field-select
+				:collection="junctionCollection"
+				v-model="fields"
+				:inject="
+					junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }
+				"
+			/>
 		</div>
 	</div>
 </template>
@@ -14,7 +20,8 @@
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
+import { Relation, Collection } from '@/types';
+import { useCollectionsStore } from '../../stores';
 
 export default defineComponent({
 	props: {
@@ -34,8 +41,17 @@ export default defineComponent({
 			type: Object as PropType<any>,
 			default: null,
 		},
+		newCollections: {
+			type: Array as PropType<Collection[]>,
+			default: () => [],
+		},
+		newFields: {
+			type: Array as PropType<Field[]>,
+			default: () => [],
+		},
 	},
 	setup(props, { emit }) {
+		const collectionsStore = useCollectionsStore();
 		const relationsStore = useRelationsStore();
 
 		const fields = computed({
@@ -59,7 +75,13 @@ export default defineComponent({
 			return junctionRelation?.many_collection || null;
 		});
 
-		return { fields, junctionCollection };
+		const junctionCollectionExists = computed(() => {
+			return !!collectionsStore.state.collections.find(
+				(collection) => collection.collection === junctionCollection.value
+			);
+		});
+
+		return { fields, junctionCollection, junctionCollectionExists };
 	},
 });
 </script>

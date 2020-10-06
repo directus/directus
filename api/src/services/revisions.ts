@@ -1,6 +1,6 @@
 import { ItemsService } from './items';
 import { AbstractServiceOptions, PrimaryKey, Revision } from '../types';
-import { InvalidPayloadException, ItemNotFoundException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 /**
  * @TODO only return data / delta based on permissions you have for the requested collection
@@ -13,7 +13,7 @@ export class RevisionsService extends ItemsService {
 
 	async revert(pk: PrimaryKey) {
 		const revision = (await super.readByKey(pk)) as Revision | null;
-		if (!revision) throw new ItemNotFoundException(pk, 'directus_revisions');
+		if (!revision) throw new ForbiddenException();
 
 		if (!revision.data)
 			throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);

@@ -341,7 +341,7 @@
 	"related_values": "Related Values",
 
 	"last_page": "Last Page",
-	"last_login": "Last Login",
+	"last_access": "Last Access",
 
 	"fill_template": "Fill with Template Value",
 
@@ -587,7 +587,7 @@
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",
-		"NO_PERMISSION": "Forbidden.",
+		"FORBIDDEN": "Forbidden.",
 		"INVALID_CREDENTIALS": "Wrong username or password.",
 		"INVALID_OTP": "Wrong one-time password.",
 		"INVALID_PAYLOAD": "Invalid payload.",

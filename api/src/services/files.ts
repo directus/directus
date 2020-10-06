@@ -8,8 +8,7 @@ import path from 'path';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
-import notFound from '../controllers/not-found';
-import { ItemNotFoundException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 
 export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -94,7 +93,7 @@ export class FilesService extends ItemsService {
 		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
 
 		if (!files) {
-			throw new ItemNotFoundException(key, 'directus_files');
+			throw new ForbiddenException();
 		}
 
 		files = Array.isArray(files) ? files : [files];

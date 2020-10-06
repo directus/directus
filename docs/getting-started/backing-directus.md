@@ -1,4 +1,4 @@
-# Supporting Directus
+# Backing Directus
 
 > Directus is both _premium_ and _free_ — two things that don't often go together. It takes significant resources to maintain and advance the platform. If you'd like to help keep Directus active and open-source please consider supporting it through one of the methods below.
 
@@ -14,17 +14,13 @@ Monthly donations via [GitHub Sponsors](#) are the most reliable form of financi
 * [WoLfulus](https://github.com/WoLfulus) — DevOps
 * [Nitwel](https://github.com/Nitwel) — Developer
 
+### Sponsored Work
+
+[Commissioned Features](#) and [Expedited Fixes](#) are great ways to financially support the development of Directus, and improve the codebase for the community.
+
 ### Merch
 
 Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and advertising. Simply make an appropriate financial donation through [GitHub Sponsors](#), message us with sizing/shipping details, and we'll get it shipped!
-
-### Commissioned Features
-
-If you need a specific feature added to Directus faster than the normal development timeline, [reach out to us](#) for a quote. Our parent agency will often help subsidize the cost of developing new features if they pass our [80/20 Rule](#) and can be merged into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
-
-### Expedited Fixes
-
-We triage all reported bugs based on priority and how long the fix is estimated to take. If you need a specific issue resolved sooner, [reach out to us](#) for a quote.
 
 ## Other Contributions
 

@@ -27,7 +27,9 @@ All project configuration is handled by the `.env` file within the `/api` direct
 
 ## Upgrading a Project
 
-@TODO
+1. Backup your project
+2. Run `npm update`
+<!-- 3. Run `directus migrate:latest` to update the DB ——— @TODO finalize when CLI is finalized -->
 
 ## Backing-up a Project
 

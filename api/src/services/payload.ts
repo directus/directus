@@ -19,12 +19,12 @@ import { format, formatISO } from 'date-fns';
 type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (
-		action: Action,
-		value: any,
-		payload: Partial<Item>,
-		accountability: Accountability | null
-	) => Promise<any>;
+	[type: string]: (context: {
+		action: Action;
+		value: any;
+		payload: Partial<Item>;
+		accountability: Accountability | null;
+	}) => Promise<any>;
 };
 
 export class PayloadService {
@@ -48,7 +48,7 @@ export class PayloadService {
 	 * in order to work
 	 */
 	public transformers: Transformers = {
-		async hash(action, value) {
+		async hash({ action, value }) {
 			if (!value) return;
 
 			if (action === 'create' || action === 'update') {
@@ -57,14 +57,14 @@ export class PayloadService {
 
 			return value;
 		},
-		async uuid(action, value) {
+		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
 				return uuidv4();
 			}
 
 			return value;
 		},
-		async 'file-links'(action, value, payload) {
+		async 'file-links'({ action, value, payload }) {
 			if (action === 'read' && payload && payload.storage && payload.filename_disk) {
 				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
 
@@ -77,14 +77,14 @@ export class PayloadService {
 			// This is an non-existing column, so there isn't any data to save
 			return undefined;
 		},
-		async boolean(action, value) {
+		async boolean({ action, value }) {
 			if (action === 'read') {
 				return value === true || value === 1 || value === '1';
 			}
 
 			return value;
 		},
-		async json(action, value) {
+		async json({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
@@ -97,37 +97,36 @@ export class PayloadService {
 
 			return value;
 		},
-		async conceal(action, value) {
+		async conceal({ action, value }) {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'(action, value, payload, accountability) {
+		async 'user-created'({ action, value, payload, accountability }) {
 			if (action === 'create') return accountability?.user || null;
 			return value;
 		},
-		async 'user-updated'(action, value, payload, accountability) {
+		async 'user-updated'({ action, value, payload, accountability }) {
 			if (action === 'update') return accountability?.user || null;
 			return value;
 		},
-		async 'role-created'(action, value, payload, accountability) {
+		async 'role-created'({ action, value, payload, accountability }) {
 			if (action === 'create') return accountability?.role || null;
 			return value;
 		},
-		async 'role-updated'(action, value, payload, accountability) {
+		async 'role-updated'({ action, value, payload, accountability }) {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'(action, value) {
+		async 'date-created'({ action, value }) {
 			if (action === 'create') return new Date();
 			return value;
 		},
-		async 'date-updated'(action, value) {
+		async 'date-updated'({ action, value }) {
 			if (action === 'update') return new Date();
 			return value;
 		},
-		async csv(action, value) {
+		async csv({ action, value }) {
 			if (!value) return;
-			// if (Array.isArray(value) && action === 'read') return value;
 			if (action === 'read') return value.split(',');
 
 			if (Array.isArray(value)) return value.join(',');
@@ -214,7 +213,12 @@ export class PayloadService {
 
 		for (const special of fieldSpecials) {
 			if (this.transformers.hasOwnProperty(special)) {
-				value = await this.transformers[special](action, value, payload, accountability);
+				value = await this.transformers[special]({
+					action,
+					value,
+					payload,
+					accountability,
+				});
 			}
 		}
 
@@ -234,13 +238,17 @@ export class PayloadService {
 			type: getLocalType(column.type),
 		}));
 
-		const dateColumns = columnsWithType.filter((column) => ['dateTime', 'date', 'timestamp'].includes(column.type));
+		const dateColumns = columnsWithType.filter((column) =>
+			['dateTime', 'date', 'timestamp'].includes(column.type)
+		);
 
 		if (dateColumns.length === 0) return payloads;
 
 		for (const dateColumn of dateColumns) {
 			for (const payload of payloads) {
-				const value: Date = payload[dateColumn.name];
+				let value: string | Date = payload[dateColumn.name];
+
+				if (typeof value === 'string') value = new Date(value);
 
 				if (value) {
 					if (dateColumn.type === 'timestamp') {
@@ -345,20 +353,19 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
-				const relatedRecords: Partial<Item>[] = payload[relation.one_field]
-					.map(
-						(record: string | number | Partial<Item>) => {
-							if (typeof record === 'string' || typeof record === 'number') {
-								record = {
-									[relation.many_primary]: record
-								};
-							}
-
-							return {
-								...record,
-								[relation.many_field]: parent || payload[relation.one_primary],
-							}
+				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
+					(record: string | number | Partial<Item>) => {
+						if (typeof record === 'string' || typeof record === 'number') {
+							record = {
+								[relation.many_primary]: record,
+							};
 						}
+
+						return {
+							...record,
+							[relation.many_field]: parent || payload[relation.one_primary],
+						};
+					}
 				);
 
 				const itemsService = new ItemsService(relation.many_collection, {

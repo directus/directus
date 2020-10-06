@@ -67,3 +67,18 @@ data:
           status: 36
           name: 300
 
+  - collection: directus_roles
+    layout: tabular
+    layout_query:
+      tabular:
+        fields:
+          - icon
+          - name
+          - description
+    layout_options:
+      tabular:
+        widths:
+          icon: 36
+          name: 248
+          description: 500
+

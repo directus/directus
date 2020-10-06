@@ -36,7 +36,8 @@
 			"datetime": "Datetime",
 			"description": "Enter dates and times",
 			"include_seconds": "Include Seconds",
-			"set_to_now": "Set to Now"
+			"set_to_now": "Set to Now",
+			"use_24": "Use 24-Hour Format"
 		},
 		"display-template": {
 			"display-template": "Display Template",
