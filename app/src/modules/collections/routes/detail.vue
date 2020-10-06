@@ -33,7 +33,7 @@
 				secondary
 				exact
 				v-tooltip.bottom="$t('back')"
-				:to="'/collections/'+collection"
+				:to="'/collections/' + collection"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
