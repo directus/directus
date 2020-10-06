@@ -2,7 +2,7 @@
 	<private-view :title="collectionInfo && collectionInfo.name">
 		<template #headline>{{ $t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact @click="$router.go(-1)">
+			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
