@@ -83,8 +83,9 @@ export default defineComponent({
 body {
 	--v-list-item-min-height-large: 40px;
 	--v-list-item-min-height: 32px;
-	--v-list-item-padding-large: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
+	--v-list-item-padding-large: 0 8px;
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
+	--v-list-item-margin-large: 4px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
@@ -187,14 +188,22 @@ body {
 		.v-list.large {
 			#{$this}:not(.dense) {
 				--v-list-item-min-height: var(--v-list-item-min-height-large);
-				--v-list-item-padding-large: 0 8px;
 				--v-list-item-border-radius: 4px;
 
 				margin: var(--v-list-item-margin-large);
 				padding: var(--v-list-item-padding-large);
 
-				&:not(:last-child):not(:only-child) {
-					margin-bottom: 4px;
+				&:first-child {
+					margin-top: 0;
+				}
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
+				&:only-child {
+					margin-top: 0;
+					margin-bottom: 0;
 				}
 			}
 		}
