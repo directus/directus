@@ -94,21 +94,21 @@ The register function (eg: `module.exports = function registerHook()`) must retu
 
 The `registerHook` function receives a context parameter with the following properties:
 
-* `services` — All API interal services [Learn More](#)
-* `exceptions` — API exception objects that can be used for throwing "proper" errors [Learn More](#)
-* `database` — Knex instance that is connected to the current database [Learn More](#)
-* `env` — Parsed environment variables [Learn More](#)
+* `services` — All API interal services
+* `exceptions` — API exception objects that can be used for throwing "proper" errors
+* `database` — Knex instance that is connected to the current database
+* `env` — Parsed environment variables
 
 ### Event Handler Function
 
 The event handler function (eg: `'items.create': function()`) recieves a context parameter with the following properties:
 
-* `event` — Full event string [Learn More](#)
-* `accountability` — Information about the current user [Learn More](#)
-* `collection` — Collection that is being modified [Learn More](#)
-* `item` — Primary key(s) of the item(s) being modified [Learn More](#)
-* `action` — Action that is performed [Learn More](#)
-* `payload` — Payload of the request [Learn More](#)
+* `event` — Full event string
+* `accountability` — Information about the current user
+* `collection` — Collection that is being modified
+* `item` — Primary key(s) of the item(s) being modified
+* `action` — Action that is performed
+* `payload` — Payload of the request
 
 ## 5. Restart the API
 

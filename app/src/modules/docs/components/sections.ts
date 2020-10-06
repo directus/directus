@@ -173,6 +173,10 @@ const sections: Section[] = [
 				name: 'Error Codes',
 				to: '/docs/reference/error-codes',
 			},
+			{
+				name: 'Item Rules',
+				to: '/docs/reference/item-rules',
+			},
 		],
 	},
 ];

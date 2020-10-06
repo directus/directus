@@ -1,249 +1,250 @@
-# Project Environment Variables
+# Environment Variables
+
+> Each Directus project supports a number of environment variables for configuration. These variables are added to the `/api/.env` file, with an example file at `/api/example.env` for easier boilerplate setup.
+
 
 ## General
 
-| Env. Var.    | Description                                                                                        | Default Value |
-|--------------|----------------------------------------------------------------------------------------------------|---------------|
-| `PORT`       | What port to run the API under                                                                     | 8055          |
-| `PUBLIC_URL` | URL where your API can be reached on the web                                                       | `/`           |
-| `LOG_LEVEL`  | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent` | `info`        |
-| `LOG_STYLE`  | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                        | `pretty`      |
+### `PORT`
 
----
+What port to run the API under.<br>**Default: `8055`**
+
+### `PUBLIC_URL`
+
+URL where your API can be reached on the web.<br>**Default: `/`**
+
+### `LOG_LEVEL`
+
+What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.<br>**Default: `info`**
+
+### `LOG_STYLE`
+
+Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.<br>**Default: `pretty`**
+
 
 ## Database
 
-| Env. Var.   | Description                                                                                 | Default Value |
-|-------------|---------------------------------------------------------------------------------------------|---------------|
-| `DB_CLIENT` | What database client to use. One of `pg`, `mysql`, `mysql2`, `sqlite3`, `oracledb`, `mssql` | --            |
+### `DB_CLIENT`
 
-Depending on what DB client you use, the config is one of:
+What database client to use. One of `pg`, `mysql`, `mysql2`, `oracledb`, `mssql`, or `sqlite3`. For all database clients except SQLite, you will also need to configure the following variables:
 
-### `sqlite3`
+### `DB_HOST`
 
-| Env. Var.     | Description                             | Default Value |
-|---------------|-----------------------------------------|---------------|
-| `DB_FILENAME` | Where to read/write the SQLite database | --            |
+Database host. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
 
-### `pg`, `mysql`, `mysql2`, `oracledb`, `mssql`
+### `DB_PORT`
 
-| Env. Var.     | Description              | Default Value |
-|---------------|--------------------------|---------------|
-| `DB_HOST`     | Database host            | --            |
-| `DB_PORT`     | Database port            | --            |
-| `DB_DATABASE` | Database name            | --            |
-| `DB_USER`     | Database user            | --            |
-| `DB_PASSWORD` | Database user's password | --            |
+Database port. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
 
-::: tip
+### `DB_DATABASE`
+
+Database name. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
+
+### `DB_USER`
+
+Database user. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
+
+### `DB_PASSWORD`
+
+Database user's password. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
+
+### `DB_FILENAME` (SQLite Only)
+
+Where to read/write the SQLite database. Required when using `sqlite3`.
+
+::: Additional Database Variables
 All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
-Based on your exact needs, you can extend the `DB_*` environment variables with any config you need to pass to the database instance.
+Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the database instance.
 :::
 
----
 
 ## Security
 
-| Env. Var.                        | Description                                                                | Default Value |
-|----------------------------------|----------------------------------------------------------------------------|---------------|
-| `KEY`                            | Unique identifier for the current instance                                 | --            |
-| `SECRET`                         | Secret string                                                              | --            |
-| `ACCESS_TOKEN_TTL`               | The time the access token is valid                                         | `15m`         |
-| `REFRESH_TOKEN_TTL`              | The time the refresh token is valid                                        | `7d`          |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode | `false`       |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for the `sameSite` value in the refresh token cookie in cookie mode  | `lax`         |
+### `KEY`
 
-::: tip
-`REFRESH_TOKEN_TTL` also controls how long a user stays logged in to the app
-:::
+Unique identifier for the project.
 
----
+### `SECRET`
+
+Secret string for the project. Generated on installation.
+
+### `ACCESS_TOKEN_TTL`
+
+The duration that the access token is valid.<br>**Default: `15m`**
+
+### `REFRESH_TOKEN_TTL`
+
+The duration that the refresh token is valid, and also how long users stay logged-in to the App.<br>**Default: `7d`**
+
+### `REFRESH_TOKEN_COOKIE_SECURE`
+
+Whether or not to use a secure cookie for the refresh token in cookie mode.<br>**Default: `false`**
+
+### `REFRESH_TOKEN_COOKIE_SAME_SITE`
+
+Value for `sameSite` in the refresh token cookie when in cookie mode.<br>**Default: `lax`**
+
 
 ## CORS
 
-| Env. Var.              | Description                                                          | Default Value                |
-|------------------------|----------------------------------------------------------------------|------------------------------|
-| `CORS_ENABLED`         | Whether or not to enable the CORS headers                            | `true`                       |
-| `CORS_METHODS`         | Value for the `Access-Control-Allow-Methods` header                  | `GET,POST,PATCH,DELETE`      |
-| `CORS_ALLOWED_HEADERS` | Value for the `Access-Control-Allow-Headers` header                  | `Content-Type,Authorization` |
-| `CORS_EXPOSED_HEADERS` | Value for the `Access-Control-Expose-Headers` header                 | `Content-Range`              |
-| `CORS_CREDENTIALS`     | Whether or not to send the `Access-Control-Allow-Credentials` header | `true`                       |
-| `CORS_MAX_AGE`         | Value for the `Access-Control-Max-Age` header                        | 18000                        |
+### `CORS_ENABLED`
 
----
+Whether or not to enable the CORS headers.<br>**Default: `true`**
+
+### `CORS_METHODS`
+
+Value for the `Access-Control-Allow-Methods` header.<br>**Default: `GET,POST,PATCH,DELETE`**
+
+### `CORS_ALLOWED_HEADERS`
+
+Value for the `Access-Control-Allow-Headers` header.<br>**Default: `Content-Type,Authorization`**
+
+### `CORS_EXPOSED_HEADERS`
+
+Value for the `Access-Control-Expose-Headers` header.<br>**Default: `Content-Range`**
+
+### `CORS_CREDENTIALS`
+
+Whether or not to send the `Access-Control-Allow-Credentials` header.<br>**Default: `true`**
+
+### `CORS_MAX_AGE`
+
+Value for the `Access-Control-Max-Age` header.<br>**Default: `18000`**
+
 
 ## Rate Limiting
 
-| Env. Var.               | Description                                                                  | Default Value |
-|-------------------------|------------------------------------------------------------------------------|---------------|
-| `RATE_LIMITER_ENABLED`  | Whether or not to enable rate limiting on the API                            | `false`       |
-| `RATE_LIMITER_POINTS`   | The amount of allowed hits per duration                                      | 50            |
-| `RATE_LIMITER_DURATION` | The time window in seconds in which the points are counted                   | 1             |
-| `RATE_LIMITER_STORE`    | Where to store the rate limiter counts. One of `memory`, `redis`, `memcache` | `memory`      |
+### `RATE_LIMITER_ENABLED`
 
-::: tip
-Every other `RATE_LIMITER_*` environment variable is passed directly to a `rate-limiter-flexible` instance. Depending on your
-exact needs, you can extend the above environment variables to configure any of [the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options)
+Whether or not to enable rate limiting on the API.<br>**Default: `false`**
+
+### `RATE_LIMITER_POINTS`
+
+The amount of allowed hits per duration.<br>**Default: `50`**
+
+### `RATE_LIMITER_DURATION`
+
+The time window in seconds in which the points are counted.<br>**Default: `1`**
+
+### `RATE_LIMITER_STORE`
+
+Where to store the rate limiter counts. Either `memory`, `redis`, or `memcache`. Based on the rate limiter used, you must also provide the following configurations.<br>**Default: `memory`**
+
+* **Memory**
+	* No additional configuration required
+* **Redis**
+	* **`RATE_LIMITER_REDIS`** — Redis connection string
+		* eg: `redis://:authpassword@127.0.0.1:6380/4`
+	* Alternatively, you can enter individual connection parameters:
+		* **`RATE_LIMITER_REDIS_HOST`**
+		* **`RATE_LIMITER_REDIS_PORT`**
+		* **`RATE_LIMITER_REDIS_PASSWORD`**
+		* **`RATE_LIMITER_REDIS_DB`**
+* **Memcache**
+	* **`RATE_LIMITER_MEMCACHE`** — Location of your memcache instance
+
+::: Additional Rate Limiter Variables
+All `RATE_LIMITER_*` variables are passed directly to a `rate-limiter-flexible` instance. Depending on your
+project's needs, you can extend the above environment variables to configure any of [the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options).
 :::
 
-Based on your used store, you might need to add the following configuration:
-
-### Redis
-
-The connection to Redis can be configured in two ways. As a connection string, or as individual parameters:
-
-#### Connection String
-
-| Env. Var.            | Description                                                                   | Default Value |
-|----------------------|-------------------------------------------------------------------------------|---------------|
-| `RATE_LIMITER_REDIS` | Redis connection string, for example `redis://:authpassword@127.0.0.1:6380/4` | --            |
-
-#### Individual Connection Parameters
-
-| Env. Var.                     | Description    | Default Value |
-|-------------------------------|----------------|---------------|
-| `RATE_LIMITER_REDIS_HOST`     | Redis Host     | --            |
-| `RATE_LIMITER_REDIS_PORT`     | Redis Port     | --            |
-| `RATE_LIMITER_REDIS_PASSWORD` | Redis Password | --            |
-| `RATE_LIMITER_REDIS_DB`       | Redis DB       | --            |
-
-### Memcache
-
-| Env. Var.               | Description                        | Default Value |
-|-------------------------|------------------------------------|---------------|
-| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance | --            |
-
----
 
 ## Cache
 
-| Env. Var.               | Description                                                         | Default Value   |
-|-------------------------|---------------------------------------------------------------------|-----------------|
-| `CACHE_ENABLED`         | Whether or not caching is enabled                                   | `false`         |
-| `CACHE_TTL`<sup>1</sup> | How long the cache is persisted                                     | `30m`           |
-| `CACHE_NAMESPACE`       | How to scope the cache data                                         | `directus-cache |
-| `CACHE_STORE`           | Where to store the cache data. One of `memory`, `redis`, `memcache` | `memory`        |
+### `CACHE_ENABLED`
 
-<small><sup>1</sup> The cache is flushed on every edit (create/update/delete) regardless of TTL.</small>
+Whether or not caching is enabled.<br>**Default: `false`**
 
-Based on your used store, you might need to add the following configuration:
+### `CACHE_TTL`
 
-### Redis
+How long the cache is persisted.<br>**Default: `30m`**
 
-The connection to Redis can be configured in two ways. As a connection string, or as individual parameters:
+:::warning Forced Flush
+Regardless of TTL, the cache is always flushed for every create, update, and delete action.
+:::
 
-#### Connection String
+### `CACHE_NAMESPACE`
 
-| Env. Var.            | Description                                                                   | Default Value |
-|----------------------|-------------------------------------------------------------------------------|---------------|
-| `RATE_LIMITER_REDIS` | Redis connection string, for example `redis://:authpassword@127.0.0.1:6380/4` | --            |
+How to scope the cache data.<br>**Default: `directus-cache`**
 
-#### Individual Connection Parameters
+### `CACHE_STORE`
 
-| Env. Var.                     | Description    | Default Value |
-|-------------------------------|----------------|---------------|
-| `RATE_LIMITER_REDIS_HOST`     | Redis Host     | --            |
-| `RATE_LIMITER_REDIS_PORT`     | Redis Port     | --            |
-| `RATE_LIMITER_REDIS_PASSWORD` | Redis Password | --            |
-| `RATE_LIMITER_REDIS_DB`       | Redis DB       | --            |
+Where to store the cache data. Either `memory`, `redis`, or `memcache`. Based on the cache used, you must also provide the following configurations.<br>**Default: `memory`**
 
-### Memcache
+* **Memory**
+	* No additional configuration required
+* **Redis**
+	* **`CACHE_REDIS`** — Redis connection string
+		* eg: `redis://:authpassword@127.0.0.1:6380/4`
+	* Alternatively, you can enter individual connection parameters:
+		* **`CACHE_REDIS_HOST`**
+		* **`CACHE_REDIS_PORT`**
+		* **`CACHE_REDIS_PASSWORD`**
+		* **`CACHE_REDIS_DB`**
+* **Memcache**
+	* **`CACHE_MEMCACHE`** — Location of your memcache instance
 
-| Env. Var.               | Description                        | Default Value |
-|-------------------------|------------------------------------|---------------|
-| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance | --            |
-
----
 
 ## File Storage
 
-| Env. Var.           | Description                              | Default Value |
-|---------------------|------------------------------------------|---------------|
-| `STORAGE_LOCATIONS` | CSV of storage locations you want to use | `local`       |
+### `STORAGE_LOCATIONS`
 
-The names for the individual storage locations is up to you. The value accepts a CSV to enable multiple
-storage locations at the same time (for example `STORAGE_LOCATIONS="local,digitalocean,amazon"`).
+A CSV of storage locations (eg: `local,digitalocean,amazon`) to use. You can use any names you'd like for these keys, but each must have a matching `<LOCATION>` configuration.<br>**Default: `local`**
 
-For each of the storage locations you have listed, you have to provide the following configuration:
+For each of the storage locations listed, you must provide the following configuration:
 
-| Env. Var.                       | Description                                                   | Default Value |
-|---------------------------------|---------------------------------------------------------------|---------------|
-| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible       | --            |
-| `STORAGE_<LOCATION>_DRIVER`     | What driver to use for the files. One of `local`, `s3`, `gcl` | --            |
+* **`STORAGE_<LOCATION>_PUBLIC_URL`** — Location on the internet where the files are accessible
+* **`STORAGE_<LOCATION>_DRIVER`** — Which driver to use, either `local`, `s3`, or `gcl`
 
-Based on your configured driver, you'll have to add the following configuration:
+Based on your configured driver, you must also provide the following configurations.
 
-### `local`
+* **Local**
+	* `STORAGE_<LOCATION>_ROOT` — Where to store the files on disk
+* **S3**
+	* **`STORAGE_<LOCATION>_KEY`** — User key
+	* **`STORAGE_<LOCATION>_SECRET`** — User secret
+	* **`STORAGE_<LOCATION>_ENDPOINT`** — S3 Endpoint
+	* **`STORAGE_<LOCATION>_BUCKET`** — S3 Bucket
+	* **`STORAGE_<LOCATION>_REGION`** — S3 Region
+* **Google Cloud**
+	* **`STORAGE_<LOCATION>_KEY_FILENAME`** — Path to key file on disk
+	* **`STORAGE_<LOCATION>_BUCKET`** — Google Cloud Storage bucket
 
-| Env. Var.                 | Description                      | Default Value |
-|---------------------------|----------------------------------|---------------|
-| `STORAGE_<LOCATION>_ROOT` | Where to store the files on disk | --            |
-
-### `s3`
-
-| Env. Var.                     | Description | Default Value |
-|-------------------------------|-------------|---------------|
-| `STORAGE_<LOCATION>_KEY`      | User key    | --            |
-| `STORAGE_<LOCATION>_SECRET`   | User secret | --            |
-| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | --            |
-| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --            |
-| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --            |
-
-### `gcl`
-
-| Env. Var.                         | Description                 | Default Value |
-|-----------------------------------|-----------------------------|---------------|
-| `STORAGE_<LOCATION>_KEY_FILENAME` | Path to key file on disk    | --            |
-| `STORAGE_<LOCATION>_BUCKET`       | Google Cloud Storage bucket | --            |
-
----
 
 ## oAuth
 
-| Env. Var.         | Description                            | Default Value |
-|-------------------|----------------------------------------|---------------|
-| `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use | --            |
+### `OAUTH_PROVIDERS`
 
-For each of the oAuth providers you have listed, you have to provide the following config:
+CSV of oAuth providers you want to use. For each of the oAuth providers you list, you must also provide the following configurations.
 
-| Env. Var.                 | Description                           | Default Value |
-|---------------------------|---------------------------------------|---------------|
-| `OAUTH_<PROVIDER>_KEY`    | oAuth key for the external service    | --            |
-| `OAUTH_<PROVIDER>_SECRET` | oAuth secret for the external service | --            |
+* **`OAUTH_<PROVIDER>_KEY`** — oAuth key for the external service
+* **`OAUTH_<PROVIDER>_SECRET`** — oAuth secret for the external service.
 
----
 
 ## Extensions
 
-| Env. Var.         | Description                          | Default Value  |
-|-------------------|--------------------------------------|----------------|
-| `EXTENSIONS_PATH` | Path to your local extensions folder | `./extensions` |
+### `EXTENSIONS_PATH`
 
----
+Path to your local extensions folder.<br>**Default: `./extensions`**
+
 
 ## Email
 
-| Env. Var.         | Description                                           | Default Value          |
-|-------------------|-------------------------------------------------------|------------------------|
-| `EMAIL_FROM`      | Email address from which emails are sent              | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp` | `sendmail`             |
+### `EMAIL_FROM`
 
-Based on your used transport, you will have to configure the following:
+Email address from which emails are sent.<br>**Default: `no-reply@directus.io`**
 
-### `sendmail`
+### `EMAIL_TRANSPORT`
 
-| Env. Var.                 | Description                            | Default Value        |
-|---------------------------|----------------------------------------|----------------------|
-| `EMAIL_SENDMAIL_NEW_LINE` | What new line style to use in sendmail | `unix`               |
-| `EMAIL_SENDMAIL_PATH`     | Path to your sendmail executable       | `/usr/sbin/sendmail` |
+What to use to send emails. One of `sendmail`, `smtp`. Based on the transport used, you must also provide the following configurations.<br>**Default: `sendmail`**
 
-### `smtp`
-
-| Env. Var.             | Description      | Default Value |
-|-----------------------|------------------|---------------|
-| `EMAIL_SMTP_HOST`     | SMTP Host        | --            |
-| `EMAIL_SMTP_PORT`     | SMTP Port        | --            |
-| `EMAIL_SMTP_USER`     | SMTP User        | --            |
-| `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
-| `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
-| `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
+* **Sendmail** (`sendgrid`)
+	* **`EMAIL_SENDMAIL_NEW_LINE`** — What new line style to use in sendmail. **Default: `unix`**
+	* **`EMAIL_SENDMAIL_PATH`** — Path to your sendmail executable. **Default: `/usr/sbin/sendmail`**
+* **SMTP** (`smtp`)
+	* **`EMAIL_SMTP_HOST`** — SMTP Host
+	* **`EMAIL_SMTP_PORT`** — SMTP Port
+	* **`EMAIL_SMTP_USER`** — SMTP User
+	* **`EMAIL_SMTP_PASSWORD`** — SMTP Password
+	* **`EMAIL_SMTP_POOL`** — Use SMTP pooling
+	* **`EMAIL_SMTP_SECURE`** — Enable TLS

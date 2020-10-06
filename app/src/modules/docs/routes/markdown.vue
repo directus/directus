@@ -285,6 +285,7 @@ export default defineComponent({
 			}
 
 			table {
+				min-width: 100%;
 				margin: 40px 0;
 				padding: 0;
 				border-collapse: collapse;
