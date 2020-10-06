@@ -24,16 +24,16 @@ const sections: Section[] = [
 				to: '/docs/getting-started/introduction',
 			},
 			{
-				name: 'Troubleshooting',
-				to: '/docs/getting-started/troubleshooting',
+				name: 'Technical Support',
+				to: '/docs/getting-started/technical-support',
 			},
 			{
 				name: 'Contributing',
 				to: '/docs/getting-started/contributing',
 			},
 			{
-				name: 'Supporting Directus',
-				to: '/docs/getting-started/supporting-directus',
+				name: 'Backing Directus',
+				to: '/docs/getting-started/backing-directus',
 			},
 		],
 	},
