@@ -35,6 +35,7 @@ body {
 		&:first-child {
 			margin-right: 12px;
 		}
+
 		&:last-child {
 			margin-left: 12px;
 		}
@@ -44,27 +45,18 @@ body {
 		.v-list,
 		.v-list-item {
 			#{$this} {
+				--v-icon-color: var(--v-list-item-icon-color);
+
 				margin-top: 4px;
 				margin-bottom: 4px;
-				--v-icon-color: var(--v-list-item-icon-color);
+
 				&:not(:only-child) {
 					&:first-child {
 						margin-right: 8px;
 					}
+
 					&:last-child {
 						margin-left: 8px;
-					}
-				}
-			}
-
-			&.large {
-				&.three-line,
-				&.two-line {
-					#{$this} {
-						align-self: flex-start;
-						&.center {
-							align-self: center;
-						}
 					}
 				}
 			}

@@ -1,14 +1,6 @@
 <template>
-	<ul
-		class="v-list"
-		:class="{
-			large,
-			'three-line': lines === 3,
-			'two-line': lines === 2,
-			'one-line': lines === 1,
-		}"
-	>
-		<slot></slot>
+	<ul class="v-list" :class="{ large }">
+		<slot />
 	</ul>
 </template>
 
@@ -21,10 +13,6 @@ export default defineComponent({
 		large: {
 			type: Boolean,
 			default: false,
-		},
-		lines: {
-			type: Number as PropType<1 | 2 | 3>,
-			default: null,
 		},
 		multiple: {
 			type: Boolean,

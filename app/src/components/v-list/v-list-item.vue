@@ -10,9 +10,6 @@
 			large,
 			dense,
 			link: isClickable,
-			'three-line': lines === 3,
-			'two-line': lines === 2,
-			'one-line': lines === 1,
 			disabled,
 			dashed,
 		}"
@@ -21,7 +18,7 @@
 		:target="component === 'a' ? '_blank' : null"
 		v-on="disabled === false && $listeners"
 	>
-		<slot></slot>
+		<slot />
 	</component>
 </template>
 
@@ -38,10 +35,6 @@ export default defineComponent({
 		dense: {
 			type: Boolean,
 			default: false,
-		},
-		lines: {
-			type: Number as PropType<1 | 2 | 3>,
-			default: null,
 		},
 		to: {
 			type: [String, Object] as PropType<string | Location>,
@@ -88,18 +81,14 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-one-line-min-height-large: 40px;
-	--v-list-item-two-line-min-height-large: 52px;
-	--v-list-item-three-line-min-height-large: 64px;
-	--v-list-item-one-line-min-height: 32px;
-	--v-list-item-two-line-min-height: 36px;
-	--v-list-item-three-line-min-height: 52px;
+	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height: 32px;
 	--v-list-item-padding-large: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height: var(--v-list-item-one-line-min-height);
+	--v-list-item-min-height: var(--v-list-item-min-height);
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
 	--v-list-item-margin-bottom: 0;
@@ -176,13 +165,13 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-list-item-title {
+		::v-deep .v-list-item-text {
 			color: var(--foreground-subdued);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-list-item-title {
+			::v-deep .v-list-item-text {
 				color: var(--primary);
 			}
 		}
@@ -192,22 +181,12 @@ body {
 		.v-list,
 		#{$this},
 		.v-list #{$this} {
-			--v-list-item-min-height: var(--v-list-item-one-line-min-height);
-			&.one-line {
-				--v-list-item-min-height: var(--v-list-item-one-line-min-height);
-			}
-			&.two-line {
-				--v-list-item-min-height: var(--v-list-item-two-line-min-height);
-			}
-			&.three-line {
-				--v-list-item-min-height: var(--v-list-item-three-line-min-height);
-			}
+			--v-list-item-min-height: var(--v-list-item-min-height);
 		}
 
 		.v-list.large {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: var(--v-list-item-one-line-min-height-large);
-
+				--v-list-item-min-height: var(--v-list-item-min-height-large);
 				--v-list-item-padding-large: 0 8px;
 				--v-list-item-border-radius: 4px;
 
@@ -216,16 +195,6 @@ body {
 
 				&:not(:last-child):not(:only-child) {
 					margin-bottom: 4px;
-				}
-
-				&.one-line {
-					--v-list-item-min-height: var(--v-list-item-one-line-min-height-large);
-				}
-				&.two-line {
-					--v-list-item-min-height: var(--v-list-item-two-line-min-height-large);
-				}
-				&.three-line {
-					--v-list-item-min-height: var(--v-list-item-three-line-min-height-large);
 				}
 			}
 		}

@@ -2,7 +2,7 @@
 	<v-list-item v-if="section.children === undefined" :to="section.to" :dense="dense" :subdued="subdued">
 		<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 		<v-list-item-content>
-			<v-list-item-title>{{ section.name }}</v-list-item-title>
+			<v-list-item-text>{{ section.name }}</v-list-item-text>
 		</v-list-item-content>
 	</v-list-item>
 	<div v-else-if="section.flat === true">
@@ -18,7 +18,7 @@
 		<template #activator>
 			<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-title>{{ section.name }}</v-list-item-title>
+				<v-list-item-text>{{ section.name }}</v-list-item-text>
 			</v-list-item-content>
 		</template>
 		<navigation-list-item

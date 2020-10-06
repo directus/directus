@@ -27,7 +27,7 @@ import VList, {
 	VListItemHint,
 	VListItemIcon,
 	VListItemSubtitle,
-	VListItemTitle,
+	VListItemText,
 } from './v-list/';
 import VMenu from './v-menu/';
 import VModal from './v-modal/';
@@ -77,8 +77,7 @@ Vue.component('v-list-group', VListGroup);
 Vue.component('v-list-item-content', VListItemContent);
 Vue.component('v-list-item-hint', VListItemHint);
 Vue.component('v-list-item-icon', VListItemIcon);
-Vue.component('v-list-item-subtitle', VListItemSubtitle);
-Vue.component('v-list-item-title', VListItemTitle);
+Vue.component('v-list-item-text', VListItemText);
 Vue.component('v-list-item', VListItem);
 Vue.component('v-list', VList);
 Vue.component('v-menu', VMenu);
