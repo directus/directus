@@ -45,7 +45,11 @@ export class SpecificationService {
 	}
 }
 
-class OASService {
+interface SpecificationSubService {
+	generate: () => Promise<any>;
+}
+
+class OASService implements SpecificationSubService {
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
@@ -64,14 +68,17 @@ class OASService {
 		this.relationsService = relationsService;
 	}
 
-	collectionsDenyList = [
+	private collectionsDenyList = [
 		'directus_collections',
 		'directus_fields',
 		'directus_migrations',
 		'directus_sessions',
 	];
 
-	fieldTypes: Record<typeof types[number], { type: string; format?: string; items?: any }> = {
+	private fieldTypes: Record<
+		typeof types[number],
+		{ type: string; format?: string; items?: any }
+	> = {
 		bigInteger: {
 			type: 'integer',
 			format: 'int64',
@@ -166,7 +173,7 @@ class OASService {
 
 		const relationsTree: RelationTree = {};
 
-		for (const relation of relations) {
+		for (const relation of relations as Relation[]) {
 			if (relation.many_collection in relationsTree === false)
 				relationsTree[relation.many_collection] = {};
 			if (relation.one_collection in relationsTree === false)
@@ -207,7 +214,7 @@ class OASService {
 		});
 	}
 
-	getNameFormats(collection: string) {
+	private getNameFormats(collection: string) {
 		const isInternal = collection.startsWith('directus_');
 		const schema = formatTitle(
 			isInternal ? collection.replace('directus_', '').replace(/s$/, '') : collection + 'Item'
@@ -221,7 +228,7 @@ class OASService {
 		return { schema, tag, path, objectRef };
 	}
 
-	generateTags(collections: Collection[]) {
+	private generateTags(collections: Collection[]) {
 		const tags: { name: string; description?: string }[] = [];
 
 		for (const collection of collections) {
@@ -233,7 +240,7 @@ class OASService {
 		return tags;
 	}
 
-	generatePaths(collections: Collection[]) {
+	private generatePaths(collections: Collection[]) {
 		const paths: Record<string, object> = {};
 
 		for (const collection of collections) {
@@ -365,7 +372,7 @@ class OASService {
 		return paths;
 	}
 
-	generateSchemas(
+	private generateSchemas(
 		collections: Collection[],
 		fields: Record<string, Field[]>,
 		relations: RelationTree
