@@ -23,34 +23,16 @@ export class WebhooksService extends ItemsService {
 
 		for (const webhook of webhooks) {
 			if (webhook.actions === '*') {
-				if (webhook.collections === '*') {
-					const event = 'items.*.*';
+				const event = 'items.*';
+				const handler = this.createHandler(webhook);
+				emitter.on(event, handler);
+				registered.push({ event, handler });
+			} else {
+				for (const action of webhook.actions.split(',')) {
+					const event = `items.${action}`;
 					const handler = this.createHandler(webhook);
 					emitter.on(event, handler);
 					registered.push({ event, handler });
-				} else {
-					for (const collection of webhook.collections.split(',')) {
-						const event = `items.*.${collection}`;
-						const handler = this.createHandler(webhook);
-						emitter.on(event, handler);
-						registered.push({ event, handler });
-					}
-				}
-			} else {
-				for (const action of webhook.actions.split(',')) {
-					if (webhook.collections === '*') {
-						const event = `items.${action}.*`;
-						const handler = this.createHandler(webhook);
-						emitter.on(event, handler);
-						registered.push({ event, handler });
-					} else {
-						for (const collection of webhook.collections.split(',')) {
-							const event = `items.${action}.${collection}`;
-							const handler = this.createHandler(webhook);
-							emitter.on(event, handler);
-							registered.push({ event, handler });
-						}
-					}
 				}
 			}
 		}
@@ -66,6 +48,13 @@ export class WebhooksService extends ItemsService {
 
 	createHandler(webhook: Webhook): ListenerFn {
 		return async (data) => {
+			const collectionAllowList = webhook.collections.split(',');
+			if (
+				collectionAllowList.includes('*') === false &&
+				collectionAllowList.includes(data.collection) === false
+			)
+				return;
+
 			try {
 				await axios({
 					url: webhook.url,
