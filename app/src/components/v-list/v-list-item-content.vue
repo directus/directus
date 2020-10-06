@@ -42,8 +42,8 @@ body {
 		}
 	}
 
-	.v-list.dense &,
-	.v-list-item.dense & {
+	.v-list:not(.large) &,
+	.v-list-item:not(.large) & {
 		--v-list-item-content-padding: 4px 0;
 	}
 }

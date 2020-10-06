@@ -15,7 +15,7 @@
 								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
 									v-for="item in items"
 									:key="item.value"

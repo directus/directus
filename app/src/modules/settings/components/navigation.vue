@@ -1,9 +1,9 @@
 <template>
-	<v-list nav>
+	<v-list large>
 		<v-list-item v-for="item in navItems" :to="item.to" :key="item.to">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-title>{{ item.name }}</v-list-item-title>
+				<v-list-item-text>{{ item.name }}</v-list-item-text>
 			</v-list-item-content>
 		</v-list-item>
 
@@ -12,14 +12,14 @@
 		<v-list-item v-for="item in externalItems" :href="item.href" :key="item.href">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-title>{{ item.name }}</v-list-item-title>
+				<v-list-item-text>{{ item.name }}</v-list-item-text>
 			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item href="https://github.com/directus/directus/releases" class="version">
 			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-title class="version">Directus {{ version }}</v-list-item-title>
+				<v-list-item-text class="version">Directus {{ version }}</v-list-item-text>
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>

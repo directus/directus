@@ -1,5 +1,5 @@
 <template>
-	<v-list nav>
+	<v-list large>
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
 			<v-list-item v-for="n in 4" :key="n">
 				<v-skeleton-loader type="list-item-icon" />

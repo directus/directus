@@ -3,7 +3,7 @@ import readme from './readme.md';
 import withPadding from '../../../.storybook/decorators/with-padding';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { defineComponent } from '@vue/composition-api';
-import VList, { VListItem, VListItemContent, VListItemTitle, VListItemIcon } from '@/components/v-list';
+import VList, { VListItem, VListItemContent, VListItemText, VListItemIcon } from '@/components/v-list';
 import VIcon from '@/components/v-icon/';
 
 export default {
@@ -72,7 +72,7 @@ export const inList = () =>
 			VListItem,
 			VListItemContent,
 			VListItemIcon,
-			VListItemTitle,
+			VListItemText,
 			VIcon,
 		},
 		props: {},
@@ -82,7 +82,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 3" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-title>Item {{ n }}</v-list-item-title>
+							<v-list-item-text>Item {{ n }}</v-list-item-text>
 						</v-list-item-content>
 					</v-list-item>
 
@@ -91,7 +91,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 1" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-title>Item {{ n + 3 }}</v-list-item-title>
+							<v-list-item-text>Item {{ n + 3 }}</v-list-item-text>
 						</v-list-item-content>
 					</v-list-item>
 
@@ -100,7 +100,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 3" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-title>Item {{ n + 4 }}</v-list-item-title>
+							<v-list-item-text>Item {{ n + 4 }}</v-list-item-text>
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>

@@ -1,11 +1,11 @@
 <template functional>
-	<div class="v-list-item-title type-text">
-		<slot></slot>
+	<div class="v-list-item-text type-text">
+		<slot />
 	</div>
 </template>
 
 <style lang="scss" scoped>
-.v-list-item-title {
+.v-list-item-text {
 	flex-basis: 100%;
 	flex-grow: 1;
 	flex-shrink: 1;

@@ -23,7 +23,7 @@
 					</v-button>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<field-list-item
 						v-for="field in availableFields"
 						:key="field.field"

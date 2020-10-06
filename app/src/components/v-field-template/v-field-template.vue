@@ -21,7 +21,7 @@
 			</v-input>
 		</template>
 
-		<v-list dense>
+		<v-list>
 			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
 		</v-list>
 	</v-menu>

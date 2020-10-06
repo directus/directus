@@ -26,7 +26,7 @@
 			</v-input>
 		</template>
 
-		<v-list dense class="list">
+		<v-list class="list">
 			<template v-if="showDeselect">
 				<v-list-item @click="$emit('input', null)" :disabled="value === null">
 					<v-list-item-icon v-if="multiple === true">
