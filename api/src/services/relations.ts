@@ -21,7 +21,7 @@ export class RelationsService extends ItemsService {
 		this.permissionsService = new PermissionsService(options);
 	}
 
-	async readByQuery(query: Query): Promise<null | Item | Item[]> {
+	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
 		const results = (await super.readByQuery(query)) as Relation | Relation[] | null;
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
@@ -31,13 +31,13 @@ export class RelationsService extends ItemsService {
 		keys: PrimaryKey[],
 		query?: Query,
 		action?: PermissionsAction
-	): Promise<null | Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
+	): Promise<null | Relation[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Relation>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
 		action: PermissionsAction = 'read'
-	): Promise<null | Item | Item[]> {
+	): Promise<null | Relation | Relation[]> {
 		const results = (await super.readByKey(key as any, query, action)) as
 			| Relation
 			| Relation[]
