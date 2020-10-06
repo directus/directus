@@ -3,7 +3,7 @@ table: directus_activity
 fields:
   - collection: directus_activity
     field: action
-    display: badge
+    display: labels
     display_options:
       defaultForeground: '#263238'
       defaultBackground: '#eceff1'
