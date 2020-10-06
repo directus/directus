@@ -24,8 +24,8 @@ const sections: Section[] = [
 				to: '/docs/getting-started/introduction',
 			},
 			{
-				name: 'Technical Support',
-				to: '/docs/getting-started/technical-support',
+				name: 'Support & FAQ',
+				to: '/docs/getting-started/support',
 			},
 			{
 				name: 'Contributing',
@@ -84,10 +84,6 @@ const sections: Section[] = [
 		default: 'readme',
 		children: [
 			{
-				name: 'Projects',
-				to: '/docs/guides/projects',
-			},
-			{
 				name: 'Collections',
 				to: '/docs/guides/collections',
 			},
@@ -96,12 +92,20 @@ const sections: Section[] = [
 				to: '/docs/guides/fields',
 			},
 			{
-				name: 'Users & Roles',
-				to: '/docs/guides/users-and-roles',
+				name: 'Presets',
+				to: '/docs/guides/presets',
 			},
 			{
-				name: 'Presets & Bookmarks',
-				to: '/docs/guides/presets',
+				name: 'Projects',
+				to: '/docs/guides/projects',
+			},
+			{
+				name: 'Roles & Permissions',
+				to: '/docs/guides/roles-and-permissions',
+			},
+			{
+				name: 'Users',
+				to: '/docs/guides/users',
 			},
 			{
 				name: 'Webhooks',

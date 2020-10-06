@@ -1,6 +1,6 @@
-# Managing Users, Roles & Permissions
+# Roles & Permissions
 
-> New Directus projects automatically include an "Admin" role, and a single user configured during installation. You can then extend and customize these as much as is needed.
+> During installation, Directus automatically includes an initial "Admin" role with complete project access. After that, you are free to extend and customize these as much as is needed.
 
 ## Creating a Role
 
@@ -152,57 +152,4 @@ You must maintain at least one role/user with Admin Access so that you can still
 
 :::warning Public Role
 You can not delete the Public role, as it is part of the core platform. To disable it completely, simply turn off all Public access permissions.
-:::
-
-## Creating a User
-
-1. Navigate to the **User Library**
-2. Click the **Create User** action button in the header
-3. Enter an **Email Address**
-4. Optional: Complete the **other user form fields** (see [Configuring a User](#))
-
-## Inviting a User
-
-1. Navigate to **Settings > Roles & Permissions > [Role Name]**
-2. Scroll to the **Users in Role** field
-3. Click the **Invite Users** button
-4. Enter **one or more email addresses**, separated by commas, in the modal
-5. Click **Invite**
-
-## Configuring a User
-
-1. Navigate to the **User Library**
-2. Click on the user you wish to manage
-3. Complete any of the [User Fields](/concepts/app-overview.md#user-detail)
-
-::: User Preferences
-This section of the User Detail is only visible/editable by the current user, and admins.
-:::
-
-### Status
-
-* **Draft** — An incomplete user; no App/API access
-* **Invited** — Has a pending invite to the project; no App/API access until accepted
-* **Active** — The only status that has proper access to the App and API
-* **Suspended** — A user that has been temporarily disabled; no App/API access
-* **Archived** — A soft-deleted user; no App/API access
-
-:::warning Admin Only
-Only admins can adjust this field's value.
-:::
-
-### Role
-
-Setting the user's role determines their access, permissions, and App presentation. You can adjust a user's role from the User Detail page, or from the _Users in Role_ field within **Settings > Roles & Permissions > [Role Name]**.
-
-:::warning Admin Only
-Only admins can adjust this field's value.
-:::
-
-### Token
-
-A user's token is an alternate way to [authenticate into the API](#) using a static string. When NULL, the token is disabled. When enabled, ensure that a secure string is used.
-
-:::warning Admin Only
-Only admins can adjust this field's value.
 :::

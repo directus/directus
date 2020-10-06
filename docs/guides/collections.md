@@ -45,7 +45,7 @@ Keep in mind that Directus Collections are just a database tables. Therefore you
 * **Note** — A helpful note that explains the collection's purpose
 * **Display Template** — A [Field Template](#) used to create dynamic titles for the collection's items
 * **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all collections.
-* **Singleton** — Is this collection will only contain a single item (eg: an "About Us" form). When enabled, the [Item Browse](#) will be bypassed, and users are taken directly to the [Item Detail](#) page.
+* **Singleton** — Is this collection will only contain a single item (eg: an "About Us" form). When enabled, the [Collection Detail](#) will be bypassed, and users are taken directly to the [Item Detail](#) page.
 * **Translation** — Allows translating the collection name into different languages. These [Schema Translations](#) are important for multilingual projects. You can also "translate" a collection name into the default language — helpful for renaming technical table names.
 
 ### Archive
@@ -67,7 +67,7 @@ When creating a new Collection, you have the option of creating an optional "Sta
 
 ### Sort
 
-The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the [Item Browse](#) page/modal, and can also be used for sorting items within a [Junction Table](#).
+The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the [Collection Detail](#) page/modal, and can also be used for sorting items within a [Junction Table](#).
 
 ::: Sort Field
 When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this field, the collection's sort settings will automatically be configured for you.
