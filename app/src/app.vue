@@ -95,6 +95,13 @@ export default defineComponent({
 			}
 		);
 
+		watch(
+			() => settingsStore.state.settings?.project_name,
+			(projectName) => {
+				document.title = projectName;
+			}
+		);
+
 		const appAccess = computed(() => {
 			if (!userStore.state.currentUser) return true;
 			return userStore.state.currentUser?.role?.app_access || false;
