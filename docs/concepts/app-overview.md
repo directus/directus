@@ -9,7 +9,7 @@
 
 ### 1. Module Bar
 
-* **Project Logo** — Displays your configured project logo and project color (defaults to the Directus logo and color). If configured, clicking this component will navigate to the Project URL. During platform activity, an indeterminate progress indicator will also be shown here.
+* **Project Logo** — Displays your configured project logo and project color (defaults to the Directus logo and color). If [configured](#), clicking this component will navigate to the Project URL. During platform activity, an indeterminate progress indicator will also be shown here.
 * **Modules** — Any available [modules](#) are listed below the project logo. These may be turned off or reordered based on your [role's configuration](#), but by default this includes:
     * [Collections](#)
     * [User Directory](#)
