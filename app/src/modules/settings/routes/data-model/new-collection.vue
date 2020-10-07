@@ -75,7 +75,7 @@
 				<div class="grid system">
 					<div class="field" v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input v-model="info.name" class="monospace">
+						<v-input v-model="info.name" class="monospace" :disabled="info.enabled === false">
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />
 							</template>
