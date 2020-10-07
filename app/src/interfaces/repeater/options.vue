@@ -22,6 +22,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import Repeater from './repeater.vue';
 import { Field, FieldMeta } from '@/types';
 import i18n from '@/lang';
+import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
 
 export default defineComponent({
 	components: { Repeater },
@@ -36,10 +37,11 @@ export default defineComponent({
 			get() {
 				return props.value?.fields?.map((field: Field) => field.meta);
 			},
-			set(newVal: FieldMeta[]) {
-				const fields = newVal.map((meta) => ({
+			set(newVal: FieldMeta[] | null) {
+				const fields = (newVal || []).map((meta: Record<string, any>) => ({
 					field: meta.field,
 					name: meta.field,
+					type: meta.type,
 					meta,
 				}));
 
@@ -90,13 +92,32 @@ export default defineComponent({
 				schema: null,
 			},
 			{
+				name: i18n.t('type'),
+				field: 'type',
+				type: 'string',
+				meta: {
+					interface: 'dropdown',
+					width: 'half',
+					sort: 3,
+					options: {
+						choices: fieldTypes
+					}
+				},
+				schema: {
+					default_value: 'string'
+				},
+			},
+			{
 				name: i18n.t('interface'),
 				field: 'interface',
 				type: 'string',
 				meta: {
 					interface: 'interface',
 					width: 'half',
-					sort: 3,
+					sort: 4,
+					options: {
+						typeField: 'type'
+					}
 				},
 				schema: null,
 			},
@@ -106,8 +127,8 @@ export default defineComponent({
 				type: 'string',
 				meta: {
 					interface: 'text-input',
-					width: 'half',
-					sort: 4,
+					width: 'full',
+					sort: 5,
 					options: {
 						placeholder: i18n.t('interfaces.repeater.field_note_placeholder'),
 					},
@@ -121,7 +142,7 @@ export default defineComponent({
 				meta: {
 					interface: 'interface-options',
 					width: 'full',
-					sort: 5,
+					sort: 6,
 					options: {
 						interfaceField: 'interface',
 					},
