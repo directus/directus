@@ -287,7 +287,7 @@ export default defineComponent({
 		});
 
 		const to = computed(() => {
-			if(item.value?.folder !== undefined) return `/files?folder=${item.value.folder}`
+			if(item.value && item.value?.folder) return `/files?folder=${item.value.folder}`
 			else return '/files'
 		})
 
