@@ -1337,6 +1337,7 @@
   "select_existing": "Select Existing",
   "select_field": "Select a Field",
   "select_from_device": "Select from device",
+  "select_field_type": "Select a field type",
   "select_interface": "Select an interface",
   "select_interface_below": "Select an interface below",
   "select_statuses_copy": "Select the statuses the user can use",

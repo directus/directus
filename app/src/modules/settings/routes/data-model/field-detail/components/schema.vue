@@ -176,6 +176,69 @@ import { types } from '@/types';
 import i18n from '@/lang';
 import { state } from '../store';
 
+export const fieldTypes = [
+	{
+		text: i18n.t('string'),
+		value: 'string',
+	},
+	{
+		text: i18n.t('text'),
+		value: 'text',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('boolean'),
+		value: 'boolean',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('integer'),
+		value: 'integer',
+	},
+	{
+		text: i18n.t('bigInteger'),
+		value: 'bigInteger',
+	},
+	{
+		text: i18n.t('float'),
+		value: 'float',
+	},
+	{
+		text: i18n.t('decimal'),
+		value: 'decimal',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('timestamp'),
+		value: 'timestamp',
+	},
+	{
+		text: i18n.t('datetime'),
+		value: 'dateTime',
+	},
+	{
+		text: i18n.t('date'),
+		value: 'date',
+	},
+	{
+		text: i18n.t('time'),
+		value: 'time',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('json'),
+		value: 'json',
+	},
+	{
+		text: i18n.t('csv'),
+		value: 'csv',
+	},
+	{
+		text: i18n.t('uuid'),
+		value: 'uuid',
+	},
+];
+
 export default defineComponent({
 	props: {
 		isExisting: {
@@ -189,68 +252,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const typesWithLabels = computed(() => {
-			return [
-				{
-					text: i18n.t('string'),
-					value: 'string',
-				},
-				{
-					text: i18n.t('text'),
-					value: 'text',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('boolean'),
-					value: 'boolean',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('integer'),
-					value: 'integer',
-				},
-				{
-					text: i18n.t('bigInteger'),
-					value: 'bigInteger',
-				},
-				{
-					text: i18n.t('float'),
-					value: 'float',
-				},
-				{
-					text: i18n.t('decimal'),
-					value: 'decimal',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('timestamp'),
-					value: 'timestamp',
-				},
-				{
-					text: i18n.t('datetime'),
-					value: 'dateTime',
-				},
-				{
-					text: i18n.t('date'),
-					value: 'date',
-				},
-				{
-					text: i18n.t('time'),
-					value: 'time',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('json'),
-					value: 'json',
-				},
-				{
-					text: i18n.t('csv'),
-					value: 'csv',
-				},
-				{
-					text: i18n.t('uuid'),
-					value: 'uuid',
-				},
-			];
+			return fieldTypes
 		});
 
 		const typeDisabled = computed(() => {
