@@ -8,6 +8,7 @@
 import { defineComponent, ref, computed, watch, PropType, onMounted, onUpdated } from '@vue/composition-api';
 import marked from 'marked';
 import highlight from 'highlight.js';
+import 'highlight.js/styles/github.css'
 
 export default defineComponent({
 	setup(props, { slots }) {
@@ -28,7 +29,9 @@ export default defineComponent({
 			const hintRegex = /<p>:::(.*?) (.*?)\r?\n((\s|.)*?):::<\/p>/gm;
 
 			htmlString = marked(htmlString, {
-				highlight: (code) => highlight.highlightAuto(code).value,
+				highlight: (code, lang) => {
+					return highlight.highlightAuto(code, [lang]).value
+				},
 			});
 
 			htmlString = htmlString.replaceAll(
