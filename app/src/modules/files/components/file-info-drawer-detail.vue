@@ -36,21 +36,30 @@
 				<dd>{{ creationDate }}</dd>
 			</div>
 
-			<div v-if="modificationDate">
-				<dt>{{ $t('modified') }}</dt>
-				<dd>{{ modificationDate }}</dd>
-			</div>
-
 			<div v-if="file.checksum" class="checksum">
 				<dt>{{ $t('checksum') }}</dt>
 				<dd>{{ file.checksum }}</dd>
 			</div>
 
-			<div v-if="user">
+			<div v-if="user_created">
 				<dt>{{ $t('owner') }}</dt>
 				<dd>
-					<user-popover :user="user.id">
-						<router-link :to="user.link">{{ user.name }}</router-link>
+					<user-popover :user="user_created.id">
+						<router-link :to="user_created.link">{{ user_created.name }}</router-link>
+					</user-popover>
+				</dd>
+			</div>
+
+			<div v-if="modificationDate">
+				<dt>{{ $t('modified') }}</dt>
+				<dd>{{ modificationDate }}</dd>
+			</div>
+
+			<div v-if="user_modified">
+				<dt>{{ $t('edited_by') }}</dt>
+				<dd>
+					<user-popover :user="user_modified.id">
+						<router-link :to="user_modified.link">{{ user_modified.name }}</router-link>
 					</user-popover>
 				</dd>
 			</div>
@@ -129,10 +138,10 @@ export default defineComponent({
 		});
 
 		const { creationDate, modificationDate } = useDates();
-		const { user } = useUser();
+		const { user_created, user_modified } = useUser();
 		const { folder } = useFolder();
 
-		return { readableMimeType, size, creationDate, modificationDate, user, folder, marked };
+		return { readableMimeType, size, creationDate, modificationDate, user_created, user_modified, folder, marked };
 
 		function useDates() {
 			const creationDate = ref<string | null>(null);
@@ -169,11 +178,12 @@ export default defineComponent({
 			};
 
 			const loading = ref(false);
-			const user = ref<User | null>(null);
+			const user_created = ref<User | null>(null);
+			const user_modified = ref<User | null>(null);
 
 			watch(() => props.file, fetchUser, { immediate: true });
 
-			return { user };
+			return { user_created, user_modified };
 
 			async function fetchUser() {
 				if (!props.file) return null;
@@ -190,11 +200,28 @@ export default defineComponent({
 
 					const { id, first_name, last_name, role } = response.data.data;
 
-					user.value = {
+					user_created.value = {
 						id: props.file.uploaded_by,
 						name: first_name + ' ' + last_name,
 						link: `/users/${id}`,
 					};
+
+					if (props.file.modified_by) {
+						const response = await api.get(`/users/${props.file.modified_by}`, {
+							params: {
+								fields: ['id', 'first_name', 'last_name', 'role'],
+							},
+						});
+
+						const { id, first_name, last_name, role } = response.data.data;
+
+						user_modified.value = {
+							id: props.file.modified_by,
+							name: first_name + ' ' + last_name,
+							link: `/users/${id}`,
+						};
+					}
+
 				} finally {
 					loading.value = false;
 				}

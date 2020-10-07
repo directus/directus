@@ -274,6 +274,7 @@ export default defineComponent({
 			'checksum',
 			'uploaded_by',
 			'uploaded_on',
+			'modified_by',
 			'modified_on',
 			'duration',
 			'folder',

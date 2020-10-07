@@ -424,6 +424,7 @@
 	"modified": "Modified",
 	"checksum": "Checksum",
 	"owner": "Owner",
+	"edited_by": "Edited by",
 	"folder": "Folder",
 
 	"set_to_now": "Set to Now",
