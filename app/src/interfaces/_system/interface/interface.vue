@@ -25,16 +25,17 @@ export default defineComponent({
 		},
 		typeField: {
 			type: String,
-			default: null
-		}
+			default: null,
+		},
 	},
 	setup(props) {
 		const interfaces = getInterfaces();
 
+		const values = inject('values', ref<Record<string, any>>({}));
+
 		const selectedType = computed(() => {
-			const values = inject('values', ref<Record<string, any>>({}));
 			if (props.typeField === null || !values.value[props.typeField]) return;
-			return values.value[props.typeField]
+			return values.value[props.typeField];
 		});
 
 		const items = computed(() => {
