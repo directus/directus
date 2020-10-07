@@ -462,7 +462,7 @@
 	"updated_by": "Updated By",
 	"updated_on": "Updated On",
 	"creating_collection_info": "Name the collection and setup its unique “key” field...",
-	"creating_collection_system": "Would you like to add any system fields?",
+	"creating_collection_system": "Enable and rename any of these optional fields.",
 	"auto_increment_integer": "Auto-incremented integer",
 	"generated_uuid": "Generated UUID",
 	"manual_string": "Manually entered string",
