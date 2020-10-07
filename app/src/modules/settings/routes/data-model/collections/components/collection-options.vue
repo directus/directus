@@ -73,6 +73,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-button.delete {
 	--v-button-background-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-125);
 }
 
 .ctx-toggle {
