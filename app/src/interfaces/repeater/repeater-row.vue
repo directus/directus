@@ -1,5 +1,5 @@
 <template>
-	<v-item class="row" v-slot:default="{ active, toggle }">
+	<v-item class="row" v-slot:default="{ active, toggle }" :active="true" :watch="false">
 		<repeater-row-header
 			:template="template"
 			:value="value"
