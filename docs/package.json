@@ -3,8 +3,14 @@
   "private": false,
   "version": "9.0.0-beta.9",
   "description": "",
-  "main": "index.js",
-  "scripts": {},
+  "main": "dist/index.json",
+  "scripts": {
+    "build": "node build.js",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

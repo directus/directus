@@ -10,4 +10,4 @@ lerna-debug.log
 api/package-lock.json
 app/package-lock.json
 packages/**/package-lock.json
-
+dist
