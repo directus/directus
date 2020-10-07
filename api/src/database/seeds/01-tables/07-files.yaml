@@ -35,6 +35,10 @@ columns:
     type: timestamp
     nullable: false
     default: '$now'
+  modified_on:
+    type: timestamp
+    nullable: false
+    default: '$now'
   charset:
     type: string
     length: 50

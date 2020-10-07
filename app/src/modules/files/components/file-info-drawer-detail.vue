@@ -36,6 +36,11 @@
 				<dd>{{ creationDate }}</dd>
 			</div>
 
+			<div v-if="modificationDate">
+				<dt>{{ $t('modified') }}</dt>
+				<dd>{{ modificationDate }}</dd>
+			</div>
+
 			<div v-if="file.checksum" class="checksum">
 				<dt>{{ $t('checksum') }}</dt>
 				<dd>{{ file.checksum }}</dd>
@@ -123,14 +128,15 @@ export default defineComponent({
 			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
 		});
 
-		const { creationDate } = useCreationDate();
+		const { creationDate, modificationDate } = useDates();
 		const { user } = useUser();
 		const { folder } = useFolder();
 
-		return { readableMimeType, size, creationDate, user, folder, marked };
+		return { readableMimeType, size, creationDate, modificationDate, user, folder, marked };
 
-		function useCreationDate() {
+		function useDates() {
 			const creationDate = ref<string | null>(null);
+			const modificationDate = ref<string | null>(null);
 
 			watch(
 				() => props.file,
@@ -141,11 +147,18 @@ export default defineComponent({
 						new Date(props.file.uploaded_on),
 						String(i18n.t('date-fns_date_short'))
 					);
+
+					if(props.file.modified_on) {
+						modificationDate.value = await localizedFormat(
+							new Date(props.file.modified_on),
+							String(i18n.t('date-fns_date_short'))
+						);
+					}					
 				},
 				{ immediate: true }
 			);
 
-			return { creationDate };
+			return { creationDate, modificationDate };
 		}
 
 		function useUser() {
