@@ -18,7 +18,7 @@
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: isValidColor ? 'none' : 'var(--border-width) solid var(--border-normal)',
+							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
 						}"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
@@ -148,9 +148,18 @@ export default defineComponent({
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
 
-		const isValidColor = computed<boolean>(() => rgb.value !== null);
+		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
 
-		const { hsl, rgb, hex } = useColor();
+		const lowContrast = computed(() => {
+			if (color.value === null) return true
+
+			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
+			const pageColor = Color(pageColorString);
+
+			return color.value.contrast(pageColor) < 2
+		})
+
+		const { hsl, rgb, hex, color } = useColor();
 
 		const menuActive = ref(false);
 
@@ -166,6 +175,7 @@ export default defineComponent({
 			menuActive,
 			Color,
 			setValue,
+			lowContrast
 		};
 
 		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
@@ -181,9 +191,9 @@ export default defineComponent({
 		}
 
 		function useColor() {
-			const _rgb = ref<Color | null>(null);
+			const color = ref<Color | null>(null);
 
-			watch(_rgb, (newColor) => {
+			watch(color, (newColor) => {
 				if (newColor === null) return emit('input', null);
 
 				const hex = newColor.hex();
@@ -197,41 +207,42 @@ export default defineComponent({
 				(newValue) => {
 					if (newValue === null) return;
 					const newColor = Color(newValue);
-					if (newColor === null || newColor === _rgb.value) return;
-					_rgb.value = newColor;
+					if (newColor === null || newColor === color.value) return;
+					color.value = newColor;
 				},
 				{ immediate: true }
 			);
 
 			const rgb = computed<number[]>({
 				get() {
-					return _rgb.value !== null ? _rgb.value.rgb().array() : [0, 0, 0];
+					return color.value !== null ? color.value.rgb().array() : [0, 0, 0];
 				},
 				set(newRGB) {
-					_rgb.value = Color.rgb(newRGB);
+					color.value = Color.rgb(newRGB);
 				},
 			});
 
 			const hsl = computed<number[]>({
 				get() {
-					return _rgb.value !== null ? _rgb.value.hsl().array() : [0, 0, 0];
+					return color.value !== null ? color.value.hsl().array() : [0, 0, 0];
 				},
 				set(newHSL) {
-					_rgb.value = Color.hsl(newHSL);
+					color.value = Color.hsl(newHSL);
 				},
 			});
 
 			const hex = computed<string | null>({
 				get() {
-					return _rgb.value !== null ? _rgb.value.hex() : null;
+					return color.value !== null ? color.value.hex() : null;
 				},
 				set(newHex) {
+					if(newHex === '') color.value = null;
 					if (newHex === null || isHex(newHex) === false) return;
-					_rgb.value = Color(newHex);
+					color.value = Color(newHex);
 				},
 			});
 
-			return { rgb, hsl, hex };
+			return { rgb, hsl, hex, color };
 		}
 	},
 });
