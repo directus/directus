@@ -75,7 +75,7 @@
 				<div class="grid system">
 					<div class="field" v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input v-model="info.name" class="monospace">
+						<v-input v-model="info.name" class="monospace" :class="{active: info.enabled}" @click.native="info.enabled = true">
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />
 							</template>
@@ -431,6 +431,16 @@ export default defineComponent({
 }
 
 .system {
+	::v-deep .v-input {
+		.input {
+			color: var(--foreground-subdued);
+		}
+
+		&.active .input {
+			color: var(--foreground-normal);
+		}
+	}
+
 	.v-icon {
 		--v-icon-color: var(--foreground-subdued);
 	}
