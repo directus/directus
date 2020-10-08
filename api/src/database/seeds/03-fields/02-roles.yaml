@@ -77,7 +77,7 @@ fields:
     locked: true
     options:
       template: '{{ name }}'
-      createItemText: Add Module
+      addLabel: Add New Module...
       fields:
         - name: Icon
           field: icon
@@ -112,7 +112,7 @@ fields:
     locked: true
     options:
       template: '{{ group_name }}'
-      createItemText: Add Group
+      addLabel: Add New Group...
       fields:
         - name: Group Name
           field: group_name
@@ -145,7 +145,7 @@ fields:
           meta:
             interface: repeater
             options:
-              createItemText: Add Collection
+              addLabel: Add New Collection...
               template: '{{ collection }}'
               fields:
                 - name: Collection
