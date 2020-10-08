@@ -78,21 +78,31 @@ git checkout -b YOUR-BRANCH-NAME
 npm install
 ```
 
-### 5. Setup the Database & Env File
-
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you.
+### 5. Install the API dependencies
 
 ```bash
-@TODO
+cd api
+npm install
 ```
 
-### 6. Start the development server
+### 6. Setup the Database & Env File
+
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you. Run the following command from within the `/api` directory.
 
 ```bash
+./cli.js init
+```
+
+### 7. Start the development server
+
+Run the following command from the root directory.
+
+```bash
+cd ..
 npm run dev
 ```
 
-### 7. Make your fixes/changes
+### 8. Make your fixes/changes
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through our docs on [submitting a pull-request](#Submitting-a-Pull-Request).
 
