@@ -97,9 +97,11 @@ fields:
     locked: true
     special: user-updated
     width: half
+    display: user
   - collection: directus_files
     field: modified_on
     interface: dateTime
     locked: true
     special: date-updated
     width: half
+    display: dateTime
