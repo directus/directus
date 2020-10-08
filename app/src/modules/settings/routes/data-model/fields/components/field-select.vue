@@ -302,7 +302,7 @@ export default defineComponent({
 					...props.field,
 					field: duplicateName.value,
 					collection: duplicateTo.value,
-				};
+				} as Field & { name?: string; meta: { id?: number; sort?: number } };
 
 				if (newField.meta) {
 					delete newField.meta.id;
