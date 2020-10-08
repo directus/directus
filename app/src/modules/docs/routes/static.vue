@@ -61,8 +61,6 @@ export default defineComponent({
 		const markdown = ref('');
 		const view = ref<Vue>();
 
-		const mainElement = inject('main-element', ref<Element | null>(null));
-
 		const title = computed(() => {
 			const firstLine = markdown.value.split('\n').shift();
 			return firstLine?.substring(2).trim();
