@@ -3,7 +3,7 @@
   "private": false,
   "version": "9.0.0-beta.9",
   "description": "",
-  "main": "dist/index.json",
+  "main": "index.js",
   "scripts": {
     "build": "node build.js",
     "prepublish": "npm run build"

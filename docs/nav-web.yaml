@@ -1,0 +1,84 @@
+- name: Getting Started
+  emoji: 🐰
+  children:
+  - name: Introduction
+    to: "/getting-started/introduction"
+  - name: Support & FAQ
+    to: "/getting-started/support"
+  - name: Contributing
+    to: "/getting-started/contributing"
+  - name: Backing Directus
+    to: "/getting-started/backing-directus"
+
+- name: Concepts
+  emoji: 🎓
+  children:
+  - name: Platform Overview
+    to: "/concepts/platform-overview"
+  - name: App Overview
+    to: "/concepts/app-overview"
+  - name: App Extensions
+    to: "/concepts/app-extensions"
+  - name: Activity & Versions
+    to: "/concepts/activity-and-versions"
+  - name: Files & Thumbnails
+    to: "/concepts/files-and-thumbnails"
+  - name: Internationalization
+    to: "/concepts/internationalization"
+  - name: Relationships
+    to: "/concepts/relationships"
+  - name: Users, Roles & Permissions
+    to: "/concepts/users-roles-and-permissions"
+
+- name: Guides
+  emoji: 📖
+  children:
+  - name: Collections
+    to: "/guides/collections"
+  - name: Fields
+    to: "/guides/fields"
+  - name: Presets
+    to: "/guides/presets"
+  - name: Projects
+    to: "/guides/projects"
+  - name: Roles & Permissions
+    to: "/guides/roles-and-permissions"
+  - name: Users
+    to: "/guides/users"
+  - name: Webhooks
+    to: "/guides/webhooks"
+  - name: White-Labeling
+    to: "/guides/white-labeling"
+  - name: Extensions
+    to: "/guides/extensions"
+    children:
+    - name: Custom Displays
+      to: "/guides/extensions/creating-a-custom-display"
+    - name: Custom Interfaces
+      to: "/guides/extensions/creating-a-custom-interface"
+    - name: Custom Layouts
+      to: "/guides/extensions/creating-a-custom-layout"
+    - name: Custom Modules
+      to: "/guides/extensions/creating-a-custom-module"
+    - name: Custom API Endpoints
+      to: "/guides/extensions/creating-a-custom-api-endpoint"
+    - name: Custom API Hooks
+      to: "/guides/extensions/creating-a-custom-api-hook"
+    - name: Custom Email Templates
+      to: "/guides/extensions/creating-a-custom-email-template"
+    - name: Custom Storage Adapters
+      to: "/guides/extensions/creating-a-custom-storage-adapter"
+    - name: Accessing Data
+      to: "/guides/extensions/accessing-data"
+
+- name: Reference
+  emoji: 🚀
+  children:
+  - name: Environment Variables
+    to: "/reference/environment-variables"
+  - name: Command Line Interface
+    to: "/reference/command-line-interface"
+  - name: Error Codes
+    to: "/reference/error-codes"
+  - name: Item Rules
+    to: "/reference/item-rules"

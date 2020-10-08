@@ -123,7 +123,8 @@
     "@directus/docs": "file:docs",
     "@directus/specs": "file:packages/spec",
     "create-directus-project": "file:packages/create-directus-project",
-    "directus": "file:api"
+    "directus": "file:api",
+    "openapi3-ts": "^2.0.0"
   },
   "husky": {
     "hooks": {
