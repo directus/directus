@@ -78,12 +78,10 @@ export class AuthorizationService {
 		): { collection: string; field: string }[] {
 			const collections = [];
 
-			if (ast.type !== 'root') {
-				collections.push({
-					collection: ast.name,
-					field: ast.fieldKey || null,
-				});
-			}
+			collections.push({
+				collection: ast.name,
+				field: ast.type === 'root' ? null : ast.fieldKey,
+			});
 
 			for (const nestedNode of ast.children) {
 				if (nestedNode.type !== 'field') {
