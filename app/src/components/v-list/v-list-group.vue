@@ -40,10 +40,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		disableGroupableParent: {
-			type: Boolean,
-			default: false,
-		},
 		scope: {
 			type: String,
 			default: undefined,
@@ -60,17 +56,6 @@ export default defineComponent({
 			group: props.scope,
 			value: props.value,
 		});
-
-		if (props.disableGroupableParent !== true) {
-			useGroupableParent(
-				{},
-				{
-					multiple
-				}
-			);
-
-			
-		}
 
 		return { groupActive, toggle, onClick };
 
