@@ -28,7 +28,7 @@
 				</v-button>
 			</template>
 
-			<v-list dense>
+			<v-list>
 				<template v-for="(option, index) in addOptions">
 					<v-divider v-if="option.divider === true" :key="index" />
 					<v-list-item

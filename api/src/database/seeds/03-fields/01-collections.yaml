@@ -63,7 +63,7 @@ fields:
     sort: 7
     width: half
   - collection: directus_collections
-    field: translation
+    field: translations
     special: json
     interface: repeater
     options:
@@ -78,7 +78,7 @@ fields:
             interface: system-language
             width: half
         - field: translation
-          name: Translation
+          name: translation
           type: string
           meta:
             interface: text-input

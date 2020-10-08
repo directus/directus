@@ -129,10 +129,10 @@ export default defineComponent({
 								'collection',
 								'item',
 								'activity.action',
-								'activity.action_on',
-								'activity.action_by.id',
-								'activity.action_by.first_name',
-								'activity.action_by.last_name',
+								'activity.timestamp',
+								'activity.user.id',
+								'activity.user.first_name',
+								'activity.user.last_name',
 								'activity.ip',
 								'activity.user_agent',
 							],
@@ -140,8 +140,8 @@ export default defineComponent({
 					});
 
 					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
-						// revision's action_on date is in iso-8601
-						const date = new Date(new Date(revision.activity.action_on).toDateString());
+						// revision's timestamp date is in iso-8601
+						const date = new Date(new Date(revision.activity.timestamp).toDateString());
 						return date;
 					});
 
@@ -164,12 +164,12 @@ export default defineComponent({
 						revisionsGrouped.push({
 							date: date,
 							dateFormatted: String(dateFormatted),
-							revisions: orderBy(value, ['activity.action_on'], ['desc']),
+							revisions: orderBy(value, ['activity.timestamp'], ['desc']),
 						});
 					}
 
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
-					revisions.value = orderBy(response.data.data, ['activity.action_on'], ['desc']);
+					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 				} catch (err) {
 					error.value = err;
 				} finally {

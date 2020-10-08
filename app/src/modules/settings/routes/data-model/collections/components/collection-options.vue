@@ -4,7 +4,7 @@
 			<template #activator="{ toggle }">
 				<v-icon name="more_vert" @click="toggle" class="ctx-toggle" />
 			</template>
-			<v-list dense>
+			<v-list>
 				<v-list-item @click="deleteActive = true" class="danger">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
@@ -73,6 +73,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-button.delete {
 	--v-button-background-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-125);
 }
 
 .ctx-toggle {

@@ -3,7 +3,7 @@ table: directus_activity
 fields:
   - collection: directus_activity
     field: action
-    display: badge
+    display: labels
     display_options:
       defaultForeground: '#263238'
       defaultBackground: '#eceff1'
@@ -30,12 +30,12 @@ fields:
     display_options:
       icon: true
   - collection: directus_activity
-    field: action_on
+    field: timestamp
     display: datetime
     options:
       relative: true
   - collection: directus_activity
-    field: action_by
+    field: user
     display: user
   - collection: directus_activity
     field: comment

@@ -7,11 +7,9 @@
 		:to="to"
 		:class="{
 			active,
+			large,
 			dense,
 			link: isClickable,
-			'three-line': lines === 3,
-			'two-line': lines === 2,
-			'one-line': lines === 1,
 			disabled,
 			dashed,
 		}"
@@ -20,7 +18,7 @@
 		:target="component === 'a' ? '_blank' : null"
 		v-on="disabled === false && $listeners"
 	>
-		<slot></slot>
+		<slot />
 	</component>
 </template>
 
@@ -30,13 +28,13 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
-		dense: {
+		large: {
 			type: Boolean,
 			default: false,
 		},
-		lines: {
-			type: Number as PropType<1 | 2 | 3>,
-			default: null,
+		dense: {
+			type: Boolean,
+			default: false,
 		},
 		to: {
 			type: [String, Object] as PropType<string | Location>,
@@ -83,18 +81,15 @@ export default defineComponent({
 
 <style>
 body {
-	--v-list-item-one-line-min-height: 40px;
-	--v-list-item-two-line-min-height: 52px;
-	--v-list-item-three-line-min-height: 64px;
-	--v-list-item-one-line-min-height-dense: 32px;
-	--v-list-item-two-line-min-height-dense: 36px;
-	--v-list-item-three-line-min-height-dense: 52px;
-	--v-list-item-padding: 0 16px 0 calc(16px + var(--v-list-item-indent, 0px));
-	--v-list-item-padding-dense: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-dense: 2px 0;
+	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height: 32px;
+	--v-list-item-padding-large: 0 8px;
+	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
+	--v-list-item-margin-large: 4px 0;
+	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height: var(--v-list-item-one-line-min-height);
+	--v-list-item-min-height: var(--v-list-item-min-height);
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
 	--v-list-item-margin-bottom: 0;
@@ -120,6 +115,7 @@ body {
 	max-width: var(--v-list-item-max-width);
 	min-height: var(--v-list-item-min-height);
 	max-height: var(--v-list-item-max-height);
+	margin: var(--v-list-item-margin);
 	margin-bottom: var(--v-list-item-margin-bottom);
 	padding: var(--v-list-item-padding);
 	overflow: hidden;
@@ -147,18 +143,18 @@ body {
 		transition-property: background-color, color;
 		user-select: none;
 
-		&:not(.disabled):hover {
+		&:not(.disabled):not(.dense):hover {
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
-		&:not(.disabled):active {
+		&:not(.disabled):not(.dense):active {
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
 	}
 
-	&.active {
+	&:not(.dense).active {
 		color: var(--v-list-item-color-active);
 		background-color: var(--v-list-item-background-color-active);
 	}
@@ -169,52 +165,45 @@ body {
 		cursor: not-allowed;
 	}
 
+	&.dense {
+		::v-deep .v-list-item-text {
+			color: var(--foreground-subdued);
+		}
+
+		&:hover,
+		&.active {
+			::v-deep .v-list-item-text {
+				color: var(--primary);
+			}
+		}
+	}
+
 	@at-root {
 		.v-list,
 		#{$this},
 		.v-list #{$this} {
-			--v-list-item-min-height: var(--v-list-item-one-line-min-height);
-			&.one-line {
-				--v-list-item-min-height: var(--v-list-item-one-line-min-height);
-			}
-			&.two-line {
-				--v-list-item-min-height: var(--v-list-item-two-line-min-height);
-			}
-			&.three-line {
-				--v-list-item-min-height: var(--v-list-item-three-line-min-height);
-			}
+			--v-list-item-min-height: var(--v-list-item-min-height);
 		}
 
-		.v-list.dense {
-			& #{$this} {
-				--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
-
-				margin: var(--v-list-item-margin-dense);
-				padding: var(--v-list-item-padding-dense);
-				&.one-line {
-					--v-list-item-min-height: var(--v-list-item-one-line-min-height-dense);
-				}
-				&.two-line {
-					--v-list-item-min-height: var(--v-list-item-two-line-min-height-dense);
-				}
-				&.three-line {
-					--v-list-item-min-height: var(--v-list-item-three-line-min-height-dense);
-				}
-			}
-		}
-
-		.v-list.nav {
-			& #{$this} {
-				--v-list-item-padding: 0 8px;
+		.v-list.large {
+			#{$this}:not(.dense) {
+				--v-list-item-min-height: var(--v-list-item-min-height-large);
 				--v-list-item-border-radius: 4px;
-				&:not(:last-child):not(:only-child) {
-					--v-list-item-margin-bottom: 4px;
+
+				margin: var(--v-list-item-margin-large);
+				padding: var(--v-list-item-padding-large);
+
+				&:first-child {
+					margin-top: 0;
 				}
-			}
-			&.dense #{$this},
-			#{$this}.dense {
-				&:not(:last-child):not(:only-child) {
-					--v-list-item-margin-bottom: 4px;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
+				&:only-child {
+					margin-top: 0;
+					margin-bottom: 0;
 				}
 			}
 		}

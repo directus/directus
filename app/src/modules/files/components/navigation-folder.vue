@@ -38,7 +38,7 @@
 		</v-list-group>
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
-			<v-list dense>
+			<v-list>
 				<v-list-item @click="renameActive = true">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
@@ -181,7 +181,7 @@ export default defineComponent({
 
 		function useMoveFolder() {
 			const moveActive = ref(false);
-			const moveValue = ref(props.folder.parent_folder);
+			const moveValue = ref(props.folder.parent);
 			const moveSaving = ref(false);
 
 			return { moveActive, moveValue, moveSave, moveSaving };
@@ -191,7 +191,7 @@ export default defineComponent({
 
 				try {
 					await api.patch(`/folders/${props.folder.id}`, {
-						parent_folder: moveValue.value,
+						parent: moveValue.value,
 					});
 				} catch (error) {
 					console.error(error);
@@ -216,7 +216,7 @@ export default defineComponent({
 					const foldersToUpdate = await api.get('/folders', {
 						params: {
 							filter: {
-								parent_folder: {
+								parent: {
 									_eq: props.folder.id,
 								},
 							},
@@ -233,13 +233,13 @@ export default defineComponent({
 						},
 					});
 
-					const newParent = props.folder.parent_folder || null;
+					const newParent = props.folder.parent || null;
 
 					const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
 					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
 					if (folderKeys.length > 0) {
-						await api.patch(`/folders/${folderKeys.join(',')}`, { parent_folder: newParent });
+						await api.patch(`/folders/${folderKeys.join(',')}`, { parent: newParent });
 					}
 
 					if (fileKeys.length > 0) {

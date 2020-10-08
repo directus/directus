@@ -40,7 +40,7 @@
 				</draggable>
 
 				<v-checkbox
-					v-for="field in fieldsInCollection.filter((field) => fields.includes(field.field) === false)"
+					v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
 					v-model="fields"
 					:key="field.field"
 					:value="field.field"
@@ -261,6 +261,10 @@ export default defineComponent({
 			return count;
 		});
 
+		const availableFields = computed(() => {
+			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
+		});
+
 		useShortcut(
 			'meta+a',
 			() => {
@@ -299,6 +303,7 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
+			availableFields,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -360,13 +365,7 @@ export default defineComponent({
 					}
 
 					const fields =
-						_layoutQuery.value?.fields ||
-						fieldsInCollection.value
-							.filter((field: Field) => {
-								return field.schema?.is_primary_key === false;
-							})
-							.slice(0, 4)
-							.map(({ field }) => field);
+						_layoutQuery.value?.fields || fieldsInCollection.value.slice(0, 4).map(({ field }) => field);
 
 					return fields;
 				},

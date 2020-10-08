@@ -26,7 +26,7 @@
 								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
@@ -72,7 +72,7 @@
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="field in fields"
 								:key="field.value"

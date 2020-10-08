@@ -1,6 +1,6 @@
 <template>
 	<div class="sso-links">
-		<template v-if="providers.length > 0">
+		<template v-if="providers && providers.length > 0">
 			<v-divider />
 
 			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
@@ -32,7 +32,7 @@ export default defineComponent({
 			try {
 				const response = await api.get('/auth/oauth/');
 
-				providers.value = response.data.data.map((providerName: string) => {
+				providers.value = response.data.data?.map((providerName: string) => {
 					return {
 						name: providerName,
 						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${

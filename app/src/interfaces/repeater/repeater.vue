@@ -5,7 +5,7 @@
 				v-for="(row, index) in value"
 				:key="index"
 				:value="row"
-				:template="template"
+				:template="_template"
 				:fields="fields"
 				@input="updateValues(index, $event)"
 				@delete="removeItem(row)"
@@ -40,7 +40,7 @@ export default defineComponent({
 		},
 		template: {
 			type: String,
-			required: true,
+			default: null
 		},
 		addLabel: {
 			type: String,
@@ -58,6 +58,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);
 
+		const _template = computed(() => {
+			if(props.template === null) return props.fields.length > 0 ? `{{${ props.fields[0].field}}}` : ''
+			return props.template
+		})
+
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
 			if (props.value === null) return true;
@@ -66,7 +71,7 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection };
+		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection, _template };
 
 		function updateValues(index: number, updatedValues: any) {
 			emitValue(

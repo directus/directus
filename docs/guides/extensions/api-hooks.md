@@ -22,20 +22,11 @@ Next, you will want to define your event. You can trigger your custom hook with 
 
 ```
 <scope>.<action>(.<before>)
+// eg: items.create
 // eg: files.create
 // eg: server.start
 // eg: collections.*
 // eg: users.update.before
-```
-
-While hooks for _items_ also require the collection to be defined:
-
-```
-<scope>.<action>.<collection>(.<before>)
-// eg: items.create.articles
-// eg: items.update.customers
-// eg: items.update.*
-// eg: items.create.invoices.before
 ```
 
 ### Scope
@@ -50,38 +41,34 @@ Currently all system tables are available as event scopes except for `directus_m
 
 Defines the triggering operation within the specified context (see chart below). The `*` wildcard can also be used to include all actions available to the scope.
 
-### Collection
-
-Events in the "Items" scope also require the collection to be defined. The `*` wildcard can also be used to include all collections.
-
 ### Before
 
 Many scopes (see chart below) support an optional `.before` suffix for running a _blocking_ hook prior to the event being fired. This allows you to check and/or modify the event's payload before it is processed.
 
-* `items.create.<collection>` (Non Blocking)
-* `items.create.<collection>.before` (Blocking)
+* `items.create` (Non Blocking)
+* `items.create.before` (Blocking)
 
 ### Event Format Options
 
-| Scope         | Actions                           | Collection | Before   |
-|---------------|-----------------------------------|------------|----------|
-| `items`       | `create`, `update` and `delete`    | Required   | Optional |
-| `activity`    | `create`, `update` and `delete`    | No         | Optional |
-| `collections` | `create`, `update` and `delete`    | No         | Optional |
-| `fields`      | `create`, `update` and `delete`    | No         | Optional |
-| `files`       | `create`, `update` and `delete`    | No         | Optional |
-| `folders`     | `create`, `update` and `delete`    | No         | Optional |
-| `permissions` | `create`, `update` and `delete`    | No         | Optional |
-| `presets`     | `create`, `update` and `delete`    | No         | Optional |
-| `relations`   | `create`, `update` and `delete`    | No         | Optional |
-| `revisions`   | `create`, `update` and `delete`    | No         | Optional |
-| `roles`       | `create`, `update` and `delete`    | No         | Optional |
-| `settings`    | `create`, `update` and `delete`    | No         | Optional |
-| `users`       | `create`, `update` and `delete`    | No         | Optional |
-| `webhooks`    | `create`, `update` and `delete`    | No         | Optional |
-| `server`      | `start` and `error`†                | No        | No       |
-| `auth`        | `success`†, `fail`† and `refresh`†    | No      | No       |
-| `request`     | `get`†, `patch`† `post`† and `delete`† | No     | No       |
+| Scope         | Actions                            | Before   |
+|---------------|------------------------------------|----------|
+| `items`       | `create`, `update` and `delete`    | Optional |
+| `activity`    | `create`, `update` and `delete`    | Optional |
+| `collections` | `create`, `update` and `delete`    | Optional |
+| `fields`      | `create`, `update` and `delete`    | Optional |
+| `files`       | `create`, `update` and `delete`    | Optional |
+| `folders`     | `create`, `update` and `delete`    | Optional |
+| `permissions` | `create`, `update` and `delete`    | Optional |
+| `presets`     | `create`, `update` and `delete`    | Optional |
+| `relations`   | `create`, `update` and `delete`    | Optional |
+| `revisions`   | `create`, `update` and `delete`    | Optional |
+| `roles`       | `create`, `update` and `delete`    | Optional |
+| `settings`    | `create`, `update` and `delete`    | Optional |
+| `users`       | `create`, `update` and `delete`    | Optional |
+| `webhooks`    | `create`, `update` and `delete`    | Optional |
+| `server`      | `start` and `error`†               | No       |
+| `response`    |                                    | No†      |
+| `auth`        | `success`†, `fail`† and `refresh`† | No       |
 
 † TBD
 
@@ -92,7 +79,7 @@ Each custom hook is registered to its event scope using a function with the foll
 ```js
 module.exports = function registerHook() {
 	return {
-		'items.create.articles': function() {
+		'items.create': function() {
 			axios.post('http://example.com/webhook');
 		}
 	}
@@ -107,21 +94,21 @@ The register function (eg: `module.exports = function registerHook()`) must retu
 
 The `registerHook` function receives a context parameter with the following properties:
 
-* `services` — All API interal services [Learn More](#)
-* `exceptions` — API exception objects that can be used for throwing "proper" errors [Learn More](#)
-* `database` — Knex instance that is connected to the current database [Learn More](#)
-* `env` — Parsed environment variables [Learn More](#)
+* `services` — All API interal services
+* `exceptions` — API exception objects that can be used for throwing "proper" errors
+* `database` — Knex instance that is connected to the current database
+* `env` — Parsed environment variables
 
 ### Event Handler Function
 
-The event handler function (eg: `'items.create.articles': function()`) recieves a context parameter with the following properties:
+The event handler function (eg: `'items.create': function()`) recieves a context parameter with the following properties:
 
-* `event` — Full event string [Learn More](#)
-* `accountability` — Information about the current user [Learn More](#)
-* `collection` — Collection that is being modified [Learn More](#)
-* `item` — Primary key(s) of the item(s) being modified [Learn More](#)
-* `action` — Action that is performed [Learn More](#)
-* `payload` — Payload of the request [Learn More](#)
+* `event` — Full event string
+* `accountability` — Information about the current user
+* `collection` — Collection that is being modified
+* `item` — Primary key(s) of the item(s) being modified
+* `action` — Action that is performed
+* `payload` — Payload of the request
 
 ## 5. Restart the API
 
@@ -147,7 +134,9 @@ module.exports = function registerHook({ services, exceptions }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure
-		'items.recipes.create.before': async function(input) {
+		'items.create.before': async function(input, { collection }) {
+			if (collection !== 'recipes') return input;
+
 			try {
 				await axios.post('https://example.com/recipes', input);
 			} catch (error) {

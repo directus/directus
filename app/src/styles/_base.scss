@@ -6,6 +6,7 @@
 	font-size: inherit;
 	font-family: inherit;
 	line-height: inherit;
+	tab-size: 2;
 	user-select: none;
 }
 
@@ -120,9 +121,9 @@ dd {
 }
 
 dt {
+	flex-shrink: 0;
 	margin-right: 8px;
 	font-weight: 600;
-	flex-shrink: 0;
 }
 
 dd {

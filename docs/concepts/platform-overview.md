@@ -53,6 +53,15 @@ Collections can be organized in any way that is appropriate for your project. Yo
 * [Creating a Collection](#)
 * [Deleting a Collection](#)
 
+## Presets
+
+Presets store the exact state of a [collection detail](#) page. These are used to set layout defaults for a user, or to define bookmarks that can be used to quickly recall specific datasets.
+
+### Relevant Guides
+
+* [Creating a Preset](#)
+* [Deleting a Preset](#)
+
 ## Fields
 
 A Field is a specific type of value within a Collection. Each field represents a database column. Directus automatically uses a built-in [title formatter](#) to display your database column names prettified, and you can use [translations](#) to completely rename them if needed.

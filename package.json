@@ -2,10 +2,9 @@
   "name": "directus-monorepo",
   "private": true,
   "scripts": {
-    "clean": "lerna clean -y",
-    "bootstrap": "lerna bootstrap",
     "dev": "lerna run dev --stream --parallel",
-    "release": "lerna publish --force-publish"
+    "release": "lerna publish --force-publish",
+    "setup": "lerna exec npm install && lerna run build"
   },
   "repository": {
     "type": "git",
@@ -81,9 +80,11 @@
     "copyfiles": "^2.3.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
+    "directory-tree": "^2.2.4",
     "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
+    "fs-extra": "^9.0.1",
     "html-loader": "^1.1.0",
     "husky": "^4.3.0",
     "jest-sonar": "^0.2.10",
@@ -96,6 +97,7 @@
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
     "regenerator-runtime": "^0.13.7",
+    "rimraf": "^3.0.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "storybook-addon-themes": "^5.4.1",

@@ -24,7 +24,7 @@ import { defineComponent, PropType, computed, ref, provide } from '@vue/composit
 import { useFieldsStore } from '@/stores/';
 import { Field, FilterOperator } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
-import { clone } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
@@ -106,7 +106,7 @@ export default defineComponent({
 		function useForm() {
 			const fields = computed(() => {
 				if (props.collection) {
-					return fieldsStore.state.fields.filter((field) => field.collection === props.collection);
+					return fieldsStore.getFieldsForCollection(props.collection)
 				}
 
 				if (props.fields) {
@@ -123,7 +123,7 @@ export default defineComponent({
 
 				return formFields.value.map((field: Field) => {
 					if (field.schema?.is_primary_key === true) {
-						const fieldClone = clone(field) as any;
+						const fieldClone = cloneDeep(field) as any;
 						if (!fieldClone.meta) fieldClone.meta = {};
 						fieldClone.meta.readonly = true;
 						return fieldClone;

@@ -10,6 +10,8 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"enter_password_to_enable_tfa": "Enter your password to enable Two-Factor Authentication",
+
 	"add_field": "Add Field",
 
 	"role_name": "Role Name",
@@ -339,7 +341,7 @@
 	"related_values": "Related Values",
 
 	"last_page": "Last Page",
-	"last_login": "Last Login",
+	"last_access": "Last Access",
 
 	"fill_template": "Fill with Template Value",
 
@@ -460,7 +462,7 @@
 	"updated_by": "Updated By",
 	"updated_on": "Updated On",
 	"creating_collection_info": "Name the collection and setup its unique “key” field...",
-	"creating_collection_system": "Would you like to add any system fields?",
+	"creating_collection_system": "Enable and rename any of these optional fields.",
 	"auto_increment_integer": "Auto-incremented integer",
 	"generated_uuid": "Generated UUID",
 	"manual_string": "Manually entered string",
@@ -585,7 +587,7 @@
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",
-		"NO_PERMISSION": "Forbidden.",
+		"FORBIDDEN": "Forbidden.",
 		"INVALID_CREDENTIALS": "Wrong username or password.",
 		"INVALID_OTP": "Wrong one-time password.",
 		"INVALID_PAYLOAD": "Invalid payload.",
@@ -921,6 +923,7 @@
 	"page_help_collections_detail": "**Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.",
 	"page_help_activity_browse": "**Browse Activity** — A comprehensive listing of all your user's system and content activity.",
 	"page_help_activity_detail": "**Activity Detail** — Shows accountability info, revision data, and the update message for this activity record.",
+	"page_help_docs_global": "**Documentation Overview** — Docs tailored specifically to this project's version and schema.",
 	"page_help_files_browse": "**File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_files_detail": "**File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.",
 	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.",
@@ -980,8 +983,8 @@
       "action": "Action",
       "collection": "Collection",
       "item": "Item Primary Key",
-      "action_by": "Action By",
-      "action_on": "Action On",
+      "user": "Action By",
+      "timestamp": "Action On",
       "edited_on": "Edited On",
       "comment_deleted_on": "Comment Deleted On",
       "ip": "IP Address",
@@ -1055,7 +1058,7 @@
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections Navigation"
+		"collection_list": "Collection Navigation"
 	}
   },
 
@@ -1335,6 +1338,7 @@
   "select_existing": "Select Existing",
   "select_field": "Select a Field",
   "select_from_device": "Select from device",
+  "select_field_type": "Select a field type",
   "select_interface": "Select an interface",
   "select_interface_below": "Select an interface below",
   "select_statuses_copy": "Select the statuses the user can use",

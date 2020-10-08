@@ -20,15 +20,7 @@ import VIcon from './v-icon/';
 import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
-import VList, {
-	VListGroup,
-	VListItem,
-	VListItemContent,
-	VListItemHint,
-	VListItemIcon,
-	VListItemSubtitle,
-	VListItemTitle,
-} from './v-list/';
+import VList, { VListGroup, VListItem, VListItemContent, VListItemHint, VListItemIcon, VListItemText } from './v-list/';
 import VMenu from './v-menu/';
 import VModal from './v-modal/';
 import VModalHeading from './v-modal/v-modal-heading.vue';
@@ -77,8 +69,7 @@ Vue.component('v-list-group', VListGroup);
 Vue.component('v-list-item-content', VListItemContent);
 Vue.component('v-list-item-hint', VListItemHint);
 Vue.component('v-list-item-icon', VListItemIcon);
-Vue.component('v-list-item-subtitle', VListItemSubtitle);
-Vue.component('v-list-item-title', VListItemTitle);
+Vue.component('v-list-item-text', VListItemText);
 Vue.component('v-list-item', VListItem);
 Vue.component('v-list', VList);
 Vue.component('v-menu', VMenu);

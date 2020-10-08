@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
+			<v-button class="header-icon" rounded icon secondary exact to="/users">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -270,11 +270,11 @@ export default defineComponent({
 			'id',
 			'external_id',
 			'last_page',
-			'last_login',
 			'created_on',
 			'created_by',
 			'modified_by',
 			'modified_on',
+			'last_access',
 		];
 
 		const fieldsFiltered = computed(() => {

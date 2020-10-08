@@ -161,7 +161,9 @@ export default function usePreview({
 
 		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
 
-		return (value.value || []).filter((stagedEdit: any) => !stagedEdit.$delete && !stagedEdit[junctionPrimaryKey]);
+		return (value.value || []).filter(
+			(stagedEdit: any) => !stagedEdit.$delete && !stagedEdit[junctionPrimaryKey] && stagedEdit.$new === true
+		);
 	}
 
 	/**

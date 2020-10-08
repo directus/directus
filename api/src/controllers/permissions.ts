@@ -4,6 +4,7 @@ import { PermissionsService, MetaService } from '../services';
 import { clone } from 'lodash';
 import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
 
@@ -26,7 +27,8 @@ router.post(
 			throw error;
 		}
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -40,7 +42,8 @@ router.get(
 
 		res.locals.payload = { data: item || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -64,7 +67,8 @@ router.get(
 
 		res.locals.payload = { data: items || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -77,7 +81,8 @@ router.get(
 
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -99,7 +104,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -109,7 +115,8 @@ router.delete(
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

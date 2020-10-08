@@ -2,6 +2,7 @@
 	<v-notice v-if="!availableFields || availableFields.length === 0">
 		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
+
 	<draggable v-else v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
 		<v-chip
 			v-for="(field, index) in selectedFields"
@@ -22,7 +23,7 @@
 					</v-button>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<field-list-item
 						v-for="field in availableFields"
 						:key="field.field"
@@ -40,7 +41,7 @@
 import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType, computed } from '@vue/composition-api';
 import FieldListItem from '../v-field-template/field-list-item.vue';
 import { useFieldsStore } from '@/stores';
-import { Field } from '@/types/';
+import { Field, Collection, Relation } from '@/types';
 import Draggable from 'vuedraggable';
 import useFieldTree from '@/composables/use-field-tree';
 import useCollection from '@/composables/use-collection';
@@ -66,6 +67,10 @@ export default defineComponent({
 			type: Number,
 			default: 1,
 		},
+		inject: {
+			type: Object as PropType<{ fields: Field[]; collections: Collection[]; relations: Relation[] } | null>,
+			default: () => ({ fields: [], collections: [], relations: [] }),
+		},
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
@@ -74,7 +79,10 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
-		const { tree } = useFieldTree(collection, true);
+		const { tree } = useFieldTree(collection, {
+			fields: props.inject?.fields.filter((field) => field.collection === props.collection) || [],
+			relations: props.inject?.relations || [],
+		});
 
 		const _value = computed({
 			get() {
@@ -98,7 +106,7 @@ export default defineComponent({
 		});
 
 		const availableFields = computed(() => {
-			return filterTree(tree.value);
+			return parseTree(tree.value);
 		});
 
 		return {
@@ -122,7 +130,7 @@ export default defineComponent({
 			return findTree(fieldObject.children, fieldSections.slice(1));
 		}
 
-		function filterTree(tree: FieldTree[] | undefined, prefix = '') {
+		function parseTree(tree: FieldTree[] | undefined, prefix = '') {
 			if (tree === undefined) return undefined;
 
 			const newTree: FieldTree[] = tree.map((field) => {
@@ -130,7 +138,7 @@ export default defineComponent({
 					name: field.name,
 					field: field.field,
 					disabled: _value.value.includes(prefix + field.field),
-					children: filterTree(field.children, prefix + field.field + '.'),
+					children: parseTree(field.children, prefix + field.field + '.'),
 				};
 			});
 

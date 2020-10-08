@@ -38,28 +38,28 @@ export default defineComponent({
 	@at-root {
 		.v-list,
 		.v-list-item {
-			&.three-line,
-			&.two-line {
-				#{$this} {
-					align-self: flex-start;
-					&.center {
-						align-self: center;
+			#{$this} {
+				margin-top: 4px;
+				margin-bottom: 4px;
+				&:not(:only-child) {
+					&:first-child {
+						margin-right: 16px;
+					}
+					&:last-child {
+						margin-left: 16px;
 					}
 				}
 			}
-			&.dense {
-				#{$this} {
-					margin-top: 4px;
-					margin-bottom: 4px;
-					&:not(:only-child) {
-						&:first-child {
-							margin-right: 16px;
-						}
-						&:last-child {
-							margin-left: 16px;
+			&.large {
+				&.three-line,
+				&.two-line {
+					#{$this} {
+						align-self: flex-start;
+						&.center {
+							align-self: center;
 						}
 					}
-				}
+				}	
 			}
 		}
 	}

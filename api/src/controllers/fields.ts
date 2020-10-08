@@ -7,6 +7,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
 import { types, Field } from '../types';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -20,7 +21,8 @@ router.get(
 
 		res.locals.payload = { data: fields || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -32,7 +34,8 @@ router.get(
 
 		res.locals.payload = { data: fields || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -48,7 +51,8 @@ router.get(
 
 		res.locals.payload = { data: field || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 const newFieldSchema = Joi.object({
@@ -58,7 +62,7 @@ const newFieldSchema = Joi.object({
 	schema: Joi.object({
 		comment: Joi.string().allow(null),
 		default_value: Joi.any(),
-		max_length: [Joi.number(), Joi.string()],
+		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
 	}).unknown(),
 	/** @todo base this on default validation */
@@ -96,7 +100,8 @@ router.post(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -129,7 +134,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -156,7 +162,8 @@ router.patch(
 		}
 
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -166,7 +173,8 @@ router.delete(
 		const service = new FieldsService({ accountability: req.accountability });
 		await service.deleteField(req.params.collection, req.params.field);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

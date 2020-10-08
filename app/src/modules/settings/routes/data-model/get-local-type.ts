@@ -28,14 +28,16 @@ export function getLocalTypeForField(
 			return 'translations';
 		}
 
-		const relationForCurrent = relations.find(
-			(relation: Relation) =>
+		const relationForCurrent = relations.find((relation: Relation) => {
+			return (
 				(relation.many_collection === collection && relation.many_field === field) ||
 				(relation.one_collection === collection && relation.one_field === field)
-		);
+			);
+		});
 
-		if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field)
+		if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field) {
 			return 'm2o';
+		}
 
 		if (relations[0].one_collection === 'directus_files' || relations[1].one_collection === 'directus_files') {
 			return 'files';

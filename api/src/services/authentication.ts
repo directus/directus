@@ -93,7 +93,7 @@ export class AuthenticationService {
 		if (this.accountability) {
 			await this.activityService.create({
 				action: Action.AUTHENTICATE,
-				action_by: user.id,
+				user: user.id,
 				ip: this.accountability.ip,
 				user_agent: this.accountability.userAgent,
 				collection: 'directus_users',
@@ -180,5 +180,23 @@ export class AuthenticationService {
 
 		const secret = user.tfa_secret;
 		return authenticator.check(otp, secret);
+	}
+
+	async verifyPassword(pk: string, password: string) {
+		const userRecord = await this.knex
+			.select('password')
+			.from('directus_users')
+			.where({ id: pk })
+			.first();
+
+		if (!userRecord || !userRecord.password) {
+			throw new InvalidCredentialsException();
+		}
+
+		if ((await argon2.verify(userRecord.password, password)) === false) {
+			throw new InvalidCredentialsException();
+		}
+
+		return true;
 	}
 }

@@ -75,17 +75,21 @@ git checkout -b YOUR-BRANCH-NAME
 ### 4. Install the dependencies
 
 ```bash
-npm run bootstrap
+npm install
+npm run setup
 ```
 
-::: Reinstalling Dependencies
-To clear existing dependencies and reinstall them, you can run the following command:
+### 5. Setup the Database & Env File
+
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you. Run the following command from within the `/api` directory.
+
 ```bash
-npm run clean && npm run bootstrap
+./cli.js init
 ```
-:::
 
-### 5. Start the development server
+### 6. Start the development server
+
+Run the following command from the root directory.
 
 ```bash
 npm run dev

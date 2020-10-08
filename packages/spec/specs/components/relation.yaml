@@ -6,7 +6,7 @@ properties:
     type: string
   many_field:
     description: Foreign key. Field that holds the primary key of the related collection.
-    example: action_by
+    example: user
     type: string
   many_primary:
     description: The primary field.

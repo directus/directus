@@ -6,10 +6,24 @@ import express, { Router } from 'express';
 import emitter from './emitter';
 import logger from './logger';
 import { HookRegisterFunction, EndpointRegisterFunction } from './types';
+import { ensureDir } from 'fs-extra';
 
 import * as exceptions from './exceptions';
 import * as services from './services';
 import database from './database';
+
+export async function ensureFoldersExist() {
+	const folders = ['endpoints', 'hooks', 'interfaces', 'modules', 'layouts', 'displays'];
+
+	for (const folder of folders) {
+		const folderPath = path.resolve(env.EXTENSIONS_PATH, folder);
+		try {
+			await ensureDir(folderPath);
+		} catch (err) {
+			logger.warn(err);
+		}
+	}
+}
 
 export async function listExtensions(type: string) {
 	const extensionsPath = env.EXTENSIONS_PATH as string;
@@ -31,6 +45,7 @@ export async function listExtensions(type: string) {
 }
 
 export async function registerExtensions(router: Router) {
+	await ensureFoldersExist();
 	let hooks: string[] = [];
 	let endpoints: string[] = [];
 

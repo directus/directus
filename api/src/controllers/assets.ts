@@ -9,10 +9,11 @@ import { Transformation } from '../types/assets';
 import storage from '../storage';
 import { PayloadService, AssetsService } from '../services';
 import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
-router.use(useCollection('directus_Files'));
+router.use(useCollection('directus_files'));
 
 router.get(
 	'/:pk',

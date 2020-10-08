@@ -33,7 +33,7 @@ fields:
     locked: true
     special: csv
   - collection: directus_fields
-    field: translation
+    field: translations
     hidden: true
     locked: true
     special: json

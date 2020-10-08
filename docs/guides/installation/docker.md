@@ -1,11 +1,19 @@
 # Installing with Docker
 
-## 1. TK
+```bash
+docker run -p 8055:8055 directus/directus
+```
 
-## 2. TK
-
-## 3. TK
+## Installing Specific Versions
 
 ```bash
-docker-compose up -d
+docker run -p 8055:8055 directus/directus:v9
+docker run -p 8055:8055 directus/directus:v9.1
+docker run -p 8055:8055 directus/directus:v9.1.2
+```
+
+## Setting Environment Variables
+
+```bash
+docker run -e ENV_VAR=VALUE -p 8055:8055 directus/directus
 ```

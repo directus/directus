@@ -4,8 +4,9 @@ import { nanoid } from 'nanoid';
 import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
 import collectionExists from '../middleware/collection-exists';
-import { UtilsService } from '../services';
+import { UtilsService, RevisionsService } from '../services';
 import Joi from 'joi';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -18,7 +19,8 @@ router.get(
 		const string = nanoid(req.query?.length ? Number(req.query.length) : 32);
 
 		return res.json({ data: string });
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -31,7 +33,8 @@ router.post(
 		const hash = await argon2.hash(req.body.string);
 
 		return res.json({ data: hash });
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -48,7 +51,8 @@ router.post(
 		const result = await argon2.verify(req.body.hash, req.body.string);
 
 		return res.json({ data: result });
-	})
+	}),
+	respond
 );
 
 const SortSchema = Joi.object({
@@ -67,7 +71,18 @@ router.post(
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
-	})
+	}),
+	respond
+);
+
+router.post(
+	'/revert/:revision',
+	asyncHandler(async (req, res, next) => {
+		const service = new RevisionsService({ accountability: req.accountability });
+		await service.revert(req.params.revision);
+		next();
+	}),
+	respond
 );
 
 export default router;

@@ -52,7 +52,7 @@ columns:
     references:
       table: directus_fields
       column: id
-  translation:
+  translations:
     type: json
   note:
     type: text

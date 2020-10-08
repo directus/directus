@@ -6,13 +6,13 @@ import { TranslateResult } from 'vue-i18n';
 type FolderRaw = {
 	id: string;
 	name: string;
-	parent_folder: string | null;
+	parent: string | null;
 };
 
 export type Folder = {
 	id: string | null;
 	name: string | TranslateResult;
-	parent_folder: string | null;
+	parent: string | null;
 	children?: Folder[];
 };
 
@@ -65,14 +65,14 @@ export default function useFolders() {
 export function nestFolders(rawFolders: FolderRaw[]) {
 	return rawFolders
 		.map((rawFolder) => nestChildren(rawFolder, rawFolders))
-		.filter((folder) => folder.parent_folder === null);
+		.filter((folder) => folder.parent === null);
 }
 
 export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {
 	const folder: FolderRaw & Folder = { ...rawFolder };
 
 	const children = rawFolders
-		.filter((childFolder) => childFolder.parent_folder === rawFolder.id && childFolder.id !== rawFolder.id)
+		.filter((childFolder) => childFolder.parent === rawFolder.id && childFolder.id !== rawFolder.id)
 		.map((childRawFolder) => nestChildren(childRawFolder, rawFolders));
 
 	if (children.length > 0) {

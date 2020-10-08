@@ -1,24 +1,10 @@
 <template>
-	<v-list-item v-if="section.children === undefined" :to="section.to" :dense="dense" :value="section.to">
-		<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
-		<v-list-item-content>
-			<v-list-item-title>{{ section.name }}</v-list-item-title>
-		</v-list-item-content>
-	</v-list-item>
-	<div v-else-if="section.flat === true">
-		<v-divider></v-divider>
-		<navigation-list-item
-			v-for="(childSection, index) in section.children"
-			:key="index"
-			:section="childSection"
-			dense
-		/>
-	</div>
-	<v-list-group v-else :multiple="false" :value="section.to" disableGroupableParent>
+	<v-divider v-if="section.divider" />
+	<v-list-group v-else-if="section.children" :dense="dense" :multiple="false" :value="section.to">
 		<template #activator>
 			<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-title>{{ section.name }}</v-list-item-title>
+				<v-list-item-text>{{ section.name }}</v-list-item-text>
 			</v-list-item-content>
 		</template>
 		<navigation-list-item
@@ -28,17 +14,24 @@
 			dense
 		/>
 	</v-list-group>
+
+	<v-list-item v-else :to="`/docs${section.to}`" :dense="dense" :value="section.to">
+		<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
+		<v-list-item-content>
+			<v-list-item-text>{{ section.name }}</v-list-item-text>
+		</v-list-item-content>
+	</v-list-item>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Section } from './sections';
+import { Link, Group } from '@directus/docs';
 
 export default defineComponent({
 	name: 'navigation-list-item',
 	props: {
 		section: {
-			type: Object as PropType<Section>,
+			type: Object as PropType<Link | Group>,
 			default: null,
 		},
 		dense: {
@@ -48,24 +41,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.version {
-	.v-icon {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	::v-deep .type-text {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	&:hover {
-		.v-icon {
-			color: var(--foreground-normal);
-		}
-		::v-deep .type-text {
-			color: var(--foreground-normal);
-		}
-	}
-}
-</style>

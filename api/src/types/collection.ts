@@ -10,7 +10,7 @@ export type Collection = {
 		hidden: boolean;
 		singleton: boolean;
 		icon: string | null;
-		translation: Record<string, string>;
+		translations: Record<string, string>;
 	} | null;
 	schema: Table;
 };

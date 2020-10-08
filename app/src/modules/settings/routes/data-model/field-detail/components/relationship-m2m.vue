@@ -26,7 +26,7 @@
 								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
@@ -79,7 +79,7 @@
 								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
@@ -130,7 +130,7 @@
 							/>
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
@@ -166,7 +166,7 @@
 							/>
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"

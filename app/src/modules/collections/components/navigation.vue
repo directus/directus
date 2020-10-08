@@ -1,5 +1,5 @@
 <template>
-	<v-list nav>
+	<v-list large>
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<v-detail
 				:active="group.accordion === 'always_open' || undefined"

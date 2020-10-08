@@ -21,7 +21,7 @@ In addition to these core modules, custom modules offer a _blank canvas_ for cre
 
 ## Layouts
 
-Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown on Item Browse pages and contextual modals for item selection. Directus includes several Layout options out-of-the-box, each with different features and configuration options.
+Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown on Collection Detail pages and contextual modals for item selection. Directus includes several Layout options out-of-the-box, each with different features and configuration options.
 
 ### Table
 

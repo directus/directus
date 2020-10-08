@@ -5648,9 +5648,9 @@
 					"group": null,
 					"length": "45"
 				},
-				"action_by": {
+				"user": {
 					"collection": "directus_activity",
-					"field": "action_by",
+					"field": "user",
 					"datatype": "INT",
 					"unique": false,
 					"primary_key": false,
@@ -5679,9 +5679,9 @@
 					"group": null,
 					"length": "10"
 				},
-				"action_on": {
+				"timestamp": {
 					"collection": "directus_activity",
-					"field": "action_on",
+					"field": "timestamp",
 					"datatype": "DATETIME",
 					"unique": false,
 					"primary_key": false,
@@ -7832,9 +7832,9 @@
 					"group": null,
 					"length": "191"
 				},
-				"parent_folder": {
+				"parent": {
 					"collection": "directus_folders",
-					"field": "parent_folder",
+					"field": "parent",
 					"datatype": "INT",
 					"unique": false,
 					"primary_key": false,
