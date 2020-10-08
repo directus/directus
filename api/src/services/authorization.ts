@@ -3,8 +3,8 @@ import {
 	Accountability,
 	AbstractServiceOptions,
 	AST,
-	NestedCollectionAST,
-	FieldAST,
+	NestedCollectionNode,
+	FieldNode,
 	Query,
 	Permission,
 	PermissionsAction,
@@ -74,30 +74,28 @@ export class AuthorizationService {
 		 * Traverses the AST and returns an array of all collections that are being fetched
 		 */
 		function getCollectionsFromAST(
-			ast: AST | NestedCollectionAST
+			ast: AST | NestedCollectionNode
 		): { collection: string; field: string }[] {
 			const collections = [];
 
-			if (ast.type === 'collection') {
+			if (ast.type !== 'root') {
 				collections.push({
 					collection: ast.name,
-					field: (ast as NestedCollectionAST).fieldKey
-						? (ast as NestedCollectionAST).fieldKey
-						: null,
+					field: ast.fieldKey || null,
 				});
 			}
 
-			for (const subAST of ast.children) {
-				if (subAST.type === 'collection') {
-					collections.push(...getCollectionsFromAST(subAST));
+			for (const nestedNode of ast.children) {
+				if (nestedNode.type !== 'field') {
+					collections.push(...getCollectionsFromAST(nestedNode));
 				}
 			}
 
 			return collections as { collection: string; field: string }[];
 		}
 
-		function validateFields(ast: AST | NestedCollectionAST) {
-			if (ast.type === 'collection') {
+		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
+			if (ast.type !== 'field') {
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
@@ -108,7 +106,7 @@ export class AuthorizationService {
 				const allowedFields = permissions.fields?.split(',') || [];
 
 				for (const childAST of ast.children) {
-					if (childAST.type === 'collection') {
+					if (childAST.type !== 'field') {
 						validateFields(childAST);
 						continue;
 					}
@@ -127,10 +125,10 @@ export class AuthorizationService {
 		}
 
 		function applyFilters(
-			ast: AST | NestedCollectionAST | FieldAST,
+			ast: AST | NestedCollectionNode | FieldNode,
 			accountability: Accountability | null
-		): AST | NestedCollectionAST | FieldAST {
-			if (ast.type === 'collection') {
+		): AST | NestedCollectionNode | FieldNode {
+			if (ast.type !== 'field') {
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
@@ -164,8 +162,8 @@ export class AuthorizationService {
 				}
 
 				ast.children = ast.children.map((child) => applyFilters(child, accountability)) as (
-					| NestedCollectionAST
-					| FieldAST
+					| NestedCollectionNode
+					| FieldNode
 				)[];
 			}
 
@@ -198,7 +196,17 @@ export class AuthorizationService {
 		let permission: Permission | undefined;
 
 		if (this.accountability?.admin === true) {
-			permission = { id: 0, role: this.accountability?.role, collection, action, permissions: {}, validation: {}, limit: null, fields: '*', presets: {}, }
+			permission = {
+				id: 0,
+				role: this.accountability?.role,
+				collection,
+				action,
+				permissions: {},
+				validation: {},
+				limit: null,
+				fields: '*',
+				presets: {},
+			};
 		} else {
 			permission = await this.knex
 				.select<Permission>('*')
@@ -238,10 +246,23 @@ export class AuthorizationService {
 		let requiredColumns: string[] = [];
 
 		for (const column of columns) {
-			const field = await this.knex.select<{ special: string }>('special').from('directus_fields').where({ collection, field: column.name }).first();
+			const field = await this.knex
+				.select<{ special: string }>('special')
+				.from('directus_fields')
+				.where({ collection, field: column.name })
+				.first();
 			const specials = (field?.special || '').split(',');
-			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) => specials.includes(name));
-			const isRequired = column.is_nullable === false && column.has_auto_increment === false && column.default_value === null && hasGenerateSpecial === false;
+			const hasGenerateSpecial = [
+				'uuid',
+				'date-created',
+				'role-created',
+				'user-created',
+			].some((name) => specials.includes(name));
+			const isRequired =
+				column.is_nullable === false &&
+				column.has_auto_increment === false &&
+				column.default_value === null &&
+				hasGenerateSpecial === false;
 
 			if (isRequired) {
 				requiredColumns.push(column.name);
@@ -250,23 +271,20 @@ export class AuthorizationService {
 
 		if (requiredColumns.length > 0) {
 			permission.validation = {
-				_and: [
-					permission.validation,
-					{}
-				]
-			}
+				_and: [permission.validation, {}],
+			};
 
 			if (action === 'create') {
 				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
-						_required: true
-					}
+						_required: true,
+					};
 				}
 			} else {
 				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
-						_nnull: true
-					}
+						_nnull: true,
+					};
 				}
 			}
 		}
@@ -282,7 +300,10 @@ export class AuthorizationService {
 		}
 	}
 
-	validateJoi(validation: Record<string, any>, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
+	validateJoi(
+		validation: Record<string, any>,
+		payloads: Partial<Record<string, any>>[]
+	): FailedValidationException[] {
 		const errors: FailedValidationException[] = [];
 
 		/**
@@ -291,13 +312,21 @@ export class AuthorizationService {
 
 		if (Object.keys(validation)[0] === '_and') {
 			const subValidation = Object.values(validation)[0];
-			const nestedErrors = flatten<FailedValidationException>(subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))).filter((err?: FailedValidationException) => err);
+			const nestedErrors = flatten<FailedValidationException>(
+				subValidation.map((subObj: Record<string, any>) =>
+					this.validateJoi(subObj, payloads)
+				)
+			).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
 		}
 
 		if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
-			const nestedErrors = flatten<FailedValidationException>(subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads)));
+			const nestedErrors = flatten<FailedValidationException>(
+				subValidation.map((subObj: Record<string, any>) =>
+					this.validateJoi(subObj, payloads)
+				)
+			);
 			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
 
 			if (allErrored) {
@@ -311,7 +340,9 @@ export class AuthorizationService {
 			const { error } = schema.validate(payload, { abortEarly: false });
 
 			if (error) {
-				errors.push(...error.details.map((details) => new FailedValidationException(details)));
+				errors.push(
+					...error.details.map((details) => new FailedValidationException(details))
+				);
 			}
 		}
 

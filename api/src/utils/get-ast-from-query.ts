@@ -4,8 +4,8 @@
 
 import {
 	AST,
-	NestedCollectionAST,
-	FieldAST,
+	FieldNode,
+	NestedCollectionNode,
 	Query,
 	Relation,
 	PermissionsAction,
@@ -49,7 +49,7 @@ export default async function getASTFromQuery(
 			: null;
 
 	const ast: AST = {
-		type: 'collection',
+		type: 'root',
 		name: collection,
 		query: query,
 		children: [],
@@ -62,7 +62,9 @@ export default async function getASTFromQuery(
 	delete query.fields;
 	delete query.deep;
 
-	ast.children = (await parseFields(collection, fields, deep)).filter(filterEmptyChildCollections);
+	ast.children = (await parseFields(collection, fields, deep)).filter(
+		filterEmptyChildCollections
+	);
 
 	return ast;
 
@@ -122,12 +124,16 @@ export default async function getASTFromQuery(
 		return fields;
 	}
 
-	async function parseFields(parentCollection: string, fields: string[], deep?: Record<string, Query>) {
+	async function parseFields(
+		parentCollection: string,
+		fields: string[],
+		deep?: Record<string, Query>
+	) {
 		fields = convertWildcards(parentCollection, fields);
 
 		if (!fields) return [];
 
-		const children: (NestedCollectionAST | FieldAST)[] = [];
+		const children: (NestedCollectionNode | FieldNode)[] = [];
 
 		const relationalStructure: Record<string, string[]> = {};
 
@@ -155,8 +161,10 @@ export default async function getASTFromQuery(
 
 			if (!relation) continue;
 
-			const child: NestedCollectionAST = {
-				type: 'collection',
+			const relationType = getRelationType(relatedCollection, relationalField, relation);
+
+			const child: NestedCollectionNode = {
+				type: relationType,
 				name: relatedCollection,
 				fieldKey: relationalField,
 				parentKey: await schemaInspector.primary(parentCollection),
@@ -198,8 +206,22 @@ export default async function getASTFromQuery(
 		}
 	}
 
-	function filterEmptyChildCollections(childAST: FieldAST | NestedCollectionAST) {
-		if (childAST.type === 'collection' && childAST.children.length === 0) return false;
-		return true;
+	function filterEmptyChildCollections(childNode: FieldNode | NestedCollectionNode) {
+		if (childNode.type === 'field') return true;
+		if (childNode.children.length > 0) return true;
+		return false;
+	}
+
+	function getRelationType(
+		relatedCollection: string,
+		relationalField: string,
+		relation: Relation
+	): 'o2m' | 'm2o' {
+		if (
+			relation.one_collection === relatedCollection &&
+			relation.many_field === relationalField
+		)
+			return 'm2o';
+		return 'o2m';
 	}
 }
