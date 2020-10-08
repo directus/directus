@@ -59,7 +59,7 @@ export default defineComponent({
 	},
 	setup() {
 		const markdown = ref('');
-		const view = ref<Vue>();
+		const view = ref<Vue | null>(null);
 
 		const title = computed(() => {
 			const firstLine = markdown.value.split('\n').shift();
@@ -73,6 +73,7 @@ export default defineComponent({
 		});
 
 		onUpdated(() => {
+			if(view.value === null) return
 			view.value.$data.contentEl?.scrollTo({ top: 0 });
 		});
 
