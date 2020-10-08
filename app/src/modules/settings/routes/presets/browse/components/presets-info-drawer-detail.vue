@@ -40,7 +40,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/presets`, {
 					params: {
-						[`filter[title][nnull]`]: 1,
+						[`filter[bookmark][_nnull]`]: 1,
 						fields: ['id'],
 						meta: 'filter_count,total_count',
 					},
