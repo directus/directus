@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="title">
+	<private-view :title="title" ref="view">
 		<template #headline>Documentation</template>
 
 		<template #title-outer:prepend>
@@ -12,14 +12,14 @@
 			<docs-navigation />
 		</template>
 
-		<div class="content selectable">
+		<div class="docs-content selectable">
 			<markdown>{{ markdownWithoutTitle }}</markdown>
 		</div>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
 import Markdown from '../components/markdown.vue';
 
@@ -59,6 +59,9 @@ export default defineComponent({
 	},
 	setup() {
 		const markdown = ref('');
+		const view = ref<Vue>();
+
+		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const title = computed(() => {
 			const firstLine = markdown.value.split('\n').shift();
@@ -71,13 +74,17 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { markdown, title, markdownWithoutTitle };
+		onUpdated(() => {
+			view.value.$data.contentEl?.scrollTo({ top: 0 });
+		});
+
+		return { markdown, title, markdownWithoutTitle, view };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.content {
+.docs-content {
 	max-width: 740px;
 	padding: 0 var(--content-padding) var(--content-padding-bottom);
 }
