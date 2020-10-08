@@ -9,5 +9,6 @@ lerna-debug.log
 *.code-workspace
 api/package-lock.json
 app/package-lock.json
+docs/package-lock.json
 packages/**/package-lock.json
 dist
