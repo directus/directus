@@ -78,14 +78,22 @@ export class AuthorizationService {
 		): { collection: string; field: string }[] {
 			const collections = [];
 
-			collections.push({
-				collection: ast.name,
-				field: ast.type === 'root' ? null : ast.fieldKey,
-			});
+			if (ast.type === 'm2a') {
+				collections.push(
+					...ast.names.map((name) => ({ collection: name, field: ast.fieldKey }))
+				);
 
-			for (const nestedNode of ast.children) {
-				if (nestedNode.type !== 'field') {
-					collections.push(...getCollectionsFromAST(nestedNode));
+				/** @TODO add nestedNode */
+			} else {
+				collections.push({
+					collection: ast.name,
+					field: ast.type === 'root' ? null : ast.fieldKey,
+				});
+
+				for (const nestedNode of ast.children) {
+					if (nestedNode.type !== 'field') {
+						collections.push(...getCollectionsFromAST(nestedNode));
+					}
 				}
 			}
 
@@ -93,7 +101,8 @@ export class AuthorizationService {
 		}
 
 		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
-			if (ast.type !== 'field') {
+			if (ast.type !== 'field' && ast.type !== 'm2a') {
+				/** @TODO remove m2a check */
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
@@ -126,7 +135,8 @@ export class AuthorizationService {
 			ast: AST | NestedCollectionNode | FieldNode,
 			accountability: Accountability | null
 		): AST | NestedCollectionNode | FieldNode {
-			if (ast.type !== 'field') {
+			if (ast.type !== 'field' && ast.type !== 'm2a') {
+				/** @TODO remove m2a check */
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run

@@ -163,17 +163,40 @@ export default async function getASTFromQuery(
 
 			const relationType = getRelationType(relatedCollection, relationalField, relation);
 
-			const child: NestedCollectionNode = {
-				type: relationType,
-				name: relatedCollection,
-				fieldKey: relationalField,
-				parentKey: await schemaInspector.primary(parentCollection),
-				relation: relation,
-				query: deep?.[relationalField] || {},
-				children: (await parseFields(relatedCollection, nestedFields)).filter(
-					filterEmptyChildCollections
-				),
-			};
+			let child: NestedCollectionNode;
+
+			if (relationType === 'm2a') {
+				const allowedCollections: string[] =
+					relation.one_allowed_collections?.split(',') || [];
+
+				child = {
+					type: 'm2a',
+					names: allowedCollections,
+					fieldKey: relationalField,
+					parentKey: await schemaInspector.primary(parentCollection),
+					relation: relation,
+					query: {},
+					children: {},
+				};
+
+				// for (const allowedCollection of allowedCollections) {
+				// 	child.children[allowedCollection] = (await parseFields(allowedCollection, nestedFields)).filter(
+				// 		filterEmptyChildCollections
+				// 	),
+				// }
+			} else {
+				child = {
+					type: relationType,
+					name: relatedCollection,
+					fieldKey: relationalField,
+					parentKey: await schemaInspector.primary(parentCollection),
+					relation: relation,
+					query: deep?.[relationalField] || {},
+					children: (await parseFields(relatedCollection, nestedFields)).filter(
+						filterEmptyChildCollections
+					),
+				};
+			}
 
 			children.push(child);
 		}
@@ -216,12 +239,18 @@ export default async function getASTFromQuery(
 		relatedCollection: string,
 		relationalField: string,
 		relation: Relation
-	): 'o2m' | 'm2o' {
+	): 'o2m' | 'm2o' | 'm2a' {
 		if (
 			relation.one_collection === relatedCollection &&
 			relation.many_field === relationalField
-		)
+		) {
 			return 'm2o';
+		}
+
+		if (relation.one_collection_field && relation.one_allowed_collections) {
+			return 'm2a';
+		}
+
 		return 'o2m';
 	}
 }

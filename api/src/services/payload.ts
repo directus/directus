@@ -302,6 +302,8 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
+				if (!relation.one_collection || !relation.one_primary) continue;
+
 				const itemsService = new ItemsService(relation.one_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
@@ -343,6 +345,8 @@ export class PayloadService {
 
 			// Only process related records that are actually in the payload
 			const relationsToProcess = relations.filter((relation) => {
+				if (!relation.one_field) return false;
+
 				return (
 					payload.hasOwnProperty(relation.one_field) &&
 					Array.isArray(payload[relation.one_field])
@@ -357,7 +361,7 @@ export class PayloadService {
 
 				const relatedRecords: Partial<Item>[] = [];
 
-				for (const relatedRecord of payload[relation.one_field]) {
+				for (const relatedRecord of payload[relation.one_field!]) {
 					let record = cloneDeep(relatedRecord);
 
 					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
@@ -380,7 +384,7 @@ export class PayloadService {
 
 					relatedRecords.push({
 						...record,
-						[relation.many_field]: parent || payload[relation.one_primary],
+						[relation.many_field]: parent || payload[relation.one_primary!],
 					});
 				}
 

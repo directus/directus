@@ -13,7 +13,7 @@ export type M2ONode = {
 
 export type M2ANode = {
 	type: 'm2a';
-	name: string;
+	names: string[];
 	children: {
 		[collection: string]: (NestedCollectionNode | FieldNode)[];
 	};
