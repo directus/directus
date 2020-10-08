@@ -32,6 +32,11 @@ data:
     many_primary: id
     one_collection: directus_users
     one_primary: id
+  - many_collection: directus_presets
+    many_field: role
+    many_primary: id
+    one_collection: directus_roles
+    one_primary: id
   - many_collection: directus_folders
     many_field: parent
     many_primary: id
