@@ -26,9 +26,13 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		mandatory: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, {emit}) {
-		const {activeItems, multiple} = toRefs(props)
+		const {activeItems, multiple, mandatory} = toRefs(props)
 		useGroupableParent(
 			{
 				selection: activeItems,
@@ -37,7 +41,7 @@ export default defineComponent({
 				}
 			},
 			{
-				mandatory: ref(true),
+				mandatory,
 				multiple
 			}
 		);

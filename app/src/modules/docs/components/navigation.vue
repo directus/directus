@@ -1,5 +1,5 @@
 <template>
-	<v-list large :multiple="false" v-model="selection">
+	<v-list large :multiple="false" v-model="selection" :mandatory="false">
 		<navigation-item v-for="item in navSections" :key="item.name" :section="item" />
 	</v-list>
 </template>
@@ -23,22 +23,26 @@ function spreadPath(path: string) {
 
 export default defineComponent({
 	components: { NavigationItem },
-	beforeRouteEnter(to, from, next) {
-		next((vm) => {
-			(vm as any)._selection = spreadPath(to.path)
-		})
-	},
-	beforeRouteUpdate(to, from, next) {
-		this._selection = spreadPath(to.path)
+	props: {
+		path: {
+			type: String,
+			default: null
+		}
 	},
 	setup(props) {
-		const _selection = ref<string[]>([])
+		const _selection = ref<string[]>(spreadPath(props.path.replace('/docs','')))
+
+		watch(() => props.path, (newPath) => {
+			_selection.value = spreadPath(newPath.replace('/docs',''))
+		})
 
 		const selection = computed({
 			get() {
 				return _selection.value
 			},
 			set(newSelection: string[]) {
+				console.log("newSelect: ", newSelection);
+				
 				if(newSelection.length === 0) {
 					_selection.value =  []
 				} else {

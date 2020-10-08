@@ -9,7 +9,7 @@
 		</template>
 
 		<template #navigation>
-			<docs-navigation />
+			<docs-navigation :path="path"/>
 		</template>
 
 		<div class="docs-content selectable">
@@ -55,16 +55,18 @@ export default defineComponent({
 	async beforeRouteEnter(to, from, next) {
 		const md = await getMarkdownForPath(to.path);
 
-		next((vm) => {
-			(vm as any).markdown = md;
+		next((vm: any) => {
+			vm.markdown = md;
+			vm.path = to.path
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
-
+		this.path = to.path
 		next();
 	},
 	setup() {
+		const path = ref<string | null>(null)
 		const markdown = ref('');
 		const view = ref<Vue>();
 
@@ -83,7 +85,7 @@ export default defineComponent({
 			view.value?.$data.contentEl?.scrollTo({ top: 0 });
 		});
 
-		return { markdown, title, markdownWithoutTitle, view, marked };
+		return { markdown, title, markdownWithoutTitle, view, marked, path };
 	},
 });
 </script>
