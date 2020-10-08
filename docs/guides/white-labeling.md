@@ -53,6 +53,7 @@ The `--primary` variable (and its shades) control call-to-actions and all other 
 * Avoid using yellow, orange, or red hues that give a sense of "danger"
 * Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible
 * Avoid low-saturation colors like black, which might not properly highlight CTAs
+
 :::
 
 ## API Reference
