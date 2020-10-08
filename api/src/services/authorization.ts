@@ -105,15 +105,15 @@ export class AuthorizationService {
 
 				const allowedFields = permissions.fields?.split(',') || [];
 
-				for (const childAST of ast.children) {
-					if (childAST.type !== 'field') {
-						validateFields(childAST);
+				for (const childNode of ast.children) {
+					if (childNode.type !== 'field') {
+						validateFields(childNode);
 						continue;
 					}
 
 					if (allowedFields.includes('*')) continue;
 
-					const fieldKey = childAST.name;
+					const fieldKey = childNode.name;
 
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException(
