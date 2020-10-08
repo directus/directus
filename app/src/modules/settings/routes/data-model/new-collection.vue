@@ -26,19 +26,25 @@
 		<v-tabs-items v-model="currentTab">
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
-				<div class="type-label">
-					{{ $t('name') }}
-					<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
-				</div>
-				<v-input
-					autofocus
-					class="monospace"
-					v-model="collectionName"
-					db-safe
-					:placeholder="$t('a_unique_table_name')"
-				/>
-				<v-divider />
 				<div class="grid">
+					<div>
+						<div class="type-label">
+							{{ $t('name') }}
+							<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
+						</div>
+						<v-input
+							autofocus
+							class="monospace"
+							v-model="collectionName"
+							db-safe
+							:placeholder="$t('a_unique_table_name')"
+						/>
+					</div>
+					<div>
+						<div class="type-label">{{ $t('singleton') }}</div>
+						<v-checkbox block :label="$t('singleton_label')" v-model="singleton" />
+					</div>
+					<v-divider class="full" />
 					<div>
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
 						<v-input
@@ -73,7 +79,7 @@
 			<v-tab-item value="system">
 				<h2 class="type-title">{{ $t('creating_collection_system') }}</h2>
 				<div class="grid system">
-					<div class="field" v-for="(info, field) in systemFields" :key="field">
+					<div v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
 						<v-input v-model="info.name" class="monospace" :class="{active: info.enabled}" @click.native="info.enabled = true">
 							<template #prepend>
@@ -124,6 +130,7 @@ export default defineComponent({
 		const currentTab = ref(['collection']);
 
 		const collectionName = ref(null);
+		const singleton = ref(false);
 		const primaryKeyFieldName = ref('id');
 		const primaryKeyFieldType = ref<'auto_int' | 'uuid' | 'manual'>('auto_int');
 
@@ -184,6 +191,7 @@ export default defineComponent({
 			collectionName,
 			saveError,
 			saving,
+			singleton
 		};
 
 		async function save() {
@@ -198,6 +206,7 @@ export default defineComponent({
 						archive_field: archiveField.value,
 						archive_value: archiveValue.value,
 						unarchive_value: unarchiveValue.value,
+						singleton: singleton.value
 					},
 				});
 
@@ -412,22 +421,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .type-title {
 	margin-bottom: 48px;
 }
 
-.type-label {
-	margin-bottom: 12px;
-}
-
-.v-divider {
-	margin: 48px 0;
-}
-
 .grid {
-	display: grid;
-	grid-gap: 48px 36px;
-	grid-template-columns: repeat(2, 1fr);
+	@include form-grid;
 }
 
 .system {
