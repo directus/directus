@@ -10482,9 +10482,9 @@
 					"group": null,
 					"length": "32"
 				},
-				"locale": {
+				"language": {
 					"collection": "directus_users",
-					"field": "locale",
+					"field": "language",
 					"datatype": "VARCHAR",
 					"unique": false,
 					"primary_key": false,

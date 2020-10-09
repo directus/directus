@@ -5639,7 +5639,7 @@
 		},
 		{
 			"collection": "directus_users",
-			"field": "locale",
+			"field": "language",
 			"datatype": "VARCHAR",
 			"unique": false,
 			"primary_key": false,
@@ -5666,7 +5666,7 @@
 			"validation": null,
 			"group": null,
 			"length": "8",
-			"name": "Locale"
+			"name": "Language"
 		},
 		{
 			"collection": "directus_users",

@@ -47,7 +47,7 @@ export type User = {
 	role: Role;
 	password_reset_token: string | null;
 	timezone: string;
-	locale: string;
+	language: string;
 	locale_options: null;
 	avatar: null | Avatar;
 	company: string | null;
