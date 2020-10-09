@@ -153,11 +153,13 @@ export default async function getASTFromQuery(
 	}
 
 	async function convertWildcards(parentCollection: string, fields: string[]) {
+		const fieldsInCollection = await getFieldsInCollection(parentCollection);
+
 		const allowedFields = permissions
 			? permissions
 					.find((permission) => parentCollection === permission.collection)
 					?.fields?.split(',')
-			: ['*'];
+			: fieldsInCollection;
 
 		if (!allowedFields || allowedFields.length === 0) return [];
 
@@ -169,7 +171,6 @@ export default async function getASTFromQuery(
 			if (fieldKey === '*') {
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
-					const fieldsInCollection = await getFieldsInCollection(parentCollection);
 					fields.splice(index, 1, ...fieldsInCollection);
 				} else {
 					// Set to all allowed fields
