@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
-    "release": "lerna publish --force-publish"
+    "release": "lerna publish --force-publish",
+    "setup": "lerna exec npm install && lerna run build"
   },
   "repository": {
     "type": "git",
@@ -123,8 +124,7 @@
     "@directus/docs": "file:docs",
     "@directus/specs": "file:packages/spec",
     "create-directus-project": "file:packages/create-directus-project",
-    "directus": "file:api",
-    "openapi3-ts": "^2.0.0"
+    "directus": "file:api"
   },
   "husky": {
     "hooks": {

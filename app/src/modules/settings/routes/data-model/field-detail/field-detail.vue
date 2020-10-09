@@ -291,21 +291,21 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newCollections.map((newCollection: Partial<Collection> & { $type: string }) => {
+					state.newCollections.map((newCollection: Partial<Collection> & { $type?: string }) => {
 						delete newCollection.$type;
 						return api.post(`/collections`, newCollection);
 					})
 				);
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
+					state.newFields.map((newField: Partial<Field> & { $type?: string }) => {
 						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
 
 				await Promise.all(
-					state.updateFields.map((updateField: Partial<Field> & { $type: string }) => {
+					state.updateFields.map((updateField: Partial<Field> & { $type?: string }) => {
 						delete updateField.$type;
 						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})

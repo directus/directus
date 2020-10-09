@@ -76,17 +76,20 @@ git checkout -b YOUR-BRANCH-NAME
 
 ```bash
 npm install
+npm run setup
 ```
 
 ### 5. Setup the Database & Env File
 
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you.
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you. Run the following command from within the `/api` directory.
 
 ```bash
-@TODO
+./cli.js init
 ```
 
 ### 6. Start the development server
+
+Run the following command from the root directory.
 
 ```bash
 npm run dev
