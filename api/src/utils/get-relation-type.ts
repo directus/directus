@@ -7,6 +7,8 @@ export function getRelationType(getRelationOptions: {
 }): 'm2o' | 'o2m' | 'm2a' | null {
 	const { relation, collection, field } = getRelationOptions;
 
+	if (!relation) return null;
+
 	if (
 		relation.many_collection === collection &&
 		relation.many_field === field &&

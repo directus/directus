@@ -126,11 +126,11 @@ export class GraphQLService {
 							});
 
 							if (relationForField) {
-								const relationType = getRelationType(
-									relationForField,
-									collection.collection,
-									field.field
-								);
+								const relationType = getRelationType({
+									relation: relationForField,
+									collection: collection.collection,
+									field: field.field,
+								});
 
 								if (relationType === 'm2o') {
 									const relatedIsSystem = relationForField.one_collection!.startsWith(
@@ -147,6 +147,7 @@ export class GraphQLService {
 									const relatedIsSystem = relationForField.many_collection.startsWith(
 										'directus_'
 									);
+
 									const relatedType = relatedIsSystem
 										? schema[relationForField.many_collection.substring(9)].type
 										: schema.items[relationForField.many_collection].type;
@@ -160,8 +161,12 @@ export class GraphQLService {
 											},
 										},
 									};
+								} else if (relationType === 'm2a') {
+									fieldsObject[field.field] = {
+										type: GraphQLString,
+									};
+									/** @TODO M2A — Handle m2a case here */
 								}
-								/** @TODO M2A — Handle m2a case here */
 							} else {
 								fieldsObject[field.field] = {
 									type: field.schema?.is_primary_key
@@ -259,11 +264,11 @@ export class GraphQLService {
 						});
 
 						if (relationForField) {
-							const relationType = getRelationType(
-								relationForField,
-								collection.collection,
-								field.field
-							);
+							const relationType = getRelationType({
+								relation: relationForField,
+								collection: collection.collection,
+								field: field.field,
+							});
 
 							if (relationType === 'm2o') {
 								const relatedType = filterTypes[relationForField.one_collection!];

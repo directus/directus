@@ -90,7 +90,7 @@ export default async function runAST(
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
 		if (options?.child !== true) {
-			// items = removeTemporaryFields(items, originalAST);
+			items = removeTemporaryFields(items, originalAST, primaryKeyField);
 		}
 
 		return items;
@@ -124,8 +124,13 @@ async function parseCurrentLevel(
 
 		if (!child.relation) continue;
 
-		if (child.type === 'm2o' || child.type === 'm2a') {
+		if (child.type === 'm2o') {
 			columnsToSelect.push(child.relation.many_field);
+		}
+
+		if (child.type === 'm2a') {
+			columnsToSelect.push(child.relation.many_field);
+			columnsToSelect.push(child.relation.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
@@ -298,12 +303,55 @@ function mergeWithParentItems(
 
 function removeTemporaryFields(
 	rawItem: Item | Item[],
-	ast: AST | NestedCollectionNode
+	ast: AST | NestedCollectionNode,
+	primaryKeyField: string,
+	parentItem?: Item
 ): null | Item | Item[] {
 	const rawItems = cloneDeep(Array.isArray(rawItem) ? rawItem : [rawItem]);
 	const items: Item[] = [];
 
 	if (ast.type === 'm2a') {
+		const fields: Record<string, string[]> = {};
+		const nestedCollectionNodes: Record<string, NestedCollectionNode[]> = {};
+
+		for (const relatedCollection of ast.names) {
+			if (!fields[relatedCollection]) fields[relatedCollection] = [];
+			if (!nestedCollectionNodes[relatedCollection])
+				nestedCollectionNodes[relatedCollection] = [];
+
+			for (const child of ast.children[relatedCollection]) {
+				if (child.type === 'field') {
+					fields[relatedCollection].push(child.name);
+				} else {
+					fields[relatedCollection].push(child.fieldKey);
+					nestedCollectionNodes[relatedCollection].push(child);
+				}
+			}
+		}
+
+		for (const rawItem of rawItems) {
+			const relatedCollection: string = parentItem?.[ast.relation.one_collection_field!];
+
+			if (rawItem === null || rawItem === undefined) return rawItem;
+
+			let item = rawItem;
+
+			for (const nestedNode of nestedCollectionNodes[relatedCollection]) {
+				item[nestedNode.fieldKey] = removeTemporaryFields(
+					item[nestedNode.fieldKey],
+					nestedNode,
+					nestedNode.relation.many_primary,
+					item
+				);
+			}
+
+			item =
+				fields[relatedCollection].length > 0
+					? pick(rawItem, fields[relatedCollection])
+					: rawItem[primaryKeyField];
+
+			items.push(item);
+		}
 	} else {
 		const fields: string[] = [];
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
@@ -312,56 +360,32 @@ function removeTemporaryFields(
 			if (child.type === 'field') {
 				fields.push(child.name);
 			} else {
+				fields.push(child.fieldKey);
 				nestedCollectionNodes.push(child);
 			}
 		}
 
 		for (const rawItem of rawItems) {
-			const item = fields.length > 0 ? pick(rawItem, fields) : rawItem.id; /** @TODO */
+			if (rawItem === null || rawItem === undefined) return rawItem;
+
+			let item = rawItem;
+
 			for (const nestedNode of nestedCollectionNodes) {
-				rawItem[nestedNode.fieldKey] = removeTemporaryFields(
-					rawItem[nestedNode.fieldKey],
-					nestedNode
+				item[nestedNode.fieldKey] = removeTemporaryFields(
+					item[nestedNode.fieldKey],
+					nestedNode,
+					nestedNode.type === 'm2o'
+						? nestedNode.relation.many_primary
+						: nestedNode.relation.one_primary!,
+					item
 				);
 			}
+
+			item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
+
+			items.push(item);
 		}
 	}
 
 	return Array.isArray(rawItem) ? items : items[0];
-
-	// const rawItems: Item[] = Array.isArray(rawItem) ? rawItem : [rawItem];
-	// let items: Item[] = [];
-
-	// if (ast.type === 'm2a') {
-	// 	return rawItems
-	// } else {
-	// 	const fields = ast.children
-	// 		.filter((child) => child.type === 'field')
-	// 		.map((child) => (child as FieldNode).name);
-
-	// 	const nestedNodes = ast.children.filter(
-	// 		(child) => child.type !== 'field'
-	// 	) as NestedCollectionNode[];
-
-	// 	items = rawItems.map((item) => parseItem(item, fields, nestedNodes));
-
-	// 	return Array.isArray(rawItem) ? items : items[0];
-	// }
-
-	// function parseItem(rawItem: Item, fields: string[], nestedNodes: NestedCollectionNode[]): Item {
-	// 	if (rawItem === null) return rawItem;
-
-	// 	const item = fields.length > 0 ? pick(rawItem, fields) : rawItem.id; /** @TODO */
-
-	// 	for (const nestedNode of nestedNodes) {
-	// 		if (item[nestedNode.fieldKey] !== null) {
-	// 			item[nestedNode.fieldKey] = removeTemporaryFields(
-	// 				rawItem[nestedNode.fieldKey],
-	// 				nestedNode,
-	// 			);
-	// 		}
-	// 	}
-
-	// 	return item;
-	// }
 }
