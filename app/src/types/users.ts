@@ -48,7 +48,6 @@ export type User = {
 	password_reset_token: string | null;
 	timezone: string;
 	language: string;
-	locale_options: null;
 	avatar: null | Avatar;
 	company: string | null;
 	title: string | null;
