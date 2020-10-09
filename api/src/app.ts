@@ -135,6 +135,19 @@ track('serverStarted');
 
 emitter.emit('init', { app });
 
+app.on('close', () => {
+	// TBD:
+	// - ideally should be async, but express handler is sync
+	//   - monkey patch app.close to handle shutdown?
+	// - close database connection here instead of start.ts?
+	try {
+		emitter.emit('destroy', { app });
+	} catch (err) {
+		logger.error('Error destroying app');
+		logger.error(err);
+	}
+});
+
 emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;
