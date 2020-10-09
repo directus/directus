@@ -53,21 +53,21 @@
     to: "/guides/extensions"
     children:
     - name: Custom Displays
-      to: "/guides/extensions/creating-a-custom-display"
+      to: "/guides/extensions/displays"
     - name: Custom Interfaces
-      to: "/guides/extensions/creating-a-custom-interface"
+      to: "/guides/extensions/interfaces"
     - name: Custom Layouts
-      to: "/guides/extensions/creating-a-custom-layout"
+      to: "/guides/extensions/layouts"
     - name: Custom Modules
-      to: "/guides/extensions/creating-a-custom-module"
+      to: "/guides/extensions/modules"
     - name: Custom API Endpoints
-      to: "/guides/extensions/creating-a-custom-api-endpoint"
+      to: "/guides/extensions/api-endpoints"
     - name: Custom API Hooks
-      to: "/guides/extensions/creating-a-custom-api-hook"
+      to: "/guides/extensions/api-hooks"
     - name: Custom Email Templates
-      to: "/guides/extensions/creating-a-custom-email-template"
+      to: "/guides/extensions/email-templates"
     - name: Custom Storage Adapters
-      to: "/guides/extensions/creating-a-custom-storage-adapter"
+      to: "/guides/extensions/storage-adapters"
     - name: Accessing Data
       to: "/guides/extensions/accessing-data"
 
