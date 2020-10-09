@@ -1,4 +1,4 @@
-import { AST, FieldNode, M2ONode, NestedCollectionNode, O2MNode } from '../types/ast';
+import { AST, NestedCollectionNode, FieldNode } from '../types/ast';
 import { clone, cloneDeep, uniq, pick } from 'lodash';
 import database from './index';
 import SchemaInspector from 'knex-schema-inspector';
@@ -19,72 +19,71 @@ export default async function runAST(
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
+	console.log(ast);
+
+	if (ast.type === 'm2a') return null;
+
 	const query = options?.query || ast.query;
 	const knex = options?.knex || database;
 
-	if (ast.type === 'm2a') {
-		return null;
-	} else {
-		return await runQuery(ast);
-	}
+	// Retrieve the database columns to select in the current AST
+	const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
+		ast,
+		knex
+	);
 
-	async function runQuery(ast: AST | O2MNode | M2ONode) {
-		// Retrieve the database columns to select in the current AST
-		const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
-			ast,
-			knex
-		);
+	// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
+	const dbQuery = await getDBQuery(knex, ast.name, columnsToSelect, query, primaryKeyField);
 
-		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(knex, ast.name, columnsToSelect, query, primaryKeyField);
+	const rawItems: Item | Item[] = await dbQuery;
 
-		const rawItems: Item | Item[] = await dbQuery;
+	if (!rawItems) return null;
 
-		if (!rawItems) return null;
+	// Run the items through the special transforms
+	const payloadService = new PayloadService(ast.name, { knex });
+	let items = await payloadService.processValues('read', rawItems);
 
-		// Run the items through the special transforms
-		const payloadService = new PayloadService(ast.name, { knex });
-		let items = await payloadService.processValues('read', rawItems);
+	if (!items || items.length === 0) return items;
 
-		if (!items || items.length === 0) return items;
+	// Apply the `_in` filters to the nested collection batches
+	const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
 
-		// Apply the `_in` filters to the nested collection batches
-		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
+	for (const nestedNode of nestedNodes) {
+		if (nestedNode.type === 'm2a') continue;
+		let tempLimit: number | null = null;
 
-		for (const nestedNode of nestedNodes) {
-			let tempLimit: number | null = null;
-
-			// Nested o2m-items are fetched from the db in a single query. This means that we're fetching
-			// all nested items for all parent items at once. Because of this, we can't limit that query
-			// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
-			// that there's _n_ items, which are then divided on the parent items. (no good)
-			if (nestedNode.type === 'o2m' && typeof nestedNode.query.limit === 'number') {
-				tempLimit = nestedNode.query.limit;
-				nestedNode.query.limit = -1;
-			}
-
-			let nestedItems = await runAST(nestedNode, { knex, child: true });
-
-			if (nestedItems) {
-				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
-			}
+		// Nested o2m-items are fetched from the db in a single query. This means that we're fetching
+		// all nested items for all parent items at once. Because of this, we can't limit that query
+		// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
+		// that there's _n_ items, which are then divided on the parent items. (no good)
+		if (nestedNode.type === 'o2m' && typeof nestedNode.query.limit === 'number') {
+			tempLimit = nestedNode.query.limit;
+			nestedNode.query.limit = -1;
 		}
 
-		// During the fetching of data, we have to inject a couple of required fields for the child nesting
-		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
-		// and nesting is done, we parse through the output structure, and filter out all non-requested
-		// fields
-		if (options?.child !== true) {
-			items = removeTemporaryFields(items, ast, primaryKeyField);
-		}
+		let nestedItems = await runAST(nestedNode, { knex, child: true });
 
-		return items;
+		if (nestedItems) {
+			// Merge all fetched nested records with the parent items
+			items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
+		}
 	}
+
+	// During the fetching of data, we have to inject a couple of required fields for the child nesting
+	// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
+	// and nesting is done, we parse through the output structure, and filter out all non-requested
+	// fields
+	if (options?.child !== true) {
+		items = removeTemporaryFields(items, originalAST, primaryKeyField);
+	}
+
+	return items;
 }
 
-async function parseCurrentLevel(ast: AST | O2MNode | M2ONode, knex: Knex) {
+async function parseCurrentLevel(ast: AST | NestedCollectionNode, knex: Knex) {
 	const schemaInspector = SchemaInspector(knex);
+	if (ast.type === 'm2a')
+		return { columnsToSelect: [], nestedCollectionNodes: [], primaryKeyField: 'id' };
 
 	const primaryKeyField = await schemaInspector.primary(ast.name);
 
@@ -153,6 +152,7 @@ function applyParentFilters(
 
 	for (const nestedNode of nestedCollectionNodes) {
 		if (!nestedNode.relation) continue;
+		if (nestedNode.type === 'm2a') continue;
 
 		if (nestedNode.type === 'm2o') {
 			nestedNode.query = {
@@ -166,7 +166,7 @@ function applyParentFilters(
 					},
 				},
 			};
-		} else if (nestedNode.type === 'o2m') {
+		} else {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
 				return child.type === 'field' && child.name === nestedNode.relation.many_field;
 			});
@@ -211,7 +211,7 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
 		}
-	} else if (nestedNode.type === 'o2m') {
+	} else {
 		for (const parentItem of parentItems) {
 			let itemChildren = nestedItems.filter((nestedItem) => {
 				if (nestedItem === null) return false;
@@ -241,16 +241,17 @@ function mergeWithParentItems(
 
 function removeTemporaryFields(
 	rawItem: Item | Item[],
-	ast: AST | O2MNode | M2ONode,
+	ast: AST | NestedCollectionNode,
 	primaryKeyField: string
 ): Item | Item[] {
 	const rawItems: Item[] = Array.isArray(rawItem) ? rawItem : [rawItem];
+	if (ast.type === 'm2a') return {};
 
 	const items: Item[] = [];
 
 	const fields = ast.children
 		.filter((child) => child.type === 'field')
-		.map((child) => (child as FieldNode).name);
+		.map((child) => (child as FieldNode).name); /** @TODO */
 
 	const nestedCollections = ast.children.filter(
 		(child) => child.type !== 'field'
@@ -262,8 +263,9 @@ function removeTemporaryFields(
 		const item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
 
 		for (const nestedCollection of nestedCollections) {
-			if (item[nestedCollection.fieldKey] !== null && nestedCollection.type !== 'm2a') {
-				/** @TODO REMOVE M2A CHECK HERE */
+			if (nestedCollection.type === 'm2a') continue;
+
+			if (item[nestedCollection.fieldKey] !== null) {
 				item[nestedCollection.fieldKey] = removeTemporaryFields(
 					rawItem[nestedCollection.fieldKey],
 					nestedCollection,

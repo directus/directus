@@ -4,8 +4,8 @@
 
 import {
 	AST,
-	FieldNode,
 	NestedCollectionNode,
+	FieldNode,
 	Query,
 	Relation,
 	PermissionsAction,
@@ -15,6 +15,7 @@ import database from '../database';
 import { clone } from 'lodash';
 import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
+import { getRelationType } from '../utils/get-relation-type';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -115,30 +116,23 @@ export default async function getASTFromQuery(
 
 			if (!relation) continue;
 
-			const relationType = getRelationType(relatedCollection, relationalField, relation);
+			const relationType = getRelationType(relation, relatedCollection, relationalField);
+
+			if (!relationType) continue;
 
 			let child: NestedCollectionNode;
 
 			if (relationType === 'm2a') {
-				const allowedCollections: string[] =
-					relation.one_allowed_collections?.split(',') || [];
-
 				child = {
 					type: 'm2a',
-					names: allowedCollections,
-					fieldKey: relationalField,
-					parentKey: await schemaInspector.primary(parentCollection),
-					relation: relation,
-					query: {},
+					names: relation.one_allowed_collections!.split(','),
 					children: {},
+					query: {},
 					relatedKey: {},
+					parentKey: await schemaInspector.primary(parentCollection),
+					fieldKey: relationalField,
+					relation: relation,
 				};
-
-				// for (const allowedCollection of allowedCollections) {
-				// 	child.children[allowedCollection] = (await parseFields(allowedCollection, nestedFields)).filter(
-				// 		filterEmptyChildCollections
-				// 	),
-				// }
 			} else {
 				child = {
 					type: relationType,
@@ -243,25 +237,6 @@ export default async function getASTFromQuery(
 		if (relation.one_collection === collection && relation.one_field === field) {
 			return relation.many_collection;
 		}
-	}
-
-	function getRelationType(
-		relatedCollection: string,
-		relationalField: string,
-		relation: Relation
-	): 'o2m' | 'm2o' | 'm2a' {
-		if (
-			relation.one_collection === relatedCollection &&
-			relation.many_field === relationalField
-		) {
-			return 'm2o';
-		}
-
-		if (relation.one_collection_field && relation.one_allowed_collections) {
-			return 'm2a';
-		}
-
-		return 'o2m';
 	}
 
 	async function getFieldsInCollection(collection: string) {
