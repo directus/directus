@@ -1,10 +1,12 @@
 import { Relation } from '../types';
 
-export function getRelationType(
-	relation: Relation,
-	collection: string,
-	field: string
-): 'm2o' | 'o2m' | 'm2a' | null {
+export function getRelationType(getRelationOptions: {
+	relation: Relation;
+	collection: string | null;
+	field: string;
+}): 'm2o' | 'o2m' | 'm2a' | null {
+	const { relation, collection, field } = getRelationOptions;
+
 	if (
 		relation.many_collection === collection &&
 		relation.many_field === field &&

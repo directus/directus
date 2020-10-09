@@ -109,18 +109,19 @@ export default async function getASTFromQuery(
 
 		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
 			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
-
-			if (!relatedCollection) continue;
-
 			const relation = getRelation(parentCollection, relationalField);
 
 			if (!relation) continue;
 
-			const relationType = getRelationType(relation, relatedCollection, relationalField);
+			const relationType = getRelationType({
+				relation,
+				collection: parentCollection,
+				field: relationalField,
+			});
 
 			if (!relationType) continue;
 
-			let child: NestedCollectionNode;
+			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
 				child = {
@@ -133,7 +134,7 @@ export default async function getASTFromQuery(
 					fieldKey: relationalField,
 					relation: relation,
 				};
-			} else {
+			} else if (relatedCollection) {
 				child = {
 					type: relationType,
 					name: relatedCollection,
@@ -146,7 +147,9 @@ export default async function getASTFromQuery(
 				};
 			}
 
-			children.push(child);
+			if (child) {
+				children.push(child);
+			}
 		}
 
 		return children;
@@ -226,18 +229,20 @@ export default async function getASTFromQuery(
 		return relation;
 	}
 
-	function getRelatedCollection(collection: string, field: string) {
+	function getRelatedCollection(collection: string, field: string): string | null {
 		const relation = getRelation(collection, field);
 
 		if (!relation) return null;
 
 		if (relation.many_collection === collection && relation.many_field === field) {
-			return relation.one_collection;
+			return relation.one_collection || null;
 		}
 
 		if (relation.one_collection === collection && relation.one_field === field) {
-			return relation.many_collection;
+			return relation.many_collection || null;
 		}
+
+		return null;
 	}
 
 	async function getFieldsInCollection(collection: string) {
