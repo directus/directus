@@ -9,6 +9,7 @@ export type M2ONode = {
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
+	relatedKey: string;
 };
 
 export type M2ANode = {
@@ -19,6 +20,9 @@ export type M2ANode = {
 	};
 	query: {
 		[collection: string]: Query;
+	};
+	relatedKey: {
+		[collection: string]: string;
 	};
 	fieldKey: string;
 	relation: Relation;
@@ -33,6 +37,7 @@ export type O2MNode = {
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
+	relatedKey: string;
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | M2ANode;

@@ -267,7 +267,7 @@ function removeTemporaryFields(
 				item[nestedCollection.fieldKey] = removeTemporaryFields(
 					rawItem[nestedCollection.fieldKey],
 					nestedCollection,
-					nestedCollection.parentKey
+					nestedCollection.relatedKey
 				);
 			}
 		}
