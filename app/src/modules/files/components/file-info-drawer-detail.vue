@@ -138,10 +138,10 @@ export default defineComponent({
 		});
 
 		const { creationDate, modificationDate } = useDates();
-		const { user_created, user_modified } = useUser();
+		const { userCreated, userModified } = useUser();
 		const { folder } = useFolder();
 
-		return { readableMimeType, size, creationDate, modificationDate, user_created, user_modified, folder, marked };
+		return { readableMimeType, size, creationDate, modificationDate, userCreated, userModified, folder, marked };
 
 		function useDates() {
 			const creationDate = ref<string | null>(null);
@@ -157,12 +157,12 @@ export default defineComponent({
 						String(i18n.t('date-fns_date_short'))
 					);
 
-					if(props.file.modified_on) {
+					if (props.file.modified_on) {
 						modificationDate.value = await localizedFormat(
 							new Date(props.file.modified_on),
 							String(i18n.t('date-fns_date_short'))
 						);
-					}					
+					}
 				},
 				{ immediate: true }
 			);
@@ -178,12 +178,12 @@ export default defineComponent({
 			};
 
 			const loading = ref(false);
-			const user_created = ref<User | null>(null);
-			const user_modified = ref<User | null>(null);
+			const userCreated = ref<User | null>(null);
+			const userModified = ref<User | null>(null);
 
 			watch(() => props.file, fetchUser, { immediate: true });
 
-			return { user_created, user_modified };
+			return { userCreated, userModified };
 
 			async function fetchUser() {
 				if (!props.file) return null;
@@ -200,7 +200,7 @@ export default defineComponent({
 
 					const { id, first_name, last_name, role } = response.data.data;
 
-					user_created.value = {
+					userCreated.value = {
 						id: props.file.uploaded_by,
 						name: first_name + ' ' + last_name,
 						link: `/users/${id}`,
@@ -215,13 +215,12 @@ export default defineComponent({
 
 						const { id, first_name, last_name, role } = response.data.data;
 
-						user_modified.value = {
+						userModified.value = {
 							id: props.file.modified_by,
 							name: first_name + ' ' + last_name,
 							link: `/users/${id}`,
 						};
 					}
-
 				} finally {
 					loading.value = false;
 				}

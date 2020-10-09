@@ -42,7 +42,6 @@ columns:
       column: id
   modified_on:
     type: timestamp
-    default: '$now'
   charset:
     type: string
     length: 50

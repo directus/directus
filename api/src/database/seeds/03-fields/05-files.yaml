@@ -104,4 +104,4 @@ fields:
     locked: true
     special: date-updated
     width: half
-    display: dateTime
+    display: datetime
