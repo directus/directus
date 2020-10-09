@@ -41,8 +41,6 @@ export default defineComponent({
 				return _selection.value
 			},
 			set(newSelection: string[]) {
-				console.log("newSelect: ", newSelection);
-				
 				if(newSelection.length === 0) {
 					_selection.value =  []
 				} else {
