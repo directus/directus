@@ -15,6 +15,12 @@
 		<div class="docs-content selectable">
 			<markdown>{{ markdownWithoutTitle }}</markdown>
 		</div>
+
+		<template #drawer>
+			<drawer-detail icon="info_outline" :title="$t('information')" close>
+				<div class="page-description" v-html="marked($t('page_help_docs_global'))" />
+			</drawer-detail>
+		</template>
 	</private-view>
 </template>
 
@@ -22,6 +28,7 @@
 import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
 import Markdown from '../components/markdown.vue';
+import marked from 'marked';
 
 async function getMarkdownForPath(path: string) {
 	const pathParts = path.split('/');
@@ -59,7 +66,7 @@ export default defineComponent({
 	},
 	setup() {
 		const markdown = ref('');
-		const view = ref<Vue | null>(null);
+		const view = ref<Vue>();
 
 		const title = computed(() => {
 			const firstLine = markdown.value.split('\n').shift();
@@ -73,11 +80,10 @@ export default defineComponent({
 		});
 
 		onUpdated(() => {
-			if(view.value === null) return
-			view.value.$data.contentEl?.scrollTo({ top: 0 });
+			view.value?.$data.contentEl?.scrollTo({ top: 0 });
 		});
 
-		return { markdown, title, markdownWithoutTitle, view };
+		return { markdown, title, markdownWithoutTitle, view, marked };
 	},
 });
 </script>
