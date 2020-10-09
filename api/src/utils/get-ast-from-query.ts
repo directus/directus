@@ -62,74 +62,16 @@ export default async function getASTFromQuery(
 	delete query.fields;
 	delete query.deep;
 
-	ast.children = (await parseFields(collection, fields, deep)).filter(
-		filterEmptyChildCollections
-	);
+	ast.children = await parseFields(collection, fields, deep);
 
 	return ast;
-
-	function convertWildcards(parentCollection: string, fields: string[]) {
-		const allowedFields = permissions
-			? permissions
-					.find((permission) => parentCollection === permission.collection)
-					?.fields?.split(',')
-			: ['*'];
-
-		if (!allowedFields || allowedFields.length === 0) return [];
-
-		for (let index = 0; index < fields.length; index++) {
-			const fieldKey = fields[index];
-
-			if (fieldKey.includes('*') === false) continue;
-
-			if (fieldKey === '*') {
-				if (allowedFields.includes('*')) continue;
-				fields.splice(index, 1, ...allowedFields);
-			}
-
-			// Swap *.* case for *,<relational-field>.*,<another-relational>.*
-			if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
-				const parts = fieldKey.split('.');
-
-				const relationalFields = allowedFields.includes('*')
-					? relations
-							.filter(
-								(relation) =>
-									relation.many_collection === parentCollection ||
-									relation.one_collection === parentCollection
-							)
-							.map((relation) => {
-								const isM2O = relation.many_collection === parentCollection;
-								return isM2O ? relation.many_field : relation.one_field;
-							})
-					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
-
-				const nonRelationalFields = allowedFields.filter(
-					(fieldKey) => relationalFields.includes(fieldKey) === false
-				);
-
-				fields.splice(
-					index,
-					1,
-					...[
-						...relationalFields.map((relationalField) => {
-							return `${relationalField}.${parts.slice(1).join('.')}`;
-						}),
-						...nonRelationalFields,
-					]
-				);
-			}
-		}
-
-		return fields;
-	}
 
 	async function parseFields(
 		parentCollection: string,
 		fields: string[],
 		deep?: Record<string, Query>
 	) {
-		fields = convertWildcards(parentCollection, fields);
+		fields = await convertWildcards(parentCollection, fields);
 
 		if (!fields) return [];
 
@@ -138,9 +80,17 @@ export default async function getASTFromQuery(
 		const relationalStructure: Record<string, string[]> = {};
 
 		for (const field of fields) {
-			if (field.includes('.') === false) {
-				children.push({ type: 'field', name: field });
-			} else {
+			const isRelational =
+				field.includes('.') ||
+				!!relations.find(
+					(relation) =>
+						(relation.many_collection === parentCollection &&
+							relation.many_field === field) ||
+						(relation.one_collection === parentCollection &&
+							relation.one_field === field)
+				);
+
+			if (isRelational) {
 				// field is relational
 				const parts = field.split('.');
 
@@ -148,7 +98,11 @@ export default async function getASTFromQuery(
 					relationalStructure[parts[0]] = [];
 				}
 
-				relationalStructure[parts[0]].push(parts.slice(1).join('.'));
+				if (parts.length > 1) {
+					relationalStructure[parts[0]].push(parts.slice(1).join('.'));
+				}
+			} else {
+				children.push({ type: 'field', name: field });
 			}
 		}
 
@@ -192,9 +146,7 @@ export default async function getASTFromQuery(
 					parentKey: await schemaInspector.primary(parentCollection),
 					relation: relation,
 					query: deep?.[relationalField] || {},
-					children: (await parseFields(relatedCollection, nestedFields)).filter(
-						filterEmptyChildCollections
-					),
+					children: await parseFields(relatedCollection, nestedFields),
 				};
 			}
 
@@ -202,6 +154,68 @@ export default async function getASTFromQuery(
 		}
 
 		return children;
+	}
+
+	async function convertWildcards(parentCollection: string, fields: string[]) {
+		const allowedFields = permissions
+			? permissions
+					.find((permission) => parentCollection === permission.collection)
+					?.fields?.split(',')
+			: ['*'];
+
+		if (!allowedFields || allowedFields.length === 0) return [];
+
+		for (let index = 0; index < fields.length; index++) {
+			const fieldKey = fields[index];
+
+			if (fieldKey.includes('*') === false) continue;
+
+			if (fieldKey === '*') {
+				// Set to all fields in collection
+				if (allowedFields.includes('*')) {
+					const fieldsInCollection = await getFieldsInCollection(parentCollection);
+					fields.splice(index, 1, ...fieldsInCollection);
+				} else {
+					// Set to all allowed fields
+					fields.splice(index, 1, ...allowedFields);
+				}
+			}
+
+			// Swap *.* case for *,<relational-field>.*,<another-relational>.*
+			if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
+				const parts = fieldKey.split('.');
+
+				const relationalFields = allowedFields.includes('*')
+					? relations
+							.filter(
+								(relation) =>
+									relation.many_collection === parentCollection ||
+									relation.one_collection === parentCollection
+							)
+							.map((relation) => {
+								const isM2O = relation.many_collection === parentCollection;
+								return isM2O ? relation.many_field : relation.one_field;
+							})
+					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
+
+				const nonRelationalFields = allowedFields.filter(
+					(fieldKey) => relationalFields.includes(fieldKey) === false
+				);
+
+				fields.splice(
+					index,
+					1,
+					...[
+						...relationalFields.map((relationalField) => {
+							return `${relationalField}.${parts.slice(1).join('.')}`;
+						}),
+						...nonRelationalFields,
+					]
+				);
+			}
+		}
+
+		return fields;
 	}
 
 	function getRelation(collection: string, field: string) {
@@ -229,12 +243,6 @@ export default async function getASTFromQuery(
 		}
 	}
 
-	function filterEmptyChildCollections(childNode: FieldNode | NestedCollectionNode) {
-		if (childNode.type === 'field') return true;
-		if (childNode.children.length > 0) return true;
-		return false;
-	}
-
 	function getRelationType(
 		relatedCollection: string,
 		relationalField: string,
@@ -252,5 +260,21 @@ export default async function getASTFromQuery(
 		}
 
 		return 'o2m';
+	}
+
+	async function getFieldsInCollection(collection: string) {
+		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
+		const fields = (
+			await database.select('field').from('directus_fields').where({ collection })
+		).map((field) => field.field);
+
+		const fieldsInCollection = [
+			...columns,
+			...fields.filter((field) => {
+				return columns.includes(field) === false;
+			}),
+		];
+
+		return fieldsInCollection;
 	}
 }

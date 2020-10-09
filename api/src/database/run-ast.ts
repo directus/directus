@@ -76,7 +76,7 @@ export default async function runAST(
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
 		if (options?.child !== true) {
-			items = removeTemporaryFields(items, ast);
+			items = removeTemporaryFields(items, ast, primaryKeyField);
 		}
 
 		return items;
@@ -241,7 +241,8 @@ function mergeWithParentItems(
 
 function removeTemporaryFields(
 	rawItem: Item | Item[],
-	ast: AST | O2MNode | M2ONode
+	ast: AST | O2MNode | M2ONode,
+	primaryKeyField: string
 ): Item | Item[] {
 	const rawItems: Item[] = Array.isArray(rawItem) ? rawItem : [rawItem];
 
@@ -257,14 +258,16 @@ function removeTemporaryFields(
 
 	for (const rawItem of rawItems) {
 		if (rawItem === null) return rawItem;
-		const item = fields.includes('*') ? rawItem : pick(rawItem, fields);
+
+		const item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
 
 		for (const nestedCollection of nestedCollections) {
 			if (item[nestedCollection.fieldKey] !== null && nestedCollection.type !== 'm2a') {
 				/** @TODO REMOVE M2A CHECK HERE */
 				item[nestedCollection.fieldKey] = removeTemporaryFields(
 					rawItem[nestedCollection.fieldKey],
-					nestedCollection
+					nestedCollection,
+					nestedCollection.parentKey
 				);
 			}
 		}
