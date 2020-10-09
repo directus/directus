@@ -1,6 +1,6 @@
 <template>
 	<div class="v-item">
-		<slot v-bind="{ 'active': isActive, toggle }" />
+		<slot v-bind="{ active: isActive, toggle }" />
 	</div>
 </template>
 
