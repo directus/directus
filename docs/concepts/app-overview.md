@@ -89,7 +89,7 @@ Similar to other [Item Detail](#) pages, this page provides a custom form for vi
 * **Description** — A description or bio of the user
 * **Tags** — A set of keywords useful when searching within the User Directory
 * **Timezone** — (User Preference) The timezone of the user
-* **Language** — (User Preference) The language to use for this user's App locale
+* **Language** — (User Preference) The language to use for this user's App language
 * **Theme** — (User Preference) Light, Dark, or Auto (based on the user's OS preferences)
 * **Two-Factor Auth** — (User Preference) Enables authenticating with 2FA
 * **Status** — (Admin Only) Determines if the user is active within the App/API

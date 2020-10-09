@@ -68,7 +68,7 @@ patch:
               description: Sort order of this field on the edit page of the admin app.
               type: integer
             translation:
-              description: 'Key value pair of `<locale>: <translation>` that allows the user to change the displayed name of the field in the admin app.'
+              description: 'Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.'
               type: object
             unique:
               description: If the value of this field should be unique within the collection.

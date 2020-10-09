@@ -1788,7 +1788,7 @@
 			"options": {
 				"fields": [
 					{
-						"field": "locale",
+						"field": "language",
 						"type": "string",
 						"interface": "language",
 						"options": {
@@ -2736,7 +2736,7 @@
 			"options": {
 				"fields": [
 					{
-						"field": "locale",
+						"field": "language",
 						"type": "string",
 						"interface": "language",
 						"options": {
@@ -10972,7 +10972,7 @@
 		{
 			"id": 826,
 			"collection": "directus_settings",
-			"field": "default_locale",
+			"field": "default_language",
 			"type": "string",
 			"interface": "language",
 			"options": {
@@ -10989,9 +10989,9 @@
 			"sort": 8,
 			"width": "half",
 			"group": null,
-			"note": "Default locale for Directus Users",
+			"note": "Default language for Directus Users",
 			"translation": null,
-			"name": "Default Locale"
+			"name": "Default Language"
 		},
 		{
 			"id": 827,

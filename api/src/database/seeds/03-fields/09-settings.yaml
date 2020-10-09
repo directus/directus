@@ -10,7 +10,7 @@ fields:
       placeholder: My project...
     sort: 1
     translations:
-      locale: en-US
+      language: en-US
       translations: Name
     width: half
   - collection: directus_settings
@@ -22,7 +22,7 @@ fields:
       placeholder: https://example.com
     sort: 2
     translations:
-      locale: en-US
+      language: en-US
       translations: Website
     width: half
   - collection: directus_settings
@@ -32,7 +32,7 @@ fields:
     note: Login & Logo Background
     sort: 3
     translations:
-      locale: en-US
+      language: en-US
       translations: Brand Color
     width: half
   - collection: directus_settings
@@ -42,7 +42,7 @@ fields:
     note: White 40x40 SVG/PNG
     sort: 4
     translations:
-      locale: en-US
+      language: en-US
       translations: Brand Logo
     width: half
   - collection: directus_settings
@@ -62,7 +62,7 @@ fields:
     locked: true
     sort: 6
     translations:
-      locale: en-US
+      language: en-US
       translations: Login Foreground
     width: half
   - collection: directus_settings
@@ -71,7 +71,7 @@ fields:
     locked: true
     sort: 7
     translations:
-      locale: en-US
+      language: en-US
       translations: Login Background
     width: half
   - collection: directus_settings

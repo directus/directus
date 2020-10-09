@@ -95,7 +95,7 @@
       "company": "Εταιρεία",
       "title": "Τίτλος",
       "timezone": "Ζώνη ώρας",
-      "locale": "Γλώσσα",
+      "language": "Γλώσσα",
       "avatar": "Avatar",
       "theme": "Θέμα",
       "2fa_secret": "Έλεγχος ταυτότητας δυο παραγόντων"

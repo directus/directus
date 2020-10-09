@@ -21,7 +21,7 @@ Directus is a simple solution for complex problems. Every aspect of Directus is 
 * **Pure** — There is no predefined model or proprietary rules for your agnostic schema, and all system settings are stored separately.
 * **Open** — Our entire codebase is public and transparent, allowing for end-to-end audits. Nothing is obfuscated or black-boxed.
 * **Portable** — Data is stored in your bespoke database and can be migrated/exported/backed-up at any time. Absolutely no vendor lock-in.
-* **Limitless** — Create unlimited users, roles, locales, collections, and items. No arbitrary restrictions or paywall limitations.
+* **Limitless** — Create unlimited users, roles, languages, collections, and items. No arbitrary restrictions or paywall limitations.
 * **Extensible** — Every aspect of the platform is modular, allowing you to adapt, customize, and infinitely extend the Core engine.
 * **Unopinionated** — Choose your stack (node or PHP), database (all SQL vendors), API (REST or GraphQL), and infra (self-hosted or Cloud).
 
@@ -76,9 +76,9 @@ For the latest product info and sneak-peeks into upcoming releases, be sure to f
 
 Join our growing community of 2,600+ developers on [Discord](https://discord.gg/directus) and [Slack](https://directus.chat). From community support to seeing where the platform is heading next, it's a great way to get more involved.
 
-### Locales
+### Languages
 
-In addition to managing multilingual content, the Directus Admin App itself can also be translated into different languages. Our locales are managed through the [Directus CrowdIn](https://locales.directus.io/), which provides a friendly interface and automatically submits pull-requests to the git repository.
+In addition to managing multilingual content, the Directus Admin App itself can also be translated into different languages. Our languages are managed through the [Directus CrowdIn](https://locales.directus.io/), which provides a friendly interface and automatically submits pull-requests to the git repository.
 
 ### Marketplace
 

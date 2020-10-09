@@ -6442,7 +6442,7 @@
 					"options": {
 						"fields": [
 							{
-								"field": "locale",
+								"field": "language",
 								"type": "string",
 								"interface": "language",
 								"options": {
@@ -7062,7 +7062,7 @@
 					"options": {
 						"fields": [
 							{
-								"field": "locale",
+								"field": "language",
 								"type": "string",
 								"interface": "language",
 								"options": {

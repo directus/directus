@@ -67,9 +67,9 @@ fields:
     special: json
     interface: repeater
     options:
-      template: '{{ translation }} ({{ locale }})'
+      template: '{{ translation }} ({{ language }})'
       fields:
-        - field: locale
+        - field: language
           name: Language
           type: string
           schema:
