@@ -153,6 +153,16 @@ export default defineComponent({
 			font-size: 14px;
 		}
 
+		.heading-link {
+			color: var(--foreground-subdued);
+			font-size: 16px;
+
+			&:hover {
+				color: var(--primary);
+				text-decoration: none;
+			}
+		}
+
 		pre {
 			padding: 16px 20px;
 			overflow: auto;
