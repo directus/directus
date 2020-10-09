@@ -435,6 +435,7 @@ export class ItemsService implements AbstractService {
 		const keys: PrimaryKey[] = itemsToUpdate.map(
 			(item: Partial<Item>) => item[primaryKeyField]
 		);
+
 		return await this.update(data, keys);
 	}
 
