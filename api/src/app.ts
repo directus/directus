@@ -133,6 +133,8 @@ registerExtensions(customRouter);
 
 track('serverStarted');
 
+emitter.emit('init', { app });
+
 emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;
