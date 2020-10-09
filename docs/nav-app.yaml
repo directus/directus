@@ -80,5 +80,7 @@
     to: "/reference/command-line-interface"
   - name: Error Codes
     to: "/reference/error-codes"
-  - name: Item Rules
-    to: "/reference/item-rules"
+  - name: Filter Rules
+    to: "/reference/filter-rules"
+  - name: Item Objects
+    to: "/reference/item-objects"
