@@ -120,6 +120,7 @@ export default async function getASTFromQuery(
 				name: relatedCollection,
 				fieldKey: relationalField,
 				parentKey: await schemaInspector.primary(parentCollection),
+				relatedKey: await schemaInspector.primary(relatedCollection),
 				relation: relation,
 				query: deep?.[relationalField] || {},
 				children: await parseFields(relatedCollection, nestedFields),
