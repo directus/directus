@@ -12,7 +12,7 @@ import {
 	Accountability,
 } from '../types';
 import database from '../database';
-import { clone } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
@@ -28,7 +28,7 @@ export default async function getASTFromQuery(
 	query: Query,
 	options?: GetASTOptions
 ): Promise<AST> {
-	query = clone(query);
+	query = cloneDeep(query);
 
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
@@ -124,9 +124,11 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
+				const allowedCollections = relation.one_allowed_collections!.split(',');
+
 				child = {
 					type: 'm2a',
-					names: relation.one_allowed_collections!.split(','),
+					names: allowedCollections,
 					children: {},
 					query: {},
 					relatedKey: {},
@@ -134,6 +136,17 @@ export default async function getASTFromQuery(
 					fieldKey: relationalField,
 					relation: relation,
 				};
+
+				for (const relatedCollection of allowedCollections) {
+					child.children[relatedCollection] = await parseFields(
+						relatedCollection,
+						nestedFields
+					);
+					child.query[relatedCollection] = {};
+					child.relatedKey[relatedCollection] = await schemaInspector.primary(
+						relatedCollection
+					);
+				}
 			} else if (relatedCollection) {
 				child = {
 					type: relationType,
@@ -156,6 +169,8 @@ export default async function getASTFromQuery(
 	}
 
 	async function convertWildcards(parentCollection: string, fields: string[]) {
+		fields = cloneDeep(fields);
+
 		const fieldsInCollection = await getFieldsInCollection(parentCollection);
 
 		const allowedFields = permissions
@@ -193,8 +208,8 @@ export default async function getASTFromQuery(
 									relation.one_collection === parentCollection
 							)
 							.map((relation) => {
-								const isM2O = relation.many_collection === parentCollection;
-								return isM2O ? relation.many_field : relation.one_field;
+								const isMany = relation.many_collection === parentCollection;
+								return isMany ? relation.many_field : relation.one_field;
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 

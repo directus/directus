@@ -19,7 +19,8 @@ export default async function runAST(
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
-	console.log(ast);
+	// @ts-ignore
+	console.log((ast as AST).children[3]);
 
 	if (ast.type === 'm2a') return null;
 
