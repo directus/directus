@@ -4,8 +4,8 @@
 	</v-notice>
 	<div class="one-to-many" v-else>
 		<v-table
-			:loading="currentLoading"
-			:items="currentItems"
+			:loading="loading"
+			:items="displayItems"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
@@ -27,7 +27,7 @@
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deselect(item)" />
+				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
 
@@ -74,8 +74,9 @@ export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
-			type: Array,
-			default: undefined,
+			// type: Array,
+			type: Array as PropType<(number | Record<string, any>)[]>,
+			default: null,
 		},
 		primaryKey: {
 			type: [Number, String],
@@ -104,16 +105,14 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { loading: currentLoading, items: currentItems } = useCurrent();
-		const { tableHeaders } = useTable();
+		const { tableHeaders, displayItems, loading, error } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 
 		return {
-			currentLoading,
-			currentItems,
 			relation,
 			tableHeaders,
+			loading,
 			currentlyEditing,
 			editItem,
 			relatedCollection,
@@ -123,8 +122,24 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			selectionFilters,
-			deselect,
+			deleteItem,
+			displayItems,
 		};
+
+		function deleteItem(item: Record<string, any>) {
+			const relatedPrimKey = relatedPrimaryKeyField.value.field;
+			const id = item[relatedPrimKey];
+
+			emit(
+				'input',
+				props.value.filter((item) => {
+					if (typeof item === 'number') return item !== id;
+					if (typeof item === 'object' && relatedPrimKey in item) {
+						return item[relatedPrimKey] !== id;
+					}
+				})
+			);
+		}
 
 		/**
 		 * Holds info about the current relationship, like related collection, primary key field
@@ -144,162 +159,64 @@ export default defineComponent({
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
 
-		/**
-		 * Manages the current display value (the rows in the table)
-		 * This listens to changes in props.value to make sure we always display the correct info
-		 * in the table itself
-		 */
-		function useCurrent() {
-			const loading = ref(false);
-			const items = ref<any[]>([]);
-			const error = ref(null);
-
-			// This is the primary key of the parent form, not the related items
-			// By watching the primary key prop for this, it'll load the items fresh on load, but
-			// also when we navigate from edit form to another edit form.
-			watch(
-				() => props.primaryKey,
-				(newKey) => {
-					if (newKey !== null && newKey !== '+' && Array.isArray(props.value) !== true) {
-						fetchCurrent();
-					}
-				},
-				{
-					immediate: true,
-				}
-			);
-
-			// The value can either be null (no changes), or an array of primary key / object with changes
-			watch(
-				() => props.value,
-				(newValue) => {
-					// When the value is null, there aren't any changes. It does not mean that all
-					// related items are deselected
-					if (newValue === null) {
-						fetchCurrent();
-					}
-
-					if (Array.isArray(newValue)) {
-						mergeWithItems(newValue);
-					}
-				}
-			);
-
-			return { loading, items, error, fetchCurrent };
-
-			/**
-			 * Fetch all related items based on the primary key of the current field. This is only
-			 * run on first load (or when the parent form primary key changes)
-			 */
-			async function fetchCurrent() {
-				loading.value = true;
-
-				let fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
-
-				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
-					fields.push(relatedPrimaryKeyField.value.field);
-				}
-
-				// We're fetching these fields nested on the current item, so nest them in the current
-				// field-key
-				fields = fields.map((fieldKey) => `${props.field}.${fieldKey}`);
-
-				try {
-					const endpoint = props.collection.startsWith('directus_')
-						? `/${props.collection.substring(9)}/${props.primaryKey}`
-						: `/items/${props.collection}/${props.primaryKey}`;
-
-					const response = await api.get(endpoint, {
-						params: {
-							fields: fields,
-						},
-					});
-
-					items.value = response.data.data[props.field] || [];
-				} catch (err) {
-					error.value = err;
-				} finally {
-					loading.value = false;
-				}
-			}
-
-			/**
-			 * Merges all changes / newly selected items with the current value array, so we can
-			 * display the most up to date information in the table. This will merge edits with the
-			 * existing items, and fetch the full item info when the item is newly selected (as it
-			 * will only have a pk in the array of changes)
-			 */
-			async function mergeWithItems(changes: any[]) {
-				loading.value = true;
-
-				const pkField = relatedPrimaryKeyField.value.field;
-
-				const itemsWithChangesApplied = items.value
-					.map((item: any) => {
-						const changeForThisItem = changes.find((change) => change[pkField] === item[pkField]);
-
-						if (changeForThisItem) {
-							return {
-								...item,
-								...changeForThisItem,
-							};
-						}
-
-						return item;
-					})
-					.filter((item) => item.hasOwnProperty(pkField))
-					.filter((item) => item[relation.value.many_field] !== null);
-
-				const newlyAddedItems = changes.filter(
-					(change) =>
-						typeof change !== 'string' &&
-						typeof change !== 'number' &&
-						change.hasOwnProperty(pkField) === false
-				);
-
-				const selectedPrimaryKeys = changes
-					.filter((change) => typeof change === 'string' || typeof change === 'number')
-					.filter((primaryKey) => {
-						const isAlsoUpdate = itemsWithChangesApplied.some((update) => update[pkField] === primaryKey);
-
-						return isAlsoUpdate === false;
-					});
-
-				let selectedItems: any[] = [];
-
-				if (selectedPrimaryKeys.length > 0) {
-					const fields = [...props.fields];
-
-					if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
-						fields.push(relatedPrimaryKeyField.value.field);
-					}
-
-					const endpoint = props.collection.startsWith('directus_')
-						? `/${props.collection.substring(9)}/${selectedPrimaryKeys.join(',')}`
-						: `/items/${relatedCollection.value.collection}/${selectedPrimaryKeys.join(',')}`;
-
-					const response = await api.get(endpoint, {
-						params: {
-							fields: fields,
-						},
-					});
-
-					if (Array.isArray(response.data.data)) {
-						selectedItems = response.data.data;
-					} else {
-						selectedItems = [response.data.data];
-					}
-				}
-
-				items.value = [...itemsWithChangesApplied, ...newlyAddedItems, ...selectedItems];
-				loading.value = false;
-			}
-		}
-
 		function useTable() {
 			// Using a ref for the table headers here means that the table itself can update the
 			// values if it needs to. This allows the user to manually resize the columns for example
 			const tableHeaders = ref<Header[]>([]);
+			const loading = ref(false);
+			const displayItems = ref<Record<string, any>[]>([]);
+			const error = ref(null);
+
+			watch(
+				() => props.value,
+				async (newVal) => {
+					loading.value = true;
+					const pkField = relatedPrimaryKeyField.value.field;
+
+					let fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
+
+					if (fields.includes(pkField) === false) {
+						fields.push(pkField);
+					}
+
+					// We're fetching these fields nested on the current item, so nest them in the current
+					// field-key
+					fields = fields.map((fieldKey) => `${props.field}.${fieldKey}`);
+
+					try {
+						const endpoint = props.collection.startsWith('directus_')
+							? `/${props.collection.substring(9)}/${props.primaryKey}`
+							: `/items/${props.collection}/${props.primaryKey}`;
+
+						const response = await api.get(endpoint, {
+							params: {
+								fields: fields,
+							},
+						});
+
+						const existingItems = (response.data.data[props.field] as Record<string, any>[]) || [];
+						const updatedItems = props.value.filter(
+							(item) => typeof item === 'object' && pkField in item === false
+						) as Record<string, any>[];
+						const newItems = props.value.filter(
+							(item) => typeof item === 'object' && pkField in item === false
+						) as Record<string, any>[];
+
+						displayItems.value = existingItems
+							.map((item) => {
+								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
+								if (updatedItem !== undefined) return updatedItem;
+								return item;
+							})
+							.concat(...newItems);
+					} catch (err) {
+						error.value = err;
+					} finally {
+						loading.value = false;
+					}
+				},
+				{ immediate: true }
+			);
 
 			// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 			// fields prop changes (most likely when we're navigating to a different o2m context)
@@ -335,7 +252,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders };
+			return { tableHeaders, displayItems, loading, error };
 		}
 
 		function useEdits() {
@@ -420,10 +337,12 @@ export default defineComponent({
 			const selectModalActive = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (!currentItems.value) return [];
+				if (displayItems.value === null) return [];
+
 				const pkField = relatedPrimaryKeyField.value.field;
-				return currentItems.value
-					.filter((currentItem) => currentItem.hasOwnProperty(pkField))
+
+				return displayItems.value
+					.filter((currentItem) => pkField in currentItem)
 					.map((currentItem) => currentItem[pkField]);
 			});
 
@@ -447,75 +366,6 @@ export default defineComponent({
 					emit('input', newSelection);
 				}
 			}
-		}
-
-		function deselect(item: any) {
-			const pkField = relatedPrimaryKeyField.value.field;
-
-			const itemPrimaryKey = item[pkField];
-
-			// If the edited item doesn't have a primary key, it's new. In that case, filtering
-			// it out of props.value should be enough to remove it
-			if (itemPrimaryKey === undefined) {
-				return emit(
-					'input',
-					props.value.filter((stagedValue) => stagedValue !== item)
-				);
-			}
-
-			// If there's no staged value, it's safe to assume this item was already selected before
-			// and has to be deselected
-			if (props.value === null) {
-				return emit('input', [
-					{
-						[pkField]: itemPrimaryKey,
-						[relation.value.many_field]: null,
-					},
-				]);
-			}
-
-			// If the item is selected in the current edits, it will only have staged the primary
-			// key so the API is able to properly set it on first creation. In that case, we have
-			// to filter out the primary key
-			const itemWasNewlySelect = !!props.value.find((stagedItem) => stagedItem === itemPrimaryKey);
-
-			if (itemWasNewlySelect) {
-				currentItems.value = currentItems.value.filter(
-					(itemPreview) => itemPreview[pkField] !== itemPrimaryKey
-				);
-
-				return emit(
-					'input',
-					props.value.filter((stagedValue) => stagedValue !== itemPrimaryKey)
-				);
-			}
-
-			const itemHasEdits =
-				props.value.find((stagedItem: any) => stagedItem[pkField] === itemPrimaryKey) !== undefined;
-
-			if (itemHasEdits) {
-				return emit(
-					'input',
-					props.value.map((stagedValue: any) => {
-						if (stagedValue[pkField] === itemPrimaryKey) {
-							return {
-								[pkField]: itemPrimaryKey,
-								[relation.value.many_field]: null,
-							};
-						}
-
-						return stagedValue;
-					})
-				);
-			}
-
-			return emit('input', [
-				...props.value,
-				{
-					[pkField]: itemPrimaryKey,
-					[relation.value.many_field]: null,
-				},
-			]);
 		}
 
 		function getDefaultFields(): string[] {
