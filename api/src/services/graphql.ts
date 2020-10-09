@@ -29,6 +29,8 @@ import {
 	GraphQLScalarType,
 	GraphQLBoolean,
 	ObjectValueNode,
+	GraphQLUnionType,
+	GraphQLUnionTypeConfig,
 } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
@@ -162,10 +164,33 @@ export class GraphQLService {
 										},
 									};
 								} else if (relationType === 'm2a') {
+									const relatedCollections = relationForField.one_allowed_collections!;
+
+									const types: any = [];
+
+									for (const relatedCollection of relatedCollections) {
+										const relatedType = relatedCollection.startsWith(
+											'directus_'
+										)
+											? schema[relatedCollection.substring(9)].type
+											: schema.items[relatedCollection].type;
+
+										types.push(relatedType);
+									}
+
 									fieldsObject[field.field] = {
-										type: GraphQLString,
+										type: new GraphQLUnionType({
+											name: field.field,
+											types,
+											resolveType(value, _, info) {
+												/**
+												 * @TODO figure out a way to reach the parent level
+												 * to be able to read one_collection_field
+												 */
+												return types[0];
+											},
+										}),
 									};
-									/** @TODO M2A — Handle m2a case here */
 								}
 							} else {
 								fieldsObject[field.field] = {
@@ -284,6 +309,9 @@ export class GraphQLService {
 								};
 							}
 							/** @TODO M2A — Handle m2a case here */
+							/** @TODO
+							 * Figure out how to setup filter fields for a union type output
+							 */
 						} else {
 							const fieldType = field.schema?.is_primary_key
 								? GraphQLID
