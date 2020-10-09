@@ -123,7 +123,9 @@ fields:
             options:
               iconRight: title
               placeholder: Label this group...
-        - name: Accordion
+          schema:
+            is_nullable: false
+        - name: Type
           field: accordion
           type: string
           schema:
@@ -154,6 +156,8 @@ fields:
                   meta:
                     interface: collection
                     width: full
+                  schema:
+                    is_nullable: false
     special: json
     sort: 10
     width: full
