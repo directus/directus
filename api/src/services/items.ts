@@ -438,6 +438,35 @@ export class ItemsService implements AbstractService {
 		return await this.update(data, keys);
 	}
 
+	upsert(data: Partial<Item>): Promise<PrimaryKey>;
+	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const payloads = Array.isArray(data) ? data : [data];
+		const primaryKeys: PrimaryKey[] = [];
+
+		for (const payload of payloads) {
+			const primaryKey = payload[primaryKeyField];
+			const exists =
+				primaryKey &&
+				!!(await this.knex
+					.select(primaryKeyField)
+					.from(this.collection)
+					.where({ [primaryKeyField]: primaryKey })
+					.first());
+
+			if (exists) {
+				const keys = await this.update([payload]);
+				primaryKeys.push(...keys);
+			} else {
+				const key = await this.create(payload);
+				primaryKeys.push(key);
+			}
+		}
+
+		return Array.isArray(data) ? primaryKeys : primaryKeys[0];
+	}
+
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
