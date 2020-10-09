@@ -38,7 +38,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<v-dialog v-model="showRaw">
+		<v-dialog v-model="showRaw" @close="showRaw = false">
 			<v-card>
 				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
 				<v-card-text>

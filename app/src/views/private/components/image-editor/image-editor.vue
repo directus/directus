@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding>
+	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @close="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>

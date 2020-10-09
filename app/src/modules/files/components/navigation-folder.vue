@@ -66,7 +66,7 @@
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="renameActive" persistent>
+		<v-dialog v-model="renameActive" persistent @close="renameActive = false">
 			<v-card>
 				<v-card-title>{{ $t('rename_folder') }}</v-card-title>
 				<v-card-text>
@@ -79,7 +79,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="moveActive" persistent>
+		<v-dialog v-model="moveActive" persistent @close="moveActive = false">
 			<v-card>
 				<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
 				<v-card-text>
@@ -92,7 +92,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent>
+		<v-dialog v-model="deleteActive" persistent @close="deleteActive = false">
 			<v-card>
 				<v-card-title>{{ $t('delete_folder') }}</v-card-title>
 				<v-card-text>

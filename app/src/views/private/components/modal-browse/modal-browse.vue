@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" :title="$t('select_item')" no-padding>
+	<v-modal v-model="_active" :title="$t('select_item')" no-padding @close="cancel">
 		<component
 			:is="`layout-${localLayout}`"
 			:collection="collection"

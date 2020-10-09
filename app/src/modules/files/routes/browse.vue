@@ -19,7 +19,7 @@
 
 			<add-folder :parent="queryFilters && queryFilters.folder" />
 
-			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0">
+			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @close="moveToDialogActive = false">
 				<template #activator="{ on }">
 					<v-button rounded icon @click="on" class="folder" v-tooltip.bottom="$t('move_to_folder')">
 						<v-icon name="folder_move" />
@@ -44,7 +44,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @close="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
 						<v-icon name="delete" outline />

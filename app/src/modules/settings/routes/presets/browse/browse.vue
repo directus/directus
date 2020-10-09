@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @close="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
 						<v-icon name="delete" outline />

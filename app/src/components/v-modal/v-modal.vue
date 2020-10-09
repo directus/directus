@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="_active" :persistent="persistent">
+	<v-dialog v-model="_active" @close="$emit('close')" :persistent="persistent">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>

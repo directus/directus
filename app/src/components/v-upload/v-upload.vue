@@ -59,7 +59,7 @@
 					@input="setSelection"
 				/>
 
-				<v-dialog :active="activeDialog === 'url'" @toggle="activeDialog = null" :persistent="urlLoading">
+				<v-dialog :active="activeDialog === 'url'" @close="activeDialog = null" @toggle="activeDialog = null" :persistent="urlLoading">
 					<v-card>
 						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 						<v-card-text>

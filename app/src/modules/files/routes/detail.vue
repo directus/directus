@@ -12,7 +12,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" @close="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -40,7 +40,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="moveToDialogActive" v-if="isNew === false">
+			<v-dialog v-model="moveToDialogActive" v-if="isNew === false" @close="moveToDialogActive = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -142,7 +142,7 @@
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave">
+		<v-dialog v-model="confirmLeave" @close="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>

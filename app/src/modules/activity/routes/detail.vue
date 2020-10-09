@@ -1,5 +1,5 @@
 <template>
-	<v-modal active title="Activity Item" @toggle="close">
+	<v-modal active title="Activity Item" @toggle="close" @close="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<template v-else-if="error">

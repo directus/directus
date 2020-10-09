@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete">
+			<v-dialog v-model="confirmDelete" @close="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded

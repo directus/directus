@@ -1,6 +1,6 @@
 <template>
 	<v-hover class="module-bar-avatar" v-slot="{ hover }">
-		<v-dialog v-model="signOutActive">
+		<v-dialog v-model="signOutActive" @close="signOutActive = false">
 			<template #activator="{ on }">
 				<v-button
 					@click="on"

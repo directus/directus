@@ -152,7 +152,7 @@
 			</template>
 		</v-input>
 
-		<v-dialog v-model="duplicateActive">
+		<v-dialog v-model="duplicateActive" @close="duplicateActive = false">
 			<v-card class="duplicate">
 				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 				<v-card-text>
@@ -179,7 +179,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive">
+		<v-dialog v-model="deleteActive" @close="deleteActive = false">
 			<v-card>
 				<v-card-title>{{ $t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 				<v-card-actions>

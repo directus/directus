@@ -66,7 +66,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @close="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						:disabled="batchDeleteAllowed !== true"
@@ -96,6 +96,7 @@
 
 			<v-dialog
 				v-model="confirmArchive"
+				@close="confirmArchive = false"
 				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 			>
 				<template #activator="{ on }">

@@ -47,7 +47,7 @@
 			{{ $t('reset_system_permissions') }}
 		</button>
 
-		<v-dialog v-model="resetActive">
+		<v-dialog v-model="resetActive" @close="resetActive = false">
 			<v-card>
 				<v-card-title>{{ $t('reset_system_permissions') }}</v-card-title>
 				<v-card-text>{{ $t('reset_system_permissions_copy') }}</v-card-text>
