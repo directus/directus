@@ -74,8 +74,7 @@ export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
-			// type: Array,
-			type: Array as PropType<(number | Record<string, any>)[]>,
+			type: Array as PropType<(number | string | Record<string, any>)[]>,
 			default: null,
 		},
 		primaryKey: {
@@ -126,6 +125,40 @@ export default defineComponent({
 			displayItems,
 		};
 
+		function getItem(id: string | number) {
+			const pkField = relatedPrimaryKeyField.value.field;
+			if (props.value === null) return null;
+			return (
+				props.value.find(
+					(item) => (typeof item === 'object' && pkField in item && item[pkField] === id) || item === id
+				) || null
+			);
+		}
+
+		function getNewItems() {
+			const pkField = relatedPrimaryKeyField.value.field;
+			if (props.value === null) return [];
+			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
+				string,
+				any
+			>[];
+		}
+
+		function getUpdatedItems() {
+			const pkField = relatedPrimaryKeyField.value.field;
+			if (props.value === null) return [];
+			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
+				string,
+				any
+			>[];
+		}
+
+		function getExistingItems() {
+			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value.field;
+			return props.value.filter((item) => typeof item === 'string' || typeof item === 'number');
+		}
+
 		function deleteItem(item: Record<string, any>) {
 			const relatedPrimKey = relatedPrimaryKeyField.value.field;
 			const id = item[relatedPrimKey];
@@ -133,7 +166,7 @@ export default defineComponent({
 			emit(
 				'input',
 				props.value.filter((item) => {
-					if (typeof item === 'number') return item !== id;
+					if (typeof item === 'number' || typeof item === 'string') return item !== id;
 					if (typeof item === 'object' && relatedPrimKey in item) {
 						return item[relatedPrimKey] !== id;
 					}
@@ -195,12 +228,8 @@ export default defineComponent({
 						});
 
 						const existingItems = (response.data.data[props.field] as Record<string, any>[]) || [];
-						const updatedItems = props.value.filter(
-							(item) => typeof item === 'object' && pkField in item === false
-						) as Record<string, any>[];
-						const newItems = props.value.filter(
-							(item) => typeof item === 'object' && pkField in item === false
-						) as Record<string, any>[];
+						const updatedItems = getUpdatedItems();
+						const newItems = getNewItems();
 
 						displayItems.value = existingItems
 							.map((item) => {
@@ -271,14 +300,10 @@ export default defineComponent({
 				// When the currently staged value is an array, we know we made changes / added / removed
 				// certain items. In that case, we have to extract the previously made edits so we can
 				// keep moving forwards with those
-				if (props.value && Array.isArray(props.value)) {
-					const existingEdits = props.value.find((existingChange) => {
-						const existingPK = existingChange[relatedPrimaryKeyField.value.field];
-						if (!existingPK) return item === existingChange;
-						return existingPK === primaryKey;
-					});
+				if (props.value !== null) {
+					const existingEdits = getItem(primaryKey);
 
-					if (existingEdits) {
+					if (existingEdits && typeof existingEdits === 'object') {
 						editsAtStart.value = existingEdits;
 					}
 				}
@@ -298,11 +323,16 @@ export default defineComponent({
 			function stageEdits(edits: any) {
 				const pkField = relatedPrimaryKeyField.value.field;
 
-				const hasPrimaryKey = edits.hasOwnProperty(pkField);
+				const hasPrimaryKey = pkField in edits;
 
 				if (props.value && Array.isArray(props.value)) {
 					const newValue = props.value.map((existingChange) => {
-						if (existingChange[pkField] && edits[pkField] && existingChange[pkField] === edits[pkField]) {
+						if (
+							typeof existingChange === 'object' &&
+							existingChange[pkField] &&
+							edits[pkField] &&
+							existingChange[pkField] === edits[pkField]
+						) {
 							return edits;
 						}
 
@@ -360,11 +390,14 @@ export default defineComponent({
 			return { stageSelection, selectModalActive, selectionFilters };
 
 			function stageSelection(newSelection: (number | string)[]) {
-				if (props.value && Array.isArray(props.value)) {
-					emit('input', [...props.value, ...newSelection]);
-				} else {
-					emit('input', newSelection);
-				}
+				const pkField = relatedPrimaryKeyField.value.field;
+				const newItems = getNewItems();
+				const selection = newSelection.map((item) => {
+					const updatedItem = getItem(item);
+					return updatedItem === null ? item : updatedItem;
+				});
+
+				emit('input', [...selection, ...newItems]);
 			}
 		}
 
