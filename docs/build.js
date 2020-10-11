@@ -7,6 +7,10 @@ const dirTree = require('directory-tree');
 const yaml = require('js-yaml');
 
 async function build() {
+	console.log('Building docs...');
+
+	const start = Date.now();
+
 	const distPath = path.resolve(__dirname, './dist');
 
 	await rimraf(distPath);
@@ -35,6 +39,8 @@ async function build() {
 			yaml.safeLoad(yamlString)
 		);
 	}
+
+	console.log(`Built docs in ${Date.now() - start} ms`);
 }
 
 build();

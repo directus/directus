@@ -2,8 +2,8 @@ get:
   description: Returns a list of the fields available in the project.
   operationId: getFields
   parameters:
-    - $ref: "#/components/parameters/Limit"
-    - $ref: "#/components/parameters/Sort"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Sort"
   responses:
     "200":
       description: Successful request
@@ -15,10 +15,10 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Field"
+                  $ref: "../../#/components/schemas/Field"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Fields

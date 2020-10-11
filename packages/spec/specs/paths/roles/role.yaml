@@ -2,8 +2,8 @@ get:
   description: Retrieve a single role by unique identifier.
   operationId: getRole
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -13,19 +13,19 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Role"
+                $ref: "../../#/components/schemas/Role"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Roles
 patch:
   description: Update an existing role
   operationId: updateRole
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -66,11 +66,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Role"
+                $ref: "../../#/components/schemas/Role"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Roles
 delete:
@@ -80,10 +80,10 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Roles
 parameters:
-  - $ref: "#/components/parameters/UUId"
+  - $ref: "../../#/components/parameters/UUId"

@@ -6,15 +6,15 @@ get:
   security:
     - Auth: []
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Limit"
-    - $ref: "#/components/parameters/Offset"
-    - $ref: "#/components/parameters/Page"
-    - $ref: "#/components/parameters/Sort"
-    - $ref: "#/components/parameters/Single"
-    - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/search"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Page"
+    - $ref: "../../#/components/parameters/Sort"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Filter"
+    - $ref: "../../#/components/parameters/search"
+    - $ref: "../../#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -26,17 +26,17 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Preset"
+                  $ref: "../../#/components/schemas/Preset"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
 post:
   tags:
     - Presets
   operationId: createPreset
   description: Create a new preset.
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -94,6 +94,6 @@ post:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Preset"
+                $ref: "../../#/components/schemas/Preset"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"

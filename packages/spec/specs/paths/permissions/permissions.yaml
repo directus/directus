@@ -2,15 +2,15 @@ get:
   description: List all permissions.
   operationId: getPermissions
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Limit"
-    - $ref: "#/components/parameters/Offset"
-    - $ref: "#/components/parameters/Single"
-    - $ref: "#/components/parameters/Meta"
-    - $ref: "#/components/parameters/Sort"
-    - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/search"
-    - $ref: "#/components/parameters/Page"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Sort"
+    - $ref: "../../#/components/parameters/Filter"
+    - $ref: "../../#/components/parameters/search"
+    - $ref: "../../#/components/parameters/Page"
   responses:
     "200":
       description: Successful request
@@ -22,18 +22,18 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Permissions"
+                  $ref: "../../#/components/schemas/Permissions"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Permissions
 post:
   description: Create a new permission.
   operationId: createPermission
   parameters:
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -100,10 +100,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Permissions"
+                $ref: "../../#/components/schemas/Permissions"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Permissions

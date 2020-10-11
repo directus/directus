@@ -19,4 +19,4 @@ get:
                 items:
                   type: string
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"

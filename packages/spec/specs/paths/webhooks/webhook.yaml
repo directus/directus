@@ -10,19 +10,19 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Webhook"
+                $ref: "../../#/components/schemas/Webhook"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Webhooks
 patch:
   description: Update an existing webhook
   operationId: updateWebhook
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -64,11 +64,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Role"
+                $ref: "../../#/components/schemas/Role"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Webhooks
 delete:
@@ -78,10 +78,10 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Webhooks
 parameters:
-  - $ref: "#/components/parameters/UUId"
+  - $ref: "../../#/components/parameters/UUId"

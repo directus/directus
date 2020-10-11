@@ -48,4 +48,4 @@ get:
           schema:
             type: string
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
