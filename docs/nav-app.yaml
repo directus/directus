@@ -13,7 +13,7 @@
 
 - name: Concepts
   icon: school
-  to: "/concepts/"
+  to: "/concepts"
   children:
   - name: Platform Overview
     to: "/concepts/platform-overview"
