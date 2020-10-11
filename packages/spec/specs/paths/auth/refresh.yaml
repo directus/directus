@@ -8,26 +8,31 @@ post:
       application/json:
         schema:
           type: object
-          required: [ token ]
+          required: [token]
           properties:
             refresh_token:
               type: string
               example: eyJ0eXAiOiJKV...
               description: JWT access token you want to refresh. This token can't be expired.
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
           schema:
             type: object
             properties:
-              public:
-                type: boolean
               data:
                 type: object
                 properties:
-                  token:
+                  access_token:
                     type: string
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                    example: eyJhbGciOiJI...
+                  expires:
+                    type: integer
+                    example: 900
+                  refresh_token:
+                    type: string
+                    example: Gy-caJMpmGTA...
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"

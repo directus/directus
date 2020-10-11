@@ -2,10 +2,10 @@ get:
   description: Retrieve a single relation by unique identifier.
   operationId: getRelation
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -13,19 +13,19 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Relation'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/Relation"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Relations
+    - Relations
 patch:
   description: Update an existing relation
   operationId: updateRelation
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -38,7 +38,8 @@ patch:
               description: Collection on the _one_ side of the relationship.
               type: string
             field_many:
-              description: Foreign key. Field that holds the primary key of the related
+              description:
+                Foreign key. Field that holds the primary key of the related
                 collection.
               type: string
             field_one:
@@ -46,12 +47,13 @@ patch:
               type: string
               example: books
             junction_field:
-              description: Field on the junction table that holds the primary key of
+              description:
+                Field on the junction table that holds the primary key of
                 the related collection.
               type: string
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -59,24 +61,24 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Relation'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/Relation"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Relations
+    - Relations
 delete:
   description: Delete an existing relation.
   operationId: deleteRelation
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Relations
+    - Relations
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: "#/components/parameters/Id"

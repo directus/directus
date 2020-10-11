@@ -1,4 +1,4 @@
-description: Index of the file.
+description: Index
 name: id
 in: path
 required: true

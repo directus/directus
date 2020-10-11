@@ -2,10 +2,10 @@ get:
   description: Retrieve a single user by unique identifier.
   operationId: getUser
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -13,26 +13,26 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/User'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "#/components/schemas/User"
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Users
+    - Users
 patch:
   description: Update an existing user
   operationId: updateUser
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "#/components/parameters/Fields"
+    - $ref: "#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yaml#/components/schemas/User'
+          $ref: "#/components/schemas/User"
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
@@ -41,23 +41,23 @@ patch:
                 type: object
             type: object
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Users
+    - Users
 delete:
   description: Delete an existing user
   operationId: deleteUser
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Users
+    - Users
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  - $ref: "#/components/parameters/UUId"

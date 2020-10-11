@@ -1,9 +1,6 @@
 get:
-  description: Retrieve a single role by unique identifier.
-  operationId: getRole
-  parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+  description: Retrieve a single webhook by unique identifier.
+  operationId: getWebhook
   responses:
     "200":
       description: Successful request
@@ -13,16 +10,16 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Role"
+                $ref: "#/components/schemas/Webhook"
     "401":
       $ref: "#/components/responses/UnauthorizedError"
     "404":
       $ref: "#/components/responses/NotFoundError"
   tags:
-    - Roles
+    - Webhooks
 patch:
-  description: Update an existing role
-  operationId: updateRole
+  description: Update an existing webhook
+  operationId: updateWebhook
   parameters:
     - $ref: "#/components/parameters/Fields"
     - $ref: "#/components/parameters/Meta"
@@ -31,31 +28,32 @@ patch:
       application/json:
         schema:
           properties:
-            collection_listing:
-              description: Custom override for the admin app collection navigation.
-              type: string
-            description:
-              description: Description of the role.
-              type: string
-            enforce_2fa:
-              description: Whether or not this role enforces the use of 2FA.
-              type: boolean
-            external_id:
-              description: ID used with external services in SCIM.
-              type: string
-            ip_whitelist:
-              description:
-                Array of IP addresses that are allowed to connect to the
-                API as a user of this role.
-              type: array
-              items:
-                type: string
-            module_listing:
-              description: Custom override for the admin app module bar navigation.
-              type: string
             name:
-              description: Name of the role.
+              description: The name of the webhook.
               type: string
+              example: create articles
+            method:
+              description: Method used in the webhook.
+              type: string
+              example: POST
+            url:
+              description: The url of the webhook.
+              type: string
+              example: null
+            status:
+              description: The status of the webhook.
+              type: string
+              example: active
+            data:
+              description: If yes, send the content of what was done
+              type: boolean
+              example: true
+            actions:
+              description: The actions that triggers this webhook.
+              example: null
+            collections:
+              description: The collections that triggers this webhook.
+              example: null
           type: object
   responses:
     "200":
@@ -72,10 +70,10 @@ patch:
     "404":
       $ref: "#/components/responses/NotFoundError"
   tags:
-    - Roles
+    - Webhooks
 delete:
-  description: Delete an existing role
-  operationId: deleteRole
+  description: Delete an existing webhook
+  operationId: deleteWebhook
   responses:
     "200":
       description: Successful request
@@ -84,6 +82,6 @@ delete:
     "404":
       $ref: "#/components/responses/NotFoundError"
   tags:
-    - Roles
+    - Webhooks
 parameters:
   - $ref: "#/components/parameters/UUId"
