@@ -6,15 +6,12 @@ properties:
     type: integer
   bookmark:
     description:
-      Name for the bookmark. If this is set, the collection preset will
-      be considered to be a bookmark.
-    example: null
+      Name for the bookmark. If this is set, the preset will be considered a bookmark.
     nullable: true
     type: string
   user:
     description:
-      The unique identifier of the user to whom this collection preset
-      applies.
+      The unique identifier of the user to whom this collection preset applies.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     nullable: true
     oneOf:
@@ -27,29 +24,32 @@ properties:
       the role.
     example: 50419801-0f30-8644-2b3c-9bc2d980d0a0
     nullable: true
-    type: string
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/Role"
   collection:
     description: What collection this collection preset is used for.
     example: articles
-    type: string
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/Collection"
   search:
-    description: What the user searched for in search/filter in the header bar.
-    example: null
+    description: Search query.
     type: string
     nullable: true
   filters:
     description: The filters that the user applied.
     example:
-      key: 7RwVrquB5dPmfbrI1rcWy
-      field: title
-      operator: contains
-      value: Hello
+      - key: 7RwVrquB5dPmfbrI1rcWy
+        field: title
+        operator: contains
+        value: Hello
     type: array
     nullable: true
     items:
       type: object
   layout:
-    description: Name of the layout type that is used.
+    description: Key of the layout that is used.
     type: string
     example: null
   layout_query:
@@ -59,12 +59,10 @@ properties:
     example:
       cards:
         sort: -published_on
-        filters: [published_on, published_by]
     nullable: true
   layout_options:
     description:
-      Options of the views. The properties in here are controlled by the
-      layout.
+      Options of the views. The properties in here are controlled by the layout.
     example:
       cards:
         icon: account_circle

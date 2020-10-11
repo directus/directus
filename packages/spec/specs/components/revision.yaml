@@ -5,7 +5,7 @@ properties:
     example: 1
     type: integer
   activity:
-    description: Unique identifier for the [activity](/api/activity) record.
+    description: Unique identifier for the activity record.
     example: 2
     oneOf:
       - type: integer
@@ -13,7 +13,9 @@ properties:
   collection:
     description: Collection of the updated item.
     example: articles
-    type: string
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/Collection"
   item:
     description: Primary key of updated item.
     example: "168"
@@ -27,7 +29,7 @@ properties:
       id: "168"
       title: Hello, World!
     type: object
-    nullable: true # Should this be nullable?
+    nullable: true
   delta:
     description: Changes between the previous and the current revision.
     example:
@@ -35,8 +37,7 @@ properties:
     type: object
   parent:
     description:
-      If the current item was updated relationally, this is the collection
-      of the parent item.
+      If the current item was updated relationally, this is the id of the parent revision record
     example: null
-    type: string
+    type: integer
     nullable: true

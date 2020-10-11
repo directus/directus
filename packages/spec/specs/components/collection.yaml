@@ -1,7 +1,7 @@
 type: object
 properties:
   collection:
-    description: The collection name.
+    description: The collection key.
     example: customers
     type: string
   meta:
@@ -11,7 +11,7 @@ properties:
     nullable: true
     properties:
       collection:
-        description: The collection name again!
+        description: The collection key.
         example: customers
         type: string
       icon:
@@ -37,7 +37,7 @@ properties:
         description: Whether or not the collection is treated as a single object.
         type: boolean
         example: false
-      translation:
+      translations:
         description: Key value pairs of how to show this collection's name in different languages in the admin app.
         type: string
         example: null
@@ -71,7 +71,7 @@ properties:
     type: object
     properties:
       name:
-        description: The collection name again!
+        description: The collection key.
         type: string
         example: customers
       schema:

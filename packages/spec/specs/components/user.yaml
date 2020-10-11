@@ -9,7 +9,7 @@ properties:
     example: Admin
     type: string
   last_name:
-    description: First name of the user.
+    description: Last name of the user.
     example: User
     type: string
   email:
@@ -19,7 +19,6 @@ properties:
     format: email
   password:
     description: Password of the user.
-    example: "*********"
     type: string
   location:
     description: The user's location.
@@ -47,14 +46,9 @@ properties:
     description: The user's avatar.
     example: null
     oneOf:
-      - type: integer
       - type: string
       - $ref: "../openapi.yaml#/components/schemas/File"
     nullable: true
-  timezone:
-    description: The user's timezone.
-    example: America/New_York
-    type: string
   language:
     description: The user's language used in Directus.
     example: en-US
@@ -80,9 +74,13 @@ properties:
     oneOf:
       - type: string
       - $ref: "../openapi.yaml#/components/schemas/Role"
-  last_login:
-    description: When this user logged in last.
-    example: "2020-05-31 14:32:37"
+  token:
+    description: Static token for the user.
+    type: string
+    nullable: true
+  last_acces:
+    description: When this user used the API last.
+    example: "2020-05-31T14:32:37Z"
     type: string
     nullable: true
     format: date-time

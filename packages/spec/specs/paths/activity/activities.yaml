@@ -9,7 +9,7 @@ get:
     - $ref: "#/components/parameters/Single"
     - $ref: "#/components/parameters/Sort"
     - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/q"
+    - $ref: "#/components/parameters/Search"
   responses:
     "200":
       content:

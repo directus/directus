@@ -8,7 +8,7 @@ get:
     - $ref: "#/components/parameters/Sort"
     - $ref: "#/components/parameters/Single"
     - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/q"
+    - $ref: "#/components/parameters/search"
     - $ref: "#/components/parameters/Meta"
   responses:
     "200":

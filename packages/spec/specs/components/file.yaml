@@ -52,7 +52,7 @@ properties:
     description: Character set of the file.
     example: binary
     type: string
-    nullable: true # Should not be null?
+    nullable: true
   filesize:
     description: Size of the file in bytes.
     example: 137862
@@ -79,7 +79,6 @@ properties:
     nullable: true
   description:
     description: Description for the file.
-    example: ""
     type: string
     nullable: true
   location:
@@ -90,16 +89,13 @@ properties:
     nullable: true
   tags:
     description:
-      Tags for the file. Is automatically populated based on EXIF data
-      for images.
+      Tags for the file. Is automatically populated based on EXIF data for images.
     type: array
     nullable: true
     items:
       type: string
   metadata:
     description:
-      User provided miscellaneous key value pairs that serve as additional
-      metadata for the file.
-    example: null
+      IPTC, EXIF, and ICC metadata extracted from file
     type: object
     nullable: true

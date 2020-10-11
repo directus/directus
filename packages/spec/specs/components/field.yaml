@@ -25,7 +25,7 @@ properties:
         example: posts
         type: string
       type:
-        description: The type of the field.
+        description: The datatype of the field.
         example: string
         type: string
       default_value:
@@ -92,7 +92,7 @@ properties:
         example: title
         type: string
       special:
-        description: Transformation flag for field
+        description: Transformation flags for field
         example: null
         type: array
         items:
@@ -100,15 +100,13 @@ properties:
         nullable: true
       interface:
         description:
-          What interface is used in the admin app to edit the value for this
-          field.
+          What interface is used in the admin app to edit the value for this field.
         example: primary-key
         type: string
         nullable: true
       options:
         description:
-          Options for the interface that's used. This format is based on the
-          individual interface.
+          Options for the interface that's used. This format is based on the individual interface.
         example: null
         type: object
         nullable: true
@@ -124,7 +122,7 @@ properties:
         nullable: true
       locked:
         description:
-          If the field can be altered by the end user. Directus system fields
+          If the field can be altered by the end user. Most Directus system fields
           have this value set to `true`.
         example: true
         type: boolean
@@ -152,7 +150,7 @@ properties:
         example: null
         type: integer
         nullable: true
-      translation:
+      translations:
         description:
           "Key value pair of `<locale>: <translation>` that allows the user
           to change the displayed name of the field in the admin app."

@@ -14,7 +14,7 @@ properties:
     example: null
     nullable: true
   project_color:
-    description: The color of the project.
+    description: The brand color of the project.
     type: string
     example: null
     nullable: true
@@ -34,31 +34,50 @@ properties:
     example: null
     nullable: true
   public_note:
-    description: The notes of the project.
+    description: Note rendered on the public pages of the app.
     type: string
     example: null
     nullable: true
-  auth_idle_timeout:
-    description: Idle authentication timeout.
-    type: integer
-    example: 10080
   auth_login_attempts:
-    description: Authentication login attempts.
+    description: Allowed authentication login attempts before the user's status is set to blocked.
     type: integer
-    example: 25,
+    example: 25
   auth_password_policy:
     description: Authentication password policy.
     type: string
-    example: null
     nullable: true
   storage_asset_transform:
-    description: ""
+    description: What transformations are allowed in the assets endpoint.
     type: string
+    enum:
+      - all
+      - none
+      - presets
     example: "all"
     nullable: true
   storage_asset_presets:
-    description: ""
-    type: string
+    description: Array of allowed
+    type: array
+    items:
+      type: object
+      properties:
+        key:
+          description: Key for the asset. Used in the assets endpoint.
+          type: string
+        fit:
+          description: Whether to crop the thumbnail to match the size, or maintain the aspect ratio.
+          type: string
+          enum:
+            - cover
+            - contain
+        width:
+          description: Width of the thumbnail.
+          type: integer
+        height:
+          description: Height of the thumbnail.
+          type: integer
+        quality:
+          description: Quality of the compression used.
+          type: integer
     example: null
     nullable: true
-additionalProperties: true

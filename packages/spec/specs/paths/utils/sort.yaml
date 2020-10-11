@@ -1,23 +1,19 @@
-get:
-  description: Returns a random string of given length.
+post:
+  description: Re-sort items in collection based on start and to value of item
   operationId: sort
-  parameters:
-    - description: Length of the random string.
-      in: query
-      name: length
-      required: false
-      schema:
-        type: integer
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            item:
+              description: Primary key of item to move
+              type: number
+            to:
+              description: Primary key of item where to move the current item to
+              type: number
   responses:
     "200":
-      content:
-        application/json:
-          schema:
-            properties:
-              data:
-                type: string
-                example: 1>M3+4oh.S
-            type: object
       description: Successful request
   tags:
     - Utilities

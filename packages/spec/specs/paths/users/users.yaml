@@ -9,7 +9,7 @@ get:
     - $ref: "#/components/parameters/Meta"
     - $ref: "#/components/parameters/Sort"
     - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/q"
+    - $ref: "#/components/parameters/search"
   responses:
     "200":
       description: Successful request
