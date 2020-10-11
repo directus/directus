@@ -12,17 +12,21 @@ import formatTitle from '@directus/format-title';
 import { cloneDeep, mergeWith } from 'lodash';
 import { RelationsService } from './relations';
 import env from '../env';
+import { OpenAPIObject } from 'openapi3-ts';
 
 // @ts-ignore
 import { version } from '../../package.json';
 
 // @ts-ignore
 import openapi from '@directus/specs';
+import Knex from 'knex';
+import database from '../database';
 
 type RelationTree = Record<string, Record<string, Relation[]>>;
 
 export class SpecificationService {
 	accountability: Accountability | null;
+	knex: Knex;
 
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
@@ -32,16 +36,20 @@ export class SpecificationService {
 
 	constructor(options?: AbstractServiceOptions) {
 		this.accountability = options?.accountability || null;
+		this.knex = options?.knex || database;
 
-		this.fieldsService = new FieldsService(options);
-		this.collectionsService = new CollectionsService(options);
-		this.relationsService = new RelationsService(options);
+		this.fieldsService = new FieldsService({ knex: this.knex });
+		this.collectionsService = new CollectionsService({ knex: this.knex });
+		this.relationsService = new RelationsService({ knex: this.knex });
 
-		this.oas = new OASService({
-			fieldsService: this.fieldsService,
-			collectionsService: this.collectionsService,
-			relationsService: this.relationsService,
-		});
+		this.oas = new OASService(
+			{ knex: this.knex, accountability: this.accountability },
+			{
+				fieldsService: this.fieldsService,
+				collectionsService: this.collectionsService,
+				relationsService: this.relationsService,
+			}
+		);
 	}
 }
 
@@ -50,19 +58,28 @@ interface SpecificationSubService {
 }
 
 class OASService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
+
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
 
-	constructor({
-		fieldsService,
-		collectionsService,
-		relationsService,
-	}: {
-		fieldsService: FieldsService;
-		collectionsService: CollectionsService;
-		relationsService: RelationsService;
-	}) {
+	constructor(
+		options: AbstractServiceOptions,
+		{
+			fieldsService,
+			collectionsService,
+			relationsService,
+		}: {
+			fieldsService: FieldsService;
+			collectionsService: CollectionsService;
+			relationsService: RelationsService;
+		}
+	) {
+		this.accountability = options.accountability || null;
+		this.knex = options?.knex || database;
+
 		this.fieldsService = fieldsService;
 		this.collectionsService = collectionsService;
 		this.relationsService = relationsService;
@@ -188,7 +205,7 @@ class OASService implements SpecificationSubService {
 			relationsTree[relation.one_collection][relation.one_field].push(relation);
 		}
 
-		const dynOpenapi = {
+		const dynOpenapi: OpenAPIObject = {
 			openapi: '3.0.1',
 			info: {
 				title: 'Dynamic Api Specification',
@@ -209,9 +226,15 @@ class OASService implements SpecificationSubService {
 			},
 		};
 
-		return mergeWith(cloneDeep(openapi), cloneDeep(dynOpenapi), (obj, src) => {
+		let spec = mergeWith(cloneDeep(openapi), cloneDeep(dynOpenapi), (obj, src) => {
 			if (Array.isArray(obj)) return obj.concat(src);
 		});
+
+		if (this.accountability?.admin !== true) {
+			spec = this.filterForPermissions(spec);
+		}
+
+		return spec;
 	}
 
 	private getNameFormats(collection: string) {
@@ -445,5 +468,20 @@ class OASService implements SpecificationSubService {
 			}
 		}
 		return schemas;
+	}
+
+	private async filterForPermissions(spec: OpenAPIObject) {
+		if (!this.accountability) return spec;
+
+		spec = cloneDeep(spec);
+
+		const permissionsForCurrentUser = await this.knex
+			.select('*')
+			.from('directus_permissions')
+			.where({ role: this.accountability.role });
+
+		console.log(spec.paths);
+
+		return spec;
 	}
 }
