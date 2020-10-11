@@ -7,6 +7,7 @@
 			:toggle="toggle"
 			@delete="$emit('delete')"
 			:disabled="disabled"
+			:placeholder="headerPlaceholder"
 		/>
 		<transition-expand>
 			<div v-if="active">
@@ -46,6 +47,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		headerPlaceholder: {
+			type: String,
+			default: null
+		}
 	},
 });
 </script>

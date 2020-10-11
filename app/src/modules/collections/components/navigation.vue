@@ -1,19 +1,28 @@
 <template>
 	<v-list large>
 		<template v-if="customNavItems && customNavItems.length > 0">
-			<v-detail
-				:active="group.accordion === 'always_open' || undefined"
-				:disabled="group.accordion === 'always_open'"
-				:start-open="group.accordion === 'start_open'"
-				:label="group.name"
-				:key="group.name"
-				v-for="group in customNavItems"
-			>
-				<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
-					<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
-					<v-list-item-content>{{ navItem.name }}</v-list-item-content>
-				</v-list-item>
-			</v-detail>
+			<template v-for="(group, index) in customNavItems">
+				<template v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0">
+					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+						<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+						<v-list-item-content>{{ navItem.name }}</v-list-item-content>
+					</v-list-item>
+				</template>
+				<template v-else>
+					<v-detail
+						:active="group.accordion === 'always_open' || undefined"
+						:disabled="group.accordion === 'always_open'"
+						:start-open="group.accordion === 'start_open'"
+						:label="group.name || null"
+						:key="group.name"
+					>
+						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+							<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+							<v-list-item-content>{{ navItem.name }}</v-list-item-content>
+						</v-list-item>
+					</v-detail>
+				</template>
+			</template>
 		</template>
 
 		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
