@@ -977,6 +977,8 @@
   "collection_removed": "Collection Removed",
   "collection_updated": "Collection Updated",
   "collections_and_fields": "Collection & Fields",
+  "singleton": "Singleton",
+  "singleton_label": "Treat as single object",
 
   "fields": {
     "directus_activity": {
