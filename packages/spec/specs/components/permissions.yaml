@@ -1,5 +1,14 @@
 type: object
 properties:
+  id:
+    description: Unique identifier for the permission.
+    example: 1
+    type: integer
+  role:
+    description: Unique identifier of the role this permission applies to.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    nullable: true # Should this be nullable?
   collection:
     description: What collection this permission applies to.
     example: customers
@@ -24,10 +33,6 @@ properties:
     example: none
     type: string
     enum: [none, create, update, always]
-  id:
-    description: Unique identifier for the permission.
-    example: 1
-    type: integer
   read:
     description: If the user can read items.
     example: mine
@@ -39,11 +44,6 @@ properties:
     type: array
     items:
       type: string
-  role:
-    description: Unique identifier of the role this permission applies to.
-    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
-    type: string
-    nullable: true # Should this be nullable?
   status:
     description: What status this permission applies to.
     example: null
@@ -52,11 +52,10 @@ properties:
   status_blacklist:
     description: Explicitly denies specific statuses to be used.
     example: []
-    oneOf:
-      - type: array
-        nullable: true
-        items:
-          type: string
+    type: array
+    nullable: true
+    items:
+      type: string
   update:
     description: If the user can update items.
     example: none

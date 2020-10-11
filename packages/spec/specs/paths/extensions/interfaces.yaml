@@ -2,7 +2,7 @@ get:
   description: List all installed custom interfaces.
   operationId: getInterfaces
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -13,9 +13,9 @@ get:
                 type: array
                 items:
                   type: object
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "#/components/responses/NotFoundError"
   tags:
-  - Extensions
+    - Extensions

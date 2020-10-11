@@ -1,5 +1,9 @@
 type: object
 properties:
+  id:
+    description: Unique identifier for the relation.
+    example: 1
+    type: integer
   many_collection:
     description: Collection that has the field that holds the foreign key.
     example: directus_activity
@@ -25,12 +29,9 @@ properties:
     description: The primary field.
     example: id
     type: string
-  id:
-    description: Unique identifier for the relation.
-    example: 1
-    type: integer
   junction_field:
-    description: Field on the junction table that holds the primary key of the related
+    description:
+      Field on the junction table that holds the primary key of the related
       collection.
     example: null
     type: string

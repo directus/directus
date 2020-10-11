@@ -8,15 +8,27 @@ properties:
     description: Action that was performed.
     example: update
     type: string
-    enum: [authenticate, comment, upload, create, update, delete, soft-delete, revert, invalid-credentials]
-  user:
-    description: Unique identifier of the user account who caused this action.
-    example: 63716273-0f29-4648-8a2a-2af2948f6f78
-    type: string
+    enum:
+      [
+        authenticate,
+        comment,
+        upload,
+        create,
+        update,
+        delete,
+        soft-delete,
+        revert,
+        invalid-credentials,
+      ]
+  action_by:
+    description: The user who caused this action.
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/User"
     nullable: true # States the SQL structure
   timestamp:
     description: When the action happened.
-    example: '2019-12-05 22:52:09'
+    example: "2019-12-05 22:52:09"
     type: string
     format: date-time
   ip:
@@ -37,10 +49,11 @@ properties:
     type: string
   item:
     description: Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
-    example: '328'
+    example: "328"
     type: string
   comment:
-    description: User comment. This will store the comments that show up in the right
+    description:
+      User comment. This will store the comments that show up in the right
       sidebar of the item edit page in the admin app.
     example: null
     type: string
