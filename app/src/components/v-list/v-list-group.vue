@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch } from '@vue/composition-api';
-import { useGroupableParent, useGroupable } from '@/composables/groupable';
+import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
+import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
@@ -40,10 +40,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		disableGroupableParent: {
-			type: Boolean,
-			default: false,
-		},
 		scope: {
 			type: String,
 			default: undefined,
@@ -51,22 +47,15 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: undefined,
-		},
+		}
 	},
 	setup(props, { listeners, emit }) {
+		const {multiple} = toRefs(props)
+
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});
-
-		if (props.disableGroupableParent !== true) {
-			useGroupableParent(
-				{},
-				{
-					multiple: toRefs(props).multiple,
-				}
-			);
-		}
 
 		return { groupActive, toggle, onClick };
 

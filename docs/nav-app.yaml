@@ -1,5 +1,6 @@
 - name: Getting Started
   icon: play_arrow
+  to: "/getting-started"
   children:
   - name: Introduction
     to: "/getting-started/introduction"
@@ -12,6 +13,7 @@
 
 - name: Concepts
   icon: school
+  to: "/concepts"
   children:
   - name: Platform Overview
     to: "/concepts/platform-overview"
@@ -32,6 +34,7 @@
 
 - name: Guides
   icon: article
+  to: "/guides"
   children:
   - name: Collections
     to: "/guides/collections"
@@ -73,6 +76,7 @@
 
 - name: Reference
   icon: code
+  to: "/reference"
   children:
   - name: Command Line Interface
     to: "/reference/command-line-interface"

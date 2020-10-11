@@ -9,7 +9,15 @@ import { defineComponent, PropType, ref, toRefs } from '@vue/composition-api';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
+	model: {
+		prop: 'activeItems',
+		event: 'input'
+	},
 	props: {
+		activeItems: {
+			type: Array as PropType<(number | string)[]>,
+			default: () => []
+		},
 		large: {
 			type: Boolean,
 			default: false,
@@ -18,13 +26,23 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		mandatory: {
+			type: Boolean,
+			default: true,
+		},
 	},
-	setup(props) {
+	setup(props, {emit}) {
+		const {activeItems, multiple, mandatory} = toRefs(props)
 		useGroupableParent(
-			{},
 			{
-				mandatory: ref(false),
-				multiple: toRefs(props).multiple,
+				selection: activeItems,
+				onSelectionChange: (newSelection) => {
+					emit('input', newSelection)
+				}
+			},
+			{
+				mandatory,
+				multiple
 			}
 		);
 
