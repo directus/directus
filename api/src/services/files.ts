@@ -1,4 +1,4 @@
-import ItemsService from './items';
+import { ItemsService } from './items';
 import storage from '../storage';
 import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
@@ -8,8 +8,9 @@ import path from 'path';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
+import { ForbiddenException } from '../exceptions';
 
-export default class FilesService extends ItemsService {
+export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
@@ -89,7 +90,13 @@ export default class FilesService extends ItemsService {
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = Array.isArray(key) ? key : [key];
-		const files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+
+		if (!files) {
+			throw new ForbiddenException();
+		}
+
+		files = Array.isArray(files) ? files : [files];
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);

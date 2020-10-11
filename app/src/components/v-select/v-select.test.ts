@@ -3,7 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueCompositionAPI from '@vue/composition-api';
 
 import VMenu from '@/components/v-menu/';
-import VList, { VListItem, VListItemContent, VListItemTitle } from '@/components/v-list/';
+import VList, { VListItem, VListItemContent, VListItemText } from '@/components/v-list/';
 import VCheckbox from '@/components/v-checkbox/';
 
 const localVue = createLocalVue();
@@ -12,7 +12,7 @@ localVue.component('v-menu', VMenu);
 localVue.component('v-list', VList);
 localVue.component('v-list-item', VListItem);
 localVue.component('v-list-item-content', VListItemContent);
-localVue.component('v-list-item-title', VListItemTitle);
+localVue.component('v-list-item-text', VListItemText);
 localVue.component('v-checkbox', VCheckbox);
 
 describe('Components / Select', () => {

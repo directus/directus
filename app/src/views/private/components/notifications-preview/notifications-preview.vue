@@ -3,7 +3,7 @@
 		<transition-expand tag="div">
 			<div v-if="active" class="inline">
 				<div class="padding-box">
-					<router-link class="link" :to="activityLink" :class="{ 'has-items': lastFour.length > 0 }">
+					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ $t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
@@ -19,7 +19,7 @@
 
 		<drawer-button
 			:active="active"
-			@click="active = !active"
+			@click="$emit('input', !active)"
 			v-tooltip.left="$t('notifications')"
 			class="toggle"
 			icon="notifications"
@@ -37,28 +37,22 @@ import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
 	components: { DrawerButton, NotificationItem },
+	model: {
+		prop: 'active',
+	},
 	props: {
 		drawerOpen: {
+			type: Boolean,
+			default: false,
+		},
+		active: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	setup(props) {
 		const notificationsStore = useNotificationsStore();
-
-		const activityLink = computed(() => `/activity`);
-		const active = ref(false);
-
-		watch(
-			() => props.drawerOpen,
-			(open: boolean) => {
-				if (open === false) {
-					active.value = false;
-				}
-			}
-		);
-
-		return { lastFour: notificationsStore.lastFour, activityLink, active };
+		return { lastFour: notificationsStore.lastFour };
 	},
 });
 </script>

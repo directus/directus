@@ -1,45 +1,47 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
 		<portal to="layout-options">
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.image_source') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
 				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.title') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.title') }}</div>
 				<v-field-template :collection="collection" v-model="title" />
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.cards.subtitle') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.cards.subtitle') }}</div>
 				<v-field-template :collection="collection" v-model="subtitle" />
 			</div>
 
-			<v-detail>
+			<v-detail class="field">
 				<template #title>{{ $t('layout_setup') }}</template>
 
-				<div class="layout-option">
-					<div class="option-label">{{ $t('layouts.cards.image_fit') }}</div>
-					<v-select
-						v-model="imageFit"
-						:disabled="imageSource === null"
-						:items="[
-							{
-								text: $t('layouts.cards.crop'),
-								value: 'crop',
-							},
-							{
-								text: $t('layouts.cards.contain'),
-								value: 'contain',
-							},
-						]"
-					/>
-				</div>
+				<div class="nested-options">
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.cards.image_fit') }}</div>
+						<v-select
+							v-model="imageFit"
+							:disabled="imageSource === null"
+							:items="[
+								{
+									text: $t('layouts.cards.crop'),
+									value: 'crop',
+								},
+								{
+									text: $t('layouts.cards.contain'),
+									value: 'contain',
+								},
+							]"
+						/>
+					</div>
 
-				<div class="layout-option">
-					<div class="option-label">{{ $t('fallback_icon') }}</div>
-					<interface-icon v-model="icon" />
+					<div class="field">
+						<div class="type-label">{{ $t('fallback_icon') }}</div>
+						<interface-icon v-model="icon" />
+					</div>
 				</div>
 			</v-detail>
 		</portal>
@@ -57,7 +59,7 @@
 		<template v-if="loading || itemCount > 0">
 			<cards-header
 				@select-all="selectAll"
-				:fields="availableFields"
+				:fields="fieldsInCollection"
 				:size.sync="size"
 				:selection.sync="_selection"
 				:sort.sync="sort"
@@ -203,10 +205,8 @@ export default defineComponent({
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const availableFields = computed(() => fieldsInCollection.value.filter((field) => field.meta?.hidden !== true));
-
 		const fileFields = computed(() => {
-			return availableFields.value.filter((field) => {
+			return fieldsInCollection.value.filter((field) => {
 				if (field.field === '$file') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
@@ -265,7 +265,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
-			availableFields,
+			fieldsInCollection,
 			limit,
 			size,
 			primaryKeyField,
@@ -277,7 +277,6 @@ export default defineComponent({
 			getLinkForItem,
 			imageFit,
 			sort,
-			fieldsInCollection,
 			_filters,
 			newLink,
 			info,
@@ -330,7 +329,7 @@ export default defineComponent({
 		function uselayoutQuery() {
 			const page = ref(1);
 
-			const sort = createlayoutQueryOption<string>('sort', availableFields.value[0].field);
+			const sort = createlayoutQueryOption<string>('sort', fieldsInCollection.value[0].field);
 			const limit = createlayoutQueryOption<number>('limit', 25);
 
 			const fields = computed<string[]>(() => {
@@ -348,10 +347,12 @@ export default defineComponent({
 					fields.push('type');
 				}
 
-				const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
+				if (sort.value) {
+					const sortField = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
 
-				if (fields.includes(sortField) === false) {
-					fields.push(sortField);
+					if (fields.includes(sortField) === false) {
+						fields.push(sortField);
+					}
 				}
 
 				const titleSubtitleFields: string[] = [];
@@ -403,6 +404,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .layout-cards {
 	padding: var(--content-padding);
@@ -467,5 +469,9 @@ export default defineComponent({
 .fade-enter,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.nested-options {
+	@include form-grid;
 }
 </style>

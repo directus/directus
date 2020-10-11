@@ -34,13 +34,13 @@ export type FieldMeta = {
 	width: string | null;
 	group: number | null;
 	note: string | null;
-	translation: null;
+	translations: null;
 };
 
 export type Field = {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-	schema: Column;
+	schema: Column | null;
 	meta: FieldMeta | null;
 };

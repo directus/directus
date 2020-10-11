@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+
+set -e
+
+root=$(dirname ${0})
+source ${root}/lib/argsf
+
+#
+# Makes a set of tags
+#
+function make_tags() {
+  local prefix=""
+  local version=${1}
+
+  semver get major ${version} > /dev/null 2>&1
+  if [ "$?" != "0" ]; then
+    echo "${version}"
+  else
+    if [ "${version:0:1}" == "v" ]; then
+      prefix="v"
+    fi
+
+    major="$(semver get major ${version})"
+    minor="${major}.$(semver get minor ${version})"
+    patch="${minor}.$(semver get patch ${version})"
+
+    prerel="$(semver get prerel ${version})"
+    if [ "${prerel}" == "" ]; then
+      is_prerel=false
+    else
+      is_prerel=true
+    fi
+
+    build="$(semver get build ${version})"
+    if [ "${build}" == "" ]; then
+      is_build=false
+    else
+      is_build=true
+    fi
+
+    if [ "${is_prerel}" == "true" ]; then
+      echo "${prefix}${major}-${prerel}"
+      echo "${prefix}${minor}-${prerel}"
+      echo "${prefix}${patch}-${prerel}"
+      if [ "${is_build}" == "true" ]; then
+        echo "${prefix}${major}-${prerel}-${build}"
+      fi
+    else
+      echo "${prefix}${major}"
+      echo "${prefix}${minor}"
+      echo "${prefix}${patch}"
+      if [ "${is_build}" == "true" ]; then
+        echo "${prefix}${patch}-${build}"
+      fi
+    fi
+  fi
+}
+
+#
+# Build script
+#
+function main() {
+  username=$(argument username)
+  password=$(argument password)
+
+  push=$(argument push "false")
+  latest=$(argument latest "false")
+
+  registry=$(argument registry "")
+  registry=$(echo "${registry}" | tr '[:upper:]' '[:lower:]')
+
+  repository=$(argument repository "directus/next")
+  repository=$(echo "${repository}" | tr '[:upper:]' '[:lower:]')
+
+  version=$(argument version "")
+  context=$(argument context ".")
+
+  image="${repository}"
+  if [ "${registry}" != "" ]; then
+    image="${registry}/${image}"
+  fi
+
+  # Normalize tag
+  if [ "${version}" == "" ]; then
+    version=${GITHUB_REF##*/}
+  else
+    version=${version##*/}
+  fi
+
+  if [ "${version}" == "" ]; then
+    version=$(echo ${GITHUB_SHA:-"000000000000"} | cut -c1-12)
+  fi
+
+  tags=$(make_tags ${version})
+  echo "Tags = ${tags}"
+
+  # build image
+  docker build \
+    -t directus:main \
+    --build-arg VERSION=${version} \
+    --build-arg REPOSITORY=${repository} \
+    /directus/images/main
+
+  # login into registry
+  docker login -u "${username}" -p "${password}" "${registry}"
+
+  # Push latest
+  # TODO: check if it's really the latest
+  if [ "${latest}" == "true" ]; then
+    fqin="${image}:latest"
+    echo "Tagging ${fqin}"
+    docker tag directus:main ${fqin}
+    if [ "${push}" == "true" ]; then
+      echo "Pushing tag ${fqin}"
+      docker push "${fqin}"
+    fi
+  fi
+
+  # Push tags
+  for tag in $tags
+  do
+    tag=$(echo "${tag}" | tr '[:upper:]' '[:lower:]')
+    fqin="${image}:${tag}"
+    echo "Tagging ${fqin}"
+    docker tag directus:main "${fqin}"
+    if [ "${push}" == "true" ]; then
+      echo "Pushing tag ${fqin}"
+      docker push "${fqin}"
+    fi
+  done
+
+  echo "Finished."
+
+  exit $?
+}
+
+main
+exit $?

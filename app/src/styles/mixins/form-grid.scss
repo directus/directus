@@ -15,26 +15,8 @@
 		margin-bottom: 4px;
 	}
 
-	& > .half,
-	& > .half-left,
-	& > .half-space {
-		grid-column: start / fill;
-
-		@include breakpoint(medium) {
-			grid-column: start / half;
-		}
-	}
-
-	& > .half + .half,
-	& > .half-right {
-		grid-column: start / fill;
-
-		@include breakpoint(medium) {
-			grid-column: half / full;
-		}
-	}
-
-	& > .full {
+	// full by default
+	.field {
 		grid-column: start / fill;
 
 		@include breakpoint(medium) {
@@ -42,7 +24,34 @@
 		}
 	}
 
-	& > .fill {
+	.half,
+	.half-left,
+	.half-space {
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / half;
+		}
+	}
+
+	.half + .half,
+	.half-right {
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: half / full;
+		}
+	}
+
+	.full {
+		grid-column: start / fill;
+
+		@include breakpoint(medium) {
+			grid-column: start / full;
+		}
+	}
+
+	.fill {
 		grid-column: start / fill;
 	}
 }

@@ -175,6 +175,7 @@ export default defineComponent({
 
 .collections-detail {
 	padding: var(--content-padding);
+	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);
 }
 

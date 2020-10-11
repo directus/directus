@@ -8,25 +8,51 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
-				<v-input :class="{ matches: junctionCollectionExists }" v-model="junctionCollection" :placeholder="$t('collection') + '...'" :disabled="autoFill || isExisting" db-safe>
+				<v-input
+					:class="{ matches: junctionCollectionExists }"
+					v-model="junctionCollection"
+					:placeholder="$t('collection') + '...'"
+					:disabled="autoFill || isExisting"
+					db-safe
+				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="autoFill || isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="autoFill || isExisting"
+								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
-									v-for="item in collectionItems"
-									:key="item.value"
-									:active="relations[0].many_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].many_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].many_collection === collection.collection"
+									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].many_collection === collection.collection"
+										@click="relations[0].many_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
@@ -34,39 +60,77 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<v-input :autofocus="autoFill" :class="{ matches: relatedCollectionExists }" v-model="relations[1].one_collection" :placeholder="$t('collection') + '...'" :disabled="type === 'files' || isExisting" db-safe>
+				<v-input
+					:autofocus="autoFill"
+					:class="{ matches: relatedCollectionExists }"
+					v-model="relations[1].one_collection"
+					:placeholder="$t('collection') + '...'"
+					:disabled="type === 'files' || isExisting"
+					db-safe
+				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="type === 'files' || isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="type === 'files' || isExisting"
+								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
-									v-for="item in collectionItems"
-									:key="item.value"
-									:active="relations[1].one_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[1].one_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[1].one_collection === collection.collection"
+									@click="relations[1].one_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[1].one_collection === collection.collection"
+										@click="relations[1].one_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
-			<v-input :class="{ matches: junctionFieldExists(relations[0].many_field)}" v-model="relations[0].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
+			<v-input
+				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
+				v-model="relations[0].many_field"
+				:placeholder="$t('foreign_key') + '...'"
+				:disabled="autoFill || isExisting"
+				db-safe
+			>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="autoFill || isExisting" />
+							<v-icon
+								name="list_alt"
+								@click="toggle"
+								v-tooltip="$t('select_existing')"
+								:disabled="autoFill || isExisting"
+							/>
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
@@ -84,14 +148,25 @@
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
-			<v-input :class="{ matches: junctionFieldExists(relations[1].many_field)}" v-model="relations[1].many_field" :placeholder="$t('foreign_key') + '...'" :disabled="autoFill || isExisting" db-safe>
+			<v-input
+				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
+				v-model="relations[1].many_field"
+				:placeholder="$t('foreign_key') + '...'"
+				:disabled="autoFill || isExisting"
+				db-safe
+			>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="autoFill || isExisting" />
+							<v-icon
+								name="list_alt"
+								@click="toggle"
+								v-tooltip="$t('select_existing')"
+								:disabled="autoFill || isExisting"
+							/>
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
@@ -107,9 +182,14 @@
 					</v-menu>
 				</template>
 			</v-input>
-			<v-input db-safe :disabled="relatedCollectionExists" v-model="relations[1].one_primary" :placeholder="$t('primary_key') + '...'" />
+			<v-input
+				db-safe
+				:disabled="relatedCollectionExists"
+				v-model="relations[1].one_primary"
+				:placeholder="$t('primary_key') + '...'"
+			/>
 			<div class="spacer" />
-			<v-checkbox block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
@@ -123,7 +203,12 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>
-				<v-input :disabled="hasCorresponding === false" v-model="correspondingField" :placeholder="$t('field_name') + '...'" db-safe />
+				<v-input
+					:disabled="hasCorresponding === false"
+					v-model="correspondingField"
+					:placeholder="$t('field_name') + '...'"
+					db-safe
+				/>
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
@@ -164,25 +249,28 @@ export default defineComponent({
 			},
 			set(newAuto: boolean) {
 				state.autoFillJunctionRelation = newAuto;
-			}
-		})
+			},
+		});
 
 		const availableCollections = computed(() => {
 			return orderBy(
 				collectionsStore.state.collections.filter((collection) => {
-					return (collection.collection.startsWith('directus_') === false);
+					return collection.collection.startsWith('directus_') === false;
 				}),
 				['collection'],
 				['asc']
 			);
 		});
 
-		const collectionItems = computed(() =>
-			availableCollections.value.map((collection) => ({
-				text: collection.collection,
-				value: collection.collection,
-			}))
-		);
+		const systemCollections = computed(() => {
+			return orderBy(
+				collectionsStore.state.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === true;
+				}),
+				['collection'],
+				['asc']
+			);
+		});
 
 		const junctionCollection = computed({
 			get() {
@@ -217,7 +305,20 @@ export default defineComponent({
 
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
-		return { relations: state.relations, autoFill, collectionItems, junctionCollection, junctionFields, junctionCollectionExists, relatedCollectionExists, junctionFieldExists, hasCorresponding, correspondingField, correspondingLabel };
+		return {
+			relations: state.relations,
+			autoFill,
+			availableCollections,
+			systemCollections,
+			junctionCollection,
+			junctionFields,
+			junctionCollectionExists,
+			relatedCollectionExists,
+			junctionFieldExists,
+			hasCorresponding,
+			correspondingField,
+			correspondingLabel,
+		};
 
 		function junctionFieldExists(fieldKey: string) {
 			if (!junctionCollection.value) return false;
@@ -230,8 +331,12 @@ export default defineComponent({
 					return !!state.newFields.find((field: any) => field.$type === 'corresponding');
 				},
 				set(enabled: boolean) {
-					if (enabled === true) {
+					if (
+						enabled === true &&
+						!!state.newFields.find((field: any) => field.$type === 'corresponding') === false
+					) {
 						state.newFields = [
+							...state.newFields,
 							{
 								$type: 'corresponding',
 								field: state.relations[0].one_collection,
@@ -260,12 +365,12 @@ export default defineComponent({
 						if (newField.$type === 'corresponding') {
 							return {
 								...newField,
-								field: field
-							}
+								field: field,
+							};
 						}
 
 						return newField;
-					})
+					});
 
 					state.relations[1].one_field = field;
 				},
@@ -309,12 +414,12 @@ export default defineComponent({
 
 		&:first-of-type {
 			bottom: 141px;
-   			left: 32.5%;
+			left: 32.5%;
 		}
 
 		&:last-of-type {
 			bottom: 76px;
-    		left: 67.4%;
+			left: 67.4%;
 		}
 	}
 }

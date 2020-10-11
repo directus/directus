@@ -28,7 +28,7 @@ const fakeFilesField: Field = {
 		hidden: false,
 		locked: true,
 		required: false,
-		translation: null,
+		translations: null,
 		readonly: true,
 		width: 'full',
 		group: null,
@@ -76,9 +76,9 @@ export const useFieldsStore = createStore({
 
 			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
 				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (field.meta && notEmpty(field.meta.translation) && field.meta.translation.length > 0) {
-				for (let i = 0; i < field.meta.translation.length; i++) {
-					const { locale, translation } = field.meta.translation[i];
+			} else if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
+				for (let i = 0; i < field.meta.translations.length; i++) {
+					const { locale, translation } = field.meta.translations[i];
 
 					i18n.mergeLocaleMessage(locale, {
 						fields: {

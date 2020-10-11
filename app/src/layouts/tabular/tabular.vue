@@ -1,8 +1,8 @@
 <template>
 	<div class="layout-tabular">
 		<portal to="layout-options">
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.tabular.spacing') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
 				<v-select
 					v-model="tableSpacing"
 					:items="[
@@ -22,8 +22,8 @@
 				/>
 			</div>
 
-			<div class="layout-option">
-				<div class="option-label">{{ $t('layouts.tabular.fields') }}</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
 				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
 					<v-checkbox
 						v-for="field in activeFields"
@@ -149,13 +149,14 @@ import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
 import router from '@/router';
 import useSync from '@/composables/use-sync';
-import { debounce } from 'lodash';
+import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
+import useShortcut from '@/composables/use-shortcut';
 
 type layoutOptions = {
 	widths?: {
@@ -211,7 +212,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const table = ref<Vue | null>(null);
+		const table = ref<Vue>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
@@ -222,10 +223,6 @@ export default defineComponent({
 
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
-
-		const availableFields = computed(() =>
-			fieldsInCollection.value.filter((field) => field.meta?.hidden === false)
-		);
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
@@ -264,6 +261,18 @@ export default defineComponent({
 			return count;
 		});
 
+		const availableFields = computed(() => {
+			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
+		});
+
+		useShortcut(
+			'meta+a',
+			() => {
+				_selection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
+			},
+			table
+		);
+
 		return {
 			_selection,
 			table,
@@ -279,7 +288,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
-			availableFields,
+			fieldsInCollection,
 			fields,
 			limit,
 			activeFields,
@@ -294,6 +303,7 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
+			availableFields,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -355,13 +365,7 @@ export default defineComponent({
 					}
 
 					const fields =
-						_layoutQuery.value?.fields ||
-						availableFields.value
-							.filter((field: Field) => {
-								return field.schema?.is_primary_key === false;
-							})
-							.slice(0, 4)
-							.map(({ field }) => field);
+						_layoutQuery.value?.fields || fieldsInCollection.value.slice(0, 4).map(({ field }) => field);
 
 					return fields;
 				},
@@ -406,7 +410,7 @@ export default defineComponent({
 			const activeFields = computed<Field[]>({
 				get() {
 					return fields.value
-						.map((key) => availableFields.value.find((field) => field.field === key))
+						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
 						.filter((f) => f) as Field[];
 				},
 				set(val) {
@@ -505,7 +509,7 @@ export default defineComponent({
 			}
 
 			function getFieldDisplay(fieldKey: string) {
-				const field = availableFields.value.find((field) => field.field === fieldKey);
+				const field = fieldsInCollection.value.find((field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
 				if (!field.meta?.display) return null;

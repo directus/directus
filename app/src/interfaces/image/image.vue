@@ -45,7 +45,7 @@
 			/>
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
-		<v-upload v-else @upload="setImage" />
+		<v-upload v-else @input="setImage" from-library from-url />
 	</div>
 </template>
 
@@ -56,6 +56,7 @@ import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
+
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
 

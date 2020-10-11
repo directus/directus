@@ -11,10 +11,10 @@ import { track } from './utils/track';
 import errorHandler from './middleware/error-handler';
 import cors from './middleware/cors';
 import rateLimiter from './middleware/rate-limiter';
-import { respond } from './middleware/respond';
 import cache from './middleware/cache';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
+import responseHook from './middleware/response-hook';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -34,21 +34,41 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
+import graphqlRouter from './controllers/graphql';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
-import WebhooksService from './services/webhooks';
+import { WebhooksService } from './services/webhooks';
+import { InvalidPayloadException } from './exceptions';
+
+import { registerExtensions } from './extensions';
+import emitter from './emitter';
 
 validateEnv(['KEY', 'SECRET']);
 
 const app = express();
 
+const customRouter = express.Router();
+
 app.disable('x-powered-by');
 app.set('trust proxy', true);
 
 app.use(expressLogger({ logger }));
+app.use(responseHook);
+
+app.use((req, res, next) => {
+	bodyParser.json()(req, res, (err) => {
+		if (err) {
+			return next(new InvalidPayloadException(err.message));
+		}
+
+		return next();
+	});
+});
+
 app.use(bodyParser.json());
 app.use(extractToken);
+
 app.use((req, res, next) => {
 	res.setHeader('X-Powered-By', 'Directus');
 	next();
@@ -79,6 +99,9 @@ app.use('/auth', authRouter);
 
 app.use(authenticate);
 app.use(cache);
+
+app.use('/graphql', graphqlRouter);
+
 app.use('/activity', activityRouter);
 app.use('/assets', assetsRouter);
 app.use('/collections', collectionsRouter);
@@ -97,9 +120,7 @@ app.use('/settings', settingsRouter);
 app.use('/users', usersRouter);
 app.use('/utils', utilsRouter);
 app.use('/webhooks', webhooksRouter);
-
-app.use(respond);
-
+app.use('/custom', customRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
@@ -107,6 +128,11 @@ app.use(errorHandler);
 const webhooksService = new WebhooksService();
 webhooksService.register();
 
+// Register custom hooks / endpoints
+registerExtensions(customRouter);
+
 track('serverStarted');
+
+emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;

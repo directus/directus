@@ -1,6 +1,6 @@
 import VueI18n from 'vue-i18n';
 
-type Translation = {
+type Translations = {
 	locale: string;
 	translation: string;
 };
@@ -12,7 +12,7 @@ export interface CollectionRaw {
 		hidden: boolean;
 		singleton: boolean;
 		icon: string | null;
-		translation: Translation[] | null;
+		translations: Translations[] | null;
 		display_template: string | null;
 		sort_field: string | null;
 		archive_field: string | null;

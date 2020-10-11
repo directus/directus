@@ -8,7 +8,7 @@ properties:
     description: Name of the folder.
     example: New York
     type: string
-  parent_folder:
+  parent:
     description: Unique identifier of the parent folder. This allows for nested folders.
     example: null
     oneOf:

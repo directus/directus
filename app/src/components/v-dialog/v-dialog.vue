@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { nanoid } from 'nanoid';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	model: {
@@ -31,6 +32,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const dialog = ref<HTMLElement | null>(null);
+		useShortcut('escape', (event, cancelNext) => {
+			if (_active.value) {
+				emitToggle();
+				cancelNext();
+			}
+		});
+
 		const localActive = ref(false);
 
 		const className = ref<string | null>(null);

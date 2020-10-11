@@ -88,7 +88,7 @@ export default defineComponent({
 				text: '',
 				value: 'icon',
 				sortable: false,
-				width: 50,
+				width: 42,
 				align: 'left',
 			},
 			{
@@ -141,7 +141,7 @@ export default defineComponent({
 					...response.data.data.map((role: any) => {
 						return {
 							...role,
-							count: role.users.length,
+							count: (role.users || []).length,
 						};
 					}),
 				];
@@ -167,6 +167,7 @@ export default defineComponent({
 
 .roles {
 	padding: var(--content-padding);
+	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);
 }
 
@@ -181,7 +182,8 @@ export default defineComponent({
 }
 
 .public {
-	color: var(--primary);
 	--v-icon-color: var(--primary);
+
+	color: var(--primary);
 }
 </style>

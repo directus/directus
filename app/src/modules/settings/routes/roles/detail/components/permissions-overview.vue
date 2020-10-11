@@ -42,6 +42,21 @@
 			:permission-key="permission"
 			@refresh="refreshPermission"
 		/>
+
+		<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
+			{{ $t('reset_system_permissions') }}
+		</button>
+
+		<v-dialog v-model="resetActive">
+			<v-card>
+				<v-card-title>{{ $t('reset_system_permissions') }}</v-card-title>
+				<v-card-text>{{ $t('reset_system_permissions_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button @click="resetActive = false" secondary>{{ $t('cancel') }}</v-button>
+					<v-button @click="resetSystemPermissions" :loading="resetting">{{ $t('reset') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -52,6 +67,7 @@ import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
+import { permissions as appRequiredPermissions } from '../../app-required-permissions';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -85,6 +101,8 @@ export default defineComponent({
 
 		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
+		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
+
 		fetchPermissions();
 
 		provide('refresh-permissions', fetchPermissions);
@@ -99,6 +117,10 @@ export default defineComponent({
 			fetchPermissions,
 			refreshPermission,
 			refreshing,
+			resetActive,
+			resetSystemPermissions,
+			resetting,
+			resetError,
 		};
 
 		function usePermissions() {
@@ -151,6 +173,44 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function useReset() {
+			const resetActive = ref(false);
+			const resetting = ref(false);
+			const resetError = ref<any>(null);
+
+			return { resetActive, resetSystemPermissions, resetting, resetError };
+
+			async function resetSystemPermissions() {
+				resetting.value = true;
+
+				const toBeDeleted = permissions.value
+					.filter((permission) => permission.collection.startsWith('directus_'))
+					.map((permission) => permission.id);
+
+				try {
+					if (toBeDeleted.length > 0) {
+						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
+					}
+
+					await api.post(
+						'/permissions',
+						appRequiredPermissions.map((permission) => ({
+							...permission,
+							role: props.role,
+						}))
+					);
+
+					await fetchPermissions();
+
+					resetActive.value = false;
+				} catch (err) {
+					resetError.value = err;
+				} finally {
+					resetting.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
@@ -184,6 +244,17 @@ export default defineComponent({
 
 	.v-icon {
 		vertical-align: -7px;
+	}
+}
+
+.reset-toggle {
+	display: block;
+	margin: 8px auto;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--foreground);
 	}
 }
 </style>

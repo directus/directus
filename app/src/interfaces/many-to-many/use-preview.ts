@@ -3,7 +3,6 @@ import api from '@/api';
 import { Field, Relation } from '@/types';
 import { merge } from 'lodash';
 import adjustFieldsForDisplay from '@/utils/adjust-fields-for-displays';
-import isNew from './is-new';
 
 /**
  * Controls what preview is shown in the table. Has some black magic logic to ensure we're able
@@ -58,6 +57,7 @@ export default function usePreview({
 			);
 		} catch (err) {
 			error.value = err;
+			throw err;
 		} finally {
 			loading.value = false;
 		}
@@ -159,15 +159,11 @@ export default function usePreview({
 		 * for me for now to worry about..
 		 */
 
-		return (value.value || [])
-			.filter((stagedEdit: any) => !stagedEdit['$delete'])
-			.filter((item) =>
-				isNew(item, {
-					relationCurrentToJunction,
-					junctionCollectionPrimaryKeyField,
-					relatedCollectionPrimaryKeyField,
-				})
-			);
+		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
+
+		return (value.value || []).filter(
+			(stagedEdit: any) => !stagedEdit.$delete && !stagedEdit[junctionPrimaryKey] && stagedEdit.$new === true
+		);
 	}
 
 	/**
@@ -187,14 +183,9 @@ export default function usePreview({
 		const junctionField = relationCurrentToJunction.value.junction_field;
 		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
 
-		const newlySelectedStagedItems = (value.value || [])
-			.filter((stagedEdit: any) => !stagedEdit['$delete'])
-			.filter((stagedEdit: any) => {
-				return (
-					stagedEdit[junctionPrimaryKey] === undefined &&
-					stagedEdit[junctionField]?.[relatedPrimaryKey] !== undefined
-				);
-			});
+		const newlySelectedStagedItems = (value.value || []).filter(
+			(stagedEdit: any) => !stagedEdit.$delete && !stagedEdit[junctionPrimaryKey] && !stagedEdit.$new
+		);
 
 		const newlySelectedRelatedKeys = newlySelectedStagedItems.map(
 			(stagedEdit: any) => stagedEdit[junctionField][relatedPrimaryKey]

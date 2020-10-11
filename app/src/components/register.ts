@@ -13,21 +13,14 @@ import VDivider from './v-divider';
 import VError from './v-error';
 import VFancySelect from './v-fancy-select';
 import VFieldTemplate from './v-field-template';
+import VFieldSelect from './v-field-select';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VIcon from './v-icon/';
 import VInfo from './v-info/';
 import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
-import VList, {
-	VListGroup,
-	VListItem,
-	VListItemContent,
-	VListItemHint,
-	VListItemIcon,
-	VListItemSubtitle,
-	VListItemTitle,
-} from './v-list/';
+import VList, { VListGroup, VListItem, VListItemContent, VListItemHint, VListItemIcon, VListItemText } from './v-list/';
 import VMenu from './v-menu/';
 import VModal from './v-modal/';
 import VModalHeading from './v-modal/v-modal-heading.vue';
@@ -64,6 +57,7 @@ Vue.component('v-divider', VDivider);
 Vue.component('v-error', VError);
 Vue.component('v-fancy-select', VFancySelect);
 Vue.component('v-field-template', VFieldTemplate);
+Vue.component('v-field-select', VFieldSelect);
 Vue.component('v-form', VForm);
 Vue.component('v-hover', VHover);
 Vue.component('v-icon', VIcon);
@@ -75,8 +69,7 @@ Vue.component('v-list-group', VListGroup);
 Vue.component('v-list-item-content', VListItemContent);
 Vue.component('v-list-item-hint', VListItemHint);
 Vue.component('v-list-item-icon', VListItemIcon);
-Vue.component('v-list-item-subtitle', VListItemSubtitle);
-Vue.component('v-list-item-title', VListItemTitle);
+Vue.component('v-list-item-text', VListItemText);
 Vue.component('v-list-item', VListItem);
 Vue.component('v-list', VList);
 Vue.component('v-menu', VMenu);

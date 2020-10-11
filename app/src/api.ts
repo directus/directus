@@ -57,7 +57,8 @@ export const onError = async (error: RequestError) => {
 		status === 401 &&
 		code === 'INVALID_CREDENTIALS' &&
 		error.request.responseURL.includes('refresh') === false &&
-		error.request.responseURL.includes('login') === false
+		error.request.responseURL.includes('login') === false &&
+		error.request.responseURL.includes('tfa') === false
 	) {
 		let newToken: string;
 

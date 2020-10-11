@@ -10,8 +10,24 @@
 
 		<v-dialog persistent v-model="enableActive">
 			<v-card>
-				<v-progress-circular class="loader" indeterminate v-if="loading === true" />
-				<template v-show="loading === false">
+				<template v-if="tfaEnabled === false" v-show="loading === false">
+					<v-card-title>
+						{{ $t('enter_password_to_enable_tfa') }}
+					</v-card-title>
+					<v-card-text>
+						<v-input v-model="password" type="password" :placeholder="$t('password')" />
+
+						<v-error v-if="error" :error="error" />
+					</v-card-text>
+					<v-card-actions>
+						<v-button @click="enableActive = false" secondary>{{ $t('cancel') }}</v-button>
+						<v-button @click="enableTFA" :loading="loading">{{ $t('next') }}</v-button>
+					</v-card-actions>
+				</template>
+
+				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />
+
+				<div v-show="tfaEnabled === true && loading === false">
 					<v-card-title>
 						{{ $t('tfa_scan_code') }}
 					</v-card-title>
@@ -22,7 +38,7 @@
 					<v-card-actions>
 						<v-button @click="enableActive = false">{{ $t('done') }}</v-button>
 					</v-card-actions>
-				</template>
+				</div>
 			</v-card>
 		</v-dialog>
 
@@ -45,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
@@ -66,6 +82,11 @@ export default defineComponent({
 		const secret = ref<string>();
 		const otp = ref('');
 		const error = ref<any>();
+		const password = ref('');
+
+		onMounted(() => {
+			password.value = '';
+		});
 
 		watch(
 			() => props.value,
@@ -75,25 +96,46 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { tfaEnabled, toggle, enableActive, disableActive, loading, canvasID, secret, disableTFA, otp, error };
+		return {
+			tfaEnabled,
+			enableTFA,
+			toggle,
+			password,
+			enableActive,
+			disableActive,
+			loading,
+			canvasID,
+			secret,
+			disableTFA,
+			otp,
+			error,
+		};
 
 		function toggle() {
 			if (tfaEnabled.value === false) {
 				enableActive.value = true;
-				enableTFA();
 			} else {
 				disableActive.value = true;
 			}
 		}
 
 		async function enableTFA() {
+			if (loading.value === true) return;
+
 			loading.value = true;
-			const response = await api.post('/users/me/tfa/enable');
-			const url = response.data.data.otpauth_url;
-			secret.value = response.data.data.secret;
-			await qrcode.toCanvas(document.getElementById(canvasID), url);
-			loading.value = false;
-			tfaEnabled.value = true;
+
+			try {
+				const response = await api.post('/users/me/tfa/enable', { password: password.value });
+				const url = response.data.data.otpauth_url;
+				secret.value = response.data.data.secret;
+				await qrcode.toCanvas(document.getElementById(canvasID), url);
+				tfaEnabled.value = true;
+				error.value = null;
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
 		}
 
 		async function disableTFA() {
@@ -144,5 +186,9 @@ export default defineComponent({
 .disable {
 	--v-button-background-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-125);
+}
+
+.v-error {
+	margin-top: 24px;
 }
 </style>

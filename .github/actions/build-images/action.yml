@@ -1,0 +1,41 @@
+name: "Build and publish Directus images"
+description: "GitHub Action to publish Directus container images."
+branding:
+  icon: archive
+  color: gray-dark
+inputs:
+  repository:
+    description: "Repository name"
+    required: true
+  registry:
+    description: "Registry"
+    required: true
+  username:
+    description: "Registry user"
+    required: true
+  password:
+    description: "Registry password"
+    required: true
+  version:
+    description: "Version"
+    required: true
+  push:
+    description: "Push"
+    required: false
+    default: "false"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - --registry
+    - ${{ inputs.registry }}
+    - --repository
+    - ${{ inputs.repository }}
+    - --username
+    - ${{ inputs.username }}
+    - --password
+    - ${{ inputs.password }}
+    - --version
+    - ${{ inputs.version }}
+    - --push
+    - ${{ inputs.push }}

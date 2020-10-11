@@ -215,7 +215,7 @@ export default defineComponent({
 						},
 					});
 
-					items.value = response.data.data[props.field];
+					items.value = response.data.data[props.field] || [];
 				} catch (err) {
 					error.value = err;
 				} finally {

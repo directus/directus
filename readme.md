@@ -28,7 +28,6 @@ This is *pre-release* software, therefore migrations will not be provided, break
 - [ ] MS SQL Support
 - [ ] OracleDB Support
 - [ ] Import/Export Endpoints
-- [ ] API Extensions (hooks/endpoints)
 
 <br>
 

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import CollectionsService from '../services/collections'
-import MetaService from '../services/meta';
+import { CollectionsService, MetaService } from '../services';
+import { ForbiddenException } from '../exceptions';
+import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -15,7 +16,8 @@ router.post(
 
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -29,7 +31,8 @@ router.get(
 
 		res.locals.payload = { data: collections || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -39,11 +42,21 @@ router.get(
 		const collectionKey = req.params.collection.includes(',')
 			? req.params.collection.split(',')
 			: req.params.collection;
-		const collection = await collectionsService.readByKey(collectionKey as any);
 
-		res.locals.payload = { data: collection || null };
+		try {
+			const collection = await collectionsService.readByKey(collectionKey as any);
+			res.locals.payload = { data: collection || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -54,10 +67,21 @@ router.patch(
 			? req.params.collection.split(',')
 			: req.params.collection;
 		await collectionsService.update(req.body, collectionKey as any);
-		const collection = await collectionsService.readByKey(collectionKey as any);
-		res.locals.payload = { data: collection || null };
+
+		try {
+			const collection = await collectionsService.readByKey(collectionKey as any);
+			res.locals.payload = { data: collection || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -70,7 +94,8 @@ router.delete(
 		await collectionsService.delete(collectionKey as any);
 
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

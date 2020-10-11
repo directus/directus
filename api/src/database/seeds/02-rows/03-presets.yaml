@@ -38,16 +38,47 @@ data:
     layout: tabular
     layout_query:
       tabular:
-        sort: -action_on
+        sort: -timestamp
         fields:
           - action
           - collection
-          - action_on
-          - action_by
+          - timestamp
+          - user
     layout_options:
       tabular:
         widths:
           action: 100
           collection: 210
-          action_on: 240
-          action_by: 240
+          timestamp: 240
+          user: 240
+
+  - collection: directus_webhooks
+    layout: tabular
+    layout_query:
+      tabular:
+        fields:
+          - status
+          - name
+          - method
+          - url
+    layout_options:
+      tabular:
+        widths:
+          status: 36
+          name: 300
+
+  - collection: directus_roles
+    layout: tabular
+    layout_query:
+      tabular:
+        fields:
+          - icon
+          - name
+          - description
+    layout_options:
+      tabular:
+        widths:
+          icon: 36
+          name: 248
+          description: 500
+

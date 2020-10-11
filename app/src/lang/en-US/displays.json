@@ -61,7 +61,10 @@
 			"description": "Display either a single or a list of labels",
 			"default_foreground": "Default Foreground",
 			"default_background": "Default Background",
-			"format_label": "Format each label"
+			"format_label": "Format each label",
+			"show_as_dot": "Show As Dot",
+			"choices_value_placeholder": "Enter a value...",
+			"choices_text_placeholder": "Enter a text..."
 
 		},
 		"mime-type": {
@@ -90,10 +93,6 @@
 			"name": "Name",
 			"both": "Both",
 			"circle_label": "Show user in a circle"
-		},
-		"labels": {
-			"labels": "Labels",
-			"show_as_dot": "Show as dot"
 		}
 	}
 }

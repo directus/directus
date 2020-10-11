@@ -15,23 +15,31 @@ import {
 import Knex from 'knex';
 import cache from '../cache';
 import emitter from '../emitter';
+import logger from '../logger';
 
-import PayloadService from './payload';
-import AuthorizationService from './authorization';
+import { PayloadService } from './payload';
+import { AuthorizationService } from './authorization';
 
-import { pick, clone } from 'lodash';
+import { pick, clone, cloneDeep } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 
-export default class ItemsService implements AbstractService {
+export class ItemsService implements AbstractService {
 	collection: string;
 	knex: Knex;
 	accountability: Accountability | null;
+	eventScope: string;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 
 	constructor(collection: string, options?: AbstractServiceOptions) {
 		this.collection = collection;
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
+		this.eventScope = this.collection.startsWith('directus_')
+			? this.collection.substring(9)
+			: 'items';
+
+		this.schemaInspector = SchemaInspector(this.knex);
 
 		return this;
 	}
@@ -39,9 +47,8 @@ export default class ItemsService implements AbstractService {
 	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	async create(data: Partial<Item>): Promise<PrimaryKey>;
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const schemaInspector = SchemaInspector(this.knex);
-		const primaryKeyField = await schemaInspector.primary(this.collection);
-		const columns = await schemaInspector.columns(this.collection);
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const columns = await this.schemaInspector.columns(this.collection);
 
 		let payloads = clone(Array.isArray(data) ? data : [data]);
 
@@ -51,10 +58,35 @@ export default class ItemsService implements AbstractService {
 				knex: trx,
 			});
 
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: trx,
-			});
+			const customProcessed = await emitter.emitAsync(
+				`${this.eventScope}.create.before`,
+				payloads,
+				{
+					event: `${this.eventScope}.create.before`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: null,
+					action: 'create',
+					payload: payloads,
+				}
+			);
+
+			if (customProcessed) {
+				payloads = customProcessed[customProcessed.length - 1];
+			}
+
+			if (this.accountability) {
+				const authorizationService = new AuthorizationService({
+					accountability: this.accountability,
+					knex: trx,
+				});
+
+				payloads = await authorizationService.validatePayload(
+					'create',
+					this.collection,
+					payloads
+				);
+			}
 
 			payloads = await payloadService.processM2O(payloads);
 
@@ -69,14 +101,6 @@ export default class ItemsService implements AbstractService {
 				'create',
 				payloadsWithoutAliases
 			);
-
-			if (this.accountability && this.accountability.admin !== true) {
-				payloads = await authorizationService.validatePayload(
-					'create',
-					this.collection,
-					payloads
-				);
-			}
 
 			const primaryKeys: PrimaryKey[] = [];
 
@@ -111,7 +135,7 @@ export default class ItemsService implements AbstractService {
 			if (this.accountability) {
 				const activityRecords = primaryKeys.map((key) => ({
 					action: Action.CREATE,
-					action_by: this.accountability!.user,
+					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
@@ -151,12 +175,16 @@ export default class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
-			emitter.emitAsync(`item.create.${this.collection}`, {
-				collection: this.collection,
-				item: primaryKeys,
-				action: 'create',
-				payload: payloads,
-			});
+			emitter
+				.emitAsync(`${this.eventScope}.create`, {
+					event: `${this.eventScope}.create`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: primaryKeys,
+					action: 'create',
+					payload: payloads,
+				})
+				.catch((err) => logger.warn(err));
 
 			return primaryKeys;
 		});
@@ -164,32 +192,42 @@ export default class ItemsService implements AbstractService {
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<Item[]> {
+	async readByQuery(query: Query): Promise<null | Item | Item[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 		});
-		let ast = await getASTFromQuery(this.collection, query, { accountability: this.accountability, knex: this.knex });
+
+		let ast = await getASTFromQuery(this.collection, query, {
+			accountability: this.accountability,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			ast = await authorizationService.processAST(ast);
 		}
 
 		const records = await runAST(ast);
-
 		return records;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Item>;
+	readByKey(
+		keys: PrimaryKey[],
+		query?: Query,
+		action?: PermissionsAction
+	): Promise<null | Item[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
 		action: PermissionsAction = 'read'
-	): Promise<Item | Item[]> {
+	): Promise<null | Item | Item[]> {
 		query = clone(query);
-		const schemaInspector = SchemaInspector(this.knex);
-		const primaryKeyField = await schemaInspector.primary(this.collection);
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const keys = Array.isArray(key) ? key : [key];
+
+		if (keys.length === 1) {
+			query.single = true;
+		}
 
 		const queryWithFilter = {
 			...query,
@@ -201,15 +239,11 @@ export default class ItemsService implements AbstractService {
 			},
 		};
 
-		let ast = await getASTFromQuery(
-			this.collection,
-			queryWithFilter,
-			{
-				accountability: this.accountability,
-				action,
-				knex: this.knex,
-			}
-		);
+		let ast = await getASTFromQuery(this.collection, queryWithFilter, {
+			accountability: this.accountability,
+			action,
+			knex: this.knex,
+		});
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -219,9 +253,8 @@ export default class ItemsService implements AbstractService {
 			ast = await authorizationService.processAST(ast, action);
 		}
 
-		const records = await runAST(ast, { knex: this.knex });
-		return Array.isArray(key) ? records : records[0];
-		return [] as Item;
+		const result = await runAST(ast, { knex: this.knex });
+		return result;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -231,9 +264,8 @@ export default class ItemsService implements AbstractService {
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
-		const schemaInspector = SchemaInspector(this.knex);
-		const primaryKeyField = await schemaInspector.primary(this.collection);
-		const columns = await schemaInspector.columns(this.collection);
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const columns = await this.schemaInspector.columns(this.collection);
 
 		// Updating one or more items to the same payload
 		if (data && key) {
@@ -241,11 +273,30 @@ export default class ItemsService implements AbstractService {
 
 			let payload = clone(data);
 
-			if (this.accountability && this.accountability.admin !== true) {
+			const customProcessed = await emitter.emitAsync(
+				`${this.eventScope}.update.before`,
+				payload,
+				{
+					event: `${this.eventScope}.update.before`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: null,
+					action: 'update',
+					payload,
+				}
+			);
+
+			if (customProcessed) {
+				payload = customProcessed[customProcessed.length - 1];
+			}
+
+			if (this.accountability) {
 				const authorizationService = new AuthorizationService({
 					accountability: this.accountability,
 				});
+
 				await authorizationService.checkAccess('update', this.collection, keys);
+
 				payload = await authorizationService.validatePayload(
 					'update',
 					this.collection,
@@ -284,7 +335,7 @@ export default class ItemsService implements AbstractService {
 				if (this.accountability) {
 					const activityRecords = keys.map((key) => ({
 						action: Action.UPDATE,
-						action_by: this.accountability!.user,
+						user: this.accountability!.user,
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
@@ -296,11 +347,13 @@ export default class ItemsService implements AbstractService {
 					for (const activityRecord of activityRecords) {
 						await trx.insert(activityRecord).into('directus_activity');
 						let primaryKey;
+
 						const result = await trx
 							.select('id')
 							.from('directus_activity')
 							.orderBy('id', 'desc')
 							.first();
+
 						primaryKey = result.id;
 						activityPrimaryKeys.push(primaryKey);
 					}
@@ -312,7 +365,10 @@ export default class ItemsService implements AbstractService {
 						activity: key,
 						collection: this.collection,
 						item: keys[index],
-						data: JSON.stringify(snapshots[index]),
+						data:
+							snapshots && Array.isArray(snapshots)
+								? JSON.stringify(snapshots?.[index])
+								: JSON.stringify(snapshots),
 						delta: JSON.stringify(payloadWithoutAliases),
 					}));
 
@@ -324,12 +380,16 @@ export default class ItemsService implements AbstractService {
 				await cache.clear();
 			}
 
-			emitter.emitAsync(`item.update.${this.collection}`, {
-				collection: this.collection,
-				item: key,
-				action: 'update',
-				payload,
-			});
+			emitter
+				.emitAsync(`${this.eventScope}.update`, {
+					event: `${this.eventScope}.update`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: key,
+					action: 'update',
+					payload,
+				})
+				.catch((err) => logger.warn(err));
 
 			return key;
 		}
@@ -347,9 +407,13 @@ export default class ItemsService implements AbstractService {
 			for (const single of payloads as Partial<Item>[]) {
 				let payload = clone(single);
 				const key = payload[primaryKeyField];
-				if (!key)
+
+				if (!key) {
 					throw new InvalidPayloadException('Primary key is missing in update payload.');
+				}
+
 				keys.push(key);
+
 				await itemsService.update(payload, key);
 			}
 		});
@@ -357,12 +421,58 @@ export default class ItemsService implements AbstractService {
 		return keys;
 	}
 
+	async updateByQuery(data: Partial<Item>, query: Query): Promise<PrimaryKey[]> {
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Not authenticated:
+		const itemsService = new ItemsService(this.collection);
+
+		let itemsToUpdate = await itemsService.readByQuery(readQuery);
+		itemsToUpdate = Array.isArray(itemsToUpdate) ? itemsToUpdate : [itemsToUpdate];
+
+		const keys: PrimaryKey[] = itemsToUpdate.map(
+			(item: Partial<Item>) => item[primaryKeyField]
+		);
+
+		return await this.update(data, keys);
+	}
+
+	upsert(data: Partial<Item>): Promise<PrimaryKey>;
+	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const payloads = Array.isArray(data) ? data : [data];
+		const primaryKeys: PrimaryKey[] = [];
+
+		for (const payload of payloads) {
+			const primaryKey = payload[primaryKeyField];
+			const exists =
+				primaryKey &&
+				!!(await this.knex
+					.select(primaryKeyField)
+					.from(this.collection)
+					.where({ [primaryKeyField]: primaryKey })
+					.first());
+
+			if (exists) {
+				const keys = await this.update([payload]);
+				primaryKeys.push(...keys);
+			} else {
+				const key = await this.create(payload);
+				primaryKeys.push(key);
+			}
+		}
+
+		return Array.isArray(data) ? primaryKeys : primaryKeys[0];
+	}
+
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = (Array.isArray(key) ? key : [key]) as PrimaryKey[];
-		const schemaInspector = SchemaInspector(this.knex);
-		const primaryKeyField = await schemaInspector.primary(this.collection);
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -372,13 +482,22 @@ export default class ItemsService implements AbstractService {
 			await authorizationService.checkAccess('delete', this.collection, key);
 		}
 
+		await emitter.emitAsync(`${this.eventScope}.delete.before`, {
+			event: `${this.eventScope}.delete.before`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'delete',
+			payload: null,
+		});
+
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.DELETE,
-					action_by: this.accountability!.user,
+					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
@@ -393,25 +512,45 @@ export default class ItemsService implements AbstractService {
 			await cache.clear();
 		}
 
-		emitter.emitAsync(`item.delete.${this.collection}`, {
-			collection: this.collection,
-			item: key,
-			action: 'delete',
-		});
+		emitter
+			.emitAsync(`${this.eventScope}.delete`, {
+				event: `${this.eventScope}.delete`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'delete',
+				payload: null,
+			})
+			.catch((err) => logger.warn(err));
 
 		return key;
 	}
 
+	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Not authenticated:
+		const itemsService = new ItemsService(this.collection);
+
+		let itemsToDelete = await itemsService.readByQuery(readQuery);
+		itemsToDelete = Array.isArray(itemsToDelete) ? itemsToDelete : [itemsToDelete];
+
+		const keys: PrimaryKey[] = itemsToDelete.map(
+			(item: Partial<Item>) => item[primaryKeyField]
+		);
+		return await this.delete(keys);
+	}
+
 	async readSingleton(query: Query) {
 		query = clone(query);
-		const schemaInspector = SchemaInspector(this.knex);
-		query.limit = 1;
+		query.single = true;
 
-		const records = await this.readByQuery(query);
-		const record = records[0];
+		const record = (await this.readByQuery(query)) as Item;
 
 		if (!record) {
-			const columns = await schemaInspector.columnInfo(this.collection);
+			const columns = await this.schemaInspector.columnInfo(this.collection);
 			const defaults: Record<string, any> = {};
 
 			for (const column of columns) {
@@ -425,8 +564,7 @@ export default class ItemsService implements AbstractService {
 	}
 
 	async upsertSingleton(data: Partial<Item>) {
-		const schemaInspector = SchemaInspector(this.knex);
-		const primaryKeyField = await schemaInspector.primary(this.collection);
+		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 
 		const record = await this.knex
 			.select(primaryKeyField)

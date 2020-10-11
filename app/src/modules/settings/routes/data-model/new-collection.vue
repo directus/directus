@@ -19,14 +19,17 @@
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
 				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="system">{{ $t('optional_system_fields') }}</v-tab>
+				<v-tab value="system" :disabled="!collectionName">{{ $t('optional_system_fields') }}</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items v-model="currentTab">
 			<v-tab-item value="collection">
 				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
-				<div class="type-label">{{ $t('name') }}</div>
+				<div class="type-label">
+					{{ $t('name') }}
+					<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
+				</div>
 				<v-input
 					autofocus
 					class="monospace"
@@ -72,7 +75,7 @@
 				<div class="grid system">
 					<div class="field" v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input v-model="info.name" class="monospace">
+						<v-input v-model="info.name" class="monospace" :class="{active: info.enabled}" @click.native="info.enabled = true">
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />
 							</template>
@@ -190,10 +193,12 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
-					sort_field: sortField.value,
-					archive_field: archiveField.value,
-					archive_value: archiveValue.value,
-					unarchive_value: unarchiveValue.value,
+					meta: {
+						sort_field: sortField.value,
+						archive_field: archiveField.value,
+						archive_value: archiveValue.value,
+						unarchive_value: unarchiveValue.value,
+					},
 				});
 
 				await collectionsStore.hydrate();
@@ -214,54 +219,50 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeyField() {
-			const field: DeepPartial<Field> = {
-				field: primaryKeyFieldName.value,
-				type: 'integer',
-				meta: {
-					hidden: true,
-					interface: 'numeric',
-					readonly: true,
-				},
-				schema: {
-					has_auto_increment: true,
-					is_primary_key: true,
-				},
-			};
-
 			if (primaryKeyFieldType.value === 'uuid') {
 				return {
-					...field,
+					field: primaryKeyFieldName.value,
 					type: 'uuid',
 					meta: {
-						...field.meta,
+						hidden: true,
+						readonly: true,
 						interface: 'text-input',
 						special: ['uuid'],
 					},
 					schema: {
-						...field.schema,
+						is_primary_key: true,
 						length: 36,
 						has_auto_increment: false,
 					},
 				};
 			} else if (primaryKeyFieldType.value === 'manual') {
 				return {
-					...field,
+					field: primaryKeyFieldName.value,
 					type: 'string',
 					meta: {
-						...field.meta,
 						interface: 'text-input',
 						readonly: false,
 						hidden: false,
 					},
 					schema: {
-						...field.schema,
+						is_primary_key: true,
 						length: 255,
-						auto_increment: false,
+						has_auto_increment: false,
 					},
 				};
 			} else {
-				// auto_int
-				return field;
+				return {
+					field: primaryKeyFieldName.value,
+					type: 'integer',
+					meta: {
+						hidden: true,
+						interface: 'numeric',
+						readonly: true,
+					},
+					schema: {
+						has_auto_increment: true,
+					},
+				};
 			}
 		}
 
@@ -309,7 +310,7 @@ export default defineComponent({
 									value: 'archived',
 								},
 							],
-						}
+						},
 					},
 					schema: {
 						default_value: 'draft',
@@ -430,6 +431,16 @@ export default defineComponent({
 }
 
 .system {
+	::v-deep .v-input {
+		.input {
+			color: var(--foreground-subdued);
+		}
+
+		&.active .input {
+			color: var(--foreground-normal);
+		}
+	}
+
 	.v-icon {
 		--v-icon-color: var(--foreground-subdued);
 	}
@@ -441,5 +452,9 @@ export default defineComponent({
 
 .v-input.monospace {
 	--v-input-font-family: var(--family-monospace);
+}
+
+.required {
+	color: var(--primary);
 }
 </style>

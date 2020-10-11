@@ -6,7 +6,7 @@
 
 **Directus is an open-source platform that provides a real-time API and intuitive Admin App for your custom database.** Built on node.js and vue.js 3, it allows both administrators and non-technical users to view and manage the content/data stored within pure SQL databases. It can be used as a headless CMS for managing project content, a database client for modeling and viewing raw data, or as a standalone customizable WebApp.
 
-:::tip What's in a name?
+::: What's in a name?
 Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight, arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and intuitive way.
 :::
 
@@ -41,12 +41,16 @@ Dedicated hardware, custom limits, full white-labeling, uptime SLAs, and more ar
 
 ### Documentation
 
-The online version of our platform's most recent documentation, all written in publicly managed markdown files so the community can help!
+[Our online documentation](#) describes the most version of our platform. They are written in publicly managed markdown files so the community can help keep them clean and up-to-date!
 
-* Getting Started
-* Concepts: Learning Oriented. For understanding the platofm.
+* Getting Started: Novice Oriented. For a platform intro and installation.
+* Concepts: Learning Oriented. For understanding the platfom.
 * Guides: Problem Oriented. Follow along with steps while working.
 * Reference: Information Oriented. Look up info and specs while working.
+
+::: Versioned Docs
+Docs for specific versions of Directus 9+ are available within the individual Project's App Documentation module.
+:::
 
 ### Online Demo
 
@@ -78,4 +82,4 @@ In addition to managing multilingual content, the Directus Admin App itself can 
 
 ### Marketplace
 
-Coming in 2021. A library of free and paid Directus extensions created by our core team and community members.
+Coming soon. A library of free and paid Directus extensions created by our core team and community members.

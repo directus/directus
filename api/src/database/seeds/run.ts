@@ -22,14 +22,14 @@ type TableSeed = {
 				column: string;
 			};
 		};
-	}
-}
+	};
+};
 
 type RowSeed = {
 	table: string;
 	defaults: Record<string, any>;
 	data: Record<string, any>[];
-}
+};
 
 type FieldSeed = {
 	table: string;
@@ -47,10 +47,10 @@ type FieldSeed = {
 		sort: number | null;
 		width: string | null;
 		group: number | null;
-		translation: Record<string, any> | null;
+		translations: Record<string, any> | null;
 		note: string | null;
 	}[];
-}
+};
 
 export default async function runSeed(database: Knex) {
 	const exists = await database.schema.hasTable('directus_collections');
@@ -68,10 +68,13 @@ async function createTables(database: Knex) {
 	const tableSeeds = await fse.readdir(path.resolve(__dirname, './01-tables/'));
 
 	for (const tableSeedFile of tableSeeds) {
-		const yamlRaw = await fse.readFile(path.resolve(__dirname, './01-tables', tableSeedFile), 'utf8');
+		const yamlRaw = await fse.readFile(
+			path.resolve(__dirname, './01-tables', tableSeedFile),
+			'utf8'
+		);
 		const seedData = yaml.safeLoad(yamlRaw) as TableSeed;
 
-		await database.schema.createTable(seedData.table, tableBuilder => {
+		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
 				let column: ColumnBuilder;
 
@@ -129,7 +132,10 @@ async function insertRows(database: Knex) {
 	const rowSeeds = await fse.readdir(path.resolve(__dirname, './02-rows/'));
 
 	for (const rowSeedFile of rowSeeds) {
-		const yamlRaw = await fse.readFile(path.resolve(__dirname, './02-rows', rowSeedFile), 'utf8');
+		const yamlRaw = await fse.readFile(
+			path.resolve(__dirname, './02-rows', rowSeedFile),
+			'utf8'
+		);
 		const seedData = yaml.safeLoad(yamlRaw) as RowSeed;
 
 		const dataWithDefaults = seedData.data.map((row) => {
@@ -149,11 +155,17 @@ async function insertRows(database: Knex) {
 async function insertFields(database: Knex) {
 	const fieldSeeds = await fse.readdir(path.resolve(__dirname, './03-fields/'));
 
-	const defaultsYaml = await fse.readFile(path.resolve(__dirname, './03-fields/_defaults.yaml'), 'utf8');
+	const defaultsYaml = await fse.readFile(
+		path.resolve(__dirname, './03-fields/_defaults.yaml'),
+		'utf8'
+	);
 	const defaults = yaml.safeLoad(defaultsYaml) as FieldSeed;
 
 	for (const fieldSeedFile of fieldSeeds) {
-		const yamlRaw = await fse.readFile(path.resolve(__dirname, './03-fields', fieldSeedFile), 'utf8');
+		const yamlRaw = await fse.readFile(
+			path.resolve(__dirname, './03-fields', fieldSeedFile),
+			'utf8'
+		);
 		const seedData = yaml.safeLoad(yamlRaw) as FieldSeed;
 
 		if (fieldSeedFile === '_defaults.yaml') {

@@ -3,14 +3,18 @@ import { FieldTree } from './types';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 
-export default function useFieldTree(collection: Ref<string>) {
+export default function useFieldTree(collection: Ref<string>, inject?: { fields: Field[]; relations: Relation[] }) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
 	const tree = computed<FieldTree[]>(() => {
-		return fieldsStore
-			.getFieldsForCollection(collection.value)
-			.filter((field: Field) => field.meta?.hidden === false && field.meta?.special?.includes('alias') === false)
+		return [...fieldsStore.getFieldsForCollection(collection.value), ...(inject?.fields || [])]
+			.filter((field: Field) => {
+				const shown =
+					field.meta?.special?.includes('alias') !== true &&
+					field.meta?.special?.includes('no-data') !== true;
+				return shown;
+			})
 			.map((field: Field) => parseField(field, []));
 
 		function parseField(field: Field, parents: Field[]) {
@@ -23,7 +27,14 @@ export default function useFieldTree(collection: Ref<string>) {
 				return fieldInfo;
 			}
 
-			const relations = relationsStore.getRelationsForField(field.collection, field.field);
+			const relations = [
+				...relationsStore.getRelationsForField(field.collection, field.field),
+				...(inject?.relations || []).filter(
+					(relation) =>
+						(relation.many_collection === field.collection && relation.many_field === field.field) ||
+						(relation.one_collection === field.collection && relation.one_field === field.field)
+				),
+			];
 
 			if (relations.length > 0) {
 				const relatedFields = relations
@@ -35,12 +46,12 @@ export default function useFieldTree(collection: Ref<string>) {
 
 						if (relation.junction_field === field.field) return [];
 
-						return fieldsStore
-							.getFieldsForCollection(relatedCollection)
-							.filter(
-								(field: Field) =>
-									field.meta?.hidden === false && field.meta?.special?.includes('alias') === false
-							);
+						return fieldsStore.getFieldsForCollection(relatedCollection).filter((field: Field) => {
+							const shown =
+								field.meta?.special?.includes('alias') !== true &&
+								field.meta?.special?.includes('no-data') !== true;
+							return shown;
+						});
 					})
 					.flat()
 					.map((childField: Field) => parseField(childField, [...parents, field]));

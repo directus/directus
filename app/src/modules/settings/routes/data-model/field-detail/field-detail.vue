@@ -1,6 +1,36 @@
 <template>
-	<v-modal
+	<v-dialog
+		persistent
 		:active="true"
+		v-if="localType === 'translations' && translationsManual === false && field === '+'"
+	>
+		<v-card class="auto-translations">
+			<v-card-title>{{ $t('create_translations') }}</v-card-title>
+			<v-card-text>
+				<v-input v-model="fieldData.field" :placeholder="$t('field_name') + '...'" />
+				<v-notice>
+					<div>
+						{{ $t('this_will_auto_setup_fields_relations') }}
+						<br />
+						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
+						{{ $t('to_manually_setup_translations') }}
+					</div>
+				</v-notice>
+			</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="cancelField">{{ $t('cancel') }}</v-button>
+				<div class="spacer" />
+				<v-button :disabled="!fieldData.field" :loading="saving" @click="saveField">
+					{{ $t('auto_generate') }}
+				</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+
+	<v-modal
+		v-else
+		:active="true"
+		@toggle="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })
@@ -29,13 +59,6 @@
 
 		<setup-translations
 			v-if="currentTab[0] === 'translations'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
-
-		<setup-languages
-			v-if="currentTab[0] === 'languages'"
 			:is-existing="field !== '+'"
 			:collection="collection"
 			:type="localType"
@@ -76,7 +99,6 @@ import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
 import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
-import SetupLanguages from './components/languages.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
@@ -88,6 +110,7 @@ import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import notify from '@/utils/notify';
+import { getLocalTypeForField } from '../get-local-type';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 
@@ -98,7 +121,6 @@ export default defineComponent({
 		SetupSchema,
 		SetupRelationship,
 		SetupTranslations,
-		SetupLanguages,
 		SetupInterface,
 		SetupDisplay,
 	},
@@ -112,7 +134,9 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'>,
+			type: String as PropType<
+				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
+			>,
 			default: null,
 		},
 	},
@@ -120,6 +144,8 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const translationsManual = ref(false);
 
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
@@ -134,7 +160,8 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' = 'standard';
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' =
+				'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
 			return type;
@@ -158,6 +185,7 @@ export default defineComponent({
 			localType,
 			existingField,
 			collectionInfo,
+			translationsManual,
 		};
 
 		function useTabs() {
@@ -192,18 +220,17 @@ export default defineComponent({
 				}
 
 				if (localType.value === 'translations') {
-					tabs.splice(1, 0, ...[
-						{
-							text: i18n.t('translations'),
-							value: 'translations',
-							disabled: translationsDisabled(),
-						},
-						{
-							text: i18n.t('languages'),
-							value: 'languages',
-							disabled: languagesDisabled(),
-						}
-					])
+					tabs.splice(
+						1,
+						0,
+						...[
+							{
+								text: i18n.t('translations'),
+								value: 'translations',
+								disabled: translationsDisabled(),
+							},
+						]
+					);
 				}
 
 				return tabs;
@@ -219,16 +246,6 @@ export default defineComponent({
 
 			function translationsDisabled() {
 				return isEmpty(state.fieldData.field);
-			}
-
-			function languagesDisabled() {
-				return isEmpty(state.fieldData.field) || (
-					state.relations.length === 0 ||
-					isEmpty(state.relations[0].many_collection) ||
-					isEmpty(state.relations[0].many_field) ||
-					isEmpty(state.relations[0].one_collection) ||
-					isEmpty(state.relations[0].one_primary)
-				);
 			}
 
 			function interfaceDisplayDisabled() {
@@ -274,21 +291,21 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newCollections.map((newCollection: Partial<Collection> & { $type: string }) => {
+					state.newCollections.map((newCollection: Partial<Collection> & { $type?: string }) => {
 						delete newCollection.$type;
 						return api.post(`/collections`, newCollection);
 					})
 				);
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field> & { $type: string }) => {
+					state.newFields.map((newField: Partial<Field> & { $type?: string }) => {
 						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
 
 				await Promise.all(
-					state.updateFields.map((updateField: Partial<Field> & { $type: string }) => {
+					state.updateFields.map((updateField: Partial<Field> & { $type?: string }) => {
 						delete updateField.$type;
 						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})
@@ -301,6 +318,13 @@ export default defineComponent({
 						} else {
 							return api.post(`/relations`, relation);
 						}
+					})
+				);
+
+				await Promise.all(
+					Object.keys(state.newRows).map((collection) => {
+						const rows = state.newRows[collection];
+						return api.post(`/items/${collection}`, rows);
 					})
 				);
 
@@ -333,48 +357,26 @@ export default defineComponent({
 			router.push(`/settings/data-model/${props.collection}`);
 			clearLocalStore();
 		}
-
-		function getLocalTypeForField(
-			collection: string,
-			field: string
-		): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' {
-			const fieldInfo = fieldsStore.getField(collection, field);
-			const relations = relationsStore.getRelationsForField(collection, field);
-
-			if (relations.length === 0) {
-				if (fieldInfo.type === 'alias') return 'presentation';
-				return 'standard';
-			}
-
-			if (relations.length === 1) {
-				const relation = relations[0];
-				if (relation.one_collection === 'directus_files') return 'file';
-				if (relation.many_collection === collection) return 'm2o';
-				return 'o2m';
-			}
-
-			if (relations.length === 2) {
-				const relationForCurrent = relations.find(
-					(relation: Relation) =>
-						(relation.many_collection === collection && relation.many_field === field) ||
-						(relation.one_collection === collection && relation.one_field === field)
-				);
-
-				if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field)
-					return 'm2o';
-
-				if (
-					relations[0].one_collection === 'directus_files' ||
-					relations[1].one_collection === 'directus_files'
-				) {
-					return 'files';
-				} else {
-					return 'm2m';
-				}
-			}
-
-			return 'standard';
-		}
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.auto-translations {
+	.v-input {
+		--v-input-font-family: var(--family-monospace);
+	}
+
+	.v-notice {
+		margin-top: 12px;
+	}
+
+	.spacer {
+		flex-grow: 1;
+	}
+
+	.manual-toggle {
+		color: var(--primary);
+	}
+}
+</style>

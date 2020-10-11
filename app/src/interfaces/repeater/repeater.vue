@@ -5,7 +5,7 @@
 				v-for="(row, index) in value"
 				:key="index"
 				:value="row"
-				:template="template"
+				:template="_template"
 				:fields="fields"
 				@input="updateValues(index, $event)"
 				@delete="removeItem(row)"
@@ -40,7 +40,7 @@ export default defineComponent({
 		},
 		template: {
 			type: String,
-			required: true,
+			default: null
 		},
 		addLabel: {
 			type: String,
@@ -58,6 +58,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);
 
+		const _template = computed(() => {
+			if(props.template === null) return props.fields.length > 0 ? `{{${ props.fields[0].field}}}` : ''
+			return props.template
+		})
+
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
 			if (props.value === null) return true;
@@ -66,11 +71,10 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection };
+		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection, _template };
 
 		function updateValues(index: number, updatedValues: any) {
-			emit(
-				'input',
+			emitValue(
 				props.value.map((item, i) => {
 					if (i === index) {
 						return updatedValues;
@@ -82,18 +86,15 @@ export default defineComponent({
 		}
 
 		function onSort(sortedItems: any[]) {
-			emit('input', sortedItems);
+			emitValue(sortedItems);
 		}
 
 		function removeItem(row: any) {
 			selection.value = [];
 			if (props.value) {
-				emit(
-					'input',
-					props.value.filter((existingItem) => existingItem !== row)
-				);
+				emitValue(props.value.filter((existingItem) => existingItem !== row));
 			} else {
-				emit('input', null);
+				emitValue(null);
 			}
 		}
 
@@ -109,10 +110,18 @@ export default defineComponent({
 			selection.value = [props.value?.length || 0];
 
 			if (props.value !== null) {
-				emit('input', [...props.value, newDefaults]);
+				emitValue([...props.value, newDefaults]);
 			} else {
-				emit('input', [newDefaults]);
+				emitValue([newDefaults]);
 			}
+		}
+
+		function emitValue(value: null | any[]) {
+			if (value === null || value.length === 0) {
+				return emit('input', null);
+			}
+
+			return emit('input', value);
 		}
 	},
 });

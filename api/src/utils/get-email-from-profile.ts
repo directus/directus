@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import env from '../env';
+import { ServiceUnavailableException } from '../exceptions';
 
 // The path in JSON to fetch the email address from the profile.
 // Note: a lot of services use `email` as the path. We fall back to that as default, so no need to
@@ -17,10 +18,11 @@ const profileMap: Record<string, string> = {};
 export default function getEmailFromProfile(provider: string, profile: Record<string, any>) {
 	const path =
 		profileMap[provider] || env[`OAUTH_${provider.toUpperCase()}_PROFILE_EMAIL`] || 'email';
+
 	const email = get(profile, path);
 
 	if (!email) {
-		throw new Error("Couldn't extract email address from SSO provider response");
+		throw new ServiceUnavailableException("Couldn't extract email address from SSO provider response", { service: 'oauth', provider });
 	}
 
 	return email;

@@ -34,7 +34,6 @@ export const useSettingsStore = createStore({
 
 				notify({
 					title: i18n.t('settings_update_success'),
-					text: Object.keys(updates).join(', '),
 					type: 'success',
 				});
 			} catch (error) {

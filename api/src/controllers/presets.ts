@@ -1,20 +1,34 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import PresetsService from '../services/presets';
-import MetaService from '../services/meta';
+import { PresetsService, MetaService } from '../services';
+import { ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
+
+router.use(useCollection('directus_presets'));
 
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const service = new PresetsService({ accountability: req.accountability });
 		const primaryKey = await service.create(req.body);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -28,7 +42,8 @@ router.get(
 
 		res.locals.payload = { data: records || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -40,7 +55,8 @@ router.get(
 
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -49,11 +65,21 @@ router.patch(
 		const service = new PresetsService({ accountability: req.accountability });
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -63,7 +89,8 @@ router.delete(
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

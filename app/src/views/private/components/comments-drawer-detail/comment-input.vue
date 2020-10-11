@@ -1,5 +1,11 @@
 <template>
-	<v-textarea class="new-comment" :placeholder="$t('leave_comment')" v-model="newCommentContent" expand-on-focus>
+	<v-textarea
+		class="new-comment"
+		:placeholder="$t('leave_comment')"
+		v-model="newCommentContent"
+		expand-on-focus
+		ref="textarea"
+	>
 		<template #append>
 			<v-icon name="alternate_email" class="add-mention" />
 			<v-icon name="insert_emoticon" class="add-emoji" />
@@ -22,6 +28,7 @@ import { defineComponent, ref, PropType } from '@vue/composition-api';
 import notify from '@/utils/notify';
 import api from '@/api';
 import i18n from '@/lang';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	props: {
@@ -39,12 +46,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const newCommentContent = ref(null);
+		const textarea = ref<HTMLElement>();
+		useShortcut('meta+enter', postComment, textarea);
+		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 
-		return { newCommentContent, postComment, saving };
+		return { newCommentContent, postComment, saving, textarea };
 
 		async function postComment() {
+			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;
 			saving.value = true;
 
 			try {

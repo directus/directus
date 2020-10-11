@@ -10,6 +10,7 @@ import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
 import usersCreate from './commands/users/create';
 import rolesCreate from './commands/roles/create';
+import count from './commands/count';
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -19,9 +20,18 @@ program.command('init').description('Create a new Directus Project').action(init
 
 const dbCommand = program.command('database');
 dbCommand.command('install').description('Install the database').action(dbInstall);
-dbCommand.command('migrate:latest').description('Upgrade the database').action(() => dbMigrate('latest'));
-dbCommand.command('migrate:up').description('Upgrade the database').action(() => dbMigrate('up'));
-dbCommand.command('migrate:down').description('Downgrade the database').action(() => dbMigrate('down'));
+dbCommand
+	.command('migrate:latest')
+	.description('Upgrade the database')
+	.action(() => dbMigrate('latest'));
+dbCommand
+	.command('migrate:up')
+	.description('Upgrade the database')
+	.action(() => dbMigrate('up'));
+dbCommand
+	.command('migrate:down')
+	.description('Downgrade the database')
+	.action(() => dbMigrate('down'));
 
 const usersCommand = program.command('users');
 usersCommand
@@ -34,12 +44,17 @@ usersCommand
 
 const rolesCommand = program.command('roles');
 rolesCommand
-.command('create')
+	.command('create')
 	.storeOptionsAsProperties(false)
 	.passCommandToAction(false)
 	.description('Create a new role')
 	.option('--name <value>', `name for the role`)
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
+
+program
+	.command('count <collection>')
+	.description('Count the amount of items in a given collection')
+	.action(count);
 
 program.parse(process.argv);

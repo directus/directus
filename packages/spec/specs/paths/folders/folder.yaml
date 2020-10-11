@@ -35,7 +35,7 @@ patch:
             name:
               type: string
               description: Name of the folder. Can't be null or empty.
-            parent_folder:
+            parent:
               type: integer
               example: 3
               description: Unique identifier of the parent folder. This allows for nested folders.

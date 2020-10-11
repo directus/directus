@@ -8,11 +8,11 @@ To use the App or API, you'll need a valid Directus User. Each user is assigned 
 
 All Directus users are aggregated and shown on the [User Directory](#) page of the App
 
-:::tip Extending Directus Users
+::: Extending Directus Users
 While the included fields within Directus Users are required/locked, you can still _extend_ this collection with additional custom fields as needed. You can do this via the normal [Create a new Field](#) process from within the system collection.
 :::
 
-:::tip System vs Custom Users
+::: System vs Custom Users
 If your project requires a users, members, customers, etc., we recommend creating your own collection to manage these instead of trying to repurpose the Directus Users system.
 :::
 
@@ -30,7 +30,7 @@ Each user is assigned to one Role, which determines their permissions within the
 
 ### Public Role
 
-Public is not technically a role, and can't be found in the `directus_roels` table. Instead, it represents the _lack_ of a role, providing a place to configure permissions for unauthenticated users. This role can not be deleted, and has no permissions by default.
+Public is not technically a role, and can't be found in the `directus_roles` table. Instead, it represents the _lack_ of a role, providing a place to configure permissions for unauthenticated users. This role can not be deleted, and has no permissions by default.
 
 ### Administrators Role
 

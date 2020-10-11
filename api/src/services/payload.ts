@@ -3,29 +3,32 @@
  * handled correctly.
  */
 
-import { FieldMeta } from '../types/field';
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
-import { clone, isObject } from 'lodash';
+import { clone, isObject, cloneDeep } from 'lodash';
 import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
-import ItemsService from './items';
+import { ItemsService } from './items';
 import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
+import SchemaInspector from 'knex-schema-inspector';
+import getLocalType from '../utils/get-local-type';
+import { format, formatISO } from 'date-fns';
+import { ForbiddenException } from '../exceptions';
 
 type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
-	[type: string]: (
-		action: Action,
-		value: any,
-		payload: Partial<Item>,
-		accountability: Accountability | null
-	) => Promise<any>;
+	[type: string]: (context: {
+		action: Action;
+		value: any;
+		payload: Partial<Item>;
+		accountability: Accountability | null;
+	}) => Promise<any>;
 };
 
-export default class PayloadService {
+export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
 	collection: string;
@@ -46,7 +49,7 @@ export default class PayloadService {
 	 * in order to work
 	 */
 	public transformers: Transformers = {
-		async hash(action, value) {
+		async hash({ action, value }) {
 			if (!value) return;
 
 			if (action === 'create' || action === 'update') {
@@ -55,14 +58,14 @@ export default class PayloadService {
 
 			return value;
 		},
-		async uuid(action, value) {
+		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
 				return uuidv4();
 			}
 
 			return value;
 		},
-		async 'file-links'(action, value, payload) {
+		async 'file-links'({ action, value, payload }) {
 			if (action === 'read' && payload && payload.storage && payload.filename_disk) {
 				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
 
@@ -75,14 +78,14 @@ export default class PayloadService {
 			// This is an non-existing column, so there isn't any data to save
 			return undefined;
 		},
-		async boolean(action, value) {
+		async boolean({ action, value }) {
 			if (action === 'read') {
 				return value === true || value === 1 || value === '1';
 			}
 
 			return value;
 		},
-		async json(action, value) {
+		async json({ action, value }) {
 			if (action === 'read') {
 				if (typeof value === 'string') {
 					try {
@@ -95,37 +98,36 @@ export default class PayloadService {
 
 			return value;
 		},
-		async conceal(action, value) {
+		async conceal({ action, value }) {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'(action, value, payload, accountability) {
+		async 'user-created'({ action, value, payload, accountability }) {
 			if (action === 'create') return accountability?.user || null;
 			return value;
 		},
-		async 'user-updated'(action, value, payload, accountability) {
+		async 'user-updated'({ action, value, payload, accountability }) {
 			if (action === 'update') return accountability?.user || null;
 			return value;
 		},
-		async 'role-created'(action, value, payload, accountability) {
+		async 'role-created'({ action, value, payload, accountability }) {
 			if (action === 'create') return accountability?.role || null;
 			return value;
 		},
-		async 'role-updated'(action, value, payload, accountability) {
+		async 'role-updated'({ action, value, payload, accountability }) {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'(action, value) {
+		async 'date-created'({ action, value }) {
 			if (action === 'create') return new Date();
 			return value;
 		},
-		async 'date-updated'(action, value) {
+		async 'date-updated'({ action, value }) {
 			if (action === 'update') return new Date();
 			return value;
 		},
-		async csv(action, value) {
+		async csv({ action, value }) {
 			if (!value) return;
-			// if (Array.isArray(value) && action === 'read') return value;
 			if (action === 'read') return value.split(',');
 
 			if (Array.isArray(value)) return value.join(',');
@@ -139,7 +141,7 @@ export default class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
+		let processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
 
 		if (processedPayload.length === 0) return [];
 
@@ -173,10 +175,19 @@ export default class PayloadService {
 			})
 		);
 
+		if (action === 'read') {
+			await this.processDates(processedPayload);
+		}
+
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && (value instanceof Date) !== true && value !== null)) {
+					if (
+						Array.isArray(value) ||
+						(typeof value === 'object' &&
+							value instanceof Date !== true &&
+							value !== null)
+					) {
 						record[key] = JSON.stringify(value);
 					}
 				}
@@ -203,11 +214,65 @@ export default class PayloadService {
 
 		for (const special of fieldSpecials) {
 			if (this.transformers.hasOwnProperty(special)) {
-				value = await this.transformers[special](action, value, payload, accountability);
+				value = await this.transformers[special]({
+					action,
+					value,
+					payload,
+					accountability,
+				});
 			}
 		}
 
 		return value;
+	}
+
+	/**
+	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
+	 * shouldn't return with time / timezone info respectively
+	 */
+	async processDates(payloads: Partial<Record<string, any>>[]) {
+		const schemaInspector = SchemaInspector(this.knex);
+		const columnsInCollection = await schemaInspector.columnInfo(this.collection);
+
+		const columnsWithType = columnsInCollection.map((column) => ({
+			name: column.name,
+			type: getLocalType(column.type),
+		}));
+
+		const dateColumns = columnsWithType.filter((column) =>
+			['dateTime', 'date', 'timestamp'].includes(column.type)
+		);
+
+		if (dateColumns.length === 0) return payloads;
+
+		for (const dateColumn of dateColumns) {
+			for (const payload of payloads) {
+				let value: string | Date = payload[dateColumn.name];
+
+				if (typeof value === 'string') value = new Date(value);
+
+				if (value) {
+					if (dateColumn.type === 'timestamp') {
+						const newValue = formatISO(value);
+						payload[dateColumn.name] = newValue;
+					}
+
+					if (dateColumn.type === 'dateTime') {
+						// Strip off the Z at the end of a non-timezone datetime value
+						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
+						payload[dateColumn.name] = newValue;
+					}
+
+					if (dateColumn.type === 'date') {
+						// Strip off the time / timezone information from a date-only value
+						const newValue = format(value, 'yyyy-MM-dd');
+						payload[dateColumn.name] = newValue;
+					}
+				}
+			}
+		}
+
+		return payloads;
 	}
 
 	/**
@@ -245,16 +310,11 @@ export default class PayloadService {
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
 
-				let relatedPrimaryKey: PrimaryKey;
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
+				const exists = hasPrimaryKey && !!(await itemsService.readByKey(relatedPrimaryKey));
 
-				if (hasPrimaryKey) {
-					relatedPrimaryKey = relatedRecord[relation.one_primary];
-
-					if (relatedRecord.hasOwnProperty('$delete') && relatedRecord.$delete) {
-						await itemsService.delete(relatedPrimaryKey);
-					} else {
-						await itemsService.update(relatedRecord, relatedPrimaryKey);
-					}
+				if (exists) {
+					await itemsService.update(relatedRecord, relatedPrimaryKey);
 				} else {
 					relatedPrimaryKey = await itemsService.create(relatedRecord);
 				}
@@ -290,40 +350,52 @@ export default class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
-				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
-					(record: Partial<Item>) => ({
-						...record,
-						[relation.many_field]: parent || payload[relation.one_primary],
-					})
-				);
-
 				const itemsService = new ItemsService(relation.many_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
 				});
 
-				const toBeCreated = relatedRecords.filter(
-					(record) => record.hasOwnProperty(relation.many_primary) === false
+				const relatedRecords: Partial<Item>[] = [];
+
+				for (const relatedRecord of payload[relation.one_field]) {
+					let record = cloneDeep(relatedRecord);
+
+					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
+						const exists = !!(await this.knex
+							.select(relation.many_primary)
+							.from(relation.many_collection)
+							.where({ [relation.many_primary]: record })
+							.first());
+
+						if (exists === false)
+							throw new ForbiddenException(undefined, {
+								item: record,
+								collection: relation.many_collection,
+							});
+
+						record = {
+							[relation.many_primary]: relatedRecord,
+						};
+					}
+
+					relatedRecords.push({
+						...record,
+						[relation.many_field]: parent || payload[relation.one_primary],
+					});
+				}
+
+				const primaryKeys = await itemsService.upsert(relatedRecords);
+
+				await itemsService.updateByQuery(
+					{ [relation.many_field]: null },
+					{
+						filter: {
+							[relation.many_primary]: {
+								_nin: primaryKeys,
+							},
+						},
+					}
 				);
-
-				const toBeUpdated = relatedRecords.filter(
-					(record) =>
-						record.hasOwnProperty(relation.many_primary) === true &&
-						record.hasOwnProperty('$delete') === false
-				);
-
-				const toBeDeleted = relatedRecords
-					.filter(
-						(record) =>
-							record.hasOwnProperty(relation.many_primary) === true &&
-							record.hasOwnProperty('$delete') &&
-							record.$delete === true
-					)
-					.map((record) => record[relation.many_primary]);
-
-				await itemsService.create(toBeCreated);
-				await itemsService.update(toBeUpdated);
-				await itemsService.delete(toBeDeleted);
 			}
 		}
 	}

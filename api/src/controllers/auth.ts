@@ -2,15 +2,15 @@ import { Router } from 'express';
 import session from 'express-session';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
-import AuthenticationService from '../services/authentication';
 import grant from 'grant';
-import getGrantConfig from '../utils/get-grant-config';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import ms from 'ms';
 import cookieParser from 'cookie-parser';
 import env from '../env';
-import UsersService from '../services/users';
+import { UsersService, AuthenticationService } from '../services';
+import grantConfig from '../grant';
+import { RouteNotFoundException } from '../exceptions';
 import { respond } from '../middleware/respond';
 
 const router = Router();
@@ -75,7 +75,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -126,7 +127,8 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -153,7 +155,8 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 		return next();
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -179,7 +182,8 @@ router.post(
 		} finally {
 			return next();
 		}
-	})
+	}),
+	respond
 );
 
 router.post(
@@ -202,22 +206,53 @@ router.post(
 		const service = new UsersService({ accountability });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
-	})
+	}),
+	respond
+);
+
+router.get(
+	'/oauth',
+	asyncHandler(async (req, res, next) => {
+		const providers = env.OAUTH_PROVIDERS.split(',').filter((p: string) => p);
+		res.locals.payload = { data: providers.length > 0 ? providers : null };
+		return next();
+	}),
+	respond
 );
 
 router.use(
-	'/sso',
+	'/oauth',
 	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
 );
 
-router.use(grant.express()(getGrantConfig()));
-
-/**
- * @todo allow json / cookie mode in SSO
- */
 router.get(
-	'/sso/:provider/callback',
+	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
+		const config = { ...grantConfig };
+		delete config.defaults;
+
+		const availableProviders = Object.keys(config);
+
+		if (availableProviders.includes(req.params.provider) === false) {
+			throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
+		}
+
+		if (req.query?.redirect && req.session) {
+			req.session.redirect = req.query.redirect;
+		}
+
+		next();
+	}),
+	respond
+);
+
+router.use(grant.express()(grantConfig));
+
+router.get(
+	'/oauth/:provider/callback',
+	asyncHandler(async (req, res, next) => {
+		const redirect = req.session?.redirect;
+
 		const accountability = {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -228,20 +263,36 @@ router.get(
 			accountability: accountability,
 		});
 
-		const email = getEmailFromProfile(req.params.provider, req.session!.grant.response.profile);
-
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate(
-			email
+		const email = getEmailFromProfile(
+			req.params.provider,
+			req.session!.grant.response?.profile
 		);
 
-		res.locals.payload = {
-			data: { access_token: accessToken, refresh_token: refreshToken, expires },
-		};
+		req.session?.destroy(() => {});
 
-		return next();
-	})
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			email,
+		});
+
+		if (redirect) {
+			res.cookie('directus_refresh_token', refreshToken, {
+				httpOnly: true,
+				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				sameSite:
+					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+			});
+
+			return res.redirect(redirect);
+		} else {
+			res.locals.payload = {
+				data: { access_token: accessToken, refresh_token: refreshToken, expires },
+			};
+
+			return next();
+		}
+	}),
+	respond
 );
-
-router.use(respond);
 
 export default router;

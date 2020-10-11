@@ -7,7 +7,7 @@ import { ForbiddenException } from '../exceptions';
 import { version } from '../../package.json';
 import macosRelease from 'macos-release';
 
-export default class ServerService {
+export class ServerService {
 	knex: Knex;
 	accountability: Accountability | null;
 

@@ -1,6 +1,6 @@
 <template>
-	<span class="user" :class="display">
-		<user-popover v-if="value" :user="value.id">
+	<user-popover v-if="value" :user="value.id">
+		<div class="user" :class="display">
 			<img
 				v-if="(display === 'avatar' || display === 'both') && src"
 				:src="src"
@@ -16,8 +16,8 @@
 				:class="{ circle }"
 			/>
 			<span v-if="display === 'name' || display === 'both'">{{ value.first_name }} {{ value.last_name }}</span>
-		</user-popover>
-	</span>
+		</div>
+	</user-popover>
 </template>
 
 <script lang="ts">
@@ -55,6 +55,7 @@ export default defineComponent({
 			if (props.value.avatar?.id) {
 				return `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
 			}
+			return null
 		});
 
 		return { src };

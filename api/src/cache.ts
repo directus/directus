@@ -27,18 +27,19 @@ function getKevyInstance() {
 	}
 }
 
-function getConfig(
-	store: 'memory' | 'redis' | 'memcache' = 'memory'
-): Options<any> {
-	const config: Options<any> = { namespace: env.CACHE_NAMESPACE, ttl: ms(env.CACHE_TTL as string) };
+function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<any> {
+	const config: Options<any> = {
+		namespace: env.CACHE_NAMESPACE,
+		ttl: ms(env.CACHE_TTL as string),
+	};
 
 	if (store === 'redis') {
 		const Redis = require('ioredis');
 		const KeyvRedis = require('@keyv/redis');
 
-		config.store = new KeyvRedis(new Redis(
-			env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_')
-		));
+		config.store = new KeyvRedis(
+			new Redis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'))
+		);
 	}
 
 	if (store === 'memcache') {

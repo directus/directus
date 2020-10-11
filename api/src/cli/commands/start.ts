@@ -1,16 +1,47 @@
+import knex from 'knex';
 import logger from '../../logger';
+import { Express } from 'express';
 
 export default async function start() {
 	const { default: env } = require('../../env');
-	const { validateDBConnection } = require('../../database');
+	const database = require('../../database');
+	const connection = database.default as knex;
 
-	await validateDBConnection();
+	await database.validateDBConnection();
 
-	const app = require('../../app').default;
+	const app: Express = require('../../app').default;
 
 	const port = env.PORT;
 
-	app.listen(port, () => {
+	const server = app.listen(port, () => {
 		logger.info(`Server started at port ${port}`);
+	});
+
+	const signals: NodeJS.Signals[] = ['SIGHUP', 'SIGINT', 'SIGTERM'];
+	signals.forEach((signal) => {
+		process.on(signal, () =>
+			server.close((err) => {
+				if (err) {
+					logger.error(`Failed to close server: ${err.message}`, {
+						err,
+					});
+					process.exit(1);
+				}
+				logger.info('Server stopped.');
+
+				connection
+					.destroy()
+					.then(() => {
+						logger.info('Database connection stopped.');
+						process.exit(0);
+					})
+					.catch((err) => {
+						logger.info(`Failed to destroy database connections: ${err.message}`, {
+							err,
+						});
+						process.exit(1);
+					});
+			})
+		);
 	});
 }

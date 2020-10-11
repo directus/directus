@@ -10,7 +10,7 @@
 				</div>
 			</template>
 
-			<v-list dense>
+			<v-list>
 				<v-list-item @click="setFullAccess">
 					<v-list-item-icon>
 						<v-icon name="check" />

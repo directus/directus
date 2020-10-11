@@ -35,7 +35,7 @@ function initLocalStore(
 	state = reactive<any>({
 		fieldData: {
 			field: '',
-			type: '',
+			type: 'string',
 			schema: {
 				default_value: undefined,
 				max_length: undefined,
@@ -56,6 +56,7 @@ function initLocalStore(
 		newCollections: [],
 		newFields: [],
 		updateFields: [],
+		newRows: {},
 
 		autoFillJunctionRelation: true,
 	});
@@ -64,7 +65,7 @@ function initLocalStore(
 		return interfaces.value
 			.filter((inter) => {
 				// Filter out all system interfaces
-				if (inter.system !== undefined && inter.system === true) return false;
+				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				let matchesRelation = false;
@@ -164,13 +165,14 @@ function initLocalStore(
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
+									is_primary_key: true,
 								},
-								system: {
+								meta: {
 									hidden: true,
-								}
-							}
-						]
-					}
+								},
+							},
+						],
+					},
 				];
 			}
 		}, 50);
@@ -224,7 +226,7 @@ function initLocalStore(
 
 	if (type === 'o2m') {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = null;
 
 		const syncNewCollectionsO2M = throttle(() => {
 			const collectionName = state.relations[0].many_collection;
@@ -242,13 +244,14 @@ function initLocalStore(
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
+									is_primary_key: true,
 								},
-								system: {
+								meta: {
 									hidden: true,
-								}
-							}
-						]
-					}
+								},
+							},
+						],
+					},
 				];
 
 				state.relations[0].many_primary = 'id';
@@ -265,8 +268,8 @@ function initLocalStore(
 							field: fieldName,
 							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
 							schema: {},
-						}
-					]
+						},
+					];
 				}
 			} else {
 				state.newFields = [
@@ -276,8 +279,8 @@ function initLocalStore(
 						field: fieldName,
 						type: 'integer',
 						schema: {},
-					}
-				]
+					},
+				];
 			}
 		}, 50);
 
@@ -315,19 +318,21 @@ function initLocalStore(
 			}
 		);
 
-		watch(
-			[() => state.relations[0].many_collection, () => state.relations[0].many_field],
-			syncNewCollectionsO2M
-		)
+		watch([() => state.relations[0].many_collection, () => state.relations[0].many_field], syncNewCollectionsO2M);
 	}
 
 	if (type === 'm2m' || type === 'files' || type === 'translations') {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = null;
 
 		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
-			state.newCollections = state.newCollections.filter((col: any) => ['junction', 'related'].includes(col.$type) === false);
-			state.newFields = state.newFields.filter((field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false);
+			state.newCollections = state.newCollections.filter(
+				(col: any) => ['junction', 'related'].includes(col.$type) === false
+			);
+			state.newFields = state.newFields.filter(
+				(field: Partial<Field> & { $type: string }) =>
+					['manyCurrent', 'manyRelated'].includes(field.$type) === false
+			);
 
 			if (collectionExists(junctionCollection) === false) {
 				state.newCollections.push({
@@ -346,9 +351,9 @@ function initLocalStore(
 							},
 							meta: {
 								hidden: true,
-							}
-						}
-					]
+							},
+						},
+					],
 				});
 
 				state.relations[0].many_primary = 'id';
@@ -360,49 +365,145 @@ function initLocalStore(
 					$type: 'manyCurrent',
 					collection: junctionCollection,
 					field: manyCurrent,
-					type: collectionExists(junctionCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type : 'integer',
+					type: collectionExists(junctionCollection)
+						? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type
+						: 'integer',
 					schema: {},
 					meta: {
 						hidden: true,
-					}
+					},
 				});
 			}
 
 			if (fieldExists(junctionCollection, manyRelated) === false) {
-				state.newFields.push({
-					$type: 'manyRelated',
-					collection: junctionCollection,
-					field: manyRelated,
-					type: collectionExists(relatedCollection) ? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type : 'integer',
-					schema: {},
-					meta: {
-						hidden: true,
-					}
-				});
+				if (type === 'translations') {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						type: collectionExists(relatedCollection)
+							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+							: 'string',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				} else {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						type: collectionExists(relatedCollection)
+							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+							: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 			}
 
 			if (collectionExists(relatedCollection) === false) {
-				state.newCollections.push({
-					$type: 'related',
-					collection: relatedCollection,
-					fields: [
-						{
-							field: state.relations[1].one_primary,
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
+				if (type === 'translations') {
+					state.newCollections.push({
+						$type: 'related',
+						collection: relatedCollection,
+						meta: {
+							icon: 'translate',
+						},
+						fields: [
+							{
+								field: state.relations[1].one_primary,
+								type: 'string',
+								schema: {
+									is_primary_key: true,
+								},
+								meta: {
+									interface: 'text-input',
+									options: {
+										iconLeft: 'vpn_key',
+									},
+									width: 'half',
+								},
 							},
-							meta: {
-								hidden: true,
-							}
-						}
-					]
-				})
+							{
+								field: 'name',
+								type: 'string',
+								schema: {},
+								meta: {
+									interface: 'text-input',
+									options: {
+										iconLeft: 'translate',
+									},
+									width: 'half',
+								},
+							},
+						],
+					});
+				} else {
+					state.newCollections.push({
+						$type: 'related',
+						collection: relatedCollection,
+						fields: [
+							{
+								field: state.relations[1].one_primary,
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								meta: {
+									hidden: true,
+								},
+							},
+						],
+					});
+				}
+			}
+
+			if (type === 'translations') {
+				if (collectionExists(relatedCollection) === false) {
+					state.newRows = {
+						[relatedCollection]: [
+							{
+								code: 'en-US',
+								name: 'English',
+							},
+							{
+								code: 'de-DE',
+								name: 'German',
+							},
+							{
+								code: 'fr-Fr',
+								name: 'French',
+							},
+							{
+								code: 'ru-RU',
+								name: 'Russian',
+							},
+							{
+								code: 'es-ES',
+								name: 'Spanish',
+							},
+							{
+								code: 'it-IT',
+								name: 'Italian',
+							},
+							{
+								code: 'pt-BR',
+								name: 'Portuguese',
+							},
+						],
+					};
+				} else {
+					state.newRows = {};
+				}
 			}
 		}, 50);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = ['m2m'];
+			state.fieldData.meta.special = [type];
 
 			state.relations = [
 				{
@@ -428,7 +529,8 @@ function initLocalStore(
 			() => state.relations[0].many_collection,
 			() => {
 				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)
+						?.field;
 					state.relations[0].many_primary = pkField;
 					state.relations[1].many_primary = pkField;
 				}
@@ -468,7 +570,7 @@ function initLocalStore(
 				() => state.relations[1].one_collection,
 			],
 			syncNewCollectionsM2M
-		)
+		);
 
 		watch(
 			() => state.fieldData.field,
@@ -493,53 +595,71 @@ function initLocalStore(
 		if (type !== 'translations') {
 			let stop: WatchStopHandle;
 
-			watch(() => state.autoFillJunctionRelation, (startWatching) => {
-				if (startWatching) {
-					stop = watch([() => state.relations[1].one_collection, () => state.relations[1].one_primary], ([newRelatedCollection, newRelatedPrimary]: string[]) => {
-						if (newRelatedCollection) {
-							state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-							state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-							state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-						}
+			watch(
+				() => state.autoFillJunctionRelation,
+				(startWatching) => {
+					if (startWatching) {
+						stop = watch(
+							[() => state.relations[1].one_collection, () => state.relations[1].one_primary],
+							([newRelatedCollection, newRelatedPrimary]: string[]) => {
+								if (newRelatedCollection) {
+									state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+									state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+									state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+								}
 
-						if (newRelatedPrimary) {
-							state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-						}
+								if (newRelatedPrimary) {
+									state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+								}
 
-						if (state.relations[0].many_field === state.relations[1].many_field) {
-							state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
-						}
-					});
-				} else {
-					stop?.();
-				}
-			}, { immediate: true });
+								if (state.relations[0].many_field === state.relations[1].many_field) {
+									state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
+								}
+							}
+						);
+					} else {
+						stop?.();
+					}
+				},
+				{ immediate: true }
+			);
 		}
 
 		if (type === 'translations') {
-			watch(() => state.relations[0].many_collection, (newManyCollection: string) => {
-				state.relations[1].many_collection = newManyCollection;
-			}, { immediate: true });
+			watch(
+				() => state.relations[0].many_collection,
+				(newManyCollection: string) => {
+					state.relations[1].many_collection = newManyCollection;
+				},
+				{ immediate: true }
+			);
 
 			state.relations[0].many_collection = `${collection}_translations`;
-			state.relations[0].many_field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+
+			state.relations[0].many_field = `${collection}_${
+				fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field
+			}`;
+
 			state.relations[1].one_collection = 'languages';
 
 			if (collectionExists('languages')) {
 				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection('languages')?.field;
 			} else {
-				state.relations[1].one_primary = 'id';
+				state.relations[1].one_primary = 'code';
 			}
 
 			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
+
+			state.fieldData.field = 'translations';
+			state.relations[0].one_field = 'translations';
 		}
 	}
 
 	if (type === 'presentation') {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = null;
 
-		state.fieldData.meta.special = ['alias'];
+		state.fieldData.meta.special = ['alias', 'no-data'];
 	}
 
 	if (type === 'standard') {
@@ -568,6 +688,8 @@ function initLocalStore(
 						state.fieldData.schema.is_nullable = false;
 						state.fieldData.schema.default_value = false;
 						break;
+					default:
+						state.fieldData.schema.default_value = undefined;
 				}
 			}
 		);

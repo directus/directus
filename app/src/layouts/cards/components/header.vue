@@ -25,7 +25,7 @@
 					</div>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<v-list-item
 						v-for="field in fieldsWithoutFake"
 						:key="field.field"

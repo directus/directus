@@ -29,9 +29,9 @@ export const useCollectionsStore = createStore({
 				let name: string | VueI18n.TranslateResult;
 				const icon = collection.meta?.icon || 'label';
 
-				if (collection.meta && notEmpty(collection.meta.translation)) {
-					for (let i = 0; i < collection.meta.translation.length; i++) {
-						const { locale, translation } = collection.meta.translation[i];
+				if (collection.meta && notEmpty(collection.meta.translations)) {
+					for (let i = 0; i < collection.meta.translations.length; i++) {
+						const { locale, translation } = collection.meta.translations[i];
 
 						i18n.mergeLocaleMessage(locale, {
 							collection_names: {
@@ -62,7 +62,6 @@ export const useCollectionsStore = createStore({
 				notify({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
-					text: collection,
 				});
 			} catch (error) {
 				notify({
@@ -80,7 +79,6 @@ export const useCollectionsStore = createStore({
 				notify({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
-					text: collection,
 				});
 			} catch (error) {
 				notify({

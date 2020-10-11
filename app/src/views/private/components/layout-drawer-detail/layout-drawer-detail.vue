@@ -1,8 +1,17 @@
 <template>
 	<drawer-detail icon="layers" :title="$t('layout_options')">
-		<div class="option-label">{{ $t('layout') }}</div>
-		<v-select :items="layouts" item-text="name" item-value="id" v-model="layout" />
-		<portal-target name="layout-options" class="layout-options" />
+		<div class="layout-options">
+			<div class="field">
+				<div class="type-label">{{ $t('layout') }}</div>
+				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
+					<template v-if="currentLayout.icon" #prepend>
+						<v-icon :name="currentLayout.icon" />
+					</template>
+				</v-select>
+			</div>
+
+			<portal-target name="layout-options" class="portal-contents" />
+		</div>
 	</drawer-detail>
 </template>
 
@@ -45,28 +54,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.layout-options {
-	.layout-option {
-		margin-top: 24px;
+@import '@/styles/mixins/form-grid';
 
-		&:last-of-type {
-			margin-bottom: 12px;
-		}
-	}
-
-	> .layout-option:first-of-type {
-		padding-top: 20px;
-		border-top: 2px solid var(--border-normal);
-	}
+.portal-contents {
+	display: contents;
 }
 
-.option-label {
-	margin-bottom: 4px;
-	font-weight: 600;
-}
+.layout-options ::v-deep {
+	--v-form-vertical-gap: 24px;
 
-.v-detail {
-	margin-top: 24px;
-	margin-bottom: 12px;
+	.type-label {
+		font-size: 1rem;
+	}
+
+	@include form-grid;
 }
 </style>

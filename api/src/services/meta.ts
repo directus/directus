@@ -4,7 +4,7 @@ import { AbstractServiceOptions, Accountability } from '../types';
 import Knex from 'knex';
 import { applyFilter } from '../utils/apply-query';
 
-export default class MetaService {
+export class MetaService {
 	knex: Knex;
 	accountability: Accountability | null;
 
@@ -40,7 +40,7 @@ export default class MetaService {
 		const dbQuery = database(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
-			applyFilter(dbQuery, query.filter);
+			applyFilter(dbQuery, query.filter, collection);
 		}
 
 		const records = await dbQuery;

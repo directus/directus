@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.go(-1)">
+			<v-button class="header-icon" rounded icon secondary exact :to="to">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -132,6 +132,7 @@
 			/>
 
 			<v-form
+				ref="form"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
@@ -231,6 +232,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
@@ -284,6 +286,11 @@ export default defineComponent({
 				.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
+		const to = computed(() => {
+			if(item.value && item.value?.folder) return `/files?folder=${item.value.folder}`
+			else return '/files'
+		})
+
 		const { formFields } = useFormFields(fieldsFiltered);
 
 		const confirmLeave = ref(false);
@@ -291,7 +298,7 @@ export default defineComponent({
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
-		useShortcut('mod+s', saveAndStay);
+		useShortcut('meta+s', saveAndStay, form);
 
 		return {
 			item,
@@ -324,6 +331,8 @@ export default defineComponent({
 			moving,
 			selectedFolder,
 			fileSrc,
+			form,
+			to
 		};
 
 		function changeCacheBuster() {

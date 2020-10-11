@@ -1,0 +1,22 @@
+{
+  "name": "directus-project",
+  "version": "1.0.0",
+  "description": "Directus Project",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@keyv/redis": "^2.1.2",
+    "directus": "^9.0.0-beta.1",
+    "ioredis": "^4.17.3",
+    "memcached": "^2.2.2",
+    "mssql": "^6.2.2",
+    "mysql": "^2.18.1",
+    "oracledb": "^5.0.0",
+    "pg": "^8.3.3",
+    "sqlite3": "^5.0.0",
+    "yargs": "^16.0.3"
+  }
+}

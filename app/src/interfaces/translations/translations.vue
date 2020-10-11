@@ -68,7 +68,13 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const { relations, translationsCollection, languagesCollection, languageField, translationsPrimaryKeyField } = useRelation();
+		const {
+			relations,
+			translationsCollection,
+			languagesCollection,
+			languageField,
+			translationsPrimaryKeyField,
+		} = useRelation();
 
 		const {
 			languages,
@@ -84,7 +90,7 @@ export default defineComponent({
 			const { info, primaryKeyField } = useCollection(languagesCollection);
 			const defaultTemplate = info.value?.meta?.display_template;
 
-			return defaultTemplate || props.template || `{{ $${primaryKeyField.value.field} }}`;
+			return props.template || defaultTemplate || `{{ ${primaryKeyField.value.field} }}`;
 		});
 
 		return {
@@ -113,10 +119,12 @@ export default defineComponent({
 			const translationsRelation = computed(() => {
 				if (!relations.value || relations.value.length === 0) return null;
 
-				return relations.value.find((relation: Relation) => {
-					return relation.one_collection === props.collection && relation.one_field === props.field;
-				}) || null;
-			})
+				return (
+					relations.value.find((relation: Relation) => {
+						return relation.one_collection === props.collection && relation.one_field === props.field;
+					}) || null
+				);
+			});
 
 			const translationsCollection = computed(() => {
 				if (!translationsRelation.value) return null;
@@ -130,9 +138,11 @@ export default defineComponent({
 			const languagesRelation = computed(() => {
 				if (!relations.value || relations.value.length === 0) return null;
 
-				return relations.value.find((relation: Relation) => {
-					return relation.one_collection !== props.collection && relation.one_field !== props.field;
-				}) || null;
+				return (
+					relations.value.find((relation: Relation) => {
+						return relation.one_collection !== props.collection && relation.one_field !== props.field;
+					}) || null
+				);
 			});
 
 			const languagesCollection = computed(() => {
@@ -143,9 +153,15 @@ export default defineComponent({
 			const languageField = computed(() => {
 				if (!languagesRelation.value) return null;
 				return languagesRelation.value.many_field;
-			})
+			});
 
-			return { relations, translationsCollection, languagesCollection, languageField, translationsPrimaryKeyField };
+			return {
+				relations,
+				translationsCollection,
+				languagesCollection,
+				languageField,
+				translationsPrimaryKeyField,
+			};
 		}
 
 		function useLanguages() {

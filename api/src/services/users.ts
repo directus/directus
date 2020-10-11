@@ -1,5 +1,5 @@
-import AuthService from './authentication';
-import ItemsService from './items';
+import { AuthenticationService } from './authentication';
+import { ItemsService } from './items';
 import jwt from 'jsonwebtoken';
 import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
@@ -10,7 +10,7 @@ import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
 
-export default class UsersService extends ItemsService {
+export class UsersService extends ItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	service: ItemsService;
@@ -140,7 +140,7 @@ export default class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new AuthService();
+		const authService = new AuthenticationService();
 		const secret = authService.generateTFASecret();
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });

@@ -95,9 +95,9 @@ export default defineComponent({
 
 <style>
 body {
-    --module-background: #13181A;
+    --module-background: #18222F;
     --module-background-alt: var(--background-normal);
-    --module-icon: #607D8B;
+    --module-icon: #8196B1;
     --module-icon-alt: var(--foreground-normal);
 }
 </style>

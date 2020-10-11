@@ -5,7 +5,7 @@ export default async function migrate(direction: 'latest' | 'up' | 'down') {
 
 	try {
 		await run(database, direction);
-	} catch(err) {
+	} catch (err) {
 		console.log(err);
 		process.exit(1);
 	} finally {

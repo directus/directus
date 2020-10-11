@@ -1,8 +1,13 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import SettingsService from '../services/settings';
+import { SettingsService } from '../services';
+import { ForbiddenException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
+
+router.use(useCollection('directus_settings'));
 
 router.get(
 	'/',
@@ -11,7 +16,8 @@ router.get(
 		const records = await service.readSingleton(req.sanitizedQuery);
 		res.locals.payload = { data: records || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -19,11 +25,21 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const service = new SettingsService({ accountability: req.accountability });
 		await service.upsertSingleton(req.body);
-		const record = await service.readSingleton(req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readSingleton(req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

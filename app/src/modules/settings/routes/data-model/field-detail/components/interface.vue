@@ -24,7 +24,11 @@
 
 			<component
 				v-model="fieldData.meta.options"
+				:collection="collection"
 				:field-data="fieldData"
+				:relations="relations"
+				:new-fields="newFields"
+				:new-collections="newCollections"
 				:is="`interface-options-${selectedInterface.id}`"
 				v-else
 			/>
@@ -33,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from '@vue/composition-api';
+import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
@@ -42,6 +46,10 @@ import { state, availableInterfaces } from '../store';
 export default defineComponent({
 	props: {
 		type: {
+			type: String,
+			required: true,
+		},
+		collection: {
 			type: String,
 			required: true,
 		},
@@ -109,7 +117,9 @@ export default defineComponent({
 			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
 		});
 
-		return { fieldData: state.fieldData, selectItems, selectedInterface };
+		const { fieldData, relations, newCollections, newFields } = toRefs(state);
+
+		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

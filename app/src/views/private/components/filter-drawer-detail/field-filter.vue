@@ -13,7 +13,7 @@
 					</div>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<v-list-item
 						:active="operator === activeOperator"
 						v-for="operator in parsedField.operators"

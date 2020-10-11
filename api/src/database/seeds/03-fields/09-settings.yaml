@@ -9,9 +9,9 @@ fields:
       iconRight: title
       placeholder: My project...
     sort: 1
-    translation:
+    translations:
       locale: en-US
-      translation: Name
+      translations: Name
     width: half
   - collection: directus_settings
     field: project_url
@@ -21,9 +21,9 @@ fields:
       iconRight: link
       placeholder: https://example.com
     sort: 2
-    translation:
+    translations:
       locale: en-US
-      translation: Website
+      translations: Website
     width: half
   - collection: directus_settings
     field: project_color
@@ -31,9 +31,9 @@ fields:
     locked: true
     note: Login & Logo Background
     sort: 3
-    translation:
+    translations:
       locale: en-US
-      translation: Brand Color
+      translations: Brand Color
     width: half
   - collection: directus_settings
     field: project_logo
@@ -41,9 +41,9 @@ fields:
     locked: true
     note: White 40x40 SVG/PNG
     sort: 4
-    translation:
+    translations:
       locale: en-US
-      translation: Brand Logo
+      translations: Brand Logo
     width: half
   - collection: directus_settings
     field: public_divider
@@ -61,18 +61,18 @@ fields:
     interface: file
     locked: true
     sort: 6
-    translation:
+    translations:
       locale: en-US
-      translation: Login Foreground
+      translations: Login Foreground
     width: half
   - collection: directus_settings
     field: public_background
     interface: file
     locked: true
     sort: 7
-    translation:
+    translations:
       locale: en-US
-      translation: Login Background
+      translations: Login Background
     width: half
   - collection: directus_settings
     field: public_note
@@ -199,17 +199,6 @@ fields:
           text: Presets Only
     sort: 14
     width: half
-  - collection: directus_settings
-    field: misc_divider
-    interface: divider
-    locked: true
-    options:
-      icon: pending
-      title: Miscellaneous
-      color: '#2F80ED'
-    special: alias
-    sort: 15
-    width: full
   - collection: directus_settings
     field: id
     hidden: true

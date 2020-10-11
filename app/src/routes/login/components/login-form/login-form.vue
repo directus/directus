@@ -17,32 +17,14 @@
 			</router-link>
 		</div>
 
-		<!-- <template v-if="ssoProviders">
-			<v-divider class="sso-divider" />
-
-			<v-button
-				secondary
-				class="sso-button"
-				rounded
-				icon
-				v-for="provider in ssoProviders"
-				:key="provider.name"
-				:href="provider.link"
-			>
-				<img :src="provider.icon" :alt="provider.name" />
-			</v-button>
-
-			<v-notice class="sso-notice" type="danger" v-if="ssoError">
-				{{ translateAPIError(ssoError) }}
-			</v-notice>
-		</template> -->
+		<sso-links />
 	</form>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import router from '@/router';
-//
+import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -55,12 +37,7 @@ type Credentials = {
 };
 
 export default defineComponent({
-	props: {
-		ssoError: {
-			type: String,
-			default: null,
-		},
-	},
+	components: { ssoLinks },
 	setup() {
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
@@ -81,19 +58,7 @@ export default defineComponent({
 			return null;
 		});
 
-		/** @todo fetch these from /auth/sso */
-		// const ssoProviders = computed(() => {
-		// 	const redirectURL = getRootPath() + `admin/login`;
-		// 	return projectsStore.currentProject.value.sso.map((provider: { icon: string; name: string }) => {
-		// 		return {
-		// 			...provider,
-		// 			link: `/auth/sso/${provider.name}?mode=cookie&redirect_url=${redirectURL}`,
-		// 		};
-		// 	});
-		// });
-
 		return {
-			// ssoProviders,
 			errorFormatted,
 			error,
 			email,
@@ -161,20 +126,5 @@ export default defineComponent({
 	&:hover {
 		color: var(--foreground-normal);
 	}
-}
-
-.sso-divider {
-	margin: 24px 0;
-}
-
-.sso-button {
-	img {
-		width: 24px;
-		height: auto;
-	}
-}
-
-.sso-notice {
-	margin-top: 24px;
 }
 </style>

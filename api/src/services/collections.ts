@@ -3,12 +3,11 @@ import { AbstractServiceOptions, Accountability, Collection, Relation } from '..
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import SchemaInspector from 'knex-schema-inspector';
-import FieldsService from '../services/fields';
-import { omit } from 'lodash';
-import ItemsService from '../services/items';
+import { FieldsService } from '../services/fields';
+import { ItemsService } from '../services/items';
 import cache from '../cache';
 
-export default class CollectionsService {
+export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
 
@@ -59,6 +58,10 @@ export default class CollectionsService {
 			for (const payload of payloads) {
 				if (!payload.collection) {
 					throw new InvalidPayloadException(`The "collection" key is required.`);
+				}
+
+				if (payload.collection.startsWith('directus_')) {
+					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
 				if (await schemaInspector.hasTable(payload.collection)) {
@@ -129,16 +132,16 @@ export default class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const meta: any[] = await collectionItemsService.readByQuery({
+		const meta = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		});
+		}) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
 		for (const table of tables) {
 			const collection: Collection = {
 				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
 				schema: table,
 			};
 
@@ -167,16 +170,16 @@ export default class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-		const meta: any[] = await collectionItemsService.readByQuery({
+		const meta = await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		});
+		}) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo.collection === table.name) || null,
+				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
 				schema: table,
 			};
 

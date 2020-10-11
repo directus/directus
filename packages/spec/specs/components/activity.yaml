@@ -26,7 +26,7 @@ properties:
       - type: string
       - $ref: "../openapi.yaml#/components/schemas/User"
     nullable: true # States the SQL structure
-  action_on:
+  timestamp:
     description: When the action happened.
     example: "2019-12-05 22:52:09"
     type: string

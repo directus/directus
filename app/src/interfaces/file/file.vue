@@ -35,7 +35,7 @@
 				</div>
 			</template>
 
-			<v-list dense>
+			<v-list>
 				<template v-if="file">
 					<v-list-item :download="file.filename_download" :href="assetURL">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
@@ -71,7 +71,7 @@
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @upload="onUpload" />
+					<v-upload @input="onUpload" from-url />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="activeDialog = null" secondary>{{ $t('cancel') }}</v-button>

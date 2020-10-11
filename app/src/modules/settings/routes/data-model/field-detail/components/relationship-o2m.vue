@@ -18,21 +18,41 @@
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="isExisting"
+								/>
 							</template>
 
-							<v-list dense class="monospace">
+							<v-list class="monospace">
 								<v-list-item
-									v-for="item in items"
-									:key="item.value"
-									:active="relations[0].many_collection === item.value"
-									:disabled="item.disabled"
-									@click="relations[0].many_collection = item.value"
+									v-for="collection in availableCollections"
+									:key="collection.collection"
+									:active="relations[0].many_collection === collection.collection"
+									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
-										{{ item.text }}
+										{{ collection.collection }}
 									</v-list-item-content>
 								</v-list-item>
+
+								<v-divider />
+
+								<v-list-group>
+									<template #activator>{{ $t('system') }}</template>
+									<v-list-item
+										v-for="collection in systemCollections"
+										:key="collection.collection"
+										:active="relations[0].many_collection === collection.collection"
+										@click="relations[0].many_collection = collection.collection"
+									>
+										<v-list-item-content>
+											{{ collection.collection }}
+										</v-list-item-content>
+									</v-list-item>
+								</v-list-group>
 							</v-list>
 						</v-menu>
 					</template>
@@ -52,7 +72,7 @@
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
-						<v-list dense class="monospace">
+						<v-list class="monospace">
 							<v-list-item
 								v-for="field in fields"
 								:key="field.value"
@@ -116,11 +136,19 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { items, fields, currentCollectionPrimaryKey, collectionMany } = useRelation();
+		const {
+			availableCollections,
+			systemCollections,
+			fields,
+			currentCollectionPrimaryKey,
+			collectionMany,
+		} = useRelation();
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
-			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
+			return collectionsStore.state.collections.find(
+				(col) => col.collection === state.relations?.[0].many_collection
+			);
 		});
 
 		const relatedFieldExists = computed(() => {
@@ -128,7 +156,18 @@ export default defineComponent({
 			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
 		});
 
-		return { relations: state.relations, items, fields, currentCollectionPrimaryKey, collectionMany, hasCorresponding, correspondingLabel, relatedCollectionExists, relatedFieldExists };
+		return {
+			relations: state.relations,
+			availableCollections,
+			systemCollections,
+			fields,
+			currentCollectionPrimaryKey,
+			collectionMany,
+			hasCorresponding,
+			correspondingLabel,
+			relatedCollectionExists,
+			relatedFieldExists,
+		};
 
 		function useRelation() {
 			const availableCollections = computed(() => {
@@ -144,12 +183,18 @@ export default defineComponent({
 				);
 			});
 
-			const items = computed(() =>
-				availableCollections.value.map((collection) => ({
-					text: collection.collection,
-					value: collection.collection,
-				}))
-			);
+			const systemCollections = computed(() => {
+				return orderBy(
+					collectionsStore.state.collections.filter((collection) => {
+						return (
+							collection.collection.startsWith('directus_') === true &&
+							collection.collection !== props.collection
+						);
+					}),
+					['collection'],
+					['asc']
+				);
+			});
 
 			const currentCollectionPrimaryKey = computed(() =>
 				fieldsStore.getPrimaryKeyFieldForCollection(props.collection)
@@ -180,7 +225,7 @@ export default defineComponent({
 				},
 			});
 
-			return { availableCollections, items, fields, currentCollectionPrimaryKey, collectionMany };
+			return { availableCollections, systemCollections, fields, currentCollectionPrimaryKey, collectionMany };
 		}
 
 		function useCorresponding() {
@@ -189,9 +234,18 @@ export default defineComponent({
 					if (!state?.relations?.[0]?.many_collection || !state?.relations?.[0]?.many_field) return false;
 
 					if (relatedFieldExists.value === true) {
-						return state.updateFields.find((updateField: any) => updateField.field === state.relations[0].many_field)?.meta?.interface === 'many-to-one' || fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)?.meta?.interface === 'many-to-one';
+						return (
+							state.updateFields.find(
+								(updateField: any) => updateField.field === state.relations[0].many_field
+							)?.meta?.interface === 'many-to-one' ||
+							fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)
+								?.meta?.interface === 'many-to-one'
+						);
 					} else {
-						return state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta?.interface === 'many-to-one';
+						return (
+							state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta
+								?.interface === 'many-to-one'
+						);
 					}
 				},
 				set(enabled: boolean) {
@@ -206,9 +260,9 @@ export default defineComponent({
 									meta: {
 										interface: 'many-to-one',
 										special: 'm2o',
-									}
-								}
-							]
+									},
+								},
+							];
 						} else {
 							state.updateFields = [
 								{
@@ -217,25 +271,44 @@ export default defineComponent({
 									meta: {
 										interface: null,
 										special: null,
-									}
-								}
-							]
+									},
+								},
+							];
 						}
 					} else {
-						state.newFields = state.newFields.map((newField: any) => {
-							if (newField.$type === 'manyRelated') {
-								if (!newField.meta) newField.meta = {};
-								if (enabled === true) {
-									newField.meta.interface = 'many-to-one';
-									newField.meta.special = ['m2o'];
-								} else {
-									newField.meta.interface = null;
-									newField.meta.special = null;
-								}
-							}
+						const newFieldCreated = !!state.newFields.find(
+							(newField: any) => newField.$type === 'manyRelated'
+						);
 
-							return newField;
-						})
+						if (newFieldCreated === false) {
+							state.newFields = [
+								...state.newFields,
+								{
+									$type: 'manyRelated',
+									collection: state.relations[0].one_collection,
+									field: state.relations[0].many_field,
+									meta: {
+										interface: 'many-to-one',
+										special: 'm2o',
+									},
+								},
+							];
+						} else {
+							state.newFields = state.newFields.map((newField: any) => {
+								if (newField.$type === 'manyRelated') {
+									if (!newField.meta) newField.meta = {};
+									if (enabled === true) {
+										newField.meta.interface = 'many-to-one';
+										newField.meta.special = ['m2o'];
+									} else {
+										newField.meta.interface = null;
+										newField.meta.special = null;
+									}
+								}
+
+								return newField;
+							});
+						}
 					}
 				},
 			});

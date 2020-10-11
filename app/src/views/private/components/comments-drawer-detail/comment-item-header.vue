@@ -4,16 +4,16 @@
 			<img
 				v-if="avatarSource"
 				:src="avatarSource"
-				:alt="activity.action_by.first_name + ' ' + activity.action_by.last_name"
+				:alt="activity.user.first_name + ' ' + activity.user.last_name"
 			/>
 			<v-icon v-else name="person_outline" />
 		</v-avatar>
 
 		<div class="name">
-			<user-popover v-if="activity.action_by && activity.action_by.id" :user="activity.action_by.id">
+			<user-popover v-if="activity.user && activity.user.id" :user="activity.user.id">
 				<span>
-					<template v-if="activity.action_by && activity.action_by">
-						{{ activity.action_by.first_name }} {{ activity.action_by.last_name }}
+					<template v-if="activity.user && activity.user">
+						{{ activity.user.first_name }} {{ activity.user.last_name }}
 					</template>
 
 					<template v-else>
@@ -33,7 +33,7 @@
 					</div>
 				</template>
 
-				<v-list dense>
+				<v-list>
 					<v-list-item @click="$emit('edit')">
 						<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>
@@ -101,18 +101,18 @@ export default defineComponent({
 		);
 
 		const formattedTime = computed(() => {
-			if (props.activity.action_on) {
-				// action_on is in iso-8601
-				return format(new Date(props.activity.action_on), String(i18n.t('date-fns_time')));
+			if (props.activity.timestamp) {
+				// timestamp is in iso-8601
+				return format(new Date(props.activity.timestamp), String(i18n.t('date-fns_time')));
 			}
 
 			return null;
 		});
 
 		const avatarSource = computed(() => {
-			if (!props.activity.action_by?.avatar) return null;
+			if (!props.activity.user?.avatar) return null;
 
-			return getRootPath() + `assets/${props.activity.action_by.avatar.id}?key=system-small-cover`;
+			return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
 		});
 
 		const { confirmDelete, deleting, remove } = useDelete();

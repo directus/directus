@@ -54,7 +54,7 @@
 				</v-input>
 			</template>
 
-			<v-list dense>
+			<v-list>
 				<template v-if="itemsLoading">
 					<v-list-item v-for="n in 10" :key="`loader-${n}`">
 						<v-list-item-content>

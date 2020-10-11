@@ -10,11 +10,18 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"enter_password_to_enable_tfa": "Enter your password to enable Two-Factor Authentication",
+
+	"add_field": "Add Field",
+
 	"role_name": "Role Name",
 
 	"db_only_click_to_configure": "Database Only: Click to Configure ",
 
 	"show_archived_items": "Show Archived Items",
+
+	"required": "Required",
+	"requires_value": "Requires value",
 
 	"create_preset": "Create Preset",
 	"create_role": "Create Role",
@@ -53,6 +60,9 @@
 	"archive_confirm": "Are you sure you want to archive this item?",
 	"archive_confirm_count": "No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?",
 
+	"reset_system_permissions": "Reset System Permissions",
+	"reset_system_permissions_copy": "Reset all all system permissions to their defaults",
+
 	"unarchive": "Unarchive",
 	"unarchive_confirm": "Are you sure you want to unarchive this item?",
 	"unarchive_confirm_count": "No Items Selected | Are you sure you want to unarchive this item? | Are you sure you want to unarchive these {count} items?",
@@ -76,7 +86,8 @@
 		"empty": "Value has to be empty",
 		"nempty": "Value can't be empty",
 		"null": "Value has to be null",
-		"nnull": "Value can't be null"
+		"nnull": "Value can't be null",
+		"required": "Value is required"
 	},
 
 	"all_access": "All Access",
@@ -162,6 +173,10 @@
 	"hidden_fields": "Hidden Fields",
 	"hidden_field": "Hidden Field",
 
+	"hidden_on_detail": "Hidden on Detail",
+
+	"disabled_editing_value": "Disable editing value",
+
 	"key": "Key",
 
 	"alias": "Alias",
@@ -183,6 +198,17 @@
 	"unknown": "Unknown",
 
 	"not_available_for_type": "Not Available for this Type",
+
+	"create_translations": "Create Translations",
+
+	"auto_generate": "Auto-Generate",
+	"this_will_auto_setup_fields_relations": "This will automatically setup all required fields and relations.",
+	"click_here": "Click here",
+	"to_manually_setup_translations": "to manually setup translations.",
+
+	"click_to_manage_translated_fields": "There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage it. | There are {count} translated fields. Click here to manage them.",
+
+	"fields_group": "Fields Group",
 
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
@@ -232,7 +258,6 @@
 	"enter_a_value": "Enter a value...",
 	"enter_a_placeholder": "Enter a placeholder...",
 	"length": "Length",
-	"required": "Required",
 	"readonly": "Readonly",
 	"hide_on_detail": "Hide on Detail",
 	"hide_on_browse": "Hide on Browse",
@@ -316,7 +341,7 @@
 	"related_values": "Related Values",
 
 	"last_page": "Last Page",
-	"last_login": "Last Login",
+	"last_access": "Last Access",
 
 	"fill_template": "Fill with Template Value",
 
@@ -437,7 +462,7 @@
 	"updated_by": "Updated By",
 	"updated_on": "Updated On",
 	"creating_collection_info": "Name the collection and setup its unique “key” field...",
-	"creating_collection_system": "Would you like to add any system fields?",
+	"creating_collection_system": "Enable and rename any of these optional fields.",
 	"auto_increment_integer": "Auto-incremented integer",
 	"generated_uuid": "Generated UUID",
 	"manual_string": "Manually entered string",
@@ -526,6 +551,8 @@
 	"user_directory": "User Directory",
 	"help_and_docs": "Help & Docs",
 
+	"documentation": "Documentation",
+
 	"card_size": "Card Size",
 	"sort_field": "Sort Field",
 
@@ -560,7 +587,7 @@
 	"errors": {
 		"COLLECTION_NOT_FOUND": "Collection doesn't exist.",
 		"FIELD_NOT_FOUND": "Field not found.",
-		"NO_PERMISSION": "Forbidden.",
+		"FORBIDDEN": "Forbidden.",
 		"INVALID_CREDENTIALS": "Wrong username or password.",
 		"INVALID_OTP": "Wrong one-time password.",
 		"INVALID_PAYLOAD": "Invalid payload.",
@@ -669,7 +696,11 @@
 	"color": "Color",
 	"circle": "Circle",
 
+
+
 	"empty_item": "Empty Item",
+
+	"log_in_with": "Log In with {provider}",
 
 	"filter": "Filter",
 	"advanced_filter": "Advanced Filter",
@@ -892,6 +923,7 @@
 	"page_help_collections_detail": "**Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.",
 	"page_help_activity_browse": "**Browse Activity** — A comprehensive listing of all your user's system and content activity.",
 	"page_help_activity_detail": "**Activity Detail** — Shows accountability info, revision data, and the update message for this activity record.",
+	"page_help_docs_global": "**Documentation Overview** — Docs tailored specifically to this project's version and schema.",
 	"page_help_files_browse": "**File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_files_detail": "**File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.",
 	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.",
@@ -951,8 +983,8 @@
       "action": "Action",
       "collection": "Collection",
       "item": "Item Primary Key",
-      "action_by": "Action By",
-      "action_on": "Action On",
+      "user": "Action By",
+      "timestamp": "Action On",
       "edited_on": "Edited On",
       "comment_deleted_on": "Comment Deleted On",
       "ip": "IP Address",
@@ -1026,9 +1058,11 @@
 		"enforce_tfa": "Require 2FA",
 		"users": "Users in Role",
 		"module_list": "Module Navigation",
-		"collection_list": "Collections Navigation"
+		"collection_list": "Collection Navigation"
 	}
   },
+
+  "no_fields_in_collection": "There are no fields in \"{collection}\" yet",
 
   "do_nothing": "Do Nothing",
   "generate_and_save_uuid": "Generate and Save UUID",
@@ -1046,7 +1080,7 @@
   "connection": "Connection",
   "contains": "Contains",
   "continue": "Continue",
-  "continue_as": "<b>{name}</b> is already authenticated. If you recognize this account, press continue.",
+  "continue_as": "<b>{name}</b> is currently authenticated. If you recognize this account, press continue.",
   "creating_item": "Creating Item",
   "creating_item_page_title": "Creating Item: {collection}",
   "creating_role": "Creating Role",
@@ -1304,6 +1338,7 @@
   "select_existing": "Select Existing",
   "select_field": "Select a Field",
   "select_from_device": "Select from device",
+  "select_field_type": "Select a field type",
   "select_interface": "Select an interface",
   "select_interface_below": "Select an interface below",
   "select_statuses_copy": "Select the statuses the user can use",

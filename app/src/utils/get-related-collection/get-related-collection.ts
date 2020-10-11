@@ -7,6 +7,7 @@ export default function getRelatedCollection(collection: string, field: string) 
 	const relations = relationsStore.getRelationsForField(collection, field);
 
 	const fieldInfo = fieldsStore.getField(collection, field);
+
 	const type = fieldInfo.type.toLowerCase();
 
 	// o2m | m2m

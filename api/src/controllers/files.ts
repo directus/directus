@@ -1,18 +1,21 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Busboy from 'busboy';
-import FilesService from '../services/files';
-import MetaService from '../services/meta';
+import { MetaService, FilesService } from '../services';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
 import axios from 'axios';
 import Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import url from 'url';
 import path from 'path';
+import useCollection from '../middleware/use-collection';
+import { respond } from '../middleware/respond';
 
 const router = express.Router();
+
+router.use(useCollection('directus_files'));
 
 const multipartHandler = asyncHandler(async (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
@@ -108,15 +111,28 @@ router.post(
 			keys = await service.create(req.body);
 		}
 
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+		try {
+			const record = await service.readByKey(keys as any, req.sanitizedQuery);
 
-		res.locals.payload = { data: res.locals.savedFiles.length === 1 ? record[0] : record || null };
+			res.locals.payload = {
+				data: record,
+			};
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
+	data: Joi.object(),
 });
 
 router.post(
@@ -142,16 +158,25 @@ router.post(
 			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
-			...req.body,
+			...(req.body.data || {}),
 		};
 
-		delete payload.url;
-
 		const primaryKey = await service.upload(fileResponse.data, payload);
-		const record = await service.readByKey(primaryKey, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+
+		try {
+			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -165,7 +190,8 @@ router.get(
 
 		res.locals.payload = { data: records || null, meta };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.get(
@@ -176,7 +202,8 @@ router.get(
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
-	})
+	}),
+	respond
 );
 
 router.patch(
@@ -193,10 +220,20 @@ router.patch(
 			await service.update(req.body, keys as any);
 		}
 
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+		try {
+			const record = await service.readByKey(keys as any, req.sanitizedQuery);
+			res.locals.payload = { data: record || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
-	})
+	}),
+	respond
 );
 
 router.delete(
@@ -206,7 +243,8 @@ router.delete(
 		const service = new FilesService({ accountability: req.accountability });
 		await service.delete(keys as any);
 		return next();
-	})
+	}),
+	respond
 );
 
 export default router;

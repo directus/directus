@@ -105,14 +105,29 @@
 			</div>
 
 			<div class="field" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('allow_null') }}</div>
-				<v-checkbox v-model="fieldData.schema.is_nullable" :label="$t('allow_null_label')" block />
+				<div class="label type-label">{{ $t('required') }}</div>
+				<v-checkbox
+					:input-value="fieldData.schema.is_nullable === false"
+					@change="fieldData.schema.is_nullable = !$event"
+					:label="$t('requires_value')"
+					block
+				/>
+			</div>
+
+			<div class="field" v-if="fieldData.meta">
+				<div class="label type-label">{{ $t('readonly') }}</div>
+				<v-checkbox v-model="fieldData.meta.readonly" :label="$t('disabled_editing_value')" block />
+			</div>
+
+			<div class="field" v-if="fieldData.meta">
+				<div class="label type-label">{{ $t('hidden') }}</div>
+				<v-checkbox v-model="fieldData.meta.hidden" :label="$t('hidden_on_detail')" block />
 			</div>
 
 			<div class="field full">
-				<div class="label type-label">{{ $t('translation') }}</div>
+				<div class="label type-label">{{ $t('translations') }}</div>
 				<interface-repeater
-					v-model="fieldData.meta.translation"
+					v-model="fieldData.meta.translations"
 					:template="'{{ translation }} ({{ locale }})'"
 					:fields="[
 						{
@@ -161,6 +176,69 @@ import { types } from '@/types';
 import i18n from '@/lang';
 import { state } from '../store';
 
+export const fieldTypes = [
+	{
+		text: i18n.t('string'),
+		value: 'string',
+	},
+	{
+		text: i18n.t('text'),
+		value: 'text',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('boolean'),
+		value: 'boolean',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('integer'),
+		value: 'integer',
+	},
+	{
+		text: i18n.t('bigInteger'),
+		value: 'bigInteger',
+	},
+	{
+		text: i18n.t('float'),
+		value: 'float',
+	},
+	{
+		text: i18n.t('decimal'),
+		value: 'decimal',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('timestamp'),
+		value: 'timestamp',
+	},
+	{
+		text: i18n.t('datetime'),
+		value: 'dateTime',
+	},
+	{
+		text: i18n.t('date'),
+		value: 'date',
+	},
+	{
+		text: i18n.t('time'),
+		value: 'time',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('json'),
+		value: 'json',
+	},
+	{
+		text: i18n.t('csv'),
+		value: 'csv',
+	},
+	{
+		text: i18n.t('uuid'),
+		value: 'uuid',
+	},
+];
+
 export default defineComponent({
 	props: {
 		isExisting: {
@@ -174,68 +252,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const typesWithLabels = computed(() => {
-			return [
-				{
-					text: i18n.t('string'),
-					value: 'string',
-				},
-				{
-					text: i18n.t('text'),
-					value: 'text',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('boolean'),
-					value: 'boolean',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('integer'),
-					value: 'integer',
-				},
-				{
-					text: i18n.t('bigInteger'),
-					value: 'bigInteger',
-				},
-				{
-					text: i18n.t('float'),
-					value: 'float',
-				},
-				{
-					text: i18n.t('decimal'),
-					value: 'decimal',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('timestamp'),
-					value: 'timestamp',
-				},
-				{
-					text: i18n.t('datetime'),
-					value: 'dateTime',
-				},
-				{
-					text: i18n.t('date'),
-					value: 'date',
-				},
-				{
-					text: i18n.t('time'),
-					value: 'time',
-				},
-				{ divider: true },
-				{
-					text: i18n.t('json'),
-					value: 'json',
-				},
-				{
-					text: i18n.t('csv'),
-					value: 'csv',
-				},
-				{
-					text: i18n.t('uuid'),
-					value: 'uuid',
-				},
-			];
+			return fieldTypes
 		});
 
 		const typeDisabled = computed(() => {
@@ -271,7 +288,7 @@ export default defineComponent({
 			onCreateOptions,
 			onCreateValue,
 			onUpdateOptions,
-			onUpdateValue
+			onUpdateValue,
 		};
 
 		function useOnCreate() {
@@ -290,13 +307,13 @@ export default defineComponent({
 						},
 						{
 							text: i18n.t('save_current_user_id'),
-							value: 'user-created'
+							value: 'user-created',
 						},
 						{
 							text: i18n.t('save_current_user_role'),
-							value: 'role-created'
+							value: 'role-created',
 						},
-					]
+					];
 				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
@@ -305,9 +322,9 @@ export default defineComponent({
 						},
 						{
 							text: i18n.t('save_current_datetime'),
-							value: 'date-created'
+							value: 'date-created',
 						},
-					]
+					];
 				}
 
 				return [];
@@ -326,16 +343,15 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter((special: string) => onCreateSpecials.includes(special) === false);
+					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
+						(special: string) => onCreateSpecials.includes(special) === false
+					);
 
 					if (newOption) {
-						state.fieldData.meta.special = [
-							...(state.fieldData.meta.special || []),
-							newOption
-						];
+						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
 					}
-				}
-			})
+				},
+			});
 
 			return { onCreateSpecials, onCreateOptions, onCreateValue };
 		}
@@ -352,13 +368,13 @@ export default defineComponent({
 						},
 						{
 							text: i18n.t('save_current_user_id'),
-							value: 'user-updated'
+							value: 'user-updated',
 						},
 						{
 							text: i18n.t('save_current_user_role'),
-							value: 'role-updated'
+							value: 'role-updated',
 						},
-					]
+					];
 				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
@@ -367,9 +383,9 @@ export default defineComponent({
 						},
 						{
 							text: i18n.t('save_current_datetime'),
-							value: 'date-updated'
+							value: 'date-updated',
 						},
-					]
+					];
 				}
 
 				return [];
@@ -388,16 +404,15 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter((special: string) => onUpdateSpecials.includes(special) === false);
+					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
+						(special: string) => onUpdateSpecials.includes(special) === false
+					);
 
 					if (newOption) {
-						state.fieldData.meta.special = [
-							...(state.fieldData.meta.special || []),
-							newOption
-						];
+						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
 					}
-				}
-			})
+				},
+			});
 
 			return { onUpdateSpecials, onUpdateOptions, onUpdateValue };
 		}

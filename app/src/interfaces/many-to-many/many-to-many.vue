@@ -16,13 +16,13 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="relatedCollection.collection"
+					:collection="junctionCollection"
 					:field="header.field.field"
 				/>
 			</template>
@@ -41,7 +41,7 @@
 
 		<modal-detail
 			v-if="!disabled"
-			:active="showDetailModal"
+			:active.sync="showDetailModal"
 			:collection="junctionCollection"
 			:primary-key="junctionRowPrimaryKey"
 			:edits="editsAtStart"

@@ -1,0 +1,42 @@
+# Installing from CLI
+
+## 1. Confirm Minimum Requirements are Met
+
+**The only requirements for Directus is an actively maintained version of [Node.js](https://nodejs.org/en/about/releases/).** Currently that is v10+, however in April 2021, node v10 will leave _Maintenance Long-Term Support (LTS)_ status, and node v12+ will become the new minimum requirement.
+
+### Databases
+
+Directus currently supports the following databases, with our minimum version being based on each vendor's official support/LTS.
+
+| Database      | Version |
+| ------------- | ------- |
+| PostgreSQL    | 9.5+    |
+| MySQL         | 5.6+    |
+| SQLite        | 3+      |
+| MS-SQL Server | 13.0+   |
+| OracleDB      | TBD     |
+| MariaDB       | 10.1+   |
+
+::: Variants
+In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).
+:::
+
+## 2. Create a Project
+
+Create a new Directus project by running the following npm command.
+
+```bash
+npx create-directus-project my-project
+```
+
+:::warning
+Except for SQLite, the database must already be running before creating your Directus project.
+:::
+
+## 3. Start your Project
+
+To start Directus, simply run the following command in your project directory.
+
+```bash
+npx directus start
+```

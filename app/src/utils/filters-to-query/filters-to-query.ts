@@ -1,11 +1,14 @@
 import { Filter } from '@/types/';
+import { set } from 'lodash';
 
 export default function filtersToQuery(filters: readonly Filter[]) {
-	const query: Record<string, any> = {};
+	const filterQuery: Record<string, any> = {};
 
-	filters.forEach((filter) => {
-		query[`filter[${filter.field}][_${filter.operator}]`] = filter.value;
-	});
+	for (const filter of filters) {
+		const { field, operator, value } = filter;
 
-	return query;
+		set(filterQuery, field, { [`_${operator}`]: value });
+	}
+
+	return { filter: filterQuery };
 }
