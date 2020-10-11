@@ -2,7 +2,7 @@ get:
   description: List all installed custom modules.
   operationId: getModules
   responses:
-    '200':
+    "200":
       content:
         application/json:
           schema:
@@ -13,9 +13,9 @@ get:
                 items:
                   type: object
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
-  - Extensions
+    - Extensions

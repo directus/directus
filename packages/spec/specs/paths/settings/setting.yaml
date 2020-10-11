@@ -2,9 +2,9 @@ get:
   description: Retrieve a single setting by unique identifier.
   operationId: getSetting
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -12,18 +12,18 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Setting'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "../../#/components/schemas/Setting"
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
-  - Settings
+    - Settings
 patch:
   description: Update an existing setting
   operationId: updateSetting
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -37,7 +37,7 @@ patch:
               type: string
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -45,24 +45,24 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Setting'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "../../#/components/schemas/Setting"
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
-  - Settings
+    - Settings
 delete:
   description: Delete an existing setting
   operationId: deleteSetting
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
-  - Settings
+    - Settings
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: "../../#/components/parameters/Id"

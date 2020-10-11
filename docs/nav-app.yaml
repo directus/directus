@@ -1,5 +1,6 @@
 - name: Getting Started
   icon: play_arrow
+  to: "/getting-started"
   children:
   - name: Introduction
     to: "/getting-started/introduction"
@@ -12,6 +13,7 @@
 
 - name: Concepts
   icon: school
+  to: "/concepts"
   children:
   - name: Platform Overview
     to: "/concepts/platform-overview"
@@ -32,6 +34,7 @@
 
 - name: Guides
   icon: article
+  to: "/guides"
   children:
   - name: Collections
     to: "/guides/collections"
@@ -52,33 +55,36 @@
   - name: Extensions
     to: "/guides/extensions"
     children:
-    - name: Custom Displays
-      to: "/guides/extensions/creating-a-custom-display"
-    - name: Custom Interfaces
-      to: "/guides/extensions/creating-a-custom-interface"
-    - name: Custom Layouts
-      to: "/guides/extensions/creating-a-custom-layout"
-    - name: Custom Modules
-      to: "/guides/extensions/creating-a-custom-module"
-    - name: Custom API Endpoints
-      to: "/guides/extensions/creating-a-custom-api-endpoint"
-    - name: Custom API Hooks
-      to: "/guides/extensions/creating-a-custom-api-hook"
-    - name: Custom Email Templates
-      to: "/guides/extensions/creating-a-custom-email-template"
-    - name: Custom Storage Adapters
-      to: "/guides/extensions/creating-a-custom-storage-adapter"
+    - name: Displays
+      to: "/guides/extensions/displays"
+    - name: Interfaces
+      to: "/guides/extensions/interfaces"
+    - name: Layouts
+      to: "/guides/extensions/layouts"
+    - name: Modules
+      to: "/guides/extensions/modules"
+    - name: API Endpoints
+      to: "/guides/extensions/api-endpoints"
+    - name: API Hooks
+      to: "/guides/extensions/api-hooks"
+    - name: Email Templates
+      to: "/guides/extensions/email-templates"
+    - name: Storage Adapters
+      to: "/guides/extensions/storage-adapters"
     - name: Accessing Data
       to: "/guides/extensions/accessing-data"
 
 - name: Reference
   icon: code
+  to: "/reference"
   children:
-  - name: Environment Variables
-    to: "/reference/environment-variables"
   - name: Command Line Interface
     to: "/reference/command-line-interface"
+  - name: Environment Variables
+    to: "/reference/environment-variables"
   - name: Error Codes
     to: "/reference/error-codes"
-  - name: Item Rules
-    to: "/reference/item-rules"
+  - name: Filter Rules
+    to: "/reference/filter-rules"
+  - name: Item Objects
+    to: "/reference/item-objects"

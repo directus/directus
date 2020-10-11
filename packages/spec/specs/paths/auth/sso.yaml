@@ -4,7 +4,7 @@ get:
   operationId: sso
   description: List the SSO providers.
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -18,5 +18,5 @@ get:
                 example: ["github", "facebook"]
                 items:
                   type: string
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
