@@ -93,6 +93,20 @@ fields:
     field: filesize
     display: filesize
   - collection: directus_files
+    field: modified_by
+    interface: user
+    locked: true
+    special: user-updated
+    width: half
+    display: user
+  - collection: directus_files
+    field: modified_on
+    interface: dateTime
+    locked: true
+    special: date-updated
+    width: half
+    display: datetime
+  - collection: directus_files
     field: created_on
     display: datetime
   - collection: directus_files
