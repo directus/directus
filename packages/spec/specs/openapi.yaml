@@ -6,7 +6,7 @@ info:
     email: contact@directus.io
   license:
     name: GPL-3.0
-    url: "https://www.gnu.org/licenses/gpl-3.0.de.html"
+    url: "https://www.gnu.org/licenses/gpl-3.0.html"
   version: 9.0.0
 externalDocs:
   description: Directus Docs
