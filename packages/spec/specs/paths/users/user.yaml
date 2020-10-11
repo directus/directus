@@ -2,8 +2,8 @@ get:
   description: Retrieve a single user by unique identifier.
   operationId: getUser
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -13,24 +13,24 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/User"
+                $ref: "../../#/components/schemas/User"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Users
 patch:
   description: Update an existing user
   operationId: updateUser
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/User"
+          $ref: "../../#/components/schemas/User"
   responses:
     "200":
       content:
@@ -42,9 +42,9 @@ patch:
             type: object
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Users
 delete:
@@ -54,10 +54,10 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Users
 parameters:
-  - $ref: "#/components/parameters/UUId"
+  - $ref: "../../#/components/parameters/UUId"

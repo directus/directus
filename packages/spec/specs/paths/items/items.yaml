@@ -6,14 +6,14 @@ get:
   security:
     - Auth: []
   parameters:
-    - $ref: "#/components/parameters/Fields"
-    - $ref: "#/components/parameters/Limit"
-    - $ref: "#/components/parameters/Meta"
-    - $ref: "#/components/parameters/Offset"
-    - $ref: "#/components/parameters/Single"
-    - $ref: "#/components/parameters/Sort"
-    - $ref: "#/components/parameters/Filter"
-    - $ref: "#/components/parameters/search"
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Sort"
+    - $ref: "../../#/components/parameters/Filter"
+    - $ref: "../../#/components/parameters/search"
     - name: status
       in: query
       description: Filter items by the given status
@@ -35,14 +35,14 @@ get:
                 items:
                   type: object
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
 post:
   description: Create a new item.
   tags:
     - Items
   operationId: createItem
   parameters:
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -56,6 +56,6 @@ post:
           schema:
             type: object
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: "#/components/parameters/Collection"
+  - $ref: "../../#/components/parameters/Collection"

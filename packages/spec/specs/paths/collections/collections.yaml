@@ -2,9 +2,9 @@ get:
   description: Returns a list of the collections available in the project.
   operationId: getCollections
   parameters:
-    - $ref: "#/components/parameters/Offset"
-    - $ref: "#/components/parameters/Single"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -16,18 +16,18 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Collection"
+                  $ref: "../../#/components/schemas/Collection"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Collections
 post:
   description: Create a new collection in Directus.
   operationId: createCollection
   parameters:
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -105,11 +105,11 @@ post:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Collection"
+                $ref: "../../#/components/schemas/Collection"
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Collections

@@ -2,8 +2,8 @@ patch:
   description: Update the content of an existing comment.
   operationId: updateComment
   parameters:
-    - $ref: "#/components/parameters/Id"
-    - $ref: "#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Id"
+    - $ref: "../../#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -21,25 +21,25 @@ patch:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Activity"
+                $ref: "../../#/components/schemas/Activity"
       description: Successful request
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Activity
 delete:
   description: Delete an existing comment. Deleted comments can not be retrieved.
   operationId: deleteComment
   parameters:
-    - $ref: "#/components/parameters/Id"
+    - $ref: "../../#/components/parameters/Id"
   responses:
     "203":
       description: Deleted succsessfully
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Activity

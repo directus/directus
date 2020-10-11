@@ -35,4 +35,4 @@ post:
                     type: string
                     example: Gy-caJMpmGTA...
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"

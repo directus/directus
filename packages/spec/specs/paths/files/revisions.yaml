@@ -4,7 +4,7 @@ get:
     - Files
   operationId: getFileRevisions
   parameters:
-    - $ref: "#/components/parameters/UUId"
+    - $ref: "../../#/components/parameters/UUId"
   responses:
     "200":
       description: Successful request
@@ -16,6 +16,6 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Revision"
+                  $ref: "../../#/components/schemas/Revision"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"

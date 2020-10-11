@@ -2,11 +2,11 @@ get:
   description: List the settings.
   operationId: getSettings
   parameters:
-    - $ref: "#/components/parameters/Limit"
-    - $ref: "#/components/parameters/Offset"
-    - $ref: "#/components/parameters/Single"
-    - $ref: "#/components/parameters/Meta"
-    - $ref: "#/components/parameters/Page"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Page"
   responses:
     "200":
       description: Successful request
@@ -16,11 +16,11 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Setting"
+                $ref: "../../#/components/schemas/Setting"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Settings
 patch:
@@ -40,18 +40,18 @@ patch:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Setting"
+                $ref: "../../#/components/schemas/Setting"
     "401":
-      $ref: "#/components/responses/UnauthorizedError"
+      $ref: "../../#/components/responses/UnauthorizedError"
     "404":
-      $ref: "#/components/responses/NotFoundError"
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
     - Settings
 # post:
 #   description: Create a new setting.
 #   operationId: createSettings
 #   parameters:
-#     - $ref: '#/components/parameters/Meta'
+#     - $ref: '../../#/components/parameters/Meta'
 #   requestBody:
 #     content:
 #       application/json:
@@ -66,10 +66,10 @@ patch:
 #             type: object
 #             properties:
 #               data:
-#                 $ref: '#/components/schemas/Setting'
+#                 $ref: '../../#/components/schemas/Setting'
 #     '401':
-#       $ref: '#/components/responses/UnauthorizedError'
+#       $ref: '../../#/components/responses/UnauthorizedError'
 #     '404':
-#       $ref: '#/components/responses/NotFoundError'
+#       $ref: '../../#/components/responses/NotFoundError'
 #   tags:
 #   - Settings
