@@ -11,10 +11,6 @@ info:
 externalDocs:
   description: Directus Docs
   url: "https://docs.directus.io"
-servers:
-  - url: "http://localhost:41201/"
-  - url: "https://demo.directus.io/"
-  - url: "/"
 tags:
   - name: Activity
     description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
