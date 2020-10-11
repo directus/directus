@@ -1,6 +1,6 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
+		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled" :dense="dense">
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
@@ -47,6 +47,10 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: undefined,
+		},
+		dense: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup(props, { listeners, emit }) {
