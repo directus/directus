@@ -11,11 +11,11 @@ Directus currently supports the following databases, with our minimum version be
 | Database      | Version |
 | ------------- | ------- |
 | PostgreSQL    | 9.5+    |
-| MySQL         | 5.6     |
-| SQLite        | 3       |
+| MySQL         | 5.6+    |
+| SQLite        | 3+      |
 | MS-SQL Server | 13.0+   |
 | OracleDB      | TBD     |
-| MariaDB       | 10.1    |
+| MariaDB       | 10.1+   |
 
 ::: Variants
 In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).

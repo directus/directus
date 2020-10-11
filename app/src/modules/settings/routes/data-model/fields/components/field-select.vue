@@ -298,7 +298,7 @@ export default defineComponent({
 			};
 
 			async function saveDuplicate() {
-				const newField = {
+				const newField: any = {
 					...props.field,
 					field: duplicateName.value,
 					collection: duplicateTo.value,

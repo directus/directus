@@ -65,13 +65,13 @@ export default defineComponent({
 			{
 				icon: 'bug_report',
 				name: i18n.t('report_bug'),
-				href: 'https://github.com/directus/directus/issues/new/choose',
+				href: 'https://github.com/directus/next/issues/new?body=%23%23%23+Project+Details%0A%60%60%60%0ADirectus+Version:+'+version+'%0AEnvironment:+Development%0AOS:+Mac%0ADatabase:+MySQL+5.2%0A%60%60%60',
 				outline: true,
 			},
 			{
 				icon: 'new_releases',
 				name: i18n.t('request_feature'),
-				href: 'https://github.com/directus/directus/discussions/new',
+				href: 'https://github.com/directus/next/discussions/new',
 				outline: true,
 			},
 		];

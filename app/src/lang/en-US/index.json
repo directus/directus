@@ -924,6 +924,7 @@
 	"page_help_collections_detail": "**Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.",
 	"page_help_activity_browse": "**Browse Activity** — A comprehensive listing of all your user's system and content activity.",
 	"page_help_activity_detail": "**Activity Detail** — Shows accountability info, revision data, and the update message for this activity record.",
+	"page_help_docs_global": "**Documentation Overview** — Docs tailored specifically to this project's version and schema.",
 	"page_help_files_browse": "**File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.",
 	"page_help_files_detail": "**File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.",
 	"page_help_settings_project": "**Project Settings** — Your project's global configuration options.",
@@ -977,6 +978,8 @@
   "collection_removed": "Collection Removed",
   "collection_updated": "Collection Updated",
   "collections_and_fields": "Collection & Fields",
+  "singleton": "Singleton",
+  "singleton_label": "Treat as single object",
 
   "fields": {
     "directus_activity": {

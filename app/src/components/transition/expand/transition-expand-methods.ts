@@ -2,7 +2,7 @@ import capitalizeFirst from '@/utils/capitalize-first';
 
 interface HTMLExpandElement extends HTMLElement {
 	_parent?: (Node & ParentNode & HTMLElement) | null;
-	_initialStyle: {
+	_initialStyle?: {
 		transition: string;
 		visibility: string;
 		overflow: string;
@@ -28,6 +28,7 @@ export default function (expandedParentClass = '', xAxis = false) {
 
 		enter(el: HTMLExpandElement) {
 			const initialStyle = el._initialStyle;
+			if (!initialStyle) return;
 			const offset = `${el[offsetProperty]}px`;
 
 			el.style.setProperty('transition', 'none', 'important');
@@ -82,6 +83,7 @@ export default function (expandedParentClass = '', xAxis = false) {
 	}
 
 	function resetStyles(el: HTMLExpandElement) {
+		if (!el._initialStyle) return;
 		const size = el._initialStyle[sizeProperty];
 		el.style.overflow = el._initialStyle.overflow;
 		if (size != null) el.style[sizeProperty] = size;

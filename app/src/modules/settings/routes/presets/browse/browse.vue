@@ -106,7 +106,7 @@ import PresetsInfoDrawerDetail from './components/presets-info-drawer-detail.vue
 
 type PresetRaw = {
 	id: number;
-	title: null | string;
+	bookmark: null | string;
 	user: null | { first_name: string; last_name: string };
 	role: null | { name: string };
 	collection: string;
@@ -184,7 +184,7 @@ export default defineComponent({
 						scope: scope,
 						collection: collection,
 						layout: layout,
-						name: preset.title,
+						name: preset.bookmark,
 					} as Preset;
 				});
 			});
@@ -199,7 +199,7 @@ export default defineComponent({
 						params: {
 							fields: [
 								'id',
-								'title',
+								'bookmark',
 								'user.first_name',
 								'user.last_name',
 								'role.name',

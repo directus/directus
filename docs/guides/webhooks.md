@@ -1,6 +1,6 @@
 # Webhooks
 
->
+> In addition to writing custom code for more complex [event hooks](#), Directus provides a way to quickly configure webhooks through the App. These send HTTP requests when a specific event is triggered within the project.
 
 ## Creating Webhooks
 

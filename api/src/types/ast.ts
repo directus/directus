@@ -9,6 +9,7 @@ export type NestedCollectionAST = {
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
+	relatedKey: string;
 };
 
 export type FieldAST = {

@@ -1,18 +1,18 @@
 <template>
 	<v-list large>
-		<navigation-item v-for="item in sections" :key="item.to" :section="item"></navigation-item>
+		<navigation-item v-for="item in navSections" :key="item.name" :section="item" />
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import NavigationItem from './navigation-item.vue';
-import sections from './sections';
+import { nav } from '@directus/docs';
 
 export default defineComponent({
 	components: { NavigationItem },
 	setup() {
-		return { sections };
+		return { navSections: nav.app };
 	},
 });
 </script>

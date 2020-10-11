@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
-    "release": "lerna publish --force-publish"
+    "release": "lerna publish --force-publish",
+    "setup": "lerna exec npm install && lerna run build"
   },
   "repository": {
     "type": "git",

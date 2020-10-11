@@ -12,11 +12,13 @@ Our [Discord](https://discord.gg/directus) community is another great way to get
 
 Premium support is included with our Enterprise Cloud service. On-Demand Cloud customers and On-Premise users interested in learning more about our monthly retainer agreements should contact us at [support@directus.io](mailto:support@directus.io).
 
-## Commissioned Features
+## Sponsored Work
+
+### Commissioned Features
 
 If you need a specific feature added to Directus faster than the normal development timeline, [reach out to us](#) for a quote. Our parent agency will often help subsidize the cost of developing new features if they pass our [80/20 Rule](#) and can be merged into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
 
-## Expedited Fixes
+### Expedited Fixes
 
 We triage all reported bugs based on priority and how long the fix is estimated to take. If you need a specific issue resolved sooner, [reach out to us](#) for a quote.
 
