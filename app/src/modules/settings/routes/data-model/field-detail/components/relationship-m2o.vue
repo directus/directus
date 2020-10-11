@@ -178,6 +178,7 @@ export default defineComponent({
 								interface: 'one-to-many',
 							},
 						});
+						state.relations[0].one_field = state.relations[0].one_collection;
 					} else {
 						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}
