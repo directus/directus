@@ -181,12 +181,8 @@ paths:
   # Server
   /server/info:
     $ref: "./paths/server/info.yaml"
-    servers:
-      - url: "https://demo.directus.io/"
   /server/ping:
     $ref: "./paths/server/ping.yaml"
-    servers:
-      - url: "https://demo.directus.io/"
 
   # Settings
   /settings:
