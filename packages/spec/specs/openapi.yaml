@@ -14,42 +14,55 @@ externalDocs:
 tags:
   - name: Activity
     description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+    x-collection: directus_activity
   - name: Assets
     description: Image typed files can be dynamically resized and transformed to fit any need.
   - name: Authentication
     description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
   - name: Presets
     description: Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
+    x-collection: directus_presets
   - name: Collections
     description: Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database.
+    x-collection: directus_collections
   - name: Extensions
     description: Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.
   - name: Fields
     description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
+    x-collection: directus_fields
   - name: Files
     description: Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate thumbnails for images on the fly.
+    x-collection: directus_files
   - name: Folders
-    description: Folders don't do anything yet, but will be used in the (near) future to be able to group files.
+    description: Group files by virtual folders.
+    x-collection: directus_folders
   - name: Items
     description: Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
   - name: Permissions
     description: Permissions control who has access to what and when.
+    x-collection: directus_permissions
   - name: Relations
     description: What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of.
+    x-collection: directus_relations
   - name: Revisions
     description: Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will.
+    x-collection: directus_revisions
   - name: Roles
     description: Roles are groups of users that share permissions.
+    x-collection: directus_roles
   - name: Server
     description: Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with.
   - name: Settings
     description: Settings control the way the platform works and acts.
+    x-collection: directus_settings
   - name: Users
     description: Users are what gives you access to the data.
+    x-collection: directus_users
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
   - name: Webhooks
     description: Webhooks.
+    x-collection: directus_webhooks
 paths:
   # Activity
   /activity:
