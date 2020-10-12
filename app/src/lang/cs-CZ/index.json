@@ -95,7 +95,7 @@
       "company": "Společnost",
       "title": "Title",
       "timezone": "Časové pásmo",
-      "locale": "Lokalizace",
+      "language": "Lokalizace",
       "avatar": "Avatar",
       "theme": "Téma",
       "2fa_secret": "Dvoufázové ověření"

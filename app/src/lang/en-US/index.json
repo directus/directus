@@ -1022,7 +1022,7 @@
       "company": "Company",
       "title": "Title",
       "timezone": "Timezone",
-      "locale": "Locale",
+      "language": "language",
       "avatar": "Avatar",
       "theme": "Theme",
       "tfa_secret": "Two-Factor Authentication"

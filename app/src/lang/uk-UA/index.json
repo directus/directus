@@ -95,7 +95,7 @@
       "company": "Компанія",
       "title": "Title",
       "timezone": "Часовий пояс",
-      "locale": "Локаль",
+      "language": "Локаль",
       "avatar": "Avatar",
       "theme": "Тема",
       "2fa_secret": "Двофакторна автентифікація"

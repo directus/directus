@@ -95,7 +95,7 @@
       "company": "Företag",
       "title": "Rubrik",
       "timezone": "Tidszon",
-      "locale": "Språk",
+      "language": "Språk",
       "avatar": "Avatar",
       "theme": "Tema",
       "2fa_secret": "Two-Factor Authentication"

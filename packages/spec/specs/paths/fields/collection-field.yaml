@@ -176,7 +176,7 @@ patch:
                   nullable: true
                 translation:
                   description:
-                    "Key value pair of `<locale>: <translation>` that allows the user
+                    "Key value pair of `<language>: <translation>` that allows the user
                     to change the displayed name of the field in the admin app."
                   example: null
                   type: object

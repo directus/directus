@@ -95,7 +95,7 @@
       "company": "Şirket",
       "title": "Ünvan",
       "timezone": "Zaman Dilimi",
-      "locale": "Dil (Ülke)",
+      "language": "Dil (Ülke)",
       "avatar": "Avatar",
       "theme": "Tema",
       "2fa_secret": "İki Faktörlü Kimlik Doğrulama"
