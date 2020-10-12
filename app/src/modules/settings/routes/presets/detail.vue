@@ -195,6 +195,9 @@ export default defineComponent({
 						editsParsed.role = edits.value.scope.substring(5);
 					} else if (edits.value.scope.startsWith('user_')) {
 						editsParsed.user = edits.value.scope.substring(5);
+					} else {
+						editsParsed.role = null;
+						editsParsed.user = null;
 					}
 				}
 
