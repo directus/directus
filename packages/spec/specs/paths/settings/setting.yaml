@@ -2,7 +2,7 @@ get:
   description: Retrieve a single setting by unique identifier.
   operationId: getSetting
   parameters:
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -12,18 +12,18 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Setting"
+                $ref: "../../openapi.yaml#/components/schemas/Setting"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Settings
 patch:
   description: Update an existing setting
   operationId: updateSetting
   parameters:
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -45,11 +45,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Setting"
+                $ref: "../../openapi.yaml#/components/schemas/Setting"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Settings
 delete:
@@ -59,10 +59,10 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Settings
 parameters:
-  - $ref: "../../#/components/parameters/Id"
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

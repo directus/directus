@@ -14,8 +14,8 @@ get:
                 items:
                   type: object
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Extensions

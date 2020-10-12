@@ -10,19 +10,19 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Webhook"
+                $ref: "../../openapi.yaml#/components/schemas/Webhook"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Webhooks
 post:
   description: Create a new webhook.
   operationId: createWebhook
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -64,10 +64,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Role"
+                $ref: "../../openapi.yaml#/components/schemas/Role"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Webhooks

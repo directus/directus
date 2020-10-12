@@ -22,10 +22,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/User"
+                $ref: "../../openapi.yaml#/components/schemas/User"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users

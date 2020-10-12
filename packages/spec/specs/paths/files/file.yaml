@@ -12,9 +12,9 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/File"
+                $ref: "../../openapi.yaml#/components/schemas/File"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
   description: Update an existing file.
   tags:
@@ -34,9 +34,9 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/File"
+                $ref: "../../openapi.yaml#/components/schemas/File"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:
   description: Delete an existing file.
   tags:
@@ -46,6 +46,6 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: "../../#/components/parameters/Id"
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

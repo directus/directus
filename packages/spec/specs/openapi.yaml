@@ -54,156 +54,156 @@ paths:
   # Activity
   /activity:
     $ref: "./paths/activity/activities.yaml"
-  # /activity/comment:
-  #   $ref: "./paths/activity/activity-comments.yaml"
-  # /activity/{id}:
-  #   $ref: "./paths/activity/activity.yaml"
-  # /activity/comment/{id}:
-  #   $ref: "./paths/activity/activity-comment.yaml"
+  /activity/comment:
+    $ref: "./paths/activity/activity-comments.yaml"
+  /activity/{id}:
+    $ref: "./paths/activity/activity.yaml"
+  /activity/comment/{id}:
+    $ref: "./paths/activity/activity-comment.yaml"
 
-  # # Assets
-  # /assets/{id}:
-  #   $ref: "./paths/assets/assets.yaml"
+  # Assets
+  /assets/{id}:
+    $ref: "./paths/assets/assets.yaml"
 
-  # # Authentication
-  # /auth/login:
-  #   $ref: "./paths/auth/login.yaml"
-  # /auth/refresh:
-  #   $ref: "./paths/auth/refresh.yaml"
-  # /auth/logout:
-  #   $ref: "./paths/auth/logout.yaml"
-  # /auth/password/request:
-  #   $ref: "./paths/auth/password-request.yaml"
-  # /auth/password/reset:
-  #   $ref: "./paths/auth/password-reset.yaml"
-  # /auth/sso:
-  #   $ref: "./paths/auth/sso.yaml"
-  # /auth/sso/{provider}:
-  #   $ref: "./paths/auth/sso-provider.yaml"
+  # Authentication
+  /auth/login:
+    $ref: "./paths/auth/login.yaml"
+  /auth/refresh:
+    $ref: "./paths/auth/refresh.yaml"
+  /auth/logout:
+    $ref: "./paths/auth/logout.yaml"
+  /auth/password/request:
+    $ref: "./paths/auth/password-request.yaml"
+  /auth/password/reset:
+    $ref: "./paths/auth/password-reset.yaml"
+  /auth/sso:
+    $ref: "./paths/auth/sso.yaml"
+  /auth/sso/{provider}:
+    $ref: "./paths/auth/sso-provider.yaml"
 
-  # # Items
-  # /items/{collection}:
-  #   $ref: "./paths/items/items.yaml"
-  # /items/{collection}/{id}:
-  #   $ref: "./paths/items/item.yaml"
+  # Items
+  /items/{collection}:
+    $ref: "./paths/items/items.yaml"
+  /items/{collection}/{id}:
+    $ref: "./paths/items/item.yaml"
 
-  # # Presets
-  # /presets:
-  #   $ref: "./paths/presets/presets.yaml"
-  # /presets/{id}:
-  #   $ref: "./paths/presets/preset.yaml"
+  # Presets
+  /presets:
+    $ref: "./paths/presets/presets.yaml"
+  /presets/{id}:
+    $ref: "./paths/presets/preset.yaml"
 
-  # # Collections
-  # /collections:
-  #   $ref: "./paths/collections/collections.yaml"
-  # /collections/{id}:
-  #   $ref: "./paths/collections/collection.yaml"
+  # Collections
+  /collections:
+    $ref: "./paths/collections/collections.yaml"
+  /collections/{id}:
+    $ref: "./paths/collections/collection.yaml"
 
-  # # Extensions
-  # /extensions/interfaces:
-  #   $ref: "./paths/extensions/interfaces.yaml"
-  # /extensions/layouts:
-  #   $ref: "./paths/extensions/layouts.yaml"
-  # /extensions/displays:
-  #   $ref: "./paths/extensions/displays.yaml"
-  # /extensions/modules:
-  #   $ref: "./paths/extensions/modules.yaml"
+  # Extensions
+  /extensions/interfaces:
+    $ref: "./paths/extensions/interfaces.yaml"
+  /extensions/layouts:
+    $ref: "./paths/extensions/layouts.yaml"
+  /extensions/displays:
+    $ref: "./paths/extensions/displays.yaml"
+  /extensions/modules:
+    $ref: "./paths/extensions/modules.yaml"
 
-  # # Fields
-  # /fields:
-  #   $ref: "./paths/fields/fields.yaml"
-  # /fields/{collection}:
-  #   $ref: "./paths/fields/collection-fields.yaml"
-  # /fields/{collection}/{id}:
-  #   $ref: "./paths/fields/collection-field.yaml"
+  # Fields
+  /fields:
+    $ref: "./paths/fields/fields.yaml"
+  /fields/{collection}:
+    $ref: "./paths/fields/collection-fields.yaml"
+  /fields/{collection}/{id}:
+    $ref: "./paths/fields/collection-field.yaml"
 
-  # # Files
-  # /files:
-  #   $ref: "./paths/files/files.yaml"
-  # /files/{id}:
-  #   $ref: "./paths/files/file.yaml"
-  # /files/{id}/revisions:
-  #   $ref: "./paths/files/revisions.yaml"
-  # /files/{id}/revisions/{offset}:
-  #   $ref: "./paths/files/revision.yaml"
+  # Files
+  /files:
+    $ref: "./paths/files/files.yaml"
+  /files/{id}:
+    $ref: "./paths/files/file.yaml"
+  /files/{id}/revisions:
+    $ref: "./paths/files/revisions.yaml"
+  /files/{id}/revisions/{offset}:
+    $ref: "./paths/files/revision.yaml"
 
-  # # Folders
-  # /folders:
-  #   $ref: "./paths/folders/folders.yaml"
-  # /folders/{id}:
-  #   $ref: "./paths/folders/folder.yaml"
+  # Folders
+  /folders:
+    $ref: "./paths/folders/folders.yaml"
+  /folders/{id}:
+    $ref: "./paths/folders/folder.yaml"
 
-  # # Permissions
-  # /permissions:
-  #   $ref: "./paths/permissions/permissions.yaml"
-  # /permissions/me:
-  #   $ref: "./paths/permissions/permissions-me.yaml"
-  # /permissions/{id}:
-  #   $ref: "./paths/permissions/permission.yaml"
+  # Permissions
+  /permissions:
+    $ref: "./paths/permissions/permissions.yaml"
+  /permissions/me:
+    $ref: "./paths/permissions/permissions-me.yaml"
+  /permissions/{id}:
+    $ref: "./paths/permissions/permission.yaml"
 
-  # # Relations
-  # /relations:
-  #   $ref: "./paths/relations/relations.yaml"
-  # /relations/{id}:
-  #   $ref: "./paths/relations/relation.yaml"
+  # Relations
+  /relations:
+    $ref: "./paths/relations/relations.yaml"
+  /relations/{id}:
+    $ref: "./paths/relations/relation.yaml"
 
-  # # Revisions
-  # /revisions:
-  #   $ref: "./paths/revisions/revisions.yaml"
-  # /revisions/{id}:
-  #   $ref: "./paths/revisions/revision.yaml"
+  # Revisions
+  /revisions:
+    $ref: "./paths/revisions/revisions.yaml"
+  /revisions/{id}:
+    $ref: "./paths/revisions/revision.yaml"
 
-  # # Roles
-  # /roles:
-  #   $ref: "./paths/roles/roles.yaml"
-  # /roles/{id}:
-  #   $ref: "./paths/roles/role.yaml"
+  # Roles
+  /roles:
+    $ref: "./paths/roles/roles.yaml"
+  /roles/{id}:
+    $ref: "./paths/roles/role.yaml"
 
-  # # Server
-  # /server/info:
-  #   $ref: "./paths/server/info.yaml"
-  # /server/ping:
-  #   $ref: "./paths/server/ping.yaml"
+  # Server
+  /server/info:
+    $ref: "./paths/server/info.yaml"
+  /server/ping:
+    $ref: "./paths/server/ping.yaml"
 
-  # # Settings
-  # /settings:
-  #   $ref: "./paths/settings/settings.yaml"
+  # Settings
+  /settings:
+    $ref: "./paths/settings/settings.yaml"
 
-  # # Users
-  # /users:
-  #   $ref: "./paths/users/users.yaml"
-  # /users/{id}:
-  #   $ref: "./paths/users/user.yaml"
-  # /users/{id}/track/page:
-  #   $ref: "./paths/users/user-tracking.yaml"
-  # /users/invite:
-  #   $ref: "./paths/users/user-invite.yaml"
-  # /users/invite/accept:
-  #   $ref: "./paths/users/user-invite-accept.yaml"
-  # /users/me:
-  #   $ref: "./paths/users/me.yaml"
-  # /users/me/track/page:
-  #   $ref: "./paths/users/me-tracking.yaml"
-  # /users/me/tfa/enable:
-  #   $ref: "./paths/users/me-tfa-enable.yaml"
-  # /users/me/tfa/disable:
-  #   $ref: "./paths/users/me-tfa-disable.yaml"
+  # Users
+  /users:
+    $ref: "./paths/users/users.yaml"
+  /users/{id}:
+    $ref: "./paths/users/user.yaml"
+  /users/{id}/track/page:
+    $ref: "./paths/users/user-tracking.yaml"
+  /users/invite:
+    $ref: "./paths/users/user-invite.yaml"
+  /users/invite/accept:
+    $ref: "./paths/users/user-invite-accept.yaml"
+  /users/me:
+    $ref: "./paths/users/me.yaml"
+  /users/me/track/page:
+    $ref: "./paths/users/me-tracking.yaml"
+  /users/me/tfa/enable:
+    $ref: "./paths/users/me-tfa-enable.yaml"
+  /users/me/tfa/disable:
+    $ref: "./paths/users/me-tfa-disable.yaml"
 
-  # # Utilities
-  # /utils/hash:
-  #   $ref: "./paths/utils/hash.yaml"
-  # /utils/hash/verify:
-  #   $ref: "./paths/utils/hash-match.yaml"
-  # /utils/random/string:
-  #   $ref: "./paths/utils/random.yaml"
-  # /utils/sort/{collection}:
-  #   $ref: "./paths/utils/sort.yaml"
+  # Utilities
+  /utils/hash:
+    $ref: "./paths/utils/hash.yaml"
+  /utils/hash/verify:
+    $ref: "./paths/utils/hash-match.yaml"
+  /utils/random/string:
+    $ref: "./paths/utils/random.yaml"
+  /utils/sort/{collection}:
+    $ref: "./paths/utils/sort.yaml"
 
-  # # Webhooks
-  # /webhooks:
-  #   $ref: "./paths/webhooks/webhooks.yaml"
-  # /webhooks/{id}:
-  #   $ref: "./paths/webhooks/webhook.yaml"
+  # Webhooks
+  /webhooks:
+    $ref: "./paths/webhooks/webhooks.yaml"
+  /webhooks/{id}:
+    $ref: "./paths/webhooks/webhook.yaml"
 
 components:
   schemas:
