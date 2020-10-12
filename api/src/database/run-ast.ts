@@ -375,8 +375,8 @@ function removeTemporaryFields(
 					item[nestedNode.fieldKey],
 					nestedNode,
 					nestedNode.type === 'm2o'
-						? nestedNode.relation.many_primary
-						: nestedNode.relation.one_primary!,
+						? nestedNode.relation.one_primary!
+						: nestedNode.relation.many_primary,
 					item
 				);
 			}

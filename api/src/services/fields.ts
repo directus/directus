@@ -52,9 +52,9 @@ export class FieldsService {
 		});
 
 		const columnsWithSystem = columns.map((column) => {
-			const field = fields.find(
-				(field) => field.field === column.name && field.collection === column.table
-			);
+			const field = fields.find((field) => {
+				return field.field === column.name && field.collection === column.table;
+			});
 
 			const data = {
 				collection: column.table,
