@@ -2,8 +2,8 @@ get:
   description: Retrieve a single permissions object by unique identifier.
   operationId: getPermission
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -13,18 +13,18 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Permissions"
+                $ref: "../../openapi.yaml#/components/schemas/Permissions"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
 patch:
   description: Update an existing permission
   operationId: updatePermission
   parameters:
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -83,11 +83,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Permissions"
+                $ref: "../../openapi.yaml#/components/schemas/Permissions"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
 delete:
@@ -97,10 +97,10 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
 parameters:
-  - $ref: "../../#/components/parameters/Id"
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

@@ -2,15 +2,15 @@ get:
   description: List the roles.
   operationId: getRoles
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Limit"
-    - $ref: "../../#/components/parameters/Offset"
-    - $ref: "../../#/components/parameters/Single"
-    - $ref: "../../#/components/parameters/Meta"
-    - $ref: "../../#/components/parameters/Sort"
-    - $ref: "../../#/components/parameters/Filter"
-    - $ref: "../../#/components/parameters/search"
-    - $ref: "../../#/components/parameters/Page"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Limit"
+    - $ref: "../../openapi.yaml#/components/parameters/Offset"
+    - $ref: "../../openapi.yaml#/components/parameters/Single"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Sort"
+    - $ref: "../../openapi.yaml#/components/parameters/Filter"
+    - $ref: "../../openapi.yaml#/components/parameters/Search"
+    - $ref: "../../openapi.yaml#/components/parameters/Page"
   responses:
     "200":
       description: Successful request
@@ -22,19 +22,19 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../#/components/schemas/Role"
+                  $ref: "../../openapi.yaml#/components/schemas/Roles"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Roles
 post:
   description: Create a new role.
   operationId: createRole
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -76,10 +76,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Role"
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Roles

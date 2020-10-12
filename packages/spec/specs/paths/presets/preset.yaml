@@ -6,8 +6,8 @@ get:
   security:
     - Auth: []
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -17,17 +17,17 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Preset"
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
   tags:
     - Presets
   operationId: updatePreset
   description: Update an existing preset.
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -84,9 +84,9 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Preset"
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:
   tags:
     - Presets
@@ -98,6 +98,6 @@ delete:
     "200":
       description: Successful request
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: "../../#/components/parameters/Id"
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

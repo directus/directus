@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_webhooks
 properties:
   id:
     description: The index of the webhook.

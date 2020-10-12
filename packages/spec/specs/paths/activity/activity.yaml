@@ -4,9 +4,9 @@ get:
     key of the activity action and Directus will return the corresponding information.
   operationId: getActivity
   parameters:
-    - $ref: "../../#/components/parameters/Id"
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Id"
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
     "200":
       description: Successful request
@@ -16,10 +16,10 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../#/components/schemas/Activity"
+                $ref: "../../openapi.yaml#/components/schemas/Activity"
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Activity
