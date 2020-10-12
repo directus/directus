@@ -35,6 +35,13 @@ columns:
     type: timestamp
     nullable: false
     default: '$now'
+  modified_by:
+    type: uuid
+    references:
+      table: directus_users
+      column: id
+  modified_on:
+    type: timestamp
   charset:
     type: string
     length: 50

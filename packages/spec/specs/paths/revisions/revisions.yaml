@@ -2,17 +2,17 @@ get:
   description: List the revisions.
   operationId: getRevisions
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Limit'
-  - $ref: '../../openapi.yaml#/components/parameters/Offset'
-  - $ref: '../../openapi.yaml#/components/parameters/Single'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
-  - $ref: '../../openapi.yaml#/components/parameters/Sort'
-  - $ref: '../../openapi.yaml#/components/parameters/Filter'
-  - $ref: '../../openapi.yaml#/components/parameters/q'
-  - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: "../../#/components/parameters/Fields"
+    - $ref: "../../#/components/parameters/Limit"
+    - $ref: "../../#/components/parameters/Offset"
+    - $ref: "../../#/components/parameters/Single"
+    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../#/components/parameters/Sort"
+    - $ref: "../../#/components/parameters/Filter"
+    - $ref: "../../#/components/parameters/search"
+    - $ref: "../../#/components/parameters/Page"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -22,10 +22,10 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Revision'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                  $ref: "../../#/components/schemas/Revision"
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../#/components/responses/NotFoundError"
   tags:
-  - Revisions
+    - Revisions

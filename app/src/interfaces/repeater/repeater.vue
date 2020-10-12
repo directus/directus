@@ -10,6 +10,7 @@
 				@input="updateValues(index, $event)"
 				@delete="removeItem(row)"
 				:disabled="disabled"
+				:headerPlaceholder="headerPlaceholder"
 			/>
 		</draggable>
 		<button @click="addNew" class="add-new" v-if="showAddNew">
@@ -54,6 +55,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		headerPlaceholder: {
+			type: String,
+			default: i18n.t('empty_item'),
+		}
 	},
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);

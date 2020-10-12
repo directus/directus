@@ -1,6 +1,6 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled">
+		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled" :dense="dense">
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch } from '@vue/composition-api';
-import { useGroupableParent, useGroupable } from '@/composables/groupable';
+import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
+import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
@@ -40,10 +40,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		disableGroupableParent: {
-			type: Boolean,
-			default: false,
-		},
 		scope: {
 			type: String,
 			default: undefined,
@@ -52,21 +48,18 @@ export default defineComponent({
 			type: [String, Number],
 			default: undefined,
 		},
+		dense: {
+			type: Boolean,
+			default: false
+		}
 	},
 	setup(props, { listeners, emit }) {
+		const {multiple} = toRefs(props)
+
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});
-
-		if (props.disableGroupableParent !== true) {
-			useGroupableParent(
-				{},
-				{
-					multiple: toRefs(props).multiple,
-				}
-			);
-		}
 
 		return { groupActive, toggle, onClick };
 

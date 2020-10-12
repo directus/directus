@@ -4,7 +4,7 @@ get:
     - Files
   operationId: getFileRevision
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+    - $ref: "../../#/components/parameters/UUId"
     - name: offset
       in: path
       description: offset or revision
@@ -12,7 +12,7 @@ get:
       schema:
         type: integer
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -20,6 +20,6 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Revision'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "../../#/components/schemas/Revision"
+    "401":
+      $ref: "../../#/components/responses/UnauthorizedError"

@@ -1,4 +1,4 @@
-description: Collection of which you want to retrieve the permissions.
+description: Collection of which you want to retrieve the items from.
 name: collection
 in: path
 required: true
