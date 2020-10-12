@@ -244,9 +244,12 @@ function removeTemporaryFields(
 	const fields = ast.children
 		.filter((child) => child.type === 'field')
 		.map((child) => child.name);
+
 	const nestedCollections = ast.children.filter(
 		(child) => child.type === 'collection'
 	) as NestedCollectionAST[];
+
+	fields.push(...nestedCollections.map((nestedNode) => nestedNode.fieldKey));
 
 	for (const rawItem of rawItems) {
 		if (rawItem === null) return rawItem;
