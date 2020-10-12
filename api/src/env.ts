@@ -62,6 +62,7 @@ function processValues(env: Record<string, any>) {
 		if (value === 'true') env[key] = true;
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;
+		if (isNaN(value) === false) env[key] = Number(value);
 	}
 
 	return env;
