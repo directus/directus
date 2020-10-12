@@ -1,7 +1,37 @@
 import Knex from 'knex';
 import database from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, AbstractService } from '../types';
-import { GraphQLString, GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLResolveInfo, GraphQLInputObjectType, ObjectFieldNode, GraphQLID, ValueNode, FieldNode, GraphQLFieldConfigMap, GraphQLInt, IntValueNode, StringValueNode, BooleanValueNode, ArgumentNode, GraphQLScalarType, GraphQLBoolean, ObjectValueNode } from 'graphql';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	Field,
+	Relation,
+	Query,
+	AbstractService,
+} from '../types';
+import {
+	GraphQLString,
+	GraphQLSchema,
+	GraphQLObjectType,
+	GraphQLList,
+	GraphQLResolveInfo,
+	GraphQLInputObjectType,
+	ObjectFieldNode,
+	GraphQLID,
+	ValueNode,
+	FieldNode,
+	GraphQLFieldConfigMap,
+	GraphQLInt,
+	IntValueNode,
+	StringValueNode,
+	BooleanValueNode,
+	ArgumentNode,
+	GraphQLScalarType,
+	GraphQLBoolean,
+	ObjectValueNode,
+	GraphQLUnionType,
+	GraphQLUnionTypeConfig,
+} from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
@@ -21,6 +51,8 @@ import { SettingsService } from './settings';
 import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
+import { getRelationType } from '../utils/get-relation-type';
+
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -38,7 +70,7 @@ export class GraphQLService {
 
 	args = {
 		sort: {
-			type: GraphQLString
+			type: GraphQLString,
 		},
 		limit: {
 			type: GraphQLInt,
@@ -51,15 +83,19 @@ export class GraphQLService {
 		},
 		search: {
 			type: GraphQLString,
-		}
-	}
+		},
+	};
 
 	async getSchema() {
 		const collectionsInSystem = await this.collectionsService.readByQuery();
 		const fieldsInSystem = await this.fieldsService.readAll();
-		const relationsInSystem = await this.relationsService.readByQuery({}) as Relation[];
+		const relationsInSystem = (await this.relationsService.readByQuery({})) as Relation[];
 
-		const schema = this.getGraphQLSchema(collectionsInSystem, fieldsInSystem, relationsInSystem);
+		const schema = this.getGraphQLSchema(
+			collectionsInSystem,
+			fieldsInSystem,
+			relationsInSystem
+		);
 
 		return schema;
 	}
@@ -77,27 +113,46 @@ export class GraphQLService {
 					description: collection.meta?.note,
 					fields: () => {
 						const fieldsObject: GraphQLFieldConfigMap<any, any> = {};
-						const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
+						const fieldsInCollection = fields.filter(
+							(field) => field.collection === collection.collection
+						);
 
 						for (const field of fieldsInCollection) {
 							const relationForField = relations.find((relation) => {
-								return relation.many_collection === collection.collection && relation.many_field === field.field ||
-									relation.one_collection === collection.collection && relation.one_field === field.field;
+								return (
+									(relation.many_collection === collection.collection &&
+										relation.many_field === field.field) ||
+									(relation.one_collection === collection.collection &&
+										relation.one_field === field.field)
+								);
 							});
 
 							if (relationForField) {
-								const isM2O = relationForField.many_collection === collection.collection && relationForField.many_field === field.field;
+								const relationType = getRelationType({
+									relation: relationForField,
+									collection: collection.collection,
+									field: field.field,
+								});
 
-								if (isM2O) {
-									const relatedIsSystem = relationForField.one_collection.startsWith('directus_');
-									const relatedType = relatedIsSystem ? schema[relationForField.one_collection.substring(9)].type : schema.items[relationForField.one_collection].type;
+								if (relationType === 'm2o') {
+									const relatedIsSystem = relationForField.one_collection!.startsWith(
+										'directus_'
+									);
+									const relatedType = relatedIsSystem
+										? schema[relationForField.one_collection!.substring(9)].type
+										: schema.items[relationForField.one_collection!].type;
 
 									fieldsObject[field.field] = {
 										type: relatedType,
-									}
-								} else {
-									const relatedIsSystem = relationForField.many_collection.startsWith('directus_');
-									const relatedType = relatedIsSystem ? schema[relationForField.many_collection.substring(9)].type : schema.items[relationForField.many_collection].type;
+									};
+								} else if (relationType === 'o2m') {
+									const relatedIsSystem = relationForField.many_collection.startsWith(
+										'directus_'
+									);
+
+									const relatedType = relatedIsSystem
+										? schema[relationForField.many_collection.substring(9)].type
+										: schema.items[relationForField.many_collection].type;
 
 									fieldsObject[field.field] = {
 										type: new GraphQLList(relatedType),
@@ -105,14 +160,44 @@ export class GraphQLService {
 											...this.args,
 											filter: {
 												type: filterTypes[relationForField.many_collection],
-											}
+											},
 										},
+									};
+								} else if (relationType === 'm2a') {
+									const relatedCollections = relationForField.one_allowed_collections!;
+
+									const types: any = [];
+
+									for (const relatedCollection of relatedCollections) {
+										const relatedType = relatedCollection.startsWith(
+											'directus_'
+										)
+											? schema[relatedCollection.substring(9)].type
+											: schema.items[relatedCollection].type;
+
+										types.push(relatedType);
 									}
+
+									fieldsObject[field.field] = {
+										type: new GraphQLUnionType({
+											name: field.field,
+											types,
+											resolveType(value, _, info) {
+												/**
+												 * @TODO figure out a way to reach the parent level
+												 * to be able to read one_collection_field
+												 */
+												return types[0];
+											},
+										}),
+									};
 								}
 							} else {
 								fieldsObject[field.field] = {
-									type: field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type),
-								}
+									type: field.schema?.is_primary_key
+										? GraphQLID
+										: getGraphQLType(field.type),
+								};
 							}
 
 							fieldsObject[field.field].description = field.meta?.note;
@@ -121,14 +206,15 @@ export class GraphQLService {
 						return fieldsObject;
 					},
 				}),
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => this.resolve(info),
+				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) =>
+					this.resolve(info),
 				args: {
 					...this.args,
 					filter: {
 						name: `${collection.collection}_filter`,
 						type: filterTypes[collection.collection],
-					}
-				}
+					},
+				},
 			};
 
 			if (systemCollection) {
@@ -145,9 +231,13 @@ export class GraphQLService {
 				const systemCollection = collection.collection.startsWith('directus_');
 
 				if (systemCollection) {
-					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(schemaWithLists[collection.collection.substring(9)].type);
+					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(
+						schemaWithLists[collection.collection.substring(9)].type
+					);
 				} else {
-					schemaWithLists.items[collection.collection].type = new GraphQLList(schemaWithLists.items[collection.collection].type);
+					schemaWithLists.items[collection.collection].type = new GraphQLList(
+						schemaWithLists.items[collection.collection].type
+					);
 				}
 			}
 		}
@@ -177,39 +267,55 @@ export class GraphQLService {
 				fields: () => {
 					const filterFields: any = {
 						_and: {
-							type: new GraphQLList(filterTypes[collection.collection])
+							type: new GraphQLList(filterTypes[collection.collection]),
 						},
 						_or: {
-							type: new GraphQLList(filterTypes[collection.collection])
+							type: new GraphQLList(filterTypes[collection.collection]),
 						},
 					};
 
-					const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
+					const fieldsInCollection = fields.filter(
+						(field) => field.collection === collection.collection
+					);
 
 					for (const field of fieldsInCollection) {
 						const relationForField = relations.find((relation) => {
-							return relation.many_collection === collection.collection && relation.many_field === field.field ||
-								relation.one_collection === collection.collection && relation.one_field === field.field;
+							return (
+								(relation.many_collection === collection.collection &&
+									relation.many_field === field.field) ||
+								(relation.one_collection === collection.collection &&
+									relation.one_field === field.field)
+							);
 						});
 
 						if (relationForField) {
-							const isM2O = relationForField.many_collection === collection.collection && relationForField.many_field === field.field;
+							const relationType = getRelationType({
+								relation: relationForField,
+								collection: collection.collection,
+								field: field.field,
+							});
 
-							if (isM2O) {
-								const relatedType = filterTypes[relationForField.one_collection];
+							if (relationType === 'm2o') {
+								const relatedType = filterTypes[relationForField.one_collection!];
 
 								filterFields[field.field] = {
 									type: relatedType,
-								}
-							} else {
+								};
+							} else if (relationType === 'o2m') {
 								const relatedType = filterTypes[relationForField.many_collection];
 
 								filterFields[field.field] = {
-									type: relatedType
-								}
+									type: relatedType,
+								};
 							}
+							/** @TODO M2A — Handle m2a case here */
+							/** @TODO
+							 * Figure out how to setup filter fields for a union type output
+							 */
 						} else {
-							const fieldType = field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type);
+							const fieldType = field.schema?.is_primary_key
+								? GraphQLID
+								: getGraphQLType(field.type);
 
 							filterFields[field.field] = {
 								type: new GraphQLInputObjectType({
@@ -220,7 +326,7 @@ export class GraphQLService {
 											type: fieldType,
 										},
 										_neq: {
-											type: fieldType
+											type: fieldType,
 										},
 										_contains: {
 											type: fieldType,
@@ -257,10 +363,10 @@ export class GraphQLService {
 										},
 										_nempty: {
 											type: GraphQLBoolean,
-										}
-									}
+										},
+									},
 								}),
-							}
+							};
 						}
 					}
 
@@ -269,20 +375,26 @@ export class GraphQLService {
 			});
 		}
 
-		return filterTypes
+		return filterTypes;
 	}
 
 	async resolve(info: GraphQLResolveInfo) {
 		const systemField = info.path.prev?.key !== 'items';
 
 		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
-		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as FieldNode[] | undefined;
+		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter(
+			(node) => node.kind === 'Field'
+		) as FieldNode[] | undefined;
 		if (!selections) return null;
 
 		return await this.getData(collection, selections, info.fieldNodes[0].arguments);
 	}
 
-	async getData(collection: string, selections: FieldNode[], argsArray?: readonly ArgumentNode[]) {
+	async getData(
+		collection: string,
+		selections: FieldNode[],
+		argsArray?: readonly ArgumentNode[]
+	) {
 		const args: Record<string, any> = this.parseArgs(argsArray);
 
 		const query: Query = sanitizeQuery(args, this.accountability);
@@ -296,7 +408,12 @@ export class GraphQLService {
 				if (selection.selectionSet === undefined) {
 					fields.push(current);
 				} else {
-					const children = parseFields(selection.selectionSet.selections.filter((selection) => selection.kind === 'Field') as FieldNode[], current);
+					const children = parseFields(
+						selection.selectionSet.selections.filter(
+							(selection) => selection.kind === 'Field'
+						) as FieldNode[],
+						current
+					);
 					fields.push(...children);
 				}
 
@@ -309,47 +426,95 @@ export class GraphQLService {
 			}
 
 			return fields;
-		}
+		};
 
-		query.fields = parseFields(selections.filter((selection) => selection.kind === 'Field') as FieldNode[]);
+		query.fields = parseFields(
+			selections.filter((selection) => selection.kind === 'Field') as FieldNode[]
+		);
 
 		let service: ItemsService;
 
 		switch (collection) {
 			case 'directus_activity':
-				service = new ActivityService({ knex: this.knex, accountability: this.accountability });
+				service = new ActivityService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			// case 'directus_collections':
 			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
 			// case 'directus_fields':
 			// 	service = new FieldsService({ knex: this.knex, accountability: this.accountability });
 			case 'directus_files':
-				service = new FilesService({ knex: this.knex, accountability: this.accountability });
+				service = new FilesService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_folders':
-				service = new FoldersService({ knex: this.knex, accountability: this.accountability });
+				service = new FoldersService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_folders':
-				service = new FoldersService({ knex: this.knex, accountability: this.accountability });
+				service = new FoldersService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_permissions':
-				service = new PermissionsService({ knex: this.knex, accountability: this.accountability });
+				service = new PermissionsService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_presets':
-				service = new PresetsService({ knex: this.knex, accountability: this.accountability });
+				service = new PresetsService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_relations':
-				service = new RelationsService({ knex: this.knex, accountability: this.accountability });
+				service = new RelationsService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_revisions':
-				service = new RevisionsService({ knex: this.knex, accountability: this.accountability });
+				service = new RevisionsService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_roles':
-				service = new RolesService({ knex: this.knex, accountability: this.accountability });
+				service = new RolesService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_settings':
-				service = new SettingsService({ knex: this.knex, accountability: this.accountability });
+				service = new SettingsService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_users':
-				service = new UsersService({ knex: this.knex, accountability: this.accountability });
+				service = new UsersService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			case 'directus_webhooks':
-				service = new WebhooksService({ knex: this.knex, accountability: this.accountability });
+				service = new WebhooksService({
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 			default:
-				service = new ItemsService(collection, { knex: this.knex, accountability: this.accountability });
+				service = new ItemsService(collection, {
+					knex: this.knex,
+					accountability: this.accountability,
+				});
 		}
 
-		const collectionInfo = await this.knex.select('singleton').from('directus_collections').where({ collection: collection }).first();
-		const result = collectionInfo?.singleton === true ? await service.readSingleton(query) : await service.readByQuery(query);
+		const collectionInfo = await this.knex
+			.select('singleton')
+			.from('directus_collections')
+			.where({ collection: collection })
+			.first();
+		const result =
+			collectionInfo?.singleton === true
+				? await service.readSingleton(query)
+				: await service.readByQuery(query);
 
 		return result;
 	}
@@ -359,7 +524,7 @@ export class GraphQLService {
 
 		const parseObjectValue = (arg: ObjectValueNode) => {
 			return this.parseArgs(arg.fields);
-		}
+		};
 
 		const argsObject: any = {};
 
@@ -379,11 +544,13 @@ export class GraphQLService {
 
 				argsObject[argument.name.value] = values;
 			} else {
-				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
+				argsObject[argument.name.value] = (argument.value as
+					| IntValueNode
+					| StringValueNode
+					| BooleanValueNode).value;
 			}
 		}
 
 		return argsObject;
 	}
 }
-

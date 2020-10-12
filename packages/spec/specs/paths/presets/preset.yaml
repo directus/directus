@@ -3,13 +3,13 @@ get:
     - Presets
   operationId: getPreset
   description: Retrieve a single preset by unique identifier.
-  security: 
+  security:
     - Auth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -17,23 +17,23 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Preset'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
   tags:
     - Presets
   operationId: updatePreset
   description: Update an existing preset.
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Fields'
-    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
         schema:
           type: object
-          required: [ collection ]
+          required: [collection]
           properties:
             collection:
               type: string
@@ -60,7 +60,7 @@ patch:
                   operator:
                     type: string
                     example: gte
-                  value: 
+                  value:
                     type: integer
                     example: 4.5
             view_type:
@@ -76,7 +76,7 @@ patch:
               type: object
               description: Key value pair of language-translation. Can be used to translate the bookmark title in multiple languages.
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -84,9 +84,9 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Preset'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:
   tags:
     - Presets
@@ -95,9 +95,9 @@ delete:
   security:
     - Auth: []
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

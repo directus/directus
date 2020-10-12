@@ -21,6 +21,7 @@ export type Link = {
 
 export type Group = {
 	name: string;
+	to: string;
 	children: (Group | Link | Divider)[];
 	icon?: string;
 };

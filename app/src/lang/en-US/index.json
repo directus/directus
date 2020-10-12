@@ -424,6 +424,7 @@
 	"modified": "Modified",
 	"checksum": "Checksum",
 	"owner": "Owner",
+	"edited_by": "Edited by",
 	"folder": "Folder",
 
 	"set_to_now": "Set to Now",
@@ -977,6 +978,8 @@
   "collection_removed": "Collection Removed",
   "collection_updated": "Collection Updated",
   "collections_and_fields": "Collection & Fields",
+  "singleton": "Singleton",
+  "singleton_label": "Treat as single object",
 
   "fields": {
     "directus_activity": {

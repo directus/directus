@@ -274,6 +274,8 @@ export default defineComponent({
 			'checksum',
 			'uploaded_by',
 			'uploaded_on',
+			'modified_by',
+			'modified_on',
 			'duration',
 			'folder',
 			'charset',
@@ -287,9 +289,9 @@ export default defineComponent({
 		});
 
 		const to = computed(() => {
-			if(item.value && item.value?.folder) return `/files?folder=${item.value.folder}`
-			else return '/files'
-		})
+			if (item.value && item.value?.folder) return `/files?folder=${item.value.folder}`;
+			else return '/files';
+		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
@@ -332,7 +334,7 @@ export default defineComponent({
 			selectedFolder,
 			fileSrc,
 			form,
-			to
+			to,
 		};
 
 		function changeCacheBuster() {

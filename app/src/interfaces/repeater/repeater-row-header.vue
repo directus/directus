@@ -25,7 +25,7 @@ export default defineComponent({
 		},
 		placeholder: {
 			type: String,
-			default: i18n.t('empty_item'),
+			default: null,
 		},
 		toggle: {
 			type: Function,

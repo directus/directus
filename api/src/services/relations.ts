@@ -22,7 +22,8 @@ export class RelationsService extends ItemsService {
 	}
 
 	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
-		const results = (await super.readByQuery(query)) as Relation | Relation[] | null;
+		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const results = (await service.readByQuery(query)) as Relation | Relation[] | null;
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -38,10 +39,12 @@ export class RelationsService extends ItemsService {
 		query: Query = {},
 		action: PermissionsAction = 'read'
 	): Promise<null | Relation | Relation[]> {
-		const results = (await super.readByKey(key as any, query, action)) as
+		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const results = (await service.readByKey(key as any, query, action)) as
 			| Relation
 			| Relation[]
 			| null;
+
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -62,17 +65,47 @@ export class RelationsService extends ItemsService {
 		relations = Array.isArray(relations) ? relations : [relations];
 
 		return relations.filter((relation) => {
-			const collectionsAllowed =
-				allowedCollections.includes(relation.many_collection) &&
-				allowedCollections.includes(relation.one_collection);
+			let collectionsAllowed = true;
+			let fieldsAllowed = true;
 
-			const fieldsAllowed =
-				allowedFields[relation.one_collection] &&
-				allowedFields[relation.many_collection] &&
-				(allowedFields[relation.many_collection].includes('*') ||
-					allowedFields[relation.many_collection].includes(relation.many_field)) &&
-				(allowedFields[relation.one_collection].includes('*') ||
-					allowedFields[relation.one_collection].includes(relation.one_field));
+			if (allowedCollections.includes(relation.many_collection) === false) {
+				collectionsAllowed = false;
+			}
+
+			if (
+				relation.one_collection &&
+				allowedCollections.includes(relation.one_collection) === false
+			) {
+				collectionsAllowed = false;
+			}
+
+			if (
+				relation.one_allowed_collections &&
+				relation.one_allowed_collections.split(',').every(allowedCollections.includes) ===
+					false
+			) {
+				collectionsAllowed = false;
+			}
+
+			if (
+				!allowedFields[relation.many_collection] ||
+				allowedFields[relation.many_collection].includes('*') ||
+				allowedFields[relation.many_collection].includes(relation.many_field) === false
+			) {
+				fieldsAllowed = false;
+			}
+
+			if (
+				relation.one_collection &&
+				relation.one_field &&
+				(!allowedFields[relation.one_collection] ||
+					allowedFields[relation.one_collection].includes('*') ||
+					allowedFields[relation.one_collection].includes(relation.one_field) === false)
+			) {
+				fieldsAllowed = false;
+			}
+
+			/** @TODO M2A — Handle m2a case here */
 
 			return collectionsAllowed && fieldsAllowed;
 		});

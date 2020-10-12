@@ -55,6 +55,7 @@ export default defineComponent({
 			if (props.value.avatar?.id) {
 				return `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
 			}
+			return null;
 		});
 
 		return { src };

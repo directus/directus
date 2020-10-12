@@ -83,9 +83,14 @@ function mapKeys(key: string) {
 
 function callHandlers(event: KeyboardEvent) {
 	Object.entries(handlers).forEach(([key, value]) => {
-		const rest = key.split('+').filter((keySegment) => keysdown.has(keySegment) === false);
+		const keys = key.split('+');
 
-		if (rest.length > 0) return;
+		for (key of keysdown) {
+			if (keys.includes(key) === false) return;
+		}
+		for (key of keys) {
+			if (keysdown.has(key) === false) return;
+		}
 
 		for (let i = 0; i < value.length; i++) {
 			let cancel = false;
