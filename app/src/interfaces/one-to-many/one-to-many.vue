@@ -52,8 +52,8 @@
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
-			:selection="[]"
-			:filters="selectionFilters"
+			:selection="selectedPrimaryKeys"
+			:filters="[]"
 			@input="stageSelection"
 			multiple
 		/>
@@ -106,7 +106,7 @@ export default defineComponent({
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { tableHeaders, displayItems, loading, error } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection();
 
 		return {
 			relation,
@@ -120,9 +120,9 @@ export default defineComponent({
 			cancelEdit,
 			stageSelection,
 			selectModalActive,
-			selectionFilters,
 			deleteItem,
 			displayItems,
+			selectedPrimaryKeys,
 		};
 
 		function getItem(id: string | number) {
@@ -157,6 +157,20 @@ export default defineComponent({
 			if (props.value === null) return [];
 			const pkField = relatedPrimaryKeyField.value.field;
 			return props.value.filter((item) => typeof item === 'string' || typeof item === 'number');
+		}
+
+		function getPrimaryKeys() {
+			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value.field;
+			return props.value
+				.map((item) => {
+					if (typeof item === 'object') {
+						if (pkField in item) return item[pkField];
+					} else {
+						return item;
+					}
+				})
+				.filter((i) => i);
 		}
 
 		function deleteItem(item: Record<string, any>) {
@@ -206,28 +220,25 @@ export default defineComponent({
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 
-					let fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
+					const fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
 
 					if (fields.includes(pkField) === false) {
 						fields.push(pkField);
 					}
 
-					// We're fetching these fields nested on the current item, so nest them in the current
-					// field-key
-					fields = fields.map((fieldKey) => `${props.field}.${fieldKey}`);
-
 					try {
-						const endpoint = props.collection.startsWith('directus_')
-							? `/${props.collection.substring(9)}/${props.primaryKey}`
-							: `/items/${props.collection}/${props.primaryKey}`;
+						const endpoint = relatedCollection.value.collection.startsWith('directus_')
+							? `/${relatedCollection.value.collection.substring(9)}`
+							: `/items/${relatedCollection.value.collection}`;
 
 						const response = await api.get(endpoint, {
 							params: {
 								fields: fields,
+								[`filter[${pkField}][_in]`]: getPrimaryKeys().join(','),
 							},
 						});
 
-						const existingItems = (response.data.data[props.field] as Record<string, any>[]) || [];
+						const existingItems = (response.data.data as Record<string, any>[]) || [];
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
 
@@ -295,29 +306,11 @@ export default defineComponent({
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const primaryKey = item[relatedPrimaryKeyField.value.field];
+				const pkField = relatedPrimaryKeyField.value.field;
+				const hasPrimaryKey = pkField in item;
 
-				// When the currently staged value is an array, we know we made changes / added / removed
-				// certain items. In that case, we have to extract the previously made edits so we can
-				// keep moving forwards with those
-				if (props.value !== null) {
-					const existingEdits = getItem(primaryKey);
-
-					if (existingEdits && typeof existingEdits === 'object') {
-						editsAtStart.value = existingEdits;
-					}
-				}
-
-				// Make sure the edits have the primary key included, otherwise the api will create
-				// the item as a new one instead of update the existing
-				if (primaryKey && editsAtStart.value.hasOwnProperty(relatedPrimaryKeyField.value.field) === false) {
-					editsAtStart.value = {
-						...editsAtStart.value,
-						[relatedPrimaryKeyField.value.field]: primaryKey,
-					};
-				}
-
-				currentlyEditing.value = primaryKey;
+				editsAtStart.value = item;
+				currentlyEditing.value = hasPrimaryKey ? item[pkField] : 1;
 			}
 
 			function stageEdits(edits: any) {
@@ -325,36 +318,34 @@ export default defineComponent({
 
 				const hasPrimaryKey = pkField in edits;
 
-				if (props.value && Array.isArray(props.value)) {
-					const newValue = props.value.map((existingChange) => {
-						if (
-							typeof existingChange === 'object' &&
-							existingChange[pkField] &&
-							edits[pkField] &&
-							existingChange[pkField] === edits[pkField]
-						) {
-							return edits;
-						}
+				if (props.value === null) return emit('input', [edits]);
 
-						if (existingChange === edits[pkField]) {
-							return edits;
-						}
-
-						if (editsAtStart.value === existingChange) {
-							return edits;
-						}
-
-						return existingChange;
-					});
-
-					if (hasPrimaryKey === false && newValue.includes(edits) === false) {
-						newValue.push(edits);
+				const newValue = props.value.map((item) => {
+					if (
+						typeof item === 'object' &&
+						pkField in item &&
+						pkField in edits &&
+						item[pkField] === edits[pkField]
+					) {
+						return edits;
 					}
 
-					emit('input', newValue);
-				} else {
-					emit('input', [edits]);
+					if (item === edits[pkField]) {
+						return edits;
+					}
+
+					if (editsAtStart.value === item) {
+						return edits;
+					}
+
+					return item;
+				});
+
+				if (hasPrimaryKey === false && newValue.includes(edits) === false) {
+					newValue.push(edits);
 				}
+
+				emit('input', newValue);
 			}
 
 			function cancelEdit() {
@@ -376,20 +367,11 @@ export default defineComponent({
 					.map((currentItem) => currentItem[pkField]);
 			});
 
-			const selectionFilters = computed<Filter[]>(() => {
-				const filter: Filter = {
-					key: 'selection',
-					field: relatedPrimaryKeyField.value.field,
-					operator: 'nin',
-					value: selectedPrimaryKeys.value.join(','),
-				};
-
-				return [filter];
-			});
-
-			return { stageSelection, selectModalActive, selectionFilters };
+			return { stageSelection, selectModalActive, selectedPrimaryKeys };
 
 			function stageSelection(newSelection: (number | string)[]) {
+				console.log(newSelection);
+
 				const pkField = relatedPrimaryKeyField.value.field;
 				const newItems = getNewItems();
 				const selection = newSelection.map((item) => {
