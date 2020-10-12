@@ -12,7 +12,7 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 		dbQuery.orderBy(query.sort);
 	}
 
-	if (typeof query.limit === 'number' && !query.offset) {
+	if (typeof query.limit === 'number') {
 		dbQuery.limit(query.limit);
 	}
 
@@ -67,7 +67,10 @@ export async function applyFilter(dbQuery: QueryBuilder, filter: Filter, collect
 		const filterPath = getFilterPath(key, value);
 		const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-		const column = filterPath.length > 1 ? await applyJoins(dbQuery, filterPath, collection) : `${collection}.${filterPath[0]}`;
+		const column =
+			filterPath.length > 1
+				? await applyJoins(dbQuery, filterPath, collection)
+				: `${collection}.${filterPath[0]}`;
 
 		applyFilterToQuery(column, filterOperator, filterValue);
 	}
@@ -167,8 +170,9 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string, value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or') return { operator: key as string, value };
+function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+	if (key.startsWith('_') && key !== '_and' && key !== '_or')
+		return { operator: key as string, value };
 	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
 }
 
@@ -191,12 +195,21 @@ async function applyJoins(dbQuery: QueryBuilder, path: string[], collection: str
 
 		if (!relation) return;
 
-		const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+		const isM2O =
+			relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 
 		if (isM2O) {
-			dbQuery.leftJoin(relation.one_collection, `${parentCollection}.${relation.many_field}`, `${relation.one_collection}.${relation.one_primary}`);
+			dbQuery.leftJoin(
+				relation.one_collection,
+				`${parentCollection}.${relation.many_field}`,
+				`${relation.one_collection}.${relation.one_primary}`
+			);
 		} else {
-			dbQuery.leftJoin(relation.many_collection, `${relation.one_collection}.${relation.one_primary}`, `${relation.many_collection}.${relation.many_field}`);
+			dbQuery.leftJoin(
+				relation.many_collection,
+				`${relation.one_collection}.${relation.one_primary}`,
+				`${relation.many_collection}.${relation.many_field}`
+			);
 		}
 
 		pathParts.shift();
