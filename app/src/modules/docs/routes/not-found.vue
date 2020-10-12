@@ -21,17 +21,17 @@ export default defineComponent({
 	components: { DocsNavigation },
 	async beforeRouteEnter(to, from, next) {
 		next((vm: any) => {
-			vm.path = to.path
+			vm.path = to.path;
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
-		this.path = to.path
+		this.path = to.path;
 		next();
 	},
 	setup() {
-		const path = ref<string | null>(null)
-		return {path}
-	}
+		const path = ref<string | null>(null);
+		return { path };
+	},
 });
 </script>
 

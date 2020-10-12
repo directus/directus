@@ -2,7 +2,13 @@
 	<v-list large>
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
-				<template v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0">
+				<template
+					v-if="
+						(group.name === undefined || group.name === null) &&
+						group.accordion === 'always_open' &&
+						index === 0
+					"
+				>
 					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 						<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
 						<v-list-item-content>{{ navItem.name }}</v-list-item-content>

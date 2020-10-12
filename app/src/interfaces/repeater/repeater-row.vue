@@ -49,8 +49,8 @@ export default defineComponent({
 		},
 		headerPlaceholder: {
 			type: String,
-			default: null
-		}
+			default: null,
+		},
 	},
 });
 </script>

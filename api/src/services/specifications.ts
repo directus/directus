@@ -10,12 +10,11 @@ import {
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import formatTitle from '@directus/format-title';
-import { cloneDeep, mergeWith, property } from 'lodash';
+import { cloneDeep, mergeWith } from 'lodash';
 import { RelationsService } from './relations';
 import env from '../env';
 import {
 	OpenAPIObject,
-	PathsObject,
 	PathItemObject,
 	OperationObject,
 	TagObject,
@@ -26,8 +25,9 @@ import {
 import { version } from '../../package.json';
 import openapi from '@directus/specs';
 
-import Knex, { StringTagSupport } from 'knex';
+import Knex from 'knex';
 import database from '../database';
+import { getRelationType } from '../utils/get-relation-type';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -99,8 +99,8 @@ class OASService implements SpecificationSubService {
 			.from('directus_permissions')
 			.where({ role: this.accountability?.role || null });
 
-		const tags = await this.generateTags(collections, fields, relations);
-		const paths = await this.generatePaths(collections, permissions, tags);
+		const tags = await this.generateTags(collections);
+		const paths = await this.generatePaths(permissions, tags);
 		const components = await this.generateComponents(collections, fields, relations, tags);
 
 		const spec: OpenAPIObject = {
@@ -125,11 +125,7 @@ class OASService implements SpecificationSubService {
 		return spec;
 	}
 
-	private async generateTags(
-		collections: Collection[],
-		fields: Field[],
-		relations: Relation[]
-	): Promise<OpenAPIObject['tags']> {
+	private async generateTags(collections: Collection[]): Promise<OpenAPIObject['tags']> {
 		const systemTags = cloneDeep(openapi.tags)!;
 
 		const tags: OpenAPIObject['tags'] = [];
@@ -166,7 +162,6 @@ class OASService implements SpecificationSubService {
 	}
 
 	private async generatePaths(
-		collections: Collection[],
 		permissions: Permission[],
 		tags: OpenAPIObject['tags']
 	): Promise<OpenAPIObject['paths']> {
@@ -439,11 +434,13 @@ class OASService implements SpecificationSubService {
 				...this.fieldTypes[field.type],
 			};
 		} else {
-			const isM2O =
-				relation.many_collection === field.collection &&
-				relation.many_field === field.field;
+			const relationType = getRelationType({
+				relation,
+				field: field.field,
+				collection: field.collection,
+			});
 
-			if (isM2O) {
+			if (relationType === 'm2o') {
 				const relatedTag = tags.find(
 					(tag) => tag['x-collection'] === relation.one_collection
 				);
@@ -462,7 +459,7 @@ class OASService implements SpecificationSubService {
 						$ref: `#/components/schemas/${relatedTag.name}`,
 					},
 				];
-			} else {
+			} else if (relationType === 'o2m') {
 				const relatedTag = tags.find(
 					(tag) => tag['x-collection'] === relation.many_collection
 				);
@@ -483,6 +480,22 @@ class OASService implements SpecificationSubService {
 						{
 							$ref: `#/components/schemas/${relatedTag.name}`,
 						},
+					],
+				};
+			} else if (relationType === 'm2a') {
+				const relatedTags = tags.filter((tag) =>
+					relation.one_allowed_collections!.includes(tag['x-collection'])
+				);
+
+				propertyObject.type = 'array';
+				propertyObject.items = {
+					oneOf: [
+						{
+							type: 'string',
+						},
+						relatedTags.map((tag) => ({
+							$ref: `#/components/schemas/${tag.name}`,
+						})),
 					],
 				};
 			}

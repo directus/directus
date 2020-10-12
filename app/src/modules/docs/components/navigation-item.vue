@@ -7,12 +7,7 @@
 				<v-list-item-text>{{ section.name }}</v-list-item-text>
 			</v-list-item-content>
 		</template>
-		<navigation-list-item
-			v-for="(child, index) in section.children"
-			:key="index"
-			:section="child"
-			dense
-		/>
+		<navigation-list-item v-for="(child, index) in section.children" :key="index" :section="child" dense />
 	</v-list-group>
 
 	<v-list-item v-else :to="`/docs${section.to}`" :dense="dense" :value="section.to">
@@ -37,7 +32,7 @@ export default defineComponent({
 		dense: {
 			type: Boolean,
 			default: false,
-		}
-	}
+		},
+	},
 });
 </script>

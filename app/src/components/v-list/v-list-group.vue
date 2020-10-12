@@ -1,6 +1,14 @@
 <template>
 	<div class="v-list-group">
-		<v-list-item :active="active" class="activator" :to="to" :exact="exact" @click="onClick" :disabled="disabled" :dense="dense">
+		<v-list-item
+			:active="active"
+			class="activator"
+			:to="to"
+			:exact="exact"
+			@click="onClick"
+			:disabled="disabled"
+			:dense="dense"
+		>
 			<slot name="activator" :active="groupActive" />
 
 			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
@@ -50,11 +58,11 @@ export default defineComponent({
 		},
 		dense: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	setup(props, { listeners, emit }) {
-		const {multiple} = toRefs(props)
+		const { multiple } = toRefs(props);
 
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
