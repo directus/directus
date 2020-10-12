@@ -1,17 +1,14 @@
 import { ItemsService } from './items';
-import {
-	AbstractServiceOptions,
-	Query,
-	Item,
-	PrimaryKey,
-	PermissionsAction,
-	Relation,
-} from '../types';
+import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation } from '../types';
 import { PermissionsService } from './permissions';
 
 /**
  * @TODO update foreign key constraints when relations are updated
  */
+
+type ParsedRelation = Relation & {
+	one_allowed_collections: string[] | null;
+};
 
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;
@@ -23,7 +20,10 @@ export class RelationsService extends ItemsService {
 
 	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
 		const service = new ItemsService('directus_relations', { knex: this.knex });
-		const results = (await service.readByQuery(query)) as Relation | Relation[] | null;
+		const results = (await service.readByQuery(query)) as
+			| ParsedRelation
+			| ParsedRelation[]
+			| null;
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -41,15 +41,15 @@ export class RelationsService extends ItemsService {
 	): Promise<null | Relation | Relation[]> {
 		const service = new ItemsService('directus_relations', { knex: this.knex });
 		const results = (await service.readByKey(key as any, query, action)) as
-			| Relation
-			| Relation[]
+			| ParsedRelation
+			| ParsedRelation[]
 			| null;
 
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
 
-	private async filterForbidden(relations: Relation | Relation[] | null) {
+	private async filterForbidden(relations: ParsedRelation | ParsedRelation[] | null) {
 		if (relations === null) return null;
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
@@ -81,16 +81,17 @@ export class RelationsService extends ItemsService {
 
 			if (
 				relation.one_allowed_collections &&
-				relation.one_allowed_collections.split(',').every(allowedCollections.includes) ===
-					false
+				relation.one_allowed_collections.every((collection) =>
+					allowedCollections.includes(collection)
+				) === false
 			) {
 				collectionsAllowed = false;
 			}
 
 			if (
 				!allowedFields[relation.many_collection] ||
-				allowedFields[relation.many_collection].includes('*') ||
-				allowedFields[relation.many_collection].includes(relation.many_field) === false
+				(allowedFields[relation.many_collection].includes('*') === false &&
+					allowedFields[relation.many_collection].includes(relation.many_field) === false)
 			) {
 				fieldsAllowed = false;
 			}
@@ -99,13 +100,12 @@ export class RelationsService extends ItemsService {
 				relation.one_collection &&
 				relation.one_field &&
 				(!allowedFields[relation.one_collection] ||
-					allowedFields[relation.one_collection].includes('*') ||
-					allowedFields[relation.one_collection].includes(relation.one_field) === false)
+					(allowedFields[relation.one_collection].includes('*') === false &&
+						allowedFields[relation.one_collection].includes(relation.one_field) ===
+							false))
 			) {
 				fieldsAllowed = false;
 			}
-
-			/** @TODO M2A — Handle m2a case here */
 
 			return collectionsAllowed && fieldsAllowed;
 		});
