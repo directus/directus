@@ -57,7 +57,7 @@ data:
     many_primary: id
     one_collection: directus_collections
     one_field: fields
-    one_primary: id
+    one_primary: collection
   - many_collection: directus_activity
     many_field: user
     many_primary: id
