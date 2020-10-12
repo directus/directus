@@ -22,7 +22,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Role"
+                  $ref: "../../openapi.yaml#/components/schemas/Roles"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
@@ -76,7 +76,7 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Role"
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":

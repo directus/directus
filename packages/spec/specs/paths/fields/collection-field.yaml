@@ -10,7 +10,7 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Field"
+                $ref: "../../openapi.yaml#/components/schemas/Fields"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
@@ -197,7 +197,7 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Field"
+                $ref: "../../openapi.yaml#/components/schemas/Fields"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":

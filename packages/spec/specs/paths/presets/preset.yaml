@@ -17,7 +17,7 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Preset"
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
@@ -84,7 +84,7 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Preset"
+                $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:

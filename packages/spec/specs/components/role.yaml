@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_roles
 properties:
   id:
     description: Unique identifier for the role.

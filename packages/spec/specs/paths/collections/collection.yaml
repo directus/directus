@@ -11,7 +11,7 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Collection"
+                $ref: "../../openapi.yaml#/components/schemas/Collections"
       description: Successful request
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
@@ -95,7 +95,7 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Collection"
+                $ref: "../../openapi.yaml#/components/schemas/Collections"
       description: Successful request
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

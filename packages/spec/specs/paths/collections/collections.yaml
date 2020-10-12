@@ -16,7 +16,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Collection"
+                  $ref: "../../openapi.yaml#/components/schemas/Collections"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
@@ -105,7 +105,7 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Collection"
+                $ref: "../../openapi.yaml#/components/schemas/Collections"
       description: Successful request
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

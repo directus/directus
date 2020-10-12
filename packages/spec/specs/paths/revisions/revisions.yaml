@@ -22,7 +22,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Revision"
+                  $ref: "../../openapi.yaml#/components/schemas/Revisions"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":

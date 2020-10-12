@@ -222,31 +222,31 @@ components:
   schemas:
     Activity:
       $ref: "./components/activity.yaml"
-    Preset:
+    Presets:
       $ref: "./components/preset.yaml"
-    Collection:
+    Collections:
       $ref: "./components/collection.yaml"
-    Field:
+    Fields:
       $ref: "./components/field.yaml"
-    File:
+    Files:
       $ref: "./components/file.yaml"
-    Folder:
+    Folders:
       $ref: "./components/folder.yaml"
-    Item:
+    Items:
       $ref: "./components/item.yaml"
     Permissions:
       $ref: "./components/permissions.yaml"
-    Relation:
+    Relations:
       $ref: "./components/relation.yaml"
-    Revision:
+    Revisions:
       $ref: "./components/revision.yaml"
-    Role:
+    Roles:
       $ref: "./components/role.yaml"
-    Setting:
+    Settings:
       $ref: "./components/setting.yaml"
-    User:
+    Users:
       $ref: "./components/user.yaml"
-    Webhook:
+    Webhooks:
       $ref: "./components/webhook.yaml"
   parameters:
     # All path parameters

@@ -14,14 +14,6 @@ get:
     - $ref: "../../openapi.yaml#/components/parameters/Sort"
     - $ref: "../../openapi.yaml#/components/parameters/Filter"
     - $ref: "../../openapi.yaml#/components/parameters/Search"
-    - name: status
-      in: query
-      description: Filter items by the given status
-      explode: false
-      schema:
-        type: array
-        items:
-          type: string
   responses:
     "200":
       description: Successful request

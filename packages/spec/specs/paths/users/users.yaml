@@ -21,7 +21,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/User"
+                  $ref: "../../openapi.yaml#/components/schemas/Users"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
@@ -37,7 +37,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../../openapi.yaml#/components/schemas/User"
+          $ref: "../../openapi.yaml#/components/schemas/Users"
   responses:
     "200":
       description: Successful request
@@ -47,7 +47,7 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/User"
+                $ref: "../../openapi.yaml#/components/schemas/Users"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":

@@ -12,7 +12,7 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/File"
+                $ref: "../../openapi.yaml#/components/schemas/Files"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
@@ -34,7 +34,7 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/File"
+                $ref: "../../openapi.yaml#/components/schemas/Files"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:

@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_files
 properties:
   id:
     description: Unique identifier for the folder.
@@ -13,5 +14,5 @@ properties:
     example: null
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Folder"
+      - $ref: "../openapi.yaml#/components/schemas/Folders"
     nullable: true

@@ -21,7 +21,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Folder"
+                  $ref: "../../openapi.yaml#/components/schemas/Folders"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
@@ -57,7 +57,7 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Folder"
+                $ref: "../../openapi.yaml#/components/schemas/Folders"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
