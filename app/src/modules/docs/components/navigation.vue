@@ -10,15 +10,15 @@ import NavigationItem from './navigation-item.vue';
 import { nav } from '@directus/docs';
 
 function spreadPath(path: string) {
-	const sections = path.substr(1).split('/')
-	if(sections.length === 0) return []
+	const sections = path.substr(1).split('/');
+	if (sections.length === 0) return [];
 
-	const paths: string[] = ['/'+sections[0]]
+	const paths: string[] = ['/' + sections[0]];
 
-	for(let i = 1; i < sections.length; i++) {
-		paths.push(paths[i - 1] + '/' + sections[i])
+	for (let i = 1; i < sections.length; i++) {
+		paths.push(paths[i - 1] + '/' + sections[i]);
 	}
-	return paths
+	return paths;
 }
 
 export default defineComponent({
@@ -26,33 +26,38 @@ export default defineComponent({
 	props: {
 		path: {
 			type: String,
-			default: null
-		}
+			default: '/docs',
+		},
 	},
 	setup(props) {
-		const _selection = ref<string[]>(spreadPath(props.path.replace('/docs','')))
+		const _selection = ref<string[] | null>(null);
 
-		watch(() => props.path, (newPath) => {
-			_selection.value = spreadPath(newPath.replace('/docs',''))
-		})
+		watch(
+			() => props.path,
+			(newPath) => {
+				if (newPath === null) return;
+				_selection.value = spreadPath(newPath.replace('/docs', ''));
+			}
+		);
 
 		const selection = computed({
 			get() {
-				return _selection.value
+				if (_selection.value === null && props.path !== null)
+					_selection.value = spreadPath(props.path.replace('/docs', ''));
+				return _selection.value || [];
 			},
 			set(newSelection: string[]) {
-				if(newSelection.length === 0) {
-					_selection.value =  []
+				if (newSelection.length === 0) {
+					_selection.value = [];
 				} else {
-					if(_selection.value.includes(newSelection[0])) {
-						_selection.value = _selection.value.filter(s => s !== newSelection[0])
+					if (_selection.value && _selection.value.includes(newSelection[0])) {
+						_selection.value = _selection.value.filter((s) => s !== newSelection[0]);
 					} else {
-						_selection.value = spreadPath(newSelection[0])
+						_selection.value = spreadPath(newSelection[0]);
 					}
-					
 				}
-			}
-		})
+			},
+		});
 
 		return { navSections: nav.app, selection };
 	},
