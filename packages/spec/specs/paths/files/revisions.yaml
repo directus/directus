@@ -4,9 +4,9 @@ get:
     - Files
   operationId: getFileRevisions
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+    - $ref: "../../openapi.yaml#/components/parameters/UUId"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -16,6 +16,6 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Revision'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                  $ref: "../../openapi.yaml#/components/schemas/Revisions"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

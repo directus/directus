@@ -6,7 +6,17 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "dev": "npm-watch build"
+  },
+  "watch": {
+    "build": {
+      "patterns": ["."],
+      "ignore": "dist",
+      "extensions": "md,yaml",
+      "silent": true,
+      "quiet": true
+    }
   },
   "files": [
     "dist"
@@ -14,5 +24,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
+  "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+  "devDependencies": {
+    "npm-watch": "^0.7.0"
+  }
 }

@@ -1,449 +1,583 @@
-// import {
-// 	AbstractServiceOptions,
-// 	Accountability,
-// 	Collection,
-// 	Field,
-// 	Relation,
-// 	types,
-// } from '../types';
-// import { CollectionsService } from './collections';
-// import { FieldsService } from './fields';
-// import formatTitle from '@directus/format-title';
-// import { cloneDeep, mergeWith } from 'lodash';
-// import { RelationsService } from './relations';
-// import env from '../env';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	Field,
+	Permission,
+	Relation,
+	types,
+} from '../types';
+import { CollectionsService } from './collections';
+import { FieldsService } from './fields';
+import formatTitle from '@directus/format-title';
+import { cloneDeep, mergeWith } from 'lodash';
+import { RelationsService } from './relations';
+import env from '../env';
+import {
+	OpenAPIObject,
+	PathItemObject,
+	OperationObject,
+	TagObject,
+	SchemaObject,
+} from 'openapi3-ts';
 
-// // @ts-ignore
-// import { version } from '../../package.json';
+// @ts-ignore
+import { version } from '../../package.json';
+import openapi from '@directus/specs';
 
-// // @ts-ignore
-// import openapi from '@directus/specs';
+import Knex from 'knex';
+import database from '../database';
+import { getRelationType } from '../utils/get-relation-type';
 
-// type RelationTree = Record<string, Record<string, Relation[]>>;
+export class SpecificationService {
+	accountability: Accountability | null;
+	knex: Knex;
 
-// export class SpecificationService {
-// 	accountability: Accountability | null;
+	fieldsService: FieldsService;
+	collectionsService: CollectionsService;
+	relationsService: RelationsService;
 
-// 	fieldsService: FieldsService;
-// 	collectionsService: CollectionsService;
-// 	relationsService: RelationsService;
+	oas: OASService;
 
-// 	oas: OASService;
+	constructor(options?: AbstractServiceOptions) {
+		this.accountability = options?.accountability || null;
+		this.knex = options?.knex || database;
 
-// 	constructor(options?: AbstractServiceOptions) {
-// 		this.accountability = options?.accountability || null;
+		this.fieldsService = new FieldsService(options);
+		this.collectionsService = new CollectionsService(options);
+		this.relationsService = new RelationsService(options);
 
-// 		this.fieldsService = new FieldsService(options);
-// 		this.collectionsService = new CollectionsService(options);
-// 		this.relationsService = new RelationsService(options);
+		this.oas = new OASService(
+			{ knex: this.knex, accountability: this.accountability },
+			{
+				fieldsService: this.fieldsService,
+				collectionsService: this.collectionsService,
+				relationsService: this.relationsService,
+			}
+		);
+	}
+}
 
-// 		this.oas = new OASService({
-// 			fieldsService: this.fieldsService,
-// 			collectionsService: this.collectionsService,
-// 			relationsService: this.relationsService,
-// 		});
-// 	}
-// }
+interface SpecificationSubService {
+	generate: () => Promise<any>;
+}
 
-// interface SpecificationSubService {
-// 	generate: () => Promise<any>;
-// }
+class OASService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
 
-// class OASService implements SpecificationSubService {
-// 	fieldsService: FieldsService;
-// 	collectionsService: CollectionsService;
-// 	relationsService: RelationsService;
+	fieldsService: FieldsService;
+	collectionsService: CollectionsService;
+	relationsService: RelationsService;
 
-// 	constructor({
-// 		fieldsService,
-// 		collectionsService,
-// 		relationsService,
-// 	}: {
-// 		fieldsService: FieldsService;
-// 		collectionsService: CollectionsService;
-// 		relationsService: RelationsService;
-// 	}) {
-// 		this.fieldsService = fieldsService;
-// 		this.collectionsService = collectionsService;
-// 		this.relationsService = relationsService;
-// 	}
+	constructor(
+		options: AbstractServiceOptions,
+		{
+			fieldsService,
+			collectionsService,
+			relationsService,
+		}: {
+			fieldsService: FieldsService;
+			collectionsService: CollectionsService;
+			relationsService: RelationsService;
+		}
+	) {
+		this.accountability = options.accountability || null;
+		this.knex = options?.knex || database;
 
-// 	private collectionsDenyList = [
-// 		'directus_collections',
-// 		'directus_fields',
-// 		'directus_migrations',
-// 		'directus_sessions',
-// 	];
+		this.fieldsService = fieldsService;
+		this.collectionsService = collectionsService;
+		this.relationsService = relationsService;
+	}
 
-// 	private fieldTypes: Record<
-// 		typeof types[number],
-// 		{ type: string; format?: string; items?: any }
-// 	> = {
-// 		bigInteger: {
-// 			type: 'integer',
-// 			format: 'int64',
-// 		},
-// 		boolean: {
-// 			type: 'boolean',
-// 		},
-// 		date: {
-// 			type: 'string',
-// 			format: 'date',
-// 		},
-// 		dateTime: {
-// 			type: 'string',
-// 			format: 'date-time',
-// 		},
-// 		decimal: {
-// 			type: 'number',
-// 		},
-// 		float: {
-// 			type: 'number',
-// 			format: 'float',
-// 		},
-// 		integer: {
-// 			type: 'integer',
-// 		},
-// 		json: {
-// 			type: 'array',
-// 			items: {
-// 				type: 'string',
-// 			},
-// 		},
-// 		string: {
-// 			type: 'string',
-// 		},
-// 		text: {
-// 			type: 'string',
-// 		},
-// 		time: {
-// 			type: 'string',
-// 			format: 'time',
-// 		},
-// 		timestamp: {
-// 			type: 'string',
-// 			format: 'timestamp',
-// 		},
-// 		binary: {
-// 			type: 'string',
-// 			format: 'binary',
-// 		},
-// 		uuid: {
-// 			type: 'string',
-// 			format: 'uuid',
-// 		},
-// 		csv: {
-// 			type: 'array',
-// 			items: {
-// 				type: 'string',
-// 			},
-// 		},
-// 	};
+	async generate() {
+		const collections = await this.collectionsService.readByQuery();
+		const fields = await this.fieldsService.readAll();
+		const relations = (await this.relationsService.readByQuery({})) as Relation[];
+		const permissions: Permission[] = await this.knex
+			.select('*')
+			.from('directus_permissions')
+			.where({ role: this.accountability?.role || null });
 
-// 	async generate() {
-// 		const collections = await this.collectionsService.readByQuery();
+		const tags = await this.generateTags(collections);
+		const paths = await this.generatePaths(permissions, tags);
+		const components = await this.generateComponents(collections, fields, relations, tags);
 
-// 		const userCollections = collections.filter(
-// 			(collection) =>
-// 				collection.collection.startsWith('directus_') === false ||
-// 				this.collectionsDenyList.includes(collection.collection) === false
-// 		);
+		const spec: OpenAPIObject = {
+			openapi: '3.0.1',
+			info: {
+				title: 'Dynamic API Specification',
+				description:
+					'This is a dynamicly generated API specification for all endpoints existing on the current .',
+				version: version,
+			},
+			servers: [
+				{
+					url: env.PUBLIC_URL,
+					description: 'Your current Directus instance.',
+				},
+			],
+			tags,
+			paths,
+			components,
+		};
 
-// 		const allFields = await this.fieldsService.readAll();
+		return spec;
+	}
 
-// 		const fields: Record<string, Field[]> = {};
+	private async generateTags(collections: Collection[]): Promise<OpenAPIObject['tags']> {
+		const systemTags = cloneDeep(openapi.tags)!;
 
-// 		for (const field of allFields) {
-// 			if (
-// 				field.collection.startsWith('directus_') === false ||
-// 				this.collectionsDenyList.includes(field.collection) === false
-// 			) {
-// 				if (field.collection in fields) {
-// 					fields[field.collection].push(field);
-// 				} else {
-// 					fields[field.collection] = [field];
-// 				}
-// 			}
-// 		}
+		const tags: OpenAPIObject['tags'] = [];
 
-// 		const relationsResult = await this.relationsService.readByQuery({});
-// 		if (relationsResult === null) return {};
+		// System tags that don't have an associated collection are always readable to the user
+		for (const systemTag of systemTags) {
+			if (!systemTag['x-collection']) {
+				tags.push(systemTag);
+			}
+		}
 
-// 		const relations = Array.isArray(relationsResult) ? relationsResult : [relationsResult];
+		for (const collection of collections) {
+			const isSystem = collection.collection.startsWith('directus_');
 
-// 		const relationsTree: RelationTree = {};
+			// If the collection is one of the system collections, pull the tag from the static spec
+			if (isSystem) {
+				for (const tag of openapi.tags!) {
+					if (tag['x-collection'] === collection.collection) {
+						tags.push(tag);
+						break;
+					}
+				}
+			} else {
+				tags.push({
+					name: 'Items' + formatTitle(collection.collection).replace(/ /g, ''),
+					description: collection.meta?.note || undefined,
+					'x-collection': collection.collection,
+				});
+			}
+		}
 
-// 		for (const relation of relations as Relation[]) {
-// 			if (relation.many_collection in relationsTree === false)
-// 				relationsTree[relation.many_collection] = {};
-// 			if (relation.one_collection in relationsTree === false)
-// 				relationsTree[relation.one_collection] = {};
+		// Filter out the generic Items information
+		return tags.filter((tag) => tag.name !== 'Items');
+	}
 
-// 			if (relation.many_field in relationsTree[relation.many_collection] === false)
-// 				relationsTree[relation.many_collection][relation.many_field] = [];
-// 			if (relation.one_field in relationsTree[relation.one_collection] === false)
-// 				relationsTree[relation.one_collection][relation.one_field] = [];
+	private async generatePaths(
+		permissions: Permission[],
+		tags: OpenAPIObject['tags']
+	): Promise<OpenAPIObject['paths']> {
+		const paths: OpenAPIObject['paths'] = {};
 
-// 			relationsTree[relation.many_collection][relation.many_field].push(relation);
-// 			relationsTree[relation.one_collection][relation.one_field].push(relation);
-// 		}
+		if (!tags) return paths;
 
-// 		const dynOpenapi = {
-// 			openapi: '3.0.1',
-// 			info: {
-// 				title: 'Dynamic Api Specification',
-// 				description:
-// 					'This is a dynamicly generated api specification for all endpoints existing on the api.',
-// 				version: version,
-// 			},
-// 			servers: [
-// 				{
-// 					url: env.PUBLIC_URL,
-// 					description: 'Your current api server.',
-// 				},
-// 			],
-// 			tags: this.generateTags(userCollections),
-// 			paths: this.generatePaths(userCollections),
-// 			components: {
-// 				schemas: this.generateSchemas(userCollections, fields, relationsTree),
-// 			},
-// 		};
+		for (const tag of tags) {
+			const isSystem =
+				tag.hasOwnProperty('x-collection') === false ||
+				tag['x-collection'].startsWith('directus_');
 
-// 		return mergeWith(cloneDeep(openapi), cloneDeep(dynOpenapi), (obj, src) => {
-// 			if (Array.isArray(obj)) return obj.concat(src);
-// 		});
-// 	}
+			if (isSystem) {
+				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
+					for (const [method, operation] of Object.entries<OperationObject>(pathItem)) {
+						if (operation.tags?.includes(tag.name)) {
+							if (!paths[path]) {
+								paths[path] = {};
+							}
 
-// 	private getNameFormats(collection: string) {
-// 		const isInternal = collection.startsWith('directus_');
-// 		const schema = formatTitle(
-// 			isInternal ? collection.replace('directus_', '').replace(/s$/, '') : collection + 'Item'
-// 		).replace(/ /g, '');
-// 		const tag = formatTitle(
-// 			isInternal ? collection.replace('directus_', '') : collection + ' Collection'
-// 		);
-// 		const path = isInternal ? collection : '/items/' + collection;
-// 		const objectRef = `#/components/schemas/${schema}`;
+							const hasPermission =
+								this.accountability?.admin === true ||
+								tag.hasOwnProperty('x-collection') === false ||
+								!!permissions.find(
+									(permission) =>
+										permission.collection === tag['x-collection'] &&
+										permission.action === this.getActionForMethod(method)
+								);
 
-// 		return { schema, tag, path, objectRef };
-// 	}
+							if (hasPermission) {
+								paths[path][method] = operation;
+							}
+						}
+					}
+				}
+			} else {
+				const listBase = cloneDeep(openapi.paths['/items/{collection}']);
+				const detailBase = cloneDeep(openapi.paths['/items/{collection}/{id}']);
+				const collection = tag['x-collection'];
 
-// 	private generateTags(collections: Collection[]) {
-// 		const tags: { name: string; description?: string }[] = [];
+				for (const method of ['post', 'get', 'patch', 'delete']) {
+					const hasPermission =
+						this.accountability?.admin === true ||
+						!!permissions.find(
+							(permission) =>
+								permission.collection === collection &&
+								permission.action === this.getActionForMethod(method)
+						);
 
-// 		for (const collection of collections) {
-// 			if (collection.collection.startsWith('directus_')) continue;
-// 			const { tag } = this.getNameFormats(collection.collection);
-// 			tags.push({ name: tag, description: collection.meta?.note || undefined });
-// 		}
+					if (hasPermission) {
+						if (!paths[`/items/${collection}`]) paths[`/items/${collection}`] = {};
+						if (!paths[`/items/${collection}/{id}`])
+							paths[`/items/${collection}/{id}`] = {};
 
-// 		return tags;
-// 	}
+						if (listBase[method]) {
+							paths[`/items/${collection}`][method] = mergeWith(
+								cloneDeep(listBase[method]),
+								{
+									description: listBase[method].description.replace(
+										'item',
+										collection + ' item'
+									),
+									tags: [tag.name],
+									operationId: `${this.getActionForMethod(method)}${tag.name}`,
+									requestBody: ['get', 'delete'].includes(method)
+										? undefined
+										: {
+												content: {
+													'application/json': {
+														schema: {
+															oneOf: [
+																{
+																	type: 'array',
+																	items: {
+																		$ref: `#/components/schema/${tag.name}`,
+																	},
+																},
+																{
+																	$ref: `#/components/schema/${tag.name}`,
+																},
+															],
+														},
+													},
+												},
+										  },
+									responses: {
+										'200': {
+											content:
+												method === 'delete'
+													? undefined
+													: {
+															'application/json': {
+																schema: {
+																	properties: {
+																		data: {
+																			items: {
+																				$ref: `#/components/schema/${tag.name}`,
+																			},
+																		},
+																	},
+																},
+															},
+													  },
+										},
+									},
+								},
+								(obj, src) => {
+									if (Array.isArray(obj)) return obj.concat(src);
+								}
+							);
+						}
 
-// 	private generatePaths(collections: Collection[]) {
-// 		const paths: Record<string, object> = {};
+						if (detailBase[method]) {
+							paths[`/items/${collection}/{id}`][method] = mergeWith(
+								cloneDeep(detailBase[method]),
+								{
+									description: detailBase[method].description.replace(
+										'item',
+										collection + ' item'
+									),
+									tags: [tag.name],
+									operationId: `${this.getActionForMethod(method)}Single${
+										tag.name
+									}`,
+									requestBody: ['get', 'delete'].includes(method)
+										? undefined
+										: {
+												content: {
+													'application/json': {
+														schema: {
+															$ref: `#/components/schema/${tag.name}`,
+														},
+													},
+												},
+										  },
+									responses: {
+										'200': {
+											content:
+												method === 'delete'
+													? undefined
+													: {
+															'application/json': {
+																schema: {
+																	properties: {
+																		data: {
+																			items: {
+																				$ref: `#/components/schema/${tag.name}`,
+																			},
+																		},
+																	},
+																},
+															},
+													  },
+										},
+									},
+								},
+								(obj, src) => {
+									if (Array.isArray(obj)) return obj.concat(src);
+								}
+							);
+						}
+					}
+				}
+			}
+		}
 
-// 		for (const collection of collections) {
-// 			if (collection.collection.startsWith('directus_')) continue;
+		return paths;
+	}
 
-// 			const { tag, schema, objectRef, path } = this.getNameFormats(collection.collection);
+	private async generateComponents(
+		collections: Collection[],
+		fields: Field[],
+		relations: Relation[],
+		tags: OpenAPIObject['tags']
+	): Promise<OpenAPIObject['components']> {
+		let components: OpenAPIObject['components'] = cloneDeep(openapi.components);
 
-// 			const objectSingle = {
-// 				content: {
-// 					'application/json': {
-// 						schema: {
-// 							$ref: objectRef,
-// 						},
-// 					},
-// 				},
-// 			};
+		if (!components) components = {};
 
-// 			(paths[path] = {
-// 				get: {
-// 					operationId: `get${schema}s`,
-// 					description: `List all items from the ${tag}`,
-// 					tags: [tag],
-// 					parameters: [
-// 						{ $ref: '#/components/parameters/Fields' },
-// 						{ $ref: '#/components/parameters/Limit' },
-// 						{ $ref: '#/components/parameters/Meta' },
-// 						{ $ref: '#/components/parameters/Offset' },
-// 						{ $ref: '#/components/parameters/Single' },
-// 						{ $ref: '#/components/parameters/Sort' },
-// 						{ $ref: '#/components/parameters/Filter' },
-// 						{ $ref: '#/components/parameters/q' },
-// 					],
-// 					responses: {
-// 						'200': {
-// 							description: 'Successful request',
-// 							content: {
-// 								'application/json': {
-// 									schema: {
-// 										type: 'object',
-// 										properties: {
-// 											data: {
-// 												type: 'array',
-// 												items: {
-// 													$ref: objectRef,
-// 												},
-// 											},
-// 										},
-// 									},
-// 								},
-// 							},
-// 						},
-// 						'401': {
-// 							$ref: '#/components/responses/UnauthorizedError',
-// 						},
-// 					},
-// 				},
-// 				post: {
-// 					operationId: `create${schema}`,
-// 					description: `Create a new item in the ${tag}`,
-// 					tags: [tag],
-// 					parameter: [{ $ref: '#/components/parameters/Meta' }],
-// 					requestBody: objectSingle,
-// 					responses: {
-// 						'200': objectSingle,
-// 						'401': {
-// 							$ref: '#/components/responses/UnauthorizedError',
-// 						},
-// 					},
-// 				},
-// 			}),
-// 				(paths[path + '/{id}'] = {
-// 					parameters: [{ $ref: '#/components/parameters/Id' }],
-// 					get: {
-// 						operationId: `get${schema}`,
-// 						description: `Get a singe item from the ${tag}`,
-// 						tags: [tag],
-// 						parameters: [
-// 							{ $ref: '#/components/parameters/Fields' },
-// 							{ $ref: '#/components/parameters/Meta' },
-// 						],
-// 						responses: {
-// 							'200': objectSingle,
-// 							'401': {
-// 								$ref: '#/components/responses/UnauthorizedError',
-// 							},
-// 							'404': {
-// 								$ref: '#/components/responses/NotFoundError',
-// 							},
-// 						},
-// 					},
-// 					patch: {
-// 						operationId: `update${schema}`,
-// 						description: `Update an item from the ${tag}`,
-// 						tags: [tag],
-// 						parameters: [
-// 							{ $ref: '#/components/parameters/Fields' },
-// 							{ $ref: '#/components/parameters/Meta' },
-// 						],
-// 						requestBody: objectSingle,
-// 						responses: {
-// 							'200': objectSingle,
-// 							'401': {
-// 								$ref: '#/components/responses/UnauthorizedError',
-// 							},
-// 							'404': {
-// 								$ref: '#/components/responses/NotFoundError',
-// 							},
-// 						},
-// 					},
-// 					delete: {
-// 						operationId: `delete${schema}`,
-// 						description: `Delete an item from the ${tag}`,
-// 						tags: [tag],
-// 						responses: {
-// 							'200': {
-// 								description: 'Successful request',
-// 							},
-// 							'401': {
-// 								$ref: '#/components/responses/UnauthorizedError',
-// 							},
-// 							'404': {
-// 								$ref: '#/components/responses/NotFoundError',
-// 							},
-// 						},
-// 					},
-// 				});
-// 		}
+		components.schemas = {};
 
-// 		return paths;
-// 	}
+		if (!tags) return;
 
-// 	private generateSchemas(
-// 		collections: Collection[],
-// 		fields: Record<string, Field[]>,
-// 		relations: RelationTree
-// 	) {
-// 		const schemas: Record<string, any> = {};
+		for (const collection of collections) {
+			const tag = tags.find((tag) => tag['x-collection'] === collection.collection);
 
-// 		for (const collection of collections) {
-// 			const { schema, tag } = this.getNameFormats(collection.collection);
+			if (!tag) continue;
 
-// 			if (fields === undefined) return;
+			const isSystem = collection.collection.startsWith('directus_');
 
-// 			schemas[schema] = {
-// 				type: 'object',
-// 				'x-tag': tag,
-// 				properties: {},
-// 			};
+			const fieldsInCollection = fields.filter(
+				(field) => field.collection === collection.collection
+			);
 
-// 			for (const field of fields[collection.collection]) {
-// 				const fieldRelations =
-// 					field.collection in relations && field.field in relations[field.collection]
-// 						? relations[field.collection][field.field]
-// 						: [];
+			if (isSystem) {
+				const schemaComponent: SchemaObject = cloneDeep(
+					openapi.components!.schemas![tag.name]
+				);
 
-// 				if (fieldRelations.length !== 0) {
-// 					const relation = fieldRelations[0];
-// 					const isM2O =
-// 						relation.many_collection === field.collection &&
-// 						relation.many_field === field.field;
+				schemaComponent.properties = {};
 
-// 					const relatedCollection = isM2O
-// 						? relation.one_collection
-// 						: relation.many_collection;
-// 					if (!relatedCollection) continue;
+				for (const field of fieldsInCollection) {
+					schemaComponent.properties[field.field] =
+						(cloneDeep(
+							(openapi.components!.schemas![tag.name] as SchemaObject).properties![
+								field.field
+							]
+						) as SchemaObject) || this.generateField(field, relations, tags, fields);
+				}
 
-// 					const relatedPrimaryField = fields[relatedCollection].find(
-// 						(field) => field.schema?.is_primary_key
-// 					);
-// 					if (relatedPrimaryField?.type === undefined) continue;
+				components.schemas[tag.name] = schemaComponent;
+			} else {
+				const schemaComponent: SchemaObject = {
+					type: 'object',
+					properties: {},
+					'x-collection': collection.collection,
+				};
 
-// 					const relatedType = this.fieldTypes[relatedPrimaryField?.type];
-// 					const { objectRef } = this.getNameFormats(relatedCollection);
+				for (const field of fieldsInCollection) {
+					schemaComponent.properties![field.field] = this.generateField(
+						field,
+						relations,
+						tags,
+						fields
+					);
+				}
 
-// 					const type = isM2O
-// 						? {
-// 								oneOf: [
-// 									{
-// 										...relatedType,
-// 										nullable: field.schema?.is_nullable === true,
-// 									},
-// 									{ $ref: objectRef },
-// 								],
-// 						  }
-// 						: {
-// 								type: 'array',
-// 								items: { $ref: objectRef },
-// 								nullable: field.schema?.is_nullable === true,
-// 						  };
+				components.schemas[tag.name] = schemaComponent;
+			}
+		}
 
-// 					schemas[schema].properties[field.field] = {
-// 						...type,
-// 						description: field.meta?.note || undefined,
-// 					};
-// 				} else {
-// 					schemas[schema].properties[field.field] = {
-// 						...this.fieldTypes[field.type],
-// 						nullable: field.schema?.is_nullable === true,
-// 						description: field.meta?.note || undefined,
-// 					};
-// 				}
-// 			}
-// 		}
-// 		return schemas;
-// 	}
-// }
+		return components;
+	}
+
+	private getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
+		switch (method) {
+			case 'post':
+				return 'create';
+			case 'patch':
+				return 'update';
+			case 'delete':
+				return 'delete';
+			case 'get':
+			default:
+				return 'read';
+		}
+	}
+
+	private generateField(
+		field: Field,
+		relations: Relation[],
+		tags: TagObject[],
+		fields: Field[]
+	): SchemaObject {
+		let propertyObject: SchemaObject = {
+			nullable: field.schema?.is_nullable,
+			description: field.meta?.note || undefined,
+		};
+
+		const relation = relations.find(
+			(relation) =>
+				(relation.many_collection === field.collection &&
+					relation.many_field === field.field) ||
+				(relation.one_collection === field.collection && relation.one_field === field.field)
+		);
+
+		if (!relation) {
+			propertyObject = {
+				...propertyObject,
+				...this.fieldTypes[field.type],
+			};
+		} else {
+			const relationType = getRelationType({
+				relation,
+				field: field.field,
+				collection: field.collection,
+			});
+
+			if (relationType === 'm2o') {
+				const relatedTag = tags.find(
+					(tag) => tag['x-collection'] === relation.one_collection
+				);
+				const relatedPrimaryKeyField = fields.find(
+					(field) =>
+						field.collection === relation.one_collection && field.schema?.is_primary_key
+				);
+
+				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
+
+				propertyObject.oneOf = [
+					{
+						...this.fieldTypes[relatedPrimaryKeyField.type],
+					},
+					{
+						$ref: `#/components/schemas/${relatedTag.name}`,
+					},
+				];
+			} else if (relationType === 'o2m') {
+				const relatedTag = tags.find(
+					(tag) => tag['x-collection'] === relation.many_collection
+				);
+				const relatedPrimaryKeyField = fields.find(
+					(field) =>
+						field.collection === relation.many_collection &&
+						field.schema?.is_primary_key
+				);
+
+				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
+
+				propertyObject.type = 'array';
+				propertyObject.items = {
+					oneOf: [
+						{
+							...this.fieldTypes[relatedPrimaryKeyField.type],
+						},
+						{
+							$ref: `#/components/schemas/${relatedTag.name}`,
+						},
+					],
+				};
+			} else if (relationType === 'm2a') {
+				const relatedTags = tags.filter((tag) =>
+					relation.one_allowed_collections!.includes(tag['x-collection'])
+				);
+
+				propertyObject.type = 'array';
+				propertyObject.items = {
+					oneOf: [
+						{
+							type: 'string',
+						},
+						relatedTags.map((tag) => ({
+							$ref: `#/components/schemas/${tag.name}`,
+						})),
+					],
+				};
+			}
+		}
+
+		return propertyObject;
+	}
+
+	private fieldTypes: Record<
+		typeof types[number],
+		{
+			type:
+				| 'string'
+				| 'number'
+				| 'boolean'
+				| 'object'
+				| 'array'
+				| 'integer'
+				| 'null'
+				| undefined;
+			format?: string;
+			items?: any;
+		}
+	> = {
+		bigInteger: {
+			type: 'integer',
+			format: 'int64',
+		},
+		boolean: {
+			type: 'boolean',
+		},
+		date: {
+			type: 'string',
+			format: 'date',
+		},
+		dateTime: {
+			type: 'string',
+			format: 'date-time',
+		},
+		decimal: {
+			type: 'number',
+		},
+		float: {
+			type: 'number',
+			format: 'float',
+		},
+		integer: {
+			type: 'integer',
+		},
+		json: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
+		},
+		string: {
+			type: 'string',
+		},
+		text: {
+			type: 'string',
+		},
+		time: {
+			type: 'string',
+			format: 'time',
+		},
+		timestamp: {
+			type: 'string',
+			format: 'timestamp',
+		},
+		binary: {
+			type: 'string',
+			format: 'binary',
+		},
+		uuid: {
+			type: 'string',
+			format: 'uuid',
+		},
+		csv: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
+		},
+	};
+}

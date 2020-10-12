@@ -19,4 +19,4 @@ export * from './settings';
 export * from './users';
 export * from './utils';
 export * from './webhooks';
-// export * from './specifications'
+export * from './specifications';

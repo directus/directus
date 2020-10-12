@@ -22,7 +22,8 @@ export class RelationsService extends ItemsService {
 	}
 
 	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
-		const results = (await super.readByQuery(query)) as Relation | Relation[] | null;
+		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const results = (await service.readByQuery(query)) as Relation | Relation[] | null;
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -38,10 +39,12 @@ export class RelationsService extends ItemsService {
 		query: Query = {},
 		action: PermissionsAction = 'read'
 	): Promise<null | Relation | Relation[]> {
-		const results = (await super.readByKey(key as any, query, action)) as
+		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const results = (await service.readByKey(key as any, query, action)) as
 			| Relation
 			| Relation[]
 			| null;
+
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}

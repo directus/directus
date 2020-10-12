@@ -1,10 +1,8 @@
 patch:
   description:
-    Updates the last used page field of the user. This is used internally
+    Updates the last used page field of the currently authenticated user. This is used internally
     to be able to open the Directus admin app from the last page you used.
-  operationId: updateLastUsedPage
-  parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/UUId"
+  operationId: updateLastUsedPageMe
   requestBody:
     content:
       application/json:

@@ -2,17 +2,17 @@ get:
   description: List the roles.
   operationId: getRoles
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Limit'
-  - $ref: '../../openapi.yaml#/components/parameters/Offset'
-  - $ref: '../../openapi.yaml#/components/parameters/Single'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
-  - $ref: '../../openapi.yaml#/components/parameters/Sort'
-  - $ref: '../../openapi.yaml#/components/parameters/Filter'
-  - $ref: '../../openapi.yaml#/components/parameters/q'
-  - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Limit"
+    - $ref: "../../openapi.yaml#/components/parameters/Offset"
+    - $ref: "../../openapi.yaml#/components/parameters/Single"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Sort"
+    - $ref: "../../openapi.yaml#/components/parameters/Filter"
+    - $ref: "../../openapi.yaml#/components/parameters/Search"
+    - $ref: "../../openapi.yaml#/components/parameters/Page"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -22,19 +22,19 @@ get:
               data:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Role'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                  $ref: "../../openapi.yaml#/components/schemas/Roles"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-  - Roles
+    - Roles
 post:
   description: Create a new role.
   operationId: createRole
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -53,7 +53,8 @@ post:
               description: ID used with external services in SCIM.
               type: string
             ip_whitelist:
-              description: Array of IP addresses that are allowed to connect to the
+              description:
+                Array of IP addresses that are allowed to connect to the
                 API as a user of this role.
               type: array
               items:
@@ -67,7 +68,7 @@ post:
               example: Interns
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -75,10 +76,10 @@ post:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Role'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-  - Roles
+    - Roles

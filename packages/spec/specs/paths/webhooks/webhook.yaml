@@ -1,9 +1,6 @@
 get:
-  description: Retrieve a single folder by unique identifier.
-  operationId: getFolder
-  parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Fields"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+  description: Retrieve a single webhook by unique identifier.
+  operationId: getWebhook
   responses:
     "200":
       description: Successful request
@@ -13,16 +10,16 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Folders"
+                $ref: "../../openapi.yaml#/components/schemas/Webhooks"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-    - Folders
+    - Webhooks
 patch:
-  description: Update an existing folder
-  operationId: updateFolder
+  description: Update an existing webhook
+  operationId: updateWebhook
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/Fields"
     - $ref: "../../openapi.yaml#/components/parameters/Meta"
@@ -30,15 +27,34 @@ patch:
     content:
       application/json:
         schema:
-          type: object
           properties:
             name:
+              description: The name of the webhook.
               type: string
-              description: Name of the folder. Can't be null or empty.
-            parent:
-              type: integer
-              example: 3
-              description: Unique identifier of the parent folder. This allows for nested folders.
+              example: create articles
+            method:
+              description: Method used in the webhook.
+              type: string
+              example: POST
+            url:
+              description: The url of the webhook.
+              type: string
+              example: null
+            status:
+              description: The status of the webhook.
+              type: string
+              example: active
+            data:
+              description: If yes, send the content of what was done
+              type: boolean
+              example: true
+            actions:
+              description: The actions that triggers this webhook.
+              example: null
+            collections:
+              description: The collections that triggers this webhook.
+              example: null
+          type: object
   responses:
     "200":
       description: Successful request
@@ -48,17 +64,16 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Folders"
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-    - Folders
-
+    - Webhooks
 delete:
-  description: Delete an existing folder
-  operationId: deleteFolder
+  description: Delete an existing webhook
+  operationId: deleteWebhook
   responses:
     "200":
       description: Successful request
@@ -67,6 +82,6 @@ delete:
     "404":
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-    - Folders
+    - Webhooks
 parameters:
   - $ref: "../../openapi.yaml#/components/parameters/UUId"
