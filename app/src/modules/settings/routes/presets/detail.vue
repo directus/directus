@@ -80,9 +80,13 @@
 				<div class="page-description" v-html="marked($t('page_help_settings_presets_detail'))" />
 			</drawer-detail>
 
-			<div class="layout-drawer">
-				<portal-target name="drawer" />
-			</div>
+			<portal-target class="layout-drawer" name="drawer" />
+
+			<drawer-detail class="layout-drawer" icon="layers" :title="$t('layout_options')">
+				<div class="layout-options">
+					<portal-target name="layout-options" class="portal-contents" />
+				</div>
+			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -510,6 +514,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .header-icon {
 	--v-button-background-color: var(--warning-25);
 	--v-button-color: var(--warning);
@@ -542,6 +548,21 @@ export default defineComponent({
 	--drawer-detail-icon-color: var(--warning);
 	--drawer-detail-color: var(--warning);
 	--drawer-detail-color-active: var(--warning);
+	--v-form-vertical-gap: 24px;
+}
+
+.portal-contents {
+	display: contents;
+}
+
+.layout-options ::v-deep {
+	--v-form-vertical-gap: 24px;
+
+	.type-label {
+		font-size: 1rem;
+	}
+
+	@include form-grid;
 }
 
 .subdued {
