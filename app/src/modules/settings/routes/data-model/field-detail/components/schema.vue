@@ -39,7 +39,7 @@
 				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
 			</div>
 
-			<div class="field full" v-if="fieldData.schema">
+			<div class="field full" v-if="fieldData.schema && fieldData.schema.is_primary_key === false">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
