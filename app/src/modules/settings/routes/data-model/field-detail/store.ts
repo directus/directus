@@ -700,7 +700,7 @@ function initLocalStore(
 	}
 
 	function fieldExists(collection: string, field: string) {
-		return collectionExists(collection) && fieldsStore.getField(collection, field) !== null;
+		return collectionExists(collection) && !!fieldsStore.getField(collection, field);
 	}
 }
 
