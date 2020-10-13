@@ -1,8 +1,10 @@
 <template>
-	<collections-not-found v-if="error || (collectionInfo.meta.singleton === true && primaryKey !== null)" />
+	<collections-not-found
+		v-if="error || (collectionInfo.meta && collectionInfo.meta.singleton === true && primaryKey !== null)"
+	/>
 
 	<private-view v-else :title="title">
-		<template #title v-if="collectionInfo.meta.singleton === true">
+		<template #title v-if="collectionInfo.meta && collectionInfo.meta.singleton === true">
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
@@ -21,7 +23,14 @@
 		</template>
 
 		<template #title-outer:prepend>
-			<v-button v-if="collectionInfo.meta.singleton === true" class="header-icon" rounded icon secondary disabled>
+			<v-button
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				disabled
+			>
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
 
@@ -41,7 +50,7 @@
 
 		<template #headline>
 			<v-breadcrumb
-				v-if="collectionInfo.meta.singleton === true"
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
 				:items="[{ name: $t('collections'), to: '/collections' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
@@ -57,7 +66,7 @@
 						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
-						v-if="collectionInfo.meta.singleton === false"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -90,7 +99,7 @@
 						v-tooltip.bottom="archiveTooltip"
 						@click="on"
 						:disabled="item === null || archiveAllowed !== true"
-						v-if="collectionInfo.meta.singleton === false"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 					>
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>
@@ -122,7 +131,7 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="collectionInfo.meta.singleton !== true"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true"
 						:disabled="hasEdits === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -166,14 +175,24 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_detail'))" />
 			</drawer-detail>
 			<revisions-drawer-detail
-				v-if="collectionInfo.meta.singleton === false && isBatch === false && isNew === false"
+				v-if="
+					collectionInfo.meta &&
+					collectionInfo.meta.singleton === false &&
+					isBatch === false &&
+					isNew === false
+				"
 				:collection="collection"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-drawer-detail
-				v-if="collectionInfo.meta.singleton === false && isBatch === false && isNew === false"
+				v-if="
+					collectionInfo.meta &&
+					collectionInfo.meta.singleton === false &&
+					isBatch === false &&
+					isNew === false
+				"
 				:collection="collection"
 				:primary-key="primaryKey"
 			/>
