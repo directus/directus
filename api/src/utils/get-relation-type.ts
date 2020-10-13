@@ -12,7 +12,8 @@ export function getRelationType(getRelationOptions: {
 	if (
 		relation.many_collection === collection &&
 		relation.many_field === field &&
-		relation.one_collection_field !== null
+		relation.one_collection_field &&
+		relation.one_allowed_collections
 	) {
 		return 'm2a';
 	}
