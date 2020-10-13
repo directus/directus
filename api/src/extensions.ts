@@ -5,7 +5,7 @@ import { ServiceUnavailableException } from './exceptions';
 import express, { Router } from 'express';
 import emitter from './emitter';
 import logger from './logger';
-import { ExtensionContext, HookRegisterFunction, EndpointRegisterFunction } from './types';
+import { HookRegisterFunction, EndpointRegisterFunction } from './types';
 import { ensureDir } from 'fs-extra';
 
 import * as exceptions from './exceptions';

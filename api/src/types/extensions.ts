@@ -5,7 +5,7 @@ import env from '../env';
 import Knex from 'knex';
 import { Router } from 'express';
 
-export type ExtensionContext = {
+type ExtensionContext = {
 	services: typeof services;
 	exceptions: typeof exceptions;
 	database: Knex;
