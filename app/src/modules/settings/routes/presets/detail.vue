@@ -431,7 +431,7 @@ export default defineComponent({
 				return options;
 			});
 
-			const systemCollectionWhiteList = ['directus_users', 'directus_files'];
+			const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
 			const fields = computed(() => [
 				{
