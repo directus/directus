@@ -16,7 +16,7 @@ columns:
   description:
     type: text
   ip_access:
-    type: json
+    type: text
   enforce_tfa:
     type: boolean
     nullable: false
