@@ -6,22 +6,14 @@ get:
   security:
     - Auth: []
   parameters:
-    - $ref: "../../#/components/parameters/Fields"
-    - $ref: "../../#/components/parameters/Limit"
-    - $ref: "../../#/components/parameters/Meta"
-    - $ref: "../../#/components/parameters/Offset"
-    - $ref: "../../#/components/parameters/Single"
-    - $ref: "../../#/components/parameters/Sort"
-    - $ref: "../../#/components/parameters/Filter"
-    - $ref: "../../#/components/parameters/search"
-    - name: status
-      in: query
-      description: Filter items by the given status
-      explode: false
-      schema:
-        type: array
-        items:
-          type: string
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Limit"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Offset"
+    - $ref: "../../openapi.yaml#/components/parameters/Single"
+    - $ref: "../../openapi.yaml#/components/parameters/Sort"
+    - $ref: "../../openapi.yaml#/components/parameters/Filter"
+    - $ref: "../../openapi.yaml#/components/parameters/Search"
   responses:
     "200":
       description: Successful request
@@ -35,14 +27,14 @@ get:
                 items:
                   type: object
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 post:
   description: Create a new item.
   tags:
     - Items
   operationId: createItem
   parameters:
-    - $ref: "../../#/components/parameters/Meta"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -56,6 +48,6 @@ post:
           schema:
             type: object
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: "../../#/components/parameters/Collection"
+  - $ref: "../../openapi.yaml#/components/parameters/Collection"

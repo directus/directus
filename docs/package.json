@@ -11,7 +11,9 @@
   },
   "watch": {
     "build": {
-      "patterns": ["."],
+      "patterns": [
+        "."
+      ],
       "ignore": "dist",
       "extensions": "md,yaml",
       "silent": true,

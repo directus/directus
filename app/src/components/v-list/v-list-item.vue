@@ -68,7 +68,7 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: undefined,
-		}
+		},
 	},
 	setup(props, { listeners }) {
 		const component = computed<string>(() => {

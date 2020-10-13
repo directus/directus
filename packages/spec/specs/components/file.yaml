@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_files
 properties:
   id:
     description: Unique identifier for the file.
@@ -35,14 +36,14 @@ properties:
     example: null
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Folder"
+      - $ref: "../openapi.yaml#/components/schemas/Folders"
     nullable: true
   uploaded_by:
     description: Who uploaded the file.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/User"
+      - $ref: "../openapi.yaml#/components/schemas/Users"
   uploaded_on:
     description: When the file was uploaded.
     example: "2019-12-03T00:10:15+00:00"

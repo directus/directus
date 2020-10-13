@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_relations
 properties:
   id:
     description: Unique identifier for the relation.

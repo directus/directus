@@ -17,6 +17,7 @@ import SettingsNotFound from './routes/not-found.vue';
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
 import { ref } from '@vue/composition-api';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export default defineModule(({ i18n }) => ({
 	id: 'settings',
@@ -37,6 +38,11 @@ export default defineModule(({ i18n }) => ({
 			name: 'settings-collections',
 			path: '/data-model',
 			component: SettingsCollections,
+			beforeEnter(to, from, next) {
+				const collectionsStore = useCollectionsStore();
+				collectionsStore.hydrate();
+				next();
+			},
 			children: [
 				{
 					path: '+',
@@ -53,10 +59,13 @@ export default defineModule(({ i18n }) => ({
 			component: SettingsFields,
 			async beforeEnter(to, from, next) {
 				const { info } = useCollection(ref(to.params.collection));
+				const fieldsStore = useFieldsStore();
 
 				if (!info.value?.meta) {
 					await api.patch(`/collections/${to.params.collection}`, { meta: {} });
 				}
+
+				fieldsStore.hydrate();
 
 				next();
 			},

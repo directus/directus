@@ -83,13 +83,13 @@ function mapKeys(key: string) {
 
 function callHandlers(event: KeyboardEvent) {
 	Object.entries(handlers).forEach(([key, value]) => {
-		const keys = key.split('+')
+		const keys = key.split('+');
 
-		for(key of keysdown) {
-			if(keys.includes(key) === false) return;
+		for (key of keysdown) {
+			if (keys.includes(key) === false) return;
 		}
-		for(key of keys) {
-			if(keysdown.has(key) === false) return;
+		for (key of keys) {
+			if (keysdown.has(key) === false) return;
 		}
 
 		for (let i = 0; i < value.length; i++) {

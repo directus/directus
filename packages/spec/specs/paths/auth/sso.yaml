@@ -19,4 +19,4 @@ get:
                 items:
                   type: string
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

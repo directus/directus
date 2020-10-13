@@ -10,7 +10,7 @@ get:
       required: true
       schema:
         type: string
-    - $ref: "../../#/components/parameters/Mode"
+    - $ref: "../../openapi.yaml#/components/parameters/Mode"
     - name: redirect_url
       in: query
       required: true
@@ -33,4 +33,4 @@ get:
                   token:
                     type: string
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

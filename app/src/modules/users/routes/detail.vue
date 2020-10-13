@@ -52,7 +52,7 @@
 						v-tooltip.bottom="archiveTooltip"
 						@click="on"
 						:disabled="item === null || archiveAllowed !== true"
-						v-if="collectionInfo.meta.singleton === false"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 					>
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>

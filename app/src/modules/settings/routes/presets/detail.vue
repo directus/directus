@@ -80,9 +80,13 @@
 				<div class="page-description" v-html="marked($t('page_help_settings_presets_detail'))" />
 			</drawer-detail>
 
-			<div class="layout-drawer">
-				<portal-target name="drawer" />
-			</div>
+			<portal-target class="layout-drawer" name="drawer" />
+
+			<drawer-detail class="layout-drawer" icon="layers" :title="$t('layout_options')">
+				<div class="layout-options">
+					<portal-target name="layout-options" class="portal-contents" />
+				</div>
+			</drawer-detail>
 		</template>
 	</private-view>
 </template>
@@ -191,6 +195,9 @@ export default defineComponent({
 						editsParsed.role = edits.value.scope.substring(5);
 					} else if (edits.value.scope.startsWith('user_')) {
 						editsParsed.user = edits.value.scope.substring(5);
+					} else {
+						editsParsed.role = null;
+						editsParsed.user = null;
 					}
 				}
 
@@ -424,7 +431,7 @@ export default defineComponent({
 				return options;
 			});
 
-			const systemCollectionWhiteList = ['directus_users', 'directus_files'];
+			const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
 			const fields = computed(() => [
 				{
@@ -510,6 +517,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .header-icon {
 	--v-button-background-color: var(--warning-25);
 	--v-button-color: var(--warning);
@@ -542,6 +551,21 @@ export default defineComponent({
 	--drawer-detail-icon-color: var(--warning);
 	--drawer-detail-color: var(--warning);
 	--drawer-detail-color-active: var(--warning);
+	--v-form-vertical-gap: 24px;
+}
+
+.portal-contents {
+	display: contents;
+}
+
+.layout-options ::v-deep {
+	--v-form-vertical-gap: 24px;
+
+	.type-label {
+		font-size: 1rem;
+	}
+
+	@include form-grid;
 }
 
 .subdued {

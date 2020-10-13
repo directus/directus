@@ -4,7 +4,7 @@ patch:
     to be able to open the Directus admin app from the last page you used.
   operationId: updateLastUsedPage
   parameters:
-    - $ref: "../../#/components/parameters/UUId"
+    - $ref: "../../openapi.yaml#/components/parameters/UUId"
   requestBody:
     content:
       application/json:
@@ -18,8 +18,8 @@ patch:
     "200":
       description: Successful request
     "401":
-      $ref: "../../#/components/responses/UnauthorizedError"
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
-      $ref: "../../#/components/responses/NotFoundError"
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users

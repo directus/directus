@@ -9,7 +9,7 @@
 		</template>
 
 		<template #navigation>
-			<docs-navigation :path="path"/>
+			<docs-navigation :path="path" />
 		</template>
 
 		<div class="docs-content selectable">
@@ -57,16 +57,16 @@ export default defineComponent({
 
 		next((vm: any) => {
 			vm.markdown = md;
-			vm.path = to.path
+			vm.path = to.path;
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
-		this.path = to.path
+		this.path = to.path;
 		next();
 	},
 	setup() {
-		const path = ref<string | null>(null)
+		const path = ref<string | null>(null);
 		const markdown = ref('');
 		const view = ref<Vue>();
 

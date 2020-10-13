@@ -102,6 +102,14 @@ export default defineComponent({
 		async function setFullAccess() {
 			saving.value = true;
 
+			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
+			// before trying to associate any permissions with it
+			if (props.collection.meta === null) {
+				await api.patch(`/collections/${props.collection.collection}`, {
+					meta: {},
+				});
+			}
+
 			if (props.permission) {
 				try {
 					await api.patch(`/permissions/${props.permission.id}`, {
@@ -148,6 +156,14 @@ export default defineComponent({
 		}
 
 		async function openPermissions() {
+			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
+			// before trying to associate any permissions with it
+			if (props.collection.meta === null) {
+				await api.patch(`/collections/${props.collection.collection}`, {
+					meta: {},
+				});
+			}
+
 			if (props.permission) {
 				router.push(`/settings/roles/${props.role || 'public'}/${props.permission.id}`);
 			} else {

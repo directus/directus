@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_presets
 properties:
   id:
     description: Unique identifier for this single collection preset.
@@ -16,7 +17,7 @@ properties:
     nullable: true
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/User"
+      - $ref: "../openapi.yaml#/components/schemas/Users"
   role:
     description:
       The unique identifier of a role in the platform. If `user` is null,
@@ -26,13 +27,13 @@ properties:
     nullable: true
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Role"
+      - $ref: "../openapi.yaml#/components/schemas/Roles"
   collection:
     description: What collection this collection preset is used for.
     example: articles
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Collection"
+      - $ref: "../openapi.yaml#/components/schemas/Collections"
   search:
     description: Search query.
     type: string

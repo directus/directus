@@ -147,7 +147,7 @@ export default defineComponent({
 						}
 						return found;
 					});
-				} else if (lang === 'javascript' || lang === 'htmlmixed' || lang === 'css' || lang === 'yaml') {
+				} else if (lang === 'javascript' || lang === 'htmlmixed' || lang === 'yaml') {
 					let linter = lang;
 					if (lang === 'javascript') {
 						const jshint = await import('jshint');
@@ -156,9 +156,6 @@ export default defineComponent({
 						linter = 'html';
 						const htmlhint = await import('htmlhint');
 						(window as any).HTMLHint = htmlhint;
-					} else if (lang === 'css') {
-						const csslint = await import('csslint');
-						(window as any).CSSLint = csslint;
 					} else if (lang === 'yaml') {
 						const jsyaml = await import('js-yaml');
 						(window as any).jsyaml = jsyaml;
@@ -166,6 +163,9 @@ export default defineComponent({
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					await import(`codemirror/addon/lint/${linter}-lint.js`);
 					codemirror.value.setOption('lint', (CodeMirror as any).lint[linter]);
+
+					await import(`codemirror/mode/${lang}/${lang}.js`);
+					codemirror.value.setOption('mode', { name: lang });
 				} else if (lang === 'text/plain') {
 					codemirror.value.setOption('mode', { name: null });
 				} else {

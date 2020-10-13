@@ -78,9 +78,9 @@ export const useFieldsStore = createStore({
 				name = i18n.t(`fields.${field.collection}.${field.field}`);
 			} else if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
-					const { locale, translation } = field.meta.translations[i];
+					const { language, translation } = field.meta.translations[i];
 
-					i18n.mergeLocaleMessage(locale, {
+					i18n.mergeLocaleMessage(language, {
 						fields: {
 							[field.collection]: {
 								[field.field]: translation,

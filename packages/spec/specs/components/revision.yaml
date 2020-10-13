@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_revisions
 properties:
   id:
     description: Unique identifier for the revision.
@@ -15,7 +16,7 @@ properties:
     example: articles
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Collection"
+      - $ref: "../openapi.yaml#/components/schemas/Collections"
   item:
     description: Primary key of updated item.
     example: "168"

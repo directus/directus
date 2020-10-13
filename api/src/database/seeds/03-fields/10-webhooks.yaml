@@ -68,6 +68,7 @@ fields:
     locked: true
     options:
       label: Send Event Data
+    special: boolean
     sort: 5
     width: half
   - collection: directus_webhooks

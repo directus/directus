@@ -11,12 +11,12 @@ import { useGroupableParent } from '@/composables/groupable';
 export default defineComponent({
 	model: {
 		prop: 'activeItems',
-		event: 'input'
+		event: 'input',
 	},
 	props: {
 		activeItems: {
 			type: Array as PropType<(number | string)[]>,
-			default: () => []
+			default: () => [],
 		},
 		large: {
 			type: Boolean,
@@ -31,18 +31,18 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	setup(props, {emit}) {
-		const {activeItems, multiple, mandatory} = toRefs(props)
+	setup(props, { emit }) {
+		const { activeItems, multiple, mandatory } = toRefs(props);
 		useGroupableParent(
 			{
 				selection: activeItems,
 				onSelectionChange: (newSelection) => {
-					emit('input', newSelection)
-				}
+					emit('input', newSelection);
+				},
 			},
 			{
 				mandatory,
-				multiple
+				multiple,
 			}
 		);
 

@@ -41,7 +41,7 @@ export default defineComponent({
 		},
 		template: {
 			type: String,
-			default: null
+			default: null,
 		},
 		addLabel: {
 			type: String,
@@ -58,15 +58,15 @@ export default defineComponent({
 		headerPlaceholder: {
 			type: String,
 			default: i18n.t('empty_item'),
-		}
+		},
 	},
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);
 
 		const _template = computed(() => {
-			if(props.template === null) return props.fields.length > 0 ? `{{${ props.fields[0].field}}}` : ''
-			return props.template
-		})
+			if (props.template === null) return props.fields.length > 0 ? `{{${props.fields[0].field}}}` : '';
+			return props.template;
+		});
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;

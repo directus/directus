@@ -102,7 +102,7 @@ import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
-import { isEmpty } from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { Relation, Collection } from '@/types';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
@@ -283,11 +283,20 @@ export default defineComponent({
 		async function saveField() {
 			saving.value = true;
 
+			const fieldData = cloneDeep(state.fieldData);
+
+			// You can't alter PK columns in most database drivers. If this field is the PK, remove `schema` so we don't
+			// accidentally try altering the column
+
+			if (fieldData.schema?.is_primary_key === true) {
+				delete fieldData.schema;
+			}
+
 			try {
 				if (props.field !== '+') {
-					await api.patch(`/fields/${props.collection}/${props.field}`, state.fieldData);
+					await api.patch(`/fields/${props.collection}/${props.field}`, fieldData);
 				} else {
-					await api.post(`/fields/${props.collection}`, state.fieldData);
+					await api.post(`/fields/${props.collection}`, fieldData);
 				}
 
 				await Promise.all(
@@ -339,7 +348,7 @@ export default defineComponent({
 					});
 				} else {
 					notify({
-						title: i18n.t('field_create_success', { field: state.fieldData.field }),
+						title: i18n.t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});
 				}

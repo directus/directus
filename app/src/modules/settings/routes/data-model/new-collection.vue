@@ -81,7 +81,12 @@
 				<div class="grid system">
 					<div v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input v-model="info.name" class="monospace" :class="{active: info.enabled}" @click.native="info.enabled = true">
+						<v-input
+							v-model="info.name"
+							class="monospace"
+							:class="{ active: info.enabled }"
+							@click.native="info.enabled = true"
+						>
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />
 							</template>
@@ -191,7 +196,7 @@ export default defineComponent({
 			collectionName,
 			saveError,
 			saving,
-			singleton
+			singleton,
 		};
 
 		async function save() {
@@ -206,7 +211,7 @@ export default defineComponent({
 						archive_field: archiveField.value,
 						archive_value: archiveValue.value,
 						unarchive_value: unarchiveValue.value,
-						singleton: singleton.value
+						singleton: singleton.value,
 					},
 				});
 

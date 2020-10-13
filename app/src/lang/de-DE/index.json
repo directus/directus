@@ -95,7 +95,7 @@
       "company": "Firma",
       "title": "Titel",
       "timezone": "Zeitzone",
-      "locale": "Sprache",
+      "language": "Sprache",
       "avatar": "Avatar",
       "theme": "Design",
       "2fa_secret": "Zwei-Faktor-Authentifizierung"

@@ -21,7 +21,6 @@ columns:
   one_collection:
     type: string
     length: 64
-    nullable: false
     references:
       table: directus_collections
       column: collection
@@ -31,7 +30,11 @@ columns:
   one_primary:
     type: string
     length: 64
-    nullable: false
+  one_collection_field:
+    type: string
+    length: 64
+  one_allowed_collections:
+    type: text
   junction_field:
     type: string
     length: 64

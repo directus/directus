@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_users
 properties:
   id:
     description: Unique identifier for the user.
@@ -47,7 +48,7 @@ properties:
     example: null
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/File"
+      - $ref: "../openapi.yaml#/components/schemas/Files"
     nullable: true
   language:
     description: The user's language used in Directus.
@@ -73,7 +74,7 @@ properties:
     example: 2f24211d-d928-469a-aea3-3c8f53d4e426
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Role"
+      - $ref: "../openapi.yaml#/components/schemas/Roles"
   token:
     description: Static token for the user.
     type: string

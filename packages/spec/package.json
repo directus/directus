@@ -13,11 +13,13 @@
 	},
 	"watch": {
 		"build": {
-      "patterns": ["specs"],
-      "extensions": "yaml",
-      "quiet": true,
-      "silent": true
-    }
+			"patterns": [
+				"specs"
+			],
+			"extensions": "yaml",
+			"quiet": true,
+			"silent": true
+		}
 	},
 	"repository": {
 		"type": "git",

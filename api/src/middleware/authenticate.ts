@@ -14,7 +14,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		user: null,
 		role: null,
 		admin: false,
-		ip: req.ip,
+		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
 		userAgent: req.get('user-agent'),
 	};
 
@@ -74,7 +74,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	}
 
 	if (req.accountability?.user) {
-		await database('directus_users').update({ last_access: new Date() }).where({ id: req.accountability.user });
+		await database('directus_users')
+			.update({ last_access: new Date() })
+			.where({ id: req.accountability.user });
 	}
 
 	return next();

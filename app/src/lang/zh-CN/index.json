@@ -95,7 +95,7 @@
       "company": "公司",
       "title": "标题",
       "timezone": "时区",
-      "locale": "区域",
+      "language": "区域",
       "avatar": "头像",
       "theme": "主题",
       "2fa_secret": "2FA（双因素身份验证）"

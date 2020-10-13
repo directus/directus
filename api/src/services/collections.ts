@@ -132,9 +132,9 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const meta = await collectionItemsService.readByQuery({
+		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		}) as Collection['meta'][];
+		})) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
@@ -170,9 +170,9 @@ export class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-		const meta = await collectionItemsService.readByQuery({
+		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		}) as Collection['meta'][];
+		})) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
@@ -287,11 +287,14 @@ export class CollectionsService {
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;
 
+			/** @TODO M2A — Handle m2a case here */
+
 			if (isM2O) {
 				await this.knex('directus_relations')
 					.delete()
 					.where({ many_collection: collection, many_field: relation.many_field });
-				await fieldsService.deleteField(relation.one_collection, relation.one_field);
+
+				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
 			} else {
 				await this.knex('directus_relations')
 					.update({ one_field: null })

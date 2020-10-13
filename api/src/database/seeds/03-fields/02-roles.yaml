@@ -50,7 +50,7 @@ fields:
     options:
       placeholder: Add allowed IP addresses, leave empty to allow all...
     locked: true
-    special: json
+    special: csv
     sort: 6
     width: full
   - collection: directus_roles

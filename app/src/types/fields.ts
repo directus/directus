@@ -1,7 +1,7 @@
 import { TranslateResult } from 'vue-i18n';
 
 type Translations = {
-	locale: string;
+	language: string;
 	translation: string;
 };
 

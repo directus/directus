@@ -51,7 +51,6 @@
     "color": "^3.1.2",
     "color-string": "^1.5.3",
     "cropperjs": "^1.5.7",
-    "csslint": "^1.0.5",
     "date-fns": "^2.14.0",
     "diff": "^4.0.2",
     "highlight.js": "^10.2.0",
