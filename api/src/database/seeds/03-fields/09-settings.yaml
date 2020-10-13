@@ -203,3 +203,23 @@ fields:
     field: id
     hidden: true
     locked: true
+  - collection: directus_settings
+    field: overrides_divider
+    interface: divider
+    locked: true
+    options:
+      icon: brush
+      title: App Overrides
+      color: '#2F80ED'
+    special: alias
+    sort: 15
+    width: full
+  - collection: directus_settings
+    field: custom_css
+    interface: code
+    locked: true
+    options:
+      language: css
+      lineNumber: true
+    sort: 16
+    width: full

@@ -26,6 +26,8 @@
 
 		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
 		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
+
+		<mounting-portal mount-to="#custom-css" target-tag="style">{{ customCSS }}</mounting-portal>
 	</div>
 </template>
 
@@ -102,6 +104,10 @@ export default defineComponent({
 			}
 		);
 
+		const customCSS = computed(() => {
+			return settingsStore.state?.settings?.custom_css || '';
+		});
+
 		const appAccess = computed(() => {
 			if (!userStore.state.currentUser) return true;
 			return userStore.state.currentUser?.role?.app_access || false;
@@ -118,7 +124,7 @@ export default defineComponent({
 			axios,
 		});
 
-		return { hydrating, brandStyle, appAccess, error };
+		return { hydrating, brandStyle, appAccess, error, customCSS };
 	},
 });
 </script>
