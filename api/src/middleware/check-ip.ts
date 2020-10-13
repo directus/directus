@@ -9,7 +9,8 @@ export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
 		.from('directus_roles')
 		.where({ id: req.accountability!.role })
 		.first();
-	const ipAllowlist = (role.ip_access || '').split(',').filter((ip: string) => ip);
+
+	const ipAllowlist = (role?.ip_access || '').split(',').filter((ip: string) => ip);
 
 	if (ipAllowlist.length > 0 && ipAllowlist.includes(req.accountability!.ip) === false)
 		throw new InvalidIPException();
