@@ -80,7 +80,7 @@ function registerHooks(hooks: string[]) {
 		const hookPath = path.resolve(extensionsPath, 'hooks', hook, 'index.js');
 		const hookInstance: HookRegisterFunction | { default?: HookRegisterFunction } = require(hookPath);
 
-		let register: HookRegisterFunction = () => ({});
+		let register: HookRegisterFunction = hookInstance as HookRegisterFunction;
 		if (typeof hookInstance !== "function") {
 			if (hookInstance.default) {
 				register = hookInstance.default;
@@ -110,7 +110,7 @@ function registerEndpoints(endpoints: string[], router: Router) {
 		const endpointPath = path.resolve(extensionsPath, 'endpoints', endpoint, 'index.js');
 		const endpointInstance: EndpointRegisterFunction | { default?: EndpointRegisterFunction } = require(endpointPath);
 
-		let register: EndpointRegisterFunction = () => ({});
+		let register: EndpointRegisterFunction = endpointInstance as EndpointRegisterFunction;
 		if (typeof endpointInstance !== "function") {
 			if (endpointInstance.default) {
 				register = endpointInstance.default;
