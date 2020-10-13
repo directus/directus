@@ -5,7 +5,7 @@ import { ServiceUnavailableException } from './exceptions';
 import express, { Router } from 'express';
 import emitter from './emitter';
 import logger from './logger';
-import { HookRegisterFunction, EndpointRegisterFunction } from './types';
+import { ExtensionContext, HookRegisterFunction, EndpointRegisterFunction } from './types';
 import { ensureDir } from 'fs-extra';
 
 import * as exceptions from './exceptions';
@@ -78,9 +78,16 @@ function registerHooks(hooks: string[]) {
 
 	function registerHook(hook: string) {
 		const hookPath = path.resolve(extensionsPath, 'hooks', hook, 'index.js');
-		const register: HookRegisterFunction = require(hookPath);
-		const events = register({ services, exceptions, env, database });
+		const hookInstance: HookRegisterFunction | { default?: HookRegisterFunction } = require(hookPath);
 
+		let register: HookRegisterFunction = () => ({});
+		if (typeof hookInstance !== "function") {
+			if (hookInstance.default) {
+				register = hookInstance.default;
+			}
+		}
+
+		let events = register({ services, exceptions, env, database });
 		for (const [event, handler] of Object.entries(events)) {
 			emitter.on(event, handler);
 		}
@@ -101,7 +108,14 @@ function registerEndpoints(endpoints: string[], router: Router) {
 
 	function registerEndpoint(endpoint: string) {
 		const endpointPath = path.resolve(extensionsPath, 'endpoints', endpoint, 'index.js');
-		const register: EndpointRegisterFunction = require(endpointPath);
+		const endpointInstance: EndpointRegisterFunction | { default?: EndpointRegisterFunction } = require(endpointPath);
+
+		let register: EndpointRegisterFunction = () => ({});
+		if (typeof endpointInstance !== "function") {
+			if (endpointInstance.default) {
+				register = endpointInstance.default;
+			}
+		}
 
 		const scopedRouter = express.Router();
 		router.use(`/${endpoint}/`, scopedRouter);
