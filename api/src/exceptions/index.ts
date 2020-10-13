@@ -9,3 +9,4 @@ export * from './invalid-payload';
 export * from './invalid-query';
 export * from './route-not-found';
 export * from './service-unavailable';
+export * from './unprocessable-entity';
