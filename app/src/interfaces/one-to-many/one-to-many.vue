@@ -239,14 +239,21 @@ export default defineComponent({
 							? `/${relatedCollection.value.collection.substring(9)}`
 							: `/items/${relatedCollection.value.collection}`;
 
-						const response = await api.get(endpoint, {
-							params: {
-								fields: fields,
-								[`filter[${pkField}][_in]`]: getPrimaryKeys().join(','),
-							},
-						});
+						const primaryKeys = getPrimaryKeys();
 
-						const existingItems = (response.data.data as Record<string, any>[]) || [];
+						let existingItems: any[] = [];
+
+						if (primaryKeys && primaryKeys.length > 0) {
+							const response = await api.get(endpoint, {
+								params: {
+									fields: fields,
+									[`filter[${pkField}][_in]`]: getPrimaryKeys().join(','),
+								},
+							});
+
+							existingItems = response.data.data;
+						}
+
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
 
