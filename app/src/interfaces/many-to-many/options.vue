@@ -66,10 +66,13 @@ export default defineComponent({
 
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+
 			const { field } = props.fieldData;
+
 			const junctionRelation = props.relations.find(
 				(relation) => relation.one_collection === props.collection && relation.one_field === field
 			);
+
 			if (junctionRelation === undefined) return;
 
 			const relatedCollection = props.relations.find(
@@ -77,7 +80,6 @@ export default defineComponent({
 					relation.one_collection !== props.collection &&
 					relation.many_field === junctionRelation.junction_field
 			);
-			console.log(junctionRelation.junction_field);
 
 			return relatedCollection?.one_collection || null;
 		});
