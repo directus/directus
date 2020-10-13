@@ -76,10 +76,10 @@ import ModalDetail from '@/views/private/components/modal-detail';
 import { get } from 'lodash';
 import i18n from '@/lang';
 
-import useRelation from '@/interfaces/many-to-many/use-relation';
-import useSelection from '@/interfaces/many-to-many/use-selection';
-import usePreview from '@/interfaces/many-to-many/use-preview';
-import useEdit from '@/interfaces/many-to-many/use-edit';
+import useRelation from './use-relation';
+import useSelection from './use-selection';
+import usePreview from './use-preview';
+import useEdit from './use-edit';
 
 export default defineComponent({
 	components: { ModalBrowse, ModalDetail },

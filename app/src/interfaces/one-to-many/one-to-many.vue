@@ -69,6 +69,7 @@ import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
 import { Filter, Field } from '@/types';
 import { Header } from '@/components/v-table/types';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
@@ -175,8 +176,15 @@ export default defineComponent({
 
 		function deleteItem(item: Record<string, any>) {
 			const relatedPrimKey = relatedPrimaryKeyField.value.field;
-			const id = item[relatedPrimKey];
 
+			if (relatedPrimKey in item === false) {
+				emit(
+					'input',
+					props.value.filter((val) => isEqual(item, val) === false)
+				);
+			}
+
+			const id = item[relatedPrimKey];
 			emit(
 				'input',
 				props.value.filter((item) => {
@@ -310,15 +318,13 @@ export default defineComponent({
 				const hasPrimaryKey = pkField in item;
 
 				editsAtStart.value = item;
-				currentlyEditing.value = hasPrimaryKey ? item[pkField] : 1;
+				currentlyEditing.value = hasPrimaryKey ? item[pkField] : -1;
 			}
 
 			function stageEdits(edits: any) {
 				const pkField = relatedPrimaryKeyField.value.field;
 
 				const hasPrimaryKey = pkField in edits;
-
-				if (props.value === null) return emit('input', [edits]);
 
 				const newValue = props.value.map((item) => {
 					if (

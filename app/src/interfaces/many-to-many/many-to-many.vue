@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="!junction">
+	<v-notice type="warning" v-if="!junction || !relation">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
@@ -70,6 +70,9 @@ import ModalBrowse from '@/views/private/components/modal-browse';
 import { Filter, Field } from '@/types';
 import { Header } from '@/components/v-table/types';
 import { Relation } from '@/types';
+import { cloneDeep, isEqual } from 'lodash';
+
+import useActions from './actions';
 
 export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
@@ -100,24 +103,28 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { value } = toRefs(props);
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const {
-			junction,
-			junctionCollection,
-			junctionPrimaryKeyField,
-			relation,
-			relationCollection,
-			relationPrimaryKeyField,
-		} = useRelation();
-		const { tableHeaders, displayItems, loading, error } = useTable();
+		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation();
+		const { tableHeaders, items, loading, error, displayItems, getJunctionFromRelatedId } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection();
 
+		const {
+			deleteItem,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys,
+			getNewSelectedItems,
+			getJunctionItem,
+		} = useActions(value, items, relationFields, (newValue) => emit('input', newValue));
+
 		return {
 			junction,
+			relation,
 			tableHeaders,
 			loading,
 			currentlyEditing,
@@ -132,95 +139,8 @@ export default defineComponent({
 			deleteItem,
 			displayItems,
 			selectedPrimaryKeys,
+			items,
 		};
-
-		function getItem(id: string | number) {
-			const pkField = junctionPrimaryKeyField.value.field;
-			if (props.value === null) return null;
-			return (
-				props.value.find(
-					(item) => (typeof item === 'object' && pkField in item && item[pkField] === id) || item === id
-				) || null
-			);
-		}
-
-		function getNewItems() {
-			const junctionField = junction.value.junction_field;
-			const relatedPkField = relationPrimaryKeyField.value.field;
-			if (props.value === null || junctionField === null) return [];
-			return props.value.filter(
-				(item) =>
-					typeof item === 'object' && junctionField in item && relatedPkField in item[junctionField] === false
-			) as Record<string, any>[];
-		}
-
-		function getUpdatedItems() {
-			const junctionField = junction.value.junction_field;
-			const relatedPkField = relationPrimaryKeyField.value.field;
-			if (props.value === null || junctionField === null) return [];
-			return props.value.filter(
-				(item) =>
-					typeof item === 'object' && junctionField in item && relatedPkField in item[junctionField] === true
-			) as Record<string, any>[];
-		}
-
-		function getExistingItems() {
-			if (props.value === null) return [];
-			const pkField = junctionPrimaryKeyField.value.field;
-			return props.value.filter((item) => typeof item === 'string' || typeof item === 'number');
-		}
-
-		function getPrimaryKeys() {
-			if (props.value === null) return [];
-			const pkField = junctionPrimaryKeyField.value.field;
-			return props.value
-				.map((item) => {
-					if (typeof item === 'object') {
-						if (pkField in item) return item[pkField];
-					} else {
-						return item;
-					}
-				})
-				.filter((i) => i);
-		}
-
-		function getRelatedPrimaryKeys() {
-			if (props.value === null) return [];
-			const junctionField = junction.value.junction_field;
-			const relatedPkField = relationPrimaryKeyField.value.field;
-			return props.value
-				.map((junctionItem) => {
-					if (
-						typeof junctionItem !== 'object' ||
-						junctionField === null ||
-						junctionField in junctionItem === false
-					)
-						return undefined;
-					const item = junctionItem[junctionField];
-
-					if (typeof item === 'object') {
-						if (relatedPkField in item) return item[relatedPkField];
-					} else {
-						return item;
-					}
-				})
-				.filter((i) => i);
-		}
-
-		function deleteItem(item: Record<string, any>) {
-			const relatedPrimKey = relationPrimaryKeyField.value.field;
-			const id = item[relatedPrimKey];
-
-			emit(
-				'input',
-				props.value.filter((item) => {
-					if (typeof item === 'number' || typeof item === 'string') return item !== id;
-					if (typeof item === 'object' && relatedPrimKey in item) {
-						return item[relatedPrimKey] !== id;
-					}
-				})
-			);
-		}
 
 		/**
 		 * Holds info about the current relationship, like related collection, primary key field
@@ -250,13 +170,20 @@ export default defineComponent({
 			const { primaryKeyField: junctionPrimaryKeyField } = useCollection(junctionCollection.value.collection);
 			const { primaryKeyField: relationPrimaryKeyField } = useCollection(relationCollection.value.collection);
 
+			const relationFields = computed(() => {
+				return {
+					junctionPkField: junctionPrimaryKeyField.value.field,
+					relationPkField: relationPrimaryKeyField.value.field,
+					junctionRelation: junction.value.junction_field as string,
+				};
+			});
+
 			return {
 				junction,
 				junctionCollection,
-				junctionPrimaryKeyField,
 				relation,
 				relationCollection,
-				relationPrimaryKeyField,
+				relationFields,
 			};
 		}
 
@@ -265,24 +192,23 @@ export default defineComponent({
 			// values if it needs to. This allows the user to manually resize the columns for example
 			const tableHeaders = ref<Header[]>([]);
 			const loading = ref(false);
-			const junctionItems = ref<Record<string, any>[]>([]);
-			const displayItems = ref<Record<string, any>[]>([]);
+			const items = ref<Record<string, any>[]>([]);
 			const error = ref(null);
 
 			watch(
 				() => props.value,
 				async (newVal) => {
 					loading.value = true;
-					const pkField = relationPrimaryKeyField.value.field;
+					const { junctionRelation, relationPkField, junctionPkField } = relationFields.value;
+					if (junctionRelation === null) return;
 
-					const relatedPrimaryKeys = await loadRelatedIds(newVal);
-					console.log(relatedPrimaryKeys);
+					// Load the junction items so we have access to the id's in the related collection
+					const junctionItems = await loadRelatedIds(newVal);
+					const relatedPrimaryKeys = junctionItems.map((junction) => junction[junctionRelation]);
 
 					const fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
 
-					if (fields.includes(pkField) === false) {
-						fields.push(pkField);
-					}
+					if (fields.includes(relationPkField) === false) fields.push(relationPkField);
 
 					try {
 						const endpoint = relationCollection.value.collection.startsWith('directus_')
@@ -292,21 +218,37 @@ export default defineComponent({
 						const response = await api.get(endpoint, {
 							params: {
 								fields: fields,
-								[`filter[${pkField}][_in]`]: relatedPrimaryKeys.join(','),
+								[`filter[${relationPkField}][_in]`]: relatedPrimaryKeys.join(','),
 							},
 						});
 
-						const existingItems = (response.data.data as Record<string, any>[]) || [];
+						const responseData = (response.data.data as Record<string, any>[]) || [];
+
+						// Insert the related items into the junction items
+						const existingItems = responseData.map((data) => {
+							const id = data[relationPkField];
+							const junction = junctionItems.find((junction) => junction[junctionRelation] === id);
+							if (junction === undefined) return;
+
+							const newJunction = cloneDeep(junction);
+							newJunction[junctionRelation] = data;
+							return newJunction;
+						}) as Record<string, any>[];
+
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
 
-						displayItems.value = existingItems
+						// Replace existing items with it's updated counterparts
+						const newVal = existingItems
 							.map((item) => {
-								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
+								const updatedItem = updatedItems.find(
+									(updated) => updated[junctionPkField] === item[junctionPkField]
+								);
 								if (updatedItem !== undefined) return updatedItem;
 								return item;
 							})
 							.concat(...newItems);
+						items.value = newVal;
 					} catch (err) {
 						error.value = err;
 					} finally {
@@ -317,6 +259,8 @@ export default defineComponent({
 			);
 
 			async function loadRelatedIds(newVal: (string | number | Record<string, any>)[]) {
+				const { junctionPkField } = relationFields.value;
+
 				try {
 					const endpoint = junctionCollection.value.collection.startsWith('directus_')
 						? `/${junctionCollection.value.collection.substring(9)}`
@@ -324,15 +268,38 @@ export default defineComponent({
 
 					const response = await api.get(endpoint, {
 						params: {
-							[`filter[${junctionPrimaryKeyField.value.field}][_in]`]: getPrimaryKeys().join(','),
+							[`filter[${junctionPkField}][_in]`]: getPrimaryKeys().join(','),
 						},
 					});
+					const data = response.data.data as Record<string, any>[];
 
-					return response.data.data;
+					// Add all items that already had the id of it's related item
+					return data.concat(...getNewSelectedItems());
 				} catch (err) {
 					error.value = err;
 				}
+				return [];
 			}
+
+			function getJunctionFromRelatedId(id: string | number) {
+				const { relationPkField, junctionRelation } = relationFields.value;
+
+				return (
+					items.value.find((item) => {
+						return;
+						typeof item === 'object' &&
+							junctionRelation in item &&
+							typeof item[junctionRelation] === 'object' &&
+							relationPkField in item[junctionRelation] &&
+							item[junctionRelation][relationPkField] === id;
+					}) || null
+				);
+			}
+
+			const displayItems = computed(() => {
+				const { junctionRelation } = relationFields.value;
+				return items.value.map((item) => item[junctionRelation]);
+			});
 
 			// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 			// fields prop changes (most likely when we're navigating to a different o2m context)
@@ -368,7 +335,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders, displayItems, loading, error };
+			return { tableHeaders, displayItems, items, loading, error, getJunctionFromRelatedId };
 		}
 
 		function useEdits() {
@@ -377,48 +344,57 @@ export default defineComponent({
 			const currentlyEditing = ref<string | number | null>(null);
 
 			// This keeps track of the starting values so we can match with it
-			const editsAtStart = ref({});
+			const editsAtStart = ref<Record<string, any>>({});
 
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const pkField = junctionPrimaryKeyField.value.field;
-				const hasPrimaryKey = pkField in item;
+				const { relationPkField } = relationFields.value;
+				const hasPrimaryKey = relationPkField in item;
 
 				editsAtStart.value = item;
-				currentlyEditing.value = hasPrimaryKey ? item[pkField] : 1;
+				currentlyEditing.value = hasPrimaryKey ? item[relationPkField] : -1;
 			}
 
 			function stageEdits(edits: any) {
-				const pkField = junctionPrimaryKeyField.value.field;
-
-				const hasPrimaryKey = pkField in edits;
-
-				if (props.value === null) return emit('input', [edits]);
+				const { relationPkField, junctionRelation, junctionPkField } = relationFields.value;
+				const editsWrapped = { [junctionRelation]: edits };
+				const hasPrimaryKey = relationPkField in editsAtStart.value;
+				const junctionItem = hasPrimaryKey
+					? getJunctionFromRelatedId(editsAtStart.value[relationPkField])
+					: null;
 
 				const newValue = props.value.map((item) => {
-					if (
-						typeof item === 'object' &&
-						pkField in item &&
-						pkField in edits &&
-						item[pkField] === edits[pkField]
-					) {
-						return edits;
+					if (junctionItem !== null && junctionPkField in junctionItem) {
+						const id = junctionItem[junctionPkField];
+
+						if (typeof item === 'object' && junctionPkField in item) {
+							if (item[junctionPkField] === id)
+								return { [junctionRelation]: edits, [junctionPkField]: id };
+						} else if (typeof item === 'number' || typeof item === 'string') {
+							if (item === id) return { [junctionRelation]: edits, [junctionPkField]: id };
+						}
 					}
 
-					if (item === edits[pkField]) {
-						return edits;
+					if (typeof item === 'object' && relationPkField in edits && junctionRelation in item) {
+						const id = edits[relationPkField];
+						const relatedItem = item[junctionRelation] as string | number | Record<string, any>;
+						if (typeof relatedItem === 'object' && relationPkField in relatedItem) {
+							if (relatedItem[relationPkField] === id) return editsWrapped;
+						} else if (typeof relatedItem === 'string' || typeof relatedItem === 'number') {
+							if (relatedItem === id) return editsWrapped;
+						}
 					}
 
-					if (editsAtStart.value === item) {
-						return edits;
+					if (isEqual({ [junctionRelation]: editsAtStart.value }, item)) {
+						return editsWrapped;
 					}
 
 					return item;
 				});
 
-				if (hasPrimaryKey === false && newValue.includes(edits) === false) {
-					newValue.push(edits);
+				if (hasPrimaryKey === false && newValue.includes(editsWrapped) === false) {
+					newValue.push(editsWrapped);
 				}
 
 				emit('input', newValue);
@@ -436,23 +412,29 @@ export default defineComponent({
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
 				if (displayItems.value === null) return [];
 
-				const pkField = junctionPrimaryKeyField.value.field;
+				const { relationPkField } = relationFields.value;
 
 				return displayItems.value
-					.filter((currentItem) => pkField in currentItem)
-					.map((currentItem) => currentItem[pkField]);
+					.filter((currentItem) => relationPkField in currentItem)
+					.map((currentItem) => currentItem[relationPkField]);
 			});
 
 			return { stageSelection, selectModalActive, selectedPrimaryKeys };
 
 			function stageSelection(newSelection: (number | string)[]) {
-				console.log(newSelection);
+				const { junctionRelation, junctionPkField } = relationFields.value;
 
-				const pkField = junctionPrimaryKeyField.value.field;
 				const newItems = getNewItems();
+
+				if (junctionRelation === null) return;
+
 				const selection = newSelection.map((item) => {
-					const updatedItem = getItem(item);
-					return updatedItem === null ? item : updatedItem;
+					const junction = getJunctionFromRelatedId(item);
+					if (junction === null) return { [junctionRelation]: item };
+
+					const updatedItem = getJunctionItem(junction[junctionPkField]);
+
+					return updatedItem === null ? { [junctionRelation]: item } : updatedItem;
 				});
 
 				emit('input', [...selection, ...newItems]);
