@@ -371,11 +371,12 @@ export class PayloadService {
 							.where({ [relation.many_primary]: record })
 							.first());
 
-						if (exists === false)
+						if (exists === false) {
 							throw new ForbiddenException(undefined, {
 								item: record,
 								collection: relation.many_collection,
 							});
+						}
 
 						record = {
 							[relation.many_primary]: relatedRecord,
@@ -394,9 +395,18 @@ export class PayloadService {
 					{ [relation.many_field]: null },
 					{
 						filter: {
-							[relation.many_primary]: {
-								_nin: primaryKeys,
-							},
+							_and: [
+								{
+									[relation.many_field]: {
+										_eq: parent,
+									},
+								},
+								{
+									[relation.many_primary]: {
+										_nin: primaryKeys,
+									},
+								},
+							],
 						},
 					}
 				);
