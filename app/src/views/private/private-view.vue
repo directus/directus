@@ -178,6 +178,8 @@ export default defineComponent({
 		width: 100%;
 		height: 100%;
 		overflow: auto;
+		scroll-padding-top: 100px;
+		scroll-behavior: smooth;
 
 		main {
 			display: contents;
