@@ -1,67 +1,58 @@
 import { Ref, ref } from '@vue/composition-api';
 import { RelationInfo } from './use-relation';
-import { isEqual } from 'lodash';
+import { isEqual, get } from 'lodash';
 
 export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
-	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
-	emit: (newVal: any[] | null) => void,
-	getJunctionFromRelatedId: (id: string | number, items: Record<string, any>[]) => Record<string, any> | null
+	emit: (newVal: any[] | null) => void
 ) {
 	// Primary key of the item we're currently editing. If null, the edit modal should be
 	// closed
 	const currentlyEditing = ref<string | number | null>(null);
+	const relatedPrimaryKey = ref<string | number | null>(null);
 
 	// This keeps track of the starting values so we can match with it
 	const editsAtStart = ref<Record<string, any>>({});
 
 	function editItem(item: any) {
-		const { relationPkField } = relation.value;
-		const hasPrimaryKey = relationPkField in item;
+		const { relationPkField, junctionRelation, junctionPkField } = relation.value;
 
 		editsAtStart.value = item;
-		currentlyEditing.value = hasPrimaryKey ? item[relationPkField] : -1;
+		relatedPrimaryKey.value = get(item, [junctionRelation, relationPkField], null);
+		currentlyEditing.value = get(item, [junctionPkField], null);
 	}
 
 	function stageEdits(edits: any) {
 		const { relationPkField, junctionRelation, junctionPkField } = relation.value;
-		const editsWrapped = { [junctionRelation]: edits };
-		const hasPrimaryKey = relationPkField in editsAtStart.value;
-		const junctionItem = hasPrimaryKey
-			? getJunctionFromRelatedId(editsAtStart.value[relationPkField], items.value)
-			: null;
 
 		const newValue = (value.value || []).map((item) => {
-			if (junctionItem !== null && junctionPkField in junctionItem) {
-				const id = junctionItem[junctionPkField];
+			if (currentlyEditing.value !== null) {
+				const id = currentlyEditing.value;
 
 				if (typeof item === 'object' && junctionPkField in item) {
-					if (item[junctionPkField] === id) return { [junctionRelation]: edits, [junctionPkField]: id };
-				} else if (typeof item === 'number' || typeof item === 'string') {
-					if (item === id) return { [junctionRelation]: edits, [junctionPkField]: id };
+					if (item[junctionPkField] === id) return edits;
+				} else if (['number', 'string'].includes(typeof item)) {
+					if (item === id) return edits;
 				}
 			}
 
-			if (typeof item === 'object' && relationPkField in edits && junctionRelation in item) {
-				const id = edits[relationPkField];
-				const relatedItem = item[junctionRelation] as string | number | Record<string, any>;
-				if (typeof relatedItem === 'object' && relationPkField in relatedItem) {
-					if (relatedItem[relationPkField] === id) return editsWrapped;
-				} else if (typeof relatedItem === 'string' || typeof relatedItem === 'number') {
-					if (relatedItem === id) return editsWrapped;
-				}
+			if (relatedPrimaryKey.value != null) {
+				const id = relatedPrimaryKey.value;
+
+				if (get(item, [junctionRelation], null) === id) return edits;
+				if (get(item, [junctionRelation, relationPkField], null) === id) return edits;
 			}
 
-			if (isEqual({ [junctionRelation]: editsAtStart.value }, item)) {
-				return editsWrapped;
+			if (isEqual(editsAtStart.value, item)) {
+				return edits;
 			}
 
 			return item;
 		});
 
-		if (hasPrimaryKey === false && newValue.includes(editsWrapped) === false) {
-			newValue.push(editsWrapped);
+		if (relatedPrimaryKey.value === null && currentlyEditing.value === null && newValue.includes(edits) === false) {
+			newValue.push(edits);
 		}
 
 		if (newValue.length === 0) emit(null);
@@ -71,7 +62,8 @@ export default function useEdit(
 	function cancelEdit() {
 		editsAtStart.value = {};
 		currentlyEditing.value = null;
+		relatedPrimaryKey.value = null;
 	}
 
-	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
+	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey };
 }

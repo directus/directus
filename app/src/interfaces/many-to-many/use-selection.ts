@@ -1,23 +1,24 @@
 import { Ref, ref, computed } from '@vue/composition-api';
 import { RelationInfo } from './use-relation';
+import { get } from 'lodash';
 import { Filter } from '@/types';
 
 export default function useSelection(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
-	displayItems: Ref<Record<string, any>[]>,
+	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
 ) {
 	const selectModalActive = ref(false);
 
 	const selectedPrimaryKeys = computed(() => {
-		if (displayItems.value === null) return [];
+		if (items.value === null) return [];
 
-		const { relationPkField } = relation.value;
+		const { relationPkField, junctionRelation } = relation.value;
 
-		const selectedKeys: (number | string)[] = displayItems.value
-			.filter((currentItem) => relationPkField in currentItem)
-			.map((currentItem) => currentItem[relationPkField]);
+		const selectedKeys: (number | string)[] = items.value
+			.map((currentItem) => get(currentItem, [junctionRelation, relationPkField]))
+			.filter((i) => i);
 
 		return selectedKeys;
 	});
@@ -39,11 +40,7 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionRelation } = relation.value;
-
-		const selection = newSelection
-			.filter((item) => selectedPrimaryKeys.value.includes(item) === false)
-			.map((item) => ({ [junctionRelation]: item }));
+		const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
 
 		const newVal = [...selection, ...(value.value || [])];
 		if (newVal.length === 0) emit(null);

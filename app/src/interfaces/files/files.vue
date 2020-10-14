@@ -45,7 +45,7 @@
 			:collection="relationFields.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:related-primary-key="relationFields.relationPkField"
+			:related-primary-key="relationFields.relationPkField || '+'"
 			:junction-field="relationFields.junctionRelation"
 			@input="stageEdits"
 			@update:active="cancelEdit"
@@ -165,10 +165,8 @@ export default defineComponent({
 
 		const { cancelEdit, stageEdits, editsAtStart, editItem, currentlyEditing } = useEdit(
 			value,
-			items,
 			relationFields,
-			emitter,
-			getJunctionFromRelatedId
+			emitter
 		);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(

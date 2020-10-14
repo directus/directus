@@ -24,6 +24,21 @@ export default function usePreview(
 	const items = ref<Record<string, any>[]>([]);
 	const error = ref(null);
 
+	function getRelatedFields(fields: string[]) {
+		const { junctionRelation } = relation.value;
+
+		return fields
+			.map((field) => {
+				const sections = field.split('.');
+				if (junctionRelation === sections[0] && sections.length === 2) return sections[1];
+			})
+			.filter((i) => i);
+	}
+
+	function getJunctionFields() {
+		return (fields.value || []).filter((field) => field.includes('.') === false);
+	}
+
 	watch(
 		() => value.value,
 		async (newVal) => {
@@ -40,7 +55,7 @@ export default function usePreview(
 			const junctionItems = await loadRelatedIds();
 			const relatedPrimaryKeys = junctionItems.map((junction) => junction[junctionRelation]);
 
-			const filteredFields = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
+			const filteredFields = [...(fields.value.length > 0 ? getRelatedFields(fields.value) : getDefaultFields())];
 
 			if (filteredFields.includes(relationPkField) === false) filteredFields.push(relationPkField);
 
@@ -103,12 +118,18 @@ export default function usePreview(
 			const primaryKeys = getPrimaryKeys();
 
 			if (primaryKeys.length > 0) {
+				const filteredFields = getJunctionFields();
+
+				if (filteredFields.includes(junctionPkField) === false) filteredFields.push(junctionPkField);
+				if (filteredFields.includes(junctionRelation) === false) filteredFields.push(junctionRelation);
+
 				const endpoint = relation.value.junctionCollection.startsWith('directus_')
 					? `/${relation.value.junctionCollection.substring(9)}`
 					: `/items/${relation.value.junctionCollection}`;
 
 				const response = await api.get(endpoint, {
 					params: {
+						fields: filteredFields,
 						[`filter[${junctionPkField}][_in]`]: getPrimaryKeys().join(','),
 					},
 				});
@@ -127,19 +148,19 @@ export default function usePreview(
 		return [];
 	}
 
-	const displayItems = computed(() => {
-		const { junctionRelation } = relation.value;
-		return items.value.map((item) => item[junctionRelation]);
-	});
-
 	// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 	// fields prop changes (most likely when we're navigating to a different o2m context)
 	watch(
 		() => fields.value,
 		() => {
-			tableHeaders.value = (fields.value.length > 0 ? fields.value : getDefaultFields())
+			const { junctionRelation, junctionCollection } = relation.value;
+
+			tableHeaders.value = (fields.value.length > 0
+				? fields.value
+				: getDefaultFields().map((field) => `${junctionRelation}.${field}`)
+			)
 				.map((fieldKey) => {
-					const field = fieldsStore.getField(relation.value.relationCollection, fieldKey);
+					let field = fieldsStore.getField(junctionCollection, fieldKey);
 
 					if (!field) return null;
 
@@ -171,5 +192,5 @@ export default function usePreview(
 		return fields.slice(0, 3).map((field: Field) => field.field);
 	}
 
-	return { tableHeaders, displayItems, items, loading, error };
+	return { tableHeaders, items, loading, error };
 }

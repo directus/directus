@@ -5,7 +5,7 @@
 	<div class="one-to-many" v-else>
 		<v-table
 			:loading="loading"
-			:items="displayItems"
+			:items="items"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
@@ -15,13 +15,13 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="junctionCollection.collection"
+					:collection="relationFields.junctionCollection"
 					:field="header.field.field"
 				/>
 			</template>
@@ -46,9 +46,9 @@
 		<modal-detail
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
-			:collection="relationCollection.collection"
+			:collection="relationFields.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
-			:related-primary-key="relationFields.relationPkField"
+			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationFields.junctionRelation"
 			:edits="editsAtStart"
 			@input="stageEdits"
@@ -71,6 +71,7 @@
 import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import ModalDetail from '@/views/private/components/modal-detail';
 import ModalBrowse from '@/views/private/components/modal-browse';
+import { get } from 'lodash';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -128,7 +129,7 @@ export default defineComponent({
 			getJunctionFromRelatedId,
 		} = useActions(value, relationFields, emitter);
 
-		const { tableHeaders, items, loading, error, displayItems } = usePreview(
+		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
 			relationFields,
@@ -138,17 +139,15 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdit(
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey } = useEdit(
 			value,
-			items,
 			relationFields,
-			emitter,
-			getJunctionFromRelatedId
+			emitter
 		);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
 			value,
-			displayItems,
+			items,
 			relationFields,
 			emitter
 		);
@@ -168,10 +167,11 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			displayItems,
 			selectionFilters,
 			items,
 			relationFields,
+			relatedPrimaryKey,
+			get,
 		};
 	},
 });

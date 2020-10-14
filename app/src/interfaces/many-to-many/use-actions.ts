@@ -1,5 +1,6 @@
 import { Ref } from '@vue/composition-api';
 import { RelationInfo } from './use-relation';
+import { get, has } from 'lodash';
 
 export default function useActions(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -12,8 +13,7 @@ export default function useActions(
 
 		return (
 			value.value.find(
-				(item) =>
-					(typeof item === 'object' && junctionPkField in item && item[junctionPkField] === id) || item === id
+				(item) => get(item, junctionPkField) === id || (['string', 'number'].includes(typeof item), item === id)
 			) || null
 		);
 	}
@@ -34,11 +34,7 @@ export default function useActions(
 		if (value.value === null || junctionRelation === null) return [];
 
 		return value.value.filter(
-			(item) =>
-				typeof item === 'object' &&
-				junctionRelation in item &&
-				typeof item[junctionRelation] === 'object' &&
-				relationPkField in item[junctionRelation] === false
+			(item) => has(item, junctionRelation) && has(item, [junctionRelation, relationPkField]) === false
 		) as Record<string, any>[];
 	}
 
@@ -47,19 +43,13 @@ export default function useActions(
 
 		if (value.value === null || junctionRelation === null) return [];
 
-		return value.value.filter(
-			(item) =>
-				typeof item === 'object' &&
-				junctionRelation in item &&
-				typeof item[junctionRelation] === 'object' &&
-				relationPkField in item[junctionRelation] === true
-		) as Record<string, any>[];
+		return value.value.filter((item) => has(item, [junctionRelation, relationPkField])) as Record<string, any>[];
 	}
 
 	function getExistingItems() {
 		if (value.value === null) return [];
 
-		return value.value.filter((item) => typeof item === 'string' || typeof item === 'number');
+		return value.value.filter((item) => ['string', 'number'].includes(typeof item));
 	}
 
 	function getPrimaryKeys(): (string | number)[] {

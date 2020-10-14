@@ -1,14 +1,16 @@
 <template>
-	<v-notice type="warning" v-if="relatedCollection === null">
+	<v-notice type="warning" v-if="junctionCollection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
 			<v-field-select
-				:collection="relatedCollection"
+				:collection="junctionCollection"
 				v-model="fields"
-				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
+				:inject="
+					junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }
+				"
 			/>
 		</div>
 	</div>
@@ -20,7 +22,6 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '../../stores';
-
 export default defineComponent({
 	props: {
 		collection: {
@@ -51,7 +52,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const relationsStore = useRelationsStore();
-
 		const fields = computed({
 			get() {
 				return props.value?.fields;
@@ -63,41 +63,26 @@ export default defineComponent({
 				});
 			},
 		});
-
-		const relatedCollection = computed(() => {
+		const junctionCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
-
 			const { field } = props.fieldData;
-
 			const junctionRelation = props.relations.find(
 				(relation) => relation.one_collection === props.collection && relation.one_field === field
 			);
-
-			if (junctionRelation === undefined) return;
-
-			const relatedCollection = props.relations.find(
-				(relation) =>
-					relation.one_collection !== props.collection &&
-					relation.many_field === junctionRelation.junction_field
-			);
-
-			return relatedCollection?.one_collection || null;
+			return junctionRelation?.many_collection || null;
 		});
-
-		const relatedCollectionExists = computed(() => {
+		const junctionCollectionExists = computed(() => {
 			return !!collectionsStore.state.collections.find(
-				(collection) => collection.collection === relatedCollection.value
+				(collection) => collection.collection === junctionCollection.value
 			);
 		});
-
-		return { fields, relatedCollection, relatedCollectionExists };
+		return { fields, junctionCollection, junctionCollectionExists };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
-
 .form-grid {
 	@include form-grid;
 }
