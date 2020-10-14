@@ -263,7 +263,7 @@ export default async function getASTFromQuery(
 	async function getFieldsInCollection(collection: string) {
 		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
 		const fields = (
-			await database.select('field').from('directus_fields').where({ collection })
+			await knex.select('field').from('directus_fields').where({ collection })
 		).map((field) => field.field);
 
 		const fieldsInCollection = [

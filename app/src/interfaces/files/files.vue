@@ -39,7 +39,7 @@
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
 			:collection="relationFields.junctionCollection"
@@ -51,7 +51,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relation.one_collection"
@@ -76,8 +76,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, toRefs, PropType } from '@vue/composition-api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ModalBrowse from '@/views/private/components/modal-browse';
-import ModalDetail from '@/views/private/components/modal-detail';
+import ModalCollection from '@/views/private/components/modal-collection';
+import ModalItem from '@/views/private/components/modal-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
 
@@ -88,7 +88,7 @@ import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
 
 export default defineComponent({
-	components: { ModalBrowse, ModalDetail },
+	components: { ModalCollection, ModalItem },
 	props: {
 		primaryKey: {
 			type: [Number, String],

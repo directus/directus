@@ -20,7 +20,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_roles_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_roles_collection'))" />
 			</drawer-detail>
 		</template>
 
@@ -75,7 +75,7 @@ type Role = {
 };
 
 export default defineComponent({
-	name: 'roles-browse',
+	name: 'roles-collection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {

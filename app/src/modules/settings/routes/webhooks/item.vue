@@ -60,7 +60,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_detail'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_item'))" />
 			</drawer-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
@@ -83,7 +83,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'webhooks-detail',
+	name: 'webhooks-item',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {

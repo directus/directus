@@ -2,7 +2,7 @@
 	<component
 		ref="component"
 		:bookmark="bookmark"
-		:is="isSingle ? 'collections-detail' : 'collections-browse'"
+		:is="isSingle ? 'item-route' : 'collection-route'"
 		:collection="collection"
 	/>
 </template>
@@ -10,14 +10,14 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import Vue from 'vue';
-import CollectionsBrowse from './browse.vue';
-import CollectionsDetail from './detail.vue';
+import CollectionRoute from './collection.vue';
+import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
 	components: {
-		CollectionsBrowse,
-		CollectionsDetail,
+		CollectionRoute,
+		ItemRoute,
 	},
 	props: {
 		collection: {

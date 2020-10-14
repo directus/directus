@@ -43,7 +43,7 @@
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
 			:collection="relationFields.junctionCollection"
@@ -55,7 +55,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relationCollection.collection"
@@ -69,8 +69,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
-import ModalDetail from '@/views/private/components/modal-detail';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalItem from '@/views/private/components/modal-item';
+import ModalCollection from '@/views/private/components/modal-collection';
 import { get } from 'lodash';
 
 import useActions from './use-actions';
@@ -80,7 +80,7 @@ import useEdit from './use-edit';
 import useSelection from './use-selection';
 
 export default defineComponent({
-	components: { ModalDetail, ModalBrowse },
+	components: { ModalItem, ModalCollection },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
