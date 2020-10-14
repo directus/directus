@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="repeater" v-model="selection">
+	<v-item-group class="repeater">
 		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
 			<repeater-row
 				v-for="(row, index) in value"
@@ -110,9 +110,6 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
-
-			// select the new row
-			selection.value = [props.value?.length || 0];
 
 			if (props.value !== null) {
 				emitValue([...props.value, newDefaults]);

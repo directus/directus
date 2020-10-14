@@ -65,7 +65,7 @@
 	],
 	"dependencies": {
 		"@directus/app": "file:../app",
-		"@directus/format-title": "^3.2.0",
+		"@directus/format-title": "file:../packages/format-title",
 		"@directus/specs": "file:../packages/spec",
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
@@ -135,7 +135,7 @@
 	"devDependencies": {
 		"copyfiles": "^2.4.0",
 		"cross-env": "^7.0.2",
-		"ts-node-dev": "^1.0.0-pre.63",
+		"ts-node-dev": "^1.0.0-pre.64",
 		"typescript": "^4.0.3"
 	}
 }
