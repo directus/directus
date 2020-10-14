@@ -439,8 +439,8 @@ export class ItemsService implements AbstractService {
 		return await this.update(data, keys);
 	}
 
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const payloads = Array.isArray(data) ? data : [data];
