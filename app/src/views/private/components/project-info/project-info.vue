@@ -1,5 +1,5 @@
 <template>
-	<div class="project-chooser">
+	<div class="project-info">
 		<latency-indicator />
 		<span class="name">{{ name }}</span>
 	</div>
@@ -8,12 +8,15 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import LatencyIndicator from '../latency-indicator';
-import { useSettingsStore } from '@/stores/';
+import { useSettingsStore, useLatencyStore } from '@/stores/';
+import { sortBy } from 'lodash';
 
 export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
+		const latencyStore = useLatencyStore();
 		const settingsStore = useSettingsStore();
+
 		const name = computed(() => settingsStore.state.settings?.project_name);
 
 		return { name };
@@ -22,7 +25,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.project-chooser {
+.project-info {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -33,12 +36,9 @@ export default defineComponent({
 	text-align: left;
 	background-color: var(--background-normal-alt);
 
-	.latency-indicator {
-		margin-right: 12px;
-	}
-
 	.name {
 		flex-grow: 1;
+		margin-left: 12px;
 	}
 }
 </style>
