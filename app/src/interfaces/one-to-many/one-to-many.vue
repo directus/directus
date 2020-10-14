@@ -148,7 +148,7 @@ export default defineComponent({
 		function getUpdatedItems() {
 			const pkField = relatedPrimaryKeyField.value.field;
 			if (props.value === null) return [];
-			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
+			return props.value.filter((item) => typeof item === 'object' && pkField in item === true) as Record<
 				string,
 				any
 			>[];
@@ -260,6 +260,8 @@ export default defineComponent({
 
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
+						console.log('updatedItems', updatedItems);
+						console.log('displayItems', displayItems);
 
 						displayItems.value = existingItems
 							.map((item) => {
