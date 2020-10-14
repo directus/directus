@@ -37,7 +37,7 @@ export default function usePreview(
 			if (junctionRelation === null) return;
 
 			// Load the junction items so we have access to the id's in the related collection
-			const junctionItems = await loadRelatedIds(newVal);
+			const junctionItems = await loadRelatedIds();
 			const relatedPrimaryKeys = junctionItems.map((junction) => junction[junctionRelation]);
 
 			const filteredFields = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
@@ -92,8 +92,8 @@ export default function usePreview(
 		{ immediate: true }
 	);
 
-	async function loadRelatedIds(newVal: (string | number | Record<string, any>)[]) {
-		const { junctionPkField } = relation.value;
+	async function loadRelatedIds() {
+		const { junctionPkField, junctionRelation, relationPkField } = relation.value;
 
 		try {
 			const endpoint = relation.value.junctionCollection.startsWith('directus_')
@@ -107,8 +107,12 @@ export default function usePreview(
 			});
 			const data = response.data.data as Record<string, any>[];
 
+			const updatedItems = getUpdatedItems().map((item) => ({
+				[junctionRelation]: item[junctionRelation][relationPkField],
+			}));
+
 			// Add all items that already had the id of it's related item
-			return data.concat(...getNewSelectedItems());
+			return data.concat(...getNewSelectedItems(), ...updatedItems);
 		} catch (err) {
 			error.value = err;
 		}

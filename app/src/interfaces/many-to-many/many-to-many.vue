@@ -43,8 +43,6 @@
 			</v-button>
 		</div>
 
-		<pre>{{ JSON.stringify(value, null, 4) }}</pre>
-
 		<modal-detail
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
@@ -59,8 +57,8 @@
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relationCollection.collection"
-			:selection="selectedPrimaryKeys"
-			:filters="[]"
+			:selection="[]"
+			:filters="selectionFilters"
 			@input="stageSelection"
 			multiple
 		/>
@@ -146,14 +144,11 @@ export default defineComponent({
 			getJunctionFromRelatedId
 		);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(
-			items,
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
+			value,
 			displayItems,
 			relationFields,
-			emitter,
-			getNewItems,
-			getJunctionFromRelatedId,
-			getJunctionItem
+			emitter
 		);
 
 		return {
@@ -172,7 +167,7 @@ export default defineComponent({
 			selectModalActive,
 			deleteItem,
 			displayItems,
-			selectedPrimaryKeys,
+			selectionFilters,
 			items,
 		};
 	},

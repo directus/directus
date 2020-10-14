@@ -24,7 +24,7 @@ export default function useActions(
 		if (value.value === null || junctionRelation === null) return [];
 
 		return value.value.filter(
-			(item) => typeof item === 'object' && junctionRelation in item && typeof junctionRelation !== 'object'
+			(item) => typeof item === 'object' && junctionRelation in item && typeof item[junctionRelation] !== 'object'
 		) as Record<string, any>[];
 	}
 

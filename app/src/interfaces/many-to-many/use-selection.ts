@@ -1,14 +1,12 @@
 import { Ref, ref, computed } from '@vue/composition-api';
 import { RelationInfo } from './use-relation';
+import { Filter } from '@/types';
 
 export default function useSelection(
-	items: Ref<Record<string, any>[]>,
+	value: Ref<(string | number | Record<string, any>)[] | null>,
 	displayItems: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
-	emit: (newVal: any[] | null) => void,
-	getNewItems: () => Record<string, any>[],
-	getJunctionFromRelatedId: (id: string | number, items: Record<string, any>[]) => Record<string, any> | null,
-	getJunctionItem: (id: string | number) => string | number | Record<string, any> | null
+	emit: (newVal: any[] | null) => void
 ) {
 	const selectModalActive = ref(false);
 
@@ -24,31 +22,31 @@ export default function useSelection(
 		return selectedKeys;
 	});
 
+	const selectionFilters = computed<Filter[]>(() => {
+		const { relationPkField } = relation.value;
+
+		const filter: Filter = {
+			key: 'selection',
+			field: relationPkField,
+			operator: 'nin',
+			value: selectedPrimaryKeys.value.join(','),
+			locked: true,
+		};
+
+		return [filter];
+	});
+
 	function stageSelection(newSelection: (number | string)[]) {
-		const { junctionRelation, junctionPkField } = relation.value;
-		const newItems = getNewItems();
+		const { junctionRelation } = relation.value;
 
-		console.log('A');
+		const selection = newSelection
+			.filter((item) => selectedPrimaryKeys.value.includes(item) === false)
+			.map((item) => ({ [junctionRelation]: item }));
 
-		const selection = newSelection.map((item) => {
-			const junction = getJunctionFromRelatedId(item, items.value);
-			console.log('----');
-			console.log('item', item);
-			console.log('items', items.value);
-			console.log('junction', junction);
-
-			if (junction === null) return { [junctionRelation]: item };
-
-			const updatedItem = getJunctionItem(junction[junctionPkField]);
-			console.log(item, ' has Updated: ', updatedItem);
-
-			return updatedItem === null ? { [junctionRelation]: item } : updatedItem;
-		});
-
-		const newVal = [...selection, ...newItems];
+		const newVal = [...selection, ...(value.value || [])];
 		if (newVal.length === 0) emit(null);
 		else emit(newVal);
 	}
 
-	return { stageSelection, selectModalActive, selectedPrimaryKeys };
+	return { stageSelection, selectModalActive, selectedPrimaryKeys, selectionFilters };
 }
