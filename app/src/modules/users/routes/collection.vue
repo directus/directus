@@ -93,7 +93,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_users_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
 			</drawer-detail>
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
@@ -119,7 +119,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'users-browse',
+	name: 'users-collection',
 	components: { UsersNavigation, LayoutDrawerDetail, SearchInput },
 	props: {
 		queryFilters: {

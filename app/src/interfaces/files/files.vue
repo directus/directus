@@ -29,12 +29,12 @@
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="showUpload = true">{{ $t('upload_file') }}</v-button>
-			<v-button class="existing" @click="showBrowseModal = true">
+			<v-button class="existing" @click="showCollectionModal = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item
 			v-if="!disabled"
 			:active="showDetailModal"
 			:collection="junctionCollection"
@@ -46,9 +46,9 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection
 			v-if="!disabled"
-			:active.sync="showBrowseModal"
+			:active.sync="showCollectionModal"
 			:collection="relationJunctionToRelated.one_collection"
 			:selection="[]"
 			:filters="selectionFilters"
@@ -71,8 +71,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, toRefs } from '@vue/composition-api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ModalBrowse from '@/views/private/components/modal-browse';
-import ModalDetail from '@/views/private/components/modal-detail';
+import ModalCollection from '@/views/private/components/modal-collection';
+import ModalItem from '@/views/private/components/modal-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
 
@@ -82,7 +82,7 @@ import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
 
 export default defineComponent({
-	components: { ModalBrowse, ModalDetail },
+	components: { ModalCollection, ModalItem },
 	props: {
 		primaryKey: {
 			type: [Number, String],
@@ -174,7 +174,7 @@ export default defineComponent({
 			onEdit: (newValue) => emit('input', newValue),
 		});
 
-		const { showBrowseModal, stageSelection, selectionFilters } = useSelection({
+		const { showCollectionModal, stageSelection, selectionFilters } = useSelection({
 			relationCurrentToJunction,
 			relatedCollectionPrimaryKeyField,
 			previewItems,
@@ -203,7 +203,7 @@ export default defineComponent({
 			junctionRowPrimaryKey,
 			editExisting,
 			relatedRowPrimaryKey,
-			showBrowseModal,
+			showCollectionModal,
 			stageSelection,
 			selectionFilters,
 			relatedCollection,

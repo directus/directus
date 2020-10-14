@@ -1,19 +1,19 @@
 import { defineModule } from '@/modules/define';
-import SettingsProject from './routes/project/project.vue';
-import SettingsCollections from './routes/data-model/collections/collections.vue';
-import SettingsNewCollection from './routes/data-model/new-collection.vue';
-import SettingsFields from './routes/data-model/fields/fields.vue';
-import SettingsFieldDetail from './routes/data-model/field-detail/field-detail.vue';
-import SettingsRolesBrowse from './routes/roles/browse.vue';
-import SettingsRolesPublicDetail from './routes/roles/public-detail.vue';
-import SettingsRolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
-import SettingsRolesDetail from './routes/roles/detail/detail.vue';
-import SettingsPresetsBrowse from './routes/presets/browse/browse.vue';
-import SettingsPresetsDetail from './routes/presets/detail.vue';
-import SettingsWebhooksBrowse from './routes/webhooks/browse.vue';
-import SettingsWebhooksDetail from './routes/webhooks/detail.vue';
-import SettingsNewRole from './routes/roles/add-new.vue';
-import SettingsNotFound from './routes/not-found.vue';
+import Project from './routes/project/project.vue';
+import Collections from './routes/data-model/collections/collections.vue';
+import NewCollection from './routes/data-model/new-collection.vue';
+import Fields from './routes/data-model/fields/fields.vue';
+import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
+import RolesCollection from './routes/roles/collection.vue';
+import RolesPublicItem from './routes/roles/public-item.vue';
+import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
+import RolesItem from './routes/roles/item/item.vue';
+import PresetsCollection from './routes/presets/collection/collection.vue';
+import PresetsItem from './routes/presets/item.vue';
+import WebhooksCollection from './routes/webhooks/collection.vue';
+import WebhooksItem from './routes/webhooks/item.vue';
+import NewRole from './routes/roles/add-new.vue';
+import NotFound from './routes/not-found.vue';
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
 import { ref } from '@vue/composition-api';
@@ -32,12 +32,12 @@ export default defineModule(({ i18n }) => ({
 		{
 			name: 'settings-project',
 			path: '/project',
-			component: SettingsProject,
+			component: Project,
 		},
 		{
 			name: 'settings-collections',
 			path: '/data-model',
-			component: SettingsCollections,
+			component: Collections,
 			beforeEnter(to, from, next) {
 				const collectionsStore = useCollectionsStore();
 				collectionsStore.hydrate();
@@ -48,7 +48,7 @@ export default defineModule(({ i18n }) => ({
 					path: '+',
 					name: 'settings-add-new',
 					components: {
-						add: SettingsNewCollection,
+						add: NewCollection,
 					},
 				},
 			],
@@ -56,7 +56,7 @@ export default defineModule(({ i18n }) => ({
 		{
 			name: 'settings-fields',
 			path: '/data-model/:collection',
-			component: SettingsFields,
+			component: Fields,
 			async beforeEnter(to, from, next) {
 				const { info } = useCollection(ref(to.params.collection));
 				const fieldsStore = useFieldsStore();
@@ -79,78 +79,78 @@ export default defineModule(({ i18n }) => ({
 					path: ':field',
 					name: 'settings-fields-field',
 					components: {
-						field: SettingsFieldDetail,
+						field: FieldDetail,
 					},
 				},
 			],
 		},
 		{
-			name: 'settings-roles-browse',
+			name: 'settings-roles-collection',
 			path: '/roles',
-			component: SettingsRolesBrowse,
+			component: RolesCollection,
 			children: [
 				{
 					path: '+',
 					name: 'settings-add-new-role',
 					components: {
-						add: SettingsNewRole,
+						add: NewRole,
 					},
 				},
 			],
 		},
 		{
 			path: '/roles/public',
-			component: SettingsRolesPublicDetail,
+			component: RolesPublicItem,
 			props: true,
 			children: [
 				{
 					path: ':permissionKey',
 					components: {
-						permissionsDetail: SettingsRolesPermissionsDetail,
+						permissionsDetail: RolesPermissionsDetail,
 					},
 				},
 			],
 		},
 		{
-			name: 'settings-roles-detail',
+			name: 'settings-roles-item',
 			path: '/roles/:primaryKey',
-			component: SettingsRolesDetail,
+			component: RolesItem,
 			props: true,
 			children: [
 				{
 					path: ':permissionKey',
 					components: {
-						permissionsDetail: SettingsRolesPermissionsDetail,
+						permissionsDetail: RolesPermissionsDetail,
 					},
 				},
 			],
 		},
 		{
-			name: 'settings-presets-browse',
+			name: 'settings-presets-collection',
 			path: '/presets',
-			component: SettingsPresetsBrowse,
+			component: PresetsCollection,
 		},
 		{
-			name: 'settings-presets-detail',
+			name: 'settings-presets-item',
 			path: '/presets/:id',
-			component: SettingsPresetsDetail,
+			component: PresetsItem,
 			props: true,
 		},
 		{
-			name: 'settings-webhooks-browse',
+			name: 'settings-webhooks-collection',
 			path: '/webhooks',
-			component: SettingsWebhooksBrowse,
+			component: WebhooksCollection,
 		},
 		{
-			name: 'settings-webhooks-detail',
+			name: 'settings-webhooks-item',
 			path: '/webhooks/:primaryKey',
-			component: SettingsWebhooksDetail,
+			component: WebhooksItem,
 			props: true,
 		},
 		{
 			name: 'settings-not-found',
 			path: '*',
-			component: SettingsNotFound,
+			component: NotFound,
 		},
 	],
 	preRegisterCheck: (user) => {

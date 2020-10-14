@@ -22,10 +22,10 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import router from '@/router';
-import PermissionsOverview from './detail/components/permissions-overview.vue';
+import PermissionsOverview from './item/components/permissions-overview.vue';
 
 export default defineComponent({
-	name: 'roles-detail',
+	name: 'roles-item',
 	components: { SettingsNavigation, PermissionsOverview },
 	props: {
 		permissionKey: {

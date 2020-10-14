@@ -128,7 +128,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_files_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
 			</drawer-detail>
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
@@ -161,7 +161,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'files-browse',
+	name: 'files-collection',
 	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
 	props: {
 		queryFilters: {
