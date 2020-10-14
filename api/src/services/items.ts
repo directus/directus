@@ -195,6 +195,7 @@ export class ItemsService implements AbstractService {
 	async readByQuery(query: Query): Promise<null | Item | Item[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
+			knex: this.knex,
 		});
 
 		let ast = await getASTFromQuery(this.collection, query, {
@@ -206,7 +207,7 @@ export class ItemsService implements AbstractService {
 			ast = await authorizationService.processAST(ast);
 		}
 
-		const records = await runAST(ast);
+		const records = await runAST(ast, { knex: this.knex });
 		return records;
 	}
 
@@ -293,6 +294,7 @@ export class ItemsService implements AbstractService {
 			if (this.accountability) {
 				const authorizationService = new AuthorizationService({
 					accountability: this.accountability,
+					knex: this.knex,
 				});
 
 				await authorizationService.checkAccess('update', this.collection, keys);
@@ -427,7 +429,7 @@ export class ItemsService implements AbstractService {
 		readQuery.fields = [primaryKeyField];
 
 		// Not authenticated:
-		const itemsService = new ItemsService(this.collection);
+		const itemsService = new ItemsService(this.collection, { knex: this.knex });
 
 		let itemsToUpdate = await itemsService.readByQuery(readQuery);
 		itemsToUpdate = Array.isArray(itemsToUpdate) ? itemsToUpdate : [itemsToUpdate];
@@ -439,8 +441,8 @@ export class ItemsService implements AbstractService {
 		return await this.update(data, keys);
 	}
 
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const payloads = Array.isArray(data) ? data : [data];

@@ -1,48 +1,60 @@
 import { Ref, computed } from '@vue/composition-api';
+import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
-import { Relation } from '@/types/';
-import { useRelationsStore } from '@/stores/';
+import { Relation } from '@/types';
 
-type RelationParams = {
-	collection: Ref<string>;
-	field: Ref<string>;
+export type RelationInfo = {
+	junctionPkField: string;
+	relationPkField: string;
+	junctionRelation: string;
+	junctionCollection: string;
+	relationCollection: string;
 };
 
-export default function useRelation({ collection, field }: RelationParams) {
+export default function useRelation(collection: Ref<string>, field: Ref<string>) {
 	const relationsStore = useRelationsStore();
+	const collectionsStore = useCollectionsStore();
 
-	// We expect two relations to exist for this field: one from this field to the junction
-	// table, and one from the junction table to the related collection
-	const relations = computed<Relation[]>(() => {
-		return relationsStore.getRelationsForField(collection.value, field.value);
+	const relations = computed(() => {
+		return relationsStore.getRelationsForField(collection.value, field.value) as Relation[];
 	});
 
-	const relationCurrentToJunction = computed(() => {
-		return relations.value.find(
-			(relation: Relation) => relation.one_collection === collection.value && relation.one_field === field.value
-		);
+	const junction = computed(() => {
+		return relations.value.find((relation) => relation.one_collection === collection.value) as Relation;
 	});
 
-	const relationJunctionToRelated = computed(() => {
-		if (!relationCurrentToJunction.value) return null;
-
-		const index = relations.value.indexOf(relationCurrentToJunction.value) === 1 ? 0 : 1;
-		return relations.value[index];
+	const relation = computed(() => {
+		return relations.value.find((relation) => relation.one_collection !== collection.value) as Relation;
 	});
 
-	const junctionCollection = computed(() => relations.value[0].many_collection);
-	const relatedCollection = computed(() => relations.value[1].one_collection);
+	const junctionCollection = computed(() => {
+		return collectionsStore.getCollection(junction.value.many_collection)!;
+	});
 
-	const { primaryKeyField: junctionCollectionPrimaryKeyField } = useCollection(junctionCollection);
-	const { primaryKeyField: relatedCollectionPrimaryKeyField } = useCollection(relatedCollection);
+	const relationCollection = computed(() => {
+		return collectionsStore.getCollection(relation.value.one_collection)!;
+	});
+
+	const { primaryKeyField: junctionPrimaryKeyField } = useCollection(junctionCollection.value.collection);
+	const { primaryKeyField: relationPrimaryKeyField } = useCollection(relationCollection.value.collection);
+
+	const relationFields = computed(() => {
+		return {
+			junctionPkField: junctionPrimaryKeyField.value.field,
+			relationPkField: relationPrimaryKeyField.value.field,
+			junctionRelation: junction.value.junction_field as string,
+			junctionCollection: junctionCollection.value.collection,
+			relationCollection: relationCollection.value.collection,
+		} as RelationInfo;
+	});
 
 	return {
-		relations,
-		relationCurrentToJunction,
-		relationJunctionToRelated,
+		junction,
 		junctionCollection,
-		junctionCollectionPrimaryKeyField,
-		relatedCollection,
-		relatedCollectionPrimaryKeyField,
+		relation,
+		relationCollection,
+		relationFields,
+		junctionPrimaryKeyField,
+		relationPrimaryKeyField,
 	};
 }

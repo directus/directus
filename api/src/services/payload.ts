@@ -347,10 +347,7 @@ export class PayloadService {
 			const relationsToProcess = relations.filter((relation) => {
 				if (!relation.one_field) return false;
 
-				return (
-					payload.hasOwnProperty(relation.one_field) &&
-					Array.isArray(payload[relation.one_field])
-				);
+				return payload.hasOwnProperty(relation.one_field);
 			});
 
 			for (const relation of relationsToProcess) {
@@ -360,43 +357,59 @@ export class PayloadService {
 				});
 
 				const relatedRecords: Partial<Item>[] = [];
+				let savedPrimaryKeys: PrimaryKey[] = [];
 
-				for (const relatedRecord of payload[relation.one_field!]) {
-					let record = cloneDeep(relatedRecord);
+				if (payload[relation.one_field!] && Array.isArray(payload[relation.one_field!])) {
+					for (const relatedRecord of payload[relation.one_field!] || []) {
+						let record = cloneDeep(relatedRecord);
 
-					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
-						const exists = !!(await this.knex
-							.select(relation.many_primary)
-							.from(relation.many_collection)
-							.where({ [relation.many_primary]: record })
-							.first());
+						if (
+							typeof relatedRecord === 'string' ||
+							typeof relatedRecord === 'number'
+						) {
+							const exists = !!(await this.knex
+								.select(relation.many_primary)
+								.from(relation.many_collection)
+								.where({ [relation.many_primary]: record })
+								.first());
 
-						if (exists === false)
-							throw new ForbiddenException(undefined, {
-								item: record,
-								collection: relation.many_collection,
-							});
+							if (exists === false) {
+								throw new ForbiddenException(undefined, {
+									item: record,
+									collection: relation.many_collection,
+								});
+							}
 
-						record = {
-							[relation.many_primary]: relatedRecord,
-						};
+							record = {
+								[relation.many_primary]: relatedRecord,
+							};
+						}
+
+						relatedRecords.push({
+							...record,
+							[relation.many_field]: parent || payload[relation.one_primary!],
+						});
 					}
 
-					relatedRecords.push({
-						...record,
-						[relation.many_field]: parent || payload[relation.one_primary!],
-					});
+					savedPrimaryKeys = await itemsService.upsert(relatedRecords);
 				}
-
-				const primaryKeys = await itemsService.upsert(relatedRecords);
 
 				await itemsService.updateByQuery(
 					{ [relation.many_field]: null },
 					{
 						filter: {
-							[relation.many_primary]: {
-								_nin: primaryKeys,
-							},
+							_and: [
+								{
+									[relation.many_field]: {
+										_eq: parent,
+									},
+								},
+								{
+									[relation.many_primary]: {
+										_nin: savedPrimaryKeys,
+									},
+								},
+							],
 						},
 					}
 				);

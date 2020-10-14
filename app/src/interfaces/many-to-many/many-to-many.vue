@@ -1,60 +1,64 @@
 <template>
-	<v-notice type="warning" v-if="!relations || relations.length !== 2">
+	<v-notice type="warning" v-if="!junction || !relation">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<div v-else>
+	<div class="one-to-many" v-else>
 		<v-table
-			inline
-			:items="previewItems"
 			:loading="loading"
+			:items="displayItems"
 			:headers.sync="tableHeaders"
-			:item-key="junctionCollectionPrimaryKeyField.field"
-			:disabled="disabled"
-			@click:row="editExisting"
 			show-resize
+			inline
+			@click:row="editItem"
+			:disabled="disabled"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="get(item, header.value)"
+					:value="item[header.value]"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="junctionCollection"
+					:collection="junctionCollection.collection"
 					:field="header.field.field"
 				/>
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deselect(item)" />
+				<v-icon
+					name="close"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item, items)"
+				/>
 			</template>
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="addNew">{{ $t('create_new') }}</v-button>
-			<v-button class="existing" @click="showCollectionModal = true">
+			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
+			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
 
 		<modal-item
 			v-if="!disabled"
-			:active.sync="showDetailModal"
-			:collection="junctionCollection"
-			:primary-key="junctionRowPrimaryKey"
+			:active="currentlyEditing !== null"
+			:collection="relationCollection.collection"
+			:primary-key="currentlyEditing || '+'"
+			:related-primary-key="relationFields.relationPkField"
+			:junction-field="relationFields.junctionRelation"
 			:edits="editsAtStart"
-			:junction-field="relationCurrentToJunction.junction_field"
-			:related-primary-key="relatedRowPrimaryKey"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
 
 		<modal-collection
 			v-if="!disabled"
-			:active.sync="showCollectionModal"
-			:collection="relationJunctionToRelated.one_collection"
+			:active.sync="selectModalActive"
+			:collection="relationCollection.collection"
 			:selection="[]"
 			:filters="selectionFilters"
 			@input="stageSelection"
@@ -64,41 +68,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, toRefs, computed } from '@vue/composition-api';
-import { useFieldsStore } from '@/stores/';
-import { Header as TableHeader } from '@/components/v-table/types';
-import ModalCollection from '@/views/private/components/modal-collection';
+import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import ModalItem from '@/views/private/components/modal-item';
-import { get } from 'lodash';
+import ModalCollection from '@/views/private/components/modal-collection';
 
+import useActions from './use-actions';
 import useRelation from './use-relation';
-import useSelection from './use-selection';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
-import { Field } from '@/types';
-
-/**
- * Hi there!
- *
- * The many to many is super complex. Please take proper care when jumping in here and making changes,
- * you might break more than you'd imagine.
- *
- * If you have any questions, please feel free to reach out to Rijk <rijkvanzanten@me.com>
- *
- * NOTE: Some of the logic here is based on the fact that you can only have 1 copy of a related item
- * associated in the m2m at a time. Without this requirement, there isn't a way to know which item
- * you're editing at a time. It would also be near impossible to keep track of the changes made to the
- * related item. Seeing we stage the made edits nested so the api is able to update it, we would have
- * to apply the same edits nested to all the junction rows or something like that, pretty tricky stuff
- *
- * Another NOTE: There's one other tricky case to be aware of: selecting an existing related item. In that case,
- * the junction row doesn't exist yet, but the related item does. Be aware that you can't rely on the
- * primary key of the junction row in some cases.
- */
+import useSelection from './use-selection';
 
 export default defineComponent({
-	components: { ModalCollection, ModalItem },
+	components: { ModalItem, ModalCollection },
 	props: {
+		value: {
+			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
+			default: null,
+		},
 		primaryKey: {
 			type: [Number, String],
 			required: true,
@@ -111,181 +97,82 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		value: {
-			type: Array,
-			default: undefined,
+		fields: {
+			type: Array as PropType<string[]>,
+			default: () => [],
 		},
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: undefined,
-		},
 	},
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
+		const { value, collection, field, fields } = toRefs(props);
 
-		const { collection, field, value, primaryKey } = toRefs(props);
+		function emitter(newVal: any[] | null) {
+			emit('input', newVal);
+		}
+
+		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation(
+			collection,
+			field
+		);
 
 		const {
-			relations,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
-			junctionCollectionPrimaryKeyField,
-			junctionCollection,
-			relatedCollectionPrimaryKeyField,
-			relatedCollection,
-		} = useRelation({ collection, field });
+			deleteItem,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys,
+			getNewSelectedItems,
+			getJunctionItem,
+			getJunctionFromRelatedId,
+		} = useActions(value, relationFields, emitter);
 
-		const fields = computed(() => {
-			if (!junctionCollection) return [];
-			return (
-				props.fields ||
-				fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => field.field)
-			);
-		});
-
-		const { tableHeaders } = useTable();
-
-		const { loading, previewItems, error } = usePreview({
+		const { tableHeaders, items, loading, error, displayItems } = usePreview(
 			value,
-			primaryKey,
-			junctionCollectionPrimaryKeyField,
-			relatedCollectionPrimaryKeyField,
-			junctionCollection,
-			relatedCollection,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
 			fields,
-		});
+			relationFields,
+			getNewSelectedItems,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys
+		);
 
-		const {
-			showDetailModal,
-			cancelEdit,
-			addNew,
-			stageEdits,
-			editsAtStart,
-			junctionRowPrimaryKey,
-			editExisting,
-			relatedRowPrimaryKey,
-			initialValues,
-		} = useEdit({
-			relationCurrentToJunction,
-			junctionCollectionPrimaryKeyField,
-			relatedCollectionPrimaryKeyField,
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdit(
 			value,
-			onEdit: (newValue) => emit('input', newValue),
-		});
+			items,
+			relationFields,
+			emitter,
+			getJunctionFromRelatedId
+		);
 
-		const { showCollectionModal, stageSelection, selectionFilters } = useSelection({
-			relationCurrentToJunction,
-			relatedCollectionPrimaryKeyField,
-			previewItems,
-			onStageSelection: (selectionAsJunctionRows) => {
-				emit('input', [...(props.value || []), ...selectionAsJunctionRows]);
-			},
-		});
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
+			value,
+			displayItems,
+			relationFields,
+			emitter
+		);
 
 		return {
-			relations,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
+			junction,
+			relation,
 			tableHeaders,
-			junctionCollectionPrimaryKeyField,
-			junctionCollection,
 			loading,
-			previewItems,
-			error,
-			showDetailModal,
-			cancelEdit,
-			addNew,
-			stageEdits,
+			currentlyEditing,
+			editItem,
+			junctionCollection,
+			relationCollection,
 			editsAtStart,
-			junctionRowPrimaryKey,
-			editExisting,
-			relatedRowPrimaryKey,
-			showCollectionModal,
+			stageEdits,
+			cancelEdit,
 			stageSelection,
+			selectModalActive,
+			deleteItem,
+			displayItems,
 			selectionFilters,
-			relatedCollection,
-			initialValues,
-			get,
-			deselect,
+			items,
+			relationFields,
 		};
-
-		/**
-		 * Manages the state of the table. This includes the table headers, and the event handlers for
-		 * the table events
-		 */
-		function useTable() {
-			// Using a ref for the table headers here means that the table itself can update the
-			// values if it needs to. This allows the user to manually resize the columns for example
-			const tableHeaders = ref<TableHeader[]>([]);
-
-			watch(fields, setHeaders, { immediate: true });
-
-			return { tableHeaders };
-
-			function setHeaders() {
-				tableHeaders.value = fields.value.map(
-					(fieldKey): TableHeader => {
-						const field = fieldsStore.getField(junctionCollection.value, fieldKey);
-
-						return {
-							text: field.name,
-							value: fieldKey,
-							align: 'left',
-							sortable: true,
-							width: null,
-							field: {
-								display: field.meta?.display,
-								displayOptions: field.meta?.display_options,
-								interface: field.meta?.interface,
-								interfaceOptions: field.meta?.options,
-								type: field.type,
-								field: field.field,
-							},
-						};
-					}
-				);
-			}
-		}
-
-		/**
-		 * Deselect an item. This either means undoing any changes made (new item), or adding $delete: true
-		 * if the junction row already exists.
-		 */
-		function deselect(junctionRow: any) {
-			const primaryKey = junctionRow[junctionCollectionPrimaryKeyField.value.field];
-
-			// If the junction row has a primary key, it's an existing item in the junction row, and
-			// we want to add the $delete flag so the API can delete the row in the junction table,
-			// effectively deselecting the related item from this item
-			if (primaryKey) {
-				// Once you deselect an item, it's removed from the preview table. You can only
-				// deselect an item once, so we don't have to check if this item was already disabled
-				emit('input', [
-					...(props.value || []),
-					{
-						[junctionCollectionPrimaryKeyField.value.field]: primaryKey,
-						$delete: true,
-					},
-				]);
-
-				return;
-			}
-
-			// If the item doesn't exist yet, there must be a staged edit for it's creation, that's
-			// the thing we want to filter out of the staged edits.
-			emit(
-				'input',
-				props.value.filter((stagedValue) => {
-					return stagedValue !== junctionRow && stagedValue !== junctionRow['$stagedEdits'];
-				})
-			);
-		}
 	},
 });
 </script>
