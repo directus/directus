@@ -75,7 +75,7 @@ export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
 	props: {
 		value: {
-			type: Array as PropType<(number | string | Record<string, any>)[]>,
+			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
 			default: null,
 		},
 		primaryKey: {
@@ -175,6 +175,7 @@ export default defineComponent({
 		}
 
 		function deleteItem(item: Record<string, any>) {
+			if (props.value === null) return;
 			const relatedPrimKey = relatedPrimaryKeyField.value.field;
 
 			if (relatedPrimKey in item === false) {
@@ -333,7 +334,7 @@ export default defineComponent({
 
 				const hasPrimaryKey = pkField in edits;
 
-				const newValue = props.value.map((item) => {
+				const newValue = (props.value || []).map((item) => {
 					if (
 						typeof item === 'object' &&
 						pkField in item &&
@@ -358,7 +359,8 @@ export default defineComponent({
 					newValue.push(edits);
 				}
 
-				emit('input', newValue);
+				if (newValue.length === 0) emit('input', null);
+				else emit('input', newValue);
 			}
 
 			function cancelEdit() {
