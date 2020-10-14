@@ -195,6 +195,7 @@ export default defineComponent({
 					if (typeof item === 'object' && relatedPrimKey in item) {
 						return item[relatedPrimKey] !== id;
 					}
+					return true;
 				})
 			);
 		}
