@@ -403,8 +403,6 @@ export default defineComponent({
 			return { stageSelection, selectModalActive, selectionFilters };
 
 			function stageSelection(newSelection: (number | string)[]) {
-				console.log(newSelection);
-
 				const pkField = relatedPrimaryKeyField.value.field;
 
 				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
