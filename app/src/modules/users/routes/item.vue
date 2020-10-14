@@ -97,7 +97,7 @@
 			<users-navigation :current-role="(item && item.role) || (preset && preset.role)" />
 		</template>
 
-		<div class="user-detail">
+		<div class="user-item">
 			<div class="user-box" v-if="isNew === false">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
@@ -184,7 +184,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'users-detail',
+	name: 'users-item',
 	beforeRouteLeave(to, from, next) {
 		const self = this as any;
 		const hasEdits = Object.keys(self.edits).length > 0;
@@ -482,7 +482,7 @@ export default defineComponent({
 	--v-button-background-color: var(--background-normal);
 }
 
-.user-detail {
+.user-item {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 }

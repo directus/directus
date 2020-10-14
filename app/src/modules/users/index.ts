@@ -1,7 +1,7 @@
 import { defineModule } from '@/modules/define';
 
-import UsersBrowse from './routes/browse.vue';
-import UsersDetail from './routes/detail.vue';
+import Collection from './routes/collection.vue';
+import Item from './routes/item.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'users',
@@ -9,17 +9,17 @@ export default defineModule(({ i18n }) => ({
 	icon: 'people_alt',
 	routes: [
 		{
-			name: 'users-browse-all',
+			name: 'users-collection',
 			path: '/',
-			component: UsersBrowse,
+			component: Collection,
 			props: (route) => ({
 				queryFilters: route.query,
 			}),
 		},
 		{
-			name: 'users-detail',
+			name: 'users-item',
 			path: '/:primaryKey',
-			component: UsersDetail,
+			component: Item,
 			props: (route) => ({
 				primaryKey: route.params.primaryKey,
 				preset: route.query,

@@ -39,7 +39,7 @@
 			<settings-navigation />
 		</template>
 
-		<div class="presets-browse">
+		<div class="presets-collection">
 			<v-info
 				center
 				type="warning"
@@ -302,7 +302,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--danger);
 }
 
-.presets-browse {
+.presets-collection {
 	padding: var(--content-padding);
 	padding-top: 0;
 }

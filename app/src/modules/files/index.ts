@@ -1,7 +1,7 @@
 import { defineModule } from '@/modules/define';
-import FilesBrowse from './routes/browse.vue';
-import FilesDetail from './routes/detail.vue';
-import FilesAddNew from './routes/add-new.vue';
+import Collection from './routes/collection.vue';
+import Item from './routes/item.vue';
+import AddNew from './routes/add-new.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'files',
@@ -9,9 +9,9 @@ export default defineModule(({ i18n }) => ({
 	icon: 'folder',
 	routes: [
 		{
-			name: 'files-browse',
+			name: 'files-collection',
 			path: '/',
-			component: FilesBrowse,
+			component: Collection,
 			props: (route) => ({
 				queryFilters: route.query,
 			}),
@@ -20,36 +20,36 @@ export default defineModule(({ i18n }) => ({
 					path: '+',
 					name: 'add-file',
 					components: {
-						addNew: FilesAddNew,
+						addNew: AddNew,
 					},
 				},
 			],
 		},
 		{
 			path: '/all',
-			component: FilesBrowse,
+			component: Collection,
 			props: () => ({
 				special: 'all',
 			}),
 		},
 		{
 			path: '/mine',
-			component: FilesBrowse,
+			component: Collection,
 			props: () => ({
 				special: 'mine',
 			}),
 		},
 		{
 			path: '/recent',
-			component: FilesBrowse,
+			component: Collection,
 			props: () => ({
 				special: 'recent',
 			}),
 		},
 		{
-			name: 'files-detail',
+			name: 'files-item',
 			path: '/:primaryKey',
-			component: FilesDetail,
+			component: Item,
 			props: true,
 		},
 	],

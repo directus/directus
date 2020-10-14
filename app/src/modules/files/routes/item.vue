@@ -111,7 +111,7 @@
 			<files-navigation :current-folder="item && item.folder" />
 		</template>
 
-		<div class="file-detail">
+		<div class="file-item">
 			<file-preview
 				v-if="isBatch === false && item"
 				:src="fileSrc"
@@ -200,7 +200,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'files-detail',
+	name: 'files-item',
 	beforeRouteLeave(to, from, next) {
 		const self = this as any;
 		const hasEdits = Object.keys(self.edits).length > 0;
@@ -451,7 +451,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--primary);
 }
 
-.file-detail {
+.file-item {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 }

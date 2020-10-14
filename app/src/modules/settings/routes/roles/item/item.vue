@@ -90,7 +90,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'roles-detail',
+	name: 'roles-item',
 	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoDrawerDetail, PermissionsOverview },
 	props: {
 		primaryKey: {

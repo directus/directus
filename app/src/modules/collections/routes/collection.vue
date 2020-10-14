@@ -208,7 +208,7 @@
 					class="page-description"
 					v-html="
 						marked(
-							$t('page_help_collections_browse', {
+							$t('page_help_collections_collection', {
 								collection: currentCollection.name,
 							})
 						)
@@ -260,7 +260,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'collections-browse',
+	name: 'collections-collection',
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,

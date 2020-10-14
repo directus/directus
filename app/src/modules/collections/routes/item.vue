@@ -172,7 +172,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_collections_detail'))" />
+				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</drawer-detail>
 			<revisions-drawer-detail
 				v-if="

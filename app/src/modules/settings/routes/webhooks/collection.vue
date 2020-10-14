@@ -87,7 +87,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
 			</drawer-detail>
 			<layout-drawer-detail />
 			<portal-target name="drawer" />
@@ -111,7 +111,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-browse',
+	name: 'webhooks-collection',
 	components: { SettingsNavigation, LayoutDrawerDetail, SearchInput },
 	setup(props) {
 		const layoutRef = ref<LayoutComponent | null>(null);
@@ -179,7 +179,7 @@ export default defineComponent({
 			filters.value = [];
 			searchQuery.value = null;
 		}
-	}
+	},
 });
 </script>
 

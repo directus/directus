@@ -28,8 +28,7 @@ export type FieldMeta = {
 	locked: boolean;
 	required: boolean;
 	readonly: boolean;
-	hidden_detail: boolean;
-	hidden_browse: boolean;
+	hidden: boolean;
 	sort: number | null;
 	width: string | null;
 	group: number | null;
