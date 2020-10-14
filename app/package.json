@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@directus/docs": "file:../docs",
-    "@directus/format-title": "^3.2.0",
+    "@directus/format-title": "file:../packages/format-title",
     "@popperjs/core": "^2.4.3",
     "@sindresorhus/slugify": "^1.0.0",
     "@tinymce/tinymce-vue": "^3.2.2",
@@ -82,15 +82,15 @@
   },
   "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.6",
-    "@vue/cli-plugin-eslint": "^4.5.6",
-    "@vue/cli-plugin-router": "^4.5.6",
-    "@vue/cli-plugin-typescript": "^4.5.6",
-    "@vue/cli-plugin-unit-jest": "^4.5.6",
-    "@vue/cli-plugin-vuex": "^4.5.6",
-    "@vue/cli-service": "^4.5.6",
+    "@vue/cli-plugin-babel": "^4.5.7",
+    "@vue/cli-plugin-eslint": "^4.5.7",
+    "@vue/cli-plugin-router": "^4.5.7",
+    "@vue/cli-plugin-typescript": "^4.5.7",
+    "@vue/cli-plugin-unit-jest": "^4.5.7",
+    "@vue/cli-plugin-vuex": "^4.5.7",
+    "@vue/cli-service": "^4.5.7",
     "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^5.1.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.1.0"
   }
 }
