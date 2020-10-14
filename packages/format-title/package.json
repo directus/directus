@@ -31,7 +31,7 @@
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
-	"prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "jest": {
     "transform": {
