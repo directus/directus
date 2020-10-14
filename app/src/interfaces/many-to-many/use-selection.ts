@@ -25,6 +25,8 @@ export default function useSelection(
 	const selectionFilters = computed<Filter[]>(() => {
 		const { relationPkField } = relation.value;
 
+		if (selectedPrimaryKeys.value.length === 0) return [];
+
 		const filter: Filter = {
 			key: 'selection',
 			field: relationPkField,
