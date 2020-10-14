@@ -22,6 +22,7 @@ export default defineComponent({
 		});
 
 		const avgLatency = computed(() => {
+			if (!latencyStore.state.latency || latencyStore.state.latency.length === 0) return 0;
 			const sorted = sortBy(latencyStore.state.latency, ['timestamp']);
 			const lastFive = sorted.slice(Math.max(sorted.length - 5, 0));
 			let total = 0;
