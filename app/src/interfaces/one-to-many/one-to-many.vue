@@ -52,8 +52,8 @@
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
-			:selection="selectedPrimaryKeys"
-			:filters="[]"
+			:selection="[]"
+			:filters="selectionFilters"
 			@input="stageSelection"
 			multiple
 		/>
@@ -107,7 +107,7 @@ export default defineComponent({
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { tableHeaders, displayItems, loading, error } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection();
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 
 		return {
 			relation,
@@ -123,7 +123,7 @@ export default defineComponent({
 			selectModalActive,
 			deleteItem,
 			displayItems,
-			selectedPrimaryKeys,
+			selectionFilters,
 		};
 
 		function getItem(id: string | number) {
@@ -176,6 +176,7 @@ export default defineComponent({
 
 		function deleteItem(item: Record<string, any>) {
 			if (props.value === null) return;
+
 			const relatedPrimKey = relatedPrimaryKeyField.value.field;
 
 			if (relatedPrimKey in item === false) {
@@ -183,6 +184,7 @@ export default defineComponent({
 					'input',
 					props.value.filter((val) => isEqual(item, val) === false)
 				);
+				return;
 			}
 
 			const id = item[relatedPrimKey];
@@ -382,19 +384,35 @@ export default defineComponent({
 					.map((currentItem) => currentItem[pkField]);
 			});
 
-			return { stageSelection, selectModalActive, selectedPrimaryKeys };
+			const selectionFilters = computed<Filter[]>(() => {
+				const pkField = relatedPrimaryKeyField.value.field;
+
+				if (selectedPrimaryKeys.value.length === 0) return [];
+
+				const filter: Filter = {
+					key: 'selection',
+					field: pkField,
+					operator: 'nin',
+					value: selectedPrimaryKeys.value.join(','),
+					locked: true,
+				};
+
+				return [filter];
+			});
+
+			return { stageSelection, selectModalActive, selectionFilters };
 
 			function stageSelection(newSelection: (number | string)[]) {
 				console.log(newSelection);
 
 				const pkField = relatedPrimaryKeyField.value.field;
-				const newItems = getNewItems();
-				const selection = newSelection.map((item) => {
-					const updatedItem = getItem(item);
-					return updatedItem === null ? item : updatedItem;
-				});
 
-				emit('input', [...selection, ...newItems]);
+				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
+
+				const newVal = [...selection, ...(props.value || [])];
+
+				if (newVal.length === 0) emit('input', null);
+				else emit('input', newVal);
 			}
 		}
 
