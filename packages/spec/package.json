@@ -8,7 +8,7 @@
 		"validate": "swagger-cli validate specs/openapi.yaml",
 		"build": "swagger-cli bundle specs/openapi.yaml -o dist/openapi.json",
 		"build:deref": "swagger-cli bundle specs/openapi.yaml -o dist/openapi-deref.json --dereference",
-		"prepublishOnly": "npm run build && npm run build:deref",
+		"prepublishOnly": "npm run build",
 		"dev": "npm-watch build"
 	},
 	"watch": {
