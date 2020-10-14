@@ -38,7 +38,7 @@
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item-detail
 			v-if="!disabled"
 			:active="currentlyEditing !== null"
 			:collection="relatedCollection.collection"
@@ -48,7 +48,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection-detail
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
@@ -65,8 +65,8 @@ import { defineComponent, ref, computed, watch, PropType } from '@vue/compositio
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
-import ModalDetail from '@/views/private/components/modal-detail';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalDetail from '@/views/private/components/modal-item-detail';
+import ModalBrowse from '@/views/private/components/modal-collection-detail';
 import { Filter, Field } from '@/types';
 import { Header } from '@/components/v-table/types';
 

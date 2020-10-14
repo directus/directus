@@ -72,7 +72,7 @@
 			</v-list>
 		</v-menu>
 
-		<modal-detail
+		<modal-item-detail
 			:active.sync="editModalActive"
 			collection="directus_users"
 			:primary-key="currentPrimaryKey"
@@ -81,7 +81,7 @@
 			v-if="!disabled"
 		/>
 
-		<modal-browse
+		<modal-collection-detail
 			:active.sync="selectModalActive"
 			collection="directus_users"
 			:selection="selection"
@@ -95,8 +95,8 @@
 import { defineComponent, computed, ref, watch, PropType } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
-import ModalDetail from '@/views/private/components/modal-detail';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalDetail from '@/views/private/components/modal-item-detail';
+import ModalBrowse from '@/views/private/components/modal-collection-detail';
 
 export default defineComponent({
 	components: { ModalDetail, ModalBrowse },
@@ -178,7 +178,7 @@ export default defineComponent({
 			const currentPrimaryKey = computed<string | number>(() => {
 				if (!currentUser.value) return '+';
 				if (!props.value) return '+';
-				
+
 				return props.value;
 			});
 

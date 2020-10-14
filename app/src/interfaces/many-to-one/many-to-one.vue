@@ -82,7 +82,7 @@
 			</v-list>
 		</v-menu>
 
-		<modal-detail
+		<modal-item-detail
 			v-if="!disabled"
 			:active.sync="editModalActive"
 			:collection="relatedCollection.collection"
@@ -91,7 +91,7 @@
 			@input="stageEdits"
 		/>
 
-		<modal-browse
+		<modal-collection-detail
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
@@ -107,8 +107,8 @@ import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
-import ModalDetail from '@/views/private/components/modal-detail';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalDetail from '@/views/private/components/modal-item-detail';
+import ModalBrowse from '@/views/private/components/modal-collection-detail';
 
 /**
  * @NOTE

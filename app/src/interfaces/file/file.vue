@@ -79,7 +79,7 @@
 			</v-card>
 		</v-dialog>
 
-		<modal-browse
+		<modal-collection-detail
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalBrowse from '@/views/private/components/modal-collection-detail';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';

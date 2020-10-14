@@ -39,7 +39,7 @@
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item-detail
 			v-if="!disabled"
 			:active.sync="showDetailModal"
 			:collection="junctionCollection"
@@ -51,7 +51,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection-detail
 			v-if="!disabled"
 			:active.sync="showBrowseModal"
 			:collection="relationJunctionToRelated.one_collection"
@@ -67,8 +67,8 @@
 import { defineComponent, ref, watch, PropType, toRefs, computed } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ModalBrowse from '@/views/private/components/modal-browse';
-import ModalDetail from '@/views/private/components/modal-detail';
+import ModalBrowse from '@/views/private/components/modal-collection-detail';
+import ModalDetail from '@/views/private/components/modal-item-detail';
 import { get } from 'lodash';
 
 import useRelation from './use-relation';

@@ -75,7 +75,12 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 
 		const { _active } = useActiveState();
-		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } = useJunction();
+		const {
+			junctionFieldInfo,
+			junctionRelatedCollection,
+			junctionRelatedCollectionInfo,
+			setJunctionEdits,
+		} = useJunction();
 		const { _edits, loading, error, item } = useItem();
 		const { save, cancel } = useActions();
 
@@ -85,14 +90,22 @@ export default defineComponent({
 
 		const title = computed(() => {
 			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', { collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name });
+				return i18n.t('creating_in', {
+					collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
+				});
 			}
 
-			return i18n.t('editing_in', { collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name });
+			return i18n.t('editing_in', {
+				collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
+			});
 		});
 
 		const showDivider = computed(() => {
-			return fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true).length > 0;
+			return (
+				fieldsStore
+					.getFieldsForCollection(props.collection)
+					.filter((field: Field) => field.meta?.hidden !== true).length > 0
+			);
 		});
 
 		return {
