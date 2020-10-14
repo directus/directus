@@ -45,18 +45,24 @@ export default function usePreview(
 			if (filteredFields.includes(relationPkField) === false) filteredFields.push(relationPkField);
 
 			try {
-				const endpoint = relation.value.relationCollection.startsWith('directus_')
-					? `/${relation.value.relationCollection.substring(9)}`
-					: `/items/${relation.value.relationCollection}`;
+				let response;
 
-				const response = await api.get(endpoint, {
-					params: {
-						fields: filteredFields,
-						[`filter[${relationPkField}][_in]`]: relatedPrimaryKeys.join(','),
-					},
-				});
+				if (relatedPrimaryKeys.length > 0) {
+					const endpoint = relation.value.relationCollection.startsWith('directus_')
+						? `/${relation.value.relationCollection.substring(9)}`
+						: `/items/${relation.value.relationCollection}`;
 
-				const responseData = (response.data.data as Record<string, any>[]) || [];
+					response = await api.get(endpoint, {
+						params: {
+							fields: filteredFields,
+							[`filter[${relationPkField}][_in]`]: relatedPrimaryKeys.join(','),
+						},
+					});
+				} else {
+					response = undefined;
+				}
+
+				const responseData = (response?.data.data as Record<string, any>[]) || [];
 
 				// Insert the related items into the junction items
 				const existingItems = responseData.map((data) => {
@@ -96,16 +102,23 @@ export default function usePreview(
 		const { junctionPkField, junctionRelation, relationPkField } = relation.value;
 
 		try {
-			const endpoint = relation.value.junctionCollection.startsWith('directus_')
-				? `/${relation.value.junctionCollection.substring(9)}`
-				: `/items/${relation.value.junctionCollection}`;
+			let response;
+			const primaryKeys = getPrimaryKeys();
 
-			const response = await api.get(endpoint, {
-				params: {
-					[`filter[${junctionPkField}][_in]`]: getPrimaryKeys().join(','),
-				},
-			});
-			const data = response.data.data as Record<string, any>[];
+			if (primaryKeys.length > 0) {
+				const endpoint = relation.value.junctionCollection.startsWith('directus_')
+					? `/${relation.value.junctionCollection.substring(9)}`
+					: `/items/${relation.value.junctionCollection}`;
+
+				response = await api.get(endpoint, {
+					params: {
+						[`filter[${junctionPkField}][_in]`]: getPrimaryKeys().join(','),
+					},
+				});
+			} else {
+				response = undefined;
+			}
+			const data = (response?.data.data as Record<string, any>[]) || [];
 
 			const updatedItems = getUpdatedItems().map((item) => ({
 				[junctionRelation]: item[junctionRelation][relationPkField],
