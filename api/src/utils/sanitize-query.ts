@@ -2,7 +2,10 @@ import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
+export function sanitizeQuery(
+	rawQuery: Record<string, any>,
+	accountability: Accountability | null
+) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -49,11 +52,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 		query.search = rawQuery.search;
 	}
 
-	if (
-		rawQuery.export &&
-		typeof rawQuery.export === 'string' &&
-		['json', 'csv'].includes(rawQuery.export)
-	) {
+	if (rawQuery.export) {
 		query.export = rawQuery.export as 'json' | 'csv';
 	}
 
