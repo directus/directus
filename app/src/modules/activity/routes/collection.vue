@@ -33,7 +33,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_activity_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_activity_collection'))" />
 			</drawer-detail>
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />

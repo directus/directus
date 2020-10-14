@@ -87,7 +87,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_browse'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
 			</drawer-detail>
 			<layout-drawer-detail />
 			<portal-target name="drawer" />

@@ -103,7 +103,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_files_detail'))" />
+		<div class="page-description" v-html="marked($t('page_help_files_item'))" />
 	</drawer-detail>
 </template>
 

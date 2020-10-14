@@ -9,7 +9,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_settings_roles_detail'))" />
+		<div class="page-description" v-html="marked($t('page_help_settings_roles_item'))" />
 	</drawer-detail>
 </template>
 

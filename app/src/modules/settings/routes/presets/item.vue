@@ -77,7 +77,7 @@
 
 		<template #drawer>
 			<drawer-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_presets_detail'))" />
+				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
 			</drawer-detail>
 
 			<portal-target class="layout-drawer" name="drawer" />

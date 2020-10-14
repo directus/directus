@@ -13,7 +13,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_settings_presets_browse'))" />
+		<div class="page-description" v-html="marked($t('page_help_settings_presets_collection'))" />
 	</drawer-detail>
 </template>
 
