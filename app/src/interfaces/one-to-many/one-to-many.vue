@@ -248,7 +248,7 @@ export default defineComponent({
 							const response = await api.get(endpoint, {
 								params: {
 									fields: fields,
-									[`filter[${pkField}][_in]`]: getPrimaryKeys().join(','),
+									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
 								},
 							});
 
