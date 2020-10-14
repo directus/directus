@@ -48,6 +48,8 @@
 			:active="currentlyEditing !== null"
 			:collection="relationCollection.collection"
 			:primary-key="currentlyEditing || '+'"
+			:related-primary-key="relationFields.relationPkField"
+			:junction-field="relationFields.junctionRelation"
 			:edits="editsAtStart"
 			@input="stageEdits"
 			@update:active="cancelEdit"
@@ -169,6 +171,7 @@ export default defineComponent({
 			displayItems,
 			selectionFilters,
 			items,
+			relationFields,
 		};
 	},
 });
