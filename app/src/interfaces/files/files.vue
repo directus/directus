@@ -208,18 +208,23 @@ export default defineComponent({
 
 			return { showUpload, onUpload };
 
-			function onUpload(file: { id: number; [key: string]: any }) {
+			function onUpload(files: Record<string, any>[]) {
+				showUpload.value = false;
+
+				if (files.length === 0) return;
+
 				const { junctionRelation } = relationFields.value;
+				const file = files[0];
 
 				const fileAsJunctionRow = {
 					[junctionRelation]: {
 						id: file.id,
+						title: file.title,
+						type: file.type,
 					},
 				};
 
 				emit('input', [...(props.value || []), fileAsJunctionRow]);
-
-				showUpload.value = false;
 			}
 		}
 	},
