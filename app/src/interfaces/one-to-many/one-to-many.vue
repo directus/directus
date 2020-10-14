@@ -260,8 +260,6 @@ export default defineComponent({
 
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
-						console.log('updatedItems', updatedItems);
-						console.log('displayItems', displayItems);
 
 						displayItems.value = existingItems
 							.map((item) => {
