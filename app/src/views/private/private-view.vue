@@ -1,5 +1,5 @@
 <template>
-	<div class="private-view" :class="{ theme, dragging }">
+	<div class="private-view" :class="{ theme }">
 		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
@@ -43,13 +43,6 @@
 		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
 
 		<notifications-group v-if="notificationsPreviewActive === false" :dense="drawerOpen === false" />
-
-		<template v-if="showDropEffect">
-			<div class="drop-border top" />
-			<div class="drop-border right" />
-			<div class="drop-border bottom" />
-			<div class="drop-border left" />
-		</template>
 	</div>
 </template>
 
@@ -62,11 +55,8 @@ import ProjectInfo from './components/project-info';
 import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
-import { useNotificationsStore, useUserStore, useAppStore } from '@/stores';
-import NotificationItem from './components/notification-item';
-import uploadFiles from '@/utils/upload-files';
+import { useUserStore, useAppStore } from '@/stores';
 import i18n from '@/lang';
-import useEventListener from '@/composables/use-event-listener';
 import emitter, { Events } from '@/events';
 
 export default defineComponent({
@@ -78,7 +68,6 @@ export default defineComponent({
 		DrawerButton,
 		NotificationsGroup,
 		NotificationsPreview,
-		NotificationItem,
 	},
 	props: {
 		title: {
@@ -90,7 +79,6 @@ export default defineComponent({
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();
 		const userStore = useUserStore();
-		const notificationsStore = useNotificationsStore();
 		const appStore = useAppStore();
 
 		const notificationsPreviewActive = ref(false);
@@ -103,150 +91,14 @@ export default defineComponent({
 
 		provide('main-element', contentEl);
 
-		const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
-
-		useEventListener(window, 'dragenter', onDragEnter);
-		useEventListener(window, 'dragover', onDragOver);
-		useEventListener(window, 'dragleave', onDragLeave);
-		useEventListener(window, 'drop', onDrop);
-
 		return {
 			navOpen,
 			contentEl,
 			theme,
-			onDragEnter,
-			onDragLeave,
-			showDropEffect,
-			onDrop,
-			dragging,
 			drawerOpen,
 			openDrawer,
 			notificationsPreviewActive,
 		};
-
-		function useFileUpload() {
-			const showDropEffect = ref(false);
-
-			let dragNotificationID: string;
-			let fileUploadNotificationID: string;
-
-			const dragCounter = ref(0);
-
-			const dragging = computed(() => dragCounter.value > 0);
-
-			return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
-
-			function enableDropEffect() {
-				showDropEffect.value = true;
-
-				dragNotificationID = notificationsStore.add({
-					title: i18n.t('drop_to_upload'),
-					icon: 'cloud_upload',
-					type: 'info',
-					persist: true,
-					closeable: false,
-				});
-			}
-
-			function disableDropEffect() {
-				showDropEffect.value = false;
-
-				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
-				}
-			}
-
-			function onDragEnter(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				dragCounter.value++;
-
-				const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
-
-				if (dragCounter.value === 1 && showDropEffect.value === false && isDropzone === false) {
-					enableDropEffect();
-				}
-
-				if (isDropzone) {
-					disableDropEffect();
-					dragCounter.value = 0;
-				}
-			}
-
-			function onDragOver(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-			}
-
-			function onDragLeave(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				dragCounter.value--;
-
-				if (dragCounter.value === 0) {
-					disableDropEffect();
-				}
-
-				if (event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '') {
-					enableDropEffect();
-					dragCounter.value = 1;
-				}
-			}
-
-			async function onDrop(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				showDropEffect.value = false;
-
-				dragCounter.value = 0;
-
-				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
-				}
-
-				const files = [...event.dataTransfer.files];
-
-				fileUploadNotificationID = notificationsStore.add({
-					title: i18n.tc('upload_file_indeterminate', files.length, {
-						done: 0,
-						total: files.length,
-					}),
-					type: 'info',
-					persist: true,
-					closeable: false,
-					loading: true,
-				});
-
-				await uploadFiles(files, {
-					onProgressChange: (progress) => {
-						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
-
-						const total = files.length;
-						const done = progress.filter((p) => p === 100).length;
-
-						notificationsStore.update(fileUploadNotificationID, {
-							title: i18n.tc('upload_file_indeterminate', files.length, {
-								done,
-								total,
-							}),
-							loading: false,
-							progress: percentageDone,
-						});
-					},
-				});
-
-				notificationsStore.remove(fileUploadNotificationID);
-				emitter.emit(Events.upload);
-			}
-		}
 
 		function openDrawer(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
@@ -389,54 +241,6 @@ export default defineComponent({
 	@include breakpoint(small) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
-	}
-}
-
-.dragging {
-	::v-deep * {
-		pointer-events: none;
-	}
-
-	::v-deep [data-dropzone] {
-		pointer-events: all;
-	}
-}
-
-.drop-border {
-	position: fixed;
-	z-index: 500;
-	background-color: var(--primary);
-
-	&.top,
-	&.bottom {
-		width: 100%;
-		height: 4px;
-	}
-
-	&.left,
-	&.right {
-		width: 4px;
-		height: 100%;
-	}
-
-	&.top {
-		top: 0;
-		left: 0;
-	}
-
-	&.right {
-		top: 0;
-		right: 0;
-	}
-
-	&.bottom {
-		bottom: 0;
-		left: 0;
-	}
-
-	&.left {
-		top: 0;
-		left: 0;
 	}
 }
 </style>
