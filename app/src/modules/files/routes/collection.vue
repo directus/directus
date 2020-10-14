@@ -161,7 +161,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'files-browse',
+	name: 'files-collection',
 	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
 	props: {
 		queryFilters: {

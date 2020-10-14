@@ -1,8 +1,8 @@
 import { defineModule } from '@/modules/define';
-import CollectionsOverview from './routes/overview.vue';
-import CollectionsBrowseOrDetail from './routes/browse-or-detail.vue';
-import CollectionsDetail from './routes/detail.vue';
-import CollectionsItemNotFound from './routes/not-found.vue';
+import Overview from './routes/overview.vue';
+import CollectionOrItem from './routes/collection-or-item.vue';
+import Item from './routes/item.vue';
+import ItemNotFound from './routes/not-found.vue';
 import { NavigationGuard } from 'vue-router';
 
 const checkForSystem: NavigationGuard = (to, from, next) => {
@@ -51,12 +51,12 @@ export default defineModule(({ i18n }) => ({
 		{
 			name: 'collections-overview',
 			path: '/',
-			component: CollectionsOverview,
+			component: Overview,
 		},
 		{
-			name: 'collections-browse',
+			name: 'collections-collection',
 			path: '/:collection',
-			component: CollectionsBrowseOrDetail,
+			component: CollectionOrItem,
 			props: (route) => ({
 				collection: route.params.collection,
 				bookmark: route.query.bookmark,
@@ -64,16 +64,16 @@ export default defineModule(({ i18n }) => ({
 			beforeEnter: checkForSystem,
 		},
 		{
-			name: 'collections-detail',
+			name: 'collections-item',
 			path: '/:collection/:primaryKey',
-			component: CollectionsDetail,
+			component: Item,
 			props: true,
 			beforeEnter: checkForSystem,
 		},
 		{
 			name: 'collections-item-not-found',
 			path: '/:collection/*',
-			component: CollectionsItemNotFound,
+			component: ItemNotFound,
 			beforeEnter: checkForSystem,
 		},
 	],

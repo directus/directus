@@ -15,7 +15,7 @@ export default function useSelection({
 	previewItems,
 	onStageSelection,
 }: SelectionParam) {
-	const showBrowseModal = ref(false);
+	const showCollectionModal = ref(false);
 
 	const alreadySelectedRelatedPrimaryKeys = computed(() => {
 		if (!relationCurrentToJunction.value) return [];
@@ -49,7 +49,7 @@ export default function useSelection({
 		return [filter];
 	});
 
-	return { showBrowseModal, stageSelection, selectionFilters };
+	return { showCollectionModal, stageSelection, selectionFilters };
 
 	function stageSelection(selection: any) {
 		const selectionAsJunctionRows = selection.map((relatedPrimaryKey: string | number) => {
@@ -70,7 +70,7 @@ export default function useSelection({
 			};
 		});
 
-		// Seeing the browse modal only shows items that haven't been selected yet (using the
+		// Seeing the collection modal only shows items that haven't been selected yet (using the
 		// filter above), we can safely assume that the items don't exist yet in props.value
 		onStageSelection(selectionAsJunctionRows);
 	}

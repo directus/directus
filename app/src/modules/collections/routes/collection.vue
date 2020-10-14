@@ -260,7 +260,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'collections-browse',
+	name: 'collections-collection',
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,

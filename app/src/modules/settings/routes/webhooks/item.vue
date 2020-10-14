@@ -83,7 +83,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'webhooks-detail',
+	name: 'webhooks-item',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {

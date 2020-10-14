@@ -52,7 +52,7 @@
 			</v-button>
 		</template>
 
-		<div class="preset-detail">
+		<div class="preset-item">
 			<v-form
 				:fields="fields"
 				:loading="loading"
@@ -533,7 +533,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--danger);
 }
 
-.preset-detail {
+.preset-item {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 }

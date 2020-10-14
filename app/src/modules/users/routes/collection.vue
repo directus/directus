@@ -119,7 +119,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'users-browse',
+	name: 'users-collection',
 	components: { UsersNavigation, LayoutDrawerDetail, SearchInput },
 	props: {
 		queryFilters: {

@@ -111,7 +111,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-browse',
+	name: 'webhooks-collection',
 	components: { SettingsNavigation, LayoutDrawerDetail, SearchInput },
 	setup(props) {
 		const layoutRef = ref<LayoutComponent | null>(null);
@@ -179,7 +179,7 @@ export default defineComponent({
 			filters.value = [];
 			searchQuery.value = null;
 		}
-	}
+	},
 });
 </script>
 

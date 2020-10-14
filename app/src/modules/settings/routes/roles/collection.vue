@@ -75,7 +75,7 @@ type Role = {
 };
 
 export default defineComponent({
-	name: 'roles-browse',
+	name: 'roles-collection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {

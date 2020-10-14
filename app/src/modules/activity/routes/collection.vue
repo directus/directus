@@ -57,7 +57,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'activity-browse',
+	name: 'activity-collection',
 	components: { ActivityNavigation, FilterDrawerDetail, LayoutDrawerDetail, SearchInput },
 	props: {
 		primaryKey: {
