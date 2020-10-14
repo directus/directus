@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="title">
+	<private-view :title="title" :class="{ dragging }">
 		<template #headline v-if="breadcrumb">
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
@@ -133,6 +133,13 @@
 			<layout-drawer-detail @input="layout = $event" :value="layout" />
 			<portal-target name="drawer" />
 		</template>
+
+		<template v-if="showDropEffect">
+			<div class="drop-border top" />
+			<div class="drop-border right" />
+			<div class="drop-border bottom" />
+			<div class="drop-border left" />
+		</template>
 	</private-view>
 </template>
 
@@ -152,9 +159,11 @@ import FolderPicker from '../components/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import router from '@/router';
 import Vue from 'vue';
-import { useUserStore } from '@/stores';
+import { useNotificationsStore, useUserStore } from '@/stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
+import useEventListener from '@/composables/use-event-listener';
+import uploadFiles from '@/utils/upload-files';
 
 type Item = {
 	[field: string]: any;
@@ -179,6 +188,7 @@ export default defineComponent({
 		const selection = ref<Item[]>([]);
 
 		const userStore = useUserStore();
+		const notificationsStore = useNotificationsStore();
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
@@ -242,6 +252,13 @@ export default defineComponent({
 		onMounted(() => emitter.on(Events.upload, refresh));
 		onUnmounted(() => emitter.off(Events.upload, refresh));
 
+		const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
+
+		useEventListener(window, 'dragenter', onDragEnter);
+		useEventListener(window, 'dragover', onDragOver);
+		useEventListener(window, 'dragleave', onDragLeave);
+		useEventListener(window, 'drop', onDrop);
+
 		return {
 			batchDelete,
 			batchLink,
@@ -264,6 +281,11 @@ export default defineComponent({
 			selectedFolder,
 			refresh,
 			clearFilters,
+			onDragEnter,
+			onDragLeave,
+			showDropEffect,
+			onDrop,
+			dragging,
 		};
 
 		function useBatchDelete() {
@@ -381,6 +403,133 @@ export default defineComponent({
 			filters.value = [];
 			searchQuery.value = null;
 		}
+
+		function useFileUpload() {
+			const showDropEffect = ref(false);
+
+			let dragNotificationID: string;
+			let fileUploadNotificationID: string;
+
+			const dragCounter = ref(0);
+
+			const dragging = computed(() => dragCounter.value > 0);
+
+			return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
+
+			function enableDropEffect() {
+				showDropEffect.value = true;
+
+				dragNotificationID = notificationsStore.add({
+					title: i18n.t('drop_to_upload'),
+					icon: 'cloud_upload',
+					type: 'info',
+					persist: true,
+					closeable: false,
+				});
+			}
+
+			function disableDropEffect() {
+				showDropEffect.value = false;
+
+				if (dragNotificationID) {
+					notificationsStore.remove(dragNotificationID);
+				}
+			}
+
+			function onDragEnter(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+				event.preventDefault();
+				dragCounter.value++;
+
+				const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
+
+				if (dragCounter.value === 1 && showDropEffect.value === false && isDropzone === false) {
+					enableDropEffect();
+				}
+
+				if (isDropzone) {
+					disableDropEffect();
+					dragCounter.value = 0;
+				}
+			}
+
+			function onDragOver(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+				event.preventDefault();
+			}
+
+			function onDragLeave(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+				event.preventDefault();
+				dragCounter.value--;
+
+				if (dragCounter.value === 0) {
+					disableDropEffect();
+				}
+
+				if (event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '') {
+					enableDropEffect();
+					dragCounter.value = 1;
+				}
+			}
+
+			async function onDrop(event: DragEvent) {
+				if (!event.dataTransfer) return;
+				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+				event.preventDefault();
+				showDropEffect.value = false;
+
+				dragCounter.value = 0;
+
+				if (dragNotificationID) {
+					notificationsStore.remove(dragNotificationID);
+				}
+
+				const files = [...event.dataTransfer.files];
+
+				fileUploadNotificationID = notificationsStore.add({
+					title: i18n.tc('upload_file_indeterminate', files.length, {
+						done: 0,
+						total: files.length,
+					}),
+					type: 'info',
+					persist: true,
+					closeable: false,
+					loading: true,
+				});
+
+				await uploadFiles(files, {
+					preset: {
+						folder: props.queryFilters?.folder || null,
+					},
+					onProgressChange: (progress) => {
+						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
+
+						const total = files.length;
+						const done = progress.filter((p) => p === 100).length;
+
+						notificationsStore.update(fileUploadNotificationID, {
+							title: i18n.tc('upload_file_indeterminate', files.length, {
+								done,
+								total,
+							}),
+							loading: false,
+							progress: percentageDone,
+						});
+					},
+				});
+
+				notificationsStore.remove(fileUploadNotificationID);
+				emitter.emit(Events.upload);
+			}
+		}
 	},
 });
 </script>
@@ -413,5 +562,53 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
+}
+
+.drop-border {
+	position: fixed;
+	z-index: 500;
+	background-color: var(--primary);
+
+	&.top,
+	&.bottom {
+		width: 100%;
+		height: 4px;
+	}
+
+	&.left,
+	&.right {
+		width: 4px;
+		height: 100%;
+	}
+
+	&.top {
+		top: 0;
+		left: 0;
+	}
+
+	&.right {
+		top: 0;
+		right: 0;
+	}
+
+	&.bottom {
+		bottom: 0;
+		left: 0;
+	}
+
+	&.left {
+		top: 0;
+		left: 0;
+	}
+}
+
+.dragging {
+	::v-deep * {
+		pointer-events: none;
+	}
+
+	::v-deep [data-dropzone] {
+		pointer-events: all;
+	}
 }
 </style>
