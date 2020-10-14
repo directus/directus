@@ -3,7 +3,7 @@
 		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
-				<project-chooser />
+				<project-info />
 
 				<div class="module-nav-content">
 					<slot name="navigation" />
@@ -58,7 +58,7 @@ import { defineComponent, ref, provide, toRefs, computed } from '@vue/compositio
 import ModuleBar from './components/module-bar/';
 import DrawerDetailGroup from './components/drawer-detail-group/';
 import HeaderBar from './components/header-bar';
-import ProjectChooser from './components/project-chooser';
+import ProjectInfo from './components/project-info';
 import DrawerButton from './components/drawer-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
@@ -74,7 +74,7 @@ export default defineComponent({
 		ModuleBar,
 		DrawerDetailGroup,
 		HeaderBar,
-		ProjectChooser,
+		ProjectInfo,
 		DrawerButton,
 		NotificationsGroup,
 		NotificationsPreview,

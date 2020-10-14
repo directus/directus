@@ -28,6 +28,11 @@
 	"create_user": "Create User",
 	"create_webhook": "Create Webhook",
 
+	"connection_excellent": "Excellent Connection",
+	"connection_good": "Good Connection",
+	"connection_fair": "Fair Connection",
+	"connection_poor": "Poor Connection",
+
 	"rename_folder": "Rename Folder",
 	"delete_folder": "Delete Folder",
 	"reset_bookmark": "Reset Bookmark",
