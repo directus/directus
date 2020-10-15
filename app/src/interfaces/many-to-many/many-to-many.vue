@@ -38,8 +38,6 @@
 			</v-button>
 		</div>
 
-		<pre>{{ JSON.stringify(value, null, 4) }}</pre>
-
 		<modal-item
 			v-if="!disabled"
 			:active="editModalActive"
