@@ -19,6 +19,11 @@ const terminusOptions: TerminusOptions = {
 
 createTerminus(server, terminusOptions);
 
+// If this file is called directly in the command line
+if (require.main === module) {
+	start();
+}
+
 export default server;
 
 export async function start() {
