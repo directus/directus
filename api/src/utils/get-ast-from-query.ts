@@ -213,7 +213,7 @@ export default async function getASTFromQuery(
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
-				const nonRelationalFields = allowedFields.filter(
+				const nonRelationalFields = fieldsInCollection.filter(
 					(fieldKey) => relationalFields.includes(fieldKey) === false
 				);
 
