@@ -242,6 +242,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		singleton: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const form = ref<HTMLElement>();
@@ -377,7 +381,7 @@ export default defineComponent({
 			if (saveAllowed.value === false || hasEdits.value === false) return;
 
 			await save();
-			router.push(`/collections/${props.collection}`);
+			if (props.singleton === false) router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {
