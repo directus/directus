@@ -1,6 +1,5 @@
 import logger from '../../logger';
 import { Express } from 'express';
-import { exitCode } from 'process';
 
 export default async function start() {
 	const { default: env } = require('../../env');
@@ -44,7 +43,7 @@ export default async function start() {
 					logger.info('Directus shut down OK. Bye bye!');
 				}
 
-				process.exit(exitCode);
+				process.exit(exitStatus);
 			});
 		});
 	});
