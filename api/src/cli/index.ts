@@ -4,7 +4,7 @@ import program from 'commander';
 
 const pkg = require('../../package.json');
 
-import start from './commands/start';
+import start from '../start';
 import init from './commands/init';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
