@@ -140,8 +140,4 @@ track('serverStarted');
 emitter.emit('init.before', { app });
 emitter.emitAsync('init').catch((err) => logger.warn(err));
 
-app.on('close', () => {
-	emitter.emit('close', { app });
-});
-
 export default app;

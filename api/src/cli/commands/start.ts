@@ -1,5 +1,8 @@
 import logger from '../../logger';
 import { Express } from 'express';
+import { createTerminus, TerminusOptions } from '@godaddy/terminus';
+import http from 'http';
+import emitter from '../../emitter';
 
 export default async function start() {
 	const { default: env } = require('../../env');
@@ -8,43 +11,35 @@ export default async function start() {
 	await database.validateDBConnection();
 
 	const app: Express = require('../../app').default;
-
 	const port = env.PORT;
 
-	const server = app.listen(port, () => {
-		logger.info(`Server started at port ${port}`);
-	});
+	const server = http.createServer(app);
 
-	const signals: NodeJS.Signals[] = ['SIGHUP', 'SIGINT', 'SIGTERM'];
+	const terminusOptions: TerminusOptions = {
+		timeout: 1000,
+		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
+		beforeShutdown,
+		onSignal,
+		onShutdown,
+		logger: logger.info,
+	};
 
-	signals.forEach((signal) => {
-		process.on(signal, async () => {
-			let exitStatus = 0;
+	createTerminus(server, terminusOptions);
 
-			try {
-				await database.default.destroy();
-				logger.info('Database connections destroyed');
-			} catch (err) {
-				logger.fatal(`Couldn't close database connections`);
-				logger.error(err);
-				exitStatus = 1;
-			}
+	server.listen(port);
+	logger.info(`Server started at port ${port}`);
 
-			server.close((err) => {
-				if (err) {
-					logger.fatal(`Couldn't close server`);
-					logger.error(err);
-					exitStatus = 1;
-				} else {
-					logger.info('Server closed');
-				}
+	async function beforeShutdown() {
+		emitter.emit('destroy');
+		logger.info('Shutting down Directus');
+	}
 
-				if (exitStatus === 0) {
-					logger.info('Directus shut down OK. Bye bye!');
-				}
+	async function onSignal() {
+		await database.default.destroy();
+		logger.info('Database connections destroyed');
+	}
 
-				process.exit(exitStatus);
-			});
-		});
-	});
+	async function onShutdown() {
+		logger.info('Directus shut down OK. Bye bye!');
+	}
 }

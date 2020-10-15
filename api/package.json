@@ -67,6 +67,7 @@
 		"@directus/app": "file:../app",
 		"@directus/format-title": "file:../packages/format-title",
 		"@directus/specs": "file:../packages/spec",
+		"@godaddy/terminus": "^4.4.1",
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
 		"@slynova/flydrive-s3": "^1.0.2",
