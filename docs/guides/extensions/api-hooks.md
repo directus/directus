@@ -24,7 +24,6 @@ Next, you will want to define your event. You can trigger your custom hook with 
 <scope>.<action>(.<before>)
 // eg: items.create
 // eg: files.create
-// eg: server.start
 // eg: collections.*
 // eg: users.update.before
 ```
@@ -84,9 +83,10 @@ module.exports = function registerHook({ exceptions }) {
 | `settings`    | `create`, `update` and `delete`    | Optional |
 | `users`       | `create`, `update` and `delete`    | Optional |
 | `webhooks`    | `create`, `update` and `delete`    | Optional |
-| `server`      | `start` and `error`†               | No       |
 | `response`    |                                    | No†      |
 | `auth`        | `success`†, `fail`† and `refresh`† | No       |
+| `init`        |                                    | Optional |
+| `server`      | `start` and `stop`                 | Optional |
 
 † TBD
 

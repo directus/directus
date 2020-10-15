@@ -51,9 +51,9 @@
 		"directus": "cli.js"
 	},
 	"scripts": {
-		"start": "cross-env NODE_ENV=production node dist/server.js",
+		"start": "npx directus start",
 		"build": "rm -rf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-		"dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/server.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
+		"dev": "cross-env NODE_ENV=development LOG_LEVEL=trace ts-node-dev --files src/start.ts --respawn --watch \"src/**/*.ts\" --transpile-only",
 		"cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
 	},
@@ -67,6 +67,7 @@
 		"@directus/app": "file:../app",
 		"@directus/format-title": "file:../packages/format-title",
 		"@directus/specs": "file:../packages/spec",
+		"@godaddy/terminus": "^4.4.1",
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
 		"@slynova/flydrive-s3": "^1.0.2",
