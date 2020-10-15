@@ -3,10 +3,9 @@
  */
 
 import env from './env';
+import { toArray } from './utils/to-array';
 
-const enabledProviders = (env.OAUTH_PROVIDERS as string[]).map((provider) =>
-	provider.toLowerCase()
-);
+const enabledProviders = toArray(env.OAUTH_PROVIDERS).map((provider) => provider.toLowerCase());
 
 const config: any = {
 	defaults: {
