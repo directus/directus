@@ -236,7 +236,7 @@ export class PayloadService {
 
 		const columnsWithType = columnsInCollection.map((column) => ({
 			name: column.name,
-			type: getLocalType(column.type),
+			type: getLocalType(column),
 		}));
 
 		const dateColumns = columnsWithType.filter((column) =>
