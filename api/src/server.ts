@@ -1,16 +1,42 @@
-import app from './app';
 import logger from './logger';
-import env from './env';
-import { validateDBConnection } from './database';
+import { createTerminus, TerminusOptions } from '@godaddy/terminus';
+import http from 'http';
+import emitter from './emitter';
+import database from './database';
+import app from './app';
 
-export default async function start() {
-	await validateDBConnection();
+const server = http.createServer(app);
 
-	const port = env.NODE_ENV === 'development' ? 8055 : env.PORT;
+const terminusOptions: TerminusOptions = {
+	timeout: 1000,
+	signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
+	beforeShutdown,
+	onSignal,
+	onShutdown,
+	logger: logger.info,
+};
 
-	app.listen(port, () => {
-		logger.info(`Server started at port ${port}`);
-	});
+createTerminus(server, terminusOptions);
+
+export default server;
+
+async function beforeShutdown() {
+	await emitter.emitAsync('destroy');
+
+	if (process.env.NODE_ENV === 'development') {
+		logger.info('Restarting...');
+	} else {
+		logger.info('Shutting down...');
+	}
 }
 
-start();
+async function onSignal() {
+	await database.destroy();
+	logger.info('Database connections destroyed');
+}
+
+async function onShutdown() {
+	if (process.env.NODE_ENV !== 'development') {
+		logger.info('Directus shut down OK. Bye bye!');
+	}
+}
