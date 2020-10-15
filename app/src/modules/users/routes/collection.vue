@@ -17,7 +17,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0">
+			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />

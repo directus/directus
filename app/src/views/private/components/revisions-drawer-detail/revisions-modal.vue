@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-modal v-model="_active" :title="$t('item_revision')">
+		<v-modal v-model="_active" :title="$t('item_revision')" @esc="_active = false">
 			<template #subtitle>
 				<revisions-modal-picker :revisions="revisions" :current.sync="_current" />
 			</template>
@@ -30,7 +30,7 @@
 			</template>
 		</v-modal>
 
-		<v-dialog v-model="confirmRevert" :persistent="reverting">
+		<v-dialog v-model="confirmRevert" :persistent="reverting" @esc="confirmRevert = false">
 			<v-card>
 				<v-card-title>{{ $t('confirm_revert') }}</v-card-title>
 				<v-card-text>{{ $t('confirm_revert_body') }}</v-card-text>

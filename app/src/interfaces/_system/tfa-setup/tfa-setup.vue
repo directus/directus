@@ -8,7 +8,7 @@
 			</template>
 		</v-checkbox>
 
-		<v-dialog persistent v-model="enableActive">
+		<v-dialog persistent v-model="enableActive" @esc="enableActive = false">
 			<v-card>
 				<template v-if="tfaEnabled === false" v-show="loading === false">
 					<v-card-title>
