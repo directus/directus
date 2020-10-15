@@ -15,6 +15,8 @@ for (let [key, value] of Object.entries(env)) {
 	key = key.toLowerCase();
 	if (key.startsWith('db') === false) continue;
 	if (key === 'db_client') continue;
+	if (key === 'db_search_path') continue;
+	if (key === 'db_connection_string') continue;
 
 	key = key.slice(3); // remove `DB_`
 
@@ -23,7 +25,8 @@ for (let [key, value] of Object.entries(env)) {
 
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
-	connection: connectionConfig,
+	searchPath: env.DB_SEARCH_PATH,
+	connection: env.DB_CONNECTION_STRING || connectionConfig,
 	log: {
 		warn: (msg) => {
 			/** @note this is wild */
