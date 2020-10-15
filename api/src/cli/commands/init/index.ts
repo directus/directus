@@ -12,6 +12,7 @@ import argon2 from 'argon2';
 import runSeed from '../../../database/seeds/run';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
+import Knex from 'knex';
 
 export default async function init(options: Record<string, any>) {
 	const rootPath = process.cwd();
@@ -27,21 +28,54 @@ export default async function init(options: Record<string, any>) {
 
 	const dbClient = getDriverForClient(client)!;
 
-	const spinnerDriver = ora('Installing Database Driver...').start();
-	await execa('npm', ['install', dbClient, '--production']);
-	spinnerDriver.stop();
+	try {
+		require.resolve(dbClient);
+	} catch {
+		const spinnerDriver = ora('Installing Database Driver...').start();
+		await execa('npm', ['install', dbClient, '--production']);
+		spinnerDriver.stop();
+	}
 
-	const credentials: Credentials = await inquirer.prompt(
-		(databaseQuestions[dbClient] as any[]).map((question: Function) =>
-			question({ client: dbClient, filepath: rootPath })
-		)
-	);
+	let attemptsRemaining = 5;
 
-	const db = createDBConnection(dbClient, credentials);
+	const { credentials, db } = await trySeed();
 
-	await runSeed(db);
+	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
+		const credentials: Credentials = await inquirer.prompt(
+			(databaseQuestions[dbClient] as any[]).map((question: Function) =>
+				question({ client: dbClient, filepath: rootPath })
+			)
+		);
 
-	await createEnv(dbClient, credentials, rootPath);
+		const db = createDBConnection(dbClient, credentials!);
+
+		try {
+			await runSeed(db);
+		} catch (err) {
+			console.log();
+			console.log('Something went wrong while seeding the database:');
+			console.log();
+			console.log(`${err.code && chalk.red(`[${err.code}]`)} ${err.message}`);
+			console.log();
+			console.log('Please try again');
+			console.log();
+			attemptsRemaining--;
+
+			if (attemptsRemaining > 0) {
+				return await trySeed();
+			} else {
+				console.log(`Couldn't seed the database. Exiting.`);
+				process.exit(1);
+			}
+		}
+
+		return { credentials, db };
+	}
+
+	await createEnv(dbClient, credentials!, rootPath);
+
+	console.log();
+	console.log();
 
 	console.log(`Create your first admin user:`);
 
