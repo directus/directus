@@ -1,6 +1,6 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
-import { Field, types } from '@/types';
+import { Field, localTypes, types } from '@/types';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;
@@ -30,6 +30,7 @@ export type DisplayConfig = {
 	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;
 	types: readonly typeof types[number][];
+	localTypes?: readonly typeof localTypes[number][];
 	fields?: string[] | DisplayFieldsFunction;
 };
 
