@@ -27,6 +27,8 @@ export const types = [
 	'unknown',
 ] as const;
 
+export const localTypes = ['standard', 'file', 'files', 'm2o', 'o2m', 'm2m', 'presentation', 'translations'] as const;
+
 export type FieldSchema = {
 	/** @todo import this from knex-schema-inspector when that's launched */
 	name: string;
@@ -70,7 +72,6 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-
 	schema: FieldSchema | null;
 	meta: FieldMeta | null;
 }

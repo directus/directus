@@ -12,7 +12,7 @@ import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
-import { Field } from '@/types';
+import { Field, localTypes } from '@/types';
 import Vue from 'vue';
 
 const fieldsStore = useFieldsStore();
@@ -25,11 +25,7 @@ let availableDisplays: ComputedRef<DisplayConfig[]>;
 
 export { state, availableInterfaces, availableDisplays, initLocalStore, clearLocalStore };
 
-function initLocalStore(
-	collection: string,
-	field: string,
-	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
-) {
+function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
 	const interfaces = getInterfaces();
 	const displays = getDisplays();
 
@@ -91,8 +87,8 @@ function initLocalStore(
 	availableDisplays = computed(() =>
 		displays.value.filter((display) => {
 			const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-			const matchesRelation = true;
-			return matchesType && matchesRelation;
+			let matchesLocalType = display.localTypes?.includes(type);
+			return matchesType && (matchesLocalType === undefined || matchesLocalType);
 		})
 	);
 
