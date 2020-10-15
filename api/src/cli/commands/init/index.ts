@@ -88,6 +88,8 @@ export default async function init(options: Record<string, any>) {
 	console.log(`
 Your project has been created at ${chalk.green(rootPath)}.
 
+The configuration can be found in ${chalk.green(rootPath + '/.env')}
+
 Start Directus by running:
   ${chalk.blue('cd')} ${rootPath}
   ${chalk.blue('npx directus')} start

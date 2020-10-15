@@ -129,7 +129,7 @@
 		"mssql": "^6.2.0",
 		"mysql": "^2.18.1",
 		"oracledb": "^5.0.0",
-		"pg": "^8.4.0",
+		"pg": "^8.4.1",
 		"sqlite3": "^5.0.0"
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
