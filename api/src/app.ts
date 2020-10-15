@@ -3,8 +3,6 @@ import bodyParser from 'body-parser';
 import logger from './logger';
 import expressLogger from 'express-pino-logger';
 import path from 'path';
-import database from './database';
-import keyv from './cache';
 
 import { validateEnv } from './utils/validate-env';
 import env from './env';
