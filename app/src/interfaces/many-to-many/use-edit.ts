@@ -7,8 +7,7 @@ export default function useEdit(
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
 ) {
-	// Primary key of the item we're currently editing. If null, the edit modal should be
-	// closed
+	const editModalActive = ref(false);
 	const currentlyEditing = ref<string | number | null>(null);
 	const relatedPrimaryKey = ref<string | number | null>(null);
 
@@ -16,15 +15,16 @@ export default function useEdit(
 	const editsAtStart = ref<Record<string, any>>({});
 
 	function editItem(item: any) {
-		const { relationPkField, junctionRelation, junctionPkField } = relation.value;
+		const { relationPkField, junctionField, junctionPkField } = relation.value;
 
+		editModalActive.value = true;
 		editsAtStart.value = item;
-		relatedPrimaryKey.value = get(item, [junctionRelation, relationPkField], null);
 		currentlyEditing.value = get(item, [junctionPkField], null);
+		relatedPrimaryKey.value = get(item, [junctionField, relationPkField], null);
 	}
 
 	function stageEdits(edits: any) {
-		const { relationPkField, junctionRelation, junctionPkField } = relation.value;
+		const { relationPkField, junctionField, junctionPkField } = relation.value;
 
 		const newValue = (value.value || []).map((item) => {
 			if (currentlyEditing.value !== null) {
@@ -40,8 +40,8 @@ export default function useEdit(
 			if (relatedPrimaryKey.value != null) {
 				const id = relatedPrimaryKey.value;
 
-				if (get(item, [junctionRelation], null) === id) return edits;
-				if (get(item, [junctionRelation, relationPkField], null) === id) return edits;
+				if (get(item, [junctionField], null) === id) return edits;
+				if (get(item, [junctionField, relationPkField], null) === id) return edits;
 			}
 
 			if (isEqual(editsAtStart.value, item)) {
@@ -57,13 +57,16 @@ export default function useEdit(
 
 		if (newValue.length === 0) emit(null);
 		else emit(newValue);
+
+		cancelEdit();
 	}
 
 	function cancelEdit() {
+		editModalActive.value = false;
 		editsAtStart.value = {};
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
 	}
 
-	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey };
+	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive };
 }

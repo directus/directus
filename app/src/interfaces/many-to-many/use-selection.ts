@@ -14,11 +14,13 @@ export default function useSelection(
 	const selectedPrimaryKeys = computed(() => {
 		if (items.value === null) return [];
 
-		const { relationPkField, junctionRelation } = relation.value;
+		const { relationPkField, junctionField } = relation.value;
 
-		const selectedKeys: (number | string)[] = items.value
-			.map((currentItem) => get(currentItem, [junctionRelation, relationPkField]))
-			.filter((i) => i);
+		const selectedKeys = items.value.reduce((acc, current) => {
+			const key = get(current, [junctionField, relationPkField]);
+			if (key !== undefined) acc.push(key);
+			return acc;
+		}, []) as (number | string)[];
 
 		return selectedKeys;
 	});
@@ -40,7 +42,12 @@ export default function useSelection(
 	});
 
 	function stageSelection(newSelection: (number | string)[]) {
-		const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
+		const { junctionField } = relation.value;
+
+		const selection = newSelection.reduce((acc, item) => {
+			if (selectedPrimaryKeys.value.includes(item) === false) acc.push({ [junctionField]: item });
+			return acc;
+		}, new Array());
 
 		const newVal = [...selection, ...(value.value || [])];
 		if (newVal.length === 0) emit(null);

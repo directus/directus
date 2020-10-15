@@ -21,35 +21,32 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="relationFields.junctionCollection"
+					:collection="relationInfo.junctionCollection"
 					:field="header.field.field"
 				/>
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item, items)"
-				/>
+				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
+			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
 			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
 
+		<pre>{{ JSON.stringify(value, null, 4) }}</pre>
+
 		<modal-item
 			v-if="!disabled"
-			:active="currentlyEditing !== null"
-			:collection="relationFields.junctionCollection"
+			:active="editModalActive"
+			:collection="relationInfo.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="relationFields.junctionRelation"
+			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
 			@input="stageEdits"
 			@update:active="cancelEdit"
@@ -114,7 +111,7 @@ export default defineComponent({
 			emit('input', newVal);
 		}
 
-		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation(
+		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
 			collection,
 			field
 		);
@@ -127,28 +124,32 @@ export default defineComponent({
 			getNewSelectedItems,
 			getJunctionItem,
 			getJunctionFromRelatedId,
-		} = useActions(value, relationFields, emitter);
+		} = useActions(value, relationInfo, emitter);
 
 		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
-			relationFields,
+			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
 			getNewItems,
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey } = useEdit(
-			value,
-			relationFields,
-			emitter
-		);
+		const {
+			currentlyEditing,
+			editItem,
+			editsAtStart,
+			stageEdits,
+			cancelEdit,
+			relatedPrimaryKey,
+			editModalActive,
+		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
 			value,
 			items,
-			relationFields,
+			relationInfo,
 			emitter
 		);
 
@@ -169,9 +170,10 @@ export default defineComponent({
 			deleteItem,
 			selectionFilters,
 			items,
-			relationFields,
+			relationInfo,
 			relatedPrimaryKey,
 			get,
+			editModalActive,
 		};
 	},
 });

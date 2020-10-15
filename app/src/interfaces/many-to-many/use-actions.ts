@@ -1,6 +1,6 @@
 import { Ref } from '@vue/composition-api';
 import { RelationInfo } from './use-relation';
-import { get, has } from 'lodash';
+import { get, has, isEqual } from 'lodash';
 
 export default function useActions(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -19,31 +19,32 @@ export default function useActions(
 	}
 
 	function getNewSelectedItems() {
-		const { junctionRelation } = relation.value;
+		const { junctionField } = relation.value;
 
-		if (value.value === null || junctionRelation === null) return [];
+		if (value.value === null || junctionField === null) return [];
 
 		return value.value.filter(
-			(item) => typeof item === 'object' && junctionRelation in item && typeof item[junctionRelation] !== 'object'
+			(item) => typeof item === 'object' && junctionField in item && typeof item[junctionField] !== 'object'
 		) as Record<string, any>[];
 	}
 
 	function getNewItems() {
-		const { junctionRelation, relationPkField } = relation.value;
+		const { junctionField, relationPkField } = relation.value;
 
-		if (value.value === null || junctionRelation === null) return [];
+		if (value.value === null || junctionField === null) return [];
 
 		return value.value.filter(
-			(item) => has(item, junctionRelation) && has(item, [junctionRelation, relationPkField]) === false
+			(item) =>
+				typeof get(item, junctionField) === 'object' && has(item, [junctionField, relationPkField]) === false
 		) as Record<string, any>[];
 	}
 
 	function getUpdatedItems() {
-		const { junctionRelation, relationPkField } = relation.value;
+		const { junctionField, relationPkField } = relation.value;
 
-		if (value.value === null || junctionRelation === null) return [];
+		if (value.value === null || junctionField === null) return [];
 
-		return value.value.filter((item) => has(item, [junctionRelation, relationPkField])) as Record<string, any>[];
+		return value.value.filter((item) => has(item, [junctionField, relationPkField])) as Record<string, any>[];
 	}
 
 	function getExistingItems() {
@@ -57,112 +58,69 @@ export default function useActions(
 
 		if (value.value === null) return [];
 
-		return value.value
-			.map((item) => {
-				if (typeof item === 'object') {
-					if (junctionPkField in item) return item[junctionPkField];
-				} else {
-					return item;
-				}
-			})
-			.filter((i) => i);
+		return value.value.reduce((acc: any[], item) => {
+			const deepId = get(item, [junctionPkField]) as number | string | undefined;
+
+			if (['string', 'number'].includes(typeof item)) acc.push(item);
+			else if (deepId !== undefined) acc.push(deepId);
+			return acc;
+		}, []) as (string | number)[];
 	}
 
-	function getRelatedPrimaryKeys(): (string | number)[] {
+	function getRelatedPrimaryKeys() {
 		if (value.value === null) return [];
-		const { junctionRelation, relationPkField } = relation.value;
-		return value.value
-			.map((junctionItem) => {
-				if (
-					typeof junctionItem !== 'object' ||
-					junctionRelation === null ||
-					junctionRelation in junctionItem === false
-				)
-					return undefined;
-				const item = junctionItem[junctionRelation];
 
+		const { junctionField, relationPkField } = relation.value;
+
+		return value.value.reduce((acc: any[], item) => {
+			const relatedId = get(item, junctionField) as number | string | undefined;
+			const deepRelatedId = get(item, [junctionField, relationPkField]) as number | string | undefined;
+
+			if (relatedId !== undefined) acc.push(relatedId);
+			else if (deepRelatedId !== undefined) acc.push(deepRelatedId);
+			return acc;
+		}, []) as (string | number)[];
+	}
+
+	function deleteItem(deletingItem: Record<string, any>) {
+		if (value.value === null) return;
+		const { junctionField, relationPkField, junctionPkField } = relation.value;
+
+		const junctionId = get(deletingItem, junctionPkField) as number | string | undefined;
+		const relatedId = get(deletingItem, [junctionField, relationPkField]) as number | string | undefined;
+
+		console.log(junctionId, relatedId);
+
+		const newValue = value.value.filter((item) => {
+			if (junctionId !== undefined) {
 				if (typeof item === 'object') {
-					if (junctionRelation in item) return item[relationPkField];
+					return get(item, [junctionPkField]) !== junctionId;
 				} else {
-					return item;
+					return item !== junctionId;
 				}
-			})
-			.filter((i) => i);
-	}
-
-	function deleteItem(item: Record<string, any>, items: Record<string, any>[]) {
-		if (value.value === null) return;
-		const { junctionRelation, relationPkField } = relation.value;
-
-		const id = item[relationPkField] as number | string | undefined;
-
-		if (id !== undefined) return deleteItemWithId(id, items);
-		if (junctionRelation === null) return;
-
-		const newVal = value.value.filter((junctionItem) => {
-			if (typeof junctionItem !== 'object' || junctionRelation in junctionItem === false) return true;
-			return junctionItem[junctionRelation] !== item;
-		});
-
-		if (newVal.length === 0) emit(null);
-		else emit(newVal);
-	}
-
-	function deleteItemWithId(id: string | number, items: Record<string, any>[]) {
-		if (value.value === null) return;
-		const { junctionRelation, relationPkField, junctionPkField } = relation.value;
-
-		const junctionItem = items.find(
-			(item) =>
-				junctionRelation in item &&
-				relationPkField in item[junctionRelation] &&
-				item[junctionRelation][relationPkField] === id
-		);
-
-		if (junctionItem === undefined) return;
-
-		// If it is a newly selected Item
-		if (junctionPkField in junctionItem === false) {
-			const newVal = value.value.filter((item) => {
-				if (typeof item === 'object' && junctionRelation in item) {
-					const jItem = item[junctionRelation];
-					return typeof jItem === 'object' ? jItem[relationPkField] !== id : jItem !== id;
-				}
-				return true;
-			});
-
-			if (newVal.length === 0) emit(null);
-			else emit(newVal);
-			return;
-		}
-
-		// If it is an already existing item
-		const newVal = value.value.filter((item) => {
-			if (typeof item === 'object' && junctionPkField in item) {
-				return junctionItem[junctionPkField] !== item[junctionPkField];
-			} else {
-				return junctionItem[junctionPkField] !== item;
 			}
-		});
 
-		if (newVal.length === 0) emit(null);
-		else emit(newVal);
+			if (relatedId !== undefined) {
+				const itemRelatedId = get(item, [junctionField, relationPkField]);
+				if (['string', 'number'].includes(typeof itemRelatedId)) {
+					return itemRelatedId !== relatedId;
+				}
+
+				const junctionFieldId = get(item, [junctionField]);
+				if (['string', 'number'].includes(typeof junctionFieldId)) {
+					return junctionFieldId !== relatedId;
+				}
+			}
+
+			return isEqual(item, deletingItem) === false;
+		});
+		emit(newValue);
 	}
 
 	function getJunctionFromRelatedId(id: string | number, items: Record<string, any>[]) {
-		const { relationPkField, junctionRelation } = relation.value;
+		const { relationPkField, junctionField } = relation.value;
 
-		return (
-			items.find((item) => {
-				return (
-					typeof item === 'object' &&
-					junctionRelation in item &&
-					typeof item[junctionRelation] === 'object' &&
-					relationPkField in item[junctionRelation] &&
-					item[junctionRelation][relationPkField] === id
-				);
-			}) || null
-		);
+		return items.find((item) => get(item, [junctionField, relationPkField]) === id) || null;
 	}
 
 	return {
@@ -175,6 +133,5 @@ export default function useActions(
 		getRelatedPrimaryKeys,
 		getJunctionFromRelatedId,
 		deleteItem,
-		deleteItemWithId,
 	};
 }

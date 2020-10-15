@@ -4,7 +4,7 @@ import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';
 import { Field, Collection } from '@/types';
 import api from '@/api';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -25,14 +25,13 @@ export default function usePreview(
 	const error = ref(null);
 
 	function getRelatedFields(fields: string[]) {
-		const { junctionRelation } = relation.value;
+		const { junctionField } = relation.value;
 
-		return fields
-			.map((field) => {
-				const sections = field.split('.');
-				if (junctionRelation === sections[0] && sections.length === 2) return sections[1];
-			})
-			.filter((i) => i);
+		return fields.reduce((acc: string[], field) => {
+			const sections = field.split('.');
+			if (junctionField === sections[0] && sections.length === 2) acc.push(sections[1]);
+			return acc;
+		}, []);
 	}
 
 	function getJunctionFields() {
@@ -48,12 +47,17 @@ export default function usePreview(
 			}
 
 			loading.value = true;
-			const { junctionRelation, relationPkField, junctionPkField } = relation.value;
-			if (junctionRelation === null) return;
+			const { junctionField, relationPkField, junctionPkField, relationCollection } = relation.value;
+			if (junctionField === null) return;
 
 			// Load the junction items so we have access to the id's in the related collection
 			const junctionItems = await loadRelatedIds();
-			const relatedPrimaryKeys = junctionItems.map((junction) => junction[junctionRelation]);
+
+			const relatedPrimaryKeys = junctionItems.reduce((acc, junction) => {
+				const id = get(junction, junctionField);
+				if (id !== null) acc.push(id);
+				return acc;
+			}, []) as (string | number)[];
 
 			const filteredFields = [...(fields.value.length > 0 ? getRelatedFields(fields.value) : getDefaultFields())];
 
@@ -63,35 +67,36 @@ export default function usePreview(
 				let responseData: Record<string, any>[] = [];
 
 				if (relatedPrimaryKeys.length > 0) {
-					const endpoint = relation.value.relationCollection.startsWith('directus_')
-						? `/${relation.value.relationCollection.substring(9)}`
-						: `/items/${relation.value.relationCollection}`;
-
-					const response = await api.get(endpoint, {
-						params: {
-							fields: filteredFields,
-							[`filter[${relationPkField}][_in]`]: relatedPrimaryKeys.join(','),
-						},
-					});
-					responseData = response?.data.data as Record<string, any>[];
+					responseData = await request(
+						relationCollection,
+						filteredFields,
+						relationPkField,
+						relatedPrimaryKeys
+					);
 				}
 
+				console.log('responseData1', responseData);
 				// Insert the related items into the junction items
-				const existingItems = responseData.map((data) => {
-					const id = data[relationPkField];
-					const junction = junctionItems.find((junction) => junction[junctionRelation] === id);
-					if (junction === undefined) return;
+				responseData = responseData.map((data) => {
+					const id = get(data, relationPkField);
+					const junction = junctionItems.find((junction) => junction[junctionField] === id);
+
+					if (junction === undefined || id === undefined) return;
 
 					const newJunction = cloneDeep(junction);
-					newJunction[junctionRelation] = data;
+					newJunction[junctionField] = data;
 					return newJunction;
 				}) as Record<string, any>[];
 
 				const updatedItems = getUpdatedItems();
 				const newItems = getNewItems();
 
+				console.log('updatedItems', updatedItems);
+				console.log('newItems', newItems);
+				console.log('responseData2', responseData);
+
 				// Replace existing items with it's updated counterparts
-				const newVal = existingItems
+				responseData = responseData
 					.map((item) => {
 						const updatedItem = updatedItems.find(
 							(updated) => updated[junctionPkField] === item[junctionPkField]
@@ -100,7 +105,9 @@ export default function usePreview(
 						return item;
 					})
 					.concat(...newItems);
-				items.value = newVal;
+
+				console.log('responseData3', responseData);
+				items.value = responseData;
 			} catch (err) {
 				error.value = err;
 			} finally {
@@ -111,33 +118,24 @@ export default function usePreview(
 	);
 
 	async function loadRelatedIds() {
-		const { junctionPkField, junctionRelation, relationPkField } = relation.value;
+		const { junctionPkField, junctionField, relationPkField, junctionCollection } = relation.value;
 
 		try {
 			let data: Record<string, any>[] = [];
 			const primaryKeys = getPrimaryKeys();
+			console.log('PKS', primaryKeys);
 
 			if (primaryKeys.length > 0) {
 				const filteredFields = getJunctionFields();
 
 				if (filteredFields.includes(junctionPkField) === false) filteredFields.push(junctionPkField);
-				if (filteredFields.includes(junctionRelation) === false) filteredFields.push(junctionRelation);
+				if (filteredFields.includes(junctionField) === false) filteredFields.push(junctionField);
 
-				const endpoint = relation.value.junctionCollection.startsWith('directus_')
-					? `/${relation.value.junctionCollection.substring(9)}`
-					: `/items/${relation.value.junctionCollection}`;
-
-				const response = await api.get(endpoint, {
-					params: {
-						fields: filteredFields,
-						[`filter[${junctionPkField}][_in]`]: getPrimaryKeys().join(','),
-					},
-				});
-				data = response?.data.data as Record<string, any>[];
+				data = await request(junctionCollection, filteredFields, junctionPkField, primaryKeys);
 			}
 
 			const updatedItems = getUpdatedItems().map((item) => ({
-				[junctionRelation]: item[junctionRelation][relationPkField],
+				[junctionField]: item[junctionField][relationPkField],
 			}));
 
 			// Add all items that already had the id of it's related item
@@ -148,16 +146,35 @@ export default function usePreview(
 		return [];
 	}
 
+	async function request(
+		collection: string,
+		fields: string[] | null,
+		filteredField: string,
+		primaryKeys: (string | number)[] | null
+	) {
+		if (fields === null || fields.length === 0 || primaryKeys === null || primaryKeys.length === 0) return [];
+
+		const endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
+
+		const response = await api.get(endpoint, {
+			params: {
+				fields: fields,
+				[`filter[${filteredField}][_in]`]: primaryKeys.join(','),
+			},
+		});
+		return response?.data.data as Record<string, any>[];
+	}
+
 	// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 	// fields prop changes (most likely when we're navigating to a different o2m context)
 	watch(
 		() => fields.value,
 		() => {
-			const { junctionRelation, junctionCollection } = relation.value;
+			const { junctionField, junctionCollection } = relation.value;
 
 			tableHeaders.value = (fields.value.length > 0
 				? fields.value
-				: getDefaultFields().map((field) => `${junctionRelation}.${field}`)
+				: getDefaultFields().map((field) => `${junctionField}.${field}`)
 			)
 				.map((fieldKey) => {
 					let field = fieldsStore.getField(junctionCollection, fieldKey);
