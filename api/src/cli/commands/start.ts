@@ -1,4 +1,5 @@
 import logger from '../../logger';
+import emitter from '../../emitter';
 
 export default async function start() {
 	const env = require('../../env').default;
@@ -8,9 +9,12 @@ export default async function start() {
 
 	const server = require('../../server').default;
 
+	await emitter.emitAsync('server.start.before', { server });
+
 	server
 		.listen(port, () => {
 			logger.info(`Server started at port ${port}`);
+			emitter.emitAsync('server.start').catch((err) => logger.warn(err));
 		})
 		.once('error', (err: any) => {
 			if (err?.code === 'EADDRINUSE') {

@@ -21,7 +21,7 @@ createTerminus(server, terminusOptions);
 export default server;
 
 async function beforeShutdown() {
-	await emitter.emitAsync('destroy');
+	await emitter.emitAsync('server.stop.before', { server });
 
 	if (process.env.NODE_ENV === 'development') {
 		logger.info('Restarting...');
@@ -36,6 +36,8 @@ async function onSignal() {
 }
 
 async function onShutdown() {
+	emitter.emitAsync('server.stop').catch((err) => logger.warn(err));
+
 	if (process.env.NODE_ENV !== 'development') {
 		logger.info('Directus shut down OK. Bye bye!');
 	}
