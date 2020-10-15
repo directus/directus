@@ -7,6 +7,7 @@ export default function useActions(
 	relation: Ref<RelationInfo>,
 	emit: (newValue: any[] | null) => void
 ) {
+	// Returns the junction item with the given Id.
 	function getJunctionItem(id: string | number) {
 		const { junctionPkField } = relation.value;
 		if (value.value === null) return null;
@@ -18,6 +19,7 @@ export default function useActions(
 		);
 	}
 
+	// Returns all items that have no junction item yet, but an related item does exist.
 	function getNewSelectedItems() {
 		const { junctionField } = relation.value;
 
@@ -28,6 +30,7 @@ export default function useActions(
 		) as Record<string, any>[];
 	}
 
+	// Returns all items that do not have an existing junction and related item.
 	function getNewItems() {
 		const { junctionField, relationPkField } = relation.value;
 
@@ -39,6 +42,7 @@ export default function useActions(
 		) as Record<string, any>[];
 	}
 
+	// Returns a list of items which related or junction item does exist but had changes.
 	function getUpdatedItems() {
 		const { junctionField, relationPkField } = relation.value;
 
@@ -47,12 +51,14 @@ export default function useActions(
 		return value.value.filter((item) => has(item, [junctionField, relationPkField])) as Record<string, any>[];
 	}
 
+	// Returns only items that do not have any changes what so ever.
 	function getExistingItems() {
 		if (value.value === null) return [];
 
 		return value.value.filter((item) => ['string', 'number'].includes(typeof item));
 	}
 
+	// Get a list of junction item ids.
 	function getPrimaryKeys(): (string | number)[] {
 		const { junctionPkField } = relation.value;
 
@@ -67,6 +73,7 @@ export default function useActions(
 		}, []) as (string | number)[];
 	}
 
+	// Get a list of ids of the related items.
 	function getRelatedPrimaryKeys() {
 		if (value.value === null) return [];
 
