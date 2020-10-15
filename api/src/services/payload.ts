@@ -16,6 +16,7 @@ import SchemaInspector from 'knex-schema-inspector';
 import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
+import { toArray } from '../utils/to-array';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -141,7 +142,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		let processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -338,7 +339,7 @@ export class PayloadService {
 			.from('directus_relations')
 			.where({ one_collection: this.collection });
 
-		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
+		const payloads = clone(toArray(payload));
 
 		for (let i = 0; i < payloads.length; i++) {
 			let payload = payloads[i];

@@ -16,6 +16,7 @@ import Knex from 'knex';
 import cache from '../cache';
 import emitter from '../emitter';
 import logger from '../logger';
+import { toArray } from '../utils/to-array';
 
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
@@ -50,7 +51,7 @@ export class ItemsService implements AbstractService {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const columns = await this.schemaInspector.columns(this.collection);
 
-		let payloads = clone(Array.isArray(data) ? data : [data]);
+		let payloads = clone(toArray(data));
 
 		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -224,7 +225,7 @@ export class ItemsService implements AbstractService {
 	): Promise<null | Item | Item[]> {
 		query = clone(query);
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
-		const keys = Array.isArray(key) ? key : [key];
+		const keys = toArray(key);
 
 		if (keys.length === 1) {
 			query.single = true;
@@ -270,7 +271,7 @@ export class ItemsService implements AbstractService {
 
 		// Updating one or more items to the same payload
 		if (data && key) {
-			const keys = Array.isArray(key) ? key : [key];
+			const keys = toArray(key);
 
 			let payload = clone(data);
 
@@ -404,7 +405,7 @@ export class ItemsService implements AbstractService {
 				knex: trx,
 			});
 
-			const payloads = Array.isArray(data) ? data : [data];
+			const payloads = toArray(data);
 
 			for (const single of payloads as Partial<Item>[]) {
 				let payload = clone(single);
@@ -432,7 +433,7 @@ export class ItemsService implements AbstractService {
 		const itemsService = new ItemsService(this.collection, { knex: this.knex });
 
 		let itemsToUpdate = await itemsService.readByQuery(readQuery);
-		itemsToUpdate = Array.isArray(itemsToUpdate) ? itemsToUpdate : [itemsToUpdate];
+		itemsToUpdate = toArray(itemsToUpdate);
 
 		const keys: PrimaryKey[] = itemsToUpdate.map(
 			(item: Partial<Item>) => item[primaryKeyField]
@@ -445,7 +446,7 @@ export class ItemsService implements AbstractService {
 	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
-		const payloads = Array.isArray(data) ? data : [data];
+		const payloads = toArray(data);
 		const primaryKeys: PrimaryKey[] = [];
 
 		for (const payload of payloads) {
@@ -473,7 +474,7 @@ export class ItemsService implements AbstractService {
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = (Array.isArray(key) ? key : [key]) as PrimaryKey[];
+		const keys = toArray(key);
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -537,7 +538,7 @@ export class ItemsService implements AbstractService {
 		const itemsService = new ItemsService(this.collection);
 
 		let itemsToDelete = await itemsService.readByQuery(readQuery);
-		itemsToDelete = Array.isArray(itemsToDelete) ? itemsToDelete : [itemsToDelete];
+		itemsToDelete = toArray(itemsToDelete);
 
 		const keys: PrimaryKey[] = itemsToDelete.map(
 			(item: Partial<Item>) => item[primaryKeyField]

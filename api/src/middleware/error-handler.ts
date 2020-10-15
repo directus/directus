@@ -2,13 +2,14 @@ import { ErrorRequestHandler } from 'express';
 import { BaseException } from '../exceptions';
 import logger from '../logger';
 import env from '../env';
+import { toArray } from '../utils/to-array';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	let payload: any = {
 		errors: [],
 	};
 
-	const errors = Array.isArray(err) ? err : [err];
+	const errors = toArray(err);
 
 	if (errors.some((err) => err instanceof BaseException === false)) {
 		res.status(500);

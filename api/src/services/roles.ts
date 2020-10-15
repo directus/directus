@@ -4,6 +4,7 @@ import { PermissionsService } from './permissions';
 import { UsersService } from './users';
 import { PresetsService } from './presets';
 import { UnprocessableEntityException } from '../exceptions';
+import { toArray } from '../utils/to-array';
 
 export class RolesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -13,7 +14,7 @@ export class RolesService extends ItemsService {
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = Array.isArray(key) ? key : [key];
+		const keys = toArray(key);
 
 		// Make sure there's at least one admin role left after this deletion is done
 		const otherAdminRoles = await this.knex
