@@ -1,11 +1,10 @@
-import knex from 'knex';
 import logger from '../../logger';
 import { Express } from 'express';
+import { exitCode } from 'process';
 
 export default async function start() {
 	const { default: env } = require('../../env');
 	const database = require('../../database');
-	const connection = database.default as knex;
 
 	await database.validateDBConnection();
 
@@ -17,38 +16,36 @@ export default async function start() {
 		logger.info(`Server started at port ${port}`);
 	});
 
-	// TBD:
-	// - This should move to app.ts?
-	// - What if we want to handle startup of Directus ourselves?
-	//   - In that case we are also responsible of shutting it down, so this can't live there.
-	//
 	const signals: NodeJS.Signals[] = ['SIGHUP', 'SIGINT', 'SIGTERM'];
+
 	signals.forEach((signal) => {
-		process.on(signal, () =>
+		process.on(signal, async () => {
+			let exitStatus = 0;
+
+			try {
+				await database.default.destroy();
+				logger.info('Database connections destroyed');
+			} catch (err) {
+				logger.fatal(`Couldn't close database connections`);
+				logger.error(err);
+				exitStatus = 1;
+			}
+
 			server.close((err) => {
 				if (err) {
-					logger.error(`Failed to close server: ${err.message}`, {
-						err,
-					});
-					process.exit(1);
+					logger.fatal(`Couldn't close server`);
+					logger.error(err);
+					exitStatus = 1;
+				} else {
+					logger.info('Server closed');
 				}
-				logger.info('Server stopped.');
 
-				// TBD:
-				// - close database connection here instead of start.ts?
-				connection
-					.destroy()
-					.then(() => {
-						logger.info('Database connection stopped.');
-						process.exit(0);
-					})
-					.catch((err) => {
-						logger.info(`Failed to destroy database connections: ${err.message}`, {
-							err,
-						});
-						process.exit(1);
-					});
-			})
-		);
+				if (exitStatus === 0) {
+					logger.info('Directus shut down OK. Bye bye!');
+				}
+
+				process.exit(exitCode);
+			});
+		});
 	});
 }

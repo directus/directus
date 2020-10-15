@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import logger from './logger';
 import expressLogger from 'express-pino-logger';
 import path from 'path';
+import database from './database';
+import keyv from './cache';
 
 import { validateEnv } from './utils/validate-env';
 import env from './env';
@@ -137,21 +139,11 @@ registerExtensions(customRouter);
 
 track('serverStarted');
 
-emitter.emit('init', { app });
+emitter.emit('init.before', { app });
+emitter.emitAsync('init').catch((err) => logger.warn(err));
 
 app.on('close', () => {
-	// TBD:
-	// - ideally should be async, but express handler is sync
-	//   - monkey patch app.close to handle shutdown?
-	// - close database connection here instead of start.ts?
-	try {
-		emitter.emit('destroy', { app });
-	} catch (err) {
-		logger.error('Error destroying app');
-		logger.error(err);
-	}
+	emitter.emit('close', { app });
 });
-
-emitter.emitAsync('server.started').catch((err) => logger.warn(err));
 
 export default app;
