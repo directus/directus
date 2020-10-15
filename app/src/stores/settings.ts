@@ -12,7 +12,7 @@ export const useSettingsStore = createStore({
 	actions: {
 		async hydrate() {
 			try {
-				const response = await api.get(`/settings`, { params: { fields: ['*.*'] } });
+				const response = await api.get(`/settings`);
 				this.state.settings = response.data.data;
 			} catch {}
 		},
@@ -28,7 +28,7 @@ export const useSettingsStore = createStore({
 			this.state.settings = newSettings;
 
 			try {
-				const response = await api.patch(`/settings`, updates, { params: { fields: ['*.*'] } });
+				const response = await api.patch(`/settings`, updates);
 
 				this.state.settings = response.data.data;
 

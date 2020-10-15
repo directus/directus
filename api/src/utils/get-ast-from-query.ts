@@ -83,12 +83,11 @@ export default async function getASTFromQuery(
 		for (const field of fields) {
 			const isRelational =
 				field.includes('.') ||
+				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
+				// anything
 				!!relations.find(
 					(relation) =>
-						(relation.many_collection === parentCollection &&
-							relation.many_field === field) ||
-						(relation.one_collection === parentCollection &&
-							relation.one_field === field)
+						relation.one_collection === parentCollection && relation.one_field === field
 				);
 
 			if (isRelational) {
@@ -213,7 +212,7 @@ export default async function getASTFromQuery(
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
-				const nonRelationalFields = allowedFields.filter(
+				const nonRelationalFields = fieldsInCollection.filter(
 					(fieldKey) => relationalFields.includes(fieldKey) === false
 				);
 

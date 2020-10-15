@@ -49,7 +49,7 @@ columns:
     type: string
     length: 16
     nullable: false
-    default: draft
+    default: active
   role:
     type: uuid
     nullable: true
