@@ -86,7 +86,7 @@ module.exports = function registerHook({ exceptions }) {
 | `response`    |                                    | No†      |
 | `auth`        | `success`†, `fail`† and `refresh`† | No       |
 | `init`        |                                    | Optional |
-| `close`       |                                    | No       |
+| `destroy`     |                                    | No       |
 
 † TBD
 
