@@ -10,6 +10,9 @@
 	"only_show_the_file_extension": "Only show the file extension",
 	"textarea": "Textarea",
 
+	"collection_name_translations": "Collection Name Translations",
+	"field_name_translations": "Field Name Translations",
+
 	"enter_password_to_enable_tfa": "Enter your password to enable Two-Factor Authentication",
 
 	"add_field": "Add Field",
@@ -1002,7 +1005,10 @@
       "ip": "IP Address",
       "user_agent": "User Agent",
       "comment": "Comment"
-    },
+	},
+	"directus_collections": {
+		"translations": "Collection Name Translations"
+	},
     "directus_files": {
       "title": "Title",
       "tags": "Tags",
@@ -1057,7 +1063,7 @@
 		"note": "Note",
 		"hidden": "Hidden",
 		"singleton": "Singleton",
-		"translation": "Translations",
+		"translation": "Field Name Translations",
 		"display_template": "Template"
 	},
 	"directus_roles": {

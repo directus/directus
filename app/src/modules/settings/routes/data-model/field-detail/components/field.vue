@@ -19,7 +19,7 @@
 			</div>
 
 			<div class="field full">
-				<div class="label type-label">{{ $t('translations') }}</div>
+				<div class="label type-label">{{ $t('field_name_translations') }}</div>
 				<interface-repeater
 					v-model="fieldData.meta.translations"
 					:template="'{{ translation }} ({{ language }})'"
