@@ -5,7 +5,7 @@
 	<div class="one-to-many" v-else>
 		<v-table
 			:loading="loading"
-			:items="displayItems"
+			:items="items"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
@@ -15,29 +15,24 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="junctionCollection.collection"
+					:collection="relationInfo.junctionCollection"
 					:field="header.field.field"
 				/>
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item, items)"
-				/>
+				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
+			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
 			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
@@ -45,11 +40,11 @@
 
 		<modal-item
 			v-if="!disabled"
-			:active="currentlyEditing !== null"
-			:collection="relationCollection.collection"
+			:active="editModalActive"
+			:collection="relationInfo.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
-			:related-primary-key="relationFields.relationPkField"
-			:junction-field="relationFields.junctionRelation"
+			:related-primary-key="relatedPrimaryKey || '+'"
+			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
 			@input="stageEdits"
 			@update:active="cancelEdit"
@@ -71,6 +66,7 @@
 import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import ModalItem from '@/views/private/components/modal-item';
 import ModalCollection from '@/views/private/components/modal-collection';
+import { get } from 'lodash';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -113,7 +109,7 @@ export default defineComponent({
 			emit('input', newVal);
 		}
 
-		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation(
+		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
 			collection,
 			field
 		);
@@ -126,30 +122,32 @@ export default defineComponent({
 			getNewSelectedItems,
 			getJunctionItem,
 			getJunctionFromRelatedId,
-		} = useActions(value, relationFields, emitter);
+		} = useActions(value, relationInfo, emitter);
 
-		const { tableHeaders, items, loading, error, displayItems } = usePreview(
+		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
-			relationFields,
+			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
 			getNewItems,
 			getPrimaryKeys
 		);
 
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdit(
-			value,
-			items,
-			relationFields,
-			emitter,
-			getJunctionFromRelatedId
-		);
+		const {
+			currentlyEditing,
+			editItem,
+			editsAtStart,
+			stageEdits,
+			cancelEdit,
+			relatedPrimaryKey,
+			editModalActive,
+		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
 			value,
-			displayItems,
-			relationFields,
+			items,
+			relationInfo,
 			emitter
 		);
 
@@ -168,10 +166,12 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			displayItems,
 			selectionFilters,
 			items,
-			relationFields,
+			relationInfo,
+			relatedPrimaryKey,
+			get,
+			editModalActive,
 		};
 	},
 });

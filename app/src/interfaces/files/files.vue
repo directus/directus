@@ -5,30 +5,25 @@
 	<div v-else class="files">
 		<v-table
 			inline
-			:items="displayItems"
+			:items="items"
 			:loading="loading"
 			:headers.sync="tableHeaders"
-			:item-key="relationFields.junctionPkField"
+			:item-key="relationInfo.junctionPkField"
 			:disabled="disabled"
 			@click:row="editItem"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
-					:value="item"
+					:value="get(item, relationInfo.junctionField)"
 					display="file"
-					:collection="relationFields.junctionCollection"
-					:field="relationFields.relationPkField"
+					:collection="relationInfo.junctionCollection"
+					:field="relationInfo.relationPkField"
 					type="file"
 				/>
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item, items)"
-				/>
+				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
 
@@ -41,12 +36,12 @@
 
 		<modal-item
 			v-if="!disabled"
-			:active="currentlyEditing !== null"
-			:collection="relationFields.junctionCollection"
+			:active="editModalActive"
+			:collection="relationInfo.junctionCollection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:related-primary-key="relationFields.relationPkField"
-			:junction-field="relationFields.junctionRelation"
+			:related-primary-key="relatedPrimaryKey || '+'"
+			:junction-field="relationInfo.junctionField"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -54,7 +49,7 @@
 		<modal-collection
 			v-if="!disabled"
 			:active.sync="selectModalActive"
-			:collection="relation.one_collection"
+			:collection="relationInfo.relationCollection"
 			:selection="[]"
 			:filters="selectionFilters"
 			@input="stageSelection"
@@ -114,7 +109,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection, field, value, primaryKey } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation(
+		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
 			collection,
 			field
 		);
@@ -131,9 +126,12 @@ export default defineComponent({
 			getNewSelectedItems,
 			getJunctionItem,
 			getJunctionFromRelatedId,
-		} = useActions(value, relationFields, emitter);
+		} = useActions(value, relationInfo, emitter);
 
-		const fields = ref(['id', 'type', 'title']);
+		const fields = computed(() => {
+			const { junctionField } = relationInfo.value;
+			return ['id', 'type', 'title'].map((key) => `${junctionField}.${key}`);
+		});
 
 		const tableHeaders = ref<TableHeader[]>([
 			{
@@ -146,35 +144,37 @@ export default defineComponent({
 			{
 				text: i18n.t('title'),
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				value: 'title',
+				value: relationInfo.value.junctionField + '.' + 'title',
 				align: 'left',
 				sortable: true,
 				width: 250,
 			},
 		]);
 
-		const { loading, displayItems, error, items } = usePreview(
+		const { loading, error, items } = usePreview(
 			value,
 			fields,
-			relationFields,
+			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
 			getNewItems,
 			getPrimaryKeys
 		);
 
-		const { cancelEdit, stageEdits, editsAtStart, editItem, currentlyEditing } = useEdit(
-			value,
-			items,
-			relationFields,
-			emitter,
-			getJunctionFromRelatedId
-		);
+		const {
+			cancelEdit,
+			stageEdits,
+			editsAtStart,
+			editItem,
+			currentlyEditing,
+			editModalActive,
+			relatedPrimaryKey,
+		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
 			value,
-			displayItems,
-			relationFields,
+			items,
+			relationInfo,
 			emitter
 		);
 
@@ -186,7 +186,6 @@ export default defineComponent({
 			tableHeaders,
 			junctionCollection,
 			loading,
-			displayItems,
 			error,
 			currentlyEditing,
 			cancelEdit,
@@ -200,8 +199,10 @@ export default defineComponent({
 			items,
 			get,
 			onUpload,
-			relationFields,
+			relationInfo,
 			editItem,
+			editModalActive,
+			relatedPrimaryKey,
 		};
 
 		function useUpload() {
@@ -214,11 +215,11 @@ export default defineComponent({
 
 				if (files.length === 0) return;
 
-				const { junctionRelation } = relationFields.value;
+				const { junctionField } = relationInfo.value;
 				const file = files[0];
 
 				const fileAsJunctionRow = {
-					[junctionRelation]: {
+					[junctionField]: {
 						id: file.id,
 						title: file.title,
 						type: file.type,

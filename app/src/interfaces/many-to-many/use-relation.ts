@@ -6,7 +6,7 @@ import { Relation } from '@/types';
 export type RelationInfo = {
 	junctionPkField: string;
 	relationPkField: string;
-	junctionRelation: string;
+	junctionField: string;
 	junctionCollection: string;
 	relationCollection: string;
 };
@@ -38,11 +38,11 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 	const { primaryKeyField: junctionPrimaryKeyField } = useCollection(junctionCollection.value.collection);
 	const { primaryKeyField: relationPrimaryKeyField } = useCollection(relationCollection.value.collection);
 
-	const relationFields = computed(() => {
+	const relationInfo = computed(() => {
 		return {
 			junctionPkField: junctionPrimaryKeyField.value.field,
 			relationPkField: relationPrimaryKeyField.value.field,
-			junctionRelation: junction.value.junction_field as string,
+			junctionField: junction.value.junction_field as string,
 			junctionCollection: junctionCollection.value.collection,
 			relationCollection: relationCollection.value.collection,
 		} as RelationInfo;
@@ -53,7 +53,7 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 		junctionCollection,
 		relation,
 		relationCollection,
-		relationFields,
+		relationInfo,
 		junctionPrimaryKeyField,
 		relationPrimaryKeyField,
 	};
